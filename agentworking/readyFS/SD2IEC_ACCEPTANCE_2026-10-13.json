@@ -276,7 +276,7 @@
     "native_destination_type_assertions": "pending final read-only check"
   },
   "final_regression": {
-    "status": "running",
+    "status": "transfer_checks_passed_type_gate_harness_failed",
     "native_image_type_checks": 12,
     "native_fat_bridge_type_checks": 1,
     "fresh_native_names": true,
@@ -285,6 +285,13 @@
     "terminal": 14649,
     "source_commit": "50b1974",
     "runtime_commit": "bb33868",
-    "runtime_hashes_match_image_matrix": true
+    "runtime_hashes_match_image_matrix": true,
+    "process_exited": true,
+    "copy_pairs_passed": 12,
+    "move_pairs_passed": 12,
+    "host_sd_hashes": "PASS",
+    "native_fat_seq_types": "PASS6",
+    "independent_persisted_iec": "PASS6 offline after restored exit",
+    "failure": "17-byte diagnostic guard label before retained-image mount; shortened; real guard now exercised by tests"
   }
 }

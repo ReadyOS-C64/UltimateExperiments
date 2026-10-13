@@ -1,5 +1,6 @@
 """Final four-endpoint regression plus read-only retained SD-image type proof."""
 import json
+import io
 import os
 import re
 import time
@@ -40,6 +41,15 @@ def retained_types(snapshot):
     return expected
 
 class FinalBaseline(Baseline):
+    types_only = False
+
+    def prepare_types_only(self):
+        marker = self.owned.root+'/sdowner.seq'
+        self.owned.guard(marker)
+        with self.owned.ftp() as ftp:
+            ftp.storbinary('STOR '+marker, io.BytesIO(self.sd['marker'].upper().encode('ascii')))
+        self.c['event'](case='retained-native-types-only', result='START')
+
     def run(self):
         self.idle = True; self.maybe_mounted = False; self.fat_verified = True
         c = self.c
@@ -63,7 +73,10 @@ class FinalBaseline(Baseline):
         c['save_json']('retained-native-image-types-expected.json',
                        {'prior_run': str(prior), 'image': image, 'types': expected,
                         'fat_bridge': {'path': fat_bridge, 'type': '11'}})
-        super().run()
+        if self.types_only:
+            self.prepare_types_only()
+        else:
+            super().run()
         sequence = 0
         def command(text, needle=None, pause=4):
             nonlocal sequence
@@ -76,7 +89,7 @@ class FinalBaseline(Baseline):
             if needle: c['check']('native-type-'+str(sequence).zfill(3), needle)
             return c['capture']('native-type-current')
         self.command = command
-        self.guard('d', 'before-type-mount')
+        self.guard('d', 'before-types')
         self.maybe_mounted = True; self.fat_verified = False
         observed = {}
         try:
@@ -92,7 +105,7 @@ class FinalBaseline(Baseline):
             command('COMPARE 10.1:/OWNER @LAB:/SDOWNER.SEQ', 'VERIFY: IDENTICAL')
             command('DISMOUNT 10.1:/ --force', 'OK')
             self.maybe_mounted = False
-            self.guard('d', 'after-type-unmount')
+            self.guard('d', 'after-types')
             command('IEC 10: PARTITION 1', 'FAT OR DNP')
             self.fat_verified = True
         observed[fat_bridge] = command('STAT '+fat_bridge, 'TYPE: $11')
@@ -104,3 +117,8 @@ class FinalBaseline(Baseline):
         assert not getattr(self, 'maybe_mounted', False), 'Native image restoration unconfirmed'
         assert getattr(self, 'fat_verified', True), 'Native FAT owner restoration unconfirmed'
         super().restore()
+
+
+class RetainedTypes(FinalBaseline):
+    """Independent remaining type gate, admitting only the completed image suite."""
+    types_only = True

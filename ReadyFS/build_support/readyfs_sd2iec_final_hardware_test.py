@@ -5,9 +5,9 @@ import json
 import os
 import tempfile
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 from readyfs_sd2iec_baseline import Baseline
-from readyfs_sd2iec_final_hardware import FinalBaseline, retained_types
+from readyfs_sd2iec_final_hardware import FinalBaseline, RetainedTypes, retained_types
 
 class FinalTests(unittest.TestCase):
     def fixture(self):
@@ -49,7 +49,7 @@ class FinalTests(unittest.TestCase):
         with patch.object(Baseline,'restore') as inherited:
             suite.restore();inherited.assert_called_once_with()
 
-    def exercise(self, failure=None):
+    def exercise(self, failure=None, types_only=False):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);prior=root/'logs/readyfs_c64u/matrix';prior.mkdir(parents=True)
             cases=['sd-image-matrix-independent-host-bytes',
@@ -70,15 +70,19 @@ class FinalTests(unittest.TestCase):
                 if failure=='type' and needle.startswith('TYPE: $'):raise AssertionError('bad type')
             suite=FinalBaseline.__new__(FinalBaseline)
             suite.sd={'marker':'marker'};suite.sd_prefix='10.1:/rf123/'
+            suite.owned=Mock();suite.owned.root='/owned'
+            suite.types_only=types_only
             suite.c={'ROOT':root,'save_json':lambda name,data:saved.update({name:data}),
                      'command':lambda *a,**k:None,'event':lambda **k:None,
                      'keys':keys,'wait_ready':wait,'check':check,'capture':lambda name:'screen'}
             with patch.dict(os.environ,{'READYFS_SD2IEC_IMAGE_RUN':str(prior)}), \
-                 patch.object(Baseline,'run'), patch.object(Baseline,'guard'), \
+                 patch.object(Baseline,'run') as baseline_run, patch.object(FinalBaseline,'prepare_types_only') as prepare, \
                  patch('readyfs_sd2iec_final_hardware.time.sleep'):
                 if failure:
                     with self.assertRaises(AssertionError):suite.run()
                 else:suite.run()
+                if types_only:
+                    baseline_run.assert_not_called();prepare.assert_called_once_with()
             return suite,commands,saved
 
     def test_actual_run_checks_all_types_then_fat_bridge_and_restores(self):
@@ -87,6 +91,13 @@ class FinalTests(unittest.TestCase):
         self.assertEqual(commands[-1],'STAT 10.1:/rf123/out/br123456.prg')
         self.assertEqual(len(saved['retained-native-image-type-screens.json']),13)
         self.assertTrue(suite.idle and suite.fat_verified and not suite.maybe_mounted)
+
+    def test_type_only_path_still_uses_real_ownership_guard_and_all_checks(self):
+        suite,commands,saved=self.exercise(types_only=True)
+        self.assertEqual(sum(command.startswith('STAT ') for command in commands),13)
+        self.assertGreaterEqual(sum(command.startswith('COMPARE 10.1:/rf123/owner ') for command in commands),2)
+        self.assertEqual(len(saved['retained-native-image-type-screens.json']),13)
+        self.assertTrue(RetainedTypes.types_only)
 
     def test_type_failure_still_returns_to_verified_fat(self):
         suite,commands,_=self.exercise('type')
