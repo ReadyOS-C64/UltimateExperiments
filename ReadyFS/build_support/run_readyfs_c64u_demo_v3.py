@@ -16,8 +16,9 @@ API='http://'+os.environ.get('C64U_HOST','10.0.0.79')+'/v1'
 log=(OUT/'events.jsonl').open('a',buffering=1)
 random.seed(64)
 steps=[]
+SD_DEMO=os.environ.get('READYFS_SD2IEC_BASELINE')=='9'
 FAST=(os.environ.get('READYFS_DEMO_PREFLIGHT')=='1' or
-      os.environ.get('READYFS_SD2IEC_BASELINE','0')!='0')
+      os.environ.get('READYFS_SD2IEC_BASELINE','0')!='0') and not SD_DEMO
 def event(**data):
     data['time']=time.time(); log.write(json.dumps(data)+'\n'); print(json.dumps(data),flush=True)
 def api(path,method='GET',data=None,ctype=None,timeout=20):
@@ -296,6 +297,8 @@ def encode():
     for item in steps:
         item['seconds']=max(0,item.pop('time')-capture_epoch-lo/fps)
         item['start_seconds']=max(0,item.pop('start_time')-capture_epoch-lo/fps)
+        for before,after in [('typed_epoch','typed_seconds'),('end_epoch','end_seconds')]:
+            if before in item:item[after]=max(0,item.pop(before)-capture_epoch-lo/fps)
     save_json('script.json',steps)
     def stamp(seconds):
         ms=round(seconds*1000);return f'{ms//3600000:02d}:{ms//60000%60:02d}:{ms//1000%60:02d}.{ms%1000:03d}'
@@ -363,7 +366,12 @@ try:
     event(phase='sidecar-load-passive-wait',timeout_seconds=300)
     wait_ready(5,timeout=300)
     check('boot','UP/DN HIST');speed(1)
-    if FAST:
+    if SD_DEMO:
+        from readyfs_sd2iec_demo import Sd2iecDemo
+        extra_baseline=Sd2iecDemo(globals())
+        extra_baseline.run()
+        rc=0
+    elif FAST:
         keys('AL LAB u:/usb1/READYFS_TEST/'+owned.run,False);keys([13],False);wait_ready(3)
         if os.environ.get('READYFS_SD2IEC_BASELINE') not in ('4','5','6','7','8'):
             if os.environ.get('READYFS_SD2IEC_BASELINE') == '1':
