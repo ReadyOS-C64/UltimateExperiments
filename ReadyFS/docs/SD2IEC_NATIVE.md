@@ -193,18 +193,36 @@ dismount 10.1:/ --force
 The mount changes SD2IEC's filesystem context. Subsequent operations query the
 new partition type. Native image unmount first goes to the specified partition's
 root and then sends its BACK command; it does not use whichever partition happens
-to be current. Physical acceptance of the updated native image commands is still
-pending at this document's initial revision.
+to be current. The real-device mount, directory, volume, read/write, MOVE,
+DELETE, unmount, and return-to-FAT checks have passed. Independent inspection
+of the exported modified image is still running.
 
 | Transfer | Implementation boundary |
 | --- | --- |
 | SD FAT ↔ UltimateDOS | Normal verified byte-stream transfer |
 | SD FAT ↔ another IEC image | Normal verified byte-stream transfer |
 | SD FAT ↔ SoftwareIEC | Normal verified byte-stream transfer |
-| Mounted SD image ↔ a different device/endpoint | Same stream service; explicit mount acceptance pending |
+| Mounted SD image ↔ a different device/endpoint | Read/write/MOVE with UltimateDOS passed; IEC9/SoftwareIEC matrix pending |
 | SD FAT ↔ image mounted on the **same SD device** | Use an intermediate file on another endpoint and explicit mount/unmount |
 | `10.1:/work.d64!/FILE` | Not yet implemented as an automatic media transition |
-| `u:/usb1/work.d81/FILE` | UltimateDOS firmware traversal, separate from the native SD path mechanism |
+| `u:/usb1/work.d81/FILE` | UltimateDOS embedded-filesystem traversal; contained-file mutation has type/lookup limits described below |
+
+### UltimateDOS contained-file paths
+
+The Ultimate firmware can enter an unmounted image through an ordinary slash
+path such as `u:/usb1/work.d81/HELLO`. That is separate from native SD image
+mounting. It can also open a typed contained-file name such as `HELLO.prg` or
+`NOTES.seq`.
+
+General mutation through this route is **not yet a supported substitute for
+mounting the image on an IEC device**. Its directory reply omits generated type
+suffixes, so ReadyFS lookup cannot reliably match a typed access name. Its
+extensionless staging and backup names can also convert SEQ/USR entries to PRG.
+Content comparison checks bytes, not the CBM directory type. In particular, do
+not infer safe replacement, rollback, or MOVE cleanup from a successful direct
+OPEN or COMPARE. Use an explicitly mounted IEC image for those general transfers.
+A narrow physical acceptance using unique bare PRG names in a separately owned,
+unmounted image is being prepared; it does not cover the SEQ/USR limitations.
 
 Mount/unmount can close all buffers on an SD2IEC device, including buffers on
 other partitions. It cannot safely occur in the middle of ordinary simultaneous
@@ -249,5 +267,6 @@ and restore the exact previous extension mode and hiding flag. Restore the mode
 first, then hiding, because modes 3 and 4 enable hiding. Do not save this temporary
 setting to EEPROM. ReadyFS now uses FAT-safe stage names so XE0 can produce a raw
 file. Mounting the resulting image is an additional required check. This procedure
-is undergoing physical acceptance; automatic raw-image creation across all five
-extension modes is not claimed.
+has passed copying, logical comparison, and actual D64 mounting. The modified
+image export is still being checked; automatic raw-image creation across all
+five extension modes is not claimed.

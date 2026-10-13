@@ -98,11 +98,30 @@
     "run": "demo-v3-sd2iec-native-image-20261013-a",
     "status": "running",
     "last_event": {
-      "command": "COPY @LAB:/NATIVE-SOURCE.D64 10.1:/rf261013085527/out/i1013100749.d64",
-      "time": 1791886103.8604128
-    }
+      "command": "COPY 10.1:/rf261013085527/out/i1013100749.d64 @LAB:/NATIVE-AFTER.D64",
+      "time": 1791889555.422451
+    },
+    "large_copy_passed": true,
+    "mounted_operations_passed": true
   },
-  "generated_utc": "2026-10-13T10:26:26.091424+00:00",
-  "current_source_commit": "c59d853",
-  "folder_rerun_required": true
+  "generated_utc": "2026-10-13T11:09:40.526729+00:00",
+  "current_source_commit": "eeff621",
+  "folder_rerun_required": true,
+  "checksum": {
+    "actual_6502_differential_cases": 46,
+    "sample_old_cycles": 52570,
+    "sample_new_cycles": 9505,
+    "physical_acceptance": "pending",
+    "resident_end": "B29D",
+    "safe_resident_bytes": 782
+  },
+  "staged_harness": {
+    "directory": "/tmp/readyfs-harness-next",
+    "apply_only_after_image_a_exit_and_restoration": true,
+    "safety_test": "ReadyFS/build_support/readyfs_hardware_cleanup_test.py",
+    "safety_cases_passed": 8,
+    "matrix_copy_pairs": 6,
+    "matrix_move_pairs": 6,
+    "ultimate_contained_image_scope": "Unique bare PRG names only; SEQ/USR mutation limitations documented"
+  }
 }

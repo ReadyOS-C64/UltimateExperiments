@@ -30,7 +30,15 @@ Detected identity: `73,SD2IEC V1.0.0ATENTDEAD0-36,00,00`. Persistence has been d
 | SD folder creation, same-SD copy, rename, scratch, empty-folder removal | Native directories-b | Passed |
 | Recursive host→SD COPY; same-SD recursive MOVE; five nested-file comparisons | Native directories-b | Passed |
 | Recursive SD→host export | Native directories-b | Found empty-Ultimate-folder lookup bug; corrected, physical rerun pending |
-| Mounted SD disk-image operations and persisted-image oracle | Native image-a | Running |
+| Mounted SD image: directory, VOLUME, PRG read, SEQ write, MOVE/delete and absence checks, qualified unmount/FAT return | Native image-a | Passed; independent exported-image oracle still running |
+
+The configuration acceptance exercised version/status, the native configuration
+reply, partition enumeration and queries (including partition 0 and a potentially
+absent partition), invalid syntax, a raw DOS reply, temporary XE1/XE2 changes,
+image-listing changes, and exact restoration. Address persistence was verified
+by the separate native repair probe. The presence of other CLI verbs in the
+implementation is not a claim that every destructive reset or EEPROM command
+was repeatedly exercised on the live device.
 
 Endpoint matrix notation in the machine-readable evidence is `u` = UltimateDOS host storage, `i` = separately mounted IEC9 image, `s` = SoftwareIEC, `d` = native SD FAT. This does not imply that every possible drive model or partition type has been exercised.
 
@@ -61,7 +69,7 @@ build still needs physical acceptance.
 
 ## Boundaries and limitations
 
-- Native `10.1:/folder/file` and Ultimate `u:/usb1/image.d81/file` are different path services. An alias does not change endpoint capabilities.
+- Native `10.1:/folder/file` and Ultimate `u:/usb1/image.d81/file` are different path services. An alias does not change endpoint capabilities. Plain Ultimate slash traversal can open embedded files, but typed lookup and extensionless stage/backup handling prevent a general SEQ/USR mutation or rollback guarantee. The prepared narrow PRG-only test will not establish that broader capability.
 - Explicit native MOUNT/DISMOUNT changes the SD2IEC filesystem view. Automatic `10.1:/image.d64!/FILE` transitions are not implemented.
 - A transfer between SD FAT and an image mounted on that same SD device requires an intermediate endpoint and explicit media transitions. Mounting/unmounting can close device-wide buffers; it cannot occur inside the ordinary simultaneous stream pump.
 - `G-P` type 1 identifies either FAT or DNP, not which one. It does not recover an unknown prior mounted-image path or current directory. Remembered mount paths are session hints and may become stale after changes elsewhere.
