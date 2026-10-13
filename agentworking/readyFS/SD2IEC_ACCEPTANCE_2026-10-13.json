@@ -92,19 +92,29 @@
         "result": "FAIL",
         "time": 1791885746.213501
       }
+    },
+    {
+      "run": "demo-v3-sd2iec-native-directories-20261013-c",
+      "status": "running",
+      "pid": 78882,
+      "terminal": 14644,
+      "artifact_snapshot": "frozen-sd20-eeff621/artifacts"
     }
   ],
   "image_acceptance": {
     "run": "demo-v3-sd2iec-native-image-20261013-a",
-    "status": "running",
+    "status": "passed",
     "last_event": {
-      "command": "COPY 10.1:/rf261013085527/out/i1013100749.d64 @LAB:/NATIVE-AFTER.D64",
-      "time": 1791889555.422451
+      "complete": true,
+      "restored": true,
+      "result": "PASS",
+      "time": 1791891121.533344
     },
     "large_copy_passed": true,
-    "mounted_operations_passed": true
+    "mounted_operations_passed": true,
+    "independent_image_passed": true
   },
-  "generated_utc": "2026-10-13T11:09:40.526729+00:00",
+  "generated_utc": "2026-10-13T11:35:26.253466+00:00",
   "current_source_commit": "eeff621",
   "folder_rerun_required": true,
   "checksum": {
@@ -122,6 +132,7 @@
     "safety_cases_passed": 8,
     "matrix_copy_pairs": 6,
     "matrix_move_pairs": 6,
-    "ultimate_contained_image_scope": "Unique bare PRG names only; SEQ/USR mutation limitations documented"
+    "ultimate_contained_image_scope": "Unique bare PRG names only; SEQ/USR mutation limitations documented",
+    "applied": true
   }
 }

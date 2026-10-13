@@ -16,8 +16,12 @@ class NativeImage(Baseline):
         c=self.c
         assert self.sd and self.sd_prefix.startswith('10.1:/'), 'Image suite requires verified partition1 bootstrap'
         self.idle=True
+        self.config_restored=True
+        self.maybe_mounted=False
+        self.fat_verified=False
         def command(text,needle=None,pause=4):
             assert self.idle, 'Previous operation did not return; do not inject more keys'
+            self.idle=False
             c['command']('CLEAR',pause=1)
             c['event'](command=text)
             c['keys'](text);time.sleep(.65);c['keys']([13]);self.idle=False
@@ -39,6 +43,7 @@ class NativeImage(Baseline):
             self.owned.guard(self.owned.root+'/'+leaf)
             with self.owned.ftp() as ftp:ftp.storbinary('STOR '+self.owned.root+'/'+leaf,io.BytesIO(data))
         self.guard('d','image-fixture')
+        self.fat_verified=True
         name='i'+time.strftime('%m%d%H%M%S',time.gmtime())+'.d64'
         image_path=self.sd_prefix+'out/'+name
         c['save_json']('native-image-scope.json',{'path':image_path,'owner':self.sd['marker'],
@@ -48,25 +53,35 @@ class NativeImage(Baseline):
         assert match,'Cannot restore unknown settings'
         original=match.group(0).strip();extension=int(match[1],16);hidden=match[2]
         assert extension in range(5)
+        self.config_restored=False
         try:
             command('IEC 10: EXTENSIONS 0','03,E00')
             self.guard('d','image-fixture')
             command('COPY @LAB:/NATIVE-SOURCE.D64 '+image_path,'COPIED')
             command('COMPARE @LAB:/NATIVE-SOURCE.D64 '+image_path,'VERIFY: IDENTICAL')
         finally:
+            errors=[]
+            for text in ('IEC 10: EXTENSIONS '+str(extension),
+                         'IEC 10: HIDE-EXTENSIONS '+('on' if hidden=='+' else 'off')):
+                if self.idle:
+                    try:command(text,'03,E')
+                    except Exception as error:errors.append(repr(error))
             if self.idle:
-                command('IEC 10: EXTENSIONS '+str(extension),'03,E')
-                command('IEC 10: HIDE-EXTENSIONS '+('on' if hidden=='+' else 'off'),'03,E')
-                restored=command('IEC 10: CONFIG','03,E')
-                assert original in restored,'Configuration restore mismatch'
-                c['event'](case='native-image-upload-config-restored',result='PASS')
-            else:
-                c['event'](restore='native configuration',result='UNCONFIRMED',reason='Operation never returned; no further keys injected')
-        mounted=False
+                try:
+                    restored=command('IEC 10: CONFIG','03,E')
+                    assert original in restored,'Configuration restore mismatch'
+                    self.config_restored=True
+                    c['event'](case='native-image-upload-config-restored',result='PASS')
+                except Exception as error:errors.append(repr(error))
+            if not self.config_restored:
+                c['event'](restore='native configuration',result='UNCONFIRMED',errors=errors,
+                    reason='Exact configuration readback required; no keys injected while busy')
+            if errors:raise RuntimeError('Native configuration restoration: '+repr(errors))
         try:
             self.guard('d','image-mount')
+            self.maybe_mounted=True
+            self.fat_verified=False
             command('MOUNT '+image_path+' --force','LAST MOUNTED BY READYFS')
-            mounted=True
             command('IEC 10: PARTITION 1','TYPE $02')
             self.image_guard()
             command('DIR 10.1:/','HELLO')
@@ -88,12 +103,13 @@ class NativeImage(Baseline):
             command('STAT 10.1:/DELETEME','NOT FOUND')
             c['event'](case='native-sd-mounted-image-read-write-move-delete',result='PASS')
         finally:
-            if mounted and self.idle:
+            if self.maybe_mounted and self.idle:
                 self.image_guard()
                 command('DISMOUNT 10.1:/ --force','OK')
-                mounted=False
+                self.maybe_mounted=False
                 self.guard('d','after-unmount')
                 command('IEC 10: PARTITION 1','FAT OR DNP')
+                self.fat_verified=True
         self.owned.guard(self.owned.root+'/native-after.d64')
         command('COPY '+image_path+' @LAB:/NATIVE-AFTER.D64','COPIED')
         raw=io.BytesIO()
@@ -115,3 +131,10 @@ class NativeImage(Baseline):
     def image_guard(self):
         self.owned.guard(self.owned.root+'/sdowner.seq')
         self.command('COMPARE 10.1:/OWNER @LAB:/SDOWNER.SEQ','VERIFY: IDENTICAL')
+
+    def restore(self):
+        assert getattr(self,'idle',True),'Native command still active; do not run restoration PRGs'
+        assert getattr(self,'config_restored',False),'Native configuration restoration unconfirmed'
+        assert not getattr(self,'maybe_mounted',False),'Native image restoration unconfirmed'
+        assert getattr(self,'fat_verified',False),'Native FAT owner restoration unconfirmed'
+        super().restore()

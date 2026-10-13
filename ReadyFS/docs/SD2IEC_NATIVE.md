@@ -194,8 +194,8 @@ The mount changes SD2IEC's filesystem context. Subsequent operations query the
 new partition type. Native image unmount first goes to the specified partition's
 root and then sends its BACK command; it does not use whichever partition happens
 to be current. The real-device mount, directory, volume, read/write, MOVE,
-DELETE, unmount, and return-to-FAT checks have passed. Independent inspection
-of the exported modified image is still running.
+DELETE, unmount, and return-to-FAT checks have passed. Independent c1541 inspection of the exported modified image also passed: raw
+geometry, bytes, CBM types, and removed MOVE/delete sources were checked.
 
 | Transfer | Implementation boundary |
 | --- | --- |
@@ -268,5 +268,5 @@ first, then hiding, because modes 3 and 4 enable hiding. Do not save this tempor
 setting to EEPROM. ReadyFS now uses FAT-safe stage names so XE0 can produce a raw
 file. Mounting the resulting image is an additional required check. This procedure
 has passed copying, logical comparison, and actual D64 mounting. The modified
-image export is still being checked; automatic raw-image creation across all
+image export passed independent geometry, byte, and type checks; automatic raw-image creation across all
 five extension modes is not claimed.

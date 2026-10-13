@@ -250,6 +250,7 @@ define READYFS_HOST_TEST
 endef
 
 readyfs-host-tests:
+	$(PYTHON) $(BUILD_SUPPORT_DIR)/readyfs_hardware_cleanup_test.py
 	$(PYTHON) $(BUILD_SUPPORT_DIR)/readyfs_sd2iec_image_matrix_test.py
 	$(PYTHON) $(BUILD_SUPPORT_DIR)/readyfs_udos_empty_test.py
 	$(call READYFS_HOST_TEST,-D__fastcall__= -I$(BUILD_SUPPORT_DIR)/readyfs_host_include,$(BUILD_SUPPORT_DIR)/readyfs_volume_test.c $(READYFS_SRC_DIR)/readyfs_volume.c $(READYFS_SRC_DIR)/readyfs_path.c,readyfs_volume_test)

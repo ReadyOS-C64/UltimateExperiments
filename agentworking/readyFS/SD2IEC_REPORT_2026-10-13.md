@@ -1,6 +1,6 @@
 # ReadyFS SD2IEC implementation and acceptance report
 
-**Status: acceptance is still in progress.** This is the current report, not a completion claim. The remaining physical checks are the corrected recursive round trip and explicit native disk-image operations.
+**Status: acceptance is still in progress.** This is the current report, not a completion claim. The remaining work includes the corrected recursive round trip, expanded image transfer matrix, and complete typed UltimateDOS contained-image support.
 
 ## What is implemented
 
@@ -30,7 +30,7 @@ Detected identity: `73,SD2IEC V1.0.0ATENTDEAD0-36,00,00`. Persistence has been d
 | SD folder creation, same-SD copy, rename, scratch, empty-folder removal | Native directories-b | Passed |
 | Recursive host→SD COPY; same-SD recursive MOVE; five nested-file comparisons | Native directories-b | Passed |
 | Recursive SD→host export | Native directories-b | Found empty-Ultimate-folder lookup bug; corrected, physical rerun pending |
-| Mounted SD image: directory, VOLUME, PRG read, SEQ write, MOVE/delete and absence checks, qualified unmount/FAT return | Native image-a | Passed; independent exported-image oracle still running |
+| Mounted SD image: directory, VOLUME, PRG read, SEQ write, MOVE/delete and absence checks, qualified unmount/FAT return | Native image-a | Passed, including independent exported-image geometry/bytes/types/source-removal oracle |
 
 The configuration acceptance exercised version/status, the native configuration
 reply, partition enumeration and queries (including partition 0 and a potentially

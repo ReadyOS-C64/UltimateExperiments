@@ -59,6 +59,9 @@ def verify_more_color(label):
     event(case='yellow-more-prompt',result='PASS')
 
 def command(text,needle=None,pause=4):
+    global hardware_wait_unresolved
+    assert not hardware_wait_unresolved,'Previous hardware command has not returned'
+    hardware_wait_unresolved = True
     started=time.time()
     event(command=text);keys(text);time.sleep(.65);keys([13]);wait_ready(min(pause,4))
     if needle:check('case-'+str(len(list(OUT.glob('case-*')))).zfill(2),needle)
@@ -215,9 +218,13 @@ def is_basic_ready(buf):
             if actual==expected:return True
     return False
 
+hardware_wait_unresolved = False
+
 def wait_ready(minimum=3,timeout=180):
+    global hardware_wait_unresolved
+    hardware_wait_unresolved = True
     # Passive VIC observation: no REST DMA while a filesystem command runs.
-    started=time.monotonic();time.sleep(minimum)
+    started=time.monotonic();last_progress=started;time.sleep(minimum)
     while time.monotonic()-started<timeout:
         items=list(frames.items())
         complete=[i for i,(_,rows) in items if len(rows)==height]
@@ -230,7 +237,13 @@ def wait_ready(minimum=3,timeout=180):
             if is_basic_ready(buf):raise RuntimeError('C64 returned to BASIC READY')
             region=buf[220*192:240*192]
             gray=sum((v&15)==11 for v in region)+sum((v>>4)==11 for v in region)
-            if gray>100 or is_more(buf):return
+            if gray>100 or is_more(buf):
+                hardware_wait_unresolved = False
+                return
+        if FAST and time.monotonic()-last_progress>=30:
+            snapshot_png('operation-in-progress.png')
+            event(phase='passive-wait',elapsed_seconds=round(time.monotonic()-started),timeout_seconds=timeout)
+            last_progress=time.monotonic()
         time.sleep(.2)
     raise RuntimeError('ReadyFS did not return to its gray live-input footer')
 
@@ -344,6 +357,7 @@ try:
     thread=threading.Thread(target=receive);thread.start()
     api('/streams/video:start?ip='+local_ip+':11000','PUT');streaming=True
     event(phase='launch-overlay-from-owned-device-9')
+    hardware_wait_unresolved = True
     response=api('/runners:run_prg','POST',bytes(binary),'application/octet-stream',45)
     (OUT/'launch-response.json').write_bytes(response)
     event(phase='sidecar-load-passive-wait',timeout_seconds=180)
@@ -351,7 +365,7 @@ try:
     check('boot','UP/DN HIST');speed(1)
     if FAST:
         keys('AL LAB u:/usb1/READYFS_TEST/'+owned.run,False);keys([13],False);wait_ready(3)
-        if os.environ.get('READYFS_SD2IEC_BASELINE') not in ('4','5','6'):
+        if os.environ.get('READYFS_SD2IEC_BASELINE') not in ('4','5','6','7'):
             if os.environ.get('READYFS_SD2IEC_BASELINE') == '1':
                 command('PROBE IEC 10:','STATUS:',4)
                 command('PROFILE IEC 10:','PROFILE:',4)
@@ -391,9 +405,11 @@ try:
             from readyfs_sd2iec_baseline import Baseline
             extra_baseline=Baseline(globals())
             extra_baseline.run()
-        if os.environ.get('READYFS_SD2IEC_BASELINE') in ('5','6'):
+        if os.environ.get('READYFS_SD2IEC_BASELINE') in ('5','6','7'):
             if os.environ['READYFS_SD2IEC_BASELINE']=='5':
                 from readyfs_sd2iec_native_hardware import NativeDirectories as NativeSuite
+            elif os.environ['READYFS_SD2IEC_BASELINE']=='7':
+                from readyfs_sd2iec_image_matrix import NativeImageMatrix as NativeSuite
             else:
                 from readyfs_sd2iec_image_hardware import NativeImage as NativeSuite
             extra_baseline=NativeSuite(globals())
@@ -501,8 +517,11 @@ except Exception as error:
     event(result='FAIL',error=repr(error))
     try:
         snapshot_png('failure.png')
-        capture('failure-screen')
-        (OUT/'failure-native-trace.bin').write_bytes(read(0xC600,16))
+        if not hardware_wait_unresolved and getattr(extra_baseline,'idle',True):
+            capture('failure-screen')
+            (OUT/'failure-native-trace.bin').write_bytes(read(0xC600,16))
+        else:
+            event(diagnostic='memory capture deferred',reason='Command has not returned; retain passive video only')
         save_json('failure-video.json', {'receive_errors':receive_errors, 'last_frame_time':max(frame_times.values(),default=None), 'now':time.monotonic()})
     except Exception as capture_error:event(diagnostic_error=repr(capture_error))
     raise
@@ -513,28 +532,33 @@ finally:
     stop.set()
     if thread:thread.join()
     if vid:vid.close()
-    restored=True
-    if extra_baseline is not None:
-        try:extra_baseline.restore()
-        except Exception as error:restored=False;event(restore='SoftwareIEC cwd',error=repr(error))
-    if saved is not None:
-        try:subprocess.run(['/bin/bash',str(ROOT/'build_support/run_readyfs_c64u_restore_speed.sh'),str(OUT),os.environ.get('C64U_HOST','10.0.0.79')],check=True)
-        except Exception as error:restored=False;event(restore='CPU settings',error=repr(error))
-    if mounted:
-        try:
-            current=js('/drives');b=next(d['b'] for d in current['drives'] if 'b' in d)
-            if b.get('image_file'):
-                guard_disk();api('/drives/b:remove','PUT')
-                image=io.BytesIO()
-                with owned.ftp() as ftp:ftp.retrbinary('RETR '+owned_image,image.write)
-                (OUT/'owned-media-after.d81').write_bytes(image.getvalue())
+    restored = False
+    hardware_idle = not hardware_wait_unresolved and getattr(extra_baseline,'idle',True)
+    if not hardware_idle:
+        event(restore='hardware',result='UNCONFIRMED',reason='Command has not returned; CPU, mounted drive, and recovery PRGs left untouched')
+    else:
+        restored = True
+        if extra_baseline is not None:
+            try:extra_baseline.restore()
+            except Exception as error:restored=False;event(restore='native/SoftwareIEC state',error=repr(error))
+        if restored and saved is not None:
+            try:subprocess.run(['/bin/bash',str(ROOT/'build_support/run_readyfs_c64u_restore_speed.sh'),str(OUT),os.environ.get('C64U_HOST','10.0.0.79')],check=True)
+            except Exception as error:restored=False;event(restore='CPU settings',error=repr(error))
+        if restored and mounted:
+            try:
+                current=js('/drives');b=next(d['b'] for d in current['drives'] if 'b' in d)
+                if b.get('image_file'):
+                    guard_disk();api('/drives/b:remove','PUT')
+                    image=io.BytesIO()
+                    with owned.ftp() as ftp:ftp.retrbinary('RETR '+owned_image,image.write)
+                    (OUT/'owned-media-after.d81').write_bytes(image.getvalue())
 
-            api('/configs','POST',json.dumps({'Drive B Settings':b_saved}).encode(),'application/json')
-            time.sleep(1);final=js('/drives');save_json('restored-drives.json',final)
-            assert next(d['a'] for d in final['drives'] if 'a' in d)==drive
-            now=next(d['b'] for d in final['drives'] if 'b' in d)
-            assert all(now.get(k)==drive_b.get(k) for k in ('enabled','bus_id','type','image_file','image_path'))
-        except Exception as error:restored=False;event(restore='Drive B',error=repr(error))
+                api('/configs','POST',json.dumps({'Drive B Settings':b_saved}).encode(),'application/json')
+                time.sleep(1);final=js('/drives');save_json('restored-drives.json',final)
+                assert next(d['a'] for d in final['drives'] if 'a' in d)==drive
+                now=next(d['b'] for d in final['drives'] if 'b' in d)
+                assert all(now.get(k)==drive_b.get(k) for k in ('enabled','bus_id','type','image_file','image_path'))
+            except Exception as error:restored=False;event(restore='Drive B',error=repr(error))
     if rc == 0 and (OUT/'baseline-expected-iec-files.json').exists():
         try:
             from verify_readyfs_sd2iec_baseline_disk import verify as verify_disk
