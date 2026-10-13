@@ -501,15 +501,10 @@ static void setup_xfer(void) {
 }
 
 static unsigned char uci_status_ok(unsigned char target) {
-    if (target == 5u) {
-        /* Current documentation specifies a single binary $00. Firmware 3.14
-         * on C64 Ultimate also returns the legacy ASCII "00,OK" form for
-         * IDENTIFY, so normalize both without accepting an empty status. */
-        return (unsigned char)(
-            (uci_xfer.stat_len != 0u && uci_stat[0] == 0u) ||
-            (uci_xfer.stat_len >= 2u &&
-             uci_stat[0] == '0' && uci_stat[1] == '0'));
-    }
+    /* Target5 accepts binary success as well as firmware3.14's legacy ASCII.
+     * Every target shares the strict nonempty ASCII00 fallback. */
+    if (target == 5u && uci_xfer.stat_len != 0u && uci_stat[0] == 0u)
+        return 1u;
     return (unsigned char)(uci_xfer.stat_len >= 2u &&
                            uci_stat[0] == '0' && uci_stat[1] == '0');
 }
@@ -835,6 +830,17 @@ static unsigned char udos_change_absolute(unsigned char target,
     return 1u;
 }
 
+/* OPEN_DIR has a successful empty result distinct from generic 00 OK.
+ * READ_DIR must not follow it: firmware has no directory entry to return. */
+static unsigned char udos_open_directory(unsigned char target) {
+    if (!uci_call(target, 0x13u, 0)) return 0u;
+    if (uci_status_ok(target)) return 1u;
+    if (uci_xfer.stat_len == 18u &&
+        memcmp(uci_stat, "\x30\x31\x2c\x44\x49\x52\x45\x43\x54\x4f\x52\x59\x20\x45\x4d\x50\x54\x59", 18u) == 0)
+        return 2u;
+    return 0u;
+}
+
 static void dir_ultimate_block(const unsigned char *data,
                                unsigned int data_len,
                                const unsigned char *stat,
@@ -853,12 +859,12 @@ static void dir_ultimate_block(const unsigned char *data,
 
 static unsigned char dir_ultimate_run(const char *path,
                                       ReadyFsUciBlockHandler handler) {
+    unsigned char opened;
     if (!udos_change_absolute(1u, path)) {
         return 0u;
     }
-    if (!uci_call(1u, 0x13u, 0) || !uci_status_ok(1u)) {
-        return 0u;
-    }
+    opened = udos_open_directory(1u);
+    if (opened != 1u) return (unsigned char)(opened == 2u);
     uci_cmd[0] = 1u;
     uci_cmd[1] = 0x14u;
     setup_xfer();
@@ -1228,6 +1234,7 @@ static void udos_find_block(const unsigned char *data,
 static const char *udos_find_leaf(ReadyFsStream *stream,
                                   unsigned char target) {
     const char *wanted;
+    unsigned char opened;
 
 #ifdef READYFS_OVERLAY_RUNTIME
     last_result = RF_RESULT_IO;
@@ -1235,7 +1242,15 @@ static const char *udos_find_leaf(ReadyFsStream *stream,
 #endif
     wanted = udos_enter_parent(stream, target);
     if (wanted == 0) return 0;
-    if (!uci_call(target, 0x13u, 0) || !uci_status_ok(target)) return 0;
+    opened = udos_open_directory(target);
+    if (!opened) return 0;
+    if (opened == 2u) {
+        temp_text[0] = 0;
+#ifdef READYFS_OVERLAY_RUNTIME
+        last_result = RF_RESULT_OK;
+#endif
+        return 0;
+    }
     udos_find_wanted = wanted;
     temp_text[0] = 0;
     uci_cmd[0] = target;
@@ -3038,15 +3053,7 @@ static unsigned char recursive_ultimate_enumerate(const char *root) {
             }
             if (readyfs_path_parse(temp_text, &path) != RF_PATH_OK) return 0u;
             native = temp_text + path.path_offset;
-            if (!udos_change_absolute(1u, native) ||
-                !uci_call(1u, 0x13u, 0) || !uci_status_ok(1u)) return 0u;
-            uci_cmd[0] = 1u;
-            uci_cmd[1] = 0x14u;
-            setup_xfer();
-            uci_xfer.on_block = recursive_ultimate_block;
-            /* Complete state-driven stream: transport owns asynchronous PUSH,
-             * all queue drains/DATA_ACC transitions, and final quiet IDLE. */
-            if (!readyfs_uci_command(uci_cmd, 2u, &uci_xfer) ||
+            if (!dir_ultimate_run(native, recursive_ultimate_block) ||
                 recursive_failed) return 0u;
         }
         cursor = resume;
