@@ -2,7 +2,7 @@
 
 ReadyFS is a standalone C64 filesystem laboratory and DOS-like command shell.
 It explores one coherent endpoint/path model across IEC floppy and tape,
-UltimateDOS, SoftwareIEC, disk images, and future SD2IEC-style hierarchical
+UltimateDOS, SoftwareIEC, disk images, and native SD2IEC hierarchical
 storage. It is intentionally separate from ReadyOS until the filesystem model
 and hardware behavior are proven.
 
@@ -15,7 +15,7 @@ and .NET for the external VICE automation harness.
 make readyfs
 ```
 
-The complete build produces the monolithic and overlay applications, nineteen
+The complete build produces the monolithic and overlay applications, 24
 sidecars, boot/test disk images, host-test results, the UCI source-contract
 check, and memory/REU reports below `artifacts/readyfs/`.
 
@@ -70,9 +70,10 @@ See [PROJECT_INVENTORY.md](PROJECT_INVENTORY.md) for the migration boundary,
 artifact groups, automation entry points, and current verification evidence.
 
 
-SD2IEC development on `codex/sd2iec-support` adds cached sidecars 16 (stream
-preparation and standalone native IEC I/O) and 17 (IEC configuration policy).
-Builds now require all 19 sidecars. Slot 18 owns native configuration I/O and
-mount reporting; slot 19 owns native file lookup and mutation status. See [native IEC configuration](docs/READYFS_IEC_CONFIGURATION.md)
-for commands, protocol boundaries and current verification status. Full SD2IEC
-filesystem/image transfer acceptance is still in progress.
+The overlay build requires all 24 sidecars. SD2IEC stream policy and VOLUME
+use slot 16; IEC configuration policy uses 17; native configuration and media
+I/O use 18; native file I/O uses 19; native filename policy uses 20. Typed
+UltimateDOS contained-image preparation, lookup, file control, and names use
+slots 21–24. See [native IEC configuration](docs/READYFS_IEC_CONFIGURATION.md)
+and [native SD2IEC support](docs/SD2IEC_NATIVE.md) for commands, boundaries,
+and evidence. Final filesystem/image transfer acceptance is still in progress.

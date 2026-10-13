@@ -8,7 +8,7 @@ hardware behavior are still being proven.
 
 - `src/apps/readyfs/`: 69 C and 6502 assembly source/header files.
 - `cfg/readyfs_overlay.cfg`: standalone resident/sidecar linker layout.
-- `Makefile`: monolithic build, overlay plus 12 sidecars, disk fixtures, host
+- `Makefile`: monolithic build, overlay plus 24 sidecars, disk fixtures, host
   tests, UCI verification, memory checks, UI reports, and VICE smoke target.
 - `obj/`: current linker maps and rebuilt object trees.
 - `artifacts/readyfs/`: current PRGs, D64/D71/D81/TAP fixtures, labels, maps,
