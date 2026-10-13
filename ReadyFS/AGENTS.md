@@ -51,6 +51,10 @@ ReadyOS application yet. Build and test it only from this project root.
 - Keep C/assembly calling assumptions explicit and conservative.
 - In linker configurations, place BSS after
   `__ONCE_RUN__ + __ONCE_SIZE__`, never directly at `__ONCE_RUN__`.
+- Keep each sidecar's code, RODATA and BSS in distinct assembler segments,
+  packaged into its shared load region. cc65 may emit constants inside a
+  function scope before switching back to code; merging segment names can
+  execute those constants as BRK. Cache sizes must cover the complete payload.
 - The current overlay build keeps resident code below `$B600`, loads sidecars
   at `$B600`, and uses REU-backed state. Preserve the verifier-enforced memory
   boundaries.

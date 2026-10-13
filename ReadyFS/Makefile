@@ -142,10 +142,10 @@ $(READYFS_OVERLAY_OBJ_DIR)/resident/%.o: %.s
 	$(CC) -t c64 -I$(READYFS_SRC_DIR) -c -o $@ $<
 
 define READYFS_OVERLAY_RULE
-$(READYFS_OVERLAY_OBJ_DIR)/overlay$(1)/%.o: %.c
+$(READYFS_OVERLAY_OBJ_DIR)/overlay$(1)/%.o: %.c Makefile
 	@mkdir -p "$$(dir $$@)"
 	$$(CC) -t c64 -Os -I$$(READYFS_SRC_DIR) $(2) \
-		--code-name OVERLAY$(1) --rodata-name OVERLAY$(1) --bss-name OVERLAY$(1) \
+		--code-name OVERLAY$(1) --rodata-name OVERLAY$(1)R --bss-name OVERLAY$(1)B \
 		-c -o $$@ $$<
 
 $(READYFS_OVERLAY_OBJ_DIR)/overlay$(1)/%.o: %.s

@@ -423,6 +423,14 @@ def main() -> int:
             "linker must emit native media sidecar18", failures)
     require(media, r'0x90u = 0u;[\s\S]*?cbm_k_listen\(device\); cbm_k_second\(0x6Fu\)',
             "native discovery must clear ST and complete LISTEN/SECOND", failures)
+    require(makefile, re.escape('--code-name OVERLAY$(1) --rodata-name OVERLAY$(1)R --bss-name OVERLAY$(1)B'),
+            "sidecar code/constants/BSS must remain distinct assembler segments", failures)
+    for slot in range(1,19):
+        require(linker_cfg, re.escape(f'__OVERLAY{slot}_SIZE__: type = export, value = __OVL{slot}_LAST__ - __OVL{slot}_START__'),
+                f"slot{slot} cache size must include code/constants/BSS", failures)
+        for suffix in ('R','B'):
+            require(linker_cfg, re.escape(f'OVERLAY{slot}{suffix}: load = OVL{slot}'),
+                    f"slot{slot} must package separate {suffix} into its sidecar", failures)
     if re.search(r"\bcbm_|readyfs_overlay_|load_sidecar", iec_plan):
         failures.append("IEC policy must not issue I/O or load overlays")
     if re.search(r"readyfs_overlay_|load_sidecar|readyfs_uci_", iec_io):

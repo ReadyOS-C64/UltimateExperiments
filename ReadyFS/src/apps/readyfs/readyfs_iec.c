@@ -1,4 +1,4 @@
-/* Native leaf service: no overlay loads, UCI, host, network or file data I/O. */
+/* Native leaf service: no overlay loads, UCI, network or file mutations. */
 #include "readyfs_iec.h"
 #include "readyfs_reu.h"
 #include "readyfs_result.h"

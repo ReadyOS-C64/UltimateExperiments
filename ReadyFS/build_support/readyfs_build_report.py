@@ -78,6 +78,16 @@ def sidecar(path: Path, expected: dict[str, int], slot_bytes: int) -> dict[str, 
 
 def main() -> int:
     overlay = segments(OVERLAY_MAP)
+    # Cached payload includes code, constants and zero-filled overlay BSS.
+    # These must remain distinct assembler segments: cc65 can emit constants
+    # after a function label, before switching back to its code segment.
+    for index in range(1,19):
+        name = f"OVERLAY{index}"
+        parts = [overlay[k] for k in (name,name+"R",name+"B") if k in overlay]
+        overlay[name] = {"start":min(x["start"] for x in parts),
+                         "end":max(x["end"] for x in parts),
+                         "size":sum(x["size"] for x in parts)}
+        assert map_symbol(OVERLAY_MAP, f"__{name}_SIZE__") == overlay[name]["size"], name
     monolithic = segments(MONOLITHIC_MAP)
     stack_top = (map_symbol(OVERLAY_MAP, "__MAIN_START__") +
                  map_symbol(OVERLAY_MAP, "__MAIN_SIZE__"))

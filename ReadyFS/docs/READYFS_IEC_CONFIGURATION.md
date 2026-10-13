@@ -106,7 +106,8 @@ Other DOS errors are red and set the shell's typed error result.
 ## Implementation and test boundaries
 
 Policy lives in cached overlay 17; native standalone I/O and media reporting
-live in overlay 18. Stream preparation retains overlay 16 for filesystem policy. The resident gateway enters them sequentially. Neither
+live in overlay 18. Stream preparation retains overlay 16 for filesystem policy.
+The resident gateway enters them sequentially. Neither
 loads a sidecar from disk at runtime. All returned data stays in resident
 buffers, and existing file transfer loops keep their current implementation.
 
@@ -120,6 +121,12 @@ partition/address 13, occupied-address refusal, verify-before-save sequencing,
 short writes, unavailable partitions, the special partition-directory EOF,
 operation-specific status codes, bounded raw commands and cache invalidation.
 They do not prove physical timing or persistent-device behavior.
+
+`build_support/readyfs_iec_6502_test.py` additionally executes the linked native
+sidecar and resident cc65 runtime using py65. It verifies the actual partition
+parser against a captured native directory and catches compiler segment-layout
+crashes that host C tests cannot see. KERNAL I/O is mocked in this test; physical
+acceptance remains a separate gate.
 
 Protocol reference: [official source for the attached -36 firmware](https://www.sd2iec.de/nightlies/sd2iec-1.0.0atentdead0-36-g7e7be29.tar.gz),
 particularly `src/doscmd.c`, `src/iec.c` and `src/fileops.c`.

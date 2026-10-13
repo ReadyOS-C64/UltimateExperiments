@@ -15,7 +15,7 @@ and .NET for the external VICE automation harness.
 make readyfs
 ```
 
-The complete build produces the monolithic and overlay applications, fifteen
+The complete build produces the monolithic and overlay applications, eighteen
 sidecars, boot/test disk images, host-test results, the UCI source-contract
 check, and memory/REU reports below `artifacts/readyfs/`.
 
