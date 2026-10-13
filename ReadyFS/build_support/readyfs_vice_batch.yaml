@@ -1,0 +1,130 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_batch_scripts
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 90, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-overlay-lab.d81"
+    disk9: null
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: ready
+    type: screen.wait_contains
+    params: { text: "UP/DN HIST", wait_timeout_s: 60 }
+  - id: help
+    type: input.sequence
+    params: { keys: [72,69,76,80,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: help_debug
+    type: screen.capture
+    params: { label: readyfs_batch_help_debug }
+  - id: help_run
+    type: screen.wait_contains
+    params: { text: "EST RUN", wait_timeout_s: 10, capture_label: readyfs_batch_help }
+  - id: clear_ok
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: run_ok
+    type: input.sequence
+    params: { keys: [82,85,78,32,56,58,47,82,70,66,79,75,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: run_ok_debug
+    type: screen.capture
+    params: { label: readyfs_batch_run_ok_debug }
+  - id: ok_expect
+    type: screen.wait_contains
+    params: { text: "EXPECT RC OK", wait_timeout_s: 20 }
+  - id: ok_summary
+    type: screen.wait_contains
+    params: { text: "RUN DONE LINES 6 COMMANDS 2 RC 0", wait_timeout_s: 20, capture_label: readyfs_batch_success }
+  - id: clear_continue
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: run_continue
+    type: input.sequence
+    params: { keys: [82,85,78,32,56,58,47,82,70,66,67,79,78,84,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: continue_unknown
+    type: screen.wait_contains
+    params: { text: "UNKNOWN; TYPE HELP", wait_timeout_s: 20 }
+  - id: continue_summary
+    type: screen.wait_contains
+    params: { text: "RUN DONE LINES 5 COMMANDS 2 RC 0", wait_timeout_s: 20, capture_label: readyfs_batch_continue }
+  - id: clear_stop
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: run_stop
+    type: input.sequence
+    params: { keys: [82,85,78,32,56,58,47,82,70,66,83,84,79,80,13], inter_key_delay_s: 0.04, post_delay_s: 0.7 }
+  - id: stop_summary
+    type: screen.wait_contains
+    params: { text: "RUN DONE LINES 2 COMMANDS 1 RC 1", wait_timeout_s: 20, capture_label: readyfs_batch_stop }
+  - id: clear_mismatch
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: run_mismatch
+    type: input.sequence
+    params: { keys: [82,85,78,32,56,58,47,82,70,66,77,73,83,13], inter_key_delay_s: 0.04, post_delay_s: 0.7 }
+  - id: mismatch_text
+    type: screen.wait_contains
+    params: { text: "EXPECT RC MISMATCH", wait_timeout_s: 20 }
+  - id: mismatch_summary
+    type: screen.wait_contains
+    params: { text: "RUN DONE LINES 3 COMMANDS 1 RC 3", wait_timeout_s: 20, capture_label: readyfs_batch_mismatch }
+  - id: clear_nested
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: run_nested
+    type: input.sequence
+    params: { keys: [82,85,78,32,56,58,47,82,70,66,78,69,83,84,13], inter_key_delay_s: 0.04, post_delay_s: 0.7 }
+  - id: nested_text
+    type: screen.wait_contains
+    params: { text: "NESTED RUN OFF", wait_timeout_s: 20 }
+  - id: nested_summary
+    type: screen.wait_contains
+    params: { text: "RUN DONE LINES 1 COMMANDS 0 RC 3", wait_timeout_s: 20, capture_label: readyfs_batch_nested }
+  - id: clear_prompt
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: run_prompt
+    type: input.sequence
+    params: { keys: [82,85,78,32,56,58,47,82,70,66,80,82,79,77,80,84,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: prompt_denied
+    type: screen.wait_contains
+    params: { text: "BATCH NEEDS --YES", wait_timeout_s: 20 }
+  - id: prompt_summary
+    type: screen.wait_contains
+    params: { text: "RUN DONE LINES 2 COMMANDS 1 RC 3", wait_timeout_s: 20, capture_label: readyfs_batch_prompt_safe }
+  - id: clear_typed
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: run_typed
+    type: input.sequence
+    params: { keys: [82,85,78,32,56,58,47,82,70,66,84,89,80,69,68,13], inter_key_delay_s: 0.04, post_delay_s: 0.9 }
+  - id: typed_debug
+    type: screen.capture
+    params: { label: readyfs_batch_typed_debug }
+  - id: typed_summary
+    type: screen.wait_contains
+    params: { text: "RUN DONE LINES 7 COMMANDS 3 RC 6", wait_timeout_s: 20, capture_label: readyfs_batch_typed_results }
+  - id: clear_guard
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: type_guard
+    type: input.sequence
+    params: { keys: [84,89,80,69,32,56,58,47,82,70,71,85,65,82,68,13], inter_key_delay_s: 0.04, post_delay_s: 0.6 }
+  - id: guard_unchanged
+    type: screen.wait_contains
+    params: { text: "ORIGINAL", wait_timeout_s: 20, capture_label: readyfs_batch_guard_unchanged }

@@ -1,0 +1,67 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_tape_probe
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 180, read_s: 3 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: null
+    disk9: null
+    autostart_prg: "artifacts/readyfs/readyfs-tape-probe.prg"
+    drive8_enabled: true
+    drive9_enabled: false
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch_tape_probe
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: tape_probe_ready
+    type: screen.wait_contains
+    params: { text: "READYFS TAPE PROBE", wait_timeout_s: 30 }
+  - id: attach_disposable_tap
+    type: monitor.command
+    params: { command: 'raw: attach "artifacts/readyfs/readyfs-tape-test.tap" 1' }
+  - id: arm_write
+    type: input.key
+    params: { key: 32, post_delay_s: 0.3 }
+  - id: wait_record_prompt
+    type: screen.wait_contains
+    params: { text: "PRESS RECORD", wait_timeout_s: 30 }
+  - id: datasette_record
+    type: monitor.command
+    params: { command: "raw: tapectrl 4" }
+  - id: tape_write_complete
+    type: screen.wait_contains
+    params: { text: "WRITE OK 10", wait_timeout_s: 120, capture_label: readyfs_tape_write_probe }
+  - id: datasette_stop
+    type: monitor.command
+    params: { command: "raw: tapectrl 0" }
+  - id: tape_rewind_exact
+    type: monitor.command
+    params: { command: "raw: tapeoffs 0" }
+  - id: arm_read
+    type: input.key
+    params: { key: 32, post_delay_s: 0.3 }
+  - id: wait_play_prompt
+    type: screen.wait_contains
+    params: { text: "PRESS PLAY", wait_timeout_s: 30 }
+  - id: datasette_play
+    type: monitor.command
+    params: { command: "raw: tapectrl 1" }
+  - id: tape_roundtrip_pass
+    type: screen.wait_contains
+    params: { text: "TAPE PROBE PASS", wait_timeout_s: 120, capture_label: readyfs_tape_roundtrip_probe }
+  - id: datasette_final_stop
+    type: monitor.command
+    params: { command: "raw: tapectrl 0" }
+  - id: detach_disposable_tap
+    type: monitor.command
+    params: { command: "raw: detach 1" }

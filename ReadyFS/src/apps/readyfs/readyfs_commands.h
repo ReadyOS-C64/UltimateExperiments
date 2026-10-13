@@ -1,0 +1,52 @@
+#ifndef READYFS_COMMANDS_H
+#define READYFS_COMMANDS_H
+
+#define RF_COMMAND_UNKNOWN 0u
+#define RF_COMMAND_EXIT 1u
+#define RF_COMMAND_HELP 2u
+#define RF_COMMAND_PROBE 3u
+#define RF_COMMAND_PROFILE 4u
+#define RF_COMMAND_NATIVE 5u
+#define RF_COMMAND_DRIVES 6u
+#define RF_COMMAND_PWD 7u
+#define RF_COMMAND_HISTORY 8u
+#define RF_COMMAND_CLEAR 9u
+#define RF_COMMAND_CD 10u
+#define RF_COMMAND_ALIAS 11u
+#define RF_COMMAND_UNALIAS 12u
+#define RF_COMMAND_CONFIG 13u
+#define RF_COMMAND_DIR 14u
+#define RF_COMMAND_TREE 15u
+#define RF_COMMAND_STAT 16u
+#define RF_COMMAND_VOLUME 17u
+#define RF_COMMAND_MATCH 18u
+#define RF_COMMAND_TYPE 19u
+#define RF_COMMAND_COPY 20u
+#define RF_COMMAND_MOVE 21u
+#define RF_COMMAND_RENAME 22u
+#define RF_COMMAND_DELETE 23u
+#define RF_COMMAND_COMPARE 24u
+#define RF_COMMAND_NEW 25u
+#define RF_COMMAND_WRITE 26u
+#define RF_COMMAND_APPEND 27u
+#define RF_COMMAND_MKDIR 28u
+#define RF_COMMAND_RMDIR 29u
+#define RF_COMMAND_MOUNT 30u
+#define RF_COMMAND_DISMOUNT 31u
+#define RF_COMMAND_SWAP 32u
+#define RF_COMMAND_CAPABILITIES 33u
+#define RF_COMMAND_STATUS 34u
+#define RF_COMMAND_FIND 35u
+#define RF_COMMAND_HEAD 36u
+#define RF_COMMAND_TAIL 37u
+#define RF_COMMAND_CRC32 38u
+#define RF_COMMAND_TEST 39u
+#define RF_COMMAND_RUN 40u
+/* High-bit lookup-only IDs; low bits are cc65's stable CBM file-type ABI. */
+#define RF_COMMAND_FILE_PRG 0x91u
+#define RF_COMMAND_FILE_USR 0x92u
+#define RF_COMMAND_FILE_SEQ 0x90u
+
+unsigned char readyfs_command_id(const char *word);
+
+#endif

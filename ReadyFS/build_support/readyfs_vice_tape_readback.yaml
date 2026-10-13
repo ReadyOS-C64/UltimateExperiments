@@ -1,0 +1,63 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_tape_readback
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 240, read_s: 3 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-overlay-lab.d81"
+    disk9: "artifacts/readyfs/readyfs-tape-target.d64"
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive8_enabled: true
+    drive9_type: 1541
+    drive9_enabled: true
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: ready
+    type: screen.wait_contains
+    params: { text: "CMDPATH: READY", wait_timeout_s: 30 }
+  - id: attach_recorded_tap
+    type: monitor.command
+    params: { command: 'raw: attach "artifacts/readyfs/readyfs-tape-test.tap" 1' }
+  - id: rewind
+    type: monitor.command
+    params: { command: "raw: tapeoffs 0" }
+  - id: copy_second_record
+    type: input.sequence
+    params: { keys: [67,79,80,89,32,84,58,47,82,70,67,79,80,89,32,57,58,47,84,65,80,79,85,84,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: play_prompt
+    type: screen.wait_contains
+    params: { text: "PRESS PLAY", wait_timeout_s: 30 }
+  - id: play
+    type: monitor.command
+    params: { command: "raw: tapectrl 1" }
+  - id: staged_verify
+    type: screen.wait_contains
+    params: { text: "VERIFY: IDENTICAL", wait_timeout_s: 180 }
+  - id: copy_result
+    type: screen.wait_contains
+    params: { text: "COPIED 84 BYTES", wait_timeout_s: 30, capture_label: readyfs_tape_to_disk }
+  - id: stop_after_copy
+    type: monitor.command
+    params: { command: "raw: tapectrl 0" }
+  - id: compare_roundtrip
+    type: input.sequence
+    params: { keys: [67,79,77,80,65,82,69,32,56,58,47,82,70,86,73,69,87,32,57,58,47,84,65,80,79,85,84,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: compare_result
+    type: screen.wait_contains
+    params: { text: "VERIFY: IDENTICAL", wait_timeout_s: 30, capture_label: readyfs_tape_roundtrip_compare }
+  - id: detach
+    type: monitor.command
+    params: { command: "raw: detach 1" }

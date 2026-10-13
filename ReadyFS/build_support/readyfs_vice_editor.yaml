@@ -1,0 +1,84 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_editor_history
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 120, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-overlay-lab.d81"
+    disk9: null
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch_readyfs
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: wait_readyfs
+    type: screen.wait_contains
+    params: { text: "UP/DN HIST", wait_timeout_s: 60 }
+  - id: rf_ui_05_06_line_255_input
+    type: input.sequence
+    params:
+      keys: [85,78,75,78,79,87,78,32,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,82,69,65,68,89,70,83,50,53,53,69,78,68]
+      inter_key_delay_s: 0.025
+      post_delay_s: 0.5
+  - id: editor_after_typing
+    type: screen.capture
+    params: { label: editor_after_typing }
+  - id: rf_ui_06_horizontal_tail
+    type: screen.wait_contains
+    params: { text: "READYFS255", wait_timeout_s: 10, capture_label: rf_ui_06_horizontal_tail }
+  - id: rf_ui_05_line_255_memory
+    type: dump.memory_ranges
+    params:
+      ranges:
+        - { label: readyfs_line_255, start: 0xAC26, end: 0xAD25 }
+  - id: rf_ui_05_line_255_execute
+    type: input.sequence
+    params: { keys: [13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: rf_ui_05_line_255_parser
+    type: screen.wait_contains
+    params: { text: "UNKNOWN; TYPE HELP", wait_timeout_s: 10, capture_label: rf_ui_05_line_255_parser }
+  - id: rf_ui_07_left_right_insert_input
+    type: input.sequence
+    params: { keys: [80,68,157,29,157,87,13], inter_key_delay_s: 0.12, post_delay_s: 0.4 }
+  - id: rf_ui_07_left_right_insert
+    type: screen.wait_contains
+    params: { text: "RF> PWD", wait_timeout_s: 10, capture_label: rf_ui_07_left_right_insert }
+  - id: rf_ui_08_overwrite_input
+    type: input.sequence
+    params: { keys: [80,88,68,19,29,148,87], inter_key_delay_s: 0.12, post_delay_s: 0.3 }
+  - id: rf_ui_08_overwrite
+    type: screen.wait_contains
+    params: { text: "OV> PWD", wait_timeout_s: 10, capture_label: rf_ui_08_overwrite }
+  - id: rf_ui_08_overwrite_execute
+    type: input.sequence
+    params: { keys: [13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: rf_ui_09_home_end_delete_input
+    type: input.sequence
+    params: { keys: [88,80,87,68,90,19,29,20,147,20,13], inter_key_delay_s: 0.12, post_delay_s: 0.4 }
+  - id: rf_ui_09_home_end_delete
+    type: screen.wait_contains
+    params: { text: "RF> PWD", wait_timeout_s: 10, capture_label: rf_ui_09_home_end_delete }
+  - id: seed_history_alpha
+    type: input.sequence
+    params: { keys: [65,76,80,72,65,13], inter_key_delay_s: 0.06, post_delay_s: 0.3 }
+  - id: seed_history_beta
+    type: input.sequence
+    params: { keys: [66,69,84,65,13], inter_key_delay_s: 0.06, post_delay_s: 0.3 }
+  - id: rf_ui_10_history_recall_edit_input
+    type: input.sequence
+    params: { keys: [145,145,17,19,88,13], inter_key_delay_s: 0.16, post_delay_s: 0.4 }
+  - id: rf_ui_10_history_recall_edit
+    type: screen.wait_contains
+    params: { text: "RF> XBETA", wait_timeout_s: 10, capture_label: rf_ui_10_history_recall_edit }

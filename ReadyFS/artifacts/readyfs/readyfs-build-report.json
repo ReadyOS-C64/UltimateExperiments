@@ -1,0 +1,470 @@
+{
+  "schema": "readyfs-build-report-v1",
+  "status": "pass",
+  "checks": {
+    "resident_below_b600": true,
+    "resident_below_kernal_scratch": true,
+    "software_stack_top_d000": true,
+    "monolithic_below_c600": true,
+    "reu_regions_disjoint": true,
+    "reu_overlay_regions_disjoint": true,
+    "reu_batch_regions_disjoint": true,
+    "reu_console_ring_fits_bank": true,
+    "presentation_sidecar": true,
+    "command_help_sidecar": true,
+    "ui_sidecar": true,
+    "match_sidecar": true,
+    "plan_sidecar": true,
+    "help_sidecar": true,
+    "backend_sidecar": true,
+    "cmdpath_sidecar": true,
+    "drive_sidecar": true,
+    "utility_sidecar": true,
+    "tree_sidecar": true,
+    "content_sidecar": true,
+    "batch_sidecar": true,
+    "recursive_sidecar": true,
+    "tape_sidecar": true
+  },
+  "resident": {
+    "end": 46500,
+    "limit": 46507,
+    "free_bytes": 7
+  },
+  "software_stack": {
+    "top": 53248
+  },
+  "monolithic": {
+    "end": 50683,
+    "limit": 50687
+  },
+  "sidecars": {
+    "command_help": {
+      "file": "artifacts/readyfs/readyfs-command-help.prg",
+      "load_address": 46592,
+      "payload_bytes": 3910,
+      "map_bytes": 3910,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "presentation": {
+      "file": "artifacts/readyfs/readyfs-present.prg",
+      "load_address": 46592,
+      "payload_bytes": 4045,
+      "map_bytes": 4045,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "matcher": {
+      "file": "artifacts/readyfs/readyfs-match.prg",
+      "load_address": 46592,
+      "payload_bytes": 4040,
+      "map_bytes": 4040,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "planner_executor": {
+      "file": "artifacts/readyfs/readyfs-plan.prg",
+      "load_address": 46592,
+      "payload_bytes": 4063,
+      "map_bytes": 4063,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "extended_help": {
+      "file": "artifacts/readyfs/readyfs-help.prg",
+      "load_address": 46592,
+      "payload_bytes": 4096,
+      "map_bytes": 4096,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "backend_controller": {
+      "file": "artifacts/readyfs/readyfs-backend.prg",
+      "load_address": 46592,
+      "payload_bytes": 4091,
+      "map_bytes": 4091,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "cmdpath_translator": {
+      "file": "artifacts/readyfs/readyfs-cmdpath.prg",
+      "load_address": 46592,
+      "payload_bytes": 4093,
+      "map_bytes": 4093,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "drive_profiler": {
+      "file": "artifacts/readyfs/readyfs-drive.prg",
+      "load_address": 46592,
+      "payload_bytes": 4093,
+      "map_bytes": 4093,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "utility_controller": {
+      "file": "artifacts/readyfs/readyfs-utility.prg",
+      "load_address": 46592,
+      "payload_bytes": 3535,
+      "map_bytes": 3535,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "tree_controller": {
+      "file": "artifacts/readyfs/readyfs-tree.prg",
+      "load_address": 46592,
+      "payload_bytes": 3354,
+      "map_bytes": 3354,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "content_controller": {
+      "file": "artifacts/readyfs/readyfs-content.prg",
+      "load_address": 46592,
+      "payload_bytes": 4082,
+      "map_bytes": 4082,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "batch_alias_controller": {
+      "file": "artifacts/readyfs/readyfs-batch.prg",
+      "load_address": 46592,
+      "payload_bytes": 2997,
+      "map_bytes": 2997,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "command_editor_controller": {
+      "file": "artifacts/readyfs/readyfs-ui.prg",
+      "load_address": 46592,
+      "payload_bytes": 4047,
+      "map_bytes": 4047,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "recursive_controller": {
+      "file": "artifacts/readyfs/readyfs-recursive.prg",
+      "load_address": 46592,
+      "payload_bytes": 3943,
+      "map_bytes": 3943,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
+    "tape_core_controller": {
+      "file": "artifacts/readyfs/readyfs-tape.prg",
+      "load_address": 46592,
+      "payload_bytes": 3911,
+      "map_bytes": 3911,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    }
+  },
+  "reu_session_regions": [
+    {
+      "name": "aliases",
+      "start": 0,
+      "end_exclusive": 2184,
+      "bytes": 2184
+    },
+    {
+      "name": "drive_profiles",
+      "start": 2184,
+      "end_exclusive": 2276,
+      "bytes": 92
+    },
+    {
+      "name": "operation_journal",
+      "start": 2304,
+      "end_exclusive": 8192,
+      "bytes": 5888
+    },
+    {
+      "name": "retired_scroll_pages_reserved",
+      "start": 8192,
+      "end_exclusive": 32192,
+      "bytes": 24000
+    },
+    {
+      "name": "retired_scroll_live_reserved",
+      "start": 32192,
+      "end_exclusive": 33192,
+      "bytes": 1000
+    },
+    {
+      "name": "action_checkpoint",
+      "start": 33280,
+      "end_exclusive": 33536,
+      "bytes": 256
+    },
+    {
+      "name": "action_report",
+      "start": 33536,
+      "end_exclusive": 33544,
+      "bytes": 8
+    },
+    {
+      "name": "action_reserved",
+      "start": 33544,
+      "end_exclusive": 33792,
+      "bytes": 248
+    },
+    {
+      "name": "config_backup",
+      "start": 33792,
+      "end_exclusive": 36232,
+      "bytes": 2440
+    },
+    {
+      "name": "recursive_checkpoint",
+      "start": 36352,
+      "end_exclusive": 36608,
+      "bytes": 256
+    },
+    {
+      "name": "tree_checkpoint",
+      "start": 36608,
+      "end_exclusive": 36864,
+      "bytes": 256
+    },
+    {
+      "name": "config_stage",
+      "start": 36864,
+      "end_exclusive": 39304,
+      "bytes": 2440
+    },
+    {
+      "name": "recursive_roots",
+      "start": 39304,
+      "end_exclusive": 39816,
+      "bytes": 512
+    },
+    {
+      "name": "action_plan",
+      "start": 40960,
+      "end_exclusive": 57328,
+      "bytes": 16368
+    }
+  ],
+  "reu_overlay_bank_regions": [
+    {
+      "name": "overlay_match",
+      "start": 0,
+      "end_exclusive": 4096,
+      "bytes": 4096
+    },
+    {
+      "name": "overlay_plan",
+      "start": 4096,
+      "end_exclusive": 8192,
+      "bytes": 4096
+    },
+    {
+      "name": "overlay_help",
+      "start": 8192,
+      "end_exclusive": 12288,
+      "bytes": 4096
+    },
+    {
+      "name": "overlay_backend",
+      "start": 12288,
+      "end_exclusive": 16384,
+      "bytes": 4096
+    },
+    {
+      "name": "overlay_cmdpath_reserved",
+      "start": 16384,
+      "end_exclusive": 20480,
+      "bytes": 4096
+    },
+    {
+      "name": "overlay_drive_profile",
+      "start": 20480,
+      "end_exclusive": 24576,
+      "bytes": 4096
+    },
+    {
+      "name": "overlay_utility_tree",
+      "start": 24576,
+      "end_exclusive": 28672,
+      "bytes": 4096
+    },
+    {
+      "name": "overlay_tree_controller",
+      "start": 28672,
+      "end_exclusive": 32768,
+      "bytes": 4096
+    },
+    {
+      "name": "overlay_content_view",
+      "start": 32768,
+      "end_exclusive": 36864,
+      "bytes": 4096
+    },
+    {
+      "name": "tree_queue",
+      "start": 36864,
+      "end_exclusive": 61424,
+      "bytes": 24560
+    },
+    {
+      "name": "overlay_recursive",
+      "start": 61440,
+      "end_exclusive": 65536,
+      "bytes": 4096
+    }
+  ],
+  "reu_batch_bank_regions": [
+    {
+      "name": "batch_overlay_cache",
+      "start": 0,
+      "end_exclusive": 4096,
+      "bytes": 4096
+    },
+    {
+      "name": "batch_script",
+      "start": 4096,
+      "end_exclusive": 20480,
+      "bytes": 16384
+    },
+    {
+      "name": "batch_checkpoint",
+      "start": 20480,
+      "end_exclusive": 20736,
+      "bytes": 256
+    },
+    {
+      "name": "tape_overlay_cache",
+      "start": 20736,
+      "end_exclusive": 24832,
+      "bytes": 4096
+    },
+    {
+      "name": "ui_overlay_cache",
+      "start": 24832,
+      "end_exclusive": 28928,
+      "bytes": 4096
+    },
+    {
+      "name": "ui_live_screen",
+      "start": 28928,
+      "end_exclusive": 29928,
+      "bytes": 1000
+    },
+    {
+      "name": "ui_live_color",
+      "start": 29952,
+      "end_exclusive": 30952,
+      "bytes": 1000
+    },
+    {
+      "name": "ui_draft",
+      "start": 30976,
+      "end_exclusive": 31232,
+      "bytes": 256
+    },
+    {
+      "name": "presentation_overlay_cache",
+      "start": 31232,
+      "end_exclusive": 35328,
+      "bytes": 4096
+    },
+    {
+      "name": "command_help_overlay_cache",
+      "start": 35328,
+      "end_exclusive": 39424,
+      "bytes": 4096
+    },
+    {
+      "name": "last_mount_session_paths",
+      "start": 39424,
+      "end_exclusive": 45312,
+      "bytes": 5888
+    }
+  ],
+  "reu_console_bank_regions": [
+    {
+      "name": "output_row_ring",
+      "start": 0,
+      "end_exclusive": 64000,
+      "bytes": 64000,
+      "physical_rows": 800,
+      "bytes_per_row": 80
+    }
+  ]
+}

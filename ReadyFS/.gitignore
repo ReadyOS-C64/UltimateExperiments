@@ -1,0 +1,15 @@
+.DS_Store
+*.o
+obj/
+logs/
+build_support/__pycache__/
+*.out
+
+# Built media and binaries are retained locally as test evidence.
+artifacts/readyfs/*.prg
+artifacts/readyfs/*.d64
+artifacts/readyfs/*.d71
+artifacts/readyfs/*.d81
+artifacts/readyfs/*.tap
+artifacts/readyfs/*.lbl
+artifacts/readyfs/*.map

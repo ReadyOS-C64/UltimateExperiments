@@ -1,0 +1,88 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_pipeline_actions
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 120, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-overlay-lab.d81"
+    disk9: null
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch_readyfs_overlay
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: five_action_ready
+    type: screen.wait_contains
+    params: { text: "PLANNER: READY", wait_timeout_s: 30, capture_label: rf_ui_135_action_controller_ready }
+  - id: action_backend_ready
+    type: screen.wait_contains
+    params: { text: "BACKEND: READY", wait_timeout_s: 10 }
+  - id: action_fixture_input
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,83,82,67,32,88,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: action_fixture_ready
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: copy_action_input
+    type: input.sequence
+    params: { keys: [67,79,80,89,32,56,58,47,82,70,83,82,67,32,56,58,47,82,70,65,67,84,76,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: copy_action_complete
+    type: screen.wait_contains
+    params: { text: "COPIED", wait_timeout_s: 60, capture_label: rf_ui_136_action_copy }
+  - id: copy_action_prompt
+    type: screen.wait_contains
+    params: { text: "RF>", wait_timeout_s: 20 }
+  - id: move_action_input
+    type: input.sequence
+    params: { keys: [77,79,86,69,32,56,58,47,82,70,65,67,84,76,32,56,58,47,82,70,77,79,86,69,68,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: move_action_debug
+    type: screen.capture
+    params: { label: readyfs_move_action_debug }
+  - id: move_action_complete
+    type: screen.wait_contains
+    params: { text: "MOVE COMPLETE", wait_timeout_s: 60, capture_label: rf_ui_137_action_move }
+  - id: move_source_stat_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,56,58,47,82,70,65,67,84,76,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: move_source_absent
+    type: screen.wait_contains
+    params: { text: "NOT FOUND", wait_timeout_s: 20 }
+  - id: move_dest_stat_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,56,58,47,82,70,77,79,86,69,68,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: move_dest_present
+    type: screen.wait_contains
+    params: { text: "DISPLAY: RFMOVED", wait_timeout_s: 20, capture_label: rf_ui_138_action_move_postcheck }
+  - id: delete_action_input
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,56,58,47,82,70,77,79,86,69,68,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: delete_action_complete
+    type: screen.wait_contains
+    params: { text: "DELETED", wait_timeout_s: 30, capture_label: rf_ui_139_action_delete }
+  - id: delete_stat_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,56,58,47,82,70,77,79,86,69,68,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: delete_absent
+    type: screen.wait_contains
+    params: { text: "NOT FOUND", wait_timeout_s: 20, capture_label: rf_ui_140_action_delete_postcheck }
+  - id: dump_action_reu
+    type: dump.reu
+    params: { stage_tag: readyfs_pipeline_actions, mode: full }
+  - id: dump_action_boundaries
+    type: dump.memory_ranges
+    params:
+      ranges:
+        - { label: resident_tail, start: 0xB580, end: 0xB5FF }
+        - { label: shared_overlay_window, start: 0xB600, end: 0xC5FF }

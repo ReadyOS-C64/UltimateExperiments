@@ -1,0 +1,178 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_tape_commands
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 180, read_s: 3 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-overlay-lab.d81"
+    disk9: "artifacts/readyfs/readyfs-tape-target.d64"
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1541
+    drive8_enabled: true
+    drive9_enabled: true
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: ready
+    type: screen.wait_contains
+    params: { text: "CMDPATH: READY", wait_timeout_s: 30 }
+  - id: attach_disposable_tap
+    type: monitor.command
+    params: { command: 'raw: attach "artifacts/readyfs/readyfs-tape-test.tap" 1' }
+
+  - id: write_tape_input
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,84,58,47,82,70,83,69,81,32,84,65,80,69,68,65,84,65,32,45,45,76,73,78,69,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: write_tape_observed
+    type: screen.capture
+    params: { capture_label: readyfs_tape_write_observed }
+  - id: write_record_prompt
+    type: screen.wait_contains
+    params: { text: "PRESS RECORD", wait_timeout_s: 30 }
+  - id: write_record
+    type: monitor.command
+    params: { command: "raw: tapectrl 4" }
+  - id: write_tape_result
+    type: screen.wait_contains
+    params: { text: "TAPE WROTE", wait_timeout_s: 120, capture_label: readyfs_tape_write }
+  - id: write_stop
+    type: monitor.command
+    params: { command: "raw: tapectrl 0" }
+  - id: write_finalize
+    type: monitor.command
+    params: { command: "raw: detach 1" }
+  - id: write_reattach
+    type: monitor.command
+    params: { command: 'raw: attach "artifacts/readyfs/readyfs-tape-test.tap" 1' }
+  - id: write_rewind
+    type: monitor.command
+    params: { command: "raw: tapeoffs 0" }
+
+  - id: clear_type
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: type_tape_input
+    type: input.sequence
+    params: { keys: [84,89,80,69,32,84,58,47,82,70,83,69,81,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: type_play_prompt
+    type: screen.wait_contains
+    params: { text: "PRESS PLAY", wait_timeout_s: 30 }
+  - id: type_play
+    type: monitor.command
+    params: { command: "raw: tapectrl 1" }
+  - id: type_payload
+    type: screen.wait_contains
+    params: { text: "TAPEDATA", wait_timeout_s: 120 }
+  - id: type_tape_result
+    type: screen.wait_contains
+    params: { text: "READ 9 BYTES", wait_timeout_s: 120, capture_label: readyfs_tape_type }
+  - id: type_stop
+    type: monitor.command
+    params: { command: "raw: tapectrl 0" }
+
+  - id: clear_copy_to_tape
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: copy_to_tape_input
+    type: input.sequence
+    params: { keys: [67,79,80,89,32,56,58,47,82,70,86,73,69,87,32,84,58,47,82,70,67,79,80,89,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: copy_record_prompt
+    type: screen.wait_contains
+    params: { text: "PRESS RECORD", wait_timeout_s: 30 }
+  - id: copy_record
+    type: monitor.command
+    params: { command: "raw: tapectrl 4" }
+  - id: copy_to_tape_result
+    type: screen.wait_contains
+    params: { text: "BYTES TAPE", wait_timeout_s: 120, capture_label: readyfs_copy_disk_to_tape }
+  - id: copy_record_stop
+    type: monitor.command
+    params: { command: "raw: tapectrl 0" }
+  - id: copy_record_finalize
+    type: monitor.command
+    params: { command: "raw: detach 1" }
+  - id: copy_record_reattach
+    type: monitor.command
+    params: { command: 'raw: attach "artifacts/readyfs/readyfs-tape-test.tap" 1' }
+  - id: copy_rewind
+    type: monitor.command
+    params: { command: "raw: tapeoffs 0" }
+
+  - id: clear_metadata
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: stat_tape_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,84,58,47,82,70,83,69,81,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: stat_tape_result
+    type: screen.wait_contains
+    params: { text: "SIZE: SEQUENTIAL UNKNOWN", wait_timeout_s: 15 }
+  - id: capabilities_tape_input
+    type: input.sequence
+    params: { keys: [67,65,80,65,66,73,76,73,84,73,69,83,32,84,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: capabilities_tape_result
+    type: screen.wait_contains
+    params: { text: "CAPS: READ WRITE SEQ", wait_timeout_s: 15, capture_label: readyfs_tape_metadata }
+  - id: capabilities_tape_proven
+    type: screen.wait_contains
+    params: { text: "PROV NO", wait_timeout_s: 15 }
+
+  - id: clear_rejections
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: append_tape_input
+    type: input.sequence
+    params: { keys: [65,80,80,69,78,68,32,84,58,47,82,70,83,69,81,32,88,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: append_tape_rejected
+    type: screen.wait_contains
+    params: { text: "TAPE APPEND OFF", wait_timeout_s: 15 }
+  - id: delete_tape_input
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,84,58,47,82,70,83,69,81,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: delete_tape_rejected
+    type: screen.wait_contains
+    params: { text: "TAPE DELETE OFF", wait_timeout_s: 15 }
+  - id: move_tape_input
+    type: input.sequence
+    params: { keys: [77,79,86,69,32,84,58,47,82,70,83,69,81,32,57,58,47,88,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: move_tape_rejected
+    type: screen.wait_contains
+    params: { text: "TAPE MOVE OFF", wait_timeout_s: 15 }
+  - id: rename_tape_input
+    type: input.sequence
+    params: { keys: [82,69,78,65,77,69,32,84,58,47,82,70,83,69,81,32,84,58,47,88,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: rename_tape_rejected
+    type: screen.wait_contains
+    params: { text: "TAPE RENAME OFF", wait_timeout_s: 15, capture_label: readyfs_tape_rejections }
+
+  - id: clear_whatif
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: tape_whatif_input
+    type: input.sequence
+    params: { keys: [67,79,80,89,32,84,58,47,82,70,83,69,81,32,57,58,47,68,82,89,32,45,45,87,72,65,84,73,70,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: tape_whatif_result
+    type: screen.wait_contains
+    params: { text: "WOULD COPY T:/RFSEQ 9:/DRY", wait_timeout_s: 15 }
+  - id: tape_whatif_summary
+    type: screen.wait_contains
+    params: { text: "PLAN W1 D0 M0; DONE W0 D0 M0", wait_timeout_s: 15, capture_label: readyfs_tape_whatif }
+
+  - id: final_tape_stop
+    type: monitor.command
+    params: { command: "raw: tapectrl 0" }
+  - id: detach_disposable_tap
+    type: monitor.command
+    params: { command: "raw: detach 1" }

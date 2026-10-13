@@ -1,0 +1,16 @@
+[
+  {
+    "image": "17-named-preview-2026-10-12.png",
+    "source_take": "demo-v4-transfer-tour-20261012a",
+    "source_capture": "step-22.png",
+    "sha256": "eec6980d9a8d19928845fbcaa679c6936df963c2003a97e9f95f930d0d8d4fb6",
+    "meaning": "All five selected files and three folders in a read-only copy preview."
+  },
+  {
+    "image": "18-named-copy-skip-2026-10-12.png",
+    "source_take": "demo-v4-transfer-tour-20261012a",
+    "source_capture": "step-16.png",
+    "sha256": "5201d9ae472ca6251bb84730a83076f74913c366b691583487119c80abf1e7bd",
+    "meaning": "Named single-file copy with explicit skipped verification, followed in the recording by COMPARE."
+  }
+]

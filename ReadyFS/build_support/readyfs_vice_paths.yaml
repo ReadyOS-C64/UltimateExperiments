@@ -1,0 +1,184 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_paths_aliases
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 90, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-lab.d81"
+    disk9: null
+    autostart_prg: "artifacts/readyfs/readyfs.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch_readyfs
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: rf_ui_01_boot
+    type: screen.wait_contains
+    params: { text: "READYFS LAB", wait_timeout_s: 30, capture_label: rf_ui_01_boot }
+  - id: rf_ui_03_unknown_input
+    type: input.sequence
+    params: { keys: [70,82,79,66,78,73,67,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: rf_ui_03_unknown
+    type: screen.wait_contains
+    params: { text: "UNKNOWN; TYPE HELP", wait_timeout_s: 10 }
+  - id: rf_ui_04_empty_input
+    type: input.sequence
+    params: { keys: [13,80,87,68,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: rf_ui_04_empty
+    type: screen.wait_contains
+    params: { text: "8:/", wait_timeout_s: 10 }
+  - id: rf_ui_17_alias_set_input
+    type: input.sequence
+    params: { keys: [65,76,73,65,83,32,87,79,82,75,32,85,58,47,85,83,66,49,47,66,65,83,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_17_alias_set
+    type: screen.wait_contains
+    params: { text: "ALIAS SET", wait_timeout_s: 10 }
+  - id: rf_ui_17_alias_list_input
+    type: input.sequence
+    params: { keys: [65,76,73,65,83,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: rf_ui_17_alias_list
+    type: screen.wait_contains
+    params: { text: "@WORK: U:/USB1/BASE", wait_timeout_s: 10, capture_label: rf_ui_17_alias_list }
+  - id: rf_ui_17_alias_use_input
+    type: input.sequence
+    params: { keys: [67,68,32,64,87,79,82,75,58,47,83,82,67,13,80,87,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_17_alias_use
+    type: screen.wait_contains
+    params: { text: "U:/USB1/BASE/SRC", wait_timeout_s: 10 }
+  - id: rf_ui_18_alias_escape_input
+    type: input.sequence
+    params: { keys: [67,68,32,64,87,79,82,75,58,47,46,46,47,69,83,67,65,80,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_18_alias_escape
+    type: screen.wait_contains
+    params: { text: "PATH ESCAPES PROTECTED ROOT", wait_timeout_s: 10, capture_label: rf_ui_18_alias_escape }
+  - id: rf_ui_17_unalias_input
+    type: input.sequence
+    params: { keys: [85,78,65,76,73,65,83,32,87,79,82,75,13,67,68,32,64,87,79,82,75,58,47,83,82,67,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_17_unalias
+    type: screen.wait_contains
+    params: { text: "BAD ENDPOINT", wait_timeout_s: 10 }
+  - id: rf_ui_14_relative_input
+    type: input.sequence
+    params: { keys: [67,68,32,85,58,47,85,83,66,49,47,66,65,83,69,13,80,87,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_14_absolute_base
+    type: screen.wait_contains
+    params: { text: "U:/USB1/BASE", wait_timeout_s: 10 }
+  - id: rf_ui_14_relative_child_input
+    type: input.sequence
+    params: { keys: [67,68,32,67,72,73,76,68,13,80,87,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_14_relative
+    type: screen.wait_contains
+    params: { text: "U:/USB1/BASE/CHILD", wait_timeout_s: 10 }
+  - id: rf_ui_14_endpoint_root_input
+    type: input.sequence
+    params: { keys: [67,68,32,47,79,84,72,69,82,13,80,87,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_14_endpoint_root
+    type: screen.wait_contains
+    params: { text: "U:/OTHER", wait_timeout_s: 10 }
+  - id: rf_ui_13_clear_input
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: rf_ui_13_iec_bounds_input
+    type: input.sequence
+    params: { keys: [67,68,32,55,58,47,78,79,80,69,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: capture_rf_ui_13_iec_bounds
+    type: screen.capture
+    params: { label: rf_ui_13_iec_bounds_before_assert }
+  - id: rf_ui_13_iec_bounds
+    type: screen.wait_contains
+    params: { text: "BAD DEVICE", wait_timeout_s: 10 }
+  - id: rf_ui_24_partition_path_input
+    type: input.sequence
+    params: { keys: [67,68,32,49,49,46,51,58,47,70,79,76,68,69,82,13,80,87,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_24_partition_path
+    type: screen.wait_contains
+    params: { text: "11.3:/FOLDER", wait_timeout_s: 10, capture_label: rf_ui_24_partition_path }
+  - id: rf_ui_24_partition_io_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,49,49,46,51,58,47,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: capture_rf_ui_24_partition_io
+    type: screen.capture
+    params: { label: rf_ui_24_partition_io_before_assert }
+  - id: rf_ui_24_partition_io
+    type: screen.wait_contains
+    params: { text: "UNSUPPORTED", wait_timeout_s: 10, capture_label: rf_ui_24_partition_io }
+  - id: rf_ui_24_partition_bounds_input
+    type: input.sequence
+    params: { keys: [67,68,32,49,49,46,50,53,53,58,47,70,73,76,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_24_partition_bounds
+    type: screen.wait_contains
+    params: { text: "BAD DEVICE", wait_timeout_s: 10 }
+  - id: rf_ui_20_image_boundary_input
+    type: input.sequence
+    params: { keys: [67,68,32,85,58,47,66,65,68,33,70,73,76,69,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: rf_ui_20_image_boundary
+    type: screen.wait_contains
+    params: { text: "BAD IMAGE BOUNDARY", wait_timeout_s: 10 }
+  - id: rf_ui_15_softiec_bounds_input
+    type: input.sequence
+    params: { keys: [67,68,32,83,50,53,53,58,47,70,79,76,68,69,82,13,80,87,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_15_softiec_bounds
+    type: screen.wait_contains
+    params: { text: "S255:/FOLDER", wait_timeout_s: 10 }
+  - id: rf_ui_16_tape_path_input
+    type: input.sequence
+    params: { keys: [67,68,32,84,58,47,78,65,77,69,13,80,87,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_16_tape_path
+    type: screen.wait_contains
+    params: { text: "T:/NAME", wait_timeout_s: 10 }
+  - id: rf_ui_12_quoted_input
+    type: input.sequence
+    params: { keys: [65,76,73,65,83,32,83,80,65,67,69,68,32,34,85,58,47,85,83,66,49,47,65,32,66,34,13,65,76,73,65,83,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: rf_ui_12_quoted
+    type: screen.wait_contains
+    params: { text: "@SPACED: U:/USB1/A B", wait_timeout_s: 10, capture_label: rf_ui_12_quoted }
+  - id: clear_before_normalize
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: normalize_parent_input
+    type: input.sequence
+    params: { keys: [67,68,32,85,58,47,85,83,66,49,47,79,78,69,47,46,46,47,84,87,79,13,80,87,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: normalize_parent
+    type: screen.wait_contains
+    params: { text: "U:/USB1/TWO", wait_timeout_s: 10, capture_label: readyfs_normalize_parent }
+  - id: normalize_image_escape_input
+    type: input.sequence
+    params: { keys: [67,68,32,85,58,47,68,73,83,75,46,68,56,49,33,47,46,46,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: normalize_image_escape
+    type: screen.wait_contains
+    params: { text: "PATH ESCAPES PROTECTED ROOT", wait_timeout_s: 10, capture_label: readyfs_normalize_image_escape }
+  - id: clear_before_match
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_21_component_match_input
+    type: input.sequence
+    params: { keys: [77,65,84,67,72,32,42,46,80,82,71,32,72,69,76,76,79,46,80,82,71,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_21_component_match
+    type: screen.wait_contains
+    params: { text: "MATCH: YES", wait_timeout_s: 10, capture_label: rf_ui_21_component_match }
+  - id: rf_ui_21_component_boundary_input
+    type: input.sequence
+    params: { keys: [77,65,84,67,72,32,42,46,80,82,71,32,70,79,76,68,69,82,47,72,69,76,76,79,46,80,82,71,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_21_component_boundary
+    type: screen.wait_contains
+    params: { text: "MATCH: NO", wait_timeout_s: 10 }
+  - id: rf_ui_22_recursive_match_input
+    type: input.sequence
+    params: { keys: [77,65,84,67,72,32,42,42,47,42,46,80,82,71,32,79,78,69,47,84,87,79,47,72,69,76,76,79,46,80,82,71,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_22_recursive_match
+    type: screen.wait_contains
+    params: { text: "MATCH: YES", wait_timeout_s: 10, capture_label: rf_ui_22_recursive_match }
+  - id: capture_paths_aliases_final
+    type: screen.capture
+    params: { label: readyfs_paths_aliases_final }

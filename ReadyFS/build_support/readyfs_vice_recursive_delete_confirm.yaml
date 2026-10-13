@@ -1,0 +1,73 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_recursive_delete_confirm
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 120, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-overlay-lab.d81"
+    disk9: null
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: ready
+    type: screen.wait_contains
+    params: { text: "BACKEND: READY", wait_timeout_s: 30 }
+  - id: seed_input
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,78,79,32,75,69,69,80,13], inter_key_delay_s: 0.03, post_delay_s: 0.5 }
+  - id: seed_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: clear_before_default
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 1.0 }
+  - id: default_delete_input
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,56,58,47,32,45,45,82,69,67,85,82,83,73,86,69,32,45,45,73,78,67,76,85,68,69,32,82,70,78,79,13], inter_key_delay_s: 0.025, post_delay_s: 0.5 }
+  - id: default_confirmation_debug
+    type: screen.capture
+    params: { label: readyfs_recursive_delete_confirmation_debug }
+  - id: default_confirmation
+    type: screen.wait_contains
+    params: { text: "DELETE [Y/.]", wait_timeout_s: 30, capture_label: rf_ui_47_recursive_delete_default_prompt }
+  - id: decline_input
+    type: input.sequence
+    params: { keys: [78], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: declined
+    type: screen.wait_contains
+    params: { text: "DELETE [Y/.] N", wait_timeout_s: 10 }
+  - id: stat_preserved_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,56,58,47,82,70,78,79,13], inter_key_delay_s: 0.03, post_delay_s: 0.5 }
+  - id: default_no_preserved
+    type: screen.wait_contains
+    params: { text: "DISPLAY: RFNO", wait_timeout_s: 30, capture_label: rf_ui_47_recursive_delete_default_no }
+  - id: clear_before_yes
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 1.0 }
+  - id: yes_delete_input
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,56,58,47,32,45,45,82,69,67,85,82,83,73,86,69,32,45,45,73,78,67,76,85,68,69,32,82,70,78,79,32,45,45,89,69,83,13], inter_key_delay_s: 0.025, post_delay_s: 0.5 }
+  - id: yes_delete_done
+    type: screen.wait_contains
+    params: { text: "BATCH DONE 1/1 FAIL 0", wait_timeout_s: 60, capture_label: rf_ui_47_recursive_delete_yes }
+  - id: stat_deleted_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,56,58,47,82,70,78,79,13], inter_key_delay_s: 0.03, post_delay_s: 0.5 }
+  - id: yes_deleted
+    type: screen.wait_contains
+    params: { text: "NOT FOUND", wait_timeout_s: 30, capture_label: rf_ui_47_recursive_delete_postcheck }

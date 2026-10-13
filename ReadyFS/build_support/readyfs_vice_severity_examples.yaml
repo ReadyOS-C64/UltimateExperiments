@@ -1,0 +1,79 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_severity_examples
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 90, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-overlay-lab.d81"
+    disk9: null
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: boot
+    type: screen.wait_contains
+    params: { text: "UP/DN HIST", wait_timeout_s: 60 }
+  - id: clear
+    type: input.sequence
+    params: { keys: [67, 76, 69, 65, 82, 13], inter_key_delay_s: 0.06, post_delay_s: 0.5 }
+  - id: alias
+    type: input.sequence
+    params: { keys: [65, 76, 73, 65, 83, 32, 76, 65, 66, 32, 56, 58, 47, 13], inter_key_delay_s: 0.06, post_delay_s: 0.5 }
+  - id: error
+    type: input.sequence
+    params: { keys: [85, 78, 75, 78, 79, 87, 78, 13], inter_key_delay_s: 0.06, post_delay_s: 0.5 }
+  - id: ordinary
+    type: input.sequence
+    params: { keys: [80, 87, 68, 13], inter_key_delay_s: 0.06, post_delay_s: 0.5 }
+  - id: severity_live
+    type: dump.memory_ranges
+    params:
+      ranges:
+        - { label: screen, start: 0x0400, end: 0x07E7 }
+        - { label: color, start: 0xD800, end: 0xDBE7 }
+  - id: clear_history
+    type: input.sequence
+    params: { keys: [67, 76, 69, 65, 82, 13], inter_key_delay_s: 0.06, post_delay_s: 0.5 }
+  - id: page_up
+    type: input.sequence
+    params: { keys: [133], inter_key_delay_s: 0.05, post_delay_s: 0.5 }
+  - id: severity_history
+    type: dump.memory_ranges
+    params:
+      ranges:
+        - { label: screen, start: 0x0400, end: 0x07E7 }
+        - { label: color, start: 0xD800, end: 0xDBE7 }
+  - id: page_down
+    type: input.sequence
+    params: { keys: [134], inter_key_delay_s: 0.05, post_delay_s: 0.5 }
+  - id: help_copy
+    type: input.sequence
+    params: { keys: [72, 69, 76, 80, 32, 67, 80, 13], inter_key_delay_s: 0.06, post_delay_s: 0.5 }
+  - id: copy_example
+    type: screen.wait_contains
+    params: { text: "COPY 8:/SHEET2", wait_timeout_s: 10 }
+  - id: help_examples
+    type: dump.memory_ranges
+    params:
+      ranges:
+        - { label: screen, start: 0x0400, end: 0x07E7 }
+        - { label: color, start: 0xD800, end: 0xDBE7 }
+  - id: help_dir
+    type: input.sequence
+    params: { keys: [72, 32, 76, 83, 13], inter_key_delay_s: 0.06, post_delay_s: 0.5 }
+  - id: dir_example
+    type: screen.wait_contains
+    params: { text: "DIR 8:/", wait_timeout_s: 10 }

@@ -1,0 +1,342 @@
+[
+  {
+    "id": 0,
+    "usage": "unknown command. use help for the list.",
+    "examples": []
+  },
+  {
+    "id": 1,
+    "usage": "exit / q\r\nleave readyfs for basic.",
+    "examples": [
+      "exit",
+      "q"
+    ]
+  },
+  {
+    "id": 2,
+    "usage": "help [command] / h\r\nshow usage; aliases work: h ls.",
+    "examples": [
+      "help copy",
+      "h cp",
+      "h ls"
+    ]
+  },
+  {
+    "id": 3,
+    "usage": "probe [all|uci|udos|softiec|recover]\r\nprobe iec n: detects a drive safely.",
+    "examples": [
+      "probe uci",
+      "pb iec 8:"
+    ]
+  },
+  {
+    "id": 4,
+    "usage": "profile iec n: [op] / pf\r\nshow the probed driver and permissions.",
+    "examples": [
+      "profile iec 8:",
+      "pf iec 11: mount"
+    ]
+  },
+  {
+    "id": 5,
+    "usage": "native op path [dest] / nt\r\nshow native path translation only.",
+    "examples": [
+      "native open 8:/hello",
+      "nt rename 9:/old 9:/new"
+    ]
+  },
+  {
+    "id": 6,
+    "usage": "drives / dv\r\nlist listeners + last readyfs mounts.\r\npaths may have changed elsewhere.",
+    "examples": [
+      "drives",
+      "dv"
+    ]
+  },
+  {
+    "id": 7,
+    "usage": "pwd / pw\r\nprint the current absolute directory.",
+    "examples": [
+      "pwd",
+      "pw"
+    ]
+  },
+  {
+    "id": 8,
+    "usage": "history / hi\r\nlist commands. up/down recalls them.",
+    "examples": [
+      "history",
+      "hi"
+    ]
+  },
+  {
+    "id": 9,
+    "usage": "clear / cl / cls\r\nclear the display.",
+    "examples": [
+      "clear",
+      "cls"
+    ]
+  },
+  {
+    "id": 10,
+    "usage": "cd path\r\nset current path; cd .. goes up.",
+    "examples": [
+      "cd u:/usb1",
+      "cd @lab:/source",
+      "cd .."
+    ]
+  },
+  {
+    "id": 11,
+    "usage": "alias [name path] / al\r\nlist or set alias. al lab u:/usb1/lab",
+    "examples": [
+      "alias disk 8:/",
+      "al usb u:/usb1",
+      "alias"
+    ]
+  },
+  {
+    "id": 12,
+    "usage": "unalias name / ua\r\nremove a saved path alias.",
+    "examples": [
+      "unalias disk",
+      "ua usb"
+    ]
+  },
+  {
+    "id": 13,
+    "usage": "config save|load [path] / cf\r\nsave or restore aliases and profiles.",
+    "examples": [
+      "config save @lab:/session.cfg",
+      "cf load 8:/readyfs.cfg"
+    ]
+  },
+  {
+    "id": 14,
+    "usage": "dir [path] / d / ls\r\nquoted names, types and disk blocks.\r\nhost size ? means not supplied.",
+    "examples": [
+      "dir 8:/",
+      "ls @usb:/",
+      "d"
+    ]
+  },
+  {
+    "id": 15,
+    "usage": "tree path [-i p -x p] / tr\r\nwalk nested folders. tree @lab:/",
+    "examples": [
+      "tree @lab:/source",
+      "tr @lab:/source -i \"beta/**\""
+    ]
+  },
+  {
+    "id": 16,
+    "usage": "stat path / st\r\nshow metadata and endpoint capabilities.",
+    "examples": [
+      "stat 8:/sheet2",
+      "st @usb:/demo.prg"
+    ]
+  },
+  {
+    "id": 17,
+    "usage": "volume [path] / vl / free\r\nshow space information when supported.",
+    "examples": [
+      "volume 8:/",
+      "free @usb:/"
+    ]
+  },
+  {
+    "id": 18,
+    "usage": "match pattern text / mt\r\ntest a wildcard match. match *.seq a.seq",
+    "examples": [
+      "match \"*.seq\" \"alpha/a.seq\"",
+      "mt \"**/*.seq\" \"alpha/a.seq\""
+    ]
+  },
+  {
+    "id": 19,
+    "usage": "type path / ty / cat\r\nread text. type @lab:/notes",
+    "examples": [
+      "type 8:/notes",
+      "cat @lab:/notes.seq"
+    ]
+  },
+  {
+    "id": 20,
+    "usage": "copy source dest [options] / cp\r\nfile dest names a file; tree dest exists.\r\nuse 8:/name, not 8:name.\r\nverify on; --no-verify/-nv skips readback.\r\nwhatif lists selected files and folders.",
+    "examples": [
+      "copy 8:/sheet2 u:/usb1/sheet2 -w",
+      "cp @disk:/sheet2 @usb:/sheet2",
+      "cp @lab:/src @lab:/copy -r -w",
+      "cp @lab:/source @lab:/copy -r -nv"
+    ]
+  },
+  {
+    "id": 21,
+    "usage": "move source dest [options] / mv\r\ncopy then remove verified source files.\r\nmv @lab:/copy @lab:/moved -r -w\r\nverify on; --no-verify/-nv skips readback.\r\nwhatif lists selected files and folders.",
+    "examples": [
+      "move @lab:/a.seq @lab:/b.seq -w",
+      "mv @lab:/copy @lab:/moved -r -w",
+      "mv @lab:/copy @lab:/moved -r -nv"
+    ]
+  },
+  {
+    "id": 22,
+    "usage": "rename source dest [options] / rn / ren\r\nrename on the same supported endpoint.",
+    "examples": [
+      "rename @lab:/old.seq @lab:/new.seq -w",
+      "rn 9:/old 9:/new -w"
+    ]
+  },
+  {
+    "id": 23,
+    "usage": "delete path [options] / dl / rm\r\nremove files and folders with -r.\r\nrm @lab:/moved -r -w previews only.\r\nroot remains; rmdir removes empty root.",
+    "examples": [
+      "delete @lab:/old.seq -w",
+      "rm @lab:/moved -r -w"
+    ]
+  },
+  {
+    "id": 24,
+    "usage": "compare source dest / cm / verify\r\nread both files and compare bytes.",
+    "examples": [
+      "compare 8:/sheet2 @usb:/sheet2",
+      "verify @lab:/a.seq @lab:/b.seq"
+    ]
+  },
+  {
+    "id": 25,
+    "usage": "new path [--type seq] / nw\r\ncreate empty file; refuses existing file.",
+    "examples": [
+      "new @lab:/empty.seq --type seq -w",
+      "nw 9:/empty -t prg -w"
+    ]
+  },
+  {
+    "id": 26,
+    "usage": "write path text [options] / wr\r\nwrite text; -l/--line adds newline.",
+    "examples": [
+      "write @lab:/note.seq \"first line\" -l -w",
+      "wr @lab:/note.seq \"hello\" -l -w"
+    ]
+  },
+  {
+    "id": 27,
+    "usage": "append path text [options] / ap\r\nappend text; -l/--line adds newline.",
+    "examples": [
+      "append @lab:/note.seq \"next line\" -l -w",
+      "ap 9:/notes \"more\" -l -w"
+    ]
+  },
+  {
+    "id": 28,
+    "usage": "mkdir path [options] / md\r\ncreate one directory on a capable drive.",
+    "examples": [
+      "mkdir @lab:/copy -w",
+      "md @lab:/moved -w"
+    ]
+  },
+  {
+    "id": 29,
+    "usage": "rmdir path [options] / rd\r\nremove an empty directory only.",
+    "examples": [
+      "rmdir @lab:/empty -w",
+      "rd 9:/empty -w"
+    ]
+  },
+  {
+    "id": 30,
+    "usage": "mount image drive: / mo\r\nattach a u:/ image to an iec drive.\r\nmount u:/folder s3: --name lab maps s3.\r\nremembers this session; may be stale.",
+    "examples": [
+      "mount u:/usb1/demo.d81 9: -w",
+      "mo u:/usb1/lab s3: -n lab -w"
+    ]
+  },
+  {
+    "id": 31,
+    "usage": "dismount drive: / um / unmount\r\ndetach media or a software iec mapping.\r\ninvalidates last-mount path hint.",
+    "examples": [
+      "dismount 9: -w",
+      "um s3: -w"
+    ]
+  },
+  {
+    "id": 32,
+    "usage": "swap drive: / sw\r\nadvance the firmware disk-swap list.\r\ninvalidates last-mount path hint.",
+    "examples": [
+      "swap 9: -w",
+      "sw 9: -w"
+    ]
+  },
+  {
+    "id": 33,
+    "usage": "capabilities [path] / ca\r\nshow supported operations for endpoint.",
+    "examples": [
+      "capabilities 8:/",
+      "ca @usb:/"
+    ]
+  },
+  {
+    "id": 34,
+    "usage": "status / ss\r\nshow the preceding command result.",
+    "examples": [
+      "status",
+      "ss"
+    ]
+  },
+  {
+    "id": 35,
+    "usage": "find path [-i p -x p] / fi\r\nsearch a tree. fi @lab:/ -i *.seq",
+    "examples": [
+      "find @lab:/source -i \"beta/**\"",
+      "fi @lab:/source -i \"**/*.seq\""
+    ]
+  },
+  {
+    "id": 36,
+    "usage": "head path [n] / hd\r\nprint first n lines (default 10).",
+    "examples": [
+      "head 8:/notes 2",
+      "hd @lab:/note.seq 5"
+    ]
+  },
+  {
+    "id": 37,
+    "usage": "tail path [n] / tl\r\nprint last n lines (default 10).",
+    "examples": [
+      "tail @lab:/note.seq 2",
+      "tl 9:/notes"
+    ]
+  },
+  {
+    "id": 38,
+    "usage": "crc32 path / cr\r\nread file and calculate crc32.",
+    "examples": [
+      "crc32 @lab:/note.seq",
+      "cr 8:/sheet2"
+    ]
+  },
+  {
+    "id": 39,
+    "usage": "test / ts\r\nrun the built-in core self-test suite.",
+    "examples": [
+      "test",
+      "ts"
+    ]
+  },
+  {
+    "id": 40,
+    "usage": "run script.seq / ru\r\nstage and run a command script.",
+    "examples": [
+      "run @lab:/inspect.seq",
+      "ru 8:/rfbok"
+    ]
+  },
+  {
+    "id": 41,
+    "usage": "format path --label name --id id\r\n--disposable --apply required to format.\r\nuse -w to preview. only disposable media.",
+    "examples": [
+      "format 9:/ -lb test -id rf -ds -w",
+      "fm 9:/ --label test --id rf -ds -w"
+    ]
+  }
+]
