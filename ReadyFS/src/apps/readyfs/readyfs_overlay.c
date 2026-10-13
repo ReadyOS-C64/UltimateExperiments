@@ -17,6 +17,7 @@
 #include "readyfs_ui.h"
 #include "readyfs_console.h"
 #include "readyfs_tape.h"
+#include "readyfs_volume.h"
 
 #ifdef READYFS_OVERLAY_RUNTIME
 
@@ -320,6 +321,12 @@ unsigned char readyfs_overlay_files(ReadyFsFilesCall *call) {
     if (!open_batch_cached(8u)) { *call->status = RF_RESULT_IO; return RF_LOOKUP_ERROR; }
     result = readyfs_files(call);
     restore_match(); return result;
+}
+
+unsigned char readyfs_overlay_volume(ReadyFsVolumeCall *call) {
+    if (!open_batch_cached(5u)) { *call->status = RF_RESULT_IO; return 0u; }
+    readyfs_volume(call);
+    restore_match(); return 1u;
 }
 
 unsigned char readyfs_overlay_stream(ReadyFsStreamCall *call) {

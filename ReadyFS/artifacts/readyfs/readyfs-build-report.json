@@ -32,9 +32,9 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 46373,
+    "end": 45626,
     "limit": 46507,
-    "free_bytes": 134
+    "free_bytes": 881
   },
   "software_stack": {
     "top": 53248
@@ -99,8 +99,8 @@
     "stream_policy": {
       "file": "artifacts/readyfs/readyfs-stream.prg",
       "load_address": 46592,
-      "payload_bytes": 1114,
-      "map_bytes": 1114,
+      "payload_bytes": 3431,
+      "map_bytes": 3431,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,

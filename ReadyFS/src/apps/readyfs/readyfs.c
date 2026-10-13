@@ -12,6 +12,7 @@
 
 #include "readyfs_path.h"
 #include "readyfs_stream.h"
+#include "readyfs_volume.h"
 #include "readyfs_match.h"
 #include "readyfs_io.h"
 #include "readyfs_overlay.h"
@@ -3856,6 +3857,7 @@ static void cmd_stat(unsigned char argc) {
     stream_close(&command_stream);
 }
 
+#ifndef READYFS_OVERLAY_RUNTIME
 static unsigned char print_softiec_mapping(unsigned char partition) {
     unsigned int len;
 
@@ -3960,6 +3962,29 @@ static void cmd_volume(unsigned char argc) {
     cputs("tape backend\r\n");
     cputs("no tape free\r\n");
 }
+
+#else
+static void cmd_volume(unsigned char argc) {
+    ReadyFsPath path;
+    ReadyFsVolumeCall call;
+    unsigned char rc;
+    rc=resolve_path(argc>=2u ? args[1] : cwd_buf,temp_text);
+    if(rc==RF_PATH_OK)rc=readyfs_path_parse(temp_text,&path);
+    if(rc!=RF_PATH_OK || !path.absolute) {
+        last_result=RF_RESULT_USAGE;
+        cputs(RF_ERROR "absolute path required\r\n");return;
+    }
+    call.path=&path;call.text=temp_text;call.directory=0;
+    call.status=&last_result;
+    if(path.endpoint==RF_EP_IEC) {
+        if(!path_prepare(temp_text,&source) ||
+           native_file(&source,0,RF_FILES_DIRECTORY)!=RF_LOOKUP_FOUND)return;
+        call.text=source.canonical;call.directory=temp_text;
+        media(RF_MEDIA_SHOW,path.unit,0);
+    }
+    (void)readyfs_overlay_volume(&call);
+}
+#endif
 
 #ifdef READYFS_OVERLAY_RUNTIME
 static unsigned char tape_designator(const char *text, unsigned char endpoint,

@@ -2,7 +2,7 @@
 #define READYFS_STREAM_H
 #include "readyfs_path.h"
 
-#define RF_STREAM_ABI 0x5253u
+#define RF_STREAM_ABI 0x5254u
 #define RF_NATIVE_FLAT 1u
 #define RF_NATIVE_HIER 2u
 
