@@ -164,10 +164,11 @@
     "integrated": true,
     "physical_acceptance": "pending",
     "host_tests": "PASS actual gateway and phases",
-    "actual_6502_cases": 28,
-    "actual_reu_transfers": 166,
-    "resident_end": "B3C8",
-    "safe_resident_bytes": 483,
-    "sidecars": 24
+    "actual_6502_cases": 29,
+    "actual_reu_transfers": 168,
+    "resident_end": "B3D6",
+    "safe_resident_bytes": 469,
+    "sidecars": 24,
+    "uncertain_close_cleanup": "Tested: do not delete stage or rename while any DOS handle remains open"
   }
 }

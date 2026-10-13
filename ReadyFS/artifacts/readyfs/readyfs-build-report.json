@@ -33,9 +33,9 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 46024,
+    "end": 46038,
     "limit": 46507,
-    "free_bytes": 483
+    "free_bytes": 469
   },
   "software_stack": {
     "top": 53248
@@ -49,8 +49,8 @@
       "prepare": {
         "file": "artifacts/readyfs/readyfs-udos-prepare.prg",
         "load_address": 46592,
-        "payload_bytes": 3205,
-        "map_bytes": 3205,
+        "payload_bytes": 3227,
+        "map_bytes": 3227,
         "reu_slot_bytes": 4096,
         "checks": {
           "load_address_b600": true,
@@ -62,8 +62,8 @@
       "lookup": {
         "file": "artifacts/readyfs/readyfs-udos-lookup.prg",
         "load_address": 46592,
-        "payload_bytes": 3837,
-        "map_bytes": 3837,
+        "payload_bytes": 3859,
+        "map_bytes": 3859,
         "reu_slot_bytes": 4096,
         "checks": {
           "load_address_b600": true,
@@ -75,8 +75,8 @@
       "execute": {
         "file": "artifacts/readyfs/readyfs-udos-execute.prg",
         "load_address": 46592,
-        "payload_bytes": 3922,
-        "map_bytes": 3922,
+        "payload_bytes": 3944,
+        "map_bytes": 3944,
         "reu_slot_bytes": 4096,
         "checks": {
           "load_address_b600": true,
@@ -88,8 +88,8 @@
       "name": {
         "file": "artifacts/readyfs/readyfs-udos-name.prg",
         "load_address": 46592,
-        "payload_bytes": 3145,
-        "map_bytes": 3145,
+        "payload_bytes": 3167,
+        "map_bytes": 3167,
         "reu_slot_bytes": 4096,
         "checks": {
           "load_address_b600": true,

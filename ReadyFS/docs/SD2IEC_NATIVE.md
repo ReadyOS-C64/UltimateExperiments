@@ -224,8 +224,8 @@ parents are rejected. Equivalent spellings such as `NOTE.seq` and `NOTE`
 cannot be used to copy, move, or rename an entry onto itself.
 
 **Physical acceptance of this new contained-file service is still pending.**
-The actual resident gateway and cold phases pass host fault tests and28 linked
-6502 cases with166 real REU DMA transfers. The prepared physical matrix covers
+The actual resident gateway and cold phases pass host fault tests and29 linked
+6502 cases with168 real REU DMA transfers. The prepared physical matrix covers
 SEQ/PRG/USR in both directions, forced replacement, rename, type-conflict
 rejection, self-entry rejection, and independent saved-image byte/type checks.
 Use retained owned fixtures for this acceptance work. Do not access a container

@@ -389,7 +389,7 @@ static unsigned char enter_call(ReadyFsUdosFilesCall *c) {
     call=c;*call->status=RF_RESULT_OK;
     /* Keep this byte-sized: cc65 2.18 can optimize away the rejection when
      * the dynamic 16-bit shift is used directly as the && condition. */
-    mask=(unsigned char)(1u<<(c->target-1u));
+    mask=c->operation==RF_UDOS_RENAME?3u:(unsigned char)(1u<<(c->target-1u));
     if(c->operation!=RF_UDOS_CLOSE && (unsigned char)(*c->open_targets & mask))
         return failure(RF_RESULT_IO,"dos target still open");
 #if RF_UDOS_PHASE != 4

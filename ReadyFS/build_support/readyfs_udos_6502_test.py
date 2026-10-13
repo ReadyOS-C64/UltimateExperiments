@@ -137,4 +137,5 @@ stream(STREAM,b'u:/usb1/disk.d64/.NOTE.seq');invoke(3);bad_close=True
 invoke(5,expected=2);assert m[LIVE]==1 and m[STREAM+271]==1
 before=len(calls);invoke(2,expected=2);assert len(calls)==before
 checks+=3
+before=len(calls);invoke(6,target=2,expected=2);assert len(calls)==before;checks+=1
 print(json.dumps({'result':'PASS','cases':checks,'dma_transfers':len(transfers),'scope':'actual linked gateway, all four leaves, real REU DMA assembly, whole payload, CPU port/stack/typed metadata/rename/hidden ambiguity/failed close','artifacts':{n:hashlib.sha256((ART/f'readyfs-udos-{n}.prg').read_bytes()).hexdigest() for n in phases}},indent=2))

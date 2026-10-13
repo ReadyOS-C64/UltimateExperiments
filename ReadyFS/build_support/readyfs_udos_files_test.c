@@ -195,5 +195,6 @@ int main(void) {
         assert(!live_targets && !phase_active && !creates);
     }
     phase_fail=255u;assert(phase_restores);
+    reset();live_targets=2u;before=commands;assert(run(RF_UDOS_RENAME)==RF_LOOKUP_ERROR && result==RF_RESULT_IO && commands==before);
     puts("ReadyFS UltimateDOS cold phases: PASS (typed lookup, errors, context, ownership, names, stage/rename/rollback type)");return 0;
 }

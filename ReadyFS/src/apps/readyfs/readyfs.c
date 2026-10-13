@@ -1982,6 +1982,11 @@ static unsigned char delete_stream(ReadyFsStream *stream) {
 #endif
         return (unsigned char)RF_MISSING(stream_find_type(stream));
     }
+#ifdef READYFS_OVERLAY_RUNTIME
+    /* An uncertain CLOSE must keep the stage intact. Do not delete through
+     * target1 while target2 may still own that output file. */
+    if (udos_open_targets) { last_result = RF_RESULT_IO; return 0u; }
+#endif
     leaf = udos_find_leaf(stream, 1u);
     if (leaf == 0) return 0u;
     return (unsigned char)(uci_call(1u, 0x09u, leaf) &&
