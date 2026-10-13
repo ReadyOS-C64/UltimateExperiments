@@ -156,6 +156,7 @@ frames={};frame_times={};first=None;capture_epoch=None;height=272;stop=threading
 lut=[bytes(PAL[i&15]+PAL[i>>4]) for i in range(256)]
 def receive():
     global first,height,capture_epoch
+    cycle=0;last_raw=None
     try:
         while not stop.is_set():
             if not select.select([vid],[],[],.05)[0]:continue
@@ -164,9 +165,19 @@ def receive():
             q,f,l,w,n,b,e=struct.unpack_from('<HHHHBBH',data)
             if (w,n,b,e)!=(384,4,4,0):continue
             if first is None:first=f;capture_epoch=time.time()
-            index=(f-first)&65535;line=l&32767
+            packet_cycle=cycle
+            if last_raw is not None:
+                if f<last_raw and last_raw-f>32768:cycle+=65536;packet_cycle=cycle
+                elif f>last_raw and f-last_raw>32768:packet_cycle=cycle-65536
+            if packet_cycle==cycle:last_raw=f
+            index=packet_cycle+f-first;line=l&32767
+            if index<0:continue
             if l&32768:height=line+n
-            if line==0:frame_times[index]=now
+            if line==0:
+                frame_times[index]=now
+                if FAST and index%30==0:
+                    for old in list(frames):
+                        if old<index-150:frames.pop(old,None);frame_times.pop(old,None)
             buf,rows=frames.setdefault(index,(bytearray(384*272//2),set()))
             buf[line*192:(line+n)*192]=data[12:];rows.update(range(line,line+n))
     except BaseException as error:receive_errors.append(repr(error))
@@ -189,14 +200,33 @@ def is_more(buf):
             if actual==pattern:return True
     return False
 
+def is_basic_ready(buf):
+    # Default BASIC warm-start palette differs from ReadyFS's blue border.
+    def pixel(x,y):
+        byte=buf[y*192+x//2];return (byte>>(4 if x&1 else 0))&15
+    if pixel(0,0)!=14:return False
+    for bank in (0,2048):
+        codes=(18,5,1,4,25,46)  # READY. in screen codes
+        expected=bytes(bool(chargen[bank+code*8+row]&(128>>bit))
+                       for row in range(8) for code in codes for bit in range(8))
+        for top in range(28,60):
+            actual=bytes(pixel(32+x,top+y)==14 for y in range(8) for x in range(48))
+            if actual==expected:return True
+    return False
+
 def wait_ready(minimum=3,timeout=180):
     # Passive VIC observation: no REST DMA while a filesystem command runs.
     started=time.monotonic();time.sleep(minimum)
     while time.monotonic()-started<timeout:
         items=list(frames.items())
         complete=[i for i,(_,rows) in items if len(rows)==height]
+        if receive_errors:raise RuntimeError('Passive video receiver failed: '+repr(receive_errors))
         if complete:
-            buf=frames[max(complete)][0]
+            latest=max(complete)
+            if frame_times.get(latest,0)<started:
+                time.sleep(.2);continue
+            buf=frames[latest][0]
+            if is_basic_ready(buf):raise RuntimeError('C64 returned to BASIC READY')
             region=buf[220*192:240*192]
             gray=sum((v&15)==11 for v in region)+sum((v>>4)==11 for v in region)
             if gray>100 or is_more(buf):return
@@ -306,51 +336,54 @@ try:
     assert binary[boot-load+2]==8;binary[boot-load+2]=9
     (OUT/'boot-device-9.prg').write_bytes(binary);save_json('boot-patch.json',{'address':boot,'original':8,'demo':9,'reason':'preserve occupied user device 8'})
     speed(64)
-    event(phase='launch-overlay-from-owned-device-9')
-    response=api('/runners:run_prg','POST',bytes(binary),'application/octet-stream',45)
-    (OUT/'launch-response.json').write_bytes(response)
-    event(phase='sidecar-load-quiet-wait',wait_seconds=180);time.sleep(180)
-    check('boot','UP/DN HIST');speed(1)
+    # Start passive video before boot so sidecar loading can finish naturally.
+    # Never poll C64 memory while the loader is running.
     route=socket.socket(socket.AF_INET,socket.SOCK_DGRAM);route.connect((os.environ.get('C64U_HOST','10.0.0.79'),80));local_ip=route.getsockname()[0];route.close()
     vid=socket.socket(socket.AF_INET,socket.SOCK_DGRAM);vid.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,8*1024*1024);vid.bind(('',11000))
     thread=threading.Thread(target=receive);thread.start()
-    api('/streams/video:start?ip='+local_ip+':11000','PUT');streaming=True;time.sleep(3)
-    assert frames,'Video stream not received'
+    api('/streams/video:start?ip='+local_ip+':11000','PUT');streaming=True
+    event(phase='launch-overlay-from-owned-device-9')
+    response=api('/runners:run_prg','POST',bytes(binary),'application/octet-stream',45)
+    (OUT/'launch-response.json').write_bytes(response)
+    event(phase='sidecar-load-passive-wait',timeout_seconds=180)
+    wait_ready(5)
+    check('boot','UP/DN HIST');speed(1)
     if FAST:
         keys('AL LAB u:/usb1/READYFS_TEST/'+owned.run,False);keys([13],False);wait_ready(3)
-        if os.environ.get('READYFS_SD2IEC_BASELINE') == '1':
-            command('PROBE IEC 10:','STATUS:',4)
-            command('PROFILE IEC 10:','PROFILE:',4)
-            command('DIR 10:/',pause=4)
-            page=0
-            while '-- MORE --' in capture(f'sd2iec-initial-directory-{page:02d}').upper():
-                page+=1
-                assert page<=32,'SD2IEC initial listing exceeds bounded inventory'
-                keys(' ',False);time.sleep(2)
-            event(case='sd2iec-present-readonly-inventory',result='PASS')
-        for mhz in (1,16,64):
-            speed(mhz);guard_disk()
-            command('MOUNT @LAB:/MEDIA.D81 9: --force','LAST MOUNTED BY READYFS')
-            check(f'mount-path-{mhz}mhz','MAY HAVE CHANGED ELSEWHERE')
-            command('DIR 9:/',pause=3)
-            while '-- MORE --' in capture('preflight-dir-page').upper():keys(' ',False);time.sleep(2)
-            guard_disk();owned.guard(owned.root+f'/disk-{mhz}.seq')
-            command(f'CP 9:/RFVIEW @LAB:/DISK-{mhz}.SEQ','COPIED',5)
-            command(f'COMPARE 9:/RFVIEW @LAB:/DISK-{mhz}.SEQ','VERIFY: IDENTICAL',5)
-            event(case=f'native-mount-cross-copy-{mhz}mhz',result='PASS')
-        speed(1)
-        guard_disk();owned.guard(owned_image)
-        command('CP @LAB:/SOURCE/README.SEQ 9:/HOSTSEQ','COPIED',5)
-        command('COMPARE 9:/HOSTSEQ @LAB:/SOURCE/README.SEQ','VERIFY: IDENTICAL',5)
-        command('DISMOUNT 9: --force','MEDIA DISMOUNTED')
-        command('DRIVES','9: IMAGE PATH UNKNOWN')
-        event(case='dismount-invalidates-path',result='PASS')
-        snap=owned.snapshot()
-        fixture=(ROOT/'build_support/readyfs_content_view.seq').read_bytes()
-        expected={'kind':'file','bytes':len(fixture),'sha256':hashlib.sha256(fixture).hexdigest()}
-        for mhz in (1,16,64):assert snap[f'disk-{mhz}.seq']==expected
-        event(case='disk-to-host-independent-byte-oracle',result='PASS')
-        if os.environ.get('READYFS_SD2IEC_BASELINE') == '3':
+        if os.environ.get('READYFS_SD2IEC_BASELINE') != '4':
+            if os.environ.get('READYFS_SD2IEC_BASELINE') == '1':
+                command('PROBE IEC 10:','STATUS:',4)
+                command('PROFILE IEC 10:','PROFILE:',4)
+                command('DIR 10:/',pause=4)
+                page=0
+                while '-- MORE --' in capture(f'sd2iec-initial-directory-{page:02d}').upper():
+                    page+=1
+                    assert page<=32,'SD2IEC initial listing exceeds bounded inventory'
+                    keys(' ',False);time.sleep(2)
+                event(case='sd2iec-present-readonly-inventory',result='PASS')
+            for mhz in (1,16,64):
+                speed(mhz);guard_disk()
+                command('MOUNT @LAB:/MEDIA.D81 9: --force','LAST MOUNTED BY READYFS')
+                check(f'mount-path-{mhz}mhz','MAY HAVE CHANGED ELSEWHERE')
+                command('DIR 9:/',pause=3)
+                while '-- MORE --' in capture('preflight-dir-page').upper():keys(' ',False);time.sleep(2)
+                guard_disk();owned.guard(owned.root+f'/disk-{mhz}.seq')
+                command(f'CP 9:/RFVIEW @LAB:/DISK-{mhz}.SEQ','COPIED',5)
+                command(f'COMPARE 9:/RFVIEW @LAB:/DISK-{mhz}.SEQ','VERIFY: IDENTICAL',5)
+                event(case=f'native-mount-cross-copy-{mhz}mhz',result='PASS')
+            speed(1)
+            guard_disk();owned.guard(owned_image)
+            command('CP @LAB:/SOURCE/README.SEQ 9:/HOSTSEQ','COPIED',5)
+            command('COMPARE 9:/HOSTSEQ @LAB:/SOURCE/README.SEQ','VERIFY: IDENTICAL',5)
+            command('DISMOUNT 9: --force','MEDIA DISMOUNTED')
+            command('DRIVES','9: IMAGE PATH UNKNOWN')
+            event(case='dismount-invalidates-path',result='PASS')
+            snap=owned.snapshot()
+            fixture=(ROOT/'build_support/readyfs_content_view.seq').read_bytes()
+            expected={'kind':'file','bytes':len(fixture),'sha256':hashlib.sha256(fixture).hexdigest()}
+            for mhz in (1,16,64):assert snap[f'disk-{mhz}.seq']==expected
+            event(case='disk-to-host-independent-byte-oracle',result='PASS')
+        if os.environ.get('READYFS_SD2IEC_BASELINE') in ('3', '4'):
             from readyfs_iec_config_hardware import run as config_acceptance
             config_acceptance(globals())
         if os.environ.get('READYFS_SD2IEC_BASELINE') in ('2', '3'):
@@ -457,7 +490,14 @@ try:
         chapter('09 · Checked on real hardware','Nested copy, move and delete verified independently. What-if snapshots match; the original source is preserved.')
         time.sleep(7);rc=0
 except Exception as error:
-    event(result='FAIL',error=repr(error));raise
+    event(result='FAIL',error=repr(error))
+    try:
+        snapshot_png('failure.png')
+        capture('failure-screen')
+        (OUT/'failure-native-trace.bin').write_bytes(read(0xC600,16))
+        save_json('failure-video.json', {'receive_errors':receive_errors, 'last_frame_time':max(frame_times.values(),default=None), 'now':time.monotonic()})
+    except Exception as capture_error:event(diagnostic_error=repr(capture_error))
+    raise
 finally:
     if streaming:
         try:api('/streams/video:stop','PUT')

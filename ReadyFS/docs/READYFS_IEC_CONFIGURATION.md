@@ -1,8 +1,14 @@
 # Native IEC and SD2IEC configuration
 
 Implementation status: the commands below are built into the overlay version,
-with host protocol tests. Physical acceptance of this new command family is
-still pending. The monolithic diagnostic retains its earlier command set.
+with host protocol tests and a physical C64U/SD2IEC acceptance run on 2026-10-13.
+Version/status/config, partition listing and queries, raw long-version query,
+invalid-argument handling, and temporary extension/image settings passed.
+Original running settings were restored exactly; native reads also passed at
+1, 16, and 64 MHz. Address/reset/save commands have host protocol coverage;
+the separate native address-repair probe verified device 10 persisted after a
+restart. This is not full physical coverage of every CLI setting.
+The monolithic diagnostic retains its earlier command set.
 The existing `native` translation preview is unchanged.
 
 ## Read first, change explicitly
