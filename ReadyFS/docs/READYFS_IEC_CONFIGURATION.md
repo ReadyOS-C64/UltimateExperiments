@@ -43,7 +43,7 @@ partition is an error. These queries do not select partitions or change images.
 | Command | Effect |
 |---|---|
 | `iec 10: partition 1 --select` | Select partition 1; SD2IEC also clears its autoswap list. |
-| `iec 10: extensions 0` | No x00 headers or automatic typed extensions. |
+| `iec 10: extensions 0` | Raw files for names representable directly in FAT; unrepresentable names can still require X00. |
 | `iec 10: extensions 1` | x00 headers for non-PRG files; raw PRG. |
 | `iec 10: extensions 2` | x00 headers for all supported types. |
 | `iec 10: extensions 3` | Typed filename extensions for non-PRG files. |
@@ -68,8 +68,11 @@ iec 10: config
 iec 10: save-config
 ```
 
-`save-config` sends XW and saves **all current SD2IEC settings**, not just the
-last command. Setters do not save automatically.
+`save-config` sends XW and saves the firmware-supported extended settings
+together, including the address, rather than only the last setting changed.
+It does not save the current folder, selected partition, or mounted image.
+Setters do not save automatically. Hardware address jumpers can override the
+saved address when their setting changes.
 
 ## Address and reset
 
@@ -84,7 +87,7 @@ iec 10: reset hard
 
 Address changes accept 8 through 30, reject occupied/ambiguous listener checks,
 and verify SD2IEC at the new address. `--save` sends XW only after verification.
-It still saves every running setting. Address 13 is sent as a binary byte with
+It still saves the other supported extended settings too. Address 13 is sent as a binary byte with
 an extra command terminator, preserving it through the firmware CR handling.
 
 Initialize cleans device buffers. Soft reset sends UJ; on SD2IEC it preserves
@@ -119,8 +122,9 @@ buffers, and existing file transfer loops keep their current implementation.
 
 On SD2IEC, **CLOSE 15 closes all user data channels on that device**. The new
 standalone configuration transaction must not be reused for status checks
-inside a copy. Native filesystem support needs command-channel lifetime handling
-that preserves live source/destination channels.
+inside a copy. The native filesystem transfer path reads status through the
+existing command channel without closing15, preserving live source/destination
+channels. These two transaction lifetimes are deliberately separate.
 
 Host tests exercise exact binary commands, current versus SYSTEM partition,
 partition/address 13, occupied-address refusal, verify-before-save sequencing,
@@ -136,3 +140,6 @@ acceptance remains a separate gate.
 
 Protocol reference: [official source for the attached -36 firmware](https://www.sd2iec.de/nightlies/sd2iec-1.0.0atentdead0-36-g7e7be29.tar.gz),
 particularly `src/doscmd.c`, `src/iec.c` and `src/fileops.c`.
+
+For file and image workflows, current acceptance evidence, and limitations, see
+[Native SD2IEC and IEC support](SD2IEC_NATIVE.md).

@@ -341,7 +341,7 @@
   },
   {
     "id": 42,
-    "usage": "iec device: command [value]\r\nstatus version config partition\r\nsave-config saves all running settings.",
+    "usage": "iec device: command [value]\r\nstatus version config partition\r\nsave-config saves extended settings.",
     "examples": [
       "iec 10: config",
       "iec 10: partition 1",

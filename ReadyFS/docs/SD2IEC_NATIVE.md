@@ -255,8 +255,13 @@ Ultimate menu has not since changed the media.
   12 MOVE/COMPARE pairs. SD destinations were exported and host-hashed; the
   persisted IEC image was independently checked for bytes, types, and removed
   MOVE sources. Machine settings were restored.
-- Automatic directory/tree and VOLUME overlay changes pass the full host build;
-  their physical acceptance is running.
+- Automatic directory/tree and VOLUME passed physical acceptance, including
+  recursive copy/move in both directions, independent nested-file hashes,
+  what-if preservation, and deletion of created descendants. The directories-e
+  run also passed native DIR/VOLUME/owner reads at16/64MHz and restored the
+  original machine settings.
+- The latest24-overlay typed-image matrix is running; the earlier four-endpoint
+  baseline will also be repeated against this runtime before completion.
 
 Detailed chronological evidence, retained failed probes, firmware findings, and
 run paths are in `agentworking/readyFS/SD2IEC_2026-10-12.md` at repository root.
