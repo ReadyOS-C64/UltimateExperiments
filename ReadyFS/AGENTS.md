@@ -14,6 +14,14 @@ ReadyOS application yet. Build and test it only from this project root.
   card, an existing mounted image, or another IEC device.
 - Preserve each run root and its evidence by default. Cleanup is opt-in and
   only valid for the exact marker-validated run id.
+- For the user-authorized SD2IEC work, native IEC10 mutations may additionally
+  use a freshly created, unique test directory with components no longer than
+  16 bytes and an exact per-run ownership marker. Bootstrap must refuse an
+  existing root/marker. Re-read the marker before every subsequent mutation;
+  mount/write/delete only owned fixtures. Preserve all pre-existing SD2IEC
+  files and retain the new test roots by default. User authorization also
+  permits temporary Ultimate A8 disable/address repair and restoring its exact
+  original image/settings; do not generalize that exception to other media.
 - REST and FTP access from Codex must run from a separate Terminal-owned or
   long-running background bash. A one-shot foreground shell may report false
   connectivity failures.
