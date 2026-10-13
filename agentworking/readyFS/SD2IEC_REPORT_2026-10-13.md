@@ -104,7 +104,7 @@ Folder-c/d proved the previous empty-directory fix was incomplete on target: cc6
 ## Remaining acceptance gates
 
 1. **Completed:** directories-e passed nested export with independent hashes, what-if preservation, deletion of only created descendants, and native reads at16/64MHz. Restoration and process exit are confirmed.
-2. **Rerun required:** expanded owned-image suite (a restored/exited after exposing missing-read reporting; wrapper fix passes full build and executable regression): mounted SD↔IEC9/SoftwareIEC; mounted SD↔unmounted Ultimate container for SEQ/PRG/USR; source removal; forced cross-type replacement and rename; alias/type-conflict rejection; independent persisted-image and host-byte oracles; explicit SD FAT↔its own image via closed-channel intermediate transfers.
+2. **Running:** expanded owned-image suite-b, source/runtimebb33868, Terminal14648/PID92546. Run-a restored/exited after exposing missing-read reporting; the wrapper fix passes full build and executable regression: mounted SD↔IEC9/SoftwareIEC; mounted SD↔unmounted Ultimate container for SEQ/PRG/USR; source removal; forced cross-type replacement and rename; alias/type-conflict rejection; independent persisted-image and host-byte oracles; explicit SD FAT↔its own image via closed-channel intermediate transfers.
 3. Repeat the four-endpoint COPY/MOVE regression using the current24-overlay runtime because its UltimateDOS file-control implementation changed after the earlier passing baseline.
 4. Reconcile final build/evidence/limits in this report and the native guide, retain all owned roots, and commit the final state. Completion has not yet been claimed.
 
