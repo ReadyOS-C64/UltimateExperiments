@@ -133,10 +133,10 @@ int main(void) {
           "in-place rmdir translation");
 
     call = make_call(RF_CMDPATH_RENAME, "11.3:/games/OLD.SEQ");
-    call.destination = "11.3:/archive/NEW.SEQ";
+    call.destination = "11.3:/games/NEW.SEQ";
     check(readyfs_cmdpath_dispatch(&call) &&
           strcmp(output,
-                 "R3//archive/:NEW.SEQ=3//games/:OLD.SEQ") == 0,
+                 "R3//games/:NEW.SEQ=3//games/:OLD.SEQ") == 0,
           "rename command");
 
     call = make_call(RF_CMDPATH_RENAME, "11.3:/games/OLD.SEQ");
@@ -210,6 +210,14 @@ int main(void) {
                  "not an absolute partitioned iec path") == 0,
           "non-IEC path rejected with stable diagnostic");
 
+    call = make_call(RF_CMDPATH_SCRATCH, "10.1:/a,b");
+    check(!readyfs_cmdpath_dispatch(&call), "scratch comma cannot select multiple files");
+    call = make_call(RF_CMDPATH_SCRATCH, "10.1:/a*");
+    check(!readyfs_cmdpath_dispatch(&call), "literal scratch rejects wildcard");
+    call = make_call(RF_CMDPATH_MKDIR, "10.1:/dir:other");
+    check(!readyfs_cmdpath_dispatch(&call), "mkdir rejects injected separator");
+    call = make_call(RF_CMDPATH_RENAME, "10.1:/a/source"); call.destination="10.1:/b/dest";
+    check(!readyfs_cmdpath_dispatch(&call) && call.result==RF_CMDPATH_CROSS_LOCATION, "rename rejects different parents");
     if (fails != 0) return 1;
     puts("readyfs CMD/SD2IEC path tests passed");
     return 0;

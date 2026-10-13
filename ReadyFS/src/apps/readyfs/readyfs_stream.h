@@ -26,6 +26,7 @@ typedef struct {
 typedef struct {
     ReadyFsStream *stream;
     unsigned char *status;
+    unsigned char *reply; /* resident80-byte workspace for native preparation */
 } ReadyFsStreamCall;
 
 unsigned int readyfs_stream_abi(void);

@@ -27,4 +27,5 @@ typedef struct {
 unsigned int readyfs_files_abi(void);
 unsigned char readyfs_files(ReadyFsFilesCall *call);
 unsigned char readyfs_files_plan(ReadyFsFilesCall *call);
+unsigned char readyfs_files_prepare(ReadyFsStreamCall *call);
 #endif

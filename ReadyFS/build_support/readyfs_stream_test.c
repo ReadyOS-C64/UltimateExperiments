@@ -43,8 +43,8 @@ int main(void) {
     detected=1;status=RF_RESULT_OK;
     assert(!prepare(&destination,"8:/",&status) && strstr(output,"file required"));
     assert(!prepare(&destination,"u:/",&status) && strstr(output,"file required"));
-    assert(!prepare(&destination,"8:/dir/file",&status) && status==RF_RESULT_UNSUPPORTED);
-    assert(!prepare(&destination,"10.1:/hello",&status) && status==RF_RESULT_UNSUPPORTED);
+    assert(prepare(&destination,"8:/dir/file",&status)); /* native classification follows */
+    assert(prepare(&destination,"10.1:/hello",&status) && destination.path.partition==1);
     assert(!prepare(&destination,"u:/disk.d81!/file",&status) && strstr(output,"image off"));
     assert(!readyfs_stream_prepare(NULL));
     puts("readyfs stream policy tests passed: persistent descriptors, endpoints, tape limits and typed rejection");

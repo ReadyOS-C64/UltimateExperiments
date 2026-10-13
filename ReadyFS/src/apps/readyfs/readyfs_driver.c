@@ -2,7 +2,8 @@
 #include "readyfs_cmdpath.h"
 
 static unsigned char folded(unsigned char value) {
-    if (value >= 'A' && value <= 'Z') return (unsigned char)(value + 32u);
+    value &= 0x7Fu;
+    if (value >= 65u && value <= 90u) return (unsigned char)(value + 32u);
     return value;
 }
 
@@ -11,7 +12,7 @@ static unsigned char contains(const char *text, const char *wanted) {
     const char *left;
     const char *right;
 
-    if (text == 0 || wanted == 0 || *wanted == 0) return 0u;
+    /* All internal needles are nonempty literals; caller validates status. */
     for (start = text; *start != 0; ++start) {
         left = start;
         right = wanted;
@@ -26,13 +27,15 @@ static unsigned char contains(const char *text, const char *wanted) {
     return 0u;
 }
 
+#ifndef READYFS_CLASSIFIER_ONLY
 unsigned int readyfs_driver_abi(void) { return RF_DRIVER_ABI; }
+#endif
 
 unsigned char readyfs_driver_classify(ReadyFsDriverCall *call) {
     if (call == 0 || call->status == 0) return 0u;
     call->kind = RF_DRIVER_UNKNOWN;
     call->flags = 0u;
-    if (contains(call->status, "sd2iec")) {
+    if (contains(call->status, "sd2iec") || contains(call->status, "uiec")) {
         call->kind = RF_DRIVER_SD2IEC;
         call->flags = RF_DRIVER_PARTITIONS | RF_DRIVER_FOLDERS |
                       RF_DRIVER_IMAGES;
@@ -58,16 +61,14 @@ unsigned char readyfs_driver_classify(ReadyFsDriverCall *call) {
     return 1u;
 }
 
+#ifndef READYFS_CLASSIFIER_ONLY
 unsigned char readyfs_driver_allows_operation(unsigned char flags,
                                               unsigned char operation) {
     unsigned char required;
     if (operation == RF_CMDPATH_OPEN_FILE ||
         operation == RF_CMDPATH_SCRATCH) {
         required = RF_DRIVER_PARTITIONS;
-    } else if (operation == RF_CMDPATH_DIRECTORY ||
-               operation == RF_CMDPATH_MKDIR ||
-               operation == RF_CMDPATH_RMDIR ||
-               operation == RF_CMDPATH_RENAME) {
+    } else if (operation >= RF_CMDPATH_DIRECTORY && operation <= RF_CMDPATH_RENAME) {
         required = RF_DRIVER_PARTITIONS | RF_DRIVER_FOLDERS;
     } else if (operation == RF_CMDPATH_MOUNT ||
                operation == RF_CMDPATH_UNMOUNT) {
@@ -90,3 +91,5 @@ const char *readyfs_driver_name(unsigned char kind) {
     }
 }
 #endif
+
+#endif /* READYFS_CLASSIFIER_ONLY */

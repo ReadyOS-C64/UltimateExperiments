@@ -1,11 +1,20 @@
 /* Native IEC leaf I/O. No native CLOSE15, overlay loads, UCI or network. */
 #include "readyfs_files.h"
 #include "readyfs_result.h"
+#include "readyfs_reu.h"
+#include "readyfs_driver.h"
 #include "readyfs_console.h"
 #include <cbm.h>
 #include <cbm_filetype.h>
 #include <conio.h>
 #include <string.h>
+/* The same pure classifier is compiled into both leaf slots; no call into
+ * slot6 can occur while slot19 is resident. */
+#define READYFS_CLASSIFIER_ONLY
+#define readyfs_driver_classify readyfs_files_classify
+#include "readyfs_driver.c"
+#undef readyfs_driver_classify
+#undef READYFS_CLASSIFIER_ONLY
 extern unsigned char readyfs_same_word(const char *, const char *);
 unsigned int readyfs_files_abi(void) { return RF_FILES_ABI; }
 
@@ -17,7 +26,7 @@ static unsigned char error(ReadyFsFilesCall *c) {
 
 /* TALK the always-present DOS channel directly. OPEN/CLOSE15 would destroy
  * live SD2IEC data buffers, including a copy's source on the same device. */
-static unsigned char status(ReadyFsFilesCall *c) {
+static unsigned char receive(ReadyFsFilesCall *c) {
     unsigned char n, st, value, stored;
     n = stored = 0u;
 #ifdef __CC65__
@@ -34,28 +43,38 @@ static unsigned char status(ReadyFsFilesCall *c) {
     }
     cbm_k_untlk(); cbm_k_clrch();
     c->reply[stored] = 0u;
-    if (st != 0x40u || stored < 2u ||
+    return st == 0x40u ? stored : 255u;
+}
+
+static unsigned char status(ReadyFsFilesCall *c) {
+    unsigned char count;
+    count = receive(c);
+    if (count == 255u || count < 2u ||
         c->reply[0] < '0' || c->reply[0] > '9' ||
         c->reply[1] < '0' || c->reply[1] > '9') return error(c);
     c->dos = (c->reply[0] - '0') * 10u + c->reply[1] - '0';
     return RF_LOOKUP_FOUND;
 }
 
+static unsigned char send(ReadyFsFilesCall *c, const unsigned char *bytes, unsigned char count) {
+    unsigned char i, st;
+#ifdef __CC65__
+    *(volatile unsigned char *)0x90u = 0u;
+#endif
+    cbm_k_listen(c->stream->device); cbm_k_second(0x6Fu);
+    for (i = 0u; i < count; ++i) cbm_k_ciout(bytes[i]);
+    cbm_k_unlsn(); st = cbm_k_readst(); cbm_k_clrch();
+    return !st;
+}
+
 static unsigned char command(ReadyFsFilesCall *c) {
-    unsigned char n, st;
     if (c->stream->path.endpoint == RF_EP_SOFTIEC) {
         /* Preserve SoftwareIEC's established standalone SCRATCH transaction.
          * Its caller verifies source disappearance with logical-type probes. */
         if (cbm_open(15u, c->stream->device, 15u, (char *)c->request)) return error(c);
         cbm_close(15u); cbm_k_clrch(); return RF_LOOKUP_FOUND;
     }
-#ifdef __CC65__
-    *(volatile unsigned char *)0x90u = 0u;
-#endif
-    cbm_k_listen(c->stream->device); cbm_k_second(0x6Fu);
-    for (n = 0u; c->request[n]; ++n) cbm_k_ciout(c->request[n]);
-    cbm_k_unlsn(); st = cbm_k_readst(); cbm_k_clrch();
-    if (st) return error(c);
+    if (!send(c, (const unsigned char *)c->request, strlen(c->request))) return error(c);
     if (status(c) == RF_LOOKUP_ERROR) return RF_LOOKUP_ERROR;
     if (c->dos != (c->operation == RF_FILES_SCRATCH ? 1u : 0u)) return error(c);
     return RF_LOOKUP_FOUND;
@@ -140,4 +159,45 @@ unsigned char readyfs_files(ReadyFsFilesCall *c) {
     if (c->dos != 0u) return error(c);
     if (result == RF_LOOKUP_MISSING) c->stream->type = 0u;
     return result;
+}
+
+/* Preparation runs before data channels open. Cache identity only; G-P is
+ * queried for every descriptor so partition0 means the current partition. */
+unsigned char readyfs_files_prepare(ReadyFsStreamCall *call) {
+    ReadyFsFilesCall c;
+    ReadyFsDriverCall identity;
+    unsigned char record[4], query[5];
+    unsigned int offset;
+    c.stream = call->stream; c.reply = call->reply; c.status = call->status;
+    offset = RF_REU_DRIVE_PROFILE_OFF + (unsigned int)(c.stream->device - 8u) * 4u;
+    if (!readyfs_reu_session_fetch(offset, record, 4u) ||
+        record[0] != 0x52u || record[1] != c.stream->device) {
+        if (!send(&c, (const unsigned char *)"ui", 2u) ||
+            status(&c) != RF_LOOKUP_FOUND || c.dos != 73u) goto io;
+        record[0] = 0x52u; record[1] = c.stream->device;
+        identity.status = (const char *)c.reply;
+        if (!readyfs_files_classify(&identity)) goto io;
+        record[2] = identity.kind; record[3] = identity.flags;
+        if (!readyfs_reu_session_store(offset, record, 4u)) goto io;
+    }
+    if (record[2] != RF_DRIVER_SD2IEC) {
+        if (c.stream->path.partition || strchr(c.stream->native_name, '/')) goto unsupported;
+        return 1u;
+    }
+    query[0] = 'g'; query[1] = '-'; query[2] = 'p';
+    query[3] = c.stream->path.partition; query[4] = 13u;
+    if (query[3] == 255u) goto unsupported;
+    if (!send(&c, query, query[3] ? 5u : 3u) || receive(&c) != 31u || c.reply[30] != 13u) goto io;
+    if (!c.reply[0]) {
+        *c.status = RF_RESULT_NOT_FOUND; cputs(RF_ERROR "partition absent\r\n"); return 0u;
+    }
+    if (!c.reply[2] || c.reply[2] == 255u || (query[3] && c.reply[2] != query[3])) goto io;
+    if (c.reply[0] < 1u || c.reply[0] > 4u) goto unsupported;
+    c.stream->native_mode = c.reply[0] == 1u ? RF_NATIVE_HIER : RF_NATIVE_FLAT;
+    c.stream->native_partition = c.reply[2];
+    return 1u;
+unsupported:
+    *c.status = RF_RESULT_UNSUPPORTED; cputs(RF_ERROR "native path unsupported\r\n"); return 0u;
+io:
+    (void)error(&c); return 0u;
 }

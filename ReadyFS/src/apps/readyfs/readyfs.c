@@ -1280,6 +1280,7 @@ static unsigned char path_prepare(const char *text, ReadyFsStream *stream) {
     }
     stream_call.stream = stream;
     stream_call.status = &last_result;
+    stream_call.reply = (unsigned char *)temp_text + 128u;
     return readyfs_overlay_stream(&stream_call);
 #else
     if (rc == RF_PATH_OK) rc = readyfs_path_parse(stream->canonical,
@@ -2012,6 +2013,8 @@ static unsigned char make_temp_stream(ReadyFsStream *dest,
 #endif
         if (!path_prepare(temp_text, temp)) return 0u;
 #ifdef READYFS_OVERLAY_RUNTIME
+        temp->native_mode = dest->native_mode;
+        temp->native_partition = dest->native_partition;
         lookup = stream_exists(temp);
         if (RF_LOOKUP_FAILED(lookup)) return 0u;
         if (RF_MISSING(lookup)) return 1u;
@@ -3185,7 +3188,10 @@ static void cmd_copy_move(unsigned char argc, unsigned char move_source) {
     copy_call.move = move_source;
     copy_result = readyfs_io_copy_call(&copy_call);
     if (copy_result && move_source) {
-        if (!path_prepare(source.canonical, &command_stream) ||
+        if (
+#ifndef READYFS_OVERLAY_RUNTIME
+            !path_prepare(source.canonical, &command_stream) ||
+#endif
             !delete_stream(&command_stream)) {
             cputs(RF_ERROR "copy ok; delete fail\r\n");
             copy_result = 0u;
@@ -3344,7 +3350,7 @@ static void recursive_call_setup(unsigned char operation) {
 
 static unsigned char recursive_execute(unsigned char action,
                                        unsigned char force) {
-    unsigned char result;
+    unsigned char result, native_mode, native_partition;
 
     if (action == RF_EXEC_ACTION_COPY_FILE ||
         action == RF_EXEC_ACTION_MOVE_FILE) {
@@ -3356,11 +3362,14 @@ static unsigned char recursive_execute(unsigned char action,
         if (result && action == RF_EXEC_ACTION_MOVE_FILE) {
             /* Copy I/O may reuse every stream workspace. Replay the pending
              * controller action to reconstruct its source before deleting. */
+            native_mode = source.native_mode; native_partition = source.native_partition;
             if (!recursive_roots(0u)) return 0u;
             recursive_call_setup(RF_RECURSIVE_CALL_NEXT);
             if (!readyfs_overlay_recursive(&recursive_call) ||
                 recursive_call.action != RF_EXEC_ACTION_MOVE_FILE ||
                 !path_prepare(temp.canonical, &command_stream)) return 0u;
+            command_stream.native_mode = native_mode;
+            command_stream.native_partition = native_partition;
             result = delete_stream(&command_stream);
         }
         return result;

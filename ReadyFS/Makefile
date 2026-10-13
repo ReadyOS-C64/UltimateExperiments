@@ -290,3 +290,6 @@ FORCE:
 
 .PHONY: all readyfs uci-protocol-check readyfs-build-report readyfs-ui-report \
 	readyfs-host-tests readyfs-vice-smoke clean help FORCE
+
+# Slot19 includes the pure identity classifier without loading slot6.
+$(READYFS_OVERLAY_OBJ_DIR)/overlay19/$(READYFS_SRC_DIR)/readyfs_files.o: $(READYFS_SRC_DIR)/readyfs_driver.c

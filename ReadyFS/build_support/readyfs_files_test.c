@@ -6,6 +6,8 @@
 #include <cbm_filetype.h>
 #include "src/apps/readyfs/readyfs_files.h"
 #include "src/apps/readyfs/readyfs_result.h"
+#include "src/apps/readyfs/readyfs_reu.h"
+#include "src/apps/readyfs/readyfs_driver.h"
 static ReadyFsStream stream,other;
 static ReadyFsFilesCall call;
 static unsigned char reply[256],result_status;
@@ -15,6 +17,16 @@ static unsigned count,entry_index,end_code,open_error,closed,channel15;
 static unsigned pos,input,transport,write_error,sent;
 static char command[256];
 static const char *dos_reply;
+static unsigned char profile[4],partition_reply[31];
+static unsigned native_auto,reply_length,transactions,cache_error;
+static const char *identity;
+static unsigned response_length(void) {return reply_length ? reply_length : strlen(dos_reply);}
+unsigned char readyfs_reu_session_fetch(unsigned int offset,void *out,unsigned int n) {
+    assert(offset==RF_REU_DRIVE_PROFILE_OFF+8 && n==4);memcpy(out,profile,4);return !cache_error;
+}
+unsigned char readyfs_reu_session_store(unsigned int offset,const void *data,unsigned int n) {
+    assert(offset==RF_REU_DRIVE_PROFILE_OFF+8 && n==4);memcpy(profile,data,4);return !cache_error;
+}
 static unsigned char fold(unsigned char c) { c &= 127;return c>='a'&&c<='z'?c-32:c; }
 unsigned char readyfs_same_word(const char *a,const char *b) {
     while (*a && *b) if (fold(*a++)!=fold(*b++)) return 0;
@@ -32,14 +44,20 @@ unsigned char cbm_readdir(unsigned char lfn,struct cbm_dirent *out) {
 void cbm_closedir(unsigned char lfn) {assert(lfn==6);++closed;}
 void cbm_k_talk(unsigned char d) {assert(d==10);input=1;pos=0;}
 void cbm_k_tksa(unsigned char s) {assert(s==0x6f);}
-unsigned char cbm_k_acptr(void) {assert(input && pos<strlen(dos_reply));return dos_reply[pos++];}
-unsigned char cbm_k_readst(void) {return input?(transport?transport:(pos==strlen(dos_reply)?64:0)):write_error;}
+unsigned char cbm_k_acptr(void) {assert(input && pos<response_length());return dos_reply[pos++];}
+unsigned char cbm_k_readst(void) {return input?(transport?transport:(pos==response_length()?64:0)):write_error;}
 void cbm_k_untlk(void) {assert(input);input=0;}
 void cbm_k_clrch(void) {}
 void cbm_k_listen(unsigned char d) {assert(d==10);sent=0;}
 void cbm_k_second(unsigned char s) {assert(s==0x6f);}
 void cbm_k_ciout(unsigned char b) {assert(sent+1<sizeof(command));command[sent++]=b;command[sent]=0;}
-void cbm_k_unlsn(void) {}
+void cbm_k_unlsn(void) {
+    ++transactions;
+    if(native_auto) {
+        if(!strcmp(command,"ui")) {dos_reply=identity;reply_length=0;}
+        else {assert(sent==3 || sent==5);assert(!memcmp(command,"g-p",3));dos_reply=(const char*)partition_reply;reply_length=31;}
+    }
+}
 unsigned char cbm_open(unsigned char lfn,unsigned char d,unsigned char sa,const char *name) {
     assert(d==10 && sa==lfn);
     if(lfn==15) { assert(stream.path.endpoint==RF_EP_SOFTIEC);++channel15; }
@@ -56,11 +74,18 @@ static void reset(void) {
     strcpy(other.canonical,"new");other.native_name=other.canonical;other.device=10;
     call.stream=&stream;call.other=&other;call.reply=reply;call.request=request;call.status=&result_status;call.operation=RF_FILES_FIND;
     result_status=0;count=entry_index=closed=channel15=pos=input=transport=write_error=sent=open_error=0;
+    memset(profile,0,sizeof(profile));memset(partition_reply,0,sizeof(partition_reply));
+    partition_reply[0]=1;partition_reply[1]=0xe2;partition_reply[2]=7;partition_reply[30]=13;
+    identity="73,SD2IEC V1.0.0,00,00\r";native_auto=reply_length=transactions=cache_error=0;
     end_code=2;dos_reply="00, OK,00,00\r";command[0]=0;
 }
 static unsigned char execute(void) {
     unsigned char result = readyfs_files_plan(&call);
     return result == RF_LOOKUP_FOUND ? readyfs_files(&call) : result;
+}
+static unsigned char prepare_native(void) {
+    ReadyFsStreamCall c={&stream,&result_status,reply};native_auto=1;
+    return readyfs_files_prepare(&c);
 }
 static void entry(unsigned char type,const char *name) {entries[count].type=type;strcpy(entries[count++].name,name);}
 int main(void) {
@@ -129,6 +154,21 @@ int main(void) {
     assert(readyfs_files_plan(&call)==RF_LOOKUP_ERROR); /* includes suffix budget */
     reset();strcpy(stream.canonical,"long softwareiec logical name");stream.path.endpoint=RF_EP_SOFTIEC;call.operation=RF_FILES_OPEN_READ;
     assert(readyfs_files_plan(&call)==RF_LOOKUP_FOUND && !strcmp(request,stream.native_name));
+    reset();assert(prepare_native() && transactions==2 && !channel15);
+    assert(stream.native_mode==RF_NATIVE_HIER && stream.native_partition==7 && profile[2]==RF_DRIVER_SD2IEC);
+    assert(prepare_native() && transactions==3); /* cached identity, fresh G-P */
+    stream.path.partition=13;partition_reply[0]=4;partition_reply[2]=13;
+    assert(prepare_native() && sent==5 && (unsigned char)command[3]==13 && command[4]==13 && stream.native_mode==RF_NATIVE_FLAT && stream.native_partition==13);
+    reset();identity="73,uIEC TEST,00,00\r";assert(prepare_native() && stream.native_partition==7);
+    reset();identity="73,CBM DOS V10 1581,00,00\r";assert(prepare_native() && transactions==1 && !stream.native_mode && profile[2]==RF_DRIVER_LEGACY);
+    stream.path.partition=1;assert(!prepare_native() && result_status==RF_RESULT_UNSUPPORTED && transactions==1);
+    reset();partition_reply[0]=0;assert(!prepare_native() && result_status==RF_RESULT_NOT_FOUND);
+    reset();partition_reply[2]=0;assert(!prepare_native() && result_status==RF_RESULT_IO);
+    reset();stream.path.partition=1;assert(!prepare_native() && result_status==RF_RESULT_IO); /* mismatched partition */
+    reset();partition_reply[30]=0;assert(!prepare_native() && result_status==RF_RESULT_IO);
+    reset();partition_reply[0]=255;assert(!prepare_native() && result_status==RF_RESULT_UNSUPPORTED);
+    reset();write_error=0x80;assert(!prepare_native() && !pos && result_status==RF_RESULT_IO);
+    reset();cache_error=1;assert(!prepare_native() && transactions==1 && result_status==RF_RESULT_IO);
     puts("native filesystem leaf tests passed: typed lookup, native channel lifetime, scratch/rename status");
     return 0;
 }

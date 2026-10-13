@@ -421,6 +421,12 @@ def main() -> int:
             "native file service must be cached and ABI checked", failures)
     require(overlay, r"readyfs_overlay_files[\s\S]*?open_batch_cached\(8u\)[\s\S]*?readyfs_files\(call\)[\s\S]*?restore_match\(\)",
             "native file gateway must restore matcher", failures)
+    require(overlay, r"readyfs_overlay_stream[\s\S]*?readyfs_stream_prepare\(call\)[\s\S]*?restore_match\(\)[\s\S]*?open_batch_cached\(8u\)[\s\S]*?readyfs_files_prepare\(call\)",
+            "native preparation must follow parsing in a separate leaf dispatch", failures)
+    require(files, r"query\[3\] \? 5u : 3u[\s\S]*?receive\(&c\) != 31u[\s\S]*?native_partition = c.reply\[2\]",
+            "native partition preparation must validate and pin fresh G-P reply", failures)
+    require(resident, r"temp->native_mode = dest->native_mode;[\s\S]*?temp->native_partition = dest->native_partition;",
+            "staging must retain destination media mode and partition pin", failures)
     require(linker_cfg, r'OVL19ADDR:[\s\S]*?readyfs-files.prg[\s\S]*?OVERLAY19: load = OVL19',
             "linker must emit native files sidecar19", failures)
     require(files, r"cbm_k_talk[\s\S]*?cbm_k_tksa\(0x6Fu\)[\s\S]*?cbm_k_untlk",

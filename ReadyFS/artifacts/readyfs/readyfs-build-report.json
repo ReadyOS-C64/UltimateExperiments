@@ -31,23 +31,23 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 46214,
+    "end": 46393,
     "limit": 46507,
-    "free_bytes": 293
+    "free_bytes": 114
   },
   "software_stack": {
     "top": 53248
   },
   "monolithic": {
-    "end": 50683,
+    "end": 50665,
     "limit": 50687
   },
   "sidecars": {
     "native_files": {
       "file": "artifacts/readyfs/readyfs-files.prg",
       "load_address": 46592,
-      "payload_bytes": 2151,
-      "map_bytes": 2151,
+      "payload_bytes": 3683,
+      "map_bytes": 3683,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -85,8 +85,8 @@
     "stream_policy": {
       "file": "artifacts/readyfs/readyfs-stream.prg",
       "load_address": 46592,
-      "payload_bytes": 3849,
-      "map_bytes": 3849,
+      "payload_bytes": 3765,
+      "map_bytes": 3765,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -176,8 +176,8 @@
     "cmdpath_translator": {
       "file": "artifacts/readyfs/readyfs-cmdpath.prg",
       "load_address": 46592,
-      "payload_bytes": 4093,
-      "map_bytes": 4093,
+      "payload_bytes": 4086,
+      "map_bytes": 4086,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -189,8 +189,8 @@
     "drive_profiler": {
       "file": "artifacts/readyfs/readyfs-drive.prg",
       "load_address": 46592,
-      "payload_bytes": 4093,
-      "map_bytes": 4093,
+      "payload_bytes": 4075,
+      "map_bytes": 4075,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,

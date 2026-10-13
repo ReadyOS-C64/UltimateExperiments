@@ -322,7 +322,13 @@ unsigned char readyfs_overlay_stream(ReadyFsStreamCall *call) {
     unsigned char result;
     if (!open_batch_cached(5u)) return 0u;
     result = readyfs_stream_prepare(call);
-    restore_match(); return result;
+    restore_match();
+    if (result && call->stream->path.endpoint == RF_EP_IEC) {
+        if (!open_batch_cached(8u)) { *call->status = RF_RESULT_IO; return 0u; }
+        result = readyfs_files_prepare(call);
+        restore_match();
+    }
+    return result;
 }
 
 unsigned char readyfs_overlay_present(ReadyFsUtilityCall *call) {

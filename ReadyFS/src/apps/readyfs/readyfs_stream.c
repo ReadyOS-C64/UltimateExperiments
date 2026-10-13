@@ -47,7 +47,7 @@ unsigned char readyfs_stream_prepare(ReadyFsStreamCall *call) {
         return reject(call, 0u, "file required\r\n");
     }
     if (stream->path.endpoint == RF_EP_IEC &&
-        (strchr(name, '/') || strchr(name, '!'))) {
+        strchr(name, '!')) {
         return reject(call, RF_RESULT_UNSUPPORTED, "cmd path\r\n");
     }
     if (stream->path.endpoint == RF_EP_ULTIMATE && strchr(name, '!')) {
@@ -56,9 +56,6 @@ unsigned char readyfs_stream_prepare(ReadyFsStreamCall *call) {
     if (stream->path.endpoint == RF_EP_TAPE &&
         (strlen(name) > 16u || strchr(name, '/') || strchr(name, '!'))) {
         return reject(call, RF_RESULT_UNSUPPORTED, "tape leaf 1-16\r\n");
-    }
-    if (stream->path.endpoint == RF_EP_IEC && stream->path.partition) {
-        return reject(call, RF_RESULT_UNSUPPORTED, "unsupported\r\n");
     }
     if (stream->path.endpoint == RF_EP_SOFTIEC) {
         if (!readyfs_uci_detect())

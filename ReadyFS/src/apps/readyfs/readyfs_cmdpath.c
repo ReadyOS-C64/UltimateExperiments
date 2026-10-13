@@ -60,6 +60,10 @@ static unsigned char append_partition(char **cursor, unsigned int *left,
     return append_char(cursor, left, (char)('0' + partition % 10u));
 }
 
+#ifdef __CC65__
+extern unsigned char __fastcall__ readyfs_same_word(const char *, const char *);
+#define same_ascii readyfs_same_word
+#else
 static unsigned char same_ascii(const char *left, const char *right) {
     unsigned char a;
     unsigned char b;
@@ -73,6 +77,8 @@ static unsigned char same_ascii(const char *left, const char *right) {
     return (unsigned char)(*left == 0 && *right == 0);
 }
 
+#endif
+
 static unsigned char image_extension_ok(const char *leaf) {
     const char *dot;
     dot = strrchr(leaf, '.');
@@ -81,10 +87,13 @@ static unsigned char image_extension_ok(const char *leaf) {
            same_ascii(dot, ".d81") || same_ascii(dot, ".dnp");
 }
 
-static unsigned char component_ok(const char *start, unsigned int length) {
+static unsigned char component_ok(const char *start, unsigned char length) {
+    unsigned char i;
     if (length == 0u || length > RF_CMDPATH_COMPONENT_MAX) return 0u;
     if (length == 1u && start[0] == '.') return 0u;
     if (length == 2u && start[0] == '.' && start[1] == '.') return 0u;
+    for (i = 0u; i < length; ++i)
+        if ((unsigned char)start[i] < 32u || strchr(":,=*?!@", start[i])) return 0u;
     return 1u;
 }
 
@@ -275,6 +284,7 @@ static unsigned char native_directory_pattern(ReadyFsCmdPathCall *call,
 unsigned char readyfs_cmdpath_dispatch(ReadyFsCmdPathCall *call) {
     ReadyFsPath source_path;
     ReadyFsPath destination_path;
+    char *left_parent, *right_parent;
     unsigned char result;
 
     if (call == 0 || call->source == 0) return 0u;
@@ -303,6 +313,13 @@ unsigned char readyfs_cmdpath_dispatch(ReadyFsCmdPathCall *call) {
                 (source_path.unit != destination_path.unit ||
                  source_path.partition != destination_path.partition)) {
                 result = RF_CMDPATH_CROSS_LOCATION;
+            }
+            if (result == RF_CMDPATH_OK) {
+                left_parent = strrchr(call->followup, ':');
+                right_parent = strrchr(call->output, ':');
+                *left_parent = *right_parent = 0;
+                if (!same_ascii(call->followup, call->output)) result = RF_CMDPATH_CROSS_LOCATION;
+                *left_parent = *right_parent = ':';
             }
             if (result == RF_CMDPATH_OK &&
                 (!prefix(call->output, call->output_capacity,

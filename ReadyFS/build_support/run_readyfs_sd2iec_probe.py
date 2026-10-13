@@ -42,7 +42,16 @@ try:
     (out/'screen_0400.bin').write_bytes(screen)
     subprocess.run(['python3',str(root/'build_support/decode_c64_screen.py'),str(out/'screen_0400.bin'),'--output',str(out/'screen.txt')],check=True)
     assert data[:3] == b'RFS' and data[0xF0] == 0xA5
-    if data[3] == 4:
+    if data[3] == 5:
+        assert data[4]==5 and data[5]==1 and data[6]==0 and data[9]==1, 'Native preparation failed'
+        assert data[7] in (1,2) and 1<=data[8]<=254, 'Invalid pinned native partition'
+        assert data[10]==1 and data[11] in (0,1) and data[12]==0, 'Qualified native root lookup failed'
+        result = {'stage':data[4], 'prepare_ok':data[5], 'explicit_prepare_ok':data[9],
+                  'native_mode':data[7], 'pinned_partition':data[8], 'lookup':data[11], 'dos':data[12],
+                  'partition_reply_hex':data[512:543].hex(),
+                  'directory_request_hex':data[384:504].split(b'\0')[0].hex(),
+                  'status_reply_hex':data[256:336].split(b'\0')[0].hex()}
+    elif data[3] == 4:
         after = int.from_bytes(data[9:11], 'little', signed=True)
         assert data[4]==6 and data[5]==0 and data[6]==6 and after>0, 'Live directory did not survive status read'
         assert data[32:35]==b'00,' and data[7]==0x40, 'Native status query failed'
