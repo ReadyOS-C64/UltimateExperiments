@@ -249,7 +249,7 @@ def wait_ready(minimum=3,timeout=180):
     raise RuntimeError('ReadyFS did not return to its gray live-input footer')
 
 def snapshot_png(filename):
-    complete=[i for i,(_,rows) in frames.items() if len(rows)==height]
+    complete=[i for i,(_,rows) in list(frames.items()) if len(rows)==height]
     if complete:
         rgb=b''.join(lut[v] for v in frames[max(complete)][0][:height*192])
         Image.frombytes('RGB',(384,height),rgb).resize((768,height*2),Image.Resampling.NEAREST).save(OUT/filename)
@@ -274,13 +274,13 @@ def record_step(text,explanation=None,started=None):
 def chapter(title,description):
     chapters.append({'time':time.time(),'title':title,'description':description})
     event(chapter=title);time.sleep(2)
-    complete=[i for i,(buf,rows) in frames.items() if len(rows)==height]
+    complete=[i for i,(buf,rows) in list(frames.items()) if len(rows)==height]
     if complete:
         rgb=b''.join(lut[v] for v in frames[max(complete)][0][:height*192])
         Image.frombytes('RGB',(384,height),rgb).resize((768,height*2),Image.Resampling.NEAREST).save(OUT/f'chapter-{len(chapters):02d}.png')
 def encode():
     assert not receive_errors,receive_errors
-    complete=[i for i,(buf,rows) in frames.items() if len(rows)==height];assert complete,'No complete VIC frames'
+    complete=[i for i,(buf,rows) in list(frames.items()) if len(rows)==height];assert complete,'No complete VIC frames'
     lo=min(complete);hi=max(complete);fps=985248/19656
     ff=subprocess.Popen(['/opt/homebrew/bin/ffmpeg','-v','error','-y','-f','rawvideo','-pixel_format','rgb24','-video_size',f'384x{height}','-framerate',str(fps),'-i','-','-vf','scale=768:-2:flags=neighbor,setsar=1','-c:v','libx264','-preset','fast','-crf','17','-pix_fmt','yuv420p','-movflags','+faststart',str(OUT/'readyfs-demo.mp4')],stdin=subprocess.PIPE)
     prev=frames[lo][0];missing=0
