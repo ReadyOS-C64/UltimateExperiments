@@ -202,10 +202,10 @@ geometry, bytes, CBM types, and removed MOVE/delete sources were checked.
 | SD FAT ↔ UltimateDOS | Normal verified byte-stream transfer |
 | SD FAT ↔ another IEC image | Normal verified byte-stream transfer |
 | SD FAT ↔ SoftwareIEC | Normal verified byte-stream transfer |
-| Mounted SD image ↔ a different device/endpoint | Read/write/MOVE with UltimateDOS passed; IEC9/SoftwareIEC matrix pending |
+| Mounted SD image ↔ a different device/endpoint | COPY/MOVE with UltimateDOS, IEC9 and SoftwareIEC passed |
 | SD FAT ↔ image mounted on the **same SD device** | Use an intermediate file on another endpoint and explicit mount/unmount |
 | `10.1:/work.d64!/FILE` | Not yet implemented as an automatic media transition |
-| `u:/usb1/work.d81/FILE` | UltimateDOS embedded-filesystem traversal; typed control is integrated, physical acceptance pending |
+| `u:/usb1/work.d81/FILE` | UltimateDOS embedded-filesystem traversal; typed COPY/MOVE and replacement/rename passed with a D64 |
 
 ### UltimateDOS contained-file paths
 
@@ -223,11 +223,14 @@ limited to16 decoded CBM bytes; malformed hexadecimal escapes and wildcard
 parents are rejected. Equivalent spellings such as `NOTE.seq` and `NOTE`
 cannot be used to copy, move, or rename an entry onto itself.
 
-**Physical acceptance of this new contained-file service is still pending.**
-The actual resident gateway and cold phases pass host fault tests and29 linked
-6502 cases with168 real REU DMA transfers. The prepared physical matrix covers
-SEQ/PRG/USR in both directions, forced replacement, rename, type-conflict
-rejection, self-entry rejection, and independent saved-image byte/type checks.
+**The full contained-image transfer matrix has passed on hardware.**
+The actual resident gateway and cold phases also pass host fault tests and29
+linked6502 cases with168 real REU DMA transfers. Matrix-b passed10COPY/10MOVE
+pairs, including SEQ/PRG/USR in both directions, forced replacement, rename,
+type-conflict rejection, self-entry rejection, and independent saved Ultimate
+image byte/type/source-removal checks. SD destination bytes were independently
+hashed after remounting; explicit native destination-type assertions are part
+of the final regression still running.
 Use retained owned fixtures for this acceptance work. Do not access a container
 through this route while it is also mounted on an IEC drive.
 
@@ -260,8 +263,9 @@ Ultimate menu has not since changed the media.
   what-if preservation, and deletion of created descendants. The directories-e
   run also passed native DIR/VOLUME/owner reads at16/64MHz and restored the
   original machine settings.
-- The latest24-overlay typed-image matrix is running; the earlier four-endpoint
-  baseline will also be repeated against this runtime before completion.
+- The latest24-overlay typed-image matrix completed with restoration. The final
+  four-endpoint baseline and retained native file-type checks are running on
+  identical runtime binaries before completion.
 
 Detailed chronological evidence, retained failed probes, firmware findings, and
 run paths are in `agentworking/readyFS/SD2IEC_2026-10-12.md` at repository root.

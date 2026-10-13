@@ -147,7 +147,7 @@ Paths are normalized: redundant slashes and `.` components are simplified; `..` 
 
 UltimateDOS can expose an access spelling with bracketed hex bytes or an added C64 file-type annotation. ReadyFS keeps the actual access identity separate from the readable name used in selection. The current lookup accepts both an actual host spelling such as `work.seq` and its decoded logical spelling where applicable. Use the exact host filename when you know it; `STAT` can show display, access, and host identities.
 
-`demo.d81` is a **host file**. `demo.d81!/HELLO` describes a **file inside its filesystem**. The latter is a useful, explicit part of the path model, but the documented build rejects explicit image-contained file operations. For supported hardware, mount the image on an IEC drive, then address the contained file through that drive, for example `8:/HELLO`. Mounting changes drive media; it is not the same as changing `CD`. Direct image access is being worked on; see the status and examples below.
+`demo.d81` is a **host file**. A contained file can be addressed through an UltimateDOS slash path such as `u:/usb1/demo.d81/HELLO.prg`, or through a mounted IEC drive such as `8:/HELLO`. The explicit `!/` spelling remains a modeled boundary that current file operations reject; use ordinary `/` for UltimateDOS contained-file access. Mounting changes drive media; it is separate from changing `CD`. Do not access a container through UltimateDOS while it is also mounted on an IEC drive.
 
 ### Boundaries and possibilities: what are you copying?
 
@@ -158,7 +158,7 @@ UltimateDOS can expose an access spelling with bracketed hex bytes or an added C
 | `u:/usb1/folder/file.seq` | An ordinary Ultimate host file | Host files and nested folders. Recursive copy, move, and delete are demonstrated in this guide. Host names and C64 file types are separate concerns. |
 | `8:/SHEET2` | A file on device 8's current media | Stream a supported file to/from another endpoint. A plain mounted D81 has a flat directory; adding slashes does not create host-style folders. Other IEC drivers may offer partitions or folders. |
 | `u:/usb1/readyos.d81` | The entire image as one host file | Copy or back up the image as a whole. Its contained directory, allocation data, and file structures remain within the image. This does not extract any individual file. |
-| `u:/usb1/readyos.d81/SHEET2` | Requested direct access to a contained file | Under implementation and not yet verified in ReadyFS. Do not assume this slash form works in the documented build. The explicit `!/` boundary is parsed but rejected by current file operations. |
+| `u:/usb1/work.d64/HELLO.prg` | Direct access to a contained file | The current overlay build supports SEQ/PRG/USR through ordinary slash paths. The physical contained-image matrix used D64; mounted IEC tests also used D81. Explicit `!/` remains rejected. |
 | `s3:/games/HELLO` | A logical SoftwareIEC mapping | Access depends on the discovered bus, firmware, mapped root, and driver. `s3:` is not device 3. SoftwareIEC is not required to copy a file from an already mounted drive 8. |
 | `@disk:/SHEET2` | An alias expanded to an underlying path | Same operations and limits as that underlying path. An alias adds neither image access nor write protection. |
 | `t:/NOTES` | A named sequential tape stream | Sequential read/write, not a folder filesystem. No directory tree, rename, delete, or move. |
@@ -214,16 +214,20 @@ COMPARE u:/usb1/demo.prg 9:/DEMO
 
 The destination is a Commodore directory entry. Its name, type, and size must fit the destination filesystem. COPY does not convert a SID, MP3, WAV, or document into an executable C64 program. Byte equality from COMPARE is useful evidence of file data, not proof of REL record structure, copy-protection data, or every item of disk metadata.
 
-#### 5. Direct image paths in both directions — requested, not yet verified
+#### 5. Direct image paths in both directions
 
-The intended convenience forms are:
+The current 24-sidecar overlay build supports contained SEQ, PRG, and USR files through **ordinary slash paths**. Use a writable, unmounted image you own, an existing output folder, and unused destination names:
 
 ```text
-COPY u:/usb1/someimage.d81/SHEET2 u:/usb1/somefolder/
-COPY u:/usb1/somefolder/SHEET2 u:/usb1/someimage.d81/
+COPY u:/usb1/work.d64/HELLO.prg u:/usb1/out/HELLO.prg --whatif
+COPY u:/usb1/work.d64/HELLO.prg u:/usb1/out/HELLO.prg
+COPY u:/usb1/out/HELLO.prg u:/usb1/work.d64/HELLO2.prg
+COMPARE u:/usb1/out/HELLO.prg u:/usb1/work.d64/HELLO2.prg
 ```
 
-Both **direct contained-file access** and **keeping the source filename when the destination ends in `/`** are work in progress. These two lines are feature examples, not instructions confirmed to work in the documented build. The mounted-drive recipes above are the current route. A contained-file write will also need writable media, free disk space, a supported file type, and safe handling of any concurrently mounted image.
+**Name the destination file explicitly.** A trailing `/` does not yet mean “keep the source filename.” A bare contained destination inherits the source type; an explicit `.prg`, `.seq`, or `.usr` must agree with it. Names are limited to 16 decoded CBM bytes. REL streams remain unsupported. Staging, replacement backups and renames preserve types; equivalent names for the same entry are rejected for self-copy/move/rename.
+
+The hardware matrix passed COPY/MOVE in both directions between an SD2IEC-mounted image and a separate Ultimate-contained D64, including all three types, replacement/rename checks and independent saved-image bytes/types. This does not establish every disk format or firmware combination. Do not use this route while the same container is mounted on an IEC drive. Native SD image mounting and same-device folder/image transfers have separate rules; see [native SD2IEC support](SD2IEC_NATIVE.md).
 
 ### Why a path can parse but an operation can fail
 
@@ -851,10 +855,13 @@ The updated 12 October companion tour uses the same passing physical take, edite
 This guide follows the current overlay implementation. On-device HELP is compact but now includes varied examples; NEW documents `--type` and SWAP documents `drive:`. The retained screenshots show the older help. When behavior changes, update this Markdown source, its evidence captions, and regenerate the HTML rather than letting the editions drift.
 
 
-## Native IEC configuration under development
+## Native IEC configuration and SD2IEC support
 
-The SD2IEC development build adds `iec 10: status`, `iec 10: config`, partition
+The current build provides `iec 10: status`, `iec 10: config`, partition
 queries and explicit configuration setters. See the [configuration reference](READYFS_IEC_CONFIGURATION.md)
-for all commands, examples and the distinction between running and saved settings.
-This new command family is not shown in the earlier published demonstration;
-its physical acceptance and the broader SD2IEC filesystem work are in progress.
+for commands, examples and the distinction between running and saved settings.
+Configuration inspection/temporary restoration and native reads passed physical
+checks at1/16/64MHz. Native recursive folder and full image COPY/MOVE suites also
+passed; the final regression and explicit native destination-type checks remain
+in progress. These additions are newer than the published demonstration. See
+[native SD2IEC support](SD2IEC_NATIVE.md) for current evidence and limitations.

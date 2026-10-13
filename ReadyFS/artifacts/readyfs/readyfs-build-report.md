@@ -2,7 +2,7 @@
 
 Status: **PASS**
 
-- Resident end: `$B3D6`; 469 safe bytes remain before KERNAL scratch at `$B5AC`.
+- Resident end: `$B3F9`; 434 safe bytes remain before KERNAL scratch at `$B5AC`.
 - Monolithic end: `$C5F7` (limit `$C5FF`).
 - Overlay-build cc65 software-stack top: `$D000`.
 - IEC configuration policy payload: `$D18` bytes (seventeenth cached sidecar).
@@ -25,7 +25,7 @@ Status: **PASS**
 - Tape/core policy and signature payload: `$F00` bytes (twelfth sidecar; dedicated batch-bank cache).
 - Command/editor payload: `$FD4` bytes (thirteenth sidecar).
 - Presentation payload: `$B14` bytes (fourteenth sidecar).
-- Command-help payload: `$FB6` bytes (fifteenth sidecar).
+- Command-help payload: `$FB2` bytes (fifteenth sidecar).
 - REU regions disjoint: yes.
 
 ## Checks

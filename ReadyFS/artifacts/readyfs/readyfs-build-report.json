@@ -33,9 +33,9 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 46038,
+    "end": 46073,
     "limit": 46507,
-    "free_bytes": 469
+    "free_bytes": 434
   },
   "software_stack": {
     "top": 53248
@@ -167,8 +167,8 @@
     "command_help": {
       "file": "artifacts/readyfs/readyfs-command-help.prg",
       "load_address": 46592,
-      "payload_bytes": 4022,
-      "map_bytes": 4022,
+      "payload_bytes": 4018,
+      "map_bytes": 4018,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
