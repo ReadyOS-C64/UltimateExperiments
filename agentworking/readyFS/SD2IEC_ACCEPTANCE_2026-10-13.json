@@ -119,11 +119,27 @@
     },
     {
       "run": "demo-v3-sd2iec-native-directories-20261013-e",
-      "status": "running",
+      "status": "passed",
       "pid": 87665,
       "terminal": 14646,
       "source_commit": "1e30bc5",
-      "boot": "PASS24sidecars"
+      "boot": "PASS24sidecars",
+      "last_event": {
+        "complete": true,
+        "restored": true,
+        "result": "PASS",
+        "time": 1791894861.038199
+      },
+      "passed_cases": 71,
+      "process_exited": true,
+      "independent_nested_bytes": true,
+      "whatif_preservation": true,
+      "recursive_delete": true,
+      "read_speeds_mhz": [
+        1,
+        16,
+        64
+      ]
     }
   ],
   "image_acceptance": {
@@ -139,16 +155,16 @@
     "mounted_operations_passed": true,
     "independent_image_passed": true
   },
-  "generated_utc": "2026-10-13T12:18:51.984125+00:00",
-  "current_source_commit": "1e30bc5",
-  "folder_rerun_required": true,
+  "generated_utc": "2026-10-13T12:35:24.652645+00:00",
+  "current_source_commit": "950588b",
+  "folder_rerun_required": false,
   "checksum": {
     "actual_6502_differential_cases": 46,
     "sample_old_cycles": 52570,
     "sample_new_cycles": 9505,
-    "physical_acceptance": "pending",
-    "resident_end": "B29D",
-    "safe_resident_bytes": 782
+    "physical_acceptance": "PASS recursive transfer/compare on optimized runtime in directories-e; full-image timing not repeated",
+    "resident_end_at_checksum_commit": "B29D",
+    "safe_resident_bytes_at_checksum_commit": 782
   },
   "staged_harness": {
     "directory": "/tmp/readyfs-harness-next",
@@ -170,5 +186,17 @@
     "safe_resident_bytes": 469,
     "sidecars": 24,
     "uncertain_close_cleanup": "Tested: do not delete stage or rename while any DOS handle remains open"
+  },
+  "current_runtime_commit": "5ed05df",
+  "expanded_image_matrix": {
+    "run": "demo-v3-sd2iec-image-matrix-20261013-a",
+    "status": "running",
+    "pid": 89829,
+    "terminal": 14647,
+    "source_commit": "950588b",
+    "runtime_commit": "5ed05df",
+    "copy_pairs": 10,
+    "move_pairs": 10,
+    "same_sd_fat_image_bridge": true
   }
 }

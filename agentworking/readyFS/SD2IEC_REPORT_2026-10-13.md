@@ -1,6 +1,6 @@
 # ReadyFS SD2IEC implementation and acceptance report
 
-**Status: acceptance is still in progress.** This is the current report, not a completion claim. The remaining work includes physical acceptance of the corrected recursive round trip and typed UltimateDOS contained-image service, the expanded image transfer matrix, and a final regression pass on the current build.
+**Status: acceptance is still in progress.** This is the current report, not a completion claim. The remaining work includes physical acceptance of the typed UltimateDOS contained-image service, the expanded image transfer matrix, and a final regression pass on the current build. The corrected recursive folder round trip has passed.
 
 ## What is implemented
 
@@ -29,7 +29,8 @@ Detected identity: `73,SD2IEC V1.0.0ATENTDEAD0-36,00,00`. Persistence has been d
 | Automatic DIR without a preceding manual PROBE; TREE; SD/U/IEC9 VOLUME | Native directories-b | Passed |
 | SD folder creation, same-SD copy, rename, scratch, empty-folder removal | Native directories-b | Passed |
 | Recursive host→SD COPY; same-SD recursive MOVE; five nested-file comparisons | Native directories-b | Passed |
-| Recursive SD→host export | Native directories-b/c/d | Found empty-folder status and target character-map bugs; corrected, physical directories-e run pending |
+| Recursive SD→host export | Native directories-e | Passed; independent hashes for all five nested files; earlier b/c/d failures retained |
+| Recursive what-if/delete and final read checks | Native directories-e | What-if preserved all five files; deletion/removal affected only created descendants; DIR/VOLUME/owner reads passed at16/64MHz; complete/restored=true |
 | Mounted SD image: directory, VOLUME, PRG read, SEQ write, MOVE/delete and absence checks, qualified unmount/FAT return | Native image-a | Passed, including independent exported-image geometry/bytes/types/source-removal oracle |
 
 The configuration acceptance exercised version/status, the native configuration
@@ -98,11 +99,11 @@ The authoritative chronological notes are [the work log](SD2IEC_2026-10-12.md). 
 
 The current build adds four cold overlays for contained-image context, lookup, checked file control, and typed names. SEQ/PRG/USR stages and rename/backup/rollback retain their original types. Bare ambiguous names require a suffix; equivalent spellings of the same entry cannot be used for self-copy/move/rename. These behaviors pass real6502 execution and host fault tests, but the full physical contained-image matrix remains outstanding.
 
-Folder-c/d proved the previous empty-directory fix was incomplete on target: cc65 translated its expected ASCII status into PETSCII. Numeric wire constants correct it. The active directories-e run must independently prove the nested SD→Ultimate export and the remaining delete/what-if/speed checks.
+Folder-c/d proved the previous empty-directory fix was incomplete on target: cc65 translated its expected ASCII status into PETSCII. Numeric wire constants correct it. Directories-e independently proved the nested SD→Ultimate export, what-if preservation, recursive deletion, and16/64MHz read checks. It completed PASS/restored=true at12:34:21UTC; PID87665 exited. Its frozen runtime is1e30bc5; the subsequent uncertain-close guard is included in the next matrix build.
 
 ## Remaining acceptance gates
 
-1. Finish directories-e: prove SD→Ultimate nested export with independent hashes, what-if preservation, recursive deletion of only the created descendants, and native reads at16/64MHz. Confirm restoration and process exit.
-2. Run the expanded owned-image suite: mounted SD↔IEC9/SoftwareIEC; mounted SD↔unmounted Ultimate container for SEQ/PRG/USR; source removal; forced cross-type replacement and rename; alias/type-conflict rejection; independent persisted-image and host-byte oracles; explicit SD FAT↔its own image via closed-channel intermediate transfers.
+1. **Completed:** directories-e passed nested export with independent hashes, what-if preservation, deletion of only created descendants, and native reads at16/64MHz. Restoration and process exit are confirmed.
+2. **Running:** expanded owned-image suite `demo-v3-sd2iec-image-matrix-20261013-a` (Terminal14647/PID89829, source950588b/runtime5ed05df): mounted SD↔IEC9/SoftwareIEC; mounted SD↔unmounted Ultimate container for SEQ/PRG/USR; source removal; forced cross-type replacement and rename; alias/type-conflict rejection; independent persisted-image and host-byte oracles; explicit SD FAT↔its own image via closed-channel intermediate transfers.
 3. Repeat the four-endpoint COPY/MOVE regression using the current24-overlay runtime because its UltimateDOS file-control implementation changed after the earlier passing baseline.
 4. Reconcile final build/evidence/limits in this report and the native guide, retain all owned roots, and commit the final state. Completion has not yet been claimed.
