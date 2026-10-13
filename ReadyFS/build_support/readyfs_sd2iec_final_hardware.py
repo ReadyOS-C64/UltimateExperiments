@@ -58,8 +58,11 @@ class FinalBaseline(Baseline):
         assert image.startswith(self.sd_prefix+'out/')
         assert re.fullmatch(r'i[0-9]{10}\.d64', image.removeprefix(self.sd_prefix+'out/'))
         expected = retained_types(json.loads((prior/'native-image-matrix-snapshot.json').read_text()))
+        stamp = next(name[2:] for name in expected if name.startswith('xu'))
+        fat_bridge = self.sd_prefix+'out/br'+stamp+'.prg'
         c['save_json']('retained-native-image-types-expected.json',
-                       {'prior_run': str(prior), 'image': image, 'types': expected})
+                       {'prior_run': str(prior), 'image': image, 'types': expected,
+                        'fat_bridge': {'path': fat_bridge, 'type': '11'}})
         super().run()
         sequence = 0
         def command(text, needle=None, pause=4):
@@ -92,6 +95,9 @@ class FinalBaseline(Baseline):
             self.guard('d', 'after-type-unmount')
             command('IEC 10: PARTITION 1', 'FAT OR DNP')
             self.fat_verified = True
+        observed[fat_bridge] = command('STAT '+fat_bridge, 'TYPE: $11')
+        c['save_json']('retained-native-image-type-screens.json', observed)
+        c['event'](case='retained-native-fat-bridge-prg-type', result='PASS')
 
     def restore(self):
         assert getattr(self, 'idle', True), 'Native command still active'
