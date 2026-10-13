@@ -62,6 +62,7 @@ unsigned char readyfs_pipeline_scratch[RF_PIPELINE_SCRATCH_BYTES];
 #define batch_ui (*(ReadyFsBatchCall *)(void *)readyfs_pipeline_scratch)
 #define tape_call (*(ReadyFsTapeCall *)(void *)readyfs_pipeline_scratch)
 #define iec_call (*(ReadyFsIecCall *)(void *)readyfs_pipeline_scratch)
+#define files_call (*(ReadyFsFilesCall *)(void *)readyfs_pipeline_scratch)
 #define stream_call (*(ReadyFsStreamCall *)(void *)readyfs_pipeline_scratch)
 #else
 static ReadyFsUtilityCall utility_ui;
@@ -1183,14 +1184,23 @@ static const char *udos_enter_parent(ReadyFsStream *stream,
 
 static const char *udos_find_wanted;
 static const char *udos_find_display;
+#ifdef READYFS_OVERLAY_RUNTIME
+static unsigned char udos_lookup_failed;
+#endif
 #define udos_find_call \
     (*(ReadyFsUltimateFindCall *)(void *)readyfs_pipeline_scratch)
 static void udos_find_block(const unsigned char *data,
                             unsigned int data_len,
                             const unsigned char *stat,
                             unsigned int stat_len) {
-    (void)stat;
-    (void)stat_len;
+#ifdef READYFS_OVERLAY_RUNTIME
+    if (stat_len) {
+        if (stat_len < 2u || stat[0] != '0' || stat[1] != '0') udos_lookup_failed = 1u;
+        last_result = udos_lookup_failed ? RF_RESULT_IO : RF_RESULT_OK;
+    }
+#else
+    (void)stat; (void)stat_len;
+#endif
     if (temp_text[0] != 0 || data_len < 2u) return;
     udos_find_call.wanted = udos_find_wanted;
     udos_find_call.entry = data + 1u;
@@ -1205,6 +1215,10 @@ static const char *udos_find_leaf(ReadyFsStream *stream,
                                   unsigned char target) {
     const char *wanted;
 
+#ifdef READYFS_OVERLAY_RUNTIME
+    last_result = RF_RESULT_IO;
+    udos_lookup_failed = 0u;
+#endif
     wanted = udos_enter_parent(stream, target);
     if (wanted == 0) return 0;
     if (!uci_call(target, 0x13u, 0) || !uci_status_ok(target)) return 0;
@@ -1217,6 +1231,9 @@ static const char *udos_find_leaf(ReadyFsStream *stream,
     /* One state-driven directory stream. The transport drains every entry
      * block and owns asynchronous DATA_ACC/final quiet IDLE. */
     if (!readyfs_uci_command(uci_cmd, 2u, &uci_xfer)) return 0;
+#ifdef READYFS_OVERLAY_RUNTIME
+    if (last_result != RF_RESULT_OK) return 0;
+#endif
     if (temp_text[0] != 0) return temp_text;
     return 0;
 }
@@ -1340,6 +1357,23 @@ static unsigned char path_prepare(const char *text, ReadyFsStream *stream) {
 #endif
 }
 
+#ifdef READYFS_OVERLAY_RUNTIME
+#define RF_FOUND(value) ((value) == RF_LOOKUP_FOUND)
+#define RF_MISSING(value) ((value) == RF_LOOKUP_MISSING)
+#define RF_LOOKUP_FAILED(value) ((value) == RF_LOOKUP_ERROR)
+static unsigned char native_file(ReadyFsStream *stream, ReadyFsStream *other, unsigned char operation) {
+    files_call.stream = stream;
+    files_call.other = other;
+    files_call.directory = 0;
+    files_call.reply = (unsigned char *)temp_text;
+    files_call.status = &last_result;
+    files_call.operation = operation;
+    return readyfs_overlay_files(&files_call);
+}
+#else
+#define RF_FOUND(value) (value)
+#define RF_MISSING(value) (!(value))
+#define RF_LOOKUP_FAILED(value) 0u
 static unsigned char iec_find_type(unsigned char device, char *name,
                                    unsigned char *type_out) {
     struct cbm_dirent entry;
@@ -1363,6 +1397,8 @@ static unsigned char iec_find_type(unsigned char device, char *name,
     cbm_k_clrch();
     return 0u;
 }
+
+#endif
 
 static void iec_open_name(char *out, const char *name,
                           unsigned char type, char mode);
@@ -1422,7 +1458,13 @@ static unsigned char softiec_find_type(ReadyFsStream *stream) {
 #ifdef READYFS_SOFT_TRACE
     cputc('a');
 #endif
-    if (!softiec_enter_parent(stream)) return 0u;
+    if (!softiec_enter_parent(stream)) {
+#ifdef READYFS_OVERLAY_RUNTIME
+        last_result = RF_RESULT_IO; return RF_LOOKUP_ERROR;
+#else
+        return 0u;
+#endif
+    }
     SOFT_DIAG(0x31u);
 #ifdef READYFS_SOFT_TRACE
     cputc('b');
@@ -1449,15 +1491,33 @@ static unsigned char softiec_find_type(ReadyFsStream *stream) {
         SOFT_DIAG(0x45u);
         io_buf[0] = 0u;
         SOFT_DIAG(0x46u);
+#ifdef READYFS_OVERLAY_RUNTIME
+        if (iec_command_status(stream->device, "") < 2) {
+            last_result = RF_RESULT_IO; return RF_LOOKUP_ERROR;
+        }
+#else
         (void)iec_command_status(stream->device, "");
+#endif
         SOFT_DIAG(0x47u);
         /* This exact OPEN status is either 00 or a two-digit DOS error; the
          * precleared non-ASCII byte keeps a failed status read fail-closed. */
-        if (io_buf[0] == '0') {
+        if (io_buf[0] == '0'
+#ifdef READYFS_OVERLAY_RUNTIME
+            && io_buf[1] == '0'
+#endif
+            ) {
             stream->type = type;
             return 1u;
         }
+#ifdef READYFS_OVERLAY_RUNTIME
+        if (io_buf[0] != '6' || io_buf[1] != '2') {
+            last_result = RF_RESULT_IO; return RF_LOOKUP_ERROR;
+        }
+#endif
     }
+#ifdef READYFS_OVERLAY_RUNTIME
+    stream->type = 0u;
+#endif
     return 0u;
 }
 
@@ -1465,7 +1525,11 @@ static unsigned char stream_find_type(ReadyFsStream *stream) {
     if (stream->path.endpoint == RF_EP_SOFTIEC) {
         return softiec_find_type(stream);
     }
+#ifdef READYFS_OVERLAY_RUNTIME
+    return native_file(stream, 0, RF_FILES_FIND);
+#else
     return iec_find_type(stream->device, stream->native_name, &stream->type);
+#endif
 }
 
 static unsigned char uci_target_ok(unsigned char target) {
@@ -1485,7 +1549,12 @@ static unsigned char udos_stat(ReadyFsStream *stream) {
     /* C64 Ultimate firmware 3.14 returns 82,FILE NOT FOUND from FILE_STAT for
      * files that its own READ_DIR reports and FTP confirms. Directory lookup
      * is therefore the existence authority; metadata uses OPEN+FILE_INFO. */
+#ifdef READYFS_OVERLAY_RUNTIME
+    if (udos_find_leaf(stream, 1u)) return RF_LOOKUP_FOUND;
+    return last_result == RF_RESULT_OK ? RF_LOOKUP_MISSING : RF_LOOKUP_ERROR;
+#else
     return (unsigned char)(udos_find_leaf(stream, 1u) != 0);
+#endif
 }
 
 static unsigned char stream_exists(ReadyFsStream *stream) {
@@ -1598,11 +1667,15 @@ static unsigned char stream_open_read(ReadyFsStream *stream,
     } else
 #endif
     if (stream_uses_iec(stream)) {
-        if (!stream_find_type(stream)) {
+        if (!RF_FOUND(stream_find_type(stream))) {
             cputs(RF_ERROR "not found\r\n");
             return 0u;
         }
+#ifdef READYFS_OVERLAY_RUNTIME
+        if (stream->type < CBM_T_SEQ || stream->type > CBM_T_USR) {
+#else
         if (stream->type == CBM_T_REL) {
+#endif
             result_unsupported("rel unsupported\r\n");
             return 0u;
         }
@@ -1776,13 +1849,17 @@ static unsigned char delete_stream(ReadyFsStream *stream) {
         if (stream->path.endpoint == RF_EP_SOFTIEC &&
             !softiec_enter_parent(stream)) return 0u;
 #endif
+#ifdef READYFS_OVERLAY_RUNTIME
+        if (!RF_FOUND(native_file(stream, 0, RF_FILES_SCRATCH))) return 0u;
+#else
         if (strlen(stream->native_name) + 3u > RF_LINE_CAP) return 0u;
         strcpy(temp_text, "s:");
         strcat(temp_text, stream->native_name);
         if (cbm_open(15u, stream->device, 15u, temp_text) != 0u) return 0u;
         cbm_close(15u);
         cbm_k_clrch();
-        return (unsigned char)!stream_find_type(stream);
+#endif
+        return (unsigned char)RF_MISSING(stream_find_type(stream));
     }
     leaf = udos_find_leaf(stream, 1u);
     if (leaf == 0) return 0u;
@@ -1832,7 +1909,10 @@ static unsigned char rename_stream(ReadyFsStream *source,
         /* Resolve the existing source to the exact raw PETSCII directory
          * spelling before issuing R:. New destination spelling stays as the
          * user supplied it; both physical DOS and VICE accept that form. */
-        if (!stream_find_type(source)) return 0u;
+        if (!RF_FOUND(stream_find_type(source))) return 0u;
+#ifdef READYFS_OVERLAY_RUNTIME
+        if (!RF_FOUND(native_file(source, dest, RF_FILES_RENAME))) return 0u;
+#else
         if (strlen(dest->native_name) + strlen(source->native_name) + 4u >
             RF_LINE_CAP) return 0u;
         strcpy(temp_text, "r:");
@@ -1842,7 +1922,8 @@ static unsigned char rename_stream(ReadyFsStream *source,
         if (cbm_open(15u, source->device, 15u, temp_text) != 0u) return 0u;
         cbm_close(15u);
         cbm_k_clrch();
-        return stream_find_type(dest);
+#endif
+        return RF_FOUND(stream_find_type(dest));
     }
     source_slash = strrchr(source->native_name, '/');
     dest_slash = strrchr(dest->native_name, '/');
@@ -1874,6 +1955,9 @@ static unsigned char make_temp_stream(ReadyFsStream *dest,
     char *last;
 #endif
     unsigned char tries;
+#ifdef READYFS_OVERLAY_RUNTIME
+    unsigned char lookup;
+#endif
 
     /* SoftwareIEC 3.14 cannot rename. For a destination still proven absent,
      * direct creation followed by the caller's verification is the only
@@ -1910,7 +1994,13 @@ static unsigned char make_temp_stream(ReadyFsStream *dest,
         }
 #endif
         if (!path_prepare(temp_text, temp)) return 0u;
+#ifdef READYFS_OVERLAY_RUNTIME
+        lookup = stream_exists(temp);
+        if (RF_LOOKUP_FAILED(lookup)) return 0u;
+        if (RF_MISSING(lookup)) return 1u;
+#else
         if (!stream_exists(temp)) return 1u;
+#endif
     }
     cputs(RF_ERROR "no stage name\r\n");
     return 0u;
@@ -2142,6 +2232,9 @@ static void cmd_config_save(unsigned char argc, const char *path_text) {
     }
 #endif
     existed = stream_exists(&dest);
+#ifdef READYFS_OVERLAY_RUNTIME
+    if (RF_LOOKUP_FAILED(existed)) return;
+#endif
     if (existed && !option_present(argc, "--force") &&
         !ask_yes("config exists; replace")) return;
     if (!make_temp_stream(&dest, &temp, temp_text)) return;
@@ -2341,12 +2434,15 @@ static void cmd_new(unsigned char argc) {
     }
 #endif
     if (stream_exists(&command_stream)) {
+#ifdef READYFS_OVERLAY_RUNTIME
+        if (last_result != RF_RESULT_IO)
+#endif
         last_result = RF_RESULT_CONFLICT;
         cputs("destination exists\r\n"); return;
     }
     if (!stream_open_write(&command_stream, 1u, 2u, type)) return;
     stream_close(&command_stream);
-    if (stream_exists(&command_stream)) cputs(RF_SUMMARY "created\r\n");
+    if (RF_FOUND(stream_exists(&command_stream))) cputs(RF_SUMMARY "created\r\n");
     else {
         cputs(RF_ERROR "verify fail\r\n");
     }
@@ -2382,6 +2478,9 @@ static void cmd_write(unsigned char argc) {
     }
 #endif
     existed = stream_exists(&dest);
+#ifdef READYFS_OVERLAY_RUNTIME
+    if (RF_LOOKUP_FAILED(existed)) return;
+#endif
     if (existed && !option_present(argc, "--force") &&
         !ask_yes("destination exists; replace")) return;
     add_line = option_present(argc, "--line");
@@ -2465,6 +2564,9 @@ static void cmd_append(unsigned char argc) {
     }
 #endif
     existed = stream_exists(&dest);
+#ifdef READYFS_OVERLAY_RUNTIME
+    if (RF_LOOKUP_FAILED(existed)) return;
+#endif
     if (existed) type = dest.type;
     if (type == CBM_T_REL) {
         result_unsupported("rel append off\r\n");
@@ -2596,6 +2698,9 @@ unsigned char readyfs_io_copy_call(ReadyFsIoCopyCall *call) {
     if (!tape_destination) {
 #endif
         existed = stream_exists(&dest);
+#ifdef READYFS_OVERLAY_RUNTIME
+        if (RF_LOOKUP_FAILED(existed)) return 0u;
+#endif
         if (existed && !copy_force &&
             !ask_yes("destination exists; replace")) return 0u;
         if (!make_temp_stream(&dest, &temp, temp_text)) return 0u;
@@ -2705,7 +2810,7 @@ unsigned char readyfs_io_copy_call(ReadyFsIoCopyCall *call) {
     if (!rename_stream(&temp, &dest)) {
         if (existed) (void)rename_stream(&backup, &dest);
         cputs(RF_ERROR "copy kept ");
-        cputs(temp_text);
+        cputs(temp.canonical);
         cputs(RF_ERROR "; rename fail\r\n");
         return 0u;
     }
@@ -3103,7 +3208,10 @@ static void cmd_delete(unsigned char argc) {
         result_unsupported("tape delete off\r\n"); return;
     }
 #endif
-    if (!stream_exists(&command_stream)) {
+    if (!RF_FOUND(stream_exists(&command_stream))) {
+#ifdef READYFS_OVERLAY_RUNTIME
+        if (last_result != RF_RESULT_IO)
+#endif
         last_result = RF_RESULT_NOT_FOUND;
         cputs(RF_ERROR "not found\r\n");
         return;
@@ -3151,12 +3259,12 @@ static unsigned char create_directory(ReadyFsStream *stream) {
         if (!iec_directory_command(stream->device, "md:",
                                    stream->native_name)) return 0u;
         if (stream->path.endpoint == RF_EP_SOFTIEC) return 1u;
-        return stream_find_type(stream);
+        return RF_FOUND(stream_find_type(stream));
     }
     leaf = udos_enter_parent(stream, 1u);
     if (leaf == 0) return 0u;
     if (!uci_call(1u, 0x16u, leaf) || !uci_target_ok(1u)) return 0u;
-    return stream_exists(stream);
+    return RF_FOUND(stream_exists(stream));
 }
 
 static unsigned char remove_directory(ReadyFsStream *stream) {
@@ -3166,12 +3274,12 @@ static unsigned char remove_directory(ReadyFsStream *stream) {
     if (stream_uses_iec(stream)) {
         if (!iec_directory_command(stream->device, "rd:",
                                    stream->native_name)) return 0u;
-        return (unsigned char)!stream_find_type(stream);
+        return (unsigned char)RF_MISSING(stream_find_type(stream));
     }
     leaf = udos_find_leaf(stream, 1u);
     if (leaf == 0) return 0u;
     if (!uci_call(1u, 0x09u, leaf) || !uci_target_ok(1u)) return 0u;
-    return (unsigned char)!stream_exists(stream);
+    return (unsigned char)RF_MISSING(stream_exists(stream));
 }
 
 #ifdef READYFS_OVERLAY_RUNTIME
@@ -3445,7 +3553,7 @@ static void cmd_mkdir_rmdir(unsigned char argc, unsigned char remove) {
         return;
     }
     if (command_stream.path.endpoint != RF_EP_SOFTIEC &&
-        !stream_exists(&command_stream)) {
+        !RF_FOUND(stream_exists(&command_stream))) {
         cputs(RF_ERROR "not found\r\n"); return;
     }
     if (!option_present(argc, "--force") && !ask_yes("remove empty directory")) {
@@ -3487,10 +3595,13 @@ static void cmd_rename(unsigned char argc) {
         cputs(RF_ERROR "same path\r\n");
         return;
     }
-    if (!stream_exists(&source)) {
+    if (!RF_FOUND(stream_exists(&source))) {
         cputs(RF_ERROR "not found\r\n"); return;
     }
     dest_existed = stream_exists(&dest);
+#ifdef READYFS_OVERLAY_RUNTIME
+    if (RF_LOOKUP_FAILED(dest_existed)) return;
+#endif
     if (dest_existed && !option_present(argc, "--force") &&
         !ask_yes("destination exists; replace")) return;
     if (dest_existed) {
@@ -3505,7 +3616,11 @@ static void cmd_rename(unsigned char argc) {
         cputs(RF_ERROR "rename mismatch\r\n");
         return;
     }
+#ifdef READYFS_OVERLAY_RUNTIME
+    if (!RF_FOUND(stream_exists(&dest)) || !RF_MISSING(stream_exists(&source))) {
+#else
     if (!stream_exists(&dest) || stream_exists(&source)) {
+#endif
         if (path_prepare(args[1], &command_stream)) {
             (void)rename_stream(&dest, &command_stream);
         }
@@ -3628,7 +3743,7 @@ static void cmd_stat(unsigned char argc) {
         if (command_stream.path.endpoint == RF_EP_IEC)
             media(RF_MEDIA_SHOW, command_stream.device, 0);
 #endif
-        if (!stream_find_type(&command_stream)) {
+        if (!RF_FOUND(stream_find_type(&command_stream))) {
             cputs(RF_ERROR "not found\r\n");
             return;
         }

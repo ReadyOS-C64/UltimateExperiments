@@ -144,14 +144,18 @@ def main() -> int:
         '(void)uci_call(5u, 0x14u, "\\6");')
     soft_probe_status = soft_find_body.find(
         'iec_command_status(stream->device, "")')
-    soft_probe_accept = soft_find_body.find("if (io_buf[0] == '0')")
+    soft_probe_accept = soft_find_body.find("if (io_buf[0] == '0'")
     if min(soft_find, soft_find_end) < 0 or \
        "for (type = CBM_T_SEQ; type <= CBM_T_USR; ++type)" not in soft_find_body or \
        "iec_open_name(temp_text, stream->native_name, type, 'r')" not in soft_find_body or \
        soft_find_body.count("cbm_close(6u);") != 1 or \
        min(soft_probe_close, soft_probe_status, soft_probe_accept) < 0 or \
        not soft_probe_close < soft_probe_status < soft_probe_accept or \
-       "return iec_find_type(" in soft_find_body:
+       "return iec_find_type(" in soft_find_body or \
+       "&& io_buf[1] == '0'" not in soft_find_body or \
+       "if (io_buf[0] != '6' || io_buf[1] != '2')" not in soft_find_body or \
+       "iec_command_status(stream->device, \"\") < 2" not in soft_find_body or \
+       "return RF_LOOKUP_ERROR;" not in soft_find_body:
         failures.append(
             "SoftwareIEC file lookup must avoid its truncated BASIC directory "
             "stream, explicitly probe only non-creating SEQ/PRG/USR types "

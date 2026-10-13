@@ -15,7 +15,7 @@ and .NET for the external VICE automation harness.
 make readyfs
 ```
 
-The complete build produces the monolithic and overlay applications, eighteen
+The complete build produces the monolithic and overlay applications, nineteen
 sidecars, boot/test disk images, host-test results, the UCI source-contract
 check, and memory/REU reports below `artifacts/readyfs/`.
 
@@ -72,6 +72,7 @@ artifact groups, automation entry points, and current verification evidence.
 
 SD2IEC development on `codex/sd2iec-support` adds cached sidecars 16 (stream
 preparation and standalone native IEC I/O) and 17 (IEC configuration policy).
-Builds now require all 17 sidecars. See [native IEC configuration](docs/READYFS_IEC_CONFIGURATION.md)
+Builds now require all 19 sidecars. Slot 18 owns native configuration I/O and
+mount reporting; slot 19 owns native file lookup and mutation status. See [native IEC configuration](docs/READYFS_IEC_CONFIGURATION.md)
 for commands, protocol boundaries and current verification status. Full SD2IEC
 filesystem/image transfer acceptance is still in progress.

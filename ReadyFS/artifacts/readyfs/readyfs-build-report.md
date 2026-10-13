@@ -2,10 +2,11 @@
 
 Status: **PASS**
 
-- Resident end: `$B53C`; 111 safe bytes remain before KERNAL scratch at `$B5AC`.
+- Resident end: `$B559`; 82 safe bytes remain before KERNAL scratch at `$B5AC`.
 - Monolithic end: `$C5FB` (limit `$C5FF`).
 - Overlay-build cc65 software-stack top: `$D000`.
 - IEC configuration policy payload: `$D18` bytes (seventeenth cached sidecar).
+- Native filesystem payload: `$5DF` bytes (nineteenth cached sidecar).
 - Native IEC/media payload: `$FB7` bytes (eighteenth cached sidecar).
 - Stream policy payload: `$473` bytes (sixteenth cached sidecar).
 - Matcher payload: `$FC8` bytes.
@@ -37,6 +38,7 @@ Status: **PASS**
 - PASS: `reu_console_ring_fits_bank`
 - PASS: `stream_policy_sidecar`
 - PASS: `iec_config_policy_sidecar`
+- PASS: `native_files_sidecar`
 - PASS: `native_iec_media_sidecar`
 - PASS: `presentation_sidecar`
 - PASS: `command_help_sidecar`

@@ -1,0 +1,25 @@
+#ifndef READYFS_FILES_H
+#define READYFS_FILES_H
+#include "readyfs_stream.h"
+#define RF_FILES_ABI 0x464Eu
+#define RF_FILES_FIND 1u
+#define RF_FILES_STATUS 2u
+#define RF_FILES_SCRATCH 3u
+#define RF_FILES_RENAME 4u
+#define RF_LOOKUP_MISSING 0u
+#define RF_LOOKUP_FOUND 1u
+#define RF_LOOKUP_ERROR 2u
+/* Resident-owned arguments; synchronous leaf service, never nested overlays.
+ * FIND only proves MISSING after the normal complete-directory terminator. */
+typedef struct {
+    ReadyFsStream *stream;
+    ReadyFsStream *other;
+    const char *directory;
+    unsigned char *reply; /* at least120 bytes, retained by resident caller */
+    unsigned char *status;
+    unsigned char operation;
+    unsigned char dos;
+} ReadyFsFilesCall;
+unsigned int readyfs_files_abi(void);
+unsigned char readyfs_files(ReadyFsFilesCall *call);
+#endif

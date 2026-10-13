@@ -409,6 +409,17 @@ def main() -> int:
             "stream policy must return pointers into resident canonical data", failures)
     require(linker_cfg, r'OVL16ADDR:[\s\S]*?readyfs-stream.prg[\s\S]*?OVERLAY16: load = OVL16',
             "linker must emit independent stream policy sidecar16", failures)
+    files = (BATCH.parent / "readyfs_files.c").read_text()
+    require(overlay, r"load_batch_cached\(8u\)[\s\S]*?readyfs_files_abi\(\)[\s\S]*?RF_FILES_ABI",
+            "native file service must be cached and ABI checked", failures)
+    require(overlay, r"readyfs_overlay_files[\s\S]*?open_batch_cached\(8u\)[\s\S]*?readyfs_files\(call\)[\s\S]*?restore_match\(\)",
+            "native file gateway must restore matcher", failures)
+    require(linker_cfg, r'OVL19ADDR:[\s\S]*?readyfs-files.prg[\s\S]*?OVERLAY19: load = OVL19',
+            "linker must emit native files sidecar19", failures)
+    require(files, r"cbm_k_talk[\s\S]*?cbm_k_tksa\(0x6Fu\)[\s\S]*?cbm_k_untlk",
+            "native file status must preserve live channels with TALK", failures)
+    if re.search(r"readyfs_overlay_|load_sidecar|readyfs_uci_", files):
+        failures.append("native file leaf must not load overlays or use UCI")
     iec_plan = (BATCH.parent / "readyfs_iec_plan.c").read_text()
     iec_io = (BATCH.parent / "readyfs_iec.c").read_text()
     require(overlay, r"load_batch_cached\(6u\)[\s\S]*?readyfs_iec_plan_abi\(\)[\s\S]*?RF_IEC_PLAN_ABI",
@@ -425,7 +436,7 @@ def main() -> int:
             "native discovery must clear ST and complete LISTEN/SECOND", failures)
     require(makefile, re.escape('--code-name OVERLAY$(1) --rodata-name OVERLAY$(1)R --bss-name OVERLAY$(1)B'),
             "sidecar code/constants/BSS must remain distinct assembler segments", failures)
-    for slot in range(1,19):
+    for slot in range(1,20):
         require(linker_cfg, re.escape(f'__OVERLAY{slot}_SIZE__: type = export, value = __OVL{slot}_LAST__ - __OVL{slot}_START__'),
                 f"slot{slot} cache size must include code/constants/BSS", failures)
         for suffix in ('R','B'):
@@ -443,7 +454,7 @@ def main() -> int:
             print(f"ReadyFS overlay DMA contract: FAIL: {failure}")
         return 1
     print("ReadyFS overlay DMA contract: PASS (flat 6-byte overlay/session/"
-          "batch boundaries, explicit slots 1-18; REU-checkpointed recursive, "
+          "batch boundaries, explicit slots 1-19; REU-checkpointed recursive, "
           "backend/native, utility, tree, content, batch, UI, and tape controllers; "
           "resident-owned device I/O)")
     return 0
