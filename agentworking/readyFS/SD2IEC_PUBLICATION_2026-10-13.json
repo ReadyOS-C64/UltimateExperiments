@@ -1,0 +1,45 @@
+{
+  "project_id": "appgprj_6ac84b23269481919d1ea34651df6e6f",
+  "commit_sha": "c8a4049aaed4aad2fd785400f301e5091760a058",
+  "archive": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/agentworking/readyfs-sd2iec-publish-20261013.tar.gz",
+  "version": {
+    "id": "appgprj_6ac84b23269481919d1ea34651df6e6f~appgver_c0bcf76bfae081918b8dae8ec573d918",
+    "project_id": "appgprj_6ac84b23269481919d1ea34651df6e6f",
+    "version_number": 14,
+    "source": {
+      "commit_sha": "c8a4049aaed4aad2fd785400f301e5091760a058"
+    },
+    "archive_storage": {
+      "archive_format": "tar",
+      "sediment_file_id": "file_00000000254082308c1ec89459b09772",
+      "content_hash": "sha256:f7c2d7b6c379eb6ec8584f143d45641e78789e6d471617f6e2a96abb8cfe16e5",
+      "size_bytes": 15933440,
+      "file_count": 122
+    },
+    "screenshot_url": null,
+    "deployment_id": null
+  },
+  "deployment": {
+    "id": "appgdep_6ace63b7b8c48191981e4f77ceba151a",
+    "project_id": "appgprj_6ac84b23269481919d1ea34651df6e6f",
+    "title": "ReadyFS · C64 Editor Walkthrough",
+    "version_id": "appgprj_6ac84b23269481919d1ea34651df6e6f~appgver_c0bcf76bfae081918b8dae8ec573d918",
+    "type": "publish",
+    "status": "succeeded",
+    "url": "https://readyfs-editor-demo.klumsy.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6ac84b23269481919d1ea34651df6e6f",
+    "failure_message": null,
+    "env_set_revision": 0,
+    "updated_at": "2026-10-13T17:00:51.133242+00:00"
+  },
+  "video": {
+    "seconds": 699.258258,
+    "chapters": 7,
+    "steps": 32,
+    "checks": 67,
+    "sha256": "f6875931435e94e8fa5b09c2337c0cac5d8c0c2254439e660d235b92515ca1d8"
+  },
+  "repository_commit": "134503f"
+}

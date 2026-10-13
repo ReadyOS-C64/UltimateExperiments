@@ -23,7 +23,7 @@ Fresh take `demo-v3-sd2iec-walkthrough-20261013-b` completed PASS/restored=true 
 
 Added a dedicated SD2IEC tutorial, a chapter in the general Markdown/printable guide, six illustrations (five actual C64 captures and one SVG diagram), configuration links, route table, and examples distinguishing ordinary recursive selection from explicit file sets on flat media. The tutorial states that automatic native `disk.d64/FILE` and `!/` transitions remain unimplemented and documents intermediate storage for same-device view changes.
 
-Existing Site: `appgprj_6ac84b23269481919d1ea34651df6e6f`, public, https://readyfs-editor-demo.klumsy.chatgpt.site. Opened its source repository with the Sites helper at source commit `995d677ca9f9b9e552f7170b8bea42cf38896e54`. Publication is pending completed footage and checks. Existing RUN-guide edits are preserved; only this task's additions will be staged in the parent repo.
+Existing Site: `appgprj_6ac84b23269481919d1ea34651df6e6f`, public, https://readyfs-editor-demo.klumsy.chatgpt.site. Opened its source repository with the Sites helper at source commit `995d677ca9f9b9e552f7170b8bea42cf38896e54`. Published successfully as version 14 at 17:00:51 UTC. Existing RUN-guide edits are preserved; only this task's additions were staged in the parent repo.
 
 ## Video editing
 
@@ -36,3 +36,11 @@ The first assembly attempt encoded all 32 segments but failed when the concat ma
 - Browser verified the guide anchor and loaded illustrations, media-view diagram, both primary and full-tour chapter seeking, 32 rendered script steps, and the actual MP4 download. The downloaded file SHA-256 matches the published candidate.
 - Expanded the SD walkthrough player to full width below 1000px after inspecting the in-app browser layout; no broken images or media errors.
 - Host source capture, edit plan, raw failed take, passing take and all marked filesystem fixtures remain retained. No runtime rebuild or hardware rerun is needed for these documentation/presentation edits.
+
+## Public delivery
+
+- Site: https://readyfs-editor-demo.klumsy.chatgpt.site
+- Full SD walkthrough: https://readyfs-editor-demo.klumsy.chatgpt.site/sd2iec.html
+- Guide chapter: https://readyfs-editor-demo.klumsy.chatgpt.site/guide.html#12-sd2iec-folders-batches-and-disk-images
+- Site source commit: `c8a4049aaed4aad2fd785400f301e5091760a058`; version 14; deployment `appgdep_6ace63b7b8c48191981e4f77ceba151a`, succeeded.
+- Repo documentation commit: `134503f`. Publication metadata and screenshot accompany this report. Existing public access was preserved.
