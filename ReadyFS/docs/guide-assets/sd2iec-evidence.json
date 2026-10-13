@@ -1,0 +1,37 @@
+[
+  {
+    "file": "sd2iec-tree.png",
+    "source_take": "demo-v3-sd2iec-walkthrough-20261013-b",
+    "input": "TREE @LAB:/SOURCE",
+    "source_screenshot": "step-06.png",
+    "sha256": "4fbe023653f75f7e6cda0f916663556766f9f8fc5b9cc5a913b84d8c23836edf"
+  },
+  {
+    "file": "sd2iec-copy.png",
+    "source_take": "demo-v3-sd2iec-walkthrough-20261013-b",
+    "input": "COPY @LAB:/SOURCE @CARD:/TREE --recursive",
+    "source_screenshot": "step-09.png",
+    "sha256": "d6ff4dff69a450117ffc6f8a5bec1490f0301315aa778db65bfa090246860cbd"
+  },
+  {
+    "file": "sd2iec-return.png",
+    "source_take": "demo-v3-sd2iec-walkthrough-20261013-b",
+    "input": "TREE @LAB:/RETURNED",
+    "source_screenshot": "step-13.png",
+    "sha256": "0f7143109473b2eecb98d79e066a30d24489a90d6db11bc720ec471c14131cc2"
+  },
+  {
+    "file": "sd2iec-image.png",
+    "source_take": "demo-v3-sd2iec-walkthrough-20261013-b",
+    "input": "DIR 10.1:/",
+    "source_screenshot": "step-21.png",
+    "sha256": "41b88589cbd50b2cc2f01c385000d41122591f9efcfca4e48b90119e269e473b"
+  },
+  {
+    "file": "sd2iec-prg.png",
+    "source_take": "demo-v3-sd2iec-walkthrough-20261013-b",
+    "input": "STAT 10.1:/V163325P",
+    "source_screenshot": "step-27.png",
+    "sha256": "6e6d74695889b3181f6f8fa0b6797851d637987eb1c3fedc7cabfdc6fe47c9d2"
+  }
+]

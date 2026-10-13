@@ -37,6 +37,8 @@ The [standalone HTML edition](docs/READYFS_USER_GUIDE.html) embeds its screensho
 and diagrams for offline reading and printing. The guide is also available on
 the [public demo site](https://readyfs-editor-demo.klumsy.chatgpt.site/guide.html).
 
+For SD cards and image contents, see the [SD2IEC multi-file walkthrough](docs/READYFS_SD2IEC_TUTORIAL.md) and its [new physical video with chapters and downloads](https://readyfs-editor-demo.klumsy.chatgpt.site/sd2iec.html).
+
 ## Interactive use
 
 Use `readyfs-overlay.prg` with `readyfs-overlay-lab.d81` on device 8 for the

@@ -143,3 +143,5 @@ particularly `src/doscmd.c`, `src/iec.c` and `src/fileops.c`.
 
 For file and image workflows, current acceptance evidence, and limitations, see
 [Native SD2IEC and IEC support](SD2IEC_NATIVE.md).
+
+The [illustrated SD2IEC walkthrough](READYFS_SD2IEC_TUTORIAL.md) places configuration inspection beside multi-file and mounted-image workflows.

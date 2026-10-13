@@ -287,3 +287,7 @@ file. Mounting the resulting image is an additional required check. This procedu
 has passed copying, logical comparison, and actual D64 mounting. The modified
 image export passed independent geometry, byte, and type checks; automatic raw-image creation across all
 five extension modes is not claimed.
+
+## Illustrated multi-file walkthrough
+
+See [SD2IEC folders, batches and disk images](READYFS_SD2IEC_TUTORIAL.md) for complete recursive round-trip recipes, selected files to IEC/SoftwareIEC, image-to-image copies and the same-device intermediate-folder workflow. The [new physical video](https://readyfs-editor-demo.klumsy.chatgpt.site/sd2iec.html) includes chapters, actual command/output captures and an MP4 download.
