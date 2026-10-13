@@ -184,7 +184,7 @@ def main() -> int:
             failures)
     require(overlay, r"batch_offsets\[\][\s\S]*?RF_REU_BATCH_CACHE_OFF, RF_UI_CACHE_OFF, RF_REU_TAPE_CACHE_OFF, RF_PRESENT_CACHE_OFF, RF_COMMAND_HELP_CACHE_OFF",
             "shared batch cache indices must keep their documented bank offsets", failures)
-    require(overlay, r"open_batch_cached[\s\S]*?slot == 9u \? readyfs_reu_session_fetch : readyfs_reu_batch_fetch\)\(batch_offsets\[slot\], _OVERLAY1_LOAD__[\s\S]*?batch_sizes\[slot\]",
+    require(overlay, r"open_batch_cached[\s\S]*?slot >= 9u \? readyfs_reu_session_fetch : readyfs_reu_batch_fetch\)\(batch_offsets\[slot\], _OVERLAY1_LOAD__[\s\S]*?batch_sizes\[slot\]",
             "shared opener must fetch slot20 from retired session space and other slots from batch cache", failures)
     require(overlay, r"readyfs_overlay_present[\s\S]*?open_batch_cached\(help \? 4u : call->operation == RF_PRESENT_MEDIA \? 7u : 3u\)[\s\S]*?readyfs_command_help\(call\)[\s\S]*?readyfs_present\(call\)[\s\S]*?restore_match\(\); return result;",
             "presentation must restore the matcher before returning", failures)
@@ -458,7 +458,20 @@ def main() -> int:
             "native discovery must clear ST and complete LISTEN/SECOND", failures)
     require(makefile, re.escape('--code-name OVERLAY$(1) --rodata-name OVERLAY$(1)R --bss-name OVERLAY$(1)B'),
             "sidecar code/constants/BSS must remain distinct assembler segments", failures)
-    for slot in range(1,21):
+    for index, name in enumerate(("prepare", "lookup", "execute", "name")):
+        slot = index + 21
+        require(overlay, rf"load_batch_cached\({index+10}u\)[\s\S]*?readyfs_udos_{name}_abi\(\)[\s\S]*?restore_match\(\)[\s\S]*?RF_UDOS_{name.upper()}_ABI",
+                f"slot{slot} must validate its complete payload ABI", failures)
+        require(reu_header, rf"RF_REU_UDOS_{name.upper()}_CACHE_OFF 0x{(index+3)*4096:04X}u",
+                f"slot{slot} must use its disjoint retired session region", failures)
+        require(linker_cfg, rf'OVL{slot}ADDR:[\s\S]*?readyfs-udos-{name}.prg[\s\S]*?OVERLAY{slot}: load = OVL{slot}',
+                f"slot{slot} must have a separate PRG", failures)
+    udos = (BATCH.parent / "readyfs_udos_files.c").read_text()
+    if re.search(r"readyfs_overlay_|readyfs_reu_|\bcbm_\w+\s*\(", udos):
+        failures.append("UltimateDOS leaf phases must not load overlays, touch REU or native IEC")
+    require(overlay, r"udos_phase[\s\S]*?open_batch_cached\(10u \+ phase\)[\s\S]*?restore_match\(\); return result;",
+            "UltimateDOS gateway must restore matcher after every cold phase", failures)
+    for slot in range(1,25):
         require(linker_cfg, re.escape(f'__OVERLAY{slot}_SIZE__: type = export, value = __OVL{slot}_LAST__ - __OVL{slot}_START__'),
                 f"slot{slot} cache size must include code/constants/BSS", failures)
         for suffix in ('R','B'):
@@ -476,7 +489,7 @@ def main() -> int:
             print(f"ReadyFS overlay DMA contract: FAIL: {failure}")
         return 1
     print("ReadyFS overlay DMA contract: PASS (flat 6-byte overlay/session/"
-          "batch boundaries, explicit slots 1-20; REU-checkpointed recursive, "
+          "batch boundaries, explicit slots 1-24; REU-checkpointed recursive, "
           "backend/native, utility, tree, content, batch, UI, and tape controllers; "
           "resident-owned device I/O)")
     return 0

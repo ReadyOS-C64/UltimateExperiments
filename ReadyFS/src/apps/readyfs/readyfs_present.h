@@ -17,6 +17,7 @@
 #define RF_PRESENT_PLAN 10u
 #define RF_PRESENT_BATCH 11u
 #define RF_PRESENT_STAT 12u
+#define RF_PRESENT_BATCH_FAILURE 13u
 unsigned char readyfs_transfer_plan(ReadyFsUtilityCall *call);
 unsigned char readyfs_transfer_present(ReadyFsUtilityCall *call);
 #define RF_MEDIA_SHOW 0u

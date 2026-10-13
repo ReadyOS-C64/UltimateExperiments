@@ -16,6 +16,7 @@
 #include "readyfs_tape.h"
 #include "readyfs_present.h"
 #include "readyfs_stream.h"
+#include "readyfs_udos_files.h"
 #include "readyfs_iec.h"
 #include "readyfs_files.h"
 
@@ -57,6 +58,7 @@ unsigned char readyfs_overlay_tape(ReadyFsTapeCall *call);
 unsigned char readyfs_overlay_nested_from_backend(ReadyFsNestedCall *nested);
 unsigned char readyfs_overlay_iec(ReadyFsIecCall *call);
 unsigned char readyfs_overlay_files(ReadyFsFilesCall *call);
+unsigned char readyfs_overlay_udos(ReadyFsUdosFilesCall *call);
 unsigned char readyfs_overlay_stream(ReadyFsStreamCall *call);
 unsigned char readyfs_overlay_help(void);
 unsigned char readyfs_overlay_present(ReadyFsUtilityCall *call);

@@ -15,11 +15,16 @@ def body(name):
 preamble=r'''
 #include <assert.h>
 #include <string.h>
+#include "readyfs_udos_status.h"
 #define READYFS_OVERLAY_RUNTIME
 #define RF_RESULT_OK 0
 #define RF_RESULT_IO 3
 typedef void (*ReadyFsUciBlockHandler)(void);
-typedef struct { int unused; } ReadyFsStream;
+typedef struct { const char *native_name; } ReadyFsStream;
+#define RF_UDOS_FIND 2
+#define RF_UDOS_HOST_LOOKUP 3
+#define RF_LOOKUP_FOUND 1
+static unsigned char udos_file(ReadyFsStream *s,unsigned char t,unsigned char o) {(void)s;(void)t;(void)o;return RF_UDOS_HOST_LOOKUP;}
 static unsigned char uci_stat[80],uci_cmd[8],last_result,udos_lookup_failed;
 static char temp_text[256];
 static const char *udos_find_wanted;
@@ -30,7 +35,7 @@ static unsigned char uci_call(unsigned char t,unsigned char op,const char *s) {
     assert(t==1 && op==0x13 && s==0); ++opens; return transport;
 }
 static unsigned char udos_change_absolute(unsigned char t,const char *p) {(void)t;(void)p;return 1;}
-static const char *udos_enter_parent(ReadyFsStream *s,unsigned char t) {(void)s;(void)t;return "wanted";}
+
 static void udos_find_block(void) {}
 static void setup_xfer(void) {}
 static unsigned char readyfs_uci_command(unsigned char *b,unsigned int n,void *x) {
@@ -42,7 +47,7 @@ static unsigned char readyfs_uci_command(unsigned char *b,unsigned int n,void *x
 tests=r'''
 static void reply(const char *s,unsigned int n) {memset(uci_stat,0,sizeof(uci_stat));memcpy(uci_stat,s,n);uci_xfer.stat_len=n;opens=reads=0;transport=1;read_result=1;strcpy(temp_text,"stale");}
 int main(void) {
-    ReadyFsStream s;
+    ReadyFsStream s={"/wanted"};
     reply("",0);assert(!uci_status_ok(1) && !uci_status_ok(5));
     reply("\0",1);assert(!uci_status_ok(1) && uci_status_ok(5));
     reply("00,OK",5);assert(uci_status_ok(1) && uci_status_ok(5));
@@ -55,6 +60,8 @@ int main(void) {
     assert(udos_find_leaf(&s,1)==0 && last_result==RF_RESULT_IO && reads==0);
     reply("01,OTHER DOS ERROR",18);
     assert(udos_find_leaf(&s,1)==0 && last_result==RF_RESULT_IO && reads==0);
+    reply("01,DIRECTORY EMPTY",19);
+    assert(udos_find_leaf(&s,1)==0 && last_result==RF_RESULT_OK && opens==1 && reads==0);
     reply("01,DIRECTORY EMPTYX",19);
     assert(dir_ultimate_run("/empty",udos_find_block)==0 && reads==0);
     reply("01,DIRECTORY EMPT",17);
@@ -71,6 +78,6 @@ int main(void) {
 with tempfile.TemporaryDirectory(prefix='readyfs-udos-empty-') as tmp:
     p=Path(tmp)/'test.c';exe=Path(tmp)/'test'
     p.write_text(preamble+'\n'.join(body(n) for n in ('uci_status_ok','udos_open_directory','dir_ultimate_run','udos_find_leaf'))+tests)
-    subprocess.run(['cc','-Wall','-Wextra','-Werror',str(p),'-o',str(exe)],check=True)
+    subprocess.run(['cc','-Wall','-Wextra','-Werror','-I'+str(root/'src/apps/readyfs'),str(p),'-o',str(exe)],check=True)
     subprocess.run([str(exe)],check=True)
 print('PASS resident Ultimate OPEN_DIR empty/normal/error lookup and enumeration')

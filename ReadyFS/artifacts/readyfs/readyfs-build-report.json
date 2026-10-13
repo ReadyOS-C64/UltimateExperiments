@@ -12,6 +12,7 @@
     "reu_console_ring_fits_bank": true,
     "stream_policy_sidecar": true,
     "iec_config_policy_sidecar": true,
+    "udos_file_sidecars": true,
     "native_files_policy_sidecar": true,
     "native_files_sidecar": true,
     "native_iec_media_sidecar": true,
@@ -32,9 +33,9 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 45725,
+    "end": 46024,
     "limit": 46507,
-    "free_bytes": 782
+    "free_bytes": 483
   },
   "software_stack": {
     "top": 53248
@@ -44,6 +45,60 @@
     "limit": 50687
   },
   "sidecars": {
+    "udos_files": {
+      "prepare": {
+        "file": "artifacts/readyfs/readyfs-udos-prepare.prg",
+        "load_address": 46592,
+        "payload_bytes": 3205,
+        "map_bytes": 3205,
+        "reu_slot_bytes": 4096,
+        "checks": {
+          "load_address_b600": true,
+          "payload_matches_map": true,
+          "fits_reu_slot": true,
+          "fits_overlay_window": true
+        }
+      },
+      "lookup": {
+        "file": "artifacts/readyfs/readyfs-udos-lookup.prg",
+        "load_address": 46592,
+        "payload_bytes": 3837,
+        "map_bytes": 3837,
+        "reu_slot_bytes": 4096,
+        "checks": {
+          "load_address_b600": true,
+          "payload_matches_map": true,
+          "fits_reu_slot": true,
+          "fits_overlay_window": true
+        }
+      },
+      "execute": {
+        "file": "artifacts/readyfs/readyfs-udos-execute.prg",
+        "load_address": 46592,
+        "payload_bytes": 3922,
+        "map_bytes": 3922,
+        "reu_slot_bytes": 4096,
+        "checks": {
+          "load_address_b600": true,
+          "payload_matches_map": true,
+          "fits_reu_slot": true,
+          "fits_overlay_window": true
+        }
+      },
+      "name": {
+        "file": "artifacts/readyfs/readyfs-udos-name.prg",
+        "load_address": 46592,
+        "payload_bytes": 3145,
+        "map_bytes": 3145,
+        "reu_slot_bytes": 4096,
+        "checks": {
+          "load_address_b600": true,
+          "payload_matches_map": true,
+          "fits_reu_slot": true,
+          "fits_overlay_window": true
+        }
+      }
+    },
     "native_files_policy": {
       "file": "artifacts/readyfs/readyfs-files-plan.prg",
       "load_address": 46592,
@@ -125,8 +180,8 @@
     "presentation": {
       "file": "artifacts/readyfs/readyfs-present.prg",
       "load_address": 46592,
-      "payload_bytes": 2700,
-      "map_bytes": 2700,
+      "payload_bytes": 2836,
+      "map_bytes": 2836,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -331,10 +386,34 @@
       "bytes": 4096
     },
     {
-      "name": "retired_scroll_pages_reserved",
+      "name": "udos_prepare_overlay_cache",
       "start": 12288,
+      "end_exclusive": 16384,
+      "bytes": 4096
+    },
+    {
+      "name": "udos_lookup_overlay_cache",
+      "start": 16384,
+      "end_exclusive": 20480,
+      "bytes": 4096
+    },
+    {
+      "name": "udos_execute_overlay_cache",
+      "start": 20480,
+      "end_exclusive": 24576,
+      "bytes": 4096
+    },
+    {
+      "name": "udos_name_overlay_cache",
+      "start": 24576,
+      "end_exclusive": 28672,
+      "bytes": 4096
+    },
+    {
+      "name": "retired_scroll_pages_reserved",
+      "start": 28672,
       "end_exclusive": 32192,
-      "bytes": 19904
+      "bytes": 3520
     },
     {
       "name": "retired_scroll_live_reserved",

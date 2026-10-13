@@ -35,6 +35,10 @@ extern unsigned char readyfs_reu_batch_bank_value;
  * session scroll area's first4KiB, outside aliases/journal/plans/snapshots. */
 #define RF_REU_FILES_PLAN_CACHE_OFF 0x2000u
 #define RF_REU_FILES_PLAN_CACHE_BYTES 0x1000u
+#define RF_REU_UDOS_PREPARE_CACHE_OFF 0x3000u
+#define RF_REU_UDOS_LOOKUP_CACHE_OFF 0x4000u
+#define RF_REU_UDOS_EXECUTE_CACHE_OFF 0x5000u
+#define RF_REU_UDOS_NAME_CACHE_OFF 0x6000u
 #define RF_REU_ACTION_OFF         0x8200u
 #define RF_REU_ACTION_BYTES       0x0200u
 #define RF_REU_ACTION_REPORT_OFF  0x8300u

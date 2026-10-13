@@ -173,6 +173,14 @@ $(eval $(call READYFS_OVERLAY_RULE,17,))
 $(eval $(call READYFS_OVERLAY_RULE,18,))
 $(eval $(call READYFS_OVERLAY_RULE,19,))
 $(eval $(call READYFS_OVERLAY_RULE,20,))
+$(eval $(call READYFS_OVERLAY_RULE,21,-DRF_UDOS_PHASE=1))
+READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay21/$(READYFS_SRC_DIR)/readyfs_udos_files.o $(READYFS_OVERLAY_OBJ_DIR)/overlay21/$(READYFS_SRC_DIR)/readyfs_udos_prepare_overlay_addr.o
+$(eval $(call READYFS_OVERLAY_RULE,22,-DRF_UDOS_PHASE=2))
+READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay22/$(READYFS_SRC_DIR)/readyfs_udos_files.o $(READYFS_OVERLAY_OBJ_DIR)/overlay22/$(READYFS_SRC_DIR)/readyfs_udos_lookup_overlay_addr.o
+$(eval $(call READYFS_OVERLAY_RULE,23,-DRF_UDOS_PHASE=3))
+READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay23/$(READYFS_SRC_DIR)/readyfs_udos_files.o $(READYFS_OVERLAY_OBJ_DIR)/overlay23/$(READYFS_SRC_DIR)/readyfs_udos_execute_overlay_addr.o
+$(eval $(call READYFS_OVERLAY_RULE,24,-DRF_UDOS_PHASE=4))
+READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay24/$(READYFS_SRC_DIR)/readyfs_udos_files.o $(READYFS_OVERLAY_OBJ_DIR)/overlay24/$(READYFS_SRC_DIR)/readyfs_udos_name_overlay_addr.o
 $(READYFS_OVERLAY_OBJ_DIR)/overlay15/$(READYFS_SRC_DIR)/readyfs_preview.o $(READYFS_OVERLAY_OBJ_DIR)/overlay15/$(READYFS_SRC_DIR)/readyfs_command_help.o: $(READYFS_HELP_DATA)
 
 READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay19/$(READYFS_SRC_DIR)/readyfs_files.o $(READYFS_OVERLAY_OBJ_DIR)/overlay19/$(READYFS_SRC_DIR)/readyfs_files_overlay_addr.o
@@ -213,6 +221,10 @@ $(READYFS_OVERLAY_D81): FORCE $(READYFS_OVERLAY)
 		-write $(READYFS_OUT_DIR)/readyfs-iec.prg rfiec \
 		-write $(READYFS_OUT_DIR)/readyfs-files.prg rffiles \
 		-write $(READYFS_OUT_DIR)/readyfs-files-plan.prg rffileplan \
+		-write $(READYFS_OUT_DIR)/readyfs-udos-prepare.prg rfudosprep \
+		-write $(READYFS_OUT_DIR)/readyfs-udos-lookup.prg rfudoslook \
+		-write $(READYFS_OUT_DIR)/readyfs-udos-execute.prg rfudosexec \
+		-write $(READYFS_OUT_DIR)/readyfs-udos-name.prg rfudosname \
 		-write $(READYFS_OUT_DIR)/readyfs-native.prg rfnative \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_content_view.seq "rfview,s" \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_content_long.seq "rflong,s" \
@@ -252,6 +264,7 @@ endef
 readyfs-host-tests:
 	$(PYTHON) $(BUILD_SUPPORT_DIR)/readyfs_hardware_cleanup_test.py
 	$(PYTHON) $(BUILD_SUPPORT_DIR)/readyfs_sd2iec_image_matrix_test.py
+	$(PYTHON) $(BUILD_SUPPORT_DIR)/readyfs_udos_files_test.py
 	$(PYTHON) $(BUILD_SUPPORT_DIR)/readyfs_udos_empty_test.py
 	$(call READYFS_HOST_TEST,-D__fastcall__= -I$(BUILD_SUPPORT_DIR)/readyfs_host_include,$(BUILD_SUPPORT_DIR)/readyfs_volume_test.c $(READYFS_SRC_DIR)/readyfs_volume.c $(READYFS_SRC_DIR)/readyfs_path.c,readyfs_volume_test)
 	$(call READYFS_HOST_TEST,-D__fastcall__= -I$(BUILD_SUPPORT_DIR)/readyfs_host_include,$(BUILD_SUPPORT_DIR)/readyfs_iec_test.c $(READYFS_SRC_DIR)/readyfs_iec_plan.c $(READYFS_SRC_DIR)/readyfs_iec.c $(READYFS_SRC_DIR)/readyfs_path.c,readyfs_iec_test)

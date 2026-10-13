@@ -93,3 +93,9 @@ The authoritative chronological notes are [the work log](SD2IEC_2026-10-12.md). 
 - C64OS SD2IEC reference: <https://c64os.com/post/sd2iecdocumentation>
 - C64OS file-manager concepts: <https://c64os.com/c64os/usersguide/filemanager>
 - Local sibling C64OS artifacts and Ultimate firmware source were inspected to distinguish filesystem capabilities, binary protocol behavior, and actual implementation details from assumptions.
+
+### UltimateDOS type-preserving overlays (integrated; hardware pending)
+
+The current build adds four cold overlays for contained-image context, lookup, checked file control, and typed names. SEQ/PRG/USR stages and rename/backup/rollback retain their original types. Bare ambiguous names require a suffix; equivalent spellings of the same entry cannot be used for self-copy/move/rename. These behaviors pass real6502 execution and host fault tests, but the full physical contained-image matrix remains outstanding.
+
+Folder-c/d proved the previous empty-directory fix was incomplete on target: cc65 translated its expected ASCII status into PETSCII. Numeric wire constants correct it. The next folder run must independently prove the nested SD→Ultimate export and the remaining delete/what-if/speed checks.

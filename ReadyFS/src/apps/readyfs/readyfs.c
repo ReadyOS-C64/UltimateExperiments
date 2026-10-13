@@ -23,6 +23,7 @@
 #include "readyfs_tape.h"
 #include "readyfs_ui.h"
 #include "readyfs_console.h"
+#include "readyfs_udos_status.h"
 
 #define RF_LINE_CAP    255u
 #define RF_ARG_CAP     12u
@@ -805,8 +806,36 @@ static unsigned char dir_iec(unsigned char device, const char *native_directory,
     return (unsigned char)(rc == 2u);
 }
 
+#ifdef READYFS_OVERLAY_RUNTIME
+#define udos_call (*(ReadyFsUdosFilesCall *)(void *)readyfs_pipeline_scratch)
+static unsigned char udos_open_targets;
+static void udos_setup(ReadyFsStream *stream, unsigned char target,
+                        unsigned char operation) {
+    memset(&udos_call, 0, sizeof(udos_call));
+    udos_call.stream = stream;
+    udos_call.target = target;
+    udos_call.operation = operation;
+    udos_call.status = &last_result;
+    udos_call.open_targets = &udos_open_targets;
+    udos_call.access = temp_text;
+    udos_call.name = temp_text + 80u;
+    udos_call.wire = temp_text + 100u;
+    if (stream) udos_call.type = stream->type;
+}
+static unsigned char udos_file(ReadyFsStream *stream, unsigned char target,
+                               unsigned char operation) {
+    udos_setup(stream, target, operation);
+    return readyfs_overlay_udos(&udos_call);
+}
+#endif
+
 static unsigned char udos_change_absolute(unsigned char target,
                                           const char *path) {
+#ifdef READYFS_OVERLAY_RUNTIME
+    udos_setup(0, target, RF_UDOS_CHANGE);
+    udos_call.path = path;
+    return readyfs_overlay_udos(&udos_call) == RF_LOOKUP_FOUND;
+#else
     char segment[64];
     unsigned char len;
 
@@ -828,15 +857,20 @@ static unsigned char udos_change_absolute(unsigned char target,
         }
     }
     return 1u;
+#endif
 }
 
 /* OPEN_DIR has a successful empty result distinct from generic 00 OK.
  * READ_DIR must not follow it: firmware has no directory entry to return. */
 static unsigned char udos_open_directory(unsigned char target) {
+    static const unsigned char empty_status[]=RF_UDOS_EMPTY_BYTES;
     if (!uci_call(target, 0x13u, 0)) return 0u;
     if (uci_status_ok(target)) return 1u;
-    if (uci_xfer.stat_len == 18u &&
-        memcmp(uci_stat, "\x30\x31\x2c\x44\x49\x52\x45\x43\x54\x4f\x52\x59\x20\x45\x4d\x50\x54\x59", 18u) == 0)
+    if ((uci_xfer.stat_len == 18u
+#ifdef READYFS_OVERLAY_RUNTIME
+         || (uci_xfer.stat_len == 19u && uci_stat[18u] == 0u)
+#endif
+         ) && memcmp(uci_stat, empty_status, 18u) == 0)
         return 2u;
     return 0u;
 }
@@ -1187,6 +1221,10 @@ static unsigned char copy_force;
 
 static const char *udos_enter_parent(ReadyFsStream *stream,
                                      unsigned char target) {
+#ifdef READYFS_OVERLAY_RUNTIME
+    if (udos_file(stream, target, RF_UDOS_PARENT) != RF_LOOKUP_FOUND) return 0;
+    return strrchr(stream->native_name, '/') + 1u;
+#else
     char *last;
     unsigned int len;
 
@@ -1200,6 +1238,7 @@ static const char *udos_enter_parent(ReadyFsStream *stream,
     }
     if (!udos_change_absolute(target, temp_text)) return 0;
     return last + 1u;
+#endif
 }
 
 static const char *udos_find_wanted;
@@ -1240,8 +1279,17 @@ static const char *udos_find_leaf(ReadyFsStream *stream,
     last_result = RF_RESULT_IO;
     udos_lookup_failed = 0u;
 #endif
+#ifdef READYFS_OVERLAY_RUNTIME
+    opened = udos_file(stream, target, RF_UDOS_FIND);
+    if (opened != RF_UDOS_HOST_LOOKUP)
+        return opened == RF_LOOKUP_FOUND ? temp_text : 0;
+    wanted = strrchr(stream->native_name, '/') + 1u;
+    /* Preparation succeeded; a subsequent directory error is still IO. */
+    last_result = RF_RESULT_IO;
+#else
     wanted = udos_enter_parent(stream, target);
     if (wanted == 0) return 0;
+#endif
     opened = udos_open_directory(target);
     if (!opened) return 0;
     if (opened == 2u) {
@@ -1659,6 +1707,7 @@ static void iec_open_name(char *out, const char *name,
 #endif
 }
 
+#ifndef READYFS_OVERLAY_RUNTIME
 static unsigned char udos_open_file_type(unsigned char target) {
 #ifdef READYFS_OVERLAY_RUNTIME
     if (!uci_call(target, 0x07u, 0) || uci_xfer.data_len < 11u) return CBM_T_SEQ;
@@ -1682,12 +1731,15 @@ static unsigned char udos_open_file_type(unsigned char target) {
     return CBM_T_SEQ;
 #endif
 }
+#endif
 
 static unsigned char stream_open_read(ReadyFsStream *stream,
                                       unsigned char target,
                                       unsigned char lfn) {
+#ifndef READYFS_OVERLAY_RUNTIME
     const char *leaf;
     unsigned int len;
+#endif
 
     stream->target = target;
     stream->lfn = lfn;
@@ -1729,6 +1781,9 @@ static unsigned char stream_open_read(ReadyFsStream *stream,
         }
 #endif
     } else {
+#ifdef READYFS_OVERLAY_RUNTIME
+        return RF_FOUND(udos_file(stream, target, RF_UDOS_READ));
+#else
         /* READ_DIR may omit dot-prefixed host files such as ownership
          * markers. OPEN is the existence authority for reads; entering the
          * parent first also preserves the normal raw host leaf unchanged. */
@@ -1752,6 +1807,7 @@ static unsigned char stream_open_read(ReadyFsStream *stream,
             (void)uci_call(target, 0x03u, 0);
             return 0u;
         }
+#endif
     }
     stream->open = 1u;
     return 1u;
@@ -1761,8 +1817,10 @@ static unsigned char stream_open_write(ReadyFsStream *stream,
                                        unsigned char target,
                                        unsigned char lfn,
                                        unsigned char source_type) {
+#ifndef READYFS_OVERLAY_RUNTIME
     const char *leaf;
     unsigned int len;
+#endif
 
     stream->target = target;
     stream->lfn = lfn;
@@ -1796,6 +1854,9 @@ static unsigned char stream_open_write(ReadyFsStream *stream,
         }
 #endif
     } else {
+#ifdef READYFS_OVERLAY_RUNTIME
+        return RF_FOUND(udos_file(stream, target, RF_UDOS_NEW));
+#else
         leaf = udos_enter_parent(stream, target);
         if (leaf == 0) {
             cputs(RF_ERROR "dest path bad\r\n"); return 0u;
@@ -1810,6 +1871,7 @@ static unsigned char stream_open_write(ReadyFsStream *stream,
             return 0u;
         }
         if (!uci_target_ok(target)) return 0u;
+#endif
     }
     stream->open = 1u;
     return 1u;
@@ -1884,7 +1946,11 @@ static void stream_close(ReadyFsStream *stream) {
         }
 #endif
     } else {
+#ifdef READYFS_OVERLAY_RUNTIME
+        return RF_FOUND(udos_file(stream, stream->target, RF_UDOS_CLOSE));
+#else
         (void)uci_call(stream->target, 0x03u, 0);
+#endif
     }
     stream->open = 0u;
 #ifdef READYFS_OVERLAY_RUNTIME
@@ -1944,12 +2010,14 @@ static unsigned char ask_yes(const char *prompt) {
 static unsigned char rename_stream(ReadyFsStream *source,
                                    ReadyFsStream *dest) {
     const char *source_leaf;
+#ifndef READYFS_OVERLAY_RUNTIME
     const char *dest_leaf;
     const char *source_slash;
     const char *dest_slash;
     unsigned int len;
     unsigned int source_parent_len;
     unsigned int dest_parent_len;
+#endif
 
     if (source->path.endpoint == RF_EP_TAPE ||
         dest->path.endpoint == RF_EP_TAPE ||
@@ -1980,6 +2048,14 @@ static unsigned char rename_stream(ReadyFsStream *source,
 #endif
         return RF_FOUND(stream_find_type(dest));
     }
+#ifdef READYFS_OVERLAY_RUNTIME
+    source_leaf = udos_find_leaf(source, 1u);
+    if (!source_leaf) return 0u;
+    udos_setup(source, 1u, RF_UDOS_RENAME);
+    udos_call.other = dest;
+    udos_call.source_access = source_leaf;
+    return RF_FOUND(readyfs_overlay_udos(&udos_call));
+#else
     source_slash = strrchr(source->native_name, '/');
     dest_slash = strrchr(dest->native_name, '/');
     if (source_slash == 0 || dest_slash == 0) return 0u;
@@ -1999,6 +2075,7 @@ static unsigned char rename_stream(ReadyFsStream *source,
     strcpy((char *)uci_cmd + len, dest_leaf);
     len += strlen(dest_leaf);
     return (unsigned char)(uci_call_raw(uci_cmd, len) && uci_status_ok(1u));
+#endif
 }
 
 static unsigned char make_temp_stream(ReadyFsStream *dest,
@@ -2062,6 +2139,29 @@ static unsigned char make_temp_stream(ReadyFsStream *dest,
     cputs(RF_ERROR "no stage name\r\n");
     return 0u;
 }
+#ifdef READYFS_OVERLAY_RUNTIME
+static unsigned char udos_distinct(ReadyFsStream *left, ReadyFsStream *right) {
+    if (left->path.endpoint != RF_EP_ULTIMATE ||
+        right->path.endpoint != RF_EP_ULTIMATE) return 1u;
+    udos_setup(left, 1u, RF_UDOS_DISTINCT);
+    udos_call.other = right;
+    return RF_FOUND(readyfs_overlay_udos(&udos_call));
+}
+static unsigned char udos_validate(ReadyFsStream *stream, unsigned char type) {
+    if (stream->path.endpoint != RF_EP_ULTIMATE) return 1u;
+    udos_setup(stream, 1u, RF_UDOS_VALIDATE);
+    udos_call.type = type;
+    return RF_FOUND(readyfs_overlay_udos(&udos_call));
+}
+static unsigned char typed_temp_stream(ReadyFsStream *dest,
+                                       ReadyFsStream *temp,
+                                       unsigned char type) {
+    return udos_validate(dest, type) && make_temp_stream(dest, temp, temp_text);
+}
+#else
+#define typed_temp_stream(dest,temp,type) make_temp_stream(dest,temp,temp_text)
+#endif
+
 
 static unsigned char verify_text_file(ReadyFsStream *file, const char *text,
                                       unsigned char add_line) {
@@ -2294,7 +2394,7 @@ static void cmd_config_save(unsigned char argc, const char *path_text) {
 #endif
     if (existed && !option_present(argc, "--force") &&
         !ask_yes("config exists; replace")) return;
-    if (!make_temp_stream(&dest, &temp, temp_text)) return;
+    if (!typed_temp_stream(&dest, &temp, CBM_T_SEQ)) return;
     if (!stream_open_write(&temp, 2u, 3u, CBM_T_SEQ)) return;
     signature_init(&expected);
     signature_add(&expected, header, sizeof(header));
@@ -2318,7 +2418,7 @@ static void cmd_config_save(unsigned char argc, const char *path_text) {
         return;
     }
     if (existed) {
-        if (!make_temp_stream(&dest, &backup, temp_text) ||
+        if (!typed_temp_stream(&dest, &backup, dest.type) ||
             !rename_stream(&dest, &backup)) {
             cputs(RF_ERROR "cfg stage kept\r\n");
             return;
@@ -2545,7 +2645,7 @@ static void cmd_write(unsigned char argc) {
     if (existed && !option_present(argc, "--force") &&
         !ask_yes("destination exists; replace")) return;
     add_line = option_present(argc, "--line");
-    if (!make_temp_stream(&dest, &temp, temp_text)) return;
+    if (!typed_temp_stream(&dest, &temp, type)) return;
 #ifdef READYFS_SOFT_TRACE
     cputc('2');
 #endif
@@ -2565,7 +2665,7 @@ static void cmd_write(unsigned char argc) {
         return;
     }
     if (existed) {
-        if (!make_temp_stream(&dest, &backup, temp_text) ||
+        if (!typed_temp_stream(&dest, &backup, dest.type) ||
             !rename_stream(&dest, &backup)) {
             cputs(RF_ERROR "stage kept\r\n");
             return;
@@ -2633,7 +2733,7 @@ static void cmd_append(unsigned char argc) {
         result_unsupported("rel append off\r\n");
         return;
     }
-    if (!make_temp_stream(&dest, &temp, temp_text)) return;
+    if (!typed_temp_stream(&dest, &temp, type)) return;
     signature_init(&expected);
     ok = 1u;
     if (existed && !stream_open_read(&dest, 1u, 2u)) return;
@@ -2670,7 +2770,7 @@ static void cmd_append(unsigned char argc) {
         return;
     }
     if (existed) {
-        if (!make_temp_stream(&dest, &backup, temp_text) ||
+        if (!typed_temp_stream(&dest, &backup, dest.type) ||
             !rename_stream(&dest, &backup)) {
             cputs(RF_ERROR "stage kept\r\n");
             return;
@@ -2734,6 +2834,9 @@ unsigned char readyfs_io_copy_call(ReadyFsIoCopyCall *call) {
     output = &temp;
 #ifdef READYFS_OVERLAY_RUNTIME
     tape_destination = (unsigned char)(dest.path.endpoint == RF_EP_TAPE);
+    /* Tape type is known before spooling; image-destination admission must
+     * not use a type left in the shared descriptor by an earlier command. */
+    if (source.path.endpoint == RF_EP_TAPE) source.type = CBM_T_SEQ;
     if (source.path.endpoint == RF_EP_TAPE && tape_destination) {
         result_unsupported("one tape drive\r\n");
         return 0u;
@@ -2764,11 +2867,11 @@ unsigned char readyfs_io_copy_call(ReadyFsIoCopyCall *call) {
 #endif
         existed = stream_exists(&dest);
 #ifdef READYFS_OVERLAY_RUNTIME
-        if (RF_LOOKUP_FAILED(existed)) return 0u;
+        if (RF_LOOKUP_FAILED(existed) || !udos_distinct(&source, &dest)) return 0u;
 #endif
         if (existed && !copy_force &&
             !ask_yes("destination exists; replace")) return 0u;
-        if (!make_temp_stream(&dest, &temp, temp_text)) return 0u;
+        if (!typed_temp_stream(&dest, &temp, source.type)) return 0u;
         output = &temp;
 #ifdef READYFS_OVERLAY_RUNTIME
     }
@@ -2866,7 +2969,7 @@ unsigned char readyfs_io_copy_call(ReadyFsIoCopyCall *call) {
         return 0u;
     }
     if (existed) {
-        if (!make_temp_stream(&dest, &backup, temp_text) ||
+        if (!typed_temp_stream(&dest, &backup, dest.type) ||
             !rename_stream(&dest, &backup)) {
             cputs(RF_ERROR "stage kept\r\n");
             return 0u;
@@ -3578,6 +3681,22 @@ static unsigned char recursive_batch(unsigned char argc,
             return recursive_call.failures == 0u;
         }
         result = recursive_execute(action, force);
+        if (!result) {
+            /* Replay the still-pending action: file I/O reuses its path
+             * buffers. Report the actual failed paths before acknowledging. */
+            rc = last_result;
+            if (recursive_roots(0u)) {
+                recursive_call_setup(RF_RECURSIVE_CALL_NEXT);
+                if (readyfs_overlay_recursive(&recursive_call)) {
+                    utility_ui.operation = RF_PRESENT_BATCH_FAILURE;
+                    utility_ui.argc = rc;
+                    utility_ui.value_low = action;
+                    utility_ui.buffer = temp.canonical;
+                    utility_ui.workspace = backup.canonical;
+                    (void)readyfs_overlay_present(&utility_ui);
+                }
+            }
+        }
         recursive_call_setup(RF_RECURSIVE_CALL_ACK);
         recursive_call.succeeded = result;
         if (!readyfs_overlay_recursive(&recursive_call)) return 0u;
@@ -3673,11 +3792,12 @@ static void cmd_rename(unsigned char argc) {
     dest_existed = stream_exists(&dest);
 #ifdef READYFS_OVERLAY_RUNTIME
     if (RF_LOOKUP_FAILED(dest_existed)) return;
+    if (!udos_distinct(&source, &dest) || !udos_validate(&dest, source.type)) return;
 #endif
     if (dest_existed && !option_present(argc, "--force") &&
         !ask_yes("destination exists; replace")) return;
     if (dest_existed) {
-        if (!make_temp_stream(&dest, &backup, temp_text) ||
+        if (!typed_temp_stream(&dest, &backup, dest.type) ||
             !rename_stream(&dest, &backup)) {
             cputs(RF_ERROR "backup failed\r\n");
             return;

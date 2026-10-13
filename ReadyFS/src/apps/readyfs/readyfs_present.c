@@ -27,6 +27,12 @@ unsigned char readyfs_present(ReadyFsUtilityCall *call) {
 #endif
     const ReadyFsDirectoryEntry *entry;
 #ifndef READYFS_MONOLITHIC
+    if (call->operation == RF_PRESENT_BATCH_FAILURE) {
+        cputs(RF_ERROR "batch action "); number(call->value_low);
+        cputs(" failed rc "); number(call->argc); cputs("\r\n");
+        cputs(call->buffer); cputs("\r\n");
+        cputs(call->workspace); cputs("\r\n"); return 1u;
+    }
     if (call->operation == RF_PRESENT_STAT) {
         cputs(call->argc == 1u ? "raw: " : "display: ");
         cputs(call->buffer); cputs("\r\n");

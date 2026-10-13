@@ -95,10 +95,27 @@
     },
     {
       "run": "demo-v3-sd2iec-native-directories-20261013-c",
-      "status": "running",
-      "pid": 78882,
-      "terminal": 14644,
-      "artifact_snapshot": "frozen-sd20-eeff621/artifacts"
+      "status": "failed",
+      "passed_cases": 44,
+      "last_event": {
+        "complete": true,
+        "restored": true,
+        "result": "FAIL",
+        "time": 1791892086.492001
+      },
+      "cause": "ASCII DOS EMPTY reply compared against cc65 PETSCII literal; corrected in24-overlay build"
+    },
+    {
+      "run": "demo-v3-sd2iec-native-directories-20261013-d",
+      "status": "failed",
+      "passed_cases": 44,
+      "last_event": {
+        "complete": true,
+        "restored": true,
+        "result": "FAIL",
+        "time": 1791893328.849359
+      },
+      "cause": "ASCII DOS EMPTY reply compared against cc65 PETSCII literal; corrected in24-overlay build"
     }
   ],
   "image_acceptance": {
@@ -114,8 +131,8 @@
     "mounted_operations_passed": true,
     "independent_image_passed": true
   },
-  "generated_utc": "2026-10-13T11:35:26.253466+00:00",
-  "current_source_commit": "eeff621",
+  "generated_utc": "2026-10-13T12:14:03.040661+00:00",
+  "current_source_commit": "pending24-overlay commit",
   "folder_rerun_required": true,
   "checksum": {
     "actual_6502_differential_cases": 46,
@@ -134,5 +151,15 @@
     "matrix_move_pairs": 6,
     "ultimate_contained_image_scope": "Unique bare PRG names only; SEQ/USR mutation limitations documented",
     "applied": true
+  },
+  "udos_control": {
+    "integrated": true,
+    "physical_acceptance": "pending",
+    "host_tests": "PASS actual gateway and phases",
+    "actual_6502_cases": 28,
+    "actual_reu_transfers": 166,
+    "resident_end": "B3C8",
+    "safe_resident_bytes": 483,
+    "sidecars": 24
   }
 }

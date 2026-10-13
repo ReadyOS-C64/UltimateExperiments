@@ -2,10 +2,11 @@
 
 Status: **PASS**
 
-- Resident end: `$B29D`; 782 safe bytes remain before KERNAL scratch at `$B5AC`.
+- Resident end: `$B3C8`; 483 safe bytes remain before KERNAL scratch at `$B5AC`.
 - Monolithic end: `$C5F7` (limit `$C5FF`).
 - Overlay-build cc65 software-stack top: `$D000`.
 - IEC configuration policy payload: `$D18` bytes (seventeenth cached sidecar).
+- UltimateDOS control: four cold phases in session slots $3000–$6FFF; code/constants/BSS are cached together.
 - Native file policy payload: `$F44` bytes (twentieth cached sidecar; retired session scroll region).
 - Native filesystem payload: `$EF4` bytes (nineteenth cached sidecar).
 - Native IEC/media payload: `$FB7` bytes (eighteenth cached sidecar).
@@ -23,7 +24,7 @@ Status: **PASS**
 - Recursive controller/name translator payload: `$F67` bytes (eleventh sidecar; cached above the tree queue).
 - Tape/core policy and signature payload: `$F00` bytes (twelfth sidecar; dedicated batch-bank cache).
 - Command/editor payload: `$FD4` bytes (thirteenth sidecar).
-- Presentation payload: `$A8C` bytes (fourteenth sidecar).
+- Presentation payload: `$B14` bytes (fourteenth sidecar).
 - Command-help payload: `$FB6` bytes (fifteenth sidecar).
 - REU regions disjoint: yes.
 
@@ -39,6 +40,7 @@ Status: **PASS**
 - PASS: `reu_console_ring_fits_bank`
 - PASS: `stream_policy_sidecar`
 - PASS: `iec_config_policy_sidecar`
+- PASS: `udos_file_sidecars`
 - PASS: `native_files_policy_sidecar`
 - PASS: `native_files_sidecar`
 - PASS: `native_iec_media_sidecar`
@@ -66,7 +68,11 @@ Status: **PASS**
 | drive_profiles | `$0888` | `$08E4` | 92 |
 | operation_journal | `$0900` | `$2000` | 5888 |
 | native_files_policy_overlay_cache | `$2000` | `$3000` | 4096 |
-| retired_scroll_pages_reserved | `$3000` | `$7DC0` | 19904 |
+| udos_prepare_overlay_cache | `$3000` | `$4000` | 4096 |
+| udos_lookup_overlay_cache | `$4000` | `$5000` | 4096 |
+| udos_execute_overlay_cache | `$5000` | `$6000` | 4096 |
+| udos_name_overlay_cache | `$6000` | `$7000` | 4096 |
+| retired_scroll_pages_reserved | `$7000` | `$7DC0` | 3520 |
 | retired_scroll_live_reserved | `$7DC0` | `$81A8` | 1000 |
 | action_checkpoint | `$8200` | `$8300` | 256 |
 | action_report | `$8300` | `$8308` | 8 |

@@ -360,8 +360,8 @@ try:
     hardware_wait_unresolved = True
     response=api('/runners:run_prg','POST',bytes(binary),'application/octet-stream',45)
     (OUT/'launch-response.json').write_bytes(response)
-    event(phase='sidecar-load-passive-wait',timeout_seconds=180)
-    wait_ready(5)
+    event(phase='sidecar-load-passive-wait',timeout_seconds=300)
+    wait_ready(5,timeout=300)
     check('boot','UP/DN HIST');speed(1)
     if FAST:
         keys('AL LAB u:/usb1/READYFS_TEST/'+owned.run,False);keys([13],False);wait_ready(3)

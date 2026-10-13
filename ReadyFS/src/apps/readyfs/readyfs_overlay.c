@@ -46,6 +46,10 @@ extern unsigned char _OVERLAY17_SIZE__[];
 extern unsigned char _OVERLAY18_SIZE__[];
 extern unsigned char _OVERLAY19_SIZE__[];
 extern unsigned char _OVERLAY20_SIZE__[];
+extern unsigned char _OVERLAY21_SIZE__[];
+extern unsigned char _OVERLAY22_SIZE__[];
+extern unsigned char _OVERLAY23_SIZE__[];
+extern unsigned char _OVERLAY24_SIZE__[];
 
 /* Linker-visible admission sentinels let post-stop automation bind to the
  * current BSS layout rather than a stale hard-coded address. */
@@ -144,15 +148,15 @@ static unsigned char restore_recursive(void) {
                         (unsigned int)_OVERLAY11_SIZE__);
 }
 
-static const char * const batch_names[] = { "rfbatch", "rfui", "rftape", "rfshow", "rfexamples", "rfstream", "rfiec", "rfnative", "rffiles", "rffileplan" };
+static const char * const batch_names[] = { "rfbatch", "rfui", "rftape", "rfshow", "rfexamples", "rfstream", "rfiec", "rfnative", "rffiles", "rffileplan", "rfudosprep", "rfudoslook", "rfudosexec", "rfudosname" };
 static const unsigned char * const batch_sizes[] = {
-    _OVERLAY10_SIZE__, _OVERLAY13_SIZE__, _OVERLAY12_SIZE__, _OVERLAY14_SIZE__, _OVERLAY15_SIZE__, _OVERLAY16_SIZE__, _OVERLAY17_SIZE__, _OVERLAY18_SIZE__, _OVERLAY19_SIZE__, _OVERLAY20_SIZE__ };
+    _OVERLAY10_SIZE__, _OVERLAY13_SIZE__, _OVERLAY12_SIZE__, _OVERLAY14_SIZE__, _OVERLAY15_SIZE__, _OVERLAY16_SIZE__, _OVERLAY17_SIZE__, _OVERLAY18_SIZE__, _OVERLAY19_SIZE__, _OVERLAY20_SIZE__, _OVERLAY21_SIZE__, _OVERLAY22_SIZE__, _OVERLAY23_SIZE__, _OVERLAY24_SIZE__ };
 static const unsigned int batch_offsets[] = {
-    RF_REU_BATCH_CACHE_OFF, RF_UI_CACHE_OFF, RF_REU_TAPE_CACHE_OFF, RF_PRESENT_CACHE_OFF, RF_COMMAND_HELP_CACHE_OFF, RF_REU_STREAM_CACHE_OFF, RF_REU_IEC_CACHE_OFF, RF_REU_NATIVE_CACHE_OFF, RF_REU_FILES_CACHE_OFF, RF_REU_FILES_PLAN_CACHE_OFF };
+    RF_REU_BATCH_CACHE_OFF, RF_UI_CACHE_OFF, RF_REU_TAPE_CACHE_OFF, RF_PRESENT_CACHE_OFF, RF_COMMAND_HELP_CACHE_OFF, RF_REU_STREAM_CACHE_OFF, RF_REU_IEC_CACHE_OFF, RF_REU_NATIVE_CACHE_OFF, RF_REU_FILES_CACHE_OFF, RF_REU_FILES_PLAN_CACHE_OFF, RF_REU_UDOS_PREPARE_CACHE_OFF, RF_REU_UDOS_LOOKUP_CACHE_OFF, RF_REU_UDOS_EXECUTE_CACHE_OFF, RF_REU_UDOS_NAME_CACHE_OFF };
 static unsigned char open_batch_cached(unsigned char slot) {
     overlay_old_port = RF_CPU_PORT;
     RF_CPU_PORT = (unsigned char)(overlay_old_port & 0xFEu);
-    if ((slot == 9u ? readyfs_reu_session_fetch : readyfs_reu_batch_fetch)(batch_offsets[slot], _OVERLAY1_LOAD__,
+    if ((slot >= 9u ? readyfs_reu_session_fetch : readyfs_reu_batch_fetch)(batch_offsets[slot], _OVERLAY1_LOAD__,
                                (unsigned int)batch_sizes[slot])) return 1u;
     close_cached(); return 0u;
 }
@@ -162,7 +166,7 @@ static unsigned char load_batch_cached(unsigned char slot) {
     if (size == 0u || size > 0x1000u || load_sidecar(batch_names[slot]) != size) return 0u;
     overlay_old_port = RF_CPU_PORT;
     RF_CPU_PORT = (unsigned char)(overlay_old_port & 0xFEu);
-    if ((slot == 9u ? readyfs_reu_session_store : readyfs_reu_batch_store)(batch_offsets[slot], _OVERLAY1_LOAD__, size)) return 1u;
+    if ((slot >= 9u ? readyfs_reu_session_store : readyfs_reu_batch_store)(batch_offsets[slot], _OVERLAY1_LOAD__, size)) return 1u;
     close_cached(); return 0u;
 }
 
@@ -283,7 +287,19 @@ unsigned char readyfs_overlay_init(unsigned char reu_available) {
     if (loaded != RF_FILES_ABI || !load_batch_cached(9u)) return 0u;
     loaded = readyfs_files_plan_abi();
     restore_match();
-    return (unsigned char)(loaded == RF_FILES_PLAN_ABI);
+    if (loaded != RF_FILES_PLAN_ABI || !load_batch_cached(10u)) return 0u;
+    loaded = readyfs_udos_prepare_abi();
+    restore_match();
+    if (loaded != RF_UDOS_PREPARE_ABI || !load_batch_cached(11u)) return 0u;
+    loaded = readyfs_udos_lookup_abi();
+    restore_match();
+    if (loaded != RF_UDOS_LOOKUP_ABI || !load_batch_cached(12u)) return 0u;
+    loaded = readyfs_udos_execute_abi();
+    restore_match();
+    if (loaded != RF_UDOS_EXECUTE_ABI || !load_batch_cached(13u)) return 0u;
+    loaded = readyfs_udos_name_abi();
+    restore_match();
+    return (unsigned char)(loaded == RF_UDOS_NAME_ABI);
 }
 
 unsigned char readyfs_overlay_match(const char *pattern,
@@ -310,6 +326,48 @@ unsigned char readyfs_overlay_iec(ReadyFsIecCall *call) {
     *call->status = RF_RESULT_OK;
     result = readyfs_iec_execute(call);
     restore_match(); return result;
+}
+
+/* Each phase finishes before the shared window is replaced. All handoff
+ * fields point into resident storage, including the live-target bitmask. */
+static unsigned char udos_phase(ReadyFsUdosFilesCall *call, unsigned char phase) {
+    unsigned char result;
+    if (!open_batch_cached(10u + phase)) {
+        *call->status = RF_RESULT_IO; return RF_LOOKUP_ERROR;
+    }
+    if (phase == 0u) result = readyfs_udos_prepare(call);
+    else if (phase == 1u) result = readyfs_udos_lookup(call);
+    else if (phase == 2u) result = readyfs_udos_execute(call);
+    else result = readyfs_udos_name(call);
+    restore_match(); return result;
+}
+unsigned char readyfs_overlay_udos(ReadyFsUdosFilesCall *call) {
+    unsigned char result;
+    if (call->operation == RF_UDOS_CLOSE) return udos_phase(call, 2u);
+    result = udos_phase(call, 0u);
+    if (result != RF_LOOKUP_FOUND || call->operation == RF_UDOS_PARENT ||
+        call->operation == RF_UDOS_CHANGE) return result;
+    if (call->operation == RF_UDOS_DISTINCT) {
+        if (call->stream->native_mode != RF_UDOS_CBM) return RF_LOOKUP_FOUND;
+        call->policy = RF_UDOS_NAME_DISTINCT;
+        return udos_phase(call, 3u);
+    }
+    if (call->stream->native_mode == RF_UDOS_CBM) {
+        if (call->operation == RF_UDOS_FIND || call->operation == RF_UDOS_READ) {
+            call->policy = RF_UDOS_NAME_INPUT;
+            result = udos_phase(call, 3u);
+            if (result != RF_LOOKUP_FOUND) return result;
+            result = udos_phase(call, 1u);
+            if (result != RF_LOOKUP_FOUND) return result;
+            call->policy = RF_UDOS_NAME_OUTPUT;
+        } else call->policy = call->operation == RF_UDOS_RENAME ?
+                              RF_UDOS_NAME_RENAME : RF_UDOS_NAME_NEW;
+        result = udos_phase(call, 3u);
+        if (result != RF_LOOKUP_FOUND) return result;
+    } else if (call->operation == RF_UDOS_FIND) return RF_UDOS_HOST_LOOKUP;
+    if (call->operation == RF_UDOS_FIND || call->operation == RF_UDOS_VALIDATE)
+        return RF_LOOKUP_FOUND;
+    return udos_phase(call, 2u);
 }
 
 unsigned char readyfs_overlay_files(ReadyFsFilesCall *call) {
