@@ -41,7 +41,7 @@ int main(void) {
     assert(!prepare(&destination,"s3:/notes",&status));
     assert(status==RF_RESULT_UNAVAILABLE && strstr(output,"softiec off"));
     detected=1;status=RF_RESULT_OK;
-    assert(!prepare(&destination,"8:/",&status) && strstr(output,"file required"));
+    assert(prepare(&destination,"8:/",&status)); /* directory policy may use root; file policy rejects it */
     assert(!prepare(&destination,"u:/",&status) && strstr(output,"file required"));
     assert(prepare(&destination,"8:/dir/file",&status)); /* native classification follows */
     assert(prepare(&destination,"10.1:/hello",&status) && destination.path.partition==1);

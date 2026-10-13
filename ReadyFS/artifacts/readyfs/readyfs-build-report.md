@@ -2,19 +2,19 @@
 
 Status: **PASS**
 
-- Resident end: `$B557`; 84 safe bytes remain before KERNAL scratch at `$B5AC`.
+- Resident end: `$B525`; 134 safe bytes remain before KERNAL scratch at `$B5AC`.
 - Monolithic end: `$C5E9` (limit `$C5FF`).
 - Overlay-build cc65 software-stack top: `$D000`.
 - IEC configuration policy payload: `$D18` bytes (seventeenth cached sidecar).
-- Native file policy payload: `$DD0` bytes (twentieth cached sidecar; retired session scroll region).
+- Native file policy payload: `$F44` bytes (twentieth cached sidecar; retired session scroll region).
 - Native filesystem payload: `$EBE` bytes (nineteenth cached sidecar).
 - Native IEC/media payload: `$FB7` bytes (eighteenth cached sidecar).
-- Stream policy payload: `$449` bytes (sixteenth cached sidecar).
+- Stream policy payload: `$45A` bytes (sixteenth cached sidecar).
 - Matcher payload: `$FC8` bytes.
 - Planner/executor payload: `$FDF` bytes.
 - Help/journal payload: `$FFA` bytes.
 - Backend/controller payload: `$FFB` bytes.
-- CMD/SD2IEC translator payload: `$FFC` bytes (cached runtime sidecar with boot self-test).
+- CMD/SD2IEC translator payload: `$F8A` bytes (cached runtime sidecar with boot self-test).
 - IEC drive profiler payload: `$FFF` bytes (resident-owned command-channel I/O).
 - Utility/history payload: `$DCF` bytes (seventh REU-cached runtime sidecar).
 - Cooperative tree-controller payload: `$D1A` bytes (eighth REU-cached runtime sidecar).

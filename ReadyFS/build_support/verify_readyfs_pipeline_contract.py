@@ -395,17 +395,17 @@ def main() -> int:
             "bind its runtime IEC bus, issue a plain native directory request, "
             "and yield resident IEC "
             "enumeration; probe softiec owns explicit capability reporting")
-    tree_flat_gate = resident.find(
+    tree_native_gate = resident.find(
         "dest.path.endpoint == RF_EP_IEC", tree_command)
-    tree_flat_root = resident.find(
-        "dest.canonical[dest.path.path_offset + 1u] == 0", tree_flat_gate)
-    tree_flat_iec = resident.find(
-        "dir_iec(dest.path.unit, 0, 1u)", tree_flat_root)
-    if min(tree_flat_gate, tree_flat_root, tree_flat_iec) < 0 or not (
-            tree_flat_gate < tree_flat_root < tree_flat_iec):
+    tree_native_dispatch = resident.find(
+        "if (dest.device == 2u)", tree_native_gate)
+    tree_native_directory = resident.find(
+        "drive_partition_command(temp_text, 0, 0u,", tree_native_dispatch)
+    if min(tree_native_gate, tree_native_dispatch, tree_native_directory) < 0 or not (
+            tree_native_gate < tree_native_dispatch < tree_native_directory):
         failures.append(
-            "regular IEC tree must admit only the flat root and yield its "
-            "resident directory enumeration to the common controller")
+            "IEC tree must route every native directory through automatic "
+            "device preparation and yield enumeration to the common controller")
     find_filter = resident.find("static unsigned char tree_filter_accept(")
     find_match = resident.find(
         "readyfs_overlay_match(RF_MATCH_ULTIMATE_FILTER", find_filter)

@@ -180,8 +180,8 @@ unsigned char readyfs_driveui_dispatch(ReadyFsDriveUiCall *call) {
              call->native_operation != RF_CMDPATH_NATIVE_DIR)) return 1u;
         /* File mutations on SD2IEC use the pinned stream service. Unknown
          * identities fall through to its automatic native preparation. */
-        if ((unsigned char)(call->native_operation - RF_CMDPATH_SCRATCH) <=
-            RF_CMDPATH_RENAME - RF_CMDPATH_SCRATCH) {
+        if ((unsigned char)(call->native_operation - RF_CMDPATH_DIRECTORY) <=
+            RF_CMDPATH_RENAME - RF_CMDPATH_DIRECTORY) {
             call->device = path.unit;
             if (!profile_fetch(call) || call->kind == RF_DRIVER_SD2IEC) return 1u;
         }

@@ -185,6 +185,14 @@ int main(void) {
     memcpy(reply+8,"USR",3);assert(execute()==CBM_T_USR);
     memcpy(reply+8,"\xD2\xC5\xCC",3);assert(execute()==CBM_T_REL);
     memcpy(reply+8,"txt",3);assert(execute()==CBM_T_SEQ);
+    reset();call.operation=RF_FILES_DIRECTORY;stream.canonical[0]=0;
+    assert(readyfs_files_plan(&call)==RF_LOOKUP_FOUND && !strcmp(request,"$") && !*stream.canonical);
+    stream.native_mode=RF_NATIVE_HIER;stream.native_partition=13;
+    assert(readyfs_files_plan(&call)==RF_LOOKUP_FOUND && !strcmp(request,"$13//:*") && !*stream.canonical);
+    strcpy(stream.canonical,"test/nested/");
+    assert(readyfs_files_plan(&call)==RF_LOOKUP_FOUND && !strcmp(request,"$13//test/nested/:*") && !strcmp(stream.canonical,"test/nested/"));
+    stream.native_mode=RF_NATIVE_FLAT;assert(readyfs_files_plan(&call)==RF_LOOKUP_ERROR);
+    stream.canonical[0]=0;assert(readyfs_files_plan(&call)==RF_LOOKUP_FOUND && !strcmp(request,"$13:*"));
     puts("native filesystem leaf tests passed: typed lookup, native channel lifetime, scratch/rename status");
     return 0;
 }

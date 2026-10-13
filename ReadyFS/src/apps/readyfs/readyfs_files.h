@@ -14,6 +14,7 @@
 #define RF_FILES_RMDIR 9u
 /* Policy-only operation returns CBM file type (always >=16), no I/O dispatch. */
 #define RF_FILES_UDOS_TYPE 16u
+#define RF_FILES_DIRECTORY 17u
 #define RF_LOOKUP_MISSING 0u
 #define RF_LOOKUP_FOUND 1u
 #define RF_LOOKUP_ERROR 2u

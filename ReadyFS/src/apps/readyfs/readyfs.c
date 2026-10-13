@@ -112,6 +112,10 @@ static void __fastcall__ result_unsupported(const char *message) {
 }
 
 static void cmd_mutation_preview(unsigned char argc);
+#ifdef READYFS_OVERLAY_RUNTIME
+static unsigned char path_prepare(const char *text, ReadyFsStream *stream);
+static unsigned char native_file(ReadyFsStream *stream, ReadyFsStream *other, unsigned char operation);
+#endif
 static unsigned char compare_one(const char *left_text, const char *right_text);
 static unsigned char compare_prepared(void);
 static unsigned char has_dry_run(unsigned char argc);
@@ -898,17 +902,20 @@ static void cmd_dir(unsigned char argc) {
                                       RF_CMDPATH_NATIVE_DIR);
         return;
     }
-    if (path.endpoint == RF_EP_IEC && path.partition != 0u &&
-        drive_partition_command(text, 0, argc,
-                                RF_CMDPATH_DIRECTORY)) return;
-#endif
+    if (path.endpoint == RF_EP_IEC) {
+        (void)drive_partition_command(text, 0, argc, RF_CMDPATH_DIRECTORY);
+        return;
+    }
+#else
     if (iec_partition_driver_pending(&path)) return;
     if (path.endpoint == RF_EP_IEC) {
         if (temp_text[path.path_offset + 1u] != 0)
             result_unsupported("unsupported\r\n");
         else (void)dir_iec(path.unit, 0, 0u);
     }
-    else if (path.endpoint == RF_EP_ULTIMATE) {
+    else
+#endif
+    if (path.endpoint == RF_EP_ULTIMATE) {
         dir_ultimate(temp_text + path.path_offset);
     } else if (path.endpoint == RF_EP_SOFTIEC) {
         if (!readyfs_uci_detect()) {
@@ -1032,16 +1039,12 @@ static void cmd_tree(unsigned char argc, unsigned char find) {
         return;
     }
     dest.device = dest.path.endpoint == RF_EP_SOFTIEC ? 1u :
-                  (dest.path.endpoint == RF_EP_IEC &&
-                   (dest.path.partition != 0u ||
-                    dest.canonical[dest.path.path_offset + 1u] == 0) ? 2u : 0u);
+                  (dest.path.endpoint == RF_EP_IEC ? 2u : 0u);
     if (dest.path.endpoint != RF_EP_ULTIMATE && !dest.device) {
         result_unsupported("unsupported\r\n"); return;
     }
-    dest.text = dest.path.partition != 0u ? dest.canonical :
-                (dest.device == 1u ? dest.canonical :
-                (dest.device == 2u ? "" :
-                 dest.canonical + dest.path.path_offset));
+    dest.text = dest.device ? dest.canonical :
+                dest.canonical + dest.path.path_offset;
     dest.native_name = dest.device == 1u ? source.canonical : temp_text;
     tree_ui.operation = RF_TREE_CALL_INIT;
     tree_ui.max_depth = 32u;
@@ -1076,7 +1079,7 @@ static void cmd_tree(unsigned char argc, unsigned char find) {
             }
             temp_text[0] = '$'; temp_text[1] = 0;
         }
-        if (dest.path.partition != 0u) {
+        if (dest.device == 2u) {
             if (!drive_partition_command(temp_text, 0, 0u,
                                          RF_CMDPATH_DIRECTORY)) {
                 tree_failed = 1u; break;
@@ -1085,8 +1088,7 @@ static void cmd_tree(unsigned char argc, unsigned char find) {
         }
         if (!(dest.device == 1u ?
               dir_iec(source.device, temp_text, 1u) :
-               (dest.device == 2u ? dir_iec(dest.path.unit, 0, 1u) :
-               dir_ultimate_run(temp_text, tree_ultimate_block))) ||
+               dir_ultimate_run(temp_text, tree_ultimate_block)) ||
             tree_failed) {
             tree_failed = 1u; break;
         }
@@ -1137,7 +1139,13 @@ static unsigned char drive_partition_command(const char *text,
     drive_command.state = &action_state;
     drive_command.native_operation = operation;
     drive_command.force = option_present(argc, "--force");
-    if (!readyfs_overlay_drive(&drive_command) || !drive_command.handled) return 0u;
+    if (!readyfs_overlay_drive(&drive_command)) return 0u;
+    if (!drive_command.handled) {
+        if (operation != RF_CMDPATH_DIRECTORY ||
+            !path_prepare(temp.canonical, &source) ||
+            native_file(&source, 0, RF_FILES_DIRECTORY) != RF_LOOKUP_FOUND) return 0u;
+        return dir_iec(source.device, temp_text, argc == 0u);
+    }
     if (drive_command.pending) {
         if (operation == RF_CMDPATH_DIRECTORY ||
             operation == RF_CMDPATH_NATIVE_DIR) {
@@ -2765,10 +2773,10 @@ unsigned char readyfs_io_copy_call(ReadyFsIoCopyCall *call) {
             }
             signature_add(&left_signature, io_buf, (unsigned int)got);
         }
-        stream_close(&source);
+        RF_CLOSE_CHECK(&source, ok);
         total_lo = spool_state.bytes_lo;
         total_hi = spool_state.bytes_bank;
-        if (ok && !stream_open_write(output, 2u, 3u, CBM_T_SEQ)) ok = 0u;
+        if (ok && !stream_open_write(output, 2u, 3u, source.type)) ok = 0u;
         while (ok) {
             got = tape_spool(RF_TAPE_SPOOL_FETCH, &spool_state, io_buf,
                              sizeof(io_buf));

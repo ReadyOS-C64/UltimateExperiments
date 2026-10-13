@@ -112,6 +112,23 @@ static unsigned char rmdir_plan(ReadyFsFilesCall *c) {
            add(next, ":", 1u) && add(next, leaf, strlen(leaf));
 }
 
+static unsigned char directory_plan(ReadyFsFilesCall *c) {
+    ReadyFsStream *s;
+    unsigned int end, n;
+    unsigned char ok;
+    s = c->stream; end = strlen(s->canonical); n = strlen(s->native_name);
+    if ((n && s->native_mode != RF_NATIVE_HIER) || end + 2u > RF_PATH_MAX)
+        return reject(c);
+    /* Reuse parent-directory validation with a temporary dummy child.
+     * Restore the caller's canonical path before any I/O or overlay return. */
+    if (n && s->native_name[n-1u] != '/') strcat(s->canonical, "/");
+    strcat(s->canonical, "_");
+    c->request[0] = 0;
+    ok = reference(c->request, s, 1u);
+    s->canonical[end] = 0; c->directory = c->request;
+    return ok ? RF_LOOKUP_FOUND : reject(c);
+}
+
 static unsigned char udos_type(const unsigned char *data) {
     unsigned char ext[3], i;
     for (i = 0u; i < 3u; ++i) {
@@ -127,6 +144,7 @@ static unsigned char udos_type(const unsigned char *data) {
 unsigned char readyfs_files_plan(ReadyFsFilesCall *c) {
     unsigned char ok;
     if (c->operation == RF_FILES_UDOS_TYPE) return udos_type(c->reply);
+    if (c->operation == RF_FILES_DIRECTORY) return directory_plan(c);
     if (c->operation == RF_FILES_STATUS || c->operation == RF_FILES_CLOSE)
         return RF_LOOKUP_FOUND;
     c->request[0] = 0;

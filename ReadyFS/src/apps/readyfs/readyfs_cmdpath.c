@@ -197,53 +197,38 @@ static unsigned char prefix(char *text, unsigned int capacity,
 
 static unsigned char mount_command(ReadyFsCmdPathCall *call,
                                    ReadyFsPath *path) {
-    const char *body;
-    const char *leaf;
-    char *cursor;
-    unsigned int left;
-    unsigned int native_length;
+    char *colon;
     unsigned char result;
-
-    if (call->output == 0 || call->output_capacity == 0u) {
-        return RF_CMDPATH_OUTPUT_TOO_SMALL;
-    }
-    call->output[0] = 0;
-    result = prepare(call->source, path, &body);
+    result = build_reference(call->source, 0u, call->output,
+                              call->output_capacity, path);
     if (result != RF_CMDPATH_OK) return result;
-    if (path->image_depth != 0u) return RF_CMDPATH_IMAGE_STATEFUL;
-    cursor = call->output;
-    left = call->output_capacity;
-    if (!append_bytes(&cursor, &left, RF_NATIVE_CD, 2u) ||
-        !append_partition(&cursor, &left, path->partition) ||
-        !append_bytes(&cursor, &left, "//", 2u)) {
-        return RF_CMDPATH_OUTPUT_TOO_SMALL;
-    }
-    native_length = 2u;
-    result = append_components(body, 0u, &cursor, &left,
-                               &native_length, &leaf);
-    if (result != RF_CMDPATH_OK) return result;
-    if (!image_extension_ok(leaf)) return RF_CMDPATH_IMAGE_REQUIRED;
-    if (!append_bytes(&cursor, &left, leaf, strlen(leaf))) {
-        return RF_CMDPATH_OUTPUT_TOO_SMALL;
-    }
-    return RF_CMDPATH_OK;
+    colon = strrchr(call->output, ':');
+    if (!image_extension_ok(colon + 1u)) return RF_CMDPATH_IMAGE_REQUIRED;
+    /* CD parses the slash path itself; remove the file-OPEN colon. */
+    memmove(colon, colon + 1u, strlen(colon));
+    return prefix(call->output, call->output_capacity, RF_NATIVE_CD) ?
+           RF_CMDPATH_OK : RF_CMDPATH_OUTPUT_TOO_SMALL;
 }
 
 static unsigned char unmount_commands(ReadyFsCmdPathCall *call,
                                       ReadyFsPath *path) {
     const char *body;
+    unsigned int length;
     unsigned char result;
     result = prepare(call->source, path, &body);
     if (result != RF_CMDPATH_OK || *body != 0) return RF_CMDPATH_BAD_PATH;
-    if (call->output == 0 || call->output_capacity < 5u ||
-        call->followup == 0 || call->followup_capacity < 4u) {
+    result = build_reference(call->source, 1u, call->output,
+                              call->output_capacity, path);
+    if (result != RF_CMDPATH_OK) return result;
+    *strrchr(call->output, ':') = 0;
+    if (!prefix(call->output, call->output_capacity, RF_NATIVE_CD))
         return RF_CMDPATH_OUTPUT_TOO_SMALL;
-    }
-    strcpy(call->output, RF_NATIVE_CD "//");
-    call->followup[0] = RF_NATIVE_CD[0];
-    call->followup[1] = RF_NATIVE_CD[1];
-    call->followup[2] = (char)RF_CMDPATH_SD2IEC_BACK;
-    call->followup[3] = 0;
+    length = strlen(call->output);
+    if (!call->followup || call->followup_capacity <= length)
+        return RF_CMDPATH_OUTPUT_TOO_SMALL;
+    strcpy(call->followup, call->output);
+    call->followup[length - 2u] = ':';
+    call->followup[length - 1u] = (char)RF_CMDPATH_SD2IEC_BACK;
     return RF_CMDPATH_OK;
 }
 

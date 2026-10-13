@@ -42,7 +42,7 @@ unsigned char readyfs_stream_prepare(ReadyFsStreamCall *call) {
         stream->path.endpoint == RF_EP_TAPE) while (*name == '/') ++name;
     else if (stream->path.endpoint == RF_EP_SOFTIEC)
         name = stream->canonical + 1u;
-    if (!*name || (stream->path.endpoint == RF_EP_ULTIMATE &&
+    if ((!*name && stream->path.endpoint != RF_EP_IEC) || (stream->path.endpoint == RF_EP_ULTIMATE &&
                   name[0] == '/' && name[1] == 0)) {
         return reject(call, 0u, "file required\r\n");
     }

@@ -157,11 +157,22 @@ int main(void) {
 
     call = make_call(RF_CMDPATH_UNMOUNT, "11.3:/");
     check(readyfs_cmdpath_dispatch(&call) &&
-          strcmp(output, "CD//") == 0 &&
-          followup[0] == 'C' && followup[1] == 'D' &&
-          (unsigned char)followup[2] == RF_CMDPATH_SD2IEC_BACK &&
-          followup[3] == 0,
-          "sd2iec root then image-unmount sequence");
+          strcmp(output, "CD3//") == 0 &&
+          memcmp(followup, "CD3:", 4u) == 0 &&
+          (unsigned char)followup[4] == RF_CMDPATH_SD2IEC_BACK &&
+          followup[5] == 0,
+          "sd2iec root then image-unmount stays on explicit partition");
+
+    call = make_call(RF_CMDPATH_UNMOUNT, "11.254:/");
+    check(readyfs_cmdpath_dispatch(&call) &&
+          strcmp(output, "CD254//") == 0 &&
+          memcmp(followup, "CD254:", 6u) == 0 &&
+          (unsigned char)followup[6] == RF_CMDPATH_SD2IEC_BACK && !followup[7],
+          "image unmount pins maximum partition");
+    call.followup_capacity = 7u;
+    check(!readyfs_cmdpath_dispatch(&call) &&
+          call.result == RF_CMDPATH_OUTPUT_TOO_SMALL,
+          "image unmount checks partition-sized followup buffer");
 
     call = make_call(RF_CMDPATH_MOUNT, "11.3:/games/readme.seq");
     check(!readyfs_cmdpath_dispatch(&call) &&
