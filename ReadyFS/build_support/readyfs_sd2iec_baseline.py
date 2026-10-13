@@ -86,12 +86,14 @@ class Baseline:
             # SoftwareIEC exposes the CBM logical stem; SEQ is its file type.
             # Sending a .seq suffix as part of the logical stem creates .seq.seq.
             return prefixes[endpoint] + (leaf.removesuffix('.seq') if endpoint == 's' else leaf)
+        suffix = time.strftime('%H%M%S', time.gmtime()) if self.sd else ''
         targets = {}
         for source in prefixes:
             for destination in prefixes:
                 if source == destination: continue
-                leaf = 'bc-'+source+destination+'.seq'
+                leaf = 'bc-'+source+destination+suffix+'.seq'
                 target = pathname(destination,leaf)
+                if destination == 'd':command('STAT '+target,'NOT FOUND',4)
                 self.guard(destination,leaf)
                 command('COPY '+sources[source]+' '+target,'COPIED',5)
                 command('COMPARE '+sources[source]+' '+target,'VERIFY: IDENTICAL',5)
@@ -100,8 +102,10 @@ class Baseline:
         for source in prefixes:
             for destination in prefixes:
                 if source == destination: continue
-                src_leaf='bm-'+source+destination+'.seq'; dst_leaf='bd-'+source+destination+'.seq'
+                src_leaf='bm-'+source+destination+suffix+'.seq'; dst_leaf='bd-'+source+destination+suffix+'.seq'
                 source_path=pathname(source,src_leaf); destination_path=pathname(destination,dst_leaf)
+                if source == 'd':command('STAT '+source_path,'NOT FOUND',4)
+                if destination == 'd':command('STAT '+destination_path,'NOT FOUND',4)
                 self.guard(source,src_leaf)
                 command('COPY '+sources[source]+' '+source_path,'COPIED',5)
                 self.guard(source,src_leaf);self.guard(destination,dst_leaf)
@@ -115,6 +119,7 @@ class Baseline:
         native_oracles = {}
         for leaf,(endpoint,data) in targets.items():
             if endpoint != 'd': continue
+            command('STAT '+pathname('d',leaf),'TYPE: $10',4)
             oracle = 'oracle-'+leaf
             self.owned.guard(root+'/'+oracle)
             command('COPY '+pathname('d',leaf)+' @LAB:/'+oracle,'COPIED',5)

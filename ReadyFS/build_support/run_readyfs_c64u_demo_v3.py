@@ -402,7 +402,10 @@ try:
             from readyfs_iec_config_hardware import run as config_acceptance
             config_acceptance(globals())
         if os.environ.get('READYFS_SD2IEC_BASELINE') in ('2', '3'):
-            from readyfs_sd2iec_baseline import Baseline
+            if os.environ.get('READYFS_SD2IEC_IMAGE_RUN'):
+                from readyfs_sd2iec_final_hardware import FinalBaseline as Baseline
+            else:
+                from readyfs_sd2iec_baseline import Baseline
             extra_baseline=Baseline(globals())
             extra_baseline.run()
         if os.environ.get('READYFS_SD2IEC_BASELINE') in ('5','6','7'):

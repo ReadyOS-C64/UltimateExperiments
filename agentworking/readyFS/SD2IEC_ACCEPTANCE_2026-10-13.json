@@ -155,7 +155,7 @@
     "mounted_operations_passed": true,
     "independent_image_passed": true
   },
-  "generated_utc": "2026-10-13T13:03:36.245060+00:00",
+  "generated_utc": "2026-10-13T13:39:50.260474+00:00",
   "current_source_commit": "bb33868",
   "folder_rerun_required": false,
   "checksum": {
@@ -217,7 +217,7 @@
     }
   ],
   "expanded_image_matrix": {
-    "status": "running",
+    "status": "passed",
     "copy_pairs": 10,
     "move_pairs": 10,
     "order": "typed Ultimate image pairs first; unchanged coverage",
@@ -239,7 +239,45 @@
       "command": "CLEAR",
       "time": 1791896615.469441
     },
-    "independent_image_oracle": "pending",
-    "moves": "pending"
+    "independent_image_oracle": "PASS bytes/types/source removal",
+    "moves": "PASS10",
+    "last_event": {
+      "complete": true,
+      "restored": true,
+      "result": "PASS",
+      "time": 1791898686.298954
+    },
+    "copy_pairs_passed": [
+      "sd-image-copy-d-to-h-seq",
+      "sd-image-copy-h-to-d-seq",
+      "sd-image-copy-d-to-h-prg",
+      "sd-image-copy-h-to-d-prg",
+      "sd-image-copy-d-to-h-usr",
+      "sd-image-copy-h-to-d-usr",
+      "sd-image-copy-d-to-i-seq",
+      "sd-image-copy-i-to-d-seq",
+      "sd-image-copy-d-to-s-seq",
+      "sd-image-copy-s-to-d-seq"
+    ],
+    "move_pairs_passed": [
+      "sd-image-move-d-to-h-seq",
+      "sd-image-move-h-to-d-seq",
+      "sd-image-move-d-to-h-prg",
+      "sd-image-move-h-to-d-prg",
+      "sd-image-move-d-to-h-usr",
+      "sd-image-move-h-to-d-usr",
+      "sd-image-move-d-to-i-seq",
+      "sd-image-move-i-to-d-seq",
+      "sd-image-move-d-to-s-seq",
+      "sd-image-move-s-to-d-seq"
+    ],
+    "process_exited": true,
+    "same_sd_fat_image_bridge": "PASS independent hashes"
+  },
+  "final_regression": {
+    "status": "ready_to_run",
+    "native_image_type_checks": 12,
+    "native_fat_bridge_type_checks": 1,
+    "fresh_native_names": true
   }
 }
