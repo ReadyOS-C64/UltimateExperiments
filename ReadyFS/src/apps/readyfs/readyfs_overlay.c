@@ -42,6 +42,7 @@ extern unsigned char _OVERLAY14_SIZE__[];
 extern unsigned char _OVERLAY15_SIZE__[];
 extern unsigned char _OVERLAY16_SIZE__[];
 extern unsigned char _OVERLAY17_SIZE__[];
+extern unsigned char _OVERLAY18_SIZE__[];
 
 /* Linker-visible admission sentinels let post-stop automation bind to the
  * current BSS layout rather than a stale hard-coded address. */
@@ -140,11 +141,11 @@ static unsigned char restore_recursive(void) {
                         (unsigned int)_OVERLAY11_SIZE__);
 }
 
-static const char * const batch_names[] = { "rfbatch", "rfui", "rftape", "rfshow", "rfexamples", "rfstream", "rfiec" };
+static const char * const batch_names[] = { "rfbatch", "rfui", "rftape", "rfshow", "rfexamples", "rfstream", "rfiec", "rfnative" };
 static const unsigned char * const batch_sizes[] = {
-    _OVERLAY10_SIZE__, _OVERLAY13_SIZE__, _OVERLAY12_SIZE__, _OVERLAY14_SIZE__, _OVERLAY15_SIZE__, _OVERLAY16_SIZE__, _OVERLAY17_SIZE__ };
+    _OVERLAY10_SIZE__, _OVERLAY13_SIZE__, _OVERLAY12_SIZE__, _OVERLAY14_SIZE__, _OVERLAY15_SIZE__, _OVERLAY16_SIZE__, _OVERLAY17_SIZE__, _OVERLAY18_SIZE__ };
 static const unsigned int batch_offsets[] = {
-    RF_REU_BATCH_CACHE_OFF, RF_UI_CACHE_OFF, RF_REU_TAPE_CACHE_OFF, RF_PRESENT_CACHE_OFF, RF_COMMAND_HELP_CACHE_OFF, RF_REU_STREAM_CACHE_OFF, RF_REU_IEC_CACHE_OFF };
+    RF_REU_BATCH_CACHE_OFF, RF_UI_CACHE_OFF, RF_REU_TAPE_CACHE_OFF, RF_PRESENT_CACHE_OFF, RF_COMMAND_HELP_CACHE_OFF, RF_REU_STREAM_CACHE_OFF, RF_REU_IEC_CACHE_OFF, RF_REU_NATIVE_CACHE_OFF };
 static unsigned char open_batch_cached(unsigned char slot) {
     overlay_old_port = RF_CPU_PORT;
     RF_CPU_PORT = (unsigned char)(overlay_old_port & 0xFEu);
@@ -270,7 +271,10 @@ unsigned char readyfs_overlay_init(unsigned char reu_available) {
     if (loaded != RF_STREAM_ABI || !load_batch_cached(6u)) return 0u;
     loaded = readyfs_iec_plan_abi();
     restore_match();
-    return (unsigned char)(loaded == RF_IEC_PLAN_ABI);
+    if (loaded != RF_IEC_PLAN_ABI || !load_batch_cached(7u)) return 0u;
+    loaded = readyfs_iec_abi();
+    restore_match();
+    return (unsigned char)(loaded == RF_IEC_ABI);
 }
 
 unsigned char readyfs_overlay_match(const char *pattern,
@@ -293,7 +297,7 @@ unsigned char readyfs_overlay_iec(ReadyFsIecCall *call) {
     if (!open_batch_cached(6u)) return 0u;
     result = readyfs_iec_plan(call);
     restore_match();
-    if (!result || !open_batch_cached(5u)) return 0u;
+    if (!result || !open_batch_cached(7u)) return 0u;
     *call->status = RF_RESULT_OK;
     result = readyfs_iec_execute(call);
     restore_match(); return result;
@@ -309,9 +313,10 @@ unsigned char readyfs_overlay_stream(ReadyFsStreamCall *call) {
 unsigned char readyfs_overlay_present(ReadyFsUtilityCall *call) {
     unsigned char help, result;
     help = (unsigned char)(call->operation == RF_PRESENT_HELP || call->operation == RF_PRESENT_PLAN);
-    if (!open_batch_cached(help ? 4u : 3u)) return 0u;
+    if (!open_batch_cached(help ? 4u : call->operation == RF_PRESENT_MEDIA ? 7u : 3u)) return 0u;
     result = 1u;
-    if (call->operation == RF_PRESENT_PLAN) result = readyfs_transfer_plan(call);
+    if (call->operation == RF_PRESENT_MEDIA) result = readyfs_media(call);
+    else if (call->operation == RF_PRESENT_PLAN) result = readyfs_transfer_plan(call);
     else if (help) readyfs_command_help(call);
     else result = readyfs_present(call);
     restore_match(); return result;

@@ -3,11 +3,17 @@
 #include "readyfs_reu.h"
 #include "readyfs_result.h"
 #include "readyfs_console.h"
+#include "readyfs_present.h"
 #include <cbm.h>
 #include <conio.h>
 #include <string.h>
 
-unsigned int readyfs_iec_abi(void) { return RF_IEC_ABI; }
+unsigned int readyfs_iec_abi(void) {
+#ifdef __CC65__
+    readyfs_media_reset();
+#endif
+    return RF_IEC_ABI;
+}
 
 /* Standalone configuration only: CLOSE15 releases ALL SD2IEC user buffers.
  * Never reuse this transaction while filesystem data channels are open.

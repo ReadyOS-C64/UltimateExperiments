@@ -186,7 +186,7 @@ def main() -> int:
             "shared batch cache indices must keep their documented bank offsets", failures)
     require(overlay, r"open_batch_cached[\s\S]*?readyfs_reu_batch_fetch\(batch_offsets\[slot\], _OVERLAY1_LOAD__[\s\S]*?batch_sizes\[slot\]",
             "shared opener must fetch the exact slot from the dedicated REU bank", failures)
-    require(overlay, r"readyfs_overlay_present[\s\S]*?open_batch_cached\(help \? 4u : 3u\)[\s\S]*?readyfs_command_help\(call\)[\s\S]*?readyfs_present\(call\)[\s\S]*?restore_match\(\); return result;",
+    require(overlay, r"readyfs_overlay_present[\s\S]*?open_batch_cached\(help \? 4u : call->operation == RF_PRESENT_MEDIA \? 7u : 3u\)[\s\S]*?readyfs_command_help\(call\)[\s\S]*?readyfs_present\(call\)[\s\S]*?restore_match\(\); return result;",
             "presentation must restore the matcher before returning", failures)
     require(makefile,
             r"READYFS_OVERLAY_RECURSIVE_OBJS[\s\S]*?overlay11/"
@@ -381,15 +381,15 @@ def main() -> int:
 
     present = (BATCH.parent / "readyfs_present.c").read_text()
     media = (BATCH.parent / "readyfs_media.c").read_text()
-    require(present, r"readyfs_present_abi[\s\S]*?readyfs_media_reset\(\)",
+    require((BATCH.parent / "readyfs_iec.c").read_text(), r"readyfs_iec_abi[\s\S]*?readyfs_media_reset\(\)",
             "startup must clear session-only mount hints", failures)
-    require(makefile, r"overlay14/\$\(READYFS_SRC_DIR\)/readyfs_media\.o",
-            "last-mount presentation must share sidecar 14", failures)
+    require(makefile, r"overlay18/\$\(READYFS_SRC_DIR\)/readyfs_media\.o",
+            "last-mount presentation must share native leaf sidecar18", failures)
     require(resident, r"media\(RF_MEDIA_FORGET, unit, 0\);[\s\S]*?uci_cmd\[1\] = 0x23u;[\s\S]*?uci_target_ok\(1u\)[\s\S]*?media\(RF_MEDIA_REMEMBER, unit, command_stream.canonical\)",
             "mount invalidation must precede shared command-buffer construction and remembering must follow target OK", failures)
     require(media, r"for \(unit = 8u; unit <= 30u; \+\+unit\)[\s\S]*?readyfs_iec_present\(unit\)[\s\S]*?t: sequential tape",
-            "media discovery must use resident-owned IEC handshake", failures)
-    if re.search(r"\bcbm_|0x23u|0x24u|0x25u|socket|http", media):
+            "media discovery must use the local native IEC handshake", failures)
+    if re.search(r"\bcbm_(?:open|write|read|close)\b|0x23u|0x24u|0x25u|socket|http", media):
         failures.append("mount presentation must not issue disk mutations or network requests")
     if re.search(r"unsigned char readyfs_reu_(?:overlay|session|batch|console)_(?:store|fetch)\s*\(", reu):
         failures.append("all public REU DMA must use the flat assembly boundary")
@@ -413,10 +413,16 @@ def main() -> int:
     iec_io = (BATCH.parent / "readyfs_iec.c").read_text()
     require(overlay, r"load_batch_cached\(6u\)[\s\S]*?readyfs_iec_plan_abi\(\)[\s\S]*?RF_IEC_PLAN_ABI",
             "IEC policy must be cached and ABI checked at startup", failures)
-    require(overlay, r"readyfs_overlay_iec[\s\S]*?open_batch_cached\(6u\)[\s\S]*?readyfs_iec_plan\(call\)[\s\S]*?restore_match\(\)[\s\S]*?open_batch_cached\(5u\)[\s\S]*?readyfs_iec_execute\(call\)[\s\S]*?restore_match\(\)",
+    require(overlay, r"readyfs_overlay_iec[\s\S]*?open_batch_cached\(6u\)[\s\S]*?readyfs_iec_plan\(call\)[\s\S]*?restore_match\(\)[\s\S]*?open_batch_cached\(7u\)[\s\S]*?readyfs_iec_execute\(call\)[\s\S]*?restore_match\(\)",
             "IEC policy and native I/O must run in sequential leaf overlays", failures)
     require(linker_cfg, r'OVL17ADDR:[\s\S]*?readyfs-iec.prg[\s\S]*?OVERLAY17: load = OVL17',
             "linker must emit IEC policy sidecar17", failures)
+    require(overlay, r"load_batch_cached\(7u\)[\s\S]*?readyfs_iec_abi\(\)[\s\S]*?RF_IEC_ABI",
+            "native media service must be cached and ABI checked at startup", failures)
+    require(linker_cfg, r'OVL18ADDR:[\s\S]*?readyfs-native.prg[\s\S]*?OVERLAY18: load = OVL18',
+            "linker must emit native media sidecar18", failures)
+    require(media, r'0x90u = 0u;[\s\S]*?cbm_k_listen\(device\); cbm_k_second\(0x6Fu\)',
+            "native discovery must clear ST and complete LISTEN/SECOND", failures)
     if re.search(r"\bcbm_|readyfs_overlay_|load_sidecar", iec_plan):
         failures.append("IEC policy must not issue I/O or load overlays")
     if re.search(r"readyfs_overlay_|load_sidecar|readyfs_uci_", iec_io):
@@ -429,7 +435,7 @@ def main() -> int:
             print(f"ReadyFS overlay DMA contract: FAIL: {failure}")
         return 1
     print("ReadyFS overlay DMA contract: PASS (flat 6-byte overlay/session/"
-          "batch boundaries, explicit slots 1-17; REU-checkpointed recursive, "
+          "batch boundaries, explicit slots 1-18; REU-checkpointed recursive, "
           "backend/native, utility, tree, content, batch, UI, and tape controllers; "
           "resident-owned device I/O)")
     return 0

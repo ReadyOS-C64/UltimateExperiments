@@ -12,6 +12,7 @@
     "reu_console_ring_fits_bank": true,
     "stream_policy_sidecar": true,
     "iec_config_policy_sidecar": true,
+    "native_iec_media_sidecar": true,
     "presentation_sidecar": true,
     "command_help_sidecar": true,
     "ui_sidecar": true,
@@ -29,9 +30,9 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 46369,
+    "end": 46396,
     "limit": 46507,
-    "free_bytes": 138
+    "free_bytes": 111
   },
   "software_stack": {
     "top": 53248
@@ -41,6 +42,19 @@
     "limit": 50687
   },
   "sidecars": {
+    "native_iec_media": {
+      "file": "artifacts/readyfs/readyfs-native.prg",
+      "load_address": 46592,
+      "payload_bytes": 4023,
+      "map_bytes": 4023,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
     "iec_config_policy": {
       "file": "artifacts/readyfs/readyfs-iec.prg",
       "load_address": 46592,
@@ -57,8 +71,8 @@
     "stream_policy": {
       "file": "artifacts/readyfs/readyfs-stream.prg",
       "load_address": 46592,
-      "payload_bytes": 3994,
-      "map_bytes": 3994,
+      "payload_bytes": 1139,
+      "map_bytes": 1139,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -83,8 +97,8 @@
     "presentation": {
       "file": "artifacts/readyfs/readyfs-present.prg",
       "load_address": 46592,
-      "payload_bytes": 4045,
-      "map_bytes": 4045,
+      "payload_bytes": 2700,
+      "map_bytes": 2700,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -494,6 +508,12 @@
       "name": "iec_config_policy_overlay_cache",
       "start": 49408,
       "end_exclusive": 53504,
+      "bytes": 4096
+    },
+    {
+      "name": "native_iec_media_overlay_cache",
+      "start": 53504,
+      "end_exclusive": 57600,
       "bytes": 4096
     }
   ],

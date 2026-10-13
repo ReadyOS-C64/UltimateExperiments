@@ -4,7 +4,19 @@
 #include "readyfs_reu.h"
 #include "readyfs_uci.h"
 #include "readyfs_console.h"
+#ifdef __CC65__
+#include <cbm.h>
+static unsigned char readyfs_iec_present(unsigned char device) {
+    unsigned char status;
+    *(volatile unsigned char *)0x90u = 0u;
+    cbm_k_listen(device); cbm_k_second(0x6Fu);
+    status = cbm_k_readst();
+    cbm_k_unlsn(); cbm_k_clrch();
+    return status == 0u;
+}
+#else
 extern unsigned char readyfs_iec_present(unsigned char device);
+#endif
 #include <conio.h>
 #include <string.h>
 static char path[256];

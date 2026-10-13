@@ -5,9 +5,6 @@
 #include "readyfs_console.h"
 #include "readyfs_uci.h"
 unsigned int readyfs_present_abi(void) {
-#ifndef READYFS_MONOLITHIC
-    readyfs_media_reset();
-#endif
     return RF_PRESENT_ABI;
 }
 #ifdef READYFS_MONOLITHIC
@@ -45,7 +42,9 @@ unsigned char readyfs_present(ReadyFsUtilityCall *call) {
         cputs(" fail "); number(call->capacity); cputs("\r\n"); return 1u;
     }
     if (call->operation == RF_PRESENT_COPY) return readyfs_transfer_present(call);
+#ifndef __CC65__
     if (call->operation == RF_PRESENT_MEDIA) return readyfs_media(call);
+#endif
     if (call->operation == RF_PRESENT_DATA_TEXT) {
         for (n = 0u; n < call->value_low; ++n) {
             i = (unsigned char)call->buffer[n];
@@ -54,18 +53,12 @@ unsigned char readyfs_present(ReadyFsUtilityCall *call) {
         return 1u;
     }
     if (call->operation == RF_PRESENT_STAGE_NAME) {
-        if (call->argc == RF_EP_IEC) {
-            last = call->workspace;
-            n = call->value_high;
-            if (n >= 10u) *last++ = (char)('0' + n / 10u);
-            *last++ = (char)('0' + n % 10u);
-            *last++ = ':'; *last++ = '/';
-        } else {
-            strcpy(call->workspace, call->buffer);
-            last = strrchr(call->workspace, '/');
-            if (!last || (unsigned int)(last - call->workspace) + 7u > RF_PATH_MAX) return 0u;
-            ++last;
-        }
+        /* The canonical parent includes endpoint, partition and image view.
+         * A stage must never fall back to the IEC device root. */
+        strcpy(call->workspace, call->buffer);
+        last = strrchr(call->workspace, '/');
+        if (!last || (unsigned int)(last - call->workspace) + 7u > RF_PATH_MAX) return 0u;
+        ++last;
         strcpy(last, "rf~");
         last[3] = "0123456789abcdef"[(unsigned char)call->value_low >> 4u];
         last[4] = "0123456789abcdef"[call->value_low & 15u];

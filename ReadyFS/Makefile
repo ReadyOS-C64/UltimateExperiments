@@ -114,7 +114,7 @@ READYFS_OVERLAY_ADDR_OBJS := \
 	$(READYFS_OVERLAY_OBJ_DIR)/overlay10/$(READYFS_SRC_DIR)/readyfs_batch_overlay_addr.o \
 	$(READYFS_OVERLAY_OBJ_DIR)/overlay11/$(READYFS_SRC_DIR)/readyfs_recursive_overlay_addr.o \
 	$(READYFS_OVERLAY_OBJ_DIR)/overlay12/$(READYFS_SRC_DIR)/readyfs_tape_overlay_addr.o
-READYFS_OVERLAY_PRESENT_OBJS := $(READYFS_OVERLAY_OBJ_DIR)/overlay14/$(READYFS_SRC_DIR)/readyfs_transfer.o $(READYFS_OVERLAY_OBJ_DIR)/overlay14/$(READYFS_SRC_DIR)/readyfs_media.o $(READYFS_OVERLAY_OBJ_DIR)/overlay14/$(READYFS_SRC_DIR)/readyfs_present.o $(READYFS_OVERLAY_OBJ_DIR)/overlay14/$(READYFS_SRC_DIR)/readyfs_present_overlay_addr.o
+READYFS_OVERLAY_PRESENT_OBJS := $(READYFS_OVERLAY_OBJ_DIR)/overlay14/$(READYFS_SRC_DIR)/readyfs_transfer.o $(READYFS_OVERLAY_OBJ_DIR)/overlay14/$(READYFS_SRC_DIR)/readyfs_present.o $(READYFS_OVERLAY_OBJ_DIR)/overlay14/$(READYFS_SRC_DIR)/readyfs_present_overlay_addr.o
 READYFS_OVERLAY_ALL_OBJS := $(READYFS_OVERLAY_PRESENT_OBJS) \
 	$(READYFS_OVERLAY_RESIDENT_OBJS) $(READYFS_OVERLAY_MATCH_OBJS) \
 	$(READYFS_OVERLAY_PLAN_OBJS) $(READYFS_OVERLAY_HELP_OBJS) \
@@ -170,9 +170,10 @@ $(eval $(call READYFS_OVERLAY_RULE,14,))
 $(eval $(call READYFS_OVERLAY_RULE,15,))
 $(eval $(call READYFS_OVERLAY_RULE,16,))
 $(eval $(call READYFS_OVERLAY_RULE,17,))
+$(eval $(call READYFS_OVERLAY_RULE,18,))
 $(READYFS_OVERLAY_OBJ_DIR)/overlay15/$(READYFS_SRC_DIR)/readyfs_preview.o $(READYFS_OVERLAY_OBJ_DIR)/overlay15/$(READYFS_SRC_DIR)/readyfs_command_help.o: $(READYFS_HELP_DATA)
 
-READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay17/$(READYFS_SRC_DIR)/readyfs_iec_plan.o $(READYFS_OVERLAY_OBJ_DIR)/overlay17/$(READYFS_SRC_DIR)/readyfs_iec_overlay_addr.o $(READYFS_OVERLAY_OBJ_DIR)/overlay16/$(READYFS_SRC_DIR)/readyfs_iec.o
+READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay17/$(READYFS_SRC_DIR)/readyfs_iec_plan.o $(READYFS_OVERLAY_OBJ_DIR)/overlay17/$(READYFS_SRC_DIR)/readyfs_iec_overlay_addr.o $(READYFS_OVERLAY_OBJ_DIR)/overlay18/$(READYFS_SRC_DIR)/readyfs_iec.o $(READYFS_OVERLAY_OBJ_DIR)/overlay18/$(READYFS_SRC_DIR)/readyfs_media.o $(READYFS_OVERLAY_OBJ_DIR)/overlay18/$(READYFS_SRC_DIR)/readyfs_native_overlay_addr.o
 
 READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay16/$(READYFS_SRC_DIR)/readyfs_stream.o $(READYFS_OVERLAY_OBJ_DIR)/overlay16/$(READYFS_SRC_DIR)/readyfs_stream_overlay_addr.o
 
@@ -206,6 +207,7 @@ $(READYFS_OVERLAY_D81): FORCE $(READYFS_OVERLAY)
 		-write $(READYFS_OUT_DIR)/readyfs-command-help.prg rfexamples \
 		-write $(READYFS_OUT_DIR)/readyfs-stream.prg rfstream \
 		-write $(READYFS_OUT_DIR)/readyfs-iec.prg rfiec \
+		-write $(READYFS_OUT_DIR)/readyfs-native.prg rfnative \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_content_view.seq "rfview,s" \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_content_long.seq "rflong,s" \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_batch_ok.seq "rfbok,s" \

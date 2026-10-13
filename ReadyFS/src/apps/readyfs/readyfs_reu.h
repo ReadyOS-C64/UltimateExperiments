@@ -16,7 +16,9 @@
 #define RF_REU_STREAM_CACHE_BYTES 0x1000u
 #define RF_REU_IEC_CACHE_OFF 0xC100u
 #define RF_REU_IEC_CACHE_BYTES 0x1000u
-#define RF_REU_BATCH_BANK_BYTES 0xD100u
+#define RF_REU_NATIVE_CACHE_OFF 0xD100u
+#define RF_REU_NATIVE_CACHE_BYTES 0x1000u
+#define RF_REU_BATCH_BANK_BYTES 0xE100u
 
 extern unsigned char readyfs_reu_batch_bank_value;
 

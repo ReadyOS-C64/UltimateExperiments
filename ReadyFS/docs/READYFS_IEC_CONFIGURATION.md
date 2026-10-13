@@ -105,8 +105,8 @@ Other DOS errors are red and set the shell's typed error result.
 
 ## Implementation and test boundaries
 
-Policy lives in cached overlay 17; native standalone I/O shares overlay 16 with
-stream preparation. The resident gateway enters them sequentially. Neither
+Policy lives in cached overlay 17; native standalone I/O and media reporting
+live in overlay 18. Stream preparation retains overlay 16 for filesystem policy. The resident gateway enters them sequentially. Neither
 loads a sidecar from disk at runtime. All returned data stays in resident
 buffers, and existing file transfer loops keep their current implementation.
 

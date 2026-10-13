@@ -692,6 +692,7 @@ static void cmd_probe(unsigned char argc) {
     }
 }
 
+#ifndef READYFS_OVERLAY_RUNTIME
 unsigned char readyfs_iec_present(unsigned char device) {
     unsigned char status;
 
@@ -705,7 +706,7 @@ unsigned char readyfs_iec_present(unsigned char device) {
     cbm_k_clrch();
     return (unsigned char)((status & 0x80u) == 0u);
 }
-
+#endif
 
 #ifdef READYFS_OVERLAY_RUNTIME
 static void media(unsigned char mode, unsigned char unit, const char *path) {
@@ -1886,8 +1887,6 @@ static unsigned char make_temp_stream(ReadyFsStream *dest,
         utility_ui.operation = RF_PRESENT_STAGE_NAME;
         utility_ui.buffer = (char *)dest->text;
         utility_ui.workspace = temp_text;
-        utility_ui.argc = dest->path.endpoint;
-        utility_ui.value_high = dest->path.unit;
         utility_ui.value_low = serial;
         if (!readyfs_overlay_present(&utility_ui)) return 0u;
 #else
