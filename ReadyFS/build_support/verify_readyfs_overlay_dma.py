@@ -171,11 +171,21 @@ def main() -> int:
             "tree gateway must dispatch cached slot 8 then restore matcher",
             failures)
     require(overlay,
-            r"unsigned char readyfs_overlay_batch[\s\S]*?"
-            r"open_batch_cached\(call->operation == RF_BATCH_EDITOR \? 1u : 0u\)[\s\S]*?"
-            r"readyfs_batch_dispatch[\s\S]*?restore_match\(\)",
-            "batch gateway must use its dedicated bank then restore matcher",
-            failures)
+            r"static unsigned char batch_call[\s\S]*?open_batch_cached\(0u\)[\s\S]*?"
+            r"readyfs_batch_dispatch\(call\)[\s\S]*?restore_match\(\)",
+            "batch checkpoint gateway must restore the matcher", failures)
+    require(overlay,
+            r"unsigned char readyfs_overlay_batch[\s\S]*?RF_BATCH_EDITOR[\s\S]*?"
+            r"open_batch_cached\(1u\)[\s\S]*?readyfs_ui_editor\(call\)[\s\S]*?restore_match\(\)",
+            "editor gateway must restore the matcher", failures)
+    require(overlay,
+            r"readyfs_overlay_script[\s\S]*?open_script\(index\)[\s\S]*?"
+            r"readyfs_config\(call\)[\s\S]*?readyfs_flow\(call\)[\s\S]*?"
+            r"readyfs_expand\(call\)[\s\S]*?readyfs_environment\(call\)[\s\S]*?restore_match\(\)",
+            "script phases must execute through their cached bank and restore the matcher", failures)
+    require(resident,
+            r"unsigned char readyfs_config_io[\s\S]*?readyfs_overlay_resume_config\(\)",
+            "nested config I/O must restore config code before returning", failures)
     require(overlay,
             r"unsigned char readyfs_overlay_tape[\s\S]*?"
             r"open_batch_cached\(2u\)[\s\S]*?"
@@ -349,8 +359,8 @@ def main() -> int:
             r"fetch_eof:\s*[\s\S]*?sta\s+\(ptr1\),y[\s\S]*?"
             r"jmp\s+succeed",
             "tape replay EOF must return success unconditionally", failures)
-    require(tape_spool, r"cmp\s+_readyfs_reu_console_bank_value",
-            "spool capacity must protect the console and all three cache banks", failures)
+    require(tape_spool, r"cmp\s+_readyfs_reu_script_bank_value",
+            "spool capacity must protect the scripting bank and all four higher banks", failures)
     if "_readyfs_reu_batch_bank_value" in tape_spool:
         failures.append("spool may not use batch bank as its capacity ceiling")
     eof_block = tape_spool.split("fetch_eof:", 1)[-1].split("; A is", 1)[0]
@@ -489,7 +499,7 @@ def main() -> int:
             print(f"ReadyFS overlay DMA contract: FAIL: {failure}")
         return 1
     print("ReadyFS overlay DMA contract: PASS (flat 6-byte overlay/session/"
-          "batch boundaries, explicit slots 1-24; REU-checkpointed recursive, "
+          "batch boundaries, explicit slots 1-28; dedicated script bank below all four higher banks; REU-checkpointed recursive, "
           "backend/native, utility, tree, content, batch, UI, and tape controllers; "
           "resident-owned device I/O)")
     return 0

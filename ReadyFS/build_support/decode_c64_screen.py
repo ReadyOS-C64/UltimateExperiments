@@ -11,6 +11,10 @@ def decode_screen_code(value: int) -> str:
     value &= 0x7F  # Screen-code bit 7 selects reverse video.
     if value == 0:
         return "@"
+    if value == 0x1B:
+        return "["
+    if value == 0x1D:
+        return "]"
     if value == 0x20:
         return " "
     if 0x01 <= value <= 0x1A:

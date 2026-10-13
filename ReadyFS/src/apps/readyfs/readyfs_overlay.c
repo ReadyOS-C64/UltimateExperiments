@@ -22,6 +22,8 @@
 #ifdef READYFS_OVERLAY_RUNTIME
 
 #include <cbm.h>
+#include <conio.h>
+#include <string.h>
 
 #define RF_CPU_PORT (*(volatile unsigned char *)0x0001u)
 
@@ -50,6 +52,10 @@ extern unsigned char _OVERLAY21_SIZE__[];
 extern unsigned char _OVERLAY22_SIZE__[];
 extern unsigned char _OVERLAY23_SIZE__[];
 extern unsigned char _OVERLAY24_SIZE__[];
+extern unsigned char _OVERLAY25_SIZE__[];
+extern unsigned char _OVERLAY26_SIZE__[];
+extern unsigned char _OVERLAY27_SIZE__[];
+extern unsigned char _OVERLAY28_SIZE__[];
 
 /* Linker-visible admission sentinels let post-stop automation bind to the
  * current BSS layout rather than a stale hard-coded address. */
@@ -168,6 +174,51 @@ static unsigned char load_batch_cached(unsigned char slot) {
     RF_CPU_PORT = (unsigned char)(overlay_old_port & 0xFEu);
     if ((slot >= 9u ? readyfs_reu_session_store : readyfs_reu_batch_store)(batch_offsets[slot], _OVERLAY1_LOAD__, size)) return 1u;
     close_cached(); return 0u;
+}
+
+static const char * const script_names[] = { "rfenv", "rfexpand", "rfflow", "rfcfg" };
+static const unsigned char * const script_sizes[] = {
+    _OVERLAY25_SIZE__, _OVERLAY26_SIZE__, _OVERLAY27_SIZE__, _OVERLAY28_SIZE__
+};
+static unsigned char open_script(unsigned char index) {
+    overlay_old_port = RF_CPU_PORT;
+    RF_CPU_PORT = (unsigned char)(overlay_old_port & 0xFEu);
+    if (readyfs_reu_script_fetch((unsigned int)index * 0x1000u,
+            _OVERLAY1_LOAD__, (unsigned int)script_sizes[index])) return 1u;
+    close_cached(); return 0u;
+}
+unsigned char readyfs_overlay_resume_config(void) {
+    return readyfs_reu_script_fetch(RF_SCRIPT_CONFIG_CACHE, _OVERLAY1_LOAD__, (unsigned int)_OVERLAY28_SIZE__);
+}
+unsigned char readyfs_overlay_script(ReadyFsBatchCall *call) {
+    unsigned char result;
+    unsigned char index, old_port;
+    old_port = RF_CPU_PORT;
+    index = call->operation >= RF_CONFIG_APPLY ? 3u : (call->operation == RF_BATCH_FLOW ? 2u :
+            (call->operation == RF_ENV_EXPAND || call->operation == RF_ENV_ARGUMENTS ? 1u : 0u));
+    if (!batch_loaded || !open_script(index)) return 0u;
+    result = index == 3u ? readyfs_config(call) : (index == 2u ? readyfs_flow(call) :
+             (index == 1u ? readyfs_expand(call) : readyfs_environment(call)));
+    restore_match(); RF_CPU_PORT = old_port; return result;
+}
+static unsigned char init_script(void) {
+    unsigned char i;
+    unsigned int size;
+    extern unsigned char readyfs_pipeline_scratch[];
+    for (i = 0u; i < 4u; ++i) {
+        size = (unsigned int)script_sizes[i];
+        if (!size || size > 0x1000u || load_sidecar(script_names[i]) != size) return 0u;
+        overlay_old_port = RF_CPU_PORT;
+        RF_CPU_PORT = (unsigned char)(overlay_old_port & 0xFEu);
+        if (!readyfs_reu_script_store((unsigned int)i * 0x1000u, _OVERLAY1_LOAD__, size)) {
+            close_cached(); return 0u;
+        }
+        size = i == 3u ? readyfs_config_abi() : (i == 0u ? readyfs_environment_abi() : (i == 1u ? readyfs_expand_abi() : readyfs_flow_abi()));
+        if (i == 0u) { ((ReadyFsBatchCall *)(void *)readyfs_pipeline_scratch)->operation = RF_ENV_INIT; if (!readyfs_environment((ReadyFsBatchCall *)(void *)readyfs_pipeline_scratch)) size = 0u; }
+        restore_match();
+        if (size != RF_SCRIPT_ABI) return 0u;
+    }
+    return 1u;
 }
 
 unsigned char readyfs_overlay_init(unsigned char reu_available) {
@@ -299,7 +350,8 @@ unsigned char readyfs_overlay_init(unsigned char reu_available) {
     if (loaded != RF_UDOS_EXECUTE_ABI || !load_batch_cached(13u)) return 0u;
     loaded = readyfs_udos_name_abi();
     restore_match();
-    return (unsigned char)(loaded == RF_UDOS_NAME_ABI);
+    if (loaded != RF_UDOS_NAME_ABI || !init_script()) { batch_loaded = 0u; return 0u; }
+    return 1u;
 }
 
 unsigned char readyfs_overlay_match(const char *pattern,
@@ -515,16 +567,69 @@ unsigned char readyfs_overlay_tree(ReadyFsTreeCall *call) {
     return result;
 }
 
-unsigned char readyfs_overlay_batch(ReadyFsBatchCall *call) {
+static unsigned char batch_call(ReadyFsBatchCall *call, unsigned char operation) {
     unsigned char result;
+    call->operation = operation;
+    if (!open_batch_cached(0u)) return 0u;
+    result = readyfs_batch_dispatch(call); restore_match(); return result;
+}
+static unsigned char script_step(ReadyFsBatchCall *call, unsigned char operation) {
+    call->operation = operation;
+    return operation == RF_BATCH_READ || operation == RF_BATCH_EVAL || operation == RF_BATCH_ACK ?
+           batch_call(call, operation) : readyfs_overlay_script(call);
+}
+#pragma static-locals (push, on)
+unsigned char readyfs_overlay_batch(ReadyFsBatchCall *call) {
+    ReadyFsBatchCall work;
+    unsigned char result, phase, exists, mode;
+    static const unsigned char phases[] = { RF_ENV_EXPAND, RF_BATCH_FLOW, RF_ENV_COMMAND, RF_BATCH_EVAL };
     if (!batch_loaded) return 0u;
-    if (!open_batch_cached(call->operation == RF_BATCH_EDITOR ? 1u : 0u)) return 0u;
-    result = call->operation == RF_BATCH_EDITOR ?
-             readyfs_ui_editor(call) : readyfs_batch_dispatch(call);
-    restore_match();
-    return result;
+    if (call->operation == RF_BATCH_EDITOR) {
+        if (!open_batch_cached(1u)) return 0u;
+        result = readyfs_ui_editor(call); restore_match(); return result;
+    }
+    if (call->operation != RF_BATCH_NEXT && call->operation != RF_BATCH_INTERACTIVE)
+        return batch_call(call, call->operation);
+    mode = call->operation;
+    memcpy(&work, call, sizeof(work));
+    do {
+        work.finish = mode == RF_BATCH_NEXT;
+        if (work.finish) {
+            if (!batch_call(&work, RF_BATCH_READ)) return 0u;
+            if (work.action == RF_BATCH_DONE) break;
+        }
+        for (phase = 0u; phase < 4u; ++phase) {
+            if (mode == RF_BATCH_INTERACTIVE && phase == 1u) phase = 2u;
+            if (phase == 2u) work.rc = 0u;
+            if (!script_step(&work, phases[phase])) return 0u;
+            if (work.action == RF_BATCH_HELP) {
+                if (!script_step(&work, RF_CONFIG_HELP)) return 0u;
+            }
+            if (work.action == RF_BATCH_EXISTS) {
+                exists = readyfs_script_exists(work.test);
+                if (exists > 1u) { work.rc = RF_RESULT_IO; work.action = RF_BATCH_ERROR; }
+                else if (exists == work.finish) work.action = RF_BATCH_SKIP;
+                else { --phase; continue; }
+            }
+            if (work.action == RF_BATCH_ERROR) {
+                work.action = RF_BATCH_SKIP; work.finish = 1u;
+                if (mode == RF_BATCH_NEXT && !batch_call(&work, RF_BATCH_ACK)) return 0u;
+                break;
+            }
+            if (work.action == RF_BATCH_SKIP) {
+                if (mode == RF_BATCH_NEXT && phase == 2u) {
+                    work.finish = 0u;
+                    if (!batch_call(&work, RF_BATCH_ACK)) return 0u;
+                }
+                break;
+            }
+            if (mode == RF_BATCH_INTERACTIVE && phase == 2u) break;
+        }
+    } while (mode == RF_BATCH_NEXT && work.action == RF_BATCH_SKIP);
+    memcpy(call, &work, sizeof(work)); return 1u;
 }
 
+#pragma static-locals (pop)
 unsigned char readyfs_overlay_batch_available(void) { return batch_loaded; }
 
 unsigned char readyfs_overlay_tape(ReadyFsTapeCall *call) {

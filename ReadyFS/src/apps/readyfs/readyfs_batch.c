@@ -1,5 +1,6 @@
 #include "readyfs_console.h"
 #include "readyfs_batch.h"
+#include "readyfs_script.h"
 
 #include "readyfs_reu.h"
 #include "readyfs_result.h"
@@ -11,17 +12,6 @@
 #define RF_BATCH_MAGIC 0x42u
 #define RF_BATCH_POLICY_STOP 1u
 #define RF_CH_END 147u
-
-typedef struct {
-    unsigned char magic;
-    unsigned char policy;
-    unsigned char have_rc;
-    unsigned char last_rc;
-    unsigned char stopped;
-    unsigned int size;
-    unsigned int offset;
-    unsigned int lines;
-} ReadyFsBatchState;
 
 static ReadyFsBatchState state;
 
@@ -53,34 +43,6 @@ static unsigned char same_word(const char *left, const char *right) {
 }
 
 #endif
-
-static unsigned char split_args(ReadyFsBatchCall *call) {
-    unsigned char count;
-    unsigned char quote;
-    char *readp;
-    char *writep;
-
-    count = 0u;
-    readp = call->buffer;
-    writep = call->buffer;
-    while (*readp != 0 && count < 12u) {
-        while (*readp == ' ') ++readp;
-        if (*readp == 0) break;
-        call->args[count++] = writep;
-        quote = 0u;
-        if (*readp == '"') { quote = 1u; ++readp; }
-        while (*readp != 0) {
-            if (quote) {
-                if (*readp == '"') { ++readp; break; }
-            } else if (*readp == ' ') break;
-            *writep++ = *readp++;
-        }
-        if (!quote && *readp == ' ') ++readp;
-        *writep++ = 0;
-        while (*readp == ' ') ++readp;
-    }
-    return count;
-}
 
 static void set_error(void) {
     state.last_rc = RF_RESULT_INTERACTION;
@@ -124,46 +86,46 @@ static unsigned char initialize(ReadyFsBatchCall *call) {
     return state_store();
 }
 
-static unsigned char next(ReadyFsBatchCall *call) {
-    unsigned char expected;
-    if (call->buffer == 0 || call->args == 0 || call->capacity < 2u ||
-        !state_fetch() || state.magic != RF_BATCH_MAGIC) return 0u;
+static unsigned char read_next(ReadyFsBatchCall *call) {
+    if (!state_fetch() || state.magic != RF_BATCH_MAGIC) return 0u;
     call->action = RF_BATCH_DONE;
-    while (!state.stopped && state.offset < state.size) {
-        if (!read_script_line(call)) {
-            (void)state_store();
-            return state.stopped ? 1u : 0u;
-        }
-        call->argc = split_args(call);
-        if (call->argc == 0u || call->args[0][0] == '#') continue;
-        if (same_word(call->args[0], "onerror")) {
-            if (call->argc == 2u && same_word(call->args[1], "stop"))
-                state.policy = RF_BATCH_POLICY_STOP;
-            else if (call->argc == 2u && same_word(call->args[1], "continue"))
-                state.policy = 0u;
-            else { cputs("onerror stop|continue\r\n"); set_error(); }
-            continue;
-        }
-        if (same_word(call->args[0], "expect")) {
-            if (call->argc != 3u || !same_word(call->args[1], "rc") ||
-                call->args[2][0] < '0' || call->args[2][0] > '9' ||
-                call->args[2][1] != 0 || !state.have_rc) {
-                cputs("expect rc N after command\r\n");
-                set_error();
-            } else if ((expected = (unsigned char)(call->args[2][0] - '0')) ==
-                       state.last_rc) cputs("expect rc ok\r\n");
-            else { cputs(RF_ERROR "expect rc mismatch\r\n"); set_error(); }
-            continue;
-        }
-        if (same_word(call->args[0], "run") ||
-            same_word(call->args[0], "ru")) {
-            cputs(RF_ERROR "nested run off\r\n");
-            set_error();
-            continue;
-        }
-        call->action = RF_BATCH_COMMAND;
-        return state_store();
+    call->rc = state.have_rc ? state.last_rc : 0u;
+    if (state.stopped) return 1u;
+    if (state.offset >= state.size) {
+        if (!state.depth) return 1u;
+        state.offset = state.returns[--state.depth];
     }
+    if (++state.steps > RF_SCRIPT_STEPS) {
+        cputs("batch step limit\r\n");
+        set_error(); state.stopped = 1u; return state_store();
+    }
+    if (!read_script_line(call)) {
+        state.stopped = 1u; set_error(); return state_store();
+    }
+    call->action = RF_BATCH_RAW;
+    return state_store();
+}
+
+static unsigned char evaluate(ReadyFsBatchCall *call) {
+    unsigned char expected;
+    if (!state_fetch()) return 0u;
+    call->action = RF_BATCH_SKIP;
+    if (call->argc == 0u || call->args[0][0] == '#') return 1u;
+    if (same_word(call->args[0], "onerror")) {
+        if (call->argc == 2u && same_word(call->args[1], "stop")) state.policy = RF_BATCH_POLICY_STOP;
+        else if (call->argc == 2u && same_word(call->args[1], "continue")) state.policy = 0u;
+        else { cputs("onerror stop|continue\r\n"); set_error(); }
+    } else if (same_word(call->args[0], "expect")) {
+        if (call->argc != 3u || !same_word(call->args[1], "rc") ||
+            call->args[2][0] < '0' || call->args[2][0] > '9' ||
+            call->args[2][1] != 0 || !state.have_rc) {
+            cputs("expect rc N after command\r\n"); set_error();
+        } else if ((expected = (unsigned char)(call->args[2][0] - '0')) == state.last_rc)
+            cputs("expect rc ok\r\n");
+        else { cputs(RF_ERROR "expect rc mismatch\r\n"); set_error(); }
+    } else if (same_word(call->args[0], "run") || same_word(call->args[0], "ru")) {
+        cputs(RF_ERROR "nested run off\r\n"); set_error();
+    } else call->action = RF_BATCH_COMMAND;
     return state_store();
 }
 
@@ -240,7 +202,8 @@ unsigned char readyfs_batch_dispatch(ReadyFsBatchCall *call) {
     if (call == 0) return 0u;
     if (call->operation == RF_BATCH_ALIAS) return alias_command(call);
     if (call->operation == RF_BATCH_INIT) return initialize(call);
-    if (call->operation == RF_BATCH_NEXT) return next(call);
+    if (call->operation == RF_BATCH_READ) return read_next(call);
+    if (call->operation == RF_BATCH_EVAL) return evaluate(call);
     if (call->operation == RF_BATCH_ACK) return acknowledge(call);
     if (call->operation == RF_BATCH_REPORT) return report(call);
     return 0u;

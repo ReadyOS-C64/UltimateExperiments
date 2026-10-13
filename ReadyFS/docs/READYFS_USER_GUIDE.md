@@ -25,7 +25,7 @@ This guide starts with that model, explains command arguments and options, then 
 
 ### Use the full application
 
-Use **`readyfs-overlay.prg`** with **`readyfs-overlay-lab.d81`** on IEC device 8. The disk contains the 24 sidecars that startup caches in the REU. This build needs a detected REU of at least **1 MiB**. Keep the sidecars available during startup; loading them can take time on the C64. The smaller `readyfs.prg` is a diagnostic version and does not provide the complete editor and command-help experience described here.
+Use **`readyfs-overlay.prg`** with **`readyfs-overlay-lab.d81`** on IEC device 8. The disk contains the 28 sidecars that startup caches in the REU. This build needs a detected REU of at least **1 MiB**. Keep the sidecars available during startup; loading them can take time on the C64. The smaller `readyfs.prg` is a diagnostic version and does not provide the complete editor and command-help experience described here.
 
 From BASIC, with the lab image mounted on drive 8:
 
@@ -217,7 +217,7 @@ The destination is a Commodore directory entry. Its name, type, and size must fi
 
 #### 5. Direct image paths in both directions
 
-The current 24-sidecar overlay build supports contained SEQ, PRG, and USR files through **ordinary slash paths**. Use a writable, unmounted image you own, an existing output folder, and unused destination names:
+The current 28-sidecar overlay build supports contained SEQ, PRG, and USR files through **ordinary slash paths**. Use a writable, unmounted image you own, an existing output folder, and unused destination names:
 
 ```text
 COPY u:/usb1/work.d64/HELLO.prg u:/usb1/out/HELLO.prg --whatif
@@ -653,23 +653,71 @@ CONFIG LOAD @lab:/readyfs.cfg
 ALIAS
 ```
 
-Configuration saves/restores aliases and drive-profile state; it does not save command/output history or the contents of your files. With no explicit path, CONFIG uses `8:/readyfs.cfg`. Saving is a filesystem write and replacement can require confirmation. Loading restores configuration state; it is not a no-change query.
+Configuration saves/restores the current directory, aliases and variables marked `/P`; it does not save command/output history or the contents of your files. With no explicit path, CONFIG uses `8:/readyfs.cfg`. Saving is a filesystem write and replacement can require confirmation. Loading restores configuration state; it is not a no-change query.
 
 ### RUN scripts: parameters, previews and reliable execution
 
-`RUN script-path` (short form `RU`) executes a text script of ReadyFS commands in the **overlay application with working REU and sidecars**. It reads and stages the whole file, closes its input stream, then dispatches commands one at a time. This is ReadyFS command scripting; it does not load and start a C64 PRG or BASIC program.
+`RUN script-path [arg1 ... arg9]` (short form `RU`) executes a text script of ReadyFS commands in the **overlay application with working REU and sidecars**. It reads and stages the whole file, closes its input stream, then dispatches commands one at a time. This is ReadyFS command scripting; it does not load and start a C64 PRG or BASIC program.
 
 #### What parameters belong where?
 
 | Where | Example | Meaning |
 |---|---|---|
-| RUN invocation | `RUN @lab:/INSPECT.SEQ` | Exactly one argument: the script path. |
+| RUN invocation | `RUN @lab:/INSPECT.SEQ` | Script path, optionally followed by up to nine arguments. |
 | Short invocation | `RU 8:/INSPECT` | Same command; use the actual disk directory name. IEC names do not automatically gain `.SEQ`. |
 | Quoted script path | `RUN "@lab:/INSPECT NOTES.SEQ"` | One path containing spaces. |
 | Inside the script | `COPY @src:/README.SEQ @dst:/README.SEQ --whatif` | COPY receives its source, destination and options. |
 | Session setup | `ALIAS SRC u:/usb1/READYFS_TEST/YOUR_FRESH_RUN/source` | An alias supplies a reusable location to script commands. |
 
-There is **no `$1`/`$2` substitution, argument forwarding, variable expansion, branching, loops or nested RUN**. `RUN script.seq --yes`, `RUN script.seq --whatif` and `RUN script.seq source destination` are invalid invocations: RUN requires exactly two tokens including its command name. Put options on the relevant commands *inside* the script. An alias is a location bookmark, not a general text variable. Scripts share the current session; changes to aliases and current directory can remain after the script finishes. Relative paths resolve against that current directory, not the directory holding the script. Prefer absolute paths or aliases in reusable scripts.
+#### DOS-style variables and flow control
+
+The current overlay build supports session variables, saved variables, script arguments, branches, counted loops and label subroutines. Type `HELP BATCH` or `HELP SET` on the C64 for the compact reference.
+
+| Command or expansion | Behavior |
+|---|---|
+| `SET NAME=value` | Set a session variable. A plain SET changes an existing saved variable to session-only. |
+| `SET /P NAME=value` | Mark this variable for the next `CONFIG SAVE`. `/P` means persistent in ReadyFS. |
+| `SET NAME=` | Delete a variable, including its persistent flag. |
+| `SET` / `SET NAME` | List variables with `/P` markers, or show one value. |
+| `%NAME%` / `%ERRORLEVEL%` | Expand a variable or the preceding command result. Undefined variables expand to empty text. Names are case-insensitive. ERRORLEVEL is read-only. |
+| `%0`, `%1` … `%9` | Script path and up to nine RUN arguments. Missing arguments expand to empty text. |
+| `%%` | Insert a literal percent sign. |
+| `SET /A N=N+1` | Evaluate an unsigned 16-bit integer, or one addition/subtraction. Operands are decimal literals or variable names; undefined operands are zero. Results wrap at 65536. Use `SET /P /A` to retain the persistent flag. |
+| `ECHO text` / `REM comment` | Print text or ignore the whole line. Whole-line `#` comments also work. |
+| `:LABEL` / `GOTO LABEL` | Declare a label or jump to it. Labels are case-insensitive, up to 16 bytes; the first matching label wins. |
+| `CALL :LABEL` | Run a label subroutine in the same staged script, sharing variables and arguments. Maximum nesting: eight. |
+| `EXIT /B [code]` / `GOTO :EOF` | Return from a subroutine, or finish the top-level script. EXIT /B can set a result from 0 to 255. Reaching the physical end of a subroutine also returns. |
+| `IF [NOT] ERRORLEVEL n command` | Run the command when the preceding result is **greater than or equal to** n, optionally negated. |
+| `IF [NOT] DEFINED name command` | Test whether a variable exists. |
+| `IF [NOT] EXIST path command` | Test the filesystem through ReadyFS's normal path and backend handling. A lookup failure stops the script with result 8. |
+| `IF [NOT] "a"=="b" command` | Compare exact, case-sensitive strings. A spaced `a == b` comparison also works. |
+| `IF [NOT] n EQU\|NEQ\|LSS\|LEQ\|GTR\|GEQ n command` | Compare unsigned integers from 0 to 65535. Expand variables explicitly, for example `IF %N% LSS 3 GOTO LOOP`. |
+
+For example, save this with real line breaks and run `RUN 8:/COUNT WORLD`:
+
+```text
+REM ARGUMENTS AND A COUNTED LOOP
+SET WHO=%1
+SET /A N=0
+:LOOP
+SET /A N=N+1
+ECHO HELLO "%WHO%" %N%
+IF %N% LSS 3 GOTO LOOP
+CALL :FINISH
+EXIT /B 0
+:FINISH
+ECHO DONE
+EXIT /B
+```
+
+Expansion happens once before tokenization on each executed line. Quote an expanded value when it must remain one argument: `COPY "%SOURCE%" "%TARGET%"`. Values are not expanded recursively. To write literal variable references into a script from the interactive prompt, double their percent signs, for example `WRITE 8:/SHOW "ECHO %%NAME%%" --line`. RUN arguments such as `--yes` are ordinary `%1`/`%2` values; they do not become global confirmation or preview options. Put those options on the intended operation inside the script.
+
+There are 16 variable slots, with names up to 16 bytes and values up to 127 bytes. Names use letters, underscores and digits after the first character. Variables can be used interactively and inside scripts. `CONFIG SAVE` writes only variables marked `/P`, alongside the current directory and aliases, in the new RFC2 format. `CONFIG LOAD` validates the complete file before applying it, replaces the saved-variable set, and preserves unrelated session variables. A loaded saved variable takes precedence over a session variable with the same name. If the merged table would exceed 16 slots, loading fails without changing the session. Legacy RFC1 configs still load their directory and aliases and leave variables alone. Loading config is explicit after startup.
+
+RUN remains bounded to a 16 KiB staged script and 255 bytes per expanded line, with at most 12 tokens. Tabs and spaces separate arguments; balanced double quotes can occur within an argument. Excess tokens, unmatched quotes and invalid expansion produce result 4 before command dispatch. Scripts stop after 10,000 executed lines to bound accidental loops; RUN/STOP cancels execution between interpreted lines with result 3. Filesystem operations retain their existing cancellation behavior. ONERROR STOP remains the default; use ONERROR CONTINUE before a command whose failure you intend to inspect with IF ERRORLEVEL. Comments, labels and false IF branches preserve the preceding result; SET and ECHO produce their own result.
+
+This is a bounded DOS-style language. Loops use labels, arithmetic and conditional GOTO; CALL targets labels in the same file. Nested RUN, external-script CALL, FOR, SETLOCAL, pipes and redirection are not implemented. Scripts share aliases and the current directory, and relative paths resolve against that directory rather than the directory containing the script.
+
 
 The recipes below are syntax examples reviewed against the implementation and existing batch fixtures; they are **not additional steps in the recorded 37-step video**. Set `@lab`, `@src` and `@dst` to your own intended locations before use. Mutation examples belong in a fresh disposable test folder.
 
@@ -800,7 +848,7 @@ EXPECT RC 0
 
 This intentionally dispatches an unknown command, checks its code, then restores normal stopping. `ONERROR CONTINUE` must appear **before** a command whose nonzero result you want to examine; with STOP, execution ends before the following EXPECT can run.
 
-A mismatched EXPECT sets result 3. Under CONTINUE, the next ordinary command may overwrite that result, so a final `RC 0` does **not** prove every earlier command/assertion passed. Read all mismatch/error lines. An EXPECT that successfully checks a nonzero code does not reset that code to zero. RUN's printed RC is its latest stored result, not an accumulated error count. Use its printed summary directly; STATUS after RUN is not a reliable substitute for that batch summary.
+A mismatched EXPECT sets result 3. Under CONTINUE, the next ordinary command may overwrite that result, so a final `RC 0` does **not** prove every earlier command/assertion passed. Read all mismatch/error lines. An EXPECT that successfully checks a nonzero code does not reset that code to zero. RUN's printed RC is its latest stored result, not an accumulated error count. That final result is also available to STATUS and `%ERRORLEVEL%` after RUN.
 
 #### Result codes and current limits
 
@@ -813,15 +861,15 @@ A mismatched EXPECT sets result 3. Under CONTINUE, the next ordinary command may
 | 4 | Usage error | 10 | Partial operation |
 | 5 | Not found | 11 | Internal failure |
 
-`EXPECT RC N` currently accepts **one digit, 0–9 only**, even though result codes 10 and 11 exist. It checks the most recent dispatched command and needs a preceding command; blank lines, comments and policy directives do not supply a new command result. Typed-result conversion is still incomplete across legacy handlers, so code 0 alone is not proof of all filesystem postconditions.
+`EXPECT RC N` currently accepts **one digit, 0–9 only**, even though result codes 10 and 11 exist. It checks the most recent command result, including SET/ECHO, and needs a preceding result; blank lines, comments and policy directives do not supply a new command result. Typed-result conversion is still incomplete across legacy handlers, so code 0 alone is not proof of all filesystem postconditions.
 
-Scripts are limited to **16 KiB**, **255 bytes per logical line**, and **12 tokens including the command**. Use spaces between arguments; the batch tokenizer does not treat tabs as separators. Use balanced double quotes around a complete argument with spaces. Keep comments on their own lines beginning with `#`; trailing `#` text is not an inline comment. Use plain C64/PETSCII-compatible text, uppercase command fixtures and real CR or LF line breaks. Avoid smart quotes, a UTF-8 BOM and host lowercase ASCII command files. CRLF is readable but its two terminators can increase reported line totals. Do not rely on excess tokens or malformed quotes being diagnosed as strictly as the interactive editor.
+Use plain C64/PETSCII-compatible text, uppercase command fixtures and real CR or LF line breaks. Avoid smart quotes, a UTF-8 BOM and host lowercase ASCII command files. CRLF is readable but its two terminators can increase reported line totals. The line total counts executed lines, including revisits in loops; the command total counts commands dispatched to the filesystem shell rather than interpreter builtins.
 
 #### If the script did not do what you expected
 
 | Symptom | Check or action |
 |---|---|
-| `RUN SCRIPT.SEQ` usage text | Supply just the script path; quote it if it has spaces. Move operation options into script lines. |
+| `RUN FILE [ARGS]` usage text | Supply a script path and at most nine arguments; quote paths/arguments with spaces. Put operation options inside the script. |
 | File not found | Use the actual directory entry: `DIR 8:/` then `RUN 8:/INSPECT` if the IEC name is INSPECT. Check aliases and the current directory. |
 | `RUN NEEDS OVERLAY`, `BATCH OFF`, or REU trouble | Use the overlay application with its matching sidecars and working REU. |
 | `SCRIPT TOO LARGE` or `LINE TOO LONG` | Split into separate top-level runs or shorten lines. RUN cannot call another RUN. |
@@ -830,6 +878,8 @@ Scripts are limited to **16 KiB**, **255 bytes per logical line**, and **12 toke
 | `BATCH NEEDS --YES` / RC 3 | Identify the specific operation that needs approval; put its explicit confirmation on that line. |
 | Only a plan appears | Remove `--whatif` / `--dry-run` / `-w` from the intended operation in a separately reviewed execution script. |
 | `EXPECT RC MISMATCH` | Read the preceding command's output and use the expected typed code; do not hide it with CONTINUE. |
+| `BATCH FLOW ERROR` / RC 4 | Check label spelling, CALL depth, IF syntax and EXIT /B result range. |
+| `BATCH STEP LIMIT` / RC 3 | Inspect loop termination; execution exceeded 10,000 lines. |
 | Script stops early | STOP is the default. Inspect its first failure, complete arguments, device capability and destination state. |
 | Final RC 0 but earlier errors | CONTINUE may have allowed a later success to replace an earlier error; inspect the entire output and filesystem results. |
 
@@ -904,8 +954,8 @@ Square brackets mean optional input in this reference; do not type the brackets.
 | **STATUS** · SS | `STATUS` | Show the previous typed result and session information; read operation output too. |
 | **ALIAS** · AL | `ALIAS [name path]` · `AL LAB u:/usb1/test` | List bookmarks or set an absolute root. Does not create the folder. |
 | **UNALIAS** · UA | `UNALIAS LAB` | Remove one saved bookmark. Does not delete its folder. |
-| **CONFIG** · CF | `CONFIG SAVE [path]` / `CONFIG LOAD [path]` | Save/restore aliases and profiles; default path is `8:/readyfs.cfg`. |
-| **RUN** · RU | `RUN @lab:/inspect.seq` | Exactly one script path; options belong inside the script. Aliases supply reusable locations; ONERROR and EXPECT control checking. No nested RUN or batch prompts. |
+| **CONFIG** · CF | `CONFIG SAVE [path]` / `CONFIG LOAD [path]` | Save/restore directory, aliases and persistent variables; default path is `8:/readyfs.cfg`. |
+| **RUN** · RU | `RUN @lab:/inspect.seq` | One script path plus up to nine arguments; `%NAME%`, SET, IF/GOTO and CALL provide bounded scripting. HELP BATCH lists syntax. No nested RUN or batch prompts. |
 | **TEST** · TS | `TEST` | Run built-in core self-tests; not a destructive storage test suite. |
 
 ### Inspect, search, and verify

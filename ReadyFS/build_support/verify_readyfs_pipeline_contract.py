@@ -343,7 +343,7 @@ def main() -> int:
     run_dispatch = resident.find("keep_running = dispatch(argc)", run_next)
     run_ack = resident.find("batch_ui.operation = RF_BATCH_ACK", run_dispatch)
     run_report = resident.find("batch_ui.operation = RF_BATCH_REPORT", run_ack)
-    batch_next = script_batch.find("static unsigned char next(")
+    batch_next = script_batch.find("static unsigned char evaluate(")
     batch_onerror = script_batch.find('same_word(call->args[0], "onerror")',
                                       batch_next)
     batch_expect = script_batch.find('same_word(call->args[0], "expect")',

@@ -3,6 +3,11 @@
         .import _readyfs_reu_history_bank_value
         .import _readyfs_reu_overlay_bank_value
         .import _readyfs_reu_batch_bank_value
+        .ifdef READYFS_OVERLAY_RUNTIME
+        .import _readyfs_reu_script_bank_value
+        .export _readyfs_reu_script_store
+        .export _readyfs_reu_script_fetch
+        .endif
         .import _readyfs_reu_console_bank_value
         .export _readyfs_reu_console_fetch
         .export _readyfs_reu_overlay_store
@@ -36,6 +41,19 @@ _readyfs_reu_overlay_fetch:
         lda #$91
         bne rf_dma_start
 
+        .ifdef READYFS_OVERLAY_RUNTIME
+_readyfs_reu_script_store:
+        jsr pushax
+        ldx _readyfs_reu_script_bank_value
+        lda #$90
+        bne rf_dma_start
+_readyfs_reu_script_fetch:
+        jsr pushax
+        ldx _readyfs_reu_script_bank_value
+        lda #$91
+        bne rf_dma_start
+
+        .endif
 _readyfs_reu_batch_store:
         jsr pushax
         ldx _readyfs_reu_batch_bank_value

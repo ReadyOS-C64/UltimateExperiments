@@ -260,7 +260,22 @@ unsigned int readyfs_tree_abi(void) { return RF_TREE_ABI; }
 #ifdef READYFS_TREE_SIDECAR
 static unsigned char render_status(ReadyFsTreeCall *call) {
     unsigned int flags;
-    flags = call->files;
+    unsigned char i, name;
+    extern unsigned char reu_available, overlay_available;
+    extern unsigned char plan_loaded, help_loaded, backend_loaded, batch_loaded;
+    flags = RF_STATUS_UTILITY | RF_STATUS_TREE;
+    call->entries = 0u;
+    call->limit = reu_available ? readyfs_reu_bank_count() : 0u;
+    if (reu_available) {
+        flags |= RF_STATUS_REU;
+        for (i = 0u; i < 8u; ++i)
+            if (readyfs_reu_session_fetch((unsigned int)i * 273u, &name, 1u) && name) ++call->entries;
+    }
+    if (overlay_available) flags |= RF_STATUS_OVERLAY;
+    if (plan_loaded) flags |= RF_STATUS_PLAN;
+    if (help_loaded) flags |= RF_STATUS_JOURNAL;
+    if (backend_loaded) flags |= RF_STATUS_BACKEND;
+    if (batch_loaded) flags |= RF_STATUS_BATCH;
     cputs("cwd "); cputs(call->parent); cputs("\r\n");
     cputs("aliases "); print_u16(call->entries); cputs("\r\n");
     cputs("reu "); print_u16(call->limit); cputs(" banks\r\n");

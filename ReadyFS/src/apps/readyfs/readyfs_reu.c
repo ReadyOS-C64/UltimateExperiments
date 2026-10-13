@@ -26,6 +26,9 @@ static unsigned char bank_count_encoded = 0xFFu;
 unsigned char readyfs_reu_history_bank_value = 0xFFu;
 unsigned char readyfs_reu_overlay_bank_value = 0xFFu;
 unsigned char readyfs_reu_batch_bank_value = 0xFFu;
+#ifdef READYFS_OVERLAY_RUNTIME
+unsigned char readyfs_reu_script_bank_value = 0xFFu;
+#endif
 #define history_bank readyfs_reu_history_bank_value
 #define overlay_bank readyfs_reu_overlay_bank_value
 static unsigned char history_head = 0xFFu;
@@ -90,6 +93,9 @@ unsigned char readyfs_reu_init(void) {
     overlay_bank = (unsigned char)(count - 2u);
     readyfs_reu_batch_bank_value = (unsigned char)(count - 3u);
     readyfs_reu_console_bank_value = (unsigned char)(count - 4u);
+#ifdef READYFS_OVERLAY_RUNTIME
+    readyfs_reu_script_bank_value = (unsigned char)(count - 5u);
+#endif
     history_head = 0u;
     history_used = 0u;
     return 1u;

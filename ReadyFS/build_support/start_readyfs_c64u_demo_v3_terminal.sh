@@ -9,6 +9,7 @@ mkdir -p "$out_dir"
 launch_script="$out_dir/terminal-run.sh"
 {
   printf '#!/usr/bin/env bash\nset -euo pipefail\n'
+  printf 'export READYFS_BATCH_BASELINE=%q\n' "${READYFS_BATCH_BASELINE:-0}"
   printf 'export READYFS_SD2IEC_IMAGE_RUN=%q\n' "${READYFS_SD2IEC_IMAGE_RUN:-}"
   printf 'export READYFS_SD2IEC_OWNED=%q\n' "${READYFS_SD2IEC_OWNED:-}"
   printf 'export READYFS_DEMO_ARTIFACTS=%q\n' "${READYFS_DEMO_ARTIFACTS:-$readyfs_root/artifacts/readyfs}"

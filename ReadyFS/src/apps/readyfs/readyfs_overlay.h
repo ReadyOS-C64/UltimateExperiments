@@ -13,6 +13,7 @@
 #include "readyfs_utility.h"
 #include "readyfs_tree.h"
 #include "readyfs_batch.h"
+#include "readyfs_script.h"
 #include "readyfs_tape.h"
 #include "readyfs_present.h"
 #include "readyfs_stream.h"
@@ -54,6 +55,12 @@ unsigned char readyfs_overlay_utility(ReadyFsUtilityCall *call);
 unsigned char readyfs_overlay_tree(ReadyFsTreeCall *call);
 unsigned char readyfs_overlay_batch(ReadyFsBatchCall *call);
 unsigned char readyfs_overlay_batch_available(void);
+unsigned char readyfs_overlay_script(ReadyFsBatchCall *call);
+#ifdef __CC65__
+unsigned char __fastcall__ readyfs_script_exists(const char *path);
+#else
+unsigned char readyfs_script_exists(const char *path);
+#endif
 unsigned char readyfs_overlay_tape(ReadyFsTapeCall *call);
 unsigned char readyfs_overlay_nested_from_backend(ReadyFsNestedCall *nested);
 unsigned char readyfs_overlay_iec(ReadyFsIecCall *call);

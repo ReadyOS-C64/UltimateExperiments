@@ -20,6 +20,7 @@
 #define COLOR_CYAN 3u
 #define COLOR_GRAY1 11u
 unsigned char cgetc(void);
+unsigned char kbhit(void);
 unsigned char wherey(void);
 void gotoxy(unsigned char x, unsigned char y);
 unsigned char textcolor(unsigned char color);

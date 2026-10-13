@@ -132,14 +132,14 @@ $(READYFS): $(READYFS_MONOLITHIC_SRCS) $(READYFS_HELP_DATA)
 	$(CC) $(CFLAGS) -I$(READYFS_SRC_DIR) -Os -DREADYFS_MONOLITHIC=1 \
 		-m $(OBJ_DIR)/readyfs.map -o $@ $(filter %.c %.s,$^)
 
-$(READYFS_OVERLAY_OBJ_DIR)/resident/%.o: %.c
+$(READYFS_OVERLAY_OBJ_DIR)/resident/%.o: %.c Makefile
 	@mkdir -p "$(dir $@)"
 	$(CC) -t c64 -Os -I$(READYFS_SRC_DIR) \
 		-DREADYFS_OVERLAY_RUNTIME=1 -c -o $@ $<
 
-$(READYFS_OVERLAY_OBJ_DIR)/resident/%.o: %.s
+$(READYFS_OVERLAY_OBJ_DIR)/resident/%.o: %.s Makefile
 	@mkdir -p "$(dir $@)"
-	$(CC) -t c64 -I$(READYFS_SRC_DIR) -c -o $@ $<
+	$(CC) -t c64 --asm-define READYFS_OVERLAY_RUNTIME=1 -I$(READYFS_SRC_DIR) -c -o $@ $<
 
 define READYFS_OVERLAY_RULE
 $(READYFS_OVERLAY_OBJ_DIR)/overlay$(1)/%.o: %.c Makefile
@@ -191,6 +191,16 @@ READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay16/$(READYFS_SRC_D
 
 READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay15/$(READYFS_SRC_DIR)/readyfs_preview.o $(READYFS_OVERLAY_OBJ_DIR)/overlay15/$(READYFS_SRC_DIR)/readyfs_command_help.o $(READYFS_OVERLAY_OBJ_DIR)/overlay15/$(READYFS_SRC_DIR)/readyfs_command_help_overlay_addr.o
 
+$(eval $(call READYFS_OVERLAY_RULE,25,))
+READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay25/$(READYFS_SRC_DIR)/readyfs_environment.o $(READYFS_OVERLAY_OBJ_DIR)/overlay25/$(READYFS_SRC_DIR)/readyfs_environment_overlay_addr.o
+$(eval $(call READYFS_OVERLAY_RULE,26,))
+READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay26/$(READYFS_SRC_DIR)/readyfs_expand.o $(READYFS_OVERLAY_OBJ_DIR)/overlay26/$(READYFS_SRC_DIR)/readyfs_expand_overlay_addr.o
+$(eval $(call READYFS_OVERLAY_RULE,27,))
+READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay27/$(READYFS_SRC_DIR)/readyfs_flow.o $(READYFS_OVERLAY_OBJ_DIR)/overlay27/$(READYFS_SRC_DIR)/readyfs_flow_overlay_addr.o
+
+$(eval $(call READYFS_OVERLAY_RULE,28,))
+READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay28/$(READYFS_SRC_DIR)/readyfs_config.o $(READYFS_OVERLAY_OBJ_DIR)/overlay28/$(READYFS_SRC_DIR)/readyfs_config_overlay_addr.o
+
 $(READYFS_OVERLAY): $(READYFS_OVERLAY_ALL_OBJS) $(CFG_DIR)/readyfs_overlay.cfg
 	@mkdir -p "$(dir $@)"
 	$(CC) -t c64 -C $(CFG_DIR)/readyfs_overlay.cfg \
@@ -212,6 +222,10 @@ $(READYFS_OVERLAY_D81): FORCE $(READYFS_OVERLAY)
 		-write $(READYFS_TREE_OVERLAY) rftree \
 		-write $(READYFS_CONTENT_OVERLAY) rfcontent \
 		-write $(READYFS_BATCH_OVERLAY) rfbatch \
+		-write $(READYFS_OUT_DIR)/readyfs-environment.prg rfenv \
+		-write $(READYFS_OUT_DIR)/readyfs-expand.prg rfexpand \
+		-write $(READYFS_OUT_DIR)/readyfs-flow.prg rfflow \
+		-write $(READYFS_OUT_DIR)/readyfs-config.prg rfcfg \
 		-write $(READYFS_RECURSIVE_OVERLAY) rfrecur \
 		-write $(READYFS_TAPE_OVERLAY) rftape \
 		-write $(READYFS_OUT_DIR)/readyfs-ui.prg rfui \
@@ -229,6 +243,10 @@ $(READYFS_OVERLAY_D81): FORCE $(READYFS_OVERLAY)
 		-write $(BUILD_SUPPORT_DIR)/readyfs_content_view.seq "rfview,s" \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_content_long.seq "rflong,s" \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_batch_ok.seq "rfbok,s" \
+		-write $(BUILD_SUPPORT_DIR)/readyfs_batch_dos.seq "rfbdos,s" \
+		-write $(BUILD_SUPPORT_DIR)/readyfs_batch_badflow.seq "rfbbad,s" \
+		-write $(BUILD_SUPPORT_DIR)/readyfs_batch_arguments.seq "rfbargs,s" \
+		-write $(BUILD_SUPPORT_DIR)/readyfs_batch_expandfail.seq "rfbexp,s" \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_batch_continue.seq "rfbcont,s" \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_batch_stop.seq "rfbstop,s" \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_batch_mismatch.seq "rfbmis,s" \
@@ -262,6 +280,7 @@ define READYFS_HOST_TEST
 endef
 
 readyfs-host-tests:
+	$(call READYFS_HOST_TEST,-D__fastcall__= -I$(BUILD_SUPPORT_DIR)/readyfs_host_include,$(BUILD_SUPPORT_DIR)/readyfs_script_test.c $(READYFS_SRC_DIR)/readyfs_batch.c $(READYFS_SRC_DIR)/readyfs_environment.c $(READYFS_SRC_DIR)/readyfs_expand.c $(READYFS_SRC_DIR)/readyfs_flow.c $(READYFS_SRC_DIR)/readyfs_config.c $(READYFS_SRC_DIR)/readyfs_path.c,readyfs_script_test)
 	$(PYTHON) $(BUILD_SUPPORT_DIR)/readyfs_hardware_cleanup_test.py
 	$(PYTHON) $(BUILD_SUPPORT_DIR)/readyfs_sd2iec_image_matrix_test.py
 	$(PYTHON) $(BUILD_SUPPORT_DIR)/readyfs_udos_files_test.py
@@ -312,3 +331,5 @@ FORCE:
 
 # Slot19 includes the pure identity classifier without loading slot6.
 $(READYFS_OVERLAY_OBJ_DIR)/overlay19/$(READYFS_SRC_DIR)/readyfs_files.o: $(READYFS_SRC_DIR)/readyfs_driver.c
+
+$(READYFS_OVERLAY_ALL_OBJS): $(wildcard $(READYFS_SRC_DIR)/*.h)

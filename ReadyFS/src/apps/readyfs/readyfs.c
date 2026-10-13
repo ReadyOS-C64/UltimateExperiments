@@ -2365,6 +2365,7 @@ static unsigned char stream_read_exact(ReadyFsStream *stream,
     return 1u;
 }
 
+#ifndef READYFS_OVERLAY_RUNTIME
 static unsigned char config_alias_valid(const ReadyFsAlias *item) {
     ReadyFsPath path;
     unsigned int i;
@@ -2382,17 +2383,26 @@ static unsigned char config_alias_valid(const ReadyFsAlias *item) {
     return 1u;
 }
 
+#endif
+
+#ifdef READYFS_OVERLAY_RUNTIME
+#pragma static-locals (push, on)
+#endif
 static void cmd_config_save(unsigned char argc, const char *path_text) {
+#ifndef READYFS_OVERLAY_RUNTIME
     static const unsigned char header[8] = {
         'R', 'F', 'C', '1', RF_ALIAS_SLOTS, RF_ALIAS_NAME,
-        (unsigned char)(RF_LINE_CAP & 0xFFu),
-        (unsigned char)(RF_LINE_CAP >> 8u)
+        (unsigned char)(RF_LINE_CAP & 0xFFu), (unsigned char)(RF_LINE_CAP >> 8u)
     };
+#endif
     ReadyFsSignature expected;
     ReadyFsSignature actual;
     unsigned char existed;
     unsigned char ok;
     unsigned char i;
+#ifdef READYFS_OVERLAY_RUNTIME
+    unsigned int record_bytes;
+#endif
 
     if (has_dry_run(argc)) { cmd_mutation_preview(argc); return; }
     if (!path_prepare(path_text, &dest)) return;
@@ -2409,7 +2419,23 @@ static void cmd_config_save(unsigned char argc, const char *path_text) {
         !ask_yes("config exists; replace")) return;
     if (!typed_temp_stream(&dest, &temp, CBM_T_SEQ)) return;
     if (!stream_open_write(&temp, 2u, 3u, CBM_T_SEQ)) return;
+#ifdef READYFS_OVERLAY_RUNTIME
+    last_result = RF_RESULT_IO;
+#endif
     signature_init(&expected);
+#ifdef READYFS_OVERLAY_RUNTIME
+    ok = 1u;
+    for (i = 0u; ok && i < 26u; ++i) {
+        batch_ui.operation = RF_CONFIG_EXPORT; batch_ui.size = i;
+        batch_ui.buffer = (char *)&alias_slot; batch_ui.test = cwd_buf;
+        ok = readyfs_overlay_script(&batch_ui);
+        if (ok) {
+            record_bytes = batch_ui.size;
+            signature_add(&expected, (const unsigned char *)&alias_slot, record_bytes);
+            ok = stream_write_all(&temp, (const unsigned char *)&alias_slot, record_bytes);
+        }
+    }
+#else
     signature_add(&expected, header, sizeof(header));
     signature_add(&expected, (const unsigned char *)cwd_buf, sizeof(cwd_buf));
     ok = stream_write_all(&temp, header, sizeof(header));
@@ -2424,6 +2450,7 @@ static void cmd_config_save(unsigned char argc, const char *path_text) {
                                   RF_ALIAS_SLOT_BYTES);
         }
     }
+#endif
     RF_CLOSE_CHECK(&temp, ok);
     if (!ok) {
         (void)delete_stream(&temp);
@@ -2462,9 +2489,32 @@ static void cmd_config_save(unsigned char argc, const char *path_text) {
     if (existed && !delete_stream(&backup)) {
         cputs("old cfg: "); cputs(backup.text); newline();
     }
+#ifdef READYFS_OVERLAY_RUNTIME
+    last_result = RF_RESULT_OK;
+#endif
     cputs(RF_SUMMARY "config saved and verified\r\n");
 }
 
+#ifdef READYFS_OVERLAY_RUNTIME
+unsigned char readyfs_config_io(ReadyFsBatchCall *call) {
+    unsigned char ok;
+    if (call->operation == RF_CONFIG_READ)
+        ok = stream_read_exact(&command_stream, (unsigned char *)call->buffer, call->size);
+    else if (call->operation == RF_CONFIG_EOF)
+        ok = stream_read(&command_stream, io_buf, 1u) == 0;
+    else if (call->operation == RF_CONFIG_CLOSE) {
+        stream_close(&command_stream); ok = 1u;
+    } else ok = readyfs_overlay_script(call);
+    return readyfs_overlay_resume_config() && ok;
+}
+static void cmd_config_load(const char *path_text) {
+    if (!path_prepare(path_text, &command_stream) || !stream_open_read(&command_stream, 1u, 2u)) return;
+    batch_ui.operation = RF_CONFIG_LOAD;
+    batch_ui.buffer = (char *)&alias_slot; batch_ui.test = cwd_buf;
+    last_result = readyfs_overlay_script(&batch_ui) ? batch_ui.rc : RF_RESULT_IO;
+    cputs(last_result ? RF_ERROR "bad cfg; unchanged\r\n" : RF_SUMMARY "config loaded\r\n");
+}
+#else
 static void cmd_config_load(const char *path_text) {
     unsigned char header[8];
     ReadyFsPath parsed;
@@ -2564,6 +2614,11 @@ static void cmd_config_load(const char *path_text) {
     cputs(RF_SUMMARY "config loaded\r\n");
 }
 
+#endif
+
+#ifdef READYFS_OVERLAY_RUNTIME
+#pragma static-locals (pop)
+#endif
 static void cmd_config(unsigned char argc) {
     const char *path_text;
 
@@ -4379,6 +4434,16 @@ static void cmd_capabilities(unsigned char argc) {
 }
 
 #ifdef READYFS_OVERLAY_RUNTIME
+unsigned char __fastcall__ readyfs_script_exists(const char *path) {
+    unsigned char found;
+    if (!path_prepare(path, &command_stream)) return 2u;
+    found = stream_exists(&command_stream);
+    return RF_LOOKUP_FAILED(found) ? 2u : (unsigned char)(found != 0u);
+}
+#endif
+
+#ifdef READYFS_OVERLAY_RUNTIME
+#pragma static-locals (push, on)
 static void cmd_run(unsigned char argc) {
     unsigned int size;
     unsigned int commands;
@@ -4386,8 +4451,11 @@ static void cmd_run(unsigned char argc) {
     unsigned char keep_running;
     int got;
 
-    if (argc != 2u) { cputs("run SCRIPT.SEQ\r\n"); return; }
+    if (argc < 2u || argc > 11u) { last_result = RF_RESULT_USAGE; cputs("run FILE [ARGS]\r\n"); return; }
     if (batch_active) { cputs(RF_ERROR "nested run off\r\n"); return; }
+    batch_ui.operation = RF_ENV_ARGUMENTS;
+    batch_ui.argc = argc; batch_ui.args = args;
+    if (!readyfs_overlay_script(&batch_ui)) { result_unavailable("batch off\r\n"); return; }
     if (!path_prepare(args[1], &command_stream) ||
         !stream_open_read(&command_stream, 1u, 2u)) return;
     size = 0u;
@@ -4408,7 +4476,6 @@ static void cmd_run(unsigned char argc) {
     stream_close(&command_stream);
     if (done != 1u) return;
 
-    cputs("run staged "); print_u16(size); cputs(" bytes\r\n");
     batch_ui.operation = RF_BATCH_INIT;
     batch_ui.size = size;
     if (!readyfs_overlay_batch(&batch_ui)) {
@@ -4447,35 +4514,16 @@ static void cmd_run(unsigned char argc) {
         cputs(RF_SUMMARY "run done lines "); print_u16(batch_ui.size);
         cputs(" commands "); print_u16(commands);
         cputs(" rc "); print_u16(batch_ui.rc); newline();
+        last_result = batch_ui.rc;
     }
 }
 #endif
 
 #ifdef READYFS_OVERLAY_RUNTIME
-static unsigned char alias_count(void) {
-    unsigned char count;
-    unsigned char i;
-    count = 0u;
-    if (!reu_available) return 0u;
-    for (i = 0u; i < RF_ALIAS_SLOTS; ++i) {
-        if (alias_fetch(i) && alias_slot.name[0] != 0) ++count;
-    }
-    return count;
-}
-
+#pragma static-locals (pop)
 static void cmd_status(void) {
     tree_ui.operation = RF_TREE_CALL_STATUS;
     tree_ui.parent = cwd_buf;
-    tree_ui.entries = alias_count();
-    tree_ui.limit = reu_available ? readyfs_reu_bank_count() : 0u;
-    tree_ui.files = 0u;
-    if (reu_available) tree_ui.files |= RF_STATUS_REU;
-    if (overlay_available) tree_ui.files |= RF_STATUS_OVERLAY;
-    if (readyfs_overlay_plan_available()) tree_ui.files |= RF_STATUS_PLAN;
-    if (readyfs_overlay_journal_available()) tree_ui.files |= RF_STATUS_JOURNAL;
-    if (readyfs_overlay_backend_available()) tree_ui.files |= RF_STATUS_BACKEND;
-    tree_ui.files |= RF_STATUS_UTILITY | RF_STATUS_TREE;
-    if (readyfs_overlay_batch_available()) tree_ui.files |= RF_STATUS_BATCH;
     tree_ui.result = last_result;
     if (!readyfs_overlay_tree(&tree_ui)) cputs(RF_ERROR "status off\r\n");
 }
@@ -4670,7 +4718,16 @@ int main(void) {
     for (;;) {
         read_line();
         readyfs_reu_history_add(line_buf);
+#ifdef READYFS_OVERLAY_RUNTIME
+        batch_ui.operation = RF_BATCH_INTERACTIVE;
+        /* Editor returns this same resident buffer and capacity. */
+        batch_ui.args = args; batch_ui.rc = last_result;
+        if (!readyfs_overlay_batch(&batch_ui)) { result_unavailable("batch off\r\n"); continue; }
+        if (batch_ui.action != RF_BATCH_COMMAND) { last_result = batch_ui.rc; continue; }
+        argc = batch_ui.argc;
+#else
         argc = split_args(line_buf);
+#endif
         if (!dispatch(argc)) break;
     }
     return 0;

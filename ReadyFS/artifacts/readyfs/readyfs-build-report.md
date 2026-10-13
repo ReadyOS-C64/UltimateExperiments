@@ -2,7 +2,8 @@
 
 Status: **PASS**
 
-- Resident end: `$B3F9`; 434 safe bytes remain before KERNAL scratch at `$B5AC`.
+- DOS batch scripting: four cached sidecars and a dedicated fifth high REU bank; tape spool stops below it.
+- Resident end: `$B536`; 117 safe bytes remain before KERNAL scratch at `$B5AC`.
 - Monolithic end: `$C5F7` (limit `$C5FF`).
 - Overlay-build cc65 software-stack top: `$D000`.
 - IEC configuration policy payload: `$D18` bytes (seventeenth cached sidecar).
@@ -18,18 +19,20 @@ Status: **PASS**
 - CMD/SD2IEC translator payload: `$F8A` bytes (cached runtime sidecar with boot self-test).
 - IEC drive profiler payload: `$FFF` bytes (resident-owned command-channel I/O).
 - Utility/history payload: `$DCF` bytes (seventh REU-cached runtime sidecar).
-- Cooperative tree-controller payload: `$D1A` bytes (eighth REU-cached runtime sidecar).
+- Cooperative tree-controller payload: `$DF3` bytes (eighth REU-cached runtime sidecar).
 - Bounded content-view payload: `$FF2` bytes (ninth REU-cached runtime sidecar).
-- Batch/alias payload: `$BB5` bytes (tenth sidecar in a dedicated REU bank).
+- Batch/alias payload: `$AA1` bytes (tenth sidecar in a dedicated REU bank).
 - Recursive controller/name translator payload: `$F67` bytes (eleventh sidecar; cached above the tree queue).
 - Tape/core policy and signature payload: `$F00` bytes (twelfth sidecar; dedicated batch-bank cache).
 - Command/editor payload: `$FD4` bytes (thirteenth sidecar).
 - Presentation payload: `$B14` bytes (fourteenth sidecar).
-- Command-help payload: `$FB2` bytes (fifteenth sidecar).
+- Command-help payload: `$FBD` bytes (fifteenth sidecar).
 - REU regions disjoint: yes.
 
 ## Checks
 
+- PASS: `scripting_sidecars`
+- PASS: `reu_script_regions_disjoint`
 - PASS: `resident_below_b600`
 - PASS: `resident_below_kernal_scratch`
 - PASS: `software_stack_top_d000`
@@ -108,3 +111,16 @@ Status: **PASS**
 | batch_script | `$1000` | `$5000` | 16384 |
 | batch_checkpoint | `$5000` | `$5100` | 256 |
 | tape_overlay_cache | `$5100` | `$6100` | 4096 |
+
+## REU Scripting Bank Map
+
+| Region | Start | End (exclusive) | Bytes |
+|---|---:|---:|---:|
+| environment_overlay_cache | `$0000` | `$1000` | 4096 |
+| expansion_overlay_cache | `$1000` | `$2000` | 4096 |
+| flow_overlay_cache | `$2000` | `$3000` | 4096 |
+| config_overlay_cache | `$3000` | `$4000` | 4096 |
+| session_variables | `$4000` | `$4920` | 2336 |
+| config_variable_stage | `$5000` | `$5920` | 2336 |
+| config_variable_merge | `$6000` | `$6920` | 2336 |
+| script_arguments | `$7000` | `$7A00` | 2560 |

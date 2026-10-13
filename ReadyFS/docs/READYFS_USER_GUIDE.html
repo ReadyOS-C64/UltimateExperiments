@@ -30,7 +30,7 @@
 </div>
 <section class="chapter"><h2 id="1-start-here">1. Start here</h2>
 <h3 id="use-the-full-application">Use the full application</h3>
-<p>Use <strong><code>readyfs-overlay.prg</code></strong> with <strong><code>readyfs-overlay-lab.d81</code></strong> on IEC device 8. The disk contains the 24 sidecars that startup caches in the REU. This build needs a detected REU of at least <strong>1 MiB</strong>. Keep the sidecars available during startup; loading them can take time on the C64. The smaller <code>readyfs.prg</code> is a diagnostic version and does not provide the complete editor and command-help experience described here.</p>
+<p>Use <strong><code>readyfs-overlay.prg</code></strong> with <strong><code>readyfs-overlay-lab.d81</code></strong> on IEC device 8. The disk contains the 28 sidecars that startup caches in the REU. This build needs a detected REU of at least <strong>1 MiB</strong>. Keep the sidecars available during startup; loading them can take time on the C64. The smaller <code>readyfs.prg</code> is a diagnostic version and does not provide the complete editor and command-help experience described here.</p>
 <p>From BASIC, with the lab image mounted on drive 8:</p>
 <pre><code class="language-text">LOAD&quot;READYFS-OVERLAY&quot;,8,1
 RUN
@@ -285,7 +285,7 @@ COMPARE u:/usb1/demo.prg 9:/DEMO
 </code></pre>
 <p>The destination is a Commodore directory entry. Its name, type, and size must fit the destination filesystem. COPY does not convert a SID, MP3, WAV, or document into an executable C64 program. Byte equality from COMPARE is useful evidence of file data, not proof of REL record structure, copy-protection data, or every item of disk metadata.</p>
 <h4 id="5-direct-image-paths-in-both-directions">5. Direct image paths in both directions</h4>
-<p>The current 24-sidecar overlay build supports contained SEQ, PRG, and USR files through <strong>ordinary slash paths</strong>. Use a writable, unmounted image you own, an existing output folder, and unused destination names:</p>
+<p>The current 28-sidecar overlay build supports contained SEQ, PRG, and USR files through <strong>ordinary slash paths</strong>. Use a writable, unmounted image you own, an existing output folder, and unused destination names:</p>
 <pre><code class="language-text">COPY u:/usb1/work.d64/HELLO.prg u:/usb1/out/HELLO.prg --whatif
 COPY u:/usb1/work.d64/HELLO.prg u:/usb1/out/HELLO.prg
 COPY u:/usb1/out/HELLO.prg u:/usb1/work.d64/HELLO2.prg
@@ -727,9 +727,9 @@ RENAME @lab:/readme-moved.seq @lab:/readme-final.seq
 CONFIG LOAD @lab:/readyfs.cfg
 ALIAS
 </code></pre>
-<p>Configuration saves/restores aliases and drive-profile state; it does not save command/output history or the contents of your files. With no explicit path, CONFIG uses <code>8:/readyfs.cfg</code>. Saving is a filesystem write and replacement can require confirmation. Loading restores configuration state; it is not a no-change query.</p>
+<p>Configuration saves/restores the current directory, aliases and variables marked <code>/P</code>; it does not save command/output history or the contents of your files. With no explicit path, CONFIG uses <code>8:/readyfs.cfg</code>. Saving is a filesystem write and replacement can require confirmation. Loading restores configuration state; it is not a no-change query.</p>
 <h3 id="run-scripts-parameters-previews-and-reliable-execution">RUN scripts: parameters, previews and reliable execution</h3>
-<p><code>RUN script-path</code> (short form <code>RU</code>) executes a text script of ReadyFS commands in the <strong>overlay application with working REU and sidecars</strong>. It reads and stages the whole file, closes its input stream, then dispatches commands one at a time. This is ReadyFS command scripting; it does not load and start a C64 PRG or BASIC program.</p>
+<p><code>RUN script-path [arg1 ... arg9]</code> (short form <code>RU</code>) executes a text script of ReadyFS commands in the <strong>overlay application with working REU and sidecars</strong>. It reads and stages the whole file, closes its input stream, then dispatches commands one at a time. This is ReadyFS command scripting; it does not load and start a C64 PRG or BASIC program.</p>
 <h4 id="what-parameters-belong-where">What parameters belong where?</h4>
 <table>
 <thead>
@@ -742,7 +742,7 @@ ALIAS
 <tbody><tr>
 <td>RUN invocation</td>
 <td><code>RUN @lab:/INSPECT.SEQ</code></td>
-<td>Exactly one argument: the script path.</td>
+<td>Script path, optionally followed by up to nine arguments.</td>
 </tr>
 <tr>
 <td>Short invocation</td>
@@ -765,7 +765,102 @@ ALIAS
 <td>An alias supplies a reusable location to script commands.</td>
 </tr>
 </tbody></table>
-<p>There is <strong>no <code>$1</code>/<code>$2</code> substitution, argument forwarding, variable expansion, branching, loops or nested RUN</strong>. <code>RUN script.seq --yes</code>, <code>RUN script.seq --whatif</code> and <code>RUN script.seq source destination</code> are invalid invocations: RUN requires exactly two tokens including its command name. Put options on the relevant commands <em>inside</em> the script. An alias is a location bookmark, not a general text variable. Scripts share the current session; changes to aliases and current directory can remain after the script finishes. Relative paths resolve against that current directory, not the directory holding the script. Prefer absolute paths or aliases in reusable scripts.</p>
+<h4 id="dos-style-variables-and-flow-control">DOS-style variables and flow control</h4>
+<p>The current overlay build supports session variables, saved variables, script arguments, branches, counted loops and label subroutines. Type <code>HELP BATCH</code> or <code>HELP SET</code> on the C64 for the compact reference.</p>
+<table>
+<thead>
+<tr>
+<th>Command or expansion</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SET NAME=value</code></td>
+<td>Set a session variable. A plain SET changes an existing saved variable to session-only.</td>
+</tr>
+<tr>
+<td><code>SET /P NAME=value</code></td>
+<td>Mark this variable for the next <code>CONFIG SAVE</code>. <code>/P</code> means persistent in ReadyFS.</td>
+</tr>
+<tr>
+<td><code>SET NAME=</code></td>
+<td>Delete a variable, including its persistent flag.</td>
+</tr>
+<tr>
+<td><code>SET</code> / <code>SET NAME</code></td>
+<td>List variables with <code>/P</code> markers, or show one value.</td>
+</tr>
+<tr>
+<td><code>%NAME%</code> / <code>%ERRORLEVEL%</code></td>
+<td>Expand a variable or the preceding command result. Undefined variables expand to empty text. Names are case-insensitive. ERRORLEVEL is read-only.</td>
+</tr>
+<tr>
+<td><code>%0</code>, <code>%1</code> … <code>%9</code></td>
+<td>Script path and up to nine RUN arguments. Missing arguments expand to empty text.</td>
+</tr>
+<tr>
+<td><code>%%</code></td>
+<td>Insert a literal percent sign.</td>
+</tr>
+<tr>
+<td><code>SET /A N=N+1</code></td>
+<td>Evaluate an unsigned 16-bit integer, or one addition/subtraction. Operands are decimal literals or variable names; undefined operands are zero. Results wrap at 65536. Use <code>SET /P /A</code> to retain the persistent flag.</td>
+</tr>
+<tr>
+<td><code>ECHO text</code> / <code>REM comment</code></td>
+<td>Print text or ignore the whole line. Whole-line <code>#</code> comments also work.</td>
+</tr>
+<tr>
+<td><code>:LABEL</code> / <code>GOTO LABEL</code></td>
+<td>Declare a label or jump to it. Labels are case-insensitive, up to 16 bytes; the first matching label wins.</td>
+</tr>
+<tr>
+<td><code>CALL :LABEL</code></td>
+<td>Run a label subroutine in the same staged script, sharing variables and arguments. Maximum nesting: eight.</td>
+</tr>
+<tr>
+<td><code>EXIT /B [code]</code> / <code>GOTO :EOF</code></td>
+<td>Return from a subroutine, or finish the top-level script. EXIT /B can set a result from 0 to 255. Reaching the physical end of a subroutine also returns.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] ERRORLEVEL n command</code></td>
+<td>Run the command when the preceding result is <strong>greater than or equal to</strong> n, optionally negated.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] DEFINED name command</code></td>
+<td>Test whether a variable exists.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] EXIST path command</code></td>
+<td>Test the filesystem through ReadyFS&#39;s normal path and backend handling. A lookup failure stops the script with result 8.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] &quot;a&quot;==&quot;b&quot; command</code></td>
+<td>Compare exact, case-sensitive strings. A spaced <code>a == b</code> comparison also works.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] n EQU|NEQ|LSS|LEQ|GTR|GEQ n command</code></td>
+<td>Compare unsigned integers from 0 to 65535. Expand variables explicitly, for example <code>IF %N% LSS 3 GOTO LOOP</code>.</td>
+</tr>
+</tbody></table>
+<p>For example, save this with real line breaks and run <code>RUN 8:/COUNT WORLD</code>:</p>
+<pre><code class="language-text">REM ARGUMENTS AND A COUNTED LOOP
+SET WHO=%1
+SET /A N=0
+:LOOP
+SET /A N=N+1
+ECHO HELLO &quot;%WHO%&quot; %N%
+IF %N% LSS 3 GOTO LOOP
+CALL :FINISH
+EXIT /B 0
+:FINISH
+ECHO DONE
+EXIT /B
+</code></pre>
+<p>Expansion happens once before tokenization on each executed line. Quote an expanded value when it must remain one argument: <code>COPY &quot;%SOURCE%&quot; &quot;%TARGET%&quot;</code>. Values are not expanded recursively. To write literal variable references into a script from the interactive prompt, double their percent signs, for example <code>WRITE 8:/SHOW &quot;ECHO %%NAME%%&quot; --line</code>. RUN arguments such as <code>--yes</code> are ordinary <code>%1</code>/<code>%2</code> values; they do not become global confirmation or preview options. Put those options on the intended operation inside the script.</p>
+<p>There are 16 variable slots, with names up to 16 bytes and values up to 127 bytes. Names use letters, underscores and digits after the first character. Variables can be used interactively and inside scripts. <code>CONFIG SAVE</code> writes only variables marked <code>/P</code>, alongside the current directory and aliases, in the new RFC2 format. <code>CONFIG LOAD</code> validates the complete file before applying it, replaces the saved-variable set, and preserves unrelated session variables. A loaded saved variable takes precedence over a session variable with the same name. If the merged table would exceed 16 slots, loading fails without changing the session. Legacy RFC1 configs still load their directory and aliases and leave variables alone. Loading config is explicit after startup.</p>
+<p>RUN remains bounded to a 16 KiB staged script and 255 bytes per expanded line, with at most 12 tokens. Tabs and spaces separate arguments; balanced double quotes can occur within an argument. Excess tokens, unmatched quotes and invalid expansion produce result 4 before command dispatch. Scripts stop after 10,000 executed lines to bound accidental loops; RUN/STOP cancels execution between interpreted lines with result 3. Filesystem operations retain their existing cancellation behavior. ONERROR STOP remains the default; use ONERROR CONTINUE before a command whose failure you intend to inspect with IF ERRORLEVEL. Comments, labels and false IF branches preserve the preceding result; SET and ECHO produce their own result.</p>
+<p>This is a bounded DOS-style language. Loops use labels, arithmetic and conditional GOTO; CALL targets labels in the same file. Nested RUN, external-script CALL, FOR, SETLOCAL, pipes and redirection are not implemented. Scripts share aliases and the current directory, and relative paths resolve against that directory rather than the directory containing the script.</p>
 <p>The recipes below are syntax examples reviewed against the implementation and existing batch fixtures; they are <strong>not additional steps in the recorded 37-step video</strong>. Set <code>@lab</code>, <code>@src</code> and <code>@dst</code> to your own intended locations before use. Mutation examples belong in a fresh disposable test folder.</p>
 <h4 id="example-1-a-small-read-only-script">Example 1 — a small read-only script</h4>
 <p>Save this as <code>INSPECT.SEQ</code>, with real line breaks:</p>
@@ -871,7 +966,7 @@ PWD
 EXPECT RC 0
 </code></pre>
 <p>This intentionally dispatches an unknown command, checks its code, then restores normal stopping. <code>ONERROR CONTINUE</code> must appear <strong>before</strong> a command whose nonzero result you want to examine; with STOP, execution ends before the following EXPECT can run.</p>
-<p>A mismatched EXPECT sets result 3. Under CONTINUE, the next ordinary command may overwrite that result, so a final <code>RC 0</code> does <strong>not</strong> prove every earlier command/assertion passed. Read all mismatch/error lines. An EXPECT that successfully checks a nonzero code does not reset that code to zero. RUN&#39;s printed RC is its latest stored result, not an accumulated error count. Use its printed summary directly; STATUS after RUN is not a reliable substitute for that batch summary.</p>
+<p>A mismatched EXPECT sets result 3. Under CONTINUE, the next ordinary command may overwrite that result, so a final <code>RC 0</code> does <strong>not</strong> prove every earlier command/assertion passed. Read all mismatch/error lines. An EXPECT that successfully checks a nonzero code does not reset that code to zero. RUN&#39;s printed RC is its latest stored result, not an accumulated error count. That final result is also available to STATUS and <code>%ERRORLEVEL%</code> after RUN.</p>
 <h4 id="result-codes-and-current-limits">Result codes and current limits</h4>
 <table>
 <thead>
@@ -919,8 +1014,8 @@ EXPECT RC 0
 <td>Internal failure</td>
 </tr>
 </tbody></table>
-<p><code>EXPECT RC N</code> currently accepts <strong>one digit, 0–9 only</strong>, even though result codes 10 and 11 exist. It checks the most recent dispatched command and needs a preceding command; blank lines, comments and policy directives do not supply a new command result. Typed-result conversion is still incomplete across legacy handlers, so code 0 alone is not proof of all filesystem postconditions.</p>
-<p>Scripts are limited to <strong>16 KiB</strong>, <strong>255 bytes per logical line</strong>, and <strong>12 tokens including the command</strong>. Use spaces between arguments; the batch tokenizer does not treat tabs as separators. Use balanced double quotes around a complete argument with spaces. Keep comments on their own lines beginning with <code>#</code>; trailing <code>#</code> text is not an inline comment. Use plain C64/PETSCII-compatible text, uppercase command fixtures and real CR or LF line breaks. Avoid smart quotes, a UTF-8 BOM and host lowercase ASCII command files. CRLF is readable but its two terminators can increase reported line totals. Do not rely on excess tokens or malformed quotes being diagnosed as strictly as the interactive editor.</p>
+<p><code>EXPECT RC N</code> currently accepts <strong>one digit, 0–9 only</strong>, even though result codes 10 and 11 exist. It checks the most recent command result, including SET/ECHO, and needs a preceding result; blank lines, comments and policy directives do not supply a new command result. Typed-result conversion is still incomplete across legacy handlers, so code 0 alone is not proof of all filesystem postconditions.</p>
+<p>Use plain C64/PETSCII-compatible text, uppercase command fixtures and real CR or LF line breaks. Avoid smart quotes, a UTF-8 BOM and host lowercase ASCII command files. CRLF is readable but its two terminators can increase reported line totals. The line total counts executed lines, including revisits in loops; the command total counts commands dispatched to the filesystem shell rather than interpreter builtins.</p>
 <h4 id="if-the-script-did-not-do-what-you-expected">If the script did not do what you expected</h4>
 <table>
 <thead>
@@ -930,8 +1025,8 @@ EXPECT RC 0
 </tr>
 </thead>
 <tbody><tr>
-<td><code>RUN SCRIPT.SEQ</code> usage text</td>
-<td>Supply just the script path; quote it if it has spaces. Move operation options into script lines.</td>
+<td><code>RUN FILE [ARGS]</code> usage text</td>
+<td>Supply a script path and at most nine arguments; quote paths/arguments with spaces. Put operation options inside the script.</td>
 </tr>
 <tr>
 <td>File not found</td>
@@ -964,6 +1059,14 @@ EXPECT RC 0
 <tr>
 <td><code>EXPECT RC MISMATCH</code></td>
 <td>Read the preceding command&#39;s output and use the expected typed code; do not hide it with CONTINUE.</td>
+</tr>
+<tr>
+<td><code>BATCH FLOW ERROR</code> / RC 4</td>
+<td>Check label spelling, CALL depth, IF syntax and EXIT /B result range.</td>
+</tr>
+<tr>
+<td><code>BATCH STEP LIMIT</code> / RC 3</td>
+<td>Inspect loop termination; execution exceeded 10,000 lines.</td>
 </tr>
 <tr>
 <td>Script stops early</td>
@@ -1065,12 +1168,12 @@ SWAP 8: --whatif
 <tr>
 <td><strong>CONFIG</strong> · CF</td>
 <td><code>CONFIG SAVE [path]</code> / <code>CONFIG LOAD [path]</code></td>
-<td>Save/restore aliases and profiles; default path is <code>8:/readyfs.cfg</code>.</td>
+<td>Save/restore directory, aliases and persistent variables; default path is <code>8:/readyfs.cfg</code>.</td>
 </tr>
 <tr>
 <td><strong>RUN</strong> · RU</td>
 <td><code>RUN @lab:/inspect.seq</code></td>
-<td>Exactly one script path; options belong inside the script. Aliases supply reusable locations; ONERROR and EXPECT control checking. No nested RUN or batch prompts.</td>
+<td>One script path plus up to nine arguments; <code>%NAME%</code>, SET, IF/GOTO and CALL provide bounded scripting. HELP BATCH lists syntax. No nested RUN or batch prompts.</td>
 </tr>
 <tr>
 <td><strong>TEST</strong> · TS</td>

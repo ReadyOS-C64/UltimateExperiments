@@ -1,7 +1,7 @@
 #ifndef READYFS_BATCH_H
 #define READYFS_BATCH_H
 
-#define RF_BATCH_ABI 0x5242u
+#define RF_BATCH_ABI 0x5243u
 
 #define RF_BATCH_INIT   1u
 #define RF_BATCH_NEXT   2u
@@ -9,6 +9,7 @@
 #define RF_BATCH_REPORT 4u
 #define RF_BATCH_EDITOR 5u
 #define RF_BATCH_ALIAS 6u
+#define RF_BATCH_INTERACTIVE 31u
 
 #define RF_BATCH_DONE    0u
 #define RF_BATCH_COMMAND 1u
@@ -22,10 +23,9 @@ typedef struct {
     unsigned char reu_available;
     char **args;
     char *buffer;
+    const char *test;
     unsigned int capacity;
     unsigned int size;
-    unsigned char *scroll_head;
-    unsigned char *scroll_used;
 } ReadyFsBatchCall;
 
 unsigned int readyfs_batch_abi(void);

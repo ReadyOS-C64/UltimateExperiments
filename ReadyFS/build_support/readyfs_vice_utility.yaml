@@ -106,10 +106,10 @@ steps:
     params: { keys: [68,73,82,32,56,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
   - id: dir_page_advance
     type: input.sequence
-    params: { keys: [32], inter_key_delay_s: 0.04, post_delay_s: 0.35 }
+    params: { keys: [32,32], inter_key_delay_s: 0.3, post_delay_s: 0.35 }
   - id: dir_formatted_free
     type: screen.wait_contains
-    params: { text: "FREE:", wait_timeout_s: 15, capture_label: readyfs_utility_formatted_directory }
+    params: { text: "BLOCKS FREE.", wait_timeout_s: 15, capture_label: readyfs_utility_formatted_directory }
   - id: iec_tree_clear
     type: input.sequence
     params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
@@ -118,16 +118,19 @@ steps:
     params: { keys: [84,82,69,69,32,56,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.6 }
   - id: iec_tree_done
     type: screen.wait_contains
-    params: { text: "TREE DONE F22 D0", wait_timeout_s: 20, capture_label: readyfs_tree_iec_flat }
+    params: { text: "TREE DONE F44 D0", wait_timeout_s: 20, capture_label: readyfs_tree_iec_flat }
   - id: softiec_tree_clear
     type: input.sequence
     params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
   - id: softiec_tree_input
     type: input.sequence
     params: { keys: [84,82,69,69,32,83,51,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: softiec_tree_absent_debug
+    type: screen.capture
+    params: { label: readyfs_tree_softiec_absent_debug }
   - id: softiec_tree_absent
     type: screen.wait_contains
-    params: { text: "SOFTIEC OFF", wait_timeout_s: 10, capture_label: readyfs_tree_softiec_absent }
+    params: { text: "TREE FAILED F0 D0", wait_timeout_s: 10, capture_label: readyfs_tree_softiec_absent }
   - id: capabilities_iec_clear
     type: input.sequence
     params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
@@ -181,7 +184,7 @@ steps:
     params: { text: "EP TAPE SEQ", wait_timeout_s: 10 }
   - id: capabilities_tape_flags
     type: screen.wait_contains
-    params: { text: "CAPS: SEQ", wait_timeout_s: 10, capture_label: readyfs_capabilities_tape }
+    params: { text: "CAPS: READ WRITE SEQ", wait_timeout_s: 10, capture_label: readyfs_capabilities_tape }
   - id: tape_dir_clear
     type: input.sequence
     params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
@@ -191,15 +194,15 @@ steps:
   - id: tape_dir_refused
     type: screen.wait_contains
     params: { text: "UNSUPPORTED", wait_timeout_s: 10, capture_label: readyfs_tape_dir_refused }
-  - id: tape_copy_clear
+  - id: tape_append_clear
     type: input.sequence
     params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
-  - id: tape_copy_input
+  - id: tape_append_input
     type: input.sequence
-    params: { keys: [67,79,80,89,32,84,58,47,88,32,56,58,47,88,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
-  - id: tape_copy_refused
+    params: { keys: [65,80,80,69,78,68,32,84,58,47,88,32,84,69,88,84,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: tape_append_refused
     type: screen.wait_contains
-    params: { text: "UNSUPPORTED", wait_timeout_s: 10, capture_label: readyfs_tape_copy_refused }
+    params: { text: "TAPE APPEND OFF", wait_timeout_s: 10, capture_label: readyfs_tape_append_refused }
   - id: tape_delete_clear
     type: input.sequence
     params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
@@ -208,7 +211,7 @@ steps:
     params: { keys: [68,69,76,69,84,69,32,84,58,47,88,32,45,45,89,69,83,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
   - id: tape_delete_refused
     type: screen.wait_contains
-    params: { text: "UNSUPPORTED", wait_timeout_s: 10, capture_label: readyfs_tape_delete_refused }
+    params: { text: "TAPE DELETE OFF", wait_timeout_s: 10, capture_label: readyfs_tape_delete_refused }
   - id: tape_tree_clear
     type: input.sequence
     params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
@@ -229,7 +232,7 @@ steps:
     params: { text: "RFUTIL", wait_timeout_s: 15 }
   - id: find_filtered_summary
     type: screen.wait_contains
-    params: { text: "FIND DONE N1 F22 D0", wait_timeout_s: 15, capture_label: readyfs_find_filtered }
+    params: { text: "FIND DONE N6 F44 D0", wait_timeout_s: 15, capture_label: readyfs_find_filtered }
   - id: head_view_clear
     type: input.sequence
     params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }

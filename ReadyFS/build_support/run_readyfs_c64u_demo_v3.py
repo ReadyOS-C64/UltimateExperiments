@@ -17,7 +17,8 @@ log=(OUT/'events.jsonl').open('a',buffering=1)
 random.seed(64)
 steps=[]
 SD_DEMO=os.environ.get('READYFS_SD2IEC_BASELINE')=='9'
-FAST=(os.environ.get('READYFS_DEMO_PREFLIGHT')=='1' or
+BATCH_BASELINE=os.environ.get('READYFS_BATCH_BASELINE')=='1'
+FAST=(BATCH_BASELINE or os.environ.get('READYFS_DEMO_PREFLIGHT')=='1' or
       os.environ.get('READYFS_SD2IEC_BASELINE','0')!='0') and not SD_DEMO
 def event(**data):
     data['time']=time.time(); log.write(json.dumps(data)+'\n'); print(json.dumps(data),flush=True)
@@ -373,7 +374,7 @@ try:
         rc=0
     elif FAST:
         keys('AL LAB u:/usb1/READYFS_TEST/'+owned.run,False);keys([13],False);wait_ready(3)
-        if os.environ.get('READYFS_SD2IEC_BASELINE') not in ('4','5','6','7','8'):
+        if not BATCH_BASELINE and os.environ.get('READYFS_SD2IEC_BASELINE') not in ('4','5','6','7','8'):
             if os.environ.get('READYFS_SD2IEC_BASELINE') == '1':
                 command('PROBE IEC 10:','STATUS:',4)
                 command('PROFILE IEC 10:','PROFILE:',4)
@@ -429,6 +430,9 @@ try:
                 from readyfs_sd2iec_image_hardware import NativeImage as NativeSuite
             extra_baseline=NativeSuite(globals())
             extra_baseline.run()
+        if BATCH_BASELINE:
+            from readyfs_batch_hardware import run as batch_acceptance
+            batch_acceptance(globals())
         rc=0
     else:
         # Unfilmed admission checks on the exact build being recorded.

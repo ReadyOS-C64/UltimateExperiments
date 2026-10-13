@@ -23,6 +23,9 @@
 #define RF_REU_BATCH_BANK_BYTES 0xF100u
 
 extern unsigned char readyfs_reu_batch_bank_value;
+extern unsigned char readyfs_reu_script_bank_value;
+unsigned char readyfs_reu_script_store(unsigned int offset, const void *data, unsigned int length);
+unsigned char readyfs_reu_script_fetch(unsigned int offset, void *data, unsigned int length);
 
 /* Bank-local session allocation. Keep this map in one place: DMA regions
  * must never overlap even when a command temporarily uses rollback space. */

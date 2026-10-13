@@ -325,7 +325,7 @@
   },
   {
     "id": 40,
-    "usage": "run script.seq / ru\r\nstage and run a command script.",
+    "usage": "run file [args] / ru\\r\\nhelp batch: vars, if, goto, call.",
     "examples": [
       "run @lab:/inspect.seq",
       "ru 8:/rfbok"

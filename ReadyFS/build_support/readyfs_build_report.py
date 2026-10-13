@@ -81,7 +81,7 @@ def main() -> int:
     # Cached payload includes code, constants and zero-filled overlay BSS.
     # These must remain distinct assembler segments: cc65 can emit constants
     # after a function label, before switching back to its code segment.
-    for index in range(1,25):
+    for index in range(1,29):
         name = f"OVERLAY{index}"
         parts = [overlay[k] for k in (name,name+"R",name+"B") if k in overlay]
         overlay[name] = {"start":min(x["start"] for x in parts),
@@ -127,6 +127,18 @@ def main() -> int:
     files_plan = sidecar(OUT / "readyfs-files-plan.prg", overlay["OVERLAY20"], 0x1000)
     files = sidecar(OUT / "readyfs-files.prg", overlay["OVERLAY19"], 0x1000)
     native = sidecar(OUT / "readyfs-native.prg", overlay["OVERLAY18"], 0x1000)
+    scripting = {name: sidecar(OUT / f"readyfs-{name}.prg", overlay[f"OVERLAY{25+i}"], 0x1000)
+                 for i, name in enumerate(("environment", "expand", "flow", "config"))}
+    script_layout = [
+        ("environment_overlay_cache", 0x0000, 0x1000),
+        ("expansion_overlay_cache", 0x1000, 0x2000),
+        ("flow_overlay_cache", 0x2000, 0x3000),
+        ("config_overlay_cache", 0x3000, 0x4000),
+        ("session_variables", 0x4000, 0x4920),
+        ("config_variable_stage", 0x5000, 0x5920),
+        ("config_variable_merge", 0x6000, 0x6920),
+        ("script_arguments", 0x7000, 0x7A00),
+    ]
     batch_layout = [("batch_overlay_cache",0,0x1000),
                     ("batch_script",0x1000,0x5000),
                     ("batch_checkpoint",0x5000,0x5100),
@@ -179,6 +191,8 @@ def main() -> int:
     overlap_free = all(layout[index][2] <= layout[index + 1][1]
                        for index in range(len(layout) - 1))
     checks = {
+        "scripting_sidecars": all(all(x["checks"].values()) for x in scripting.values()),
+        "reu_script_regions_disjoint": all(script_layout[i][2] <= script_layout[i+1][1] for i in range(len(script_layout)-1)),
         "resident_below_b600": resident_end < 0xB600,
         "resident_below_kernal_scratch": resident_end < 0xB5AC,
         "software_stack_top_d000": stack_top == 0xD000,
@@ -223,7 +237,7 @@ def main() -> int:
         },
         "software_stack": {"top": stack_top},
         "monolithic": {"end": monolithic_end, "limit": 0xC5FF},
-        "sidecars": {"udos_files": udos, "native_files_policy": files_plan, "native_files": files, "native_iec_media": native, "iec_config_policy": iec, "stream_policy": stream, "command_help": command_help, "presentation": present, "matcher": match, "planner_executor": plan,
+        "sidecars": {"scripting": scripting, "udos_files": udos, "native_files_policy": files_plan, "native_files": files, "native_iec_media": native, "iec_config_policy": iec, "stream_policy": stream, "command_help": command_help, "presentation": present, "matcher": match, "planner_executor": plan,
                      "extended_help": help_sidecar,
                      "backend_controller": backend,
                      "cmdpath_translator": cmdpath,
@@ -249,6 +263,10 @@ def main() -> int:
             {"name": name, "start": start, "end_exclusive": end,
              "bytes": end-start} for name,start,end in batch_layout
         ],
+        "reu_script_bank_regions": [
+            {"name": name, "start": start, "end_exclusive": end, "bytes": end-start}
+            for name, start, end in script_layout
+        ],
         "reu_console_bank_regions": [
             {"name":"output_row_ring", "start":0, "end_exclusive":64000,
              "bytes":64000, "physical_rows":800, "bytes_per_row":80}
@@ -264,6 +282,7 @@ def main() -> int:
         "",
         f"Status: **{report['status'].upper()}**",
         "",
+        "- DOS batch scripting: four cached sidecars and a dedicated fifth high REU bank; tape spool stops below it.",
         f"- Resident end: `${resident_end:04X}`; "
         f"{report['resident']['free_bytes']} safe bytes remain before "
         "KERNAL scratch at `$B5AC`.",
@@ -326,6 +345,9 @@ def main() -> int:
                   "| batch_script | `$1000` | `$5000` | 16384 |",
                   "| batch_checkpoint | `$5000` | `$5100` | 256 |",
                   "| tape_overlay_cache | `$5100` | `$6100` | 4096 |"])
+    lines.extend(["", "## REU Scripting Bank Map", "", "| Region | Start | End (exclusive) | Bytes |", "|---|---:|---:|---:|"])
+    for name, start, end in script_layout:
+        lines.append(f"| {name} | `${start:04X}` | `${end:04X}` | {end-start} |")
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"ReadyFS build report: {report['status']} ({md_path})")
     return 0 if passed else 1

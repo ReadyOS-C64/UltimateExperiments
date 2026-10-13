@@ -39,7 +39,7 @@ the [public demo site](https://readyfs-editor-demo.klumsy.chatgpt.site/guide.htm
 
 For SD cards and image contents, see the [SD2IEC multi-file walkthrough](docs/READYFS_SD2IEC_TUTORIAL.md) and its [new physical video with chapters and downloads](https://readyfs-editor-demo.klumsy.chatgpt.site/sd2iec.html).
 
-For command scripts, see the [RUN guide](docs/READYFS_RUN_GUIDE.md): exact invocation syntax, alias-based inputs, previews, confirmation options, error policies and result checks.
+For command scripts, see the [RUN guide](docs/READYFS_RUN_GUIDE.md): DOS-style SET variables, persistent variables in CONFIG SAVE, arguments, IF/GOTO, label subroutines, counted loops, previews and result checks.
 
 ## Interactive use
 
@@ -74,10 +74,12 @@ See [PROJECT_INVENTORY.md](PROJECT_INVENTORY.md) for the migration boundary,
 artifact groups, automation entry points, and current verification evidence.
 
 
-The overlay build requires all 24 sidecars. SD2IEC stream policy and VOLUME
+The overlay build requires all 28 sidecars. SD2IEC stream policy and VOLUME
 use slot 16; IEC configuration policy uses 17; native configuration and media
 I/O use 18; native file I/O uses 19; native filename policy uses 20. Typed
 UltimateDOS contained-image preparation, lookup, file control, and names use
 slots 21–24. See [native IEC configuration](docs/READYFS_IEC_CONFIGURATION.md)
 and [native SD2IEC support](docs/SD2IEC_NATIVE.md) for commands, boundaries,
 and evidence. Final filesystem/image transfer acceptance is still in progress.
+
+DOS-style scripting uses one additional reserved 64 KiB REU bank, with the 1 MiB minimum unchanged. Run `HELP BATCH` in the overlay application. `SET NAME=value` lasts for the session; `SET /P NAME=value` is included in the next `CONFIG SAVE`. Slots 25–28 cache environment, expansion, flow-control and config policy. Test the interpreter and config round trip with a 1 MiB REU using `bash build_support/run_readyfs_vice_dos_batch.sh`. The physical Ultimate matrix runs with `READYFS_BATCH_BASELINE=1 bash build_support/start_readyfs_c64u_demo_v3_terminal.sh`; it uses a new marker-owned USB1 root, preserves drive A, and restores drive B and CPU settings.

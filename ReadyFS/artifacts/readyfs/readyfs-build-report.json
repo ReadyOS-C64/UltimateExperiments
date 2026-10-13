@@ -2,6 +2,8 @@
   "schema": "readyfs-build-report-v1",
   "status": "pass",
   "checks": {
+    "scripting_sidecars": true,
+    "reu_script_regions_disjoint": true,
     "resident_below_b600": true,
     "resident_below_kernal_scratch": true,
     "software_stack_top_d000": true,
@@ -33,9 +35,9 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 46073,
+    "end": 46390,
     "limit": 46507,
-    "free_bytes": 434
+    "free_bytes": 117
   },
   "software_stack": {
     "top": 53248
@@ -45,6 +47,60 @@
     "limit": 50687
   },
   "sidecars": {
+    "scripting": {
+      "environment": {
+        "file": "artifacts/readyfs/readyfs-environment.prg",
+        "load_address": 46592,
+        "payload_bytes": 3785,
+        "map_bytes": 3785,
+        "reu_slot_bytes": 4096,
+        "checks": {
+          "load_address_b600": true,
+          "payload_matches_map": true,
+          "fits_reu_slot": true,
+          "fits_overlay_window": true
+        }
+      },
+      "expand": {
+        "file": "artifacts/readyfs/readyfs-expand.prg",
+        "load_address": 46592,
+        "payload_bytes": 2761,
+        "map_bytes": 2761,
+        "reu_slot_bytes": 4096,
+        "checks": {
+          "load_address_b600": true,
+          "payload_matches_map": true,
+          "fits_reu_slot": true,
+          "fits_overlay_window": true
+        }
+      },
+      "flow": {
+        "file": "artifacts/readyfs/readyfs-flow.prg",
+        "load_address": 46592,
+        "payload_bytes": 3653,
+        "map_bytes": 3653,
+        "reu_slot_bytes": 4096,
+        "checks": {
+          "load_address_b600": true,
+          "payload_matches_map": true,
+          "fits_reu_slot": true,
+          "fits_overlay_window": true
+        }
+      },
+      "config": {
+        "file": "artifacts/readyfs/readyfs-config.prg",
+        "load_address": 46592,
+        "payload_bytes": 2862,
+        "map_bytes": 2862,
+        "reu_slot_bytes": 4096,
+        "checks": {
+          "load_address_b600": true,
+          "payload_matches_map": true,
+          "fits_reu_slot": true,
+          "fits_overlay_window": true
+        }
+      }
+    },
     "udos_files": {
       "prepare": {
         "file": "artifacts/readyfs/readyfs-udos-prepare.prg",
@@ -167,8 +223,8 @@
     "command_help": {
       "file": "artifacts/readyfs/readyfs-command-help.prg",
       "load_address": 46592,
-      "payload_bytes": 4018,
-      "map_bytes": 4018,
+      "payload_bytes": 4029,
+      "map_bytes": 4029,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -284,8 +340,8 @@
     "tree_controller": {
       "file": "artifacts/readyfs/readyfs-tree.prg",
       "load_address": 46592,
-      "payload_bytes": 3354,
-      "map_bytes": 3354,
+      "payload_bytes": 3571,
+      "map_bytes": 3571,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -310,8 +366,8 @@
     "batch_alias_controller": {
       "file": "artifacts/readyfs/readyfs-batch.prg",
       "load_address": 46592,
-      "payload_bytes": 2997,
-      "map_bytes": 2997,
+      "payload_bytes": 2721,
+      "map_bytes": 2721,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -634,6 +690,56 @@
       "start": 57600,
       "end_exclusive": 61696,
       "bytes": 4096
+    }
+  ],
+  "reu_script_bank_regions": [
+    {
+      "name": "environment_overlay_cache",
+      "start": 0,
+      "end_exclusive": 4096,
+      "bytes": 4096
+    },
+    {
+      "name": "expansion_overlay_cache",
+      "start": 4096,
+      "end_exclusive": 8192,
+      "bytes": 4096
+    },
+    {
+      "name": "flow_overlay_cache",
+      "start": 8192,
+      "end_exclusive": 12288,
+      "bytes": 4096
+    },
+    {
+      "name": "config_overlay_cache",
+      "start": 12288,
+      "end_exclusive": 16384,
+      "bytes": 4096
+    },
+    {
+      "name": "session_variables",
+      "start": 16384,
+      "end_exclusive": 18720,
+      "bytes": 2336
+    },
+    {
+      "name": "config_variable_stage",
+      "start": 20480,
+      "end_exclusive": 22816,
+      "bytes": 2336
+    },
+    {
+      "name": "config_variable_merge",
+      "start": 24576,
+      "end_exclusive": 26912,
+      "bytes": 2336
+    },
+    {
+      "name": "script_arguments",
+      "start": 28672,
+      "end_exclusive": 31232,
+      "bytes": 2560
     }
   ],
   "reu_console_bank_regions": [
