@@ -17,7 +17,7 @@ Status: **PASS**
 - Bounded content-view payload: `$FF2` bytes (ninth REU-cached runtime sidecar).
 - Batch/alias payload: `$BB5` bytes (tenth sidecar in a dedicated REU bank).
 - Recursive controller/name translator payload: `$F67` bytes (eleventh sidecar; cached above the tree queue).
-- Tape/core policy and signature payload: `$F47` bytes (twelfth sidecar; dedicated batch-bank cache).
+- Tape/core policy and signature payload: `$F4F` bytes (twelfth sidecar; dedicated batch-bank cache).
 - Command/editor payload: `$FCF` bytes (thirteenth sidecar).
 - Presentation payload: `$FCD` bytes (fourteenth sidecar).
 - Command-help payload: `$F46` bytes (fifteenth sidecar).

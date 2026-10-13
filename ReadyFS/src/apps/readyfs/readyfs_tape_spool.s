@@ -3,7 +3,7 @@
 ; runtime pointers, not the software-stack pointer, and no nested call occurs.
 
         .importzp ptr1, ptr2, ptr3
-        .import _readyfs_reu_batch_bank_value
+        .import _readyfs_reu_console_bank_value
         .export _readyfs_tape_spool_dispatch
         .export _readyfs_tape_open_name_dispatch
 
@@ -172,25 +172,29 @@ store:
         clc
         adc #$01
         jcs fail
-        cmp _readyfs_reu_batch_bank_value
+        cmp _readyfs_reu_console_bank_value
         jcs fail
         sta spool_bank
         ; If this chunk crosses a 64K boundary, the automatically incremented
-        ; REU bank must still remain below the three reserved high banks.
+        ; REU bank must still remain below all four reserved high banks. An exact end at the
+        ; boundary does not touch the following bank.
         ldy #SP_BYTES_LO
         lda (ptr2),y
         ldy #TC_LENGTH
         clc
         adc (ptr1),y
+        sta spool_rem
         ldy #SP_BYTES_LO+1
         lda (ptr2),y
         ldy #TC_LENGTH+1
         adc (ptr1),y
         bcc store_dma
+        ora spool_rem
+        beq store_dma
         lda spool_bank
         clc
         adc #$01
-        cmp _readyfs_reu_batch_bank_value
+        cmp _readyfs_reu_console_bank_value
         jcs fail
 store_dma:
         lda #SP_BYTES_LO
@@ -266,7 +270,7 @@ fetch_more_banks:
         clc
         adc #$01
         jcs fail
-        cmp _readyfs_reu_batch_bank_value
+        cmp _readyfs_reu_console_bank_value
         jcs fail
         sta spool_bank
         lda #SP_REPLAY_LO

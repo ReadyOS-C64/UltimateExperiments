@@ -4,13 +4,14 @@
 
 #include "src/apps/readyfs/readyfs_tape.h"
 
-unsigned char readyfs_reu_batch_bank_value = 0xFDu;
-static unsigned char spool[256];
+unsigned char readyfs_reu_batch_bank_value = 13u;
+static unsigned char spool[16u * 65536u];
 
-unsigned int readyfs_reu_bank_count(void) { return 256u; }
+unsigned int readyfs_reu_bank_count(void) { return 16u; }
 
 unsigned char readyfs_reu_batch_store(unsigned int offset, const void *data,
                                       unsigned int length) {
+    offset += readyfs_reu_batch_bank_value * 65536u;
     if (offset + length > sizeof(spool)) return 0u;
     memcpy(spool + offset, data, length);
     return 1u;
@@ -18,6 +19,7 @@ unsigned char readyfs_reu_batch_store(unsigned int offset, const void *data,
 
 unsigned char readyfs_reu_batch_fetch(unsigned int offset, void *data,
                                       unsigned int length) {
+    offset += readyfs_reu_batch_bank_value * 65536u;
     if (offset + length > sizeof(spool)) return 0u;
     memcpy(data, spool + offset, length);
     return 1u;
@@ -37,6 +39,8 @@ int main(void) {
     ReadyFsTapeSpoolState spool_state;
     ReadyFsPath path;
     unsigned char fetched[9];
+    unsigned char boundary[17];
+    unsigned int i;
     char open_text[24];
     char *write_args[] = {"write", "t:/rfseq", "data", "--line"};
     char *typed_args[] = {"new", "t:/rfseq", "--type", "prg"};
@@ -96,15 +100,46 @@ int main(void) {
     call.data = (const unsigned char *)"tape data";
     call.length = 9u;
     check(readyfs_tape_dispatch(&call) && call.result &&
-          readyfs_reu_batch_bank_value == 0xFDu,
+          readyfs_reu_batch_bank_value == 13u,
           "spool store and bank restore");
     call.operation = RF_TAPE_SPOOL_FETCH;
     call.data = fetched;
     call.length = sizeof(fetched);
     check(readyfs_tape_dispatch(&call) && call.result &&
           memcmp(fetched, "tape data", 9u) == 0 &&
-          readyfs_reu_batch_bank_value == 0xFDu,
+          readyfs_reu_batch_bank_value == 13u,
           "spool fetch and bank restore");
+    memset(spool + 12u * 65536u, 0xA7, 4u * 65536u);
+    memset(boundary, 0x5C, sizeof(boundary));
+    spool_state.bytes_bank = 10u; /* actual bank 11 is the last spool bank */
+    spool_state.bytes_lo = 0xFFF0u;
+    spool_state.replay_bank = 10u;
+    spool_state.replay_lo = 0xFFF0u;
+    call.operation = RF_TAPE_SPOOL_STORE;
+    call.data = boundary;
+    call.length = 17u;
+    check(readyfs_tape_dispatch(&call) && !call.result &&
+          spool_state.bytes_lo == 0xFFF0u, "reject one-byte console overlap");
+    call.length = 16u;
+    check(readyfs_tape_dispatch(&call) && call.result &&
+          spool_state.bytes_lo == 0u && spool_state.bytes_bank == 11u,
+          "allow exact last spool boundary");
+    call.length = 1u;
+    check(readyfs_tape_dispatch(&call) && !call.result,
+          "reject first byte in reserved console bank");
+    call.operation = RF_TAPE_SPOOL_FETCH;
+    call.length = 16u;
+    memset(boundary, 0, sizeof(boundary));
+    check(readyfs_tape_dispatch(&call) && call.result && call.length == 16u &&
+          spool_state.replay_bank == 11u && spool_state.replay_lo == 0u,
+          "fetch exact spool end");
+    for (i = 0; i < 16u; ++i) check(boundary[i] == 0x5C, "boundary data intact");
+    call.length = 1u;
+    check(readyfs_tape_dispatch(&call) && call.result && call.length == 0u,
+          "EOF at reserved boundary");
+    for (i = 12u * 65536u; i < sizeof(spool); ++i)
+        check(spool[i] == 0xA7, "all four reserved banks unchanged");
+    check(readyfs_reu_batch_bank_value == 13u, "batch bank restored");
     puts("readyfs tape policy/signature/spool tests passed");
     return 0;
 }

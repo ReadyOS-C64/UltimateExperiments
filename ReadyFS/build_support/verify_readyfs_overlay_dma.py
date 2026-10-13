@@ -349,6 +349,10 @@ def main() -> int:
             r"fetch_eof:\s*[\s\S]*?sta\s+\(ptr1\),y[\s\S]*?"
             r"jmp\s+succeed",
             "tape replay EOF must return success unconditionally", failures)
+    require(tape_spool, r"cmp\s+_readyfs_reu_console_bank_value",
+            "spool capacity must protect the console and all three cache banks", failures)
+    if "_readyfs_reu_batch_bank_value" in tape_spool:
+        failures.append("spool may not use batch bank as its capacity ceiling")
     eof_block = tape_spool.split("fetch_eof:", 1)[-1].split("; A is", 1)[0]
     if re.search(r"\bbeq\s+succeed\b", eof_block):
         failures.append("tape replay EOF must not depend on LDY/INY flags")

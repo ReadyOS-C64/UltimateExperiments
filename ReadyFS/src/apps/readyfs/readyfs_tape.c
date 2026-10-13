@@ -128,6 +128,7 @@ static unsigned char spool_transfer(ReadyFsTapeCall *call) {
     ReadyFsTapeSpoolState *state;
     unsigned int bank_count;
     unsigned int before;
+    unsigned int end;
     unsigned int amount;
     unsigned char saved_bank;
 
@@ -140,9 +141,11 @@ static unsigned char spool_transfer(ReadyFsTapeCall *call) {
     if (call->data == 0 || call->length == 0u) return 0u;
     bank_count = readyfs_reu_bank_count();
     if (call->operation == RF_TAPE_SPOOL_STORE) {
-        if ((unsigned int)state->bytes_bank + 4u >= bank_count ||
-            ((unsigned int)(state->bytes_lo + call->length) < state->bytes_lo &&
-             (unsigned int)state->bytes_bank + 5u >= bank_count)) return 0u;
+        /* Banks count-4 through count-1 hold console and overlay state. */
+        end = (state->bytes_lo + call->length) & 0xFFFFu;
+        if ((unsigned int)state->bytes_bank + 5u >= bank_count ||
+            (end < state->bytes_lo && end != 0u &&
+             (unsigned int)state->bytes_bank + 6u >= bank_count)) return 0u;
         saved_bank = readyfs_reu_batch_bank_value;
         readyfs_reu_batch_bank_value = (unsigned char)(state->bytes_bank + 1u);
         call->result = readyfs_reu_batch_store(state->bytes_lo, call->data,
@@ -150,7 +153,7 @@ static unsigned char spool_transfer(ReadyFsTapeCall *call) {
         readyfs_reu_batch_bank_value = saved_bank;
         if (!call->result) return 0u;
         before = state->bytes_lo;
-        state->bytes_lo = (unsigned int)(state->bytes_lo + call->length);
+        state->bytes_lo = end;
         if (state->bytes_lo < before) ++state->bytes_bank;
         return 1u;
     }
@@ -164,6 +167,10 @@ static unsigned char spool_transfer(ReadyFsTapeCall *call) {
     if (state->replay_bank == state->bytes_bank &&
         amount > (unsigned int)(state->bytes_lo - state->replay_lo))
         amount = (unsigned int)(state->bytes_lo - state->replay_lo);
+    end = (state->replay_lo + amount) & 0xFFFFu;
+    if ((unsigned int)state->replay_bank + 5u >= bank_count ||
+        (end < state->replay_lo && end != 0u &&
+         (unsigned int)state->replay_bank + 6u >= bank_count)) return 0u;
     saved_bank = readyfs_reu_batch_bank_value;
     readyfs_reu_batch_bank_value = (unsigned char)(state->replay_bank + 1u);
     call->result = readyfs_reu_batch_fetch(state->replay_lo,
@@ -171,7 +178,7 @@ static unsigned char spool_transfer(ReadyFsTapeCall *call) {
     readyfs_reu_batch_bank_value = saved_bank;
     if (!call->result) return 0u;
     before = state->replay_lo;
-    state->replay_lo = (unsigned int)(state->replay_lo + amount);
+    state->replay_lo = end;
     if (state->replay_lo < before) ++state->replay_bank;
     call->length = amount;
     return 1u;
