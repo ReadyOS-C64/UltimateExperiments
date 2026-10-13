@@ -155,8 +155,8 @@
     "mounted_operations_passed": true,
     "independent_image_passed": true
   },
-  "generated_utc": "2026-10-13T13:39:50.260474+00:00",
-  "current_source_commit": "bb33868",
+  "generated_utc": "2026-10-13T13:44:06.815504+00:00",
+  "current_source_commit": "50b1974",
   "folder_rerun_required": false,
   "checksum": {
     "actual_6502_differential_cases": 46,
@@ -178,7 +178,7 @@
   },
   "udos_control": {
     "integrated": true,
-    "physical_acceptance": "pending",
+    "physical_acceptance": "PASS expanded image matrix-b; independent Ultimate D64 bytes/types/source removal",
     "host_tests": "PASS actual gateway and phases",
     "actual_6502_cases": 29,
     "actual_reu_transfers": 168,
@@ -272,12 +272,19 @@
       "sd-image-move-s-to-d-seq"
     ],
     "process_exited": true,
-    "same_sd_fat_image_bridge": "PASS independent hashes"
+    "same_sd_fat_image_bridge": "PASS independent hashes",
+    "native_destination_type_assertions": "pending final read-only check"
   },
   "final_regression": {
-    "status": "ready_to_run",
+    "status": "running",
     "native_image_type_checks": 12,
     "native_fat_bridge_type_checks": 1,
-    "fresh_native_names": true
+    "fresh_native_names": true,
+    "run": "demo-v3-sd2iec-final-regression-20261013-a",
+    "pid": 96976,
+    "terminal": 14649,
+    "source_commit": "50b1974",
+    "runtime_commit": "bb33868",
+    "runtime_hashes_match_image_matrix": true
   }
 }

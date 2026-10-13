@@ -1,6 +1,6 @@
 # ReadyFS SD2IEC implementation and acceptance report
 
-**Status: acceptance is still in progress.** This is the current report, not a completion claim. The remaining work includes physical acceptance of the typed UltimateDOS contained-image service, the expanded image transfer matrix, and a final regression pass on the current build. The corrected recursive folder round trip has passed.
+**Status: acceptance is still in progress.** This is the current report, not a completion claim. The corrected recursive round trip and expanded image matrix have passed. Remaining work is the final four-endpoint regression on the current build, explicit native destination-type checks, and final evidence reconciliation.
 
 ## What is implemented
 
@@ -32,6 +32,8 @@ Detected identity: `73,SD2IEC V1.0.0ATENTDEAD0-36,00,00`. Persistence has been d
 | Recursive SD→host export | Native directories-e | Passed; independent hashes for all five nested files; earlier b/c/d failures retained |
 | Recursive what-if/delete and final read checks | Native directories-e | What-if preserved all five files; deletion/removal affected only created descendants; DIR/VOLUME/owner reads passed at16/64MHz; complete/restored=true |
 | Mounted SD image: directory, VOLUME, PRG read, SEQ write, MOVE/delete and absence checks, qualified unmount/FAT return | Native image-a | Passed, including independent exported-image geometry/bytes/types/source-removal oracle |
+| Expanded image COPY/MOVE matrix | Matrix-b | All10COPY and10MOVE pairs passed; includes SD image↔Ultimate image SEQ/PRG/USR each way; independent byte/type/removal checks and restoration passed |
+| Same-SD folder↔image workflow | Matrix-b | Explicit closed-channel intermediate transfers and independent hashes passed |
 
 The configuration acceptance exercised version/status, the native configuration
 reply, partition enumeration and queries (including partition 0 and a potentially
@@ -70,7 +72,7 @@ build has passed the repeated smaller recursive-copy byte comparisons; full curr
 
 ## Boundaries and limitations
 
-- Native `10.1:/folder/file` and Ultimate `u:/usb1/image.d81/file` are different path services. An alias does not change endpoint capabilities. The current cold service handles SEQ/PRG/USR lookup, stages, backups, rename, and rollback with explicit wire types. Actual linked6502 and host fault tests pass; broad physical acceptance remains pending. The next matrix tests all three types in both directions, not just PRG.
+- Native `10.1:/folder/file` and Ultimate `u:/usb1/image.d81/file` are different path services. An alias does not change endpoint capabilities. The current cold service handles SEQ/PRG/USR lookup, stages, backups, rename, and rollback with explicit wire types. Actual linked6502 and host fault tests pass; matrix-b also passed all three types in both directions and independently checked persisted Ultimate-image bytes/types. Explicit retained SD-image type assertions remain in the final regression.
 - Explicit native MOUNT/DISMOUNT changes the SD2IEC filesystem view. Automatic `10.1:/image.d64!/FILE` transitions are not implemented.
 - A transfer between SD FAT and an image mounted on that same SD device requires an intermediate endpoint and explicit media transitions. Mounting/unmounting can close device-wide buffers; it cannot occur inside the ordinary simultaneous stream pump.
 - `G-P` type 1 identifies either FAT or DNP, not which one. It does not recover an unknown prior mounted-image path or current directory. Remembered mount paths are session hints and may become stale after changes elsewhere.
@@ -95,17 +97,17 @@ The authoritative chronological notes are [the work log](SD2IEC_2026-10-12.md). 
 - C64OS file-manager concepts: <https://c64os.com/c64os/usersguide/filemanager>
 - Local sibling C64OS artifacts and Ultimate firmware source were inspected to distinguish filesystem capabilities, binary protocol behavior, and actual implementation details from assumptions.
 
-### UltimateDOS type-preserving overlays (integrated; hardware pending)
+### UltimateDOS type-preserving overlays (integrated; image matrix passed)
 
-The current build adds four cold overlays for contained-image context, lookup, checked file control, and typed names. SEQ/PRG/USR stages and rename/backup/rollback retain their original types. Bare ambiguous names require a suffix; equivalent spellings of the same entry cannot be used for self-copy/move/rename. These behaviors pass real6502 execution and host fault tests, but the full physical contained-image matrix remains outstanding.
+The current build adds four cold overlays for contained-image context, lookup, checked file control, and typed names. SEQ/PRG/USR stages and rename/backup/rollback retain their original types. Bare ambiguous names require a suffix; equivalent spellings of the same entry cannot be used for self-copy/move/rename. These behaviors pass real6502 execution, host fault tests, and the full physical contained-image matrix, including independent saved-image bytes/types/source-removal checks.
 
 Folder-c/d proved the previous empty-directory fix was incomplete on target: cc65 translated its expected ASCII status into PETSCII. Numeric wire constants correct it. Directories-e independently proved the nested SD→Ultimate export, what-if preservation, recursive deletion, and16/64MHz read checks. It completed PASS/restored=true at12:34:21UTC; PID87665 exited. Its frozen runtime is1e30bc5; the subsequent uncertain-close guard is included in the next matrix build.
 
 ## Remaining acceptance gates
 
 1. **Completed:** directories-e passed nested export with independent hashes, what-if preservation, deletion of only created descendants, and native reads at16/64MHz. Restoration and process exit are confirmed.
-2. **Running:** expanded owned-image suite-b, source/runtimebb33868, Terminal14648/PID92546. Run-a restored/exited after exposing missing-read reporting; the wrapper fix passes full build and executable regression: mounted SD↔IEC9/SoftwareIEC; mounted SD↔unmounted Ultimate container for SEQ/PRG/USR; source removal; forced cross-type replacement and rename; alias/type-conflict rejection; independent persisted-image and host-byte oracles; explicit SD FAT↔its own image via closed-channel intermediate transfers.
-3. Repeat the four-endpoint COPY/MOVE regression using the current24-overlay runtime because its UltimateDOS file-control implementation changed after the earlier passing baseline. Use fresh native filenames and assert their SEQ type. Afterward, read-only STAT checks must confirm SEQ/PRG/USR types of all retained native-image COPY/MOVE targets and bridge/USR seed fixtures; byte comparisons alone do not prove those destination types.
+2. **Completed:** expanded owned-image suite-b, source/runtimebb33868, passed/restored at13:38:06UTC; PID92546 exited. It covered: mounted SD↔IEC9/SoftwareIEC; mounted SD↔unmounted Ultimate container for SEQ/PRG/USR; source removal; forced cross-type replacement and rename; alias/type-conflict rejection; independent persisted-image and host-byte oracles; explicit SD FAT↔its own image via closed-channel intermediate transfers.
+3. **Running:** final four-endpoint COPY/MOVE regression (`demo-v3-sd2iec-final-regression-20261013-a`, Terminal14649/PID96976) uses the current24-overlay runtime because its UltimateDOS file-control implementation changed after the earlier passing baseline. Its PRG hashes exactly match the passing image matrix. Use fresh native filenames and assert their SEQ type. Afterward, read-only STAT checks must confirm SEQ/PRG/USR types of all retained native-image COPY/MOVE targets and bridge/USR seed fixtures; byte comparisons alone do not prove those destination types.
 4. Reconcile final build/evidence/limits in this report and the native guide, retain all owned roots, and commit the final state. Completion has not yet been claimed.
 
 ### Expanded image run-a: missing-read integration correction
@@ -121,5 +123,5 @@ An executable test extracts the actual resident function and verifies missing
 READ, quiet FIND, I/O-error preservation, and success. Full build and29 linked
 6502 cases pass. Run-a finished FAIL/restored=true at12:46:47UTC; PID89829 exited.
 No Ultimate-image destination write had been attempted when its STAT failed.
-The full matrix remains required; its pair order now reaches typed image
-operations first without removing any coverage.
+The corrected matrix-b subsequently passed the full scope; its pair order reached
+typed image operations first without removing any coverage.
