@@ -1,4 +1,4 @@
-"""Continue a proved, owned SD image with IEC9/SoftwareIEC transfer pairs.
+"""Continue a proved, owned SD image with native/SoftIEC/typed UDOS pairs.
 
 No large image upload is repeated. The supplied prior run must have completed
 successfully, exported an independently checked D64, and restored its state.
@@ -12,6 +12,14 @@ import subprocess
 import time
 from pathlib import Path
 from readyfs_sd2iec_baseline import Baseline
+
+IMAGE_TYPES={'s':'seq','p':'prg','u':'usr'}
+IMAGE_PAIRS=[('d','i','s'),('i','d','s'),('d','s','s'),('s','d','s')]+[
+    (src,dst,kind) for kind in IMAGE_TYPES for src,dst in [('d','h'),('h','d')]]
+def matrix_leaf(operation,source,destination,kind,suffix):
+    leaf=operation+'-'+source+destination+kind+suffix+'.'+IMAGE_TYPES[kind]
+    assert len(leaf)<=16 and '/' not in leaf
+    return leaf
 
 class NativeImageMatrix(Baseline):
     def run(self):
@@ -53,9 +61,12 @@ class NativeImageMatrix(Baseline):
         assert payload==b'\x01\x08'+bytes((i*13+7)&255 for i in range(513))
         owner_file=self.out/'ud-image-owner.seq';owner_file.write_bytes(self.sd['marker'].upper().encode('ascii'))
         hello_file=self.out/'ud-image-hello.prg';hello_file.write_bytes(payload)
+        note_file=self.out/'ud-image-note.seq';note_file.write_bytes(self.owned.seed['readme.seq'])
+        data_file=self.out/'ud-image-data.usr';data_file.write_bytes(bytes((i*17+3)&255 for i in range(129)))
         host_image=self.out/'ud-image.d64'
         subprocess.run(['c1541','-format','readyfs ud,rf','d64',str(host_image),
-            '-write',str(owner_file),'owner,s','-write',str(hello_file),'hello,p'],check=True,capture_output=True)
+            '-write',str(owner_file),'owner,s','-write',str(hello_file),'hello,p',
+            '-write',str(note_file),'note,s','-write',str(data_file),'data,u'],check=True,capture_output=True)
         self.owned.guard(self.owned.root+'/ud-image.d64')
         with self.owned.ftp() as ftp:
             ftp.storbinary('STOR '+self.owned.root+'/ud-image.d64',io.BytesIO(host_image.read_bytes()))
@@ -71,47 +82,77 @@ class NativeImageMatrix(Baseline):
             expected={'d':self.owned.seed['readme.seq'],'i':(c['ROOT']/'build_support/readyfs_content_view.seq').read_bytes(),'s':self.owned.seed['readme.seq']}
             targets={}
             suffix=time.strftime('%H%M%S',time.gmtime())
-            pairs=[('d','i'),('i','d'),('d','s'),('s','d'),('d','h'),('h','d')]
-            sources['h']=prefixes['h']+'HELLO';expected['h']=payload
-            def pair_source(src,dst):
-                return '10.1:/HELLO' if src=='d' and dst=='h' else sources[src]
-            def pair_expected(src,dst):
-                return payload if 'h' in (src,dst) else expected[src]
-            def make_leaf(kind,src,dst):
-                return kind+'-'+src+dst+suffix+('.prg' if 'h' in (src,dst) else '.seq')
+            pairs=IMAGE_PAIRS
+            image_sources={'s':prefixes['h']+'NOTE.SEQ','p':prefixes['h']+'HELLO.PRG','u':prefixes['h']+'DATA.USR'}
+            image_data={'s':note_file.read_bytes(),'p':payload,'u':data_file.read_bytes()}
+            usr_seed='xu'+suffix
+            command('STAT 10.1:/'+usr_seed,'NOT FOUND')
+            self.image_guard();command('COPY '+image_sources['u']+' 10.1:/'+usr_seed,'COPIED')
+            command('COMPARE '+image_sources['u']+' 10.1:/'+usr_seed,'VERIFY: IDENTICAL')
+            def pair_source(src,dst,kind):
+                if src=='h':return image_sources[kind]
+                if src=='d' and dst=='h':return '10.1:/'+{'s':'FROMHOST','p':'HELLO','u':usr_seed}[kind]
+                return sources[src]
+            def pair_expected(src,dst,kind):
+                return image_data[kind] if 'h' in (src,dst) else expected[src]
+            def make_leaf(operation,src,dst,kind):return matrix_leaf(operation,src,dst,kind,suffix)
             self.touched_soft=True
-            def path(endpoint,leaf):return prefixes[endpoint]+(leaf.removesuffix('.seq') if endpoint=='s' else leaf.removesuffix('.prg') if endpoint=='h' else leaf)
+            def path(endpoint,leaf):
+                # Bare COPY names inherit type; MOVE destinations additionally
+                # exercise explicit typed selectors in the UDOS image view.
+                return prefixes[endpoint]+(leaf.removesuffix('.seq') if endpoint=='s' else
+                    leaf.rsplit('.',1)[0] if endpoint=='h' and not leaf.startswith('bd-') else leaf)
             def guard(endpoint,leaf):
                 if endpoint=='d':self.image_guard()
                 elif endpoint=='i':c['guard_disk']()
                 elif endpoint=='h':self.owned.guard(self.owned.root+'/ud-image.d64')
                 else:self.owned.guard(self.owned.root+'/'+leaf.lower())
-            for src,dst in pairs:
-                name=make_leaf('bc',src,dst);target=path(dst,name)
+            for src,dst,kind in pairs:
+                name=make_leaf('bc',src,dst,kind);target=path(dst,name)
                 command('STAT '+target,'NOT FOUND')
                 guard(dst,name)
-                command('COPY '+pair_source(src,dst)+' '+target,'COPIED')
-                command('COMPARE '+pair_source(src,dst)+' '+target,'VERIFY: IDENTICAL')
-                targets[name]=(dst,pair_expected(src,dst))
-                c['event'](case='sd-image-copy-'+src+'-to-'+dst,result='PASS')
-            for src,dst in pairs:
-                src_leaf=make_leaf('bm',src,dst);dst_leaf=make_leaf('bd',src,dst)
+                command('COPY '+pair_source(src,dst,kind)+' '+target,'COPIED')
+                command('COMPARE '+pair_source(src,dst,kind)+' '+target,'VERIFY: IDENTICAL')
+                targets[name]=(dst,pair_expected(src,dst,kind))
+                c['event'](case='sd-image-copy-'+src+'-to-'+dst+'-'+IMAGE_TYPES[kind],result='PASS')
+            for src,dst,kind in pairs:
+                src_leaf=make_leaf('bm',src,dst,kind);dst_leaf=make_leaf('bd',src,dst,kind)
                 source=path(src,src_leaf);target=path(dst,dst_leaf)
                 command('STAT '+source,'NOT FOUND');command('STAT '+target,'NOT FOUND')
-                guard(src,src_leaf);command('COPY '+pair_source(src,dst)+' '+source,'COPIED')
+                guard(src,src_leaf);command('COPY '+pair_source(src,dst,kind)+' '+source,'COPIED')
                 guard(src,src_leaf);guard(dst,dst_leaf)
                 command('MOVE '+source+' '+target,'MOVE COMPLETE')
-                command('COMPARE '+pair_source(src,dst)+' '+target,'VERIFY: IDENTICAL')
+                command('COMPARE '+pair_source(src,dst,kind)+' '+target,'VERIFY: IDENTICAL')
                 command('STAT '+source,'NOT FOUND')
-                targets[dst_leaf]=(dst,pair_expected(src,dst))
-                c['event'](case='sd-image-move-'+src+'-to-'+dst,result='PASS')
+                targets[dst_leaf]=(dst,pair_expected(src,dst,kind))
+                c['event'](case='sd-image-move-'+src+'-to-'+dst+'-'+IMAGE_TYPES[kind],result='PASS')
+            # Force replacement changes an existing SEQ to PRG while retaining
+            # its old type in the backup. Then rename and reject alias moves.
+            replacement='rp'+suffix;renamed='rn'+suffix;rejected='rx'+suffix
+            for leaf in (replacement,renamed,rejected):command('STAT '+prefixes['h']+leaf,'NOT FOUND')
+            guard('h',replacement);command('COPY '+image_sources['s']+' '+prefixes['h']+replacement,'COPIED')
+            guard('h',replacement);command('COPY '+image_sources['p']+' '+prefixes['h']+replacement+' --force','COPIED')
+            command('COMPARE '+image_sources['p']+' '+prefixes['h']+replacement+'.PRG','VERIFY: IDENTICAL')
+            guard('h',replacement);command('RENAME '+prefixes['h']+replacement+' '+prefixes['h']+renamed,'RENAME COMPLETE')
+            command('STAT '+prefixes['h']+replacement,'NOT FOUND')
+            targets[renamed+'.prg']=('h',payload)
+            guard('h',renamed)
+            command('MOVE '+prefixes['h']+renamed+'.PRG '+prefixes['h']+renamed+' --force','SAME IMAGE ENTRY')
+            command('COMPARE '+image_sources['p']+' '+prefixes['h']+renamed+'.PRG','VERIFY: IDENTICAL')
+            guard('h',renamed)
+            command('RENAME '+prefixes['h']+renamed+'.PRG '+prefixes['h']+renamed+' --force','SAME IMAGE ENTRY')
+            command('COMPARE '+image_sources['p']+' '+prefixes['h']+renamed+'.PRG','VERIFY: IDENTICAL')
+            guard('h',rejected)
+            command('COPY '+image_sources['s']+' '+prefixes['h']+rejected+'.PRG','IMAGE TYPE CONFLICTS')
+            command('STAT '+prefixes['h']+rejected+'.PRG','NOT FOUND')
+            c['event'](case='ultimate-image-replace-type-rename-self-alias-type-conflict',result='PASS')
             # Reopen the saved image before exporting its new logical files.
             self.image_guard();command('DISMOUNT 10.1:/ --force','OK')
             self.maybe_mounted=False;self.guard('d','after-unmount')
             self.maybe_mounted=True;command('MOUNT '+self.image_path+' --force','LAST MOUNTED BY READYFS')
             self.image_guard()
-            for src,dst in pairs:
-                if src=='d':command('STAT '+path(src,make_leaf('bm',src,dst)),'NOT FOUND')
+            for src,dst,kind in pairs:
+                if src=='d':command('STAT '+path(src,make_leaf('bm',src,dst,kind)),'NOT FOUND')
             oracles={}
             for leaf,(endpoint,data) in targets.items():
                 if endpoint!='d':continue
@@ -133,16 +174,17 @@ class NativeImageMatrix(Baseline):
             listing=subprocess.check_output(['c1541','-attach',str(persisted),'-list']).decode(errors='replace')
             (self.out/'ud-image-directory.txt').write_text(listing)
             assert 'bm-' not in listing.lower()
-            for cbm,kind,data in [('owner','s',owner_file.read_bytes()),('hello','p',payload)]:
+            assert not re.search(r'"(?:rft[0-9a-f]+|'+replacement+'|'+rejected+r')"',listing.lower())
+            for cbm,kind,data in [('owner','s',owner_file.read_bytes()),('hello','p',payload),('note','s',note_file.read_bytes()),('data','u',data_file.read_bytes())]:
                 export=self.out/('ud-image-original-'+cbm+'.bin')
                 subprocess.run(['c1541','-attach',str(persisted),'-read',cbm+','+kind,str(export)],check=True,capture_output=True)
                 assert export.read_bytes()==data,cbm
             for name,(endpoint,data) in targets.items():
                 if endpoint!='h':continue
-                cbm=name.removesuffix('.prg');export=self.out/('ud-image-'+cbm+'.prg')
-                subprocess.run(['c1541','-attach',str(persisted),'-read',cbm+',p',str(export)],check=True,capture_output=True)
+                cbm,extension=name.rsplit('.',1);kind=next(k for k,v in IMAGE_TYPES.items() if v==extension);export=self.out/('ud-image-'+cbm+'.'+extension)
+                subprocess.run(['c1541','-attach',str(persisted),'-read',cbm+','+kind,str(export)],check=True,capture_output=True)
                 assert export.read_bytes()==data,name
-            c['event'](case='ultimate-contained-image-prg-independent-bytes-types-removal',result='PASS')
+            c['event'](case='ultimate-contained-image-seq-prg-usr-independent-bytes-types-removal',result='PASS')
             c['event'](case='sd-image-matrix-independent-host-bytes',result='PASS')
         finally:
             if self.maybe_mounted:

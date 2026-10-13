@@ -116,6 +116,14 @@
         "time": 1791893328.849359
       },
       "cause": "ASCII DOS EMPTY reply compared against cc65 PETSCII literal; corrected in24-overlay build"
+    },
+    {
+      "run": "demo-v3-sd2iec-native-directories-20261013-e",
+      "status": "running",
+      "pid": 87665,
+      "terminal": 14646,
+      "source_commit": "1e30bc5",
+      "boot": "PASS24sidecars"
     }
   ],
   "image_acceptance": {
@@ -131,8 +139,8 @@
     "mounted_operations_passed": true,
     "independent_image_passed": true
   },
-  "generated_utc": "2026-10-13T12:14:03.040661+00:00",
-  "current_source_commit": "pending24-overlay commit",
+  "generated_utc": "2026-10-13T12:18:51.984125+00:00",
+  "current_source_commit": "1e30bc5",
   "folder_rerun_required": true,
   "checksum": {
     "actual_6502_differential_cases": 46,
@@ -147,9 +155,9 @@
     "apply_only_after_image_a_exit_and_restoration": true,
     "safety_test": "ReadyFS/build_support/readyfs_hardware_cleanup_test.py",
     "safety_cases_passed": 8,
-    "matrix_copy_pairs": 6,
-    "matrix_move_pairs": 6,
-    "ultimate_contained_image_scope": "Unique bare PRG names only; SEQ/USR mutation limitations documented",
+    "matrix_copy_pairs": 10,
+    "matrix_move_pairs": 10,
+    "ultimate_contained_image_scope": "SEQ/PRG/USR both directions; force replacement, rename, same-entry aliases and explicit type conflicts; independent persisted-image bytes/types; not yet run",
     "applied": true
   },
   "udos_control": {

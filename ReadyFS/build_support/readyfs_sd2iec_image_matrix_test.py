@@ -3,9 +3,21 @@
 import unittest
 from unittest.mock import patch
 from readyfs_sd2iec_baseline import Baseline
-from readyfs_sd2iec_image_matrix import NativeImageMatrix
+from readyfs_sd2iec_image_matrix import NativeImageMatrix, IMAGE_PAIRS, IMAGE_TYPES, matrix_leaf
 
 class CleanupTests(unittest.TestCase):
+    def test_typed_pairs_cover_both_directions_and_fit_native_leaves(self):
+        self.assertEqual(len(IMAGE_PAIRS),10)
+        names=set()
+        for source,destination,kind in IMAGE_PAIRS:
+            for operation in ('bc','bm','bd'):
+                name=matrix_leaf(operation,source,destination,kind,'123456')
+                self.assertLessEqual(len(name),16)
+                self.assertNotIn(name,names);names.add(name)
+        for kind in IMAGE_TYPES:
+            self.assertIn(('d','h',kind),IMAGE_PAIRS)
+            self.assertIn(('h','d',kind),IMAGE_PAIRS)
+
     def test_no_recovery_prg_while_command_or_mount_is_unresolved(self):
         for idle,mounted,fat in [(False,True,False),(False,False,True),(True,True,False),(True,False,False)]:
             with self.subTest(idle=idle,mounted=mounted,fat=fat):

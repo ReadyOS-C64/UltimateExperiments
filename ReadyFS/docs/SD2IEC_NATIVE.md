@@ -205,7 +205,7 @@ geometry, bytes, CBM types, and removed MOVE/delete sources were checked.
 | Mounted SD image ↔ a different device/endpoint | Read/write/MOVE with UltimateDOS passed; IEC9/SoftwareIEC matrix pending |
 | SD FAT ↔ image mounted on the **same SD device** | Use an intermediate file on another endpoint and explicit mount/unmount |
 | `10.1:/work.d64!/FILE` | Not yet implemented as an automatic media transition |
-| `u:/usb1/work.d81/FILE` | UltimateDOS embedded-filesystem traversal; contained-file mutation has type/lookup limits described below |
+| `u:/usb1/work.d81/FILE` | UltimateDOS embedded-filesystem traversal; typed control is integrated, physical acceptance pending |
 
 ### UltimateDOS contained-file paths
 
@@ -214,15 +214,22 @@ path such as `u:/usb1/work.d81/HELLO`. That is separate from native SD image
 mounting. It can also open a typed contained-file name such as `HELLO.prg` or
 `NOTES.seq`.
 
-General mutation through this route is **not yet a supported substitute for
-mounting the image on an IEC device**. Its directory reply omits generated type
-suffixes, so ReadyFS lookup cannot reliably match a typed access name. Its
-extensionless staging and backup names can also convert SEQ/USR entries to PRG.
-Content comparison checks bytes, not the CBM directory type. In particular, do
-not infer safe replacement, rollback, or MOVE cleanup from a successful direct
-OPEN or COMPARE. Use an explicitly mounted IEC image for those general transfers.
-A narrow physical acceptance using unique bare PRG names in a separately owned,
-unmounted image is being prepared; it does not cover the SEQ/USR limitations.
+The 24-overlay build has typed file control for SEQ, PRG, and USR entries.
+A bare destination name inherits the source type; an explicit `.seq`, `.prg`,
+or `.usr` must agree with it. Stages, backups, commit renames, and rollback
+renames carry explicit types on the wire. REL streams remain unsupported.
+When a bare name matches several types, use an explicit suffix. Names are
+limited to16 decoded CBM bytes; malformed hexadecimal escapes and wildcard
+parents are rejected. Equivalent spellings such as `NOTE.seq` and `NOTE`
+cannot be used to copy, move, or rename an entry onto itself.
+
+**Physical acceptance of this new contained-file service is still pending.**
+The actual resident gateway and cold phases pass host fault tests and28 linked
+6502 cases with166 real REU DMA transfers. The prepared physical matrix covers
+SEQ/PRG/USR in both directions, forced replacement, rename, type-conflict
+rejection, self-entry rejection, and independent saved-image byte/type checks.
+Use retained owned fixtures for this acceptance work. Do not access a container
+through this route while it is also mounted on an IEC drive.
 
 Mount/unmount can close all buffers on an SD2IEC device, including buffers on
 other partitions. It cannot safely occur in the middle of ordinary simultaneous
