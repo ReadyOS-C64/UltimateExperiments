@@ -10,6 +10,7 @@
     "reu_overlay_regions_disjoint": true,
     "reu_batch_regions_disjoint": true,
     "reu_console_ring_fits_bank": true,
+    "stream_policy_sidecar": true,
     "presentation_sidecar": true,
     "command_help_sidecar": true,
     "ui_sidecar": true,
@@ -27,9 +28,9 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 46500,
+    "end": 46104,
     "limit": 46507,
-    "free_bytes": 7
+    "free_bytes": 403
   },
   "software_stack": {
     "top": 53248
@@ -39,6 +40,19 @@
     "limit": 50687
   },
   "sidecars": {
+    "stream_policy": {
+      "file": "artifacts/readyfs/readyfs-stream.prg",
+      "load_address": 46592,
+      "payload_bytes": 1139,
+      "map_bytes": 1139,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
     "command_help": {
       "file": "artifacts/readyfs/readyfs-command-help.prg",
       "load_address": 46592,
@@ -455,6 +469,12 @@
       "start": 39424,
       "end_exclusive": 45312,
       "bytes": 5888
+    },
+    {
+      "name": "stream_policy_overlay_cache",
+      "start": 45312,
+      "end_exclusive": 49408,
+      "bytes": 4096
     }
   ],
   "reu_console_bank_regions": [

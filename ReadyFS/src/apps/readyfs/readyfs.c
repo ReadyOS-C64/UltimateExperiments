@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include "readyfs_path.h"
+#include "readyfs_stream.h"
 #include "readyfs_match.h"
 #include "readyfs_io.h"
 #include "readyfs_overlay.h"
@@ -60,6 +61,7 @@ unsigned char readyfs_pipeline_scratch[RF_PIPELINE_SCRATCH_BYTES];
 #define tree_ui (*(ReadyFsTreeCall *)(void *)readyfs_pipeline_scratch)
 #define batch_ui (*(ReadyFsBatchCall *)(void *)readyfs_pipeline_scratch)
 #define tape_call (*(ReadyFsTapeCall *)(void *)readyfs_pipeline_scratch)
+#define stream_call (*(ReadyFsStreamCall *)(void *)readyfs_pipeline_scratch)
 #else
 static ReadyFsUtilityCall utility_ui;
 #endif
@@ -923,17 +925,7 @@ static void cmd_cd(unsigned char argc) {
     (void)readyfs_overlay_present(&utility_ui);
 }
 
-typedef struct {
-    ReadyFsPath path;
-    char canonical[RF_LINE_CAP + 1u];
-    const char *text;
-    char *native_name;
-    unsigned char device;
-    unsigned char target;
-    unsigned char lfn;
-    unsigned char type;
-    unsigned char open;
-} ReadyFsStream;
+
 
 static ReadyFsStream source;
 /* Command dispatch is single-threaded. Single-path commands reuse source;
@@ -1255,7 +1247,9 @@ static unsigned char stream_uses_iec(const ReadyFsStream *stream) {
 
 static unsigned char path_prepare(const char *text, ReadyFsStream *stream) {
     unsigned char rc;
+#ifndef READYFS_OVERLAY_RUNTIME
     char *name;
+#endif
 
     /* Rebuild the descriptor without erasing an in-place canonical input.
      * Parse fills path; preparation fills device/name; open fills channel/type. */
@@ -1265,42 +1259,9 @@ static unsigned char path_prepare(const char *text, ReadyFsStream *stream) {
     if (rc != RF_PATH_OK) {
         cputc(0x1Cu); cputs(readyfs_path_error(rc)); newline(); return 0u;
     }
-    memset(&tape_call, 0, sizeof(tape_call));
-    tape_call.operation = RF_TAPE_PATH_PREPARE;
-    tape_call.text = stream->canonical;
-    tape_call.path = &stream->path;
-    if (!readyfs_overlay_tape(&tape_call)) {
-        result_unavailable("core off\r\n"); return 0u;
-    }
-    if (tape_call.result != RF_TAPE_PATH_OK) {
-        if (tape_call.value == 0u) {
-            cputc(0x1Cu); cputs(readyfs_path_error(tape_call.result)); newline();
-        } else if (tape_call.result == RF_TAPE_PATH_REQUIRED) {
-            cputs(RF_ERROR "file required\r\n");
-        } else if (tape_call.result == RF_TAPE_PATH_CMD) {
-            result_unsupported("cmd path\r\n");
-        } else if (tape_call.result == RF_TAPE_PATH_IMAGE) {
-            result_unsupported("image off\r\n");
-        } else if (tape_call.result == RF_TAPE_PATH_LEAF) {
-            result_unsupported("tape leaf 1-16\r\n");
-        } else result_unsupported("use 8:/file\r\n");
-        return 0u;
-    }
-    if (iec_partition_driver_pending(&stream->path)) return 0u;
-    name = (char *)tape_call.found;
-    if (stream->path.endpoint == RF_EP_SOFTIEC) {
-        if (!readyfs_uci_detect()) {
-            result_unavailable("softiec off\r\n"); return 0u;
-        }
-        stream->device = readyfs_uci_softiec_bus();
-        if (stream->device < 8u || stream->device > 30u) {
-            cputs(RF_ERROR "bad soft bus\r\n"); return 0u;
-        }
-    } else stream->device = stream->path.endpoint == RF_EP_TAPE ? 1u :
-                                                               stream->path.unit;
-    stream->text = stream->canonical;
-    stream->native_name = name;
-    return 1u;
+    stream_call.stream = stream;
+    stream_call.status = &last_result;
+    return readyfs_overlay_stream(&stream_call);
 #else
     if (rc == RF_PATH_OK) rc = readyfs_path_parse(stream->canonical,
                                                    &stream->path);

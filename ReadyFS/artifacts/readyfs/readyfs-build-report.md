@@ -2,9 +2,10 @@
 
 Status: **PASS**
 
-- Resident end: `$B5A4`; 7 safe bytes remain before KERNAL scratch at `$B5AC`.
+- Resident end: `$B418`; 403 safe bytes remain before KERNAL scratch at `$B5AC`.
 - Monolithic end: `$C5FB` (limit `$C5FF`).
 - Overlay-build cc65 software-stack top: `$D000`.
+- Stream policy payload: `$473` bytes (sixteenth cached sidecar).
 - Matcher payload: `$FC8` bytes.
 - Planner/executor payload: `$FDF` bytes.
 - Help/journal payload: `$1000` bytes.
@@ -32,6 +33,7 @@ Status: **PASS**
 - PASS: `reu_overlay_regions_disjoint`
 - PASS: `reu_batch_regions_disjoint`
 - PASS: `reu_console_ring_fits_bank`
+- PASS: `stream_policy_sidecar`
 - PASS: `presentation_sidecar`
 - PASS: `command_help_sidecar`
 - PASS: `ui_sidecar`

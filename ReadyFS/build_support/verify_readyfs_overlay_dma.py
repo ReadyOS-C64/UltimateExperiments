@@ -394,12 +394,26 @@ def main() -> int:
     require(overlay, r"readyfs_ui_editor\(",
             "resident gateway must dispatch the separate UI sidecar", failures)
 
+    stream_policy = (BATCH.parent / "readyfs_stream.c").read_text()
+    require(overlay, r"load_batch_cached\(5u\)[\s\S]*?readyfs_stream_abi\(\)[\s\S]*?restore_match\(\)[\s\S]*?RF_STREAM_ABI",
+            "stream policy must be cached and ABI checked at startup", failures)
+    require(overlay, r"readyfs_overlay_stream[\s\S]*?open_batch_cached\(5u\)[\s\S]*?readyfs_stream_prepare\(call\)[\s\S]*?restore_match\(\)",
+            "stream policy gateway must restore matcher after dispatch", failures)
+    require(resident, r"resolve_path\(text, stream->canonical\)[\s\S]*?stream_call.stream = stream;[\s\S]*?readyfs_overlay_stream\(&stream_call\)",
+            "resident must resolve before loading stream policy", failures)
+    require(stream_policy, r"stream->text = stream->canonical;[\s\S]*?stream->native_name = name;",
+            "stream policy must return pointers into resident canonical data", failures)
+    require(linker_cfg, r'OVL16ADDR:[\s\S]*?readyfs-stream.prg[\s\S]*?OVERLAY16: load = OVL16',
+            "linker must emit independent stream policy sidecar16", failures)
+    if re.search(r"\bcbm_|readyfs_overlay_|load_sidecar", stream_policy):
+        failures.append("stream policy must not invoke device I/O, nested overlays or runtime disk loading")
+
     if failures:
         for failure in failures:
             print(f"ReadyFS overlay DMA contract: FAIL: {failure}")
         return 1
     print("ReadyFS overlay DMA contract: PASS (flat 6-byte overlay/session/"
-          "batch boundaries, explicit slots 1-15; REU-checkpointed recursive, "
+          "batch boundaries, explicit slots 1-16; REU-checkpointed recursive, "
           "backend/native, utility, tree, content, batch, UI, and tape controllers; "
           "resident-owned device I/O)")
     return 0

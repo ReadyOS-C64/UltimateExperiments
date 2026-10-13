@@ -1097,8 +1097,9 @@ def main() -> int:
         if action not in c64_executor[action_begin:action_store]:
             failures.append(f"general action controller missing {action}")
 
-    tape_path = resident.find("tape_call.operation = RF_TAPE_PATH_PREPARE")
-    tape_device = resident.find(
+    stream_policy = (APP / "readyfs_stream.c").read_text(encoding="utf-8")
+    tape_path = stream_policy.find("readyfs_path_parse(stream->canonical")
+    tape_device = stream_policy.find(
         "stream->path.endpoint == RF_EP_TAPE ? 1u", tape_path)
     tape_read_open = resident.find("cbm_open(lfn, 1u, 0u, stream->native_name)")
     tape_write_open = resident.find("cbm_open(lfn, 1u, 1u, stream->native_name)")

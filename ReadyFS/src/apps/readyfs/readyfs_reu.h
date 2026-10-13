@@ -12,7 +12,9 @@
 #define RF_REU_TAPE_CACHE_BYTES 0x1000u
 #define RF_REU_MEDIA_OFF 0x9A00u
 #define RF_REU_MEDIA_BYTES 0x1700u /* 23 session-only 256-byte paths: units 8..30. */
-#define RF_REU_BATCH_BANK_BYTES 0xB100u
+#define RF_REU_STREAM_CACHE_OFF 0xB100u
+#define RF_REU_STREAM_CACHE_BYTES 0x1000u
+#define RF_REU_BATCH_BANK_BYTES 0xC100u
 
 extern unsigned char readyfs_reu_batch_bank_value;
 

@@ -39,6 +39,7 @@ extern unsigned char _OVERLAY12_SIZE__[];
 extern unsigned char _OVERLAY13_SIZE__[];
 extern unsigned char _OVERLAY14_SIZE__[];
 extern unsigned char _OVERLAY15_SIZE__[];
+extern unsigned char _OVERLAY16_SIZE__[];
 
 /* Linker-visible admission sentinels let post-stop automation bind to the
  * current BSS layout rather than a stale hard-coded address. */
@@ -137,11 +138,11 @@ static unsigned char restore_recursive(void) {
                         (unsigned int)_OVERLAY11_SIZE__);
 }
 
-static const char * const batch_names[] = { "rfbatch", "rfui", "rftape", "rfshow", "rfexamples" };
+static const char * const batch_names[] = { "rfbatch", "rfui", "rftape", "rfshow", "rfexamples", "rfstream" };
 static const unsigned char * const batch_sizes[] = {
-    _OVERLAY10_SIZE__, _OVERLAY13_SIZE__, _OVERLAY12_SIZE__, _OVERLAY14_SIZE__, _OVERLAY15_SIZE__ };
+    _OVERLAY10_SIZE__, _OVERLAY13_SIZE__, _OVERLAY12_SIZE__, _OVERLAY14_SIZE__, _OVERLAY15_SIZE__, _OVERLAY16_SIZE__ };
 static const unsigned int batch_offsets[] = {
-    RF_REU_BATCH_CACHE_OFF, RF_UI_CACHE_OFF, RF_REU_TAPE_CACHE_OFF, RF_PRESENT_CACHE_OFF, RF_COMMAND_HELP_CACHE_OFF };
+    RF_REU_BATCH_CACHE_OFF, RF_UI_CACHE_OFF, RF_REU_TAPE_CACHE_OFF, RF_PRESENT_CACHE_OFF, RF_COMMAND_HELP_CACHE_OFF, RF_REU_STREAM_CACHE_OFF };
 static unsigned char open_batch_cached(unsigned char slot) {
     overlay_old_port = RF_CPU_PORT;
     RF_CPU_PORT = (unsigned char)(overlay_old_port & 0xFEu);
@@ -261,7 +262,10 @@ unsigned char readyfs_overlay_init(unsigned char reu_available) {
     if (loaded != RF_PRESENT_ABI || !load_batch_cached(4u)) return 0u;
     loaded = readyfs_command_help_abi();
     restore_match();
-    return (unsigned char)(loaded == RF_COMMAND_HELP_ABI);
+    if (loaded != RF_COMMAND_HELP_ABI || !load_batch_cached(5u)) return 0u;
+    loaded = readyfs_stream_abi();
+    restore_match();
+    return (unsigned char)(loaded == RF_STREAM_ABI);
 }
 
 unsigned char readyfs_overlay_match(const char *pattern,
@@ -277,6 +281,13 @@ unsigned char readyfs_overlay_match(const char *pattern,
 }
 
 unsigned char readyfs_overlay_plan_available(void) { return plan_loaded; }
+
+unsigned char readyfs_overlay_stream(ReadyFsStreamCall *call) {
+    unsigned char result;
+    if (!open_batch_cached(5u)) return 0u;
+    result = readyfs_stream_prepare(call);
+    restore_match(); return result;
+}
 
 unsigned char readyfs_overlay_present(ReadyFsUtilityCall *call) {
     unsigned char help, result;

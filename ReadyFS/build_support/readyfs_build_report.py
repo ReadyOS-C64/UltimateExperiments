@@ -110,6 +110,7 @@ def main() -> int:
     ui = sidecar(OUT / "readyfs-ui.prg", overlay["OVERLAY13"], 0x1000)
     present = sidecar(OUT / "readyfs-present.prg", overlay["OVERLAY14"], 0x1000)
     command_help = sidecar(OUT / "readyfs-command-help.prg", overlay["OVERLAY15"], 0x1000)
+    stream = sidecar(OUT / "readyfs-stream.prg", overlay["OVERLAY16"], 0x1000)
     batch_layout = [("batch_overlay_cache",0,0x1000),
                     ("batch_script",0x1000,0x5000),
                     ("batch_checkpoint",0x5000,0x5100),
@@ -120,7 +121,8 @@ def main() -> int:
                     ("ui_draft",0x7900,0x7A00),
                     ("presentation_overlay_cache",0x7A00,0x8A00),
                     ("command_help_overlay_cache",0x8A00,0x9A00),
-                    ("last_mount_session_paths",0x9A00,0xB100)]
+                    ("last_mount_session_paths",0x9A00,0xB100),
+                    ("stream_policy_overlay_cache",0xB100,0xC100)]
     layout = [
         ("aliases", 0x0000, 0x0888),
         ("drive_profiles", 0x0888, 0x08E4),
@@ -163,6 +165,7 @@ def main() -> int:
             for index in range(len(overlay_layout) - 1)),
         "reu_batch_regions_disjoint": all(batch_layout[i][2] <= batch_layout[i+1][1] for i in range(len(batch_layout)-1)),
         "reu_console_ring_fits_bank": 800 * 80 <= 0x10000,
+        "stream_policy_sidecar": all(stream["checks"].values()),
         "presentation_sidecar": all(present["checks"].values()),
         "command_help_sidecar": all(command_help["checks"].values()),
         "ui_sidecar": all(ui["checks"].values()),
@@ -191,7 +194,7 @@ def main() -> int:
         },
         "software_stack": {"top": stack_top},
         "monolithic": {"end": monolithic_end, "limit": 0xC5FF},
-        "sidecars": {"command_help": command_help, "presentation": present, "matcher": match, "planner_executor": plan,
+        "sidecars": {"stream_policy": stream, "command_help": command_help, "presentation": present, "matcher": match, "planner_executor": plan,
                      "extended_help": help_sidecar,
                      "backend_controller": backend,
                      "cmdpath_translator": cmdpath,
@@ -237,6 +240,7 @@ def main() -> int:
         "KERNAL scratch at `$B5AC`.",
         f"- Monolithic end: `${monolithic_end:04X}` (limit `$C5FF`).",
         f"- Overlay-build cc65 software-stack top: `${stack_top:04X}`.",
+        f"- Stream policy payload: `${stream['payload_bytes']:X}` bytes (sixteenth cached sidecar).",
         f"- Matcher payload: "
         f"`${match['payload_bytes']:X}` bytes.",
         f"- Planner/executor payload: `${plan['payload_bytes']:X}` bytes.",
