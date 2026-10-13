@@ -44,3 +44,5 @@ The first assembly attempt encoded all 32 segments but failed when the concat ma
 - Guide chapter: https://readyfs-editor-demo.klumsy.chatgpt.site/guide.html#12-sd2iec-folders-batches-and-disk-images
 - Site source commit: `c8a4049aaed4aad2fd785400f301e5091760a058`; version 14; deployment `appgdep_6ace63b7b8c48191981e4f77ceba151a`, succeeded.
 - Repo documentation commit: `134503f`. Publication metadata and screenshot accompany this report. Existing public access was preserved.
+
+Final cache-reference update: version 15, source `409f5a0d855b2538c7230a71feb0bc12d57b2c17`, deployment `appgdep_6ace6441c3208191b4260924e206557b`, succeeded at 17:03:04 UTC. This changes only the homepage stylesheet version reference; video, documentation and verification results are unchanged.

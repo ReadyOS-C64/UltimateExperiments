@@ -1,18 +1,18 @@
 {
   "project_id": "appgprj_6ac84b23269481919d1ea34651df6e6f",
-  "commit_sha": "c8a4049aaed4aad2fd785400f301e5091760a058",
-  "archive": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/agentworking/readyfs-sd2iec-publish-20261013.tar.gz",
+  "commit_sha": "409f5a0d855b2538c7230a71feb0bc12d57b2c17",
+  "archive": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/agentworking/readyfs-sd2iec-cache-publish-20261013.tar.gz",
   "version": {
-    "id": "appgprj_6ac84b23269481919d1ea34651df6e6f~appgver_c0bcf76bfae081918b8dae8ec573d918",
+    "id": "appgprj_6ac84b23269481919d1ea34651df6e6f~appgver_5eb6b7f25aa8819183ece8b427f30d52",
     "project_id": "appgprj_6ac84b23269481919d1ea34651df6e6f",
-    "version_number": 14,
+    "version_number": 15,
     "source": {
-      "commit_sha": "c8a4049aaed4aad2fd785400f301e5091760a058"
+      "commit_sha": "409f5a0d855b2538c7230a71feb0bc12d57b2c17"
     },
     "archive_storage": {
       "archive_format": "tar",
-      "sediment_file_id": "file_00000000254082308c1ec89459b09772",
-      "content_hash": "sha256:f7c2d7b6c379eb6ec8584f143d45641e78789e6d471617f6e2a96abb8cfe16e5",
+      "sediment_file_id": "file_000000003cf48230be2c78266f646eab",
+      "content_hash": "sha256:dc9b43f33eed065a8bf9671bd56ea5cb75b241bae56c8cf2cd4d575ab278671a",
       "size_bytes": 15933440,
       "file_count": 122
     },
@@ -20,10 +20,10 @@
     "deployment_id": null
   },
   "deployment": {
-    "id": "appgdep_6ace63b7b8c48191981e4f77ceba151a",
+    "id": "appgdep_6ace6441c3208191b4260924e206557b",
     "project_id": "appgprj_6ac84b23269481919d1ea34651df6e6f",
-    "title": "ReadyFS · C64 Editor Walkthrough",
-    "version_id": "appgprj_6ac84b23269481919d1ea34651df6e6f~appgver_c0bcf76bfae081918b8dae8ec573d918",
+    "title": "ReadyFS \u00b7 C64 Editor Walkthrough",
+    "version_id": "appgprj_6ac84b23269481919d1ea34651df6e6f~appgver_5eb6b7f25aa8819183ece8b427f30d52",
     "type": "publish",
     "status": "succeeded",
     "url": "https://readyfs-editor-demo.klumsy.chatgpt.site",
@@ -32,7 +32,7 @@
     "provider_deployment_id": "site---6ac84b23269481919d1ea34651df6e6f",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-13T17:00:51.133242+00:00"
+    "updated_at": "2026-10-13T17:03:04.383414+00:00"
   },
   "video": {
     "seconds": 699.258258,
@@ -41,5 +41,41 @@
     "checks": 67,
     "sha256": "f6875931435e94e8fa5b09c2337c0cac5d8c0c2254439e660d235b92515ca1d8"
   },
-  "repository_commit": "134503f"
+  "repository_commit": "134503f",
+  "previous_publication": {
+    "commit_sha": "c8a4049aaed4aad2fd785400f301e5091760a058",
+    "archive": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/agentworking/readyfs-sd2iec-publish-20261013.tar.gz",
+    "version": {
+      "id": "appgprj_6ac84b23269481919d1ea34651df6e6f~appgver_c0bcf76bfae081918b8dae8ec573d918",
+      "project_id": "appgprj_6ac84b23269481919d1ea34651df6e6f",
+      "version_number": 14,
+      "source": {
+        "commit_sha": "c8a4049aaed4aad2fd785400f301e5091760a058"
+      },
+      "archive_storage": {
+        "archive_format": "tar",
+        "sediment_file_id": "file_00000000254082308c1ec89459b09772",
+        "content_hash": "sha256:f7c2d7b6c379eb6ec8584f143d45641e78789e6d471617f6e2a96abb8cfe16e5",
+        "size_bytes": 15933440,
+        "file_count": 122
+      },
+      "screenshot_url": null,
+      "deployment_id": null
+    },
+    "deployment": {
+      "id": "appgdep_6ace63b7b8c48191981e4f77ceba151a",
+      "project_id": "appgprj_6ac84b23269481919d1ea34651df6e6f",
+      "title": "ReadyFS \u00b7 C64 Editor Walkthrough",
+      "version_id": "appgprj_6ac84b23269481919d1ea34651df6e6f~appgver_c0bcf76bfae081918b8dae8ec573d918",
+      "type": "publish",
+      "status": "succeeded",
+      "url": "https://readyfs-editor-demo.klumsy.chatgpt.site",
+      "has_mcp": false,
+      "screenshot_asset_pointer": null,
+      "provider_deployment_id": "site---6ac84b23269481919d1ea34651df6e6f",
+      "failure_message": null,
+      "env_set_revision": 0,
+      "updated_at": "2026-10-13T17:00:51.133242+00:00"
+    }
+  }
 }
