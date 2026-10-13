@@ -18,11 +18,13 @@ typedef struct {
     ReadyFsStream *stream;
     ReadyFsStream *other;
     const char *directory;
-    unsigned char *reply; /* at least120 bytes, retained by resident caller */
+    unsigned char *reply; /* at least80 bytes, retained by resident caller */
+    char *request; /* separate120-byte resident command workspace */
     unsigned char *status;
     unsigned char operation;
     unsigned char dos;
 } ReadyFsFilesCall;
 unsigned int readyfs_files_abi(void);
 unsigned char readyfs_files(ReadyFsFilesCall *call);
+unsigned char readyfs_files_plan(ReadyFsFilesCall *call);
 #endif

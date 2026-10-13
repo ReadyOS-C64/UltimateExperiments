@@ -309,6 +309,10 @@ unsigned char readyfs_overlay_iec(ReadyFsIecCall *call) {
 
 unsigned char readyfs_overlay_files(ReadyFsFilesCall *call) {
     unsigned char result;
+    if (!open_batch_cached(5u)) { *call->status = RF_RESULT_IO; return RF_LOOKUP_ERROR; }
+    result = readyfs_files_plan(call);
+    restore_match();
+    if (result != RF_LOOKUP_FOUND) return result;
     if (!open_batch_cached(8u)) { *call->status = RF_RESULT_IO; return RF_LOOKUP_ERROR; }
     result = readyfs_files(call);
     restore_match(); return result;

@@ -2,13 +2,13 @@
 
 Status: **PASS**
 
-- Resident end: `$B434`; 375 safe bytes remain before KERNAL scratch at `$B5AC`.
+- Resident end: `$B486`; 293 safe bytes remain before KERNAL scratch at `$B5AC`.
 - Monolithic end: `$C5FB` (limit `$C5FF`).
 - Overlay-build cc65 software-stack top: `$D000`.
 - IEC configuration policy payload: `$D18` bytes (seventeenth cached sidecar).
-- Native filesystem payload: `$983` bytes (nineteenth cached sidecar).
+- Native filesystem payload: `$867` bytes (nineteenth cached sidecar).
 - Native IEC/media payload: `$FB7` bytes (eighteenth cached sidecar).
-- Stream policy payload: `$473` bytes (sixteenth cached sidecar).
+- Stream policy payload: `$F09` bytes (sixteenth cached sidecar).
 - Matcher payload: `$FC8` bytes.
 - Planner/executor payload: `$FDF` bytes.
 - Help/journal payload: `$FFA` bytes.

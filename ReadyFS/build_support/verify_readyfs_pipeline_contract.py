@@ -426,7 +426,7 @@ def main() -> int:
             "find must apply include/exclude matching to the complete relative "
             "stem, dispatch through the cooperative tree controller, and "
             "render an explicit selected/files/directories summary")
-    alias_storage = resident.find("alias_backup_storage[sizeof(ReadyFsAlias)]")
+    alias_storage = resident.find("alias_backup_storage[sizeof(ReadyFsAlias) + 2u]")
     alias_view = resident.find("#define alias_slot", alias_storage)
     backup_view = resident.find("#define backup", alias_view)
     recursive_outer = resident.find(

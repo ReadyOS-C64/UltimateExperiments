@@ -82,7 +82,7 @@ static ReadyFsUciTransfer uci_xfer;
  * created. Tree uses alias scratch while backup is idle. Recursive execution
  * has a dedicated outer call below, so these two 272-byte lifetimes may share
  * one resident workspace without aliasing the sidecar's call record. */
-static unsigned char alias_backup_storage[sizeof(ReadyFsAlias)];
+static unsigned char alias_backup_storage[sizeof(ReadyFsAlias) + 2u];
 #define alias_slot (*(ReadyFsAlias *)(void *)alias_backup_storage)
 #else
 static ReadyFsAlias alias_slot;
@@ -1365,7 +1365,8 @@ static unsigned char native_file(ReadyFsStream *stream, ReadyFsStream *other, un
     files_call.stream = stream;
     files_call.other = other;
     files_call.directory = 0;
-    files_call.reply = (unsigned char *)temp_text;
+    files_call.request = temp_text;
+    files_call.reply = (unsigned char *)temp_text + 128u;
     files_call.status = &last_result;
     files_call.operation = operation;
     return readyfs_overlay_files(&files_call);
@@ -2710,7 +2711,11 @@ unsigned char readyfs_io_copy_call(ReadyFsIoCopyCall *call) {
 #endif
     {
         if (!stream_open_read(&source, 1u, 2u)) return 0u;
+#ifdef READYFS_OVERLAY_RUNTIME
+        if (!stream_close(&source)) return 0u;
+#else
         stream_close(&source);
+#endif
     }
     existed = 0u;
 #ifdef READYFS_OVERLAY_RUNTIME

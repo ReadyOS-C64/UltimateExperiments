@@ -16,7 +16,8 @@ API='http://'+os.environ.get('C64U_HOST','10.0.0.79')+'/v1'
 log=(OUT/'events.jsonl').open('a',buffering=1)
 random.seed(64)
 steps=[]
-FAST=os.environ.get('READYFS_DEMO_PREFLIGHT')=='1'
+FAST=(os.environ.get('READYFS_DEMO_PREFLIGHT')=='1' or
+      os.environ.get('READYFS_SD2IEC_BASELINE','0')!='0')
 def event(**data):
     data['time']=time.time(); log.write(json.dumps(data)+'\n'); print(json.dumps(data),flush=True)
 def api(path,method='GET',data=None,ctype=None,timeout=20):

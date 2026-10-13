@@ -3,6 +3,8 @@
 #include "readyfs_path.h"
 
 #define RF_STREAM_ABI 0x5253u
+#define RF_NATIVE_FLAT 1u
+#define RF_NATIVE_HIER 2u
 
 /* Descriptors and canonical storage remain resident while cached policy swaps. */
 typedef struct {
@@ -15,6 +17,10 @@ typedef struct {
     unsigned char lfn;
     unsigned char type;
     unsigned char open;
+#ifndef READYFS_MONOLITHIC
+    unsigned char native_mode;
+    unsigned char native_partition;
+#endif
 } ReadyFsStream;
 
 typedef struct {

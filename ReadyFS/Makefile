@@ -178,7 +178,7 @@ READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay19/$(READYFS_SRC_D
 
 READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay17/$(READYFS_SRC_DIR)/readyfs_iec_plan.o $(READYFS_OVERLAY_OBJ_DIR)/overlay17/$(READYFS_SRC_DIR)/readyfs_iec_overlay_addr.o $(READYFS_OVERLAY_OBJ_DIR)/overlay18/$(READYFS_SRC_DIR)/readyfs_iec.o $(READYFS_OVERLAY_OBJ_DIR)/overlay18/$(READYFS_SRC_DIR)/readyfs_media.o $(READYFS_OVERLAY_OBJ_DIR)/overlay18/$(READYFS_SRC_DIR)/readyfs_native_overlay_addr.o
 
-READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay16/$(READYFS_SRC_DIR)/readyfs_stream.o $(READYFS_OVERLAY_OBJ_DIR)/overlay16/$(READYFS_SRC_DIR)/readyfs_stream_overlay_addr.o
+READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay16/$(READYFS_SRC_DIR)/readyfs_stream.o $(READYFS_OVERLAY_OBJ_DIR)/overlay16/$(READYFS_SRC_DIR)/readyfs_files_plan.o $(READYFS_OVERLAY_OBJ_DIR)/overlay16/$(READYFS_SRC_DIR)/readyfs_stream_overlay_addr.o
 
 READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay15/$(READYFS_SRC_DIR)/readyfs_preview.o $(READYFS_OVERLAY_OBJ_DIR)/overlay15/$(READYFS_SRC_DIR)/readyfs_command_help.o $(READYFS_OVERLAY_OBJ_DIR)/overlay15/$(READYFS_SRC_DIR)/readyfs_command_help_overlay_addr.o
 
@@ -249,7 +249,7 @@ endef
 
 readyfs-host-tests:
 	$(call READYFS_HOST_TEST,-D__fastcall__= -I$(BUILD_SUPPORT_DIR)/readyfs_host_include,$(BUILD_SUPPORT_DIR)/readyfs_iec_test.c $(READYFS_SRC_DIR)/readyfs_iec_plan.c $(READYFS_SRC_DIR)/readyfs_iec.c $(READYFS_SRC_DIR)/readyfs_path.c,readyfs_iec_test)
-	$(call READYFS_HOST_TEST,-D__fastcall__= -I$(BUILD_SUPPORT_DIR)/readyfs_host_include,$(BUILD_SUPPORT_DIR)/readyfs_files_test.c $(READYFS_SRC_DIR)/readyfs_files.c,readyfs_files_test)
+	$(call READYFS_HOST_TEST,-D__fastcall__= -I$(BUILD_SUPPORT_DIR)/readyfs_host_include,$(BUILD_SUPPORT_DIR)/readyfs_files_test.c $(READYFS_SRC_DIR)/readyfs_files.c $(READYFS_SRC_DIR)/readyfs_files_plan.c,readyfs_files_test)
 	$(call READYFS_HOST_TEST,-D__fastcall__= -I$(BUILD_SUPPORT_DIR)/readyfs_host_include,$(BUILD_SUPPORT_DIR)/readyfs_stream_test.c $(READYFS_SRC_DIR)/readyfs_stream.c $(READYFS_SRC_DIR)/readyfs_path.c,readyfs_stream_test)
 	$(call READYFS_HOST_TEST,-D__fastcall__= -I$(BUILD_SUPPORT_DIR)/readyfs_host_include,$(BUILD_SUPPORT_DIR)/readyfs_present_test.c $(READYFS_SRC_DIR)/readyfs_present.c $(READYFS_SRC_DIR)/readyfs_media.c $(READYFS_SRC_DIR)/readyfs_transfer.c $(READYFS_SRC_DIR)/readyfs_preview.c $(READYFS_SRC_DIR)/readyfs_command_help.c $(READYFS_SRC_DIR)/readyfs_path.c,readyfs_present_test)
 	$(call READYFS_HOST_TEST,,$(BUILD_SUPPORT_DIR)/readyfs_tape_test.c $(READYFS_SRC_DIR)/readyfs_tape.c $(READYFS_SRC_DIR)/readyfs_path.c,readyfs_tape_test)

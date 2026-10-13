@@ -31,9 +31,9 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 46132,
+    "end": 46214,
     "limit": 46507,
-    "free_bytes": 375
+    "free_bytes": 293
   },
   "software_stack": {
     "top": 53248
@@ -46,8 +46,8 @@
     "native_files": {
       "file": "artifacts/readyfs/readyfs-files.prg",
       "load_address": 46592,
-      "payload_bytes": 2435,
-      "map_bytes": 2435,
+      "payload_bytes": 2151,
+      "map_bytes": 2151,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -85,8 +85,8 @@
     "stream_policy": {
       "file": "artifacts/readyfs/readyfs-stream.prg",
       "load_address": 46592,
-      "payload_bytes": 1139,
-      "map_bytes": 1139,
+      "payload_bytes": 3849,
+      "map_bytes": 3849,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,

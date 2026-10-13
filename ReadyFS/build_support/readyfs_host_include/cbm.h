@@ -10,7 +10,7 @@ void cbm_k_second(unsigned char);
 unsigned char cbm_k_readst(void);
 void cbm_k_unlsn(void);
 struct cbm_dirent { char name[17]; unsigned int size; unsigned char type, access; };
-unsigned char cbm_opendir(unsigned char, unsigned char, ...);
+unsigned char cbm_opendir(unsigned char, unsigned int, ...);
 unsigned char cbm_readdir(unsigned char, struct cbm_dirent *);
 void cbm_closedir(unsigned char);
 void cbm_k_talk(unsigned char);

@@ -410,6 +410,13 @@ def main() -> int:
     require(linker_cfg, r'OVL16ADDR:[\s\S]*?readyfs-stream.prg[\s\S]*?OVERLAY16: load = OVL16',
             "linker must emit independent stream policy sidecar16", failures)
     files = (BATCH.parent / "readyfs_files.c").read_text()
+    files_plan = (BATCH.parent / "readyfs_files_plan.c").read_text()
+    require(overlay, r"readyfs_overlay_files[\s\S]*?open_batch_cached\(5u\)[\s\S]*?readyfs_files_plan\(call\)[\s\S]*?restore_match\(\)[\s\S]*?open_batch_cached\(8u\)",
+            "file request formatting and I/O must run in sequential leaves", failures)
+    if re.search(r"\bcbm_|readyfs_overlay_|readyfs_uci_", files_plan):
+        failures.append("file formatter must not issue I/O or nested overlay calls")
+    require(resident, r"files_call.request = temp_text;[\s\S]*?files_call.reply = \(unsigned char \*\)temp_text \+ 128u;",
+            "native requests/replies must use disjoint resident storage", failures)
     require(overlay, r"load_batch_cached\(8u\)[\s\S]*?readyfs_files_abi\(\)[\s\S]*?RF_FILES_ABI",
             "native file service must be cached and ABI checked", failures)
     require(overlay, r"readyfs_overlay_files[\s\S]*?open_batch_cached\(8u\)[\s\S]*?readyfs_files\(call\)[\s\S]*?restore_match\(\)",

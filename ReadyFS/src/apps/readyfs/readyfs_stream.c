@@ -24,6 +24,7 @@ unsigned char readyfs_stream_prepare(ReadyFsStreamCall *call) {
     if (!call || !call->stream || !call->status) return 0u;
     stream = call->stream;
     stream->open = 0u;
+    stream->native_mode = stream->native_partition = 0u;
     rc = readyfs_path_parse(stream->canonical, &stream->path);
     if (rc != RF_PATH_OK) {
         cputs(RF_ERROR); cputs(readyfs_path_error(rc)); cputs("\r\n");
