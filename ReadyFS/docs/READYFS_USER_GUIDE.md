@@ -861,7 +861,7 @@ The current build provides `iec 10: status`, `iec 10: config`, partition
 queries and explicit configuration setters. See the [configuration reference](READYFS_IEC_CONFIGURATION.md)
 for commands, examples and the distinction between running and saved settings.
 Configuration inspection/temporary restoration and native reads passed physical
-checks at1/16/64MHz. Native recursive folder and full image COPY/MOVE suites also
-passed; the final regression and explicit native destination-type checks remain
-in progress. These additions are newer than the published demonstration. See
+checks at 1/16/64 MHz. Native recursive folder, full image COPY/MOVE, and final
+four-endpoint regression suites passed with restoration. Native destination
+SEQ/PRG/USR types were also checked. These additions are newer than the published demonstration. See
 [native SD2IEC support](SD2IEC_NATIVE.md) for current evidence and limitations.

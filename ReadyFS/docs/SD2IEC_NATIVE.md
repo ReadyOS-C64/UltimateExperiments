@@ -102,9 +102,9 @@ Extension modes on the detected firmware:
 | `1` | X00 for SEQ/USR/REL; ordinary PRG stays raw |
 | `2` | X00 for ordinary file types |
 | `3` | SEQ/USR/REL filename extensions, without X00 headers |
-| `4` | As mode3, including PRG extensions |
+| `4` | As mode 3, including PRG extensions |
 
-Modes3/4 also enable extension hiding. With hiding enabled, a FAT
+Modes 3/4 also enable extension hiding. With hiding enabled, a FAT
 `README.SEQ` is presented as the logical SEQ file `README`. Disk-image names
 have special firmware rules; the raw-image procedure below accounts for
 ReadyFS's staging and rename behavior. `images both` lists each image twice,
@@ -219,18 +219,18 @@ A bare destination name inherits the source type; an explicit `.seq`, `.prg`,
 or `.usr` must agree with it. Stages, backups, commit renames, and rollback
 renames carry explicit types on the wire. REL streams remain unsupported.
 When a bare name matches several types, use an explicit suffix. Names are
-limited to16 decoded CBM bytes; malformed hexadecimal escapes and wildcard
+limited to 16 decoded CBM bytes; malformed hexadecimal escapes and wildcard
 parents are rejected. Equivalent spellings such as `NOTE.seq` and `NOTE`
 cannot be used to copy, move, or rename an entry onto itself.
 
 **The full contained-image transfer matrix has passed on hardware.**
-The actual resident gateway and cold phases also pass host fault tests and29
-linked6502 cases with168 real REU DMA transfers. Matrix-b passed10COPY/10MOVE
+The actual resident gateway and cold phases also pass host fault tests and 29
+linked 6502 cases with 168 real REU DMA transfers. Matrix-b passed 10 COPY/10 MOVE
 pairs, including SEQ/PRG/USR in both directions, forced replacement, rename,
 type-conflict rejection, self-entry rejection, and independent saved Ultimate
 image byte/type/source-removal checks. SD destination bytes were independently
-hashed after remounting; explicit native destination-type assertions are part
-of the final regression still running.
+hashed after remounting. The focused retained-types run confirmed all 12 retained
+SD-image entry types and the returned FAT PRG type through native STAT.
 Use retained owned fixtures for this acceptance work. Do not access a container
 through this route while it is also mounted on an IEC drive.
 
@@ -245,7 +245,7 @@ unknown previous native image/current directory cannot be reconstructed from
 `G-P`. Never interpret a remembered path as proof that another program or the
 Ultimate menu has not since changed the media.
 
-## Evidence and current work
+## Verified evidence
 
 - Exact detected firmware: `SD2IEC V1.0.0ATENTDEAD0-36`.
 - Config CLI, partition queries, and temporary configuration restoration passed
@@ -261,11 +261,12 @@ Ultimate menu has not since changed the media.
 - Automatic directory/tree and VOLUME passed physical acceptance, including
   recursive copy/move in both directions, independent nested-file hashes,
   what-if preservation, and deletion of created descendants. The directories-e
-  run also passed native DIR/VOLUME/owner reads at16/64MHz and restored the
+  run also passed native DIR/VOLUME/owner reads at 16/64 MHz and restored the
   original machine settings.
-- The latest24-overlay typed-image matrix completed with restoration. The final
-  four-endpoint baseline and retained native file-type checks are running on
-  identical runtime binaries before completion.
+- The latest 24-overlay typed-image matrix and final four-endpoint regression
+  passed on identical runtime binaries. Native STAT confirmed all six new FAT
+  SEQ destinations, 12 retained SD-image entries and the returned FAT PRG. All
+  jobs finished with machine restoration confirmed and their processes exited.
 
 Detailed chronological evidence, retained failed probes, firmware findings, and
 run paths are in `agentworking/readyFS/SD2IEC_2026-10-12.md` at repository root.
