@@ -155,7 +155,7 @@
     "mounted_operations_passed": true,
     "independent_image_passed": true
   },
-  "generated_utc": "2026-10-13T12:50:28.959043+00:00",
+  "generated_utc": "2026-10-13T13:03:36.245060+00:00",
   "current_source_commit": "bb33868",
   "folder_rerun_required": false,
   "checksum": {
@@ -225,6 +225,21 @@
     "pid": 92546,
     "terminal": 14648,
     "source_commit": "bb33868",
-    "runtime_commit": "bb33868"
+    "runtime_commit": "bb33868",
+    "typed_copy_pairs_passed": [
+      "sd-image-copy-d-to-h-prg",
+      "sd-image-copy-d-to-h-seq",
+      "sd-image-copy-d-to-h-usr",
+      "sd-image-copy-h-to-d-prg",
+      "sd-image-copy-h-to-d-seq",
+      "sd-image-copy-h-to-d-usr"
+    ],
+    "missing_stat_regression": "PASS image-matrix-017",
+    "last_observed_case": {
+      "command": "CLEAR",
+      "time": 1791896615.469441
+    },
+    "independent_image_oracle": "pending",
+    "moves": "pending"
   }
 }
