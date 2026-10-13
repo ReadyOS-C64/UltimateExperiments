@@ -1154,6 +1154,8 @@ static unsigned char drive_partition_command(const char *text,
                 return dir_iec(drive_command.device, drive_command.output, 1u);
             (void)dir_iec(drive_command.device, drive_command.output, 0u);
         } else {
+            if (operation == RF_CMDPATH_MOUNT || operation == RF_CMDPATH_UNMOUNT)
+                media(RF_MEDIA_FORGET, drive_command.device, 0);
             probe_iec_io(&drive_command);
             if (operation == RF_CMDPATH_UNMOUNT && drive_command.io_ok &&
                 drive_command.followup != 0 &&
@@ -1164,6 +1166,9 @@ static unsigned char drive_partition_command(const char *text,
             }
             drive_command.operation = RF_DRIVEUI_COMMAND_COMPLETE;
             (void)readyfs_overlay_drive(&drive_command);
+            if (!drive_command.io_ok) last_result = RF_RESULT_IO;
+            else if (operation == RF_CMDPATH_MOUNT)
+                media(RF_MEDIA_REMEMBER, drive_command.device, temp.canonical);
         }
     }
     return 1u;
@@ -3420,8 +3425,8 @@ static unsigned char recursive_execute(unsigned char action,
     return 0u;
 }
 
-/* Initial real recursive adapter: flat IEC plus the bounded Ultimate tree
- * walker. Both feed the same serialized ADD/start/yield/ACK controller. */
+/* Every filesystem tree feeds the serialized ADD/start/yield/ACK controller.
+ * Explicit drive-native wildcard requests retain their flat iterator. */
 static unsigned char recursive_batch(unsigned char argc,
                                      unsigned char mode) {
     unsigned int entries;
@@ -3457,13 +3462,11 @@ static unsigned char recursive_batch(unsigned char argc,
     } else {
         if (readyfs_path_parse(source.canonical, &source.path) != RF_PATH_OK ||
             source.path.image_depth != 0u) return 0u;
-        /* Ultimate and SoftIEC are adjacent recursive-capable endpoints. */
+        /* Native IEC, UltimateDOS and SoftwareIEC share the tree importer.
+         * Native directory preparation decides hierarchical versus flat media. */
         tree_source = (unsigned char)
-            (source.path.endpoint - RF_EP_ULTIMATE) <= 1u;
-        if (!tree_source &&
-            (source.path.endpoint != RF_EP_IEC ||
-             source.path.partition != 0u ||
-             strcmp(source.canonical + source.path.path_offset, "/") != 0)) {
+            (source.path.endpoint - RF_EP_IEC) <= RF_EP_SOFTIEC - RF_EP_IEC;
+        if (!tree_source) {
             cputs(RF_ERROR "source bad\r\n");
             return 0u;
         }

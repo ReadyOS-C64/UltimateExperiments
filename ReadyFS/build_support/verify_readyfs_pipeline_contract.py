@@ -507,7 +507,7 @@ def main() -> int:
     roots_second_fetch = resident.find(
         "return readyfs_reu_session_fetch(", roots_fetch)
     batch_soft_source = resident.find(
-        "source.path.endpoint - RF_EP_ULTIMATE", resident_batch)
+        "source.path.endpoint - RF_EP_IEC", resident_batch)
     batch_tree_walk = resident.find("cmd_tree(argc, 2u)", batch_soft_source)
     batch_tree_import = resident.find(
         "RF_RECURSIVE_CALL_IMPORT_TREE", batch_tree_walk)
@@ -547,7 +547,7 @@ def main() -> int:
            copy_route < delete_route < resident_batch):
         failures.append(
             "resident recursive batch must checkpoint roots, admit and "
-            "import Ultimate/SoftIEC trees, enumerate/"
+            "import native IEC/Ultimate/SoftIEC trees, enumerate/"
             "sidecar-add/report, "
             "dry-run/confirm delete, start, yield NEXT, perform device I/O, "
             "ACK, and route copy/move/delete")

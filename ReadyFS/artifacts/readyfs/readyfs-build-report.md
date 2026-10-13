@@ -2,7 +2,7 @@
 
 Status: **PASS**
 
-- Resident end: `$B23A`; 881 safe bytes remain before KERNAL scratch at `$B5AC`.
+- Resident end: `$B253`; 856 safe bytes remain before KERNAL scratch at `$B5AC`.
 - Monolithic end: `$C5E9` (limit `$C5FF`).
 - Overlay-build cc65 software-stack top: `$D000`.
 - IEC configuration policy payload: `$D18` bytes (seventeenth cached sidecar).

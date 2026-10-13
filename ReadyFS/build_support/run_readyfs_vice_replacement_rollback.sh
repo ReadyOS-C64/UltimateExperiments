@@ -43,7 +43,7 @@ grep -qi "FREE: ${baseline_free} C64 BLOCKS" "$screen_text"
 c1541 "$target_image" -list > "$out_dir/target-after.txt"
 grep -qi '"old"' "$out_dir/target-after.txt"
 grep -qi "${baseline_free} blocks free" "$out_dir/target-after.txt"
-if grep -Eqi '"rf~[0-9a-f][0-9a-f]"' "$out_dir/target-after.txt"; then
-  printf 'rollback left a staged RF~ file\n' >&2
+if grep -Eqi '"rf[~t][0-9a-f][0-9a-f]"' "$out_dir/target-after.txt"; then
+  printf 'rollback left a staged RF file\n' >&2
   exit 1
 fi

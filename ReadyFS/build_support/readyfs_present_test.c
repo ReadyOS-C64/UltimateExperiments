@@ -77,11 +77,11 @@ int main(void) {
     call.operation=RF_PRESENT_CD;call.buffer="u:/usb1/test";call.workspace=cwd;call.value_low=0;show(&call);assert(strcmp(cwd,call.buffer)==0);
     call.buffer="8:relative";show(&call);assert(strstr(output,"absolute"));assert(strcmp(cwd,"u:/usb1/test")==0);
     call.value_low=RF_PATH_ESCAPE;show(&call);assert(strcmp(cwd,"u:/usb1/test")==0);
-    call.operation=RF_PRESENT_STAGE_NAME;call.buffer="u:/usb1/out.seq";call.workspace=stage;call.argc=RF_EP_ULTIMATE;call.value_low=0xAF;show(&call);assert(!strcmp(stage,"u:/usb1/rf~af"));
-    call.argc=RF_EP_IEC;call.buffer="9:/old";show(&call);assert(!strcmp(stage,"9:/rf~af"));
-    call.buffer="30:/old";show(&call);assert(!strcmp(stage,"30:/rf~af"));
-    call.buffer="10:1:/test/nested/original";show(&call);assert(!strcmp(stage,"10:1:/test/nested/rf~af"));
-    call.buffer="10:2:/test/media.d81!/original";show(&call);assert(!strcmp(stage,"10:2:/test/media.d81!/rf~af"));
+    call.operation=RF_PRESENT_STAGE_NAME;call.buffer="u:/usb1/out.seq";call.workspace=stage;call.argc=RF_EP_ULTIMATE;call.value_low=0xAF;show(&call);assert(!strcmp(stage,"u:/usb1/rftaf"));
+    call.argc=RF_EP_IEC;call.buffer="9:/old";show(&call);assert(!strcmp(stage,"9:/rftaf"));
+    call.buffer="30:/old";show(&call);assert(!strcmp(stage,"30:/rftaf"));
+    call.buffer="10:1:/test/nested/original";show(&call);assert(!strcmp(stage,"10:1:/test/nested/rftaf"));
+    call.buffer="10:2:/test/media.d81!/original";show(&call);assert(!strcmp(stage,"10:2:/test/media.d81!/rftaf"));
     call.argc=RF_EP_ULTIMATE;call.buffer="bad-parent";assert(!readyfs_present(&call));
     memset(cwd,'a',sizeof(cwd));cwd[248]='/';cwd[249]='x';cwd[250]=0;call.buffer=cwd;assert(readyfs_present(&call));assert(strlen(stage)==254);
     cwd[248]='a';cwd[249]='/';cwd[250]='x';cwd[251]=0;assert(!readyfs_present(&call));

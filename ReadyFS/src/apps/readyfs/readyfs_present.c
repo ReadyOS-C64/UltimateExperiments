@@ -59,7 +59,10 @@ unsigned char readyfs_present(ReadyFsUtilityCall *call) {
         last = strrchr(call->workspace, '/');
         if (!last || (unsigned int)(last - call->workspace) + 7u > RF_PATH_MAX) return 0u;
         ++last;
-        strcpy(last, "rf~");
+        /* SD2IEC forces an X00 wrapper for invalid FAT characters even in
+         * raw XE0 mode. Keep stages FAT-safe; the existence probe still guards
+         * this temporary namespace against collisions. */
+        strcpy(last, "rft");
         last[3] = "0123456789abcdef"[(unsigned char)call->value_low >> 4u];
         last[4] = "0123456789abcdef"[call->value_low & 15u];
         last[5] = 0;
