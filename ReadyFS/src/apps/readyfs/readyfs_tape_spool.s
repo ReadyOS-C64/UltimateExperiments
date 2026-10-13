@@ -230,9 +230,24 @@ fetch:
         lda (ptr2),y
         ldy #SP_BYTES_HI
         cmp (ptr2),y
-        jcc fetch_more_banks
+        bcc fetch_adjacent
         jne fetch_eof
-        ; Same 64K bank: EOF or cap requested length to remaining bytes.
+        lda #$00
+        sta spool_state_offset
+        beq fetch_remaining
+fetch_adjacent:
+        ; An adjacent end bank can still leave fewer bytes than requested.
+        ; Cap that final chunk even when its end is exactly a 64K boundary.
+        ldy #SP_REPLAY_HI
+        lda (ptr2),y
+        clc
+        adc #$01
+        ldy #SP_BYTES_HI
+        cmp (ptr2),y
+        jne fetch_more_banks
+        lda #$01
+        sta spool_state_offset
+fetch_remaining:
         ldy #SP_BYTES_LO
         lda (ptr2),y
         ldy #SP_REPLAY_LO
@@ -244,6 +259,15 @@ fetch:
         ldy #SP_REPLAY_LO+1
         sbc (ptr2),y
         sta spool_rem+1
+        bcc fetch_borrowed
+        lda spool_state_offset
+        jne fetch_more_banks ; adjacent with >=64K remaining
+        beq fetch_cap
+fetch_borrowed:
+        lda spool_state_offset
+        jeq fetch_eof        ; same-bank cursor passed EOF
+fetch_cap:
+        lda spool_rem+1
         ora spool_rem
         beq fetch_eof
         ldy #TC_LENGTH+1

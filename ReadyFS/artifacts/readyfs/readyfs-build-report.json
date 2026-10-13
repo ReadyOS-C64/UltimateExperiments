@@ -252,8 +252,8 @@
     "tape_core_controller": {
       "file": "artifacts/readyfs/readyfs-tape.prg",
       "load_address": 46592,
-      "payload_bytes": 3919,
-      "map_bytes": 3919,
+      "payload_bytes": 3967,
+      "map_bytes": 3967,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,

@@ -167,6 +167,10 @@ static unsigned char spool_transfer(ReadyFsTapeCall *call) {
     if (state->replay_bank == state->bytes_bank &&
         amount > (unsigned int)(state->bytes_lo - state->replay_lo))
         amount = (unsigned int)(state->bytes_lo - state->replay_lo);
+    if ((unsigned int)state->replay_bank + 1u == state->bytes_bank &&
+        state->bytes_lo < state->replay_lo &&
+        amount > ((state->bytes_lo - state->replay_lo) & 0xFFFFu))
+        amount = (state->bytes_lo - state->replay_lo) & 0xFFFFu;
     end = (state->replay_lo + amount) & 0xFFFFu;
     if ((unsigned int)state->replay_bank + 5u >= bank_count ||
         (end < state->replay_lo && end != 0u &&

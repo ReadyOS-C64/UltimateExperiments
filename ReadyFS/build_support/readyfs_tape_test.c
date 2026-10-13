@@ -39,7 +39,7 @@ int main(void) {
     ReadyFsTapeSpoolState spool_state;
     ReadyFsPath path;
     unsigned char fetched[9];
-    unsigned char boundary[17];
+    unsigned char boundary[32];
     unsigned int i;
     char open_text[24];
     char *write_args[] = {"write", "t:/rfseq", "data", "--line"};
@@ -128,11 +128,11 @@ int main(void) {
     check(readyfs_tape_dispatch(&call) && !call.result,
           "reject first byte in reserved console bank");
     call.operation = RF_TAPE_SPOOL_FETCH;
-    call.length = 16u;
+    call.length = 32u; /* request spans the adjacent end cursor */
     memset(boundary, 0, sizeof(boundary));
     check(readyfs_tape_dispatch(&call) && call.result && call.length == 16u &&
           spool_state.replay_bank == 11u && spool_state.replay_lo == 0u,
-          "fetch exact spool end");
+          "fetch caps oversized final request across bank boundary");
     for (i = 0; i < 16u; ++i) check(boundary[i] == 0x5C, "boundary data intact");
     call.length = 1u;
     check(readyfs_tape_dispatch(&call) && call.result && call.length == 0u,
