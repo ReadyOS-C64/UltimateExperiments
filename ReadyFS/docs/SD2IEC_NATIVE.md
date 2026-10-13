@@ -94,12 +94,33 @@ iec 10: save-config
 | `partition N --select` | Valid partition number | `CPN` |
 | `save-config` | No argument | `XW` |
 
+Extension modes on the detected firmware:
+
+| Mode | Normal FAT file creation |
+| --- | --- |
+| `0` | No X00 wrapper for names representable directly in FAT |
+| `1` | X00 for SEQ/USR/REL; ordinary PRG stays raw |
+| `2` | X00 for ordinary file types |
+| `3` | SEQ/USR/REL filename extensions, without X00 headers |
+| `4` | As mode3, including PRG extensions |
+
+Modes3/4 also enable extension hiding. With hiding enabled, a FAT
+`README.SEQ` is presented as the logical SEQ file `README`. Disk-image names
+have special firmware rules; the raw-image procedure below accounts for
+ReadyFS's staging and rename behavior. `images both` lists each image twice,
+with its file type and as a directory. `wildcard 1581` makes text after `*`
+participate in matching; `1541` ignores that trailing text in native matching.
+
 These settings affect the drive globally, including other C64 software.
 `config` shows the native `X` response rather than guessing settings from a
 ReadyFS preference. Extension mode and extension hiding are related firmware
 settings; inspect `config` after changing either. Image listing as directories
 is a presentation setting, not proof that a filesystem entry is an ordinary
-FAT directory. Running changes and EEPROM persistence are separate: use
+FAT directory. On the tested firmware, image files are rejected as intermediate
+path components. Recursive planning therefore stops if a listing presents an
+image as a directory; it does not silently mount, skip, or recurse into it. Use
+`images files` explicitly when you want image containers treated as files.
+Running changes and EEPROM persistence are separate: use
 `save-config` only when the current drive settings are the ones to retain.
 
 ### Device address
@@ -115,6 +136,11 @@ listener, and verifies the result on the new address. `--save` persists it with
 `XW`. Use the old address in the command and the new address afterward. Hard
 restart is SD2IEC-specific (`U` followed by `$CA`). If two devices already answer
 on the same address, resolve that collision before discovery or readdressing.
+
+`save-config` saves supported current extended settings together, including the
+address; it does not save the current folder, selected partition, or mounted
+image. On hardware with address jumpers, changing the jumper setting can
+override the saved address.
 
 The user's external SD2IEC was found on 8, moved to 10, saved, and verified after
 a hard restart. Ultimate A was temporarily disabled during that repair and then
@@ -139,7 +165,9 @@ move @card:/renamed @card:/work/notes
 ```
 
 `COPY` stages a new destination, closes it, verifies content, and commits it.
-`MOVE` removes its source only after successful copy/verification. Failed native
+`MOVE` removes its source only after successful copy/verification. Empty Ultimate destination folders are valid: the firmware
+reply `01,DIRECTORY EMPTY` means the requested file is absent, not that lookup
+failed. Failed native
 OPEN/CLOSE and DOS statuses are propagated instead of becoming an empty file or
 successful operation. The native status reader uses the existing command channel
 without closing channel 15, which would discard SD2IEC's other open buffers.

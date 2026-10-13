@@ -1,0 +1,108 @@
+{
+  "status": "in_progress",
+  "baseline": {
+    "run": "demo-v3-sd2iec-native-four-endpoints-20261013-a",
+    "frozen_commit": "f0682c0",
+    "copy_pairs": [
+      "baseline-copy-u-to-i",
+      "baseline-copy-u-to-s",
+      "baseline-copy-u-to-d",
+      "baseline-copy-i-to-u",
+      "baseline-copy-i-to-s",
+      "baseline-copy-i-to-d",
+      "baseline-copy-s-to-u",
+      "baseline-copy-s-to-i",
+      "baseline-copy-s-to-d",
+      "baseline-copy-d-to-u",
+      "baseline-copy-d-to-i",
+      "baseline-copy-d-to-s"
+    ],
+    "move_pairs": [
+      "baseline-move-u-to-i",
+      "baseline-move-u-to-s",
+      "baseline-move-u-to-d",
+      "baseline-move-i-to-u",
+      "baseline-move-i-to-s",
+      "baseline-move-i-to-d",
+      "baseline-move-s-to-u",
+      "baseline-move-s-to-i",
+      "baseline-move-s-to-d",
+      "baseline-move-d-to-u",
+      "baseline-move-d-to-i",
+      "baseline-move-d-to-s"
+    ],
+    "complete": {
+      "complete": true,
+      "restored": true,
+      "result": "PASS",
+      "time": 1791884110.0302489
+    },
+    "independent_disk": {
+      "bc-ui.seq": {
+        "bytes": 38,
+        "sha256": "99ac65b0a01119a7f073b3b8b902d3ba189a74a0b07db3f8191199337b8f2ed3",
+        "type": "SEQ"
+      },
+      "bc-si.seq": {
+        "bytes": 38,
+        "sha256": "99ac65b0a01119a7f073b3b8b902d3ba189a74a0b07db3f8191199337b8f2ed3",
+        "type": "SEQ"
+      },
+      "bc-di.seq": {
+        "bytes": 1025,
+        "sha256": "7bec35b7137ed53c8a2f2e7d254838c9bbd8b0d3cd93f8d006fc776f8d50ce15",
+        "type": "SEQ"
+      },
+      "bd-ui.seq": {
+        "bytes": 38,
+        "sha256": "99ac65b0a01119a7f073b3b8b902d3ba189a74a0b07db3f8191199337b8f2ed3",
+        "type": "SEQ"
+      },
+      "bd-si.seq": {
+        "bytes": 38,
+        "sha256": "99ac65b0a01119a7f073b3b8b902d3ba189a74a0b07db3f8191199337b8f2ed3",
+        "type": "SEQ"
+      },
+      "bd-di.seq": {
+        "bytes": 1025,
+        "sha256": "7bec35b7137ed53c8a2f2e7d254838c9bbd8b0d3cd93f8d006fc776f8d50ce15",
+        "type": "SEQ"
+      }
+    }
+  },
+  "native_directory_runs": [
+    {
+      "run": "demo-v3-sd2iec-native-directories-20261013-a",
+      "status": "failed",
+      "passed_cases": 20,
+      "last_event": {
+        "complete": true,
+        "restored": true,
+        "result": "FAIL",
+        "time": 1791884674.537683
+      }
+    },
+    {
+      "run": "demo-v3-sd2iec-native-directories-20261013-b",
+      "status": "failed",
+      "passed_cases": 44,
+      "last_event": {
+        "complete": true,
+        "restored": true,
+        "result": "FAIL",
+        "time": 1791885746.213501
+      }
+    }
+  ],
+  "image_acceptance": {
+    "run": "demo-v3-sd2iec-native-image-20261013-a",
+    "status": "running",
+    "last_event": {
+      "command": "COPY @LAB:/NATIVE-SOURCE.D64 10.1:/rf261013085527/out/i1013100749.d64",
+      "time": 1791886103.8604128
+    }
+  },
+  "generated_utc": "2026-10-13T10:26:26.091424+00:00",
+  "current_source_commit": "c59d853",
+  "folder_rerun_required": true
+}
