@@ -71,9 +71,55 @@ static unsigned char command(ReadyFsFilesCall *c) {
     return RF_LOOKUP_FOUND;
 }
 
+static unsigned char open_file(ReadyFsFilesCall *c) {
+    ReadyFsStream *s;
+    unsigned char len, rc;
+    s = c->stream;
+    if (s->type < CBM_T_SEQ || s->type > CBM_T_USR) {
+        *c->status = RF_RESULT_UNSUPPORTED;
+        cputs(RF_ERROR "file type unsupported\r\n");
+        return RF_LOOKUP_ERROR;
+    }
+    if (strlen(s->native_name) + 4u > 119u) return error(c);
+    strcpy((char *)c->reply, s->native_name); len = strlen((char *)c->reply);
+    c->reply[len++] = ',';
+    c->reply[len++] = s->type == CBM_T_SEQ ? 's' : s->type == CBM_T_PRG ? 'p' : 'u';
+    c->reply[len++] = ',';
+    c->reply[len++] = c->operation == RF_FILES_OPEN_WRITE ? 'w' : 'r';
+    c->reply[len] = 0u;
+#ifdef __CC65__
+    *(volatile unsigned char *)0x90u = 0u;
+#endif
+    rc = cbm_open(s->lfn, s->device, s->lfn, (char *)c->reply);
+    cbm_k_clrch();
+    if (rc) { cbm_close(s->lfn); cbm_k_clrch(); return error(c); }
+    if (s->path.endpoint == RF_EP_IEC) {
+        rc = status(c);
+        if (rc == RF_LOOKUP_ERROR || c->dos != 0u) {
+            cbm_close(s->lfn); cbm_k_clrch();
+            return rc == RF_LOOKUP_ERROR ? rc : error(c);
+        }
+    }
+    return RF_LOOKUP_FOUND;
+}
+
+static unsigned char close_file(ReadyFsFilesCall *c) {
+    unsigned char st;
+#ifdef __CC65__
+    *(volatile unsigned char *)0x90u = 0u;
+#endif
+    cbm_close(c->stream->lfn); st = cbm_k_readst(); cbm_k_clrch();
+    c->stream->open = 0u;
+    if (st) return error(c);
+    if (status(c) == RF_LOOKUP_ERROR) return RF_LOOKUP_ERROR;
+    return c->dos == 0u ? RF_LOOKUP_FOUND : error(c);
+}
+
 unsigned char readyfs_files(ReadyFsFilesCall *c) {
     struct cbm_dirent entry;
     unsigned char rc, result;
+    if (c->operation == RF_FILES_OPEN_READ || c->operation == RF_FILES_OPEN_WRITE) return open_file(c);
+    if (c->operation == RF_FILES_CLOSE) return close_file(c);
     if (c->operation == RF_FILES_SCRATCH || c->operation == RF_FILES_RENAME) return command(c);
     if (c->operation == RF_FILES_STATUS) return status(c);
     if (c->operation != RF_FILES_FIND) return error(c);

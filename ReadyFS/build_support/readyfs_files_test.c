@@ -40,10 +40,15 @@ void cbm_k_second(unsigned char s) {assert(s==0x6f);}
 void cbm_k_ciout(unsigned char b) {assert(sent+1<sizeof(command));command[sent++]=b;command[sent]=0;}
 void cbm_k_unlsn(void) {}
 unsigned char cbm_open(unsigned char lfn,unsigned char d,unsigned char sa,const char *name) {
-    assert(stream.path.endpoint==RF_EP_SOFTIEC && lfn==15 && sa==15 && d==10);
-    strcpy(command,name);++channel15;return 0;
+    assert(d==10 && sa==lfn);
+    if(lfn==15) { assert(stream.path.endpoint==RF_EP_SOFTIEC);++channel15; }
+    else assert(lfn==2);
+    strcpy(command,name);return open_error;
 }
-void cbm_close(unsigned char lfn) {assert(stream.path.endpoint==RF_EP_SOFTIEC && lfn==15);++channel15;}
+void cbm_close(unsigned char lfn) {
+    if(lfn==15) {assert(stream.path.endpoint==RF_EP_SOFTIEC);++channel15;}
+    else {assert(lfn==2);++closed;}
+}
 static void reset(void) {
     memset(&stream,0,sizeof(stream));memset(&other,0,sizeof(other));memset(&call,0,sizeof(call));
     strcpy(stream.canonical,"hello");stream.native_name=stream.canonical;stream.device=10;stream.path.endpoint=RF_EP_IEC;
@@ -69,6 +74,24 @@ int main(void) {
     reset();call.operation=RF_FILES_SCRATCH;assert(readyfs_files(&call)==RF_LOOKUP_ERROR); /* 00 is not SCRATCH success */
     reset();call.operation=RF_FILES_RENAME;write_error=0x80;assert(readyfs_files(&call)==RF_LOOKUP_ERROR && !pos);
     reset();call.operation=RF_FILES_SCRATCH;stream.path.endpoint=RF_EP_SOFTIEC;assert(readyfs_files(&call)==RF_LOOKUP_FOUND && channel15==2);
+    reset();stream.lfn=2;stream.type=CBM_T_SEQ;call.operation=RF_FILES_OPEN_READ;
+    assert(readyfs_files(&call)==RF_LOOKUP_FOUND && !strcmp(command,"hello,s,r") && !closed && !channel15);
+    reset();stream.lfn=2;stream.type=CBM_T_USR;call.operation=RF_FILES_OPEN_WRITE;
+    assert(readyfs_files(&call)==RF_LOOKUP_FOUND && !strcmp(command,"hello,u,w") && !closed);
+    reset();stream.lfn=2;stream.type=CBM_T_PRG;call.operation=RF_FILES_OPEN_WRITE;dos_reply="63,FILE EXISTS,00,00\r";
+    assert(readyfs_files(&call)==RF_LOOKUP_ERROR && closed==1 && !channel15);
+    reset();stream.lfn=2;stream.type=CBM_T_SEQ;call.operation=RF_FILES_OPEN_READ;open_error=5;
+    assert(readyfs_files(&call)==RF_LOOKUP_ERROR && closed==1 && !pos);
+    reset();stream.lfn=2;stream.type=CBM_T_REL;call.operation=RF_FILES_OPEN_WRITE;
+    assert(readyfs_files(&call)==RF_LOOKUP_ERROR && result_status==RF_RESULT_UNSUPPORTED && !*command);
+    reset();stream.lfn=2;stream.open=1;call.operation=RF_FILES_CLOSE;
+    assert(readyfs_files(&call)==RF_LOOKUP_FOUND && closed==1 && !stream.open && !channel15);
+    reset();stream.lfn=2;stream.open=1;call.operation=RF_FILES_CLOSE;write_error=0x80;
+    assert(readyfs_files(&call)==RF_LOOKUP_ERROR && closed==1 && !stream.open && !pos);
+    reset();stream.lfn=2;stream.open=1;call.operation=RF_FILES_CLOSE;dos_reply="72,DISK FULL,00,00\r";
+    assert(readyfs_files(&call)==RF_LOOKUP_ERROR && closed==1 && !stream.open && result_status==RF_RESULT_IO);
+    reset();stream.lfn=2;stream.type=CBM_T_SEQ;stream.path.endpoint=RF_EP_SOFTIEC;call.operation=RF_FILES_OPEN_READ;
+    assert(readyfs_files(&call)==RF_LOOKUP_FOUND && !pos && !channel15); /* preserve SoftIEC lifecycle */
     puts("native filesystem leaf tests passed: typed lookup, native channel lifetime, scratch/rename status");
     return 0;
 }

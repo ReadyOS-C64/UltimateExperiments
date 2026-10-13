@@ -1672,10 +1672,9 @@ static unsigned char stream_open_read(ReadyFsStream *stream,
             return 0u;
         }
 #ifdef READYFS_OVERLAY_RUNTIME
-        if (stream->type < CBM_T_SEQ || stream->type > CBM_T_USR) {
+        if (!RF_FOUND(native_file(stream, 0, RF_FILES_OPEN_READ))) return 0u;
 #else
         if (stream->type == CBM_T_REL) {
-#endif
             result_unsupported("rel unsupported\r\n");
             return 0u;
         }
@@ -1689,6 +1688,7 @@ static unsigned char stream_open_read(ReadyFsStream *stream,
             cbm_k_clrch();
             return 0u;
         }
+#endif
     } else {
         /* READ_DIR may omit dot-prefixed host files such as ownership
          * markers. OPEN is the existence authority for reads; entering the
@@ -1742,6 +1742,9 @@ static unsigned char stream_open_write(ReadyFsStream *stream,
         if (stream->path.endpoint == RF_EP_SOFTIEC) {
             if (!softiec_enter_parent(stream)) return 0u;
         }
+#ifdef READYFS_OVERLAY_RUNTIME
+        if (!RF_FOUND(native_file(stream, 0, RF_FILES_OPEN_WRITE))) return 0u;
+#else
         if (strlen(stream->native_name) + 4u > RF_LINE_CAP) {
             cputs(RF_ERROR "name long\r\n");
             return 0u;
@@ -1752,6 +1755,7 @@ static unsigned char stream_open_write(ReadyFsStream *stream,
             cbm_k_clrch();
             return 0u;
         }
+#endif
     } else {
         leaf = udos_enter_parent(stream, target);
         if (leaf == 0) {
@@ -1821,8 +1825,17 @@ static unsigned char stream_write(ReadyFsStream *stream,
                            uci_target_ok_or_quiet(stream->target));
 }
 
+#ifdef READYFS_OVERLAY_RUNTIME
+#define RF_CLOSE_CHECK(stream, ok) do { if (!stream_close(stream)) ok = 0u; } while (0)
+static unsigned char stream_close(ReadyFsStream *stream) {
+    if (!stream->open) return 1u;
+    if (stream->path.endpoint == RF_EP_IEC)
+        return RF_FOUND(native_file(stream, 0, RF_FILES_CLOSE));
+#else
+#define RF_CLOSE_CHECK(stream, ok) stream_close(stream)
 static void stream_close(ReadyFsStream *stream) {
     if (!stream->open) return;
+#endif
     if (stream->path.endpoint != RF_EP_ULTIMATE) {
         cbm_close(stream->lfn);
         cbm_k_clrch();
@@ -1835,6 +1848,9 @@ static void stream_close(ReadyFsStream *stream) {
         (void)uci_call(stream->target, 0x03u, 0);
     }
     stream->open = 0u;
+#ifdef READYFS_OVERLAY_RUNTIME
+    return 1u;
+#endif
 }
 
 static unsigned char delete_stream(ReadyFsStream *stream) {
@@ -2054,7 +2070,7 @@ static unsigned char verify_text_file(ReadyFsStream *file, const char *text,
 #endif
         if (got != 0) ok = 0u;
     }
-    stream_close(file);
+    RF_CLOSE_CHECK(file, ok);
     cputs(ok ? RF_SUMMARY "verify: identical\r\n" : RF_ERROR "verify: mismatch\r\n");
     return ok;
 }
@@ -2119,7 +2135,7 @@ static unsigned char signature_file(ReadyFsStream *file,
         if (got == 0) break;
         signature_add(sig, io_buf, (unsigned int)got);
     }
-    stream_close(file);
+    RF_CLOSE_CHECK(file, ok);
     return ok;
 }
 
@@ -2254,7 +2270,7 @@ static void cmd_config_save(unsigned char argc, const char *path_text) {
                                   RF_ALIAS_SLOT_BYTES);
         }
     }
-    stream_close(&temp);
+    RF_CLOSE_CHECK(&temp, ok);
     if (!ok) {
         (void)delete_stream(&temp);
         cputs(RF_ERROR "cfg write fail\r\n");
@@ -2441,7 +2457,11 @@ static void cmd_new(unsigned char argc) {
         cputs("destination exists\r\n"); return;
     }
     if (!stream_open_write(&command_stream, 1u, 2u, type)) return;
+#ifdef READYFS_OVERLAY_RUNTIME
+    if (!stream_close(&command_stream)) return;
+#else
     stream_close(&command_stream);
+#endif
     if (RF_FOUND(stream_exists(&command_stream))) cputs(RF_SUMMARY "created\r\n");
     else {
         cputs(RF_ERROR "verify fail\r\n");
@@ -2494,7 +2514,7 @@ static void cmd_write(unsigned char argc) {
 #endif
     ok = stream_write(&temp, args[2], strlen(args[2]));
     if (ok && add_line) ok = stream_write(&temp, "\r", 1u);
-    stream_close(&temp);
+    RF_CLOSE_CHECK(&temp, ok);
 #ifdef READYFS_SOFT_TRACE
     cputc('4');
 #endif
@@ -2591,7 +2611,7 @@ static void cmd_append(unsigned char argc) {
                 break;
             }
         }
-        stream_close(&dest);
+        RF_CLOSE_CHECK(&dest, ok);
     }
     if (ok) {
         signature_add(&expected, (const unsigned char *)args[2], strlen(args[2]));
@@ -2602,7 +2622,7 @@ static void cmd_append(unsigned char argc) {
         signature_add(&expected, (const unsigned char *)"\r", 1u);
         ok = stream_write(&temp, "\r", 1u);
     }
-    stream_close(&temp);
+    RF_CLOSE_CHECK(&temp, ok);
     if (!ok) {
         (void)delete_stream(&temp);
         cputs(RF_ERROR "append fail\r\n");
@@ -2767,8 +2787,8 @@ unsigned char readyfs_io_copy_call(ReadyFsIoCopyCall *call) {
             if (total_lo < before) ++total_hi;
         }
     }
-    stream_close(output);
-    stream_close(&source);
+    RF_CLOSE_CHECK(output, ok);
+    RF_CLOSE_CHECK(&source, ok);
     if (!ok) {
 #ifdef READYFS_OVERLAY_RUNTIME
         if (!tape_destination) (void)delete_stream(&temp);

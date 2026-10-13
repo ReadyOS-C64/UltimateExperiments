@@ -6,6 +6,9 @@
 #define RF_FILES_STATUS 2u
 #define RF_FILES_SCRATCH 3u
 #define RF_FILES_RENAME 4u
+#define RF_FILES_OPEN_READ 5u
+#define RF_FILES_OPEN_WRITE 6u
+#define RF_FILES_CLOSE 7u
 #define RF_LOOKUP_MISSING 0u
 #define RF_LOOKUP_FOUND 1u
 #define RF_LOOKUP_ERROR 2u
