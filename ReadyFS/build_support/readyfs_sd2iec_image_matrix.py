@@ -70,6 +70,13 @@ class NativeImageMatrix(Baseline):
         self.owned.guard(self.owned.root+'/ud-image.d64')
         with self.owned.ftp() as ftp:
             ftp.storbinary('STOR '+self.owned.root+'/ud-image.d64',io.BytesIO(host_image.read_bytes()))
+        # Explicit same-device bridge: all channels close before changing
+        # the SD filesystem view. The host file is an independently hashed
+        # intermediate, never a Mac runtime relay.
+        bridge_seed=bytes((i*37+11)&255 for i in range(1025))
+        self.owned.guard(self.owned.root+'/fat-to-image.seq')
+        command('COPY '+self.sd_prefix+'in/seed @LAB:/FAT-TO-IMAGE.SEQ','COPIED')
+        command('COMPARE '+self.sd_prefix+'in/seed @LAB:/FAT-TO-IMAGE.SEQ','VERIFY: IDENTICAL')
         self.guard('d','before-mount')
         c['guard_disk']()
         self.maybe_mounted=True
@@ -82,6 +89,14 @@ class NativeImageMatrix(Baseline):
             expected={'d':self.owned.seed['readme.seq'],'i':(c['ROOT']/'build_support/readyfs_content_view.seq').read_bytes(),'s':self.owned.seed['readme.seq']}
             targets={}
             suffix=time.strftime('%H%M%S',time.gmtime())
+            bridge_image_leaf='bf'+suffix
+            command('STAT 10.1:/'+bridge_image_leaf,'NOT FOUND')
+            self.image_guard();command('COPY @LAB:/FAT-TO-IMAGE.SEQ 10.1:/'+bridge_image_leaf,'COPIED')
+            command('COMPARE @LAB:/FAT-TO-IMAGE.SEQ 10.1:/'+bridge_image_leaf,'VERIFY: IDENTICAL')
+            targets[bridge_image_leaf]=('d',bridge_seed)
+            self.owned.guard(self.owned.root+'/image-to-fat.prg')
+            command('COPY 10.1:/HELLO @LAB:/IMAGE-TO-FAT.PRG','COPIED')
+            command('COMPARE 10.1:/HELLO @LAB:/IMAGE-TO-FAT.PRG','VERIFY: IDENTICAL')
             pairs=IMAGE_PAIRS
             image_sources={'s':prefixes['h']+'NOTE.SEQ','p':prefixes['h']+'HELLO.PRG','u':prefixes['h']+'DATA.USR'}
             image_data={'s':note_file.read_bytes(),'p':payload,'u':data_file.read_bytes()}
@@ -194,6 +209,17 @@ class NativeImageMatrix(Baseline):
                 self.maybe_mounted=False;self.guard('d','final-fat')
                 command('IEC 10: PARTITION 1','FAT OR DNP')
                 self.fat_verified=True
+        fat_leaf='br'+suffix+'.prg'
+        fat_target=self.sd_prefix+'out/'+fat_leaf
+        command('STAT '+fat_target,'NOT FOUND')
+        self.guard('d',fat_leaf);command('COPY @LAB:/IMAGE-TO-FAT.PRG '+fat_target,'COPIED')
+        command('COMPARE @LAB:/IMAGE-TO-FAT.PRG '+fat_target,'VERIFY: IDENTICAL')
+        self.owned.guard(self.owned.root+'/fat-bridge-oracle.prg')
+        command('COPY '+fat_target+' @LAB:/FAT-BRIDGE-ORACLE.PRG','COPIED')
+        snapshot=self.owned.snapshot();c['save_json']('native-same-device-bridge-snapshot.json',snapshot)
+        for leaf,data in [('fat-to-image.seq',bridge_seed),('image-to-fat.prg',payload),('fat-bridge-oracle.prg',payload)]:
+            assert snapshot[leaf]['sha256']==hashlib.sha256(data).hexdigest(),leaf
+        c['event'](case='sd-fat-to-own-image-and-back-via-explicit-intermediate',result='PASS')
 
     def image_guard(self):
         self.owned.guard(self.owned.root+'/sdowner.seq')
