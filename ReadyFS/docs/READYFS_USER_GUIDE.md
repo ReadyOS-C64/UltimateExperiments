@@ -849,3 +849,12 @@ The updated 12 October companion tour uses the same passing physical take, edite
 - Printable/offline edition: [READYFS_USER_GUIDE.html](READYFS_USER_GUIDE.html).
 
 This guide follows the current overlay implementation. On-device HELP is compact but now includes varied examples; NEW documents `--type` and SWAP documents `drive:`. The retained screenshots show the older help. When behavior changes, update this Markdown source, its evidence captions, and regenerate the HTML rather than letting the editions drift.
+
+
+## Native IEC configuration under development
+
+The SD2IEC development build adds `iec 10: status`, `iec 10: config`, partition
+queries and explicit configuration setters. See the [configuration reference](READYFS_IEC_CONFIGURATION.md)
+for all commands, examples and the distinction between running and saved settings.
+This new command family is not shown in the earlier published demonstration;
+its physical acceptance and the broader SD2IEC filesystem work are in progress.

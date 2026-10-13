@@ -2,13 +2,14 @@
 
 Status: **PASS**
 
-- Resident end: `$B418`; 403 safe bytes remain before KERNAL scratch at `$B5AC`.
+- Resident end: `$B503`; 168 safe bytes remain before KERNAL scratch at `$B5AC`.
 - Monolithic end: `$C5FB` (limit `$C5FF`).
 - Overlay-build cc65 software-stack top: `$D000`.
-- Stream policy payload: `$473` bytes (sixteenth cached sidecar).
+- IEC configuration policy payload: `$D18` bytes (seventeenth cached sidecar).
+- Stream/native IEC service payload: `$F9A` bytes (sixteenth cached sidecar).
 - Matcher payload: `$FC8` bytes.
 - Planner/executor payload: `$FDF` bytes.
-- Help/journal payload: `$1000` bytes.
+- Help/journal payload: `$FFA` bytes.
 - Backend/controller payload: `$FFB` bytes.
 - CMD/SD2IEC translator payload: `$FFD` bytes (cached runtime sidecar with boot self-test).
 - IEC drive profiler payload: `$FFD` bytes (resident-owned command-channel I/O).
@@ -18,9 +19,9 @@ Status: **PASS**
 - Batch/alias payload: `$BB5` bytes (tenth sidecar in a dedicated REU bank).
 - Recursive controller/name translator payload: `$F67` bytes (eleventh sidecar; cached above the tree queue).
 - Tape/core policy and signature payload: `$F4F` bytes (twelfth sidecar; dedicated batch-bank cache).
-- Command/editor payload: `$FCF` bytes (thirteenth sidecar).
+- Command/editor payload: `$FD4` bytes (thirteenth sidecar).
 - Presentation payload: `$FCD` bytes (fourteenth sidecar).
-- Command-help payload: `$F46` bytes (fifteenth sidecar).
+- Command-help payload: `$FB6` bytes (fifteenth sidecar).
 - REU regions disjoint: yes.
 
 ## Checks
@@ -34,6 +35,7 @@ Status: **PASS**
 - PASS: `reu_batch_regions_disjoint`
 - PASS: `reu_console_ring_fits_bank`
 - PASS: `stream_policy_sidecar`
+- PASS: `iec_config_policy_sidecar`
 - PASS: `presentation_sidecar`
 - PASS: `command_help_sidecar`
 - PASS: `ui_sidecar`

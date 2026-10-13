@@ -42,6 +42,7 @@
 #define RF_COMMAND_CRC32 38u
 #define RF_COMMAND_TEST 39u
 #define RF_COMMAND_RUN 40u
+#define RF_COMMAND_IEC 42u /* help topic 41 is FORMAT */
 /* High-bit lookup-only IDs; low bits are cc65's stable CBM file-type ABI. */
 #define RF_COMMAND_FILE_PRG 0x91u
 #define RF_COMMAND_FILE_USR 0x92u

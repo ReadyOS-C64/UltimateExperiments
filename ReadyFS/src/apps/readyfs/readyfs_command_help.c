@@ -21,7 +21,7 @@ void readyfs_command_help(ReadyFsUtilityCall *call) {
 #ifndef READYFS_MONOLITHIC
         n = call->value_low;
         if (n == RF_COMMAND_MOUNT && (call->buffer[0] == 'f' || call->buffer[0] == 'F')) n = 41u;
-        if (n > 41u) n = 0u;
+        if (n > 42u) n = 0u;
         name = (const char *)topics[n];
         while (*name) help_emit((unsigned char)*name++);
         if (n == 20u || n == 21u || n == 23u) {

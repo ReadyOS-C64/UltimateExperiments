@@ -68,3 +68,10 @@ physical mutation test.
 
 See [PROJECT_INVENTORY.md](PROJECT_INVENTORY.md) for the migration boundary,
 artifact groups, automation entry points, and current verification evidence.
+
+
+SD2IEC development on `codex/sd2iec-support` adds cached sidecars 16 (stream
+preparation and standalone native IEC I/O) and 17 (IEC configuration policy).
+Builds now require all 17 sidecars. See [native IEC configuration](docs/READYFS_IEC_CONFIGURATION.md)
+for commands, protocol boundaries and current verification status. Full SD2IEC
+filesystem/image transfer acceptance is still in progress.

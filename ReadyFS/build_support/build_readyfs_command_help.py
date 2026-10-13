@@ -11,7 +11,7 @@ import json
 
 ROOT = Path(__file__).resolve().parent.parent
 records = json.loads((ROOT/'docs/command-help.json').read_text())
-assert [r['id'] for r in records] == list(range(42))
+assert [r['id'] for r in records] == list(range(43))
 texts = []
 for r in records:
     assert r['id'] == 0 or len(r['examples']) >= 2
@@ -54,8 +54,8 @@ for n,s in enumerate(packed):
     lines += [f'static const unsigned char help_{n}[] = {{',
               '    '+','.join(map(literal,s))+',0', '};']
 lines += ['static const unsigned char * const topics[] = {',
-          '    '+','.join('help_'+str(n) for n in range(42)), '};','']
+          '    '+','.join('help_'+str(n) for n in range(43)), '};','']
 (ROOT/'src/apps/readyfs/readyfs_help_data.h').write_text('\n'.join(lines))
 print(json.dumps({'topics':len(records),'original_bytes':sum(map(len,texts)),
-                  'packed_bytes':sum(map(len,packed))+42+len(pairs)*2+84,
+                  'packed_bytes':sum(map(len,packed))+43+len(pairs)*2+86,
                   'max_expansion_depth':max(depth)}))

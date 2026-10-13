@@ -40,8 +40,8 @@ void readyfs_help_show(void) {
     cputs("drives cd dir stat status type head tail crc32\r\n");
     cputs("find alias unalias config capabilities test run\r\n");
     cputs("new write append copy move rename delete\r\n");
-    cputs("mkdir rmdir mount dismount swap format\r\n");
-    cputs("help command: usage and options\r\n");
+    cputs("mkdir rmdir mount dismount swap format iec\r\n");
+    cputs("help command: options\r\n");
     cputs("path 8:/ u:/ s3:/ t:/\r\n");
     cputs(".d81!/file\r\n");
 #else

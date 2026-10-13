@@ -409,6 +409,18 @@ def main() -> int:
             "stream policy must return pointers into resident canonical data", failures)
     require(linker_cfg, r'OVL16ADDR:[\s\S]*?readyfs-stream.prg[\s\S]*?OVERLAY16: load = OVL16',
             "linker must emit independent stream policy sidecar16", failures)
+    iec_plan = (BATCH.parent / "readyfs_iec_plan.c").read_text()
+    iec_io = (BATCH.parent / "readyfs_iec.c").read_text()
+    require(overlay, r"load_batch_cached\(6u\)[\s\S]*?readyfs_iec_plan_abi\(\)[\s\S]*?RF_IEC_PLAN_ABI",
+            "IEC policy must be cached and ABI checked at startup", failures)
+    require(overlay, r"readyfs_overlay_iec[\s\S]*?open_batch_cached\(6u\)[\s\S]*?readyfs_iec_plan\(call\)[\s\S]*?restore_match\(\)[\s\S]*?open_batch_cached\(5u\)[\s\S]*?readyfs_iec_execute\(call\)[\s\S]*?restore_match\(\)",
+            "IEC policy and native I/O must run in sequential leaf overlays", failures)
+    require(linker_cfg, r'OVL17ADDR:[\s\S]*?readyfs-iec.prg[\s\S]*?OVERLAY17: load = OVL17',
+            "linker must emit IEC policy sidecar17", failures)
+    if re.search(r"\bcbm_|readyfs_overlay_|load_sidecar", iec_plan):
+        failures.append("IEC policy must not issue I/O or load overlays")
+    if re.search(r"readyfs_overlay_|load_sidecar|readyfs_uci_", iec_io):
+        failures.append("native IEC leaf must not call overlays, load files or use UCI")
     if re.search(r"\bcbm_|readyfs_overlay_|load_sidecar", stream_policy):
         failures.append("stream policy must not invoke device I/O, nested overlays or runtime disk loading")
 
@@ -417,7 +429,7 @@ def main() -> int:
             print(f"ReadyFS overlay DMA contract: FAIL: {failure}")
         return 1
     print("ReadyFS overlay DMA contract: PASS (flat 6-byte overlay/session/"
-          "batch boundaries, explicit slots 1-16; REU-checkpointed recursive, "
+          "batch boundaries, explicit slots 1-17; REU-checkpointed recursive, "
           "backend/native, utility, tree, content, batch, UI, and tape controllers; "
           "resident-owned device I/O)")
     return 0

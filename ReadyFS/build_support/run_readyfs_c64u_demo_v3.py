@@ -10,6 +10,7 @@ import socket, struct, threading, select, random, hashlib, shutil
 import ftplib, io, posixpath
 from PIL import Image
 ROOT=Path(__file__).resolve().parent.parent
+ARTIFACTS=Path(os.environ.get('READYFS_DEMO_ARTIFACTS', str(ROOT/'artifacts/readyfs')))
 OUT=Path(os.environ['READYFS_DEMO_OUT']); OUT.mkdir(parents=True,exist_ok=True)
 API='http://'+os.environ.get('C64U_HOST','10.0.0.79')+'/v1'
 log=(OUT/'events.jsonl').open('a',buffering=1)
@@ -262,17 +263,17 @@ def encode():
     report={'source':'physical C64 Ultimate VIC UDP stream','cpu_mhz':1,'frames':hi-lo+1,'complete_frames':len(complete),'duplicated_missing_frames':missing,'fps':fps,'seconds':duration,'dimensions':[768,height*2],'audio':'silent; ReadyFS produces no music','sha256':hashlib.sha256((OUT/'readyfs-demo.mp4').read_bytes()).hexdigest(),'checks':sum('"result": "PASS"' in line and '"case"' in line for line in (OUT/'events.jsonl').read_text().splitlines())}
     save_json('video-report.json',report);event(video=report)
 
-labels=(ROOT/'artifacts/readyfs/readyfs-overlay.lbl').read_text()
+labels=(ARTIFACTS/'readyfs-overlay.lbl').read_text()
 line_address=int(re.search(r'^al ([0-9A-F]{6}) \._line_buf$',labels,re.M)[1],16)
 snapshot=OUT/'build-snapshot';snapshot.mkdir(exist_ok=True)
-build_files=list((ROOT/'artifacts/readyfs').glob('*.prg'))+[
-    ROOT/'artifacts/readyfs/readyfs-overlay-lab.d81',
-    ROOT/'artifacts/readyfs/readyfs-overlay.lbl',
-    ROOT/'artifacts/readyfs/readyfs-build-report.json',
-    ROOT/'obj/readyfs-overlay.map']
+build_files=list(ARTIFACTS.glob('*.prg'))+[
+    ARTIFACTS/'readyfs-overlay-lab.d81',
+    ARTIFACTS/'readyfs-overlay.lbl',
+    ARTIFACTS/'readyfs-build-report.json',
+    (ARTIFACTS/'readyfs-overlay.map' if (ARTIFACTS/'readyfs-overlay.map').exists() else ROOT/'obj/readyfs-overlay.map')]
 for file in build_files:shutil.copy2(file,snapshot/file.name)
 save_json('build-hashes.json',{file.name:hashlib.sha256(file.read_bytes()).hexdigest() for file in build_files})
-mounted=False;saved=None;b_saved=None;rc=1;vid=None;thread=None
+mounted=False;saved=None;b_saved=None;rc=1;vid=None;thread=None;extra_baseline=None
 (OUT/'status.txt').write_text('running\n')
 try:
     original=js('/drives');save_json('original-drives.json',original)
@@ -287,7 +288,7 @@ try:
     save_json('restore-speed.json',{'U64 Specific Settings':saved})
     owned=OwnedDemo()
     owned_image=owned.root+'/media.d81';owned.guard(owned_image)
-    with owned.ftp() as ftp:ftp.storbinary('STOR '+owned_image,io.BytesIO((ROOT/'artifacts/readyfs/readyfs-overlay-lab.d81').read_bytes()))
+    with owned.ftp() as ftp:ftp.storbinary('STOR '+owned_image,io.BytesIO((ARTIFACTS/'readyfs-overlay-lab.d81').read_bytes()))
     owned.original=owned.snapshot();save_json('seed-snapshot.json',owned.original)
     payload={'Drive B Settings':{'Drive':'Enabled','Drive Type':'1581','Drive Bus ID':9}}
     api('/configs','POST',json.dumps(payload).encode(),'application/json');mounted=True
@@ -300,7 +301,7 @@ try:
         current=js('/drives');assert next(d['a'] for d in current['drives'] if 'a' in d)==drive,'Drive A changed'
         b=next(d['b'] for d in current['drives'] if 'b' in d)
         assert b['bus_id']==9 and b['enabled'] and posixpath.normpath(b['image_file'] if b['image_file'].startswith('/') else b['image_path'].rstrip('/')+'/'+b['image_file']).lower()==owned_image.lower(),b
-    binary=bytearray((ROOT/'artifacts/readyfs/readyfs-overlay.prg').read_bytes())
+    binary=bytearray((ARTIFACTS/'readyfs-overlay.prg').read_bytes())
     load=int.from_bytes(binary[:2],'little');boot=int(re.search(r'^al ([0-9A-F]{6}) \._readyfs_boot_device$',labels,re.M)[1],16)
     assert binary[boot-load+2]==8;binary[boot-load+2]=9
     (OUT/'boot-device-9.prg').write_bytes(binary);save_json('boot-patch.json',{'address':boot,'original':8,'demo':9,'reason':'preserve occupied user device 8'})
@@ -317,6 +318,16 @@ try:
     assert frames,'Video stream not received'
     if FAST:
         keys('AL LAB u:/usb1/READYFS_TEST/'+owned.run,False);keys([13],False);wait_ready(3)
+        if os.environ.get('READYFS_SD2IEC_BASELINE') == '1':
+            command('PROBE IEC 10:','STATUS:',4)
+            command('PROFILE IEC 10:','PROFILE:',4)
+            command('DIR 10:/',pause=4)
+            page=0
+            while '-- MORE --' in capture(f'sd2iec-initial-directory-{page:02d}').upper():
+                page+=1
+                assert page<=32,'SD2IEC initial listing exceeds bounded inventory'
+                keys(' ',False);time.sleep(2)
+            event(case='sd2iec-present-readonly-inventory',result='PASS')
         for mhz in (1,16,64):
             speed(mhz);guard_disk()
             command('MOUNT @LAB:/MEDIA.D81 9: --force','LAST MOUNTED BY READYFS')
@@ -339,6 +350,13 @@ try:
         expected={'kind':'file','bytes':len(fixture),'sha256':hashlib.sha256(fixture).hexdigest()}
         for mhz in (1,16,64):assert snap[f'disk-{mhz}.seq']==expected
         event(case='disk-to-host-independent-byte-oracle',result='PASS')
+        if os.environ.get('READYFS_SD2IEC_BASELINE') == '3':
+            from readyfs_iec_config_hardware import run as config_acceptance
+            config_acceptance(globals())
+        if os.environ.get('READYFS_SD2IEC_BASELINE') in ('2', '3'):
+            from readyfs_sd2iec_baseline import Baseline
+            extra_baseline=Baseline(globals())
+            extra_baseline.run()
         rc=0
     else:
         # Unfilmed admission checks on the exact build being recorded.
@@ -448,6 +466,9 @@ finally:
     if thread:thread.join()
     if vid:vid.close()
     restored=True
+    if extra_baseline is not None:
+        try:extra_baseline.restore()
+        except Exception as error:restored=False;event(restore='SoftwareIEC cwd',error=repr(error))
     if saved is not None:
         try:subprocess.run(['/bin/bash',str(ROOT/'build_support/run_readyfs_c64u_restore_speed.sh'),str(OUT),os.environ.get('C64U_HOST','10.0.0.79')],check=True)
         except Exception as error:restored=False;event(restore='CPU settings',error=repr(error))

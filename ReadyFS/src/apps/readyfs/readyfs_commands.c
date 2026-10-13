@@ -113,6 +113,9 @@ static const unsigned char command_names[] = {
     RF_COMMAND_CRC32, 'c','r','c','3','2',0,
     RF_COMMAND_TEST, 't','e','s','t',0,
     RF_COMMAND_RUN, 'r','u','n',0,
+#ifndef READYFS_MONOLITHIC
+    RF_COMMAND_IEC, 'i','e','c',0,
+#endif
     RF_COMMAND_MOUNT, 'f','o','r','m','a','t',0,
     RF_COMMAND_FILE_PRG, 'p','r','g',0,
     RF_COMMAND_FILE_USR, 'u','s','r',0,

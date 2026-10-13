@@ -11,6 +11,7 @@
     "reu_batch_regions_disjoint": true,
     "reu_console_ring_fits_bank": true,
     "stream_policy_sidecar": true,
+    "iec_config_policy_sidecar": true,
     "presentation_sidecar": true,
     "command_help_sidecar": true,
     "ui_sidecar": true,
@@ -28,9 +29,9 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 46104,
+    "end": 46339,
     "limit": 46507,
-    "free_bytes": 403
+    "free_bytes": 168
   },
   "software_stack": {
     "top": 53248
@@ -40,11 +41,24 @@
     "limit": 50687
   },
   "sidecars": {
+    "iec_config_policy": {
+      "file": "artifacts/readyfs/readyfs-iec.prg",
+      "load_address": 46592,
+      "payload_bytes": 3352,
+      "map_bytes": 3352,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
     "stream_policy": {
       "file": "artifacts/readyfs/readyfs-stream.prg",
       "load_address": 46592,
-      "payload_bytes": 1139,
-      "map_bytes": 1139,
+      "payload_bytes": 3994,
+      "map_bytes": 3994,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -56,8 +70,8 @@
     "command_help": {
       "file": "artifacts/readyfs/readyfs-command-help.prg",
       "load_address": 46592,
-      "payload_bytes": 3910,
-      "map_bytes": 3910,
+      "payload_bytes": 4022,
+      "map_bytes": 4022,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -108,8 +122,8 @@
     "extended_help": {
       "file": "artifacts/readyfs/readyfs-help.prg",
       "load_address": 46592,
-      "payload_bytes": 4096,
-      "map_bytes": 4096,
+      "payload_bytes": 4090,
+      "map_bytes": 4090,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -212,8 +226,8 @@
     "command_editor_controller": {
       "file": "artifacts/readyfs/readyfs-ui.prg",
       "load_address": 46592,
-      "payload_bytes": 4047,
-      "map_bytes": 4047,
+      "payload_bytes": 4052,
+      "map_bytes": 4052,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -474,6 +488,12 @@
       "name": "stream_policy_overlay_cache",
       "start": 45312,
       "end_exclusive": 49408,
+      "bytes": 4096
+    },
+    {
+      "name": "iec_config_policy_overlay_cache",
+      "start": 49408,
+      "end_exclusive": 53504,
       "bytes": 4096
     }
   ],

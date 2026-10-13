@@ -338,5 +338,14 @@
       "format 9:/ -lb test -id rf -ds -w",
       "fm 9:/ --label test --id rf -ds -w"
     ]
+  },
+  {
+    "id": 42,
+    "usage": "iec device: command [value]\r\nstatus version config partition\r\nsave-config saves all running settings.",
+    "examples": [
+      "iec 10: config",
+      "iec 10: partition 1",
+      "iec 10: extensions 2"
+    ]
   }
 ]

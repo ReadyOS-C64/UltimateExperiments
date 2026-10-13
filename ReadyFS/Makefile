@@ -169,7 +169,10 @@ $(eval $(call READYFS_OVERLAY_RULE,13,))
 $(eval $(call READYFS_OVERLAY_RULE,14,))
 $(eval $(call READYFS_OVERLAY_RULE,15,))
 $(eval $(call READYFS_OVERLAY_RULE,16,))
+$(eval $(call READYFS_OVERLAY_RULE,17,))
 $(READYFS_OVERLAY_OBJ_DIR)/overlay15/$(READYFS_SRC_DIR)/readyfs_preview.o $(READYFS_OVERLAY_OBJ_DIR)/overlay15/$(READYFS_SRC_DIR)/readyfs_command_help.o: $(READYFS_HELP_DATA)
+
+READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay17/$(READYFS_SRC_DIR)/readyfs_iec_plan.o $(READYFS_OVERLAY_OBJ_DIR)/overlay17/$(READYFS_SRC_DIR)/readyfs_iec_overlay_addr.o $(READYFS_OVERLAY_OBJ_DIR)/overlay16/$(READYFS_SRC_DIR)/readyfs_iec.o
 
 READYFS_OVERLAY_ALL_OBJS += $(READYFS_OVERLAY_OBJ_DIR)/overlay16/$(READYFS_SRC_DIR)/readyfs_stream.o $(READYFS_OVERLAY_OBJ_DIR)/overlay16/$(READYFS_SRC_DIR)/readyfs_stream_overlay_addr.o
 
@@ -202,6 +205,7 @@ $(READYFS_OVERLAY_D81): FORCE $(READYFS_OVERLAY)
 		-write $(READYFS_OUT_DIR)/readyfs-present.prg rfshow \
 		-write $(READYFS_OUT_DIR)/readyfs-command-help.prg rfexamples \
 		-write $(READYFS_OUT_DIR)/readyfs-stream.prg rfstream \
+		-write $(READYFS_OUT_DIR)/readyfs-iec.prg rfiec \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_content_view.seq "rfview,s" \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_content_long.seq "rflong,s" \
 		-write $(BUILD_SUPPORT_DIR)/readyfs_batch_ok.seq "rfbok,s" \
@@ -238,6 +242,7 @@ define READYFS_HOST_TEST
 endef
 
 readyfs-host-tests:
+	$(call READYFS_HOST_TEST,-D__fastcall__= -I$(BUILD_SUPPORT_DIR)/readyfs_host_include,$(BUILD_SUPPORT_DIR)/readyfs_iec_test.c $(READYFS_SRC_DIR)/readyfs_iec_plan.c $(READYFS_SRC_DIR)/readyfs_iec.c $(READYFS_SRC_DIR)/readyfs_path.c,readyfs_iec_test)
 	$(call READYFS_HOST_TEST,-D__fastcall__= -I$(BUILD_SUPPORT_DIR)/readyfs_host_include,$(BUILD_SUPPORT_DIR)/readyfs_stream_test.c $(READYFS_SRC_DIR)/readyfs_stream.c $(READYFS_SRC_DIR)/readyfs_path.c,readyfs_stream_test)
 	$(call READYFS_HOST_TEST,-D__fastcall__= -I$(BUILD_SUPPORT_DIR)/readyfs_host_include,$(BUILD_SUPPORT_DIR)/readyfs_present_test.c $(READYFS_SRC_DIR)/readyfs_present.c $(READYFS_SRC_DIR)/readyfs_media.c $(READYFS_SRC_DIR)/readyfs_transfer.c $(READYFS_SRC_DIR)/readyfs_preview.c $(READYFS_SRC_DIR)/readyfs_command_help.c $(READYFS_SRC_DIR)/readyfs_path.c,readyfs_present_test)
 	$(call READYFS_HOST_TEST,,$(BUILD_SUPPORT_DIR)/readyfs_tape_test.c $(READYFS_SRC_DIR)/readyfs_tape.c $(READYFS_SRC_DIR)/readyfs_path.c,readyfs_tape_test)

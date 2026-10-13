@@ -61,6 +61,7 @@ unsigned char readyfs_pipeline_scratch[RF_PIPELINE_SCRATCH_BYTES];
 #define tree_ui (*(ReadyFsTreeCall *)(void *)readyfs_pipeline_scratch)
 #define batch_ui (*(ReadyFsBatchCall *)(void *)readyfs_pipeline_scratch)
 #define tape_call (*(ReadyFsTapeCall *)(void *)readyfs_pipeline_scratch)
+#define iec_call (*(ReadyFsIecCall *)(void *)readyfs_pipeline_scratch)
 #define stream_call (*(ReadyFsStreamCall *)(void *)readyfs_pipeline_scratch)
 #else
 static ReadyFsUtilityCall utility_ui;
@@ -4170,6 +4171,13 @@ static unsigned char dispatch(unsigned char argc) {
     }
     else if (command == RF_COMMAND_PROBE) cmd_probe(argc);
 #ifdef READYFS_OVERLAY_RUNTIME
+    else if (command == RF_COMMAND_IEC) {
+        iec_call.args = args; iec_call.argc = argc;
+        iec_call.command = (unsigned char *)source.canonical;
+        iec_call.reply = (unsigned char *)temp_text;
+        iec_call.status = &last_result;
+        (void)readyfs_overlay_iec(&iec_call);
+    }
     else if (command == RF_COMMAND_PROFILE) {
         drive_ui.operation = RF_DRIVEUI_QUERY;
         drive_ui.argc = argc;
