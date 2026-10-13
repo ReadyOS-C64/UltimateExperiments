@@ -39,6 +39,8 @@ the [public demo site](https://readyfs-editor-demo.klumsy.chatgpt.site/guide.htm
 
 For SD cards and image contents, see the [SD2IEC multi-file walkthrough](docs/READYFS_SD2IEC_TUTORIAL.md) and its [new physical video with chapters and downloads](https://readyfs-editor-demo.klumsy.chatgpt.site/sd2iec.html).
 
+For command scripts, see the [RUN guide](docs/READYFS_RUN_GUIDE.md): exact invocation syntax, alias-based inputs, previews, confirmation options, error policies and result checks.
+
 ## Interactive use
 
 Use `readyfs-overlay.prg` with `readyfs-overlay-lab.d81` on device 8 for the

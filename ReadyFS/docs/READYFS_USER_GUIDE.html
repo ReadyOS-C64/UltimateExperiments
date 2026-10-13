@@ -9,7 +9,7 @@
 </style></head>
 <body><div class="topbar"><a class="brand" href="#top">READY<span>FS</span> <small>FIELD GUIDE</small></a><div class="actions"><a href="https://readyfs-editor-demo.klumsy.chatgpt.site/">Demo &amp; downloads</a><button class="primary" type="button" onclick="window.print()">Print / Save as PDF</button></div></div>
 <header class="cover"><div class="eyebrow">A guide for the Commodore 64 filesystem laboratory</div><h1>Know the path.<br>Understand the command.</h1><p>From endpoints and aliases to nested SD2IEC folders and disk-image contents, with real C64 screenshots and a command reference.</p><div class="edition"><span>Current overlay build · Updated 13 October 2026</span><span>Offline, self-contained HTML</span><span>Letter / A4 print friendly</span></div></header>
-<div class="layout"><nav class="rail" aria-label="Guide chapters"><strong>IN THIS GUIDE</strong><ol><li><a href="#1-start-here">1. Start here</a></li><li><a href="#2-the-path-system">2. The path system</a></li><li><a href="#3-commands-arguments-and-options">3. Commands, arguments, and options</a></li><li><a href="#4-patterns-and-selection">4. Patterns and selection</a></li><li><a href="#5-editing-and-the-two-histories">5. Editing and the two histories</a></li><li><a href="#6-inspect-files-before-changing-them">6. Inspect files before changing them</a></li><li><a href="#7-worked-example-copy-move-and-delete-a-nested-tree">7. Worked example: copy, move, and delete a nested tree</a></li><li><a href="#8-create-text-compare-files-and-save-a-session">8. Create text, compare files, and save a session</a></li><li><a href="#9-devices-images-and-advanced-operations">9. Devices, images, and advanced operations</a></li><li><a href="#10-complete-command-reference">10. Complete command reference</a></li><li><a href="#11-limits-troubleshooting-and-evidence">11. Limits, troubleshooting, and evidence</a></li><li><a href="#12-sd2iec-folders-batches-and-disk-images">12. SD2IEC: folders, batches, and disk images</a></li></ol><div class="hint">Cyan in C64 captures: commands.<br>White: results.<br>Yellow: summaries and pager.<br>Red: errors.<br>Diagrams: concepts and workflow.</div></nav><main class="document"><p><strong>Paths, commands, and a complete folder workflow</strong> · Guide updated 12 October 2026 · Core screenshots: 9 October · SD2IEC screenshots: 13 October 2026</p>
+<div class="layout"><nav class="rail" aria-label="Guide chapters"><strong>IN THIS GUIDE</strong><ol><li><a href="#1-start-here">1. Start here</a></li><li><a href="#2-the-path-system">2. The path system</a></li><li><a href="#3-commands-arguments-and-options">3. Commands, arguments, and options</a></li><li><a href="#4-patterns-and-selection">4. Patterns and selection</a></li><li><a href="#5-editing-and-the-two-histories">5. Editing and the two histories</a></li><li><a href="#6-inspect-files-before-changing-them">6. Inspect files before changing them</a></li><li><a href="#7-worked-example-copy-move-and-delete-a-nested-tree">7. Worked example: copy, move, and delete a nested tree</a></li><li><a href="#8-create-text-compare-files-and-save-a-session">8. Create text, compare files, and save a session</a></li><li><a href="#9-devices-images-and-advanced-operations">9. Devices, images, and advanced operations</a></li><li><a href="#10-complete-command-reference">10. Complete command reference</a></li><li><a href="#11-limits-troubleshooting-and-evidence">11. Limits, troubleshooting, and evidence</a></li><li><a href="#12-sd2iec-folders-batches-and-disk-images">12. SD2IEC: folders, batches, and disk images</a></li></ol><div class="hint">Cyan in C64 captures: commands.<br>White: results.<br>Yellow: summaries and pager.<br>Red: errors.<br>Diagrams: concepts and workflow.</div></nav><main class="document"><p><strong>Paths, commands, and a complete folder workflow</strong> · Guide updated 13 October 2026 · Core screenshots: 9 October · SD2IEC screenshots: 13 October 2026</p>
 <p>ReadyFS is a DOS-like command shell for the Commodore 64. Its central idea is simple: <strong>say where a file lives, then say what you want to do with it</strong>. The same command language can address a floppy drive, an Ultimate host folder, a SoftwareIEC mapping, or sequential tape. The storage devices still have different capabilities.</p>
 <p>This guide starts with that model, explains command arguments and options, then follows the real nested-folder demonstration. Screenshots are frames from a physical C64 Ultimate running at 1 MHz; they show actual results. Other examples are identified as recipes or syntax examples. The complete <a href="https://readyfs-editor-demo.klumsy.chatgpt.site/">video walkthrough</a> remains available alongside this guide.</p>
 <div class="contents-block"><h2 id="contents">Contents</h2>
@@ -728,21 +728,252 @@ CONFIG LOAD @lab:/readyfs.cfg
 ALIAS
 </code></pre>
 <p>Configuration saves/restores aliases and drive-profile state; it does not save command/output history or the contents of your files. With no explicit path, CONFIG uses <code>8:/readyfs.cfg</code>. Saving is a filesystem write and replacement can require confirmation. Loading restores configuration state; it is not a no-change query.</p>
-<h3 id="run-a-small-script">Run a small script</h3>
-<p>Prepare a SEQ text file containing real line breaks, for example:</p>
-<pre><code class="language-text"># Read-only inspection
+<h3 id="run-scripts-parameters-previews-and-reliable-execution">RUN scripts: parameters, previews and reliable execution</h3>
+<p><code>RUN script-path</code> (short form <code>RU</code>) executes a text script of ReadyFS commands in the <strong>overlay application with working REU and sidecars</strong>. It reads and stages the whole file, closes its input stream, then dispatches commands one at a time. This is ReadyFS command scripting; it does not load and start a C64 PRG or BASIC program.</p>
+<h4 id="what-parameters-belong-where">What parameters belong where?</h4>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RUN invocation</td>
+<td><code>RUN @lab:/INSPECT.SEQ</code></td>
+<td>Exactly one argument: the script path.</td>
+</tr>
+<tr>
+<td>Short invocation</td>
+<td><code>RU 8:/INSPECT</code></td>
+<td>Same command; use the actual disk directory name. IEC names do not automatically gain <code>.SEQ</code>.</td>
+</tr>
+<tr>
+<td>Quoted script path</td>
+<td><code>RUN &quot;@lab:/INSPECT NOTES.SEQ&quot;</code></td>
+<td>One path containing spaces.</td>
+</tr>
+<tr>
+<td>Inside the script</td>
+<td><code>COPY @src:/README.SEQ @dst:/README.SEQ --whatif</code></td>
+<td>COPY receives its source, destination and options.</td>
+</tr>
+<tr>
+<td>Session setup</td>
+<td><code>ALIAS SRC u:/usb1/READYFS_TEST/YOUR_FRESH_RUN/source</code></td>
+<td>An alias supplies a reusable location to script commands.</td>
+</tr>
+</tbody></table>
+<p>There is <strong>no <code>$1</code>/<code>$2</code> substitution, argument forwarding, variable expansion, branching, loops or nested RUN</strong>. <code>RUN script.seq --yes</code>, <code>RUN script.seq --whatif</code> and <code>RUN script.seq source destination</code> are invalid invocations: RUN requires exactly two tokens including its command name. Put options on the relevant commands <em>inside</em> the script. An alias is a location bookmark, not a general text variable. Scripts share the current session; changes to aliases and current directory can remain after the script finishes. Relative paths resolve against that current directory, not the directory holding the script. Prefer absolute paths or aliases in reusable scripts.</p>
+<p>The recipes below are syntax examples reviewed against the implementation and existing batch fixtures; they are <strong>not additional steps in the recorded 37-step video</strong>. Set <code>@lab</code>, <code>@src</code> and <code>@dst</code> to your own intended locations before use. Mutation examples belong in a fresh disposable test folder.</p>
+<h4 id="example-1-a-small-read-only-script">Example 1 — a small read-only script</h4>
+<p>Save this as <code>INSPECT.SEQ</code>, with real line breaks:</p>
+<pre><code class="language-text"># READ-ONLY INSPECTION
 ONERROR STOP
 PWD
 EXPECT RC 0
-MATCH &quot;**/*.seq&quot; &quot;alpha/one.seq&quot;
+MATCH &quot;*&quot; &quot;ABC&quot;
 EXPECT RC 0
-HEAD @lab:/source/readme.seq 2
+HEAD @src:/README.SEQ 2
+EXPECT RC 0
 </code></pre>
-<p>Then run it:</p>
-<pre><code class="language-text">RUN @lab:/inspect.seq
+<p>Set its source location and run it:</p>
+<pre><code class="language-text">ALIAS LAB u:/usb1/READYFS_TEST/YOUR_FRESH_RUN
+ALIAS SRC @lab:/source
+RUN @lab:/INSPECT.SEQ
 </code></pre>
-<p>RUN stages the complete script in REU before executing it. It accepts up to 16 KiB of script data and applies the command-line length/token limits per line. <code>#</code> starts a comment when it begins the first token. <code>ONERROR STOP</code> is the default; <code>ONERROR CONTINUE</code> deliberately changes it. <code>EXPECT RC N</code> checks the preceding result and currently accepts one digit, 0–9. Nested RUN is disabled. Interactive confirmation prompts are denied in batch mode; appropriate explicit options are needed for authorized mutations.</p>
-<p>Use STATUS after an interactive command for its typed result, but also read the operation&#39;s output. Typed-result reporting is still being adopted across handlers; a general RC alone is not a substitute for checking transfer/failure reports or postconditions.</p>
+<p><code>HEAD</code> receives two parameters: a filename and the number of lines to display. <code>MATCH</code> receives a pattern and a candidate string. Successful assertions print <code>EXPECT RC OK</code>. A complete successful run ends with a <code>RUN DONE ... RC 0</code> summary. The line/command totals depend on comments, directives and line endings; ordinary commands count separately from <code>ONERROR</code> and <code>EXPECT</code>.</p>
+<p>You can create a tiny script directly in ReadyFS, using a new filename:</p>
+<pre><code class="language-text">WRITE @lab:/CHECK.SEQ &quot;ONERROR STOP&quot; --line
+APPEND @lab:/CHECK.SEQ &quot;PWD&quot; --line
+APPEND @lab:/CHECK.SEQ &quot;EXPECT RC 0&quot; --line
+HEAD @lab:/CHECK.SEQ 10
+RUN @lab:/CHECK.SEQ
+</code></pre>
+<p>Each <code>--line</code> writes a real carriage return. Typing <code>\n</code> in a quoted string does not create a new script line. Existing-file replacement may prompt; use a fresh name unless replacement is intentional.</p>
+<h4 id="example-2-reuse-one-script-with-different-locations">Example 2 — reuse one script with different locations</h4>
+<p>Save this as <code>PREVIEW.SEQ</code>:</p>
+<pre><code class="language-text">ONERROR STOP
+COPY @src:/README.SEQ @dst:/README.SEQ --whatif
+EXPECT RC 0
+COPY @src:/ALPHA/ONE.SEQ @dst:/ONE.SEQ --whatif
+EXPECT RC 0
+</code></pre>
+<p>First location pair:</p>
+<pre><code class="language-text">ALIAS SRC @lab:/source
+ALIAS DST @lab:/first-copy
+RUN @lab:/PREVIEW.SEQ
+</code></pre>
+<p>Second location pair, same script:</p>
+<pre><code class="language-text">AL DST @lab:/second-copy
+RU @lab:/PREVIEW.SEQ
+</code></pre>
+<p>The script resolves the aliases when each command runs. These previews do not create destination folders or prove that source files exist, that media is writable, or that the backend supports the eventual copy. Inspect the paths separately before executing real writes. For a single-file COPY, the destination names a <strong>file</strong>; a recursive COPY uses an existing destination <strong>container</strong>.</p>
+<h4 id="example-3-preview-a-tree-then-execute-a-separate-copy-script">Example 3 — preview a tree, then execute a separate copy script</h4>
+<p>First create <code>PLAN.SEQ</code>:</p>
+<pre><code class="language-text">ONERROR STOP
+COPY @src:/ @dst:/ --recursive --whatif
+EXPECT RC 0
+</code></pre>
+<p>Set <code>@src</code> to the source directory and <code>@dst</code> to an intended new container, then run <code>RUN @lab:/PLAN.SEQ</code>. Read the named selection. A preview performs no mutation and is not a queued job.</p>
+<p>For the real operation, prepare <code>COPYTREE.SEQ</code> separately:</p>
+<pre><code class="language-text">ONERROR STOP
+MKDIR @dst:/
+EXPECT RC 0
+COPY @src:/ @dst:/ --recursive
+EXPECT RC 0
+TREE @dst:/
+EXPECT RC 0
+</code></pre>
+<p>Then execute it with <code>RUN @lab:/COPYTREE.SEQ</code>. The destination must be new for this recipe; MKDIR failing on an existing folder is a reason to stop and inspect it. Copy includes verification by default. <code>ONERROR STOP</code> stops after a nonzero command result; it does not roll back an earlier successful MKDIR or partially completed copy. Check the COPY reports, batch failure count and resulting tree as well as the script RC.</p>
+<p>For a deliberately chosen copy without destination readback, change the COPY line to:</p>
+<pre><code class="language-text">CP @src:/ @dst:/ -r -nv
+</code></pre>
+<p><code>--no-verify</code> / <code>-nv</code> is a COPY/MOVE option, not a RUN option. You can later run <code>COMPARE @src:/README.SEQ @dst:/README.SEQ</code> for a specific file. One comparison does not verify an entire tree.</p>
+<h4 id="example-4-supply-explicit-confirmation-inside-the-script">Example 4 — supply explicit confirmation inside the script</h4>
+<p>RUN cannot answer interactive confirmation prompts. An operation that would ask returns <code>BATCH NEEDS --YES</code> and script result 3 instead.</p>
+<table>
+<thead>
+<tr>
+<th>Intended script operation</th>
+<th>Parameters on that script line</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Preview deletion</td>
+<td><code>DELETE @lab:/scratch --recursive --whatif</code></td>
+</tr>
+<tr>
+<td>Delete only approved disposable descendants</td>
+<td><code>DELETE @lab:/scratch --recursive --yes</code></td>
+</tr>
+<tr>
+<td>Remove the resulting empty root</td>
+<td><code>RMDIR @lab:/scratch --yes</code></td>
+</tr>
+<tr>
+<td>Intentionally replace one destination file</td>
+<td><code>COPY @src:/README.SEQ @dst:/README.SEQ --force</code></td>
+</tr>
+<tr>
+<td>Ordinary fresh copy</td>
+<td><code>COPY @src:/README.SEQ @dst:/README.SEQ</code> — no replacement approval is needed if it is genuinely new.</td>
+</tr>
+</tbody></table>
+<p>Inspect each target before adding confirmation. <code>--force</code> authorizes supported replacement; it does not add a missing backend capability. Current confirmation lookup also accepts <code>--yes</code> where force is checked, so it can authorize replacement too. Use the option that expresses your intention rather than adding both to every line. Native-pattern mutations additionally require <code>--apply</code> on that command; formatting has separate disposable-media requirements. There is no universal “make this script succeed” switch.</p>
+<h4 id="example-5-expect-an-error-deliberately-then-continue">Example 5 — expect an error deliberately, then continue</h4>
+<pre><code class="language-text">ONERROR CONTINUE
+BOGUS
+EXPECT RC 1
+ONERROR STOP
+PWD
+EXPECT RC 0
+</code></pre>
+<p>This intentionally dispatches an unknown command, checks its code, then restores normal stopping. <code>ONERROR CONTINUE</code> must appear <strong>before</strong> a command whose nonzero result you want to examine; with STOP, execution ends before the following EXPECT can run.</p>
+<p>A mismatched EXPECT sets result 3. Under CONTINUE, the next ordinary command may overwrite that result, so a final <code>RC 0</code> does <strong>not</strong> prove every earlier command/assertion passed. Read all mismatch/error lines. An EXPECT that successfully checks a nonzero code does not reset that code to zero. RUN&#39;s printed RC is its latest stored result, not an accumulated error count. Use its printed summary directly; STATUS after RUN is not a reliable substitute for that batch summary.</p>
+<h4 id="result-codes-and-current-limits">Result codes and current limits</h4>
+<table>
+<thead>
+<tr>
+<th align="right">RC</th>
+<th>Meaning</th>
+<th align="right">RC</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0</td>
+<td>OK</td>
+<td align="right">6</td>
+<td>Destination conflict</td>
+</tr>
+<tr>
+<td align="right">1</td>
+<td>Unknown command</td>
+<td align="right">7</td>
+<td>Unsupported operation</td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td>Unavailable feature</td>
+<td align="right">8</td>
+<td>I/O failure</td>
+</tr>
+<tr>
+<td align="right">3</td>
+<td>Interaction denied / script assertion error</td>
+<td align="right">9</td>
+<td>Verification failure</td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td>Usage error</td>
+<td align="right">10</td>
+<td>Partial operation</td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td>Not found</td>
+<td align="right">11</td>
+<td>Internal failure</td>
+</tr>
+</tbody></table>
+<p><code>EXPECT RC N</code> currently accepts <strong>one digit, 0–9 only</strong>, even though result codes 10 and 11 exist. It checks the most recent dispatched command and needs a preceding command; blank lines, comments and policy directives do not supply a new command result. Typed-result conversion is still incomplete across legacy handlers, so code 0 alone is not proof of all filesystem postconditions.</p>
+<p>Scripts are limited to <strong>16 KiB</strong>, <strong>255 bytes per logical line</strong>, and <strong>12 tokens including the command</strong>. Use spaces between arguments; the batch tokenizer does not treat tabs as separators. Use balanced double quotes around a complete argument with spaces. Keep comments on their own lines beginning with <code>#</code>; trailing <code>#</code> text is not an inline comment. Use plain C64/PETSCII-compatible text, uppercase command fixtures and real CR or LF line breaks. Avoid smart quotes, a UTF-8 BOM and host lowercase ASCII command files. CRLF is readable but its two terminators can increase reported line totals. Do not rely on excess tokens or malformed quotes being diagnosed as strictly as the interactive editor.</p>
+<h4 id="if-the-script-did-not-do-what-you-expected">If the script did not do what you expected</h4>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check or action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>RUN SCRIPT.SEQ</code> usage text</td>
+<td>Supply just the script path; quote it if it has spaces. Move operation options into script lines.</td>
+</tr>
+<tr>
+<td>File not found</td>
+<td>Use the actual directory entry: <code>DIR 8:/</code> then <code>RUN 8:/INSPECT</code> if the IEC name is INSPECT. Check aliases and the current directory.</td>
+</tr>
+<tr>
+<td><code>RUN NEEDS OVERLAY</code>, <code>BATCH OFF</code>, or REU trouble</td>
+<td>Use the overlay application with its matching sidecars and working REU.</td>
+</tr>
+<tr>
+<td><code>SCRIPT TOO LARGE</code> or <code>LINE TOO LONG</code></td>
+<td>Split into separate top-level runs or shorten lines. RUN cannot call another RUN.</td>
+</tr>
+<tr>
+<td>Several commands appear on one line</td>
+<td>Create real CR/LF separators; WRITE/APPEND <code>--line</code> adds CR.</td>
+</tr>
+<tr>
+<td>Unknown command from a host-created file</td>
+<td>Check C64-compatible text encoding, uppercase command bytes, BOM, smart quotes and tabs.</td>
+</tr>
+<tr>
+<td><code>BATCH NEEDS --YES</code> / RC 3</td>
+<td>Identify the specific operation that needs approval; put its explicit confirmation on that line.</td>
+</tr>
+<tr>
+<td>Only a plan appears</td>
+<td>Remove <code>--whatif</code> / <code>--dry-run</code> / <code>-w</code> from the intended operation in a separately reviewed execution script.</td>
+</tr>
+<tr>
+<td><code>EXPECT RC MISMATCH</code></td>
+<td>Read the preceding command&#39;s output and use the expected typed code; do not hide it with CONTINUE.</td>
+</tr>
+<tr>
+<td>Script stops early</td>
+<td>STOP is the default. Inspect its first failure, complete arguments, device capability and destination state.</td>
+</tr>
+<tr>
+<td>Final RC 0 but earlier errors</td>
+<td>CONTINUE may have allowed a later success to replace an earlier error; inspect the entire output and filesystem results.</td>
+</tr>
+</tbody></table>
 </section><section class="chapter"><h2 id="9-devices-images-and-advanced-operations">9. Devices, images, and advanced operations</h2>
 <h3 id="learn-what-the-endpoint-can-do">Learn what the endpoint can do</h3>
 <pre><code class="language-text">DRIVES
@@ -839,7 +1070,7 @@ SWAP 8: --whatif
 <tr>
 <td><strong>RUN</strong> · RU</td>
 <td><code>RUN @lab:/inspect.seq</code></td>
-<td>Stage and execute a SEQ script. No nested RUN; batch prompts are denied.</td>
+<td>Exactly one script path; options belong inside the script. Aliases supply reusable locations; ONERROR and EXPECT control checking. No nested RUN or batch prompts.</td>
 </tr>
 <tr>
 <td><strong>TEST</strong> · TS</td>
