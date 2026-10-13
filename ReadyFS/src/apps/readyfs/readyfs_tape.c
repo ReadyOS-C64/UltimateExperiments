@@ -97,6 +97,10 @@ static void path_prepare(ReadyFsTapeCall *call) {
     } else call->result = RF_TAPE_PATH_OK;
 }
 
+#ifdef __CC65__
+extern unsigned char __fastcall__
+readyfs_tape_signature_add_dispatch(ReadyFsTapeCall *call);
+#else
 static void signature_add(ReadyFsSignature *sig,
                           const unsigned char *data,
                           unsigned int len) {
@@ -119,6 +123,8 @@ static void signature_add(ReadyFsSignature *sig,
     }
     sig->crc = crc;
 }
+
+#endif
 
 #ifdef __CC65__
 extern unsigned char __fastcall__
@@ -238,8 +244,12 @@ unsigned char readyfs_tape_dispatch(ReadyFsTapeCall *call) {
     } else if (call->operation == RF_TAPE_SIGNATURE_ADD &&
                call->signature != 0 &&
                (call->data != 0 || call->length == 0u)) {
+#ifdef __CC65__
+        return readyfs_tape_signature_add_dispatch(call);
+#else
         signature_add(call->signature, call->data, call->length);
         call->result = 1u;
+#endif
     } else if (call->operation == RF_TAPE_SIGNATURE_EQUAL &&
                call->signature != 0 &&
                call->other != 0) {

@@ -32,9 +32,9 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 45743,
+    "end": 45725,
     "limit": 46507,
-    "free_bytes": 764
+    "free_bytes": 782
   },
   "software_stack": {
     "top": 53248
@@ -294,8 +294,8 @@
     "tape_core_controller": {
       "file": "artifacts/readyfs/readyfs-tape.prg",
       "load_address": 46592,
-      "payload_bytes": 3967,
-      "map_bytes": 3967,
+      "payload_bytes": 3840,
+      "map_bytes": 3840,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,

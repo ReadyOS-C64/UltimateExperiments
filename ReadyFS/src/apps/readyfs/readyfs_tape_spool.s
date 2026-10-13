@@ -372,3 +372,103 @@ spool_state_offset:
         .byte 0
 spool_rem:
         .word 0
+
+
+; CRC-16/CCITT-FALSE and 32-bit byte count. Same signature as the portable
+; oracle, with no table and no resident allocation. The C dispatcher validates
+; pointers; length0 permits a null data pointer. All arithmetic is unsigned.
+        .export _readyfs_tape_signature_add_dispatch
+        .segment "OVERLAY12"
+_readyfs_tape_signature_add_dispatch:
+        sta ptr1
+        stx ptr1+1
+        ldy #1                  ; signature pointer
+        lda (ptr1),y
+        sta ptr2
+        iny
+        lda (ptr1),y
+        sta ptr2+1
+        ldy #TC_DATA
+        lda (ptr1),y
+        sta ptr3
+        iny
+        lda (ptr1),y
+        sta ptr3+1
+        iny                     ; TC_LENGTH
+        lda (ptr1),y
+        sta sig_remaining
+        iny
+        lda (ptr1),y
+        sta sig_remaining+1
+
+        ldy #0
+        clc
+        lda (ptr2),y
+        adc sig_remaining
+        sta (ptr2),y
+        iny
+        lda (ptr2),y
+        adc sig_remaining+1
+        sta (ptr2),y
+        iny
+        lda (ptr2),y
+        adc #0
+        sta (ptr2),y
+        iny
+        lda (ptr2),y
+        adc #0
+        sta (ptr2),y
+        iny                     ; CRC low then high
+        lda (ptr2),y
+        sta sig_crc
+        iny
+        lda (ptr2),y
+        sta sig_crc+1
+        lda sig_remaining
+        ora sig_remaining+1
+        beq sig_done
+sig_byte:
+        ldy #0
+        lda (ptr3),y
+        eor sig_crc+1
+        sta sig_crc+1
+        ldx #8
+sig_bit:
+        asl sig_crc
+        rol sig_crc+1
+        bcc sig_next_bit
+        lda sig_crc
+        eor #$21
+        sta sig_crc
+        lda sig_crc+1
+        eor #$10
+        sta sig_crc+1
+sig_next_bit:
+        dex
+        bne sig_bit
+        inc ptr3
+        bne :+
+        inc ptr3+1
+:       lda sig_remaining
+        bne :+
+        dec sig_remaining+1
+:       dec sig_remaining
+        lda sig_remaining
+        ora sig_remaining+1
+        bne sig_byte
+sig_done:
+        ldy #4
+        lda sig_crc
+        sta (ptr2),y
+        iny
+        lda sig_crc+1
+        sta (ptr2),y
+        ldy #TC_RESULT
+        lda #1
+        sta (ptr1),y
+        ldx #0
+        rts
+
+        .segment "OVERLAY12B"
+sig_remaining: .res 2
+sig_crc:       .res 2
