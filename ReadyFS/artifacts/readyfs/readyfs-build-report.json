@@ -29,9 +29,9 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 46339,
+    "end": 46369,
     "limit": 46507,
-    "free_bytes": 168
+    "free_bytes": 138
   },
   "software_stack": {
     "top": 53248

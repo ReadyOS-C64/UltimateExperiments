@@ -480,12 +480,20 @@ finally:
                 image=io.BytesIO()
                 with owned.ftp() as ftp:ftp.retrbinary('RETR '+owned_image,image.write)
                 (OUT/'owned-media-after.d81').write_bytes(image.getvalue())
+
             api('/configs','POST',json.dumps({'Drive B Settings':b_saved}).encode(),'application/json')
             time.sleep(1);final=js('/drives');save_json('restored-drives.json',final)
             assert next(d['a'] for d in final['drives'] if 'a' in d)==drive
             now=next(d['b'] for d in final['drives'] if 'b' in d)
             assert all(now.get(k)==drive_b.get(k) for k in ('enabled','bus_id','type','image_file','image_path'))
         except Exception as error:restored=False;event(restore='Drive B',error=repr(error))
+    if rc == 0 and (OUT/'baseline-expected-iec-files.json').exists():
+        try:
+            from verify_readyfs_sd2iec_baseline_disk import verify as verify_disk
+            verify_disk(OUT)
+            event(case='baseline-independent-disk-bytes-and-source-removal', result='PASS')
+        except Exception as error:
+            rc=1;event(result='FAIL', oracle='independent persisted disk', error=repr(error))
     if frames and not FAST:
         event(phase='encoding');encode()
     (OUT/'status.txt').write_text('success\n' if rc==0 and restored else 'failed\n')

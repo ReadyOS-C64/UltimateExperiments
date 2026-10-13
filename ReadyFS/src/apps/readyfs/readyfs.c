@@ -1768,6 +1768,13 @@ static unsigned char delete_stream(ReadyFsStream *stream) {
 
     if (stream->path.endpoint == RF_EP_TAPE) return 0u;
     if (stream_uses_iec(stream)) {
+#ifdef READYFS_OVERLAY_RUNTIME
+        /* path_prepare leaves a SoftwareIEC partition/path reference here.
+         * SCRATCH accepts a logical leaf in the current parent, not a path.
+         * COPY has already closed both data channels before MOVE gets here. */
+        if (stream->path.endpoint == RF_EP_SOFTIEC &&
+            !softiec_enter_parent(stream)) return 0u;
+#endif
         if (strlen(stream->native_name) + 3u > RF_LINE_CAP) return 0u;
         strcpy(temp_text, "s:");
         strcat(temp_text, stream->native_name);
