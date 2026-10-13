@@ -16,7 +16,7 @@ static struct cbm_dirent entries[3];
 static unsigned count,entry_index,end_code,open_error,closed,channel15;
 static unsigned pos,input,transport,write_error,sent;
 static char command[256], first_command[256];
-static const char *dos_reply;
+static const char *dos_reply,*second_dos_reply;
 static unsigned char profile[4],partition_reply[31];
 static unsigned native_auto,reply_length,transactions,cache_error;
 static const char *identity;
@@ -54,6 +54,7 @@ void cbm_k_ciout(unsigned char b) {assert(sent+1<sizeof(command));command[sent++
 void cbm_k_unlsn(void) {
     if (!transactions) strcpy(first_command,command);
     ++transactions;
+    if(transactions==2 && second_dos_reply)dos_reply=second_dos_reply;
     if(native_auto) {
         if(!strcmp(command,"ui")) {dos_reply=identity;reply_length=0;}
         else {assert(sent==3 || sent==5);assert(!memcmp(command,"g-p",3));dos_reply=(const char*)partition_reply;reply_length=31;}
@@ -78,7 +79,7 @@ static void reset(void) {
     memset(profile,0,sizeof(profile));memset(partition_reply,0,sizeof(partition_reply));
     partition_reply[0]=1;partition_reply[1]=0xe2;partition_reply[2]=7;partition_reply[30]=13;
     identity="73,SD2IEC V1.0.0,00,00\r";native_auto=reply_length=transactions=cache_error=0;
-    end_code=2;dos_reply="00, OK,00,00\r";command[0]=0;
+    end_code=2;dos_reply="00, OK,00,00\r";second_dos_reply=0;command[0]=0;
 }
 static unsigned char execute(void) {
     unsigned char result = readyfs_files_plan(&call);
@@ -173,10 +174,12 @@ int main(void) {
     reset();assert(readyfs_files_plan_abi()==RF_FILES_PLAN_ABI);
     stream.native_mode=RF_NATIVE_HIER;stream.native_partition=13;strcpy(stream.canonical,"test/nested/leaf");
     call.operation=RF_FILES_MKDIR;assert(execute()==RF_LOOKUP_FOUND && !strcmp(command,"md13//test/nested/:leaf"));
-    call.operation=RF_FILES_RMDIR;transactions=0;
+    call.operation=RF_FILES_RMDIR;transactions=0;second_dos_reply="01,FILES SCRATCHED,01,00\r";
     assert(execute()==RF_LOOKUP_FOUND && !strcmp(first_command,"cd13//test/nested/") && !strcmp(command,"rd13:leaf") && transactions==2 && !channel15);
     reset();stream.native_mode=RF_NATIVE_HIER;stream.native_partition=1;call.operation=RF_FILES_RMDIR;
     dos_reply="62,FILE NOT FOUND,00,00\r";assert(execute()==RF_LOOKUP_ERROR && transactions==1); /* never RD when CD failed */
+    reset();stream.native_mode=RF_NATIVE_HIER;stream.native_partition=1;call.operation=RF_FILES_RMDIR;
+    assert(execute()==RF_LOOKUP_ERROR && transactions==2); /* RD must return01, not00 */
     reset();stream.native_mode=RF_NATIVE_FLAT;stream.native_partition=1;call.operation=RF_FILES_MKDIR;
     assert(execute()==RF_LOOKUP_ERROR && !transactions);
     reset();stream.native_mode=RF_NATIVE_HIER;stream.native_partition=254;strcpy(stream.canonical,"abcdefghijklmnop/abcdefghijklmnop/abcdefghijklmnop/abcdefghijklmnop/abcdefghijklmnop/abcdefghijklmnop/abcdefghij");call.operation=RF_FILES_RMDIR;

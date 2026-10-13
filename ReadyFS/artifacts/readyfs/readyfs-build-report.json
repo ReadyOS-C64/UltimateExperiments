@@ -60,8 +60,8 @@
     "native_files": {
       "file": "artifacts/readyfs/readyfs-files.prg",
       "load_address": 46592,
-      "payload_bytes": 3774,
-      "map_bytes": 3774,
+      "payload_bytes": 3828,
+      "map_bytes": 3828,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,

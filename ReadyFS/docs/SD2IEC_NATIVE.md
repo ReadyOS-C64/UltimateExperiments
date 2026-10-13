@@ -198,10 +198,28 @@ Ultimate menu has not since changed the media.
   with the SD2IEC present.
 - A fresh marked native SD root and a 1,025-byte binary fixture were created and
   reread byte-for-byte. Existing user files were preserved.
-- The expanded four-endpoint matrix is in progress; results will be recorded in
-  the final report, not inferred from a successful build.
+- The expanded four-endpoint matrix passed all 12 directed COPY/COMPARE and
+  12 MOVE/COMPARE pairs. SD destinations were exported and host-hashed; the
+  persisted IEC image was independently checked for bytes, types, and removed
+  MOVE sources. Machine settings were restored.
 - Automatic directory/tree and VOLUME overlay changes pass the full host build;
-  their physical acceptance is next.
+  their physical acceptance is running.
 
 Detailed chronological evidence, retained failed probes, firmware findings, and
 run paths are in `agentworking/readyFS/SD2IEC_2026-10-12.md` at repository root.
+
+### Copying a disk-image container onto SD FAT
+
+SD2IEC's normal extension modes may create X00 wrappers. ReadyFS reads the
+logical bytes inside those wrappers, so a successful `COMPARE` alone does not
+prove that the underlying FAT file is a mountable disk image. In particular,
+renaming an X00 file changes its internal CBM name, not its outer FAT container.
+
+The current explicit procedure is to inspect `iec 10: config`, temporarily use
+`iec 10: extensions 0`, copy to an unused owned `.d64`/`.d71`/`.d81` filename,
+and restore the exact previous extension mode and hiding flag. Restore the mode
+first, then hiding, because modes 3 and 4 enable hiding. Do not save this temporary
+setting to EEPROM. ReadyFS now uses FAT-safe stage names so XE0 can produce a raw
+file. Mounting the resulting image is an additional required check. This procedure
+is undergoing physical acceptance; automatic raw-image creation across all five
+extension modes is not claimed.

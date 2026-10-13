@@ -24,6 +24,11 @@ static unsigned char error(ReadyFsFilesCall *c) {
     return RF_LOOKUP_ERROR;
 }
 
+static unsigned char dos_error(ReadyFsFilesCall *c) {
+    cputs(RF_ERROR); cputs((const char *)c->reply); cputs("\n");
+    return error(c);
+}
+
 /* TALK the always-present DOS channel directly. OPEN/CLOSE15 would destroy
  * live SD2IEC data buffers, including a copy's source on the same device. */
 static unsigned char receive(ReadyFsFilesCall *c) {
@@ -76,7 +81,7 @@ static unsigned char command(ReadyFsFilesCall *c) {
     }
     if (!send(c, (const unsigned char *)c->request, strlen(c->request))) return error(c);
     if (status(c) == RF_LOOKUP_ERROR) return RF_LOOKUP_ERROR;
-    if (c->dos != (c->operation == RF_FILES_SCRATCH ? 1u : 0u)) return error(c);
+    if (c->dos != (c->operation == RF_FILES_SCRATCH ? 1u : 0u)) return dos_error(c);
     return RF_LOOKUP_FOUND;
 }
 
@@ -106,7 +111,7 @@ static unsigned char open_file(ReadyFsFilesCall *c) {
         rc = status(c);
         if (rc == RF_LOOKUP_ERROR || c->dos != 0u) {
             cbm_close(s->lfn); cbm_k_clrch();
-            return rc == RF_LOOKUP_ERROR ? rc : error(c);
+            return rc == RF_LOOKUP_ERROR ? rc : dos_error(c);
         }
     }
 #ifdef __CC65__
@@ -126,7 +131,7 @@ static unsigned char close_file(ReadyFsFilesCall *c) {
     c->stream->open = 0u;
     if (st) return error(c);
     if (status(c) == RF_LOOKUP_ERROR) return RF_LOOKUP_ERROR;
-    return c->dos == 0u ? RF_LOOKUP_FOUND : error(c);
+    return c->dos == 0u ? RF_LOOKUP_FOUND : dos_error(c);
 }
 
 unsigned char readyfs_files(ReadyFsFilesCall *c) {
@@ -138,6 +143,9 @@ unsigned char readyfs_files(ReadyFsFilesCall *c) {
     if (c->operation == RF_FILES_RMDIR) {
         if (command(c) != RF_LOOKUP_FOUND) return RF_LOOKUP_ERROR;
         c->request = (char *)c->directory;
+        /* SD2IEC RD deletes a directory entry with file_delete and reports
+         * 01 FILES SCRATCHED. Only the preceding CD expects 00 OK. */
+        c->operation = RF_FILES_SCRATCH;
         return command(c);
     }
     if (c->operation == RF_FILES_SCRATCH || c->operation == RF_FILES_RENAME ||
@@ -167,7 +175,7 @@ unsigned char readyfs_files(ReadyFsFilesCall *c) {
     cbm_closedir(6u); cbm_k_clrch();
     if (result == RF_LOOKUP_ERROR) return error(c);
     if (status(c) == RF_LOOKUP_ERROR) return RF_LOOKUP_ERROR;
-    if (c->dos != 0u) return error(c);
+    if (c->dos != 0u) return dos_error(c);
     if (result == RF_LOOKUP_MISSING) c->stream->type = 0u;
     return result;
 }

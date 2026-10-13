@@ -7,7 +7,7 @@ Status: **PASS**
 - Overlay-build cc65 software-stack top: `$D000`.
 - IEC configuration policy payload: `$D18` bytes (seventeenth cached sidecar).
 - Native file policy payload: `$F44` bytes (twentieth cached sidecar; retired session scroll region).
-- Native filesystem payload: `$EBE` bytes (nineteenth cached sidecar).
+- Native filesystem payload: `$EF4` bytes (nineteenth cached sidecar).
 - Native IEC/media payload: `$FB7` bytes (eighteenth cached sidecar).
 - Stream policy payload: `$D67` bytes (sixteenth cached sidecar).
 - Matcher payload: `$FC8` bytes.
