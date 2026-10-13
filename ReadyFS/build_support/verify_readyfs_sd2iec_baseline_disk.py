@@ -2,6 +2,7 @@
 """Independent offline byte/type/source-removal checks on the owned D81."""
 import hashlib
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -13,8 +14,7 @@ def verify(out):
     image = out/'owned-media-after.d81'
     listing = subprocess.check_output(['c1541', '-attach', str(image), '-list']).decode(errors='replace')
     (out/'baseline-persisted-disk-directory.txt').write_text(listing)
-    for source in ('bm-iu.seq', 'bm-is.seq'):
-        assert '"'+source+'"' not in listing.lower(), 'MOVE source still on disk: '+source
+    assert not re.search(r'"bm-[^"]+"', listing.lower()), 'MOVE source still on owned disk'
     result = {}
     for leaf, wanted in expected.items():
         destination = out/('baseline-persisted-'+leaf+'.bin')

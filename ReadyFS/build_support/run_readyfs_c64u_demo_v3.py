@@ -351,7 +351,7 @@ try:
     check('boot','UP/DN HIST');speed(1)
     if FAST:
         keys('AL LAB u:/usb1/READYFS_TEST/'+owned.run,False);keys([13],False);wait_ready(3)
-        if os.environ.get('READYFS_SD2IEC_BASELINE') != '4':
+        if os.environ.get('READYFS_SD2IEC_BASELINE') not in ('4','5','6'):
             if os.environ.get('READYFS_SD2IEC_BASELINE') == '1':
                 command('PROBE IEC 10:','STATUS:',4)
                 command('PROFILE IEC 10:','PROFILE:',4)
@@ -390,6 +390,13 @@ try:
         if os.environ.get('READYFS_SD2IEC_BASELINE') in ('2', '3'):
             from readyfs_sd2iec_baseline import Baseline
             extra_baseline=Baseline(globals())
+            extra_baseline.run()
+        if os.environ.get('READYFS_SD2IEC_BASELINE') in ('5','6'):
+            if os.environ['READYFS_SD2IEC_BASELINE']=='5':
+                from readyfs_sd2iec_native_hardware import NativeDirectories as NativeSuite
+            else:
+                from readyfs_sd2iec_image_hardware import NativeImage as NativeSuite
+            extra_baseline=NativeSuite(globals())
             extra_baseline.run()
         rc=0
     else:
