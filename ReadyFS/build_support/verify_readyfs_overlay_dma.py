@@ -184,8 +184,8 @@ def main() -> int:
             failures)
     require(overlay, r"batch_offsets\[\][\s\S]*?RF_REU_BATCH_CACHE_OFF, RF_UI_CACHE_OFF, RF_REU_TAPE_CACHE_OFF, RF_PRESENT_CACHE_OFF, RF_COMMAND_HELP_CACHE_OFF",
             "shared batch cache indices must keep their documented bank offsets", failures)
-    require(overlay, r"open_batch_cached[\s\S]*?readyfs_reu_batch_fetch\(batch_offsets\[slot\], _OVERLAY1_LOAD__[\s\S]*?batch_sizes\[slot\]",
-            "shared opener must fetch the exact slot from the dedicated REU bank", failures)
+    require(overlay, r"open_batch_cached[\s\S]*?slot == 9u \? readyfs_reu_session_fetch : readyfs_reu_batch_fetch\)\(batch_offsets\[slot\], _OVERLAY1_LOAD__[\s\S]*?batch_sizes\[slot\]",
+            "shared opener must fetch slot20 from retired session space and other slots from batch cache", failures)
     require(overlay, r"readyfs_overlay_present[\s\S]*?open_batch_cached\(help \? 4u : call->operation == RF_PRESENT_MEDIA \? 7u : 3u\)[\s\S]*?readyfs_command_help\(call\)[\s\S]*?readyfs_present\(call\)[\s\S]*?restore_match\(\); return result;",
             "presentation must restore the matcher before returning", failures)
     require(makefile,
@@ -409,11 +409,20 @@ def main() -> int:
             "stream policy must return pointers into resident canonical data", failures)
     require(linker_cfg, r'OVL16ADDR:[\s\S]*?readyfs-stream.prg[\s\S]*?OVERLAY16: load = OVL16',
             "linker must emit independent stream policy sidecar16", failures)
+    require(overlay, r"load_batch_cached\(9u\)[\s\S]*?readyfs_files_plan_abi\(\)[\s\S]*?RF_FILES_PLAN_ABI",
+            "file policy20 must be cached and ABI checked", failures)
+    require(linker_cfg, r'OVL20ADDR:[\s\S]*?readyfs-files-plan.prg[\s\S]*?OVERLAY20: load = OVL20',
+            "linker must emit independent file policy20", failures)
+    reu_header = (BATCH.parent / "readyfs_reu.h").read_text()
+    require(reu_header, r"RF_REU_FILES_PLAN_CACHE_OFF 0x2000u", "slot20 must use retired session scroll region", failures)
+    for source in BATCH.parent.glob("*"):
+        if source.suffix in (".c", ".s", ".h") and "RF_REU_SCROLL_" in source.read_text():
+            failures.append("retired session scroll region must have no live references")
     files = (BATCH.parent / "readyfs_files.c").read_text()
     files_plan = (BATCH.parent / "readyfs_files_plan.c").read_text()
-    require(overlay, r"readyfs_overlay_files[\s\S]*?open_batch_cached\(5u\)[\s\S]*?readyfs_files_plan\(call\)[\s\S]*?restore_match\(\)[\s\S]*?open_batch_cached\(8u\)",
+    require(overlay, r"readyfs_overlay_files[\s\S]*?open_batch_cached\(9u\)[\s\S]*?readyfs_files_plan\(call\)[\s\S]*?restore_match\(\)[\s\S]*?open_batch_cached\(8u\)",
             "file request formatting and I/O must run in sequential leaves", failures)
-    if re.search(r"\bcbm_|readyfs_overlay_|readyfs_uci_", files_plan):
+    if re.search(r"\bcbm_\w+\s*\(|readyfs_overlay_|readyfs_uci_", files_plan):
         failures.append("file formatter must not issue I/O or nested overlay calls")
     require(resident, r"files_call.request = temp_text;[\s\S]*?files_call.reply = \(unsigned char \*\)temp_text \+ 128u;",
             "native requests/replies must use disjoint resident storage", failures)
@@ -449,7 +458,7 @@ def main() -> int:
             "native discovery must clear ST and complete LISTEN/SECOND", failures)
     require(makefile, re.escape('--code-name OVERLAY$(1) --rodata-name OVERLAY$(1)R --bss-name OVERLAY$(1)B'),
             "sidecar code/constants/BSS must remain distinct assembler segments", failures)
-    for slot in range(1,20):
+    for slot in range(1,21):
         require(linker_cfg, re.escape(f'__OVERLAY{slot}_SIZE__: type = export, value = __OVL{slot}_LAST__ - __OVL{slot}_START__'),
                 f"slot{slot} cache size must include code/constants/BSS", failures)
         for suffix in ('R','B'):
@@ -467,7 +476,7 @@ def main() -> int:
             print(f"ReadyFS overlay DMA contract: FAIL: {failure}")
         return 1
     print("ReadyFS overlay DMA contract: PASS (flat 6-byte overlay/session/"
-          "batch boundaries, explicit slots 1-19; REU-checkpointed recursive, "
+          "batch boundaries, explicit slots 1-20; REU-checkpointed recursive, "
           "backend/native, utility, tree, content, batch, UI, and tape controllers; "
           "resident-owned device I/O)")
     return 0

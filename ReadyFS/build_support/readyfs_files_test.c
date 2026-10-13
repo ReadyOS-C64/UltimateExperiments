@@ -15,7 +15,7 @@ static char request[120];
 static struct cbm_dirent entries[3];
 static unsigned count,entry_index,end_code,open_error,closed,channel15;
 static unsigned pos,input,transport,write_error,sent;
-static char command[256];
+static char command[256], first_command[256];
 static const char *dos_reply;
 static unsigned char profile[4],partition_reply[31];
 static unsigned native_auto,reply_length,transactions,cache_error;
@@ -52,6 +52,7 @@ void cbm_k_listen(unsigned char d) {assert(d==10);sent=0;}
 void cbm_k_second(unsigned char s) {assert(s==0x6f);}
 void cbm_k_ciout(unsigned char b) {assert(sent+1<sizeof(command));command[sent++]=b;command[sent]=0;}
 void cbm_k_unlsn(void) {
+    if (!transactions) strcpy(first_command,command);
     ++transactions;
     if(native_auto) {
         if(!strcmp(command,"ui")) {dos_reply=identity;reply_length=0;}
@@ -123,7 +124,7 @@ int main(void) {
     reset();stream.lfn=2;stream.type=CBM_T_SEQ;stream.path.endpoint=RF_EP_SOFTIEC;call.operation=RF_FILES_OPEN_READ;
     assert(execute()==RF_LOOKUP_FOUND && !pos && !channel15); /* preserve SoftIEC lifecycle */
     reset();strcpy(stream.canonical,"test/nested/hello");stream.native_mode=RF_NATIVE_HIER;stream.native_partition=13;
-    assert(readyfs_files_plan(&call)==RF_LOOKUP_FOUND && !strcmp(call.directory,"$13//test/nested/"));
+    assert(readyfs_files_plan(&call)==RF_LOOKUP_FOUND && !strcmp(call.directory,"$13//test/nested/:*"));
     call.operation=RF_FILES_OPEN_READ;assert(readyfs_files_plan(&call)==RF_LOOKUP_FOUND && !strcmp(request,"13//test/nested/:hello"));
     assert(!strcmp(stream.native_name,"test/nested/hello"));
     call.operation=RF_FILES_SCRATCH;assert(readyfs_files_plan(&call)==RF_LOOKUP_FOUND && !strcmp(request,"s13//test/nested/:hello"));
@@ -134,7 +135,7 @@ int main(void) {
     other.native_partition=1;assert(readyfs_files_plan(&call)==RF_LOOKUP_ERROR);
     reset();stream.native_mode=RF_NATIVE_FLAT;stream.native_partition=254;call.operation=RF_FILES_OPEN_READ;
     assert(readyfs_files_plan(&call)==RF_LOOKUP_FOUND && !strcmp(request,"254:hello"));
-    call.operation=RF_FILES_FIND;assert(readyfs_files_plan(&call)==RF_LOOKUP_FOUND && !strcmp(request,"$254"));
+    call.operation=RF_FILES_FIND;assert(readyfs_files_plan(&call)==RF_LOOKUP_FOUND && !strcmp(request,"$254:*"));
     stream.native_partition=0;assert(readyfs_files_plan(&call)==RF_LOOKUP_ERROR);
     stream.native_partition=255;assert(readyfs_files_plan(&call)==RF_LOOKUP_ERROR);
     reset();strcpy(stream.canonical,"test/hello");stream.native_mode=RF_NATIVE_FLAT;stream.native_partition=1;
@@ -169,6 +170,21 @@ int main(void) {
     reset();partition_reply[0]=255;assert(!prepare_native() && result_status==RF_RESULT_UNSUPPORTED);
     reset();write_error=0x80;assert(!prepare_native() && !pos && result_status==RF_RESULT_IO);
     reset();cache_error=1;assert(!prepare_native() && transactions==1 && result_status==RF_RESULT_IO);
+    reset();assert(readyfs_files_plan_abi()==RF_FILES_PLAN_ABI);
+    stream.native_mode=RF_NATIVE_HIER;stream.native_partition=13;strcpy(stream.canonical,"test/nested/leaf");
+    call.operation=RF_FILES_MKDIR;assert(execute()==RF_LOOKUP_FOUND && !strcmp(command,"md13//test/nested/:leaf"));
+    call.operation=RF_FILES_RMDIR;transactions=0;
+    assert(execute()==RF_LOOKUP_FOUND && !strcmp(first_command,"cd13//test/nested/") && !strcmp(command,"rd13:leaf") && transactions==2 && !channel15);
+    reset();stream.native_mode=RF_NATIVE_HIER;stream.native_partition=1;call.operation=RF_FILES_RMDIR;
+    dos_reply="62,FILE NOT FOUND,00,00\r";assert(execute()==RF_LOOKUP_ERROR && transactions==1); /* never RD when CD failed */
+    reset();stream.native_mode=RF_NATIVE_FLAT;stream.native_partition=1;call.operation=RF_FILES_MKDIR;
+    assert(execute()==RF_LOOKUP_ERROR && !transactions);
+    reset();stream.native_mode=RF_NATIVE_HIER;stream.native_partition=254;strcpy(stream.canonical,"abcdefghijklmnop/abcdefghijklmnop/abcdefghijklmnop/abcdefghijklmnop/abcdefghijklmnop/abcdefghijklmnop/abcdefghij");call.operation=RF_FILES_RMDIR;
+    assert(execute()==RF_LOOKUP_ERROR && !transactions);
+    reset();call.operation=RF_FILES_UDOS_TYPE;memcpy(reply+8,"prg",3);assert(execute()==CBM_T_PRG && !transactions);
+    memcpy(reply+8,"USR",3);assert(execute()==CBM_T_USR);
+    memcpy(reply+8,"\xD2\xC5\xCC",3);assert(execute()==CBM_T_REL);
+    memcpy(reply+8,"txt",3);assert(execute()==CBM_T_SEQ);
     puts("native filesystem leaf tests passed: typed lookup, native channel lifetime, scratch/rename status");
     return 0;
 }

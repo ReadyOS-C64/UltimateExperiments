@@ -36,13 +36,10 @@ static unsigned char operation_code(const char *name) {
 }
 
 static void print_profile(unsigned char kind) {
-    if (kind == RF_DRIVER_SD2IEC) cputs("sd2iec");
-    else if (kind == RF_DRIVER_CMD) cputs("cmd");
-    else if (kind == RF_DRIVER_PI1541) cputs("pi1541");
-    else if (kind == RF_DRIVER_ULTIMATE) cputs("ultimate");
-    else if (kind == RF_DRIVER_SOFTIEC) cputs("softiec");
-    else if (kind == RF_DRIVER_LEGACY) cputs("legacy");
-    else cputs("unknown");
+    static const char * const names[] = {
+        "unknown", "legacy", "sd2iec", "cmd", "pi1541", "ultimate", "softiec"
+    };
+    cputs(names[kind <= RF_DRIVER_SOFTIEC ? kind : 0u]);
 }
 
 static unsigned char parse_drive(ReadyFsDriveUiCall *call,
@@ -62,7 +59,7 @@ static unsigned char parse_drive(ReadyFsDriveUiCall *call,
 
 static unsigned int profile_offset(unsigned char device) {
     return (unsigned int)(RF_REU_DRIVE_PROFILE_OFF +
-           (unsigned int)(device - 8u) * 4u);
+           (unsigned char)((device - 8u) << 2));
 }
 
 unsigned char readyfs_driveui_reset(void) {
@@ -98,9 +95,9 @@ static unsigned char profile_fetch(ReadyFsDriveUiCall *call) {
 static void render_profile(ReadyFsDriveUiCall *call) {
     cputs("profile: ");
     print_profile(call->kind);
-    cputs(" p"); cputc((call->flags & RF_DRIVER_PARTITIONS) ? '1' : '0');
-    cputs(" f"); cputc((call->flags & RF_DRIVER_FOLDERS) ? '1' : '0');
-    cputs(" i"); cputc((call->flags & RF_DRIVER_IMAGES) ? '1' : '0');
+    cputs(" p"); cputc('0' + (call->flags & 1u));
+    cputs(" f"); cputc('0' + ((call->flags >> 1u) & 1u));
+    cputs(" i"); cputc('0' + ((call->flags >> 2u) & 1u));
     cputs("\r\n");
 }
 
@@ -129,7 +126,7 @@ static unsigned char prepare_partition(ReadyFsDriveUiCall *call,
     call->nested.call = &call->path;
     if (!readyfs_overlay_nested_from_backend(
             (ReadyFsNestedCall *)&call->nested)) {
-        cputs(RF_ERROR "xlate err\r\n");
+        cputs(RF_ERROR "path err\r\n");
         return 0u;
     }
     return 1u;
@@ -181,6 +178,13 @@ unsigned char readyfs_driveui_dispatch(ReadyFsDriveUiCall *call) {
             path.endpoint != RF_EP_IEC ||
             (path.partition == 0u &&
              call->native_operation != RF_CMDPATH_NATIVE_DIR)) return 1u;
+        /* File mutations on SD2IEC use the pinned stream service. Unknown
+         * identities fall through to its automatic native preparation. */
+        if ((unsigned char)(call->native_operation - RF_CMDPATH_SCRATCH) <=
+            RF_CMDPATH_RENAME - RF_CMDPATH_SCRATCH) {
+            call->device = path.unit;
+            if (!profile_fetch(call) || call->kind == RF_DRIVER_SD2IEC) return 1u;
+        }
         call->handled = 1u;
         if (call->native_operation < RF_CMDPATH_DIRECTORY ||
             call->native_operation > RF_CMDPATH_NATIVE_DIR) return 1u;
@@ -205,7 +209,7 @@ unsigned char readyfs_driveui_dispatch(ReadyFsDriveUiCall *call) {
         action = command_action(call->native_operation);
         call->io_ok = 0u;
         if (!nested_backend(call, RF_BACKEND_CALL_BEGIN, action)) {
-            cputs(RF_ERROR "begin err\r\n");
+            cputs(RF_ERROR "begin fail\r\n");
             return 1u;
         }
         call->pending = 1u;
@@ -250,7 +254,7 @@ unsigned char readyfs_driveui_dispatch(ReadyFsDriveUiCall *call) {
             unsigned char operation = operation_code(call->args[3]);
             if (operation == 0u) cputs("op: ?\r\n");
             else cputs(readyfs_driver_allows_operation(call->flags, operation) ?
-                       "op: yes\r\n" : "op: denied\r\n");
+                       "op: yes\r\n" : "op: no\r\n");
         }
         return 1u;
     }
@@ -274,7 +278,7 @@ unsigned char readyfs_driveui_dispatch(ReadyFsDriveUiCall *call) {
     call->kind = classify.kind;
     call->flags = classify.flags;
     if (!profile_store(call)) {
-        cputs(RF_ERROR "save fail\r\n");
+        cputs(RF_ERROR "save err\r\n");
         return 1u;
     }
     cputs("status: "); cputs(call->status); cputs("\r\n");

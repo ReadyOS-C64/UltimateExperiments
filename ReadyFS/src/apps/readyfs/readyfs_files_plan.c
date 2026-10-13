@@ -1,9 +1,12 @@
-/* Pure request formatter in slot16. No I/O and no nested overlay calls. */
+/* Pure request formatter in slot20. No I/O and no nested overlay calls. */
 #include "readyfs_files.h"
 #include "readyfs_result.h"
 #include "readyfs_console.h"
 #include <string.h>
 #include <conio.h>
+#include <cbm_filetype.h>
+
+unsigned int readyfs_files_plan_abi(void) { return RF_FILES_PLAN_ABI; }
 
 static unsigned char reject(ReadyFsFilesCall *c) {
     *c->status = RF_RESULT_UNSUPPORTED;
@@ -66,7 +69,9 @@ static unsigned char reference(char *out, const ReadyFsStream *s,
         leaf = s->native_name + parent;
     } else if (s->native_mode == RF_NATIVE_FLAT) leaf = s->native_name;
     else return 0u;
-    if (directory) return 1u;
+    /* A colon enables path parsing; an explicit star matches all entries.
+     * Empty patterns match no nonempty filename in the SD2IEC firmware. */
+    if (directory) return add(out, ":*", 2u);
     return add(out, ":", 1u) && add(out, leaf, strlen(leaf));
 }
 
@@ -88,13 +93,49 @@ static unsigned char same_parent(const ReadyFsStream *a, const ReadyFsStream *b)
     return 1u;
 }
 
+/* SD2IEC RD rejects every slash. Enter the qualified parent first, then
+ * RD only the partition-qualified leaf. Both commands stay in resident data.
+ * This standalone operation changes the device cwd; never use with live files. */
+static unsigned char rmdir_plan(ReadyFsFilesCall *c) {
+    char leaf[17];
+    char *colon, *next;
+    unsigned char used;
+    if (!reference(c->request, c->stream, 0u)) return 0u;
+    colon = strrchr(c->request, ':');
+    strcpy(leaf, colon + 1u); *colon = 0;
+    used = strlen(c->request);
+    if ((unsigned int)used + strlen(leaf) + 10u > 119u) return 0u;
+    memmove(c->request + 2u, c->request, used + 1u);
+    memcpy(c->request, "cd", 2u);
+    next = c->request + used + 3u; c->directory = next; *next = 0;
+    return add(next, "rd", 2u) && partition(next, c->stream->native_partition) &&
+           add(next, ":", 1u) && add(next, leaf, strlen(leaf));
+}
+
+static unsigned char udos_type(const unsigned char *data) {
+    unsigned char ext[3], i;
+    for (i = 0u; i < 3u; ++i) {
+        ext[i] = data[8u + i] & 0x7Fu;
+        if (ext[i] >= 97u && ext[i] <= 122u) ext[i] -= 32u;
+    }
+    if (ext[0] == 80u && ext[1] == 82u && ext[2] == 71u) return CBM_T_PRG;
+    if (ext[0] == 85u && ext[1] == 83u && ext[2] == 82u) return CBM_T_USR;
+    if (ext[0] == 82u && ext[1] == 69u && ext[2] == 76u) return CBM_T_REL;
+    return CBM_T_SEQ;
+}
+
 unsigned char readyfs_files_plan(ReadyFsFilesCall *c) {
     unsigned char ok;
+    if (c->operation == RF_FILES_UDOS_TYPE) return udos_type(c->reply);
     if (c->operation == RF_FILES_STATUS || c->operation == RF_FILES_CLOSE)
         return RF_LOOKUP_FOUND;
     c->request[0] = 0;
     c->directory = 0;
-    if (c->operation == RF_FILES_FIND) {
+    if (c->operation == RF_FILES_MKDIR || c->operation == RF_FILES_RMDIR) {
+        if (c->stream->native_mode != RF_NATIVE_HIER) return reject(c);
+        if (c->operation == RF_FILES_RMDIR) ok = rmdir_plan(c);
+        else ok = add(c->request, "md", 2u) && reference(c->request, c->stream, 0u);
+    } else if (c->operation == RF_FILES_FIND) {
         ok = reference(c->request, c->stream, 1u);
         c->directory = c->request;
     } else if (c->operation == RF_FILES_SCRATCH) {

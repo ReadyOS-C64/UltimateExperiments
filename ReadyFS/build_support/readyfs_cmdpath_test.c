@@ -44,11 +44,11 @@ int main(void) {
 
     call = make_call(RF_CMDPATH_DIRECTORY, "11.3:/games/tools");
     check(readyfs_cmdpath_dispatch(&call) &&
-          strcmp(output, "$3//games/tools/") == 0,
+          strcmp(output, "$3//games/tools/:*") == 0,
           "absolute directory reference");
 
     call = make_call(RF_CMDPATH_DIRECTORY, "11.3:/");
-    check(readyfs_cmdpath_dispatch(&call) && strcmp(output, "$3//") == 0,
+    check(readyfs_cmdpath_dispatch(&call) && strcmp(output, "$3//:*") == 0,
           "partition root directory reference");
 
     call = make_call(RF_CMDPATH_NATIVE_DIR, "8:/A*.PRG");
@@ -113,7 +113,7 @@ int main(void) {
     call.output = path;
     call.output_capacity = sizeof(path);
     check(readyfs_cmdpath_dispatch(&call) &&
-          strcmp(path, "$3//games/tools/") == 0,
+          strcmp(path, "$3//games/tools/:*") == 0,
           "in-place directory translation");
 
     strcpy(path, "11.3:/games/newdir");

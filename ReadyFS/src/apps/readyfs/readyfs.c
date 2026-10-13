@@ -1631,6 +1631,13 @@ static void iec_open_name(char *out, const char *name,
 }
 
 static unsigned char udos_open_file_type(unsigned char target) {
+#ifdef READYFS_OVERLAY_RUNTIME
+    if (!uci_call(target, 0x07u, 0) || uci_xfer.data_len < 11u) return CBM_T_SEQ;
+    files_call.operation = RF_FILES_UDOS_TYPE;
+    files_call.status = &last_result;
+    files_call.reply = uci_data;
+    return readyfs_overlay_files(&files_call);
+#else
     unsigned char a;
     unsigned char b;
     unsigned char c;
@@ -1644,6 +1651,7 @@ static unsigned char udos_open_file_type(unsigned char target) {
     if (a == 'u' && b == 's' && c == 'r') return CBM_T_USR;
     if (a == 'r' && b == 'e' && c == 'l') return CBM_T_REL;
     return CBM_T_SEQ;
+#endif
 }
 
 static unsigned char stream_open_read(ReadyFsStream *stream,
@@ -3282,11 +3290,17 @@ static unsigned char create_directory(ReadyFsStream *stream) {
     if (stream_uses_iec(stream)) {
         if (stream->path.endpoint == RF_EP_SOFTIEC &&
             !softiec_enter_parent(stream)) return 0u;
+#ifdef READYFS_OVERLAY_RUNTIME
+        if (stream->path.endpoint == RF_EP_IEC)
+            return RF_FOUND(native_file(stream, 0, RF_FILES_MKDIR)) &&
+                   RF_FOUND(stream_find_type(stream));
+#else
         if (stream->path.endpoint == RF_EP_IEC &&
             strlen(stream->native_name) > 16u) {
             cputs(RF_ERROR "iec name over 16\r\n");
             return 0u;
         }
+#endif
         if (!iec_directory_command(stream->device, "md:",
                                    stream->native_name)) return 0u;
         if (stream->path.endpoint == RF_EP_SOFTIEC) return 1u;
@@ -3303,6 +3317,11 @@ static unsigned char remove_directory(ReadyFsStream *stream) {
 
     if (stream->path.endpoint == RF_EP_TAPE) return 0u;
     if (stream_uses_iec(stream)) {
+#ifdef READYFS_OVERLAY_RUNTIME
+        if (stream->path.endpoint == RF_EP_IEC)
+            return RF_FOUND(native_file(stream, 0, RF_FILES_RMDIR)) &&
+                   RF_MISSING(stream_find_type(stream));
+#endif
         if (!iec_directory_command(stream->device, "rd:",
                                    stream->native_name)) return 0u;
         return (unsigned char)RF_MISSING(stream_find_type(stream));

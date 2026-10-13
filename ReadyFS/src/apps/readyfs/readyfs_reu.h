@@ -31,10 +31,10 @@ extern unsigned char readyfs_reu_batch_bank_value;
 #define RF_REU_DRIVE_PROFILE_BYTES 0x005Cu
 #define RF_REU_JOURNAL_OFF        0x0900u
 #define RF_REU_JOURNAL_BYTES      0x1700u
-#define RF_REU_SCROLL_OFF         0x2000u
-#define RF_REU_SCROLL_PAGES       24u
-#define RF_REU_SCROLL_BYTES       1000u
-#define RF_REU_SCROLL_LIVE_OFF    0x7DC0u
+/* Console history now has its own reserved bank. Reuse only the retired
+ * session scroll area's first4KiB, outside aliases/journal/plans/snapshots. */
+#define RF_REU_FILES_PLAN_CACHE_OFF 0x2000u
+#define RF_REU_FILES_PLAN_CACHE_BYTES 0x1000u
 #define RF_REU_ACTION_OFF         0x8200u
 #define RF_REU_ACTION_BYTES       0x0200u
 #define RF_REU_ACTION_REPORT_OFF  0x8300u

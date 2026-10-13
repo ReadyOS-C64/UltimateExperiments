@@ -2,19 +2,20 @@
 
 Status: **PASS**
 
-- Resident end: `$B539`; 114 safe bytes remain before KERNAL scratch at `$B5AC`.
+- Resident end: `$B557`; 84 safe bytes remain before KERNAL scratch at `$B5AC`.
 - Monolithic end: `$C5E9` (limit `$C5FF`).
 - Overlay-build cc65 software-stack top: `$D000`.
 - IEC configuration policy payload: `$D18` bytes (seventeenth cached sidecar).
-- Native filesystem payload: `$E63` bytes (nineteenth cached sidecar).
+- Native file policy payload: `$DD0` bytes (twentieth cached sidecar; retired session scroll region).
+- Native filesystem payload: `$EBE` bytes (nineteenth cached sidecar).
 - Native IEC/media payload: `$FB7` bytes (eighteenth cached sidecar).
-- Stream policy payload: `$EB5` bytes (sixteenth cached sidecar).
+- Stream policy payload: `$449` bytes (sixteenth cached sidecar).
 - Matcher payload: `$FC8` bytes.
 - Planner/executor payload: `$FDF` bytes.
 - Help/journal payload: `$FFA` bytes.
 - Backend/controller payload: `$FFB` bytes.
-- CMD/SD2IEC translator payload: `$FF6` bytes (cached runtime sidecar with boot self-test).
-- IEC drive profiler payload: `$FEB` bytes (resident-owned command-channel I/O).
+- CMD/SD2IEC translator payload: `$FFC` bytes (cached runtime sidecar with boot self-test).
+- IEC drive profiler payload: `$FFF` bytes (resident-owned command-channel I/O).
 - Utility/history payload: `$DCF` bytes (seventh REU-cached runtime sidecar).
 - Cooperative tree-controller payload: `$D1A` bytes (eighth REU-cached runtime sidecar).
 - Bounded content-view payload: `$FF2` bytes (ninth REU-cached runtime sidecar).
@@ -38,6 +39,7 @@ Status: **PASS**
 - PASS: `reu_console_ring_fits_bank`
 - PASS: `stream_policy_sidecar`
 - PASS: `iec_config_policy_sidecar`
+- PASS: `native_files_policy_sidecar`
 - PASS: `native_files_sidecar`
 - PASS: `native_iec_media_sidecar`
 - PASS: `presentation_sidecar`
@@ -63,7 +65,8 @@ Status: **PASS**
 | aliases | `$0000` | `$0888` | 2184 |
 | drive_profiles | `$0888` | `$08E4` | 92 |
 | operation_journal | `$0900` | `$2000` | 5888 |
-| retired_scroll_pages_reserved | `$2000` | `$7DC0` | 24000 |
+| native_files_policy_overlay_cache | `$2000` | `$3000` | 4096 |
+| retired_scroll_pages_reserved | `$3000` | `$7DC0` | 19904 |
 | retired_scroll_live_reserved | `$7DC0` | `$81A8` | 1000 |
 | action_checkpoint | `$8200` | `$8300` | 256 |
 | action_report | `$8300` | `$8308` | 8 |

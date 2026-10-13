@@ -175,12 +175,11 @@ static unsigned char build_reference(const char *text,
     result = append_components(body, directory, &cursor, &left,
                                &native_length, &leaf);
     if (result != RF_CMDPATH_OK) return result;
-    if (!directory) {
-        if (!append_char(&cursor, &left, ':') ||
-            !append_bytes(&cursor, &left, leaf, strlen(leaf))) {
-            return RF_CMDPATH_OUTPUT_TOO_SMALL;
-        }
-    }
+    /* SD2IEC requires a colon and a nonempty match-all pattern. */
+    if (directory) leaf = "*";
+    if (!append_char(&cursor, &left, ':') ||
+        !append_bytes(&cursor, &left, leaf, strlen(leaf)))
+        return RF_CMDPATH_OUTPUT_TOO_SMALL;
     return RF_CMDPATH_OK;
 }
 

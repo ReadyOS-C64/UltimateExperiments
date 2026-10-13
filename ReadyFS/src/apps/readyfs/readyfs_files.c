@@ -109,6 +109,11 @@ static unsigned char open_file(ReadyFsFilesCall *c) {
             return rc == RF_LOOKUP_ERROR ? rc : error(c);
         }
     }
+#ifdef __CC65__
+    /* The DOS status reply ended in EOI. That belongs to channel15, not to
+     * the newly opened data file: cbm_read tests ST before its first BASIN. */
+    *(volatile unsigned char *)0x90u = 0u;
+#endif
     return RF_LOOKUP_FOUND;
 }
 
@@ -130,7 +135,13 @@ unsigned char readyfs_files(ReadyFsFilesCall *c) {
     unsigned char rc, result;
     if (c->operation == RF_FILES_OPEN_READ || c->operation == RF_FILES_OPEN_WRITE) return open_file(c);
     if (c->operation == RF_FILES_CLOSE) return close_file(c);
-    if (c->operation == RF_FILES_SCRATCH || c->operation == RF_FILES_RENAME) return command(c);
+    if (c->operation == RF_FILES_RMDIR) {
+        if (command(c) != RF_LOOKUP_FOUND) return RF_LOOKUP_ERROR;
+        c->request = (char *)c->directory;
+        return command(c);
+    }
+    if (c->operation == RF_FILES_SCRATCH || c->operation == RF_FILES_RENAME ||
+        c->operation == RF_FILES_MKDIR) return command(c);
     if (c->operation == RF_FILES_STATUS) return status(c);
     if (c->operation != RF_FILES_FIND) return error(c);
     leaf = strrchr(c->stream->native_name, '/');

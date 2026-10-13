@@ -81,7 +81,7 @@ def main() -> int:
     # Cached payload includes code, constants and zero-filled overlay BSS.
     # These must remain distinct assembler segments: cc65 can emit constants
     # after a function label, before switching back to its code segment.
-    for index in range(1,20):
+    for index in range(1,21):
         name = f"OVERLAY{index}"
         parts = [overlay[k] for k in (name,name+"R",name+"B") if k in overlay]
         overlay[name] = {"start":min(x["start"] for x in parts),
@@ -122,6 +122,7 @@ def main() -> int:
     command_help = sidecar(OUT / "readyfs-command-help.prg", overlay["OVERLAY15"], 0x1000)
     stream = sidecar(OUT / "readyfs-stream.prg", overlay["OVERLAY16"], 0x1000)
     iec = sidecar(OUT / "readyfs-iec.prg", overlay["OVERLAY17"], 0x1000)
+    files_plan = sidecar(OUT / "readyfs-files-plan.prg", overlay["OVERLAY20"], 0x1000)
     files = sidecar(OUT / "readyfs-files.prg", overlay["OVERLAY19"], 0x1000)
     native = sidecar(OUT / "readyfs-native.prg", overlay["OVERLAY18"], 0x1000)
     batch_layout = [("batch_overlay_cache",0,0x1000),
@@ -143,7 +144,8 @@ def main() -> int:
         ("aliases", 0x0000, 0x0888),
         ("drive_profiles", 0x0888, 0x08E4),
         ("operation_journal", 0x0900, 0x2000),
-        ("retired_scroll_pages_reserved", 0x2000, 0x7DC0),
+        ("native_files_policy_overlay_cache", 0x2000, 0x3000),
+        ("retired_scroll_pages_reserved", 0x3000, 0x7DC0),
         ("retired_scroll_live_reserved", 0x7DC0, 0x81A8),
         ("action_checkpoint", 0x8200, 0x8300),
         ("action_report", 0x8300, 0x8308),
@@ -183,6 +185,7 @@ def main() -> int:
         "reu_console_ring_fits_bank": 800 * 80 <= 0x10000,
         "stream_policy_sidecar": all(stream["checks"].values()),
         "iec_config_policy_sidecar": all(iec["checks"].values()),
+        "native_files_policy_sidecar": all(files_plan["checks"].values()),
         "native_files_sidecar": all(files["checks"].values()),
         "native_iec_media_sidecar": all(native["checks"].values()),
         "presentation_sidecar": all(present["checks"].values()),
@@ -213,7 +216,7 @@ def main() -> int:
         },
         "software_stack": {"top": stack_top},
         "monolithic": {"end": monolithic_end, "limit": 0xC5FF},
-        "sidecars": {"native_files": files, "native_iec_media": native, "iec_config_policy": iec, "stream_policy": stream, "command_help": command_help, "presentation": present, "matcher": match, "planner_executor": plan,
+        "sidecars": {"native_files_policy": files_plan, "native_files": files, "native_iec_media": native, "iec_config_policy": iec, "stream_policy": stream, "command_help": command_help, "presentation": present, "matcher": match, "planner_executor": plan,
                      "extended_help": help_sidecar,
                      "backend_controller": backend,
                      "cmdpath_translator": cmdpath,
@@ -260,6 +263,7 @@ def main() -> int:
         f"- Monolithic end: `${monolithic_end:04X}` (limit `$C5FF`).",
         f"- Overlay-build cc65 software-stack top: `${stack_top:04X}`.",
         f"- IEC configuration policy payload: `${iec['payload_bytes']:X}` bytes (seventeenth cached sidecar).",
+        f"- Native file policy payload: `${files_plan['payload_bytes']:X}` bytes (twentieth cached sidecar; retired session scroll region).",
         f"- Native filesystem payload: `${files['payload_bytes']:X}` bytes (nineteenth cached sidecar).",
         f"- Native IEC/media payload: `${native['payload_bytes']:X}` bytes (eighteenth cached sidecar).",
         f"- Stream policy payload: `${stream['payload_bytes']:X}` bytes (sixteenth cached sidecar).",

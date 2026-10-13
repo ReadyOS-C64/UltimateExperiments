@@ -12,6 +12,7 @@
     "reu_console_ring_fits_bank": true,
     "stream_policy_sidecar": true,
     "iec_config_policy_sidecar": true,
+    "native_files_policy_sidecar": true,
     "native_files_sidecar": true,
     "native_iec_media_sidecar": true,
     "presentation_sidecar": true,
@@ -31,9 +32,9 @@
     "tape_sidecar": true
   },
   "resident": {
-    "end": 46393,
+    "end": 46423,
     "limit": 46507,
-    "free_bytes": 114
+    "free_bytes": 84
   },
   "software_stack": {
     "top": 53248
@@ -43,11 +44,24 @@
     "limit": 50687
   },
   "sidecars": {
+    "native_files_policy": {
+      "file": "artifacts/readyfs/readyfs-files-plan.prg",
+      "load_address": 46592,
+      "payload_bytes": 3536,
+      "map_bytes": 3536,
+      "reu_slot_bytes": 4096,
+      "checks": {
+        "load_address_b600": true,
+        "payload_matches_map": true,
+        "fits_reu_slot": true,
+        "fits_overlay_window": true
+      }
+    },
     "native_files": {
       "file": "artifacts/readyfs/readyfs-files.prg",
       "load_address": 46592,
-      "payload_bytes": 3683,
-      "map_bytes": 3683,
+      "payload_bytes": 3774,
+      "map_bytes": 3774,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -85,8 +99,8 @@
     "stream_policy": {
       "file": "artifacts/readyfs/readyfs-stream.prg",
       "load_address": 46592,
-      "payload_bytes": 3765,
-      "map_bytes": 3765,
+      "payload_bytes": 1097,
+      "map_bytes": 1097,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -176,8 +190,8 @@
     "cmdpath_translator": {
       "file": "artifacts/readyfs/readyfs-cmdpath.prg",
       "load_address": 46592,
-      "payload_bytes": 4086,
-      "map_bytes": 4086,
+      "payload_bytes": 4092,
+      "map_bytes": 4092,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -189,8 +203,8 @@
     "drive_profiler": {
       "file": "artifacts/readyfs/readyfs-drive.prg",
       "load_address": 46592,
-      "payload_bytes": 4075,
-      "map_bytes": 4075,
+      "payload_bytes": 4095,
+      "map_bytes": 4095,
       "reu_slot_bytes": 4096,
       "checks": {
         "load_address_b600": true,
@@ -311,10 +325,16 @@
       "bytes": 5888
     },
     {
-      "name": "retired_scroll_pages_reserved",
+      "name": "native_files_policy_overlay_cache",
       "start": 8192,
+      "end_exclusive": 12288,
+      "bytes": 4096
+    },
+    {
+      "name": "retired_scroll_pages_reserved",
+      "start": 12288,
       "end_exclusive": 32192,
-      "bytes": 24000
+      "bytes": 19904
     },
     {
       "name": "retired_scroll_live_reserved",

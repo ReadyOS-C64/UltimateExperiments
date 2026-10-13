@@ -44,6 +44,7 @@ extern unsigned char _OVERLAY16_SIZE__[];
 extern unsigned char _OVERLAY17_SIZE__[];
 extern unsigned char _OVERLAY18_SIZE__[];
 extern unsigned char _OVERLAY19_SIZE__[];
+extern unsigned char _OVERLAY20_SIZE__[];
 
 /* Linker-visible admission sentinels let post-stop automation bind to the
  * current BSS layout rather than a stale hard-coded address. */
@@ -142,15 +143,15 @@ static unsigned char restore_recursive(void) {
                         (unsigned int)_OVERLAY11_SIZE__);
 }
 
-static const char * const batch_names[] = { "rfbatch", "rfui", "rftape", "rfshow", "rfexamples", "rfstream", "rfiec", "rfnative", "rffiles" };
+static const char * const batch_names[] = { "rfbatch", "rfui", "rftape", "rfshow", "rfexamples", "rfstream", "rfiec", "rfnative", "rffiles", "rffileplan" };
 static const unsigned char * const batch_sizes[] = {
-    _OVERLAY10_SIZE__, _OVERLAY13_SIZE__, _OVERLAY12_SIZE__, _OVERLAY14_SIZE__, _OVERLAY15_SIZE__, _OVERLAY16_SIZE__, _OVERLAY17_SIZE__, _OVERLAY18_SIZE__, _OVERLAY19_SIZE__ };
+    _OVERLAY10_SIZE__, _OVERLAY13_SIZE__, _OVERLAY12_SIZE__, _OVERLAY14_SIZE__, _OVERLAY15_SIZE__, _OVERLAY16_SIZE__, _OVERLAY17_SIZE__, _OVERLAY18_SIZE__, _OVERLAY19_SIZE__, _OVERLAY20_SIZE__ };
 static const unsigned int batch_offsets[] = {
-    RF_REU_BATCH_CACHE_OFF, RF_UI_CACHE_OFF, RF_REU_TAPE_CACHE_OFF, RF_PRESENT_CACHE_OFF, RF_COMMAND_HELP_CACHE_OFF, RF_REU_STREAM_CACHE_OFF, RF_REU_IEC_CACHE_OFF, RF_REU_NATIVE_CACHE_OFF, RF_REU_FILES_CACHE_OFF };
+    RF_REU_BATCH_CACHE_OFF, RF_UI_CACHE_OFF, RF_REU_TAPE_CACHE_OFF, RF_PRESENT_CACHE_OFF, RF_COMMAND_HELP_CACHE_OFF, RF_REU_STREAM_CACHE_OFF, RF_REU_IEC_CACHE_OFF, RF_REU_NATIVE_CACHE_OFF, RF_REU_FILES_CACHE_OFF, RF_REU_FILES_PLAN_CACHE_OFF };
 static unsigned char open_batch_cached(unsigned char slot) {
     overlay_old_port = RF_CPU_PORT;
     RF_CPU_PORT = (unsigned char)(overlay_old_port & 0xFEu);
-    if (readyfs_reu_batch_fetch(batch_offsets[slot], _OVERLAY1_LOAD__,
+    if ((slot == 9u ? readyfs_reu_session_fetch : readyfs_reu_batch_fetch)(batch_offsets[slot], _OVERLAY1_LOAD__,
                                (unsigned int)batch_sizes[slot])) return 1u;
     close_cached(); return 0u;
 }
@@ -160,7 +161,7 @@ static unsigned char load_batch_cached(unsigned char slot) {
     if (size == 0u || size > 0x1000u || load_sidecar(batch_names[slot]) != size) return 0u;
     overlay_old_port = RF_CPU_PORT;
     RF_CPU_PORT = (unsigned char)(overlay_old_port & 0xFEu);
-    if (readyfs_reu_batch_store(batch_offsets[slot], _OVERLAY1_LOAD__, size)) return 1u;
+    if ((slot == 9u ? readyfs_reu_session_store : readyfs_reu_batch_store)(batch_offsets[slot], _OVERLAY1_LOAD__, size)) return 1u;
     close_cached(); return 0u;
 }
 
@@ -278,7 +279,10 @@ unsigned char readyfs_overlay_init(unsigned char reu_available) {
     if (loaded != RF_IEC_ABI || !load_batch_cached(8u)) return 0u;
     loaded = readyfs_files_abi();
     restore_match();
-    return (unsigned char)(loaded == RF_FILES_ABI);
+    if (loaded != RF_FILES_ABI || !load_batch_cached(9u)) return 0u;
+    loaded = readyfs_files_plan_abi();
+    restore_match();
+    return (unsigned char)(loaded == RF_FILES_PLAN_ABI);
 }
 
 unsigned char readyfs_overlay_match(const char *pattern,
@@ -309,7 +313,7 @@ unsigned char readyfs_overlay_iec(ReadyFsIecCall *call) {
 
 unsigned char readyfs_overlay_files(ReadyFsFilesCall *call) {
     unsigned char result;
-    if (!open_batch_cached(5u)) { *call->status = RF_RESULT_IO; return RF_LOOKUP_ERROR; }
+    if (!open_batch_cached(9u)) { *call->status = RF_RESULT_IO; return RF_LOOKUP_ERROR; }
     result = readyfs_files_plan(call);
     restore_match();
     if (result != RF_LOOKUP_FOUND) return result;
