@@ -824,8 +824,16 @@ static void udos_setup(ReadyFsStream *stream, unsigned char target,
 }
 static unsigned char udos_file(ReadyFsStream *stream, unsigned char target,
                                unsigned char operation) {
+    unsigned char result;
     udos_setup(stream, target, operation);
-    return readyfs_overlay_udos(&udos_call);
+    result = readyfs_overlay_udos(&udos_call);
+    /* FIND may quietly report absence for destination admission. READ must
+     * expose it as a command failure, including STAT/TYPE and COPY sources. */
+    if (operation == RF_UDOS_READ && result == RF_LOOKUP_MISSING) {
+        last_result = RF_RESULT_NOT_FOUND;
+        cputs(RF_ERROR "not found\r\n");
+    }
+    return result;
 }
 #endif
 

@@ -14,8 +14,10 @@ from pathlib import Path
 from readyfs_sd2iec_baseline import Baseline
 
 IMAGE_TYPES={'s':'seq','p':'prg','u':'usr'}
-IMAGE_PAIRS=[('d','i','s'),('i','d','s'),('d','s','s'),('s','d','s')]+[
-    (src,dst,kind) for kind in IMAGE_TYPES for src,dst in [('d','h'),('h','d')]]
+# Exercise the newly integrated typed image service first; retain every pair.
+IMAGE_PAIRS=[(src,dst,kind) for kind in IMAGE_TYPES
+    for src,dst in [('d','h'),('h','d')]]+[
+    ('d','i','s'),('i','d','s'),('d','s','s'),('s','d','s')]
 def matrix_leaf(operation,source,destination,kind,suffix):
     leaf=operation+'-'+source+destination+kind+suffix+'.'+IMAGE_TYPES[kind]
     assert len(leaf)<=16 and '/' not in leaf

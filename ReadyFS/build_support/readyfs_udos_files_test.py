@@ -63,3 +63,41 @@ udos_open_targets=0;assert(delete_stream(&s) && lookups==1 && deletes==1);return
     subprocess.run(flags+['-I'+str(root/'src/apps/readyfs'),str(cleanup),'-o',cleanup_exe],check=True)
     subprocess.run([cleanup_exe],check=True)
     print('ReadyFS resident cleanup: PASS (uncertain DOS handles preserve stage)')
+
+    # The real resident wrapper distinguishes quiet FIND absence from a READ
+    # failure. Missing contained-image STAT previously returned with no output
+    # and status OK even though the cold lookup correctly returned MISSING.
+    start=resident.index('static unsigned char udos_file(')
+    opening=resident.index('{',start);end=opening+1;depth=1
+    while depth:
+        depth+=(resident[end]=='{')-(resident[end]=='}');end+=1
+    required=Path(tmp)/'required_read.c'
+    required.write_text(r'''
+#include <assert.h>
+#include <string.h>
+#include "readyfs_udos_files.h"
+#include "readyfs_result.h"
+#include "readyfs_console.h"
+static ReadyFsUdosFilesCall udos_call;
+static unsigned char last_result,returned,result_status;
+static unsigned int messages;
+static void udos_setup(ReadyFsStream *s,unsigned char t,unsigned char op){
+udos_call.stream=s;udos_call.target=t;udos_call.operation=op;}
+static unsigned char readyfs_overlay_udos(ReadyFsUdosFilesCall *c){
+assert(c==&udos_call);last_result=result_status;return returned;}
+static void cputs(const char *s){assert(!strcmp(s,RF_ERROR "not found\r\n"));++messages;}
+'''+resident[start:end]+r'''
+int main(void){ReadyFsStream s={0};
+returned=RF_LOOKUP_MISSING;result_status=RF_RESULT_OK;
+assert(udos_file(&s,1,RF_UDOS_FIND)==RF_LOOKUP_MISSING && !messages && last_result==RF_RESULT_OK);
+assert(udos_file(&s,1,RF_UDOS_READ)==RF_LOOKUP_MISSING && messages==1 && last_result==RF_RESULT_NOT_FOUND);
+returned=RF_LOOKUP_ERROR;result_status=RF_RESULT_IO;
+assert(udos_file(&s,1,RF_UDOS_READ)==RF_LOOKUP_ERROR && messages==1 && last_result==RF_RESULT_IO);
+returned=RF_LOOKUP_FOUND;result_status=RF_RESULT_OK;
+assert(udos_file(&s,1,RF_UDOS_READ)==RF_LOOKUP_FOUND && messages==1 && last_result==RF_RESULT_OK);
+return 0;}
+''')
+    required_exe=str(Path(tmp)/'required_read')
+    subprocess.run(flags+['-I'+str(root/'src/apps/readyfs'),str(required),'-o',required_exe],check=True)
+    subprocess.run([required_exe],check=True)
+    print('ReadyFS resident READ: PASS (missing reads report NOT_FOUND; FIND stays quiet)')

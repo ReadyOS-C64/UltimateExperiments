@@ -47,7 +47,7 @@ Endpoint matrix notation in the machine-readable evidence is `u` = UltimateDOS h
 
 There are now 24 REU-cached sidecars. Cold stream policy and VOLUME run in slot 16; IEC configuration policy in 17; native configuration/media I/O in 18; native file I/O and preparation in 19; pure native filename/directory policy in 20. UltimateDOS image-context preparation, typed lookup, checked file control, and name policy use slots21–24. Requests and DOS replies have separate bounded buffers; the new cold DOS command/reply storage resides inside its overlays. Overlay CODE, RODATA, and BSS segments are distinct, preventing compiler-emitted constants from being executed as instructions.
 
-The latest full build passes at resident end `$B3D6`, leaving **469 safe bytes** before KERNAL scratch at `$B5AC`. The pre-work end was `$B5A4`, leaving seven safe bytes: **462 bytes recovered** despite the added features. The monolithic build remains within its existing limit, ending `$C5F7`. ReadyOS integration has not started.
+The latest full build passes at resident end `$B3F9`, leaving **434 safe bytes** before KERNAL scratch at `$B5AC`. The pre-work end was `$B5A4`, leaving seven safe bytes: **427 bytes recovered** despite the added features. The monolithic build remains within its existing limit, ending `$C5F7`. ReadyOS integration has not started.
 
 A measured hot checksum loop was replaced inside the existing tape/core overlay
 with equivalent 6502 code. Actual built-code differential tests pass 46 cases
@@ -104,6 +104,22 @@ Folder-c/d proved the previous empty-directory fix was incomplete on target: cc6
 ## Remaining acceptance gates
 
 1. **Completed:** directories-e passed nested export with independent hashes, what-if preservation, deletion of only created descendants, and native reads at16/64MHz. Restoration and process exit are confirmed.
-2. **Running:** expanded owned-image suite `demo-v3-sd2iec-image-matrix-20261013-a` (Terminal14647/PID89829, source950588b/runtime5ed05df): mounted SD↔IEC9/SoftwareIEC; mounted SD↔unmounted Ultimate container for SEQ/PRG/USR; source removal; forced cross-type replacement and rename; alias/type-conflict rejection; independent persisted-image and host-byte oracles; explicit SD FAT↔its own image via closed-channel intermediate transfers.
+2. **Rerun required:** expanded owned-image suite (a restored/exited after exposing missing-read reporting; wrapper fix passes full build and executable regression): mounted SD↔IEC9/SoftwareIEC; mounted SD↔unmounted Ultimate container for SEQ/PRG/USR; source removal; forced cross-type replacement and rename; alias/type-conflict rejection; independent persisted-image and host-byte oracles; explicit SD FAT↔its own image via closed-channel intermediate transfers.
 3. Repeat the four-endpoint COPY/MOVE regression using the current24-overlay runtime because its UltimateDOS file-control implementation changed after the earlier passing baseline.
 4. Reconcile final build/evidence/limits in this report and the native guide, retain all owned roots, and commit the final state. Completion has not yet been claimed.
+
+### Expanded image run-a: missing-read integration correction
+
+Run-a passed explicit FAT→intermediate→SD-image transfer/compare, PRG export,
+USR copy/readback from an Ultimate-contained image, and both COPY directions
+between the SD image and IEC9/SoftwareIEC. It then failed the preflight STAT for
+a new Ultimate-contained image leaf: cold lookup correctly returned MISSING,
+but the resident READ wrapper left status OK and printed nothing. That also
+affected other reads of missing contained files. The wrapper now reports
+NOT_FOUND in red for READ while retaining quiet absence for FIND admission.
+An executable test extracts the actual resident function and verifies missing
+READ, quiet FIND, I/O-error preservation, and success. Full build and29 linked
+6502 cases pass. Run-a finished FAIL/restored=true at12:46:47UTC; PID89829 exited.
+No Ultimate-image destination write had been attempted when its STAT failed.
+The full matrix remains required; its pair order now reaches typed image
+operations first without removing any coverage.

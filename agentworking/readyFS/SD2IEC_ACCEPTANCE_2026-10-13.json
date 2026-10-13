@@ -155,7 +155,7 @@
     "mounted_operations_passed": true,
     "independent_image_passed": true
   },
-  "generated_utc": "2026-10-13T12:35:24.652645+00:00",
+  "generated_utc": "2026-10-13T12:49:49.845618+00:00",
   "current_source_commit": "950588b",
   "folder_rerun_required": false,
   "checksum": {
@@ -182,21 +182,44 @@
     "host_tests": "PASS actual gateway and phases",
     "actual_6502_cases": 29,
     "actual_reu_transfers": 168,
-    "resident_end": "B3D6",
-    "safe_resident_bytes": 469,
+    "resident_end": "B3F9",
+    "safe_resident_bytes": 434,
     "sidecars": 24,
-    "uncertain_close_cleanup": "Tested: do not delete stage or rename while any DOS handle remains open"
+    "uncertain_close_cleanup": "Tested: do not delete stage or rename while any DOS handle remains open",
+    "missing_read_regression": "PASS actual resident wrapper; full build and29 linked6502 cases"
   },
   "current_runtime_commit": "5ed05df",
+  "expanded_image_matrix_runs": [
+    {
+      "run": "demo-v3-sd2iec-image-matrix-20261013-a",
+      "status": "failed",
+      "pid": 89829,
+      "terminal": 14647,
+      "source_commit": "950588b",
+      "runtime_commit": "5ed05df",
+      "copy_pairs": 10,
+      "move_pairs": 10,
+      "same_sd_fat_image_bridge": true,
+      "last_event": {
+        "complete": true,
+        "restored": true,
+        "result": "FAIL",
+        "time": 1791895607.880425
+      },
+      "process_exited": true,
+      "cause": "Contained-image READ returned missing without NOT_FOUND/output; fixed resident wrapper",
+      "passed_pairs": [
+        "sd-image-copy-d-to-i-seq",
+        "sd-image-copy-i-to-d-seq",
+        "sd-image-copy-d-to-s-seq",
+        "sd-image-copy-s-to-d-seq"
+      ]
+    }
+  ],
   "expanded_image_matrix": {
-    "run": "demo-v3-sd2iec-image-matrix-20261013-a",
-    "status": "running",
-    "pid": 89829,
-    "terminal": 14647,
-    "source_commit": "950588b",
-    "runtime_commit": "5ed05df",
+    "status": "ready_to_rerun",
     "copy_pairs": 10,
     "move_pairs": 10,
-    "same_sd_fat_image_bridge": true
+    "order": "typed Ultimate image pairs first; unchanged coverage"
   }
 }
