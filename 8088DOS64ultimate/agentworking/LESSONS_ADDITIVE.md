@@ -184,3 +184,8 @@ An optional evidence worker must not let interrupted waits, serialization errors
 ## 2026-10-15 — combine measured optimizations without changing policy
 
 Compare the combination directly: savings from separate changes can interact through flags, scratch registers and clock-derived guest timing. Keep fixed-clock state differentials separate from workload cost comparisons. An unchanged CPU ISA source is useful retained evidence, but it does not make an old whole-PRG hash identify a newly linked executable. Refresh source-bound application proof bundles when target bytes change.
+
+
+## 2026-10-15 — alarm evidence needs a boundary invariant
+
+Final RAM observations do not timestamp interrupt assertion during DMA. An arithmetic early-alarm inequality only holds with a proved hardware overhead premise and correct latch/start semantics. Phrase emulator safety at eligible guest boundaries, including every DMA return path. Keep full sampling until hint readiness or an unconditional fallback is proved at every due boundary.

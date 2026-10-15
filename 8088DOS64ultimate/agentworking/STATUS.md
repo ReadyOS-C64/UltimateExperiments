@@ -267,3 +267,8 @@ Runtime22f8209108fca953/unit8a84329ce41850fa,42497bytes, now supersedes the shar
 Owned clock sampling plus validated emptyPIC saves424modeledCPU cycles at each eligible empty boundary, preserving every callback and full fixed-clock state/CIAcounts. Genuine nativeDOSCPU2869345809→2616062815 for598702guest; MODE1923740623→1755120848,377062→377078guest under cost-derived timer. No physical gain inferred. Shadow2361/1223tail;PIT1664,totalpayload7302; all other resident headroom/state unchanged. [Evidence](evidence/boundary-performance-20261015.json),[details](../docs/BOUNDARY_PERFORMANCE_20261015.md).
 
 New actual MODE proof2526dfbd binds the new pair, executed report/fonts/assertions and both full bitmaps. Old5701wholePRG/eightlongHD and physical98fc proofs remain historical, not transferred. New hardware launch must freeze the current target/host recovery/metadata and use fresh fullREU backup. PhysicalHD/IEC/floppysave/graphics/humaninput/readability/nearXT remain unfinished.
+
+
+## Native timer hint research retained
+
+Standalone both-CIA-model VICE observations and exact rational timing arithmetic are independently reviewed. No production timer implementation or sampling policy changes. C64UFPGA121 alarm latency and production fit remain unproved. Next experiment may observe CIA1ICR while keeping every full sample; an early hint must remain sticky through the exact edge. [Research](../docs/HARDWARE_TIMER_RESEARCH_20261015.md),[evidence](evidence/hardware-timer-research-20261015.json).
