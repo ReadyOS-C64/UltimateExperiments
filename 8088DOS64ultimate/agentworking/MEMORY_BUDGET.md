@@ -99,3 +99,6 @@ BSS222,ZP18runtime/30unit,DEVICESTATE345atEA00–EB58,PAGEMAP2048,CACHEMETA192,r
 FILE1088,TEXT963(renderer718+VIC245),INPUT882,PIT1662,GFX1278 are alternativeC900–CFFF payloads; maxPIT leaves130. Sources6000/6800/8000/8800/9000 commitALL10240bytes toREU340000–3427FF before cache/BIOS. They initially overlap12cacheframes. Runtime/unitPRGs36865load0801–97FF; linkedinitialfile23872/24848,padding2751/1775; all-linked34876/35864 includesalternativeoverlays5873+cold2640+unit975.
 
 Residentallocation excludingdiscardablecold/unithelpers andalternativeoverlays is26363/26376includingfonts/static; maxloadedPIT1662 gives28025/28038. ResidentemittedBASIC/CODE/RODATA/NSTATE/DEVICE18160/18161,with3072fontdata separate. Exact maps/manifest are retained in `agentworking/runs/timer-graphics-20261015-root/`; [evidence](evidence/timer-graphics-integration-20261015.json). FutureHDshadow/scrollrelocation remains a private proposal; per-window free bytes cannot be pooled without actual linking.
+
+
+MODE/XTcompatibility follow-up: runtime3c2627a4/unit6280024d changes only loadedbyte5014(31h→25h) fromfiveoverlaycheckpoint. Allsegments/PRGlength/padding/fonts/overlaylengths/coldlifetimebudgets unchanged. Bothmaps independently verified byrootmakebuild/default. This is not an HDshadow allocation.

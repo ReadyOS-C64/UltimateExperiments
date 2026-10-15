@@ -22,6 +22,8 @@ pub fn build(b: *std.Build) void {
     addPeddle(workflows.root_module,b);b.step("native-builtins","Opt-in genuine native DOS disposable workflows").dependOn(&b.addRunArtifact(workflows).step);
     const modes=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_builtin_workflows.zig"),.target=target,.optimize=.Debug}),.filters=&.{"MODE COM"}});
     addPeddle(modes.root_module,b);b.step("native-mode","Opt-in genuine MODE CO40/CO80").dependOn(&b.addRunArtifact(modes).step);
+    const compat=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/video_xt_integration.zig"),.target=target,.optimize=.Debug})});
+    addPeddle(compat.root_module,b);b.step("video-xt-compat","Original XT ignored INT10 functions").dependOn(&b.addRunArtifact(compat).step);
     const differential=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/threshold_differential.zig"),.target=target,.optimize=.Debug})});
     addPeddle(differential.root_module,b);b.step("threshold-differential","Compare exact optimized and frozen assembled PIT converters").dependOn(&b.addRunArtifact(differential).step);
     const cg=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_cga.zig"),.target=target,.optimize=.Debug})});

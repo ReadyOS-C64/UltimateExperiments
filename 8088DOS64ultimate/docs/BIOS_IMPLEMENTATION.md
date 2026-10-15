@@ -68,3 +68,10 @@ Schema-2 `build/dos-boot-first.json` retains stage/input history, exact identiti
 The default `make test` lane now stops after the exact IO.SYS kernel handoff and writes `build/dos-boot-kernel.json`; it does not repeat the long scripted interactive run. The final opt-in lane passed 1/1 in 18.83 wall seconds (16 test seconds). [Clock](CLOCK_IMPLEMENTATION.md) and [keyboard](KEYBOARD_IMPLEMENTATION.md) contracts define mutable BDA behavior and the blocking BIOS yield, while [PC ports](PORTS_IMPLEMENTATION.md) documents the narrowly accepted DOS shared-interrupt rearm broadcast.
 
 Native startup, file import, host rendering/input scanning, asynchronous IRQs and real-time pacing remain unfinished. A functional Peddle COMMAND prompt does not establish the complete C64U runtime or all DOS utilities. The actual original CONFIG.SYS diagnostic is retained; originals were not repaired to conceal it.
+
+
+## Original XT ignored video functions and supplied MODE
+
+Current INT10AH10h–FFh returns all guest registers and saved FLAGS unchanged, without BDA/VRAM/device access. This follows the original11/08/82 XT VIDEO_IO range check and register restore, corroborated by separately archived original ROM bytes; noEGA/VGA services are implemented. [Primary source archive](https://www.pcjs.org/software/pcx86/dev/rom/ibm/5160/),[pinned test evidence](../agentworking/evidence/dos-mode-xt-20261015.json). OriginalAH04/0B,unsupportedmode7 and malformed supported arguments retain explicit rejection. This supersedes older blanket unsupported-function wording above.
+
+Genuine suppliedMODE.COM first probesAH1Bh/AL00 and branches to its XT fallback whenAL stays00. NativeENTRY/import/DOSapplicationloading thenMODECO40/CO80 now passes both returnedprompts and independent fullbitmap/matrix/BDAoracles. This is functional Peddle presentation, separate from physicalkeyboard/readability. NativeTEXT/GFX implementation now exists in their dedicated contracts; old logical-only/nohostrenderer paragraphs describe earlier checkpoints.

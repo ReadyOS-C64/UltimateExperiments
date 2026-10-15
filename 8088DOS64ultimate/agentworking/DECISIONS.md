@@ -113,3 +113,5 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D81 | Evidence reuse,2026-10-15 | Reuse once-run full5701 CPU proof only with all55sourcehashes and both rootPRGs byte-identical plus independent review | Root reruns408default/native/legacy/threshold/profile; no redundant slowfullgate absentsemanticdivergence; physical647eca remains separately scoped |
 
 | D82 | Implemented/test verified,2026-10-15 | InternalDOS workflows run through nativeENTRY and real keyboard ring on disposableREUfloppy |11commands/complete720sectorcheckpoints,mirroredFATs/exactoriginalcontent+allocation/deletionlogicalstate; sourceimmutable; no nativeDOSshortcuts/persistenceclaim |
+
+| D83 | Implemented/primary-source/Peddle verified,2026-10-15 | OriginalXT INT10 AH10..FF returns all guest state unchanged | Archived11/08/82listing+independentROM path agree; one-bytebranchfix enables genuineMODECO40/CO80; noEGA/VGA implementation or newXTsiliconclaim |

@@ -4,9 +4,11 @@ Planning and implementation of a C64 Ultimate program that boots the supplied **
 
 **Status: genuine DOS 3.3 boots on the physical C64U at Manual 64 MHz.** The frozen three-overlay runtime imports the unchanged floppy through native UCI, runs DOS and COMMAND.COM, and passes VER and DIR /P: all 35 filenames/sizes, 9,216 free bytes and the returned `A>` prompt. Complete first-4-MiB REU restoration, prior configuration/media and reset/resume pass. [Physical evidence](agentworking/evidence/c64u-native-dos-20261015.json). DOS owns INT 21h, FAT and application loading.
 
-The current five-overlay target adds asynchronous IRQ0 through the guest IVT, the default guest timer/INT 1Ch handler, and native CGA modes 4/5/6. Root checks pass **408 Zig/Peddle tests, 597 quick hardware cases, 172 tooling checks, native and legacy DOS lanes, seven timer differential tests and twelve profile samples**. The reviewed full 5,701-case CPU build is byte-identical to the root build. [Current evidence](agentworking/evidence/timer-graphics-integration-20261015.json). Native ENTRY/import/tick execution accepts VER/DIR /P after 598,702 guest instructions, with timer delivery enabled. Packaged startup remains disabled until explicitly configured with an owned image path and CRC.
+The current five-overlay target adds asynchronous IRQ0 through the guest IVT, the default guest timer/INT 1Ch handler, and native CGA modes 4/5/6. Root checks pass **410 Zig/Peddle tests, 597 quick hardware cases and 172 tooling checks**. The full 5,701-case proof is retained for timer integration; the latest BIOS-only fix leaves the interpreter unchanged. [Current evidence](agentworking/evidence/timer-graphics-integration-20261015.json). Native ENTRY/import/tick execution accepts VER/DIR /P after 598,702 guest instructions, with timer delivery enabled. Packaged startup remains disabled until explicitly configured with an owned image path and CRC.
 
 Genuine internal DOS file workflows also pass through native startup and ticks: MD/CD, COPY/TYPE, REN, IF EXIST, DEL/RD and expected missing-file handling. Independent FAT12 checks inspect every sector and preserve all original files. [Workflow evidence](agentworking/evidence/dos-native-workflows-20261015.json).
+
+The supplied MODE utility also passes CO40 and CO80 with exact BDA geometry and complete native bitmap/matrix checks. A one-byte BIOS fix follows original XT ignored-function behavior. [MODE evidence](agentworking/evidence/dos-mode-xt-20261015.json).
 
 The five-overlay target has not yet run physically. Human matrix input, physical 40/80-column readability, native graphics on the display, persistent floppy/HD/IEC images and XT performance remain unfinished. Graphics reduction and palette compromises are explicit; guest VRAM is preserved. CPU profiles exclude DMA stalls and cannot establish a physical XT speed ratio. Historical failures and earlier accepted targets remain in the working records.
 
@@ -20,6 +22,7 @@ make test-image-import # opt-in whole 360 KiB cold import/CRC/error tests
 make test-native-runtime # focused configured startup/scheduler/development controls
 make test-native-dos  # opt-in native ENTRY/import/BIOS/VER/DIR /P end-to-end
 make test-native-builtins # real MD/CD/COPY/TYPE/REN/IF/DEL/RD plus independent FAT checks
+make test-native-mode # supplied MODE CO40/CO80 with bitmap and matrix oracles
 make test-overlays    # focused overlays and cold lifetime checks
 make test-timer-graphics # IRQ/PIT, startup/layout and native CGA checks
 make test-timer-threshold # opt-in actual-assembly timer converter differential

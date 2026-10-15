@@ -145,8 +145,11 @@ test "INT10 query and absent INT14 INT17 use owned gates and normal IRET frames"
     var f = try init(true);
     defer f.deinit();
     const g = try f.symbol("dos64_guest");
-    const rows = [_]struct { vector: u8, ax: u16, gate: u16, expected: u16 }{
-        .{ .vector = 0x10, .ax = 0x0f00, .gate = 0x150, .expected = 0x5003 },
+    const rows = [_]struct { vector: u8, ax: u16, gate: u16, expected: u16, expected_bx:u16=0xbeef }{
+        .{ .vector = 0x10, .ax = 0x0f00, .gate = 0x150, .expected = 0x5003, .expected_bx=0x00ef },
+        .{ .vector=0x10,.ax=0x1b00,.gate=0x150,.expected=0x1b00 },
+        .{ .vector=0x10,.ax=0x10a7,.gate=0x150,.expected=0x10a7 },
+        .{ .vector=0x10,.ax=0xff5a,.gate=0x150,.expected=0xff5a },
         .{ .vector = 0x14, .ax = 0x00a3, .gate = 0x160, .expected = 0x00a3 },
         .{ .vector = 0x17, .ax = 0xffa3, .gate = 0x170, .expected = 0xffa3 },
     };
@@ -174,7 +177,7 @@ test "INT10 query and absent INT14 INT17 use owned gates and normal IRET frames"
         try step(&f);
         try step(&f);
         try std.testing.expectEqual(row.expected, f.word(g));
-        try std.testing.expectEqual(if (row.vector == 0x10) @as(u16, 0x00ef) else @as(u16, 0xbeef), f.word(g + 6));
+        try std.testing.expectEqual(row.expected_bx, f.word(g + 6));
         try std.testing.expectEqual(@as(u16, 3), f.word(g + 4));
         try std.testing.expectEqual(@as(u16, 0x1000), f.word(g + 8));
         try std.testing.expectEqual(@as(u16, 0xf603), f.word(g + 26));

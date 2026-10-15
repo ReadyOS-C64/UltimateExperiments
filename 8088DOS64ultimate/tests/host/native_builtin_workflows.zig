@@ -116,7 +116,7 @@ const Lane = struct {
         // original command pending and poll a fixed bound; call advances the
         // independent functional CIA clock using the observed native cost.
         for (0..256) |_| {
-            try self.call("dos64_native_tick", if (cmd == 2) 3_000_000 else 5_000_000);
+            try self.call("dos64_native_tick", if (cmd == 2) 3_000_000 else if (self.mode_lane) 8_000_000 else 5_000_000);
             if (self.f.peek(self.diag + 3) == 0) break;
         }
         if (self.f.peek(self.diag + 3) != 0 or self.f.peek(self.diag + 4) != 0xa5) {
@@ -366,7 +366,7 @@ fn runWorkflow(mode_lane: bool) !void {
             return error.NativeTickBudget;
         }
         // A genuine DOS text scroll alone takes slightly over3M cycles.
-        try lane.call("dos64_native_tick", 5_000_000);
+        try lane.call("dos64_native_tick", if (mode_lane) 8_000_000 else 5_000_000);
         const count = lane.count();
         // DOS also polls INT16 AH01 without entering the blocking AH00 gate.
         // Observe coherently at bounded progress intervals as well as blocking

@@ -13,6 +13,8 @@ DOS64_VIDEO_INC = 1
 ; 16-bit guest offset; stores outside B8000..BBFFF follow the PC bus policy.
 ; Cursor/page/window/pixel arguments outside supported geometry are rejected.
 ; Mode7/EGA preserve-clear bit, AH04/0B, graphics glyph services unsupported.
+; AH10..FF are original-XT ignored functions: all guest registers/FLAGS and
+; memory unchanged; this does not implement EGA/VGA services.
 ; No font, host renderer, retrace fidelity, sound, or device port emulation.
 ;
 ; Contract facts consulted, no BIOS implementation code copied:

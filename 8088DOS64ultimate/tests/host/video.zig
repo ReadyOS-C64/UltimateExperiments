@@ -446,7 +446,7 @@ test "video rejects unknown modes services graphics glyphs and malformed windows
     try mode(&f, 3);
     var s = Screen.init(80);
     try seedScreen(&f, &s);
-    for ([_]u16{ 7, 0x80, 0x83, 0xff, 0x0400, 0x0b00, 0x1000, 0xff00, 0x0c01, 0x0d00 }) |ax| try invoke(&f, ax, 0, 0, 0, &.{}, false);
+    for ([_]u16{ 7, 0x80, 0x83, 0xff, 0x0400, 0x0b00, 0x0c01, 0x0d00 }) |ax| try invoke(&f, ax, 0, 0, 0, &.{}, false);
     for ([_][2]u16{ .{ 0x1900, 0x1800 }, .{ 0x000a, 0x1809 }, .{ 0, 0x1900 }, .{ 0, 0x1850 }, .{ 0xffff, 0xffff } }) |window| {
         try invoke(&f, 0x0601, 0x7700, window[0], window[1], &.{}, false);
         try invoke(&f, 0x0700, 0x7700, window[0], window[1], &.{}, false);
@@ -488,7 +488,7 @@ test "video cache failures at deep mode and pixel helpers unwind host stack pres
     try std.testing.expectEqual(@as(u8, 1), f.peek(try f.symbol("dos64_video_host_error")));
     try std.testing.expectEqual(@as(u8, 0xec), r.p & 0xec);
     _ = try busRead(&f, 0x449); // failure injection is one-shot, authority retries
-    try invoke(&f, 0xff00, 0, 0, 0, &.{}, false); // unsupported clears old fatal
+    try invoke(&f, 0xff00, 0, 0, 0, &.{}, true); // XT ignored function clears old host fatal
 }
 
 fn expectNativeWriteBounds(f: *Fixture) !void {

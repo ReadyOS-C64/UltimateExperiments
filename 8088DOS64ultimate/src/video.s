@@ -55,7 +55,7 @@ dos64_video_service:
     sta dos64_video_host_error
     lda dos64_guest+G_AX+1
     cmp #$10
-    jcs v_unsupported
+    jcs v_done ; Original 11/08/82 XT VIDEO_IO out-of-range function is a no-op.
     asl
     tax
     lda v_dispatch,x
