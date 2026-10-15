@@ -1,5 +1,7 @@
 .include "abi.inc"
 .macpack longbranch
+.import dos64_native_timer_repeat, dos64_irq_result, cpu_error_return
+.import dos64_cpu_irq_shadow
 .import dos64_guest, dos64_cpu_value, dos64_cpu_opcode, dos64_cpu_yield
 .import cpu_rep, cpu_override, cpu_return, cpu_complete, cpu_memory_error
 .import dos64_cpu_word_read, dos64_cpu_word_write, dos64_physical, dos64_mem_read, dos64_mem_write
@@ -16,7 +18,7 @@ string_delta: .res 1
 
 .segment "CODE"
 ; Tail-dispatched with cpu_step's saved host P. A call handles one non-REP
-; instruction or at most 16 REP iterations. Host scheduling yields preserve
+; instruction or at most16 REP iterations, sampling IRQ after every eligible element. Host scheduling yields preserve
 ; decoded prefixes/opcode and do not re-fetch possibly modified instruction
 ; bytes. They are not guest interrupts and do not emulate interrupt restart.
 dos64_strings_execute:
@@ -94,6 +96,10 @@ string_advance_destination:
     ldx #G_DI
     jsr string_advance
 string_iteration_complete:
+    lda dos64_cpu_irq_shadow
+    beq :+
+    dec dos64_cpu_irq_shadow
+:
     lda cpu_rep
     jeq string_complete
     lda dos64_guest+G_CX
@@ -101,9 +107,6 @@ string_iteration_complete:
     dec dos64_guest+G_CX+1
 @low:
     dec dos64_guest+G_CX
-    lda dos64_guest+G_CX
-    ora dos64_guest+G_CX+1
-    jeq string_complete
     lda string_kind
     cmp #$A6
     beq @condition
@@ -123,6 +126,18 @@ string_iteration_complete:
     and #$40
     jeq string_complete
 @continue:
+    ; Microcode checks INTR here: after comparison's ZF exit, before CX-zero.
+    ; pending marks a restartable completed element, including final CX=0.
+    lda #1
+    sta dos64_string_pending
+    jsr dos64_native_timer_repeat
+    jcs cpu_error_return
+    lda dos64_irq_result
+    cmp #1
+    jeq cpu_return
+    lda dos64_guest+G_CX
+    ora dos64_guest+G_CX+1
+    jeq string_complete
     dec string_slice
     jne string_iteration
     lda #1

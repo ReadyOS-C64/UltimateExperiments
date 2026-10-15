@@ -140,3 +140,12 @@ A run manifest must be generated after every artifact-producing prerequisite, in
 
 
 2026-10-15 recovery/codeidentity: optimize restoration by detecting unchanged data, not reducing protected scope. Every attempt must rescan all bytes after partial failure; unexpected alias changes need a test. Validate explicitly located self-modified operands and their allowed buffers rather than exempting an entire code segment. ca65 global export assignments reset cheap-local scope; scoped routines/local labels plus external export aliases can retain byte-identical target code. Confirm hashes after rebuilding, never rely on stale artifacts left by a failed compile.
+
+
+## 2026-10-15 — timer/graphics promotion
+
+- Separate a host REP work quota from guest interrupt boundaries:16elements percall can still callback aftereveryeligibleelement. Check last-element/comparison ordering and original restart frames explicitly.
+- BDA timer updates belong to executed guest BIOS code. A period counter and guest tick counter differ when PIC requests coalesce or guest hooks replaceINT08.
+- A private full gate can be reused only with exact reviewedsource and executable identity. Root integrated lanes and independent adversarial boundaries still test composition; no blanket reuse after code changes.
+- Unit helpers can occupy cold space only with host refusal before stack/register mutation and a resident return sentinel. A total memory budget cannot prove per-window fit.
+- Returning from graphics must reapply TEXT settings without replacing the saved original VIC owner. Keep physical bitmap correctness distinct from externaldisplay/readability.

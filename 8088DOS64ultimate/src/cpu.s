@@ -7,6 +7,7 @@
 .export dos64_cpu_value, dos64_cpu_word_read, dos64_cpu_word_write
 .export cpu_fetch8, cpu_fetch8_slow, cpu_fetch16, cpu_override, cpu_byte_registers
 .import dos64_fetch_init, dos64_fast_fetch
+.export cpu_error_return
 .export cpu_complete, cpu_memory_error, cpu_unsupported, cpu_return, cpu_rep, cpu_relative
 .import dos64_strings_execute, dos64_string_pending, dos64_shifts_execute, dos64_control_execute
 .import dos64_stack_execute, dos64_math_execute, dos64_indirect_execute, dos64_adjust_execute
@@ -553,9 +554,7 @@ cpu_move_segment:
     jsr dos64_operand_read
     jcs cpu_memory_error
     jsr cpu_put_reg
-    lda cpu_reg
-    cmp #G_SS
-    jne cpu_complete
+    ; Repaired NMOS8088 inhibits after MOV to ANY segment (Intel/manual+die).
     lda #2
     sta dos64_cpu_irq_shadow
     jmp cpu_complete
@@ -770,8 +769,12 @@ cpu_cli:
     and #$FD
     jmp cpu_high_flags
 cpu_sti:
+    lda dos64_guest+G_FLAGS+1
+    and #2
+    bne @already
     lda #2
     sta dos64_cpu_irq_shadow
+@already:
     lda dos64_guest+G_FLAGS+1
     ora #2
     jmp cpu_high_flags

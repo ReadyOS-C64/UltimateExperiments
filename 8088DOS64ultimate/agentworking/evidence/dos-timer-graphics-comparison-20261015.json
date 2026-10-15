@@ -1,0 +1,72 @@
+{
+  "checks": {
+    "milestone": true,
+    "kernel_handoff": true,
+    "kernel_bytes_verified": true,
+    "command_prompt_accepted": true,
+    "script_stage": true,
+    "initial_prompt_seen": true,
+    "ver_accepted": true,
+    "dir_accepted": true,
+    "directory_entries": true,
+    "expected_free_bytes": true,
+    "directory_header_seen": true,
+    "directory_summary_seen": true,
+    "input_history": true,
+    "screen_observations": true,
+    "last_screen": true,
+    "stop_reason": true,
+    "cga_vram_sha256": true,
+    "missing_bios_vector": true,
+    "cpu_status": true,
+    "cpu_opcode": true,
+    "register_order": true,
+    "state": true,
+    "instruction_bytes_hex": true,
+    "previous_state": true,
+    "previous_bytes_hex": true,
+    "instruction_bytes_coherent": true,
+    "native_calls": true,
+    "handoff_guest_instructions": true,
+    "handoff_read_count": true,
+    "bios_reads": true,
+    "last_trace": true
+  },
+  "guest_ram_only_differences": [
+    {
+      "address": 32,
+      "before": 0,
+      "after": 160
+    },
+    {
+      "address": 33,
+      "before": 0,
+      "after": 1
+    },
+    {
+      "address": 35,
+      "before": 0,
+      "after": 240
+    },
+    {
+      "address": 112,
+      "before": 0,
+      "after": 192
+    },
+    {
+      "address": 113,
+      "before": 0,
+      "after": 1
+    },
+    {
+      "address": 115,
+      "before": 0,
+      "after": 240
+    }
+  ],
+  "all_other_640k_identical": true,
+  "cga_16k_byte_identical": true,
+  "new_cpu_cycles": 1168826484,
+  "baseline_cpu_cycles": 1164544586,
+  "scope": "Timer-disabled legacy lane; independent BIOS oracle checks full new guest ROM. Six IVT bytes deliberately added."
+}

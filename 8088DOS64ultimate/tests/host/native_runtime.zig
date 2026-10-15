@@ -73,6 +73,8 @@ fn ready(f: *F) !void {
     c.dos64_cia_clock_seed(f.machine, 0xf000, 0xffff);
     try p(f, "dos64_host_input_claim", 0xa5);
     try call(f, "dos64_overlay_input_init", 50000, 0);
+    try call(f,"dos64_elapsed_poll",10000,0);
+    try call(f,"dos64_native_timer_init",100000,0);
     try call(f, "dos64_cold_release", 10000, 0);
     try call(f, "dos64_overlay_text_setup", 10000, 0);
     const d = try f.symbol("dos64_native_diag");
@@ -122,6 +124,7 @@ test "native runtime bounded actual CPU keys coherent pause read validation and 
     for (0..100) |i| c.dos64_reu_poke(f.machine, 0x1000 + @as(u32, @intCast(i)), 0x90);
     c.dos64_cia_clock_step(f.machine, 0);
     c.dos64_cia_clock_seed(f.machine, 0xf000, 0xffff);
+    try call(&f,"dos64_native_timer_resume",100000,0);
     try call(&f, "dos64_native_tick", 200000, 0);
     try std.testing.expectEqual(@as(u32, 16), try guest32(&f));
     try put(&f, 5, 0x61);
@@ -185,6 +188,7 @@ test "patched actual native entry imports exact original disk then real BIOS rel
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x100000, data.ptr, data.len));
     c.dos64_cia_clock_step(f.machine, 0);
     c.dos64_cia_clock_seed(f.machine, 0xf000, 0xffff);
+    try call(&f,"dos64_native_timer_resume",100000,0);
     try call(&f, "dos64_native_tick", 3000000, 0);
     try std.testing.expectEqual(@as(u32, 16), try guest32(&f));
     try request(&f, 2);
@@ -278,6 +282,7 @@ test "native scheduler normalizes all 256 elapsed blink phases to renderer boole
         const raw = (@as(u32, @intCast(phase)) << 12) | 256;
         const counter = ~raw;
         c.dos64_cia_clock_seed(f.machine, @truncate(counter), @truncate(counter >> 16));
+        try call(&f,"dos64_native_timer_resume",100000,0);
         const prior: u16 = @as(u16, @intCast(phase)) -% 4;
         try put(&f, 10, @truncate(prior));
         try put(&f, 11, @truncate(prior >> 8));

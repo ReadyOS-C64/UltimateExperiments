@@ -181,8 +181,9 @@ stack_pop_register:
     sta dos64_guest,x
     lda dos64_cpu_value+1
     sta dos64_guest+1,x
-    cpx #G_SS
-    bne @done
+    ; All segment POPs inhibit on repaired NMOS8088; general POPs do not.
+    cpx #G_ES
+    bcc @done
     lda #2
     sta dos64_cpu_irq_shadow
 @done:

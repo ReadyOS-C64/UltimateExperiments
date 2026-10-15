@@ -5,7 +5,11 @@
 .export fixture_timed
 .export fixture_unimplemented_reu
 
+.ifdef DOS64_UNIT_COLD
+.segment "UNITCOLD"
+.else
 .segment "TESTCODE"
+.endif
 fixture_pass:
     jsr dos64_cpu_reset
     lda #STATUS_PASS
@@ -31,5 +35,12 @@ fixture_unimplemented_reu:
     lda $DF00
     rts
 ; Stopped by the host before executing. Normal RTS must restore SP=$FF here.
+.segment "TESTCODE"
 fixture_return:
     nop
+
+.ifdef DOS64_UNIT_COLD
+.import __UNITCOLD_RUN__, __UNITCOLD_SIZE__
+.assert __UNITCOLD_RUN__ >= $7401, lderror, "unit cold helpers overlap snapshot output/guard"
+.assert __UNITCOLD_RUN__+__UNITCOLD_SIZE__ <= $8000, lderror, "unit cold helpers exceed disposable window"
+.endif

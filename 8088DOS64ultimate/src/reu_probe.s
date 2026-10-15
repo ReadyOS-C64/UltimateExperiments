@@ -6,7 +6,11 @@
 
 .segment "ZEROPAGE"
 probe_ptr: .res 2
+.ifdef DOS64_UNIT_COLD
+.segment "UNITCOLD"
+.else
 .segment "CODE"
+.endif
 ; Integrity vector shared by Peddle, VICE and later physical hardware.
 ; Requires normal RAM+IO mapping; uses $6000-$6FFF and REU $180003-$181002.
 ; Preserves P; clobbers A/X/Y and probe_ptr. No physical timing claim.

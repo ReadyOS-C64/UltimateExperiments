@@ -1,5 +1,14 @@
 .include "overlays.inc"
 .include "reu.inc"
+.import dos64_pit_init, dos64_pit_rebase, dos64_pit_advance, dos64_pit_poll
+.import dos64_irq_pulse, dos64_irq_select, dos64_irq_try, dos64_irq_repeat
+.import __IRQMAIN_SIZE__, __IRQDEVICE_SIZE__, __PITCODE_SIZE__
+PIT_SIZE = __IRQMAIN_SIZE__+__IRQDEVICE_SIZE__+__PITCODE_SIZE__
+.assert PIT_SIZE <= OV_WINDOW_SIZE, lderror, "PIT too large"
+
+.import dos64_render_graphics_line, dos64_present_graphics_line, __GFXCODE_SIZE__
+.assert __GFXCODE_SIZE__ <= OV_WINDOW_SIZE, lderror, "GFX too large"
+
 .macpack longbranch
 .import dos64_reu_transfer, dos64_reu_request
 .import dos64_files_init, dos64_files_start, dos64_files_poll, dos64_render_text_row
@@ -7,8 +16,8 @@
 .import dos64_native_text_setup, dos64_native_text_restore, dos64_native_text_state
 TEXT_SIZE = __RENDERCODE_SIZE__ + __DISPLAYCODE_SIZE__
 .assert __RENDERCODE_SIZE__ = 718, lderror, "renderer canonical length changed"
-.assert __DISPLAYCODE_SIZE__ = 239, lderror, "display canonical length changed"
-.assert TEXT_SIZE = 957, lderror, "combined TEXT canonical length changed"
+.assert __DISPLAYCODE_SIZE__ = 245, lderror, "display canonical length changed"
+.assert TEXT_SIZE = 963, lderror, "combined TEXT canonical length changed"
 .assert __DISPLAYCODE_RUN__ = OV_WINDOW+__RENDERCODE_SIZE__, lderror, "TEXT display segment must immediately follow renderer"
 .import dos64_host_input_init, dos64_host_input_poll, dos64_cold_open
 .export dos64_overlay_input_init, dos64_overlay_input_poll
@@ -21,7 +30,7 @@ TEXT_SIZE = __RENDERCODE_SIZE__ + __DISPLAYCODE_SIZE__
 .export dos64_overlay_boot_code_start, dos64_overlay_boot_code_end
 .export dos64_overlay_headers
 .assert OV_ASSETS >= $340000, error, "overlay assets below owned staging slice"
-.assert OV_ASSETS+3*OV_SLOT_SIZE <= $380000, error, "overlay assets exceed owned staging slice"
+.assert OV_ASSETS+5*OV_SLOT_SIZE <= $380000, error, "overlay assets exceed owned staging slice"
 .assert (OV_ASSETS & (OV_SLOT_SIZE-1)) = 0, error, "overlay slots require 2 KiB alignment"
 .assert OV_HEADER+OV_WINDOW_SIZE <= OV_SLOT_SIZE, error, "overlay header/payload exceeds slot"
 .assert __FILECODE_SIZE__ > 0, lderror, "empty file overlay"
@@ -58,7 +67,7 @@ dos64_overlay_acquire:
     lda dos64_overlay_requested
     cmp #OV_FILE
     bcc ov_bad_id
-    cmp #OV_INPUT+1
+    cmp #6
     bcs ov_bad_id
     inc dos64_overlay_busy
     cmp dos64_overlay_current
@@ -70,7 +79,7 @@ dos64_overlay_acquire:
     asl
     asl
     clc
-    adc #16                      ; header descriptors24,32,40
+    adc #32                      ; variant header descriptor base
     tax
     jsr ov_dma
     bcs ov_dma_failed
@@ -96,7 +105,7 @@ dos64_overlay_acquire:
     asl
     asl
     clc
-    adc #40                      ; payload descriptors48,56,64
+    adc #72                      ; variant payload descriptor base
     tax
     jsr ov_dma
     bcs ov_dma_failed
@@ -182,6 +191,28 @@ WRAP dos64_overlay_text_restore, OV_TEXT, dos64_native_text_restore, 1
 WRAP dos64_overlay_input_init, OV_INPUT, dos64_host_input_init
 WRAP dos64_overlay_input_poll, OV_INPUT, dos64_host_input_poll
 
+
+.export dos64_overlay_pit_init
+WRAP dos64_overlay_pit_init, OV_PIT, dos64_pit_init
+.export dos64_overlay_pit_rebase
+WRAP dos64_overlay_pit_rebase, OV_PIT, dos64_pit_rebase
+.export dos64_overlay_pit_advance
+WRAP dos64_overlay_pit_advance, OV_PIT, dos64_pit_advance
+.export dos64_overlay_pit_poll
+WRAP dos64_overlay_pit_poll, OV_PIT, dos64_pit_poll
+.export dos64_overlay_irq_pulse
+WRAP dos64_overlay_irq_pulse, OV_PIT, dos64_irq_pulse
+.export dos64_overlay_irq_select
+WRAP dos64_overlay_irq_select, OV_PIT, dos64_irq_select
+.export dos64_overlay_irq_try
+WRAP dos64_overlay_irq_try, OV_PIT, dos64_irq_try
+.export dos64_overlay_irq_repeat
+WRAP dos64_overlay_irq_repeat, OV_PIT, dos64_irq_repeat
+.export dos64_overlay_render_graphics_line
+WRAP dos64_overlay_render_graphics_line, OV_GFX, dos64_render_graphics_line, 1
+.export dos64_overlay_present_graphics_line
+WRAP dos64_overlay_present_graphics_line, OV_GFX, dos64_present_graphics_line, 1
+
 ; Descriptors are reversed for the eight-byte loop into request[7..0].
 ov_dma:
     ldy #7
@@ -198,12 +229,18 @@ ov_requests:
     REQUEST OV_SOURCE, OV_ASSETS, OV_SLOT_SIZE, 0
     REQUEST OV_SOURCE+OV_SLOT_SIZE, OV_ASSETS+OV_SLOT_SIZE, OV_SLOT_SIZE, 0
     REQUEST OV_INPUT_SOURCE, OV_ASSETS+2*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
+    REQUEST OV_PIT_SOURCE, OV_ASSETS+3*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
+    REQUEST OV_GFX_SOURCE, OV_ASSETS+4*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
     REQUEST $C000, OV_ASSETS, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+2*OV_SLOT_SIZE, OV_HEADER, 1
+    REQUEST $C000, OV_ASSETS+3*OV_SLOT_SIZE, OV_HEADER, 1
+    REQUEST $C000, OV_ASSETS+4*OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST OV_WINDOW, OV_ASSETS+OV_HEADER, __FILECODE_SIZE__, 1
     REQUEST OV_WINDOW, OV_ASSETS+OV_SLOT_SIZE+OV_HEADER, TEXT_SIZE, 1
     REQUEST OV_WINDOW, OV_ASSETS+2*OV_SLOT_SIZE+OV_HEADER, __INPUTCODE_SIZE__, 1
+    REQUEST OV_WINDOW, OV_ASSETS+3*OV_SLOT_SIZE+OV_HEADER, PIT_SIZE, 1
+    REQUEST OV_WINDOW, OV_ASSETS+4*OV_SLOT_SIZE+OV_HEADER, __GFXCODE_SIZE__, 1
 dos64_overlay_headers:
     .byte "D64O",1,OV_FILE
     .word __FILECODE_SIZE__,OV_WINDOW
@@ -217,6 +254,14 @@ dos64_overlay_headers:
     .word __INPUTCODE_SIZE__,OV_WINDOW
     .word 0
     .byte "KEYS"
+    .byte "D64O",1,OV_PIT
+    .word PIT_SIZE,OV_WINDOW
+    .word 0
+    .byte "TIME"
+    .byte "D64O",1,OV_GFX
+    .word __GFXCODE_SIZE__,OV_WINDOW
+    .word 0
+    .byte "CGA "
 dos64_overlay_code_end:
 
 ; Bootstrap is cold resident CODE to keep DEVICECODE budget below 400 bytes.
@@ -283,6 +328,12 @@ dos64_overlay_cold_bootstrap:
     lda OV_INPUT_SOURCE,x
     cmp dos64_overlay_headers+2*OV_HEADER,x
     jne ov_header_failed
+    lda OV_PIT_SOURCE,x
+    cmp dos64_overlay_headers+3*OV_HEADER,x
+    jne ov_header_failed
+    lda OV_GFX_SOURCE,x
+    cmp dos64_overlay_headers+4*OV_HEADER,x
+    jne ov_header_failed
     dex
     bpl @headers
     ldx #0
@@ -292,6 +343,12 @@ dos64_overlay_cold_bootstrap:
     jsr ov_dma
     jcs ov_dma_failed
     ldx #16
+    jsr ov_dma
+    jcs ov_dma_failed
+    ldx #24
+    jsr ov_dma
+    jcs ov_dma_failed
+    ldx #32
     jsr ov_dma
     jcs ov_dma_failed
     lda #OV_READY

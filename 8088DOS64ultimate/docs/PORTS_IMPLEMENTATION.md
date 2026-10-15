@@ -1,8 +1,10 @@
 # PC port implementation
 
+Current timer integration adds only the exact owned F8h BIOS clock gate. Guest8253ports40h–43h and directCGA3D8h/3D9h/CRTC remain unsupported. Fixed PIT scheduling and BDA-selected presentation are described in [timer](TIMER_IRQ_IMPLEMENTATION.md) and [graphics](CGA_RENDERER_IMPLEMENTATION.md).
+
 The linked original 8088 CPU handles immediate-port and DX-port IN/OUT forms, byte and word (E4–E7, EC–EF). Reads update AL or AX; writes preserve guest registers. Guest FLAGS are unchanged. Immediate ports are zero-extended; DX ports retain 16 bits. Prefixes do not introduce repeated I/O. Failed or unsupported operations latch the CPU diagnostic and restore the instruction's starting IP. Fetch/cache failures remain terminal host errors.
 
-`src/ports.s` supplies a bounded functional 8259A PIC at 20h/21h. It supports all ICW sequence lengths, interrupt masks, IRR/ISR read selection, specific/nonspecific EOI, priority rotation and special-mask programming. Defaults follow the original IBM XT BIOS: ICW1=13h, base 08h, ICW4=09h and mask FCh. BIOS cold initialization resets this state. IRR/ISR remain explicit latches until the event dispatcher exists.
+`src/ports.s` supplies a bounded functional 8259A PIC at 20h/21h. It supports all ICW sequence lengths, interrupt masks, IRR/ISR read selection, specific/nonspecific EOI, priority rotation and special-mask programming. Defaults follow the original IBM XT BIOS: ICW1=13h, base 08h, ICW4=09h and mask FCh. BIOS cold initialization resets this state. IRR/ISR remain explicit latches; the current event dispatcher accepts eligible requests through the guest IVT.
 
 The descriptor is `dos64_io_port`/`dos64_io_value` as little-endian words, and `dos64_io_width` (0 byte, 1 word). `dos64_io_read/write` preserve guest registers and native P except returned carry. Carry reports an unsupported port/width/command. Word I/O preflights both consecutive ports, so only a word at 20h currently succeeds. An unsupported second port cannot cause a partial first-port side effect. Byte reads preserve the descriptor's high byte.
 

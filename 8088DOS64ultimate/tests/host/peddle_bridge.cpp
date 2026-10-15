@@ -19,6 +19,7 @@ public:
     std::array<uint8_t, 4096> io{};
     uint64_t instructions = 0;
     bool unsupported = false;
+    bool graphics_color_ram = false;
     std::unique_ptr<ReuModel> reu;
     // Explicitly enabled per fixture; ordinary machines still reject UCI I/O.
     std::unique_ptr<UciModel> uci;
@@ -85,6 +86,7 @@ protected:
         if (a >= 0xd000 && a <= 0xdfff && (port & 3)) {
             if (!(port & 4)) return 0xcc;
             if (native_runtime_control && (a==0xdc0d || a==0xdc0e || a==0xdc0f)) return io[a-0xd000];
+            if (graphics_color_ram && a>=0xd800 && a<=0xdbff) return io[a-0xd000];
             if (native_display && native_display->owns(a)) return native_display->read(a);
             if (a>=0xdc00 && a<=0xdc0f && host_input) return host_input->read(a-0xdc00);
             if (clock_probe && clock_probe->owns(a)) return clock_probe->read(a, cia_clock.get());
@@ -101,6 +103,7 @@ protected:
         written[a] = 1;
         if (a >= 0xd000 && a <= 0xdfff && (port & 3) && (port & 4)) {
             if (native_runtime_control && (a==0xdc0d || a==0xdc0e || a==0xdc0f)) {io[a-0xd000] = (a==0xdc0d ? 0 : v);return;}
+            if (graphics_color_ram && a>=0xd800 && a<=0xdbff) {io[a-0xd000]=v&15;return;}
             if (native_display && native_display->owns(a)) {native_display->write(a,v);return;}
             if (a>=0xdc00 && a<=0xdc0f && host_input) {host_input->write(a-0xdc00,v);return;}
             if (uci && uci->owns(a)) {
@@ -342,3 +345,6 @@ extern "C" void native_runtime_control_enable(Dos64Machine *m){m->cpu.native_run
 
 extern "C" void native_runtime_require_nmi_order(Dos64Machine *m,uint16_t vector){m->cpu.native_runtime_nmi_order=true;m->cpu.native_runtime_nmi_vector=vector;}
 extern "C" uint8_t native_runtime_nmi_checked(Dos64Machine *m){return m->cpu.native_runtime_nmi_checked;}
+
+extern "C" void dos64_graphics_color_enable(Dos64Machine *m){m->cpu.graphics_color_ram=true;}
+extern "C" uint8_t dos64_graphics_color_peek(Dos64Machine *m,uint16_t a){return m->cpu.io[a-0xd000];}

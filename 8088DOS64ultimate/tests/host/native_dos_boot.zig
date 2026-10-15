@@ -103,7 +103,7 @@ const Lane = struct {
             self.diagnostics();
             return error.NativeRuntimeFailure;
         }
-        if (self.native_cycles > 2_500_000_000 or self.count() > 900_000) {
+        if (self.native_cycles > 6_000_000_000 or self.count() > 1_200_000) {
             self.diagnostics();
             return error.NativeDosBudget;
         }
@@ -113,7 +113,13 @@ const Lane = struct {
         self.f.poke(self.diag + 4, 0);
         self.f.poke(self.diag + 3, cmd);
         self.command_calls += 1;
-        try self.call("dos64_native_tick", if (cmd == 2) 3_000_000 else 5_000_000);
+        // Resume may defer at the documented CIA reload exclusion. Keep the
+        // original command pending and poll a fixed bound; call advances the
+        // independent functional CIA clock using the observed native cost.
+        for (0..256) |_| {
+            try self.call("dos64_native_tick", if (cmd == 2) 3_000_000 else 5_000_000);
+            if (self.f.peek(self.diag+3)==0) break;
+        }
         if (self.f.peek(self.diag + 3) != 0 or self.f.peek(self.diag + 4) != 0xa5) {
             self.diagnostics();
             return error.NativeCommandRejected;
@@ -279,7 +285,10 @@ const Lane = struct {
     fn report(self: *Lane, status: []const u8, source: []const u8, guest_hash: ?[64]u8, video_hash: ?[64]u8) !void {
         const prg = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests.prg", alloc, .limited(65538));
         defer alloc.free(prg);
-        const output = try std.json.Stringify.valueAlloc(alloc, .{ .status = status, .script = "native ENTRY/import/BIOS then native tick; CR,CR,VER CR,DIR /P CR,SPACE per pagination", .source_sha256 = sha(source), .linked_prg_sha256 = sha(prg), .guest_instructions = self.count(), .native_cpu_cycles = self.native_cycles, .native_ticks = self.cpu_ticks, .startup_polls = self.startup_polls, .development_commands = self.command_calls, .maximum_tick_cycles = self.max_tick_cycles, .maximum_snapshot_cycles = self.max_snapshot_cycles, .initial_prompt = self.initial_prompt, .version_3_30 = self.version, .directory_header = self.header, .directory_summary = self.summary, .expected_free_bytes = self.free_bytes, .directory_entries = self.entries.items, .pagination_keys = self.pagination, .input_words = self.inputs.items, .observations = self.observations.items, .guest_640k_sha256 = guest_hash, .cga_16k_sha256 = video_hash, .clock_model = "functional64:1 Peddle CPUcycle/phi2 after startup, DMA stalls excluded; not physical timing", .no_direct_cpu_steps_or_DOS_shortcuts = true }, .{ .whitespace = .indent_2 });
+        const pit=try self.f.symbol("dos64_pit_total");
+        const pit_edges=@as(u32,self.f.word(pit))|(@as(u32,self.f.word(pit+2))<<16);
+        const delivered_ticks=c.dos64_reu_peek(self.f.machine,0x46c)|(@as(u32,c.dos64_reu_peek(self.f.machine,0x46d))<<8)|(@as(u32,c.dos64_reu_peek(self.f.machine,0x46e))<<16)|(@as(u32,c.dos64_reu_peek(self.f.machine,0x46f))<<24);
+        const output = try std.json.Stringify.valueAlloc(alloc, .{ .status = status, .script = "native ENTRY/import/BIOS then native tick; CR,CR,VER CR,DIR /P CR,SPACE per pagination", .source_sha256 = sha(source), .linked_prg_sha256 = sha(prg), .guest_instructions = self.count(), .native_cpu_cycles = self.native_cycles, .native_ticks = self.cpu_ticks, .observed_pit_periods=pit_edges, .guest_bda_timer_ticks=delivered_ticks, .timer_callbacks_enabled=self.f.peek(try self.f.symbol("dos64_irq_callback_enabled")), .startup_polls = self.startup_polls, .development_commands = self.command_calls, .maximum_tick_cycles = self.max_tick_cycles, .maximum_snapshot_cycles = self.max_snapshot_cycles, .initial_prompt = self.initial_prompt, .version_3_30 = self.version, .directory_header = self.header, .directory_summary = self.summary, .expected_free_bytes = self.free_bytes, .directory_entries = self.entries.items, .pagination_keys = self.pagination, .input_words = self.inputs.items, .observations = self.observations.items, .guest_640k_sha256 = guest_hash, .cga_16k_sha256 = video_hash, .clock_model = "functional64:1 Peddle CPUcycle/phi2 after startup, DMA stalls excluded; not physical timing", .no_direct_cpu_steps_or_DOS_shortcuts = true }, .{ .whitespace = .indent_2 });
         defer alloc.free(output);
         try std.Io.Dir.cwd().writeFile(std.Options.debug_io, .{ .sub_path = "build/native-dos-boot.json", .data = output });
     }
@@ -353,6 +362,8 @@ test "opt-in actual native file startup and bounded runtime boot genuine DOS33 V
     const after = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, source_path, alloc, .limited(368641));
     defer alloc.free(after);
     try std.testing.expectEqualSlices(u8, image, after);
+    try std.testing.expect(lane.f.word(try lane.f.symbol("dos64_pit_total"))>0);
+    try std.testing.expect(word(guest,0x46c)>0);
     var host_ram: [65536]u8 = undefined;
     for (&host_ram, 0..) |*byte, address| byte.* = lane.f.peek(@intCast(address));
     for ([_]struct { operand: []const u8, buffer: []const u8, opcode: u8 }{

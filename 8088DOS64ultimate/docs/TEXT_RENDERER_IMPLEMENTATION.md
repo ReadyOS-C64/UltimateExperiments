@@ -1,6 +1,8 @@
 # Native text presentation
 
-The current TEXT overlay is one canonical957-byte linked image:718 bytes of coherent row renderer immediately followed by239 bytes of VIC setup/restore. All headers, linker assertions, packaging and DMA lengths cover both members. The resident wrappers hold TEXT busy for the complete call and reject display calls until cold_open is zero. Runtime startup does not yet call them.
+Current TEXT payload is963bytes(renderer718+VIC245). Reapplying TEXT after graphics retains the original saved VIC owner. The five-overlay runtime shares the window with GFX and commits all startup assets before cache use. [Graphics contract](CGA_RENDERER_IMPLEMENTATION.md). Physical80column bitmap/matrix matched an independent oracle for the earlier three-overlay target; external display/readability and actual matrix keyboard remain open.
+
+The current TEXT overlay is one canonical 963-byte linked image: 718 bytes of coherent row renderer immediately followed by 245 bytes of VIC setup/restore. All headers, linker assertions, packaging and DMA lengths cover both members. The resident wrappers hold TEXT busy for the complete call and reject display calls until cold_open is zero. Configured runtime startup establishes TEXT and schedules rows after cold release.
 
 The renderer reads mutable dirty BDA/VRAM through the guest cache. Modes0/1 draw40 columns with full eight-pixel glyphs from4800; modes2/3 draw80 columns with an independent four-pixel font from4400. Two characters share one VIC color cell, using the left attribute for approximate foreground/background; blink visibility remains per character. Guest attributes and VRAM are never rewritten to fit the host display. Bitmap is6000–7FFF, matrix4000–43E7 and guard43E8–43FF.
 

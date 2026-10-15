@@ -10,4 +10,4 @@ All five clock BDA bytes share one coherent cache page. Initial acquisition fail
 
 Tests execute all 256 AH values, full overflow-byte semantics, unnormalized sets, exact midnight/32-bit wrap, zero work, one-frame dirty BDA authority, initial/eviction failures and retry, native flags and memory guards. The genuine DOS path passes its INT 1Ah startup calls and later reaches COMMAND.COM in the opt-in long lane.
 
-No PIT programming, IRQ0/INT 1Ch delivery, motor timeout, host-time pacing or RTC hardware is implemented here. The long functional DOS run does not establish elapsed-time fidelity. Runtime integration must convert a validated elapsed clock into bounded guest ticks while retaining guest IF/event semantics.
+The current runtime integrates fixed PIT/IRQ0 and guest INT1Ch through normal guest code; see [timer/IRQ implementation](TIMER_IRQ_IMPLEMENTATION.md). Only the default owned INT08 gate advances BDA ticks. Guest programmable PIT ports, motor timeout and RTC hardware remain unsupported. Peddle scheduling does not establish physical elapsed-time fidelity.

@@ -8,6 +8,7 @@
 .import dos64_video_service, dos64_video_host_error
 .import dos64_aux_bios_service, dos64_aux_bios_vector, dos64_aux_bios_host_error
 .import dos64_clock_service, dos64_clock_host_error
+.import dos64_clock_advance, dos64_clock_count
 .import dos64_keyboard_service, dos64_keyboard_host_error, dos64_keyboard_waiting
 .import dos64_keyboard_flags_mask, dos64_keyboard_flags_value
 .import dos64_keyboard_flags_mask_high, dos64_keyboard_flags_value_high
@@ -294,6 +295,8 @@ dos64_bios_port:
     sta dos64_guest+G_FLAGS+1
     jmp bios_handled
 bios_other_gate:
+    cmp #$A2
+    jeq bios_timer_gate
     cmp #$80
     jeq bios_keyboard_gate
     cmp #$90
@@ -330,6 +333,17 @@ bios_other_gate:
     lda dos64_video_host_error
     jne bios_host_failed
     jmp bios_unrecognized
+bios_timer_gate:
+    lda bios_port
+    cmp #$F8
+    jne bios_unrecognized
+    lda #1
+    sta dos64_clock_count
+    lda #0
+    sta dos64_clock_count+1
+    jsr dos64_clock_advance
+    jcc bios_handled
+    jmp bios_host_failed
 bios_clock_gate:
     lda bios_port
     cmp #$F7
@@ -402,6 +416,25 @@ bios_unrecognized:
     .byte <address, >address, ^address, value
 .endmacro
 bios_patches:
+    patch $00020, $A0
+    patch $00021, $01
+    patch $00023, $F0
+    patch $00070, $C0
+    patch $00071, $01
+    patch $00073, $F0
+    patch $F01C0, $CF
+    patch $F01A0, $FB
+    patch $F01A1, $50
+    patch $F01A2, $E6
+    patch $F01A3, $F8
+    patch $F01A4, $CD
+    patch $F01A5, $1C
+    patch $F01A6, $B0
+    patch $F01A7, $20
+    patch $F01A8, $E6
+    patch $F01A9, $20
+    patch $F01AA, $58
+    patch $F01AB, $CF
     patch $00058, $80
     patch $00059, $01
     patch $0005B, $F0

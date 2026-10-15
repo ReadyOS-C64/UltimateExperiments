@@ -7,7 +7,11 @@
 .export dos64_reu_restore := dos64_range_restore
 .endif
 
+.ifdef DOS64_UNIT_COLD
+.segment "UNITCOLD"
+.else
 .segment "CODE"
+.endif
 ; Hardware recovery only. Concatenate the complete touched page envelopes:
 ; REU 07FC00..0803FF -> host 6000..67FF (guest, 2048 bytes)
 ; REU 34FF00..3504FF -> host 6800..6DFF (source, 1536 bytes)
@@ -66,7 +70,11 @@ range_snapshot_direction:
     sec
     rts
 
+.ifdef DOS64_UNIT_COLD
+.segment "UNITCOLD"
+.else
 .segment "RODATA"
+.endif
 ; host high, REU middle, REU bank, length high (all low bytes are zero).
 range_snapshot_chunks:
     .byte $60, $FC, $07, $04

@@ -3,7 +3,11 @@
 .import dos64_reu_request, dos64_reu_transfer, dos64_mailbox
 .export dos64_reu_backup, dos64_reu_restore
 
+.ifdef DOS64_UNIT_COLD
+.segment "UNITCOLD"
+.else
 .segment "CODE"
+.endif
 ; Dedicated hardware-fixture helpers. Back up/restore exactly 07FC00..0803FF
 ; through host 6000..67FF; split at the REC bank boundary. No file operations.
 dos64_reu_backup:

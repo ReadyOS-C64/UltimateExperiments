@@ -13,7 +13,11 @@ range_probe_index: .res 2
 range_probe_pointer: .res 2
 range_probe_value: .res 1
 
+.ifdef DOS64_UNIT_COLD
+.segment "UNITCOLD"
+.else
 .segment "CODE"
+.endif
 ; Standalone integrity transaction; external arenas and output are probe-owned.
 ; SOURCE 34FF00..3504FF -> guest 07FD00..0802FF -> DEST 35FF00..3604FF.
 ; Host 6000..65FF is evidence output only; C000..C0FF is the range bounce.

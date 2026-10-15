@@ -101,7 +101,7 @@ test "all register PUSH POP execute with original 8088 PUSH SP and POP SP order"
     }
 }
 
-test "segment stack instructions use SS and POP SS inhibits next instruction" {
+test "segment stack instructions use SS and repaired NMOS POP segment inhibits next instruction" {
     const pushes = [_]u8{ 0x06, 0x0e, 0x16, 0x1e };
     for (pushes, 0..) |opcode, i| {
         var f = try init(2);
@@ -125,7 +125,7 @@ test "segment stack instructions use SS and POP SS inhibits next instruction" {
         const index: u16 = if (opcode == 7) 8 else if (opcode == 0x17) 10 else 11;
         try std.testing.expectEqual(@as(u16, 0x4567), try get(&f, index));
         try std.testing.expectEqual(@as(u16, 0x202), try get(&f, 4));
-        try std.testing.expectEqual(@as(u8, if (opcode == 0x17) 1 else 0), f.peek(try f.symbol("dos64_cpu_irq_shadow")));
+        try std.testing.expectEqual(@as(u8, 1), f.peek(try f.symbol("dos64_cpu_irq_shadow")));
         try step(&f);
         try std.testing.expectEqual(@as(u8, 0), f.peek(try f.symbol("dos64_cpu_irq_shadow")));
     }

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Package linked, fixed-address overlays into a temporary bitmap startup blob.
 
-The resident PRG must end by 6000; padding plus the two complete 2048-byte slots
-are loaded at 6000–6FFF. Native bootstrap must commit these to immutable REU
+The resident PRG must end by 6000; padding plus five complete 2048-byte slots
+are loaded at6000/6800/8000/8800/9000. Native bootstrap must commit these to immutable REU
 before VIC bitmap use. Payloads run at C900 and are mutually exclusive. This
 packer does not relocate code, change state allocation, or replace native DMA.
 An optional independently linked cold importer occupies7000–7FFF only during
@@ -27,11 +27,11 @@ IMPORT_SIZE = 0x1000
 
 
 def slot(payload, identity):
-    if identity not in (1, 2, 3):
+    if identity not in (1, 2, 3, 4, 5):
         raise ValueError("unknown overlay identity")
     if not 1 <= len(payload) <= WINDOW_SIZE:
         raise ValueError("overlay payload must fit C900–CFFF and be nonempty")
-    tag = {1:b"FILE",2:b"TEXT",3:b"KEYS"}[identity]
+    tag = {1:b"FILE",2:b"TEXT",3:b"KEYS",4:b"TIME",5:b"CGA "}[identity]
     header = b"D64O" + bytes((1, identity)) + struct.pack("<HHH", len(payload), WINDOW, 0) + tag
     return header + payload + bytes(SLOT_SIZE - HEADER - len(payload))
 
@@ -56,8 +56,10 @@ def append_import(prg, cold, labels):
                re.findall(r"^al ([0-9A-Fa-f]+) (\S+)", labels, re.M)}
     import_size=symbols.get("__IMPORTCODE_SIZE__",0)
     cold_cursor=IMPORT_START+import_size
-    for name in ("COLDINIT","COLDRODATA"):
+    for name in ("COLDINIT","COLDRODATA","UNITCOLD"):
         size=symbols.get("__"+name+"_SIZE__",0)
+        if name=="UNITCOLD" and not size:
+            continue
         if not size or symbols.get("__"+name+"_LOAD__")!=cold_cursor or symbols.get("__"+name+"_RUN__")!=cold_cursor:
             raise ValueError("cold BIOS/bootstrap/data segments must follow importer contiguously")
         cold_cursor+=size
@@ -92,11 +94,25 @@ def append_input(prg,payload,labels):
     return prg+block,block
 
 
+def append_variant(prg,payload,labels,identity,area,members,source):
+    symbols={name.lstrip("."):int(addr,16) for addr,name in re.findall(r"^al ([0-9A-Fa-f]+) (\S+)",labels,re.M)}
+    cursor=WINDOW
+    for name in members:
+        size=symbols.get("__"+name+"_SIZE__",0)
+        if not size or symbols.get("__"+name+"_LOAD__")!=cursor or symbols.get("__"+name+"_RUN__")!=cursor:
+            raise ValueError(area+" member placement differs from linked output")
+        cursor+=size
+    expected={"__"+area+"_START__":WINDOW,"__"+area+"_SIZE__":WINDOW_SIZE,"__"+area+"_FILEOFFS__":0,"__"+area+"_LAST__":cursor}
+    if len(prg)!=source-0x801+2 or cursor-WINDOW!=len(payload) or any(symbols.get(k)!=v for k,v in expected.items()):
+        raise ValueError(area+" source/length differs from linked output")
+    block=slot(payload,identity)
+    return prg+block,block
+
 def validate_text(payload,labels):
     symbols={name.lstrip("."):int(addr,16) for addr,name in re.findall(r"^al ([0-9A-Fa-f]+) (\S+)",labels,re.M)}
-    expected={"__RENDERCODE_RUN__":WINDOW,"__RENDERCODE_SIZE__":718,"__DISPLAYCODE_RUN__":WINDOW+718,"__DISPLAYCODE_SIZE__":239,"__RENDER_LAST__":WINDOW+957}
-    if len(payload)!=957 or any(symbols.get(k)!=value for k,value in expected.items()):
-        raise ValueError("TEXT payload must include canonical contiguous718-byte renderer+239-byte VIC setup")
+    expected={"__RENDERCODE_RUN__":WINDOW,"__RENDERCODE_SIZE__":718,"__DISPLAYCODE_RUN__":WINDOW+718,"__DISPLAYCODE_SIZE__":245,"__RENDER_LAST__":WINDOW+963}
+    if len(payload)!=963 or any(symbols.get(k)!=value for k,value in expected.items()):
+        raise ValueError("TEXT payload must include canonical contiguous718-byte renderer+245-byte VIC setup")
 
 
 def main():
@@ -105,6 +121,8 @@ def main():
     p.add_argument("--files", type=pathlib.Path, required=True)
     p.add_argument("--render", type=pathlib.Path, required=True)
     p.add_argument("--input",type=pathlib.Path,required=True)
+    p.add_argument("--pit",type=pathlib.Path,required=True)
+    p.add_argument("--gfx",type=pathlib.Path,required=True)
     p.add_argument("--import-code", type=pathlib.Path,required=True)
     p.add_argument("--labels", type=pathlib.Path)
     p.add_argument("--output-prg", type=pathlib.Path, required=True)
@@ -113,7 +131,7 @@ def main():
     a = p.parse_args()
     if not a.labels or bool(a.import_code) != bool(a.labels):
         p.error("cold importer requires both linked code and labels")
-    inputs = (a.resident_prg,a.files,a.render,a.import_code,a.labels,a.input)
+    inputs = (a.resident_prg,a.files,a.render,a.import_code,a.labels,a.input,a.pit,a.gfx)
     outputs = (a.output_prg, a.output_assets) + ((a.manifest,) if a.manifest else ())
     resolved = [path.resolve() for path in inputs + outputs]
     if len(set(resolved)) != len(resolved):
@@ -126,6 +144,9 @@ def main():
             prg = append_import(prg,raw[3],raw[4].decode())
         prg,input_slot=append_input(prg,raw[5],raw[4].decode())
         assets+=input_slot
+        prg,pit_slot=append_variant(prg,raw[6],raw[4].decode(),4,"PIT",("IRQMAIN","IRQDEVICE","PITCODE"),0x8800)
+        prg,gfx_slot=append_variant(prg,raw[7],raw[4].decode(),5,"GFX",("GFXCODE",),0x9000)
+        assets+=pit_slot+gfx_slot
     except ValueError as e:
         p.error(str(e))
     # Compute and validate all results before opening outputs. Build outputs are
@@ -138,9 +159,9 @@ def main():
                              for path, data in zip(inputs, raw)},
                   "window": WINDOW, "window_size": WINDOW_SIZE,
                   "startup_source": SOURCE, "reu_assets": ASSETS,
-                  "slot_size": SLOT_SIZE, "payload_lengths": [len(raw[1]),len(raw[2]),len(raw[5])],
-                  "startup_sources": [0x6000,0x6800,0x8000],
-                  "text_members": {"RENDERCODE":718,"DISPLAYCODE":239},
+                  "slot_size": SLOT_SIZE, "payload_lengths": [len(raw[1]),len(raw[2]),len(raw[5]),len(raw[6]),len(raw[7])],
+                  "startup_sources": [0x6000,0x6800,0x8000,0x8800,0x9000],
+                  "text_members": {"RENDERCODE":718,"DISPLAYCODE":245},
                   "fonts": {"narrow":{"start":0x4400,"bytes":1024,"executable":False,"sha256":hashlib.sha256(raw[0][0x4400-0x801+2:0x4800-0x801+2]).hexdigest()},"full":{"start":0x4800,"bytes":2048,"executable":False,"sha256":hashlib.sha256(raw[0][0x4800-0x801+2:0x5000-0x801+2]).hexdigest()}},
                   "input_source_ownership": "copied before any guest cache use; then first four cache frames",
                   "input_sha256": hashlib.sha256(raw[5]).hexdigest(),

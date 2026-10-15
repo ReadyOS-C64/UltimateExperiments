@@ -151,3 +151,9 @@ test { _ = @import("cold_phase.zig"); }
 
 test { _ = @import("native_text_display.zig"); }
 test { _ = @import("elapsed.zig"); }
+
+test { _ = @import("irq_pit.zig"); }
+test { _ = @import("native_timer_startup.zig"); }
+test { _ = @import("future_layout.zig"); }
+test { _ = @import("native_cga.zig"); }
+test { _ = @import("unit_cold_lifetime.zig"); }

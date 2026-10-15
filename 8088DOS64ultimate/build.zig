@@ -18,6 +18,24 @@ fn addPeddle(module: *std.Build.Module, b: *std.Build) void {
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
+    const differential=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/threshold_differential.zig"),.target=target,.optimize=.Debug})});
+    addPeddle(differential.root_module,b);b.step("threshold-differential","Compare exact optimized and frozen assembled PIT converters").dependOn(&b.addRunArtifact(differential).step);
+    const cg=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_cga.zig"),.target=target,.optimize=.Debug})});
+    addPeddle(cg.root_module,b);b.step("native-cga","Verify BIOS CGA native presentation").dependOn(&b.addRunArtifact(cg).step);
+    const startup = b.addTest(.{ .root_module=b.createModule(.{ .root_source_file=b.path("tests/host/native_timer_startup.zig"), .target=target, .optimize=.Debug }) });
+    addPeddle(startup.root_module,b);
+    b.step("timer-startup","Private bounded timer activation seams").dependOn(&b.addRunArtifact(startup).step);
+    const irq_pit = b.addTest(.{ .root_module=b.createModule(.{ .root_source_file=b.path("tests/host/irq_pit.zig"), .target=target, .optimize=.Debug }) });
+    addPeddle(irq_pit.root_module,b);
+    b.step("irq-pit","Private leased IRQ/PIT runtime proof").dependOn(&b.addRunArtifact(irq_pit).step);
+    const future = b.addTest(.{ .root_module=b.createModule(.{ .root_source_file=b.path("tests/host/future_layout.zig"), .target=target, .optimize=.Debug }) });
+    addPeddle(future.root_module,b);
+    b.step("future-layout","Private five-overlay lease and phase tests").dependOn(&b.addRunArtifact(future).step);
+
+    const layout = b.addTest(.{ .root_module=b.createModule(.{ .root_source_file=b.path("tests/host/unit_layout.zig"), .target=target, .optimize=.Debug }) });
+    addPeddle(layout.root_module,b);
+    b.step("unit-layout","Private unit cold lifetime tests").dependOn(&b.addRunArtifact(layout).step);
+
     const tests = b.addTest(.{
         .root_module = b.createModule(.{
             .root_source_file = b.path("tests/host/foundation.zig"),

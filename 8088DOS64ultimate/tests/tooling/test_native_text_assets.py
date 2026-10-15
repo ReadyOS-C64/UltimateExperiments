@@ -25,9 +25,9 @@ class NativeTextAssets(unittest.TestCase):
   for at in (0x43e8,0x43ff,0x4400,0x47ff,0x4800,0x4fff):
    b=bytearray(raw);b[at-0x801+2]^=1;self.assertFalse(m.verify(mp,labels,b)['passed'])
  def test_same_text_member_overlap_is_rejected(self):
-  mp=(ROOT/'build/dos64-tests.map').read_text();labels=(ROOT/'build/dos64-tests.labels').read_text();changed=mp.replace('DISPLAYCODE           00CBCE  00CCBC','DISPLAYCODE           00CBCD  00CCBB');self.assertNotEqual(mp,changed);self.assertFalse(m.verify(changed,labels)['passed'])
+  mp=(ROOT/'build/dos64-tests.map').read_text();labels=(ROOT/'build/dos64-tests.labels').read_text();changed=mp.replace('DISPLAYCODE           00CBCE  00CCC2','DISPLAYCODE           00CBCD  00CCC1');self.assertNotEqual(mp,changed);self.assertFalse(m.verify(changed,labels)['passed'])
  def test_manifest_includes_both_fonts_and_exact_text_payload(self):
-  manifest=json.loads((ROOT/'build/manifest.json').read_text());package=json.loads((ROOT/'build/dos64-tests-overlay-package.json').read_text());self.assertEqual(package['payload_lengths'][1],957);self.assertEqual(package['text_members'],{'RENDERCODE':718,'DISPLAYCODE':239})
+  manifest=json.loads((ROOT/'build/manifest.json').read_text());package=json.loads((ROOT/'build/dos64-tests-overlay-package.json').read_text());self.assertEqual(package['payload_lengths'][1],963);self.assertEqual(package['text_members'],{'RENDERCODE':718,'DISPLAYCODE':245})
   for n in ('cp437-narrow4x8.bin','cp437-unscii8.bin'):
    p=Path('assets/native-text')/n;self.assertEqual(manifest['files'][str(p)],hashlib.sha256((ROOT/p).read_bytes()).hexdigest())
 if __name__=='__main__':unittest.main()

@@ -50,12 +50,20 @@ pub const Fixture = struct {
     pub fn word(self: *const Fixture, address: u16) u16 { return @as(u16, self.peek(address)) | (@as(u16, self.peek(address+%1)) << 8); }
 
     pub fn call(self: *Fixture, entry: []const u8, budget: u64) !c.Dos64Regs {
+        const entry_address = try self.symbol(entry);
+        // Unit-only moved helpers exist only before bitmap ownership. Refuse
+        // before seeding the host stack or changing native registers.
+        if (self.symbols.get("__UNITCOLD_RUN__")) |cold_start| {
+            const cold_size = self.symbols.get("__UNITCOLD_SIZE__") orelse 0;
+            if (entry_address >= cold_start and @as(u32, entry_address) < @as(u32, cold_start) + cold_size and
+                (self.peek(try self.symbol("dos64_cold_open")) != 0xa5 or self.peek(try self.symbol("dos64_overlay_ready")) != 0 or self.peek(try self.symbol("dos64_native_started")) != 0)) return error.DiscardedUnitFixture;
+        }
         const sentinel = try self.symbol("fixture_return");
         const return_address = sentinel -% 1;
         self.poke(0x1ff, @intCast(return_address >> 8));
         self.poke(0x1fe, @truncate(return_address));
         c.dos64_clear_writes(self.machine);
-        c.dos64_set_regs(self.machine, .{ .pc = try self.symbol(entry), .sp = 0xfd, .a = 0x71, .x = 0x82, .y = 0x93, .p = self.initial_status, .cycles = 0, .instructions = 0 });
+        c.dos64_set_regs(self.machine, .{ .pc = entry_address, .sp = 0xfd, .a = 0x71, .x = 0x82, .y = 0x93, .p = self.initial_status, .cycles = 0, .instructions = 0 });
         const result = c.dos64_run(self.machine, sentinel, budget);
         self.last_regs = result.regs;
         self.stack_high_water = @max(self.stack_high_water, result.stack_high_water);

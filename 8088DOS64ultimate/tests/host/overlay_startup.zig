@@ -33,7 +33,7 @@ fn diagnostic(f: *F, stage: u8, error_code: u8, detail: u8) !void {
     try std.testing.expectEqual(detail, f.peek(d + 2));
 }
 fn blob() ![]u8 {
-    return std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", std.testing.allocator, .limited(6145));
+    return std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", std.testing.allocator, .limited(10241));
 }
 
 test "configured native entry commits all real overlays before starting read-only import" {
@@ -44,7 +44,7 @@ test "configured native entry commits all real overlays before starting read-onl
     const bytes = try blob();
     defer std.testing.allocator.free(bytes);
     c.dos64_reu_poke(f.machine, 0x33ffff, 0x83);
-    c.dos64_reu_poke(f.machine, 0x341800, 0x29);
+    c.dos64_reu_poke(f.machine, 0x342800, 0x29);
     try entry(&f, true);
     try diagnostic(&f, 2, 0, 0);
     try std.testing.expectEqual(@as(u8, 0xa5), try get(&f, "dos64_overlay_ready"));
@@ -52,10 +52,10 @@ test "configured native entry commits all real overlays before starting read-onl
     try std.testing.expectEqual(@as(u8, 0), try get(&f, "dos64_overlay_busy"));
     try std.testing.expectEqual(@as(u8, 4), try get(&f, "dos64_overlay_reu_mib"));
     try std.testing.expectEqual(@as(u8, 0), try get(&f, "dos64_disk_loaded"));
-    try std.testing.expectEqual(@as(u64, 5), c.dos64_dma_transfers(f.machine));
+    try std.testing.expectEqual(@as(u64, 7), c.dos64_dma_transfers(f.machine));
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x340000, bytes.ptr, bytes.len));
     try std.testing.expectEqual(@as(u8, 0x83), c.dos64_reu_peek(f.machine, 0x33ffff));
-    try std.testing.expectEqual(@as(u8, 0x29), c.dos64_reu_peek(f.machine, 0x341800));
+    try std.testing.expectEqual(@as(u8, 0x29), c.dos64_reu_peek(f.machine, 0x342800));
 }
 
 test "configured native malformed overlay header fails before REU writes and SYS cannot reset evidence" {
@@ -82,7 +82,7 @@ test "configured native malformed overlay header fails before REU writes and SYS
 test "configured native partial bootstrap stays unpublished and explicit cold repair restores exact assets" {
     const bytes = try blob();
     defer std.testing.allocator.free(bytes);
-    for (0..3) |skip| for ([_]u32{ 0, 1, 17, 2047, 2048 }) |prefix| {
+    for (0..5) |skip| for ([_]u32{ 0, 1, 17, 2047, 2048 }) |prefix| {
         var f = try F.init();
         defer f.deinit();
         c.dos64_enable_reu(f.machine);

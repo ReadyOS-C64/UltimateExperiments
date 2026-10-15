@@ -231,6 +231,8 @@ test "pinned hardware-generated original 8088 cases match registers and complete
         if(!full and !t.quick) continue;
         executed+=1;
         var f=try init(32,1);defer f.deinit();@memset(expected_ram,0);
+        f.poke(try f.symbol("dos64_irq_callback_enabled"),0);
+        f.poke(try f.symbol("dos64_pit_poll_enabled"),0);
         const g=try f.symbol("dos64_guest");
         inline for(names,0..) |name,i| if(@field(t.initial.regs,name)) |v| {setWord(&f,g+@as(u16,@intCast(i*2)),v);};
         for(t.initial.ram) |cell| {c.dos64_reu_poke(f.machine,cell[0],@intCast(cell[1]));expected_ram[cell[0]]=@intCast(cell[1]);}

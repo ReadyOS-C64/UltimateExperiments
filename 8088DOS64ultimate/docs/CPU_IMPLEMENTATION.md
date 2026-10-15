@@ -1,5 +1,7 @@
 # Original-8088 execution checkpoint
 
+Current2026-10-15 five-overlay target adds original repaired-NMOS segment/STI shadows and asynchronous PIC acceptance, including actual callbacks at every eligible REP element. REP host quota remains16. See [timer/IRQ contract](TIMER_IRQ_IMPLEMENTATION.md) and [pinned root evidence](../agentworking/evidence/timer-graphics-integration-20261015.json). The reviewed full5701-case CPU executable is byte-identical to root. Older asynchronous-pending statements below describe historical checkpoints; trap/NMI/prefetch timing remains incomplete.
+
 Updated 2026-10-15 in `src/cpu.s`, `src/alu.s`, `src/operands.s`, `src/stack.s`, `src/strings.s`, `src/shifts.s`, `src/control.s`, `src/math.s`, `src/indirect.s`, `src/fetch.s`, `src/ports.s` and `src/adjust.s`. This is a functional execution checkpoint, not a complete 8088 or full native DOS machine. Target code is independently authored 6502 assembly and executes guest bytes through the coherent memory bus.
 
 ## Current interface and instructions

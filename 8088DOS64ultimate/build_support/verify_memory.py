@@ -23,9 +23,10 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
               "TESTCODE": (0x080D, 0x3FFF), "ZEROPAGE": (0x20, 0xDF),
               "DEVICECODE": (0x5000, 0x5FFF),
               "IMPORTCODE": (0x7000, 0x7FFF),
-              "COLDINIT": (0x7000,0x7FFF), "COLDRODATA": (0x7000,0x7FFF),
+              "COLDINIT": (0x7000,0x7FFF), "COLDRODATA": (0x7000,0x7FFF), "UNITCOLD": (0x7401,0x7FFF),
               "NATIVESTATE": (0x080D,0x3FFF), "INPUTCODE": (0xC900,0xCFFF),
               "UCIBUFFER": (0xC100, 0xC8FF),
+              "IRQMAIN":(0xC900,0xCFFF),"IRQDEVICE":(0xC900,0xCFFF),"PITCODE":(0xC900,0xCFFF),"GFXCODE":(0xC900,0xCFFF),
               "FILECODE": (0xC900, 0xCFFF), "RENDERCODE": (0xC900, 0xCFFF), "DISPLAYCODE": (0xC900,0xCFFF),
               "NARROWFONT": (0x4400,0x47FF), "FULLFONT": (0x4800,0x4FFF),
               "RANGEBUFFER": (0xC000, 0xC0FF), "BSS": (0xE000, 0xE0FF), "PAGEMAP": (0xE100, 0xE8FF),
@@ -44,7 +45,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     for index, seg in enumerate(segments):
         for other in segments[index+1:]:
             # Only these two separately emitted images may share a run window.
-            variant={"FILECODE":"FILE","RENDERCODE":"TEXT","DISPLAYCODE":"TEXT","INPUTCODE":"INPUT"}
+            variant={"FILECODE":"FILE","RENDERCODE":"TEXT","DISPLAYCODE":"TEXT","INPUTCODE":"INPUT","IRQMAIN":"PIT","IRQDEVICE":"PIT","PITCODE":"PIT","GFXCODE":"GFX"}
             exclusive_overlays = seg["name"] in variant and other["name"] in variant and variant[seg["name"]]!=variant[other["name"]]
             if not exclusive_overlays and max(seg['start'], other['start']) <= min(seg['end'], other['end']):
                 errors.append(f"Overlapping segments {seg['name']} and {other['name']}")
@@ -55,7 +56,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     runtime = "__DEVICE_START__" in symbols
     load = {"layout": "runtime" if runtime else "standalone", "start": 0x0801,
             "linked_file_bytes": sum(s["bytes"] for s in segments
-                                     if s["name"] in ("BASIC", "CODE", "RODATA", "TESTCODE", "DEVICECODE", "IMPORTCODE", "COLDINIT", "COLDRODATA", "NATIVESTATE", "NARROWFONT", "FULLFONT")),
+                                     if s["name"] in ("BASIC", "CODE", "RODATA", "TESTCODE", "DEVICECODE", "IMPORTCODE", "COLDINIT", "COLDRODATA", "UNITCOLD", "NATIVESTATE", "NARROWFONT", "FULLFONT")),
             "padding": [], "payload_checked": prg is not None}
     main_end = max((s["end"] + 1 for s in segments
                     if s["name"] in ("BASIC", "CODE", "RODATA", "TESTCODE", "NATIVESTATE")), default=0x0801)
@@ -88,7 +89,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
         if any(s["name"] in ("DEVICECODE", "UCIBUFFER") for s in segments):
             errors.append("Runtime-only segments require the contiguous runtime layout")
     overlays = {seg["name"]: seg for seg in segments
-                if seg["name"] in ("FILECODE", "RENDERCODE", "INPUTCODE")}
+                if seg["name"] in ("FILECODE", "RENDERCODE", "INPUTCODE","IRQMAIN","GFXCODE")}
     display=[x for x in segments if x["name"]=="DISPLAYCODE"]
     if overlays:
         renderer=overlays.get("RENDERCODE")
@@ -96,12 +97,21 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             errors.append("TEXT requires separate renderer and VIC display segments")
         else:
             part=display[0]
-            if renderer["bytes"]!=718 or part["bytes"]!=239 or part["start"]!=renderer["end"]+1:
-                errors.append("TEXT must be contiguous canonical718+239 bytes")
+            if renderer["bytes"]!=718 or part["bytes"]!=245 or part["start"]!=renderer["end"]+1:
+                errors.append("TEXT must be contiguous canonical718+245 bytes")
             for suffix,value in (("RUN",part["start"]),("LOAD",part["start"]),("SIZE",part["bytes"])):
                 if symbols.get("__DISPLAYCODE_"+suffix+"__")!=value:errors.append("DISPLAYCODE metadata mismatch")
             overlays["RENDERCODE"]={**renderer,"end":part["end"],"bytes":renderer["bytes"]+part["bytes"],"renderer_bytes":renderer["bytes"],"display_bytes":part["bytes"]}
     elif display:errors.append("DISPLAYCODE requires exclusive TEXT overlay")
+    if "IRQMAIN" in overlays:
+        members=[next((x for x in segments if x["name"]==name),None) for name in ("IRQMAIN","IRQDEVICE","PITCODE")]
+        if any(x is None for x in members):errors.append("PIT requires all three contiguous members")
+        else:
+            for index,member in enumerate(members):
+                for suffix,value in (("RUN",member["start"]),("LOAD",member["start"]),("SIZE",member["bytes"])):
+                    if symbols.get("__"+member["name"]+"_"+suffix+"__")!=value:errors.append("PIT member metadata mismatch")
+                if index and members[index-1]["end"]+1!=member["start"]:errors.append("PIT members must be contiguous")
+            overlays["IRQMAIN"]={**members[0],"end":members[-1]["end"],"bytes":sum(x["bytes"] for x in members),"first_member_bytes":members[0]["bytes"]}
     fonts=[x for x in segments if x["name"] in ("NARROWFONT","FULLFONT")]
     load["startup_fonts"]=[]
     if overlays and len(fonts)!=2:errors.append("Runtime requires both explicitly loaded non-executable fonts")
@@ -117,8 +127,8 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     if overlays:
         if not runtime:
             errors.append("Overlays require the runtime layout")
-        if len(overlays) != 3:
-            errors.append("All three FILE/TEXT/INPUT exclusive overlays are required")
+        if len(overlays) != 5:
+            errors.append("All five FILE/TEXT/INPUT/PIT/GFX exclusive overlays are required")
         device_end = load["end_exclusive"]
         if device_end > 0x6000:
             errors.append("Resident payload overlaps startup overlay sources")
@@ -128,7 +138,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
                                     "file_offset": device_end-0x0801+2, "value": 0})
         load["resident_end_exclusive"] = device_end
         load["end_exclusive"] = 0x7000
-        variants = (("FILECODE", "FILE", b"FILE"), ("RENDERCODE", "RENDER", b"TEXT"), ("INPUTCODE", "INPUT", b"KEYS"))
+        variants = (("FILECODE", "FILE", b"FILE"), ("RENDERCODE", "RENDER", b"TEXT"), ("INPUTCODE", "INPUT", b"KEYS"),("IRQMAIN","PIT",b"TIME"),("GFXCODE","GFX",b"CGA "))
         for index, (segment_name, area_name, tag) in enumerate(variants):
             if segment_name not in overlays:
                 continue
@@ -136,7 +146,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             fields = {f"__{area_name}_START__": 0xC900, f"__{area_name}_SIZE__": 0x700,
                       f"__{area_name}_FILEOFFS__": 0, f"__{area_name}_LAST__": seg["end"]+1,
                       f"__{segment_name}_LOAD__": 0xC900, f"__{segment_name}_RUN__": 0xC900,
-                      f"__{segment_name}_SIZE__": seg.get("renderer_bytes",seg["bytes"])}
+                      f"__{segment_name}_SIZE__": seg.get("renderer_bytes",seg.get("first_member_bytes",seg["bytes"]))}
             for name, value in fields.items():
                 if symbols.get(name) != value:
                     errors.append(f"{name}: expected ${value:04X}, got {symbols.get(name)}")
@@ -145,7 +155,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             if not 1 <= seg["bytes"] <= 0x700:
                 errors.append(f"{segment_name} payload size must fit the exclusive window")
                 continue
-            source = (0x6000,0x6800,0x8000)[index]
+            source = (0x6000,0x6800,0x8000,0x8800,0x9000)[index]
             item = {"name": segment_name, "startup_source": source,
                     "reu_slot": 0x340000+index*0x800, "slot_bytes": 0x800,
                     "payload_bytes": seg["bytes"], "run": 0xC900,
@@ -171,11 +181,17 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     load["cold_import"] = None
     if cold:
         seg = cold[0]
-        cold_parts=[item for item in segments if item["name"] in ("IMPORTCODE","COLDINIT","COLDRODATA")]
+        cold_parts=[item for item in segments if item["name"] in ("IMPORTCODE","COLDINIT","COLDRODATA","UNITCOLD")]
         cold_parts.sort(key=lambda item:item["start"])
         cold_end=max(item["end"]+1 for item in cold_parts)
-        if [item["name"] for item in cold_parts] != ["IMPORTCODE","COLDINIT","COLDRODATA"]:
+        if [item["name"] for item in cold_parts] not in (["IMPORTCODE","COLDINIT","COLDRODATA"], ["IMPORTCODE","COLDINIT","COLDRODATA","UNITCOLD"]):
             errors.append("Cold image must retain ordered IMPORT/BIOS-bootstrap/data parts")
+        unit = [item for item in cold_parts if item["name"] == "UNITCOLD"]
+        if unit:
+            if not 0x080D <= symbols.get("fixture_return",0) < 0x4000:
+                errors.append("Unit return sentinel must remain resident")
+            if not symbols.get("n_started") or not symbols.get("dos64_cold_open"):
+                errors.append("Unit cold fixture host guard requires resident startup ownership")
         for before,after in zip(cold_parts,cold_parts[1:]):
             if before["end"]+1!=after["start"]:
                 errors.append("Cold linked output contains an undeclared hole")
@@ -183,7 +199,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             for suffix,value in (("LOAD",item["start"]),("RUN",item["start"]),("SIZE",item["bytes"])):
                 if symbols.get("__"+item["name"]+"_"+suffix+"__")!=value:
                     errors.append("Cold segment metadata mismatch")
-        if not runtime or len(overlays) != 3:
+        if not runtime or len(overlays) != 5:
             errors.append("Cold importer requires runtime and both committed overlay source phases")
         fields = {"__IMPORT_START__": 0x7000, "__IMPORT_SIZE__": 0x1000,
                   "__IMPORT_FILEOFFS__": 0, "__IMPORT_LAST__": cold_end,
@@ -218,13 +234,13 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     elif import_payload is not None or symbols.get("__IMPORTCODE_SIZE__", 0):
         errors.append("Linked cold importer segment is missing")
     if "INPUTCODE" in overlays:
-        load["end_exclusive"]=0x8800
+        load["end_exclusive"]=0x9800
         state=[seg for seg in segments if seg["name"]=="NATIVESTATE"]
         native_runtime = "dos64_native_entry" in symbols
         initialized = b"\xa5\x00\x00" if native_runtime else b"\xa5\x00"
         if len(state)!=1 or state[0]["bytes"]!=len(initialized) or symbols.get("dos64_cold_open")!=state[0]["start"] or symbols.get("dos64_cold_error")!=state[0]["start"]+1:
             errors.append("Cold/native reload guards must be initialized resident state bytes")
-        elif native_runtime and symbols.get("n_started")!=state[0]["start"]+2:
+        elif native_runtime and (symbols.get("n_started")!=state[0]["start"]+2 or symbols.get("dos64_native_started")!=state[0]["start"]+2):
             errors.append("Native reload guard must follow cold-open/error state")
         elif prg is not None:
             offset=state[0]["start"]-0x0801+2
@@ -259,16 +275,18 @@ if __name__ == "__main__":
     parser.add_argument("--overlay-files", type=Path)
     parser.add_argument("--overlay-render", type=Path)
     parser.add_argument("--overlay-input",type=Path)
+    parser.add_argument("--overlay-pit",type=Path)
+    parser.add_argument("--overlay-gfx",type=Path)
     parser.add_argument("--import-code", type=Path)
     args = parser.parse_args()
     map_path = args.map
     prg_path = args.prg or map_path.with_suffix(".prg")
     payloads = None
-    if args.overlay_files or args.overlay_render or args.overlay_input:
-        if not (args.overlay_files and args.overlay_render and args.overlay_input):
+    if args.overlay_files or args.overlay_render or args.overlay_input or args.overlay_pit or args.overlay_gfx:
+        if not (args.overlay_files and args.overlay_render and args.overlay_input and args.overlay_pit and args.overlay_gfx):
             parser.error("All three linked overlay payload files are required")
         payloads = {"FILECODE": args.overlay_files.read_bytes(),
-                    "RENDERCODE": args.overlay_render.read_bytes(),"INPUTCODE":args.overlay_input.read_bytes()}
+                    "RENDERCODE": args.overlay_render.read_bytes(),"INPUTCODE":args.overlay_input.read_bytes(),"IRQMAIN":args.overlay_pit.read_bytes(),"GFXCODE":args.overlay_gfx.read_bytes()}
     report = verify(map_path.read_text(), args.labels.read_text(), prg_path.read_bytes(), payloads, args.import_code.read_bytes() if args.import_code else None)
     map_path.with_suffix(".memory.json").write_text(json.dumps(report, indent=2)+"\n")
     if report["errors"]:

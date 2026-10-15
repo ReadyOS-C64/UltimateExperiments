@@ -17,7 +17,7 @@ class ImageImportContract(unittest.TestCase):
         cls.cold = Path("build/dos64-tests-resident.prg.import.bin").read_bytes()
         cls.payloads = {"FILECODE": Path("build/dos64-tests-resident.prg.files.bin").read_bytes(),
                         "RENDERCODE": Path("build/dos64-tests-resident.prg.render.bin").read_bytes(),
-                        "INPUTCODE": Path("build/dos64-tests-resident.prg.input.bin").read_bytes()}
+                        "INPUTCODE": Path("build/dos64-tests-resident.prg.input.bin").read_bytes(),"IRQMAIN":Path("build/dos64-tests-resident.prg.pit.bin").read_bytes(),"GFXCODE":Path("build/dos64-tests-resident.prg.gfx.bin").read_bytes()}
 
     def check(self, **changes):
         args = dict(map_text=self.map, labels_text=self.labels, prg=self.prg,
@@ -41,14 +41,14 @@ class ImageImportContract(unittest.TestCase):
         self.assertTrue(r["passed"], r["errors"])
         cold = r["load"]["cold_import"]
         self.assertEqual(cold["start"], 0x7000)
-        self.assertEqual(cold["linked_bytes"], 2471)
+        self.assertEqual(cold["linked_bytes"], 3615)
         self.assertEqual(cold["state_bytes"], 26)
         self.assertTrue(cold["payload_checked"])
-        self.assertEqual(r["load"]["prg_bytes"], 32769)
+        self.assertEqual(r["load"]["prg_bytes"], 36865)
         self.assertEqual(self.prg[0x7000-0x801+2:0x7000-0x801+2+len(self.cold)], self.cold)
         self.assertEqual(self.prg[0x7000-0x801+2+len(self.cold):0x8000-0x801+2], bytes(4096-len(self.cold)))
         partial=append_import(self.prg[:0x7000-0x801+2],self.cold,self.labels)
-        self.assertEqual(append_input(partial,self.payloads["INPUTCODE"],self.labels)[0],self.prg)
+        self.assertEqual(append_input(partial,self.payloads["INPUTCODE"],self.labels)[0],self.prg[:0x8800-0x801+2])
 
     def test_every_linked_cold_byte_difference_is_detected(self):
         for index in range(len(self.cold)):

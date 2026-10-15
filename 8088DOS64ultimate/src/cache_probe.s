@@ -9,7 +9,11 @@ cache_probe_index: .res 2
 cache_probe_pointer: .res 2
 cache_probe_value: .res 1
 
+.ifdef DOS64_UNIT_COLD
+.segment "UNITCOLD"
+.else
 .segment "CODE"
+.endif
 ; Same native transaction on Peddle/VICE/physical C64U. Two frames force dirty
 ; eviction across the expanded REC seam; 1536 bytes at guest 07FD00..0802FF.
 ; Exports verified readback at host 6000..65FF. No physical timing claim.

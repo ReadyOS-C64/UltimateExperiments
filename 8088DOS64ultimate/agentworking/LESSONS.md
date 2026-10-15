@@ -55,3 +55,6 @@ Current overlays are exclusive native owners, not arbitrary function-pointer sto
 - Native observers must handle AH01 polling, not just AH00 blocking; pagination belongs to the active cursor. Convert bit masks to strict API booleans.
 - Retain KERNAL until the complete RAM NMI vector/CIA masks exist. Second SYS must reject before resetting live cold/import state.
 - Distinguish pre-load transport failure, native execution and verified REU restoration. Preserve the original failed report alongside independent recovery evidence.
+
+- Preserve REP's bounded host quota while checking real IRQ acceptance at every eligible element; period counts and guest BIOS ticks need not match.
+- Keep accepted physical binaries separate from newer Peddle targets, and reuse expensive gates only under exact reviewed executable/source identity.

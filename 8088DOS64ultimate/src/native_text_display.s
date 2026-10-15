@@ -35,7 +35,7 @@ nd_ddr: .res 1
 dos64_native_text_setup:
     ND_ENTER
     lda dos64_native_text_state+ND_READY
-    bne nd_ok
+    bne nd_apply
     lda $D011
     and #$7F
     sta dos64_native_text_state+ND_D011
@@ -51,11 +51,14 @@ dos64_native_text_setup:
     sta dos64_native_text_state+ND_D021
     lda $DD00
     sta dos64_native_text_state+ND_PRA
+    lda $DD02
+    sta dos64_native_text_state+ND_DDRA
+nd_apply:
+    lda $DD00
     and #$FC
     ora #2
     sta $DD00
     lda $DD02
-    sta dos64_native_text_state+ND_DDRA
     ora #3
     sta $DD02
     lda #0
