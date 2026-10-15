@@ -36,3 +36,9 @@
 5. A direct page map consumes 2 KiB before descriptors. Current BSS/map/frame metadata total 2,302 bytes, leaving 1,794 bytes including alignment gaps for future storage/control needs.
 6. Successful VICE eviction across a REC seam strengthens the mock evidence but does not measure physical stalls. Warm public byte reads already cost 221 host cycles, so future instruction fetch must exploit spans rather than call the full bus API for every byte indefinitely.
 7. C64U physical discovery succeeded through a Terminal-owned read-only client. Firmware is 3.14; the speed field is 64 but register-controlled turbo means the field alone does not prove current speed. Preserve actual configuration and overwritten REU bytes before a test program.
+
+## 2026-10-14 — physical recovery and firmware options
+
+- Native backup/restore, independent REU re-read and configuration comparison made the failed first physical attempt recoverable. Keep these before/after checks for future hardware tests.
+- Firmware speed options can contain leading spaces. `1` produced HTTP 400; ` 1` is the advertised valid value. Normalize only for matching, then send the original advertised string.
+- A successful physical integrity matrix does not measure effective elapsed CPU/DMA throughput. Preserve that distinction in results.

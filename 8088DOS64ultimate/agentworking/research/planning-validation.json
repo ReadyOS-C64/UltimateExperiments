@@ -1,7 +1,7 @@
 {
   "scope": "planning-artifact checks only, no emulator/runtime validation",
-  "markdown_files": 26,
-  "local_links_checked": 53,
+  "markdown_files": 28,
+  "local_links_checked": 57,
   "host_bytes": 65536,
   "reu_bytes": 4194304,
   "reference_images": [

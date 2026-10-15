@@ -18,6 +18,8 @@ report = {"scope": "read-only C64U discovery, no machine/media changes", "host":
           "started_utc": datetime.now(timezone.utc).isoformat(), "pid": os.getpid(), "requests": {}}
 routes = {"version": "version", "info": "info", "drives": "drives",
           "turbo": "configs/U64%20Specific%20Settings",
+          "turbo-options": "configs/U64%20Specific%20Settings/Turbo%20Control",
+          "speed-options": "configs/U64%20Specific%20Settings/CPU%20Speed",
           "machine": "configs/C64%20and%20Cartridge%20Settings"}
 for label, route in routes.items():
     try:

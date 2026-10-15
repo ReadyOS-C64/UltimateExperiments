@@ -2,7 +2,7 @@
 
 Planning and implementation of a C64 Ultimate program that boots the supplied **real MS-DOS 3.3**, emulates the 8086/8088 instruction set, and provides 640 KiB of conventional PC memory through the REU. Target hardware is the user's 64 MHz C64U with **4 MiB or larger REU**.
 
-**Status: implementation underway; assembly foundation, REU primitive and coherent guest byte cache verified.** `make test` runs 41 Zig/Peddle behavior tests and 10 tooling tests. Shared REU and cache probes pass Peddle and VICE, with independently verified captured bytes. Physical read-only discovery succeeded on firmware 3.14; hardware probe/timing and target DOS boot remain future milestones. The supplied disk boots in DOSBox-X and reports MS-DOS 3.30.
+**Status: implementation underway; assembly foundation, REU primitive and coherent guest byte cache verified.** `make test` runs 42 Zig/Peddle behavior tests and 15 tooling tests. Shared probes pass Peddle/VICE; the cache probe also passes physical C64U at 1/16/64 MHz settings with verified readback and REU/configuration restoration. Calibrated timing and target DOS boot remain future milestones. The supplied disk boots in DOSBox-X and reports MS-DOS 3.30.
 
 Compatibility targets the **original 8088 and IBM PC/XT**, with the shared 8086 instruction set. Existing 8086 implementations are references; they do not define our CPU profile or reduce the required functionality.
 
@@ -14,6 +14,7 @@ make test-reference   # slower disposable real-DOS boot in installed DOSBox-X
 make probe            # standalone REU integrity PRG and symbol-based VICE plan
 make test-vice        # slower VICE run plus independent captured-byte checks
 make test-cache-vice  # slower coherent-cache probe with forced dirty eviction
+make hardware-helpers # prepare physical backup/restore/cache probe images
 ```
 
 Tool overrides: `DOS64_ZIG`, `DOS64_CA65`, `DOS64_LD65`, `DOS64_PYTHON`, `DOS64_DOSBOX`. Zig defaults to the sibling pinned 0.16.0 tooling, then PATH. Build outputs and identity manifest are in `build/`; reference-run evidence is retained in project-local `agentworking/runs/`.

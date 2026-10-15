@@ -234,3 +234,19 @@ test "4 8 and 16 MiB capacity models reach their last bank with actual DMA assem
     }
     try std.testing.expectEqual(@as(u8,0),c.dos64_enable_reu_sized(f.machine,512));
 }
+
+test "hardware envelope helper backs up and restores both sides of REC seam exactly" {
+    var f = try Fixture.init(); defer f.deinit();
+    c.dos64_enable_reu(f.machine);
+    for (0..2050) |i| c.dos64_reu_poke(f.machine,0x7fbff+@as(u32,@intCast(i)),@truncate(i*19+7));
+    _ = try f.call("dos64_reu_backup",5000);
+    try f.expectStatus(0xa5);
+    for (0..2048) |i| {
+        try std.testing.expectEqual(@as(u8,@truncate((i+1)*19+7)),f.peek(0x6000+@as(u16,@intCast(i))));
+        c.dos64_reu_poke(f.machine,0x7fc00+@as(u32,@intCast(i)),0);
+    }
+    _ = try f.call("dos64_reu_restore",5000);
+    try f.expectStatus(0xa5);
+    for (0..2050) |i| try std.testing.expectEqual(@as(u8,@truncate(i*19+7)),c.dos64_reu_peek(f.machine,0x7fbff+@as(u32,@intCast(i))));
+    try std.testing.expectEqual(@as(u64,4),c.dos64_dma_transfers(f.machine));
+}

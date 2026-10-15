@@ -2,8 +2,14 @@
 .import dos64_guest, dos64_mailbox, dos64_cpu_reset
 .ifdef DOS64_PROBE
 .import dos64_reu_probe
-.else
+.endif
+.if .defined(DOS64_SNAPSHOT)
+.import dos64_reu_backup, dos64_reu_restore
+.endif
+.ifndef DOS64_PROBE
+.ifndef DOS64_SNAPSHOT
 .import dos64_cache_init, dos64_cache_limit
+.endif
 .endif
 .ifdef DOS64_CACHE_PROBE
 .import dos64_cache_probe
@@ -30,9 +36,11 @@ dos64_entry:
     sta $01
     jsr dos64_cpu_reset
 .ifndef DOS64_PROBE
+.ifndef DOS64_SNAPSHOT
     lda #32
     sta dos64_cache_limit
     jsr dos64_cache_init
+.endif
 .endif
     lda #0
     ldx #MB_SIZE-1
@@ -51,6 +59,13 @@ dos64_entry:
 .endif
 .ifdef DOS64_CACHE_PROBE
     jsr dos64_cache_probe
+.endif
+.ifdef DOS64_SNAPSHOT
+.ifdef DOS64_RESTORE
+    jsr dos64_reu_restore
+.else
+    jsr dos64_reu_backup
+.endif
 .endif
 dos64_idle:
     jmp dos64_idle

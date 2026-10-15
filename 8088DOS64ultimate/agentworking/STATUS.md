@@ -36,7 +36,7 @@ Updated: 2026-10-14, America/Los_Angeles.
 
 ## What is not established
 
-The target still has no guest interpreter, BIOS, UCI/file backend or target DOS boot. Physical C64U integrity/timing and XT performance remain unmeasured. The reference DOSBox process was stopped after its guest output files closed; this is not a clean-storage-shutdown test. Original CONFIG diagnostics were not captured as screen text.
+The target still has no guest interpreter, BIOS, UCI/file backend or target DOS boot. Physical C64U timing and XT performance remain unmeasured. The reference DOSBox process was stopped after its guest output files closed; this is not a clean-storage-shutdown test. Original CONFIG diagnostics were not captured as screen text.
 
 ## Verified implementation slice: REU primitive
 
@@ -63,3 +63,9 @@ The full-system memory allocation, final page size and performance thresholds re
 [NEXT_SLICE](NEXT_SLICE.md), then [PLAN](../docs/PLAN.md), [TESTING](../docs/TESTING.md), [DECISIONS](DECISIONS.md). Implementation is authorized; preserve user clarifications and proceed in verified slices.
 
 Existing unrelated ReadyFS edits and the large dirty sibling ZeroPage checkout were left unchanged. Root `agentworking` was not written. Project `.gitignore` overrides the parent's working-record ignore so these planning records can be versioned; scratch/runs remain ignored.
+
+## Verified physical cache slice
+
+- Native cache probe passed at manual 1/16/64 MHz settings on firmware 3.14. All 1,536 bytes and uploaded executable identity verified. Exact prior REU page envelope 07FC00–0803FF was backed up, restored and byte-compared; machine/turbo/media configuration matched before/after. [Evidence](evidence/c64u-cache-20261014.json), [procedure and limits](../docs/HARDWARE_TESTING.md).
+- Latest fast checks: 42 Zig/Peddle + 15 tooling tests. Native backup/restore is tested across the bank seam; workflow tests cover cleanup on failure and firmware-padded speed options.
+- First hardware run failed with HTTP 400 because `1` did not match the advertised ` 1` option. Recovery succeeded; corrected mapping and subsequent full matrix passed. No calibrated timing or DOS boot claim.

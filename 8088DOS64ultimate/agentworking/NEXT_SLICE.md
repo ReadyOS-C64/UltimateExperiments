@@ -2,7 +2,8 @@
 
 Foundation, REU primitive, 20-bit addressing and coherent byte cache are verified in Peddle; shared DMA/cache probes pass VICE. Continue the full plan with local commits and no pushes. Target remains original 8088 / XT, assembly runtime, Zig/Peddle assertions and minimum 4 MiB REU.
 
-1. Physical read-only discovery succeeded at 10.0.0.79 (firmware 3.14, FPGA 121, core 1.47, REU 16 MB). Recheck before mutation, preserve current config/media and RAM recovery evidence, back up guest REU envelope 07FC00–0803FF through a bounded native DMA helper, then run the existing cache probe. Restore and verify the REU envelope and configuration. Keep raw hardware artifacts project-local/owned. RAM capture is not an execution snapshot; do not claim the old program resumes after reset. Record effective turbo control explicitly; configured 64 alone is not measured speed.
+1. Physical integrity at 1/16/64 MHz has now passed with verified REU/configuration recovery. Reuse the documented Terminal-owned runner only when target behavior warrants another slow run. Calibrated timer/DMA measurements remain outstanding; do not infer throughput from REST timing.
+
 2. Freeze original-8088 multi-byte operand behavior from hardware vectors/primary manuals before a read16 fast path. Segment/IP updates and 20-bit wrap are already implemented separately. Pin the imported corpus and its license.
 3. Start actual CPU execution through the memory API: instruction fetch, prefixes/ModR/M, arithmetic/flags and a bounded single-step interface. Build small guest programs and original-8088 instruction cases around linked assembly. Expand toward executing the supplied boot sector and synthetic BIOS; no native DOS INT 21h replacement.
 4. Add coherent range access for later BIOS disk reads/writes and ROM loading before using any direct REU path. Grow DOS image helpers as integration fixtures need them. Preserve originals and own all mutation clones.
