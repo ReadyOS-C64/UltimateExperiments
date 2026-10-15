@@ -1,5 +1,8 @@
 .include "abi.inc"
 .import dos64_guest, dos64_mailbox, dos64_cpu_reset
+.ifdef DOS64_PROBE
+.import dos64_reu_probe
+.endif
 .export dos64_entry, dos64_idle
 
 .segment "LOADADDR"
@@ -33,5 +36,8 @@ dos64_entry:
     sta dos64_mailbox+MB_STATUS
     lda #5
     sta $D020
+.ifdef DOS64_PROBE
+    jsr dos64_reu_probe
+.endif
 dos64_idle:
     jmp dos64_idle

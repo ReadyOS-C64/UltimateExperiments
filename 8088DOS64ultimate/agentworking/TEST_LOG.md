@@ -37,3 +37,15 @@ Working directory: this project root. Commands: `make test`; `python3 build_supp
 - Reference boot passed: `agentworking/runs/reference-20261014-220319/result.json`; compact retained evidence `agentworking/evidence/dosbox-reference-20261014.json`. Real guest output: MS-DOS Version 3.30; DIR lists supplied utilities. Original hash unchanged. DOSBox-X logged its 8086 CPU mode as experimental, so it remains a functional reference, not CPU conformance/timing proof.
 - `build/manifest.json` captures actual tool binaries/versions and source/output hashes; vendored Peddle archive/files checked against its pinned upstream commit.
 - Not run: VICE or physical C64U; no guest interpreter, REU/UCI, target boot or XT performance claim.
+
+## 2026-10-14 — REU primitive and shared integrity probe
+
+Working directory: this project root. Commands: `make test`; `make test-vice`; `python3 build_support/vice_probe.py --verify-existing logs/vice_auto_20261014_222223 --evidence agentworking/evidence/reu-vice-20261014.json`.
+
+- Final fast pass: **26/26 Zig/Peddle**, 912 ms warm execution; **9/9 Python tooling** (four linker, five capture-verifier). Includes 4/8/16 MiB final-bank actual-assembly transfers. Tools remain Zig 0.16.0, ca65/ld65 V2.18 and Peddle `c23e34a7e6516b284750b8c7caaa8c41948a407a`; exact binary/source/output hashes in `build/manifest.json`.
+- Runtime CODE 255, BSS 46, ZP 4, BASIC 12, header 2. Probe CODE 416, BSS 46, ZP 6; PRG SHA-256 `a1e277d2ed8bfad12796efa4a54eec3b4e57e355086b228c030dd9ccb2d3291e`.
+- First VICE attempt failed required plan-schema retry_policy validation; fixed generator. Run `logs/vice_auto_20261014_222223` then succeeded, five steps; completion assertion needed two attempts, error zero. Config: established .NET x64sc harness, headless/warp, 16,384 KiB REU, virtual drives disabled. No physical C64U access.
+- Rechecked existing capture without another slow run: all 4,096 restored bytes match pattern; captured executable equals current PRG. Restored SHA-256 `544a424fc1268f07738317486fd59978ebb6b3107c2ef80caacc2afe60b64f1e`. Tracked record `agentworking/evidence/reu-vice-20261014.json`; full manifest/state/dumps retained in ignored logs.
+- Capture-verifier negative tests reject corruption with a passing mailbox, failed mailbox, partial run and stale executable. These test acceptance reliability, not extra target functionality.
+- Mock checked against pinned VICE source, but one VICE integrity vector does not validate all modeled edges. IRQ/compare/swap/deferred DMA and unknown CIA/VIC fail explicitly. No physical/DMA timing, UCI/storage/cache/interpreter/target DOS boot or XT-speed result claimed.
+- NES86 source inspection pinned to `d72debaa0a5daed533d994e087fa2963e1793820`. Downloads only in ignored scratch; no runtime code copied. License/adaptation boundaries in `docs/EXISTING_EMULATORS.md`.

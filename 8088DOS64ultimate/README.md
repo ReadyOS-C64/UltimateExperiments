@@ -1,14 +1,18 @@
 # 8088DOS64ultimate
 
-Planning package for a C64 Ultimate program that boots the supplied **real MS-DOS 3.3**, emulates the 8086/8088 instruction set, and provides 640 KiB of conventional PC memory through the REU. Target hardware is the user's 64 MHz C64U with a 16 MiB REU.
+Planning and implementation of a C64 Ultimate program that boots the supplied **real MS-DOS 3.3**, emulates the 8086/8088 instruction set, and provides 640 KiB of conventional PC memory through the REU. Target hardware is the user's 64 MHz C64U with **4 MiB or larger REU**.
 
-**Status: implementation underway; assembly/Zig/Peddle foundation verified.** `make test` assembles the target and runs 10 Zig/Peddle behavior tests plus 4 linker-contract tests. The supplied DOS disk boots in DOSBox-X and reports MS-DOS 3.30. Target-emulator DOS boot and physical C64U performance remain future milestones.
+**Status: implementation underway; assembly foundation and REU primitive verified.** `make test` assembles the target and runs 26 Zig/Peddle behavior tests, 4 linker-contract tests and 5 capture-verifier tests. The shared 4 KiB REU probe passes Peddle and VICE. The supplied DOS disk boots in DOSBox-X and reports MS-DOS 3.30. Target-emulator DOS boot and physical C64U performance remain future milestones.
+
+Compatibility targets the **original 8088 and IBM PC/XT**, with the shared 8086 instruction set. Existing 8086 implementations are references; they do not define our CPU profile or reduce the required functionality.
 
 The target uses **6502/6510 assembly** via ca65/ld65. **Host Zig tests execute the assembled code in Peddle and assert its behavior**, following the existing ZeroPage project. This incorporates the user's two planning clarifications on 2026-10-14.
 
 ```sh
 make test             # fast assembly, memory checks, tooling and Zig/Peddle tests
 make test-reference   # slower disposable real-DOS boot in installed DOSBox-X
+make probe            # standalone REU integrity PRG and symbol-based VICE plan
+make test-vice        # slower VICE run plus independent captured-byte checks
 ```
 
 Tool overrides: `DOS64_ZIG`, `DOS64_CA65`, `DOS64_LD65`, `DOS64_PYTHON`, `DOS64_DOSBOX`. Zig defaults to the sibling pinned 0.16.0 tooling, then PATH. Build outputs and identity manifest are in `build/`; reference-run evidence is retained in project-local `agentworking/runs/`.
@@ -21,7 +25,7 @@ Tool overrides: `DOS64_ZIG`, `DOS64_CA65`, `DOS64_LD65`, `DOS64_PYTHON`, `DOS64_
 4. [Tests and acceptance](docs/TESTING.md) — Zig/Peddle, PC references, VICE, real C64U, DOS utilities.
 5. [Performance experiments](docs/PERFORMANCE.md) — what must be measured before promising XT speed.
 
-Details: [storage](docs/STORAGE.md), [display and keyboard](docs/DISPLAY_INPUT.md), [research and sources](docs/RESEARCH.md), [requirements coverage](docs/REQUIREMENTS.md).
+Details: [storage](docs/STORAGE.md), [display and keyboard](docs/DISPLAY_INPUT.md), [research and sources](docs/RESEARCH.md), [existing emulator references](docs/EXISTING_EMULATORS.md), [REU implementation](docs/REU_IMPLEMENTATION.md), [requirements coverage](docs/REQUIREMENTS.md).
 
 ## Main decisions proposed
 

@@ -13,7 +13,7 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D07 | Proposed | Functional original-8088 profile for shared 8086 ISA; no cycle-accurate prefetch initially | DOS compatibility and limited host resources; explicit conformance exclusions |
 | D08 | Proposed | Eager flags/simple interpreter first; optimize measured hot paths | Independent tests before lazy flags/predecode complexity |
 | D09 | User requirement; implementation proposed | 640 KiB guest RAM, whole floppy images in REU | A single coherent physical cache; 16 KiB host frames and 512-byte initial candidate, page size selected by M1/M2 |
-| D10 | Proposed | Require 16 MiB REU for v1 | Straightforward fixed arenas, two floppy slots and HD cache; lower-memory profile is not assumed |
+| D10 | Superseded by D22 | Initial 16 MiB minimum proposal | User clarified 4 MiB or larger on 2026-10-14 |
 | D11 | User requirement | HD backed by file and cached extents; ~2 MiB first, then 20 MiB | 32-bit file offsets separate from 24-bit REU addresses; force eviction even on small fixture |
 | D12 | Proposed | Floppy session writes plus explicit verified save/export; HD write-through first | Clear persistence semantics and limited recovery complexity; do not promise power-fail atomicity |
 | D13 | User requirement / proposed boundary | Keyboard, 40/80 text, manageable CGA modes 4/5/6; no extra peripherals | Exact guest state, approximate C64 rendering; minimal timer/ports still required |
@@ -25,6 +25,10 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D19 | Proposed | Track planning records with a local ignore override; keep scratch/runs generated | Parent repository ignores agentworking everywhere; continuation records should survive a clean clone |
 | D20 | User requirement, 2026-10-14 | Implement progressively; commit verified slices locally; never push | Active thread goal authorizes implementation and local Git commits |
 | D21 | Implemented, 2026-10-14 | Advance Peddle clock explicitly per microcycle, with bounded stepping | Upstream core delegates clock advancement to embedding application; 8-cycle LDA/RTS assertion verifies bridge |
+| D22 | User requirement, 2026-10-14 | 4 MiB minimum REU; allow larger capacities | Budget guest RAM, complete floppy images, HD cache, overlays/staging within baseline; extra memory is optional |
+| D23 | Implemented, 2026-10-14 | Restrict DMA primitive to one REU 64 KiB bank | Avoid expanded-REC 512 KiB counter wrap; range operations must split and reload bank explicitly |
+| D24 | User clarification, 2026-10-14 | Original 8088 / IBM PC XT is the CPU/machine target | Shared 8086 ISA makes other cores useful references; no shift to 8086 timing or 80186 extensions |
+| D25 | User direction, 2026-10-14 | Requirements govern implementation regardless of reference availability | NES86 provides useful 6502 techniques; research neither constrains scope nor makes progress depend on reusable source |
 
 ## Clarification history
 

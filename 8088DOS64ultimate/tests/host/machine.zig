@@ -7,6 +7,7 @@ pub const Fixture = struct {
     labels: []u8,
     last_regs: ?c.Dos64Regs = null,
     stack_high_water: u8 = 0,
+    initial_status: u8 = 0x24,
 
     pub fn init() !Fixture {
         const bytes = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests.prg", allocator, .limited(65538));
@@ -47,7 +48,7 @@ pub const Fixture = struct {
         self.poke(0x1ff, @intCast(return_address >> 8));
         self.poke(0x1fe, @truncate(return_address));
         c.dos64_clear_writes(self.machine);
-        c.dos64_set_regs(self.machine, .{ .pc = try self.symbol(entry), .sp = 0xfd, .a = 0x71, .x = 0x82, .y = 0x93, .p = 0x24, .cycles = 0, .instructions = 0 });
+        c.dos64_set_regs(self.machine, .{ .pc = try self.symbol(entry), .sp = 0xfd, .a = 0x71, .x = 0x82, .y = 0x93, .p = self.initial_status, .cycles = 0, .instructions = 0 });
         const start = c.dos64_get_regs(self.machine).cycles;
         while (true) {
             const regs = c.dos64_get_regs(self.machine);

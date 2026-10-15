@@ -1,13 +1,21 @@
-# Next bounded slice: REU transfer contract and measurement probe
+# Next bounded slice: guest physical addressing and coherent paging
 
-M0 foundation is verified. Continue implementing the full plan; user authorized local commits and no pushes.
+M0 and the REU functional primitive are verified. Continue the full plan with local commits and no pushes. Target is original 8088 / XT, assembly runtime, Zig/Peddle assertions and minimum 4 MiB REU.
 
-1. Implement a bounded assembly REU transfer interface with explicit addresses/counts and bank/IRQ preservation. Keep all used register semantics documented.
-2. Build a register-level REU model in the project Peddle bridge, checking the relevant original/VICE/Ultimate semantics rather than inheriting simplified sibling shims blindly.
-3. Zig tests execute the real transfer routine for round trips, unaligned/cross-bank ranges, 64 KiB length encoding, fixed-address modes if used, register/status postconditions, and rejected ranges. DMA cycle cost remains separate from CPU cycle counts.
-4. Add host benchmark summaries for setup/transfer/translation candidates. Prepare the same vectors as a standalone physical/VICE probe, then inventory the actual C64U firmware/configuration using existing harness controls before scheduling its slower run.
-5. Continue into the guest 20-bit address helpers and coherent page cache. Preserve whole-image and real-DOS scope; no native INT 21h replacement.
+1. Implement segment-base/offset to 20-bit physical-address helpers and independently test aliases, carry and 1 MiB wrap. Keep multi-byte boundary policy explicit; check original-8088 hardware vectors/manuals before selecting it. An 8086/C reference's linear word load is not proof.
+2. Implement a coherent REU-backed page cache before instruction decode. Cover clean/dirty eviction, physical aliases, pinned frames, failures and metadata ownership. Start with 512-byte candidate pages; do not present that as a measured optimum. Enforce REU capacity/ownership above the trusted primitive.
+3. Inventory actual C64U firmware/configuration through the established Terminal-owned harness workflow, then run the shared probe preserving prior state and using owned paths. A default host in another project is not proof of current configuration. Add elapsed-time measurements after calibrating timer behavior at turbo speeds.
+4. Add host CPU setup-cycle summaries separate from mock DMA bytes/stalls; compare page sizes and interpreter costs as real routines become available. Do not infer physical 64 MHz speed from Peddle CPU clocks.
+5. Grow DOS image helpers (inventory/list/extract/geometry/check), then safe owned-clone mutations when integration fixtures require them. Current inventory and DOSBox reader are not complete general disk helpers. Preserve actual DOS boot scope; no native INT 21h replacement.
 
-Normal loop: `make test`; use the slower `make test-reference` only when reference fixtures/workflow change. Existing reference boot is recorded in `agentworking/evidence/dosbox-reference-20261014.json` and raw run files remain under `agentworking/runs/reference-20261014-220319`.
+Before CPU design consult [existing emulator references](../docs/EXISTING_EMULATORS.md). NES86 supplies useful techniques; implement required behavior regardless of reference coverage. Substantial reuse requires pinning, notices, explicit license treatment and independent tests.
 
-Foundation limitations: ordinary-RAM Peddle bus; no C64 ROM/banking/IRQ timing, REU/UCI behavior, guest instructions or target DOS boot yet. Budget failures retain last host registers and stack high-water; richer guest traces come with the interpreter.
+Normal loop: `make test` (26 Zig/Peddle + nine tooling tests at this checkpoint). Use `make test-reference` when reference fixtures/workflow change; `make test-vice` when DMA/banking/probe behavior changes. Existing VICE results can be rechecked without a new slow run:
+
+```sh
+python3 build_support/vice_probe.py --verify-existing logs/vice_auto_20261014_222223
+```
+
+The checker rejects mismatched executable bytes; retain/rebuild the corresponding probe before checking old evidence. Compact results are tracked in `agentworking/evidence/`; raw DOSBox runs and VICE logs stay ignored here.
+
+Limits: ROM sentinels are a banking test aid, not executable ROM; unknown I/O fails; DMA does not stall the mock CPU. The primitive depends on its future caller for splitting and allocator ownership. No guest instructions, UCI protocol, target boot or physical performance result exists. Budget failures retain last host registers and stack high-water; richer guest traces come with the interpreter.

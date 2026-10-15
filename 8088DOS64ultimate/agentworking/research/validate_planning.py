@@ -42,7 +42,7 @@ def verify_ranges(label, ranges, size):
         errors.append(f"{label} wrong total {cursor}")
 
 verify_ranges("host", host, 65536)
-verify_ranges("REU", reu, 16777216)
+verify_ranges("REU", reu, 4194304)
 if 0x4000 // 16384 != 0x6000 // 16384:
     errors.append("VIC matrix/bitmap bank mismatch")
 

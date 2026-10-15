@@ -1,16 +1,23 @@
 #include "peddle_bridge.h"
 #include "Peddle.h"
+#include "reu_model.h"
 #include <array>
 #include <algorithm>
 #include <cstring>
+#include <memory>
 
 class Machine : public peddle::Peddle {
 public:
     std::array<uint8_t, 65536> ram{};
     std::array<uint8_t, 65536> written{};
+    std::array<uint8_t, 4096> io{};
     uint64_t instructions = 0;
     bool unsupported = false;
-    Machine() { setModel(peddle::MOS_6510); reset(); reg.sp = 0xff; }
+    std::unique_ptr<ReuModel> reu;
+    Machine() {
+        setModel(peddle::MOS_6510); reset(); reg.sp = 0xff;
+        reg.pport.direction = 0x2f; reg.pport.data = 0x35;
+    }
     void setRegs(Dos64Regs r) {
         reg.pc = r.pc; reg.pc0 = r.pc; next = peddle::fetch;
         reg.sp = r.sp; reg.a = r.a; reg.x = r.x; reg.y = r.y; setP(r.p);
@@ -33,24 +40,45 @@ public:
     uint8_t peek(uint16_t a) const {
         if (a == 0) return reg.pport.direction;
         if (a == 1) return reg.pport.data;
+        if (a == 0xd020) return io[0x20];
         return ram[a];
     }
+    uint8_t busRead(uint16_t a) { return read(a); }
+    void busWrite(uint16_t a, uint8_t v) { write(a,v); }
 protected:
+    uint8_t externalPortBits() const override { return 0xff; }
     void writePort(uint8_t v) override {
         peddle::Peddle::writePort(v); ram[1] = v; written[1] = 1;
     }
     void writePortDir(uint8_t v) override {
         peddle::Peddle::writePortDir(v); ram[0] = v; written[0] = 1;
     }
-    // Foundation bus: ordinary RAM and border register only. REU/UCI access is
-    // explicitly unsupported until its register contract is implemented.
+    // Banking subset: BASIC/KERNAL/character ROM return recognizable sentinels,
+    // not executable ROMs. It catches data hidden by a wrong $00/$01 mapping.
     peddle::u8 read(peddle::u16 a) override {
-        if (a >= 0xdf00 && a <= 0xdf1f) unsupported = true;
+        const auto port = readPort();
+        if (a >= 0xa000 && a <= 0xbfff && (port & 3) == 3) return 0xba;
+        if (a >= 0xe000 && (port & 2)) return 0xea;
+        if (a >= 0xd000 && a <= 0xdfff && (port & 3)) {
+            if (!(port & 4)) return 0xcc;
+            if (a >= 0xdf00 && a <= 0xdf0a && reu) return reu->read(a-0xdf00);
+            if (a != 0xd020) unsupported = true;
+            return io[a-0xd000];
+        }
         return ram[a];
     }
     void write(peddle::u16 a, peddle::u8 v) override {
-        if (a >= 0xdf00 && a <= 0xdf1f) unsupported = true;
-        ram[a] = v; written[a] = 1;
+        const auto port = readPort();
+        written[a] = 1;
+        if (a >= 0xd000 && a <= 0xdfff && (port & 3) && (port & 4)) {
+            if (a >= 0xdf00 && a <= 0xdf0a && reu) {
+                reu->write(a-0xdf00, v, ram, written); return;
+            }
+            if (a != 0xd020) unsupported = true;
+            io[a-0xd000] = v;
+            return;
+        }
+        ram[a] = v;
     }
     peddle::u8 readDasm(peddle::u16 a) const override { return ram[a]; }
 };
@@ -72,4 +100,15 @@ Dos64Regs dos64_get_regs(const Dos64Machine *m) {
 void dos64_step(Dos64Machine *m) { m->cpu.step(); }
 void dos64_clear_writes(Dos64Machine *m) { m->cpu.written.fill(0); }
 uint8_t dos64_was_written(const Dos64Machine *m, uint16_t a) { return m->cpu.written[a]; }
-uint8_t dos64_model_fault(const Dos64Machine *m) { return m->cpu.unsupported; }
+uint8_t dos64_model_fault(const Dos64Machine *m) { return m->cpu.unsupported || (m->cpu.reu && m->cpu.reu->unsupported); }
+void dos64_enable_reu(Dos64Machine *m) { m->cpu.reu = std::make_unique<ReuModel>(); }
+uint8_t dos64_enable_reu_sized(Dos64Machine *m, uint32_t size_kib) {
+    if (size_kib != 4096 && size_kib != 8192 && size_kib != 16384) return 0;
+    m->cpu.reu = std::make_unique<ReuModel>(size_kib); return 1;
+}
+void dos64_reu_poke(Dos64Machine *m, uint32_t a, uint8_t v) { m->cpu.reu->bytes.at(a) = v; }
+uint8_t dos64_reu_peek(const Dos64Machine *m, uint32_t a) { return m->cpu.reu->bytes.at(a); }
+uint8_t dos64_bus_read(Dos64Machine *m, uint16_t a) { return m->cpu.busRead(a); }
+void dos64_bus_write(Dos64Machine *m, uint16_t a, uint8_t v) { m->cpu.busWrite(a,v); }
+uint64_t dos64_dma_bytes(const Dos64Machine *m) { return m->cpu.reu ? m->cpu.reu->dma_bytes : 0; }
+uint64_t dos64_dma_transfers(const Dos64Machine *m) { return m->cpu.reu ? m->cpu.reu->transfers : 0; }

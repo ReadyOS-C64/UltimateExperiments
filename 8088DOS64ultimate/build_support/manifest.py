@@ -17,7 +17,7 @@ for name, command in vars(args).items():
                              capture_output=True, check=True, text=True)
     report["tools"][name] = {"path": str(path), "version": (version.stdout+version.stderr).strip(),
                              "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
-for pattern in ("Makefile", "build.zig", "build_support/*.py", "src/*.s", "include/*.inc", "cfg/*.cfg", "tests/host/*", "tests/fixtures/*", "reference/*.img", "build/*.prg"):
+for pattern in ("Makefile", "build.zig", "build_support/*.py", "src/*.s", "include/*.inc", "cfg/*.cfg", "tests/host/*", "tests/fixtures/*", "tests/tooling/*.py", "reference/*.img", "build/*.prg"):
     for path in sorted(Path().glob(pattern)):
         if path.is_file():
             report["files"][str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()

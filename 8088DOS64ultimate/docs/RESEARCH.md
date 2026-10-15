@@ -8,7 +8,7 @@ Inspected 2026-10-14 (America/Los_Angeles). Distinguish **local observation**, *
 |---|---|---|
 | Project contents | Three `.img` files in `reference/`; no emulator implementation | No existing project architecture to preserve |
 | Disk size/BPB | All 368,640 bytes, FAT12, 512-byte sectors, 2 sectors/cluster, 720 sectors, 9 sectors/track, 2 heads; 55AA boot trailer | First storage profile is 360 KiB, 40-cylinder floppy; fits inside D81 SEQ file |
-| Disk 1 | IO.SYS, MSDOS.SYS, COMMAND.COM, DOS tools and CONFIG.SYS | Primary boot fixture; actual DOS version still needs boot/VER confirmation |
+| Disk 1 | IO.SYS, MSDOS.SYS, COMMAND.COM, DOS tools and CONFIG.SYS; subsequent cloned DOSBox boot reports MS-DOS 3.30 | Primary boot fixture; retain original CONFIG behavior |
 | Disk 2 | Utility files, no IO.SYS/MSDOS.SYS/COMMAND.COM | Data/utility disk, not independently bootable from these files |
 | Disk 3 | DOS system binaries hash-identical to disk 1, GWBASIC.EXE, HDFORM/HDPARK; different boot sector/OEM bytes | Later BASIC/CGA fixture; do not infer version/validity from OEM string |
 | Configuration | Disk 1 contains `c:` and `device=c:\dos\ansi.sys`; disk 3 includes `config.sys` and `control-c` lines | Observe original diagnostics; use separately hashed minimal/driver test copies |
@@ -62,6 +62,8 @@ Additional authoritative references identified for detailed implementation: [Int
 | “Zig” target | User clarified assembly; host Zig provides tests, generators and assertions. ZeroPage remains the example testing workflow |
 
 ## Open research to close during implementation
+
+Follow-up source inspection is recorded in [existing emulator references](EXISTING_EMULATORS.md). NES86 is a verified 6502-assembly 8086 interpreter and the closest inspected host-CPU match. 8086tiny supplies an MIT-licensed C core and BIOS; XTulator supplies a readable GPL CPU reference. Our target remains original 8088/XT, and none of these sources has been incorporated into the target. [REU_IMPLEMENTATION.md](REU_IMPLEMENTATION.md) records the subsequently implemented primitive, mock and functional VICE evidence.
 
 - Exact original-CPU multi-byte behavior at segment/physical boundaries; interrupt/prefix corner cases absent from public single-step vectors.
 - Actual DOS version/OEM boot dependencies, observed INT/port trace, FDISK small/large geometry and FORMAT BIOS requirements.

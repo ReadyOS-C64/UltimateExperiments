@@ -1,6 +1,7 @@
 const std = @import("std");
 const host = @import("machine.zig");
 const Fixture = host.Fixture;
+test { _ = @import("reu.zig"); }
 
 test "assembly reset initializes original CPU state and preserves host ABI" {
     var f = try Fixture.init();

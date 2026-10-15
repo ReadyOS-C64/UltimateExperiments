@@ -1,6 +1,6 @@
 # Memory budget checkpoint
 
-Status: M0 linked foundation measured; full allocation remains proposed. Authoritative ranges: [MEMORY.md](../docs/MEMORY.md). `build/dos64.map` / `.memory.json` currently report CODE 73 bytes, BASIC stub 12, BSS 36, PRG header 2. The runtime PRG is 87 bytes; the test build adds 36 fixture-code bytes. No ZP allocated yet; measured reset-test stack depth is 4 bytes including the host return sentinel.
+Status: foundation plus REU primitive measured; full allocation remains proposed. Authoritative ranges: [MEMORY.md](../docs/MEMORY.md). `build/dos64.map` / `.memory.json` report CODE 255 bytes, BASIC stub 12, BSS 46, PRG header 2, ZP 4. The runtime PRG is 269 bytes. The standalone integrity probe has CODE 416, BSS 46, ZP 6 and a 430-byte PRG. The test build has CODE 413 plus 36 fixture-code bytes and a 463-byte PRG. Probe ZP ends at 25; low-level transfer ZP ends at 23. Reset-test stack depth remains 4 bytes including its return sentinel; this is not a whole-program stack bound. Full cache and interpreter are not allocated yet.
 
 | Resource | Budget | Measured used | Gate |
 |---|---:|---:|---|
@@ -12,10 +12,10 @@ Status: M0 linked foundation measured; full allocation remains proposed. Authori
 | Video matrix/fonts/bitmap | 12 KiB | Unknown | Correct VIC bank and font/bitmap alignment |
 | I/O reservation | 4 KiB | Reserved | Never allocated as RAM |
 | REU guest physical arena | 1 MiB | Reserved design | Guest bus holes/ROM enforced |
-| REU whole floppies | 2 × 1 MiB | 360 KiB each fixture | Actual image lengths, no tail in exports |
-| REU HD cache | At most 2 MiB | Unknown | Metadata fits; force smaller cache in small-disk tests |
-| REU assets/staging/trace | 2 MiB | Unknown | Ownership and versioned descriptors |
-| REU unallocated | 9 MiB | Unknown | Cannot be borrowed silently |
+| REU whole floppies | 2 × 512 KiB | 360 KiB each fixture | Actual image lengths, no tail in exports |
+| REU HD cache | 1 MiB at baseline | Unknown | Metadata fits; force smaller cache in small-disk tests |
+| REU assets/staging/trace | 3 × 256 KiB | Unknown | Ownership and versioned descriptors |
+| REU unallocated | 256 KiB at baseline | Unknown | Cannot be borrowed silently |
 
 The 4 KiB metadata budget is particularly tight: a full 512-byte-page map alone takes 2 KiB. Charge disk-cache descriptors and all bounce buffers here; move cold metadata to REU or reduce cache capacity if the measured ledger exceeds the budget. A larger cache advertised without its metadata is not a valid budget.
 

@@ -62,4 +62,4 @@ Proposed command contract, not yet implemented: `make build`, `make test`, `make
 
 ## Review points
 
-The defaults proposed for review are: native BIOS with real DOS, 16 MiB REU requirement, assembly via ca65/ld65, 16 KiB guest cache, measured page-size selection, explicit image-save behavior for floppies, read-through/write-through hard-disk caching initially, and approximate CGA rendering. No further preference is required to begin M0 after the user reviews this plan.
+Current defaults: native BIOS with real DOS, **4 MiB minimum REU** (user clarification supersedes the 16 MiB proposal), assembly via ca65/ld65, 16 KiB guest cache, measured page-size selection, explicit image-save behavior for floppies, read-through/write-through hard-disk caching initially, and approximate CGA rendering. Larger REUs can expand caches and overlay storage.

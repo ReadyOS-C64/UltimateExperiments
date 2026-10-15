@@ -41,20 +41,22 @@ Host normal mapping exposes RAM under BASIC/KERNAL while leaving I/O visible. KE
 
 The overlay window is not assumed to solve arbitrary code growth. Only cold operations such as disk selection/help/export can be overlaid initially. The CPU, active BIOS callbacks, pager, and IRQ gateways must stay callable without overlay faults. Record separate CODE/RODATA/BSS boundaries; do not execute embedded constants or overwrite persistent state with an overlay.
 
-## REU arena: 16 MiB profile
+## REU arena: 4 MiB minimum profile
 
 | REU range | Capacity | Use |
 |---|---:|---|
 | `000000–0FFFFF` | 1 MiB | Guest physical backing arena |
-| `100000–1FFFFF` | 1 MiB | Complete floppy A image; exact actual length in descriptor |
-| `200000–2FFFFF` | 1 MiB | Complete floppy B image |
-| `300000–4FFFFF` | 2 MiB | Hard-disk extent cache, independent of guest RAM cache |
-| `500000–57FFFF` | 512 KiB | Cold assembly payloads / fonts / immutable assets |
-| `580000–5FFFFF` | 512 KiB | Storage transfer/recovery staging |
-| `600000–6FFFFF` | 1 MiB | Optional bounded trace/checkpoint scratch |
-| `700000–FFFFFF` | 9 MiB | Unallocated reserve; no implicit ownership |
+| `100000–17FFFF` | 512 KiB | Complete floppy A image; exact actual length in descriptor |
+| `180000–1FFFFF` | 512 KiB | Complete floppy B image |
+| `200000–2FFFFF` | 1 MiB | Hard-disk extent cache, independent of guest RAM cache |
+| `300000–33FFFF` | 256 KiB | Cold assembly payloads / fonts / immutable assets |
+| `340000–37FFFF` | 256 KiB | Storage transfer/recovery staging |
+| `380000–3BFFFF` | 256 KiB | Optional bounded trace/checkpoint scratch |
+| `3C0000–3FFFFF` | 256 KiB | Unallocated reserve; no implicit ownership |
 
-Require/probe 16 MiB for v1. The supplied 360 KiB disks fit easily. A 720 KiB floppy extension fits these slots; 1.2/1.44 MiB images require a revised allocation and tests, not truncation. REU is volatile: arena allocation is not persistence. A 20 MiB hard disk cannot be held wholly in this REU; only its extents are resident.
+User clarification 2026-10-14: assume **4 MiB or larger**, including room for overlays. This supersedes the initial 16 MiB minimum proposal. The supplied 360 KiB disks fit both 512 KiB slots. Larger REUs can expand the HD cache and floppy slots through a capacity-aware allocator; 720 KiB and larger floppy support requires that expanded profile, never truncation. No runtime feature may require memory above the 4 MiB baseline. REU is volatile: arena allocation is not persistence. A 20 MiB hard disk remains file-backed.
+
+Expanded REC DMA counters may wrap within 512 KiB without carrying into the upper bank latch. The implemented low-level routine accepts only a nonzero, single-64-KiB-bank chunk and rejects crossing ranges; future range operations must split and explicitly reload the bank. This is conservative for differing firmware and keeps page transfers safe. See [implemented REU contract](REU_IMPLEMENTATION.md).
 
 ## Guest page cache
 

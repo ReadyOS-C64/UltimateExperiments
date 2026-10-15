@@ -21,6 +21,14 @@ void dos64_step(Dos64Machine *);
 void dos64_clear_writes(Dos64Machine *);
 uint8_t dos64_was_written(const Dos64Machine *, uint16_t);
 uint8_t dos64_model_fault(const Dos64Machine *);
+void dos64_enable_reu(Dos64Machine *);
+uint8_t dos64_enable_reu_sized(Dos64Machine *, uint32_t size_kib);
+void dos64_reu_poke(Dos64Machine *, uint32_t, uint8_t);
+uint8_t dos64_reu_peek(const Dos64Machine *, uint32_t);
+uint8_t dos64_bus_read(Dos64Machine *, uint16_t);
+void dos64_bus_write(Dos64Machine *, uint16_t, uint8_t);
+uint64_t dos64_dma_bytes(const Dos64Machine *);
+uint64_t dos64_dma_transfers(const Dos64Machine *);
 #ifdef __cplusplus
 }
 #endif

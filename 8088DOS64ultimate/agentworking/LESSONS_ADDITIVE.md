@@ -17,3 +17,12 @@
 1. The first runaway fixture hung because Peddle `executeInstruction()` leaves `clock` advancement to the embedding application. Stopped that specific test process, changed the bridge to bounded per-microcycle stepping with explicit increments, and added an exact 8-cycle LDA/RTS assertion. All 10 Zig tests then passed.
 2. DOSBox-X works with SDL dummy video/audio for automated reference boot. Copy AUTOEXEC into the disposable image before BOOT, then capture guest-written VER/DIR/DONE from the FAT12 image. The original config remained and the guest reported MS-DOS 3.30.
 3. DOSBox-X did not exit promptly on SIGTERM in this run; the wrapper killed only its own process after a bounded wait. The captured files were already closed and verified; this is a functional boot baseline, not clean-shutdown evidence.
+
+## 2026-10-14 — REU primitive and reference investigation
+
+1. A descriptor at E000 cannot be read through KERNAL ROM. Establish RAM/I/O mapping before any request access; restore it after storing status/error. Tests invoke the routine with KERNAL initially visible.
+2. Expanded REU increment wraps its low 19-bit REC counter with upper bank latches preserved. Split requests at 64 KiB banks and make higher-level range handling explicit.
+3. First VICE attempt failed plan-schema validation because global retry_policy was missing. Adding that required field allowed the run; this was not a target probe failure.
+4. A success mailbox is weak evidence alone. Compare every captured byte independently and associate results with captured executable bytes so an old run cannot validate new code.
+5. The shared VICE harness selects 16 MiB REU. A successful low-address probe does not prove a 4 MiB configuration; the fast model covers 4/8/16 MiB separately. Physical capacity/firmware/timing remain outstanding.
+6. Search hits often describe the opposite direction or independent desktop CPU emulators. NES86 is a verified 6502-hosted 8086 core; Appler runs 6502 emulation on an 8088. Record direction, CPU profile and license explicitly.
