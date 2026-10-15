@@ -1,15 +1,12 @@
-.DS_Store
+/obj/
+/logs/
+/build_support/__pycache__/
 *.o
-obj/
-logs/
-build_support/__pycache__/
 *.out
 
-# Built media and binaries are retained locally as test evidence.
-artifacts/readyfs/*.prg
-artifacts/readyfs/*.d64
-artifacts/readyfs/*.d71
-artifacts/readyfs/*.d81
-artifacts/readyfs/*.tap
-artifacts/readyfs/*.lbl
-artifacts/readyfs/*.map
+# Regenerate reports, standalone binaries, and disposable test fixtures locally.
+/artifacts/*
+!/artifacts/readyfs/
+/artifacts/readyfs/*
+!/artifacts/readyfs/readyfs-overlay-lab.d81
+!/artifacts/readyfs/readyfs-lab.d81

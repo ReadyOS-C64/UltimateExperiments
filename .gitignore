@@ -1,0 +1,19 @@
+# Local indexes, firmware checkouts, and independently managed demo sites.
+/.repoql/
+/reference/
+/agentworking/
+
+# Internal working records stay local, including already tracked history notes.
+**/[Aa]gent[Ww]orking/
+**/[Aa]gents[Ww]orking/
+/ReadyFS/agent.md
+
+# OS metadata and interpreter caches.
+.DS_Store
+._*
+__pycache__/
+*.py[cod]
+
+# Generated logs and build products; project rules allow the main D81s.
+**/logs/
+/C77Cyberpunk77/build/

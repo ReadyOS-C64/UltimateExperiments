@@ -1,0 +1,8 @@
+/build/*
+!/build/rsql64_shell.d81
+/.zig-cache/
+/zig-out/
+/logs/
+*.o
+*.map
+*.lbl
