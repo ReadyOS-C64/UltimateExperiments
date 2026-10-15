@@ -125,3 +125,5 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 | D88 | Implemented/Peddle verified,2026-10-15 | SixthHDoverlay plus separately verified F000–FDFF copiedcode for HD/scroll; all23startupcacheframes released onlyaftercopy | Minimum4MiB budget,explicitdisabledD64H,residentconfig,asyncFILElease/readbackauthority;root417/597/218/nativeDOS/MODE/HD and exactreviewedfullproof;physicalpending |
 | D89 | Implemented/host verified,2026-10-15 | Physicalrunner requires pinned pairedshadowmetadata andimmutablePRGsource comparison for all3584runbytes/A5guard | LiveA000cache neverauthority;FEvectors excluded;RESTunderlyingRAM cannotproveCPUportbanking;no nativebytechange |
+
+| D90 | Measured research/next experiment,2026-10-15 | Prioritize owned clock ABI and coherent memory/fetch cost before broad runtime translation | Actual DOSprofile601936calls,60.32%memory/fetch/address;register-onlyzero-cost ceiling1.081×diagnostic harness;allIRQ/REP sampling retained;translator unimplemented/noXTclaim |

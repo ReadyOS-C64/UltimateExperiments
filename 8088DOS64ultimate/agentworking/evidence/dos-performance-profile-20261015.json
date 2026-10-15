@@ -1,0 +1,53 @@
+{
+  "status": "root verified profile arithmetic and exact report equality",
+  "raw": "agentworking/scratch/translation-feasibility",
+  "guest_instructions": 598702,
+  "cpu_step_clocks": 1169895754,
+  "all_native_clocks": 2869345809,
+  "timer_calls": 658267,
+  "timer_inclusive_clocks": 873806129,
+  "timer_inclusive_overlaps_cpu_rep": true,
+  "independent_histogram_sums_exact": true,
+  "profile_trace_records": 601936,
+  "runtime_sha256": "98fcd115338c43c8976d35f24feea468a040897f11ee143f8c52c9b477d07ff7",
+  "unit_sha256": "6eba1ee7bf6c872fcb7f4a059cc64f4572243511efa37302026d8ced82b244f8",
+  "target_changed": false,
+  "translator_implemented": false,
+  "hardware_executed": false,
+  "provenance": {
+    "agentworking/scratch/translation-feasibility/manifest.json": {
+      "sha256": "8be778472eed34660bf34dc539cb9a76c1fe51ca505f44dee72601b475d9d72f",
+      "bytes": 37709
+    },
+    "agentworking/scratch/translation-feasibility/PROPOSAL.md": {
+      "sha256": "bebbe9459bba042183a0fb5036537767affe772cb0a67471b96d7cb1585e1e35",
+      "bytes": 20596
+    },
+    "agentworking/scratch/translation-feasibility/profile-summary.json": {
+      "sha256": "5595e4e1e278f0f4956b97ee87d8e1375dcbe92d509a12416ce5b520acd4438b",
+      "bytes": 38527
+    },
+    "agentworking/scratch/translation-feasibility/instrument.py": {
+      "sha256": "08f9edd8b1e1ea20a3a67322dff642aaea4b7d763a4dab42326c0d5661467882",
+      "bytes": 6001
+    },
+    "agentworking/scratch/translation-feasibility/analyze.py": {
+      "sha256": "70df4b8516fe27fbc36b7021a2e51bd3f22dbd2a721eb22ef2db6dd19aaad274",
+      "bytes": 5986
+    },
+    "agentworking/scratch/translation-feasibility/instrumented-native-dos.log": {
+      "sha256": "8fa7e346142631a9fc255c541332eeecce58cb95d4acd91749c591a4fa8c58f0",
+      "bytes": 172
+    },
+    "agentworking/scratch/translation-feasibility/work/build/native-profile-records.bin": {
+      "sha256": "4fa030a02fd7bacb4e45ed374372bde3e4792c08381276f954c04483a92c7b97",
+      "bytes": 14446464
+    }
+  },
+  "limitations": [
+    "Diagnostic script includes presentation/snapshot/import support",
+    "CPU and timer inclusive totals must not be added",
+    "Modeled clocks exclude REU stalls and physical MMIO",
+    "No XT speed ratio or measured translator gain"
+  ]
+}
