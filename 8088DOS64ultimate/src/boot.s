@@ -1,4 +1,12 @@
 .include "abi.inc"
+.ifndef DOS64_PROBE
+.ifndef DOS64_SNAPSHOT
+.ifndef DOS64_CACHE_PROBE
+DOS64_CORE_BOOT = 1
+.import dos64_cpu_init
+.endif
+.endif
+.endif
 .import dos64_guest, dos64_mailbox, dos64_cpu_reset
 .ifdef DOS64_PROBE
 .import dos64_reu_probe
@@ -34,7 +42,11 @@ dos64_entry:
     sta $00
     lda #$35
     sta $01
+.ifdef DOS64_CORE_BOOT
+    jsr dos64_cpu_init
+.else
     jsr dos64_cpu_reset
+.endif
 .ifndef DOS64_PROBE
 .ifndef DOS64_SNAPSHOT
     lda #32

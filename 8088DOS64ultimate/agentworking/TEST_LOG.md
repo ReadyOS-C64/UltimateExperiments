@@ -69,3 +69,17 @@ Commands from this project: `make hardware-helpers`; `make test`; Terminal-owned
 First helper compilation rejected C-style `!` in a ca65 conditional; used nested `.ifndef` blocks. First physical run `c64u-cache-20261014-231434` backed up/restored REU successfully but failed speed configuration with HTTP 400 before running the cache probe. Discovered firmware advertises ` 1` with a leading space; selected exact advertised values and added a regression.
 
 Run `c64u-cache-20261014-231652` passed manual 1/16/64 MHz settings, firmware 3.14 / FPGA 121 / core 1.47 / PAL / 16 MB REU. Each captured 1,536-byte result has SHA-256 `90c3cb67dae979134af6135359c23bcd3bd7c5a2dff06e41a794bcbf493b3230`. Uploaded executable bytes independently match. Backup and restored 2 KiB envelope SHA-256 both `32bfa7834e0c6f117ad40eb75cad39e0c945bec449e6de26687504396c43fdb5`; prior configuration/media matched. [Compact evidence](evidence/c64u-cache-20261014.json); raw RAM/REU captures and owned restoration PRG retained in ignored project-local runs. No persistent hardware file writes. Prior program execution is not resumed after reset. Timing/UCI/IEC/full IRQ/DOS boot remain untested.
+
+## 2026-10-14 — initial original-8088 execution
+
+Commands: `make test`; `make test-cpu-corpus`; explicit source import `python3 build_support/fetch_8088_subset.py`. Initial broader run passed all 53 Zig tests including 481 hardware cases but took 27 seconds; separated the default 41-case representative lane from the full corpus. Final default passes 53 Zig + 15 tooling in about six seconds; final full corpus passes all 481 cases in 26 seconds. No target behavior failure was observed in this slice.
+
+Corpus pin `aea84484abc79d09639d855b7b0ab32bc9e4dbeb`; selected 20 opcode files, first 24 rows plus audited A3 edge row 9570. MIT license and compressed-source/fixture hashes in third_party/sst8088/UPSTREAM.json. All guest registers and all 1 MiB RAM compare after executing actual linked assembly and flushing its cache. Cycles/queue/interrupt behavior are not checked.
+
+Runtime CODE 2,019, RODATA 8, BSS 84, ZP 16; PRG 2,041. Independent guest tests include offset/physical/fetch wrap, self-modification followed by jump, prefix yielding, control flags, halt/loop budgets, STI shadow and latched unsupported/error conditions. Word offset-FFFF policy follows MartyPC source pin 05c0d088e84ad6bbfac9b3f0d051e7eadefd9f44; audited A1/A3 hardware files lacked that exact case, so no direct hardware-FFFF claim is made.
+
+No slow VICE/physical rerun was necessary: those standalone builds exclude the new execution module and retain uploaded byte identity. Arithmetic, general ModR/M, stack/strings/I/O/interrupts, BIOS and target DOS boot remain absent.
+
+Final integration addition loads the unchanged supplied disk-1 boot sector: target executes its jump to 7C36 and CLI, then latches unsupported XOR opcode 33 at 7C37 without changing AX. First attempt failed in Zig fixture loading because an exact-size reader limit produced StreamTooLong; allowed bounded headroom and separately asserted the exact disk size. This was a fixture failure before CPU execution.
+
+Host RAM comparison now uses a bounded native memcmp with first-divergence fallback, retaining all 1 MiB checks. A separate test flips first/middle/last bytes and checks rejected bounds. Final quick lane: 55 Zig/Peddle + 15 tooling passed. Full corpus remains 481 functional cases; actual current output/profile retained in the slice evidence.

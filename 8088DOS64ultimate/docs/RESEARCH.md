@@ -70,3 +70,7 @@ Follow-up source inspection is recorded in [existing emulator references](EXISTI
 - C64U firmware, REU transfer latency/stalls, turbo switching and I/O behavior; source/documentation discrepancies must be tested on that firmware.
 - Final 80-column font quality, palette policy, graphics reduction and keyboard chords on the user's screen/keyboard.
 - Corpus/download/toolchain pinning and source licenses for anything copied into the project. No downloaded DOS replacement is needed.
+
+## Implementation follow-up: CPU boundaries and hardware corpus
+
+Original-8088 word policy follows [MartyPC byte-bus implementation at 05c0d088](https://github.com/dbalsom/martypc/blob/05c0d088e84ad6bbfac9b3f0d051e7eadefd9f44/crates/lib/marty_core/src/cpu_808x/biu.rs): wrap the offset for the second byte, then translate. No source copied. The [pinned hardware projection](../third_party/sst8088/UPSTREAM.json) retains 481 functional cases and the MIT license. Audited A1/A3 originals have no word beginning at FFFF; A3 index 9570 covers FFFE. Independent corner tests supplement the source reference; they are not direct physical-8088 evidence. [CPU implementation](CPU_IMPLEMENTATION.md) lists actual opcode coverage and exclusions.

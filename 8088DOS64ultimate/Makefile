@@ -3,7 +3,7 @@ DOS64_CA65 ?= ca65
 DOS64_LD65 ?= ld65
 DOS64_PYTHON ?= python3
 
-ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s
+ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
 
 .PHONY: all build test verify-memory manifest clean
@@ -86,6 +86,10 @@ manifest: build/dos64.prg build/dos64-tests.prg
 test: build hardware-helpers
 	$(DOS64_PYTHON) -m unittest discover -s tests/tooling -v
 	$(DOS64_ZIG) build test --summary all
+
+.PHONY: test-cpu-corpus
+test-cpu-corpus: build hardware-helpers
+	$(DOS64_ZIG) build test -Dcpu-corpus=true --summary all
 
 .PHONY: test-reference
 test-reference:

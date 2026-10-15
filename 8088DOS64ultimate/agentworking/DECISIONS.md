@@ -32,6 +32,9 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D26 | Implemented baseline, 2026-10-14 | 512-byte physical pages, 32 frames, direct 2,048-entry map and bounded clock eviction | Functional correctness verified, not a page-size/performance winner; limits 1..32 support forced-eviction tests |
 | D27 | Implemented, 2026-10-14 | Publish cache ownership only after successful load; keep dirty victim on write-back failure | Partial-transfer fault tests guard data authority and retries |
 
+| D28 | Implemented initial profile | Word transfers wrap the 16-bit offset before separately translating each byte | Pinned original-8088 MartyPC implementation and independent boundary tests; direct hardware FFFF case still absent |
+| D29 | Implemented | Long prefix streams yield after bounded 64-prefix slices and continue the same guest instruction | Avoid hangs without introducing a modern 15-byte invalid-instruction limit |
+
 ## Clarification history
 
 2026-10-14: Initial investigation considered C/assembly because user permitted Zig or C. Before implementation, the user explicitly chose assembly and emphasized Zig behavior tests. All current plans use assembly as target and Zig as host tooling. No target implementation was created or discarded.

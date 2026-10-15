@@ -2,7 +2,7 @@
 
 Updated: 2026-10-14, America/Los_Angeles.
 
-**Phase: implementation active.** User authorized implementing the plan, progressively verifying, and making local commits without pushing. Planning baseline committed as `67b6954`.
+**Phase: implementation active. Current quick checks: 55 Zig/Peddle + 15 tooling; all 481 pinned CPU cases have also passed.** User authorized implementing the plan, progressively verifying, and making local commits without pushing. Planning baseline committed as `67b6954`.
 
 ## User decisions to preserve
 
@@ -36,7 +36,7 @@ Updated: 2026-10-14, America/Los_Angeles.
 
 ## What is not established
 
-The target still has no guest interpreter, BIOS, UCI/file backend or target DOS boot. Physical C64U timing and XT performance remain unmeasured. The reference DOSBox process was stopped after its guest output files closed; this is not a clean-storage-shutdown test. Original CONFIG diagnostics were not captured as screen text.
+The target has an initial instruction subset but no full interpreter, BIOS, UCI/file backend or target DOS boot. Physical C64U timing and XT performance remain unmeasured. The reference DOSBox process was stopped after its guest output files closed; this is not a clean-storage-shutdown test. Original CONFIG diagnostics were not captured as screen text.
 
 ## Verified implementation slice: REU primitive
 
@@ -69,3 +69,11 @@ Existing unrelated ReadyFS edits and the large dirty sibling ZeroPage checkout w
 - Native cache probe passed at manual 1/16/64 MHz settings on firmware 3.14. All 1,536 bytes and uploaded executable identity verified. Exact prior REU page envelope 07FC00–0803FF was backed up, restored and byte-compared; machine/turbo/media configuration matched before/after. [Evidence](evidence/c64u-cache-20261014.json), [procedure and limits](../docs/HARDWARE_TESTING.md).
 - Latest fast checks: 42 Zig/Peddle + 15 tooling tests. Native backup/restore is tested across the bank seam; workflow tests cover cleanup on failure and firmware-padded speed options.
 - First hardware run failed with HTTP 400 because `1` did not match the advertised ` 1` option. Recovery succeeded; corrected mapping and subsequent full matrix passed. No calibrated timing or DOS boot claim.
+
+## Verified initial CPU execution slice
+
+- Assembly step/init, immediate register MOV, AX exchanges/NOP, accumulator byte/word memory transfers, relative/far jumps, guest control flags and halt. Prefix streams yield in 64-prefix slices without an invented length exception. Unsupported instructions and host memory failures latch explicit diagnostics.
+- `make test`: 55 Zig/Peddle + 15 tooling, including 41 hardware cases, approximately six seconds warm. `make test-cpu-corpus`: all 481 pinned SingleStepTests cases pass with register and complete 1 MiB RAM comparison, approximately 26 seconds. [CPU contract/limits](../docs/CPU_IMPLEMENTATION.md).
+- Runtime CODE 2,019, RODATA 8, BSS 84, ZP 16, map 2,048, frame metadata 192; PRG 2,041 bytes. Probe binaries are isolated from the execution module and retain their physically tested identity.
+- Word transfers use wrapping 16-bit offset then 20-bit translation per byte, following pinned original-8088 MartyPC implementation. Hardware projection covers FFFE, but contains no audited FFFF word case; that particular hardware corner remains open.
+- No arithmetic/ModR/M/stack/string/I/O/interrupt execution, synthetic BIOS, target DOS boot or speed claim yet.

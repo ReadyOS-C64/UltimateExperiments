@@ -27,4 +27,14 @@ for entry in pin["files"]:
     if hashlib.sha256(path.read_bytes()).hexdigest() != entry["sha256"]:
         raise SystemExit(f"Vendored Peddle changed: {path}")
 report["peddle_commit"] = pin["commit"]
+corpus_pin=Path("third_party/sst8088/UPSTREAM.json")
+if corpus_pin.exists():
+    corpus=json.loads(corpus_pin.read_text())
+    fixture=Path(corpus["fixture"])
+    if hashlib.sha256(fixture.read_bytes()).hexdigest()!=corpus["fixture_sha256"]:
+        raise SystemExit("Pinned 8088 fixture changed; regenerate from the declared upstream pin")
+    license_hash=next(f["sha256"] for f in corpus["source_files"] if f["path"]=="LICENSE")
+    if hashlib.sha256(Path("third_party/sst8088/LICENSE").read_bytes()).hexdigest()!=license_hash:
+        raise SystemExit("Pinned 8088 license changed")
+    report["8088_corpus_commit"]=corpus["commit"]
 Path("build/manifest.json").write_text(json.dumps(report, indent=2)+"\n")

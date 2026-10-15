@@ -42,3 +42,13 @@
 - Native backup/restore, independent REU re-read and configuration comparison made the failed first physical attempt recoverable. Keep these before/after checks for future hardware tests.
 - Firmware speed options can contain leading spaces. `1` produced HTTP 400; ` 1` is the advertised valid value. Normalize only for matching, then send the original advertised string.
 - A successful physical integrity matrix does not measure effective elapsed CPU/DMA throughput. Preserve that distinction in results.
+
+## 2026-10-14 — first instruction execution
+
+- Keep IP wrapping, segmented word-byte address calculation and physical 1 MiB wrap separate. Hardware data at FFFE does not prove a word beginning at FFFF; disclose evidence gaps.
+- Long prefix streams need bounded host work without inventing a modern 15-byte guest limit. Preserve pending decode state and instruction counts across prefix yields.
+- Full 1 MiB RAM comparisons caught the scope of each hardware case, including bytes expected to remain unchanged. Separate the six-second development lane from the 26-second broader corpus run.
+- Isolate physical probes from the evolving execution module so CPU-only changes do not invalidate or require repeating unrelated hardware tests.
+
+- A Zig 0.16 readFileAlloc limit equal to the file length produced StreamTooLong in the new boot fixture. Use bounded headroom and assert the expected image size separately.
+- Keep full-RAM comparison coverage when improving host test speed; test the comparator's mismatch and bounds paths independently.

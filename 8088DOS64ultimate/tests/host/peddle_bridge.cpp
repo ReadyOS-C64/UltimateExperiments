@@ -117,3 +117,14 @@ void dos64_reu_fail_after(Dos64Machine *m, uint64_t skip, uint32_t prefix_bytes)
     m->cpu.reu->fault_skip = skip;
     m->cpu.reu->fault_prefix = prefix_bytes;
 }
+uint8_t dos64_reu_read(const Dos64Machine *m, uint32_t address, uint8_t *out, size_t length) {
+    if (!m->cpu.reu || address > m->cpu.reu->bytes.size() || length > m->cpu.reu->bytes.size()-address) return 0;
+    std::copy_n(m->cpu.reu->bytes.data()+address, length, out); return 1;
+}
+uint32_t dos64_reu_compare(const Dos64Machine *m, uint32_t address, const uint8_t *expected, size_t length) {
+    if (!m->cpu.reu || address > m->cpu.reu->bytes.size() || length > m->cpu.reu->bytes.size()-address) return 0xfffffffe;
+    const auto actual = m->cpu.reu->bytes.data()+address;
+    if (std::memcmp(actual,expected,length)==0) return 0xffffffff;
+    for (size_t index=0; index<length; ++index) if (actual[index]!=expected[index]) return uint32_t(index);
+    return 0xfffffffe;
+}

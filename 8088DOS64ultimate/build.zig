@@ -8,6 +8,9 @@ pub fn build(b: *std.Build) void {
             .optimize = b.standardOptimizeOption(.{}),
         }),
     });
+    const options=b.addOptions();
+    options.addOption(bool,"full_cpu_corpus",b.option(bool,"cpu-corpus","Run the full pinned CPU corpus") orelse false);
+    tests.root_module.addOptions("test_options",options);
     tests.root_module.addIncludePath(b.path("tests/host"));
     tests.root_module.addIncludePath(b.path("third_party/peddle/Peddle"));
     tests.root_module.addCSourceFiles(.{

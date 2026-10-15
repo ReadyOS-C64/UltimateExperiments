@@ -1,13 +1,14 @@
 # Memory budget checkpoint
 
-Status: foundation, REU primitive and byte cache measured; full interpreter/display/storage allocation remains unfinished. Authoritative ranges: [MEMORY.md](../docs/MEMORY.md). Runtime map reports CODE 1,109, BASIC 12, BSS 62, PAGEMAP 2,048, CACHEMETA 192, header 2, ZP 16 (20–2F); PRG 1,123 bytes. Cache probe CODE 1,284, ZP 21, PRG 1,298. Unit build CODE 1,439 plus TESTCODE 36, ZP 23 (20–36), PRG 1,489. All use the same control allocations. Cache frames are a runtime reservation at 8000–BFFF, not bytes embedded in the PRG. The independent REU-only probe remains 430 bytes, with no pager linked.
+Status: initial CPU execution and coherent guest memory measured; full CPU/BIOS/display/storage remain unfinished. Authoritative ranges: [MEMORY.md](../docs/MEMORY.md). Runtime CODE 2,019, RODATA 8, BASIC 12, BSS 84, PAGEMAP 2,048, CACHEMETA 192, header 2, ZP 16 (20–2F); PRG 2,041 bytes. Unit CODE 2,442 + RODATA 8 + TESTCODE 36, ZP 23 (20–36), PRG 2,500. Cache-probe CODE 1,284, ZP 21, PRG 1,298 excludes the CPU module; REU-only probe remains 430 bytes. Cache frames are a 16 KiB runtime reservation, not bytes embedded in the PRG.
+
 
 | Resource | Budget | Measured used | Gate |
 |---|---:|---:|---|
-| Resident/hot executable ranges | 22 KiB | 1,109 CODE + 12 BASIC | Linker map; renderer/BIOS/storage not yet implemented |
+| Resident/hot executable ranges | 22 KiB | 2,019 CODE + 8 RODATA + 12 BASIC | Linker map; renderer/BIOS/storage not yet implemented |
 | Cold window including vectors | 4 KiB | Unknown | Must preserve IRQ/NMI/reset vectors and return gateways |
 | Host guest-cache frames | 16 KiB | 32 × 512 bytes reserved/used | 8000–BFFF, direct physical tags; tests cover all frames |
-| Host control/metadata/buffers | 4 KiB | 2,302 static bytes; 1,794 remaining | BSS 62 + map 2,048 + frame metadata 192; remaining includes alignment gaps |
+| Host control/metadata/buffers | 4 KiB | 2,324 static bytes; 1,772 remaining | BSS 84 + map 2,048 + frame metadata 192; remaining includes alignment gaps |
 | Host low memory | 2 KiB | Runtime ZP 16; stack measured by probe | Full-system stack/IRQ/KERNAL bound not established |
 | Video matrix/fonts/bitmap | 12 KiB | Unknown | Correct VIC bank and font/bitmap alignment |
 | I/O reservation | 4 KiB | Reserved | Never allocated as RAM |
@@ -24,3 +25,5 @@ Shared cache probe stack high-water is 14 bytes including the synthetic host ret
 At each implementation slice record build hash, map path, ZP allocations, maximum stack depth, resident/static bytes, cache frames/page size, REU high-water, and remaining headroom. Do not replace “Unknown” with estimates labeled as measurements.
 
 Physical-helper checkpoint: standalone backup/restore each occupy 415 linked bytes including BSS/ZP, with unchanged normal runtime layout. They use host 6000–67FF only for owned snapshot/recovery data. Unit fixture code grew; consult its current map rather than reusing the older fixture PRG length.
+
+CPU checkpoint supersedes earlier runtime totals: CODE 2,019 + RODATA 8 + BASIC 12, BSS 84, PAGEMAP 2,048, CACHEMETA 192, runtime ZP 16; PRG 2,041 bytes. Static control usage is now 2,324 bytes, leaving 1,772 including alignment gaps. Unit CODE 2,442 + RODATA 8 + TESTCODE 36, ZP 23, PRG 2,500. Hardware cache/backup/restore builds exclude the new CPU execution module; their tested binaries remain unchanged.

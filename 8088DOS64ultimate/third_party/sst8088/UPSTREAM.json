@@ -1,0 +1,100 @@
+{
+  "repository": "https://github.com/SingleStepTests/8088",
+  "commit": "aea84484abc79d09639d855b7b0ab32bc9e4dbeb",
+  "license": "MIT; LICENSE retained alongside this record",
+  "selection": "first 24 per selected opcode plus audited boundary rows",
+  "limitations": "Functional state only; cycles/queue omitted, no interrupt or throughput coverage",
+  "source_files": [
+    {
+      "path": "LICENSE",
+      "sha256": "9b9e332ee11019f131e945d40e20ab0c48b52921754dc03fe62cc85b579e6c61"
+    },
+    {
+      "path": "v2/metadata.json",
+      "sha256": "5ec19ecd5080d3ce583772ee6d157dcb66cf3bc0708c49a29f387ae5ced07a5d"
+    },
+    {
+      "path": "v2/B0.json.gz",
+      "sha256": "2e868cd59ad04324c9671adbb31046e92ea012dc730431b6c1b4ab7cdb08f6e9"
+    },
+    {
+      "path": "v2/B7.json.gz",
+      "sha256": "061212eef11870b09b7dc38d18f5ad240de9c1d4eb21815cb4902b1661156e00"
+    },
+    {
+      "path": "v2/B8.json.gz",
+      "sha256": "ccf17092cb75c3f75e99f698f1591b805445d4007a05dc93dd6acce1dd99f27c"
+    },
+    {
+      "path": "v2/BF.json.gz",
+      "sha256": "4d98e297c7def19fe65da993c9b3f169e94ef475237e97d8c9924cc35cb26a58"
+    },
+    {
+      "path": "v2/90.json.gz",
+      "sha256": "05ab2d20db1e748654af1d7047a7a7ae07c4e077e014e864955873e13573e5fb"
+    },
+    {
+      "path": "v2/97.json.gz",
+      "sha256": "dd4e27a536aea89a0b72c424de69e5367b35c57077c0461b1f65922ffaa9aa8b"
+    },
+    {
+      "path": "v2/A0.json.gz",
+      "sha256": "b644cc3cae0a5f69f08d648837b687de355f6f007c00ce32f8c1e9b09e13586e"
+    },
+    {
+      "path": "v2/A1.json.gz",
+      "sha256": "f6b966f7ce89ab83e0cdb82df943b2b77feccf5fd7d4425f5d6b1613497826bf"
+    },
+    {
+      "path": "v2/A2.json.gz",
+      "sha256": "87b8b82978e24ec9c2d2d11b3a8f54e5f92ddeed9f8460300ce59fc07f9e171c"
+    },
+    {
+      "path": "v2/A3.json.gz",
+      "sha256": "be36afd28408a1e027caefaedce12f3abf55fc2b0c080efd7d45f407cf313e0d"
+    },
+    {
+      "path": "v2/E9.json.gz",
+      "sha256": "8c443f57b08f520a2f950d027a5dbb1e5e5b66371a2087b427ca064347646f8f"
+    },
+    {
+      "path": "v2/EA.json.gz",
+      "sha256": "bc498ba8612182249ba1435fdfa14f542304b19f9fc891c2fe2193799881fd83"
+    },
+    {
+      "path": "v2/EB.json.gz",
+      "sha256": "cf176cacd35a86ffa77ddb7f27e783fe5dbb78fbab68b1524866c7994e2be2d9"
+    },
+    {
+      "path": "v2/F5.json.gz",
+      "sha256": "ad580ee3416948dccf02aab8164f9a1f93e811cfc5492d35f37d7861770f23b4"
+    },
+    {
+      "path": "v2/F8.json.gz",
+      "sha256": "ee09c5f388064577e95dee3448af740ae70d304cac198013bc904462b209bfa7"
+    },
+    {
+      "path": "v2/F9.json.gz",
+      "sha256": "8930143e106095e0d910f129f1c64c5a08c5dde5eff92390369b8e0b3a788ee7"
+    },
+    {
+      "path": "v2/FA.json.gz",
+      "sha256": "3c9b26f793aacbf7df1f2d4787030cf08caa3b8a32c3770cf76d598b02bf2bb1"
+    },
+    {
+      "path": "v2/FB.json.gz",
+      "sha256": "bb5fe6404850adfca891aa856f3d885a88dffc3cf45a54c05cb41dc6c285ac89"
+    },
+    {
+      "path": "v2/FC.json.gz",
+      "sha256": "657c23e6034de2acff72b66c46bd176e814fefb1fd617738b203e0283bc587ad"
+    },
+    {
+      "path": "v2/FD.json.gz",
+      "sha256": "bdac5b9ef120f35df4ea9b63596661eb3816587173b3e8f2ae084d7adef37f39"
+    }
+  ],
+  "fixture": "tests/fixtures/8088-subset.json",
+  "fixture_sha256": "98b00534ce10d838a469f0879eb993d3b3f20633b005febf4d9c509e68334941",
+  "cases": 481
+}
