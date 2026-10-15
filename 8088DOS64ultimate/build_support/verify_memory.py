@@ -6,7 +6,7 @@ import sys
 import struct
 
 
-def verify(map_text, labels_text, prg=None, overlay_payloads=None):
+def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payload=None):
     errors = []
     symbols = {name.lstrip("."): int(addr, 16) for addr, name in
                re.findall(r"^al ([0-9A-Fa-f]+) (\S+)", labels_text, re.M)}
@@ -21,6 +21,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None):
               "CODE": (0x080D, 0x3FFF), "RODATA": (0x080D, 0x3FFF),
               "TESTCODE": (0x080D, 0x3FFF), "ZEROPAGE": (0x20, 0xDF),
               "DEVICECODE": (0x5000, 0x5FFF),
+              "IMPORTCODE": (0x7000, 0x7FFF),
               "UCIBUFFER": (0xC100, 0xC8FF),
               "FILECODE": (0xC900, 0xCFFF), "RENDERCODE": (0xC900, 0xCFFF),
               "RANGEBUFFER": (0xC000, 0xC0FF), "BSS": (0xE000, 0xE0FF), "PAGEMAP": (0xE100, 0xE8FF),
@@ -49,7 +50,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None):
     runtime = "__DEVICE_START__" in symbols
     load = {"layout": "runtime" if runtime else "standalone", "start": 0x0801,
             "linked_file_bytes": sum(s["bytes"] for s in segments
-                                     if s["name"] in ("BASIC", "CODE", "RODATA", "TESTCODE", "DEVICECODE")),
+                                     if s["name"] in ("BASIC", "CODE", "RODATA", "TESTCODE", "DEVICECODE", "IMPORTCODE")),
             "padding": [], "payload_checked": prg is not None}
     main_end = max((s["end"] + 1 for s in segments
                     if s["name"] in ("BASIC", "CODE", "RODATA", "TESTCODE")), default=0x0801)
@@ -136,6 +137,44 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None):
                         errors.append(f"{segment_name} startup payload differs from its linked output")
     elif overlay_payloads:
         errors.append("Overlay payloads provided without linked overlay segments")
+    cold = [seg for seg in segments if seg["name"] == "IMPORTCODE"]
+    load["cold_import"] = None
+    if cold:
+        seg = cold[0]
+        if not runtime or len(overlays) != 2:
+            errors.append("Cold importer requires runtime and both committed overlay source phases")
+        fields = {"__IMPORT_START__": 0x7000, "__IMPORT_SIZE__": 0x1000,
+                  "__IMPORT_FILEOFFS__": 0, "__IMPORT_LAST__": seg["end"]+1,
+                  "__IMPORTCODE_LOAD__": 0x7000, "__IMPORTCODE_RUN__": 0x7000,
+                  "__IMPORTCODE_SIZE__": seg["bytes"],
+                  "dos64_import_code_start": 0x7000,
+                  "dos64_import_code_end": seg["end"]+1,
+                  "dos64_import_state_end": seg["end"]+1}
+        for name, value in fields.items():
+            if symbols.get(name) != value:
+                errors.append(f"{name}: expected ${value:04X}, got {symbols.get(name)}")
+        state_start = symbols.get("dos64_import_state_start", -1)
+        if not 0x7000 <= state_start <= seg["end"]:
+            errors.append("Cold importer state must be inside its discarded startup image")
+        if seg["start"] != 0x7000 or not 1 <= seg["bytes"] <= 0x1000:
+            errors.append("Cold importer must start at 7000 and fit its 4096-byte startup phase")
+        else:
+            load["end_exclusive"] = 0x8000
+            if seg["end"] < 0x7FFF:
+                first = seg["end"]+1
+                load["padding"].append({"name": "cold_import_tail_zero", "start": first,
+                                        "end": 0x7FFF, "bytes": 0x8000-first,
+                                        "file_offset": first-0x0801+2, "value": 0})
+            load["cold_import"] = {"start": 0x7000, "end": seg["end"],
+                                   "linked_bytes": seg["bytes"], "state_bytes": seg["end"]+1-state_start,
+                                   "window_bytes": 0x1000, "payload_checked": import_payload is not None,
+                                   "ownership": "startup-only after overlay bootstrap; code/state discarded before bitmap ownership"}
+            if import_payload is not None:
+                offset = 0x7000-0x0801+2
+                if len(import_payload) != seg["bytes"] or (prg is not None and prg[offset:offset+seg["bytes"]] != import_payload):
+                    errors.append("Cold importer bytes differ from exact linked output")
+    elif import_payload is not None or symbols.get("__IMPORTCODE_SIZE__", 0):
+        errors.append("Linked cold importer segment is missing")
     load["exclusive_overlay_window_bytes"] = 0x700 if overlays else 0
     load["max_linked_overlay_bytes"] = max((s["bytes"] for s in overlays.values()), default=0)
     load["overlay_source_bytes"] = sum(s["bytes"] for s in overlays.values())
@@ -164,6 +203,7 @@ if __name__ == "__main__":
     parser.add_argument("prg", type=Path, nargs="?")
     parser.add_argument("--overlay-files", type=Path)
     parser.add_argument("--overlay-render", type=Path)
+    parser.add_argument("--import-code", type=Path)
     args = parser.parse_args()
     map_path = args.map
     prg_path = args.prg or map_path.with_suffix(".prg")
@@ -173,7 +213,7 @@ if __name__ == "__main__":
             parser.error("Both linked overlay payload files are required")
         payloads = {"FILECODE": args.overlay_files.read_bytes(),
                     "RENDERCODE": args.overlay_render.read_bytes()}
-    report = verify(map_path.read_text(), args.labels.read_text(), prg_path.read_bytes(), payloads)
+    report = verify(map_path.read_text(), args.labels.read_text(), prg_path.read_bytes(), payloads, args.import_code.read_bytes() if args.import_code else None)
     map_path.with_suffix(".memory.json").write_text(json.dumps(report, indent=2)+"\n")
     if report["errors"]:
         raise SystemExit("\n".join(report["errors"]))

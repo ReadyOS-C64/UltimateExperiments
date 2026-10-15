@@ -50,6 +50,15 @@ pub fn build(b: *std.Build) void {
     addPeddle(overlay.root_module, b);
     const run_overlay = b.addRunArtifact(overlay);
     b.step("overlays", "Verify FILE/TEXT overlays and bounded startup ownership").dependOn(&run_overlay.step);
+    // Full360KiB source/CRC/failure oracle is deliberately opt-in.
+    const image_import = b.addTest(.{ .root_module = b.createModule(.{
+        .root_source_file = b.path("tests/host/image_import.zig"),
+        .target = target,
+        .optimize = .Debug,
+    }) });
+    addPeddle(image_import.root_module, b);
+    const run_image_import = b.addRunArtifact(image_import);
+    b.step("image-import", "Verify cold native whole-floppy import and failure ownership").dependOn(&run_image_import.step);
     const boot = b.addTest(.{ .root_module = b.createModule(.{
         .root_source_file = b.path("tests/host/dos_boot.zig"),
         .target = target,

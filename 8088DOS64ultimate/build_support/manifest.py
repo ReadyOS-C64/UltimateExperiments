@@ -17,10 +17,17 @@ for name, command in vars(args).items():
                              capture_output=True, check=True, text=True)
     report["tools"][name] = {"path": str(path), "version": (version.stdout+version.stderr).strip(),
                              "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
-for pattern in ("Makefile", "build.zig", "build_support/*.py", "src/*.s", "include/*.inc", "cfg/*.cfg", "tests/host/*", "tests/fixtures/*", "tests/tooling/*.py", "reference/*.img", "build/*.prg", "build/*overlay*.bin", "build/*overlay*.json", "build/*resident.prg*.bin"):
+for pattern in ("Makefile", "build.zig", "build_support/*.py", "src/*.s", "include/*.inc", "cfg/*.cfg", "tests/host/*", "tests/fixtures/*", "tests/tooling/*.py", "reference/*.img", "build/*.prg", "build/*overlay*.bin", "build/*overlay*.json", "build/*resident.prg*.bin", "build/*.map", "build/*.labels", "build/*.memory.json"):
     for path in sorted(Path().glob(pattern)):
         if path.is_file():
             report["files"][str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
+for variant in ("dos64", "dos64-tests"):
+    memory_path=Path("build")/(variant+".memory.json")
+    if memory_path.exists():
+        memory=json.loads(memory_path.read_text())
+        if not memory["passed"]:
+            raise SystemExit(f"Unverified packaged memory contract: {variant}")
+        report.setdefault("packaged_layout", {})[variant]=memory["load"]
 pin = json.loads(Path("third_party/peddle/UPSTREAM.json").read_text())
 for entry in pin["files"]:
     path = Path("third_party/peddle")/entry["path"]

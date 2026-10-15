@@ -23,7 +23,7 @@ class OverlayMemoryContract(unittest.TestCase):
         self.assertEqual(r['load']['exclusive_overlay_window_bytes'], 1792)
         self.assertEqual(r['load']['overlay_source_bytes'], 1994)
         self.assertEqual(r['load']['startup_overlay_bytes'], 4096)
-        self.assertEqual(r['load']['prg_bytes'], 26625)
+        self.assertEqual(r['load']['prg_bytes'], 30721)
 
     def test_header_every_byte_fault_is_rejected(self):
         for start in (24576, 26624):

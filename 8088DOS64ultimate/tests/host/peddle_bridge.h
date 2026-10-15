@@ -59,6 +59,15 @@ void dos64_uci_model_error(void *);
 void dos64_uci_model_stale(void *, uint8_t);
 uint64_t dos64_uci_model_count(void *, uint8_t);
 uint8_t dos64_uci_model_command(void *, uint16_t);
+/* Optional read-only whole-floppy source fixture; requires explicit UCI model
+ * enable first. Source length0..368641, fixed fixture raw path disk.img and
+ * READ target1; never writes source, target RAM or REU. Ordinary UCI remains
+ * scripted and strict until this separate enable. See image_import_model.h. */
+void import_model_source(void *, const uint8_t *, size_t);
+void import_model_faults(void *, int command, int corrupt, int short_offset, int close);
+uint32_t import_model_commands(void *);
+uint32_t import_model_position(void *);
+uint8_t import_model_open(void *);
 /* CIA clock is disabled until explicitly enabled. Advances/scripts are actual
  * model PHI2 inputs, never derived from Peddle CPU clocks or turbo settings.
  * Other helpers require an enabled model. */

@@ -1,0 +1,13 @@
+# Cold whole-floppy import
+
+`make test-image-import` exercises the linked startup-only importer against a separate filesystem/UCI source model. Native entry does not call it yet. It occupies 931 bytes at 7000–73A2, including 26 state bytes; no resident state or zero page is added. The remaining 3,165 bytes through 7FFF are checked zero padding. All importer code/state/configuration becomes invalid when bitmap ownership begins.
+
+Caller first commits overlays, initializes the exclusive UCI/file owner, supplies an ASCII path/target, an independently derived expected reflected IEEE CRC32 and monotonic 16-bit elapsed ticks/timeouts. The importer opens READ, requests 720 exact 512-byte chunks, computes CRC on at most 16 received bytes per poll and transfers each chunk into REU 100000–159FFF. A final one-byte read must return EOF. CRC match, accepted CLOSE and known closed handle are required before disk_loaded becomes one. Exactly 723 read-only commands complete a successful import. Original source bytes are never written.
+
+Short/extra/corrupt data, DMA/status failures, total timeout and cleanup errors leave disk_loaded zero, even though the owned REU slot may have been partially replaced. Timeout requests one abort, allows the independent UCI recovery deadline and attempts closure. An uncertain handle or stuck recovery remains explicit; reinitializing the file layer cannot pretend it closed. Firmware's READ stale-status limitation is mitigated by whole-image CRC. No write or durability claim is made.
+
+The dedicated lane passes eight tests: seven actual-assembly tests plus an optional-model default-off contract. It checks the original DOS disk1 (CRC32 30770A37), seeded full images, all 4 MiB REU bytes/overlay assets/guards, exact commands and failures. Maximum observed poll is 8,466 native CPU cycles; public-call budget is 100,000. Tests supply elapsed ticks explicitly rather than treating poll count as a clock. The source mock remains disabled for ordinary Peddle machines and preserves scripted UCI and strict unknown I/O.
+
+The default gate passes 298 tests/597 selected hardware cases and 99 tooling checks. Existing 26,625-byte runtime/unit prefixes exactly match commit 28e4290; the new PRGs are 30,721 bytes through 7FFF. Full 5,701-case, long DOS and profile proofs are retained from that unchanged prefix; they were not redundantly rerun. [Evidence](../agentworking/evidence/image-import-linked-20261015.json).
+
+Runtime startup/elapsed conversion, physical UCI acceptance, image export/persistence, IEC/D81, alternate geometry and HD remain unfinished. Later cold-phase gateways must reject late calls before touching overwritten state; the current caller contract forbids such calls.

@@ -124,3 +124,5 @@
 - Separate linked variant totals, maximum simultaneous overlay bytes, resident file bytes, startup assets and zero padding. Summing two mutually exclusive payloads as permanently resident would misstate the available host RAM.
 - Save/restore observable 6510 DDR/output bits. Input-configured port bits are not readable copies of the output latch; exact hidden-latch assertions can reject correct hardware behavior.
 - Source freeze plus independent artifact hashes lets full corpus, genuine DOS and profiles run concurrently without racing build mutations. Host wall time from that concurrency is not target throughput.
+
+A run manifest must be generated after every artifact-producing prerequisite, including isolated hardware helpers. A correct native binary does not make an earlier helper-map identity current. Cold startup code/state is another lifetime: exact loaded bytes and zero tails need verification, and a resident publication flag must protect partially loaded media.

@@ -2,6 +2,7 @@
 #include "Peddle.h"
 #include "reu_model.h"
 #include "uci_model.h"
+#include "image_import_model.h"
 #include "cia_clock_model.h"
 #include "clock_probe_model.h"
 #include <array>
@@ -19,6 +20,8 @@ public:
     std::unique_ptr<ReuModel> reu;
     // Explicitly enabled per fixture; ordinary machines still reject UCI I/O.
     std::unique_ptr<UciModel> uci;
+    // Explicit read-only filesystem source fixture; disabled in ordinary UCI.
+    std::unique_ptr<ImageImportModel> image_import;
     // Explicitly enabled per fixture; its PHI2 advances are independent of CPU.
     std::unique_ptr<CiaClockModel> cia_clock;
     // Isolated calibration fixture only; default machines still reject VIC.
@@ -84,6 +87,7 @@ protected:
         written[a] = 1;
         if (a >= 0xd000 && a <= 0xdfff && (port & 3) && (port & 4)) {
             if (uci && uci->owns(a)) {
+                if (image_import && !image_import->prepare(*uci, a, v)) return;
                 uci->write(a, v); return;
             }
             if (a >= 0xdd00 && a <= 0xdd0f && cia_clock) {
@@ -174,6 +178,7 @@ uint32_t dos64_reu_compare(const Dos64Machine *m, uint32_t address, const uint8_
 
 void dos64_uci_model_enable(void *p, uint16_t base, uint32_t delay, uint8_t id) {
     auto &m = static_cast<Dos64Machine *>(p)->cpu;
+    m.image_import.reset();
     m.uci = std::make_unique<UciModel>();
     m.uci->base = base; m.uci->delay = delay; m.uci->id = id;
 }
@@ -270,4 +275,35 @@ void dos64_clock_probe_model_enable(Dos64Machine *m, uint16_t lines,
 }
 uint64_t dos64_clock_probe_model_reads(const Dos64Machine *m) {
     return m->cpu.clock_probe ? m->cpu.clock_probe->d011_reads : 0;
+}
+
+// Import source fixture is enabled separately from the FPGA protocol model.
+extern "C" {
+void import_model_source(void *p,const uint8_t *s,size_t n) {
+ auto &m=static_cast<Dos64Machine*>(p)->cpu;
+ if (!m.uci || (!s && n) || n>368641) {m.unsupported=true;return;}
+ m.image_import=std::make_unique<ImageImportModel>();
+ auto &source=*m.image_import;
+ if(n) source.source.assign(s,s+n);
+ source.path={'d','i','s','k','.','i','m','g'};
+}
+void import_model_faults(void *p,int command,int corrupt,int short_offset,int close) {
+ auto &m=static_cast<Dos64Machine*>(p)->cpu;
+ if(!m.image_import) {m.unsupported=true;return;}
+ auto &source=*m.image_import;
+ source.fail_command=command;source.corrupt_at=corrupt;
+ source.short_at=short_offset;source.bad_close=close;
+}
+uint32_t import_model_commands(void *p) {
+ auto &m=static_cast<Dos64Machine*>(p)->cpu;
+ return m.image_import ? m.image_import->history.size() : 0;
+}
+uint32_t import_model_position(void *p) {
+ auto &m=static_cast<Dos64Machine*>(p)->cpu;
+ return m.image_import ? m.image_import->position : 0;
+}
+uint8_t import_model_open(void *p) {
+ auto &m=static_cast<Dos64Machine*>(p)->cpu;
+ return m.image_import ? m.image_import->opened : 0;
+}
 }

@@ -6,7 +6,7 @@ Status: FILE/TEXT REU overlays and direct CPU dispatch are linked and verified b
 | Resource | Budget | Measured used | Gate |
 |---|---:|---:|---|
 | Resident/hot executable ranges | 20,223 bytes across MAIN/DEVICE/overlay | Resident file 17,330 + maximum loaded overlay 1,088 = 18,418 | MAIN/DEVICECODE boundaries; C000 staging and linked C100–C8FF UCI buffer leave C900–CFFF |
-| Cold window including vectors | 4 KiB | Unknown | Must preserve IRQ/NMI/reset vectors and return gateways |
+| Cold startup lifetime | 4 KiB | 931 linked importer bytes plus 3,165 checked zeros | 7000–7FFF before bitmap ownership; no runtime reentry |
 | Host guest-cache frames | 16 KiB | 32 × 512 bytes reserved/used | 8000–BFFF, direct physical tags; tests cover all frames |
 | Host control/metadata | 4 KiB | 2,659 static bytes; 1,437 remaining including gaps | BSS 222 + map 2,048 + frame metadata 192 + DEVICESTATE 197; only 34 BSS bytes before E100 |
 | Host range staging | 256 bytes | 256 reserved, not PRG payload | C000–C0FF; linker/map gate forbids graphics/cache overlap |
@@ -78,3 +78,5 @@ Unit CODE 080D–3B0A (**13,054**), RODATA 3B0B–3E82 (**888**), TESTCODE 3E83�
 DEVICESTATE growth is clock **13**, keyboard **18**, UCI **43** and native CIA clock **12**, added to previous **61** for **147** total. Clock/UCI/native-clock add **390/1,265/333** DEVICECODE bytes; keyboard adds **464** MAIN CODE bytes, with additional BIOS gate/port/ROM glue accounted in final totals. No runtime ZP or pre-map BSS is added by these components. Static control is 222+2,048+192+147=**2,609**, leaving **1,487** bytes including gaps; only **34** are in pre-E100 BSS. DEVICESTATE has **1,133** bytes left before EF00, metadata **64** before EA00.
 
 Remaining runtime code windows are MAIN **1,321**, DEVICECODE **412** and C900–CFFF **1,792** bytes (the latter budget is not yet a linker code segment). Unit MAIN has only **345** bytes. The linked UCI buffer has consumed its previous conditional reservation. Full-system stack/IRQ/KERNAL bounds remain unmeasured; private overlay/render/file-command modules are not linked and cannot be charged as completed functionality.
+
+Cold-import extension supersedes only the file/startup totals above: IMPORTCODE 931 bytes at 7000–73A2 (905 code + 26 cold state), checked tail 3,165 bytes, final PRG 30,721 bytes. Resident/main/device/overlay bytes remain exactly 28e4290. All-linked-variant totals 25,238 runtime/26,226 unit include the cold image; do not charge its 26 state bytes as resident metadata or reuse them after bitmap takeover. [Exact map/package evidence](evidence/image-import-linked-20261015.json).
