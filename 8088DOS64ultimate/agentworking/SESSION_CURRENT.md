@@ -1,3 +1,7 @@
+Latest physical interactive attempt failed before DOS at first FILE overlay header DMA (raw91, error4); all4MiB/settings/media/reset,1205sourcepins+828copies/3FTPfiles restored and verified. Evidence evidence/c64u-interactive-reu-failure-20261015.json. No physical application active; source freeze released. Private native-only bounded completion observer is being developed/reviewed; official delayedDMA regression is a candidate, not established installed-core cause. User still wants interactive DOS handoff; recording remains deferred.
+
+Latest user priority: run the emulator on the physical Ultimate for interactive play. Game recording launch is deferred; exact fresh PRGs are staged/read back (Terminal1442), native1e32b3f7 / runtime7122. No hardware application or REU mutation is active. Private interactive callback is being prepared, reusing original full-backup/recovery around an active session.
+
 Current update: UCF2+PIT7122c4e1/22b45779 is promoted androot428/290/27+55 pass; see evidence/ucf2-pit-20261015.json. Fourthgame freshPRGstage/guard nowbeingprepared. No physicalrunactive.
 
 # Current implementation handoff — 2026-10-15

@@ -1,3 +1,5 @@
+Latest physical interactive attempt failed before DOS at first FILE overlay header DMA (raw91, error4); all4MiB/settings/media/reset,1205sourcepins+828copies/3FTPfiles restored and verified. Evidence evidence/c64u-interactive-reu-failure-20261015.json. No physical application active; source freeze released. Private native-only bounded completion observer is being developed/reviewed; official delayedDMA regression is a candidate, not established installed-core cause. User still wants interactive DOS handoff; recording remains deferred.
+
 # Current state
 
 Updated: 2026-10-15, America/Los_Angeles.

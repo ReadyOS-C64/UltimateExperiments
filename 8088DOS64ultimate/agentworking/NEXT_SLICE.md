@@ -1,3 +1,5 @@
+Latest physical interactive attempt failed before DOS at first FILE overlay header DMA (raw91, error4); all4MiB/settings/media/reset,1205sourcepins+828copies/3FTPfiles restored and verified. Evidence evidence/c64u-interactive-reu-failure-20261015.json. No physical application active; source freeze released. Private native-only bounded completion observer is being developed/reviewed; official delayedDMA regression is a candidate, not established installed-core cause. User still wants interactive DOS handoff; recording remains deferred.
+
 # Next implementation slice
 
 Current combined runtime22f82091/unit8a84329c is root-promoted:421default/597quick/273tooling plusfocusedHD32 and exactprivate nativeDOS/MODE/IRQ/startup proof. Shadow2361/1223tail,PIT1664; every IRQ/HLT/REP boundary preserved. Oldphysical98fc and full5701/longHD acceptance remain tied to their original binaries. [Evidence](evidence/boundary-performance-20261015.json). Goal remains active.
