@@ -1,7 +1,7 @@
 .include "abi.inc"
 .include "host_clock.inc"
 .macpack longbranch
-.import dos64_elapsed_poll, dos64_host_clock_ticks, dos64_host_clock_status
+.import dos64_elapsed_poll_owned, dos64_host_clock_ticks, dos64_host_clock_status
 .import dos64_irq_pulse, dos64_irq_line, dos64_irq_result, dos64_cpu_status
 .export dos64_pit_init, dos64_pit_rebase, dos64_pit_advance, dos64_pit_poll
 .export dos64_pit_now, dos64_pit_last, dos64_pit_fraction, dos64_pit_phase
@@ -295,7 +295,7 @@ dos64_pit_poll:
     cld
     lda #0
     sta dos64_pit_poll_error
-    jsr dos64_elapsed_poll
+    jsr dos64_elapsed_poll_owned
     bcs @clock
     ldx #3
 @copy:

@@ -65,3 +65,51 @@ dos64_elapsed_poll:
     leave 0
 failed:
     leave 1
+
+.ifdef DOS64_OWNED_CLOCK
+.import dos64_host_clock_read_owned
+.export dos64_elapsed_poll_owned
+.segment "HDBIOS"
+; Same published values/errors and P contract, with already-owned RAM+I/O.
+dos64_elapsed_poll_owned:
+    php
+    sei
+    cld
+    jsr dos64_host_clock_read_owned
+    bcs owned_failed
+    ; Compute the exact low 16 bits of the published 32-bit counter >> 12.
+    ; Ownership excludes NMI/IRQ consumers during this two-byte publication.
+    lda dos64_host_clock_ticks+1
+    lsr
+    lsr
+    lsr
+    lsr
+    sta dos64_elapsed_now
+    lda dos64_host_clock_ticks+2
+    asl
+    asl
+    asl
+    asl
+    ora dos64_elapsed_now
+    sta dos64_elapsed_now
+    lda dos64_host_clock_ticks+2
+    lsr
+    lsr
+    lsr
+    lsr
+    sta dos64_elapsed_now+1
+    lda dos64_host_clock_ticks+3
+    asl
+    asl
+    asl
+    asl
+    ora dos64_elapsed_now+1
+    sta dos64_elapsed_now+1
+    plp
+    clc
+    rts
+owned_failed:
+    plp
+    sec
+    rts
+.endif

@@ -26,3 +26,8 @@ This validates the observed PAL raw CIA/raster clock domain and its turbo indepe
 ## Linked elapsed adapter
 
 The88-byte resident adapter publishes exactly low16(raw32CIAcounter>>12), with two resident state bytes and no ZP. A unit is4096 raw phi2 ticks, not a millisecond or turboCPUcycle. Consumers require durations1..32767 and polling gaps below32768 units. It establishes RAM+I/O before reading resident clock output, restores banking/P except carry and preservesX/Y. Clock-read failure leaves the previous elapsed value unchanged. Three actual-assembly tests cover2048 seeded values, raw/unit wrap seams, ownership/readiness/control faults and all256 native statuses across16 DDR/port combinations. It is linked but not yet consumed by startup or scheduling. [Current evidence](../agentworking/evidence/native-text-input-20261015.json).
+
+
+## Owned PIT entry, 2026-10-15
+
+The normal target now links a separately assembled internal owned entry for PIT boundary calls. It uses the same coherent CIA sampling/control/read ordering and errors, but relies on already established ownership, RAM+I/O mapping and copied-shadow readiness. Internal raw/elapsed entries save73/111 modeled CPU cycles; public banking-safe APIs and all standalone helper bytes remain unchanged. This adds217 shadow-code bytes, no resident state/ZP. Wrong banking is unsupported for the internal entry; public entries remain tested under all eight mappings. [Combined evidence and limits](BOUNDARY_PERFORMANCE_20261015.md).

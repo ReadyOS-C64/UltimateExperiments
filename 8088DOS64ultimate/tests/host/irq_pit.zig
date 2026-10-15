@@ -1435,3 +1435,31 @@ test "integrated native polling overhead separates warm NOP noedge duepulse and 
         std.debug.print("INTEGRATED_TIMER label={s} rawdelta={d} warmNOP={d} callback={d} nativeStep={d} CPUcycles\n",.{scenario.label,scenario.delta,nop_cycles,callback_cycles,step_cycles});
     }
 }
+
+test "empty or fully masked IRR still validates every PIC programming byte before returning none" {
+    var f = try init();
+    defer f.deinit();
+    for ([_][2]u8{ .{ 0, 0 }, .{ 255, 255 } }) |requests| {
+        try put(&f, "dos64_pic_irr", requests[0]);
+        try put(&f, "dos64_pic_imr", requests[1]);
+        inline for (.{ "dos64_pic_icw1", "dos64_pic_icw4", "dos64_pic_phase" }, .{ @as(u8, 0x13), @as(u8, 9), @as(u8, 0) }) |name, normal| {
+            for (0..256) |raw| {
+                const value: u8 = @intCast(raw);
+                try put(&f, name, value);
+                const valid = if (std.mem.eql(u8, name, "dos64_pic_icw1"))
+                    value & 0x1b == 0x13
+                else if (std.mem.eql(u8, name, "dos64_pic_icw4"))
+                    value & 0x11 == 1 and !(value & 2 != 0 and value & 0x0c == 8)
+                else
+                    value == 0;
+                const r = try f.call("dos64_irq_select", 10000);
+                try std.testing.expectEqual(@as(u8, if (valid) 0 else 1), r.p & 1);
+                try std.testing.expectEqual(@as(u8, 255), try get(&f, "dos64_irq_selected"));
+                try std.testing.expectEqual(requests[0], try get(&f, "dos64_pic_irr"));
+                try std.testing.expectEqual(requests[1], try get(&f, "dos64_pic_imr"));
+                try std.testing.expectEqual(value, try get(&f, name));
+            }
+            try put(&f, name, normal);
+        }
+    }
+}

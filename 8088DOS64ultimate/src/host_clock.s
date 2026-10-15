@@ -96,8 +96,7 @@ owned:
     leave 0
 .endproc
 
-.proc dos64_host_clock_read
-    enter
+.macro clock_read_body owned
     lda dos64_host_clock_claim
     cmp #HC_OWNED
     beq owner_ok
@@ -163,12 +162,40 @@ publish:
     bpl publish
     lda #HC_OK
     sta dos64_host_clock_status
-    leave 0
+    .if owned
+        plp
+        clc
+        rts
+    .else
+        leave 0
+    .endif
 inconsistent:
     dec attempts
     bne retry
     lda #HC_ERR_SAMPLE
 failed:
     sta dos64_host_clock_status
-    leave 1
+    .if owned
+        plp
+        sec
+        rts
+    .else
+        leave 1
+    .endif
+.endmacro
+.proc dos64_host_clock_read
+    enter
+    clock_read_body 0
 .endproc
+.ifdef DOS64_OWNED_CLOCK
+.export dos64_host_clock_read_owned
+.segment "HDBIOS"
+; Internal only: exclusive CIA2, already RAM+I/O, initialized shadow,
+; synchronous/non-reentrant. P except C preserved; A/X/Y clobbered.
+.proc dos64_host_clock_read_owned
+    php
+    sei
+    cld
+    clock_read_body 1
+.endproc
+.endif

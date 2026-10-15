@@ -83,3 +83,6 @@ K01/K02 remain HIGH. Actual nativeDOS profile has1169895754CPUstepclocks/601936c
 
 
 2026-10-15 MODE: physical CO40/CO80 framebuffer/code evidence now passes. External readability and human matrix input remain open. First native restore protocol failure before DMA required a second attempt; cause is unknown because declared reply lengths were zero. Both attempts and all4MiB final equality are retained.600seconds is configured per attempt, not a global two-attempt guarantee.
+
+
+2026-10-15 combined boundary optimization: shadow headroom decreases1440→1223, PIT tail130→128; MAIN/DEVICE/state unchanged. K03 remainsHIGH. ModeledDOS CPU cost falls8.8%, but C64U elapsed and XT ratio remainunproved. Full5701whole-PRG/longHD/physical proofs remainold98fc; newtarget has421default/597quick/nativeDOS/MODE/focusedHD evidence. Every existing sampling boundary is retained.

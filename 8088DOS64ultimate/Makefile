@@ -7,6 +7,13 @@ DOS64_PYTHON ?= python3
 
 ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s src/host_input.s src/cold.s src/elapsed.s src/native_text_display.s src/native_text_fonts.s src/native_runtime.s src/native_timer.s src/virtual_irq.s src/virtual_pit.s src/render_graphics.s src/hd_cache.s src/hd_bios.s src/hd_extension_load.s src/hd_cold.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
+OBJECTS := $(filter-out build/host_clock.o build/elapsed.o,$(OBJECTS)) build/owned-host_clock.o build/owned-elapsed.o
+build/owned-host_clock.o: src/host_clock.s include/host_clock.inc Makefile
+	@mkdir -p build
+	$(DOS64_CA65) -g -D DOS64_OWNED_CLOCK=1 -I include -o $@ $<
+build/owned-elapsed.o: src/elapsed.s include/elapsed.inc include/host_clock.inc Makefile
+	@mkdir -p build
+	$(DOS64_CA65) -g -D DOS64_OWNED_CLOCK=1 -I include -o $@ $<
 build/alu.o: include/parity.inc Makefile
 build/range.o: include/range.inc Makefile
 build/disk.o: include/disk.inc include/range.inc Makefile

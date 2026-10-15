@@ -136,3 +136,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 | D94 | Implemented/host verified, 2026-10-15 | Optional bounded HD collector retains new authority/handoff/image before outer REU restoration | Root273tooling/27native-file host; independent273/no network/no children; interruptions/malformed results cannot skip recovery; original pre-helper appRAM must be preserved by future caller; no physicalHD trace/runner yet |
+
+
+| D95 | Implemented/model verified, 2026-10-15 | Internal owned-clock ABI plus validated emptyPIC branch preserve every existing IRQ/HLT/REP boundary | Root421/597quick/273tools/focusedHD32; actualprivateDOS/MODE exactbothPRGs+176source proof; independent12combination tests;424cycles emptyboundary/8.8%modeledDOS reduction;shadow2361/PIT1664; no transfer of old physical/full5701 acceptance |

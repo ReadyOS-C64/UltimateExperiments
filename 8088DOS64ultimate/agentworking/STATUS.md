@@ -2,9 +2,9 @@
 
 Updated: 2026-10-15, America/Los_Angeles.
 
-**Phase: six-overlay floppy-only native DOS, MODE CO40/CO80 and complete recovery accepted physically; physical HD and external display acceptance remain pending.** Implementation remains active, with local commits only.
+**Phase: combined clock/PIC target promoted; physical DOS/MODE acceptance remains exact98fc. New target physical gate, physical HD and external readability remain pending.** Implementation remains active, with local commits only.
 
-Current runtime98fcd115/unit6eba1ee7,42497-byte PRGs load0801–ADFF. Root417default/597quick/218tooling plus nativeDOS1/MODE1/HDfixtures1/backend14/BIOS12/cold6 pass. Three optional long cases skip in the root quick lane; reviewed eight-case long HD and5701CPU proofs are retained by exact bothPRG/203execution-test-source identity. All398frozen dependencies independently checked. Independent normalproduction review13 and shadowhost28 pass. Required Make range.inc dependency fixed without nativebytechange. Actual rootDOS64KiB capture passes sixresidentproofs/all3584shadowbytes/A5guard. [Evidence](evidence/hd-production-20261015.json).
+Historical HD/scroll checkpoint runtime98fcd115/unit6eba1ee7,42497-byte PRGs load0801–ADFF. Root417default/597quick/218tooling plus nativeDOS1/MODE1/HDfixtures1/backend14/BIOS12/cold6 pass. Three optional long cases skip in the root quick lane; reviewed eight-case long HD and5701CPU proofs are retained by exact bothPRG/203execution-test-source identity. All398frozen dependencies independently checked. Independent normalproduction review13 and shadowhost28 pass. Required Make range.inc dependency fixed without nativebytechange. Actual rootDOS64KiB capture passes sixresidentproofs/all3584shadowbytes/A5guard. [Evidence](evidence/hd-production-20261015.json).
 
 Sixassets commit12288bytes toREU340000–342FFF; separate A000–ADFF copies to hostF000–FDFF beforecache/BIOS.23cacheframes initially overlap sources. MAINfree115runtime/114unit,DEVICE22,cold1093/118;HDBIOS2144+1440zero tail. BSS223,DEVICESTATE659,ZP18/30. [Memory](MEMORY_BUDGET.md),[HDcontract](../docs/HD_IMPLEMENTATION.md). HDdisabled remains default; realDOSowns FAT/INT21/loading. PhysicalHDwrite failure must preserve newuncertainsector350000 andhandoff352000 before restoring oldREU.
 
@@ -258,3 +258,12 @@ This accepts BIOS-ring input and captured framebuffer bytes. Physical matrix inp
 Four reviewed host files are promoted. Root273tooling and27native-file host checks pass; independent clean-layout273 checks pass with networking forbidden and zero live children. Optional pre-restoration collection retains RAM, newly authoritative sector350000, handoff352000 and complete/partial owned remote image. Failed/interrupted collection and malformed reports cannot skip full REU/configuration/reset recovery. Default hook=None flow and target PRGs are unchanged. Original rejected/repair cohorts remain retained. [Evidence](evidence/hd-failure-evidence-foundation-20261015.json),[caller contract](../docs/HD_FAILURE_EVIDENCE.md).
 
 Future HD runner must retain the application's original pre-helper RAM; the later collector can see DRS1. Full physical guest-write tracing, owned HD stager/runner and persistence acceptance remain unfinished.
+
+
+## Current combined clock/PIC target
+
+Runtime22f8209108fca953/unit8a84329ce41850fa,42497bytes, now supersedes the shared target. Root421Zig/597quick/273tooling and focusedHD14backend/12BIOS/6cold pass, three optional longHD skips. Actual private nativeDOS1/MODE1/IRQ49/startup3 proof is retained by exact bothPRGs and176native/testsource identities; no redundant root native run. Independent12 distinct combined tests/11shadow/16memory checks pass and bothPRGs reproduce. Nine standalone helpers remain exact.
+
+Owned clock sampling plus validated emptyPIC saves424modeledCPU cycles at each eligible empty boundary, preserving every callback and full fixed-clock state/CIAcounts. Genuine nativeDOSCPU2869345809→2616062815 for598702guest; MODE1923740623→1755120848,377062→377078guest under cost-derived timer. No physical gain inferred. Shadow2361/1223tail;PIT1664,totalpayload7302; all other resident headroom/state unchanged. [Evidence](evidence/boundary-performance-20261015.json),[details](../docs/BOUNDARY_PERFORMANCE_20261015.md).
+
+New actual MODE proof2526dfbd binds the new pair, executed report/fonts/assertions and both full bitmaps. Old5701wholePRG/eightlongHD and physical98fc proofs remain historical, not transferred. New hardware launch must freeze the current target/host recovery/metadata and use fresh fullREU backup. PhysicalHD/IEC/floppysave/graphics/humaninput/readability/nearXT remain unfinished.

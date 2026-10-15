@@ -179,3 +179,8 @@ Freeze complete source/artifact input bytes alongside hashes before later target
 ## 2026-10-15 — cleanup cannot depend on well-formed evidence
 
 An optional evidence worker must not let interrupted waits, serialization errors or malformed results bypass recovery. Reap the child in all paths and independently validate artifacts in the parent. Preserve partial accepted bytes before publishing progress. A RAM-first collector only guarantees order relative to its own helper; bind the earlier application capture explicitly if another evidence path has already replaced native code.
+
+
+## 2026-10-15 — combine measured optimizations without changing policy
+
+Compare the combination directly: savings from separate changes can interact through flags, scratch registers and clock-derived guest timing. Keep fixed-clock state differentials separate from workload cost comparisons. An unchanged CPU ISA source is useful retained evidence, but it does not make an old whole-PRG hash identify a newly linked executable. Refresh source-bound application proof bundles when target bytes change.

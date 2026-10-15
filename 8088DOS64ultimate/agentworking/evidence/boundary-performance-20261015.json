@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "status": "promoted combined owned-clock/PIC optimization; physical gate pending",
+  "runtime_sha256": "22f8209108fca953f783116c0a6cf5bd0c788e08b586421e30406f6129be0369",
+  "unit_sha256": "8a84329ce41850fa42d89c0ee5f42d4e6f77a000a2c0a9abce8cae9c0092d94f",
+  "PRG_bytes": 42497,
+  "root": {
+    "default_Zig": 421,
+    "quick_CPU": 597,
+    "tooling": 273,
+    "tooling_seconds": 32.476,
+    "HD_backend": 14,
+    "HD_BIOS": 12,
+    "HD_cold": 6,
+    "optional_long_HD_skips": 3
+  },
+  "private_actual_native_gates": {
+    "IRQ_PIT": 49,
+    "startup": 3,
+    "DOS": 1,
+    "MODE": 1,
+    "runtime_and_unit_bytes_exact_root": true,
+    "all_native_execution_assertion_source_inputs_exact_root": 176,
+    "no_redundant_root_DOS_MODE_rerun": true
+  },
+  "independent_review": {
+    "distinct_combination_tests": 12,
+    "strict_shadow": 11,
+    "memory_contract": 16,
+    "forced_bothPRGs_rebuild_exact": true,
+    "standalone_helpers_unchanged": 9,
+    "manifest_sha256": "e8726a3aef7616d31de2006e87f88c12dca963846f4d54eb98762ea2752ade29"
+  },
+  "measured": {
+    "empty_eligible_boundary_CPU_cycles_saved": 424,
+    "owned_elapsed_saving": 111,
+    "empty_PIC_saving": 313,
+    "nonempty_PIC_extra_cycles": 2,
+    "full_guest_state_and_CIA_counts_equal_at_fixed_clock": true,
+    "native_DOS_guest_instructions": 598702,
+    "native_DOS_CPU_cycles_before": 2869345809,
+    "native_DOS_CPU_cycles_after": 2616062815,
+    "native_DOS_CPU_reduction_fraction": 0.08827203511181947,
+    "native_MODE_guest_instructions_before": 377062,
+    "native_MODE_guest_instructions_after": 377078,
+    "native_MODE_CPU_cycles_before": 1923740623,
+    "native_MODE_CPU_cycles_after": 1755120848,
+    "functional_clock_timing_changes_expected": true
+  },
+  "memory": {
+    "HDBIOS_code": 2361,
+    "HDBIOS_zero_tail": 1223,
+    "PIT_overlay": 1664,
+    "all_overlays": 7302,
+    "MAIN_free_runtime": 115,
+    "MAIN_free_unit": 114,
+    "DEVICE_free": 22,
+    "no_additional_ZP_BSS_state": true
+  },
+  "new_actual_MODE_proof_descriptor_sha256": "2526dfbd9217ecc52601960443cd3cf1ab12fafe768611400b6b61054fd0fc2e",
+  "provenance": {
+    "agentworking/runs/performance-promotion-20261015-root/result.json": {
+      "sha256": "b9490f242786cf125aa8e4774e834075ebeaebcc9ba47051d00ad3e40489922f",
+      "bytes": 875
+    },
+    "agentworking/runs/performance-promotion-20261015-root/base-audit.json": {
+      "sha256": "be745623082b24073f59b17cab32d024af552417eef8711b3e1fbf78202f7e8f",
+      "bytes": 275
+    },
+    "agentworking/runs/performance-promotion-20261015-root/test.log": {
+      "sha256": "8940dded2d06a463e2b8644d82b4f168e93ee32e1b96e96626948c38b874feaa",
+      "bytes": 42616
+    },
+    "agentworking/runs/performance-promotion-20261015-root/hd-focused.log": {
+      "sha256": "0c34d787f3073b9d533790be4a10570bf32053060bef55d4662f994922810881",
+      "bytes": 980
+    },
+    "agentworking/runs/performance-promotion-20261015-root/manifest.json": {
+      "sha256": "7590419d49be514be0f4db743c5d7f56a0569e22a00a411c33aba8cd7d0774af",
+      "bytes": 47138
+    },
+    "agentworking/runs/performance-promotion-20261015-root/dos64.memory.json": {
+      "sha256": "143a61ad31561e23b0c8d8095c179c7b97266491a98f07aa72d2e80dac2f5298",
+      "bytes": 8188
+    },
+    "agentworking/runs/performance-promotion-20261015-root/dos64-tests.memory.json": {
+      "sha256": "0ca5b7aafacddd20793ab06a0e3157dd5ca1d66884a4a5dd98e5ea27175c8eed",
+      "bytes": 8385
+    },
+    "agentworking/runs/performance-promotion-20261015-root/dos64-overlay-package.json": {
+      "sha256": "4b9b02b48e295c3ab4747b2d7e233b4a318c98f2f0452d1d0984876e77f15673",
+      "bytes": 3346
+    },
+    "agentworking/runs/performance-promotion-20261015-root/dos64-tests-overlay-package.json": {
+      "sha256": "d944f0afb85a6a9d8a6a20a9ceb3ba59e24f751ac3633e87b438dc0e9d80d320",
+      "bytes": 3405
+    },
+    "agentworking/runs/performance-promotion-20261015-root/native-dos-boot.json": {
+      "sha256": "714bc60dadb80a183b9f4cb28a9c8cdf6a03f0e9d75203b5b3a5bca44c07eb76",
+      "bytes": 351124
+    },
+    "agentworking/runs/performance-promotion-20261015-root/native-mode-workflow.json": {
+      "sha256": "f6dc51c8e34a428d3a10c00b41ffa641ccf6bc8d8bd1c9bf7de9cdb073de2785",
+      "bytes": 220839
+    },
+    "agentworking/runs/performance-promotion-20261015-root/mode-proof/proof.json": {
+      "sha256": "2526dfbd9217ecc52601960443cd3cf1ab12fafe768611400b6b61054fd0fc2e",
+      "bytes": 730
+    },
+    "agentworking/runs/performance-promotion-20261015-root/mode-proof-acceptance.json": {
+      "sha256": "1b2829f54c2520d73b5f152c4591d09056cd5710d3d3549fafee9243024a490e",
+      "bytes": 2082
+    },
+    "agentworking/scratch/performance-combined-root/manifest.json": {
+      "sha256": "b8092dfcc9a1dc831aaab834519f593750fca2f8a4a821a93546eed5531f58c5",
+      "bytes": 49490
+    },
+    "agentworking/scratch/performance-combined-root/result.json": {
+      "sha256": "bfe165745eea094a928d90fdff11e13e513e74c3cb00ce784eb141ee75e4de2f",
+      "bytes": 6198
+    },
+    "agentworking/scratch/performance-combined-root/promotion.patch": {
+      "sha256": "35805564c4f484077bbdf2e581f4275f3f84422842b47b42ef97ebbca68580de",
+      "bytes": 11775
+    },
+    "agentworking/scratch/performance-combined-root/first-failures.md": {
+      "sha256": "8b5e277c8ea9851bd0470eebfa39c1dc74200ad5a2edbb38b36b333e4fa18906",
+      "bytes": 557
+    },
+    "agentworking/scratch/performance-combined-root/native-gates.log": {
+      "sha256": "6f8032898e633eb92c4b32f6332d7ad5956f3aa29ece5e74b0df8d340cfbc6d2",
+      "bytes": 2101
+    },
+    "agentworking/scratch/performance-combined-review/REVIEW.md": {
+      "sha256": "a5b9c4440aa1d24acec951fa7a7db7e12561e191b02da8db028a619ae288bfe4",
+      "bytes": 7992
+    },
+    "agentworking/scratch/performance-combined-review/review-manifest.json": {
+      "sha256": "e8726a3aef7616d31de2006e87f88c12dca963846f4d54eb98762ea2752ade29",
+      "bytes": 2698
+    }
+  },
+  "limitations": [
+    "Old full5701 whole-PRG and eight longHD proofs remain tied to98fc/6eba; CPU ISA source unchanged but not new exact-binary acceptance",
+    "Old physicalDOS/MODE remains98fc; new target physical gate pending",
+    "Modeled native clocks include observer commands and exclude real DMA/MMIO/VIC stalls",
+    "No nearXT or physical performance claim",
+    "No complete long-run RAM equality under cost-derived clocks",
+    "Every previous IRQ/HLT/REP sampling boundary remains active"
+  ]
+}

@@ -161,3 +161,5 @@ test { _ = @import("unit_cold_lifetime.zig"); }
 comptime { _ = @import("video_xt_compat.zig"); }
 
 test { _ = @import("video_spans.zig"); }
+
+test { _ = @import("owned_clock_internal.zig"); }

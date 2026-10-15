@@ -78,6 +78,9 @@ irq_select:
     eor #$FF
     and dos64_pic_irr
     sta irq_candidates
+    ; No request can win priority arbitration; validated PIC state above still
+    ; reports unsupported programming even with an empty/masked IRR.
+    beq @none
     lda dos64_pic_isr
     sta irq_blockers
     lda dos64_pic_special_mask
