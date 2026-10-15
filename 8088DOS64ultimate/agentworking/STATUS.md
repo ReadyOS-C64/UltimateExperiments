@@ -2,7 +2,7 @@
 
 Updated: 2026-10-15, America/Los_Angeles.
 
-**Phase: six-overlay floppy-only native DOS and complete recovery accepted physically; HD and MODE physical gates pending.** Implementation remains active, with local commits only.
+**Phase: six-overlay floppy-only native DOS, MODE CO40/CO80 and complete recovery accepted physically; physical HD and external display acceptance remain pending.** Implementation remains active, with local commits only.
 
 Current runtime98fcd115/unit6eba1ee7,42497-byte PRGs load0801–ADFF. Root417default/597quick/218tooling plus nativeDOS1/MODE1/HDfixtures1/backend14/BIOS12/cold6 pass. Three optional long cases skip in the root quick lane; reviewed eight-case long HD and5701CPU proofs are retained by exact bothPRG/203execution-test-source identity. All398frozen dependencies independently checked. Independent normalproduction review13 and shadowhost28 pass. Required Make range.inc dependency fixed without nativebytechange. Actual rootDOS64KiB capture passes sixresidentproofs/all3584shadowbytes/A5guard. [Evidence](evidence/hd-production-20261015.json).
 
@@ -242,3 +242,12 @@ Terminal `c64u-native-five-file-20261015-080121` exits1 because current3c/00e708
 SEPARATE native-file restoration PASSES firstattempt: fresh4194304bytebackupbeforeapp,actualFTP/native388069CRC/8192sectors/knownCLOSE,original40feserviceall256chunkreadback/rootallbytesequality, SHAac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3. Complete restorestageincludingouterreload231.922859seconds<600;wholeworkflow488.766818seconds. Priorconfiguration/turbo/mountedmedia/resetresumeallpass. Independent86checkaudit supportsrecoveryonly. [Physical record](evidence/c64u-native-file-recovery-20261015.json). Upper12MiBnotindependentlycompared; priorCPUexecutionnotrestored.
 
 Observeranalysisfinds113.390secondsconfirmedpausedlowerboundover143SNAPSHOT→RUN windows,versus56.018secondsintheolderacceptedrun; workloads/binaries/transportdiffer,soPIT/MMIOcostisnotisolated. Root197tooling+27recoveryhostchecks/localexplicit2s360svalidationpassforOPTIONALboundedobservercontrols,old0.25s/180sdefaultsretained. [Observer evidence](evidence/native-observer-controls-20261015.json). Nextphysicaltargetmaybethe reviewed6overlayHD/scrollcohort afternormalrootpromotion+strictF000sourceidentity; no stalebackupreuse ornewtargetacceptanceyet.
+
+
+## Physical MODE acceptance, 2026-10-15
+
+Terminal run `c64u-native-mode-file-20261015-092257` passes genuine MODE CO40/CO80 on runtime98fc/configuredab50, with HD disabled. Both returned prompts; 22 BIOS keys and 25 observations; 112.328 seconds including application evidence. Each checkpoint independently checks all source fonts, 8,000 bitmap bytes, 1,000 matrix bytes, coherent BDA/CGA and resident/shadow code. Guest counts are 340,818 and 434,422. Fresh original floppy and configured PRGs were staged and read back byte-for-byte.
+
+The first recovery attempt failed at OPEN/cleanup with protocol error4, unknown handle and zero sectors before any restore DMA. Its failure RAM is retained; stale status bytes with declared length zero do not explain the firmware cause. Attempt two passed fresh staging/startup/CRC/EOF/known CLOSE and independent comparison of all4,194,304 bytes. Prior machine/media settings and reset/resume passed. Observed restoration across both attempts took272.930 seconds, whole workflow461.177 seconds; the configured600-second bound applies separately to each allowed attempt. Independent preflight741 and raw audit1,443 checks pass. All349 reviewed inputs have immutable historical copies. [Evidence](evidence/c64u-native-mode-20261015.json).
+
+This accepts BIOS-ring input and captured framebuffer bytes. Physical matrix input, external VIC/HDMI readability, graphics modes, physical HD/IEC/floppy-save persistence, upper12MiB and near-XT speed remain open. Shared target remains98fc/6eba. Private combined clock/PIC candidate passes421default/597quick/238tooling and54 focused/native gates, under independent review; it has no physical acceptance yet.

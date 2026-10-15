@@ -356,3 +356,14 @@ Freshimmutable4MiBbackup precedesapp;one-file nativeFTP/CRC6565A1A2/8192sector/k
 ## 2026-10-15 MODE host production promotion
 
 Read-onlybasecheck andallcohort hashes pass;copiedsixadditivefiles. `python3 -m unittest discover -s tests/tooling -v` PASS238/238,24.887s; `make manifest` pass;normalruntime98fc/unit6eba unchanged. Independent26testsperlayout/10offlineCLIvalidations passwithnetworkblocked. Actualoldfive/newroot sixMODEunitproofs preserved; no newslowDOSrerun. [Evidence](evidence/mode-host-production-20261015.json). PhysicalMODEstillpending.
+
+
+## 2026-10-15 physical genuine MODE CO40/CO80
+
+Root-owned Terminal `agentworking/scratch/native-mode-reviewed-20261015-092257/launch-mode.sh`, exit0. Run16:33:59.563927–16:41:40.740711UTC,461.176784 seconds. Firmware3.14/FPGA121/core1.47/PAL/Manual64MHz/16MiBREU, badlines disabled. Runtime98fc/unit6eba/configuredab50,42497bytes,56 permitted D64N changes, all140 D64H bytes unchanged/disabled. Fresh owned unchanged floppy and PRGs staged with complete FTP readbacks. Independent preflight741 pins349 inputs and330 build entries. Exact host/output/self-hash launcher guards pass.
+
+Actual genuine MODE CO40 then CO80 passes:22 BIOS keys,25 observations,112.328034 seconds including application evidence. Mode1/40columns/340818guest then mode3/80columns/434422guest, both cursor-local returnedA>. Every source font,8000bitmap/1000matrix per checkpoint, BDA/CGA/hostRAM and all ordinary/copied-shadow code checks pass; unit/physical bitmaps exactly equal. Shadow3584 includes1440zero tail/A5ready. Original/imported floppy and postrunFTP floppy/twoPRGs are byte-exact.
+
+Recovery attempt1 retained engine2/phase7/file2/UCI4/state10/recovery_failed1/handle2/cleanup1, zero sectors/no restoreDMA/CRCFFFFFFFF. Declared data/status lengths zero: residual84,NO FILE TO CLOSE is stale and gives no firmware-cause proof. Attempt2 fresh directory/configuration/mailbox/startup passes8192sectors/CRC6565A1A2/EOF/knownCLOSE and original service fresh READY. All512 ordered READ/ACK pairs and all4194304 before/after bytes equal SHAac43c06b. Configuration/turbo/mountedmedia/resetresume pass. Observed both-attempt restoration272.930021s, second conservative span218.814512s; configured600s applies per attempt, max2. Root first looked for nonexistent reu-after-1; corrected to result.restore_attempts=2. Independent raw audit1443 passes with no network/hardware or run-verifier import; report05a30e71/manifestc5cb66f0. A later metadata extractor initially treated resident-identity JSON list as dict; corrected local inspection only. All349 historical input bytes copied/rehashed read-only before future source changes. [Evidence](evidence/c64u-native-mode-20261015.json).
+
+No externalHDMI/readability/humanmatrix/graphics/physicalHD/IEC/floppy-save/upper12MiB/nearXT acceptance. First recovery protocol failure remains recorded; whole success does not erase it.

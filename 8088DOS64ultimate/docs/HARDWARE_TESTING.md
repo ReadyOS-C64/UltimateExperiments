@@ -36,3 +36,8 @@ Run080121 restores the freshfirst4MiB exactly onattempt1,withnativeCRC/8192secto
 Terminal run085647 passes runtime98fc/configured1ff1 atManual64/PAL/firmware3.14. HDdisabled. GenuineDOS/VER/DIR /P exact35entries/9216free/returnedprompt andall3584copiedshadowbytes/A5guard pass. Completebitmap/matrix matchindependentlicensedfontoracle. Freshfull4MiBbackup/nativefile restore/allbytecompare/configmediareset pass,222.093srestore/436.493swhole. [Evidence](../agentworking/evidence/c64u-native-six-20261015.json). Explicit2s/360sobserverfunctionaloptions wereused; oldfailedfive180srun staysfailed. No externalHDMI/physicalmatrix/MODE/CGAgraphics/HDpersist/upper12MiB/XTacceptance follows.
 
 The opt-in [MODE runner](../build_support/c64u_native_display_runner.py) requires explicitactualunitproof SHA,pinnedpairedruntime/source/bitmap inputs,rolespecificshadowmetadata,freshownedfloppy/PRGs andcompleteREUrecovery. Localvalidate andindependentpreflight precedeTerminalexecution. [Hostevidence](../agentworking/evidence/mode-host-production-20261015.json).
+
+
+## Physical MODE acceptance
+
+Terminal MODE run092257 passes on98fc/configuredab50 with HDdisabled. Genuine CO40 and CO80 return prompts and pass complete bitmap/matrix/font/coherent state/code checks;22 BIOS keys/25 observations. Independent preflight741 and audit1,443 checks pass. First recovery fails before DMA, retains protocol/unknown-handle diagnostics; second restores all4MiB. Observed total restoration272.930seconds, whole461.177seconds;600seconds is configured per attempt. Fresh owned floppy/PRGs and final settings/media/reset pass. [Evidence](../agentworking/evidence/c64u-native-mode-20261015.json). This does not accept physical matrix input or external readability.

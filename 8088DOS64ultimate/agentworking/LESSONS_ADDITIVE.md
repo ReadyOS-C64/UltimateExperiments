@@ -167,3 +167,10 @@ Coherent screen inspection pauses guest execution across several commands. Measu
 
 
 2026-10-15 HD promotion: source/linked/runtime identity are separate. Compare every linked source and both whole PRGs before reusing slow corpus/boot evidence; review build dependencies even when initial binaries match. Copied executable expectations must come from immutable packaged bytes, never the live cache source. REST full-RAM bytes at6510 portaddresses are underlying RAM, not trustworthy live DDR/data registers. Preserve newly authoritative uncertain HD writes before restoring the pre-run REU snapshot.
+
+
+## 2026-10-15 — physical MODE and retry evidence
+
+Use the recorded restoration attempt count when selecting final readback files. Preserve every failed attempt before overwriting helper RAM. A status buffer with declared length zero is stale, even when its bytes resemble a useful firmware error. Check executable/diagnostic equality separately from changing I/O registers in repeated RAM captures. A successful retry establishes final restoration, not the cause of the first failure.
+
+Freeze complete source/artifact input bytes alongside hashes before later target changes. That preserves historical physical proof without pretending an old unit or hardware binary identifies the new target. Distinguish observed total restoration time from a configured per-attempt bound.

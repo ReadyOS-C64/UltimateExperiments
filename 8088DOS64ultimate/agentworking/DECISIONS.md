@@ -130,3 +130,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 | D91 | Physically verified,2026-10-15 | Accept six-overlay98fc/config1ff1 floppy-only nativeDOS atManual64,explicit2s/360s observer |37screens/14keys/35entries/9216free/returnedprompt,all3584shadow/A5/fullbitmapmatrix,all4MiBrestore222.093s/configmediareset;HDdisabled,noMODE/readability/XTclaim;failedfive staysfailed |
 | D92 | Implemented/host verified,2026-10-15 | OptionalMODErunner requires explicitSHA-bound actualunit proof pluspairedruntime/source/bitmap identity |Root238tooling,independent26testsperlayout/10offlineCLI;defaultVERDIRunchanged,strictshadowand600recovery retained;physicalMODEpending |
+
+
+| D93 | Physically verified, 2026-10-15 | Accept genuine DOS MODE CO40/CO80 on exact98fc/configuredab50 with complete RAM framebuffer/code proof | Both returned prompts; independent1,443 assertions; first recovery protocol failure retained, second restores all4MiB; observed272.930s across attempts, configured600s per attempt; no human matrix/HDMI/graphics/HD/XT claim |
