@@ -20,7 +20,7 @@ def verify(map_text, labels_text):
               "CODE": (0x080D, 0x3FFF), "RODATA": (0x080D, 0x3FFF),
               "TESTCODE": (0x080D, 0x3FFF), "ZEROPAGE": (0x20, 0xDF),
               "RANGEBUFFER": (0xC000, 0xC0FF), "BSS": (0xE000, 0xE0FF), "PAGEMAP": (0xE100, 0xE8FF),
-              "CACHEMETA": (0xE900, 0xEFFF)}
+              "CACHEMETA": (0xE900, 0xE9FF), "DEVICESTATE": (0xEA00, 0xEEFF)}
     segments = []
     for name, first, last, size in re.findall(
             r"^(\w+)\s+([0-9A-F]{6})\s+([0-9A-F]{6})\s+([0-9A-F]{6})", map_text, re.M):

@@ -34,6 +34,19 @@ class MemoryContract(unittest.TestCase):
         changed = self.labels.replace("00080D .dos64_entry", "00080E .dos64_entry")
         self.assertFalse(verify(self.map, changed)["passed"])
 
+    def test_device_state_cannot_take_vector_reservation(self):
+        changed = re.sub(r"^(DEVICESTATE\s+)([0-9A-F]{6})(\s+)([0-9A-F]{6})",
+                         lambda m: f"{m[1]}00EF00{m[3]}00EF{int(m[4],16)-int(m[2],16):02X}",
+                         self.map, flags=re.M)
+        self.assertNotEqual(changed, self.map)
+        self.assertFalse(verify(changed, self.labels)["passed"])
+
+    def test_frame_metadata_cannot_expand_into_devices(self):
+        changed = re.sub(r"^(CACHEMETA\s+)([0-9A-F]{6})(\s+)([0-9A-F]{6})",
+                         lambda m: f"{m[1]}00EA00{m[3]}00EABF", self.map, flags=re.M)
+        self.assertNotEqual(changed, self.map)
+        self.assertFalse(verify(changed, self.labels)["passed"])
+
     def test_missing_segment_list_fails(self):
         self.assertFalse(verify("", self.labels)["passed"])
 

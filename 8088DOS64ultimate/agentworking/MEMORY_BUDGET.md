@@ -51,3 +51,7 @@ New physical range snapshot uses host 6000–73FF for a 5,120-byte recovery payl
 ## Fetch optimization superseding current totals
 
 Runtime CODE080D–2F1B **9,999**, RODATA2F1C–31BC **673**, BSS E000–E0DD **222**, ZP0020–0031 **18**, PRG **10,686**. UnitCODE **10,915**, RODATA **697**, TESTCODE **36**, ends 358C, ZP **30**, PRG **11,662**. The module plus calls/wrapper cost 297 executable bytes,11BSS and 2ZP. Staticcontrol 222+2048+192=**2,462**, leaving **1,634** including gaps; pre-mapBSS headroom **34** bytes. MAIN runtime headroom 3,651. Range buffer/map/frame metadata remain unchanged. [Exact maps/evidence](evidence/fetch-optimization-20261015.json).
+
+## PIC/device layout superseding current totals
+
+Runtime CODE10,586, RODATA681, BSS222, ZP18, DEVICESTATE20 atEA00–EA13; PRG11,281. Unit CODE11,502, RODATA705, TESTCODE36, ZP30, ends37DF, PRG12,257. Static control usage222+2048+192+20=2,482, leaving1,614 bytes including gaps. The E000 BSS ceiling remains unchanged with34 bytes free. Device scratch is relocated into the EA00–EEFF allocation, while frame metadata is bounded toE900–E9FF and EF00–EFFF remains reserved. [Exact maps](evidence/pic-io-20261015.json).

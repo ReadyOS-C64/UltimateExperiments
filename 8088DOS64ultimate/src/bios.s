@@ -3,6 +3,7 @@
 .include "bios.inc"
 .macpack longbranch
 .import dos64_guest, dos64_cpu_value
+.import dos64_io_init
 .import dos64_mem_write, dos64_memory_mode, dos64_physical
 .import dos64_cpu_word_read, dos64_cpu_word_write
 .import dos64_disk_transfer, dos64_disk_spt, dos64_disk_host_error
@@ -28,6 +29,7 @@ dos64_bios_init:
     php
     sei
     cld
+    jsr dos64_io_init
     lda #0
     sta dos64_bios_ready
     sta dos64_bios_host_error

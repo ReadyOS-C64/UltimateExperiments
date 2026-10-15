@@ -128,3 +128,6 @@ test { _ = @import("dos_boot.zig"); }
 test { _ = @import("range_snapshot.zig"); }
 
 test { _ = @import("fetch.zig"); }
+
+test { _ = @import("ports.zig"); }
+test { _ = @import("io_instructions.zig"); }

@@ -5,12 +5,13 @@ DOS64_PYTHON ?= python3
 
 .DEFAULT_GOAL := all
 
-ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s
+ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
 build/alu.o: include/parity.inc Makefile
 build/range.o: include/range.inc Makefile
 build/disk.o: include/disk.inc include/range.inc Makefile
 build/bios.o: include/bios.inc Makefile
+build/ports.o: include/ports.inc Makefile
 build/range_probe.o: include/range.inc Makefile
 
 .PHONY: all build test verify-memory manifest clean

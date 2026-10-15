@@ -11,6 +11,7 @@
 .import dos64_strings_execute, dos64_string_pending, dos64_shifts_execute, dos64_control_execute
 .import dos64_stack_execute, dos64_math_execute, dos64_indirect_execute
 .import dos64_bios_port, dos64_bios_host_error
+.import dos64_io_read, dos64_io_write, dos64_io_port, dos64_io_value, dos64_io_width
 .import dos64_decode_rm, dos64_operand_read, dos64_operand_write, dos64_map_register
 .import dos64_operand_width, dos64_modrm_reg, dos64_modrm_mod, dos64_operand_offset
 .import dos64_operand_kind, dos64_operand_segment
@@ -254,8 +255,15 @@ cpu_dispatch:
     cmp #$A4
     jcc cpu_moffs
 @control:
-    cmp #$E6
-    jeq cpu_out_immediate
+    cmp #$E4
+    bcc @jump
+    cmp #$E8
+    jcc cpu_io
+    cmp #$EC
+    bcc @jump
+    cmp #$F0
+    jcc cpu_io
+@jump:
     cmp #$EA
     jeq cpu_far_jump
     cmp #$E9
@@ -285,14 +293,55 @@ cpu_dispatch:
     sta dos64_cpu_status
     jmp cpu_complete
 
-cpu_out_immediate:
+cpu_io:
+    lda dos64_cpu_opcode
+    and #1
+    sta dos64_io_width
+    lda dos64_guest+G_AX
+    sta dos64_io_value
+    lda dos64_guest+G_AX+1
+    sta dos64_io_value+1
+    lda dos64_cpu_opcode
+    and #8
+    bne @dx
     jsr cpu_fetch8
     jcs cpu_memory_error
+    sta dos64_io_port
+    lda #0
+    sta dos64_io_port+1
+    lda dos64_cpu_opcode
+    cmp #$E6
+    bne @cycle
+    ; Private byte OUT callbacks require their exact owned synthetic ROM gate.
+    lda dos64_io_port
     jsr dos64_bios_port
     jcc cpu_complete
     lda dos64_bios_host_error
     jne cpu_memory_error
-    jmp cpu_unsupported
+    jmp @cycle
+@dx:
+    lda dos64_guest+G_DX
+    sta dos64_io_port
+    lda dos64_guest+G_DX+1
+    sta dos64_io_port+1
+@cycle:
+    lda dos64_cpu_opcode
+    and #2
+    beq @read
+    jsr dos64_io_write
+    jcs cpu_unsupported
+    jmp cpu_complete
+@read:
+    jsr dos64_io_read
+    jcs cpu_unsupported
+    lda dos64_io_value
+    sta dos64_guest+G_AX
+    lda dos64_io_width
+    beq @done
+    lda dos64_io_value+1
+    sta dos64_guest+G_AX+1
+@done:
+    jmp cpu_complete
 
 cpu_unsupported:
     lda #2

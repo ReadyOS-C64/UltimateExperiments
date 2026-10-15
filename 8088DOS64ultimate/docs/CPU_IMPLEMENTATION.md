@@ -24,7 +24,7 @@ Updated 2026-10-15 in `src/cpu.s`, `src/alu.s`, `src/operands.s`, `src/stack.s`,
 | 86/87, 8F /0, 98/99, A8/A9 | General XCHG, POP r/m16, CBW/CWD and accumulator TEST |
 | FE /0–1, FF /0–7 | Byte/word INC/DEC; word indirect near/far CALL/JMP and PUSH, including /7 PUSH alias; far register forms excluded |
 | F6/F7 | TEST (/0 and /1 alias), NOT, NEG, MUL, IMUL, DIV and IDIV |
-| E6 at owned ROM entries | Private BIOS callbacks for disk/bootstrap; arbitrary port OUT remains unsupported |
+| E4–E7, EC–EF | Byte/word IN/OUT with immediate/DX ports; PIC20h/21h and whitelisted private BIOS callbacks |
 | F4 | Halt latch; subsequent steps wait without advancing IP/count |
 | F5, F8–FD | CMC, CLC, STC, CLI, STI, CLD, STD guest flags |
 | 26, 2E, 36, 3E, F0, F2, F3 | Recognized prefixes; last segment override wins, REP executes on strings, LOCK retained without bus-lock timing |
@@ -89,6 +89,6 @@ The [synthetic BIOS](BIOS_IMPLEMENTATION.md) and [disk primitive](DISK_IMPLEMENT
 
 ## Coherent fetch span checkpoint
 
-`src/fetch.s` accelerates instruction byte reads without pinning a cache frame across operand accesses. Each dereference validates expected CS/IP, cache mode/readiness/capacity, frame validity/tag and generation. The 512-byte span ends at a frame boundary or 16-bit IP wrap; holes never create a span. Every refill uses the normal guest-memory API. `cpu_fetch 8_slow` retains the previous assembled helper for independent differential tests, including self-modification, one-frame eviction, redirects, aliases, initialization and failure.
+`src/fetch.s` accelerates instruction byte reads without pinning a cache frame across operand accesses. Each dereference validates expected CS/IP, cache mode/readiness/capacity, frame validity/tag and generation. The 512-byte span ends at a frame boundary or 16-bit IP wrap; holes never create a span. Every refill uses the normal guest-memory API. `cpu_fetch8_slow` retains the previous assembled helper for independent differential tests, including self-modification, one-frame eviction, redirects, aliases, initialization and failure.
 
 Integrated quick/full lanes pass 161 tests and 2,555 selected hardware cases; tooling 45. The cycle profile preserves all final registers and full 1MiB oracle memory. See [measured comparison](../agentworking/evidence/fetch-optimization-20261015.json). This is functional fetching, without an 8088 prefetch queue or bus timing.
