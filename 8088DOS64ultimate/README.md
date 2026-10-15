@@ -2,9 +2,11 @@
 
 Planning and implementation of a C64 Ultimate program that boots the supplied **real MS-DOS 3.3**, emulates the 8086/8088 instruction set, and provides 640 KiB of conventional PC memory through the REU. Target hardware is the user's 64 MHz C64U with **4 MiB or larger REU**.
 
-**Status: verified CPU, coherent storage, PIC, logical CGA BIOS and absent-device BIOS; full DOS boot remains active work.** The combined quick gate passes 205 Zig/Peddle behavior tests and 57 tooling tests. The final full lane passes all **5,701 pinned original-8088 hardware cases**, including 3,146 new adjust cases. From guest reset, the unchanged disk-1 boot sector uses the assembly BIOS to load IO.SYS and reach `0070:0000`; all 22,398 kernel bytes and its entire 51-sector raw extent match the immutable image. IO.SYS now gets past serial/printer/video initialization and reaches absent clock BIOS **INT 1Ah after 2,542 completed instructions**. COMMAND.COM has not reached a prompt, and native startup still initializes then idles.
+**Status: genuine DOS 3.3 reaches COMMAND.COM and executes VER and DIR in Peddle.** The opt-in `make test-dos-boot` lane starts at guest reset, executes the unchanged boot sector and real DOS binaries, supplies ten keys through the assembled keyboard queue, verifies `MS-DOS Version 3.30`, checks all 35 visible DIR filenames/sizes plus `35 File(s)` and 9,216 free bytes against an independent FAT12 oracle, and requires the returned `A>` prompt. This completes after 588,937 guest instructions; the original image and in-REU floppy remain unchanged. DOS still owns INT 21h, FAT and application loading.
 
-Coherent fetch, all eight IN/OUT forms, a functional PIC, original decimal/ASCII adjust instructions and logical CGA/text memory services are linked and verified. Native Ultimate/IEC image loading, persistence, remaining PC devices, the C64 renderer/font and keyboard remain ahead. Logical video services do not yet present a readable C64 display. REU/cache integrity passed Peddle, VICE and physical C64U at 1/16/64 MHz settings; the new range probe also passed VICE and physical Manual 64 MHz, with all 1,536 output bytes and 5,120 restored REU bytes/configuration checked exactly. Calibrated physical timing and XT speed are unmeasured. The supplied disk independently boots in DOSBox-X and reports MS-DOS 3.30. [Current verified slice](agentworking/evidence/video-adjust-bios-20261015.json) and [storage baseline](agentworking/evidence/storage-bootstrap-20261015.json) retain identities, gates and limitations.
+This is host functional acceptance of the actual linked 6510 emulator. The native C64 program still initializes then idles. The runtime file loader, C64 font/VIC renderer/native key scan, asynchronous IRQs, persistent Ultimate/IEC images and 2 MiB→20 MiB HD remain unfinished. Linked generic UCI transport and CIA clock routines do not establish those integrations. Default tests retain the short exact IO.SYS handoff lane; the long interactive DOS/VER/DIR lane is explicit. The last full original-8088 corpus passes all 5,701 pinned cases; current quick checks pass 258 Zig/Peddle tests with 72 in-scope tooling checks and 597 selected quick hardware rows. Twelve profile samples also pass. The corrected native clock probe passes physical Manual 1/16/64 MHz on firmware 3.14, validating raw PAL CIA ticks against raster frames and their observed turbo independence. Clock conversion/scheduling remains unwired; CPU/REU throughput and XT speed are unmeasured. The rejected first attempt remains recorded.
+
+REU/cache integrity passed Peddle, VICE and physical C64U at 1/16/64 MHz settings. The range probe passed VICE and physical Manual 64 MHz, including exact 5,120-byte recovery. Logical CGA/text, clock and keyboard BIOS behavior is verified through assembly tests; no full native display/input claim or XT-speed result exists. [DOS built-ins evidence](agentworking/evidence/dos-command-builtins-20261015.json), [clock/keyboard/UCI slice](agentworking/evidence/clock-keyboard-uci-20261015.json) and [prior video/adjust slice](agentworking/evidence/video-adjust-bios-20261015.json) retain scope and identities.
 
 Compatibility targets the **original 8088 and IBM PC/XT**, with the shared 8086 instruction set. Existing 8086 implementations are references; they do not define our CPU profile or reduce the required functionality.
 
@@ -12,6 +14,7 @@ The target uses **6502/6510 assembly** via ca65/ld65. **Host Zig tests execute t
 
 ```sh
 make test             # fast assembly, memory checks, tooling and Zig/Peddle tests
+make test-dos-boot    # opt-in actual emulator COMMAND prompt, VER and exact DIR proof
 make test-reference   # slower disposable real-DOS boot in installed DOSBox-X
 make test-cpu-corpus  # broader pinned 8088 functional corpus after CPU changes
 make probe            # standalone REU integrity PRG and symbol-based VICE plan
@@ -19,6 +22,7 @@ make test-vice        # slower VICE run plus independent captured-byte checks
 make test-cache-vice  # slower coherent-cache probe with forced dirty eviction
 make test-range-vice  # coherent disk-range integrity across guest/REU bank seams
 make profile-cpu      # real linked interpreter cycle/counter baseline, not physical timing
+make test-clock-probe # separate scripted CIA/VIC probe checks, not hardware calibration
 make hardware-helpers # prepare physical backup/restore/cache probe images
 ```
 
@@ -32,7 +36,7 @@ Tool overrides: `DOS64_ZIG`, `DOS64_CA65`, `DOS64_LD65`, `DOS64_PYTHON`, `DOS64_
 4. [Tests and acceptance](docs/TESTING.md) — Zig/Peddle, PC references, VICE, real C64U, DOS utilities.
 5. [Performance experiments](docs/PERFORMANCE.md) — what must be measured before promising XT speed.
 
-Details: [storage](docs/STORAGE.md), [display and keyboard](docs/DISPLAY_INPUT.md), [research and sources](docs/RESEARCH.md), [existing emulator references](docs/EXISTING_EMULATORS.md), [REU implementation](docs/REU_IMPLEMENTATION.md), [memory implementation](docs/MEMORY_IMPLEMENTATION.md), [CPU implementation](docs/CPU_IMPLEMENTATION.md), [BIOS implementation](docs/BIOS_IMPLEMENTATION.md), [disk implementation](docs/DISK_IMPLEMENTATION.md), [coherent ranges](docs/RANGE_IMPLEMENTATION.md), [PC ports](docs/PORTS_IMPLEMENTATION.md), [physical tests](docs/HARDWARE_TESTING.md), [requirements coverage](docs/REQUIREMENTS.md).
+Details: [storage](docs/STORAGE.md), [display and keyboard](docs/DISPLAY_INPUT.md), [research and sources](docs/RESEARCH.md), [existing emulator references](docs/EXISTING_EMULATORS.md), [REU implementation](docs/REU_IMPLEMENTATION.md), [memory implementation](docs/MEMORY_IMPLEMENTATION.md), [CPU implementation](docs/CPU_IMPLEMENTATION.md), [BIOS implementation](docs/BIOS_IMPLEMENTATION.md), [disk implementation](docs/DISK_IMPLEMENTATION.md), [coherent ranges](docs/RANGE_IMPLEMENTATION.md), [PC ports](docs/PORTS_IMPLEMENTATION.md), [guest clock](docs/CLOCK_IMPLEMENTATION.md), [keyboard BIOS](docs/KEYBOARD_IMPLEMENTATION.md), [UCI transport](docs/UCI_IMPLEMENTATION.md), [native clock](docs/NATIVE_CLOCK_IMPLEMENTATION.md), [physical tests](docs/HARDWARE_TESTING.md), [requirements coverage](docs/REQUIREMENTS.md).
 
 ## Main decisions and remaining scope
 

@@ -10,7 +10,9 @@ PIC_DATA_PORT = $0021
 ; width on read; byte read changes value low only. A/X/Y may be clobbered.
 ; Requires ordinary C64 RAM/I/O mapping. No guest registers/FLAGS are touched.
 ;
-; Only PIC20/21 are supported. Word cycles preflight both 16-bit consecutive
+; PIC20/21 and byte GLOBAL REARM writes02F2..02F7 (absent boards) are
+; supported. The latter ignore data and never mutate PIC state.
+; PIC word cycles preflight both 16-bit consecutive
 ; ports; therefore only a word at0020 succeeds. Failed cycles have no device
 ; effect and leave value untouched. No mirrored ports are claimed.
 ;

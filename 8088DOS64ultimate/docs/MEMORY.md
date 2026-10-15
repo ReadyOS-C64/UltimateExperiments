@@ -30,12 +30,12 @@ Compute an effective offset with 16-bit arithmetic; then `physical = ((segment <
 | `6000–7FFF` | 8,192 | VIC bitmap reservation (8,000 displayed bytes) |
 | `8000–BFFF` | 16,384 | Guest cache frames; includes RAM under BASIC |
 | `C000–C0FF` | 256 | Coherent range staging buffer; linker-enforced reservation |
-| `C100–C8FF` | 2,048 | Optional future UCI queue/buffer reservation; not linked in the current slice |
+| `C100–C8FF` | 2,048 | Linked UCIBUFFER: command/data/status transport storage |
 | `C900–CFFF` | 1,792 | Additional resident CPU/BIOS/storage code |
 | `D000–DFFF` | 4,096 | I/O visible: VIC, SID, color RAM, CIA, REU/UCI |
 | `E000–EFFF` | 4,096 | State, page map, descriptors, dirty maps, bounce buffers |
 | `F000–FFFF` | 4,096 | Cold-code window / spare; reserve hardware vectors within it |
-| **Total** | **65,536** | Hot/resident executable ceiling with the future UCI buffer reserved: 20,224 bytes (19.75 KiB) |
+| **Total** | **65,536** | Hot/resident executable ceiling with the linked UCI buffer reserved: 20,224 bytes (19.75 KiB) |
 
 The VIC bank is `4000–7FFF`: the matrix at 4000 and bitmap at 6000 are in the **same** 16 KiB bank. This must be asserted, not inferred from total free bytes. Font alignment and VIC character-ROM visibility must also be checked. Color RAM is at D800 and is already inside the I/O reservation, not another 1 KiB of ordinary RAM.
 
@@ -85,7 +85,7 @@ Tests include alias writes, eviction during instruction fetch, dirty code replac
 
 The BIOS initializer owns guest IVT/BDA 00000–004FF and ROM F0000–FFFFF. It uses the coherent bus under a temporary all-RAM initialization mode and restores the prior mode; normal guest writes cannot change ROM. Conventional RAM outside IVT/BDA and configured media remain caller-owned. INT 11h/12h ordinary ROM code reads mutable BDA through the CPU bus, including dirty resident bytes.
 
-Whole floppy A begins at REU 100000 and must be explicitly loaded before setting its loaded flag. Disk reads/writes use [range copying](RANGE_IMPLEMENTATION.md), so partial cached-page neighbors and dirty export bytes retain their authority. C000–C0FF is a separate 256-byte host bounce buffer, unavailable to resident code. It is not embedded in the PRG. The optional future UCI buffer is budgeted at C100–C8FF, leaving C900–CFFF (1,792 bytes) for additional resident code; the full inclusive host map above still totals 65,536. UCIBUFFER is optional and is absent from the current linked map. Reclaiming its reserved budget requires an explicit allocation decision.
+Whole floppy A begins at REU 100000 and must be explicitly loaded before setting its loaded flag. Disk reads/writes use [range copying](RANGE_IMPLEMENTATION.md), so partial cached-page neighbors and dirty export bytes retain their authority. C000–C0FF is a separate 256-byte host bounce buffer, unavailable to resident code. It is not embedded in the PRG. The linked UCI transport buffer occupies C100–C8FF, leaving C900–CFFF (1,792 bytes) for additional resident code; the full inclusive host map above still totals 65,536. These 2,048 bytes are measured reservations, not reclaimable code space while the transport is linked.
 
 A range is linear physical guest memory with 20-bit wrap, unlike CPU segmented word helpers that wrap a 16-bit offset. The disk BIOS checks the translated physical 64 KiB DMA boundary independently from ES:BX wrapping. REU ranges must be outside guest backing and within the minimum 4 MiB arena; range length zero means no bytes, whereas the low-level DMA primitive rejects zero.
 
@@ -95,4 +95,4 @@ The runtime/unit linker configuration `cfg/dos64-runtime.cfg` places hot CODE/RO
 
 The PRG is contiguous because the loader writes sequential addresses. MAIN is zero-padded through 3FFF; 4000–4FFF contains explicit startup zero initialization for screen/font RAM, then DEVICECODE begins at 5000. Padding and startup zeros are file bytes, not linked CODE/RODATA or free-standing executable allocations. Loading the program initializes this display reservation but supplies no font or renderer. Runtime and unit PRGs can therefore have the same file length while their linked CODE/test payload differs. Standalone hardware probes/helpers retain `cfg/dos64.cfg` and their prior byte identity.
 
-The verified combined integration map is described in [the ledger](../agentworking/MEMORY_BUDGET.md) and [slice evidence](../agentworking/evidence/video-adjust-bios-20261015.json). Runtime linked usage is 16,758 bytes; its 20,129-byte PRG additionally contains 2,072 MAIN padding bytes and 4,096 display startup zeros. Unit linked usage is 17,746 with 1,096 MAIN padding bytes and the same 4,096 startup zeros, producing the same 20,129-byte PRG. Optional UCIBUFFER at C100–C8FF adds no linked reservation until a module actually uses it. Keep the configured future budget separate from measured RAM usage and the file's padding.
+The historical video/adjust map is retained in [slice evidence](../agentworking/evidence/video-adjust-bios-20261015.json), while [the ledger](../agentworking/MEMORY_BUDGET.md) records later linked modules. At that checkpoint runtime linked usage was 16,758 bytes; its 20,129-byte PRG additionally contains 2,072 MAIN padding bytes and 4,096 display startup zeros. Its unit linked usage was 17,746 with 1,096 MAIN padding bytes and the same 4,096 startup zeros, producing the same 20,129-byte PRG. UCIBUFFER at C100–C8FF is now linked and measured. It adds 2,048 writable bytes independently from the PRG file and its padding. Current clock/keyboard/UCI/native-clock maps supersede the historical video/adjust totals in the ledger.

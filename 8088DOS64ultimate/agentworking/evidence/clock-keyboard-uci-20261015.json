@@ -1,0 +1,1666 @@
+{
+  "slice": "Clock, keyboard, generic UCI and native CIA clock; genuine DOS COMMAND built-ins in Peddle",
+  "date": "2026-10-15",
+  "baseline_commit": "282b896",
+  "functional_result": "passed",
+  "physical_clock_result": "Revised probe independently passed Manual 1/16/64 MHz over 100 PAL frames; configuration/reset recovery passed",
+  "commands": [
+    "make test",
+    "make test-dos-boot",
+    "make profile-cpu",
+    "make test-clock-probe"
+  ],
+  "quick_gate": {
+    "zig_tests": 258,
+    "working_tree_tooling_tests": 74,
+    "excluded_future_overlay_tooling_tests": 5,
+    "staged_feature_tooling_tests": 72,
+    "hardware_cases_executed": 597,
+    "wall_seconds": 33.75,
+    "test_execution_seconds": 29,
+    "staged_feature_tooling_separate_run": "build/clock-keyboard-in-scope-tooling.log: unittest discovery excluding test_overlay_package, exit0; 72/72"
+  },
+  "full_hardware_corpus": {
+    "cases": 5701,
+    "fixture_sha256": "aba315edeb9bf6517e9c0eb0f5a887d97589c1604b74ff7f83e1dd2a64bf2f8e",
+    "last_full_pass_commit": "282b896",
+    "rerun_for_this_slice": false
+  },
+  "manifest": {
+    "schema": 1,
+    "tools": {
+      "zig": {
+        "path": "/Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig",
+        "version": "0.16.0",
+        "sha256": "e6cd688d25664983833aae272f501d4bceeae304875b8f1741209d15fd13a4ec"
+      },
+      "ca65": {
+        "path": "/opt/homebrew/Cellar/cc65/2.19/bin/ca65",
+        "version": "ca65 V2.18 - N/A",
+        "sha256": "1a57997819fd98814e4601b5160df589e7a1a24e1888a80fee51ae450d8fd0ea"
+      },
+      "ld65": {
+        "path": "/opt/homebrew/Cellar/cc65/2.19/bin/ld65",
+        "version": "ld65 V2.18 - N/A",
+        "sha256": "36bb196207a6b2c90a4aa991b419d6113885303951b14b60b455f51c777b3339"
+      }
+    },
+    "files": {
+      "Makefile": "b040fb540b0c72b76253fca5dd394a7321ded145f4841f92447360135396147e",
+      "build.zig": "85c29b68819064ab547abbc1bd30036a90aee846397682029c701831c17f6fd5",
+      "build_support/c64u_clock_probe.py": "a68ea1017d81b7c9b11e2cdc2e264c6975a3b5f24899722ceec6dd99eb64b002",
+      "build_support/c64u_preflight.py": "04d8e2f39bb04a97e97f4cfc5b965bbaa78a84f48c74fc591f924d230c45c651",
+      "build_support/c64u_probe.py": "4067f05248f0a22a5fb254aa7031fda06ae8e011ea69b5b6c660157809e5d614",
+      "build_support/c64u_range_probe.py": "c29d1d3a09af5fda01ed55e24b9db4af295eb04846d9482b46bd957f908a78f2",
+      "build_support/clock_probe_verify.py": "2b78f5d62596a790d59660c5dc0c33e5d19bd748c1aa982fcdf9f76bc99d8f5b",
+      "build_support/dos_boot_oracle.py": "708919f8fe30d3e14ebf23d7da54ae472fc6421e78e87d42b94c000de48f365d",
+      "build_support/dos_image.py": "2eb2ed0409dd401c803735a95ca4a1e31c7e67f35a51f6bd8d2ababa9962b905",
+      "build_support/fetch_8088_subset.py": "3b937beb344de037fd4c872dc4c32d5d87febd4c35e2adb3f7de39f009d4d97d",
+      "build_support/manifest.py": "33d13438c3261b804755980e8034badfd0a6ad5a3859aac78fcde25e200d8236",
+      "build_support/raw_payload.py": "f10ed30c1096a4789ac77135186a97847f68a6eb515f21fb005bd3c400e2b4f3",
+      "build_support/reference_boot.py": "adeb5344f93c721b15e892a0a56fddc93806dcb5dcfda85e3fcca5281f455c8c",
+      "build_support/verify_memory.py": "29a27eb4fcc40e13a11fd7bae5b0a1e597a61ca680979d45895620b3754f8445",
+      "build_support/vice_capture.py": "95a192b79d81a39f9cee1c7b93e1925d2bf527ccb3e6149e683b70241fd8b3e8",
+      "build_support/vice_probe.py": "6f4d04665a5dc170038976197f3a97fbbb6f40edf3e563a72e19de8cd2002a7a",
+      "src/address.s": "09805aa9fe6249726447d7c093223b884de04fea9fbb7f65068c96b90507ee01",
+      "src/adjust.s": "8373cca0aaf311f0cbd859780e2d8e05e503a643ec516eba5fdeb19e1b549490",
+      "src/alu.s": "9c5c4aeadddb9c65c4b441c7fb30530cc7433a7846c82a7df1bc6168f1fb4500",
+      "src/aux_bios.s": "4be68451703004b131498afa80a3e8ca52af092931c21f9540bd486765c9c606",
+      "src/bios.s": "926874e0663af0ab46cef557aab855385f2e8f3564e052c4abb3eaf12521050e",
+      "src/boot.s": "946f0026fa6114e43412b3b23e8a852501db63653a21530e165ade04517bd661",
+      "src/cache_probe.s": "bf3e74d9b1cd482c57161ecf0b6a1d1d18f395bb89aa91d36df1548aa0bcac4e",
+      "src/clock.s": "e949ebf02887e83773acfcb61cfe91415db761baf77147b4178f83044af8297c",
+      "src/control.s": "9c49f31c51646213430124c9ff3c5fb12b2bb4cd71e3d17f71b52d2ae398f295",
+      "src/cpu.s": "f79ed669d38b41aaa936c0144d9b4aae30a48d05af35858aaa091ac9fdf3ff2b",
+      "src/cpu_state.s": "77c0e8db8217b15bc5d9a031fc4554eeaec14c38b8212b0faabee4d7ac65563f",
+      "src/disk.s": "2783fc60f7c59b904e04d72e5ce9326eda67b4d60fa83d02ebc90b59fb56b3dd",
+      "src/fetch.s": "7824ce0b4a4e326c9fb6cffa20a22836443b4f60597152d1e22862442b75fbf8",
+      "src/host_clock.s": "9b837c5ad775f0b3d824ed50869bc06fa0834ada353ad1bab1153638a8ff0ec1",
+      "src/host_clock_probe.s": "b5a2f4c28a7a1fa60cfaa361ad64b52377ad6359b3c0dda96f28ee2cadcca810",
+      "src/host_clock_probe_boot.s": "7510fa10c7afc5b244f009a9713cc8fbb4c6bede0be7fe50251c345aa9b5bbf8",
+      "src/indirect.s": "036c7638d20cb50aaef716d20a39cf0f38095b0fe3f7bf1ed77deac42399c23d",
+      "src/keyboard.s": "cb22e7f3f22ffe48bee84d24d3fe07c86764160304bddda9d66cea33883c9d56",
+      "src/math.s": "fa98bbb7559519e494568bcdbc78d395007f0ba5279bc96ea5ce0ecda8f3242f",
+      "src/memory.s": "5dd3276aa320ce76e5d7ce0ee688f723b7a49a25d39b11e8dc80515ee3aa52cb",
+      "src/operands.s": "90ec334ea77d3bd2c555f403879eb578d2b918837a0f0aad814365f50c415fdd",
+      "src/ports.s": "fec6cbe5536ab9b448963aec33d9f9aaaca918f32555c90047ac4be8615f7164",
+      "src/range.s": "668e5b1bf583089e5a5abaf99b279a86a750d94e5bbb4dc0ab68f7743ed54574",
+      "src/range_probe.s": "01b09c4d34044ce136123580943f6774e37a94a4b6be1f37651d42aea30b4849",
+      "src/range_snapshot.s": "dbf5ea21cfb6d24b9bbddfd024022381db000828e73f61b35e6cd658b0ae8d5b",
+      "src/reu.s": "e51b31fff8da86894156fcc004b2339567d240e66b7aee1fd42d4117bf5c73d2",
+      "src/reu_probe.s": "09dbcef1ecd8a757ec11771097564b8b46f2a1663c63466fa4a72b893308751d",
+      "src/reu_snapshot.s": "2286f662181ecb26dfd8523e9aef4c405701a3b5ccaeb0b35425bc8c7f607b7f",
+      "src/shifts.s": "3acdd0bbcbe0708125370d629fc144e893dde5e8b5b3a04775c3be1047a0a2ed",
+      "src/stack.s": "97bad438a6c4d7b07927197ad7a43079842383e8741f3dcb474eb9ae98da36b3",
+      "src/strings.s": "54867f5e9558d86222ef4bcddda35b1f584acd001582d938fe864298801d5106",
+      "src/uci.s": "28d6cd5d77a936e3b5de9cd7d5cce17443d622ae41a87ce273ea950cc1fa8898",
+      "src/video.s": "04bfcf60b35eaf0af6974962800e09ce1762de535877cf872705720501028437",
+      "include/abi.inc": "74a874c245aed278ba884d33923279bde901bed97427452096dd414ba67e08d6",
+      "include/aux_bios.inc": "1fd24eaf7ef4b38a375037d2599492c46edfd9bcc46162d0a7ddb9774fdd1688",
+      "include/bios.inc": "ff22fa832fa24b8f1d35c934e30a4ada0412dfc97777fffba8bd17621ea14749",
+      "include/clock.inc": "7e6c70f8860846486edb4c8858bc832ad2bfc7a2353fc7450b437e74f1884cb7",
+      "include/disk.inc": "b7d571420a26f59cfdc85cf9bc57d78cfe2047cd107adee229fc568873b4b050",
+      "include/host_clock.inc": "17a391747f896c8b635f31be371aae8f2da72fdbe775174b37ba186944fef6fd",
+      "include/keyboard.inc": "1ed373d4541bada5b4023357c213d56d13ad190ccba64fb85ae3b7fa7221f9ec",
+      "include/memory.inc": "26c5be0321b5678fa17e7881792760c90771f398ab1ca7c4b23d071dca4ce428",
+      "include/parity.inc": "52b5bbf6f9cd159297e3b8abd5b9e78ec4f4a3e3d1f07a931a869b1a7f46668e",
+      "include/ports.inc": "65f23a04c54df8705827579ff83e02ffa40160d5ed2084276b0c2776a2b9f104",
+      "include/range.inc": "cd22a54aa28af068c612ef1606c303107891c0c2accf4f35e8ab7f0a18e42987",
+      "include/reu.inc": "47a4eac6be6d727dc506c2d8e808e1028aefb2f8321b89aff3d333bff94c5e05",
+      "include/uci.inc": "574d140bfa3772a438f45510309018190c41f54ee205cab691523f034cf9640d",
+      "include/video.inc": "7bdcbe38fffd87efe4a67dbfe59d23edc28c9f58a9c5cd477dbdfb83e21c2cdd",
+      "cfg/dos64-clock-probe.cfg": "ce5e35b7039756297a1ebf0d683a7c2db1de7b09f12ad7d832ad46b38a9a0eec",
+      "cfg/dos64-runtime.cfg": "b4c65b77a860fbd6985815fce1bc88af7b6bac3f3299dd08da41ceaf82c24b56",
+      "cfg/dos64.cfg": "eb7dd51bca42e9af2ba481d583b02731f6ad465e2cd06ee8e7b4bf4a576f81f1",
+      "tests/host/adjust.zig": "5165c166cda3baed3134a7712ed6addb88b8eaee078f8aa156aa712a14670475",
+      "tests/host/alu.zig": "515e580ae16c0176912adccec1dbee00422dda1ab48c144c43bfad70c33e0500",
+      "tests/host/aux_bios.zig": "1077a27b22cc1f5209685777354f7f043de4511d11bf85398a77930436ffba1d",
+      "tests/host/bios.zig": "7599eb467fbc34c30358a47ea990f0c716b8480ad1462903e1a62493a7a82c29",
+      "tests/host/cia_clock_model.h": "400b50fd4f993c067c9e2e161f8cf0a06e35d44470896d20e18f1826918da0ff",
+      "tests/host/clock.zig": "6fbde043cd666f1642409d1ba4106a529f26f66fb75f3ee4b59c9c5089952328",
+      "tests/host/clock_probe_model.h": "bf38128e8ea12aac97d3c67cfa92f40e4a21f31911004a8f47fe8cfc50202643",
+      "tests/host/cpu.zig": "799d1df7fe07c6b48a53556837d8c3602af8b093f478f6c183431b42643adb94",
+      "tests/host/disk.zig": "01512a80dc12e35141f6c575dae0978e2d951ef6d9689e376e7d233dcc87bca5",
+      "tests/host/dos_boot.zig": "208e24b0ded80b467ba73bd9a06dbbaf5b1202d73c8ddfa9d466af61322a58eb",
+      "tests/host/fetch.zig": "e69025f91ad493b575d98fda8ddf8e5c448e545e2b96e6922e2ed1670e11a1b4",
+      "tests/host/foundation.zig": "08d0a3bec2839c04560a1c2e25a0ba2f542df06637e340928f1a4dc3e61119db",
+      "tests/host/host_clock.zig": "e541124d416ba9474f7856462109ce2eeba198eb5dbb61e61ee04c5cc8fd29bf",
+      "tests/host/host_clock_probe.zig": "a2f9cf5e3759e03ee6eaf3f42a4e73a22bd01403d11b6f82973c4a61acc8f6cd",
+      "tests/host/indirect.zig": "54f1736903d88caff623367def3934ceb78fcd3df5d8c459674822b75a1ec64a",
+      "tests/host/interrupts.zig": "b86c73d97640c10b4537fe4eca0c705dc583bc0adab46b9e9c299b9874a454a5",
+      "tests/host/io_instructions.zig": "5df7634835f61e57c1aa06f5cc20067e7136ce3cd296e9f97a295b57aac993bd",
+      "tests/host/keyboard.zig": "883476dbf6a97dd7584f3fb62509bb45d5a20206d0679faacc6627f0e1405705",
+      "tests/host/machine.zig": "b823a6d6fda157299dac11a4e53b2a7c91d5a35c943c4127e17adb95b417f897",
+      "tests/host/math.zig": "0f9b787db239251d957179950434742cf45bcb8484102356510f98d97ba850c5",
+      "tests/host/memory.zig": "3eae690ec99f994e1e749c998410ca3a3d5a803a6727725861340131e0c9574f",
+      "tests/host/operands.zig": "86aebda6cc476d434eb91836dece613eac3124698b8f66fcd48c3f8fa01d6451",
+      "tests/host/peddle_bridge.cpp": "5a5433ef54b895abe5558067f1bc59c326c872e75efbbe1be7980a23fe774bfd",
+      "tests/host/peddle_bridge.h": "5b73089b6de0aaa334423d6a5ef7e01e6c7ab7fe5476414907d6f8e77ad13eef",
+      "tests/host/ports.zig": "e82de5fdbfb7d88ab0bd2fd7b2acb72917297aec2cfa526e5cb68647d6f55cf1",
+      "tests/host/profile.zig": "c6820138806e2545d69de84ef06ef4cbd0a2877986d649b5456942a00a9b9234",
+      "tests/host/range.zig": "78ca5d6d1039925c6a648a535e7783c419c9a46f0be2d38e5d9a148f3ae77507",
+      "tests/host/range_probe.zig": "b17a079c3adbcf7745147ceaad32500c17cf33789773c53b1f05e0ab12c9b882",
+      "tests/host/range_snapshot.zig": "0dabc86f6feb1d9d1824d13ff81ea6633cab8e4ad133f26ce0e4779b238ecd34",
+      "tests/host/reu.zig": "9300e1c88c7ea435651500eee6e9d9dc1f213c6f86675ce0084cb16f3ff12b81",
+      "tests/host/reu_model.h": "f43b161b3838621aa02902d0629f23c212d527ab363f387eebfb4f9d3c957168",
+      "tests/host/runner.zig": "2189eee754a65cf012f781046bd97a9a35ae165fa5ef06063d9d67274c53a49f",
+      "tests/host/shifts.zig": "e172e0a6732e5d90e1f67c7134a0ee6324d743aeac1b7d00ba2db893d4d7ca56",
+      "tests/host/stack.zig": "332e9b12ac6cd3fa8173e4f2fbad35335e04741605774deb9248e680be18e7b4",
+      "tests/host/strings.zig": "247195ec84139c3cc1a920a4e6ebd2c2ce744e6549ca8375649cca0f5fe50be8",
+      "tests/host/uci.zig": "dcc8e5d998498e2c7dc54cd8bbc2281323046c582054b452a0f3b6c245530ce0",
+      "tests/host/uci_model.h": "ddaca4467a8515988f5edd6a6fec9762df0b099334f1f3dd7d68805c7e3b5996",
+      "tests/host/video.zig": "e9c2b3f48e51a149921e537eaa54265030c5b8c5b0dcd153958aff153795bfe8",
+      "tests/fixtures/8088-subset.json": "aba315edeb9bf6517e9c0eb0f5a887d97589c1604b74ff7f83e1dd2a64bf2f8e",
+      "tests/fixtures/dos-boot-oracle.json": "6b99967e3861777a1e6a07fb6dc6c49d110fa534cf3bcbf25f006141fb15f3ca",
+      "tests/fixtures/foundation.s": "3e5d8539cd2694b598aeeb4e86a645d877a9387707dabf92e7d0e2d155fc759b",
+      "tests/tooling/test_c64u_probe.py": "ded4b08cd067ee9ca8e3bdd5514aca78aa690e169775c697ceafdf8c9a92a1c9",
+      "tests/tooling/test_c64u_range_probe.py": "9c212c9c60a66303b8bfde4858ea62281c48488ffd833b98ba6754dbab1fb452",
+      "tests/tooling/test_clock_probe_verify.py": "78864a628905559d55adc84e5df773c26b288e905c1649173d777f1361236e17",
+      "tests/tooling/test_dos_image.py": "ede41ba71b0f1a82c1109d4299ce32472588cb1423b646d1f3eff718fa150249",
+      "tests/tooling/test_memory_contract.py": "fb26f440e0af9d3a918130380c5c9f35f5a391be57c7a4656e3c4214330db8f8",
+      "tests/tooling/test_vice_capture.py": "0f8bc77a36d326374d6c5849e1fdb30ea6cf30ac1b1230e177a45d0bd443fb71",
+      "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+      "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 2 of 3.img": "91a624fc448c1c423d159ae21f51cc416393d8e19a73d3858afc3af92af041c2",
+      "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 3 of 3.img": "c69238c738bab18db840b5ae72b2470c0d594832d91103573a6d8273dce300e9",
+      "build/dos64-backup.prg": "fc46ea72ab23a4bece154350a68c5c946d3e856e37d3639028446fa0ed6434d0",
+      "build/dos64-cache-probe.prg": "b4c403e909dd489daa4c3a9fca2c438075facd0b2fce7edd2c807b46522abc9d",
+      "build/dos64-clock-probe.prg": "fe78c4fbf29531d20ce1edd300666ec5a800d8dea2046555bc90e429233d46c1",
+      "build/dos64-range-backup.prg": "3ac011f03e6418185bffde2c513774412056a78d96a1aa8f6c29831370e693ef",
+      "build/dos64-range-probe.prg": "e7b46c87bff1c84c37d0b32044310265ebfa34a966dbee4bf5a9349f1669b69d",
+      "build/dos64-range-restore.prg": "33f4135e9499a0cb35b7754972ec5ddee02ec55d3b548a243e6af3034c025ecc",
+      "build/dos64-restore.prg": "23a6b7658d61ad5092596b377ef76f0ba37fab487f9883ff833bdad9b99d814d",
+      "build/dos64-reu-probe.prg": "a1e277d2ed8bfad12796efa4a54eec3b4e57e355086b228c030dd9ccb2d3291e",
+      "build/dos64-tests.prg": "8c7e5a429f406473fa07c2acb06a86dd40e359696ca99f1a62d280c1325a5301",
+      "build/dos64.prg": "057e5a9886e7194c9cc8203496d65e006e46af98709a641615955cc2937335ca"
+    },
+    "peddle_commit": "c23e34a7e6516b284750b8c7caaa8c41948a407a",
+    "8088_corpus_commit": "aea84484abc79d09639d855b7b0ab32bc9e4dbeb"
+  },
+  "runtime_memory": {
+    "segments": [
+      {
+        "name": "LOADADDR",
+        "start": 0,
+        "end": 1,
+        "bytes": 2
+      },
+      {
+        "name": "ZEROPAGE",
+        "start": 32,
+        "end": 49,
+        "bytes": 18
+      },
+      {
+        "name": "BASIC",
+        "start": 2049,
+        "end": 2060,
+        "bytes": 12
+      },
+      {
+        "name": "CODE",
+        "start": 2061,
+        "end": 14198,
+        "bytes": 12138
+      },
+      {
+        "name": "RODATA",
+        "start": 14199,
+        "end": 15062,
+        "bytes": 864
+      },
+      {
+        "name": "DEVICECODE",
+        "start": 20480,
+        "end": 24163,
+        "bytes": 3684
+      },
+      {
+        "name": "RANGEBUFFER",
+        "start": 49152,
+        "end": 49407,
+        "bytes": 256
+      },
+      {
+        "name": "UCIBUFFER",
+        "start": 49408,
+        "end": 51455,
+        "bytes": 2048
+      },
+      {
+        "name": "BSS",
+        "start": 57344,
+        "end": 57565,
+        "bytes": 222
+      },
+      {
+        "name": "PAGEMAP",
+        "start": 57600,
+        "end": 59647,
+        "bytes": 2048
+      },
+      {
+        "name": "CACHEMETA",
+        "start": 59648,
+        "end": 59839,
+        "bytes": 192
+      },
+      {
+        "name": "DEVICESTATE",
+        "start": 59904,
+        "end": 60050,
+        "bytes": 147
+      }
+    ],
+    "load": {
+      "layout": "runtime",
+      "start": 2049,
+      "linked_file_bytes": 16698,
+      "padding": [
+        {
+          "name": "unused_main",
+          "start": 15063,
+          "end": 16383,
+          "bytes": 1321,
+          "file_offset": 13016,
+          "value": 0
+        },
+        {
+          "name": "display_startup_zero",
+          "start": 16384,
+          "end": 20479,
+          "bytes": 4096,
+          "file_offset": 14337,
+          "value": 0
+        }
+      ],
+      "payload_checked": true,
+      "end_exclusive": 24164,
+      "padding_bytes": 5417,
+      "payload_bytes": 22115,
+      "prg_bytes": 22117
+    },
+    "errors": [],
+    "passed": true
+  },
+  "unit_memory": {
+    "segments": [
+      {
+        "name": "LOADADDR",
+        "start": 0,
+        "end": 1,
+        "bytes": 2
+      },
+      {
+        "name": "ZEROPAGE",
+        "start": 32,
+        "end": 61,
+        "bytes": 30
+      },
+      {
+        "name": "BASIC",
+        "start": 2049,
+        "end": 2060,
+        "bytes": 12
+      },
+      {
+        "name": "CODE",
+        "start": 2061,
+        "end": 15114,
+        "bytes": 13054
+      },
+      {
+        "name": "RODATA",
+        "start": 15115,
+        "end": 16002,
+        "bytes": 888
+      },
+      {
+        "name": "TESTCODE",
+        "start": 16003,
+        "end": 16038,
+        "bytes": 36
+      },
+      {
+        "name": "DEVICECODE",
+        "start": 20480,
+        "end": 24163,
+        "bytes": 3684
+      },
+      {
+        "name": "RANGEBUFFER",
+        "start": 49152,
+        "end": 49407,
+        "bytes": 256
+      },
+      {
+        "name": "UCIBUFFER",
+        "start": 49408,
+        "end": 51455,
+        "bytes": 2048
+      },
+      {
+        "name": "BSS",
+        "start": 57344,
+        "end": 57565,
+        "bytes": 222
+      },
+      {
+        "name": "PAGEMAP",
+        "start": 57600,
+        "end": 59647,
+        "bytes": 2048
+      },
+      {
+        "name": "CACHEMETA",
+        "start": 59648,
+        "end": 59839,
+        "bytes": 192
+      },
+      {
+        "name": "DEVICESTATE",
+        "start": 59904,
+        "end": 60050,
+        "bytes": 147
+      }
+    ],
+    "load": {
+      "layout": "runtime",
+      "start": 2049,
+      "linked_file_bytes": 17674,
+      "padding": [
+        {
+          "name": "unused_main",
+          "start": 16039,
+          "end": 16383,
+          "bytes": 345,
+          "file_offset": 13992,
+          "value": 0
+        },
+        {
+          "name": "display_startup_zero",
+          "start": 16384,
+          "end": 20479,
+          "bytes": 4096,
+          "file_offset": 14337,
+          "value": 0
+        }
+      ],
+      "payload_checked": true,
+      "end_exclusive": 24164,
+      "padding_bytes": 4441,
+      "payload_bytes": 22115,
+      "prg_bytes": 22117
+    },
+    "errors": [],
+    "passed": true
+  },
+  "profile": {
+    "schema_version": 1,
+    "measurement": "Actual linked 6510 CPU entry through RTS; monotonic Peddle counter deltas",
+    "exclusions": [
+      "Synthetic host caller JSR (6 CPU cycles per scheduling call)",
+      "REU DMA stall/transfer elapsed time",
+      "VIC contention, hardware timers, rendering, UCI/IEC waits",
+      "Guest 8088 cycle timing, XT ratio and physical C64U elapsed time"
+    ],
+    "source_identity_algorithm": "SHA256 of ordered path + NUL + lowercase file SHA256 + NUL",
+    "source_identity_sha256": "87eab9545143199ee360ca7831af65876e61792424090f891a72300d89927770",
+    "file_identities": [
+      {
+        "path": "build/dos64-tests.prg",
+        "sha256": "8c7e5a429f406473fa07c2acb06a86dd40e359696ca99f1a62d280c1325a5301"
+      },
+      {
+        "path": "build/dos64-tests.labels",
+        "sha256": "5178e43920bf254ee7234c209ae710240328bec333de4193a3d1f6031e1aa9c0"
+      },
+      {
+        "path": "build.zig",
+        "sha256": "85c29b68819064ab547abbc1bd30036a90aee846397682029c701831c17f6fd5"
+      },
+      {
+        "path": "Makefile",
+        "sha256": "b040fb540b0c72b76253fca5dd394a7321ded145f4841f92447360135396147e"
+      },
+      {
+        "path": "cfg/dos64.cfg",
+        "sha256": "eb7dd51bca42e9af2ba481d583b02731f6ad465e2cd06ee8e7b4bf4a576f81f1"
+      },
+      {
+        "path": "src/boot.s",
+        "sha256": "946f0026fa6114e43412b3b23e8a852501db63653a21530e165ade04517bd661"
+      },
+      {
+        "path": "src/cpu_state.s",
+        "sha256": "77c0e8db8217b15bc5d9a031fc4554eeaec14c38b8212b0faabee4d7ac65563f"
+      },
+      {
+        "path": "src/reu.s",
+        "sha256": "e51b31fff8da86894156fcc004b2339567d240e66b7aee1fd42d4117bf5c73d2"
+      },
+      {
+        "path": "src/address.s",
+        "sha256": "09805aa9fe6249726447d7c093223b884de04fea9fbb7f65068c96b90507ee01"
+      },
+      {
+        "path": "src/memory.s",
+        "sha256": "5dd3276aa320ce76e5d7ce0ee688f723b7a49a25d39b11e8dc80515ee3aa52cb"
+      },
+      {
+        "path": "src/cpu.s",
+        "sha256": "f79ed669d38b41aaa936c0144d9b4aae30a48d05af35858aaa091ac9fdf3ff2b"
+      },
+      {
+        "path": "src/fetch.s",
+        "sha256": "7824ce0b4a4e326c9fb6cffa20a22836443b4f60597152d1e22862442b75fbf8"
+      },
+      {
+        "path": "src/alu.s",
+        "sha256": "9c5c4aeadddb9c65c4b441c7fb30530cc7433a7846c82a7df1bc6168f1fb4500"
+      },
+      {
+        "path": "src/operands.s",
+        "sha256": "90ec334ea77d3bd2c555f403879eb578d2b918837a0f0aad814365f50c415fdd"
+      },
+      {
+        "path": "src/stack.s",
+        "sha256": "97bad438a6c4d7b07927197ad7a43079842383e8741f3dcb474eb9ae98da36b3"
+      },
+      {
+        "path": "src/strings.s",
+        "sha256": "54867f5e9558d86222ef4bcddda35b1f584acd001582d938fe864298801d5106"
+      },
+      {
+        "path": "src/shifts.s",
+        "sha256": "3acdd0bbcbe0708125370d629fc144e893dde5e8b5b3a04775c3be1047a0a2ed"
+      },
+      {
+        "path": "src/control.s",
+        "sha256": "9c49f31c51646213430124c9ff3c5fb12b2bb4cd71e3d17f71b52d2ae398f295"
+      },
+      {
+        "path": "src/math.s",
+        "sha256": "fa98bbb7559519e494568bcdbc78d395007f0ba5279bc96ea5ce0ecda8f3242f"
+      },
+      {
+        "path": "src/indirect.s",
+        "sha256": "036c7638d20cb50aaef716d20a39cf0f38095b0fe3f7bf1ed77deac42399c23d"
+      },
+      {
+        "path": "src/range.s",
+        "sha256": "668e5b1bf583089e5a5abaf99b279a86a750d94e5bbb4dc0ab68f7743ed54574"
+      },
+      {
+        "path": "src/range_probe.s",
+        "sha256": "01b09c4d34044ce136123580943f6774e37a94a4b6be1f37651d42aea30b4849"
+      },
+      {
+        "path": "src/range_snapshot.s",
+        "sha256": "dbf5ea21cfb6d24b9bbddfd024022381db000828e73f61b35e6cd658b0ae8d5b"
+      },
+      {
+        "path": "src/disk.s",
+        "sha256": "2783fc60f7c59b904e04d72e5ce9326eda67b4d60fa83d02ebc90b59fb56b3dd"
+      },
+      {
+        "path": "src/bios.s",
+        "sha256": "926874e0663af0ab46cef557aab855385f2e8f3564e052c4abb3eaf12521050e"
+      },
+      {
+        "path": "src/ports.s",
+        "sha256": "fec6cbe5536ab9b448963aec33d9f9aaaca918f32555c90047ac4be8615f7164"
+      },
+      {
+        "path": "include/ports.inc",
+        "sha256": "65f23a04c54df8705827579ff83e02ffa40160d5ed2084276b0c2776a2b9f104"
+      },
+      {
+        "path": "src/video.s",
+        "sha256": "04bfcf60b35eaf0af6974962800e09ce1762de535877cf872705720501028437"
+      },
+      {
+        "path": "include/video.inc",
+        "sha256": "7bdcbe38fffd87efe4a67dbfe59d23edc28c9f58a9c5cd477dbdfb83e21c2cdd"
+      },
+      {
+        "path": "src/adjust.s",
+        "sha256": "8373cca0aaf311f0cbd859780e2d8e05e503a643ec516eba5fdeb19e1b549490"
+      },
+      {
+        "path": "src/aux_bios.s",
+        "sha256": "4be68451703004b131498afa80a3e8ca52af092931c21f9540bd486765c9c606"
+      },
+      {
+        "path": "src/clock.s",
+        "sha256": "e949ebf02887e83773acfcb61cfe91415db761baf77147b4178f83044af8297c"
+      },
+      {
+        "path": "include/clock.inc",
+        "sha256": "7e6c70f8860846486edb4c8858bc832ad2bfc7a2353fc7450b437e74f1884cb7"
+      },
+      {
+        "path": "src/keyboard.s",
+        "sha256": "cb22e7f3f22ffe48bee84d24d3fe07c86764160304bddda9d66cea33883c9d56"
+      },
+      {
+        "path": "include/keyboard.inc",
+        "sha256": "1ed373d4541bada5b4023357c213d56d13ad190ccba64fb85ae3b7fa7221f9ec"
+      },
+      {
+        "path": "src/uci.s",
+        "sha256": "28d6cd5d77a936e3b5de9cd7d5cce17443d622ae41a87ce273ea950cc1fa8898"
+      },
+      {
+        "path": "include/uci.inc",
+        "sha256": "574d140bfa3772a438f45510309018190c41f54ee205cab691523f034cf9640d"
+      },
+      {
+        "path": "src/host_clock.s",
+        "sha256": "9b837c5ad775f0b3d824ed50869bc06fa0834ada353ad1bab1153638a8ff0ec1"
+      },
+      {
+        "path": "include/host_clock.inc",
+        "sha256": "17a391747f896c8b635f31be371aae8f2da72fdbe775174b37ba186944fef6fd"
+      },
+      {
+        "path": "tests/host/uci_model.h",
+        "sha256": "ddaca4467a8515988f5edd6a6fec9762df0b099334f1f3dd7d68805c7e3b5996"
+      },
+      {
+        "path": "tests/host/cia_clock_model.h",
+        "sha256": "400b50fd4f993c067c9e2e161f8cf0a06e35d44470896d20e18f1826918da0ff"
+      },
+      {
+        "path": "include/aux_bios.inc",
+        "sha256": "1fd24eaf7ef4b38a375037d2599492c46edfd9bcc46162d0a7ddb9774fdd1688"
+      },
+      {
+        "path": "cfg/dos64-runtime.cfg",
+        "sha256": "b4c65b77a860fbd6985815fce1bc88af7b6bac3f3299dd08da41ceaf82c24b56"
+      },
+      {
+        "path": "src/reu_probe.s",
+        "sha256": "09dbcef1ecd8a757ec11771097564b8b46f2a1663c63466fa4a72b893308751d"
+      },
+      {
+        "path": "src/cache_probe.s",
+        "sha256": "bf3e74d9b1cd482c57161ecf0b6a1d1d18f395bb89aa91d36df1548aa0bcac4e"
+      },
+      {
+        "path": "src/reu_snapshot.s",
+        "sha256": "2286f662181ecb26dfd8523e9aef4c405701a3b5ccaeb0b35425bc8c7f607b7f"
+      },
+      {
+        "path": "include/abi.inc",
+        "sha256": "74a874c245aed278ba884d33923279bde901bed97427452096dd414ba67e08d6"
+      },
+      {
+        "path": "include/reu.inc",
+        "sha256": "47a4eac6be6d727dc506c2d8e808e1028aefb2f8321b89aff3d333bff94c5e05"
+      },
+      {
+        "path": "include/memory.inc",
+        "sha256": "26c5be0321b5678fa17e7881792760c90771f398ab1ca7c4b23d071dca4ce428"
+      },
+      {
+        "path": "include/parity.inc",
+        "sha256": "52b5bbf6f9cd159297e3b8abd5b9e78ec4f4a3e3d1f07a931a869b1a7f46668e"
+      },
+      {
+        "path": "include/range.inc",
+        "sha256": "cd22a54aa28af068c612ef1606c303107891c0c2accf4f35e8ab7f0a18e42987"
+      },
+      {
+        "path": "include/disk.inc",
+        "sha256": "b7d571420a26f59cfdc85cf9bc57d78cfe2047cd107adee229fc568873b4b050"
+      },
+      {
+        "path": "include/bios.inc",
+        "sha256": "ff22fa832fa24b8f1d35c934e30a4ada0412dfc97777fffba8bd17621ea14749"
+      },
+      {
+        "path": "tests/fixtures/foundation.s",
+        "sha256": "3e5d8539cd2694b598aeeb4e86a645d877a9387707dabf92e7d0e2d155fc759b"
+      },
+      {
+        "path": "tests/host/profile.zig",
+        "sha256": "c6820138806e2545d69de84ef06ef4cbd0a2877986d649b5456942a00a9b9234"
+      },
+      {
+        "path": "tests/host/machine.zig",
+        "sha256": "b823a6d6fda157299dac11a4e53b2a7c91d5a35c943c4127e17adb95b417f897"
+      },
+      {
+        "path": "tests/host/peddle_bridge.h",
+        "sha256": "5b73089b6de0aaa334423d6a5ef7e01e6c7ab7fe5476414907d6f8e77ad13eef"
+      },
+      {
+        "path": "tests/host/peddle_bridge.cpp",
+        "sha256": "5a5433ef54b895abe5558067f1bc59c326c872e75efbbe1be7980a23fe774bfd"
+      },
+      {
+        "path": "tests/host/reu_model.h",
+        "sha256": "f43b161b3838621aa02902d0629f23c212d527ab363f387eebfb4f9d3c957168"
+      },
+      {
+        "path": "third_party/peddle/UPSTREAM.json",
+        "sha256": "de86a17844160fb58d1a8515f425614170fcbed63b4b0168e32d0b9501c9e5f7"
+      },
+      {
+        "path": "third_party/peddle/Peddle/Peddle.h",
+        "sha256": "be9269b633be208631e4520d284a7bf2e61c85544b3dda819a52cee7587bfb3e"
+      },
+      {
+        "path": "third_party/peddle/Peddle/PeddleConfig.h",
+        "sha256": "44791d9261eb117c8bb5f5ad436f3bcd36c6445fc56693be19f0b54d18445995"
+      },
+      {
+        "path": "third_party/peddle/Peddle/PeddleDebugger.h",
+        "sha256": "518a718a882458dcd7edd601a3b0555a4bdcc82fbf06c0281294b9e7e8d3e5cb"
+      },
+      {
+        "path": "third_party/peddle/Peddle/PeddleDebuggerTypes.h",
+        "sha256": "51aefa0f421ecdc9eec1b0833f117b2923be46ae52731d617313eca00dcd4b95"
+      },
+      {
+        "path": "third_party/peddle/Peddle/PeddleDisassembler.h",
+        "sha256": "ddad84acee3f02b634573678834384d402ca996d1c81268513a6c3e95e8b54d2"
+      },
+      {
+        "path": "third_party/peddle/Peddle/PeddleExec_cpp.h",
+        "sha256": "a934618eef43a234578e9d8f32632af7357296277b78c2d561031c7266c43581"
+      },
+      {
+        "path": "third_party/peddle/Peddle/PeddleInit_cpp.h",
+        "sha256": "fc0e330a52702e67664d4af929d4a35d672a0c416c9937c664d47116048cf61b"
+      },
+      {
+        "path": "third_party/peddle/Peddle/PeddleMacros.h",
+        "sha256": "0ce5228ad2cf6aef71c058787a23e59a124c1906c431ce6bd02adb6c37965121"
+      },
+      {
+        "path": "third_party/peddle/Peddle/PeddleMemory_cpp.h",
+        "sha256": "dd5a15b19d598e75821a9aa52f55e9c9a82fedf44722fc5032e83354fd07c205"
+      },
+      {
+        "path": "third_party/peddle/Peddle/PeddleTypes.h",
+        "sha256": "b103a58af6dd7b80a79a3335840a8db794a3f8d868f896cc256fa4007cea9f08"
+      },
+      {
+        "path": "third_party/peddle/Peddle/PeddleUtils.h",
+        "sha256": "e0f46eebf074a2e616f06aa594026d93f7c9873a0f10bcf3d42d02f8e8f80a28"
+      },
+      {
+        "path": "third_party/peddle/Peddle/StrWriter.h",
+        "sha256": "18ffa60902a7f32b05f48b18075caa39ce64a39358c52f2867bd411561d12f31"
+      },
+      {
+        "path": "third_party/peddle/Peddle/Peddle.cpp",
+        "sha256": "ffedff83b4bcce1a698e2a98ef4fd04b6d6a8f3858aaae243b376cbefa8d269f"
+      },
+      {
+        "path": "third_party/peddle/Peddle/PeddleDebugger.cpp",
+        "sha256": "3e1df70e137946707a42c2ece3ae95bfd29f15d6af71d60c429b6301ba631d12"
+      },
+      {
+        "path": "third_party/peddle/Peddle/PeddleDisassembler.cpp",
+        "sha256": "c3d9bc13bff7af84f7822a5d1e3eccfe3b7a5116a654c751eb713d647bf090f5"
+      },
+      {
+        "path": "third_party/peddle/Peddle/StrWriter.cpp",
+        "sha256": "6762cedf870935db3c05c8ddd8d64f800caf6f760a9951a6bac9766200e14f1f"
+      }
+    ],
+    "configuration": {
+      "host_cpu": "MOS6510 via pinned Peddle",
+      "initial_6510_port_direction": 47,
+      "initial_6510_port_data": 53,
+      "host_call_initial_status": 36,
+      "dma_model": "Functional synchronous copy; no DMA stall clocks",
+      "guest_cpu": "functional original 8088",
+      "reu_kib": 4096,
+      "guest_ram_bytes": 1048576,
+      "memory_mode": "ALL_RAM",
+      "page_bytes": 512,
+      "cache_frames": 32,
+      "cache_bytes": 16384,
+      "zig_mode": "Debug",
+      "zig_version": "0.16.0",
+      "bridge_flags": "-std=c++20 -O2 -Wno-unused-parameter -Wno-unused-variable",
+      "ram_seed": 2156422416,
+      "seed_algorithm": "xorshift32: left13,right17,left5; low byte per address",
+      "per_call_cycle_budget": 100000,
+      "per_sample_aggregate_cycle_budget": 150000000,
+      "per_sample_scheduling_call_limit": 32768,
+      "rep_iterations_per_scheduling_call_max": 16,
+      "warm_policy": "Reuse same fixture/cache after previous workload and unmeasured coherent validation flush; Guest CPU registers/instruction counter reset outside measurement; monotonic host counters are retained and cache is not cleared. Above-cache workloads remain capacity limited."
+    },
+    "register_order": [
+      "ax",
+      "cx",
+      "dx",
+      "bx",
+      "sp",
+      "bp",
+      "si",
+      "di",
+      "es",
+      "cs",
+      "ss",
+      "ds",
+      "ip",
+      "flags"
+    ],
+    "initial_guest_registers": [
+      0,
+      0,
+      0,
+      0,
+      32768,
+      0,
+      0,
+      0,
+      16384,
+      0,
+      12288,
+      8192,
+      256,
+      61442
+    ],
+    "samples": [
+      {
+        "workload": "register_loop",
+        "cache_state": "cold_empty_cache",
+        "cache_frames": 32,
+        "working_set_bytes": 512,
+        "guest_bytes_copied": 0,
+        "host_cpu_cycles_per_copied_byte": null,
+        "guest_program_hex": "b80100bb0301b9000101d81500003d0401750190e2f33d0203f4",
+        "completed_guest_instructions": 1286,
+        "scheduling_calls": 1286,
+        "counters": {
+          "host_cpu_cycles": 1813043,
+          "native_peddle_instructions": 557071,
+          "dma_operations": 1,
+          "dma_bytes": 512
+        },
+        "host_cpu_cycles_per_guest_instruction": 1409.8312597200622,
+        "native_instructions_per_guest_instruction": 433.1811819595645,
+        "dma_operations_per_guest_instruction": 0.0007776049766718507,
+        "dma_bytes_per_guest_instruction": 0.39813374805598756,
+        "validation_flush_counters": {
+          "host_cpu_cycles": 1706,
+          "native_peddle_instructions": 462,
+          "dma_operations": 0,
+          "dma_bytes": 0
+        },
+        "final_registers": [
+          770,
+          0,
+          0,
+          259,
+          32768,
+          0,
+          0,
+          0,
+          16384,
+          0,
+          12288,
+          8192,
+          282,
+          61510
+        ],
+        "final_cpu_status": 1,
+        "full_1mib_ram_matches": true,
+        "final_ram_sha256": "95032ae3e2dfb281c8a6a95edd546025bea4d3dc549df511658067241d79887d"
+      },
+      {
+        "workload": "register_loop",
+        "cache_state": "warm_after_same_workload_and_validation_flush",
+        "cache_frames": 32,
+        "working_set_bytes": 512,
+        "guest_bytes_copied": 0,
+        "host_cpu_cycles_per_copied_byte": null,
+        "guest_program_hex": "b80100bb0301b9000101d81500003d0401750190e2f33d0203f4",
+        "completed_guest_instructions": 1286,
+        "scheduling_calls": 1286,
+        "counters": {
+          "host_cpu_cycles": 1812486,
+          "native_peddle_instructions": 556908,
+          "dma_operations": 0,
+          "dma_bytes": 0
+        },
+        "host_cpu_cycles_per_guest_instruction": 1409.398133748056,
+        "native_instructions_per_guest_instruction": 433.054432348367,
+        "dma_operations_per_guest_instruction": 0,
+        "dma_bytes_per_guest_instruction": 0,
+        "validation_flush_counters": {
+          "host_cpu_cycles": 1706,
+          "native_peddle_instructions": 462,
+          "dma_operations": 0,
+          "dma_bytes": 0
+        },
+        "final_registers": [
+          770,
+          0,
+          0,
+          259,
+          32768,
+          0,
+          0,
+          0,
+          16384,
+          0,
+          12288,
+          8192,
+          282,
+          61510
+        ],
+        "final_cpu_status": 1,
+        "full_1mib_ram_matches": true,
+        "final_ram_sha256": "95032ae3e2dfb281c8a6a95edd546025bea4d3dc549df511658067241d79887d"
+      },
+      {
+        "workload": "dirty_memory",
+        "cache_state": "cold_empty_cache",
+        "cache_frames": 32,
+        "working_set_bytes": 2560,
+        "guest_bytes_copied": 1024,
+        "host_cpu_cycles_per_copied_byte": 4436.94140625,
+        "guest_program_hex": "b90002be0000bf00408b04890583c60283c702e2f43d49bbf4",
+        "completed_guest_instructions": 2565,
+        "scheduling_calls": 2565,
+        "counters": {
+          "host_cpu_cycles": 4543428,
+          "native_peddle_instructions": 1391883,
+          "dma_operations": 5,
+          "dma_bytes": 2560
+        },
+        "host_cpu_cycles_per_guest_instruction": 1771.3169590643274,
+        "native_instructions_per_guest_instruction": 542.6444444444444,
+        "dma_operations_per_guest_instruction": 0.001949317738791423,
+        "dma_bytes_per_guest_instruction": 0.9980506822612085,
+        "validation_flush_counters": {
+          "host_cpu_cycles": 2542,
+          "native_peddle_instructions": 714,
+          "dma_operations": 2,
+          "dma_bytes": 1024
+        },
+        "final_registers": [
+          47945,
+          0,
+          0,
+          0,
+          32768,
+          0,
+          1024,
+          17408,
+          16384,
+          0,
+          12288,
+          8192,
+          281,
+          61510
+        ],
+        "final_cpu_status": 1,
+        "full_1mib_ram_matches": true,
+        "final_ram_sha256": "c0a007857e7e384bf2e1654f50b7fc2651cc999683e10879cfc06648091b60e4"
+      },
+      {
+        "workload": "dirty_memory",
+        "cache_state": "warm_after_same_workload_and_validation_flush",
+        "cache_frames": 32,
+        "working_set_bytes": 2560,
+        "guest_bytes_copied": 1024,
+        "host_cpu_cycles_per_copied_byte": 4434.2216796875,
+        "guest_program_hex": "b90002be0000bf00408b04890583c60283c702e2f43d49bbf4",
+        "completed_guest_instructions": 2565,
+        "scheduling_calls": 2565,
+        "counters": {
+          "host_cpu_cycles": 4540643,
+          "native_peddle_instructions": 1391068,
+          "dma_operations": 0,
+          "dma_bytes": 0
+        },
+        "host_cpu_cycles_per_guest_instruction": 1770.2311890838207,
+        "native_instructions_per_guest_instruction": 542.3267056530215,
+        "dma_operations_per_guest_instruction": 0,
+        "dma_bytes_per_guest_instruction": 0,
+        "validation_flush_counters": {
+          "host_cpu_cycles": 2542,
+          "native_peddle_instructions": 714,
+          "dma_operations": 2,
+          "dma_bytes": 1024
+        },
+        "final_registers": [
+          47945,
+          0,
+          0,
+          0,
+          32768,
+          0,
+          1024,
+          17408,
+          16384,
+          0,
+          12288,
+          8192,
+          281,
+          61510
+        ],
+        "final_cpu_status": 1,
+        "full_1mib_ram_matches": true,
+        "final_ram_sha256": "c0a007857e7e384bf2e1654f50b7fc2651cc999683e10879cfc06648091b60e4"
+      },
+      {
+        "workload": "stack_calls",
+        "cache_state": "cold_empty_cache",
+        "cache_frames": 32,
+        "working_set_bytes": 1024,
+        "guest_bytes_copied": 0,
+        "host_cpu_cycles_per_copied_byte": null,
+        "guest_program_hex": "b98000b80000bb0100e80600e2fb3d8000f45301d85bc3",
+        "completed_guest_instructions": 773,
+        "scheduling_calls": 773,
+        "counters": {
+          "host_cpu_cycles": 1270863,
+          "native_peddle_instructions": 385932,
+          "dma_operations": 2,
+          "dma_bytes": 1024
+        },
+        "host_cpu_cycles_per_guest_instruction": 1644.065976714101,
+        "native_instructions_per_guest_instruction": 499.26520051746445,
+        "dma_operations_per_guest_instruction": 0.00258732212160414,
+        "dma_bytes_per_guest_instruction": 1.3247089262613196,
+        "validation_flush_counters": {
+          "host_cpu_cycles": 2124,
+          "native_peddle_instructions": 588,
+          "dma_operations": 1,
+          "dma_bytes": 512
+        },
+        "final_registers": [
+          128,
+          0,
+          0,
+          1,
+          32768,
+          0,
+          0,
+          0,
+          16384,
+          0,
+          12288,
+          8192,
+          274,
+          61510
+        ],
+        "final_cpu_status": 1,
+        "full_1mib_ram_matches": true,
+        "final_ram_sha256": "01cecadc52387555bceecf3eb46c122aeeea3bf8c6bd9cd00866777bcf14f178"
+      },
+      {
+        "workload": "stack_calls",
+        "cache_state": "warm_after_same_workload_and_validation_flush",
+        "cache_frames": 32,
+        "working_set_bytes": 1024,
+        "guest_bytes_copied": 0,
+        "host_cpu_cycles_per_copied_byte": null,
+        "guest_program_hex": "b98000b80000bb0100e80600e2fb3d8000f45301d85bc3",
+        "completed_guest_instructions": 773,
+        "scheduling_calls": 773,
+        "counters": {
+          "host_cpu_cycles": 1269749,
+          "native_peddle_instructions": 385606,
+          "dma_operations": 0,
+          "dma_bytes": 0
+        },
+        "host_cpu_cycles_per_guest_instruction": 1642.6248382923675,
+        "native_instructions_per_guest_instruction": 498.84346701164293,
+        "dma_operations_per_guest_instruction": 0,
+        "dma_bytes_per_guest_instruction": 0,
+        "validation_flush_counters": {
+          "host_cpu_cycles": 2124,
+          "native_peddle_instructions": 588,
+          "dma_operations": 1,
+          "dma_bytes": 512
+        },
+        "final_registers": [
+          128,
+          0,
+          0,
+          1,
+          32768,
+          0,
+          0,
+          0,
+          16384,
+          0,
+          12288,
+          8192,
+          274,
+          61510
+        ],
+        "final_cpu_status": 1,
+        "full_1mib_ram_matches": true,
+        "final_ram_sha256": "01cecadc52387555bceecf3eb46c122aeeea3bf8c6bd9cd00866777bcf14f178"
+      },
+      {
+        "workload": "rep_256",
+        "cache_state": "cold_empty_cache",
+        "cache_frames": 32,
+        "working_set_bytes": 1024,
+        "guest_bytes_copied": 256,
+        "host_cpu_cycles_per_copied_byte": 1119.9765625,
+        "guest_program_hex": "b90001be0000bf0000fcf3a4b800013d0001f4",
+        "completed_guest_instructions": 8,
+        "scheduling_calls": 23,
+        "counters": {
+          "host_cpu_cycles": 286714,
+          "native_peddle_instructions": 83881,
+          "dma_operations": 3,
+          "dma_bytes": 1536
+        },
+        "host_cpu_cycles_per_guest_instruction": 35839.25,
+        "native_instructions_per_guest_instruction": 10485.125,
+        "dma_operations_per_guest_instruction": 0.375,
+        "dma_bytes_per_guest_instruction": 192,
+        "validation_flush_counters": {
+          "host_cpu_cycles": 2124,
+          "native_peddle_instructions": 588,
+          "dma_operations": 1,
+          "dma_bytes": 512
+        },
+        "final_registers": [
+          256,
+          0,
+          0,
+          0,
+          32768,
+          0,
+          256,
+          256,
+          16384,
+          0,
+          12288,
+          8192,
+          275,
+          61510
+        ],
+        "final_cpu_status": 1,
+        "full_1mib_ram_matches": true,
+        "final_ram_sha256": "e72a605086cb67ffb1fc35bebe005ba3cdce6cc21cb5055d139d92f70ef1add7"
+      },
+      {
+        "workload": "rep_256",
+        "cache_state": "warm_after_same_workload_and_validation_flush",
+        "cache_frames": 32,
+        "working_set_bytes": 1024,
+        "guest_bytes_copied": 256,
+        "host_cpu_cycles_per_copied_byte": 1113.44921875,
+        "guest_program_hex": "b90001be0000bf0000fcf3a4b800013d0001f4",
+        "completed_guest_instructions": 8,
+        "scheduling_calls": 23,
+        "counters": {
+          "host_cpu_cycles": 285043,
+          "native_peddle_instructions": 83392,
+          "dma_operations": 0,
+          "dma_bytes": 0
+        },
+        "host_cpu_cycles_per_guest_instruction": 35630.375,
+        "native_instructions_per_guest_instruction": 10424,
+        "dma_operations_per_guest_instruction": 0,
+        "dma_bytes_per_guest_instruction": 0,
+        "validation_flush_counters": {
+          "host_cpu_cycles": 2124,
+          "native_peddle_instructions": 588,
+          "dma_operations": 1,
+          "dma_bytes": 512
+        },
+        "final_registers": [
+          256,
+          0,
+          0,
+          0,
+          32768,
+          0,
+          256,
+          256,
+          16384,
+          0,
+          12288,
+          8192,
+          275,
+          61510
+        ],
+        "final_cpu_status": 1,
+        "full_1mib_ram_matches": true,
+        "final_ram_sha256": "e72a605086cb67ffb1fc35bebe005ba3cdce6cc21cb5055d139d92f70ef1add7"
+      },
+      {
+        "workload": "rep_20k",
+        "cache_state": "cold_empty_cache",
+        "cache_frames": 32,
+        "working_set_bytes": 41472,
+        "guest_bytes_copied": 20480,
+        "host_cpu_cycles_per_copied_byte": 1080.940576171875,
+        "guest_program_hex": "b90050be0000bf0000fcf3a4b800503d0050f4",
+        "completed_guest_instructions": 8,
+        "scheduling_calls": 1287,
+        "counters": {
+          "host_cpu_cycles": 22137663,
+          "native_peddle_instructions": 6451976,
+          "dma_operations": 106,
+          "dma_bytes": 54272
+        },
+        "host_cpu_cycles_per_guest_instruction": 2767207.875,
+        "native_instructions_per_guest_instruction": 806497,
+        "dma_operations_per_guest_instruction": 13.25,
+        "dma_bytes_per_guest_instruction": 6784,
+        "validation_flush_counters": {
+          "host_cpu_cycles": 8394,
+          "native_peddle_instructions": 2478,
+          "dma_operations": 16,
+          "dma_bytes": 8192
+        },
+        "final_registers": [
+          20480,
+          0,
+          0,
+          0,
+          32768,
+          0,
+          20480,
+          20480,
+          16384,
+          0,
+          12288,
+          8192,
+          275,
+          61510
+        ],
+        "final_cpu_status": 1,
+        "full_1mib_ram_matches": true,
+        "final_ram_sha256": "69c59a21611040094bfc6f31f2e20397c80b17fc8fce88c0cf0d9e8657bd2b73"
+      },
+      {
+        "workload": "rep_20k",
+        "cache_state": "warm_after_same_workload_and_validation_flush",
+        "cache_frames": 32,
+        "working_set_bytes": 41472,
+        "guest_bytes_copied": 20480,
+        "host_cpu_cycles_per_copied_byte": 1081.040673828125,
+        "guest_program_hex": "b90050be0000bf0000fcf3a4b800503d0050f4",
+        "completed_guest_instructions": 8,
+        "scheduling_calls": 1287,
+        "counters": {
+          "host_cpu_cycles": 22139713,
+          "native_peddle_instructions": 6452576,
+          "dma_operations": 105,
+          "dma_bytes": 53760
+        },
+        "host_cpu_cycles_per_guest_instruction": 2767464.125,
+        "native_instructions_per_guest_instruction": 806572,
+        "dma_operations_per_guest_instruction": 13.125,
+        "dma_bytes_per_guest_instruction": 6720,
+        "validation_flush_counters": {
+          "host_cpu_cycles": 8394,
+          "native_peddle_instructions": 2478,
+          "dma_operations": 16,
+          "dma_bytes": 8192
+        },
+        "final_registers": [
+          20480,
+          0,
+          0,
+          0,
+          32768,
+          0,
+          20480,
+          20480,
+          16384,
+          0,
+          12288,
+          8192,
+          275,
+          61510
+        ],
+        "final_cpu_status": 1,
+        "full_1mib_ram_matches": true,
+        "final_ram_sha256": "69c59a21611040094bfc6f31f2e20397c80b17fc8fce88c0cf0d9e8657bd2b73"
+      },
+      {
+        "workload": "multiply_divide",
+        "cache_state": "cold_empty_cache",
+        "cache_frames": 32,
+        "working_set_bytes": 512,
+        "guest_bytes_copied": 0,
+        "host_cpu_cycles_per_copied_byte": null,
+        "guest_program_hex": "b98000b83412bb0700f7e3f7f3050100e2f73db412f4",
+        "completed_guest_instructions": 517,
+        "scheduling_calls": 517,
+        "counters": {
+          "host_cpu_cycles": 930110,
+          "native_peddle_instructions": 259301,
+          "dma_operations": 1,
+          "dma_bytes": 512
+        },
+        "host_cpu_cycles_per_guest_instruction": 1799.0522243713733,
+        "native_instructions_per_guest_instruction": 501.54932301740814,
+        "dma_operations_per_guest_instruction": 0.0019342359767891683,
+        "dma_bytes_per_guest_instruction": 0.9903288201160542,
+        "validation_flush_counters": {
+          "host_cpu_cycles": 1706,
+          "native_peddle_instructions": 462,
+          "dma_operations": 0,
+          "dma_bytes": 0
+        },
+        "final_registers": [
+          4788,
+          0,
+          0,
+          7,
+          32768,
+          0,
+          0,
+          0,
+          16384,
+          0,
+          12288,
+          8192,
+          278,
+          61510
+        ],
+        "final_cpu_status": 1,
+        "full_1mib_ram_matches": true,
+        "final_ram_sha256": "2314123223fe652fcc8de232a2c8be1bb8067268f1b35233deedaf38cf8a6d75"
+      },
+      {
+        "workload": "multiply_divide",
+        "cache_state": "warm_after_same_workload_and_validation_flush",
+        "cache_frames": 32,
+        "working_set_bytes": 512,
+        "guest_bytes_copied": 0,
+        "host_cpu_cycles_per_copied_byte": null,
+        "guest_program_hex": "b98000b83412bb0700f7e3f7f3050100e2f73db412f4",
+        "completed_guest_instructions": 517,
+        "scheduling_calls": 517,
+        "counters": {
+          "host_cpu_cycles": 929553,
+          "native_peddle_instructions": 259138,
+          "dma_operations": 0,
+          "dma_bytes": 0
+        },
+        "host_cpu_cycles_per_guest_instruction": 1797.9748549323017,
+        "native_instructions_per_guest_instruction": 501.2340425531915,
+        "dma_operations_per_guest_instruction": 0,
+        "dma_bytes_per_guest_instruction": 0,
+        "validation_flush_counters": {
+          "host_cpu_cycles": 1706,
+          "native_peddle_instructions": 462,
+          "dma_operations": 0,
+          "dma_bytes": 0
+        },
+        "final_registers": [
+          4788,
+          0,
+          0,
+          7,
+          32768,
+          0,
+          0,
+          0,
+          16384,
+          0,
+          12288,
+          8192,
+          278,
+          61510
+        ],
+        "final_cpu_status": 1,
+        "full_1mib_ram_matches": true,
+        "final_ram_sha256": "2314123223fe652fcc8de232a2c8be1bb8067268f1b35233deedaf38cf8a6d75"
+      }
+    ],
+    "totals": {
+      "completed_guest_instructions": 10314,
+      "scheduling_calls": 12902,
+      "counters": {
+        "host_cpu_cycles": 61959008,
+        "native_peddle_instructions": 18258732,
+        "dma_operations": 223,
+        "dma_bytes": 114176
+      },
+      "host_cpu_cycles_per_guest_instruction": 6007.272445220089,
+      "native_instructions_per_guest_instruction": 1770.286212914485,
+      "dma_operations_per_guest_instruction": 0.021621097537327903,
+      "dma_bytes_per_guest_instruction": 11.070001939111886,
+      "averages_are_instruction_weighted": true
+    },
+    "all_final_state_checks_passed": true,
+    "physical_timing_calibrated": false
+  },
+  "profile_wall_seconds": 3.61,
+  "dos_command_evidence": "dos-command-builtins-20261015.json",
+  "private_clock": {
+    "status": "passed",
+    "scope": "isolated linked clock assembly only; not full BIOS-ROM integration",
+    "tests": 10,
+    "final_warm_command_seconds": 2.33,
+    "code_bytes": 390,
+    "device_state_bytes": 13,
+    "new_bss_bytes": 0,
+    "new_zero_page_bytes": 0,
+    "primary_source": {
+      "url": "https://raw.githubusercontent.com/jeffpar/pcjs/b4a910e606d87137e977ec89ce816f05a31c366a/machines/pcx86/ibm/5160/rom/bios/1982-11-08/src/XTBIOS.ASM",
+      "sha256": "2e55fa806f84aa332f46dfc0f09d92fd6034cd9f177134b0d11c44241bc83514",
+      "sections": [
+        "TIME_OF_DAY",
+        "TIMER_INT"
+      ]
+    },
+    "sha256": {
+      "src/clock.s": "f1db24f86263a8dfb7af3d801f1066b058889b5b106b90403c4fa92012b1baa6",
+      "include/clock.inc": "7e6c70f8860846486edb4c8858bc832ad2bfc7a2353fc7450b437e74f1884cb7",
+      "tests/host/clock.zig": "6fbde043cd666f1642409d1ba4106a529f26f66fb75f3ee4b59c9c5089952328",
+      "src/cpu_state.s": "77c0e8db8217b15bc5d9a031fc4554eeaec14c38b8212b0faabee4d7ac65563f",
+      "src/reu.s": "e51b31fff8da86894156fcc004b2339567d240e66b7aee1fd42d4117bf5c73d2",
+      "src/address.s": "09805aa9fe6249726447d7c093223b884de04fea9fbb7f65068c96b90507ee01",
+      "src/memory.s": "5dd3276aa320ce76e5d7ce0ee688f723b7a49a25d39b11e8dc80515ee3aa52cb",
+      "tests/host/machine.zig": "b823a6d6fda157299dac11a4e53b2a7c91d5a35c943c4127e17adb95b417f897",
+      "tests/host/peddle_bridge.cpp": "669d9aa68414dda5c27c305b033aaba772d1bd6022b090b92fe39f7579f50d39",
+      "cfg/dos64.cfg": "eb7dd51bca42e9af2ba481d583b02731f6ad465e2cd06ee8e7b4bf4a576f81f1",
+      "agentworking/scratch/clock-bios/build/dos64-tests.prg": "94cba55d741af6d54ff8d2e1e43b5123febb46b24cd5c0ee2e267d523233effe",
+      "agentworking/scratch/clock-bios/build/dos64-tests.labels": "ae8af8a2d9e9b267e522add074cdddeae8147781dbfaa473e50e99548f0a9d56",
+      "agentworking/scratch/clock-bios/build/dos64-tests.map": "ac8c9357365e120bc7cebfb4b795d13f05357b56fe462ec19a47538415187bd4"
+    },
+    "limitations": [
+      "No PIT/wall clock/instruction-to-tick conversion",
+      "No IRQ0/INT1Ch/motor countdown",
+      "No AT RTC/date calls; original unknown-AH behavior only",
+      "Only isolated native APIs verified, root owns ROM-gate integration and global gates",
+      "No physical hardware timing claim"
+    ]
+  },
+  "private_keyboard": {
+    "status": "passed",
+    "test_count": 8,
+    "assembly_code_bytes": 464,
+    "device_state_bytes": 18,
+    "new_zeropage_bytes": 0,
+    "new_E000_BSS_bytes": 0,
+    "source_reference": {
+      "repository": "https://github.com/jeffpar/pcjs",
+      "commit": "b4a910e606d87137e977ec89ce816f05a31c366a",
+      "path": "machines/pcx86/ibm/5160/rom/bios/1982-11-08/src/XTBIOS.ASM",
+      "sha256": "2e55fa806f84aa332f46dfc0f09d92fd6034cd9f177134b0d11c44241bc83514"
+    },
+    "hashes": {
+      "src/keyboard.s": "cb22e7f3f22ffe48bee84d24d3fe07c86764160304bddda9d66cea33883c9d56",
+      "include/keyboard.inc": "1ed373d4541bada5b4023357c213d56d13ad190ccba64fb85ae3b7fa7221f9ec",
+      "tests/host/keyboard.zig": "883476dbf6a97dd7584f3fb62509bb45d5a20206d0679faacc6627f0e1405705",
+      "agentworking/scratch/keyboard-bios/build/dos64-tests.prg": "78ae6875432f2c88058b3de31ec08a4f46a634f28960942c544fd78b7bbb0d7c",
+      "agentworking/scratch/keyboard-bios/build/dos64-tests.map": "130616f614551457f7cb52fb78e41b5c5a6bc331cb0cdf38ed3aafec6d0a0f0f",
+      "tests/host/peddle_bridge.cpp": "669d9aa68414dda5c27c305b033aaba772d1bd6022b090b92fe39f7579f50d39",
+      "third_party/peddle/Peddle/Peddle.cpp": "ffedff83b4bcce1a698e2a98ef4fd04b6d6a8f3858aaae243b376cbefa8d269f"
+    },
+    "tools": {
+      "zig": "0.16.0",
+      "ca65": "V2.18",
+      "ld65": "V2.18"
+    },
+    "scope": [
+      "actual linked6502 keyboard assembly in Peddle",
+      "256head/tailpairs with originalCMPflags descriptor",
+      "256shiftbytes",
+      "256nativePinputs",
+      "repeated15entryFIFOwrap/full",
+      "emptyAH00yield",
+      "emptyAH01stillloadsAX",
+      "malformedpointerfailure",
+      "dirtyoneframeBDA",
+      "17bytepartialDMAload/evictionfailure+retry",
+      "nativewritebounds/canaries"
+    ],
+    "limitations": [
+      "not integrated into root BIOS/CPU gate yet",
+      "fixed041E..043Dring; mutable0480/0482relocationunsupported",
+      "no rawscantranslation/nativeC64polling/IRQ1/ATservices",
+      "no physicalhardwaretest needed for logical guest BDAoperations; underlyingcoherentcache separatelyverified",
+      "TFcleared highmask models ordinaryINT16entry; root owns saved-frame patch and wait retry"
+    ],
+    "test_results": "test-results.txt"
+  },
+  "private_uci": {
+    "date_utc": "2026-10-15T09:07:55.404779+00:00",
+    "scope": "private actual-assembly foundation, not integrated or physical acceptance",
+    "tests_passed": 16,
+    "code_bytes": 1265,
+    "device_state_bytes": 42,
+    "zero_page_bytes": 0,
+    "buffer_bytes": 2048,
+    "buffer_range": "C100-C8FF",
+    "remaining_extra_resident_range": "C900-CFFF",
+    "remaining_extra_resident_bytes": 1792,
+    "physical_tested": false,
+    "persistent_writes": false,
+    "clock_source": "caller-supplied monotonic16-bit tick, native provider not implemented",
+    "firmware_source_pins": {
+      "commit": "125da1fec3e3b50d31f6409ec217d80693ed674d",
+      "paths": [
+        "fpga/io/command_interface/vhdl_source/command_if_pkg.vhd",
+        "fpga/io/command_interface/vhdl_source/command_interface.vhd",
+        "fpga/io/command_interface/vhdl_source/command_protocol.vhd",
+        "software/io/command_interface/command_intf.cc",
+        "software/io/command_interface/command_intf.h",
+        "software/test/stubs/command_intf.h"
+      ],
+      "v3.14": {
+        "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+        "files": {
+          "fpga/io/command_interface/vhdl_source/command_if_pkg.vhd": "cda3814335e04666d693d48780d09bac1a82cb5ca9e07a8e837e703c54f6881b",
+          "fpga/io/command_interface/vhdl_source/command_interface.vhd": "5d8272db81b817169a8ebe1d0e101df0bc93a0576a618f07cf504f669aed01e5",
+          "fpga/io/command_interface/vhdl_source/command_protocol.vhd": "4d51475b880d1b26b288bd2f9e63f75dd15bfa7e68cd2c77a9a46e22360dd737",
+          "software/io/command_interface/command_intf.cc": "c67aeea4594e4b90f2ef2f0aa1c3b421d073c169d9077bd7ebd17ac194d79a9f",
+          "software/io/command_interface/command_intf.h": "cb9d497a72188bc59211e49fc495a78d8f3477bb4306be6a10706e91c77a592f"
+        }
+      },
+      "master_files": {
+        "fpga/io/command_interface/vhdl_source/command_if_pkg.vhd": "cda3814335e04666d693d48780d09bac1a82cb5ca9e07a8e837e703c54f6881b",
+        "fpga/io/command_interface/vhdl_source/command_interface.vhd": "5d8272db81b817169a8ebe1d0e101df0bc93a0576a618f07cf504f669aed01e5",
+        "fpga/io/command_interface/vhdl_source/command_protocol.vhd": "9ca991ffe32ce1887552bcefb5c347baa075555b80c69e778ba4bc57288499f9",
+        "software/io/command_interface/command_intf.cc": "ebc58050ad58e1feaf959148cbccca49441255f7f8210eb29349509702da54d2",
+        "software/io/command_interface/command_intf.h": "e61f7b4a77fbd45fdce4eb9d3eeab16b155fd42fb5060bb038d0199996913563",
+        "software/test/stubs/command_intf.h": "9efc934e65b68aa7acb2c96091c4469f3a4eafadc9d5b14c245220dea4d20861"
+      }
+    },
+    "peddle": "c23e34a7e6516b284750b8c7caaa8c41948a407a",
+    "tool_versions": {
+      "zig": "0.16.0",
+      "ca65": "V2.18 - N/A",
+      "ld65": "V2.18 - N/A"
+    },
+    "sha256": {
+      "src/uci.s": "eb097d241e0e61026cf0dd6b2d12a84bfdcf801dec9c638621d11eb28ba9d2f7",
+      "include/uci.inc": "574d140bfa3772a438f45510309018190c41f54ee205cab691523f034cf9640d",
+      "tests/host/uci.zig": "dcc8e5d998498e2c7dc54cd8bbc2281323046c582054b452a0f3b6c245530ce0",
+      "tests/host/uci_model.h": "ddaca4467a8515988f5edd6a6fec9762df0b099334f1f3dd7d68805c7e3b5996",
+      "agentworking/scratch/ultimate-transport/peddle_bridge.cpp": "d8393b0c74adc85b20ebaacfd24523b38019d271768eda7abbc93bcc0ed17810",
+      "agentworking/scratch/ultimate-transport/machine.zig": "a8858298e465f4e3177c1924b63b84c08c14b950b56139589ff0fbdbdea95fb7",
+      "agentworking/scratch/ultimate-transport/build.zig": "ce53c55de75fe38745c26bc518bda43ea5907696e6d8902b2cd2c4fee2027eee",
+      "agentworking/scratch/ultimate-transport/fixture.s": "bf3325c7c9ede043b62fd131f1e23e6ec48fa904f929aa49018395f265dbcabf",
+      "agentworking/scratch/ultimate-transport/dos64.cfg": "aaf4b6529d4935dbafa76356961eb9dbd2542f7ffe88ae4c600ef4f0412756d8",
+      "agentworking/scratch/ultimate-transport/dos64-tests.prg": "d655ef3174e1f0037e46b914eb2790769bd1e3fdb3092975e9c0028010922aa5",
+      "agentworking/scratch/ultimate-transport/dos64-tests.labels": "43bf08fe28f21f204167b1ce103c84258ebbc84064ea59504f742036a5ffcab0",
+      "agentworking/scratch/ultimate-transport/dos64-tests.map": "bd83d249a0265c4869b79fd186646fc3ea554c447e7fdf6edfcddcae1e448661",
+      "agentworking/scratch/ultimate-transport/test.log": "5df28d6a0154e1b583eaa652685af76e7fb3fd21cc28b0c3832dc013750293f4",
+      "agentworking/scratch/ultimate-transport/upstream.json": "5c6104bc5b63aa57b38f5d21b8af6c9902f00042d836faa37173c303560b2edd",
+      "agentworking/scratch/ultimate-transport/NOTES.md": "b00c04baaceb95f791f9313d4d758feb518897954076e6275d478a3054eac129"
+    },
+    "execution_ms": 355,
+    "compile_seconds_reported": 1
+  },
+  "uci_upstream_pins": {
+    "commit": "125da1fec3e3b50d31f6409ec217d80693ed674d",
+    "paths": [
+      "fpga/io/command_interface/vhdl_source/command_if_pkg.vhd",
+      "fpga/io/command_interface/vhdl_source/command_interface.vhd",
+      "fpga/io/command_interface/vhdl_source/command_protocol.vhd",
+      "software/io/command_interface/command_intf.cc",
+      "software/io/command_interface/command_intf.h",
+      "software/test/stubs/command_intf.h"
+    ],
+    "v3.14": {
+      "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+      "files": {
+        "fpga/io/command_interface/vhdl_source/command_if_pkg.vhd": "cda3814335e04666d693d48780d09bac1a82cb5ca9e07a8e837e703c54f6881b",
+        "fpga/io/command_interface/vhdl_source/command_interface.vhd": "5d8272db81b817169a8ebe1d0e101df0bc93a0576a618f07cf504f669aed01e5",
+        "fpga/io/command_interface/vhdl_source/command_protocol.vhd": "4d51475b880d1b26b288bd2f9e63f75dd15bfa7e68cd2c77a9a46e22360dd737",
+        "software/io/command_interface/command_intf.cc": "c67aeea4594e4b90f2ef2f0aa1c3b421d073c169d9077bd7ebd17ac194d79a9f",
+        "software/io/command_interface/command_intf.h": "cb9d497a72188bc59211e49fc495a78d8f3477bb4306be6a10706e91c77a592f"
+      }
+    },
+    "master_files": {
+      "fpga/io/command_interface/vhdl_source/command_if_pkg.vhd": "cda3814335e04666d693d48780d09bac1a82cb5ca9e07a8e837e703c54f6881b",
+      "fpga/io/command_interface/vhdl_source/command_interface.vhd": "5d8272db81b817169a8ebe1d0e101df0bc93a0576a618f07cf504f669aed01e5",
+      "fpga/io/command_interface/vhdl_source/command_protocol.vhd": "9ca991ffe32ce1887552bcefb5c347baa075555b80c69e778ba4bc57288499f9",
+      "software/io/command_interface/command_intf.cc": "ebc58050ad58e1feaf959148cbccca49441255f7f8210eb29349509702da54d2",
+      "software/io/command_interface/command_intf.h": "e61f7b4a77fbd45fdce4eb9d3eeab16b155fd42fb5060bb038d0199996913563",
+      "software/test/stubs/command_intf.h": "9efc934e65b68aa7acb2c96091c4469f3a4eafadc9d5b14c245220dea4d20861"
+    }
+  },
+  "private_native_clock": {
+    "status": "optional CIA bridge merged; host_clock DEVICECODE privately verified; joint global gate pending",
+    "zig": "0.16.0",
+    "ca65": "V2.18",
+    "ld65": "V2.18",
+    "device_state_bytes": 12,
+    "zp_bytes": 0,
+    "e000_bss_bytes": 0,
+    "tests": 11,
+    "files": {
+      "src/host_clock.s": {
+        "sha256": "9b837c5ad775f0b3d824ed50869bc06fa0834ada353ad1bab1153638a8ff0ec1",
+        "bytes": 3165
+      },
+      "include/host_clock.inc": {
+        "sha256": "17a391747f896c8b635f31be371aae8f2da72fdbe775174b37ba186944fef6fd",
+        "bytes": 1732
+      },
+      "tests/host/host_clock.zig": {
+        "sha256": "e541124d416ba9474f7856462109ce2eeba198eb5dbb61e61ee04c5cc8fd29bf",
+        "bytes": 12264
+      },
+      "tests/host/cia_clock_model.h": {
+        "sha256": "400b50fd4f993c067c9e2e161f8cf0a06e35d44470896d20e18f1826918da0ff",
+        "bytes": 3634
+      },
+      "agentworking/scratch/host-clock/dos64-tests.prg": {
+        "sha256": "f7b063016062a66f3da3d14ae254ee366013feaaf9d83595b99e0a4651555f5d",
+        "bytes": 336
+      },
+      "agentworking/scratch/host-clock/peddle_bridge.cpp": {
+        "sha256": "9b4fb1830601a6bfc852c5cbc96cb64e2600472c1843d17e2ef5b810b130b880",
+        "bytes": 11203
+      },
+      "agentworking/scratch/host-clock/clock.map": {
+        "sha256": "159b4256242e892c3196c225977efe05887b999c511d45c32adacd22ca00ab08",
+        "bytes": 684
+      },
+      "agentworking/scratch/host-clock/build.zig": {
+        "sha256": "aeac124e1c690e69db6000ec4347cc9e570cfed292c75203eb3276826f92ea58",
+        "bytes": 1082
+      },
+      "tests/host/peddle_bridge.cpp": {
+        "sha256": "9b4fb1830601a6bfc852c5cbc96cb64e2600472c1843d17e2ef5b810b130b880",
+        "bytes": 11203
+      },
+      "tests/host/peddle_bridge.h": {
+        "sha256": "ebfd6ab72c05c98532afb03df91df17b5264257e54d12660582f88c35c7ce8d4",
+        "bytes": 3973
+      }
+    },
+    "device_code_bytes": 333
+  },
+  "native_clock_primary_sources": {
+    "firmware_commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "sources": [
+      {
+        "file": "mos-6526.pdf",
+        "url": "https://www.retrodocs.fr/wp-content/uploads/pdf/MOS-6526.pdf",
+        "sha256": "f24db71122870dc1b714c1736794e860d454cb005c1c1f110a440797c855ade2",
+        "length": 550685
+      },
+      {
+        "file": "issue874.json",
+        "url": "https://api.github.com/repos/GideonZ/1541ultimate/issues/874",
+        "sha256": "76c2e84336624fe44ddf874d1bd522aa354f58bfea1c6bc1fb48ebbcd5312c2f",
+        "length": 10512
+      },
+      {
+        "file": "issue874-comments.json",
+        "url": "https://api.github.com/repos/GideonZ/1541ultimate/issues/874/comments",
+        "sha256": "3f43e3a091bb15c7582937467d89ab93f67aca99ca00ec2ef5c137075d983829",
+        "length": 16766
+      },
+      {
+        "file": "u64_config.cc",
+        "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/u64/u64_config.cc",
+        "sha256": "22cdd1534975a26b298ac0b02176f53572d82a2afb998b6b48106026d073a794",
+        "length": 93311
+      },
+      {
+        "file": "color_timings.cc",
+        "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/u64/color_timings.cc",
+        "sha256": "d44c925624ffbe484b81796710a4ddc16be5e1817cbaa2a6cbff81ed917983b2",
+        "length": 2341
+      },
+      {
+        "file": "fpll.cc",
+        "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/u64/fpll.cc",
+        "sha256": "d858f5339cc1bbbc5ddaf7cc40ab97b5b004c34c7918e5ec5441f0745821d45a",
+        "length": 13826
+      },
+      {
+        "file": "color_timings.h",
+        "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/u64/color_timings.h",
+        "sha256": "f400defcf7d6469553435e89de2d091ccb7633b2afc133e19079d3374efa3b1f",
+        "length": 320
+      },
+      {
+        "file": "cia_timer.vhd",
+        "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/830665cd9b41bc34b868f5c1a1179c5baa4989af/fpga/1541/vhdl_source/cia_timer.vhd",
+        "sha256": "614e756c61c6e81ab66d97a732c6b2852c3be735789b90b630d2e75b7eaad32d",
+        "length": 3481,
+        "scope": "drive CIA, not host C64 CIA RTL"
+      },
+      {
+        "file": "cia_registers.vhd",
+        "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/830665cd9b41bc34b868f5c1a1179c5baa4989af/fpga/1541/vhdl_source/cia_registers.vhd",
+        "sha256": "895df24eb7371f4f659fbfd77ba72942b8c1d715d25a0fdea3759683636bb5af",
+        "length": 30333,
+        "scope": "drive CIA, not host C64 CIA RTL"
+      }
+    ]
+  },
+  "first_physical_clock_evidence": "c64u-clock-first-failure-20261015.json",
+  "limitations": [
+    "Native startup initializes then idles; actual image load/save, C64 input scanning/font/VIC rendering/events and HD backend remain unfinished",
+    "File/text/overlay modules and dispatch-table optimization remain private and unlinked",
+    "Peddle clocks exclude REU DMA stalls/VIC contention/device waits; near-XT performance unproved",
+    "Full hardware ISA corpus last passed at previous slice; current quick projection executed597 cases",
+    "First clock probe attempt was rejected and preserved; revised probe validates the PAL raw CIA counter, not CPU/XT throughput"
+  ],
+  "clock_probe_gate": {
+    "zig_tests": 6,
+    "tooling_tests": 15,
+    "result": "passed",
+    "endpoint_lines": 16,
+    "endpoint_bound_raw_phi2_ticks": 1008,
+    "failure_capture_before_reset": true,
+    "probe_prg_sha256": "fe78c4fbf29531d20ce1edd300666ec5a800d8dea2046555bc90e429233d46c1",
+    "limitations": [
+      "VIC scripting verifies logic only; physics remains separate hardware evidence"
+    ]
+  },
+  "physical_clock_evidence": "c64u-clock-20261015.json"
+}

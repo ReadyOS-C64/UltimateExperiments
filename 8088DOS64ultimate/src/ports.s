@@ -119,6 +119,22 @@ dos64_io_write:
     php
     sei
     cld
+    ; DOS3.30 SYSINIT broadcasts GLOBAL REARM to shared-IRQ2..7 boards
+    ; at02F2..02F7; data is arbitrary. Our XT has none: these six byte
+    ; broadcasts have no device/PIC effect. Reads/words stay unsupported.
+    ; Primary Microsoft MS-DOS SYSINIT1.ASM, commit2d04cacc5322951f187bb17e017c12920ac8ebe2.
+    lda dos64_io_width
+    bne @pic
+    lda dos64_io_port+1
+    cmp #2
+    bne @pic
+    lda dos64_io_port
+    cmp #$F2
+    bcc @pic
+    cmp #$F8
+    bcs @pic
+    jmp io_success
+@pic:
     jsr io_validate
     bcs io_unsupported
     lda dos64_io_port

@@ -27,7 +27,7 @@
 - Reset→IO.SYS through actual BIOS is a useful milestone. COMMAND.COM prompt, native media loading, runtime execution and the remaining machine/storage requirements still determine completion.
 - Recognize native BIOS service only at exact owned physical ROM opcodes, and patch saved guest flags before ordinary IRET. INT 11h/12h must see mutable dirty BDA.
 - A zero range length differs from zero low-level DMA count. Validate before touching bytes, split REU banks and publish only committed progress; a failed DMA's uncertain chunk must be repeated.
-- Charge every linked staging reservation to the full host map. C000–C0FF belongs to range staging; the conditional future UCI buffer uses C100–C8FF, leaving C900–CFFF for further resident growth; pre-map BSS headroom must follow the current ledger.
+- Charge every linked staging reservation to the full host map. C000–C0FF belongs to range staging; the linked UCI buffer uses C100–C8FF, leaving C900–CFFF for further resident growth; pre-map BSS headroom must follow the current ledger.
 - Listing an already older object in a changed Makefile does not force a relink without the Makefile/object prerequisites. Check linker/map/binary identity, not compilation messages alone.
 - Preserve every physical range a probe mutates, including dirty guest-page neighbors and external source/destination arenas. Backup read-only, restore exact bytes, then independently compare a fresh readback.
 - State the profile interval and omitted costs. Peddle CPU cycles are target instruction work, while faster host testing, REU stalls and physical elapsed time are different measurements.
@@ -37,3 +37,9 @@
 - A zero serial/printer BDA base returns before AH dispatch on the XT. Preserve the actual register result and wrapping index behavior; do not invent a timeout for absent hardware.
 - Logical video memory services do not prove a C64 renderer or readable display. Keep CP437/attributes exact and test coherent scroll/pixel/page behavior before presentation.
 - Separate PRG file padding and startup zero initialization from linked CODE/RODATA/reservations. A larger contiguous PRG does not imply every byte is executable or occupied by linked modules.
+
+- Keep kernel-only default acceptance separate from the opt-in long real-DOS command lane. A prompt is stronger evidence when actual keyboard enqueue drives VER and DIR and independent output checks require a returned prompt.
+- A surprising original DOS port access needs binary/relocation and primary-source audit before diagnosing fetch corruption. The 02F2h–02F7h GLOBAL REARM broadcast is narrow absent-board behavior; reads/words/unrelated ports remain unsupported.
+- Preserve the guest interrupt frame across an empty keyboard wait and retry only its exact owned ROM instruction; do not increment completed instructions or fabricate keys.
+- Generic UCI completion is transport state, not image-file success. Operation-specific status, exact byte counts and persistence remain separate native integration work.
+- CIA phi2 ticks, native CPU cycles, guest timer ticks and REST duration are different clocks. Establish physical timer progress/turbo independence before using real-time deadlines.

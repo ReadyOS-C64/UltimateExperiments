@@ -29,6 +29,15 @@ fn step(f:*Fixture) !void {
     }
 }
 fn code(f:*Fixture,at:u32,bytes:[]const u8) void { for(bytes,0..) |v,i| c.dos64_reu_poke(f.machine,at+@as(u32,@intCast(i)),v); }
+fn coherentCode(f:*Fixture,at:u16,bytes:[]const u8) !void {
+    const address=try f.symbol("dos64_address");
+    for(bytes,0..) |value,index| {
+        word(f,address,at+@as(u16,@intCast(index))); f.poke(address+2,0);
+        f.poke(try f.symbol("dos64_mem_value"),value);
+        const r=try f.call("dos64_mem_write",50_000);
+        try std.testing.expectEqual(@as(u8,0),r.p&1);
+    }
+}
 fn port(f:*Fixture,p:u8) !c.Dos64Regs {
     const sentinel=try f.symbol("fixture_return");
     word(f,0x1fe,sentinel-%1);
@@ -60,6 +69,7 @@ test "owned synthetic BIOS initializes exact ROM IVT BDA and preserves conventio
     for([_][2]u16{.{0x44,0x20},.{0x45,1},.{0x47,0xf0},.{0x48,0x30},.{0x49,1},.{0x4b,0xf0},.{0x4d,1},.{0x4f,0xf0},.{0x64,0x10},.{0x65,1},.{0x67,0xf0},.{0x79,3},.{0x7b,0xf0},.{0x410,0x21},.{0x413,0x80},.{0x414,2},.{0x41a,0x1e},.{0x41c,0x1e},.{0x449,3},.{0x44a,80},.{0x44d,0x10},.{0x460,7},.{0x461,6},.{0x463,0xd4},.{0x464,3},.{0x465,0x29}}) |p| low[p[0]]=@intCast(p[1]);
     low[0x54]=0x40; low[0x55]=1; low[0x57]=0xf0;
     for ([_][2]u16{ .{0x40,0x50}, .{0x41,1}, .{0x43,0xf0}, .{0x50,0x60}, .{0x51,1}, .{0x53,0xf0}, .{0x5c,0x70}, .{0x5d,1}, .{0x5f,0xf0}, .{0x466,0x30} }) |p| low[p[0]]=@intCast(p[1]);
+    for ([_][2]u16{ .{0x58,0x80}, .{0x59,1}, .{0x5b,0xf0}, .{0x68,0x90}, .{0x69,1}, .{0x6b,0xf0}, .{0x480,0x1e}, .{0x482,0x3e} }) |p| low[p[0]]=@intCast(p[1]);
     try std.testing.expectEqual(@as(u32,0xffffffff),c.dos64_reu_compare(f.machine,0,low.ptr,low.len));
     const rom=try allocator.alloc(u8,65536); defer allocator.free(rom); @memset(rom,0xff);
     @memcpy(rom[0x100..0x103],&[_]u8{0xe6,0xf1,0xcf}); @memcpy(rom[0x110..0x113],&[_]u8{0xe6,0xf2,0xf4});
@@ -69,6 +79,8 @@ test "owned synthetic BIOS initializes exact ROM IVT BDA and preserves conventio
     @memcpy(rom[0x150..0x153],&[_]u8{0xe6,0xf3,0xcf});
     @memcpy(rom[0x160..0x163],&[_]u8{0xe6,0xf4,0xcf});
     @memcpy(rom[0x170..0x173],&[_]u8{0xe6,0xf5,0xcf});
+    @memcpy(rom[0x180..0x183],&[_]u8{0xe6,0xf6,0xcf});
+    @memcpy(rom[0x190..0x193],&[_]u8{0xe6,0xf7,0xcf});
     @memcpy(rom[0x300..0x30b],&[_]u8{0xcf,2,0x25,2,9,0x2a,0xff,0x50,0xf6,0x19,4});
     @memcpy(rom[0xfff0..0xfffe],&[_]u8{0xea,0x10,1,0,0xf0,'1','0','/','1','5','/','2','6',0xff}); rom[0xfffe]=0xfe;
     try std.testing.expectEqual(@as(u32,0xffffffff),c.dos64_reu_compare(f.machine,0xf0000,rom.ptr,rom.len));
@@ -154,6 +166,69 @@ test "video and auxiliary callback whitelists reject wrong gates and propagate c
     r=try port(&f,0xf3);
     try std.testing.expectEqual(@as(u8,1),r.p&1);
     try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_bios_host_error")));
+}
+
+test "INT1A RTC probe follows original XT AH decrement and restores caller flags" {
+    var f=try init(true); defer f.deinit();
+    const g=try f.symbol("dos64_guest");
+    try coherentCode(&f,0x200,&.{0xcd,0x1a,0xf4});
+    try reg(&f,9,0); try reg(&f,12,0x200);
+    try reg(&f,10,0x2000); try reg(&f,4,0x1000);
+    try reg(&f,0,0x02c9); try reg(&f,1,0x1234); try reg(&f,2,0x5678); try reg(&f,13,0xf703);
+    try step(&f); try std.testing.expectEqual(@as(u16,0x190),f.word(g+24));
+    try step(&f); try step(&f);
+    try std.testing.expectEqual(@as(u16,0x01c9),f.word(g));
+    try std.testing.expectEqual(@as(u16,0x1234),f.word(g+2));
+    try std.testing.expectEqual(@as(u16,0x5678),f.word(g+4));
+    try std.testing.expectEqual(@as(u16,0xf703),f.word(g+26));
+    try std.testing.expectEqual(@as(u16,0x202),f.word(g+24));
+}
+
+test "INT16 empty read yields in its owned gate then consumes an enqueued key without stack drift" {
+    var f=try init(true); defer f.deinit();
+    const g=try f.symbol("dos64_guest");
+    try coherentCode(&f,0x200,&.{0xcd,0x16,0xf4});
+    try reg(&f,9,0); try reg(&f,12,0x200);
+    try reg(&f,10,0x2000); try reg(&f,4,0x1000);
+    try reg(&f,0,0x00a7); try reg(&f,13,0xf403);
+    try step(&f);
+    for(0..32) |_| {
+        try step(&f);
+        try std.testing.expectEqual(@as(u16,0x180),f.word(g+24));
+        try std.testing.expectEqual(@as(u16,0x0ffa),f.word(g+8));
+        try std.testing.expectEqual(@as(u16,1),f.word(try f.symbol("dos64_cpu_instructions")));
+        try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_cpu_yield")));
+        try std.testing.expectEqual(@as(u16,0x00a7),f.word(g));
+        try std.testing.expectEqual(@as(u16,0x200),f.word(g+26)&0x200);
+    }
+    word(&f,try f.symbol("dos64_keyboard_key"),0x1e61);
+    const queued=try f.call("dos64_keyboard_enqueue",100_000);
+    try std.testing.expectEqual(@as(u8,0),queued.p&1);
+    try step(&f); try std.testing.expectEqual(@as(u16,0x182),f.word(g+24));
+    try std.testing.expectEqual(@as(u16,0x1e61),f.word(g));
+    try step(&f);
+    try std.testing.expectEqual(@as(u16,0x202),f.word(g+24));
+    try std.testing.expectEqual(@as(u16,0x1000),f.word(g+8));
+    try std.testing.expectEqual(@as(u16,0xf403),f.word(g+26));
+    try std.testing.expectEqual(@as(u16,3),f.word(try f.symbol("dos64_cpu_instructions")));
+}
+
+test "INT16 peek patches original CMP TF IF return flags and leaves the key queued" {
+    var f=try init(true); defer f.deinit();
+    const g=try f.symbol("dos64_guest");
+    word(&f,try f.symbol("dos64_keyboard_key"),0x3062);
+    _=try f.call("dos64_keyboard_enqueue",100_000);
+    try coherentCode(&f,0x200,&.{0xcd,0x16,0xf4});
+    try reg(&f,9,0); try reg(&f,12,0x200);
+    try reg(&f,10,0x2000); try reg(&f,4,0x1000);
+    try reg(&f,0,0x0100); try reg(&f,13,0xfdd7);
+    try step(&f); try step(&f); try step(&f);
+    // CMP 001Eh,0020h = FFFEh: CF/SF set; PF/AF/ZF/OF clear; STI IF1, TF0.
+    try std.testing.expectEqual(@as(u16,(0xfdd7&~@as(u16,0x0bd5))|0x0281),f.word(g+26));
+    try std.testing.expectEqual(@as(u16,0x3062),f.word(g));
+    try flush(&f);
+    try std.testing.expectEqual(@as(u8,0x1e),c.dos64_reu_peek(f.machine,0x41a));
+    try std.testing.expectEqual(@as(u8,0x20),c.dos64_reu_peek(f.machine,0x41c));
 }
 
 test "BIOS private ports whitelist physical owned opcodes including aliases and reject arbitrary guest instructions" {

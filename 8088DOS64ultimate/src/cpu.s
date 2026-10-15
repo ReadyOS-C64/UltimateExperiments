@@ -10,7 +10,7 @@
 .export cpu_complete, cpu_memory_error, cpu_unsupported, cpu_return, cpu_rep, cpu_relative
 .import dos64_strings_execute, dos64_string_pending, dos64_shifts_execute, dos64_control_execute
 .import dos64_stack_execute, dos64_math_execute, dos64_indirect_execute, dos64_adjust_execute
-.import dos64_bios_port, dos64_bios_host_error
+.import dos64_bios_port, dos64_bios_host_error, dos64_bios_waiting
 .import dos64_io_read, dos64_io_write, dos64_io_port, dos64_io_value, dos64_io_width
 .import dos64_decode_rm, dos64_operand_read, dos64_operand_write, dos64_map_register
 .import dos64_operand_width, dos64_modrm_reg, dos64_modrm_mod, dos64_operand_offset
@@ -328,10 +328,20 @@ cpu_io:
     ; Private byte OUT callbacks require their exact owned synthetic ROM gate.
     lda dos64_io_port
     jsr dos64_bios_port
-    jcc cpu_complete
+    bcc @bios_result
     lda dos64_bios_host_error
     jne cpu_memory_error
     jmp @cycle
+@bios_result:
+    lda dos64_bios_waiting
+    jeq cpu_complete
+    lda cpu_start_ip
+    sta dos64_guest+G_IP
+    lda cpu_start_ip+1
+    sta dos64_guest+G_IP+1
+    lda #1
+    sta dos64_cpu_yield
+    jmp cpu_return
 @dx:
     lda dos64_guest+G_DX
     sta dos64_io_port

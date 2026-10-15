@@ -1,15 +1,16 @@
 # Memory budget checkpoint
 
-Status: current verified slice includes coherent fetch, PIC, logical video, original adjust and absent serial/printer BIOS. Full CPU/devices/host display/native file transport remain unfinished. Runtime and unit use `cfg/dos64-runtime.cfg`; standalone hardware helpers retain `cfg/dos64.cfg`. Current runtime CODE **11,443**, RODATA **808**, DEVICECODE **1,696**, BASIC **12**, BSS **222**, DEVICESTATE **61**, PAGEMAP **2,048**, CACHEMETA **192**, RANGEBUFFER **256**, ZP **18**. Runtime linked total **16,758**, PRG **20,129** including **6,168** padding/startup-zero bytes. Unit CODE **12,359**, RODATA **832**, TESTCODE **36**, DEVICECODE **1,696**, ZP **30**; linked total **17,746**, PRG **20,129** including **5,192** padding/startup-zero bytes. [Exact maps/evidence](evidence/video-adjust-bios-20261015.json). The full-system [host map](../docs/MEMORY.md) and final checkpoint below explain allocation separately from PRG length.
+Status: current linked clock/keyboard/UCI/native-clock slice has genuine Peddle DOS built-ins acceptance; default quick/profile and genuine long DOS tests pass; physical clock calibration failed and is not accepted. Runtime and unit use `cfg/dos64-runtime.cfg`; original hardware helpers retain isolated configurations. Final current runtime CODE **12,138**, RODATA **864**, DEVICECODE **3,684**, BASIC **12**, BSS **222**, DEVICESTATE **147**, PAGEMAP **2,048**, CACHEMETA **192**, RANGEBUFFER **256**, UCIBUFFER **2,048**, ZP **18**. Linked total **21,631**, PRG **22,117**, including **5,417** padding/startup-zero bytes. Unit CODE **13,054**, RODATA **888**, TESTCODE **36**, DEVICECODE **3,684**, ZP **30**; linked total **22,619**, same PRG **22,117**, including **4,441** padding/startup zeros. The final gate/evidence confirms these allocations; the physical clock failure is separate from linker validity.
 
 
 | Resource | Budget | Measured used | Gate |
 |---|---:|---:|---|
-| Resident/hot executable ranges | 20,224 bytes with future UCI buffer budgeted | CODE 11,443 + RODATA 808 + BASIC 12 + DEVICECODE 1,696 = 13,959 | MAIN/DEVICECODE boundaries; C000 staging and conditional C100–C8FF UCI buffer leave C900–CFFF |
+| Resident/hot executable ranges | 20,224 bytes with linked UCI buffer | CODE 12,138 + RODATA 864 + BASIC 12 + DEVICECODE 3,684 = 16,698 | MAIN/DEVICECODE boundaries; C000 staging and linked C100–C8FF UCI buffer leave C900–CFFF |
 | Cold window including vectors | 4 KiB | Unknown | Must preserve IRQ/NMI/reset vectors and return gateways |
 | Host guest-cache frames | 16 KiB | 32 × 512 bytes reserved/used | 8000–BFFF, direct physical tags; tests cover all frames |
-| Host control/metadata | 4 KiB | 2,523 static bytes; 1,573 remaining including gaps | BSS 222 + map 2,048 + frame metadata 192 + DEVICESTATE 61; only 34 BSS bytes before E100 |
+| Host control/metadata | 4 KiB | 2,609 static bytes; 1,487 remaining including gaps | BSS 222 + map 2,048 + frame metadata 192 + DEVICESTATE 147; only 34 BSS bytes before E100 |
 | Host range staging | 256 bytes | 256 reserved, not PRG payload | C000–C0FF; linker/map gate forbids graphics/cache overlap |
+| Host UCI storage | 2 KiB | 2,048 linked writable bytes, not PRG payload | C100–C8FF; command/data/status storage stays outside banked/I/O memory |
 | Host low memory | 2 KiB | Runtime ZP 18; stack measured by probe | Full-system stack/IRQ/KERNAL bound not established |
 | Video matrix/fonts/bitmap | 12 KiB | 4 KiB startup zero initialization; no renderer/font yet | Startup zeros are file bytes; preserve VIC bank/font/bitmap alignment |
 | I/O reservation | 4 KiB | Reserved | Never allocated as RAM |
@@ -66,3 +67,14 @@ Runtime allocated MAIN payload is 11,443+808+12=**12,263** bytes; MAIN zero padd
 Runtime emitted BASIC/CODE/RODATA/DEVICECODE is **13,959** bytes. Static control usage 222+2,048+192+61=**2,523**, leaving **1,573** bytes across the control region including gaps; only **34** bytes remain in pre-E100 BSS. DEVICESTATE has **1,219** bytes left before EF00; CACHEMETA leaves **64** bytes before EA00. The optional future **2,048-byte** UCIBUFFER at C100–C8FF is not linked; reserving its budget leaves **1,792** bytes at C900–CFFF. The full host map totals 65,536 bytes and conservative resident/hot code capacity becomes **20,224 bytes**, including the shared 5000–5FFF code window. Remaining per-window space cannot be treated as interchangeable without linker changes.
 
 Standalone hardware probes/helpers retain `cfg/dos64.cfg`; runtime and unit use `cfg/dos64-runtime.cfg`. The new file layout does not invalidate physically tested standalone binaries. Logical video adds no runtime ZP or E000 BSS; DEVICESTATE 61 comprises PIC 20, video 33, adjust 6 and auxiliary BIOS 2 bytes. Full-system IRQ/KERNAL/renderer stack bounds and physical timing remain unmeasured.
+
+
+## Verified clock/keyboard/UCI/native-clock map
+
+Runtime CODE 080D–3776 (**12,138**), RODATA 3777–3AD6 (**864**), DEVICECODE 5000–5E63 (**3,684**), BSS E000–E0DD (**222**), ZP 0020–0031 (**18**), DEVICESTATE EA00–EA92 (**147**), PAGEMAP E100–E8FF (**2,048**), CACHEMETA E900–E9BF (**192**), range buffer C000–C0FF (**256**) and linked UCI buffer C100–C8FF (**2,048**). Runtime emitted BASIC/CODE/RODATA/DEVICECODE is **16,698** bytes. MAIN has **1,321** padding bytes and 4000–4FFF contributes **4,096** explicit startup zeros; PRG **22,117** is separate from linked total **21,631**.
+
+Unit CODE 080D–3B0A (**13,054**), RODATA 3B0B–3E82 (**888**), TESTCODE 3E83–3EA6 (**36**), DEVICECODE **3,684**, ZP **30**. Unit MAIN padding is **345** bytes plus **4,096** display startup zeros, producing the same **22,117-byte** PRG from **22,619** linked bytes. Code remains outside 4000–4FFF display/font and 6000–7FFF bitmap reservations. Final source/map identities are retained in [current slice evidence](evidence/clock-keyboard-uci-20261015.json).
+
+DEVICESTATE growth is clock **13**, keyboard **18**, UCI **43** and native CIA clock **12**, added to previous **61** for **147** total. Clock/UCI/native-clock add **390/1,265/333** DEVICECODE bytes; keyboard adds **464** MAIN CODE bytes, with additional BIOS gate/port/ROM glue accounted in final totals. No runtime ZP or pre-map BSS is added by these components. Static control is 222+2,048+192+147=**2,609**, leaving **1,487** bytes including gaps; only **34** are in pre-E100 BSS. DEVICESTATE has **1,133** bytes left before EF00, metadata **64** before EA00.
+
+Remaining runtime code windows are MAIN **1,321**, DEVICECODE **412** and C900–CFFF **1,792** bytes (the latter budget is not yet a linker code segment). Unit MAIN has only **345** bytes. The linked UCI buffer has consumed its previous conditional reservation. Full-system stack/IRQ/KERNAL bounds remain unmeasured; private overlay/render/file-command modules are not linked and cannot be charged as completed functionality.

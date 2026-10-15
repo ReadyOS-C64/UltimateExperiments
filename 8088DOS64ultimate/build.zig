@@ -26,11 +26,30 @@ pub fn build(b: *std.Build) void {
         }),
     });
     const options = b.addOptions();
+    options.addOption(bool, "long_dos_boot", false);
     options.addOption(bool, "full_cpu_corpus", b.option(bool, "cpu-corpus", "Run the full pinned CPU corpus") orelse false);
     tests.root_module.addOptions("test_options", options);
     addPeddle(tests.root_module, b);
     const run = b.addRunArtifact(tests);
     b.step("test", "Assert actual 6510 assembly behavior in Peddle").dependOn(&run.step);
+    // Isolated standalone native clock PRG; explicit VIC script activation
+    // tests control flow only. This lane does not use runtime/unit PRG files.
+    const clock_probe = b.addTest(.{ .root_module = b.createModule(.{
+        .root_source_file = b.path("tests/host/host_clock_probe.zig"),
+        .target = target, .optimize = .Debug,
+    }) });
+    addPeddle(clock_probe.root_module, b);
+    const run_clock_probe = b.addRunArtifact(clock_probe);
+    b.step("clock-probe", "Verify bounded native CIA/VIC calibration fixture").dependOn(&run_clock_probe.step);
+    const boot = b.addTest(.{ .root_module = b.createModule(.{
+        .root_source_file = b.path("tests/host/dos_boot.zig"), .target = target, .optimize = .Debug,
+    }) });
+    const boot_options = b.addOptions();
+    boot_options.addOption(bool, "long_dos_boot", true);
+    boot.root_module.addOptions("test_options", boot_options);
+    addPeddle(boot.root_module, b);
+    const run_boot = b.addRunArtifact(boot);
+    b.step("dos-boot", "Continue genuine DOS beyond the verified kernel handoff").dependOn(&run_boot.step);
     // Profiling is opt-in and retains Debug Zig assertions. It executes the
     // same bridge/Peddle sources as the behavior tests, with the same C++ flags.
     const profile = b.addTest(.{

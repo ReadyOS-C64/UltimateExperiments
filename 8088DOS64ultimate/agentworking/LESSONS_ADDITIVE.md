@@ -98,3 +98,22 @@
 - Original XT zero serial/printer base checks precede AH dispatch and preserve AX. A missing device is not a timeout; retain unchecked wrapping DX indexing and fail explicitly for a present-device contract that is unimplemented.
 - Logical video mode/page/cursor/scroll/pixel/teletype tests prove BDA/VRAM behavior. They do not prove host fonts, rendering, keyboard input, retrace timing or physical readability. Native POST initializes mode 3 coherently while preserving guest AX.
 - Original adjust hardware corrected an AAM-zero flag expectation before acceptance: SZP reflects zero while AX stays unchanged and INT 0 saves the post-immediate IP. Keep undefined-flag masking scoped to actual hardware metadata and disclose source gaps for REP AAM/AAD.
+
+
+## 2026-10-15 — genuine DOS prompt, VER and DIR
+
+- A later SYSINIT port stop at 9DFD:0A53 was legitimate original relocated code. Binary span/relocation audit plus Microsoft inherited DOS 3.30 comments identified arbitrary-byte GLOBAL REARM writes at 02F2h–02F7h. Preserve narrow absent-board behavior, not blanket unknown-port success.
+- The private fast/slow fetch comparison matched every state for 55,583 calls and all coherent conventional/CGA RAM. That rules out regression against the prior fetch path, without claiming universal CPU correctness.
+- Original clock AH behavior includes decrementing all nonzero functions, unnormalized sets, full overflow-byte read/clear and equality-only midnight. Native elapsed time and asynchronous ticks are distinct integrations.
+- Original keyboard AH=01 loads AX even when empty and exposes exact RET2/CMP flags. Empty AH=00 must retain its guest frame and retry the exact owned OUT without counting completion; key enqueue and host input scanning are separate.
+- Separate the short default kernel-handoff test from opt-in interactive DOS acceptance. Ten keys through actual assembly drove the original date/time prompts, VER and DIR; exact names/sizes/count/free bytes plus a returned prompt make a stronger milestone than seeing a substring once.
+- The first real COMMAND prompt is at 193,673 instructions; complete VER/DIR/return acceptance takes 588,937. Do not relabel early IO.SYS entry or intermediate screens as the full built-ins proof. Keep CPU-step/support/setup clocks separate from physical elapsed time.
+- Generic UCI DONE only completes transport. Streaming/backpressure, saturated FPGA queue limits, stale-state abort and elapsed recovery are required before the separate image-file operation/status/persistence layer can be accepted.
+- A CIA counter's unit is phi2, independent from turbo CPU instruction cycles by design but still requiring physical evidence. Destructive timer/NMI ownership cannot be reconstructed from readback; reset/resume is not prior program/timer-state restoration.
+
+- The first physical CIA/VIC clock attempt failed at Manual 1 MHz with error 3 while configuration restoration/reset-resume succeeded. Preserve the failure and fix capture-before-reset diagnosis; functional model/probe success cannot stand in for clock-domain calibration. No 16/64 MHz or timing result follows from a matrix that stops at its first speed.
+- Working-tree tooling includes five tests for an unlinked future overlay package. Count the accepted 69-test commit scope separately from the 74-test working set; passing package tooling does not mean a resident overlay runtime is linked.
+
+- Pre-commit clock diagnostic correction: capture full RAM/mailbox/40-byte DCK1 before cleanup resets the evidence. The first error-3 subreason remains unknown. The updated probe's 16-PAL-line endpoint window permits ±1,008 raw ticks, independently checked; six Peddle tests/15 tooling checks do not imply a physical pass. Three added diagnostic cases raise selected feature tooling from 69 to 72 and the working set from 74 to 77 (five unlinked overlay-package tests remain excluded).
+
+- Corrected physical matrix passed all three speeds within independently derived 16-line bounds. This validates raw CIA/raster domain and observed turbo independence, while native deadline conversion and throughput remain separate work. The new 1 MHz 8/8 endpoint observation is a plausible explanation for the first narrow-window failure, not proof of its missing old subreason.

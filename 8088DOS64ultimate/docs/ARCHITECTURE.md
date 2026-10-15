@@ -1,6 +1,8 @@
 # Architecture contract
 
-Proposed; not implemented. See [decisions](../agentworking/DECISIONS.md).
+This is the full-system architecture and remaining integration contract. The actual assembly CPU, coherent memory/disk services, synthetic logical BIOS, functional PIC, original clock/keyboard backend, generic asynchronous UCI transport and native CIA clock are implemented. In Peddle, genuine reset and unchanged DOS 3.3 binaries reach COMMAND.COM and execute verified VER/DIR through normal guest INT 21h and the assembled keyboard queue. [Current functional evidence](../agentworking/evidence/dos-command-builtins-20261015.json).
+
+The native CIA clock is functionally tested and the corrected physical 1/16/64 MHz matrix validates raw PAL CIA-versus-raster clock-domain behavior and observed turbo independence. Its rejected first attempt remains historical; native scheduler/UCI deadline conversion and CPU/REU/XT throughput are not established. The standalone C64 startup still initializes then idles. Native image-file commands/import/persistence, runtime scheduling, C64 font/VIC rendering/key scan, asynchronous IRQs and file-backed HD remain unfinished. Privately prepared file-command/render/overlay modules are unlinked. The diagram therefore combines implemented functional boundaries with the native system still to integrate; it does not claim that the complete program runs DOS on physical C64U. See [decisions](../agentworking/DECISIONS.md) and [current state](../agentworking/STATUS.md).
 
 ```mermaid
 flowchart TD

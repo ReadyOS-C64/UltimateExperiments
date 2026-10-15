@@ -5,16 +5,21 @@ DOS64_PYTHON ?= python3
 
 .DEFAULT_GOAL := all
 
-ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/video.s src/adjust.s src/aux_bios.s
+ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
 build/alu.o: include/parity.inc Makefile
 build/range.o: include/range.inc Makefile
 build/disk.o: include/disk.inc include/range.inc Makefile
-build/bios.o: include/bios.inc Makefile
+build/bios.o: include/bios.inc include/video.inc Makefile
 build/ports.o: include/ports.inc Makefile
 build/video.o: include/video.inc Makefile
+build/clock.o: include/clock.inc Makefile
+build/keyboard.o: include/keyboard.inc Makefile
+build/uci.o: include/uci.inc Makefile
+build/host_clock.o: include/host_clock.inc Makefile
 build/aux_bios.o: include/aux_bios.inc Makefile
 build/range_probe.o: include/range.inc Makefile
+build/host_clock_probe.o: include/host_clock.inc Makefile
 
 .PHONY: all build test verify-memory manifest clean
 all: build
@@ -77,13 +82,28 @@ hardware-helpers: build/dos64-backup.prg build/dos64-restore.prg cache-probe
 build/dos64-range-probe.prg: build/range_probe_boot.o build/cpu_state.o build/reu.o build/address.o build/memory.o build/range.o build/range_probe.o cfg/dos64.cfg Makefile
 	$(DOS64_LD65) -C cfg/dos64.cfg -o $@ -m build/dos64-range-probe.map -Ln build/dos64-range-probe.labels build/range_probe_boot.o build/cpu_state.o build/reu.o build/address.o build/memory.o build/range.o build/range_probe.o
 
-.PHONY: range-probe test-range-vice profile-cpu
+# This native calibration fixture has its own short contiguous layout and
+# scripted VIC test lane. It is deliberately excluded from ASM_SOURCES.
+build/dos64-clock-probe.prg: build/host_clock_probe_boot.o build/host_clock_probe.o build/host_clock.o cfg/dos64-clock-probe.cfg Makefile
+	$(DOS64_LD65) -C cfg/dos64-clock-probe.cfg -o $@ -m build/dos64-clock-probe.map -Ln build/dos64-clock-probe.labels build/host_clock_probe_boot.o build/host_clock_probe.o build/host_clock.o
+
+.PHONY: clock-probe test-clock-probe
+clock-probe: build/dos64-clock-probe.prg
+
+test-clock-probe: clock-probe
+	$(DOS64_PYTHON) -m unittest discover -s tests/tooling -p test_clock_probe_verify.py -v
+	$(DOS64_ZIG) build clock-probe --summary all
+
+.PHONY: range-probe test-range-vice profile-cpu test-dos-boot
 range-probe: build/dos64-range-probe.prg
 	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64-range-probe.map build/dos64-range-probe.labels
 	$(DOS64_PYTHON) build_support/vice_probe.py --kind range --prepare
 
 test-range-vice: range-probe
 	$(DOS64_PYTHON) build_support/vice_probe.py --kind range
+
+test-dos-boot: build
+	$(DOS64_ZIG) build dos-boot --summary all
 
 profile-cpu: build
 	$(DOS64_ZIG) build profile-cpu --summary all

@@ -79,11 +79,11 @@ Final frozen-baseline profile rerun passed 1/1 in 3.27 host seconds: 10,314 gues
 Against source-pinned baseline `49ac73f`, the same 12 workloads and all final-state checks pass after the fetch change. Warm cycles per guest instruction: register loop **1,383.78** (21.49% reduction), dirty memory **1,744.48** (20.45%), stack/calls **1,616.05** (10.36%), multiply/divide **1,774.18** (18.23%). The 20 KiB REP workload increases about 0.08%; its DMA counts are unchanged. Aggregate CPU cycles fall 65,680,572→61,735,896, but this weighted total is not an XT ratio. The same exclusions and lack of calibrated physical timing apply. [Source identities, complete samples and baseline comparison](../agentworking/evidence/fetch-optimization-20261015.json).
 
 
-## Current resident video/adjust/BIOS profile
+## Resident video/adjust/BIOS profile checkpoint
 
-The combined verified slice passes 1/1 profiling in 3.28 host seconds, with all 12 exact-register/full-RAM samples accepted. Ordered identity `9f596825c60881eb349a04b9ca26feccdba29d12eb12f0c4f785ceac8f766a9c` and [current slice evidence](../agentworking/evidence/video-adjust-bios-20261015.json) retain linked/source identities and configuration. Total work is unchanged at 10,314 guest instructions, 12,902 scheduling calls, 223 DMA operations and 114,176 bytes; measured CPU cycles are 62,013,116 and native instructions 18,258,732. This profile supersedes current-runtime costs while the earlier tables remain pinned historical comparisons.
+The combined verified slice passes 1/1 profiling in 3.28 host seconds, with all 12 exact-register/full-RAM samples accepted. Ordered identity `9f596825c60881eb349a04b9ca26feccdba29d12eb12f0c4f785ceac8f766a9c` and [current slice evidence](../agentworking/evidence/video-adjust-bios-20261015.json) retain linked/source identities and configuration. Total work is unchanged at 10,314 guest instructions, 12,902 scheduling calls, 223 DMA operations and 114,176 bytes; measured CPU cycles are 62,013,116 and native instructions 18,258,732. This profile superseded earlier costs at that checkpoint; each table remains a pinned historical comparison as later modules are integrated.
 
-| Current warm sample | Measured host CPU cost |
+| Video/adjust checkpoint warm sample | Measured host CPU cost |
 |---|---:|
 | Register/branch loop | 1,410.56 cycles per guest instruction |
 | Dirty memory copy | 1,770.94 cycles per guest instruction; 4,436.00 per copied byte |
@@ -93,3 +93,18 @@ The combined verified slice passes 1/1 profiling in 3.28 host seconds, with all 
 | Multiply/divide loop | 1,802.75 cycles per guest instruction |
 
 The same step-entry→RTS interval, caller/setup/validation exclusions and unmodeled physical DMA/VIC/UCI/rendering costs apply. Adding linked modules changes address placement and cycle details; do not attribute every difference to a new algorithm. Genuine IO.SYS continuation separately reports 26,023,384 step cycles through missing INT 1Ah after 2,542 instructions, plus 26,360,254 setup cycles; handoff itself is 392 instructions/11,860,775 step cycles. This is still short of boot-to-prompt and is not calibrated physical elapsed time or an XT ratio.
+
+
+## Clock/keyboard/UCI slice and long DOS cost
+
+The final 12-sample profile passes 1/1 with exact registers/full 1 MiB RAM: source identity `87eab9545143199ee360ca7831af65876e61792424090f891a72300d89927770`, **61,959,008** CPU cycles, **18,258,732** native instructions and unchanged **10,314** guest instructions/**12,902** calls/**223** DMA operations/**114,176** bytes. [Current slice evidence](../agentworking/evidence/clock-keyboard-uci-20261015.json) pins the measured binary and source. Warm register/dirty-memory/stack/multiply-divide costs are respectively **1,409.40 / 1,770.23 / 1,642.62 / 1,797.97** cycles per guest instruction. Warm 256-byte/20 KiB REP costs are **1,113.45 / 1,081.04** cycles per copied byte. Earlier tables remain source-pinned historical comparisons.
+
+The explicit real-DOS command lane passes in **18.83 host wall seconds** (16 test seconds), reaching the first prompt at **193,673** guest instructions and finishing VER/exact DIR/returned prompt at **588,937**. It uses **1,269,694,142 CPU-step cycles**, **9,698,220 support cycles** for coherent screen observations/assembly key enqueue and **26,364,820 setup cycles**, reported separately. CPU cycles exclude caller JSR and DMA stalls; host test duration is not C64U elapsed boot latency. [Built-ins evidence](../agentworking/evidence/dos-command-builtins-20261015.json) records stopping criteria and identities.
+
+The historical first native CIA/VIC attempt failed at Manual 1 MHz, error 3 (`01e1000003000000`); configuration restoration/reset-resume succeeded and 16/64 MHz calibration was not reached. That rejected run accepted no elapsed-clock/turbo-independence calibration or XT-throughput conclusion. The corrected raw-domain validation below supersedes the physical clock uncertainty; native deadline conversion remains a separate integration. The genuine Peddle prompt does not measure native runtime, rendering, storage or keyboard latency.
+
+
+The [genuine DOS workload research](../agentworking/research/dos-performance-20261015.md) independently instruments the frozen baseline without adding modeled target instructions. Its native-PC histogram sums exactly to the reported step clocks; DIR accounts for 62.40% of this script's step work. This identifies real workload costs beyond the six microbenchmarks. A private optimization experiment in that report measured an 8.276% gain at a net 103 MAIN bytes, but it is not integrated or accepted in this slice. Its result must not be applied to the current source/profile or reported as physical speed.
+
+
+The corrected [physical clock matrix](../agentworking/evidence/c64u-clock-20261015.json) now passes Manual 1/16/64 MHz on firmware 3.14/FPGA 121/core 1.47. Across 100 PAL raster frames, CIA deltas are **1,965,627 / 1,965,599 / 1,965,600**, all within **1,965,600 ±1,008**, with zero retries and **28 ticks** total cross-speed spread. This accepts raw CIA-versus-raster domain/turbo validation. It does not calibrate interpreter/REU throughput, external absolute time or an XT ratio, and is not yet wired into the native scheduler/UCI deadline conversion. The rejected first attempt remains historical evidence; its exact cause is unproved.

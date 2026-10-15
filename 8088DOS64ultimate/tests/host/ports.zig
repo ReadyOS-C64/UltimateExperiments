@@ -81,7 +81,7 @@ test "PIC original XT BIOS defaults and native initialization ABI" {
     try expectState(&f, "dos64_pic_icw4", 9);
     for ([_][]const u8{ "dos64_pic_irr", "dos64_pic_isr", "dos64_pic_phase", "dos64_pic_read_isr", "dos64_pic_special_mask", "dos64_pic_rotate_auto" }) |n| try expectState(&f, n, 0);
     try expectState(&f, "dos64_pic_priority", 7);
-    try std.testing.expectEqual(@as(u16, 0xea00), try f.symbol("dos64_io_state_start"));
+    try std.testing.expect((try f.symbol("dos64_io_state_start")) >= 0xea00 and (try f.symbol("dos64_io_state_end")) <= 0xef00);
     for ([_]u8{ 0x20, 0x2e, 0xe8, 0xef }) |p| {
         f.initial_status = p;
         _ = try cycle(&f, 0x21, 0x5500, 0, true, 0);
@@ -249,4 +249,19 @@ test "PIC word cycles preserve descriptors and preflight unsupported widths and 
     try expectState(&f, "dos64_pic_special_mask", 0);
     try expectState(&f, "dos64_pic_irr", 0x35);
     try expectState(&f, "dos64_pic_imr", 0xa6);
+}
+
+test "DOS shared IRQ global rearm accepts only documented absent-board byte broadcasts" {
+    var f=try init(); defer f.deinit();
+    for(0x2f2..0x2f8) |port_number| {
+        for(0..256) |value| {
+            _=try cycle(&f,@intCast(port_number),@intCast(value),0,false,0);
+            try expectState(&f,"dos64_pic_imr",0xfc);
+            try expectState(&f,"dos64_pic_irr",0);
+            try expectState(&f,"dos64_pic_isr",0);
+        }
+        _=try cycle(&f,@intCast(port_number),0xff,0,true,1);
+        _=try cycle(&f,@intCast(port_number),0xffff,1,false,1);
+    }
+    for([_]u16{0x2f1,0x2f8,0x1f2,0x3f2}) |port_number| _=try cycle(&f,port_number,0xff,0,false,1);
 }

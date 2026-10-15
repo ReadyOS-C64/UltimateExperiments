@@ -1,0 +1,96 @@
+{
+  "scope": "first physical CIA/VIC clock probe; rejected, not timing validation",
+  "raw_run_directory": "agentworking/runs/c64u-clock-20261015-030029",
+  "result": {
+    "schema": 1,
+    "status": "failed",
+    "pid": 6033,
+    "started_utc": "2026-10-15T10:03:13.687598+00:00",
+    "speeds": [],
+    "configuration_restored": true,
+    "reset_resumed": true,
+    "artifacts": {
+      "probe_prg_sha256": "ceb9bdb0ebd324c051f91d13f1f07e909ddf8c22d6de376cdd76a0a76dee4e4e",
+      "probe_labels_sha256": "10e05b7db377253136af7e475e9d751c1578652cd2b44cefd6053325f39fa685",
+      "probe_map_sha256": "650d68f580a6abc7aeb774f8acc27002980df5c3d5d9eb3f7fad7d247a4e6821"
+    },
+    "tools_observed_at_run": {
+      "python": {
+        "path": "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "version": "3.9.6"
+      },
+      "ca65": {
+        "path": "/opt/homebrew/Cellar/cc65/2.19/bin/ca65",
+        "version": "ca65 V2.18 - N/A",
+        "exit_code": 0
+      },
+      "ld65": {
+        "path": "/opt/homebrew/Cellar/cc65/2.19/bin/ld65",
+        "version": "ld65 V2.18 - N/A",
+        "exit_code": 0
+      },
+      "zig": {
+        "path": "/Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig",
+        "version": "0.16.0",
+        "exit_code": 0
+      }
+    },
+    "limitations": [
+      "Raw CIA phi2 ticks versus PAL raster; no CPU/XT throughput",
+      "CIA2 timer and RAM NMI takeover is followed by reset/resume",
+      "RAM capture is recovery evidence, not prior program resumption",
+      "No REU, UCI, filesystem or persistent-media writes"
+    ],
+    "source_sha256": {
+      "src/host_clock.s": "9b837c5ad775f0b3d824ed50869bc06fa0834ada353ad1bab1153638a8ff0ec1",
+      "src/host_clock_probe.s": "611720f9ba2357179cfd66e8a11c9242674e8dbe45c1253a75499866d846c4e1",
+      "src/host_clock_probe_boot.s": "7510fa10c7afc5b244f009a9713cc8fbb4c6bede0be7fe50251c345aa9b5bbf8",
+      "include/abi.inc": "74a874c245aed278ba884d33923279bde901bed97427452096dd414ba67e08d6",
+      "include/host_clock.inc": "17a391747f896c8b635f31be371aae8f2da72fdbe775174b37ba186944fef6fd",
+      "cfg/dos64-clock-probe.cfg": "ce5e35b7039756297a1ebf0d683a7c2db1de7b09f12ad7d832ad46b38a9a0eec",
+      "Makefile": "b040fb540b0c72b76253fca5dd394a7321ded145f4841f92447360135396147e",
+      "build.zig": "85c29b68819064ab547abbc1bd30036a90aee846397682029c701831c17f6fd5",
+      "build_support/clock_probe_verify.py": "988ec779650e651e386673328e154e9b45efd18fd1f8865985a983ab9608db8c",
+      "build_support/c64u_clock_probe.py": "75ab421d027ee53db3224a39b2aa2cdc7824c0ff42df16606e8b131f06a5615d"
+    },
+    "stage": "finished",
+    "device": {
+      "product": "C64 Ultimate",
+      "firmware_version": "3.14",
+      "fpga_version": "121",
+      "core_version": "1.47",
+      "hostname": "c64karl",
+      "unique_id": "DCAF71",
+      "errors": []
+    },
+    "firmware_options": {
+      "turbo": [
+        "Off",
+        "Manual",
+        "C64U Turbo Registers",
+        "TurboEnable Bit"
+      ],
+      "speed": [
+        " 1",
+        " 2",
+        " 3",
+        " 4",
+        " 6",
+        " 8",
+        "10",
+        "12",
+        "14",
+        "16",
+        "20",
+        "24",
+        "32",
+        "40",
+        "48",
+        "64"
+      ]
+    },
+    "error": "RuntimeError('Target reported 01e1000003000000')",
+    "finished_utc": "2026-10-15T10:03:19.072922+00:00"
+  },
+  "capture_limitation": "Runner raised on failure mailbox before capturing DCK1/RAM; native failure subreason unavailable. Probe window hypothesis and follow-up are separate evidence."
+}

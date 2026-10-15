@@ -1,0 +1,263 @@
+{
+  "date": "2026-10-15",
+  "scope": "Physical CIA2 chained raw-phi2 timer against 100 PAL frames at Manual 1/16/64 MHz settings",
+  "raw_run_directory": "agentworking/runs/c64u-clock-20261015-031712",
+  "independent_reverification": "verify_matrix against saved full 64 KiB RAM, uploaded PRG and labels; source/binary hashes and before/after turbo, machine and drives JSON match; all pass",
+  "result": {
+    "schema": 1,
+    "status": "passed",
+    "pid": 8069,
+    "started_utc": "2026-10-15T10:17:20.191579+00:00",
+    "speeds": [
+      {
+        "mhz_setting": 1,
+        "firmware_speed_value": " 1",
+        "turbo_control": "Manual",
+        "profile": "PAL-312x63",
+        "frames": 100,
+        "start_ticks": 2473,
+        "end_ticks": 1968100,
+        "delta_ticks": 1965627,
+        "expected_ticks": 1965600,
+        "error_ticks": 27,
+        "tolerance_ticks": 1008,
+        "clock_retries": 0,
+        "start_postread_raster": 8,
+        "end_postread_raster": 8,
+        "record_hex": "44434b3101a50001640064003701a9090000e4071e003bfe1d000000000500000800080000000000",
+        "record_sha256": "84c8d477f9ce61476c4250ff94353818aa6f6f0a128dc3b66a9a1583d5a51072",
+        "ram_sha256": "24aed7accdf08ce43d56aa3b94143a2a70d65d8b05a1ab8e775e348fbe4a51d8",
+        "prg_sha256": "fe78c4fbf29531d20ce1edd300666ec5a800d8dea2046555bc90e429233d46c1",
+        "mailbox_hex": "01a5000000000000",
+        "limitations": [
+          "Raw CIA phi2 ticks against VIC PAL frames, not turbo CPU cycles",
+          "No prior CIA timer/NMI execution-state restoration",
+          "No XT throughput or UCI asynchronous protocol acceptance"
+        ]
+      },
+      {
+        "mhz_setting": 16,
+        "firmware_speed_value": "16",
+        "turbo_control": "Manual",
+        "profile": "PAL-312x63",
+        "frames": 100,
+        "start_ticks": 16666,
+        "end_ticks": 1982265,
+        "delta_ticks": 1965599,
+        "expected_ticks": 1965600,
+        "error_ticks": -1,
+        "tolerance_ticks": 1008,
+        "clock_retries": 0,
+        "start_postread_raster": 0,
+        "end_postread_raster": 0,
+        "record_hex": "44434b3101a500016400640037011a410000393f1e001ffe1d000000000500000000000000000000",
+        "record_sha256": "8c9d544e0f0a324dcf91c930965a4c4b7ef7b2ccffc39bacbeb05418778ee114",
+        "ram_sha256": "23fdf39ec50a7d15af01ba3b454e844f92ba9977d4b89f1f4f178706fe5ee023",
+        "prg_sha256": "fe78c4fbf29531d20ce1edd300666ec5a800d8dea2046555bc90e429233d46c1",
+        "mailbox_hex": "01a5000000000000",
+        "limitations": [
+          "Raw CIA phi2 ticks against VIC PAL frames, not turbo CPU cycles",
+          "No prior CIA timer/NMI execution-state restoration",
+          "No XT throughput or UCI asynchronous protocol acceptance"
+        ]
+      },
+      {
+        "mhz_setting": 64,
+        "firmware_speed_value": "64",
+        "turbo_control": "Manual",
+        "profile": "PAL-312x63",
+        "frames": 100,
+        "start_ticks": 6185,
+        "end_ticks": 1971785,
+        "delta_ticks": 1965600,
+        "expected_ticks": 1965600,
+        "error_ticks": 0,
+        "tolerance_ticks": 1008,
+        "clock_retries": 0,
+        "start_postread_raster": 0,
+        "end_postread_raster": 0,
+        "record_hex": "44434b3101a500016400640037012918000049161e0020fe1d000000000500000000000000000000",
+        "record_sha256": "9e57854e840412a8f8284bef79b6c75992e28f6cb005e5a5eca4c6a902bd6089",
+        "ram_sha256": "2ef3676803b5a3d4a55168886d26a1cb2d20eacc6350783ff5e5c5b83965f26b",
+        "prg_sha256": "fe78c4fbf29531d20ce1edd300666ec5a800d8dea2046555bc90e429233d46c1",
+        "mailbox_hex": "01a5000000000000",
+        "limitations": [
+          "Raw CIA phi2 ticks against VIC PAL frames, not turbo CPU cycles",
+          "No prior CIA timer/NMI execution-state restoration",
+          "No XT throughput or UCI asynchronous protocol acceptance"
+        ]
+      }
+    ],
+    "configuration_restored": true,
+    "reset_resumed": true,
+    "artifacts": {
+      "probe_prg_sha256": "fe78c4fbf29531d20ce1edd300666ec5a800d8dea2046555bc90e429233d46c1",
+      "probe_labels_sha256": "10e05b7db377253136af7e475e9d751c1578652cd2b44cefd6053325f39fa685",
+      "probe_map_sha256": "650d68f580a6abc7aeb774f8acc27002980df5c3d5d9eb3f7fad7d247a4e6821"
+    },
+    "tools_observed_at_run": {
+      "python": {
+        "path": "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "version": "3.9.6"
+      },
+      "ca65": {
+        "path": "/opt/homebrew/Cellar/cc65/2.19/bin/ca65",
+        "version": "ca65 V2.18 - N/A",
+        "exit_code": 0
+      },
+      "ld65": {
+        "path": "/opt/homebrew/Cellar/cc65/2.19/bin/ld65",
+        "version": "ld65 V2.18 - N/A",
+        "exit_code": 0
+      },
+      "zig": {
+        "path": "/Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig",
+        "version": "0.16.0",
+        "exit_code": 0
+      }
+    },
+    "limitations": [
+      "Raw CIA phi2 ticks versus PAL raster; no CPU/XT throughput",
+      "CIA2 timer and RAM NMI takeover is followed by reset/resume",
+      "RAM capture is recovery evidence, not prior program resumption",
+      "No REU, UCI, filesystem or persistent-media writes"
+    ],
+    "source_sha256": {
+      "src/host_clock.s": "9b837c5ad775f0b3d824ed50869bc06fa0834ada353ad1bab1153638a8ff0ec1",
+      "src/host_clock_probe.s": "b5a2f4c28a7a1fa60cfaa361ad64b52377ad6359b3c0dda96f28ee2cadcca810",
+      "src/host_clock_probe_boot.s": "7510fa10c7afc5b244f009a9713cc8fbb4c6bede0be7fe50251c345aa9b5bbf8",
+      "include/abi.inc": "74a874c245aed278ba884d33923279bde901bed97427452096dd414ba67e08d6",
+      "include/host_clock.inc": "17a391747f896c8b635f31be371aae8f2da72fdbe775174b37ba186944fef6fd",
+      "cfg/dos64-clock-probe.cfg": "ce5e35b7039756297a1ebf0d683a7c2db1de7b09f12ad7d832ad46b38a9a0eec",
+      "Makefile": "b040fb540b0c72b76253fca5dd394a7321ded145f4841f92447360135396147e",
+      "build.zig": "85c29b68819064ab547abbc1bd30036a90aee846397682029c701831c17f6fd5",
+      "build_support/clock_probe_verify.py": "2b78f5d62596a790d59660c5dc0c33e5d19bd748c1aa982fcdf9f76bc99d8f5b",
+      "build_support/c64u_clock_probe.py": "a68ea1017d81b7c9b11e2cdc2e264c6975a3b5f24899722ceec6dd99eb64b002"
+    },
+    "stage": "finished",
+    "device": {
+      "product": "C64 Ultimate",
+      "firmware_version": "3.14",
+      "fpga_version": "121",
+      "core_version": "1.47",
+      "hostname": "c64karl",
+      "unique_id": "DCAF71",
+      "errors": []
+    },
+    "firmware_options": {
+      "turbo": [
+        "Off",
+        "Manual",
+        "C64U Turbo Registers",
+        "TurboEnable Bit"
+      ],
+      "speed": [
+        " 1",
+        " 2",
+        " 3",
+        " 4",
+        " 6",
+        " 8",
+        "10",
+        "12",
+        "14",
+        "16",
+        "20",
+        "24",
+        "32",
+        "40",
+        "48",
+        "64"
+      ]
+    },
+    "calibration": {
+      "status": "passed",
+      "speeds": [
+        {
+          "mhz_setting": 1,
+          "profile": "PAL-312x63",
+          "frames": 100,
+          "start_ticks": 2473,
+          "end_ticks": 1968100,
+          "delta_ticks": 1965627,
+          "expected_ticks": 1965600,
+          "error_ticks": 27,
+          "tolerance_ticks": 1008,
+          "clock_retries": 0,
+          "start_postread_raster": 8,
+          "end_postread_raster": 8,
+          "record_hex": "44434b3101a50001640064003701a9090000e4071e003bfe1d000000000500000800080000000000",
+          "record_sha256": "84c8d477f9ce61476c4250ff94353818aa6f6f0a128dc3b66a9a1583d5a51072",
+          "ram_sha256": "24aed7accdf08ce43d56aa3b94143a2a70d65d8b05a1ab8e775e348fbe4a51d8",
+          "prg_sha256": "fe78c4fbf29531d20ce1edd300666ec5a800d8dea2046555bc90e429233d46c1",
+          "mailbox_hex": "01a5000000000000",
+          "limitations": [
+            "Raw CIA phi2 ticks against VIC PAL frames, not turbo CPU cycles",
+            "No prior CIA timer/NMI execution-state restoration",
+            "No XT throughput or UCI asynchronous protocol acceptance"
+          ]
+        },
+        {
+          "mhz_setting": 16,
+          "profile": "PAL-312x63",
+          "frames": 100,
+          "start_ticks": 16666,
+          "end_ticks": 1982265,
+          "delta_ticks": 1965599,
+          "expected_ticks": 1965600,
+          "error_ticks": -1,
+          "tolerance_ticks": 1008,
+          "clock_retries": 0,
+          "start_postread_raster": 0,
+          "end_postread_raster": 0,
+          "record_hex": "44434b3101a500016400640037011a410000393f1e001ffe1d000000000500000000000000000000",
+          "record_sha256": "8c9d544e0f0a324dcf91c930965a4c4b7ef7b2ccffc39bacbeb05418778ee114",
+          "ram_sha256": "23fdf39ec50a7d15af01ba3b454e844f92ba9977d4b89f1f4f178706fe5ee023",
+          "prg_sha256": "fe78c4fbf29531d20ce1edd300666ec5a800d8dea2046555bc90e429233d46c1",
+          "mailbox_hex": "01a5000000000000",
+          "limitations": [
+            "Raw CIA phi2 ticks against VIC PAL frames, not turbo CPU cycles",
+            "No prior CIA timer/NMI execution-state restoration",
+            "No XT throughput or UCI asynchronous protocol acceptance"
+          ]
+        },
+        {
+          "mhz_setting": 64,
+          "profile": "PAL-312x63",
+          "frames": 100,
+          "start_ticks": 6185,
+          "end_ticks": 1971785,
+          "delta_ticks": 1965600,
+          "expected_ticks": 1965600,
+          "error_ticks": 0,
+          "tolerance_ticks": 1008,
+          "clock_retries": 0,
+          "start_postread_raster": 0,
+          "end_postread_raster": 0,
+          "record_hex": "44434b3101a500016400640037012918000049161e0020fe1d000000000500000000000000000000",
+          "record_sha256": "9e57854e840412a8f8284bef79b6c75992e28f6cb005e5a5eca4c6a902bd6089",
+          "ram_sha256": "2ef3676803b5a3d4a55168886d26a1cb2d20eacc6350783ff5e5c5b83965f26b",
+          "prg_sha256": "fe78c4fbf29531d20ce1edd300666ec5a800d8dea2046555bc90e429233d46c1",
+          "mailbox_hex": "01a5000000000000",
+          "limitations": [
+            "Raw CIA phi2 ticks against VIC PAL frames, not turbo CPU cycles",
+            "No prior CIA timer/NMI execution-state restoration",
+            "No XT throughput or UCI asynchronous protocol acceptance"
+          ]
+        }
+      ],
+      "cross_speed_spread_ticks": 28,
+      "maximum_to_minimum_delta_ratio": 1.0000142450214922,
+      "maximum_ratio_from_bounds": 1.0010261672652643
+    },
+    "finished_utc": "2026-10-15T10:17:34.907693+00:00"
+  },
+  "previous_rejected_attempt": "c64u-clock-first-failure-20261015.json",
+  "diagnosis": "Revised 1 MHz endpoints are both raster 8, outside the old 0..7 budget. This is consistent with endpoint-window rejection; the old failure subreason is unavailable because RAM was not captured. The old run remains rejected.",
+  "limitations": [
+    "PAL 312x63 on firmware 3.14, FPGA 121, core 1.47 only; NTSC remains unvalidated",
+    "Validates the raw CIA counter against VIC and turbo independence within the endpoint bound; no interpreter/REU performance or XT-speed claim",
+    "Reset/resume does not restore prior timer, NMI or CPU execution state",
+    "No REU, UCI or file/persistent-media writes"
+  ]
+}

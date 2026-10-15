@@ -135,3 +135,8 @@ test { _ = @import("io_instructions.zig"); }
 test { _ = @import("video.zig"); }
 test { _ = @import("adjust.zig"); }
 test { _ = @import("aux_bios.zig"); }
+
+test { _ = @import("clock.zig"); }
+test { _ = @import("keyboard.zig"); }
+test { _ = @import("uci.zig"); }
+test { _ = @import("host_clock.zig"); }

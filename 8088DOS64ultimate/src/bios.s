@@ -7,6 +7,13 @@
 .import dos64_io_init
 .import dos64_video_service, dos64_video_host_error
 .import dos64_aux_bios_service, dos64_aux_bios_vector, dos64_aux_bios_host_error
+.import dos64_clock_service, dos64_clock_host_error
+.import dos64_keyboard_service, dos64_keyboard_host_error, dos64_keyboard_waiting
+.import dos64_keyboard_flags_mask, dos64_keyboard_flags_value
+.import dos64_keyboard_flags_mask_high, dos64_keyboard_flags_value_high
+.export dos64_bios_waiting
+.segment "DEVICESTATE"
+dos64_bios_waiting: .res 1
 .import dos64_mem_write, dos64_memory_mode, dos64_physical
 .import dos64_cpu_word_read, dos64_cpu_word_write
 .import dos64_disk_transfer, dos64_disk_spt, dos64_disk_host_error
@@ -37,6 +44,7 @@ dos64_bios_init:
     sta dos64_bios_ready
     sta dos64_bios_host_error
     sta dos64_bios_boot_status
+    sta dos64_bios_waiting
     sta dos64_address
     sta dos64_address+1
     sta dos64_address+2
@@ -159,6 +167,7 @@ dos64_bios_port:
     sta bios_port
     lda #0
     sta dos64_bios_host_error
+    sta dos64_bios_waiting
     lda dos64_bios_ready
     cmp #BIOS_READY
     jne bios_unrecognized
@@ -260,6 +269,10 @@ dos64_bios_port:
     sta dos64_guest+G_FLAGS+1
     jmp bios_handled
 bios_other_gate:
+    cmp #$80
+    jeq bios_keyboard_gate
+    cmp #$90
+    jeq bios_clock_gate
     cmp #<BIOS_VIDEO_OFFSET
     beq @video
     cmp #$60
@@ -279,7 +292,7 @@ bios_other_gate:
 @aux:
     sta dos64_aux_bios_vector
     jsr dos64_aux_bios_service
-    bcc bios_handled
+    jcc bios_handled
     lda dos64_aux_bios_host_error
     jne bios_host_failed
     jmp bios_unrecognized
@@ -288,10 +301,65 @@ bios_other_gate:
     cmp #BIOS_VIDEO_PORT
     jne bios_unrecognized
     jsr dos64_video_service
-    bcc bios_handled
+    jcc bios_handled
     lda dos64_video_host_error
     jne bios_host_failed
     jmp bios_unrecognized
+bios_clock_gate:
+    lda bios_port
+    cmp #$F7
+    jne bios_unrecognized
+    jsr dos64_clock_service
+    jcc bios_handled
+    lda dos64_clock_host_error
+    jne bios_host_failed
+    jmp bios_unrecognized
+bios_keyboard_gate:
+    lda bios_port
+    cmp #$F6
+    jne bios_unrecognized
+    jsr dos64_keyboard_service
+    bcc @handled
+    lda dos64_keyboard_host_error
+    jne bios_host_failed
+    jmp bios_unrecognized
+@handled:
+    ; Original keyboard BIOS enables guest interrupts while waiting. IRET
+    ; restores the original caller flags; AH01 uses its exact RET2 patch.
+    lda dos64_guest+G_FLAGS+1
+    ora #2
+    sta dos64_guest+G_FLAGS+1
+    lda dos64_keyboard_waiting
+    sta dos64_bios_waiting
+    jne bios_handled
+    lda dos64_keyboard_flags_mask
+    ora dos64_keyboard_flags_mask_high
+    jeq bios_handled
+    lda dos64_guest+G_SS
+    sta dos64_segment
+    lda dos64_guest+G_SS+1
+    sta dos64_segment+1
+    clc
+    lda dos64_guest+G_SP
+    adc #4
+    sta dos64_offset
+    lda dos64_guest+G_SP+1
+    adc #0
+    sta dos64_offset+1
+    jsr dos64_cpu_word_read
+    jcs bios_host_failed
+    lda dos64_keyboard_flags_mask
+    eor #$FF
+    and dos64_cpu_value
+    ora dos64_keyboard_flags_value
+    sta dos64_cpu_value
+    lda dos64_keyboard_flags_mask_high
+    eor #$FF
+    and dos64_cpu_value+1
+    ora dos64_keyboard_flags_value_high
+    sta dos64_cpu_value+1
+    jsr dos64_cpu_word_write
+    jcs bios_host_failed
 bios_handled:
     plp
     clc
@@ -309,6 +377,20 @@ bios_unrecognized:
     .byte <address, >address, ^address, value
 .endmacro
 bios_patches:
+    patch $00058, $80
+    patch $00059, $01
+    patch $0005B, $F0
+    patch $00068, $90
+    patch $00069, $01
+    patch $0006B, $F0
+    patch $00480, $1E
+    patch $00482, $3E
+    patch $F0180, $E6
+    patch $F0181, $F6
+    patch $F0182, $CF
+    patch $F0190, $E6
+    patch $F0191, $F7
+    patch $F0192, $CF
     patch $00040, <BIOS_VIDEO_OFFSET
     patch $00041, >BIOS_VIDEO_OFFSET
     patch $00043, $F0

@@ -1,6 +1,9 @@
 #include "peddle_bridge.h"
 #include "Peddle.h"
 #include "reu_model.h"
+#include "uci_model.h"
+#include "cia_clock_model.h"
+#include "clock_probe_model.h"
 #include <array>
 #include <algorithm>
 #include <cstring>
@@ -14,6 +17,12 @@ public:
     uint64_t instructions = 0;
     bool unsupported = false;
     std::unique_ptr<ReuModel> reu;
+    // Explicitly enabled per fixture; ordinary machines still reject UCI I/O.
+    std::unique_ptr<UciModel> uci;
+    // Explicitly enabled per fixture; its PHI2 advances are independent of CPU.
+    std::unique_ptr<CiaClockModel> cia_clock;
+    // Isolated calibration fixture only; default machines still reject VIC.
+    std::unique_ptr<ClockProbeModel> clock_probe;
     Machine() {
         setModel(peddle::MOS_6510); reset(); reg.sp = 0xff;
         reg.pport.direction = 0x2f; reg.pport.data = 0x35;
@@ -61,7 +70,10 @@ protected:
         if (a >= 0xe000 && (port & 2)) return 0xea;
         if (a >= 0xd000 && a <= 0xdfff && (port & 3)) {
             if (!(port & 4)) return 0xcc;
+            if (clock_probe && clock_probe->owns(a)) return clock_probe->read(a, cia_clock.get());
+            if (uci && uci->owns(a)) return uci->read(a);
             if (a >= 0xdf00 && a <= 0xdf0a && reu) return reu->read(a-0xdf00);
+            if (a >= 0xdd00 && a <= 0xdd0f && cia_clock) return cia_clock->read(a-0xdd00);
             if (a != 0xd020) unsupported = true;
             return io[a-0xd000];
         }
@@ -71,6 +83,12 @@ protected:
         const auto port = readPort();
         written[a] = 1;
         if (a >= 0xd000 && a <= 0xdfff && (port & 3) && (port & 4)) {
+            if (uci && uci->owns(a)) {
+                uci->write(a, v); return;
+            }
+            if (a >= 0xdd00 && a <= 0xdd0f && cia_clock) {
+                cia_clock->write(a-0xdd00, v); return;
+            }
             if (a >= 0xdf00 && a <= 0xdf0a && reu) {
                 reu->write(a-0xdf00, v, ram, written); return;
             }
@@ -121,7 +139,11 @@ Dos64RunResult dos64_run(Dos64Machine *m, uint16_t sentinel, uint64_t cycle_budg
 }
 void dos64_clear_writes(Dos64Machine *m) { m->cpu.written.fill(0); }
 uint8_t dos64_was_written(const Dos64Machine *m, uint16_t a) { return m->cpu.written[a]; }
-uint8_t dos64_model_fault(const Dos64Machine *m) { return m->cpu.unsupported || (m->cpu.reu && m->cpu.reu->unsupported); }
+uint8_t dos64_model_fault(const Dos64Machine *m) {
+    return m->cpu.unsupported || (m->cpu.reu && m->cpu.reu->unsupported) ||
+           (m->cpu.uci && m->cpu.uci->fault) ||
+           (m->cpu.cia_clock && m->cpu.cia_clock->unsupported);
+}
 void dos64_enable_reu(Dos64Machine *m) { m->cpu.reu = std::make_unique<ReuModel>(); }
 uint8_t dos64_enable_reu_sized(Dos64Machine *m, uint32_t size_kib) {
     if (size_kib != 4096 && size_kib != 8192 && size_kib != 16384) return 0;
@@ -148,4 +170,104 @@ uint32_t dos64_reu_compare(const Dos64Machine *m, uint32_t address, const uint8_
     if (std::memcmp(actual,expected,length)==0) return 0xffffffff;
     for (size_t index=0; index<length; ++index) if (actual[index]!=expected[index]) return uint32_t(index);
     return 0xfffffffe;
+}
+
+void dos64_uci_model_enable(void *p, uint16_t base, uint32_t delay, uint8_t id) {
+    auto &m = static_cast<Dos64Machine *>(p)->cpu;
+    m.uci = std::make_unique<UciModel>();
+    m.uci->base = base; m.uci->delay = delay; m.uci->id = id;
+}
+void dos64_uci_model_block(void *p, const uint8_t *data, size_t length,
+                           const uint8_t *status, size_t status_length) {
+    auto &u = *static_cast<Dos64Machine *>(p)->cpu.uci;
+    if (length > 896 || status_length > 256) { u.fault = true; return; }
+    UciModel::Block b;
+    if (length) b.data.assign(data, data + length);
+    if (status_length) b.status.assign(status, status + status_length);
+    u.blocks.push_back(b);
+}
+void dos64_uci_model_stuck(void *p, uint8_t stuck) {
+    static_cast<Dos64Machine *>(p)->cpu.uci->stuck = stuck;
+}
+void dos64_uci_model_error(void *p) {
+    static_cast<Dos64Machine *>(p)->cpu.uci->error = true;
+}
+void dos64_uci_model_stale(void *p, uint8_t state) {
+    auto &u = *static_cast<Dos64Machine *>(p)->cpu.uci;
+    if (state & 0x20) u.publish();
+    u.state = state;
+}
+uint64_t dos64_uci_model_count(void *p, uint8_t counter) {
+    const auto &u = *static_cast<Dos64Machine *>(p)->cpu.uci;
+    switch (counter) {
+        case 0: return u.pushes;
+        case 1: return u.accepts;
+        case 2: return u.aborts;
+        case 3: return u.clears;
+        case 4: return u.data_reads;
+        case 5: return u.stat_reads;
+        case 6: return u.command.size();
+        default: return 0;
+    }
+}
+uint8_t dos64_uci_model_command(void *p, uint16_t position) {
+    return static_cast<Dos64Machine *>(p)->cpu.uci->command.at(position);
+}
+
+void dos64_cia_clock_enable(Dos64Machine *m) {
+    m->cpu.cia_clock = std::make_unique<CiaClockModel>();
+}
+void dos64_cia_clock_seed(Dos64Machine *m, uint16_t a, uint16_t b) {
+    auto &c = *m->cpu.cia_clock;
+    c.count = {a, b}; c.startup = {0, 0}; c.cascade_pending = false;
+}
+void dos64_cia_clock_advance(Dos64Machine *m, uint32_t ticks) {
+    m->cpu.cia_clock->advance(ticks);
+}
+void dos64_cia_clock_step(Dos64Machine *m, uint32_t per_read) {
+    m->cpu.cia_clock->read_step = per_read;
+}
+void dos64_cia_clock_script(Dos64Machine *m, const uint32_t *p, size_t n) {
+    auto &c = *m->cpu.cia_clock;
+    c.script.assign(p, p + n); c.script_index = 0;
+}
+uint32_t dos64_cia_clock_low_snapshot(const Dos64Machine *m) {
+    return m->cpu.cia_clock->last_low_snapshot;
+}
+uint32_t dos64_cia_clock_reads(const Dos64Machine *m, uint8_t reg) {
+    return m->cpu.cia_clock->reads[reg];
+}
+uint32_t dos64_cia_clock_writes(const Dos64Machine *m, uint8_t reg) {
+    return m->cpu.cia_clock->writes[reg];
+}
+uint16_t dos64_cia_clock_count(const Dos64Machine *m, uint8_t timer) {
+    return m->cpu.cia_clock->count[timer];
+}
+uint16_t dos64_cia_clock_latch(const Dos64Machine *m, uint8_t timer) {
+    return m->cpu.cia_clock->latch[timer];
+}
+void dos64_cia_clock_icr_seed(Dos64Machine *m, uint8_t mask, uint8_t pending) {
+    auto &c = *m->cpu.cia_clock;
+    c.mask = mask; c.pending = pending;
+}
+uint8_t dos64_cia_clock_mask(const Dos64Machine *m) {
+    return m->cpu.cia_clock->mask;
+}
+uint8_t dos64_cia_clock_pending(const Dos64Machine *m) {
+    return m->cpu.cia_clock->pending;
+}
+
+void dos64_clock_probe_model_enable(Dos64Machine *m, uint16_t lines,
+                                    uint32_t ticks, uint32_t repeats, uint8_t mode) {
+    // Invalid fixture scripts fail explicitly rather than divide by zero or
+    // impose an unbounded host-side tick loop. No ordinary fixture enables it.
+    if (!lines || lines > 512 || ticks > 65536 || !repeats || repeats > 65535 || mode > 3) {
+        m->cpu.unsupported = true; return;
+    }
+    m->cpu.clock_probe = std::make_unique<ClockProbeModel>();
+    auto &p = *m->cpu.clock_probe;
+    p.lines = lines; p.ticks_per_line = ticks; p.repeats = repeats; p.mode = mode;
+}
+uint64_t dos64_clock_probe_model_reads(const Dos64Machine *m) {
+    return m->cpu.clock_probe ? m->cpu.clock_probe->d011_reads : 0;
 }
