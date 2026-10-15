@@ -221,3 +221,6 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 
 
 2026-10-15: A failed Ultimate OPEN followed by failed transportrecovery can leave a genuinely uncertain ownedhandle even when externalREU/settings/reset recovery succeeds. Capturedfiles_op=CLOSE does not prove CLOSE was sent; inspect actualcommand/upload/drain counters. Retain firstprotocolstatus before recovery overwriteslast_status. Use protocolchallenge/response research and explicitownercontext; never replace readiness withfixedsleep or accept staleempty/84OPEN replies. Paired reviewedperformance changes composed byteexactly and passedroot428tests; strongesthelpergain35% is notwholeworkflowgain8.54% orhardwareXT speed.
+
+
+2026-10-15 actualUCI diagnostic succeeds despiteearlierstartupfailure: verifiedclose/read-onlyopen/exactsector/knownclose resolvesownedcontext only. A separatePRGsuccess doesnotestablishreadinessafteranotherreset. FourlegitimateSMCoperandbytes mustbevalidatedasownedpointers, notexcludedwithoutbounds; reviewcaught0000falsepassbeforehardware. CancellationneedsboundedRAMcapturebeforeDRShelperoverwrite aswellasrecovery.
