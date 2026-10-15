@@ -17,3 +17,10 @@ First attempt `c64u-cache-20261014-231434` failed with HTTP 400 on speed configu
 ## Limits
 
 The physical REU is 16 MiB; test addresses stay below the 4 MiB baseline. Peddle additionally covers 4/8/16 MiB capacity models. No calibrated elapsed timing, UCI/IEC persistence, video quality, keyboard, DOS boot or complete IRQ/NMI behavior was tested. REST launch/poll duration is not a throughput benchmark. Timing probes must calibrate timer units and account for display/badline/I/O effects, preserving configuration and overwritten REU bytes in the same way.
+
+
+## Native DOS3.3 physical milestone —2026-10-15
+
+The frozen three-overlay647eca target passed actual native UCI360KiB import, genuineDOS/COMMAND.COM, VER and exactDIR /P atManual64MHz.35 names/sizes,9216free,14 BIOS-enqueued keys,1pagination and returnedA> are verified over108 coherent observations. Code/source/floppy/CGA identities pass. All first4MiB were backed, exhaustively delta-scanned/restored and independently reread; root byte comparison, priorconfiguration/media equality andreset/resume pass. [Evidence](../agentworking/evidence/c64u-native-dos-20261015.json).
+
+This accepts scripted native DOS execution and physical bitmap bytes, not human matrix keyboard,40column/graphics presentation, external HDMI readability, persistent saves/HD/IEC or XT-speed ratio. The newer five-overlay timer/CGA target remains a distinct Peddle proof and has not run physically. Native bitmap reconstruction uses capturedRAM and an illustrativepalette, not a screenshot. The earlier pre-load RESTattachment failure remains retained.

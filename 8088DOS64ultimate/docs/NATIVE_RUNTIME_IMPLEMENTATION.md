@@ -16,3 +16,8 @@ The first Terminal-owned physical attempt failed before service PRG loading; no 
 
 
 The physical host verifier now recognizes exactly four self-modified UCI pointer operand bytes using stable exported aliases. Each retains its expected AD/8D opcode and an address within the correct896-byte command/data buffer after successful DOS; all other resident bytes compare exactly. An actual native Peddle64KiB capture passes this verifier. Updated tooling168/168; target binary647eca/unit ecc86 unchanged. The attachment-free FTP/PUT runner uses exhaustive delta restoration, still backed and fully compared over4MiB. Both are preparation for physical acceptance.
+
+
+## Physical three-overlay acceptance
+
+The frozen647eca runtime/configured3103258f passed native UCIimport/genuineDOS/VER/DIR /P onC64U Manual64MHz. Exact35files/9216free/returnedprompt,108coherent screens/14keys, fullcode/output/floppy and4MiB recovery/configuration/reset proof are retained. [Evidence](../agentworking/evidence/c64u-native-dos-20261015.json). This supersedes earlier physical-pending statements for that target only. Human keyboard/40column/external readability, newfiveoverlaytimer/CGA target, persistence/HD/IEC and XTspeed remain unfinished.

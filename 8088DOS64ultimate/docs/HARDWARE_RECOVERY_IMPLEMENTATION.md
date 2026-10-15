@@ -17,3 +17,8 @@ Physical RAM-only bodyless PUT/file-loader gates now pass, but measured whole-re
 `c64u_native_ftp_put_runner.py --transport ftp-put` now uses strict owned file/hash launch and `DeltaService`. This still snapshots/verifies all4MiB before application; within the600second restoration phase it scans all4MiB, uploads only changed16KiB chunks from verified immutable backup, and the original workflow independently rereads/compares all4MiB. Every bounded retry rescans from scratch. No-change, unexpected region, partial DMA/alias and partial staging cases are tested. This is prepared host/model behavior, not yet physical full-restoration acceptance. [Evidence](../agentworking/evidence/delta-recovery-preparation-20261015.json).
 
 Captured-code validation normalizes only the two UCI absolute pointer operands (four bytes), with source opcode and legal896byte buffer checks; successful DOS requires initialized buffer pointers. All other resident bytes remain exact. The actual native Peddle hostRAM capture passes this verifier; alias/scoping metadata emits identical binaries.
+
+
+## Physical acceptance
+
+The exhaustive delta workflow passed with frozen native DOS target647eca: ALL4MiB backed,256chunks inspected,37changed/606208bytes restored in282.119seconds scan+write, then ALL4MiB reread and independently compared byte-for-byte. First attempt succeeded; prior configuration/media/reset/resume passed. Fullrun545.455seconds includes genuineDOSscript/evidence. [Accepted physical proof](../agentworking/evidence/c64u-native-dos-20261015.json). The private single-file native UCI restore remains an alternative with host integration pending, not part of this accepted run.

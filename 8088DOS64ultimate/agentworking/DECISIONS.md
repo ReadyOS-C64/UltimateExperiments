@@ -101,3 +101,7 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 | D73 | Implemented/host verified,2026-10-15 | Exhaustively scan4MiB and restore changed chunks, then independently compare4MiB | Complete immutable backup remains authority, every retry rescans including unexpected/alias changes; same600second phase/bounded attempts; saves slow unchanged payload uploads |
 | D74 | Implemented/actual native Peddle verified,2026-10-15 | Normalize only four exported UCI pointer operand bytes after opcode/buffer checks | AD upload and8D drain self-modify legally; all other resident bytes exact; scoped debug aliases preserve target binary identity |
+
+
+| D75 | Physically verified,2026-10-15 | Accept genuine native DOS3.3/UCI import/VER/DIR at Manual64MHz for frozen three-overlay647eca target | Exact35entry/9216free/returnedprompt,108screens/14keys, resident/CGA/floppy identity; does not accept new timer/CGA target or human keyboard/readability |
+| D76 | Physically verified,2026-10-15 | Exhaustive delta scan plus changed-chunk restoration and full4MiB compare is accepted |37chunks606208bytes,282.119second scan/write, firstattempt, root all-byte equality/config/media/reset proof; protects full scope, not only expected writes |

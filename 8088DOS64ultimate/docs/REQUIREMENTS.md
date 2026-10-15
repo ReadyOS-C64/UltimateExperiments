@@ -2,7 +2,7 @@
 
 | ID | Requirement | Design / milestone | Evidence required |
 |---|---|---|---|
-| R01 | Planning now; review before implementation with 6.1 Sol | README, PLAN, NEXT_SLICE | Planning-only status and bounded handoff |
+| R01 | Planning now; review before implementation with 6.1 Sol | README, PLAN, NEXT_SLICE | User authorized implementation2026-10-14; local verified commits, no pushes |
 | R02 | Project isolated under 8088DOS64ultimate | AGENTS, local ignore rules | All new files/records in this directory |
 | R03 | 8086 emulator, real DOS 3.3 supplied images | ARCHITECTURE M3–M5 | Actual image boot and DOS-owned INT 21h/process/file logic |
 | R04 | 64 MHz C64U, 640 KiB guest RAM via REU | MEMORY, PERFORMANCE M1–M4 | Real hardware timing, INT 12h and memory/paging tests |
@@ -20,6 +20,9 @@
 | R16 | Strategy aiming near original 8088 performance | PERFORMANCE M1/M11 | Disclosed baseline, per-workload ratios, cache/CPU/render breakdown |
 | R17 | DOS included commands before third-party apps | TESTING M5–M10 | Explicit required/conditional/excluded utility manifest |
 | R18 | Long-horizon context, decisions, lessons | agentworking records | Updated STATUS/NEXT_SLICE/DECISIONS/LESSONS/TEST_LOG each slice |
-| R19 | Deep research, consider DOSBox comparisons | RESEARCH, TESTING M0 | Source register; installed DOSBox-X recorded; actual reference boot pending |
+| R19 | Deep research, consider DOSBox comparisons | RESEARCH, TESTING M0 | Source register; installed DOSBox-X recorded; actual DOSBox-X reference boot recorded |
 
 Planning coverage means each request has an implementation/test destination. It does not mean those implementation tests have passed.
+
+
+2026-10-15 accepted scope: R03/R11 now have realC64U Manual64MHz native UCIboot/COMMAND.COM/VER/DIR proof, with exact35entries/9216free/returnedprompt and complete4MiB/configuration recovery. R09 native wholefloppy loading is physically accepted; save/reopen remains pending. R14 physical80column bitmap/matrix bytes match independent oracle, but human readability/keyboard/40column remain pending. R10/12/15/16 persistence/HD/IEC/nativephysicalCGA/XTperformance are not complete. [Physical evidence](../agentworking/evidence/c64u-native-dos-20261015.json).

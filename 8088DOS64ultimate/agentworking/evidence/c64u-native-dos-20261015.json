@@ -1,0 +1,221 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "status": "passed",
+  "milestone": "genuine DOS3.3 native file boot/VER/DIR on physicalC64U Manual64MHz",
+  "raw_run": "agentworking/runs/c64u-native-delta-20261015-064456",
+  "runtime_base_sha256": "647eca6fb65db56153067c6a6be0209cb7f63955a904e618400b6734e2dc1023",
+  "configured_prg_sha256": "3103258f3d646ee4bfa835420dfa259aee5861e837ecb7ecff3681d03f4e6b91",
+  "configuration_patch": "owned read-only path/CRC/enable only",
+  "baseline_commit": "69e3e2d",
+  "device": {
+    "product": "C64 Ultimate",
+    "firmware_version": "3.14",
+    "fpga_version": "121",
+    "core_version": "1.47",
+    "hostname": "c64karl",
+    "unique_id": "DCAF71",
+    "errors": []
+  },
+  "active_turbo": {
+    "control": "Manual",
+    "speed": "64",
+    "badlines": "Disabled"
+  },
+  "physical_reu_mib": 16,
+  "protected_reu_bytes": 4194304,
+  "dos": {
+    "version3_30": true,
+    "entries": 35,
+    "all_names_and_sizes_exact": true,
+    "free_bytes": 9216,
+    "pagination_keys": 1,
+    "input_words": [
+      7181,
+      7181,
+      12118,
+      4677,
+      4946,
+      7181,
+      8260,
+      5961,
+      4946,
+      14624,
+      13615,
+      6480,
+      7181,
+      14624
+    ],
+    "coherent_screens": 108,
+    "final_prompt": "A>",
+    "guest_instructions_at_final_screen": 622478,
+    "final_screen_elapsed_seconds": 109.455742917,
+    "application_evidence_elapsed_seconds": 124.474281667,
+    "cga_bytes_equal_native_peddle": true,
+    "no_host_guest_loader_or_INT21_replacement": true
+  },
+  "resident_identity": [
+    {
+      "name": "BASIC",
+      "start": 2049,
+      "length": 12,
+      "source_sha256": "1d7f248e93f18a1db2d23531f113a70abfb7273e969666d43e14cabd1336336c",
+      "captured_sha256": "1d7f248e93f18a1db2d23531f113a70abfb7273e969666d43e14cabd1336336c",
+      "normalized_sha256": "1d7f248e93f18a1db2d23531f113a70abfb7273e969666d43e14cabd1336336c",
+      "raw_matches": true,
+      "mutable_operands": [],
+      "matches": true
+    },
+    {
+      "name": "CODE",
+      "start": 2061,
+      "length": 12452,
+      "source_sha256": "a3308f808c9f98c656d2db2b9fa871d95002022a8ac4ed79808e4d60c1cd38f7",
+      "captured_sha256": "a3308f808c9f98c656d2db2b9fa871d95002022a8ac4ed79808e4d60c1cd38f7",
+      "normalized_sha256": "a3308f808c9f98c656d2db2b9fa871d95002022a8ac4ed79808e4d60c1cd38f7",
+      "raw_matches": true,
+      "mutable_operands": [],
+      "matches": true
+    },
+    {
+      "name": "RODATA",
+      "start": 14513,
+      "length": 880,
+      "source_sha256": "4ba949bc14aa6723989de304fb30a0eea3003c3d58e7bc91ed2d3b53e4ce30a4",
+      "captured_sha256": "4ba949bc14aa6723989de304fb30a0eea3003c3d58e7bc91ed2d3b53e4ce30a4",
+      "normalized_sha256": "4ba949bc14aa6723989de304fb30a0eea3003c3d58e7bc91ed2d3b53e4ce30a4",
+      "raw_matches": true,
+      "mutable_operands": [],
+      "matches": true
+    },
+    {
+      "name": "DEVICECODE",
+      "start": 20480,
+      "length": 4084,
+      "source_sha256": "0b7fdfb065f5fe4b428a33ba8c15d365577f91c9675cd2cf3053487cc4e6bfc1",
+      "captured_sha256": "647a3c50ad1e1342dcfc98e3e26f7d56f74ed91a1cbfe4ab35f82e1e32389634",
+      "normalized_sha256": "0b7fdfb065f5fe4b428a33ba8c15d365577f91c9675cd2cf3053487cc4e6bfc1",
+      "raw_matches": false,
+      "mutable_operands": [
+        {
+          "symbol": "dos64_uci_upload_operand",
+          "address": 23516,
+          "bytes": 2,
+          "value": 49409,
+          "buffer_start": 49408,
+          "buffer_bytes": 896,
+          "valid": true
+        },
+        {
+          "symbol": "dos64_uci_drain_operand",
+          "address": 23682,
+          "bytes": 2,
+          "value": 50815,
+          "buffer_start": 50304,
+          "buffer_bytes": 896,
+          "valid": true
+        }
+      ],
+      "matches": true
+    }
+  ],
+  "floppy_sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+  "original_source_unchanged": true,
+  "postrun_owned_remote_media": {
+    "status": "passed",
+    "purpose": "read-only postrun owned media/PRG verification",
+    "writes": 0,
+    "files": {
+      "/usb1/DOS64_TEST/dosboot-20261015-045113/DOS33A.IMG": {
+        "bytes": 368640,
+        "sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+        "all_bytes_equal": true
+      },
+      "/usb1/DOS64_TEST/native-prgs-delta-20261015-062922/REU-RECOVERY.PRG": {
+        "bytes": 592,
+        "sha256": "40fe690953c245c8093c7cd5e5cb91684df7290602d8afa44dbd2e0b5b30d09e",
+        "all_bytes_equal": true
+      },
+      "/usb1/DOS64_TEST/native-prgs-delta-20261015-062922/NATIVE-DOS.PRG": {
+        "bytes": 32769,
+        "sha256": "3103258f3d646ee4bfa835420dfa259aee5861e837ecb7ecff3681d03f4e6b91",
+        "all_bytes_equal": true
+      }
+    }
+  },
+  "restoration": {
+    "scope_bytes": 4194304,
+    "root_independent_every_byte_comparison": true,
+    "before_after_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+    "attempts": 1,
+    "all256chunks_scanned": true,
+    "changed_chunks": 37,
+    "restored_bytes": 606208,
+    "scan_and_write_seconds": 282.119332,
+    "phase_limit_seconds": 600,
+    "all4MiB_readback_compared": true,
+    "configuration_restored": true,
+    "reset_resumed": true
+  },
+  "native_bitmap_proof": {
+    "status": "passed",
+    "kind": "physical RAM bitmap reconstruction; illustrative palette, not HDMI screenshot",
+    "native_bitmap_all8000bytes_equal_independent_font_oracle": true,
+    "native_matrix_all1000bytes_equal_independent_attr_oracle": true,
+    "columns": 80,
+    "source_native_ram_sha256": "650dc74c666c2a2502eb34dfec5e7cc876c1e808ae3fee8ae6b94a2c0ddb3d2d",
+    "bitmap_sha256": "5586ec535aa94ca266bd50c12f1ebc9e2d51c459d66b64fd73def3f135435cc2",
+    "png_sha256": "5f74c2d40a3e6e638d4b2861c3fdc23516167a72d38d959e1f9c677baf2c76ee",
+    "limits": [
+      "No physical RGB calibration or external screenshot",
+      "No physical keyboard or subjective80column readability acceptance"
+    ]
+  },
+  "artifacts": {
+    "reu-before.bin": {
+      "bytes": 4194304,
+      "sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3"
+    },
+    "reu-after-1.bin": {
+      "bytes": 4194304,
+      "sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3"
+    },
+    "application-ram-before-recovery.bin": {
+      "bytes": 65536,
+      "sha256": "650dc74c666c2a2502eb34dfec5e7cc876c1e808ae3fee8ae6b94a2c0ddb3d2d"
+    },
+    "guest-640k-coherent.bin": {
+      "bytes": 655360,
+      "sha256": "e8deedb6243c62b574904aa9e70fdf168c3e456bd356ef4df39223c31f34638e"
+    },
+    "cga-16k-coherent.bin": {
+      "bytes": 16384,
+      "sha256": "a4c3351af444b5f6b5930ef487021540e27766b2eef02b5e155399cc7b7d220c"
+    },
+    "floppy-import-after.bin": {
+      "bytes": 368640,
+      "sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb"
+    },
+    "native-framebuffer-reconstruction.png": {
+      "bytes": 12863,
+      "sha256": "5f74c2d40a3e6e638d4b2861c3fdc23516167a72d38d959e1f9c677baf2c76ee"
+    },
+    "root-reviewed-inputs.json": {
+      "bytes": 6041,
+      "sha256": "ee17604f84ea04572f025226eb3bfa74878452515ee0d967286649387f139f4b"
+    },
+    "postrun-owned-media-readback.json": {
+      "bytes": 761,
+      "sha256": "c81db095dd87ce12806697080a87604cadf6949943007eb5ded1f5610e0fd7f2"
+    }
+  },
+  "total_run_seconds": 545.455377,
+  "limits": [
+    "Physical proof applies to frozen THREE-overlay647eca target; newly integrated five-overlay IRQ/CGA target was not physically launched",
+    "Script uses native BIOS keyboard enqueue; physical matrix input remains unaccepted",
+    "80column bitmap/matrix match independent oracle, but reconstruction is not an external HDMI screenshot or physical readability/RGB calibration",
+    "40column physical mode/graphics presentation, persistence/IEC/HD and XT-speed ratio remain unfinished",
+    "Upper12MiB not snapshotted; helper/nativeruntime address ownership is below4MiB, no claim of an independent upper12MiB physical comparison",
+    "Wall times include startup, REST observations/pauses and evidence; not interpreter throughput or XT ratio"
+  ]
+}
