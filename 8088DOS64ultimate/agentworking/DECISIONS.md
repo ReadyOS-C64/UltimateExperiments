@@ -117,3 +117,5 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D83 | Implemented/primary-source/Peddle verified,2026-10-15 | OriginalXT INT10 AH10..FF returns all guest state unchanged | Archived11/08/82listing+independentROM path agree; one-bytebranchfix enables genuineMODECO40/CO80; noEGA/VGA implementation or newXTsiliconclaim |
 
 | D84 | Implemented/source and host verified,2026-10-15 | Add explicit opt-in one-file native4MiB recovery while preserving default delta | Source reproduces388069/40fe; immutablebackup/freshFTP/codeCRCknownCLOSE/all4MiBcompare; one600secondphase/max2freshpasses; physicalthroughputpending |
+
+| D85 | Implemented/reference verified,2026-10-15 | Source-complete read-only DOS disk inspector and genuineDOS2/20MiB fixture recipe |17newtests/cleancheckout,actualFDISKFORMAT SYS CHKDSKHDboot/CROSS16,fullhash/chain/allocationchecks; no bundledHDimages/nativepersistenceclaim |

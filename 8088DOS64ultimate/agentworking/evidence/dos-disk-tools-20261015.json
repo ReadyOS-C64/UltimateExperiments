@@ -1,0 +1,148 @@
+{
+  "status": "root promoted clean-checkout reference tools; not native HD acceptance",
+  "cohort": {
+    "schema_version": 1,
+    "production_files": {
+      "build_support/dos_disk_inspect.py": "2b2a882d17f030ed889b76384c82ab11c0462401c60f62e84dc09d1993f4d836",
+      "build_support/dos_fixture_assets/cross16.asm": "1abc7e8023b675a572848fa03b765e22b42a5de90eccf8eff72a3c44b46a38d1",
+      "build_support/dos_fixture_assets/keyfeed.asm": "172e1f422e9409c1618b8b94a251c02a92fefa329c90c4c924c70d4fbbd958c5",
+      "build_support/dos_hd_fixture.py": "fe33779dca608a0e4f13542db34494dad3f896beae2b62c236e8cfe46e13e358",
+      "docs/DISK_TOOLS.md": "731212bba12394499e5edd8ae3a4e71c1a92590352703a7fadfa931fcb63c8ec",
+      "tests/tooling/test_dos_disk_inspect.py": "7929520674e004095694f9203ea9a6175e28242a784b5dd1eadf742a9bbd7e8e",
+      "tests/tooling/test_dos_hd_fixture.py": "4e221caea303f0fa1210c12d8ed54cfb204013d891c2f1c33abf493d5997d4e2"
+    },
+    "runs": [
+      {
+        "profile": "small",
+        "manifest": "agentworking/runs/dos-disk-tools-small-accepted-20261015/manifest.json",
+        "manifest_sha256": "fd6e2469e09199f25c2879a68e40028d10912ba61b4b9cb00893852fd9a04931",
+        "raw_image": {
+          "path": "disk.raw.img",
+          "bytes": 2097152,
+          "sha256": "590c110bc12a8431ec5407bafd62d0fc0f347615a58ccde98ec90227c2822eca"
+        },
+        "geometry": {
+          "cylinders": 128,
+          "heads": 2,
+          "sectors_per_track": 16,
+          "bytes_per_sector": 512
+        },
+        "fat_bits": 12,
+        "data_clusters": 505,
+        "free_bytes": 1953792,
+        "stage_seconds": {
+          "partition": 13.034392417,
+          "format_sys": 17.552343417,
+          "hard_disk_boot": 4.220806084000003
+        },
+        "cross16": null,
+        "dosbox_version_probe_returncode": 1
+      },
+      {
+        "profile": "large",
+        "manifest": "agentworking/runs/dos-disk-tools-large-accepted-20261015/manifest.json",
+        "manifest_sha256": "a839d8f711666592b199ae935b6ba4bd4ea296b219333799ce940dc3144d354a",
+        "raw_image": {
+          "path": "disk.raw.img",
+          "bytes": 20971520,
+          "sha256": "0637b75c7687e746bc89b17139c42aff4aca36c0881a3847d7614ee3134aea41"
+        },
+        "geometry": {
+          "cylinders": 640,
+          "heads": 4,
+          "sectors_per_track": 16,
+          "bytes_per_sector": 512
+        },
+        "fat_bits": 16,
+        "data_clusters": 10207,
+        "free_bytes": 4028416,
+        "stage_seconds": {
+          "partition": 12.983188833,
+          "format_sys": 20.481273167,
+          "hard_disk_boot": 4.366510292000001
+        },
+        "cross16": {
+          "name": "CROSS16.BIN",
+          "file_bytes": 16781312,
+          "sha256": "ff7eedd1c8669feb1dfc069599eb09c632c7ceed11407bb40b57617be43b035f",
+          "raw_start": 160256,
+          "raw_end_exclusive": 16941568,
+          "contiguous": true,
+          "guest_write_close_reopen_read_compare_eof_close": true,
+          "host_compared_all_generated_bytes": true,
+          "generator_source_sha256": "1abc7e8023b675a572848fa03b765e22b42a5de90eccf8eff72a3c44b46a38d1",
+          "generator_binary_sha256": "8153b2fae42fd1b076bea3c4f7a019296669814c71ff2f4d250f57967ffbe5ce",
+          "execution": {
+            "command": [
+              "/opt/homebrew/bin/dosbox-x",
+              "-conf",
+              "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/dos-disk-tools-large-accepted-20261015/03-cross16/dosbox-x.conf",
+              "-noconsole"
+            ],
+            "configuration_sha256": "fcc7918c9e2dc02602de5d465c7be2faf714ed919df4f867d1c85d718b66e40e",
+            "completed": true,
+            "returncode": -9,
+            "host_seconds": 23.560886083,
+            "termination": "Stopped after closed guest evidence files or bounded failure; not a power-loss durability test."
+          },
+          "seams": {
+            "0xfffe00": {
+              "offset_le32": "00feff00",
+              "sha256": "9a3b007452a635053b189e0ac9cd148414be4916aee3432e31a7dc8b14cd8bf3"
+            },
+            "0x1000000": {
+              "offset_le32": "00000001",
+              "sha256": "b6c54f41836b769c5910672a0068ffeb3838950dc5483f01008c6051d12c03ba"
+            },
+            "0x1000200": {
+              "offset_le32": "00020001",
+              "sha256": "c6fcc5949db4472e239c971f991943df282a2cea44606914c1e786cfd17cf587"
+            },
+            "0x13ffe00": {
+              "offset_le32": "00fe3f01",
+              "sha256": "076a27c79e5ace2a3d47f9dd2e83e4ff6ea8872b3c2218f66c92b89b55f36560"
+            }
+          }
+        },
+        "dosbox_version_probe_returncode": 1
+      }
+    ],
+    "test_blocks": 17,
+    "test_log": "agentworking/scratch/dos-disk-tools/tests-frozen.log",
+    "first_failures": [
+      "Synthetic unit FAT setter shifted its value twice while writing mirrors; fixed fixture generator, first log tests-first.log retained.",
+      "DOSBox-X -version returns 1 while printing a valid version; strict check=True rejected both before guest startup. Failed manifests/logs retained at dos-disk-tools-{small,large}-frozen-20261015. Final code records status and validates identity text."
+    ],
+    "limitations": [
+      "No target emulator changes, hardware, commits, boot/FAT host substitution, or bundled raw images.",
+      "DOSBox-X functional fixture media only; not power-failure durability or XT timing."
+    ],
+    "clean_checkout_test_blocks": 17
+  },
+  "root_checks": {
+    "tooling": 189,
+    "test_seconds": 8.674,
+    "wall_seconds": 9.81,
+    "user_seconds": 8.22,
+    "sys_seconds": 1.2,
+    "source_hashes_exact": true,
+    "both_manifest_and_whole_raw_hashes_rechecked": true,
+    "native_code_changed": false,
+    "long_reference_creation_not_repeated": "Source-identical actual guest stages and independent all-byte review already pass"
+  },
+  "independent_review": {
+    "report": "agentworking/scratch/dos-disk-tools-review/REVIEW.md",
+    "report_sha256": "0c2a8340ca2b01de7a66a76a91001f0babcf964026809d139f33bd3a7ef5cfc4",
+    "verification_sha256": "00294c5bd752bcc3de8859e9bada3719c15aea771c0e9fe9647fc9aa70813d16",
+    "tests": 17,
+    "extra_adversarial_checks": 3,
+    "cross16_words_independently_compared": 8390656
+  },
+  "raw_run": "agentworking/runs/dos-disk-tools-20261015-root",
+  "limitations": [
+    "DOSBox-X reference media proof only",
+    "No physical storage/power-loss/native backend or XT timing result",
+    "Whole image timestamps vary; consumers pin actual manifests",
+    "Small3MiBtemporary/extrabytezero workaround disclosed; exact2MiB target image derived only after verification"
+  ]
+}
