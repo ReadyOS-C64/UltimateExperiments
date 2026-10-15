@@ -148,3 +148,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 | D98 | Physically verified, 2026-10-15 | Accept exact22f82091/configuredea93 native DOS VER/DIR with full recovery |33screens/14keys/35entries/9216free/returnedprompt,allshadow/fonts/bitmapmatrix,firstattemptall4MiBrestore226.434s/configmediareset; independent1524audit; actual745preflight/provisional1105retracted; observedone-run107.320vs118.151 finaltime is notXT/isolatedspeedclaim |
+
+
+| D99 | Implemented/prototype verified, 2026-10-15 | Native whole-floppy create-new/write/CLOSE/reopen/allbyteverify/EOF/CLOSE pipeline as opt-in standalone fixture | Root12Peddle/39scenarios/5host; independent6/8additional; all4MiBauthority/guards, lostreplyuncertainty, noexistingoverwrite; normal22f/8a unchanged; realclock/leases/modal/UI/physicalintegrationpending |

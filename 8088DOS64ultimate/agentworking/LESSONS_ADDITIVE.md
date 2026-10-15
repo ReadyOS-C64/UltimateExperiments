@@ -199,3 +199,8 @@ A reserved localhost port and live child do not prove that the accepted monitor 
 ## 2026-10-15 — final audit means completed execution
 
 Do not freeze a proposed expanded assertion count as a passed audit before that exact harness finishes. Preserve original executed source/output before extending a verifier; label reconstructed or overwritten-harness records as chronology. A provisional report can be withdrawn without discarding valid earlier checks, provided both provenance and limitations remain explicit. New raw independent rederivation should bind immutable inputs and report only its actually completed checks.
+
+
+## 2026-10-15 — file success needs reopened content
+
+A successful firmware WRITE can hide a short transfer, and CLOSE can discard underlying errors. Keep REU authoritative until complete native reopen/readback/EOF/knownclosure succeeds. Lost replies remain uncertain even when a model independently sees committed bytes. A source-complete engine with caller ownership attestations is a prototype until actual runtime leases, clock and UI enforce those conditions.

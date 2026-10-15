@@ -286,3 +286,10 @@ Terminal run102259 PASSES runtime22f82091/configuredea93 withHDdisabled,33cohere
 Fresh complete first4MiB backup precedesapp; firstattempt nativefileCRC/8192sectors/EOF/knownCLOSE plusoriginalserviceall512READACK/two256phases/all4194304bytesequal SHAac43 pass. Restorephase226.434181s,whole430.774553s, priorconfig/turbo/media/reset andpostreadonlyFTPfulloriginalfloppy/twoPRGs pass/Terminalexit0. Rootfinal358pins checked beforeunfreezing; readonlyhistoricalcopies preserveexpectations. Independent raw audit1524checks passes. Correctedpreflight745prelaunch is bound separately; provisional1105claim retracted/retainedexplicitly. [Evidence](evidence/c64u-native-performance-20261015.json).
 
 Single prior98fc comparable run had118.151354sfinal/138.699888sapp; timing andguestcountdifferences are observations, notisolatedcause orXTbenchmark. No newtargetMODE40/80/CGAgraphics/humanmatrix/HDMI/physicalHD/IEC/floppysave/upper12MiB claim. Oldfailures/oldMODEscope retained.
+
+
+## Standalone native floppy export promoted
+
+Thirteen exact additive files,38dependencies andminimalIEC-preservingMake/Zigregistration. Root12actualPeddle tests/39scenarios+5packagechecks pass; independent6tests/8extra scenarios pass. NativeCREATE_NEW|WRITE6 writes720sectors, closes/reopens, compares everybyte toauthoritativeREU, checksEOF/finalknownCLOSE. Full4MiBsource/otherguards preserved; lostWRITEreply remainsuncertain; existingfile untouched. Disabled3817PRG556e61c4 cannotissueI/Othroughitsloopentry. Code1265/state164 do notfit1223shadowtail. [Evidence](evidence/floppy-native-export-20261015.json),[contract](../docs/FLOPPY_EXPORT_PROTOTYPE.md).
+
+Realnativeclock/FILEownership/pausedmodalSAVER/cacheborrowing/UI andphysicalsave remainprivatework. Existingnative22f/8a PRGs unchanged; no partialintegrationclaimed.
