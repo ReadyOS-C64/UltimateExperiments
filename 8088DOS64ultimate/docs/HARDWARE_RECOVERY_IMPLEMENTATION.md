@@ -1,0 +1,11 @@
+# Development recovery and fixture preparation
+
+`build_support/build_bulk_reu_service.py --test` builds a standalone 592-byte native recovery service and runs four actual-assembly tests plus seventeen no-network workflow tests. The service uses the unchanged REU primitive, a sequenced mailbox at 6000 and a 16 KiB staging window at 8000. Only REU addresses below 4 MiB are accepted. Peddle tests independently seed and compare all 16 MiB, including the untouched upper 12 MiB.
+
+`build_support/c64u_bulk_reu_recovery.py` snapshots all first 4 MiB into a complete size/hash-verified, read-only local backup before invoking an application. Restoration reloads the service, writes from verified immutable backup bytes and independently rereads all 4 MiB. Descriptor/staging readback precedes GO publication. Stale sequences, partial transfers, timeouts, corrupted backups, short reads and recovery/storage failures have explicit failure results. Recovery attempts and phase deadlines are bounded. Full RAM is captured before failure recovery and final reset.
+
+This is destructive execution takeover, with explicit CIA2/NMI ownership. Saved machine/turbo/media identities are checked; prior CPU, timers and CIA execution cannot be resumed. A callback must preserve configuration/media and stay inside the first 4 MiB. Unexpected machine configuration prevents restoration DMA and retains the complete backup for explicit recovery. Terminal owns physical invocations. REST is a development control channel, never an emulator runtime dependency.
+
+`build_support/c64u_media_fixture.py` prepares a read-only DOS disk1 fixture through development FTP. It requires the independent 360 KiB source SHA-256, creates a fresh `/usb1/DOS64_TEST/<run-id>` directory, verifies a unique ownership marker, uploads `DOS33A.IMG` and reads every byte back. Existing run directories are rejected before any upload. It never deletes or overwrites an existing fixture. Four no-network tests cover success, ownership rejection, readback corruption and invalid inputs.
+
+These tools have not yet contacted hardware or uploaded a fixture. Their tests establish host workflow and modeled native DMA behavior. Actual Ultimate file import, coherent native DOS capture and physical restoration acceptance are separate gates. [Evidence](../agentworking/evidence/bulk-reu-fixture-preparation-20261015.json).

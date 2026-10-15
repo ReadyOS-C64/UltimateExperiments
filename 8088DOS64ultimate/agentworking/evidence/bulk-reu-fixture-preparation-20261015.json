@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "result": "passed-host-only",
+  "hardware_executed": false,
+  "scope": "Development REU snapshot/recovery service and fresh FTP fixture staging; no runtime dependency",
+  "native_tests": 4,
+  "recovery_host_tests": 17,
+  "media_fixture_host_tests": 4,
+  "root_repeat_command": "python3 build_support/build_bulk_reu_service.py --test",
+  "root_repeat_log": "agentworking/runs/native-text-input-20261015-root/bulk-reu.log",
+  "service_prg_sha256": "40fe690953c245c8093c7cd5e5cb91684df7290602d8afa44dbd2e0b5b30d09e",
+  "service_prg_bytes": 592,
+  "files": {
+    "src/bulk_reu_service.s": "868e00fdd9426e57ce18709d418aa2946faacc59985b5151a58562ebed1df821",
+    "cfg/dos64-bulk-reu.cfg": "bc9d105f7758904773bc0929b1959855ba656e6bb59cc75819f6d945d2d7e6bc",
+    "build_support/build_bulk_reu_service.py": "e1300a93b4a12738c580a3b43887c69c7c6ecd23cf4169003837d963d5fee14d",
+    "build_support/c64u_bulk_reu_recovery.py": "22b45fdff7c039dfc0bf0571dfc005775ec9c13bb0f6c99bcf0227ffe28c0008",
+    "tests/host/bulk_reu_service.zig": "5cd745ef0686d8919be877815495471ed05829f60a5ba9a83ed21963afbe1728",
+    "tests/tooling/test_bulk_reu_recovery.py": "e1f6249e0950d6f786b85cfb0e28a79aeedf84bae86aed9d0b1b3a0f5452c6c7",
+    "build_support/c64u_media_fixture.py": "1f9ca8408ab3cede7ce3a31a6c9a9106e8d8b3a520e48b47563b4e4c50f8fa49",
+    "tests/tooling/test_c64u_media_fixture.py": "d2c614fcc517bf42e207d6eec37634aa29490fc4e3947714e342faa0ec715a4e"
+  },
+  "bulk_manifest": {
+    "schema": 1,
+    "hardware_executed": false,
+    "peddle_tests": 4,
+    "host_tests": 17,
+    "compiler_version": "0.16.0",
+    "artifacts": {
+      "src/bulk_reu_service.s": {
+        "bytes": 3959,
+        "sha256": "868e00fdd9426e57ce18709d418aa2946faacc59985b5151a58562ebed1df821"
+      },
+      "src/reu.s": {
+        "bytes": 2527,
+        "sha256": "e51b31fff8da86894156fcc004b2339567d240e66b7aee1fd42d4117bf5c73d2"
+      },
+      "include/reu.inc": {
+        "bytes": 222,
+        "sha256": "47a4eac6be6d727dc506c2d8e808e1028aefb2f8321b89aff3d333bff94c5e05"
+      },
+      "cfg/dos64-bulk-reu.cfg": {
+        "bytes": 431,
+        "sha256": "bc9d105f7758904773bc0929b1959855ba656e6bb59cc75819f6d945d2d7e6bc"
+      },
+      "build_support/build_bulk_reu_service.py": {
+        "bytes": 3130,
+        "sha256": "e1300a93b4a12738c580a3b43887c69c7c6ecd23cf4169003837d963d5fee14d"
+      },
+      "build_support/c64u_bulk_reu_recovery.py": {
+        "bytes": 18220,
+        "sha256": "22b45fdff7c039dfc0bf0571dfc005775ec9c13bb0f6c99bcf0227ffe28c0008"
+      },
+      "tests/host/bulk_reu_service.zig": {
+        "bytes": 8275,
+        "sha256": "5cd745ef0686d8919be877815495471ed05829f60a5ba9a83ed21963afbe1728"
+      },
+      "tests/tooling/test_bulk_reu_recovery.py": {
+        "bytes": 13077,
+        "sha256": "e1f6249e0950d6f786b85cfb0e28a79aeedf84bae86aed9d0b1b3a0f5452c6c7"
+      },
+      "agentworking/scratch/bulk-reu/service.prg": {
+        "bytes": 592,
+        "sha256": "40fe690953c245c8093c7cd5e5cb91684df7290602d8afa44dbd2e0b5b30d09e"
+      },
+      "agentworking/scratch/bulk-reu/service.labels": {
+        "bytes": 1273,
+        "sha256": "0edb833568d89aefc535e95ef1306e2e50fd1b6e3d9a456c06c985c6067f1786"
+      },
+      "agentworking/scratch/bulk-reu/service.map": {
+        "bytes": 1519,
+        "sha256": "eabc295d3942eb5b3178ae6e18194d7375f1141f4dea6b6532d2f0eb012542bd"
+      },
+      "agentworking/scratch/bulk-reu/peddle_bridge.cpp": {
+        "bytes": 15632,
+        "sha256": "7aba49af225bc921089834274d4a3871165f336e1d2ea440c2b6e14482214cdc"
+      },
+      "agentworking/scratch/bulk-reu/cia_clock_model.h": {
+        "bytes": 3634,
+        "sha256": "400b50fd4f993c067c9e2e161f8cf0a06e35d44470896d20e18f1826918da0ff"
+      },
+      "agentworking/scratch/bulk-reu/clock_probe_model.h": {
+        "bytes": 1507,
+        "sha256": "bf38128e8ea12aac97d3c67cfa92f40e4a21f31911004a8f47fe8cfc50202643"
+      },
+      "agentworking/scratch/bulk-reu/host_input_model.h": {
+        "bytes": 1780,
+        "sha256": "6df183ace33369d8ac8111a3de5ca4aa60d21d3373e119865889db77be48a1af"
+      },
+      "agentworking/scratch/bulk-reu/image_import_model.h": {
+        "bytes": 2302,
+        "sha256": "2b22af0c945cfe55dcc27ab4a08a52327c4970dd63462afe4684b6f63b17d083"
+      },
+      "agentworking/scratch/bulk-reu/native_display_model.h": {
+        "bytes": 1343,
+        "sha256": "e8f71474924edd3f24a54b57f8e62f95f8709510d673b53dd47c6df0a4d06c27"
+      },
+      "agentworking/scratch/bulk-reu/peddle_bridge.h": {
+        "bytes": 5449,
+        "sha256": "1709934c34fed80589a9a4467c6db230a2d099b345e1c36f0810b61f482067a9"
+      },
+      "agentworking/scratch/bulk-reu/reu_model.h": {
+        "bytes": 3105,
+        "sha256": "f43b161b3838621aa02902d0629f23c212d527ab363f387eebfb4f9d3c957168"
+      },
+      "agentworking/scratch/bulk-reu/uci_model.h": {
+        "bytes": 4009,
+        "sha256": "ddaca4467a8515988f5edd6a6fec9762df0b099334f1f3dd7d68805c7e3b5996"
+      },
+      "third_party/peddle/Peddle/Peddle.cpp": {
+        "bytes": 4057,
+        "sha256": "ffedff83b4bcce1a698e2a98ef4fd04b6d6a8f3858aaae243b376cbefa8d269f"
+      },
+      "third_party/peddle/Peddle/PeddleDebugger.cpp": {
+        "bytes": 7956,
+        "sha256": "3e1df70e137946707a42c2ece3ae95bfd29f15d6af71d60c429b6301ba631d12"
+      },
+      "third_party/peddle/Peddle/PeddleDisassembler.cpp": {
+        "bytes": 10529,
+        "sha256": "c3d9bc13bff7af84f7822a5d1e3eccfe3b7a5116a654c751eb713d647bf090f5"
+      },
+      "third_party/peddle/Peddle/StrWriter.cpp": {
+        "bytes": 4483,
+        "sha256": "6762cedf870935db3c05c8ddd8d64f800caf6f760a9951a6bac9766200e14f1f"
+      },
+      "agentworking/scratch/bulk-reu/peddle-test.log": {
+        "bytes": 461,
+        "sha256": "7f628ef77b27130226e15dd548942be9752dbccc0f42dbf23a28bcab94acded0"
+      },
+      "agentworking/scratch/bulk-reu/host-test.log": {
+        "bytes": 116,
+        "sha256": "e5ade4d0c3344ce67dd742d8a4240e8e1d2112a79a00d5169bdca2cb55b5c317"
+      }
+    }
+  },
+  "limitations": [
+    "No hardware or FTP execution yet",
+    "Recovery resets execution; cannot resume prior CPU/timer/NMI state",
+    "Only first4MiB addressed; application must obey that bound and preserve machine/media settings",
+    "No persistent file changes through UCI; FTP creates a new owned directory and never overwrites an existing run",
+    "Verified backup and full readback precede acceptance; failures retain recovery data"
+  ]
+}
