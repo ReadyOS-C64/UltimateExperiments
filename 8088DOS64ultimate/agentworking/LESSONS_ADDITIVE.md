@@ -149,3 +149,8 @@ A run manifest must be generated after every artifact-producing prerequisite, in
 - A private full gate can be reused only with exact reviewedsource and executable identity. Root integrated lanes and independent adversarial boundaries still test composition; no blanket reuse after code changes.
 - Unit helpers can occupy cold space only with host refusal before stack/register mutation and a resident return sentinel. A total memory budget cannot prove per-window fit.
 - Returning from graphics must reapply TEXT settings without replacing the saved original VIC owner. Keep physical bitmap correctness distinct from externaldisplay/readability.
+
+
+## 2026-10-15 — real DOS file workflows
+
+Directory deletion is a logical FAT/root change, not erased sector slack. Verify live names, allocation and original data independently while allowing freed data to remain. Long commands must refill only available slots in the real15-keyBIOSring; coherentPAUSED must transition throughRUN beforeKEY. Supplied MODE probes later BIOS functions before selecting an XT mode: preserve first failure and inspect originalXT unsupported-function return behavior rather than inventing VGA support.

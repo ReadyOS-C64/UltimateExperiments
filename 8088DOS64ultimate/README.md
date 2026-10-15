@@ -6,6 +6,8 @@ Planning and implementation of a C64 Ultimate program that boots the supplied **
 
 The current five-overlay target adds asynchronous IRQ0 through the guest IVT, the default guest timer/INT 1Ch handler, and native CGA modes 4/5/6. Root checks pass **408 Zig/Peddle tests, 597 quick hardware cases, 172 tooling checks, native and legacy DOS lanes, seven timer differential tests and twelve profile samples**. The reviewed full 5,701-case CPU build is byte-identical to the root build. [Current evidence](agentworking/evidence/timer-graphics-integration-20261015.json). Native ENTRY/import/tick execution accepts VER/DIR /P after 598,702 guest instructions, with timer delivery enabled. Packaged startup remains disabled until explicitly configured with an owned image path and CRC.
 
+Genuine internal DOS file workflows also pass through native startup and ticks: MD/CD, COPY/TYPE, REN, IF EXIST, DEL/RD and expected missing-file handling. Independent FAT12 checks inspect every sector and preserve all original files. [Workflow evidence](agentworking/evidence/dos-native-workflows-20261015.json).
+
 The five-overlay target has not yet run physically. Human matrix input, physical 40/80-column readability, native graphics on the display, persistent floppy/HD/IEC images and XT performance remain unfinished. Graphics reduction and palette compromises are explicit; guest VRAM is preserved. CPU profiles exclude DMA stalls and cannot establish a physical XT speed ratio. Historical failures and earlier accepted targets remain in the working records.
 
 Compatibility targets the **original 8088 and IBM PC/XT**, with the shared 8086 instruction set. Existing 8086 implementations are references; they do not define our CPU profile or reduce the required functionality.
@@ -17,6 +19,7 @@ make test             # fast assembly, memory checks, tooling and Zig/Peddle tes
 make test-image-import # opt-in whole 360 KiB cold import/CRC/error tests
 make test-native-runtime # focused configured startup/scheduler/development controls
 make test-native-dos  # opt-in native ENTRY/import/BIOS/VER/DIR /P end-to-end
+make test-native-builtins # real MD/CD/COPY/TYPE/REN/IF/DEL/RD plus independent FAT checks
 make test-overlays    # focused overlays and cold lifetime checks
 make test-timer-graphics # IRQ/PIT, startup/layout and native CGA checks
 make test-timer-threshold # opt-in actual-assembly timer converter differential

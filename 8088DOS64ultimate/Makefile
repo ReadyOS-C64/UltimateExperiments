@@ -223,3 +223,11 @@ build/dos64-reference.prg: $(OBJECTS) build/virtual_pit_reference.o build/fixtur
 .PHONY: test-timer-threshold
 test-timer-threshold: build build/dos64-reference.prg
 	$(DOS64_ZIG) build threshold-differential --summary all
+
+.PHONY: test-native-builtins test-native-mode
+test-native-builtins: build
+	$(DOS64_ZIG) build native-builtins --summary all
+	$(DOS64_PYTHON) build_support/verify_native_workflows.py build "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img"
+	$(DOS64_PYTHON) tests/host/verify_native_workflows_test.py
+test-native-mode: build
+	$(DOS64_ZIG) build native-mode --summary all
