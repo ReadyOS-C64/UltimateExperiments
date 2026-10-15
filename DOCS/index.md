@@ -2,32 +2,32 @@
 
 [Source repository on GitHub](https://github.com/ReadyOS-C64/UltimateExperiments)
 
-Outside ReadyOS—and sometimes before ReadyOS—we do random experiments for the Commodore 64 Ultimate. Some may become supported projects; some are one-offs and throwaways. These guides describe what each experiment currently does and how to try it.
+Outside ReadyOS—and sometimes before ReadyOS—we do random experiments for the Commodore 64 Ultimate. Some may become supported projects; some are one-offs and throwaways. Pick an experiment below for its guides, examples and downloads.
 
-## Pick an experiment
+## ReadyFS
 
-| Project | Explore | Read |
-|---|---|---|
-| **ReadyFS** | Filesystem paths, typed transfers, native SD2IEC and a DOS-style shell | [Project guide](readyfs/index.md) · [Illustrated user guide](readyfs/READYFS_USER_GUIDE.md) |
-| **ReuSQL64** | A SQL-like database in REU memory, from tables and indexes to joins and aggregates | [Project guide](reusql/index.md) · [SQL language](reusql/sql-language.md) |
-| **C77 Cyberpunk 77** | Dual-bank character ROM, palette and ReadyOS screenshot galleries | [Project guide](c77/index.md) |
-
-## ReadyFS in pictures
+ReadyFS aims to provide a full set of command-line tools and a coherent way to work with Ultimate DOS drives, mounted disk images or real C64 drives, SOFTIEC, and SD2IEC. That includes mounting disk images and accessing disk images on the Ultimate **without mounting them**, as if they were folders.
 
 ![ReadyFS command-line editor on a physical C64](readyfs/guide-assets/06-long-line.png)
 
-The [editor and filesystem walkthrough](readyfs/tours/editor.md) follows help, editing, history, previews, transfers and a parameterized backup script. The [SD2IEC walkthrough](readyfs/tours/sd2iec.md) follows real native folder and image operations. Every step includes a command, explanation and actual C64 screenshot. No video files are needed or bundled.
+[Explore ReadyFS](readyfs/index.md) · [Illustrated guide](readyfs/READYFS_USER_GUIDE.md) · [Screenshot walkthrough](readyfs/tours/editor.md)
 
-## Main disk images
+## ReuSQL64
 
-- [ReadyFS overlay shell](downloads/readyfs-overlay-lab.d81): the main interactive build and all 28 sidecars; at least 1 MiB REU.
-- [ReadyFS monolithic diagnostic](downloads/readyfs-lab.d81): the earlier, simpler reader.
-- [ReuSQL64 interactive shell](downloads/rsql64_shell.d81): SQL client and engine overlays; 512 KB–16 MB REU.
+ReuSQL64 explores a SQL-like database engine that keeps its data in a 512 KB–16 MB REU. Create tables, query and join rows, group and aggregate results, and use explicit indexes through a C64 shell or a reusable engine API.
 
-Read each project guide before loading an image. For filesystem writes, use disposable fixtures and follow the ownership rules. REU database state needs an explicit checkpoint/capture workflow to survive reset.
+```sql
+CREATE TABLE NOTES (ID I16, BODY TEXT)
+INSERT INTO NOTES VALUES (1, 'HELLO REU')
+SELECT ID, BODY FROM NOTES
+```
 
-## Read offline or publish
+[Explore ReuSQL64](reusql/index.md) · [SQL language](reusql/sql-language.md) · [Interactive shell](reusql/shell.md)
 
-Every reference has a Markdown source and an HTML edition. Open `index.html` for the website, or browse the Markdown files directly. Images, styles and downloads are local; there is no runtime CDN dependency. The [portable ReadyFS guide](readyfs/portable-guide.html) embeds its illustrations for printing and single-file offline reading.
+## C77 Cyberpunk 77
 
-[Build and GitHub Pages instructions](README.md)
+A reconstructed dual-bank character ROM and Cyberpunk palette, explored across ReadyOS applications. Clean and CRT galleries show the same screens with different display treatments.
+
+![ReadyOS launcher with the C77 character ROM and palette](c77/screenshots/c77-cyberpunk-77-charrom/01_launcher.png)
+
+[Explore C77 Cyberpunk 77](c77/index.md) · [Clean gallery](c77/screenshots/c77-cyberpunk-77-charrom/README.md) · [CRT gallery](c77/screenshots/c77-cyberpunk-77-crt/README.md)

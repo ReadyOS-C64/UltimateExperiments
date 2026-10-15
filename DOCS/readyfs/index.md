@@ -1,6 +1,6 @@
 # ReadyFS
 
-ReadyFS is a standalone Commodore 64 filesystem laboratory and DOS-like command shell. It explores a common path and command model across UltimateDOS host storage, IEC disks, SoftwareIEC, native SD2IEC folders and disk images, with sequential tape support. It belongs to Ultimate Experiments and is separate from ReadyOS integration.
+ReadyFS aims to provide a full set of command-line tools and a coherent way to work with Ultimate DOS drives, mounted disk images or real C64 drives, SOFTIEC, and SD2IEC. That includes mounting disk images and accessing disk images on the Ultimate **without mounting them**, as if they were folders. It is a standalone Commodore 64 filesystem experiment in Ultimate Experiments, separate from ReadyOS integration.
 
 ## Try the committed disk
 

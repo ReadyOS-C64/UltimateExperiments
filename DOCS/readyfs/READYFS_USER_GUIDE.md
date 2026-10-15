@@ -2,7 +2,7 @@
 
 **Paths, commands, and a complete folder workflow** · Guide updated 13 October 2026 · Core screenshots: 9 October · SD2IEC screenshots: 13 October 2026
 
-ReadyFS is a DOS-like command shell for the Commodore 64. Its central idea is simple: **say where a file lives, then say what you want to do with it**. The same command language can address a floppy drive, an Ultimate host folder, a SoftwareIEC mapping, or sequential tape. The storage devices still have different capabilities.
+ReadyFS aims to provide a full set of command-line tools and a coherent way to work with Ultimate DOS drives, mounted disk images or real C64 drives, SOFTIEC, and SD2IEC. That includes mounting disk images and accessing disk images on the Ultimate **without mounting them**, as if they were folders. Its central idea is simple: **say where a file lives, then say what you want to do with it**. The same command language also addresses sequential tape. Storage endpoints retain their own capabilities and limits; the command references below describe the implemented behavior.
 
 This guide starts with that model, explains command arguments and options, then follows the real nested-folder demonstration. Screenshots are frames from a physical C64 Ultimate running at 1 MHz; they show actual results. Other examples are identified as recipes or syntax examples. The complete [video walkthrough](https://readyfs-editor-demo.klumsy.chatgpt.site/) remains available alongside this guide.
 

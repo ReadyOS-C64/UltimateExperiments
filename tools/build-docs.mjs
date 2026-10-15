@@ -56,12 +56,47 @@ for(const [src,dst] of sources){
 }
 const escape=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const slug=s=>s.toLowerCase().replace(/<[^>]*>/g,'').replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-');
-const nav=[
- ['Start','index.html'],['ReadyFS','readyfs/index.html'],['Illustrated guide','readyfs/READYFS_USER_GUIDE.html'],
- ['RUN / batch','readyfs/READYFS_RUN_GUIDE.html'],['SD2IEC','readyfs/READYFS_SD2IEC_TUTORIAL.html'],
- ['Editor tour','readyfs/tours/editor.html'],['SD2IEC tour','readyfs/tours/sd2iec.html'],
- ['ReuSQL64','reusql/index.html'],['SQL language','reusql/sql-language.html'],['C77 gallery','c77/index.html']
+const experiments=[
+ {label:'ReadyFS',directory:'readyfs',children:[
+  ['Illustrated user guide','READYFS_USER_GUIDE.html'],
+  ['Editor and history','READYFS_INTERACTIVE_UI.html'],
+  ['RUN / batch scripting','READYFS_RUN_GUIDE.html'],
+  ['SD2IEC walkthrough','READYFS_SD2IEC_TUTORIAL.html'],
+  ['IEC configuration','READYFS_IEC_CONFIGURATION.html'],
+  ['Native SD2IEC reference','SD2IEC_NATIVE.html'],
+  ['Editor screenshot tour','tours/editor.html'],
+  ['SD2IEC screenshot tour','tours/sd2iec.html'],
+  ['Safety','READYFS_SAFETY.html'],
+  ['Acceptance and limits','READYFS_ACCEPTANCE.html'],
+  ['Design plan','READYFS_MASTER_PLAN.html'],
+  ['Path research','READYFS_PATH_RESEARCH.html']
+ ]},
+ {label:'ReuSQL64',directory:'reusql',children:[
+  ['Interactive shell','shell.html'],
+  ['SQL language','sql-language.html'],
+  ['Tested SQL examples','tested-queries.html'],
+  ['Architecture','architecture.html'],
+  ['Memory map','memory-map.html'],
+  ['Public API','public-api.html'],
+  ['Storage format','storage-format.html'],
+  ['Export format','export-format.html'],
+  ['Build dependencies','dependencies.html']
+ ]},
+ {label:'C77 Cyberpunk 77',directory:'c77',children:[
+  ['Clean character-ROM gallery','screenshots/c77-cyberpunk-77-charrom/README.html'],
+  ['CRT gallery','screenshots/c77-cyberpunk-77-crt/README.html'],
+  ['Earlier palette gallery','screenshots/c77-cyberpunk-77/README.html']
+ ]}
 ];
+function navigation(page){
+ const link=(label,target)=>`<a href="${escape(relative(page,path.join(out,target)))}"${path.join(out,target)===page?' aria-current="page"':''}>${escape(label)}</a>`;
+ const home=link('All experiments','index.html');
+ return home+experiments.map(project=>{
+  const current=page.startsWith(path.join(out,project.directory)+path.sep);
+  const children=`<li>${link('Overview and downloads',project.directory+'/index.html')}</li>`+project.children.map(([label,target])=>`<li>${link(label,project.directory+'/'+target)}</li>`).join('');
+  return `<details class="project-nav" data-project="${project.directory}"${current?' open':''}><summary aria-label="${escape(project.label)} guides">${escape(project.label)}<span class="nav-chevron" aria-hidden="true"></span></summary><ul>${children}</ul></details>`;
+ }).join('');
+}
 function* files(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,e.name);if(e.isDirectory())yield* files(p);else yield p;}}
 let count=0;
 for(const file of files(out)){
@@ -82,8 +117,8 @@ for(const file of files(out)){
  if(file.includes(path.join('tours', ''))){
   content=content.replace(/(<p><img [\s\S]*?<\/p>)\s*(<pre>[\s\S]*?<\/pre>)/g,'$1<details class="screen-text"><summary>Read the screen text</summary>$2</details>');
  }
- const links=nav.map(([label,target])=>{const url=relative(page,path.join(out,target));return `<a href="${escape(url)}"${path.join(out,target)===page?' aria-current="page"':''}>${escape(label)}</a>`;}).join('');
- const tocHtml=toc.length?`<details class="contents" open><summary>On this page</summary><ul>${toc.map(h=>`<li><a href="#${h.id}">${escape(h.label)}</a></li>`).join('')}</ul></details>`:'';
+ const links=navigation(page);
+ const tocHtml=toc.length && page!==path.join(out,'index.html')?`<details class="contents" open><summary>On this page</summary><ul>${toc.map(h=>`<li><a href="#${h.id}">${escape(h.label)}</a></li>`).join('')}</ul></details>`:'';
  const home=relative(page,path.join(out,'index.html'));
  const html=`<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>${escape(title)} · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ${escape(title)}"><link rel="stylesheet" href="${relative(page,path.join(out,'style.css'))}"></head>
