@@ -1,17 +1,17 @@
 # Memory budget checkpoint
 
-Status: current CPU/BIOS/coherent floppy baseline measured; full CPU/devices/display/native file transport remain unfinished. Authoritative full-system ranges: [MEMORY.md](../docs/MEMORY.md). Storage/bootstrap baseline maps `build/dos64.map` / `build/dos64-tests.map`: runtime CODE **9,702**, RODATA **673**, BASIC **12**, BSS **211**, PAGEMAP **2,048**, CACHEMETA **192**, RANGEBUFFER **256**, ZP **16**, header **2**; PRG **10,389 bytes**. Unit CODE **10,618**, RODATA **697**, TESTCODE **36**, BASIC **12**, ZP **28**, PRG **11,365 bytes**. Final quick/helper integration passed; runtime bytes are unchanged and the extra recovery code is unit-only.
+Status: current verified slice includes coherent fetch, PIC, logical video, original adjust and absent serial/printer BIOS. Full CPU/devices/host display/native file transport remain unfinished. Runtime and unit use `cfg/dos64-runtime.cfg`; standalone hardware helpers retain `cfg/dos64.cfg`. Current runtime CODE **11,443**, RODATA **808**, DEVICECODE **1,696**, BASIC **12**, BSS **222**, DEVICESTATE **61**, PAGEMAP **2,048**, CACHEMETA **192**, RANGEBUFFER **256**, ZP **18**. Runtime linked total **16,758**, PRG **20,129** including **6,168** padding/startup-zero bytes. Unit CODE **12,359**, RODATA **832**, TESTCODE **36**, DEVICECODE **1,696**, ZP **30**; linked total **17,746**, PRG **20,129** including **5,192** padding/startup-zero bytes. [Exact maps/evidence](evidence/video-adjust-bios-20261015.json). The full-system [host map](../docs/MEMORY.md) and final checkpoint below explain allocation separately from PRG length.
 
 
 | Resource | Budget | Measured used | Gate |
 |---|---:|---:|---|
-| Resident/hot executable ranges | 22,272 bytes | 9,999 CODE + 673 RODATA + 12 BASIC = 10,684 emitted | C000 staging removes 256 bytes from old 22 KiB code ceiling; additional window C100–CFFF |
+| Resident/hot executable ranges | 20,224 bytes with future UCI buffer budgeted | CODE 11,443 + RODATA 808 + BASIC 12 + DEVICECODE 1,696 = 13,959 | MAIN/DEVICECODE boundaries; C000 staging and conditional C100–C8FF UCI buffer leave C900–CFFF |
 | Cold window including vectors | 4 KiB | Unknown | Must preserve IRQ/NMI/reset vectors and return gateways |
 | Host guest-cache frames | 16 KiB | 32 × 512 bytes reserved/used | 8000–BFFF, direct physical tags; tests cover all frames |
-| Host control/metadata | 4 KiB | 2,462 static bytes; 1,634 remaining including gaps | BSS 222 + map 2,048 + frame metadata 192; only 34 BSS bytes before E100 |
+| Host control/metadata | 4 KiB | 2,523 static bytes; 1,573 remaining including gaps | BSS 222 + map 2,048 + frame metadata 192 + DEVICESTATE 61; only 34 BSS bytes before E100 |
 | Host range staging | 256 bytes | 256 reserved, not PRG payload | C000–C0FF; linker/map gate forbids graphics/cache overlap |
 | Host low memory | 2 KiB | Runtime ZP 18; stack measured by probe | Full-system stack/IRQ/KERNAL bound not established |
-| Video matrix/fonts/bitmap | 12 KiB | Unknown | Correct VIC bank and font/bitmap alignment |
+| Video matrix/fonts/bitmap | 12 KiB | 4 KiB startup zero initialization; no renderer/font yet | Startup zeros are file bytes; preserve VIC bank/font/bitmap alignment |
 | I/O reservation | 4 KiB | Reserved | Never allocated as RAM |
 | REU guest physical arena | 1 MiB | Reserved design | Guest bus holes/ROM enforced |
 | REU whole floppies | 2 × 512 KiB | 360 KiB each fixture | Actual image lengths, no tail in exports |
@@ -48,10 +48,21 @@ Standalone range probe map: CODE 080D–0FAE (**1,954**), BSS **81**, ZP **21**,
 
 New physical range snapshot uses host 6000–73FF for a 5,120-byte recovery payload only while the standalone runner exclusively owns the machine; it is not production bitmap RAM available for resident growth. REU envelopes are guest 07FC00–0803FF, source 34FF00–3504FF and destination 35FF00–3604FF. The six bank-split descriptors recover all touched bytes; physical Manual 64 MHz integrity and exact 5,120-byte/configuration restoration passed. No new runtime REU arena or runtime ZP was added. Full-system IRQ/KERNAL/renderer stack bounds remain unmeasured.
 
-## Fetch optimization superseding current totals
+## Fetch optimization checkpoint
 
-Runtime CODE080D–2F1B **9,999**, RODATA2F1C–31BC **673**, BSS E000–E0DD **222**, ZP0020–0031 **18**, PRG **10,686**. UnitCODE **10,915**, RODATA **697**, TESTCODE **36**, ends 358C, ZP **30**, PRG **11,662**. The module plus calls/wrapper cost 297 executable bytes,11BSS and 2ZP. Staticcontrol 222+2048+192=**2,462**, leaving **1,634** including gaps; pre-mapBSS headroom **34** bytes. MAIN runtime headroom 3,651. Range buffer/map/frame metadata remain unchanged. [Exact maps/evidence](evidence/fetch-optimization-20261015.json).
+Runtime CODE 080D–2F1B **9,999**, RODATA 2F1C–31BC **673**, BSS E000–E0DD **222**, ZP 0020–0031 **18**, PRG **10,686**. Unit CODE **10,915**, RODATA **697**, TESTCODE **36**, ends 358C, ZP **30**, PRG **11,662**. The module plus calls/wrapper cost 297 executable bytes, 11 BSS and 2 ZP. Static control 222+2,048+192=**2,462**, leaving **1,634** including gaps; pre-map BSS headroom **34** bytes. MAIN runtime headroom is 3,651 bytes. Range buffer/map/frame metadata remain unchanged. [Exact maps/evidence](evidence/fetch-optimization-20261015.json).
 
-## PIC/device layout superseding current totals
+## PIC/device layout checkpoint
 
-Runtime CODE10,586, RODATA681, BSS222, ZP18, DEVICESTATE20 atEA00–EA13; PRG11,281. Unit CODE11,502, RODATA705, TESTCODE36, ZP30, ends37DF, PRG12,257. Static control usage222+2048+192+20=2,482, leaving1,614 bytes including gaps. The E000 BSS ceiling remains unchanged with34 bytes free. Device scratch is relocated into the EA00–EEFF allocation, while frame metadata is bounded toE900–E9FF and EF00–EFFF remains reserved. [Exact maps](evidence/pic-io-20261015.json).
+Runtime CODE **10,586**, RODATA **681**, BSS **222**, ZP **18**, DEVICESTATE **20** at EA00–EA13; PRG **11,281**. Unit CODE **11,502**, RODATA **705**, TESTCODE **36**, ZP **30**, ends 37DF, PRG **12,257**. Static control usage 222+2,048+192+20=**2,482**, leaving **1,614** bytes including gaps. The E000 BSS ceiling remains unchanged with 34 bytes free. Device scratch is relocated into the EA00–EEFF allocation, while frame metadata is bounded to E900–E9FF and EF00–EFFF remains reserved. [Exact maps](evidence/pic-io-20261015.json).
+
+
+## Verified resident video/adjust/auxiliary-BIOS layout
+
+Final verified maps: runtime CODE 080D–34BF **11,443**, RODATA 34C0–37E7 **808**, DEVICECODE 5000–569F **1,696**, BASIC **12**, BSS E000–E0DD **222**, ZP 0020–0031 **18**, DEVICESTATE EA00–EA3C **61**, PAGEMAP **2,048**, CACHEMETA **192** and RANGEBUFFER **256**. Unit CODE 080D–3853 **12,359**, RODATA 3854–3B93 **832**, TESTCODE 3B94–3BB7 **36**, DEVICECODE **1,696**, ZP **30**; other static allocations match runtime. The 205-test/57-tooling and expanded 5,701-case full gates accept these maps, superseding the historical checkpoint totals above.
+
+Runtime allocated MAIN payload is 11,443+808+12=**12,263** bytes; MAIN zero padding through 3FFF contributes **2,072** file bytes. Unit allocated MAIN payload is 12,359+832+36+12=**13,239**, with **1,096** padding bytes. Both append **4,096** startup zero bytes at 4000–4FFF and **1,696** DEVICECODE bytes at 5000–569F. Including the two-byte load header, both PRGs are **20,129 bytes**; their equal file length does not mean equal linked CODE usage. Actual linked totals excluding padding/startup zeros are runtime **16,758** / unit **17,746**, including header/ZP/static reservations. INITVIDEO is a file-memory region, not a linked executable segment.
+
+Runtime emitted BASIC/CODE/RODATA/DEVICECODE is **13,959** bytes. Static control usage 222+2,048+192+61=**2,523**, leaving **1,573** bytes across the control region including gaps; only **34** bytes remain in pre-E100 BSS. DEVICESTATE has **1,219** bytes left before EF00; CACHEMETA leaves **64** bytes before EA00. The optional future **2,048-byte** UCIBUFFER at C100–C8FF is not linked; reserving its budget leaves **1,792** bytes at C900–CFFF. The full host map totals 65,536 bytes and conservative resident/hot code capacity becomes **20,224 bytes**, including the shared 5000–5FFF code window. Remaining per-window space cannot be treated as interchangeable without linker changes.
+
+Standalone hardware probes/helpers retain `cfg/dos64.cfg`; runtime and unit use `cfg/dos64-runtime.cfg`. The new file layout does not invalidate physically tested standalone binaries. Logical video adds no runtime ZP or E000 BSS; DEVICESTATE 61 comprises PIC 20, video 33, adjust 6 and auxiliary BIOS 2 bytes. Full-system IRQ/KERNAL/renderer stack bounds and physical timing remain unmeasured.

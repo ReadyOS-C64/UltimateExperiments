@@ -26,7 +26,8 @@ EXTRA_ROWS={
     "F7.7":{110:"REP F2 divide overflow",143:"successful REP F3 quotient negation",612:"successful REP F2 quotient negation",9837:"zero divisor"},
     "FF.6":{68:"original PUSH SP ordering"},"FF.7":{81:"PUSH SP alias ordering"},
 }
-OPCODES=BASE_OPCODES+ADDED+CONTROL_STRINGS+SHIFTS+MATH_INDIRECT
+ADJUST_OPCODES="27 2F 37 3F D4 D5 D6 D7".split()
+OPCODES=BASE_OPCODES+ADDED+CONTROL_STRINGS+SHIFTS+MATH_INDIRECT+ADJUST_OPCODES
 project=Path(__file__).resolve().parents[1]
 scratch=project/"agentworking/scratch/sst8088"
 vendor=project/"third_party/sst8088"
@@ -49,7 +50,17 @@ metadata=json.loads(files["v2/metadata.json"])
 cases=[]
 for op in OPCODES:
     source=json.loads(gzip.decompress(files[f"v2/{op}.json.gz"]))
-    chosen=list(range(24 if op in BASE_OPCODES else 8))
+    chosen=list(range(128 if op in ADJUST_OPCODES else 24 if op in BASE_OPCODES else 8))
+    if op in ("27","2F","37","3F"):
+        edges={0,1,5,6,0x99,0x9a,0x9f,0xa0,0xf9,0xfa,0xff}
+        chosen+= [i for i,t in enumerate(source) if (t["initial"]["regs"]["ax"]&255) in edges and i not in chosen]
+    if op in ("D4","D5"):
+        seen=set()
+        for i,t in enumerate(source):
+            base=t["bytes"][-1]
+            if base not in seen or (op=="D4" and base==0):
+                if i not in chosen:chosen.append(i)
+                seen.add(base)
     for i in EXTRA_ROWS.get(op,{}):
         if i not in chosen:chosen.append(i)
     # C6/C7 contain undefined extension aliases in this original-8088 source.
@@ -92,10 +103,10 @@ for op in OPCODES:
 fixture=project/"tests/fixtures/8088-subset.json"
 fixture.write_text(json.dumps(cases,separators=(",",":"))+"\n")
 record={"repository":"https://github.com/SingleStepTests/8088","commit":PIN,
-        "license":"MIT; LICENSE retained alongside this record","selection":"first24 per baseline opcode plus audited boundary rows; first8 per added opcode/extension including first hardware C6/C7 case of every extension alias; quick rows explicit",
+        "license":"MIT; LICENSE retained alongside this record","selection":"first24 per baseline opcode plus audited boundary rows; first8 per added opcode/extension including first hardware C6/C7 case of every extension alias; adjust first128 each plus all BCD AL edge rows, every AAM/AAD base first row and every AAM0 row; quick rows explicit",
         "limitations":"Functional state only; cycles/queue omitted; register flags use upstream-defined masks; divide-error saved FLAGS masks only the same undefined arithmetic bits; no throughput coverage",
         "audited_extra_rows":EXTRA_ROWS,
-        "source_gaps":["FE.2 through FE.7 are absent at this pin", "8F source contains only /0", "F6/F7 MUL, IMUL and unsigned DIV sources contain no REP prefixes; IDIV prefixes are covered"],
+        "source_gaps":["FE.2 through FE.7 are absent at this pin", "8F source contains only /0", "F6/F7 MUL, IMUL and unsigned DIV sources contain no REP prefixes; IDIV prefixes are covered", "Adjust opcode sources contain no REP prefixes; independent microcode-derived behavior tests cover that gap"],
         "source_files":[{"path":name,"sha256":hashlib.sha256(data).hexdigest()} for name,data in files.items()],
         "fixture":"tests/fixtures/8088-subset.json","fixture_sha256":hashlib.sha256(fixture.read_bytes()).hexdigest(),"cases":len(cases)}
 (vendor/"UPSTREAM.json").write_text(json.dumps(record,indent=2)+"\n")

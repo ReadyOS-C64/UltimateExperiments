@@ -59,17 +59,24 @@ test "owned synthetic BIOS initializes exact ROM IVT BDA and preserves conventio
     const low=try allocator.alloc(u8,0x500); defer allocator.free(low); @memset(low,0);
     for([_][2]u16{.{0x44,0x20},.{0x45,1},.{0x47,0xf0},.{0x48,0x30},.{0x49,1},.{0x4b,0xf0},.{0x4d,1},.{0x4f,0xf0},.{0x64,0x10},.{0x65,1},.{0x67,0xf0},.{0x79,3},.{0x7b,0xf0},.{0x410,0x21},.{0x413,0x80},.{0x414,2},.{0x41a,0x1e},.{0x41c,0x1e},.{0x449,3},.{0x44a,80},.{0x44d,0x10},.{0x460,7},.{0x461,6},.{0x463,0xd4},.{0x464,3},.{0x465,0x29}}) |p| low[p[0]]=@intCast(p[1]);
     low[0x54]=0x40; low[0x55]=1; low[0x57]=0xf0;
+    for ([_][2]u16{ .{0x40,0x50}, .{0x41,1}, .{0x43,0xf0}, .{0x50,0x60}, .{0x51,1}, .{0x53,0xf0}, .{0x5c,0x70}, .{0x5d,1}, .{0x5f,0xf0}, .{0x466,0x30} }) |p| low[p[0]]=@intCast(p[1]);
     try std.testing.expectEqual(@as(u32,0xffffffff),c.dos64_reu_compare(f.machine,0,low.ptr,low.len));
     const rom=try allocator.alloc(u8,65536); defer allocator.free(rom); @memset(rom,0xff);
     @memcpy(rom[0x100..0x103],&[_]u8{0xe6,0xf1,0xcf}); @memcpy(rom[0x110..0x113],&[_]u8{0xe6,0xf2,0xf4});
     @memcpy(rom[0x120..0x12a],&[_]u8{0x1e,0x31,0xc0,0x8e,0xd8,0xa1,0x10,0x04,0x1f,0xcf});
     @memcpy(rom[0x130..0x13a],&[_]u8{0x1e,0x31,0xc0,0x8e,0xd8,0xa1,0x13,0x04,0x1f,0xcf});
     @memcpy(rom[0x140..0x14b],&[_]u8{0x55,0x89,0xe5,0x83,0x4e,6,1,0xb4,0x86,0x5d,0xcf});
+    @memcpy(rom[0x150..0x153],&[_]u8{0xe6,0xf3,0xcf});
+    @memcpy(rom[0x160..0x163],&[_]u8{0xe6,0xf4,0xcf});
+    @memcpy(rom[0x170..0x173],&[_]u8{0xe6,0xf5,0xcf});
     @memcpy(rom[0x300..0x30b],&[_]u8{0xcf,2,0x25,2,9,0x2a,0xff,0x50,0xf6,0x19,4});
     @memcpy(rom[0xfff0..0xfffe],&[_]u8{0xea,0x10,1,0,0xf0,'1','0','/','1','5','/','2','6',0xff}); rom[0xfffe]=0xfe;
     try std.testing.expectEqual(@as(u32,0xffffffff),c.dos64_reu_compare(f.machine,0xf0000,rom.ptr,rom.len));
     try std.testing.expectEqual(@as(u8,0xab),c.dos64_reu_peek(f.machine,0x500));
     try std.testing.expectEqual(@as(u8,0xcd),c.dos64_reu_peek(f.machine,0x9ffff));
+    const screen=try allocator.alloc(u8,0x4000); defer allocator.free(screen);
+    for(screen,0..) |*v,i| v.*=if(i%2==0) 0x20 else 7;
+    try std.testing.expectEqual(@as(u32,0xffffffff),c.dos64_reu_compare(f.machine,0xb8000,screen.ptr,screen.len));
     // Guest stores through the normal PC bus cannot alter the owned ROM.
     word(&f,try f.symbol("dos64_segment"),0xf000); word(&f,try f.symbol("dos64_offset"),0x100);
     word(&f,try f.symbol("dos64_cpu_value"),0x1234);
@@ -85,6 +92,67 @@ test "BIOS initialization restores caller memory mode and refuses publication af
     try std.testing.expectEqual(@as(u8,1),r.p&1);
     try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_memory_mode")));
     try std.testing.expectEqual(@as(u8,0),f.peek(try f.symbol("dos64_bios_ready")));
+    try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_bios_host_error")));
+}
+
+test "INT10 query and absent INT14 INT17 use owned gates and normal IRET frames" {
+    var f = try init(true);
+    defer f.deinit();
+    const g = try f.symbol("dos64_guest");
+    const rows = [_]struct { vector:u8, ax:u16, gate:u16, expected:u16 }{
+        .{ .vector=0x10, .ax=0x0f00, .gate=0x150, .expected=0x5003 },
+        .{ .vector=0x14, .ax=0x00a3, .gate=0x160, .expected=0x00a3 },
+        .{ .vector=0x17, .ax=0xffa3, .gate=0x170, .expected=0xffa3 },
+    };
+    for(rows,0..) |row,i| {
+        const at:u16=0x200+@as(u16,@intCast(i*8));
+        for ([_]u8{0xcd,row.vector,0xf4},0..) |value,index| {
+            const address=try f.symbol("dos64_address");
+            word(&f,address,at+@as(u16,@intCast(index))); f.poke(address+2,0);
+            f.poke(try f.symbol("dos64_mem_value"),value);
+            const write=try f.call("dos64_mem_write",50_000);
+            try std.testing.expectEqual(@as(u8,0),write.p&1);
+        }
+        try reg(&f,9,0); try reg(&f,12,at);
+        try reg(&f,4,0x1000); try reg(&f,10,0x2000);
+        try reg(&f,13,0xf603); try reg(&f,0,row.ax);
+        try reg(&f,2,3); try reg(&f,3,0xbeef);
+        try step(&f);
+        try std.testing.expectEqual(@as(u16,0xf000),f.word(g+18));
+        try std.testing.expectEqual(row.gate,f.word(g+24));
+        try step(&f); try step(&f);
+        try std.testing.expectEqual(row.expected,f.word(g));
+        try std.testing.expectEqual(if(row.vector==0x10) @as(u16,0x00ef) else @as(u16,0xbeef),f.word(g+6));
+        try std.testing.expectEqual(@as(u16,3),f.word(g+4));
+        try std.testing.expectEqual(@as(u16,0x1000),f.word(g+8));
+        try std.testing.expectEqual(@as(u16,0xf603),f.word(g+26));
+        try std.testing.expectEqual(at+2,f.word(g+24));
+    }
+}
+
+test "video and auxiliary callback whitelists reject wrong gates and propagate cache failure" {
+    var f = try init(true);
+    defer f.deinit();
+    const g = try f.symbol("dos64_guest");
+    for([_][2]u16{.{0x102,0xf3},.{0x152,0xf4},.{0x162,0xf5},.{0x172,0xf3}}) |item| {
+        try reg(&f,9,0xf000); try reg(&f,12,item[0]); try reg(&f,0,0x0f00);
+        const r=try port(&f,@intCast(item[1]));
+        try std.testing.expectEqual(@as(u8,1),r.p&1);
+        try std.testing.expectEqual(@as(u8,0),f.peek(try f.symbol("dos64_bios_host_error")));
+        try std.testing.expectEqual(@as(u16,0x0f00),f.word(g));
+    }
+    // Segment alias of F0150 is admitted and queries dirty coherent BDA.
+    try reg(&f,9,0xf001); try reg(&f,12,0x142);
+    var r=try port(&f,0xf3);
+    try std.testing.expectEqual(@as(u8,0),r.p&1);
+    try std.testing.expectEqual(@as(u16,0x5003),f.word(g));
+    try flush(&f);
+    f.poke(try f.symbol("dos64_cache_limit"),1);
+    _=try f.call("dos64_cache_init",50_000);
+    c.dos64_reu_fail_after(f.machine,0,8);
+    try reg(&f,9,0xf000); try reg(&f,12,0x152); try reg(&f,0,0x0f00);
+    r=try port(&f,0xf3);
+    try std.testing.expectEqual(@as(u8,1),r.p&1);
     try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_bios_host_error")));
 }
 

@@ -76,4 +76,20 @@ Final frozen-baseline profile rerun passed 1/1 in 3.27 host seconds: 10,314 gues
 
 ## Integrated fetch comparison
 
-Against source-pinned baseline `49 ac 73 f`, the same 12 workloads and all final-state checks pass after the fetch change. Warm cycles per guest instruction: register loop **1,383.78** (21.49% reduction), dirty memory **1,744.48** (20.45%), stack/calls **1,616.05** (10.36%), multiply/divide **1,774.18** (18.23%). The 20KiB REP workload increases about 0.08%; its DMA counts are unchanged. Aggregate CPU cycles fall 65,680,572→61,735,896, but this weighted total is not an XT ratio. The same exclusions and lack of calibrated physical timing apply. [Source identities, complete samples and baseline comparison](../agentworking/evidence/fetch-optimization-20261015.json).
+Against source-pinned baseline `49ac73f`, the same 12 workloads and all final-state checks pass after the fetch change. Warm cycles per guest instruction: register loop **1,383.78** (21.49% reduction), dirty memory **1,744.48** (20.45%), stack/calls **1,616.05** (10.36%), multiply/divide **1,774.18** (18.23%). The 20 KiB REP workload increases about 0.08%; its DMA counts are unchanged. Aggregate CPU cycles fall 65,680,572→61,735,896, but this weighted total is not an XT ratio. The same exclusions and lack of calibrated physical timing apply. [Source identities, complete samples and baseline comparison](../agentworking/evidence/fetch-optimization-20261015.json).
+
+
+## Current resident video/adjust/BIOS profile
+
+The combined verified slice passes 1/1 profiling in 3.28 host seconds, with all 12 exact-register/full-RAM samples accepted. Ordered identity `9f596825c60881eb349a04b9ca26feccdba29d12eb12f0c4f785ceac8f766a9c` and [current slice evidence](../agentworking/evidence/video-adjust-bios-20261015.json) retain linked/source identities and configuration. Total work is unchanged at 10,314 guest instructions, 12,902 scheduling calls, 223 DMA operations and 114,176 bytes; measured CPU cycles are 62,013,116 and native instructions 18,258,732. This profile supersedes current-runtime costs while the earlier tables remain pinned historical comparisons.
+
+| Current warm sample | Measured host CPU cost |
+|---|---:|
+| Register/branch loop | 1,410.56 cycles per guest instruction |
+| Dirty memory copy | 1,770.94 cycles per guest instruction; 4,436.00 per copied byte |
+| Stack calls | 1,643.29 cycles per guest instruction |
+| 256-byte REP copy | 1,114.48 cycles per copied byte |
+| 20 KiB REP copy | 1,082.04 cycles per copied byte |
+| Multiply/divide loop | 1,802.75 cycles per guest instruction |
+
+The same step-entry→RTS interval, caller/setup/validation exclusions and unmodeled physical DMA/VIC/UCI/rendering costs apply. Adding linked modules changes address placement and cycle details; do not attribute every difference to a new algorithm. Genuine IO.SYS continuation separately reports 26,023,384 step cycles through missing INT 1Ah after 2,542 instructions, plus 26,360,254 setup cycles; handoff itself is 392 instructions/11,860,775 step cycles. This is still short of boot-to-prompt and is not calibrated physical elapsed time or an XT ratio.

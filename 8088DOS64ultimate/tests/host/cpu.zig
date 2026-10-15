@@ -145,7 +145,7 @@ test "reset ROM far jump reaches guest code and repeated short loop stays bounde
 }
 
 test "STI shadow covers following instruction and unsupported instruction latches" {
-    var f=try init(2,1);defer f.deinit();try program(&f,0,0x100,&.{0xfb,0x90,0xd6,0xc0});
+    var f=try init(2,1);defer f.deinit();try program(&f,0,0x100,&.{0xfb,0x90,0xe4,0xfe});
     try step(&f);try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_cpu_irq_shadow")));
     try step(&f);try std.testing.expectEqual(@as(u8,0),f.peek(try f.symbol("dos64_cpu_irq_shadow")));
     var r=try f.call("dos64_cpu_step",10_000);

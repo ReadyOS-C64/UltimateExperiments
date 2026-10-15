@@ -1,9 +1,12 @@
 .include "abi.inc"
 .include "memory.inc"
 .include "bios.inc"
+.include "video.inc"
 .macpack longbranch
 .import dos64_guest, dos64_cpu_value
 .import dos64_io_init
+.import dos64_video_service, dos64_video_host_error
+.import dos64_aux_bios_service, dos64_aux_bios_vector, dos64_aux_bios_host_error
 .import dos64_mem_write, dos64_memory_mode, dos64_physical
 .import dos64_cpu_word_read, dos64_cpu_word_write
 .import dos64_disk_transfer, dos64_disk_spt, dos64_disk_host_error
@@ -94,6 +97,21 @@ dos64_bios_init:
     lda dos64_disk_spt
     sta dos64_mem_value
     jsr dos64_mem_write
+    jcs bios_init_failed
+    ; POST mode3 initializes the logical CGA aperture before guest reset.
+    lda dos64_guest+G_AX
+    sta bios_count
+    lda dos64_guest+G_AX+1
+    sta bios_count+1
+    lda #3
+    sta dos64_guest+G_AX
+    lda #0
+    sta dos64_guest+G_AX+1
+    jsr dos64_video_service
+    lda bios_count
+    sta dos64_guest+G_AX
+    lda bios_count+1
+    sta dos64_guest+G_AX+1
     jcs bios_init_failed
     lda bios_mode
     sta dos64_memory_mode
@@ -199,7 +217,7 @@ dos64_bios_port:
     jmp bios_handled
 @boot:
     cmp #$10
-    jne bios_unrecognized
+    jne bios_other_gate
     lda bios_port
     cmp #BIOS_BOOT_PORT
     jne bios_unrecognized
@@ -223,7 +241,7 @@ dos64_bios_port:
     jne bios_host_failed
     lda dos64_bios_boot_status
     ; Loading the status above must not replace transfer's success/failure C.
-    bcs bios_handled
+    jcs bios_handled
     lda #0
     sta dos64_guest+G_CS
     sta dos64_guest+G_CS+1
@@ -240,6 +258,40 @@ dos64_bios_port:
     sta dos64_guest+G_FLAGS
     lda #$F2
     sta dos64_guest+G_FLAGS+1
+    jmp bios_handled
+bios_other_gate:
+    cmp #<BIOS_VIDEO_OFFSET
+    beq @video
+    cmp #$60
+    beq @serial
+    cmp #$70
+    jne bios_unrecognized
+    lda bios_port
+    cmp #$F5
+    jne bios_unrecognized
+    lda #$17
+    bne @aux
+@serial:
+    lda bios_port
+    cmp #$F4
+    jne bios_unrecognized
+    lda #$14
+@aux:
+    sta dos64_aux_bios_vector
+    jsr dos64_aux_bios_service
+    bcc bios_handled
+    lda dos64_aux_bios_host_error
+    jne bios_host_failed
+    jmp bios_unrecognized
+@video:
+    lda bios_port
+    cmp #BIOS_VIDEO_PORT
+    jne bios_unrecognized
+    jsr dos64_video_service
+    bcc bios_handled
+    lda dos64_video_host_error
+    jne bios_host_failed
+    jmp bios_unrecognized
 bios_handled:
     plp
     clc
@@ -257,6 +309,24 @@ bios_unrecognized:
     .byte <address, >address, ^address, value
 .endmacro
 bios_patches:
+    patch $00040, <BIOS_VIDEO_OFFSET
+    patch $00041, >BIOS_VIDEO_OFFSET
+    patch $00043, $F0
+    patch $00050, $60
+    patch $00051, $01
+    patch $00053, $F0
+    patch $0005C, $70
+    patch $0005D, $01
+    patch $0005F, $F0
+    patch $F0150, $E6
+    patch $F0151, BIOS_VIDEO_PORT
+    patch $F0152, $CF
+    patch $F0160, $E6
+    patch $F0161, $F4
+    patch $F0162, $CF
+    patch $F0170, $E6
+    patch $F0171, $F5
+    patch $F0172, $CF
     patch $00044, $20
     patch $00045, $01
     patch $00047, $F0

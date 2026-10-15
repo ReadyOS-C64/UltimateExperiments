@@ -2,7 +2,7 @@
   "repository": "https://github.com/SingleStepTests/8088",
   "commit": "aea84484abc79d09639d855b7b0ab32bc9e4dbeb",
   "license": "MIT; LICENSE retained alongside this record",
-  "selection": "first24 per baseline opcode plus audited boundary rows; first8 per added opcode/extension including first hardware C6/C7 case of every extension alias; quick rows explicit",
+  "selection": "first24 per baseline opcode plus audited boundary rows; first8 per added opcode/extension including first hardware C6/C7 case of every extension alias; adjust first128 each plus all BCD AL edge rows, every AAM/AAD base first row and every AAM0 row; quick rows explicit",
   "limitations": "Functional state only; cycles/queue omitted; register flags use upstream-defined masks; divide-error saved FLAGS masks only the same undefined arithmetic bits; no throughput coverage",
   "audited_extra_rows": {
     "F6.6": {
@@ -32,7 +32,8 @@
   "source_gaps": [
     "FE.2 through FE.7 are absent at this pin",
     "8F source contains only /0",
-    "F6/F7 MUL, IMUL and unsigned DIV sources contain no REP prefixes; IDIV prefixes are covered"
+    "F6/F7 MUL, IMUL and unsigned DIV sources contain no REP prefixes; IDIV prefixes are covered",
+    "Adjust opcode sources contain no REP prefixes; independent microcode-derived behavior tests cover that gap"
   ],
   "source_files": [
     {
@@ -1150,9 +1151,41 @@
     {
       "path": "v2/A9.json.gz",
       "sha256": "3ca66c60a7aafc0a82389ace38a561db98013a34d38d94a403c31dbdca746934"
+    },
+    {
+      "path": "v2/27.json.gz",
+      "sha256": "9118e426712207b17cb81cd43482cff2200a3fd136caad5514b82ef868ec031a"
+    },
+    {
+      "path": "v2/2F.json.gz",
+      "sha256": "d0d5b697031c11f319ba3721a0a550aabbef894e6407dc1a4d6c7d64638715dc"
+    },
+    {
+      "path": "v2/37.json.gz",
+      "sha256": "71f9567dbb239f199bbb16edb5d9aac86c76742eee0686e4b73314a545a5ee59"
+    },
+    {
+      "path": "v2/3F.json.gz",
+      "sha256": "a77fdee3c5f46aa56a2ccd3c630488f2d9a522da69ef97da1c54aa2658813538"
+    },
+    {
+      "path": "v2/D4.json.gz",
+      "sha256": "0fa4bedd30cb2f271e4f792cdd813596737984276b1dfc89d62bf3490759db49"
+    },
+    {
+      "path": "v2/D5.json.gz",
+      "sha256": "92ab2f2a816713136b90425b23ca0d2d2c1c6680f4c1ae49efa326654b1ef65b"
+    },
+    {
+      "path": "v2/D6.json.gz",
+      "sha256": "a1d813136fa94587d9986a5acf0f03216aad58ec88afec004393ca7e8f37c1d8"
+    },
+    {
+      "path": "v2/D7.json.gz",
+      "sha256": "5a60f82cb5a45bdf8ad1873b53fd615dafc01f68ba7b970d2c40a29451fb3999"
     }
   ],
   "fixture": "tests/fixtures/8088-subset.json",
-  "fixture_sha256": "ac0aec1995ab621589439c6db0ade54cc8d45c7c5b25f216a2f6466993fe5fe1",
-  "cases": 2555
+  "fixture_sha256": "aba315edeb9bf6517e9c0eb0f5a887d97589c1604b74ff7f83e1dd2a64bf2f8e",
+  "cases": 5701
 }

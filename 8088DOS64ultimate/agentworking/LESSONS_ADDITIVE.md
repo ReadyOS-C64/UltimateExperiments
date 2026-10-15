@@ -87,4 +87,14 @@
 - Real reset→boot sector→IO.SYS handoff is accepted independently from continuation. The next missing PIC OUT 20h at 0070:2BFB is retained rather than faked. Kernel entry and a passing integration test do not establish a COMMAND.COM prompt or native startup/media loading.
 - Real-assembly profiles establish a costly pre-optimization baseline (warm register/branch about 1,762 cycles/instruction; 20 KiB REP about 1,081 cycles/byte). Report caller/setup/validation/DMA/VIC/physical exclusions. Unlinked optimization files are not evidence of an optimized runtime.
 
-- 2026-10-15: A fetch optimization must survive one-frame operand eviction and cold cache reset, not merely sequential reads. Compare the entire guest state after each instruction and full RAM at completion against the prior assembled path. Profile short-loop and largeREP separately: faster fetch reduced the former substantially while largeREP changed negligibly.
+- 2026-10-15: A fetch optimization must survive one-frame operand eviction and cold cache reset, not merely sequential reads. Compare the entire guest state after each instruction and full RAM at completion against the prior assembled path. Profile short-loop and large REP separately: faster fetch reduced the former substantially while large REP changed negligibly.
+
+
+## 2026-10-15 — resident logical video and auxiliary BIOS integration
+
+- Moving logical video code to DEVICECODE at 5000–5FFF preserves the 4000–4FFF screen/font and 6000–7FFF bitmap reservations. A contiguous PRG needs MAIN padding and explicit 4000–4FFF startup zeros to reach that code; those bytes must not be reported as linked executable allocations. Standalone hardware configurations/binaries remain separate.
+- New mutable scratch belongs in the bounded EA00–EEFF DEVICESTATE allocation rather than overflowing scarce E000 pre-map BSS. Keep CACHEMETA bounded to E900–E9FF and reserve EF00–EFFF; count the conditional future C100–C8FF UCI buffer before promising C000-window code headroom.
+- The first combined quick gate exposed two test-fixture mistakes, not target failures: the old unsupported-opcode sentinel D6 is now valid SALC, so the test uses unsupported input port FE instead; a new BIOS gate loop wrote REU backing behind a live dirty cache, so its guest code writes now use the coherent memory API.
+- Original XT zero serial/printer base checks precede AH dispatch and preserve AX. A missing device is not a timeout; retain unchecked wrapping DX indexing and fail explicitly for a present-device contract that is unimplemented.
+- Logical video mode/page/cursor/scroll/pixel/teletype tests prove BDA/VRAM behavior. They do not prove host fonts, rendering, keyboard input, retrace timing or physical readability. Native POST initializes mode 3 coherently while preserving guest AX.
+- Original adjust hardware corrected an AAM-zero flag expectation before acceptance: SZP reflects zero while AX stays unchanged and INT 0 saves the post-immediate IP. Keep undefined-flag masking scoped to actual hardware metadata and disclose source gaps for REP AAM/AAD.

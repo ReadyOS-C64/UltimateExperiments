@@ -1,6 +1,6 @@
 # Original-8088 execution checkpoint
 
-Updated 2026-10-15 in `src/cpu.s`, `src/alu.s`, `src/operands.s`, `src/stack.s`, `src/strings.s`, `src/shifts.s`, `src/control.s`, `src/math.s` and `src/indirect.s`. This is a functional execution checkpoint, not a complete 8088 or complete DOS boot. Target code is independently authored 6502 assembly and executes guest bytes through the coherent memory bus.
+Updated 2026-10-15 in `src/cpu.s`, `src/alu.s`, `src/operands.s`, `src/stack.s`, `src/strings.s`, `src/shifts.s`, `src/control.s`, `src/math.s`, `src/indirect.s`, `src/fetch.s`, `src/ports.s` and `src/adjust.s`. This is a functional execution checkpoint, not a complete 8088 or complete DOS boot. Target code is independently authored 6502 assembly and executes guest bytes through the coherent memory bus.
 
 ## Current interface and instructions
 
@@ -23,8 +23,9 @@ Updated 2026-10-15 in `src/cpu.s`, `src/alu.s`, `src/operands.s`, `src/stack.s`,
 | E9, EA, EB | Near-relative, far-absolute and short-relative jumps |
 | 86/87, 8F /0, 98/99, A8/A9 | General XCHG, POP r/m16, CBW/CWD and accumulator TEST |
 | FE /0–1, FF /0–7 | Byte/word INC/DEC; word indirect near/far CALL/JMP and PUSH, including /7 PUSH alias; far register forms excluded |
+| 27/2F, 37/3F, D4–D7 | Original DAA/DAS/AAA/AAS, immediate-base AAM/AAD, SALC and coherent XLAT |
 | F6/F7 | TEST (/0 and /1 alias), NOT, NEG, MUL, IMUL, DIV and IDIV |
-| E4–E7, EC–EF | Byte/word IN/OUT with immediate/DX ports; PIC20h/21h and whitelisted private BIOS callbacks |
+| E4–E7, EC–EF | Byte/word IN/OUT with immediate/DX ports; PIC 20h/21h and whitelisted private BIOS callbacks |
 | F4 | Halt latch; subsequent steps wait without advancing IP/count |
 | F5, F8–FD | CMC, CLC, STC, CLI, STI, CLD, STD guest flags |
 | 26, 2E, 36, 3E, F0, F2, F3 | Recognized prefixes; last segment override wins, REP executes on strings, LOCK retained without bus-lock timing |
@@ -33,7 +34,7 @@ Status 0 is running, 1 halted, 2 unsupported instruction and 3 host memory failu
 
 Original 8088 prefixes have no modern 15-byte instruction limit. After 64 prefixes the step routine yields with pending state and IP advanced through those prefixes, without completing/counting the guest instruction. A subsequent step continues it. STI, loading SS, and POPF changing IF from zero to one record an interrupt shadow through the following complete instruction; asynchronous hardware interrupt/trap delivery and halt wake-up remain unimplemented. Software INT/IRET routing is implemented.
 
-Instruction fetch wraps IP as a 16-bit register before translating each byte. It sees dirty cached code, including tested self-modification followed by a jump. There is no instruction prefetch-queue emulation or fast span fetch yet.
+Instruction fetch wraps IP as a 16-bit register before translating each byte. It sees dirty cached code, including tested self-modification followed by a jump. The linked fetch helper reuses a validated coherent span; there is no original-8088 prefetch-queue emulation.
 
 ## Word boundary policy
 
@@ -55,7 +56,7 @@ A failed push can leave SP decremented and a low byte written. Pop advances only
 
 ## Independent verification
 
-The final quick gate passes **150 Zig/Peddle + 45 tooling tests**. The final broader CPU gate passes **150 Zig/Peddle tests including all 2,555 hardware cases**, in 23.70 host seconds, including the newly added math and indirect forms. [Retained baseline evidence](../agentworking/evidence/storage-bootstrap-20261015.json) pins tools, source and artifacts. The math/indirect checkpoint itself passed 114 Zig tests and 15 tooling tests in 8.00 seconds quick, then 114 Zig tests with the full corpus in 17.73 seconds. Later storage/BIOS tests extend that baseline; host command durations are not guest emulation rates.
+The combined slice passes **205 Zig/Peddle behavior tests and 57 tooling checks**. The final full lane passes **205 tests including all 5,701 selected hardware cases** in 59.26 host seconds, maximum eight scheduling slices. The quick gate took 29.12 seconds and executed the earlier 581-row quick projection; the subsequently expanded fixture designates 597 quick rows, all covered by the final full run, without a separate quick rerun. [Current evidence](../agentworking/evidence/video-adjust-bios-20261015.json) pins tools, source, maps, fixtures and artifacts. The 5,701 cases preserve all prior 2,555 rows and add 3,146 adjust rows; all 47 selected AAM-zero saved-FLAGS frames compare exactly in RAM without new masks. Historical math/storage/fetch/PIC checkpoints retain their individual evidence. Host command durations are not guest emulation rates.
 
 The pinned [SingleStepTests 8088](https://github.com/SingleStepTests/8088/tree/aea84484abc79d09639d855b7b0ab32bc9e4dbeb) projection and exact selection are recorded in [upstream hashes](../third_party/sst8088/UPSTREAM.json). The MIT license is retained. Import script: `build_support/fetch_8088_subset.py`; network is only needed for explicit import, not routine tests. The manifest checks fixture and license identity.
 
@@ -65,11 +66,11 @@ The test runner batches bounded native Peddle stepping in C++, caches linker sym
 
 ## Strings, shifts and software interrupt routing
 
-Each step handles one ordinary string instruction or at most 16 REP iterations. CX0 performs no string access or flag change. MOVS/STOS/LODS repeat for either F2/F3; CMPS/SCAS test the actual comparison's ZF after the first iteration and stop on the requested REPE/REPNE condition. SI/DI wrap with DF and element width; destination ES is fixed. Pending host yields preserve opcode/prefixes, leave IP after the decoded opcode, and increment the guest instruction counter once on completion. Tests include 65prefixes before REP, forced eviction, overlap/self-overwrite, multi-slice comparisons and terminal failures after prior iterations.
+Each step handles one ordinary string instruction or at most 16 REP iterations. CX=0 performs no string access or flag change. MOVS/STOS/LODS repeat for either F2/F3; CMPS/SCAS test the actual comparison's ZF after the first iteration and stop on the requested REPE/REPNE condition. SI/DI wrap with DF and element width; destination ES is fixed. Pending host yields preserve opcode/prefixes, leave IP after the decoded opcode, and increment the guest instruction counter once on completion. Tests include 65 prefixes before REP, forced eviction, overlap/self-overwrite, multi-slice comparisons and terminal failures after prior iterations.
 
 These host yields are scheduling boundaries, not asynchronous guest interrupts. Original-8088 REP interrupt restart (including multiple-prefix loss), traps and per-iteration hardware event sampling remain unimplemented; a future event dispatcher must implement their policy explicitly. Software INT cannot be fetched until the current REP completes.
 
-D0–D3 use the full 8-bit CL, without a modern 31 mask. Counts0 preserve destination and flags. Rotates preserve SZP; shifts update SZP with undefined AF deterministically cleared. OF follows the final single-bit operation where checked by the original vectors. Extension 6 is original SETMO/SETMOC, setting all operand bits for nonzero counts; its undefined arithmetic flags are masked by upstream metadata. Independent closed-form integer/ring tests include counts 0/1/8/9/16/17/31/32/255.
+D0–D3 use the full 8-bit CL, without a modern 31 mask. Count zero preserve destination and flags. Rotates preserve SZP; shifts update SZP with undefined AF deterministically cleared. OF follows the final single-bit operation where checked by the original vectors. Extension 6 is original SETMO/SETMOC, setting all operand bits for nonzero counts; its undefined arithmetic flags are masked by upstream metadata. Independent closed-form integer/ring tests include counts 0/1/8/9/16/17/31/32/255.
 
 Software INT reads both IVT words at segment 0 before pushing normalized FLAGS, CS and return IP; clears guest IF/TF; then transfers to the captured target. This preserves mutable guest hooks and a reference-derived IVT/stack alias ordering. INTO only routes vector 4 when OF is set. IRET pops IP/CS/FLAGS and applies the same normalized flags-load IF transition policy as POPF. Event timing is not proven by these state tests. Partial host errors can consume stack words or commit prior state and remain terminal. No native INT 21h replacement exists.
 
@@ -83,12 +84,20 @@ General XCHG writes the decoded memory destination before replacing a base regis
 
 ## What remains
 
-Port I/O and PC devices beyond private BIOS entry gates, BCD adjust/AAM/AAD/XLAT, original POP CS, hardware interrupt/trap handling, halt wake-up and further original-CPU corners remain unfinished. Native display/keyboard, Ultimate/IEC file loading and persistence, complete DOS boot, calibrated speed and optimized fetch remain ahead. `src/fetch.s` and its tests are future work and are not linked into this baseline; no fetch optimization result is claimed. Startup initializes state and waits; it does not automatically execute a DOS image.
+PC devices beyond the functional PIC, original POP CS, hardware interrupt/trap handling, halt wake-up and further original-CPU corners remain unfinished. Native C64 renderer/font/keyboard, Ultimate/IEC file loading and persistence, complete DOS boot and calibrated speed remain ahead. Coherent fetch, adjust instructions, logical video and accurate absent serial/printer BIOS are now linked and verified. Clock, keyboard and UCI candidate modules are not linked in this checkpoint. Startup initializes state and waits; it does not automatically execute a DOS image.
 
-The [synthetic BIOS](BIOS_IMPLEMENTATION.md) and [disk primitive](DISK_IMPLEMENTATION.md) now execute reset at FFFF:0000, load the original sector at 0000:7C00 and let that sector load IO.SYS into 0070:0000. The full 22,398-byte file and 51 raw sectors, including padding and bootloader overread, match the unchanged floppy. This takes 392 completed guest instructions and 12,019,126 native CPU step cycles, excluding setup. The continuation reaches unsupported `E6 20` (`OUT 20h,AL`) at 0070:2BFB after 2,335 instructions. This is a real kernel handoff and useful next-failure trace; the COMMAND.COM prompt remains unaccepted.
+The [synthetic BIOS](BIOS_IMPLEMENTATION.md) and [disk primitive](DISK_IMPLEMENTATION.md) now execute reset at FFFF:0000, load the original sector at 0000:7C00 and let that sector load IO.SYS into 0070:0000. The full 22,398-byte file and 51 raw sectors, including padding and bootloader overread, match the unchanged floppy. The current linked slice takes 392 completed guest instructions and 11,860,775 native CPU step cycles to handoff, excluding setup. The storage baseline previously stopped at PIC OUT 20h after 2,335 instructions, and PIC integration reached INT 14h after 2,347. The new logical video/absent-device path reaches missing clock BIOS INT 1Ah after 2,542 completed instructions. This is genuine kernel execution and a concrete next-failure trace; the COMMAND.COM prompt remains unaccepted.
 
 ## Coherent fetch span checkpoint
 
 `src/fetch.s` accelerates instruction byte reads without pinning a cache frame across operand accesses. Each dereference validates expected CS/IP, cache mode/readiness/capacity, frame validity/tag and generation. The 512-byte span ends at a frame boundary or 16-bit IP wrap; holes never create a span. Every refill uses the normal guest-memory API. `cpu_fetch8_slow` retains the previous assembled helper for independent differential tests, including self-modification, one-frame eviction, redirects, aliases, initialization and failure.
 
-Integrated quick/full lanes pass 161 tests and 2,555 selected hardware cases; tooling 45. The cycle profile preserves all final registers and full 1MiB oracle memory. See [measured comparison](../agentworking/evidence/fetch-optimization-20261015.json). This is functional fetching, without an 8088 prefetch queue or bus timing.
+The fetch checkpoint quick/full lanes pass 161 tests and 2,555 selected hardware cases, with 45 tooling checks. The cycle profile preserves all final registers and the full 1 MiB memory oracle. See [measured comparison](../agentworking/evidence/fetch-optimization-20261015.json). This is functional fetching, without an 8088 prefetch queue or bus timing.
+
+## Decimal/ASCII adjust implementation
+
+`src/adjust.s` adds original 8088 DAA/DAS (27/2F), AAA/AAS (37/3F), AAM/AAD with immediate base (D4/D5), SALC (D6) and XLAT (D7). Adjust scratch uses six DEVICESTATE bytes with no extra pre-map BSS or zero page. DAA/DAS uses the AF-sensitive high-digit threshold 99h/9Fh; DAS low correction alone does not force CF. AAA/AAS correct AL by six and AH independently by one, avoiding later-CPU AX-wide carry behavior. Undefined flag bits retain the explicitly tested policy and are masked only where the hardware metadata declares them undefined.
+
+AAM/AAD use the actual immediate byte, including nondecimal bases. AAM base zero preserves AX, updates SZP to the original hardware-observed zero result and enters ordinary guest INT 0 with IP following the immediate. AAD base zero is valid. REP has no sign effect on AAM/AAD; this policy is source/microcode-derived because the pinned adjust hardware inputs contain no REP cases. SALC sets AL to 00h/FFh from CF without changing flags. XLAT wraps BX+AL at 16 bits, honors the source segment override and reads through the coherent bus, including dirty data, holes and physical wrap.
+
+Private checks passed 10 native test blocks covering 80,946 executed guest instructions and 3,146 selected additional hardware cases, with register/defined-flag and full 1 MiB RAM comparison. The 3,146 cases are now integrated into the normal 5,701-case full projection, preserving all earlier 2,555 cases. Offline model comparison over all 10,000 rows in each BCD source file is also separate from actual target execution. AAM-zero saved FLAGS bytes were compared without masking. The global linked quick/full/profile gates passed; this is functional coverage, not physical execution or original-CPU bus timing.

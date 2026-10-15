@@ -9,7 +9,7 @@
 .import dos64_fetch_init, dos64_fast_fetch
 .export cpu_complete, cpu_memory_error, cpu_unsupported, cpu_return, cpu_rep, cpu_relative
 .import dos64_strings_execute, dos64_string_pending, dos64_shifts_execute, dos64_control_execute
-.import dos64_stack_execute, dos64_math_execute, dos64_indirect_execute
+.import dos64_stack_execute, dos64_math_execute, dos64_indirect_execute, dos64_adjust_execute
 .import dos64_bios_port, dos64_bios_host_error
 .import dos64_io_read, dos64_io_write, dos64_io_port, dos64_io_value, dos64_io_width
 .import dos64_decode_rm, dos64_operand_read, dos64_operand_write, dos64_map_register
@@ -137,6 +137,19 @@ cpu_dispatch:
     lda #0
     sta dos64_cpu_pending
     lda dos64_cpu_opcode
+    cmp #$27
+    jeq dos64_adjust_execute
+    cmp #$2F
+    jeq dos64_adjust_execute
+    cmp #$37
+    jeq dos64_adjust_execute
+    cmp #$3F
+    jeq dos64_adjust_execute
+    cmp #$D4
+    bcc @math
+    cmp #$D8
+    jcc dos64_adjust_execute
+@math:
     cmp #$F6
     bcc @indirect
     cmp #$F8
