@@ -1,0 +1,132 @@
+{
+  "status": "read-only assessment; no new benchmark executed",
+  "runtime_sha256": "22f8209108fca953f783116c0a6cf5bd0c788e08b586421e30406f6129be0369",
+  "unit_sha256": "8a84329ce41850fa42d89c0ee5f42d4e6f77a000a2c0a9abce8cae9c0092d94f",
+  "inputs": {
+    "agentworking/evidence/boundary-performance-20261015.json": {
+      "sha256": "15d2d6c3291cc96b8433669a00f0f438215485b0c1d5800b5a6e989b2435ccd8",
+      "bytes": 6464
+    },
+    "docs/BOUNDARY_PERFORMANCE_20261015.md": {
+      "sha256": "127687a727d2099cf1fda1097fd8ce52d763dc1c2788452af307167c2cc76133",
+      "bytes": 3368
+    },
+    "agentworking/scratch/performance-combined-review/REVIEW.md": {
+      "sha256": "a5b9c4440aa1d24acec951fa7a7db7e12561e191b02da8db028a619ae288bfe4",
+      "bytes": 7992
+    },
+    "agentworking/scratch/performance-combined-review/boundary.log": {
+      "sha256": "a0342af8bb1caf1a8805ddb6bb14e6656ca614c6e9edddb92295ac93bb2b17e5",
+      "bytes": 555
+    },
+    "agentworking/scratch/performance-combined-review/work/tests/host/combined_boundary.zig": {
+      "sha256": "0dd20e9694b330339e39342fd030566c7aa56488c35933e2317b4b113b6fd2b5",
+      "bytes": 13498
+    },
+    "agentworking/scratch/cpu-timer-performance/HANDOFF.md": {
+      "sha256": "c603db6ba525c7575bd240eadbfaa3e981bcd74bb38d112f30b2dbc9502c38de",
+      "bytes": 10157
+    },
+    "agentworking/evidence/c64u-native-performance-20261015.json": {
+      "sha256": "796ce5d32e70575bc9c682f4278de74f8960c99bed79048aed946bff18e5c8a7",
+      "bytes": 9934
+    }
+  },
+  "raw_boundary_measurements": [
+    {
+      "raw_delta_per_boundary": 0,
+      "baseline_cycles_32": 56704,
+      "candidate_cycles_32": 43136,
+      "cycles_per_guest_NOP": 1348.0,
+      "ideal_microseconds_per_NOP_64MHz": 21.0625,
+      "ideal_NOP_per_second_64MHz": 47477.744807121664
+    },
+    {
+      "raw_delta_per_boundary": 1,
+      "baseline_cycles_32": 70250,
+      "candidate_cycles_32": 56682,
+      "cycles_per_guest_NOP": 1771.3125,
+      "ideal_microseconds_per_NOP_64MHz": 27.6767578125,
+      "ideal_NOP_per_second_64MHz": 36131.39973889418
+    },
+    {
+      "raw_delta_per_boundary": 100,
+      "baseline_cycles_32": 88013,
+      "candidate_cycles_32": 74445,
+      "cycles_per_guest_NOP": 2326.40625,
+      "ideal_microseconds_per_NOP_64MHz": 36.35009765625,
+      "ideal_NOP_per_second_64MHz": 27510.242460877158
+    }
+  ],
+  "modeled_DOS": {
+    "guest_instructions": 598702,
+    "cycles_before": 2869345809,
+    "cycles_after": 2616062815,
+    "CPU_cost_reduction_fraction": 0.08827203511181947,
+    "same_work_model_speedup": 1.096818391572146,
+    "mean_modeled_CPU_cycles_per_guest_instruction": 4369.557501060628
+  },
+  "algebra_only": {
+    "host_Hz": 64000000,
+    "requested_8088_Hz": 4000000,
+    "best_fixed_raw_NOP_host_cycles": 1348,
+    "host_cycles_per_reference_8088_clock": 16,
+    "break_even_reference_clocks_per_guest_instruction": 84.25,
+    "nominal_3_clock_NOP_microseconds_4MHz": 0.75,
+    "best_fixed_raw_to_nominal_3_clock_duration_ratio": 28.083333333333332,
+    "ideal_4_clock_bus_byte_supply_per_second_4MHz": 1000000,
+    "best_fixed_raw_rate_fraction_of_ideal_bus_supply": 0.04747774480712166,
+    "best_fixed_raw_duration_vs_ideal_4_clock_supply_ratio": 21.0625
+  },
+  "primary_sources": [
+    {
+      "url": "https://www.inf.pucrs.br/~calazans/undergrad/orgcomp_EC/mat_microproc/intel-8086_family_Users_Manual.pdf",
+      "download_sha256": "f72963977047b69ba020dbcb33301e8a5ecd14194cd3b5a4d0596f1508e0e9de",
+      "download_bytes": 9664998,
+      "visually_inspected_pdf_pages_1_based": [
+        65,
+        66,
+        77
+      ],
+      "printed_pages": [
+        "2-50",
+        "2-51",
+        "2-62"
+      ],
+      "facts": [
+        "NOP table lists 3 clocks and 1 byte",
+        "Table timing assumes instruction prefetched and waiting in queue",
+        "Exact sequence execution time should be measured on hardware"
+      ]
+    },
+    {
+      "url": "https://www.ceibo.com/eng/datasheets/Intel-8088-Data-Sheet.pdf",
+      "document": "Intel8088 datasheet231456-006 August1990",
+      "printed_pages": [
+        "10",
+        "11"
+      ],
+      "facts": [
+        "8-bit multiplexed data bus",
+        "Bus cycles require at least four clocks",
+        "Wait and idle states can extend throughput"
+      ],
+      "access": "web extracted text successful; local urllib download HTTP465 failed, no local PDF"
+    }
+  ],
+  "limitations": [
+    "Fixed scripted raw time is not self-consistent advancing physical-clock timing and does not measure physical throughput",
+    "Peddle CPU cycles omit actual MMIO/REU/VIC stalls and outer native scheduler/display cost",
+    "Nominal3-clock NOP table excludes an empty instruction queue; long 8088 NOP stream cannot sustain more byte fetches than bus permits",
+    "Ideal4-clock byte supply is an upper ceiling, not demonstrated actual8088 NOP throughput; therefore21.06 ratio is conditional and cannot establish measured20x slowdown",
+    "No overall DOS/XT speed ratio or MHz equivalence follows from this synthetic case",
+    "Physical107.320s includes33observer captures/import/keyboard waits and deliberate pauses; not compute rate",
+    "Historical CPU-only429-clock figure is not a new current-binary benchmark"
+  ],
+  "process": [
+    "No shared source/build changes, tests, hardware, commits or child agents",
+    "First broad rg search included JSON fixture huge line; output truncated; corrected to explicit test file",
+    "Local Intel datasheet download HTTP465 failed; successful web source retained by URL and extracted page references",
+    "Manual pypdf text extraction found no searchable text; inspected rendered actual source pages instead"
+  ]
+}

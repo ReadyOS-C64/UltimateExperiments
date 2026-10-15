@@ -157,3 +157,8 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 | D101 | Physically verified,2026-10-15 | Publish same-pause guestDOS/C64pixelpairs fromgenuine40/80 DIR/W, with honestfont/RGB provenance | All35files/9216free/A>, full4MiBdelta/settingsmediareset,54capture/1404recovery/1181evidence; previousnativefilefailures retained andseparatelyrecovered; DIR|MORE pending |
+
+
+| D102 | Physically verified,2026-10-15 | Genuine DIR|MORE first-page pairs and explicit temporary-file policy | Both40/80, realSPACE/finalDOS;37live→35clean originals;2066 allowed residue bytes; all4MiB/settings restored, remote source exact |
+| D103 | User directed,2026-10-15 | Performance minimum50%, stretch85% of4MHz8088 using real elapsed and analytical instruction/bus/prefetch bounds | DOSBox functional only; current3–5% is idealNOP model comparison, not physical whole-DOS measurement; privateCPM example is feasibility signal |
+| D104 | User directed,2026-10-15 | Record actualC64U video of GW-BASIC autoplayhangman, LIST, SYSTEM, DIR | Explicit recording request authorizes owned video endpoint/start/stop; stop only own stream, preserve known settings, never claim unknown prior stream restored; no audio/debug needed |

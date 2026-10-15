@@ -209,3 +209,6 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 
 - Disaster recovery must retain the established attachment-free FtpPutClient even when using original DRS1/DeltaService. BareClient POST memory/config routes fail on this firmware; a mocked entrypoint review did not establish transport compatibility. Separate successful disaster restoration does not change a failed application-run result.
 - Put dependent final checks and launches in one checked Python sequence. A shell newline can launch after a preceding guard/read fails; the frozen launcher must independently enforce every input, its own identity and exact host/output.
+
+- Validate DOS pipe live temporary listings separately from final cleanup; retain actual bytes/SHA and permit only deleted-slot/originally-free-cluster residue with exact original allocation, metadata, content and slack.
+- Seal source review, physical preflight and postrun logs in separate directories; a reused validate-only stdout path can destroy historical evidence without changing executable inputs.

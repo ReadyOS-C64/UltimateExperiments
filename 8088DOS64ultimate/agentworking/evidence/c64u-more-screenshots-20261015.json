@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "run": "agentworking/runs/c64u-native-more-screenshot-file-20261015-121556",
+  "runtime_sha256": "22f8209108fca953f783116c0a6cf5bd0c788e08b586421e30406f6129be0369",
+  "unit_sha256": "8a84329ce41850fa42d89c0ee5f42d4e6f77a000a2c0a9abce8cae9c0092d94f",
+  "review": "agentworking/scratch/more-physical-postrun-review/POSTRUN_MANIFEST.json",
+  "review_sha256": "c7e97188d8b71b02976109cd4f4b509102169e3b904f9f262a31f17cb52ea07d",
+  "checks": {
+    "capture": 56,
+    "filesystem": 473,
+    "recovery": 1412,
+    "evidence": 1201,
+    "preflight": 632
+  },
+  "application": {
+    "commands": 6,
+    "BIOS_key_words": 54,
+    "SPACE": 2,
+    "observations": 108,
+    "seconds_including_evidence": 365.498667459,
+    "CPU_MHz": 64,
+    "Turbo_Control": "Manual",
+    "pipeline_listing_files": 37,
+    "pipeline_listing_free": 7168,
+    "final_original_files": 35,
+    "final_free": 9216,
+    "actual_floppy_sha256": "be92fad31a6543c57e8cf5bad675b84eb57dcb7a49c5df1fbbaa36df4e5fd2e5",
+    "allowed_residue_bytes": 2066,
+    "original_metadata_chains_all_allocated_data_slack_boot_FAT_exact": true,
+    "no_live_extras_or_orphans": true
+  },
+  "restoration": {
+    "attempts": 1,
+    "full4194304bytes_equal": true,
+    "sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+    "ACKs": 805,
+    "fresh_backup_reads": 256,
+    "scan_reads": 256,
+    "writes": 37,
+    "compare_reads": 256,
+    "settings_media_reset_restored": true,
+    "live_and_historical_inputs": 588,
+    "root_check_sha256": "cb653865fa88bc27dd84d52222dcfcae40782b8350d1c50e0f2a834ede9b5e70"
+  },
+  "source": {
+    "supplied_original_unchanged": true,
+    "readonly_remote_original_and_two_PRGs_full_readback": true,
+    "FTP_report_sha256": "11ec8f66eff518613b35be47bcb3e1222d7ff6c2bf5e807dca0be931d2c5631e"
+  },
+  "images": {
+    "40": {
+      "file": "docs/screenshots/dos33-dir-more-40.png",
+      "sha256": "19ebc6cc14466069aef88571a72d47b932621cc8cf91dce7808ed0503ad124a8",
+      "guest_instructions": 965840,
+      "pagination_prompt": true,
+      "returned_prompt_at_capture": false
+    },
+    "80": {
+      "file": "docs/screenshots/dos33-dir-more-80.png",
+      "sha256": "600ad27f31e02d3341e01f0bb630f9eb6f2c20dbd76bbcbd3331cdef0dcd1cb9",
+      "guest_instructions": 2013421,
+      "pagination_prompt": true,
+      "returned_prompt_at_capture": false
+    }
+  },
+  "limitations": [
+    "RAM framebuffer pixels, not HDMI or VIC video capture",
+    "DOS uses pinned Unscii8 presentation font, RGB illustrative",
+    "BIOS keys injected, not physical keyboard matrix",
+    "Observation-heavy elapsed time is not a throughput benchmark"
+  ]
+}

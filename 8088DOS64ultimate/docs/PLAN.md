@@ -1,8 +1,8 @@
 # Implementation plan for review
 
-Planning date: 2026-10-14, America/Los_Angeles. This package incorporates the user's assembly and Zig-test clarifications. All milestones below are future work unless explicitly marked as planning evidence.
+Original planning date: 2026-10-14, America/Los_Angeles. The milestone deliverables and exit criteria below remain the scope contract. Current implementation status is recorded separately from complete acceptance.
 
-Implementation update 2026-10-14: M0 assembly/Zig/Peddle foundation and DOSBox-X reference boot are verified; detailed results and remaining limitations are in `agentworking/STATUS.md` and `agentworking/TEST_LOG.md`. Later milestones remain unimplemented.
+Implementation update 2026-10-15: genuine DOS 3.3 boots on the physical C64U, with actual 40/80-column VER, TYPE and DIR captures. CPU, REU memory, BIOS, text, HD and CGA have substantial tested implementations. Persistence integration, full utility coverage, physical HD/graphics/input acceptance and performance remain unfinished. Roughly 60% functional progress is a subjective scope estimate excluding performance, not a prediction of remaining effort. Exact current evidence and limitations are in `agentworking/STATUS.md` and `agentworking/TEST_LOG.md`.
 
 ## Outcome and boundaries
 
@@ -28,6 +28,25 @@ The CPU profile is functionally 8086/8088, with original 8088 behavior chosen fo
 | M9 — 20 MiB hard disk | Same backend with larger offsets and image | Accesses below/above 16 MiB, final sector, cache churn, disk-full/errors, flush/restart and utilities pass; no 24-bit file-offset truncation |
 | M10 — CGA | Guest modes 4/5/6, direct VRAM and BIOS pixel services, deterministic conversion | Synthetic test cards and GW-BASIC from supplied disk 3 used as a later included-program test; reference pixels checked before downsampling; C64U visual approval |
 | M11 — optimization and release | Trace-driven hot paths, coherent fetch cache, safe REP acceleration, optional lazy flags | All functional lanes remain green; memory map fits; measured performance report for every workload; documented limitations and reproducible user guide |
+
+### Current milestone status — 2026-10-15
+
+| Milestone | Current status |
+| --- | --- |
+| M0 | Foundation and DOSBox-X reference boot verified. |
+| M1 | Hardware clock, REU, UCI and renderer evidence retained; matched performance baseline remains outstanding. |
+| M2 | Memory/cache/ownership and native UCI core implemented and tested; transport acceptance continues. |
+| M3 | CPU foundation implemented and tested. |
+| M4 | Documented CPU groups and original-8088 edge cases implemented/tested; exact corpus proofs remain tied to their executable/source identities. |
+| M5 | Core boot milestone achieved on physical C64U: genuine DOS/COMMAND.COM, VER, DIR, TYPE and MODE. Full B: and physical keyboard coverage remain. |
+| M6 | Native floppy SAVE/reopen passes actual assembly tests; standalone IEC/D81 import passes VICE. Production integration and physical save/reboot remain. |
+| M7 | Actual 40/80-column text and several DOS workflows pass. Full supplied-utility matrix, interactive editors/debugger, physical keyboard and readability acceptance remain. |
+| M8 | 2 MiB backend/BIOS and genuine DOS model workflows tested. Physical guest-write/persistence acceptance remains. |
+| M9 | 20 MiB addressing/cache boundary support tested. Physical scale, persistence/restart and utility acceptance remain. |
+| M10 | CGA4/5/6 and genuine DOS-loaded graphics probe verified in Peddle. Physical CGA and later GW-BASIC acceptance remain. |
+| M11 | Initial measured optimizations completed; near-XT speed has not been achieved. Matched benchmarks, further optimization and release work remain. |
+
+Current screenshot work follows the user's request for genuine `DIR | MORE` first-page captures in both modes. Native and physical pipeline/pagination, temporary-file cleanup, paired captures and full REU restoration pass. Earlier `DIR /W` pairs and complete REU restoration passed. See [screenshots](screenshots/README.md) and [performance assessment](PERFORMANCE_ASSESSMENT_20261015.md).
 
 M1 can begin after the minimal M0 runner, before the entire reference-boot tooling is polished. M2's plain memory API should precede CPU work; aggressive paging optimization can follow CPU correctness. Do not make the full instruction suite wait for a beautiful UI. Ship bounded working boot slices, but do not mark CPU completion solely because DOS boots.
 

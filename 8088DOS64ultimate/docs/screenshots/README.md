@@ -5,3 +5,9 @@ Genuine MS-DOS3.3 ran `MODE CO40`, `VER`, `DIR /W`, then the same commands in80c
 [40columns](dos33-dir-wide-40.png) · [80columns](dos33-dir-wide-80.png) · [Evidence](../../agentworking/evidence/c64u-dir-screenshots-20261015.json).
 
 Fullfirst4MiB REU and originalmachine/media settings were restored and independently compared. NativeBIOS keys were injected; physicalkeyboardmatrix/readability acceptance remains separate. `DIR | MORE` captures are the next requested workflow.
+
+## DIR | MORE
+
+Actual first MORE pages: [40 columns](dos33-dir-more-40.png) · [80 columns](dos33-dir-more-80.png) · [Evidence](../../agentworking/evidence/c64u-more-screenshots-20261015.json).
+
+Real SPACE inputs continue both listings to DOS. The running pipe has two temporary files (37 files/7168 free); final cleanup independently preserves all35 originals/9216 free, exact metadata/chains/allocated data and slack/FAT/boot. Only2066 bytes of deleted temporary slots/free-cluster residue differ in the disposable REU copy. Full4MiB restoration and readonly remote source/PRG readback pass.
