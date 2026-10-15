@@ -5,6 +5,7 @@ Development control only; all scripted input goes through native keyboard enqueu
 """
 import argparse
 import json
+import math
 from pathlib import Path
 import sys
 import time
@@ -61,11 +62,37 @@ def labels_from(path):
     return labels
 
 
+def checked_seconds(value,minimum,maximum,label):
+    if isinstance(value,bool):raise ValueError(f'{label} must be finite{minimum}..{maximum} seconds')
+    try:seconds=float(value)
+    except (ValueError,TypeError,OverflowError):raise ValueError(f'{label} must be finite{minimum}..{maximum} seconds') from None
+    if not math.isfinite(seconds) or not minimum<=seconds<=maximum:
+        raise ValueError(f'{label} must be finite{minimum}..{maximum} seconds')
+    return seconds
+
+
+def checked_observation_interval(value):
+    """Validate bounded host observation pacing before any machine access."""
+    return checked_seconds(value,0.25,2.0,'Observation interval')
+
+
+def checked_application_seconds(value):
+    return checked_seconds(value,10,600,'Application deadline')
+
+
+class NativeDeadlineError(TimeoutError):
+    def __init__(self,message,details):
+        super().__init__(message)
+        self.details=details
+
+
 class Application:
     def __init__(self,prg,labels,media,source,service_prg,expected_prg_sha,seconds=180,
-                 clock=time.monotonic,sleep=time.sleep,resident_segments=None,build_identity=None):
+                 clock=time.monotonic,sleep=time.sleep,resident_segments=None,build_identity=None,
+                 observation_interval=0.25):
+        self.observation_interval=checked_observation_interval(observation_interval)
         if sha(prg)!=expected_prg_sha:raise ValueError('Runtime PRG differs from reviewed build identity')
-        if not 10<=seconds<=180:raise ValueError('Application deadline must be bounded10..180 seconds')
+        seconds=checked_application_seconds(seconds)
         data,path=verified_media(media,source)
         config_offset=labels['dos64_native_config']-0x801+2
         if int.from_bytes(prg[config_offset+8:config_offset+10],'little')!=0xdf1c:
@@ -78,7 +105,9 @@ class Application:
         self.build_identity=build_identity or {'scope':'mocked runner fixture only; no hardware build identity supplied'}
         self.observations=[];self.client=None;self.output=None;self.journal=None;self.deadline=None;self.app_upload_started=False
     def bound(self):
-        if self.clock()>=self.deadline:raise TimeoutError('Native application exceeded its bounded execution/evidence deadline')
+        if self.clock()>=self.deadline:
+            raise NativeDeadlineError('Native application exceeded its bounded execution/evidence deadline',
+                                      {'scope':'application','application_seconds':self.seconds})
     def write(self,address,data):
         self.client.request('POST',f'machine:writemem?address={address:X}',data,'application/octet-stream')
     def diag(self):
@@ -104,7 +133,8 @@ class Application:
             raise ValueError('Native read body readback mismatch')
         self.journal('native_command_go',command=command,key=key,address=address,count=count)
         self.client.put('machine:resume')
-        end=min(self.deadline,self.clock()+12)
+        wait_started=self.clock();command_deadline=wait_started+12
+        end=min(self.deadline,command_deadline)
         while self.clock()<end:
             done=self.diag()
             if done[0]==STAGE_FAILED:raise RuntimeError(f'Native failure during command: {done.hex()}')
@@ -113,7 +143,14 @@ class Application:
                 if done[4]!=0xa5:raise RuntimeError(f'Native command rejected: {done.hex()}')
                 return done
             self.sleep(0.02)
-        raise TimeoutError('Native command acknowledgement deadline; command will not be reissued')
+        scope='application' if self.deadline<=command_deadline else 'command_ack'
+        details={'scope':scope,'command':command,'command_wait_seconds':self.clock()-wait_started,
+                 'command_budget_seconds':12,'application_remaining_at_wait_start_seconds':max(0,self.deadline-wait_started),
+                 'command_will_not_be_reissued':True}
+        self.journal('native_command_timeout',**details)
+        message=('Native application deadline exhausted while awaiting command acknowledgement' if scope=='application'
+                 else 'Native command acknowledgement exceeded its12second bound')
+        raise NativeDeadlineError(message+'; command will not be reissued',details)
     def read_paused(self,address,count):
         result=bytearray()
         while count:
@@ -209,7 +246,8 @@ class Application:
     def __call__(self,client,output):
         self.client=client;self.output=Path(output);self.journal=Journal(self.output/'application-journal.jsonl')
         self.started=self.clock();self.deadline=self.started+self.seconds
-        report={'status':'running','physical_script':'VER then DIR /P','coherent_final_guest':False,
+        report={'status':'running','physical_script':'VER then DIR /P','coherent_final_guest':False,'observation_interval_seconds':self.observation_interval,
+                'application_bound_seconds':self.seconds,
                 'limitations':['Explicit native test mailbox enqueues real BIOS keys; physical matrix keyboard remains a separate acceptance',
                               'Guest DOS runs unchanged; no INT21 replacement or native EXE loader',
                               'Runtime target path is a read-only freshly owned disk fixture',
@@ -248,9 +286,13 @@ class Application:
                     waiting=client.read(self.labels['dos64_bios_waiting'],1)
                     counter=client.read(self.labels['dos64_cpu_instructions'],4)
                     token=(waiting,counter)
-                    if (waiting==b'\x01' and token==prior_wait) or self.clock()-last_capture>=0.25:
+                    capture_reason=('stable_blocking_input' if waiting==b'\x01' and token==prior_wait else
+                                    'periodic' if self.clock()-last_capture>=self.observation_interval else None)
+                    if capture_reason is not None:
                         # Real DOS may poll INT16 AH01 without the AH00
                         # blocking flag. Periodic coherent captures service both.
+                        self.journal('native_observation_due',reason=capture_reason,interval_seconds=self.observation_interval,
+                                     bios_waiting_hex=waiting.hex(),guest_instructions=int.from_bytes(counter,'little'))
                         screen=self.screen();last_capture=self.clock();keys=self.script.observe(screen)
                         dump(self.output/'builtins-progress.json',self.script.result())
                         if self.script.stage=='done':break
@@ -276,6 +318,7 @@ class Application:
             return report
         except Exception as error:
             report.update(status='failed',error=repr(error))
+            if isinstance(error,NativeDeadlineError):report['timeout']=error.details
             try:
                 report['failure_ram_sha256']=self.capture_ram('application-failure-before-reset.bin')
                 if self.app_upload_started:
@@ -306,6 +349,10 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('host','prg','labels','map','build_manifest','media_manifest','source','service','output','expected_prg_sha256'):
         parser.add_argument('--'+name.replace('_','-'),required=True)
+    parser.add_argument('--observation-interval',type=checked_observation_interval,default=0.25,
+                        help='Coherent screen cadence0.25..2.0seconds; stable blocking input is serviced promptly')
+    parser.add_argument('--application-seconds',type=checked_application_seconds,default=180,
+                        help='Application/evidence bound10..600seconds; larger budgets require an explicit option')
     args=parser.parse_args()
     project=Path(__file__).resolve().parents[1]
     out=Path(args.output).resolve()
@@ -319,7 +366,8 @@ def main():
             parser.error('Runtime PRG/labels/map identity is missing from the frozen build manifest: '+artifact)
     app=Application(Path(args.prg).read_bytes(),symbols,json.loads(Path(args.media_manifest).read_text()),
                     args.source,Path(args.service).read_bytes(),args.expected_prg_sha256,
-                    resident_segments=resident,build_identity=build_identity)
+                    seconds=args.application_seconds,resident_segments=resident,build_identity=build_identity,
+                    observation_interval=args.observation_interval)
     # Root launches through Terminal after reviewing frozen source/binary/media
     # identities. Importing this module or running mocked tests contacts no host.
     result=run_with_recovery(Client(args.host),app.service_prg,out,application=app)

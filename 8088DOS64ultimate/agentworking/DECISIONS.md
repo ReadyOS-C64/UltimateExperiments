@@ -119,3 +119,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D84 | Implemented/source and host verified,2026-10-15 | Add explicit opt-in one-file native4MiB recovery while preserving default delta | Source reproduces388069/40fe; immutablebackup/freshFTP/codeCRCknownCLOSE/all4MiBcompare; one600secondphase/max2freshpasses; physicalthroughputpending |
 
 | D85 | Implemented/reference verified,2026-10-15 | Source-complete read-only DOS disk inspector and genuineDOS2/20MiB fixture recipe |17newtests/cleancheckout,actualFDISKFORMAT SYS CHKDSKHDboot/CROSS16,fullhash/chain/allocationchecks; no bundledHDimages/nativepersistenceclaim |
+
+| D86 | Physically verified recovery only,2026-10-15 | Accept one-file native4MiB restore independently of failednew5DOSapplication | Freshbackup/all4194304bytesequal/CRC8192knownCLOSE/strictcode/firstattempt/231.923s/configmediareset; app180secondfailure staysfailed; upper12MiBuncompared |
+| D87 | Implemented/host verified,2026-10-15 | Explicit bounded observation cadence/application duration preserve0.25s/180s defaults | Optional0.25–2.0s/10–600s,stableAH00prompt/periodicAH01,allkeys/pagination; distinguishoverallbudgetfrom12sACK; no pendingcommandreissue/performanceclaim |

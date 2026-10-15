@@ -159,3 +159,8 @@ Directory deletion is a logical FAT/root change, not erased sector slack. Verify
 ## 2026-10-15 — source-complete whole-file recovery
 
 A CRC-success flag is insufficient restoration evidence: bind the configured PRG to an immutable backup and fresh owned file, require new startup/knownCLOSE/counters, then independently compare every restored byte. Keep one deadline across FTP/native/reload/compare; never turn per-step bounds into unbounded total time. Source-complete helpers with fixed reviewed output hashes permit fast path/host changes without rerunning a five-minute native test when executable/core bytes remain exact. Physical test recovery must use a fresh snapshot of current REU state, never a prior-run backup merely because it already exists.
+
+
+## 2026-10-15 — physical recovery and observer duty
+
+Coherent screen inspection pauses guest execution across several commands. Measure those intervals before treating end-to-end observer wall time as emulator throughput. A command bounded by min(overalldeadline,12seconds) may have no remaining wait budget; retain both deadline scopes and inspect captured completion rather than calling it a nativehang. An application can fail while complete independently checked restoration succeeds; preserve both statuses. Raw REST RAM0000/0001 is not a trustworthy live6510CPU-port view. Source/guard/functionalexecution and a separately trusted diagnostic must be distinguished from those DMA bytes. Every tool command needs an explicit private workdir: agentcontext alone doesnot change the shared defaultcwd.

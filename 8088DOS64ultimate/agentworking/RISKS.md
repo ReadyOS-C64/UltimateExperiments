@@ -72,3 +72,6 @@ The cold importer mitigates stale READ status with exact length/EOF/CRC, but is 
 
 
 2026-10-15 currenttimer/CGA integration: MAIN217/216andDEVICE54 leave little code headroom; HD needs measured relocation. Timercallbacks materiallyincrease hotpathCPUcost (NOP796 versus timer+NOP2141–5283); graphics idealcadencefloor~416msbeforecosts. Neither acceptedphysicalDOSobserverelapsed nor Peddleprofiles establishesnearXTthroughput. FixedPITports/directCGA unsupported; physicalnewtarget/input/readability/graphics/persistenceHDIEC remain open. Source-derivedNMOSinterruptbehavior lacksneworiginalsiliconcapture; keep evidencegap explicit.
+
+
+Physicalnew5run080121 fails180secondfunctionalobservationbudgetwhilefullnativefile4MiBrecoverypasses. Journalsshowmaterialguest-pausedobserverduty,butdonotisolateinterpreter/PIT/MMIO/REUcost; noXTspeedratiofollows. Optional2s/360stestbudgetneedsafresh-backedretry,notreclassificationofoldfailure. RawRESTlowportbytescannotproveCPUbank; hostshadowproofmustusesource-to-runidentityandscopebankingevidenceseparately.
