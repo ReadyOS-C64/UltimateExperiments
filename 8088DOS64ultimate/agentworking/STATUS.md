@@ -2,7 +2,7 @@
 
 Updated: 2026-10-14, America/Los_Angeles.
 
-**Phase: planning package ready for user review. Implementation has not started.** The user intends to switch to 6.1 Sol before implementation; do not change model settings or start another chat on their behalf.
+**Phase: implementation active.** User authorized implementing the plan, progressively verifying, and making local commits without pushing. Planning baseline committed as `67b6954`.
 
 ## User decisions to preserve
 
@@ -23,9 +23,18 @@ Updated: 2026-10-14, America/Los_Angeles.
 - Verified a disposable D81 can store disk 1 as a SEQ file and extract it byte-for-byte; this is container evidence, not emulator/IEC runtime acceptance.
 - Planning validation passed: all 28 local links resolved, both address-space budgets are contiguous and complete, inventory repeats, originals retain their hashes, and ignore rules keep project context versionable while excluding scratch.
 
+## Verified implementation slice: M0 foundation
+
+- ca65/ld65 PRG and raw test payload, labels/maps, memory-contract checks and dependency/tool/artifact manifest.
+- Vendored original Peddle core at its pinned upstream commit with license and per-file hashes.
+- Zig tests exercise the linked reset routine and actual PRG startup; 10 tests cover state/ABI, error detection, runaway budget, stack imbalance, forbidden writes, unimplemented-device rejection, raw payload identity and exact CPU clocks.
+- Four negative/positive linker-contract tests guard resident/entry placement.
+- DOSBox-X boots a cloned supplied disk 1 with original CONFIG.SYS and an injected evidence AUTOEXEC. Guest VER reports **MS-DOS Version 3.30**; DIR and completion marker were read back from the guest floppy; original SHA-256 matches.
+- Found and fixed clock integration: Peddle's embedding application must increment `clock` after each microcycle. The first runaway test exposed the missing clock advancement; exact LDA/RTS timing now guards it.
+
 ## What is not established
 
-No new emulator PRG, CPU implementation, BIOS, device mocks, boot test, performance benchmark, physical-device access, or DOSBox guest run has been completed. Installed DOSBox-X was identified by its version command only. Image inventory does not prove bootability or correct DOS runtime behavior.
+The target PRG initializes state and a mailbox only. No guest instruction interpreter, BIOS, REU/UCI model/driver, target DOS boot, VICE runtime, performance benchmark, or physical-device test exists yet. The foundation bus is ordinary host RAM with explicit rejection of REU/UCI access; C64 ROM banking and DMA timing are not yet modeled. The reference DOSBox process was stopped after its guest output files closed; this is not a clean-storage-shutdown test. Original CONFIG diagnostics were not captured as screen text.
 
 All memory sizes, page/cache policies, assembler choice, and performance thresholds are proposals unless marked as user requirements in DECISIONS. Disk 1's C:-specific config and disk 3's different boot/OEM field need observed reference behavior; do not silently repair originals.
 

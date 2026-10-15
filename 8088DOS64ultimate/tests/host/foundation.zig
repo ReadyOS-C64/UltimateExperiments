@@ -1,0 +1,105 @@
+const std = @import("std");
+const host = @import("machine.zig");
+const Fixture = host.Fixture;
+
+test "assembly reset initializes original CPU state and preserves host ABI" {
+    var f = try Fixture.init();
+    defer f.deinit();
+    const guest = try f.symbol("dos64_guest");
+    for (0..28) |index| f.poke(guest+@as(u16, @intCast(index)), 0xa7);
+    f.poke(1, 0x35);
+    const regs = try f.call("fixture_pass", 10_000);
+    try std.testing.expectEqual(@as(u16, 0xffff), f.word(guest+18));
+    try std.testing.expectEqual(@as(u16, 0xf002), f.word(guest+26));
+    for (0..13) |index| {
+        if (index == 9) continue;
+        try std.testing.expectEqual(@as(u16, 0), f.word(guest+@as(u16, @intCast(index*2))));
+    }
+    try std.testing.expectEqual(@as(u8, 0x93), regs.y);
+    try std.testing.expectEqual(@as(u8, 0x35), f.peek(1));
+    try f.expectStatus(0xa5);
+    try f.verifyWrites();
+    try std.testing.expectEqual(@as(u8, 4), f.stack_high_water);
+    try std.testing.expect(regs.cycles > 100);
+}
+
+test "wrong expected behavior is detected by the Zig harness" {
+    var f = try Fixture.init();
+    defer f.deinit();
+    _ = try f.call("fixture_pass", 10_000);
+    try std.testing.expectError(error.StatusMismatch, f.expectStatus(0xe1));
+}
+
+test "target-reported failure is observable" {
+    var f = try Fixture.init();
+    defer f.deinit();
+    _ = try f.call("fixture_fail", 100);
+    try std.testing.expectError(error.StatusMismatch, f.expectStatus(0xa5));
+    try f.expectStatus(0xe1);
+}
+
+test "runaway actual assembly stops at the CPU cycle budget" {
+    var f = try Fixture.init();
+    defer f.deinit();
+    try std.testing.expectError(error.CycleBudget, f.call("fixture_runaway", 100));
+    try std.testing.expectEqual(try f.symbol("fixture_runaway"), f.last_regs.?.pc);
+    try std.testing.expect(f.last_regs.?.cycles >= 100);
+}
+
+test "unbalanced host stack fails even when the completion address is reached" {
+    var f = try Fixture.init();
+    defer f.deinit();
+    try std.testing.expectError(error.StackImbalance, f.call("fixture_unbalanced", 100));
+}
+
+test "write guards catch a target write into the reserved display matrix" {
+    var f = try Fixture.init();
+    defer f.deinit();
+    _ = try f.call("fixture_bad_write", 100);
+    try std.testing.expectError(error.ForbiddenWrite, f.verifyWrites());
+    try std.testing.expectEqual(@as(u8, 0x42), f.peek(0x4000));
+}
+
+test "raw unit payload is byte-identical to the linked PRG payload" {
+    const allocator = std.testing.allocator;
+    const prg = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests.prg", allocator, .limited(65538));
+    defer allocator.free(prg);
+    const raw = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests.bin", allocator, .limited(65536));
+    defer allocator.free(raw);
+    try std.testing.expectEqualSlices(u8, prg[2..], raw);
+}
+
+test "Peddle bridge counts all two LDA and six RTS microcycles" {
+    var f = try Fixture.init();
+    defer f.deinit();
+    const before = host.c.dos64_get_regs(f.machine).cycles;
+    const after = try f.call("fixture_timed", 100);
+    try std.testing.expectEqual(@as(u64, 8), after.cycles-before);
+    try std.testing.expectEqual(@as(u64, 2), after.instructions);
+    try std.testing.expectEqual(@as(u8, 7), after.a);
+}
+
+test "unsupported REU access is rejected rather than treated as ordinary RAM" {
+    var f = try Fixture.init();
+    defer f.deinit();
+    try std.testing.expectError(error.UnsupportedDevice, f.call("fixture_unimplemented_reu", 100));
+}
+
+test "actual PRG entry initializes mailbox, CPU, bank latch and host stack" {
+    var f = try Fixture.init();
+    defer f.deinit();
+    const idle = try f.symbol("dos64_idle");
+    host.c.dos64_set_regs(f.machine, .{ .pc = try f.symbol("dos64_entry"), .sp = 0x57, .a = 0, .x = 0, .y = 0, .p = 0x28, .cycles = 0, .instructions = 0 });
+    while (host.c.dos64_get_regs(f.machine).pc != idle) {
+        if (host.c.dos64_get_regs(f.machine).cycles > 2000) return error.StartupTimeout;
+        host.c.dos64_step(f.machine);
+    }
+    const mb = try f.symbol("dos64_mailbox");
+    try std.testing.expectEqual(@as(u8, 1), f.peek(mb));
+    try std.testing.expectEqual(@as(u8, 1), f.peek(mb+1));
+    try std.testing.expectEqual(@as(u8, 0x35), f.peek(1));
+    try std.testing.expectEqual(@as(u8, 5), f.peek(0xd020));
+    const regs = host.c.dos64_get_regs(f.machine);
+    try std.testing.expectEqual(@as(u8, 0xff), regs.sp);
+    try std.testing.expectEqual(@as(u8, 0), regs.p & 8);
+}

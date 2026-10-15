@@ -4,7 +4,7 @@ Scope is this directory. Read README.md, agentworking/STATUS.md, agentworking/NE
 
 ## Phase and implementation
 
-- The current deliverable is a reviewable plan. Start implementation when the user resumes it after review/model selection.
+- Implementation is authorized (2026-10-14): progressively verify and make local commits; do not push to GitHub.
 - User decisions: target 6502/6510 assembly; Zig host assertions around the actual assembly in Peddle; ZeroPage is a testing reference, not the target compiler.
 - Use ca65/ld65 provisionally. Record any assembler change. Do not quietly substitute a C or ZeroPage target implementation.
 - Boot genuine DOS 3.3 from the supplied disk images. Do not replace DOS INT 21h or implement a separate native EXE/COM loader as a shortcut to the boot milestone.

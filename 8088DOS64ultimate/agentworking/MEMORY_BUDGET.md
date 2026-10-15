@@ -1,6 +1,6 @@
 # Memory budget checkpoint
 
-Status: proposed, no linked artifact exists. Authoritative proposed ranges: [MEMORY.md](../docs/MEMORY.md).
+Status: M0 linked foundation measured; full allocation remains proposed. Authoritative ranges: [MEMORY.md](../docs/MEMORY.md). `build/dos64.map` / `.memory.json` currently report CODE 73 bytes, BASIC stub 12, BSS 36, PRG header 2. The runtime PRG is 87 bytes; the test build adds 36 fixture-code bytes. No ZP allocated yet; measured reset-test stack depth is 4 bytes including the host return sentinel.
 
 | Resource | Budget | Measured used | Gate |
 |---|---:|---:|---|

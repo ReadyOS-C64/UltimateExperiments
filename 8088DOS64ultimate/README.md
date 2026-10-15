@@ -2,9 +2,16 @@
 
 Planning package for a C64 Ultimate program that boots the supplied **real MS-DOS 3.3**, emulates the 8086/8088 instruction set, and provides 640 KiB of conventional PC memory through the REU. Target hardware is the user's 64 MHz C64U with a 16 MiB REU.
 
-**Status: planning complete for review; emulator implementation has not started.** No DOS boot, emulator performance, or physical C64U compatibility has yet been demonstrated by this project.
+**Status: implementation underway; assembly/Zig/Peddle foundation verified.** `make test` assembles the target and runs 10 Zig/Peddle behavior tests plus 4 linker-contract tests. The supplied DOS disk boots in DOSBox-X and reports MS-DOS 3.30. Target-emulator DOS boot and physical C64U performance remain future milestones.
 
-The target will be **6502/6510 assembly**, provisionally ca65/ld65. **Host Zig tests will execute the assembled code in Peddle and assert its behavior**, following the existing ZeroPage project. ZeroPage itself will not compile the emulator. This incorporates the user's two planning clarifications on 2026-10-14.
+The target uses **6502/6510 assembly** via ca65/ld65. **Host Zig tests execute the assembled code in Peddle and assert its behavior**, following the existing ZeroPage project. This incorporates the user's two planning clarifications on 2026-10-14.
+
+```sh
+make test             # fast assembly, memory checks, tooling and Zig/Peddle tests
+make test-reference   # slower disposable real-DOS boot in installed DOSBox-X
+```
+
+Tool overrides: `DOS64_ZIG`, `DOS64_CA65`, `DOS64_LD65`, `DOS64_PYTHON`, `DOS64_DOSBOX`. Zig defaults to the sibling pinned 0.16.0 tooling, then PATH. Build outputs and identity manifest are in `build/`; reference-run evidence is retained in project-local `agentworking/runs/`.
 
 ## Review first
 
@@ -29,4 +36,4 @@ Details: [storage](docs/STORAGE.md), [display and keyboard](docs/DISPLAY_INPUT.m
 
 All project working records live here, under lowercase [agentworking](agentworking/STATUS.md), never in the enclosing repository's `agentworking` folder. Start with [STATUS](agentworking/STATUS.md), [NEXT_SLICE](agentworking/NEXT_SLICE.md), and [DECISIONS](agentworking/DECISIONS.md). [AGENTS.md](AGENTS.md) specifies the implementation workflow.
 
-The three user-provided images remain unchanged in `reference/`. Their read-only [inventory](agentworking/research/reference-images.json) records geometry, hashes, file contents' hashes, and configuration text. DOSBox-X 2026.01.02 is already installed locally; reference boot verification is an explicit first implementation task.
+The three user-provided images remain unchanged in `reference/`. Their read-only [inventory](agentworking/research/reference-images.json) records geometry, hashes, file contents' hashes, and configuration text. The [DOSBox-X baseline](agentworking/evidence/dosbox-reference-20261014.json) records the actual guest's VER/DIR output and immutable source hash.

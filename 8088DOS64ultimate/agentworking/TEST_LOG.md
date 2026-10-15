@@ -27,3 +27,13 @@ Failed lookups during research: the guessed `uci/dos.html` documentation path an
 ## Future entry format
 
 Record date, slice/commit, exact working directory and command, tool/firmware and fixture hashes, lane/configuration, pass/fail/skipped totals, first failure, output/evidence path, limitations, and any deviation from the plan. Preserve a failing regression before fixing it; link its passing rerun.
+
+## 2026-10-14 — M0 foundation
+
+Working directory: this project root. Commands: `make test`; `python3 build_support/reference_boot.py --timeout 15`.
+
+- First `make test`: assembly/maps built; runaway test exposed a zero CPU clock counter and required interrupting exec session 29588. Peddle core expects external clock advancement. Fixed the bridge without editing upstream source, then added exact-cycle regression coverage.
+- Final assembly test pass: **10/10 Zig/Peddle tests**, run time 313 ms (compile 1 s on warm host cache), plus **4/4 Python linker-contract tests**. Linked runtime CODE 73 bytes, BSS 36, PRG 87; raw fixture payload matches linked PRG bytes. Final negative linker test was made independent of exact code length.
+- Reference boot passed: `agentworking/runs/reference-20261014-220319/result.json`; compact retained evidence `agentworking/evidence/dosbox-reference-20261014.json`. Real guest output: MS-DOS Version 3.30; DIR lists supplied utilities. Original hash unchanged. DOSBox-X logged its 8086 CPU mode as experimental, so it remains a functional reference, not CPU conformance/timing proof.
+- `build/manifest.json` captures actual tool binaries/versions and source/output hashes; vendored Peddle archive/files checked against its pinned upstream commit.
+- Not run: VICE or physical C64U; no guest interpreter, REU/UCI, target boot or XT performance claim.

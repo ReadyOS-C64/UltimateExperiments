@@ -2,6 +2,8 @@
 
 Planning date: 2026-10-14, America/Los_Angeles. This package incorporates the user's assembly and Zig-test clarifications. All milestones below are future work unless explicitly marked as planning evidence.
 
+Implementation update 2026-10-14: M0 assembly/Zig/Peddle foundation and DOSBox-X reference boot are verified; detailed results and remaining limitations are in `agentworking/STATUS.md` and `agentworking/TEST_LOG.md`. Later milestones remain unimplemented.
+
 ## Outcome and boundaries
 
 A standalone PRG boots the supplied MS-DOS 3.3 in an emulated PC with 640 KiB conventional RAM, two floppy drives, keyboard, 40/80-column text, and limited CGA graphics. Guest execution uses the C64U's 64 MHz 6510; the REU stores guest memory, whole floppy images, and cached hard-disk extents. Native Ultimate DOS loads/saves image bytes. A KERNAL IEC backend supports development in VICE using D81 containers.
