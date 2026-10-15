@@ -126,3 +126,8 @@ MAIN115/114,DEVICE22,cold1093/118,ZP18/30,BSS223,DEVICESTATE659 remain unchanged
 ## Current GW-BASIC compatibility maps — 2026-10-15
 
 Supersedes currentproductionidentity only: runtimeed7462bad54947a32092cf7cd3f6ac4e6f962cea98757555e104c0ebffdcedd8/unitd530c37556d148e0972766b5f9a7bbdc7bba39d83d06792ce22661163a8e03ea,42497bytes0801–ADFF. Actual CODE13418(+95), MAIN20runtime/19unitfree, DEVICE4074/22free, BSS223,ZP18/30, DEVICESTATE661(+2PPI/PITwritephase). Staticcontrol3124leaves972includinggaps; pre-mapBSS33. Shadow2361/1223tail,PIT1664 and allsixoverlay lengths/12288startupreservation unchanged. [Exactrootmaps/evidence](evidence/gwbasic-hangman-20261015.json). LayoutmakesnoextraREUassumption; full-systemstackboundremainsunmeasured. Privateperformanceunion10/9MAIN isnotproductionorbehavioraccepted.
+
+
+## Current word/fetch union maps — 2026-10-15
+
+Supersedes current identity above: runtime1a17831879058a363d9581e49b6c796ea7d90c9bf7c022a81e1643bcc037e5ae/unit4e4301ef2cb9f40aabe99bdf478da488ea58a32816076f0b6bc74aaf7e823402,42497bytes0801–ADFF. CODE13412,RODATA880,NATIVESTATE5, MAIN26runtime/25unitfree; DEVICE4074/22free. BSS205 (18privateCPU/fetch bytes moved to ZP), ZP36/48; DEVICESTATE661 unchanged. Staticcontrol205+2048+192+661=3106 leaves990 includinggaps; zero page separately accounted. Shadow2361/1223tail, sixoverlay lengths includingPIT1664/max128tail,12288startupreservation and23overlappedcacheframes unchanged. No publicguest/mailboxABI or addedtotalstate. Allmaps/package verified byrootmake test and bothPRGs exactly reproduce independent review; [evidence](evidence/word-fetch-performance-20261015.json). No pooledheadroom, largerREU or fullstackbound claim.

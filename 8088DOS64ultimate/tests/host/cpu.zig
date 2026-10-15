@@ -372,3 +372,39 @@ test "divide-error RAM masks admit only undefined saved flags and detect control
     invalid=t;invalid.ram_masks=&.{.{0xfe,0},.{0xff,0xf7}};
     try std.testing.expectError(error.InvalidRamMask,normalizeUndefinedSavedFlags(invalid,&f,expected));
 }
+
+fn wordSpanReadable(mode:u8,p:u32)bool{return mode==1 or p<0xa0000 or p>=0xf0000 or (p>=0xb8000 and p<0xbc000);}
+fn wordSpanWritable(mode:u8,p:u32)bool{return mode==1 or p<0xa0000 or (p>=0xb8000 and p<0xbc000);}
+test "word transfer continuation preserves byte publications and bus rules through every low byte and region seam" {
+    const oracle=try allocator.alloc(u8,1024*1024);defer allocator.free(oracle);
+    const seams=[_][2]u16{.{0x9fff,0xf},.{0xa000,0},.{0xb7ff,0xf},.{0xb800,0},.{0xbbff,0xf},.{0xbc00,0},.{0xefff,0xf},.{0xf000,0},.{0xffff,0xf},.{0x1234,0xffff},.{0xffff,0xffff}};
+    for([_]u8{0,1})|mode|for([_]u8{1,2})|frames| {
+        var f=try init(frames,mode);defer f.deinit();@memset(oracle,0);
+        const seg=try f.symbol("dos64_segment");const off=try f.symbol("dos64_offset");const value=try f.symbol("dos64_cpu_value");
+        for(0..256+seams.len)|i| {
+            const segment:u16=if(i<256)0x1234 else seams[i-256][0];
+            const offset:u16=if(i<256)@as(u16,@intCast(i)) else seams[i-256][1];
+            const low=(@as(u32,segment)*16+offset)&0xfffff;const high=(@as(u32,segment)*16+(offset+%1))&0xfffff;
+            oracle[low]=0x12;oracle[high]=0x34;c.dos64_reu_poke(f.machine,low,0x12);c.dos64_reu_poke(f.machine,high,0x34);
+            _=try f.call("dos64_cache_init",50_000);f.poke(try f.symbol("dos64_memory_mode"),mode);setWord(&f,seg,segment);setWord(&f,off,offset);f.initial_status=@truncate(i);
+            const read=try f.call("dos64_cpu_word_read",10_000);try std.testing.expectEqual(@as(u8,0),read.p&1);try std.testing.expectEqual(f.initial_status&0xce,read.p&0xce);
+            const expected:u16=@as(u16,if(wordSpanReadable(mode,low))0x12 else 0xff)|(@as(u16,if(wordSpanReadable(mode,high))0x34 else 0xff)<<8);
+            try std.testing.expectEqual(expected,f.word(value));try std.testing.expectEqual(segment,f.word(seg));try std.testing.expectEqual(offset,f.word(off));
+            setWord(&f,value,0xa55a);const write=try f.call("dos64_cpu_word_write",10_000);try std.testing.expectEqual(@as(u8,0),write.p&1);try std.testing.expectEqual(f.initial_status&0xce,write.p&0xce);
+            const low_written=wordSpanWritable(mode,low);const high_written=wordSpanWritable(mode,high);
+            if(low_written)oracle[low]=0x5a;if(high_written)oracle[high]=0xa5;
+            try std.testing.expectEqual(@as(u16,@intFromBool(low_written)+@as(u16,@intFromBool(high_written))),f.word(try f.symbol("dos64_write_epoch")));
+            try std.testing.expectEqual(segment,f.word(seg));try std.testing.expectEqual(offset,f.word(off));_=try f.call("dos64_cache_flush",100_000);
+            try std.testing.expectEqual(@as(u32,0xffffffff),c.dos64_reu_compare(f.machine,0,oracle.ptr,oracle.len));
+        }
+    };
+}
+test "word continuation seam failure keeps low-byte acknowledgment and restores offset" {
+    for([_]bool{false,true})|write|for([_]u32{0,1})|prefix| {
+        var f=try init(1,1);defer f.deinit();setWord(&f,try f.symbol("dos64_segment"),0);setWord(&f,try f.symbol("dos64_offset"),0x1ff);setWord(&f,try f.symbol("dos64_cpu_value"),0xa55a);
+        c.dos64_reu_poke(f.machine,0x1ff,0x12);c.dos64_reu_poke(f.machine,0x200,0x34);c.dos64_reu_fail_after(f.machine,if(write)2 else 1,prefix);
+        const r=try f.call(if(write)"dos64_cpu_word_write" else "dos64_cpu_word_read",10_000);try std.testing.expectEqual(@as(u8,1),r.p&1);try std.testing.expectEqual(@as(u16,0x1ff),f.word(try f.symbol("dos64_offset")));try std.testing.expectEqual(@as(u8,3),f.peek(try f.symbol("dos64_memory_error")));
+        if(write)try std.testing.expectEqual(@as(u8,0x5a),c.dos64_reu_peek(f.machine,0x1ff)) else try std.testing.expectEqual(@as(u8,0x12),f.peek(try f.symbol("dos64_cpu_value")));
+        try std.testing.expectEqual(@as(u8,0x34),c.dos64_reu_peek(f.machine,0x200));
+    };
+}

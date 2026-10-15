@@ -12,6 +12,7 @@
 .export dos64_cache_generations_hi, dos64_cache_hand, dos64_video_dirty
 .export dos64_mem_value, dos64_mem_pointer, dos64_cache_selected
 .export dos64_cache_ready, dos64_write_epoch
+.export dos64_mem_access_kind := mem_access_kind
 
 .segment "ZEROPAGE"
 mem_map_pointer: .res 2

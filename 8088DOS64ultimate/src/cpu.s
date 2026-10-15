@@ -1,12 +1,14 @@
 .include "abi.inc"
+.import __CODE_RUN__, __CODE_SIZE__
 .import dos64_guest, dos64_cpu_reset, dos64_mem_read, dos64_mem_write, dos64_physical
-.importzp dos64_segment, dos64_offset, dos64_mem_value
+.importzp dos64_segment, dos64_offset, dos64_mem_value, dos64_address, dos64_mem_pointer
+.import dos64_mem_access_kind, dos64_mem_write_span_byte
 .macpack longbranch
 .export dos64_cpu_init, dos64_cpu_step, dos64_cpu_status, dos64_cpu_opcode
 .export dos64_cpu_instructions, dos64_cpu_yield, dos64_cpu_pending, dos64_cpu_irq_shadow
 .export dos64_cpu_value, dos64_cpu_word_read, dos64_cpu_word_write
 .export cpu_fetch8, cpu_fetch8_slow, cpu_fetch16, cpu_override, cpu_byte_registers
-.import dos64_fetch_init, dos64_fast_fetch
+.import dos64_fetch_init, dos64_fast_fetch, dos64_fetch_owned_next
 .export cpu_error_return
 .export cpu_complete, cpu_memory_error, cpu_unsupported, cpu_return, cpu_rep, cpu_relative
 .import dos64_strings_execute, dos64_string_pending, dos64_shifts_execute, dos64_control_execute
@@ -31,6 +33,10 @@ cpu_override: .res 1
 cpu_rep: .res 1
 cpu_lock: .res 1
 cpu_slice: .res 1
+
+.segment "ZEROPAGE"
+; Synchronous CPU-private scratch, never a public guest register or retained
+; frame capability. Moving these bytes leaves the guest-state ABI unchanged.
 cpu_reg: .res 1
 cpu_byte: .res 1
 cpu_low: .res 1
@@ -89,39 +95,34 @@ cpu_prefix:
     jsr cpu_fetch8
     jcs cpu_memory_error
     sta dos64_cpu_opcode
-    cmp #$26
-    beq @es
-    cmp #$2E
-    beq @cs
-    cmp #$36
-    beq @ss
-    cmp #$3E
-    beq @ds
-    cmp #$F2
-    beq @rep
-    cmp #$F3
-    beq @rep
-    cmp #$F0
-    beq @lock
-    jmp cpu_dispatch
-@es:
-    lda #G_ES
-    bne @segment
-@cs:
-    lda #G_CS
-    bne @segment
-@ss:
-    lda #G_SS
-    bne @segment
-@ds:
-    lda #G_DS
-@segment:
+    ; Prefix markers share the existing high-byte dispatch table. All normal
+    ; handlers occupy low RAM. No guest byte is prefetched or cached here.
+    tax
+    lda cpu_table_hi,x
+    bmi cpu_prefix_special
+    sta cpu_jump+1
+    lda cpu_table_lo,x
+    sta cpu_jump
+    lda #0
+    sta dos64_cpu_pending
+    lda dos64_cpu_opcode
+    jmp (cpu_jump)
+cpu_prefix_special:
+    ; Low table bytes encode the last segment selector or REP/LOCK kind.
+    ; X is still the original opcode index; only the seven high-byte markers
+    ; can enter here. Keep the original opcode itself in REP/LOCK state.
+    lda cpu_table_lo,x
+    bmi @repeat_lock
     sta cpu_override
     jmp @next
-@rep:
+@repeat_lock:
+    cmp #$80
+    bne @lock
+    lda dos64_cpu_opcode
     sta cpu_rep
     jmp @next
 @lock:
+    lda dos64_cpu_opcode
     sta cpu_lock
 @next:
     inc cpu_slice
@@ -134,20 +135,8 @@ cpu_prefix:
     sta dos64_cpu_yield
     jmp cpu_return
 
-; Tail dispatch keeps cpu_step's saved P on the stack. Prefix handling and
-; pending REP continuation remain above this entry. A is an internal handler
-; input (notably MOV-immediate and XCHG), so restore the opcode after lookup.
-; cpu_jump is synchronous scratch; no retained operand/state depends on it here.
-cpu_dispatch:
-    lda #0
-    sta dos64_cpu_pending
-    ldx dos64_cpu_opcode
-    lda cpu_table_lo,x
-    sta cpu_jump
-    lda cpu_table_hi,x
-    sta cpu_jump+1
-    lda dos64_cpu_opcode
-    jmp (cpu_jump)
+ ; Pending state is cleared only after a non-prefix byte succeeds, exactly as
+; before. Fetch faults and 64-prefix continuation retain the original state.
 cpu_table_unsupported:
     lda #2
     jmp cpu_fault
@@ -155,8 +144,8 @@ cpu_table_halt:
     lda #1
     sta dos64_cpu_status
     jmp cpu_complete
-; Every byte has an explicit target. Prefix bytes have fault entries here
-; because cpu_prefix consumes them before dispatch. Unsupported forms keep the
+; Every normal byte has an explicit target. The seven prefix high bytes are
+; $80 markers; their low bytes are ignored. Unsupported forms keep the same
 ; diagnostic exit; instruction families still validate ModR/M and sub-opcodes.
 .segment "RODATA"
 cpu_table_lo:
@@ -164,10 +153,10 @@ cpu_table_lo:
     .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<dos64_stack_execute,<cpu_table_unsupported
     .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<dos64_stack_execute,<dos64_stack_execute
     .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<dos64_stack_execute,<dos64_stack_execute
-    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_table_unsupported,<dos64_adjust_execute
-    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_table_unsupported,<dos64_adjust_execute
-    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_table_unsupported,<dos64_adjust_execute
-    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_table_unsupported,<dos64_adjust_execute
+    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,G_ES,<dos64_adjust_execute
+    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,G_CS,<dos64_adjust_execute
+    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,G_SS,<dos64_adjust_execute
+    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,G_DS,<dos64_adjust_execute
     .byte <cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec
     .byte <cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec
     .byte <dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute
@@ -190,7 +179,7 @@ cpu_table_lo:
     .byte <cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported
     .byte <dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<cpu_io,<cpu_io,<cpu_io,<cpu_io
     .byte <dos64_stack_execute,<cpu_near_jump,<cpu_far_jump,<cpu_short_jump,<cpu_io,<cpu_io,<cpu_io,<cpu_io
-    .byte <cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_halt,<cpu_cmc,<dos64_math_execute,<dos64_math_execute
+    .byte $81,<cpu_table_unsupported,$80,$80,<cpu_table_halt,<cpu_cmc,<dos64_math_execute,<dos64_math_execute
     .byte <cpu_clc,<cpu_stc,<cpu_cli,<cpu_sti,<cpu_cld,<cpu_std,<dos64_indirect_execute,<dos64_indirect_execute
 .assert *-cpu_table_lo = 256, error, "opcode low table must contain 256 entries"
 cpu_table_hi:
@@ -198,10 +187,10 @@ cpu_table_hi:
     .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>dos64_stack_execute,>cpu_table_unsupported
     .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>dos64_stack_execute,>dos64_stack_execute
     .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>dos64_stack_execute,>dos64_stack_execute
-    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_table_unsupported,>dos64_adjust_execute
-    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_table_unsupported,>dos64_adjust_execute
-    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_table_unsupported,>dos64_adjust_execute
-    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_table_unsupported,>dos64_adjust_execute
+    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,$80,>dos64_adjust_execute
+    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,$80,>dos64_adjust_execute
+    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,$80,>dos64_adjust_execute
+    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,$80,>dos64_adjust_execute
     .byte >cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec
     .byte >cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec
     .byte >dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute
@@ -224,10 +213,11 @@ cpu_table_hi:
     .byte >cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported
     .byte >dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>cpu_io,>cpu_io,>cpu_io,>cpu_io
     .byte >dos64_stack_execute,>cpu_near_jump,>cpu_far_jump,>cpu_short_jump,>cpu_io,>cpu_io,>cpu_io,>cpu_io
-    .byte >cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_halt,>cpu_cmc,>dos64_math_execute,>dos64_math_execute
+    .byte $80,>cpu_table_unsupported,$80,$80,>cpu_table_halt,>cpu_cmc,>dos64_math_execute,>dos64_math_execute
     .byte >cpu_clc,>cpu_stc,>cpu_cli,>cpu_sti,>cpu_cld,>cpu_std,>dos64_indirect_execute,>dos64_indirect_execute
 
 .assert *-cpu_table_hi = 256, error, "opcode high table must contain 256 entries"
+.assert __CODE_RUN__ + __CODE_SIZE__ <= $8000, lderror, "dispatch prefix marker requires low-RAM CODE"
 
 .segment "CODE"
 
@@ -842,10 +832,11 @@ cpu_fetch8_slow:
 @error:
     rts
 cpu_fetch16:
-    jsr cpu_fetch8
+    ; The continuation requires this exact preceding ownership validation.
+    jsr dos64_fast_fetch
     bcs @error
     sta cpu_low
-    jsr cpu_fetch8
+    jsr dos64_fetch_owned_next
     bcs @error
     sta dos64_cpu_value+1
     lda cpu_low
@@ -864,12 +855,23 @@ dos64_cpu_word_read:
     jsr dos64_mem_read
     bcs word_failed
     sta dos64_cpu_value
+    ; A successful low byte owns this resolution until the following access.
+    ; Stay within one physical256-byte subpage and one offset256-byte subpage.
+    ; Thus no512-byte cache/PC-region/20-bit/segment-offset seam is crossed.
+    jsr word_span_check
+    bcs @slow
+    jsr dos64_mem_read_next_byte
+    inc dos64_address
+    jmp word_read_complete
+@slow:
     jsr word_next
     jsr dos64_physical
     jsr dos64_mem_read
     jsr word_previous
     bcs word_failed
+word_read_complete:
     sta dos64_cpu_value+1
+word_success:
     plp
     clc
     rts
@@ -882,16 +884,21 @@ dos64_cpu_word_write:
     jsr dos64_physical
     jsr dos64_mem_write
     bcs word_failed
+    jsr word_span_check
+    bcs @slow
+    lda dos64_cpu_value+1
+    sta dos64_mem_value
+    jsr dos64_mem_write_next_byte
+    inc dos64_address
+    jmp word_success
+@slow:
     jsr word_next
     lda dos64_cpu_value+1
     sta dos64_mem_value
     jsr dos64_physical
     jsr dos64_mem_write
     jsr word_previous
-    bcs word_failed
-    plp
-    clc
-    rts
+    bcc word_success
 word_failed:
     plp
     sec
@@ -911,4 +918,43 @@ word_previous:
 @low:
     dec dos64_offset
     pla
+    rts
+
+; C clear proves both low-byte increments cannot cross any transfer seam.
+word_span_check:
+    lda dos64_address
+    cmp #$FF
+    beq @done
+    lda dos64_offset
+    cmp #$FF
+@done:
+    rts
+
+; Internal synchronous continuation after a successful mem_read/mem_write.
+; word_span_check proves both physical and segmented offsets remain inside
+; one256-byte subpage; no intervening bus/cache operation is permitted.
+; Holes have no pointer. ROM/hole writes remain ignored. CPU owns SEI/CLD.
+dos64_mem_read_next_byte:
+    lda dos64_mem_access_kind
+    cmp #2
+    beq @hole
+    inc dos64_mem_pointer
+    ldy #0
+    lda (dos64_mem_pointer),y
+    rts
+@hole:
+    lda #$FF
+    rts
+
+dos64_mem_write_next_byte:
+    lda dos64_mem_access_kind
+    beq @write
+    cmp #3
+    bne @ignored
+@write:
+    inc dos64_mem_pointer
+    ldy #0
+    ; Existing per-byte publication preserves generation, epoch and CGA dirty.
+    jmp dos64_mem_write_span_byte
+@ignored:
     rts

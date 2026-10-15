@@ -1,0 +1,28 @@
+{
+  "status": "APPLICATION_FAILED_RECOVERY_PASSED",
+  "application_status": "failed",
+  "error": "RuntimeError('Native startup/runtime failure: e1040200e10000000000000000fa0000000000')",
+  "reu_bytes_compared": 4194304,
+  "reu_exact": true,
+  "sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+  "restore_attempts": 1,
+  "configuration_restored": true,
+  "reset_resumed": true,
+  "machine_turbo_drives_equal": true,
+  "live_inputs_checked": 1101,
+  "historical_inputs_checked": 669,
+  "root_exit": 1,
+  "game_video_accepted": false,
+  "limitations": [
+    "Only REU[0,4MiB) is addressed; larger capacity remainder is untouched by this helper",
+    "C64 RAM and configuration are captured; prior CPU/timer/NMI execution cannot be resumed",
+    "No persistent media or UCI writes; REST is development control only",
+    "Application callback must enforce its own deadline and preserve media/configuration"
+  ],
+  "run": "agentworking/runs/c64u-native-gwbasic-paced-20261015-135021",
+  "root_audit_sha256": "99c3436669eaa954fa7fb940273309441a0d79e3601615d6b9fc76b57aa7b6c1",
+  "post_ftp_exact_files": 3,
+  "post_ftp_sha256": "84a8fa6f2d153b0ba3082cf5f8d7420a10781fdd41b106309dcf7e3372d28e71",
+  "diagnosis": "Complete61-byte OPEN reached PUSH; zero response bytes/blocks, no CLOSE issued. First sampled error status not retained; later60 is recovery only. Cause remains unproved.",
+  "unknown_owned_target1_handle_closed": false
+}

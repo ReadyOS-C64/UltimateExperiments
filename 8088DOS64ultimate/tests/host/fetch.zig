@@ -327,6 +327,7 @@ test "fast fetch improves a complete register and taken-branch guest workload wi
     const wrapper = try p.slow.symbol("cpu_fetch8");
     try std.testing.expectEqual(@as(u8, 0x4c), p.slow.peek(wrapper));
     word(&p.slow, wrapper + 1, try p.slow.symbol("cpu_fetch8_slow"));
+    try routeSlowWord(&p.slow);
     const golden = try std.testing.allocator.alloc(u8, 1024 * 1024);
     defer std.testing.allocator.free(golden);
     @memset(golden, 0);
@@ -363,5 +364,65 @@ test "fast fetch improves a complete register and taken-branch guest workload wi
             try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0, golden.ptr, golden.len));
         }
         std.debug.print("Verified {s} 261-instruction register/branch workload: fast={d} slow={d} host CPU cycles (no physical throughput claim)\n", .{ phase, fast_cycles, slow_cycles });
+    }
+}
+
+fn routeSlowWord(f: *Fixture) !void {
+    // Word immediates own their adjacent continuation inside cpu_fetch16.
+    // Redirect both internal JSRs as well: the comparison path must remain
+    // the independent slow byte helper, never a stale or hybrid fast span.
+    const fetch_word = try f.symbol("cpu_fetch16");
+    const fetch_fast = try f.symbol("dos64_fast_fetch");
+    const fetch_owned = try f.symbol("dos64_fetch_owned_next");
+    var redirects: usize = 0;
+    for (0..20) |i| {
+        const at = fetch_word + @as(u16, @intCast(i));
+        if (f.peek(at) != 0x20) continue;
+        const target = f.word(at + 1);
+        if (target != fetch_fast and target != fetch_owned) continue;
+        word(f, at + 1, try f.symbol("cpu_fetch8_slow"));
+        redirects += 1;
+    }
+    try std.testing.expectEqual(@as(usize, 2), redirects);
+
+}
+
+test "owned immediate words retain independent slow-byte behavior at PC frame IP and physical seams" {
+    const golden = try std.testing.allocator.alloc(u8, 1024 * 1024);
+    defer std.testing.allocator.free(golden);
+    for (golden, 0..) |*v, i| v.* = @truncate(i * 17 + (i >> 8));
+    for ([_]u8{0, 1}) |mode| {
+        var p = try Pair.init(1, mode);
+        defer p.deinit();
+        try routeSlowWord(&p.slow);
+        for (golden, 0..) |v, i| p.backing(@intCast(i), v);
+        for ([_]u16{0, 0x9fff, 0xafff, 0xb7ff, 0xbbff, 0xefff, 0xffff}) |cs| {
+            for ([_]u16{0, 0xfe00}) |window| {
+                for (0..512) |i| {
+                    const ip:u16=window|@as(u16,@intCast(i));
+                    try p.position(cs,ip);
+                    const low=(@as(u32,cs)*16+ip)&0xfffff;
+                    const high=(@as(u32,cs)*16+(ip+%1))&0xfffff;
+                    var expected:u16=0;
+                    for ([_]u32{low,high},0..) |at,byte| {
+                        const read=mode==1 or at<0xa0000 or at>=0xf0000 or (at>=0xb8000 and at<0xbc000);
+                        expected|=@as(u16,if(read)golden[at] else 0xff)<<@as(u4,@intCast(byte*8));
+                    }
+                    const fast=try p.fast.call("cpu_fetch16",100000);
+                    const slow=try p.slow.call("cpu_fetch16",100000);
+                    try std.testing.expectEqual(@as(u8,0),fast.p&1);
+                    try std.testing.expectEqual(slow.p&1,fast.p&1);
+                    for ([_]*Fixture{&p.fast,&p.slow}) |f| {
+                        try std.testing.expectEqual(expected,f.word(try f.symbol("dos64_cpu_value")));
+                        try std.testing.expectEqual(ip+%2,f.word((try f.symbol("dos64_guest"))+24));
+                        try guards(f);
+                    }
+                }
+            }
+        }
+        for ([_]*Fixture{&p.fast,&p.slow}) |f| {
+            _=try f.call("dos64_cache_flush",100000);
+            try std.testing.expectEqual(@as(u32,0xffffffff),c.dos64_reu_compare(f.machine,0,golden.ptr,golden.len));
+        }
     }
 }

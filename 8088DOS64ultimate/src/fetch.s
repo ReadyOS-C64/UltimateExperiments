@@ -6,12 +6,11 @@
 .import dos64_cache_ready, dos64_cache_limit, dos64_memory_mode, dos64_memory_error
 .import dos64_cache_selected, dos64_cache_flags, dos64_cache_tags_lo, dos64_cache_tags_hi
 .import dos64_cache_generations_lo, dos64_cache_generations_hi
-.export dos64_fetch_init, dos64_fast_fetch
+.export dos64_fetch_init, dos64_fast_fetch, dos64_fetch_owned_next
 
 .segment "ZEROPAGE"
 fetch_pointer: .res 2
-.segment "BSS"
-; 11 BSS bytes + 2 ZP bytes. No acquired frame survives this routine.
+; 13 private ZP bytes. No acquired frame survives a public call.
 fetch_valid: .res 1
 fetch_cs: .res 2
 fetch_ip: .res 2
@@ -29,7 +28,8 @@ dos64_fetch_init:
 ; Internal CPU ABI: normal RAM/I/O mapping, CLD, synchronous/non-reentrant.
 ; A = fetched byte, C = memory failure, A/X/Y/P clobbered. IP advances only on
 ; success. The pointer is read-only and UNPINNED: operand accesses may evict it.
-; Validate ownership before every dereference, including after cold cache init.
+; Validate ownership before every public dereference, including cold cache init.
+; The CPU-only immediate continuation has the stricter local contract below.
 ; Generation changes invalidate writes; valid/tag checks invalidate eviction.
 ; Reset counters can repeat, but valid+same tag still identifies the same guest
 ; page at this host frame, whose bytes are read now (never prefetched/copied).
@@ -75,6 +75,19 @@ dos64_fast_fetch:
     lda dos64_cache_flags,x
     ora #MEM_REFERENCED
     sta dos64_cache_flags,x
+    ldy #0
+    lda (fetch_pointer),y
+    pha
+    jmp fetch_advance
+
+; CPU-private immediate-word continuation. Enter ONLY immediately after a
+; successful dos64_fast_fetch, with no intervening memory/cache/device call,
+; guest state mutation or clock/IRQ boundary. The preceding byte owns this
+; pointer until this call; advance revokes ownership at frame and IP seams.
+; A public caller must always use dos64_fast_fetch and all of its checks.
+dos64_fetch_owned_next:
+    lda fetch_valid
+    beq dos64_fast_fetch
     ldy #0
     lda (fetch_pointer),y
     pha
