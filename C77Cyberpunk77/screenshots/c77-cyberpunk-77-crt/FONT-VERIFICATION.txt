@@ -1,0 +1,3 @@
+Verified 12/12 launcher glyphs in APPLICATIONS against the ReadyOS ROM's second 2KB character bank.
+ROM: <local-capture-path>
+Verified screen: 01_launcher.png
