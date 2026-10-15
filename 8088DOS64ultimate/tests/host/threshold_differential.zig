@@ -335,7 +335,8 @@ test "direct rebase and fast advance preserve every native flag including incomi
     defer p.deinit();
     try p.put("dos64_pit_now", 1024, 4);
     try p.call("dos64_pit_init");
-    for ([_]u8{ 0, 1, 8, 9, 0xff, 0x24, 0xc9, 0x7f }) |flags| {
+    for (0..256) |raw_flags| {
+        const flags: u8 = @intCast(raw_flags);
         p.a.initial_status = flags;
         p.b.initial_status = flags;
         try p.put("dos64_pit_phase", 65534, 2);

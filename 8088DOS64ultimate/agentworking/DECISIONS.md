@@ -178,3 +178,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-15 actualPALManual64CIAcalibration: retainfullsamples. Measured64tickearlymarginisinsufficient;256/1024succeedonlyinthenineownedkernels. IRQ-backedRAMhintisthenextprivateobservationalmechanism;currentgloballySEInativeentryandbankvisibilitymustbehandledexplicitly. NeitherfinitecalibrationnorclockmodelauthorizeschangingproductionIRQeligibility.
+
+
+2026-10-15 promotePITdirectaccumulatoronlyunderexactnoedgeprecondition; allpartialbinarysums<=delta guaranteephasecannotoverflow, remsum<2D needsatmostonesubtract. Preservefullphysicalclock/IRQ/REPboundarycadence. Continuous64:1perPeddlemicrocycle ispreferredcontrolledCPUmodeloverburst-batchedclock; neitherincludesphysicalDMA/VIC/IOwaits. Separatefixedworkfromwholeworkflowguestcountvariation.

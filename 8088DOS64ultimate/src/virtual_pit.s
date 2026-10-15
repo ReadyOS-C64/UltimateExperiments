@@ -447,8 +447,7 @@ pit_fast_noedge:
     lsr pit_delta+1
     ror pit_delta
     bcc @next
-    jsr pit_add_bit
-    jsr pit_commit_trial
+    jsr pit_accumulate_noedge_bit
 @next:
     inx
     lda pit_delta
@@ -471,6 +470,53 @@ pit_fast_noedge:
     dex
     bpl @last
     jmp pit_ok
+; Only reachable after delta < exact first-edge distance. Every partial
+; binary sum is <= delta, so phase cannot overflow. Update the accumulator
+; directly; the general inverse-threshold trial still uses its old path.
+pit_accumulate_noedge_bit:
+    clc
+    lda pit_phase
+    adc pit_qlo,x
+    sta pit_phase
+    lda pit_phase+1
+    adc pit_qhi,x
+    sta pit_phase+1
+    clc
+    lda pit_rem
+    adc pit_rlo,x
+    sta pit_rem
+    lda pit_rem+1
+    adc pit_rmid,x
+    sta pit_rem+1
+    lda pit_rem+2
+    adc pit_rhi,x
+    sta pit_rem+2
+    cmp #6
+    bcc @done
+    bne @subtract
+    lda pit_rem+1
+    cmp #$e3
+    bcc @done
+    bne @subtract
+    lda pit_rem
+    cmp #$f4
+    bcc @done
+@subtract:
+    sec
+    lda pit_rem
+    sbc #$f4
+    sta pit_rem
+    lda pit_rem+1
+    sbc #$e3
+    sta pit_rem+1
+    lda pit_rem+2
+    sbc #6
+    sta pit_rem+2
+    inc pit_phase
+    bne @done
+    inc pit_phase+1
+@done:
+    rts
 pit_qlo: .byte $01,$02,$04,$09,$13,$26,$4D,$9B,$36,$6C,$D8,$B0,$60,$C0,$81,$03
 pit_qhi: .byte $00,$00,$00,$00,$00,$00,$00,$00,$01,$02,$04,$09,$13,$26,$4D,$9B
 pit_rlo: .byte $47,$8E,$1C,$44,$94,$28,$5C,$C4,$88,$10,$20,$40,$80,$00,$0C,$24

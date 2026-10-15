@@ -21,7 +21,7 @@ class OverlayMemoryContract(unittest.TestCase):
         r = self.check()
         self.assertTrue(r['passed'], r['errors'])
         self.assertEqual(r['load']['exclusive_overlay_window_bytes'], 1792)
-        self.assertEqual(r['load']['overlay_source_bytes'],1088+963+882+1664+1278+1427)
+        self.assertEqual(r['load']['overlay_source_bytes'],1088+963+882+1764+1278+1427)
         self.assertEqual(r['load']['startup_overlay_bytes'],12288)
         self.assertEqual(r['load']['prg_bytes'],42497)
 

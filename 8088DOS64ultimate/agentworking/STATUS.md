@@ -354,3 +354,6 @@ Third hardware game attempt150139 failed before command upload: initial interfac
 
 
 Physical CIA1 calibration atPALManual64 completed:64rawtick margin missed23readyboundaries, while256/1024 hadzero acrossplain/actualREUDMA/forcedfallback profiles. FullCIA2/exactPITsampling remainedauthoritative. Immutablecode/all3584shadow/vectors/nineexactrawrationalrecords passed beforehelper; owned4KiBpattern/neighbors passed. All4194304REUbytes restoredac43/attempt1/settingsmediareset/822frozeninputs/twofullpostFTPPRGs exact. Finite empiricalmargin guidance only, no universalS/sample-skipping/XTacceptance. [Evidence](evidence/c64u-cia1-calibration-20261015.json).
+
+
+CurrentPITperformance targetb29cb1a1/e374bb33 passesroot428Zig/290tooling/7frozenreferencegroups(all256nativeflags),367manifestinputs and13standalonePRGsexact. Directno-edge rationalaccumulator saves8.535%modeledCPU/+9.331%throughput onfixed4096NOP withcontinuous64:1 clock; genuinecontinuousGW-BASICWIN/all37LIST/SYSTEM/DIR passeswith7.421%lowerworkflowCPU(differingguestcounts). Generaledgeconverter/allclockIRQREPboundaries unchanged. PIT1764/1792,28free,+100reloadDMAbytes; resident/shadow/state unchanged. No physicalXT/newpairacceptance. [Evidence](evidence/pit-inplace-performance-20261015.json).
