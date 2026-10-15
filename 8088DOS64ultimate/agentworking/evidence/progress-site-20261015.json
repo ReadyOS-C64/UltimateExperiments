@@ -1,0 +1,29 @@
+{
+  "status": "PUBLISHED_PRIVATE",
+  "project_id": "appgprj_6ad135ebbb8481919ddec553e219ff16",
+  "url": "https://dos64-ultimate-lab.klumsy.chatgpt.site",
+  "source_commit": "2dc2e149d6362ae1af90ba1d23a93067218c3bce",
+  "version_id": "appgprj_6ad135ebbb8481919ddec553e219ff16~appgver_5492f74d56a08191bfdfcaf51bf9c6fe",
+  "deployment_id": "appgdep_6ad13b90c4b081918b2b0b593aedea8e",
+  "deployment_status": "succeeded",
+  "source_checkout": "agentworking/sites/progress",
+  "archive": "agentworking/runs/site-progress-20261015-v1.tar.gz",
+  "archive_sha256": "4579f0b5c524c88abc858fc3ff3e505e4953a4ccab15c892b04594058f441815",
+  "features": [
+    "Interactivequalifiedmodeledperformancecomparison",
+    "Steppable/animatedcoherentwordpath/seamfallback",
+    "Interactive4MiBREUmap",
+    "Fourreal40/80DIR/MOREpairedcaptures",
+    "All37syntaxhighlightedBASICsource lines/CRLFdownload"
+  ],
+  "game_video_status": "pending_retry_not_published",
+  "validation": {
+    "static_assets_ids": true,
+    "DOM_interaction_groups": 12,
+    "snapshot_guards": 13,
+    "actual_BAS_CRLF_sha256": "ae363cf70f76fdfc52e790cfc2f33f6c69c6c14d5cdea3d4431c2f48b2c59a10",
+    "browser_visual_QA": "unavailable; no CUA browser surfaces"
+  },
+  "no_commercial_disks_or_EXE_or_private_machine_logs_uploaded": true,
+  "source_credential": "sessionmemory/stdinonly; neverpersisted"
+}

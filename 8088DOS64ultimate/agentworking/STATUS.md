@@ -318,3 +318,8 @@ Latest recording preparation: root-owned actual stationary C64U VIC stream captu
 
 
 Current production GW-BASIC slice: runtimeed7462ba/unitd530c375 promoted after independentreviewa81f3cfb; root425Zig/597quickCPU/290tooling pass, all363livebuildpins exact. Genuine suppliedGW-BASIC executes ten autoplay guesses/WIN, all37source lines in fourLISTpages, SYSTEM and DOSDIR34files/7168free; all368640derivedfloppybytesunchanged. Exactprivateexecuted362sources matchroot; onlyreviewedregistration-onlybuild.zig differs. MAIN20/19, CODE13418(+95), DEVICESTATE661(+2), shadow2361 unchanged. Physicalgame/actualvideo stillpending, priorphysical22facceptance stays scoped. [Evidence](evidence/gwbasic-hangman-20261015.json).
+
+
+GW-BASIC physical firstattempt131135 was root-interrupted at360111guest/287.98s: .25s coherent screen polling limited progress to1185guest/wallsecond, projecting over1200s. OwnedvideoSTOPPED; all4194304REUbytes restoredexactac43/attempt1/configmediareset pass,809ACK/41changedchunks. All746live/660historicalpins exact. Rawoldstatusrunning underKeyboardInterrupt retained, separateauditlabelsinterrupted/notaccepted; NEWpacingpackage722b fixes cancellationreports anduses2sutility/.75sBASIC with1800app/2400recording;600recoveryphases unchanged. [Evidence](evidence/c64u-gwbasic-interrupted-20261015.json).
+
+[Progresssite](https://dos64-ultimate-lab.klumsy.chatgpt.site) is publishedprivate/succeeded/source2dc2e149. Interactiveperformance/memorydiagrams, fourrealpairedcaptures andall37highlightedBASlines/CRLFdownload; completegamevideo pendingpacedretry. [Siteprocess](../docs/PROGRESS_SITE.md),[evidence](evidence/progress-site-20261015.json). Keep updates tied to accepted evidence; sourcecheckoutisolatedfromemulatorrepo.

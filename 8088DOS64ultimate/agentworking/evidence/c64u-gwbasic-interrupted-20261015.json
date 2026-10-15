@@ -1,0 +1,29 @@
+{
+  "status": "INTERRUPTED_APPLICATION_RECOVERY_PASSED",
+  "game_video_accepted": false,
+  "raw_result_status_preserved": "running",
+  "raw_root_exit": 254,
+  "reason": "Root cancelled ownedchildaftermeasuredobserveroverhead projected over1200s; successorusesphasecadenceand1800sbound",
+  "application_guest_instructions_at_interruption": 360111,
+  "application_elapsed_seconds_at_interruption": 287.983491583,
+  "full_REU_bytes_compared": 4194304,
+  "full_REU_equal": true,
+  "backup_and_after_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+  "restore_attempt": 1,
+  "configuration_media_reset_verified": true,
+  "owned_video_status": "OWNED_STOPPED",
+  "native_service_acknowledgements": 809,
+  "delta": {
+    "changed_chunks": 41,
+    "restoration_bytes": 671744
+  },
+  "all_frozen_live_inputs_checked": 746,
+  "all_historical_copies_checked": 660,
+  "source_identity_waiver": false,
+  "raw_cancellation_status_defect": "Original outerfinally restores successfully but leaves running status when KeyboardInterrupt bypasses exceptException. Retained rawunchanged; NEWpacingwrapper fixes truthfulfailed/cancelledreporting.",
+  "raw_audit_path": "agentworking/runs/c64u-native-gwbasic-20261015-131135/root-interrupted-run-audit.json",
+  "raw_audit_sha256": "6319ae2bf172f1c3153c3ea55ce1602fca5e0a85d7b392b8b2cb4187b6cd77df",
+  "raw_result_path": "agentworking/runs/c64u-native-gwbasic-20261015-131135/result.json",
+  "raw_result_sha256": "e1419e1ac237d68aae190a221928cdcc6725e7002df2e036f91662509292d0d0",
+  "revised_pacing_package_sha256": "722b0b9f96c02480d5403faff0dc77c94e3622e1c16cf4690bab33eb1af62ec4"
+}

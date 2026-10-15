@@ -74,3 +74,5 @@ All project working records live here, under lowercase [agentworking](agentworki
 The three user-provided images remain unchanged in `reference/`. Their read-only [inventory](agentworking/research/reference-images.json) records geometry, hashes, file contents' hashes, and configuration text. The [DOSBox-X baseline](agentworking/evidence/dosbox-reference-20261014.json) records the actual guest's VER/DIR output and immutable source hash.
 
 The opt-in genuine DOS CGA probe now passes modes4/5/6 through DOS loading and an independent full-pixel oracle. This is model evidence; physical graphics capture remains separate. [Evidence](agentworking/evidence/genuine-cga-workflow-20261015.json).
+
+[Live progress lab](https://dos64-ultimate-lab.klumsy.chatgpt.site) — interactive diagrams, verified screenshots and highlighted BASIC source. [Publication/update process](docs/PROGRESS_SITE.md). Complete physical game video is pending the paced recording retry.
