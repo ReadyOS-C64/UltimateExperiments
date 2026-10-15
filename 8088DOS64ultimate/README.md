@@ -37,6 +37,8 @@ make test-range-vice  # coherent disk-range integrity across guest/REU bank seam
 make profile-cpu      # real linked interpreter cycle/counter baseline, not physical timing
 make test-clock-probe # separate scripted CIA/VIC probe checks, not hardware calibration
 make hardware-helpers # prepare physical backup/restore/cache probe images
+make native-file-recovery # build optional whole-file REU restore helper
+make test-native-file-recovery # fast checks for that opt-in development backend
 ```
 
 Tool overrides: `DOS64_ZIG`, `DOS64_CA65`, `DOS64_LD65`, `DOS64_PYTHON`, `DOS64_DOSBOX`. Zig defaults to the sibling pinned 0.16.0 tooling, then PATH. Build outputs and identity manifest are in `build/`; reference-run evidence is retained in project-local `agentworking/runs/`.
@@ -49,7 +51,7 @@ Tool overrides: `DOS64_ZIG`, `DOS64_CA65`, `DOS64_LD65`, `DOS64_PYTHON`, `DOS64_
 4. [Tests and acceptance](docs/TESTING.md) — Zig/Peddle, PC references, VICE, real C64U, DOS utilities.
 5. [Performance experiments](docs/PERFORMANCE.md) — what must be measured before promising XT speed.
 
-Details: [storage](docs/STORAGE.md), [display and keyboard](docs/DISPLAY_INPUT.md), [research and sources](docs/RESEARCH.md), [existing emulator references](docs/EXISTING_EMULATORS.md), [REU implementation](docs/REU_IMPLEMENTATION.md), [memory implementation](docs/MEMORY_IMPLEMENTATION.md), [CPU implementation](docs/CPU_IMPLEMENTATION.md), [BIOS implementation](docs/BIOS_IMPLEMENTATION.md), [disk implementation](docs/DISK_IMPLEMENTATION.md), [coherent ranges](docs/RANGE_IMPLEMENTATION.md), [PC ports](docs/PORTS_IMPLEMENTATION.md), [guest clock](docs/CLOCK_IMPLEMENTATION.md), [keyboard BIOS](docs/KEYBOARD_IMPLEMENTATION.md), [UCI transport](docs/UCI_IMPLEMENTATION.md), [native clock](docs/NATIVE_CLOCK_IMPLEMENTATION.md), [native startup/runtime](docs/NATIVE_RUNTIME_IMPLEMENTATION.md), [physical tests](docs/HARDWARE_TESTING.md), [requirements coverage](docs/REQUIREMENTS.md).
+Details: [storage](docs/STORAGE.md), [display and keyboard](docs/DISPLAY_INPUT.md), [research and sources](docs/RESEARCH.md), [existing emulator references](docs/EXISTING_EMULATORS.md), [REU implementation](docs/REU_IMPLEMENTATION.md), [memory implementation](docs/MEMORY_IMPLEMENTATION.md), [CPU implementation](docs/CPU_IMPLEMENTATION.md), [BIOS implementation](docs/BIOS_IMPLEMENTATION.md), [disk implementation](docs/DISK_IMPLEMENTATION.md), [coherent ranges](docs/RANGE_IMPLEMENTATION.md), [PC ports](docs/PORTS_IMPLEMENTATION.md), [guest clock](docs/CLOCK_IMPLEMENTATION.md), [keyboard BIOS](docs/KEYBOARD_IMPLEMENTATION.md), [UCI transport](docs/UCI_IMPLEMENTATION.md), [native clock](docs/NATIVE_CLOCK_IMPLEMENTATION.md), [native startup/runtime](docs/NATIVE_RUNTIME_IMPLEMENTATION.md), [physical tests](docs/HARDWARE_TESTING.md), [optional whole-file recovery](docs/NATIVE_FILE_RECOVERY.md), [requirements coverage](docs/REQUIREMENTS.md).
 
 ## Main decisions and remaining scope
 

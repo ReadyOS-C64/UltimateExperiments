@@ -102,3 +102,6 @@ Residentallocation excludingdiscardablecold/unithelpers andalternativeoverlays i
 
 
 MODE/XTcompatibility follow-up: runtime3c2627a4/unit6280024d changes only loadedbyte5014(31h→25h) fromfiveoverlaycheckpoint. Allsegments/PRGlength/padding/fonts/overlaylengths/coldlifetimebudgets unchanged. Bothmaps independently verified byrootmakebuild/default. This is not an HDshadow allocation.
+
+
+Opt-in standalone native-file restore is separate from emulator resident allocation:4624bytePRG0801–1A0E,DRFconfig1985/138,ZP20–25,2KiBstaging8000–87FF,UCI C100–C8FF,descriptorE000–E009,stateEA00–EA78,32bytemailbox6000–601F. No overlays/cache/guest/renderer. Exactly2048×2048byteDMAs addressREU[0,4MiB); uppercapacityexcluded. Source/export-onlyFILEalias changesnoemulator/helperbytes. OriginalstandaloneDRS1592bytesunchanged. [Sourcebuild/contract](../docs/NATIVE_FILE_RECOVERY.md).

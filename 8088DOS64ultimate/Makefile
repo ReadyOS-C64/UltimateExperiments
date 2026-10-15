@@ -231,3 +231,17 @@ test-native-builtins: build
 	$(DOS64_PYTHON) tests/host/verify_native_workflows_test.py
 test-native-mode: build
 	$(DOS64_ZIG) build native-mode --summary all
+
+# Explicit development backend; excluded from all/build/test and default delta.
+.PHONY: native-file-recovery test-native-file-recovery test-native-file-recovery-peddle check-native-file-recovery-test-build
+native-file-recovery:
+	$(DOS64_PYTHON) build_support/build_native_file_recovery.py --ca65 "$(DOS64_CA65)" --ld65 "$(DOS64_LD65)"
+
+test-native-file-recovery: native-file-recovery
+	$(DOS64_PYTHON) -m unittest discover -s tests/native_file_recovery -p test_host.py -v
+
+test-native-file-recovery-peddle: native-file-recovery
+	$(DOS64_ZIG) build native-file-recovery --summary all
+
+check-native-file-recovery-test-build: native-file-recovery
+	$(DOS64_ZIG) build native-file-recovery-compile --summary all

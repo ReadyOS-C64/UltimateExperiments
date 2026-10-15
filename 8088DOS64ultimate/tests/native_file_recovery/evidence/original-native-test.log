@@ -1,0 +1,10 @@
+test
++- run test w
+maximum_restore_poll_cycles=9658
+failed command: cd agentworking/scratch/bulk-file-restore && ./.zig-cache/o/e717f5e4b5c50291d4875d29fab67a52/test --cache-dir=./.zig-cache --seed=0x10b85568 --listen=-
+
+Build Summary: 3/3 steps succeeded; 7/7 tests passed
+test success
++- run test 7 pass (7 total) 5m MaxRSS:55M
+   +- compile test Debug native success 1s MaxRSS:276M
+

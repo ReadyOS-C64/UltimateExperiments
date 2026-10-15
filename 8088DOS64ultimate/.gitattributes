@@ -1,0 +1,2 @@
+# Preserve retained raw test logs byte-for-byte, including trailing blank lines.
+tests/native_file_recovery/evidence/*.log -whitespace

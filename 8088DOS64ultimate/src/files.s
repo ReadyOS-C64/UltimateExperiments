@@ -13,6 +13,7 @@
 .import dos64_uci_data_len, dos64_uci_status_len, dos64_uci_last_status, dos64_uci_flags
 .export dos64_files_init, dos64_files_start, dos64_files_poll
 .export dos64_files_state_start, dos64_files_state_end, dos64_files_code_start, dos64_files_code_end
+.export dos64_files_owned_target := files_owned_target ; development CLOSE owner claim; no target bytes
 .export dos64_files_state, dos64_files_error, dos64_files_transport_error
 .export dos64_files_now, dos64_files_target, dos64_files_op, dos64_files_mode
 .export dos64_files_count, dos64_files_path_len, dos64_files_offset

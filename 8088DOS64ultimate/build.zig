@@ -18,6 +18,15 @@ fn addPeddle(module: *std.Build.Module, b: *std.Build) void {
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
+    // Explicit slow native recovery proof; no dependency from default test.
+    const reu_file=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/native_file_recovery/actual_assembly.zig"),.target=target,.optimize=.Debug})});
+    reu_file.root_module.addIncludePath(b.path("tests/native_file_recovery/fixture"));
+    reu_file.root_module.addIncludePath(b.path("third_party/peddle/Peddle"));
+    reu_file.root_module.addCSourceFiles(.{.files=&.{"tests/native_file_recovery/fixture/peddle_bridge.cpp","third_party/peddle/Peddle/Peddle.cpp","third_party/peddle/Peddle/PeddleDebugger.cpp","third_party/peddle/Peddle/PeddleDisassembler.cpp","third_party/peddle/Peddle/StrWriter.cpp"},.flags=&.{"-std=c++20","-O2","-Wno-unused-parameter","-Wno-unused-variable"}});
+    reu_file.root_module.link_libcpp=true;
+    const run_reu_file=b.addRunArtifact(reu_file);run_reu_file.setCwd(b.path("."));
+    b.step("native-file-recovery","Opt-in actual6502 full4MiB recovery and failure proof").dependOn(&run_reu_file.step);
+    b.step("native-file-recovery-compile","Compile opt-in recovery fixture without executing full4MiB tests").dependOn(&reu_file.step);
     const workflows=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_builtin_workflows.zig"),.target=target,.optimize=.Debug}),.filters=&.{"internal disposable", "ASCII mapping"}});
     addPeddle(workflows.root_module,b);b.step("native-builtins","Opt-in genuine native DOS disposable workflows").dependOn(&b.addRunArtifact(workflows).step);
     const modes=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_builtin_workflows.zig"),.target=target,.optimize=.Debug}),.filters=&.{"MODE COM"}});

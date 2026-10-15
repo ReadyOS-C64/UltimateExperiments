@@ -154,3 +154,8 @@ A run manifest must be generated after every artifact-producing prerequisite, in
 ## 2026-10-15 — real DOS file workflows
 
 Directory deletion is a logical FAT/root change, not erased sector slack. Verify live names, allocation and original data independently while allowing freed data to remain. Long commands must refill only available slots in the real15-keyBIOSring; coherentPAUSED must transition throughRUN beforeKEY. Supplied MODE probes later BIOS functions before selecting an XT mode: preserve first failure and inspect originalXT unsupported-function return behavior rather than inventing VGA support.
+
+
+## 2026-10-15 — source-complete whole-file recovery
+
+A CRC-success flag is insufficient restoration evidence: bind the configured PRG to an immutable backup and fresh owned file, require new startup/knownCLOSE/counters, then independently compare every restored byte. Keep one deadline across FTP/native/reload/compare; never turn per-step bounds into unbounded total time. Source-complete helpers with fixed reviewed output hashes permit fast path/host changes without rerunning a five-minute native test when executable/core bytes remain exact. Physical test recovery must use a fresh snapshot of current REU state, never a prior-run backup merely because it already exists.
