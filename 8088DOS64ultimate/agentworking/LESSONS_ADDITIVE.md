@@ -134,3 +134,6 @@ A run manifest must be generated after every artifact-producing prerequisite, in
 
 
 2026-10-15 native runtime: convert blink bits to strict0/1 at the target ABI, and exhaust all256 phases. AH01 polling need not set the BIOS AH00-wait flag; coherent periodic observers must still find prompts. Match pagination at the active cursor, not stale scrollback. A normal BIOS scroll can cost>3M CPU cycles; retain bounded measured budgets instead of assuming opcode-sized work. Keep cumulative Peddle clocks separate from incremental external phi2 modeling. Retain KERNAL until the RAM NMI vector and CIA masks are complete. A REST upload failure before PRG load is not native execution; independent settings equality is not full REU restoration. Preserve original failure reports and never delete unknown firmware Temp files to make a test pass.
+
+
+2026-10-15 physical transport: measure request throughput before committing a multi-megabyte recovery path. Four/eight concurrent requests did not improve a serial firmware server. A file loader that correctly copies16KiB can still cost~2seconds per reset; extrapolate full-workflow work. Full readmem captures can include changing IO while CPU is paused; compare RAM ranges and exact payloads without calling volatile observations corruption. Never execute a known-over-budget restore merely to confirm the estimate.

@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "status": "RAM-only gates pass; both bulk restoration transport proposals rejected for measured cost",
+  "runs": [
+    {
+      "path": "agentworking/runs/c64u-inline-put-20261015-060822",
+      "result": {
+        "status": "passed",
+        "started": "2026-10-15T13:09:07.766773+00:00",
+        "writes": "same saved128 RAM bytes at8000; no intended byte changes",
+        "requests": 256,
+        "reu_commands": 0,
+        "prg_launches": 0,
+        "paused_ram_ranges_exact": true,
+        "full_read_exact": false,
+        "excluded_comparison_hex": "D000-DFFF potentially mapped IO",
+        "ram_sha256": "6bc08b5188d52fab970ca956b28f7890bf49829f4ec0e57785feb45d688ea825",
+        "original128_restored_exact": true,
+        "resumed": true,
+        "settings_media_exact": true,
+        "completed_requests": 256,
+        "latencies_seconds": {
+          "mean": 0.03732755285546876,
+          "median": 0.03759139549999979,
+          "p95": 0.03849470799999999,
+          "maximum": 0.043546957999999414
+        },
+        "32768_payload_request_estimated_seconds": 1223.1492519680003,
+        "finished": "2026-10-15T13:09:18.034142+00:00"
+      },
+      "result_sha256": "b886ce1ef4253b93bd5160f09ea39105c07d26ae98d609f4b21b90ba78c9a46e"
+    },
+    {
+      "path": "agentworking/runs/c64u-inline-put-4workers-20261015-061056",
+      "result": {
+        "status": "passed",
+        "started": "2026-10-15T13:11:07.692887+00:00",
+        "writes": "same saved128 RAM bytes at8000; no intended byte changes",
+        "requests": 256,
+        "parallel_workers": 4,
+        "reu_commands": 0,
+        "prg_launches": 0,
+        "payload_batch_wall_seconds": 9.490167709,
+        "32768_payload_requests_throughput_estimate_seconds": 1214.741466752,
+        "paused_ram_ranges_exact": true,
+        "full_read_exact": false,
+        "excluded_comparison_hex": "D000-DFFF potentially mapped IO",
+        "ram_sha256": "2d02d76e5883a2123b92c085dc9af855dc9bc75ae603d2d1b880cf1714d410c4",
+        "original128_restored_exact": true,
+        "resumed": true,
+        "settings_media_exact": true,
+        "completed_requests": 256,
+        "latencies_seconds": {
+          "mean": 0.14741971679687496,
+          "median": 0.1504885210000002,
+          "p95": 0.1834210419999991,
+          "maximum": 0.18610612500000023
+        },
+        "32768_payload_request_estimated_seconds": 4830.649279999999,
+        "finished": "2026-10-15T13:11:17.882758+00:00"
+      },
+      "result_sha256": "babbef0efce9ea75e3cdba4f7edbb88e3284281d7bd926f09ede6205342d33d9"
+    },
+    {
+      "path": "agentworking/runs/c64u-inline-put-8workers-20261015-061056",
+      "result": {
+        "status": "passed",
+        "started": "2026-10-15T13:11:17.976689+00:00",
+        "writes": "same saved128 RAM bytes at8000; no intended byte changes",
+        "requests": 256,
+        "parallel_workers": 8,
+        "reu_commands": 0,
+        "prg_launches": 0,
+        "payload_batch_wall_seconds": 9.490591708,
+        "32768_payload_requests_throughput_estimate_seconds": 1214.795738624,
+        "paused_ram_ranges_exact": true,
+        "full_read_exact": false,
+        "excluded_comparison_hex": "D000-DFFF potentially mapped IO",
+        "ram_sha256": "765d87725b74ddb2700d39bed20b9f5ed344ffa69a601af552225be74c48cb03",
+        "original128_restored_exact": true,
+        "resumed": true,
+        "settings_media_exact": true,
+        "completed_requests": 256,
+        "latencies_seconds": {
+          "mean": 0.293039484359375,
+          "median": 0.3079624165000001,
+          "p95": 0.33157483299999946,
+          "maximum": 0.33350649999999993
+        },
+        "32768_payload_request_estimated_seconds": 9602.317823488,
+        "finished": "2026-10-15T13:11:28.165692+00:00"
+      },
+      "result_sha256": "26b55fbf2450c0246158f1e1787344c50c7a45d4456e1f5dafaa984bc12f9e71"
+    },
+    {
+      "path": "agentworking/runs/c64u-recovery-payload-20261015-061538",
+      "result": {
+        "status": "passed",
+        "started": "2026-10-15T13:15:39.356347+00:00",
+        "reu_GO_commands": 0,
+        "remote_directory": "/usb1/DOS64_TEST/recovery-payload-20261015-061538",
+        "prg_sha256": "00ad2e7c225bc6c3351fc8760942ce613c8bfbf34f61b1c4544ec26047244016",
+        "service_sha256": "40fe690953c245c8093c7cd5e5cb91684df7290602d8afa44dbd2e0b5b30d09e",
+        "payload_sha256": "bfd09cd07bc57d61c1b25abbc360c9eb851a84c33b95a62fba4208d8a1ba1c7b",
+        "prg_bytes": 47105,
+        "limits": [
+          "RAM-only loader/timing gate; no REU DMA or native DOS acceptance",
+          "CPU execution reset; prior CPU/timer state is not resumed"
+        ],
+        "ftp_stage_readback_seconds": 1.679169167,
+        "remote_byte_verified": true,
+        "file_runner_request_seconds": 2.026949084,
+        "original_service_code_exact": true,
+        "staging_16k_exact": true,
+        "sequence_zero": true,
+        "ready_through_capture_seconds": 2.316551959,
+        "256_ftp_plus_ready_estimate_seconds": 1022.904608256,
+        "reset": true,
+        "resumed": true,
+        "settings_media_exact": true,
+        "finished": "2026-10-15T13:15:44.080296+00:00"
+      },
+      "result_sha256": "23ebb84883e2e9d5bf377e2c91906183b40c387961c6b692b894e09a5f98e162"
+    }
+  ],
+  "native_DOS_ran": false,
+  "REU_DMA_GO_commands": 0,
+  "source_runtime_sha256": "647eca6fb65db56153067c6a6be0209cb7f63955a904e618400b6734e2dc1023",
+  "decision": "Keep600second restoration phase; prepare one-file native read-only UCI restore instead of serial128byte PUTs or256 full file reloads.",
+  "sources": [
+    "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/api/route_machine.cc",
+    "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/api/route_runners.cc"
+  ],
+  "limitations": [
+    "RAM-only loader/code/payload/transport measurements do not prove REU restoration or native DOS",
+    "Full read contains volatileD000-DFFF IO; equality was required for RAM ranges outsideIO and exact8000payload",
+    "Single packedfile measurement extrapolates1023seconds; not an executed whole restoration",
+    "Prior CPU/timer execution is reset, not resumed by loader probe; settings/media/reset/resume passed"
+  ]
+}

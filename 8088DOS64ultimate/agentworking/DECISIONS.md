@@ -94,3 +94,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D69 | Implemented/verified,2026-10-15 | Development SNAPSHOT flushes and pauses; bounded READ only while coherent PAUSED; KEY uses real BIOS ring | Guest DOS semantics unchanged; body/ack invalidation before command-last, result before clear-last |
 | D70 | Implemented/verified,2026-10-15 | Observe DOS periodically even without AH00 wait, and recognize pagination only at active cursor | Real COMMAND polls AH01; stale prompt elsewhere on screen must not queue extra keys |
 | D71 | Physical attempt failed,2026-10-15 | Preserve initial native hardware failure and independently inspect unchanged settings/media | No service/application/DMA loaded, no verified backup; reset/resume/equality does not imply full REU recovery |
+
+
+| D72 | Measured/rejected bulk proposals,2026-10-15 | Keep bounded600second recovery phase; serial/parallel tiny PUT and256 packed PRG reloads are too slow | Actual RAM-only gates preserve settings/media; extrapolations~20/~17minutes precede REU writes; implement one-file native UCI restore instead |
