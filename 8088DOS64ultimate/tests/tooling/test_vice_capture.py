@@ -58,3 +58,16 @@ class ViceCapture(unittest.TestCase):
         self.manifest["steps"].pop();self.write_manifest()
         with self.assertRaisesRegex(ValueError,"step"):
             verify_capture(self.run,self.project)
+
+    def test_cache_capture_uses_its_own_length_pattern_and_executable(self):
+        self.manifest["plan_id"]="dos64_cache_integrity";self.write_manifest()
+        prg=self.project/"build/dos64-reu-probe.prg"
+        (self.project/"build/dos64-cache-probe.prg").write_bytes(prg.read_bytes())
+        data=bytearray(1536)
+        for page in range(6):
+            for value in range(256):
+                data[page*256+(value ^ page ^ 0xa7)]=value
+        (self.run/"stages/dump/restored_data.bin").write_bytes(data)
+        self.assertEqual(verify_capture(self.run,self.project,"cache")["restored_bytes"],1536)
+        with self.assertRaisesRegex(ValueError,"successful"):
+            verify_capture(self.run,self.project,"reu")

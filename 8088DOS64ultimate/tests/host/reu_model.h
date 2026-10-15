@@ -2,6 +2,7 @@
 #include <array>
 #include <vector>
 #include <cstdint>
+#include <algorithm>
 
 // Functional subset used by dos64_reu_transfer. No bus-stall timing, IRQ,
 // deferred FF00 trigger, compare or swap behavior is claimed.
@@ -13,6 +14,10 @@ public:
     uint64_t dma_bytes = 0;
     uint64_t transfers = 0;
     bool unsupported = false;
+    // Synthetic one-shot transaction failure, not a claimed hardware behavior.
+    bool fault_armed = false;
+    uint64_t fault_skip = 0;
+    uint32_t fault_prefix = 0;
     explicit ReuModel(uint32_t size_kib = 4096) : bytes(size_kib*1024u) {}
 
     uint8_t read(unsigned index) {
@@ -41,7 +46,11 @@ public:
         uint32_t far = regs[4] | (uint32_t(regs[5])<<8) | (uint32_t(regs[6])<<16);
         const unsigned count = (regs[7] | (unsigned(regs[8])<<8)) ?
                                (regs[7] | (unsigned(regs[8])<<8)) : 65536;
-        for (unsigned index = 0; index < count; ++index) {
+        const bool fail = fault_armed && fault_skip == 0;
+        if (fault_armed && fault_skip) --fault_skip;
+        if (fail) fault_armed = false;
+        const unsigned transferred = fail ? std::min(count, fault_prefix) : count;
+        for (unsigned index = 0; index < transferred; ++index) {
             const auto physical = far & (bytes.size()-1);
             if (mode == 0) bytes[physical] = ram[host];
             else { ram[host] = bytes[physical]; written[host] = 1; }
@@ -51,16 +60,17 @@ public:
                 far = (far & 0xf80000) | ((far+1) & 0x07ffff);
             }
         }
-        dma_bytes += count;
+        dma_bytes += transferred;
         ++transfers;
         if (value & 0x20) {
             for (unsigned index = 0; index < 7; ++index) regs[index+2] = reload[index];
         } else {
             regs[2] = uint8_t(host); regs[3] = uint8_t(host>>8);
             regs[4] = uint8_t(far); regs[5] = uint8_t(far>>8); regs[6] = uint8_t(far>>16);
-            regs[7] = 1; regs[8] = 0; // REC post-completion count, not zero
+            const unsigned remaining = fail ? count-transferred : 1;
+            regs[7] = uint8_t(remaining); regs[8] = uint8_t(remaining>>8);
         }
-        regs[0] |= 0x40;
+        regs[0] |= fail ? 0x20 : 0x40;
         regs[1] = (value & 0x7f) | 0x10;
     }
 };

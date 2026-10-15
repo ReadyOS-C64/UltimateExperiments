@@ -20,3 +20,5 @@
 | K16 | Scope expands to all DOS utilities/peripheral modes | Medium | Explicit applicability matrix; no printer/network/EGA dependency; record unsupported operation instead of dropping entire useful utility |
 
 No risk is marked resolved by the existence of this plan. Add measurements/evidence and dated state changes as work proceeds.
+
+2026-10-14 checkpoint: K01 remains high. A public warm byte read costs 221 host CPU cycles in ALL_RAM mode, before address generation/decoding; span fetch/hot-path work is required. K05/K06 have stronger functional evidence from all-page/random/partial-failure cache tests and a native VICE eviction probe, but UCI/persistence/physical effects remain unverified. K14 now has a real device inventory (firmware 3.14, FPGA 121, core 1.47, enabled 16 MB REU); actual UCI behavior, active turbo speed and DMA timing remain open. Read-only discovery made no hardware/media changes.

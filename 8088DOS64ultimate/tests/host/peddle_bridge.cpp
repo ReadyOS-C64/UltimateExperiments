@@ -112,3 +112,8 @@ uint8_t dos64_bus_read(Dos64Machine *m, uint16_t a) { return m->cpu.busRead(a); 
 void dos64_bus_write(Dos64Machine *m, uint16_t a, uint8_t v) { m->cpu.busWrite(a,v); }
 uint64_t dos64_dma_bytes(const Dos64Machine *m) { return m->cpu.reu ? m->cpu.reu->dma_bytes : 0; }
 uint64_t dos64_dma_transfers(const Dos64Machine *m) { return m->cpu.reu ? m->cpu.reu->transfers : 0; }
+void dos64_reu_fail_after(Dos64Machine *m, uint64_t skip, uint32_t prefix_bytes) {
+    m->cpu.reu->fault_armed = true;
+    m->cpu.reu->fault_skip = skip;
+    m->cpu.reu->fault_prefix = prefix_bytes;
+}

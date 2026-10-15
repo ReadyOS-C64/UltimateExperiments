@@ -1,0 +1,182 @@
+{
+  "slice": "20-bit addressing and coherent byte cache",
+  "command": "make test",
+  "result": "pass",
+  "zig_tests": 41,
+  "tooling_tests": 10,
+  "scope": "Actual assembly memory behavior; no target DOS boot or physical timing",
+  "manifest": {
+    "schema": 1,
+    "tools": {
+      "zig": {
+        "path": "/Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig",
+        "version": "0.16.0",
+        "sha256": "e6cd688d25664983833aae272f501d4bceeae304875b8f1741209d15fd13a4ec"
+      },
+      "ca65": {
+        "path": "/opt/homebrew/Cellar/cc65/2.19/bin/ca65",
+        "version": "ca65 V2.18 - N/A",
+        "sha256": "1a57997819fd98814e4601b5160df589e7a1a24e1888a80fee51ae450d8fd0ea"
+      },
+      "ld65": {
+        "path": "/opt/homebrew/Cellar/cc65/2.19/bin/ld65",
+        "version": "ld65 V2.18 - N/A",
+        "sha256": "36bb196207a6b2c90a4aa991b419d6113885303951b14b60b455f51c777b3339"
+      }
+    },
+    "files": {
+      "Makefile": "83987fbd11af6d96d64cc0f4f0b19cd13eff1f11cb7488a8d98e7df7151f7236",
+      "build.zig": "7cd1c11c515df2b8271fe4cc63283026d8f2c645335c5d80a8b983d533656690",
+      "build_support/c64u_preflight.py": "dd2a95bd720852045d28cd4e7302ab788d82cb82acde7c7670e59d22a4d590ae",
+      "build_support/manifest.py": "b9d28f27fd1c6126f4ca57edae04a0970437138b5ae7aa9bbba97ec5f6cb43ff",
+      "build_support/raw_payload.py": "f10ed30c1096a4789ac77135186a97847f68a6eb515f21fb005bd3c400e2b4f3",
+      "build_support/reference_boot.py": "adeb5344f93c721b15e892a0a56fddc93806dcb5dcfda85e3fcca5281f455c8c",
+      "build_support/verify_memory.py": "cf0f7485fc11269af6ffd04d8c854aecaeb7c48c0e742a3b2b72ac95220ab792",
+      "build_support/vice_capture.py": "2e9818ad4b21f01a4a0d48b86c7deb6ef4d2cc0e592d77403480d87b9ffd5697",
+      "build_support/vice_probe.py": "df5ba7c04fec7e37aaba43af6af939c4c9d49e6b96689f5591ed2246869f5185",
+      "src/address.s": "09805aa9fe6249726447d7c093223b884de04fea9fbb7f65068c96b90507ee01",
+      "src/boot.s": "8c7e598ce1a26c8b4f760f81c5de65c76b6d3832e08e199bec3c697a54feae5b",
+      "src/cache_probe.s": "bf3e74d9b1cd482c57161ecf0b6a1d1d18f395bb89aa91d36df1548aa0bcac4e",
+      "src/cpu_state.s": "77c0e8db8217b15bc5d9a031fc4554eeaec14c38b8212b0faabee4d7ac65563f",
+      "src/memory.s": "5dd3276aa320ce76e5d7ce0ee688f723b7a49a25d39b11e8dc80515ee3aa52cb",
+      "src/reu.s": "e51b31fff8da86894156fcc004b2339567d240e66b7aee1fd42d4117bf5c73d2",
+      "src/reu_probe.s": "09dbcef1ecd8a757ec11771097564b8b46f2a1663c63466fa4a72b893308751d",
+      "include/abi.inc": "74a874c245aed278ba884d33923279bde901bed97427452096dd414ba67e08d6",
+      "include/memory.inc": "26c5be0321b5678fa17e7881792760c90771f398ab1ca7c4b23d071dca4ce428",
+      "include/reu.inc": "47a4eac6be6d727dc506c2d8e808e1028aefb2f8321b89aff3d333bff94c5e05",
+      "cfg/dos64.cfg": "4105a2025ee6ff89b0275333132eefd465cc8c0dd0fee49b09efa78e746eabc0",
+      "tests/host/foundation.zig": "2b0010515118c80e9e7fa39e4afeda94953259c1287645d47e17788f7375f38c",
+      "tests/host/machine.zig": "f01fd350c90d5f85736b7d533b5a77f9e46aa1d6259371a3de8ed963f554e973",
+      "tests/host/memory.zig": "3eae690ec99f994e1e749c998410ca3a3d5a803a6727725861340131e0c9574f",
+      "tests/host/peddle_bridge.cpp": "c40ef766a33ef55079bb58dbc3030378f9c6e95e9c10dd1c3de4fb93a63b2b5e",
+      "tests/host/peddle_bridge.h": "97b3cdc1aa43166be2f2ee91ba7998c8cd0518c187d5f8a2d25c485ff352e01f",
+      "tests/host/reu.zig": "3e16f0a1a016df3c8dd1bb56f354f2cb81340be21bb1f2f6fd3947173fc73c45",
+      "tests/host/reu_model.h": "f43b161b3838621aa02902d0629f23c212d527ab363f387eebfb4f9d3c957168",
+      "tests/fixtures/foundation.s": "3e5d8539cd2694b598aeeb4e86a645d877a9387707dabf92e7d0e2d155fc759b",
+      "tests/tooling/test_memory_contract.py": "17b40af7f1296328ce4844749f9200995493205c8ee6ece1bbebc65dc5db17ed",
+      "tests/tooling/test_vice_capture.py": "52cc691fa2504a489354b44b2a453919a65259a6168164aec0fed6f802eb6ce6",
+      "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+      "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 2 of 3.img": "91a624fc448c1c423d159ae21f51cc416393d8e19a73d3858afc3af92af041c2",
+      "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 3 of 3.img": "c69238c738bab18db840b5ae72b2470c0d594832d91103573a6d8273dce300e9",
+      "build/dos64-cache-probe.prg": "b4c403e909dd489daa4c3a9fca2c438075facd0b2fce7edd2c807b46522abc9d",
+      "build/dos64-reu-probe.prg": "a1e277d2ed8bfad12796efa4a54eec3b4e57e355086b228c030dd9ccb2d3291e",
+      "build/dos64-tests.prg": "b61b723759e1b58cf036dc9888b944da17188ad47b246dff810f9bfe31e94b9b",
+      "build/dos64.prg": "b42fb13a2f2327abe63f6d1f330606911f6d081d6cefa845f41a0511719cfd11"
+    },
+    "peddle_commit": "c23e34a7e6516b284750b8c7caaa8c41948a407a"
+  },
+  "runtime_memory": {
+    "segments": [
+      {
+        "name": "LOADADDR",
+        "start": 0,
+        "end": 1,
+        "bytes": 2
+      },
+      {
+        "name": "ZEROPAGE",
+        "start": 32,
+        "end": 47,
+        "bytes": 16
+      },
+      {
+        "name": "BASIC",
+        "start": 2049,
+        "end": 2060,
+        "bytes": 12
+      },
+      {
+        "name": "CODE",
+        "start": 2061,
+        "end": 3169,
+        "bytes": 1109
+      },
+      {
+        "name": "BSS",
+        "start": 57344,
+        "end": 57405,
+        "bytes": 62
+      },
+      {
+        "name": "PAGEMAP",
+        "start": 57600,
+        "end": 59647,
+        "bytes": 2048
+      },
+      {
+        "name": "CACHEMETA",
+        "start": 59648,
+        "end": 59839,
+        "bytes": 192
+      }
+    ],
+    "errors": [],
+    "passed": true
+  },
+  "probe_memory": {
+    "segments": [
+      {
+        "name": "LOADADDR",
+        "start": 0,
+        "end": 1,
+        "bytes": 2
+      },
+      {
+        "name": "ZEROPAGE",
+        "start": 32,
+        "end": 52,
+        "bytes": 21
+      },
+      {
+        "name": "BASIC",
+        "start": 2049,
+        "end": 2060,
+        "bytes": 12
+      },
+      {
+        "name": "CODE",
+        "start": 2061,
+        "end": 3344,
+        "bytes": 1284
+      },
+      {
+        "name": "BSS",
+        "start": 57344,
+        "end": 57405,
+        "bytes": 62
+      },
+      {
+        "name": "PAGEMAP",
+        "start": 57600,
+        "end": 59647,
+        "bytes": 2048
+      },
+      {
+        "name": "CACHEMETA",
+        "start": 59648,
+        "end": 59839,
+        "bytes": 192
+      }
+    ],
+    "errors": [],
+    "passed": true
+  },
+  "warm_read_profile": {
+    "warm_read_cpu_cycles": 221,
+    "dma_stalls": "unmodeled",
+    "frame_count": 32,
+    "page_bytes": 512,
+    "mode": "all_ram"
+  },
+  "cache_probe_profile": {
+    "cpu_cycles": 1103632,
+    "stack_high_water": 14,
+    "dma_bytes": 6144,
+    "dma_transfers": 12,
+    "physical_timing": false
+  },
+  "test_output": "python3 build_support/verify_memory.py build/dos64.map build/dos64.labels\nMemory verified: build/dos64.map (3441 linked bytes)\npython3 build_support/verify_memory.py build/dos64-tests.map build/dos64-tests.labels\nMemory verified: build/dos64-tests.map (3814 linked bytes)\npython3 build_support/manifest.py --zig \"../../zeropage-tooling/bin/zig\" --ca65 \"ca65\" --ld65 \"ld65\"\npython3 -m unittest discover -s tests/tooling -v\ntest_changed_entry_point_fails (test_memory_contract.MemoryContract) ... ok\ntest_code_moved_into_guest_cache_fails (test_memory_contract.MemoryContract) ... ok\ntest_linked_artifact_fits (test_memory_contract.MemoryContract) ... ok\ntest_missing_segment_list_fails (test_memory_contract.MemoryContract) ... ok\ntest_cache_capture_uses_its_own_length_pattern_and_executable (test_vice_capture.ViceCapture) ... ok\ntest_failed_mailbox_rejected (test_vice_capture.ViceCapture) ... ok\ntest_partial_run_rejected (test_vice_capture.ViceCapture) ... ok\ntest_pass_mailbox_does_not_hide_data_corruption (test_vice_capture.ViceCapture) ... ok\ntest_stale_executable_rejected (test_vice_capture.ViceCapture) ... ok\ntest_valid_capture (test_vice_capture.ViceCapture) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 0.015s\n\nOK\n../../zeropage-tooling/bin/zig build test --summary all\nBuild Summary: 3/3 steps succeeded; 41/41 tests passed\ntest success\n+- run test 41 pass (41 total) 4s MaxRSS:58M\n   +- compile test Debug native success 1s MaxRSS:299M\n\n",
+  "vice_evidence": "cache-vice-20261014.json",
+  "physical_inventory": "c64u-inventory-20261014.json",
+  "physical_probe_executed": false
+}

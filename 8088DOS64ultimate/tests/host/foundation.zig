@@ -2,6 +2,7 @@ const std = @import("std");
 const host = @import("machine.zig");
 const Fixture = host.Fixture;
 test { _ = @import("reu.zig"); }
+test { _ = @import("memory.zig"); }
 
 test "assembly reset initializes original CPU state and preserves host ABI" {
     var f = try Fixture.init();
@@ -92,7 +93,7 @@ test "actual PRG entry initializes mailbox, CPU, bank latch and host stack" {
     const idle = try f.symbol("dos64_idle");
     host.c.dos64_set_regs(f.machine, .{ .pc = try f.symbol("dos64_entry"), .sp = 0x57, .a = 0, .x = 0, .y = 0, .p = 0x28, .cycles = 0, .instructions = 0 });
     while (host.c.dos64_get_regs(f.machine).pc != idle) {
-        if (host.c.dos64_get_regs(f.machine).cycles > 2000) return error.StartupTimeout;
+        if (host.c.dos64_get_regs(f.machine).cycles > 50_000) return error.StartupTimeout;
         host.c.dos64_step(f.machine);
     }
     const mb = try f.symbol("dos64_mailbox");

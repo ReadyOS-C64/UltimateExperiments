@@ -1,6 +1,6 @@
 # Memory, paging, and coherence
 
-These are **proposed budgets**, not linked sizes. M1/M2 must validate them and update [MEMORY_BUDGET](../agentworking/MEMORY_BUDGET.md). All ranges below are inclusive unless a length is explicitly given.
+These are full-system budgets; current measured subsets are recorded in [MEMORY_BUDGET](../agentworking/MEMORY_BUDGET.md) and [MEMORY_IMPLEMENTATION](MEMORY_IMPLEMENTATION.md). The 512-byte coherent byte cache is now implemented and functionally tested; page size and future optimizations remain candidates. All ranges below are inclusive unless a length is explicitly given.
 
 ## Guest address space
 

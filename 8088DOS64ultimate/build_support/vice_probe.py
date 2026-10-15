@@ -11,13 +11,20 @@ from vice_capture import verify_capture
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--prepare", action="store_true")
+parser.add_argument("--kind", choices=("reu","cache"), default="reu")
 parser.add_argument("--verify-existing", type=Path)
-parser.add_argument("--evidence", type=Path, default=Path("build/reu-vice-evidence.json"))
+parser.add_argument("--evidence", type=Path)
 args = parser.parse_args()
 project = Path(__file__).resolve().parents[1]
 os.chdir(project)
+kind = args.kind
+if args.evidence is None:
+    args.evidence = Path(f"build/{kind}-vice-evidence.json")
+plan_id = f"dos64_{kind}_integrity"
+stem = f"dos64-{kind}-probe"
+length = 4096 if kind == "reu" else 1536
 symbols = {}
-for line in Path("build/dos64-reu-probe.labels").read_text().splitlines():
+for line in Path(f"build/{stem}.labels").read_text().splitlines():
     fields = line.split()
     if len(fields) == 3 and fields[0] == "al":
         symbols[fields[2].lstrip(".")] = int(fields[1],16)
@@ -25,7 +32,7 @@ status = symbols["dos64_mailbox"]+1
 error = symbols["dos64_mailbox"]+4
 plan = f'''version: 1
 kind: vice_task_plan
-plan_id: dos64_reu_integrity
+plan_id: {plan_id}
 run_mode: gui_vice
 global_defaults:
   monitor_host: 127.0.0.1
@@ -44,7 +51,7 @@ global_defaults:
     capture_state: true
     capture_dump: true
   vice:
-    autostart_prg: "build/dos64-reu-probe.prg"
+    autostart_prg: "build/{stem}.prg"
     drive8_enabled: false
     drive9_enabled: false
     true_drive: false
@@ -85,12 +92,12 @@ steps:
           end: {symbols['dos64_mailbox']+7}
         - label: restored_data
           start: 24576
-          end: 28671
+          end: {24576+length-1}
 '''
-path = Path("build/dos64-reu-probe.vice.yaml")
+path = Path(f"build/{stem}.vice.yaml")
 path.write_text(plan)
 if args.verify_existing:
-    result = verify_capture(args.verify_existing.resolve(), project)
+    result = verify_capture(args.verify_existing.resolve(), project, kind)
     args.evidence.parent.mkdir(parents=True, exist_ok=True)
     args.evidence.write_text(json.dumps(result, indent=2)+"\n")
     print(f"VICE captured bytes verified: {args.evidence}")
@@ -102,10 +109,10 @@ elif not args.prepare:
     existing = set(Path("logs").glob("vice_auto_*/manifest.json"))
     subprocess.run([dotnet,"run","--project",str(harness),"--","run-plan","--plan",str(path),"--close-vice"],check=True)
     created = set(Path("logs").glob("vice_auto_*/manifest.json")) - existing
-    matching = [p.parent for p in created if json.loads(p.read_text(encoding="utf-8-sig")).get("plan_id") == "dos64_reu_integrity"]
+    matching = [p.parent for p in created if json.loads(p.read_text(encoding="utf-8-sig")).get("plan_id") == plan_id]
     if len(matching) != 1:
         raise SystemExit(f"Expected one new probe run, found {len(matching)}")
-    result = verify_capture(matching[0].resolve(), project)
+    result = verify_capture(matching[0].resolve(), project, kind)
     args.evidence.parent.mkdir(parents=True, exist_ok=True)
     args.evidence.write_text(json.dumps(result, indent=2)+"\n")
     print(f"VICE captured bytes verified: {args.evidence}")

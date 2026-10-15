@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "run_id": "vice_auto_20261014_225535",
+  "status": "passed",
+  "finished_utc": "2026-10-15T05:55:56Z",
+  "raw_run": "logs/vice_auto_20261014_225535",
+  "manifest_sha256": "99016bf7a050dfc33373f988943b18e4161f48bd31a044cc998e0acd79a4ffbc",
+  "probe_prg_sha256": "b4c403e909dd489daa4c3a9fca2c438075facd0b2fce7edd2c807b46522abc9d",
+  "captured_executable_identical": true,
+  "restored_bytes": 1536,
+  "pattern": "low_byte(index) XOR high_byte(index) XOR A7",
+  "restored_sha256": "90c3cb67dae979134af6135359c23bcd3bd7c5a2dff06e41a794bcbf493b3230",
+  "mailbox_hex": "01a5000000000000",
+  "all_steps_passed": true,
+  "configuration": {
+    "reu_kib": 16384,
+    "warp": true,
+    "headless": true
+  },
+  "limitations": [
+    "Functional integrity probe below the 4 MiB baseline",
+    "Harness uses 16 MiB REU; not physical capacity validation",
+    "No C64U firmware or 64 MHz timing evidence"
+  ]
+}

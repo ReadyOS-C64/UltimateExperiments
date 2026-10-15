@@ -2,6 +2,11 @@
 .import dos64_guest, dos64_mailbox, dos64_cpu_reset
 .ifdef DOS64_PROBE
 .import dos64_reu_probe
+.else
+.import dos64_cache_init, dos64_cache_limit
+.endif
+.ifdef DOS64_CACHE_PROBE
+.import dos64_cache_probe
 .endif
 .export dos64_entry, dos64_idle
 
@@ -24,6 +29,11 @@ dos64_entry:
     lda #$35
     sta $01
     jsr dos64_cpu_reset
+.ifndef DOS64_PROBE
+    lda #32
+    sta dos64_cache_limit
+    jsr dos64_cache_init
+.endif
     lda #0
     ldx #MB_SIZE-1
 @clear:
@@ -38,6 +48,9 @@ dos64_entry:
     sta $D020
 .ifdef DOS64_PROBE
     jsr dos64_reu_probe
+.endif
+.ifdef DOS64_CACHE_PROBE
+    jsr dos64_cache_probe
 .endif
 dos64_idle:
     jmp dos64_idle

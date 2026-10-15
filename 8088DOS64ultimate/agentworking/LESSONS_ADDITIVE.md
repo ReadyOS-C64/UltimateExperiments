@@ -26,3 +26,13 @@
 4. A success mailbox is weak evidence alone. Compare every captured byte independently and associate results with captured executable bytes so an old run cannot validate new code.
 5. The shared VICE harness selects 16 MiB REU. A successful low-address probe does not prove a 4 MiB configuration; the fast model covers 4/8/16 MiB separately. Physical capacity/firmware/timing remain outstanding.
 6. Search hits often describe the opposite direction or independent desktop CPU emulators. NES86 is a verified 6502-hosted 8086 core; Appler runs 6502 emulation on an 8088. Record direction, CPU profile and license explicitly.
+
+## 2026-10-14 — coherent memory implementation
+
+1. A failed new-page load may have overwritten part of the victim's host buffer. Write back dirty data first, remove old ownership before loading, and publish the new tag only on success. On write-back failure retain the dirty old owner. Prefix-transfer fault tests exercise both orders.
+2. The first test pass attempt had 38/39 passing; the flag test incorrectly expected 28 after masking P with 0C. The target returned the correct 08. Corrected the assertion, preserving the decimal/interrupt check. Target flag behavior did not require a fix.
+3. Import zero-page assembly symbols with `.importzp`; a regular import produced a linker address-size warning and unnecessary absolute-address instructions. Fixed the interface before the successful full run.
+4. Distinct pinned-page and replacement-page patterns matter. All-zero buffers could conceal accidental frame reuse even when a retained pointer still reads zero.
+5. A direct page map consumes 2 KiB before descriptors. Current BSS/map/frame metadata total 2,302 bytes, leaving 1,794 bytes including alignment gaps for future storage/control needs.
+6. Successful VICE eviction across a REC seam strengthens the mock evidence but does not measure physical stalls. Warm public byte reads already cost 221 host cycles, so future instruction fetch must exploit spans rather than call the full bus API for every byte indefinitely.
+7. C64U physical discovery succeeded through a Terminal-owned read-only client. Firmware is 3.14; the speed field is 64 but register-controlled turbo means the field alone does not prove current speed. Preserve actual configuration and overwritten REU bytes before a test program.

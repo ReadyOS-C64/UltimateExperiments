@@ -29,6 +29,7 @@ uint8_t dos64_bus_read(Dos64Machine *, uint16_t);
 void dos64_bus_write(Dos64Machine *, uint16_t, uint8_t);
 uint64_t dos64_dma_bytes(const Dos64Machine *);
 uint64_t dos64_dma_transfers(const Dos64Machine *);
+void dos64_reu_fail_after(Dos64Machine *, uint64_t skip, uint32_t prefix_bytes);
 #ifdef __cplusplus
 }
 #endif

@@ -29,6 +29,8 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D23 | Implemented, 2026-10-14 | Restrict DMA primitive to one REU 64 KiB bank | Avoid expanded-REC 512 KiB counter wrap; range operations must split and reload bank explicitly |
 | D24 | User clarification, 2026-10-14 | Original 8088 / IBM PC XT is the CPU/machine target | Shared 8086 ISA makes other cores useful references; no shift to 8086 timing or 80186 extensions |
 | D25 | User direction, 2026-10-14 | Requirements govern implementation regardless of reference availability | NES86 provides useful 6502 techniques; research neither constrains scope nor makes progress depend on reusable source |
+| D26 | Implemented baseline, 2026-10-14 | 512-byte physical pages, 32 frames, direct 2,048-entry map and bounded clock eviction | Functional correctness verified, not a page-size/performance winner; limits 1..32 support forced-eviction tests |
+| D27 | Implemented, 2026-10-14 | Publish cache ownership only after successful load; keep dirty victim on write-back failure | Partial-transfer fault tests guard data authority and retries |
 
 ## Clarification history
 

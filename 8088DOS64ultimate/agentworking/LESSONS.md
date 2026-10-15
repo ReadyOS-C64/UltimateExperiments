@@ -6,6 +6,8 @@
 - Peddle delegates clock advancement to its embedder. Step bounded microcycles, increment clock explicitly, and assert known instruction timings before relying on cycle budgets.
 - Existing REU shims are deliberately incomplete and differ at their memory boundary. Validate the used register subset before inheriting it.
 - Keep guest page-cache ownership coherent across BIOS transfers, rendering, debugger writes and REP. REU can contain stale bytes while a dirty frame exists.
+- Write back before discarding a dirty owner; unpublish it before a new DMA load can overwrite the frame, and publish the new owner only on success. Retain dirty authority when write-back fails.
+- Pin acquired pointers, save frame handles across calls, and release before yielding. Use distinct page patterns in pin tests; zero-filled pages can hide incorrect reuse.
 - Budget code, cache metadata, fonts, bitmap, stack and I/O explicitly. A valid total does not ensure the bitmap and screen share a VIC bank.
 - File offsets and REU addresses have different widths. The 20 MiB milestone must cross 16 MiB in tests.
 - UCI is asynchronous; completion is a state/queue protocol, not a fast CPU polling count or an initial return to IDLE. Verify transferred byte counts.
