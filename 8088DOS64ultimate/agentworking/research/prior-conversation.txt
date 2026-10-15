@@ -1,0 +1,907 @@
+if i were to make a 8086 emulator for DOS 3.X  for the c64 ulitmate running at 64mhz... having to emulate the CPU, but also filesystem (likely keeping a cache in REU, then ultimate dos to solve)  and allowsing REU copying to provide more room, and having to have clever ways for specific X86 memory addressing (like for graphics/text etc)... not caring around other sort of IO other than keyboard, screen output and disk.. how complex and feasible would it be (with the help of the best agentic engineering) what tradeoffs would be made.. and what were the specs of PCs at the time DOS 3.X (and say DOS 4 come out), and with doing such at emulator at 64mhz c64u , would we likely get close (or even faster) to original speed on original hardware
+
+Worked for 4m 43s
+Could a 64 MHz C64 Ultimate emulate an IBM PC running DOS 3.x or 4.x?
+Yes, and I think it's a genuinely feasible engineering project. You could build something that runs real 8086 DOS programs on the C64 Ultimate, with up to 640 KB of emulated conventional memory, DOS file access, keyboard input, and text or limited graphics output.
+
+The interesting question isn't whether it can be done. It's how much of a 1980s IBM PC's performance you can recover.
+
+My assessment:
+
+8086 CPU emulation: Very feasible, particularly if optimized in 6502 assembly.
+
+640 KB of PC memory: Feasible with the 16 MB REU, but paging will be the biggest performance risk.
+
+DOS 3.x compatibility: Feasible without emulating all the PC hardware.
+
+DOS 4.x: Also feasible. It doesn't require a 286.
+
+Performance: Approaching a 4.77 MHz IBM PC/XT is plausible for selected workloads. Consistently matching or exceeding one is much harder.
+
+Development with strong agentic coding: Quite realistic, provided it is built and tested in layers rather than attempting complete IBM PC compatibility immediately.
+
+The most promising design would be a hybrid 8086 emulator and DOS-compatible runtime, closer architecturally to early DOSBox than a complete virtual IBM PC.
+
+1. What PCs would you be trying to match?
+DOS versions don't correspond to particular processor generations. DOS 3.3 and DOS 4.0 could still run on an original 8088-powered IBM PC.
+
+PC generation
+
+Introduction
+
+CPU
+
+Typical RAM
+
+Storage
+
+IBM PC 5150
+
+1981
+
+8088, 4.77 MHz
+
+64–256 KB, expandable
+
+160–360 KB floppy
+
+IBM PC/XT
+
+1983
+
+8088, 4.77 MHz
+
+128–640 KB
+
+10 MB hard disk
+
+IBM PC/AT
+
+1984
+
+80286, 6 MHz
+
+256–512 KB+, expandable
+
+20 MB hard disk
+
+Turbo XT clones
+
+1986–88
+
+8088, 8–10 MHz
+
+512–640 KB
+
+20–40 MB hard disk
+
+286 AT clones
+
+1987–88
+
+80286, 8–12 MHz
+
+640 KB–1 MB+
+
+20–40 MB+ hard disk
+
+These are representative configurations rather than fixed specifications. 
+
+World Radio History
++2
+
+The DOS versions themselves
+DOS version
+
+Release
+
+CPU required
+
+Minimum RAM
+
+DOS 3.0
+
+1984
+
+8088/8086
+
+About 128 KB
+
+DOS 3.1
+
+1985
+
+8088/8086
+
+About 128 KB
+
+DOS 3.2
+
+1986
+
+8088/8086
+
+About 128 KB
+
+DOS 3.3
+
+1987
+
+8088/8086
+
+About 128 KB
+
+DOS 4.0
+
+1988
+
+8088/8086
+
+256 KB
+
+DOS 4.0's big changes included larger hard-disk partition support and a full-screen DOS Shell, but it consumed substantially more conventional RAM. 
+
+msarchive
++2
+
+I'd target an IBM PC/XT-class machine with 640 KB RAM and DOS 3.3 compatibility first.
+
+That gives you a historically meaningful target, an instruction set shared with 8086 machines, and potentially thousands of suitable DOS applications.
+
+2. The raw speed comparison
+CLOCK FREQUENCIES — NOT EQUIVALENT INSTRUCTIONS PER SECOND
+
+IBM PC/XT
+
+4.77 MHz
+
+Turbo XT
+
+8 MHz
+
+IBM PC/AT
+
+6 MHz
+
+C64 Ultimate
+
+64 MHz
+
+Clock rates alone are misleading: a 6502 and an 8086 perform different amounts of work per instruction, and emulation adds considerable overhead.
+The C64 Ultimate's 64 MHz mode provides approximately 13.4 host clock cycles per original XT clock cycle.
+
+That's actually a useful starting budget. An 8088 instruction might require anywhere from a handful to many dozens of clocks, depending on the instruction and memory activity.
+
+But to execute one x86 instruction, your 6510 emulator must decode it, identify its operands, calculate effective addresses, emulate the operation, and update the x86 status flags.
+
+The result could require tens or hundreds of 6510 clocks for one x86 instruction, with particularly expensive cases taking considerably more.
+
+A vital hardware distinction: the Commodore 64 Ultimate and Ultimate 64 Elite-II support 64 MHz; earlier Ultimate 64 boards top out at 48 MHz. The Ultimate documentation also confirms that accesses to internal memory can run at turbo speeds, while external hardware accesses may be constrained. 
+
+Ultimate Documentation documentation
++1
+
+3. How I would architect the emulator
+DOS .COM and .EXE programs
+
+Real, unmodified 8086 machine code
+
+8086 CPU interpreter
+
+Hand-optimized 6502 assembly, running at 64 MHz
+
+Memory manager
+
+RAM cache, REU paging, segment translation
+
+DOS / BIOS layer
+
+INT 21h, INT 10h, INT 16h, file handles
+
+Video adapter
+
+CGA text memory, dirty regions, conversion
+
+16 MB REU
+
+Guest memory and cached file data
+
+Ultimate DOS
+
+USB/SD filesystem, bulk REU transfers
+
+VIC-II and keyboard
+
+Native C64 video output and input
+
+The crucial architectural decision is not to run the actual DOS kernel initially.
+
+Instead, run DOS applications by emulating their CPU instructions and intercepting DOS/BIOS services. DOSBox uses this general technique, with emulator-native callbacks for DOS interrupt services. 
+
+GitHub
++1
+
+A DOS application doing:
+
+MOV AH, 09h
+MOV DX, msg
+INT 21h
+wouldn't need the original DOS kernel executing thousands of additional x86 instructions.
+
+Your emulator would recognize INT 21h, service DOS function 09h directly in native 6502 code, output the string, then resume x86 execution.
+
+This saves a considerable amount of work.
+
+It also enables you to use native Ultimate DOS for disk operations and build your own fast keyboard and video services.
+
+There is a tradeoff: applications that rely on undocumented DOS internals, real-mode device drivers, or unusual hardware behavior won't necessarily work. But lots of DOS software uses standard DOS and BIOS interfaces.
+
+4. The biggest problem: mapping 1 MB of 8086 address space onto 64 KB
+An 8086 has a 20-bit physical address space, covering 1 MB.
+
+It calculates addresses using:
+
+Physical
+=
+(
+(
+Segment
+×
+16
+)
++
+Offset
+)
+ 
+m
+o
+d
+ 
+2
+20
+Physical=((Segment×16)+Offset)mod2 
+20
+ 
+For example:
+
+MOV AX, 1234h
+MOV DS, AX
+
+MOV BX, 2000h
+MOV AL, [BX]
+This reads from physical address 0x14340, not 0x2000.
+
+Your emulator must maintain guest registers such as CS, DS, ES, SS, IP, SP, BX, SI, DI and BP, calculating physical addresses while handling segment aliases and 16-bit wrapping correctly.
+
+That part is entirely practical.
+
+The problem is that the guest physical address might refer to anywhere in 1 MB, whereas the C64's CPU can directly access only 64 KB.
+
+My preferred solution: REU-backed virtual RAM
+Allocate perhaps 1 MB of REU space to the PC's physical address space, including video and BIOS regions as required, and use a cache in the C64's main RAM.
+
+An illustrative layout:
+
+C64 main RAM usage
+
+Allocation
+
+8086 emulator and dispatch routines
+
+22 KB
+
+Screen bitmap and associated data
+
+10 KB
+
+DOS/BIOS support and working data
+
+4 KB
+
+Guest memory cache
+
+26 KB
+
+Miscellaneous remaining space
+
+2 KB
+
+Total
+
+64 KB
+
+These are proposed engineering budgets, not measured implementation sizes. You'd need to manage ROM/I/O banking and zero-page usage carefully.
+
+The goal is to keep enough guest code and data in ordinary C64 RAM that most emulated instructions never need to touch the REU.
+
+Page-cache design
+I'd experiment with 512-byte, 1 KB, and 2 KB pages rather than automatically selecting 4 KB.
+
+On a guest memory access:
+
+Calculate the 20-bit physical address.
+
+Check whether its page is resident.
+
+On a hit, access the corresponding C64 RAM byte.
+
+On a miss, evict another page, writing it back if modified, and DMA the required page from REU.
+
+Keep the instruction-fetch, stack, and currently active data pages resident whenever possible.
+
+The design should specifically accommodate the x86 addressing modes that combine registers, such as [BX+SI+disp] and [BP+DI+disp].
+
+It also needs to handle 16-bit values crossing page boundaries.
+
+How expensive is an REU page fault?
+A June 2026 community discussion reported approximately 4 MB/s throughput for the C64 Ultimate's REU, even with the CPU running at 64 MHz. This is a reported measurement, not a guaranteed specification, and is worth benchmarking on your own firmware. 
+
+Commodore 64
+
+Using that figure:
+
+Page size
+
+Minimum transfer time
+
+CPU clocks lost at 64 MHz
+
+256 bytes
+
+0.064 ms
+
+4,096
+
+512 bytes
+
+0.128 ms
+
+8,192
+
+1 KB
+
+0.256 ms
+
+16,384
+
+2 KB
+
+0.512 ms
+
+32,768
+
+4 KB
+
+1.024 ms
+
+65,536
+
+16 KB
+
+4.096 ms
+
+262,144
+
+Approximate one-way transfers at 4 MB/s, excluding setup overhead and dirty-page write-back. A dirty eviction may add another transfer.
+That's a huge amount of lost CPU execution for a single cache miss.
+
+Even 1 KB could cost the time needed to emulate dozens or hundreds of x86 instructions.
+
+This creates an interesting tradeoff:
+
+Small pages reduce the penalty of each miss, but large pages improve locality and simplify address translation.
+
+I'd favor a cache that's aware of x86 segments and execution behavior, rather than a purely conventional least-recently-used cache.
+
+For example, keep the active instruction-fetch page and likely next code page resident, plus at least one stack page and the hottest data page. Most normal 8086 programs repeatedly execute nearby code and access relatively small working sets, which you can exploit.
+
+An optimization worth pursuing: fast segmented windows
+Every normal instruction shouldn't need a complete 20-bit address translation and page-table search.
+
+When DS or CS changes, you can recalculate a cached segment base. When IP is advancing through resident instructions, you can keep a direct C64 pointer to the cached code and only run the full translation when crossing a cache boundary.
+
+A successful design might do something like:
+
+CS:IP instruction fetch
+    → direct cached code pointer
+
+SS:SP stack operation
+    → pinned stack cache
+
+DS:BX ordinary data access
+    → cached segment base + page lookup
+
+B800:xxxx video write
+    → specially mapped text memory
+You still preserve actual x86 memory semantics; you're simply avoiding expensive translation work whenever possible.
+
+This is where I expect some of the largest speed improvements to come from.
+
+5. CPU emulation: difficult, but less difficult than memory
+The 8086 instruction set is much more complicated than the 6502, but it's finite and well documented.
+
+The major challenges include 16-bit arithmetic on an 8-bit CPU, ModR/M instruction decoding, effective-address calculation, conditional flags, and string instructions.
+
+x86 operation
+
+Relative difficulty
+
+Optimization potential
+
+MOV between registers
+
+Low
+
+Very high
+
+ADD/SUB/AND/OR/XOR
+
+Medium
+
+High
+
+Conditional jumps
+
+Medium
+
+High
+
+PUSH/POP/CALL/RET
+
+Medium
+
+High
+
+Memory addressing through ModR/M
+
+High
+
+Very high
+
+REP MOVSB / MOVSW
+
+High
+
+Very high
+
+MUL/DIV, especially 16-bit
+
+High
+
+Moderate
+
+Segment overrides and far calls
+
+High
+
+Moderate
+
+Interrupts and flag semantics
+
+High
+
+Moderate
+
+The 6502 can do 16-bit addition through pairs of 8-bit operations, so that isn't particularly problematic.
+
+More subtle is reproducing the x86 flags exactly: carry, overflow, sign, zero, parity, auxiliary carry and direction, among others.
+
+An optimization would be to defer calculating some flags until they're actually needed. But you'd need careful testing, since an 8086 program can inspect flags through instructions like PUSHF and conditional branches.
+
+Especially interesting: x86 string instructions
+Consider:
+
+CLD
+MOV CX, 4096
+REP MOVSB
+This copies 4 KB between guest memory regions.
+
+Rather than interpreting thousands of individual x86 memory operations, you could use a native bulk-copy routine.
+
+If the locations are in REU-backed memory, it could copy in blocks through a C64 RAM buffer using REU DMA.
+
+It wouldn't be a direct REU-to-REU transfer through the standard REU interface, but it would avoid interpreting every individual MOVSB iteration.
+
+This could actually outperform an original IBM PC in some memory-copying scenarios, despite the general CPU emulation overhead.
+
+You would need correct handling for overlaps, direction flag, segment boundaries, and video-memory side effects.
+
+6. Filesystem: this part should be quite achievable
+Ultimate DOS is a particularly good fit for the project.
+
+Its documented API already includes file open, read, write, seek, delete, rename, directory enumeration, and bulk transfers directly between files and the 16 MB REU. 
+
+Ultimate Documentation documentation
+
+That makes it a much better foundation than going through the 1541 emulation.
+
+I'd implement the DOS file interface using the real-mode DOS API, particularly INT 21h, and translate filesystem requests into Ultimate DOS operations.
+
+For example:
+
+DOS application:
+    Open C:\DATA\TEST.DAT
+         ↓
+INT 21h / AH=3Dh
+         ↓
+Native 6502 DOS layer
+         ↓
+Translate 8.3 filename / path
+         ↓
+Ultimate DOS: OPEN_FILE
+And similarly for read, seek, write, close, and directory search operations.
+
+One complication: open-file handles
+The documented Ultimate DOS interface has two DOS targets with their own state, allowing two open files concurrently.
+
+DOS applications can have considerably more file handles open.
+
+So you can't simply map every PC DOS handle to a permanently open Ultimate DOS file.
+
+I'd use your REU cache for file data and maintain a virtual handle table containing filenames, positions, access modes and DOS metadata. When necessary, reopen and seek on the host side, while carefully preserving pending writes and consistency.
+
+For demanding programs, this cache could be quite beneficial.
+
+One more advantage: you could put the bulk of an executable or its overlays directly into the REU using Ultimate DOS's LOAD_REU operation.
+
+The loader wouldn't need to copy an entire large executable byte by byte through the 6510.
+
+What about the actual DOS kernel?
+There are two choices:
+
+Design
+
+Advantages
+
+Disadvantages
+
+Native DOS-compatible environment
+
+Faster DOS calls, less emulated code, direct filesystem integration
+
+Must implement DOS semantics
+
+Boot real DOS 3.3 or 4.0
+
+Greater authenticity, real COMMAND.COM and DOS kernel, some improved compatibility
+
+Requires more BIOS and PC hardware behavior, slower execution
+
+For the second option, you could implement a minimal BIOS with virtual disk sector services and boot a real DOS installation from an emulated FAT disk image. You wouldn't necessarily need to emulate an actual floppy controller if disk calls go through BIOS.
+
+But you'd still encounter direct hardware access, timer interrupts, DOS device drivers, and programs that assume particular IBM PC hardware exists.
+
+My preference would be to implement the native DOS-compatible approach first, then consider genuine DOS boot support as a separate compatibility mode.
+
+7. Screen output may be your second-biggest problem
+The original PC had several display modes relevant to DOS software.
+
+IBM PC mode
+
+Output
+
+C64 Ultimate approach
+
+40×25 text
+
+40 columns
+
+Very close match with C64 native text
+
+80×25 text
+
+80 columns
+
+320×200 bitmap with 4×8 characters
+
+CGA 320×200
+
+4 colors
+
+Palette conversion, dithering or 160×200
+
+CGA 640×200
+
+2 colors
+
+Horizontal downsampling
+
+EGA 320×200
+
+16 colors
+
+Limited palette approximation
+
+EGA 640×350
+
+16 colors
+
+Significant downscaling; low fidelity
+
+The standard C64 VIC-II supports 320×200 high-resolution pixels with two colors per 8×8 cell, or 160×200 multicolor pixels with four colors per cell. 
+
+GitHub
+
+For normal business software: emulate 80 columns
+Extended Text Mode on the Commodore 64 - Imran Nazar
+PC/MS DOS 3.30
+A DOS application usually expects an 80×25 text screen, backed by memory beginning at:
+
+B800:0000  Character at row 0, column 0
+B800:0001  Character attribute
+B800:0002  Character at row 0, column 1
+B800:0003  Character attribute
+You would maintain that video memory in your emulated PC's address space.
+
+Then render it to the VIC-II's screen.
+
+A 4×8 font means two PC characters can fit in each normal 8-pixel C64 character cell. This is an established C64 technique called Soft-80. 
+
+C64 Soft-80
+
+The compromises are important. Text will be small, IBM PC characters must be converted or rendered using a compressed font, and independent foreground/background colors for adjacent PC characters can't always be represented faithfully by the VIC-II.
+
+For most text-based software, I'd initially prioritize legibility over faithful colors.
+
+Make the screen update asynchronously from CPU execution
+Don't draw pixels every time an x86 program writes to B800:xxxx.
+
+Instead, let the program update guest video RAM and track dirty character positions or regions.
+
+A native rendering routine would periodically convert changes into the C64 bitmap.
+
+Likewise, intercepting BIOS video output can provide a fast path for BIOS-oriented applications.
+
+This matters because plenty of DOS programs, including Turbo Pascal's IDE and full-screen text applications, modify video RAM directly rather than calling DOS for every character.
+
+Would 64 MHz raster tricks help?
+Potentially for particular graphics effects, but I wouldn't build the first version around them.
+
+You've already got a tight CPU budget for the emulator. A software-driven raster effect that changes color registers continually competes directly with that budget.
+
+The more practical approach is to support simple text rendering and perhaps CGA-compatible output, with the C64 display presenting the closest feasible representation.
+
+For word processors, development tools and database programs, that would already be worthwhile.
+
+8. The performance estimate: could it match a real XT?
+Here's the interesting part.
+
+A 64 MHz 6510 has a theoretical budget of 64 million CPU clocks per second, before accounting for VIC activity, interrupts, REU stalls and other overhead.
+
+Depending on how clever the emulator is, its average cost per x86 instruction could vary dramatically.
+
+The following is an illustrative performance model, not a benchmark of an existing C64 implementation.
+
+ESTIMATED GUEST EXECUTION SPEED
+
+390
+thousand x86 instructions/sec
+
+Relative to illustrative 4.77 MHz XT baseline
+
+0.87×
+
+Reference XT estimate: 450,000 instructions/sec. Uses an illustrative average instruction mix, not an instruction-accurate 8088 timing model.
+Average 6510 clocks per x86 instruction
+
+160
+
+Highly optimized
+Complex/naive
+REU page faults per second
+
+100
+
+Excellent locality
+Heavy thrashing
+Time lost to REU DMA
+
+2.6%
+Emulation CPU time available
+
+97.4%
+Assumes 1 KB clean-page reads at 4 MB/s, no per-fault setup cost, and full 64 MHz host availability. Real performance would generally be lower; the model is for exploring sensitivity to these two bottlenecks.
+Here is how I would interpret the possibilities:
+
+Implementation quality
+
+Likely performance relative to an XT
+
+Straightforward C interpreter with generic memory accesses
+
+Potentially well below XT
+
+Reasonably optimized assembly interpreter
+
+A useful fraction of XT speed
+
+Carefully optimized code, flags and memory cache
+
+Could approach XT speed on favorable workloads
+
+Highly specialized instruction paths and fast DOS services
+
+Could exceed XT speed in selected operations
+
+I wouldn't promise 1× XT overall without measuring an actual implementation. The unknowns are too large, particularly page locality and the cost of 20-bit memory addressing.
+
+Some workloads will perform much better than others
+Text utilities and command-line tools
+
+Likely the most successful category. They often spend much of their time doing file operations, formatted output, simple calculations and waiting for keyboard input.
+
+You could get an experience that feels faster than an original floppy-based XT, even when raw instruction execution is slower, because file loading is so much faster.
+
+Turbo Pascal, assemblers and compilers
+
+These are especially interesting targets. They use substantial CPU time for tokenization, parsing, symbol tables and code generation, but don't need particularly sophisticated PC hardware.
+
+Larger projects and compilers would stress the REU memory cache. I would expect their performance to vary significantly with source-file size and the guest's working set.
+
+Lotus 1-2-3, dBASE and WordPerfect
+
+Potentially compatible, but they exercise substantially more of the environment: direct video memory writes, complex keyboard behavior, file handling, memory allocation, and sometimes BIOS-specific behavior.
+
+Even a slower-than-XT emulator could make them usefully interactive.
+
+Games and graphics-intensive software
+
+These would be far more problematic. Real-time graphics, PC timing assumptions, direct hardware register access, sound and joystick hardware all increase the scope.
+
+I'd exclude them from the initial compatibility target.
+
+9. What I would do differently for maximum performance
+I'd make three architectural bets.
+
+First: keep x86 instruction fetches cheap. A program executing a tight loop should not repeatedly calculate the full segmented address, perform a page lookup, and decode the same instruction unnecessarily. An instruction-fetch cache or compact predecoded representation could be valuable, provided cache coherence is maintained when x86 code is modified.
+
+Second: specialize the common instruction combinations. For example, common MOV, CMP, ADD, SUB, Jcc, PUSH, and POP paths should not pass through an overly generic operand-processing framework. I'd measure execution traces from Turbo Pascal, common DOS utilities and assembly programs, then specialize the hot cases.
+
+Third: treat bulk operations as native operations. DOS file reads into guest memory, guest video writes, large memory initialization, and repeated string instructions could all use more efficient native transfers rather than unnecessarily going through the general instruction interpreter.
+
+There is also a fourth, more experimental approach: a tiny dynamic translator that turns frequently executed x86 basic blocks into 6502 code. That might accelerate hot loops considerably, but the very limited C64 RAM and the problem of self-modifying code make it risky. I'd try an interpreter with predecoding and fast paths before attempting that.
+
+10. How difficult would it be with modern agentic coding?
+This is a strong candidate for AI-assisted development because so much of the CPU and DOS behavior can be specified and tested deterministically.
+
+The agent could develop and test the entire x86 interpreter on a modern computer first, then target 6502 assembly while maintaining identical behavior against a reference.
+
+I'd structure the development like this:
+
+Stage
+
+Deliverable
+
+Difficulty
+
+1
+
+Portable 8086 interpreter passing instruction tests
+
+Moderate
+
+2
+
+Basic C64 implementation at 64 MHz
+
+Moderate–high
+
+3
+
+REU memory manager and paging
+
+Very high
+
+4
+
+DOS .COM execution, INT 21h, keyboard and screen
+
+Moderate–high
+
+5
+
+MZ .EXE loader, relocations and DOS memory allocation
+
+Moderate
+
+6
+
+Ultimate DOS-backed filesystem and caching
+
+Moderate–high
+
+7
+
+Reliable 80-column text compatibility
+
+High
+
+8
+
+Performance optimization and application compatibility
+
+Very high
+
+The most powerful development technique would be differential testing.
+
+Run exactly the same short x86 programs in a well-tested reference emulator and your implementation. After each instruction, compare the CPU registers, defined flag values, memory modifications, and segment state.
+
+That would catch an enormous number of subtle CPU bugs before you ever try running a complicated DOS application.
+
+For performance, the agent could generate instruction-mix benchmarks, REU paging tests, and traces of real applications, then optimize the routines that account for most execution time.
+
+I think a compelling proof of concept is a realistic project measured in weeks of focused development with good AI tooling, while a reliable implementation capable of running a broad range of real DOS software is more likely a multi-month project. Those are rough scope estimates, not measured schedules.
+
+AI can greatly reduce the routine coding burden. It won't eliminate the need for hardware benchmarking, cycle-level optimization, and debugging 1980s compatibility quirks.
+
+11. The implementation strategy I'd actually choose
+I would define the initial product very narrowly:
+
+C64 Ultimate PC/XT Runtime — Version 1
+CPU	8086/8088 instruction set, real mode
+Emulated memory	640 KB conventional RAM, REU-backed
+DOS compatibility	DOS 3.3 API target
+Program formats	.COM and .EXE
+Screen	40×25 and software 80×25 text
+Keyboard	BIOS/DOS keyboard input, mapped C64 keys
+Disk	Ultimate DOS and REU file cache
+Hardware I/O	Minimal BIOS support; unsupported ports stubbed
+Initial software	Simple DOS utilities, text programs, small development tools
+I would also prioritize a very early hardware benchmark before building the whole emulator: implement a handful of representative x86 instructions in native 6502 assembly, with the proposed cached memory accesses, and measure them directly at 64 MHz.
+
+That gives you an actual answer to the central performance question rather than spending months building an architecture around assumptions.
+
+12. My overall feasibility assessment
+Goal
+
+Assessment
+
+Execute arbitrary well-formed 8086 instructions correctly
+
+Highly feasible
+
+Run simple DOS .COM applications
+
+Highly feasible
+
+Run a useful subset of DOS 3.x software
+
+Feasible
+
+Emulate a full 640 KB PC address space
+
+Feasible, performance-sensitive
+
+Run complex applications such as WordPerfect or Turbo Pascal
+
+Plausible, with meaningful compatibility work
+
+Boot genuine MS-DOS 3.3 or 4.x
+
+Feasible but substantially more work
+
+Approach 4.77 MHz XT execution speed
+
+Plausible for optimized workloads
+
+Consistently exceed 4.77 MHz XT speed
+
+Uncertain and difficult
+
+Match an 8 MHz Turbo XT or 6 MHz 286 generally
+
+Unlikely
+
+Provide reasonably faithful CGA and EGA games
+
+Limited by graphics hardware as well as CPU speed
+
+The standout opportunity is the combination of 64 MHz internal CPU/RAM execution, 16 MB of REU storage, and direct Ultimate DOS integration.
+
+It gives you vastly more resources than anyone developing a conventional C64 PC emulator in the 1980s could have expected.
+
+My biggest uncertainty is whether the combination of the 8086's expensive effective-address calculations and REU page faults can be reduced enough for sustained XT-class performance.
+
+And that's also what makes this project interesting. If you can keep the hot code, stack and data resident, implement efficient direct instruction fetching, and avoid running the original DOS kernel for routine services, you have a real shot at an emulator that is not merely a curiosity, but a surprisingly usable PC/XT-class DOS environment running entirely on the C64 Ultimate.
+
+I'd make proving that speed possible the first milestone, rather than making broad DOS compatibility the first milestone.

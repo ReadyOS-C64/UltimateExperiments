@@ -1,0 +1,12 @@
+# Keep this project's long-horizon records despite the parent ignore rule.
+!/agentworking/
+!/agentworking/**
+/agentworking/scratch/
+/agentworking/runs/
+/build/
+/.zig-cache/
+/zig-out/
+/logs/
+__pycache__/
+*.py[cod]
+.DS_Store

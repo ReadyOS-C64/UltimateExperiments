@@ -1,0 +1,30 @@
+{
+  "scope": "planning-artifact checks only, no emulator/runtime validation",
+  "markdown_files": 19,
+  "local_links_checked": 28,
+  "host_bytes": 65536,
+  "reu_bytes": 16777216,
+  "reference_images": [
+    {
+      "path": "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img",
+      "matches_recorded_hash": true
+    },
+    {
+      "path": "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 2 of 3.img",
+      "matches_recorded_hash": true
+    },
+    {
+      "path": "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 3 of 3.img",
+      "matches_recorded_hash": true
+    }
+  ],
+  "inventory_reproducible": true,
+  "ignore_policy": {
+    "agentworking/STATUS.md": false,
+    "agentworking/research/reference-images.json": false,
+    "agentworking/scratch/test.tmp": true
+  },
+  "d81_container_byte_identical": true,
+  "errors": [],
+  "passed": true
+}
