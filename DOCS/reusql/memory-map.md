@@ -1,5 +1,14 @@
 # C64 and REU Memory Map
 
+There are two maps to keep separate: C64 address space holds the client and active
+execution phase, while the REU holds persistent pages, rollback before-images and cached
+overlays. Fixed boundaries are checked after linking.
+
+![C64 address regions and the REU page reservations](diagrams/memory-layout.svg)
+
+*The active overlay occupies one C64 window. Its other payloads are cached in reserved
+REU regions, outside the database allocator.*
+
 ## C64 RAM
 
 - `$0801-$30FF`: client application; must remain untouched by engine loading,
@@ -28,8 +37,8 @@
 
 ## REU
 
-REU addresses are 24-bit. The detected size is converted to a page count from
-2,048 pages (512KB) through 65,536 pages (16MB).
+REU addresses are 24-bit. The detected size is converted to a page count from 2,048
+pages (512KB) through 65,536 pages (16MB).
 
 - Page 0: superblock A.
 - Page 1: superblock B.
@@ -39,9 +48,13 @@ REU addresses are 24-bit. The detected size is converted to a page count from
 - The following 16 pages are statement-journal before images.
 - Top 544 pages: eight 68-page (17KB) overlay slots.
 
-The shell reuses the caches. Direct wide execution owns the eighth top slot;
-administration remains fixed at pages 34-101. This reservation is recorded by
-storage version 4 so older raw images cannot be opened with overlapping data.
+### Why the cache reservations are fixed
 
-The bitmap is deliberately reserved at its maximum size on every supported REU
-so physical page identities and format offsets do not depend on capacity.
+The shell reuses the caches. Direct wide execution owns the eighth top slot;
+administration remains fixed at pages 34-101. This reservation is recorded by storage
+version 4 so older raw images cannot be opened with overlapping data.
+
+### Capacity-independent page identities
+
+The bitmap is deliberately reserved at its maximum size on every supported REU so
+physical page identities and format offsets do not depend on capacity.

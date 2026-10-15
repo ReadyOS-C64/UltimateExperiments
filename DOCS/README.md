@@ -14,7 +14,7 @@ npm run check:docs
 
 The builder reads the project READMEs, `ReadyFS/docs/`, `ReuSQL64/docs/`, C77 screenshots/assets, and the retained walkthrough Markdown/screenshots under `DOCS/readyfs/tours/`. It does not need the ignored external demo-site checkout. Update a reference in its project source and rebuild rather than editing its generated copy. The two walkthroughs are maintained directly in `DOCS/readyfs/tours/`.
 
-Both generated HTML and copied Markdown are committed so a checkout already contains a readable site. The renderer rewrites local document links for HTML, gives headings stable anchors, and adds common navigation. `npm run check:docs` checks local destinations and anchors, rejects video/media dependencies and personal home paths, and verifies the D81 downloads match their project originals.
+Both generated HTML and copied Markdown are committed so a checkout already contains a readable site. The renderer rewrites local document links for HTML, gives headings stable anchors, and adds common navigation. SQL code blocks are syntax-highlighted at build time with the pinned highlight.js dependency, so the published site needs no runtime highlighter or CDN. Performance notes use a dedicated callout style, and ReuSQL64 diagrams are local SVG assets. `npm run check:docs` checks local destinations and anchors, rejects video/media dependencies and personal home paths, and verifies the D81 downloads match their project originals.
 
 To preview over HTTP:
 

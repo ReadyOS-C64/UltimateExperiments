@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Storage Format v2 · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Storage Format v2"><link rel="stylesheet" href="../style.css"></head>
-<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="reusql" open><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="shell.html">Interactive shell</a></li><li><a href="sql-language.html">SQL language</a></li><li><a href="tested-queries.html">Tested SQL examples</a></li><li><a href="architecture.html">Architecture</a></li><li><a href="memory-map.html">Memory map</a></li><li><a href="public-api.html">Public API</a></li><li><a href="storage-format.html" aria-current="page">Storage format</a></li><li><a href="export-format.html">Export format</a></li><li><a href="dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#fixed-reservations">Fixed reservations</a></li><li><a href="#catalog-and-tables">Catalog and tables</a></li><li><a href="#variable-values">Variable values</a></li><li><a href="#enumerations">Enumerations</a></li><li><a href="#indexes">Indexes</a></li><li><a href="#atomicity-boundary">Atomicity boundary</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="storage-format.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="storage-format-v2">Storage Format v2</h1>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="reusql" open><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="performance.html">Performance and staged queries</a></li><li><a href="shell.html">Interactive shell</a></li><li><a href="sql-language.html">SQL language</a></li><li><a href="tested-queries.html">Tested SQL examples</a></li><li><a href="architecture.html">Architecture</a></li><li><a href="memory-map.html">Memory map</a></li><li><a href="public-api.html">Public API</a></li><li><a href="storage-format.html" aria-current="page">Storage format</a></li><li><a href="export-format.html">Export format</a></li><li><a href="dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#fixed-reservations">Fixed reservations</a></li><li><a href="#catalog-and-tables">Catalog and tables</a></li><li><a href="#variable-values">Variable values</a></li><li><a href="#enumerations">Enumerations</a></li><li><a href="#indexes">Indexes</a></li><li><a href="#atomicity-boundary">Atomicity boundary</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="storage-format.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="storage-format-v2">Storage Format v2</h1>
+<p>The REU image is a page-based database, not a dump of native C structs. This reference
+follows its reserved regions, catalog roots and owned page chains, then explains the
+journal and publication boundaries.</p>
 <p>All persistent pages are 256 bytes. Multi-byte values are explicitly encoded
 little-endian; native C structures are not written as database pages.</p>
 <h2 id="fixed-reservations">Fixed reservations</h2>
@@ -12,77 +15,83 @@ little-endian; native C structures are not written as database pages.</p>
 <li>All other allocated pages: catalog, table, row, enum, index, and
 variable-value objects.</li>
 </ul>
-<p>The allocator opens the newest valid superblock and falls back when either
-copy is corrupt. A catalog-root update writes the secondary superblock before
-the primary.</p>
-<p>The superblock format is version 2 and persistent catalog/object pages carry
-storage version 4. Version 4 reserves pages 34-101 and the eighth 68-page hot
-overlay slot, so allocator-owned pages begin at page 102 and stop below the
-top 544 pages on every supported REU. This is a deliberate pre-release
-compatibility break: there is no in-place v1-to-v2 migration. Initialization
-with formatting disabled rejects even checksummed older superblocks as
-<code>RSQL_ERR_CORRUPT_STORAGE</code>; callers must explicitly create a new image and
-import selected data. The checkpoint target constructs and rejects a valid-
-checksum version-1 pair as a regression test.</p>
+<p>The allocator opens the newest valid superblock and falls back when either copy is
+corrupt. A catalog-root update writes the secondary superblock before the primary.</p>
+<h3 id="format-versions-and-compatibility">Format versions and compatibility</h3>
+<p>The superblock format is version 2 and persistent catalog/object pages carry storage
+version 4. Version 4 reserves pages 34-101 and the eighth 68-page hot overlay slot, so
+allocator-owned pages begin at page 102 and stop below the top 544 pages on every
+supported REU. This is a deliberate pre-release compatibility break: there is no
+in-place v1-to-v2 migration.</p>
+<p>Initialization with formatting disabled rejects even checksummed older superblocks as
+<code>RSQL_ERR_CORRUPT_STORAGE</code>; callers must explicitly create a new image and import
+selected data. The checkpoint target constructs and rejects a valid- checksum version-1
+pair as a regression test.</p>
 <h2 id="catalog-and-tables">Catalog and tables</h2>
-<p>The catalog root links table descriptors, enum descriptors, index descriptors,
-and blob directory pages. Each table descriptor contains its name, fixed row
-width, row chain, row count, and up to eight column descriptors. Every row
-begins with a null bitmap. The remaining values are fixed-stride and a row may
-occupy at most 240 bytes in format v2.</p>
-<p>Table descriptor byte 5 contains <code>TEMPORARY</code>, <code>DROPPING</code>, and <code>BUILDING</code>
-lifecycle bits. Catalog name lookup ignores <code>DROPPING</code> or <code>BUILDING</code>
-descriptors. TEMP cleanup, interrupted-build cleanup, and explicit
-<code>DROP TABLE</code> advance durable row, blob, and index links in bounded transactions
-before freeing each old page, so initialization can resume an interruption and
-finally unlink the descriptor.</p>
-<p>Index descriptor byte 5 and enum descriptor byte 39 contain a <code>DROPPING</code> bit.
-Named lookup and index rebuilds ignore marked descriptors. Index cleanup
-advances the descriptor leaf head before each leaf free. Enum cleanup advances
-the descriptor&#39;s first-member link before each member-page free, then unlinks
-the descriptor and decrements the root enum count. The next enum ID remains
+<p>The catalog root links table descriptors, enum descriptors, index descriptors, and blob
+directory pages. Each table descriptor contains its name, fixed row width, row chain,
+row count, and up to eight column descriptors. Every row begins with a null bitmap.</p>
+<p>The remaining values are fixed-stride and a row may occupy at most 240 bytes in format
+v2.</p>
+<h3 id="table-lifecycle-flags">Table lifecycle flags</h3>
+<p>Table descriptor byte 5 contains <code>TEMPORARY</code>, <code>DROPPING</code>, and <code>BUILDING</code> lifecycle bits.
+Catalog name lookup ignores <code>DROPPING</code> or <code>BUILDING</code> descriptors. TEMP cleanup,
+interrupted-build cleanup, and explicit <code>DROP TABLE</code> advance durable row, blob, and
+index links in bounded transactions before freeing each old page, so initialization can
+resume an interruption and finally unlink the descriptor.</p>
+<h3 id="index-and-enum-cleanup-flags">Index and enum cleanup flags</h3>
+<p>Index descriptor byte 5 and enum descriptor byte 39 contain a <code>DROPPING</code> bit. Named
+lookup and index rebuilds ignore marked descriptors. Index cleanup advances the
+descriptor leaf head before each leaf free.</p>
+<p>Enum cleanup advances the descriptor&#39;s first-member link before each member-page free,
+then unlinks the descriptor and decrements the root enum count. The next enum ID remains
 monotonic after a drop.</p>
-<p>Physical widths are BOOLEAN/I8/ENUM8 = 1, I16/FIXED8_8/ENUM16 = 2, I32 = 4,
-I64 = 8, Commodore FLOAT = 5, CHAR(n) = n, and TEXT/BLOB = a four-byte stable
-handle.</p>
-<p>Row pages contain a four-byte used-slot bitmap and up to 32 fixed-stride rows.
-Deleted slots are cleared and reused before another row page is allocated.</p>
+<h3 id="column-widths-and-row-slots">Column widths and row slots</h3>
+<p>Physical widths are BOOLEAN/I8/ENUM8 = 1, I16/FIXED8_8/ENUM16 = 2, I32 = 4, I64 = 8,
+Commodore FLOAT = 5, CHAR(n) = n, and TEXT/BLOB = a four-byte stable handle.</p>
+<p>Row pages contain a four-byte used-slot bitmap and up to 32 fixed-stride rows. Deleted
+slots are cleared and reused before another row page is allocated.</p>
 <h2 id="variable-values">Variable values</h2>
-<p>TEXT and BLOB directory entries hold a monotonically assigned four-byte
-handle, kind, byte length, and first payload page. Payload pages are linked and
-carry 246 bytes apiece. Delete marks a directory entry as a tombstone;
-<code>rsql_blob_compact</code> releases its chain and clears the directory slot. Handles
-are never reused.</p>
+<p>TEXT and BLOB directory entries hold a monotonically assigned four-byte handle, kind,
+byte length, and first payload page. Payload pages are linked and carry 246 bytes
+apiece. Delete marks a directory entry as a tombstone; <code>rsql_blob_compact</code> releases its
+chain and clears the directory slot.</p>
+<p>Handles are never reused.</p>
 <h2 id="enumerations">Enumerations</h2>
-<p>Enum descriptors have a stable 16-bit catalog ID and width of one or two
-bytes. Named members live in linked member pages. Lookups fold ASCII/PETSCII
-letters, support name-to-value and value-to-name, and reject duplicate names
-or numeric values.</p>
+<p>Enum descriptors have a stable 16-bit catalog ID and width of one or two bytes. Named
+members live in linked member pages. Lookups fold ASCII/PETSCII letters, support
+name-to-value and value-to-name, and reject duplicate names or numeric values.</p>
 <h2 id="indexes">Indexes</h2>
-<p>The root&#39;s index link points to globally named index descriptors. A descriptor
-records its source table, one or more source-column ordinals, encoded compound
-key width, entry count, and the head and tail of a doubly linked leaf chain.
-Only fixed-width columns can be indexed; TEXT and BLOB are rejected.</p>
-<p>Each leaf stores a sorted sequence of encoded key plus physical row ID entries.
-Keys contain a NULL marker and the column&#39;s fixed physical bytes. Leaves split
-when full and remain linked in key order. ReuSQL64 does not create or persist an
-execution plan: a query must opt in with <code>USING INDEX index_name</code>, and the row
-predicate is still evaluated against every returned row ID.</p>
-<p>INSERT, UPDATE, and DELETE rebuild every index belonging to the changed table
-inside the same transaction. This correctness-first implementation preserves
-row/index atomicity but is bounded by the 16-page before-image journal; a
-larger rebuild can return <code>RSQL_ERR_JOURNAL_FULL</code> and roll back cleanly.</p>
+<p>The root&#39;s index link points to globally named index descriptors. A descriptor records
+its source table, one or more source-column ordinals, encoded compound key width, entry
+count, and the head and tail of a doubly linked leaf chain. Only fixed-width columns can
+be indexed; TEXT and BLOB are rejected.</p>
+<p>Each leaf stores a sorted sequence of encoded key plus physical row ID entries. Keys
+contain a NULL marker and the column&#39;s fixed physical bytes. Leaves split when full and
+remain linked in key order.</p>
+<p>ReuSQL64 does not create or persist an execution plan: a query must opt in with <code>USING INDEX index_name</code>, and the row predicate is still evaluated against every returned row
+ID.</p>
+<h3 id="index-rebuilds-and-journal-capacity">Index rebuilds and journal capacity</h3>
+<p>INSERT, UPDATE, and DELETE rebuild every index belonging to the changed table inside the
+same transaction. This correctness-first implementation preserves row/index atomicity
+but is bounded by the 16-page before-image journal; a larger rebuild can return
+<code>RSQL_ERR_JOURNAL_FULL</code> and roll back cleanly.</p>
+<blockquote class="performance-callout" aria-label="Query performance"><p><strong>Performance: some advanced queries are very slow right now.</strong></p>
+<p>Joins, correlated subqueries, grouping, sorting and duplicate elimination can walk the same relationships repeatedly. For demanding work, it is often faster to filter/project into TEMP tables, index the useful intermediate columns, and run the next query against that smaller result. The tested seven-step sales pipeline took <strong>425.88 seconds PAL</strong>, compared with <strong>2,300.2 seconds</strong> for the original grouped join—about <strong>5.4× faster</strong>, including its intermediate table and index builds. These are measurements of this fixture, not a guarantee for every query.</p>
+<p><a href="performance.html">Why this happens and how to stage a query</a>.</p>
+</blockquote>
 <h2 id="atomicity-boundary">Atomicity boundary</h2>
-<p>Checksums detect torn or corrupt pages. A 16-page REU before-image journal makes
-CREATE TABLE, CREATE TYPE, CREATE INDEX, INSERT, UPDATE, and DELETE
-statement-atomic. On an injected or real write failure, catalog, allocation,
-row, blob, enum, and index pages are restored before control returns.</p>
-<p>CTAS can own more than sixteen pages without enlarging or weakening that
-journal. Table flag <code>BUILDING</code> (<code>0x04</code>) is committed with the new descriptor;
-catalog lookup ignores the descriptor until publication. Fixed rows commit one
-at a time. Each non-NULL TEXT/BLOB handle is first stored as a zero-length
-directory entry in its hidden row, after which one payload page and its owner
-links commit per transaction. Clearing <code>BUILDING</code> is the only publication
-write. Initialization treats a remaining BUILDING descriptor like resumable
-garbage and reclaims its rows, handles, chains, and descriptor.</p>
+<p>Checksums detect torn or corrupt pages. A 16-page REU before-image journal makes CREATE
+TABLE, CREATE TYPE, CREATE INDEX, INSERT, UPDATE, and DELETE statement-atomic. On an
+injected or real write failure, catalog, allocation, row, blob, enum, and index pages
+are restored before control returns.</p>
+<h3 id="ctas-publication-is-a-separate-boundary">CTAS publication is a separate boundary</h3>
+<p>CTAS can own more than sixteen pages without enlarging or weakening that journal. Table
+flag <code>BUILDING</code> (<code>0x04</code>) is committed with the new descriptor; catalog lookup ignores
+the descriptor until publication. Fixed rows commit one at a time.</p>
+<p>Each non-NULL TEXT/BLOB handle is first stored as a zero-length directory entry in its
+hidden row, after which one payload page and its owner links commit per transaction.
+Clearing <code>BUILDING</code> is the only publication write. Initialization treats a remaining
+BUILDING descriptor like resumable garbage and reclaims its rows, handles, chains, and
+descriptor.</p>
 </main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

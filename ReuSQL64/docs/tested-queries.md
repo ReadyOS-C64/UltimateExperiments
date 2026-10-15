@@ -4,7 +4,22 @@ These statements are executed by the compiled 6510 test program in both
 Peddle REU sizes and by the automated VICE D81/1581 lane. This is an evidence list,
 not a claim that the rest of the planned dialect is already implemented.
 
-## Schema and physical types
+## How to use this evidence catalog
+
+The statements below keep their fixture names and expected results. They are executable test cases, including deliberate rejections—not a single script to paste into a fresh shell. Some statements exceed the shell's 160-byte line limit and are submitted through the engine API.
+
+For a first pass, start with [schema and types](#schema-and-physical-types), [three-source scans](#three-output-source-fixed-scans), [nested predicates](#depth-2-scalar-in-null-and-aggregate-queries), or the [sales benchmark](#permanent-real-world-sales-benchmark). The chapter headings group the full original catalog without dropping any SQL or assertions.
+
+
+## Schemas, values and basic queries
+
+> **Performance: some advanced queries are very slow right now.**
+>
+> Joins, correlated subqueries, grouping, sorting and duplicate elimination can walk the same relationships repeatedly. For demanding work, it is often faster to filter/project into TEMP tables, index the useful intermediate columns, and run the next query against that smaller result. The tested seven-step sales pipeline took **425.88 seconds PAL**, compared with **2,300.2 seconds** for the original grouped join—about **5.4× faster**, including its intermediate table and index builds. These are measurements of this fixture, not a guarantee for every query.
+>
+> [Why this happens and how to stage a query](performance.md).
+
+### Schema and physical types
 
 ```sql
 create table sqltypes (
@@ -48,7 +63,7 @@ CREATE TABLE SQLDML (
 )
 ```
 
-## Inserts and literal encoding
+### Inserts and literal encoding
 
 ```sql
 INSERT INTO SQLDML VALUES (42, 'ADA', TRUE, NULL)
@@ -66,7 +81,7 @@ escaping, false, a four-byte integer, and an optional trailing semicolon. The
 row iterator must return both inserts in deterministic physical order and then
 `RSQL_ERR_NOT_FOUND`.
 
-## Named enumerations
+### Named enumerations
 
 ```sql
 CREATE TYPE MOOD AS ENUM8 (SAD = 1, OK = 2, HAPPY = 7);
@@ -89,7 +104,7 @@ unknown named column type, duplicate enum values, an ENUM8 member above 255,
 missing members, a qualifier for the wrong enum, an enum literal assigned to a
 non-enum column, and numeric values outside ENUM8/ENUM16 unsigned ranges.
 
-## SELECT and cursor results
+### SELECT and cursor results
 
 ```sql
 SELECT BODY, RAW FROM SQLVAR;
@@ -131,7 +146,7 @@ SELECT ID FROM SQLDML WHERE ID < 0
 This exercises signed, width-aware integer comparison. It returns only `-7`
 and then end-of-cursor.
 
-## Compound predicates and LIKE
+### Compound predicates and LIKE
 
 ```sql
 SELECT COUNT(*)
@@ -183,7 +198,7 @@ WHERE ID >= -7 AND ID <= 42 AND ID != 0
 Returns one while executing every supported comparison spelling in one bounded
 postfix predicate program.
 
-## Grouping and aggregates
+### Grouping and aggregates
 
 The aggregate lane creates a data set with duplicate keys, negative values,
 and NULL-only groups:
@@ -248,7 +263,7 @@ FROM EMPTYDATA
 
 The empty-table result is one row containing `0, 0, NULL, NULL, NULL, NULL`.
 
-## Commodore FLOAT
+### Commodore FLOAT
 
 ```sql
 CREATE TABLE FLOATDATA (REGION CHAR(2), VALUE FLOAT NULL);
@@ -310,7 +325,9 @@ UPDATE AGGDATA SET AMOUNT = 1.5 WHERE REGION = 'N';
 Rejected with `RSQL_ERR_TYPE_MISMATCH`: a decimal FLOAT literal is not silently
 narrowed into I16.
 
-## Atomic mutation failure injection
+## Transactions and indexed access
+
+### Atomic mutation failure injection
 
 ```sql
 CREATE TABLE JFAIL (ID I16)
@@ -329,7 +346,7 @@ the committed transaction's measured write count to inject failure at every
 write boundary, proving that payload pages, directory entries, handle counters,
 the row, and allocation bitmap roll back together.
 
-## DELETE
+### DELETE
 
 ```sql
 DELETE FROM JFAIL WHERE ID = 1;
@@ -358,7 +375,7 @@ statement owns four nonempty handles; failure injection at every measured write
 boundary restores both rows and all four active directory entries. The commit
 tombstones all four and compaction reclaims four pages.
 
-## UPDATE
+### UPDATE
 
 ```sql
 UPDATE UDATA
@@ -400,7 +417,7 @@ every dynamically measured canonical write; every failure restores rows, old
 handles, predicates, and the first-free page. The committed retry tombstones
 four old handles, and compaction reclaims exactly four payload pages.
 
-## Persistent named indexes
+### Persistent named indexes
 
 The storage lane builds both compound and single-column indexes:
 
@@ -456,7 +473,9 @@ SELECT NAME FROM PEOPLE USING INDEX IDX_NAME_ID;
 These respectively reject a variable-width key, a missing name, and an index
 owned by a different table. Creating `IDX_NAME_ID` twice is also rejected.
 
-## Two-source joins
+## Joins, subqueries and result shaping
+
+### Two-source joins
 
 The join lane creates customers and orders with duplicate matches, unmatched
 rows, a NULL foreign key, signed values, TEXT, and a shared named enum:
@@ -600,7 +619,7 @@ is checked as `3,'DA','ADAADA'`, and the harness consumes all three rows. This
 exercises LENGTH, substring, source-to-source concatenation, a projection
 ordinal, and repeated target-row reads without a scalar result buffer.
 
-## Joined grouping and aggregates
+### Joined grouping and aggregates
 
 The dedicated joined-aggregate lane widens the order fixture with signed I8,
 I32, I64, nullable FLOAT, and an empty inner table. It first verifies complete
@@ -678,7 +697,7 @@ counts `2,1`. An ordered compound query with `LIMIT 1 OFFSET 1` returns
 `(1,50,1)`. Ungrouped ordered and ordered-empty aggregate queries remain
 one-row results.
 
-## Correlated scalar, IN, and EXISTS subqueries
+### Correlated scalar, IN, and EXISTS subqueries
 
 The join lane also exercises the complex-query sidecar as a correlated
 subquery executor. EXISTS and NOT EXISTS use both accepted projection forms:
@@ -830,7 +849,7 @@ and `rsql_cursor_next()` returns `RSQL_ERR_SUBQUERY_ROWS`. Empty scalar input
 is NULL/UNKNOWN. Incompatible selected types such as `CHAR IN (SELECT I16 ...)`
 are rejected during binding.
 
-## ORDER BY, DISTINCT, LIMIT, and OFFSET
+### ORDER BY, DISTINCT, LIMIT, and OFFSET
 
 The result-shaping lane inserts five deliberately unordered rows with duplicate
 CHAR values, duplicate numeric values, signed I8 extremes, NULLs, enum values,
@@ -982,7 +1001,7 @@ elimination, and pagination without copying either variable key into a C64-RAM
 result buffer. Joined/correlated variable keys, variable scalar expressions,
 and explicit-index variable grouping are covered below.
 
-## Scalar string projections
+### Scalar string projections
 
 The result lane exercises all eight projection slots in one CHAR/literal query:
 
@@ -1105,7 +1124,7 @@ tuple while comparing substring and all supported TEXT concatenation forms.
 The joined query orders NULL and streamed substrings, and the final two prove
 DISTINCT scalar evaluation over joined and correlated producers.
 
-## Single-table aggregate producers with correlated subqueries
+### Single-table aggregate producers with correlated subqueries
 
 These query-lane cases prove that the correlated outer scan feeds slot 6
 directly, without pretending to be a join.
@@ -1149,7 +1168,7 @@ into UNKNOWN/false.
 All three run as compiled 6510 in Peddle at 512KB and 16MB and in the query
 VICE D81/1581 lane.
 
-## Joined aggregate producers with correlated subqueries
+### Joined aggregate producers with correlated subqueries
 
 These queries exercise a joined pair as the outer row context while a third
 table scan evaluates the correlated predicate before aggregation.
@@ -1198,7 +1217,9 @@ LIMIT exercise the shaped aggregate replay over the correlated producer.
 All three run as compiled 6510 in Peddle at 512KB and 16MB and in the joined-
 aggregate VICE D81/1581 lane.
 
-## Rejection tests
+## Validation and schema lifecycles
+
+### Rejection tests
 
 ```sql
 INSERT INTO SQLDML VALUES (40000, 'X', TRUE, NULL)
@@ -1257,7 +1278,7 @@ HAVING COUNT(*) > 1
 Rejected with `RSQL_ERR_SYNTAX`; `HAVING` is intentionally outside the
 dialect.
 
-## Materialized result tables
+### Materialized result tables
 
 ```sql
 CREATE TEMP TABLE UR AS
@@ -1324,7 +1345,7 @@ rows per page, WIDECOPY owns seventeen destination row pages and returns count
 A persistent table descriptor manually marked only `BUILDING` is invisible
 and fully reclaimed by the next `rsql_init`.
 
-## TEMP lifecycle and explicit DROP TABLE
+### TEMP lifecycle and explicit DROP TABLE
 
 The lifecycle lane creates a persistent table with an index and a 4096-byte
 TEXT value, whose payload occupies seventeen REU pages:
@@ -1358,7 +1379,7 @@ and allocated. Retrying the same statement succeeds, makes the name absent,
 and frees its descriptor. This distinguishes atomic publication of the
 visibility marker from the deliberately incremental cleanup that follows it.
 
-## DROP INDEX and DROP TYPE
+### DROP INDEX and DROP TYPE
 
 The variable-update/schema lifecycle lane verifies standalone index removal
 without changing its table:
@@ -1398,7 +1419,9 @@ descriptor; the base table and its row remain available by sequential scan.
 The stale index name and enum type name are absent, and dropping the remaining
 table restores the exact first-free page.
 
-## FIXED8_8 grouping and aggregates
+## Numeric and streamed-value aggregation
+
+### FIXED8_8 grouping and aggregates
 
 The dedicated fixed-point lane stores Q8.8 values `1`, `2`, `-2`, NULL, and
 three copies of `127`. Its ordinary aggregate query is:
@@ -1472,7 +1495,7 @@ SELECT * FROM Z;
 `Z` contains `(1,0.33203125,-2,2)`, with all four columns physically
 `FIXED8_8` rather than widened I64.
 
-## Streamed TEXT/BLOB GROUP BY
+### Streamed TEXT/BLOB GROUP BY
 
 The same lane creates five rows whose equal logical values have independent
 stable handles:
@@ -1572,7 +1595,9 @@ The ORDER query returns IDs `10,12`, ordered by the streamed scalar prefixes
 `(BOB,RETURN,12)`. Both force a live streamed NOTE predicate to suspend slot 4,
 run in slot 6, restore slot 4, and continue the ORDER/DISTINCT rescan.
 
-## Whole-REU checkpoint and restore
+## Persistence, export and shell
+
+### Whole-REU checkpoint and restore
 
 The eleventh target lane establishes durable and temporary state:
 
@@ -1606,7 +1631,7 @@ The first query streams `(1,'ALPHA')` and `(2,'BETA')`; the second returns
 REU image when its binary monitor does not enumerate REU banks; the verified
 16MB artifact is exactly 16,777,216 bytes.
 
-## Schema, size, and selected-query export
+### Schema, size, and selected-query export
 
 The checkpoint lane now adds a named type and index:
 
@@ -1651,7 +1676,7 @@ the same framing. The lane finally converts both valid version-2 superblocks
 into checksummed version-1 copies and verifies restore rejects the old format
 with `RSQL_ERR_CORRUPT_STORAGE`.
 
-## Interactive shell transcript
+### Interactive shell transcript
 
 The twelfth lane drives the real GETIN/CHROUT loop rather than calling the
 engine directly. Peddle injects the same commands at 512KB and 16MB; VICE types
@@ -1682,7 +1707,9 @@ checkpoint, and clean termination. Peddle compares all 36 bytes written by the
 export adapter. VICE extracts `shexport` from the writable D81 with `c1541` and
 compares the same RSQLX header, typed row, streamed TEXT bytes, and footer.
 
-## Depth-2 correlated EXISTS
+## Three-source and nested query composition
+
+### Depth-2 correlated EXISTS
 
 The join/subquery lane composes its existing one-level query at runtime with a
 second EXISTS so the full client image does not duplicate the common prefix:
@@ -1707,7 +1734,7 @@ both earlier levels and resolves a named ENUM8 member against the third-table
 column. The focused Peddle lane passes at 512KB and 16MB, and the D81-backed
 VICE/1581 plan passes without degradation.
 
-## Depth-2 scalar, IN, NULL, and aggregate queries
+### Depth-2 scalar, IN, NULL, and aggregate queries
 
 The dedicated nested lane uses three nullable fixed-width tables and executes
 the following depth-2 forms at both 512KB and 16MB:
@@ -1774,7 +1801,7 @@ The first returns `(1,1)`, the second returns `1`, and the grouped query returns
 `RSQL_ERR_SUBQUERY_ROWS` rather than silently completing accumulation. The
 same client boots from an 819,200-byte D81 on VICE's virtual 1581.
 
-## Three-output-source fixed scans
+### Three-output-source fixed scans
 
 ```sql
 SELECT A.ID,B.ID,C.ID
@@ -1960,7 +1987,7 @@ For `C.ID=100`, the projection returns I32 `5`, TEXT `LPH`, TEXT
 collapses `OUTER-ONEALPHA` with `OUTER-ONEalpha`, leaving `OTHERBETA` and
 `OUTER-ONEALPHA`.
 
-## Independent wide source indexes
+### Independent wide source indexes
 
 The same target creates one single-column and two compound indexes:
 
@@ -1995,7 +2022,7 @@ returns `RSQL_ERR_TYPE_MISMATCH`. A single-table `USING INDEX IA` control proves
 that the wide raw stream reproduces the existing engine leaf order. Explicit
 `ORDER BY`, not physical leaf order, remains the semantic ordering mechanism.
 
-## Direct three-source CTAS
+### Direct three-source CTAS
 
 The fixed-width materializer retains the triple identity while it builds each
 destination row:
@@ -2044,7 +2071,7 @@ SELECT * FROM WAGG ORDER BY C1;
 This returns `(1,2,400)` and `(2,1,200)`, proving that grouping and aggregates
 are evaluated by the wide producer before bounded destination staging.
 
-## Independently indexed two-source joins
+### Independently indexed two-source joins
 
 The ordinary two-source scan path now consumes one validated leaf iterator per
 source while retaining scalar projection, LIKE, semantic ORDER BY, and joined
@@ -2062,7 +2089,7 @@ Companion negative cases name a nonexistent index and an index owned by the
 wrong table. They return `RSQL_ERR_NOT_FOUND` and `RSQL_ERR_TYPE_MISMATCH`
 respectively; neither silently falls back to a heap scan.
 
-## Scalar expressions in grouped aggregate results
+### Scalar expressions in grouped aggregate results
 
 The ordinary producer combines packed literal metadata, grouped keys, scalar
 evaluation, and an aggregate in one cursor:
@@ -2180,7 +2207,9 @@ The destination derives `C2` as fixed `CHAR(6)`, so its public table read
 contains `BYBY` or `ZZ` followed by physical trailing spaces. This distinguishes
 logical scalar cursor length from materialized fixed-width CHAR semantics.
 
-## Permanent real-world sales benchmark
+## Benchmarks and performance
+
+### Permanent real-world sales benchmark
 
 The permanent benchmark database contains 2,054 rows across five readable
 tables. It deliberately bounds the hot query to 128 sales while retaining a
@@ -2262,7 +2291,7 @@ The captured database owns 1,043 REU pages / 267,008 bytes: all table and
 index pages above plus the catalog root. The VICE whole-REU export is
 16,777,216 bytes; the D81 bootstrap image is 819,200 bytes.
 
-## Opt-in staged TEMP-table benchmark
+### Opt-in staged TEMP-table benchmark
 
 The alternative benchmark keeps the original test and materializes the same
 hot analytical workload in explicit, timed stages:

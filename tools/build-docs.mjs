@@ -4,6 +4,9 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {Marked} from 'marked';
 import {execFileSync} from 'node:child_process';
+import hljs from 'highlight.js/lib/core';
+import sql from 'highlight.js/lib/languages/sql';
+hljs.registerLanguage('sql',sql);
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const out=path.join(root,'DOCS');
 execFileSync(process.execPath,[path.join(root,'ReadyFS/build_support/build_readyfs_user_guide.mjs')],{stdio:'inherit'});
@@ -72,6 +75,7 @@ const experiments=[
   ['Path research','READYFS_PATH_RESEARCH.html']
  ]},
  {label:'ReuSQL64',directory:'reusql',children:[
+  ['Performance and staged queries','performance.html'],
   ['Interactive shell','shell.html'],
   ['SQL language','sql-language.html'],
   ['Tested SQL examples','tested-queries.html'],
@@ -104,7 +108,17 @@ for(const file of files(out)){
  const source=fs.readFileSync(file,'utf8');
  const title=source.match(/^# (.+)$/m)?.[1]||path.basename(file,'.md');
  const page=file.slice(0,-3)+'.html',toc=[],seen=new Map();
- const renderer={heading(token){
+ const renderer={
+ code(token){
+  if(token.lang?.toLowerCase()!=='sql')return false;
+  const highlighted=hljs.highlight(token.text,{language:'sql',ignoreIllegals:true}).value;
+  return `<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs">${highlighted}</code></pre>\n`;
+ },
+ blockquote(token){
+  if(!token.text.startsWith('**Performance:'))return false;
+  return `<blockquote class="performance-callout" aria-label="Query performance">${this.parser.parse(token.tokens)}</blockquote>\n`;
+ },
+ heading(token){
   const base=slug(token.text),n=seen.get(base)||0;seen.set(base,n+1);
   const id=base+(n?'-'+n:'');
   const label=this.parser.parseInline(token.tokens);
@@ -113,7 +127,22 @@ for(const file of files(out)){
  }};
  let content=new Marked({renderer,gfm:true}).parse(source);
  content=content.replace(/(href=")([^"?#]+)\.md([#?][^"]*)?"/g,'$1$2.html$3"');
- content=content.replace(/<img /g,'<img loading="lazy" decoding="async" ');
+ // Reserve image space so a late-loading screenshot cannot move a section anchor.
+ content=content.replace(/<img src="([^"]+)"([^>]*)>/g,(tag,src,rest)=>{
+  let dimensions='';
+  const imageFile=path.resolve(path.dirname(page),decodeURIComponent(src));
+  if(imageFile.startsWith(out+path.sep) && fs.existsSync(imageFile)){
+   const bytes=fs.readFileSync(imageFile);
+   if(imageFile.toLowerCase().endsWith('.png') && bytes.length>=24){
+    dimensions=` width="${bytes.readUInt32BE(16)}" height="${bytes.readUInt32BE(20)}"`;
+   }else if(imageFile.toLowerCase().endsWith('.svg')){
+    const svg=bytes.toString('utf8');
+    const width=svg.match(/\bwidth="(\d+)"/)?.[1],height=svg.match(/\bheight="(\d+)"/)?.[1];
+    if(width && height)dimensions=` width="${width}" height="${height}"`;
+   }
+  }
+  return `<img loading="lazy" decoding="async"${dimensions} src="${src}"${rest}>`;
+ });
  if(file.includes(path.join('tours', ''))){
   content=content.replace(/(<p><img [\s\S]*?<\/p>)\s*(<pre>[\s\S]*?<\/pre>)/g,'$1<details class="screen-text"><summary>Read the screen text</summary>$2</details>');
  }

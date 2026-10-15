@@ -1,11 +1,14 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Selected-Query Export Format · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Selected-Query Export Format"><link rel="stylesheet" href="../style.css"></head>
-<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="reusql" open><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="shell.html">Interactive shell</a></li><li><a href="sql-language.html">SQL language</a></li><li><a href="tested-queries.html">Tested SQL examples</a></li><li><a href="architecture.html">Architecture</a></li><li><a href="memory-map.html">Memory map</a></li><li><a href="public-api.html">Public API</a></li><li><a href="storage-format.html">Storage format</a></li><li><a href="export-format.html" aria-current="page">Export format</a></li><li><a href="dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav></aside><main id="content"><div class="page-actions"><a href="export-format.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="selected-query-export-format">Selected-Query Export Format</h1>
-<p><code>rsql_export_d81()</code> streams any supported SELECT result to a CBM sequential
-file. D81/1581 is the standard target because it is the largest conventional
-Commodore disk used by this project, but export is intentionally bounded by
-free disk space. It is not a whole-database persistence format; databases too
-large for removable media use raw whole-REU capture through VICE.</p>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="reusql" open><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="performance.html">Performance and staged queries</a></li><li><a href="shell.html">Interactive shell</a></li><li><a href="sql-language.html">SQL language</a></li><li><a href="tested-queries.html">Tested SQL examples</a></li><li><a href="architecture.html">Architecture</a></li><li><a href="memory-map.html">Memory map</a></li><li><a href="public-api.html">Public API</a></li><li><a href="storage-format.html">Storage format</a></li><li><a href="export-format.html" aria-current="page">Export format</a></li><li><a href="dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#header-and-byte-order">Header and byte order</a></li><li><a href="#row-and-field-encoding">Row and field encoding</a></li><li><a href="#footer-and-incomplete-file-detection">Footer and incomplete-file detection</a></li><li><a href="#adapter-ownership">Adapter ownership</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="export-format.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="selected-query-export-format">Selected-Query Export Format</h1>
+<p>RSQLX is a typed stream for selected rows. Use this page to decode an export or detect a
+partial file. Use a whole-REU image—not this format—for a complete database checkpoint.</p>
+<p><code>rsql_export_d81()</code> streams any supported SELECT result to a CBM sequential file.
+D81/1581 is the standard target because it is the largest conventional Commodore disk
+used by this project, but export is intentionally bounded by free disk space. It is not
+a whole-database persistence format; databases too large for removable media use raw
+whole-REU capture through VICE.</p>
+<h2 id="header-and-byte-order">Header and byte order</h2>
 <p>Version 1 is a compact typed row stream. All lengths and numeric payloads are
 little-endian. The file begins with:</p>
 <table>
@@ -28,19 +31,21 @@ little-endian. The file begins with:</p>
 <td>Selected column count</td>
 </tr>
 </tbody></table>
-<p>Each row begins with marker <code>52</code>. Every selected field then has a four-byte
-header <code>{type_tag, is_null, length_lo, length_hi}</code> followed by exactly <code>length</code>
-payload bytes unless <code>is_null</code> is nonzero. Fixed values retain their public
-cursor representation. TEXT and BLOB values are read in 64-byte chunks, so no
-variable result is materialized in C64 RAM. String payloads are raw C64 bytes
-(normally PETSCII); BLOB payloads are unchanged binary bytes.</p>
-<p>The stream ends with marker <code>FF</code> and a four-byte row count. A short KERNAL
-write, full disk, open failure, query error, or value-read error aborts the
-adapter and returns the relevant engine error or <code>RSQL_ERR_IO</code>; the cursor and
-file are closed on every path. A partial sequential file can therefore exist
-after an error and must not be treated as complete without the footer.</p>
-<p>The adapter is client-side source in <code>src/export_d81.c</code>, not a fixed-address
-ABI entry. This keeps disk naming and device policy out of the resident engine
-and leaves a future C64 Ultimate UCI adapter possible without implementing or
-testing UCI now.</p>
+<h2 id="row-and-field-encoding">Row and field encoding</h2>
+<p>Each row begins with marker <code>52</code>. Every selected field then has a four-byte header
+<code>{type_tag, is_null, length_lo, length_hi}</code> followed by exactly <code>length</code> payload bytes
+unless <code>is_null</code> is nonzero. Fixed values retain their public cursor representation.</p>
+<p>TEXT and BLOB values are read in 64-byte chunks, so no variable result is materialized
+in C64 RAM. String payloads are raw C64 bytes (normally PETSCII); BLOB payloads are
+unchanged binary bytes.</p>
+<h2 id="footer-and-incomplete-file-detection">Footer and incomplete-file detection</h2>
+<p>The stream ends with marker <code>FF</code> and a four-byte row count. A short KERNAL write, full
+disk, open failure, query error, or value-read error aborts the adapter and returns the
+relevant engine error or <code>RSQL_ERR_IO</code>; the cursor and file are closed on every path. A
+partial sequential file can therefore exist after an error and must not be treated as
+complete without the footer.</p>
+<h2 id="adapter-ownership">Adapter ownership</h2>
+<p>The adapter is client-side source in <code>src/export_d81.c</code>, not a fixed-address ABI entry.
+This keeps disk naming and device policy out of the resident engine and leaves a future
+C64 Ultimate UCI adapter possible without implementing or testing UCI now.</p>
 </main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

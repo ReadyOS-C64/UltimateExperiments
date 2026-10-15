@@ -1,138 +1,218 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReuSQL64 · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReuSQL64"><link rel="stylesheet" href="../style.css"></head>
-<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="reusql" open><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html" aria-current="page">Overview and downloads</a></li><li><a href="shell.html">Interactive shell</a></li><li><a href="sql-language.html">SQL language</a></li><li><a href="tested-queries.html">Tested SQL examples</a></li><li><a href="architecture.html">Architecture</a></li><li><a href="memory-map.html">Memory map</a></li><li><a href="public-api.html">Public API</a></li><li><a href="storage-format.html">Storage format</a></li><li><a href="export-format.html">Export format</a></li><li><a href="dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#try-the-committed-interactive-image">Try the committed interactive image</a></li><li><a href="#documentation-map">Documentation map</a></li><li><a href="#current-build">Current build</a></li><li><a href="#safety-boundary">Safety boundary</a></li><li><a href="#repository-and-evidence-policy">Repository and evidence policy</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="reusql64">ReuSQL64</h1>
-<p>ReuSQL64 is a SQL-like database engine for a Commodore 64 equipped with a
-512KB-16MB REU. It is being built as a reusable resident service with a stable
-jump-table ABI and a small interactive shell.</p>
-<p>The original requested query/product feature surface is implemented and target-tested. Optional extensions include a third correlated subquery level and wider public variable-value slices. Internal working records remain local; the maintained design and language references below describe the distributed project.</p>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="reusql" open><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html" aria-current="page">Overview and downloads</a></li><li><a href="performance.html">Performance and staged queries</a></li><li><a href="shell.html">Interactive shell</a></li><li><a href="sql-language.html">SQL language</a></li><li><a href="tested-queries.html">Tested SQL examples</a></li><li><a href="architecture.html">Architecture</a></li><li><a href="memory-map.html">Memory map</a></li><li><a href="public-api.html">Public API</a></li><li><a href="storage-format.html">Storage format</a></li><li><a href="export-format.html">Export format</a></li><li><a href="dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#showcase-queries-from-the-tests">Showcase queries from the tests</a></li><li><a href="#try-the-committed-interactive-image">Try the committed interactive image</a></li><li><a href="#documentation-map">Documentation map</a></li><li><a href="#capabilities-and-current-scope">Capabilities and current scope</a></li><li><a href="#current-build">Current build</a></li><li><a href="#safety-boundary">Safety boundary</a></li><li><a href="#repository-and-evidence-policy">Repository and evidence policy</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="reusql64">ReuSQL64</h1>
+<p>ReuSQL64 is a SQL-like database engine for a Commodore 64 equipped with a 512KB-16MB
+REU. It is being built as a reusable resident service with a stable jump-table ABI and a
+small interactive shell.</p>
+<p>The original requested query/product feature surface is implemented and target-tested.
+Optional extensions include a third correlated subquery level and wider public
+variable-value slices. Internal working records remain local; the maintained design and
+language references below describe the distributed project.</p>
+<blockquote class="performance-callout" aria-label="Query performance"><p><strong>Performance: some advanced queries are very slow right now.</strong></p>
+<p>Joins, correlated subqueries, grouping, sorting and duplicate elimination can walk the same relationships repeatedly. For demanding work, it is often faster to filter/project into TEMP tables, index the useful intermediate columns, and run the next query against that smaller result. The tested seven-step sales pipeline took <strong>425.88 seconds PAL</strong>, compared with <strong>2,300.2 seconds</strong> for the original grouped join—about <strong>5.4× faster</strong>, including its intermediate table and index builds. These are measurements of this fixture, not a guarantee for every query.</p>
+<p><a href="performance.html">Why this happens and how to stage a query</a>.</p>
+</blockquote>
+<h2 id="showcase-queries-from-the-tests">Showcase queries from the tests</h2>
+<p>These are actual queries from the target test clients, formatted for reading. They assume their named fixture tables and indexes already exist. Several exceed the interactive shell&#39;s <strong>160-byte input line</strong>; the benchmark and regression clients submit the complete statements through the engine API.</p>
+<h3 id="three-indexed-sources-filters-and-five-aggregate-forms">Three indexed sources, filters and five aggregate forms</h3>
+<p>The sales benchmark joins orders to customers and products, names an index for each source, filters numeric/Boolean/CHAR values, and groups seven output columns by region and category:</p>
+<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.REGION,
+       P.CATEGORY_ID,
+       <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>),
+       <span class="hljs-built_in">SUM</span>(O.ORDER_TOTAL),
+       <span class="hljs-built_in">AVG</span>(O.ITEM_COUNT),
+       <span class="hljs-built_in">MIN</span>(O.ORDER_TOTAL),
+       <span class="hljs-built_in">MAX</span>(O.ORDER_TOTAL)
+<span class="hljs-keyword">FROM</span> SALES_ORDERS <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">USING</span> INDEX ORDER_BUYER_PROD
+<span class="hljs-keyword">JOIN</span> CUSTOMERS <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">USING</span> INDEX CUSTOMER_ID_REGION
+  <span class="hljs-keyword">ON</span> C.CUSTOMER_ID <span class="hljs-operator">=</span> O.CUSTOMER_ID
+<span class="hljs-keyword">JOIN</span> PRODUCTS <span class="hljs-keyword">AS</span> P <span class="hljs-keyword">USING</span> INDEX PRODUCT_ID_CATEGORY
+  <span class="hljs-keyword">ON</span> P.PRODUCT_ID <span class="hljs-operator">=</span> O.PRODUCT_ID
+<span class="hljs-keyword">WHERE</span> O.ORDER_TOTAL <span class="hljs-operator">&gt;=</span> <span class="hljs-number">1000</span>
+  <span class="hljs-keyword">AND</span> O.ITEM_COUNT <span class="hljs-operator">&gt;=</span> <span class="hljs-number">2</span>
+  <span class="hljs-keyword">AND</span> O.DETAILS <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;A%&#x27;</span>
+  <span class="hljs-keyword">AND</span> C.ACTIVE <span class="hljs-operator">=</span> <span class="hljs-literal">TRUE</span>
+  <span class="hljs-keyword">AND</span> P.ACTIVE <span class="hljs-operator">=</span> <span class="hljs-literal">TRUE</span>
+<span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> C.REGION, P.CATEGORY_ID;</code></pre>
+<p>The fixture checks two groups: <code>(region 1, category 0)</code> has 16 sales totaling 28,000; <code>(region 2, category 1)</code> has 17 totaling 30,000. Both have an average item count of 3. The exact minimum/maximum values, fixture sizes and timing boundaries are in the <a href="tested-queries.html#permanent-real-world-sales-benchmark">benchmark evidence</a>. This statement has no ORDER BY clause.</p>
+<p>Source: <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/ReuSQL64/src/benchmark_main.c"><code>SQL_SALES_SUMMARY</code> in the benchmark client</a>.</p>
+<h3 id="an-aggregate-filtered-by-two-levels-of-correlation">An aggregate filtered by two levels of correlation</h3>
+<p>For each row in A, the engine finds a matching B row whose value appears in a C scan correlated to that B row. Only qualifying A rows reach the outer COUNT and SUM:</p>
+<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(A.ID)
+<span class="hljs-keyword">FROM</span> A
+<span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span> (
+  <span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span>
+  <span class="hljs-keyword">FROM</span> B
+  <span class="hljs-keyword">WHERE</span> B.AID <span class="hljs-operator">=</span> A.ID
+    <span class="hljs-keyword">AND</span> B.V <span class="hljs-keyword">IN</span> (
+      <span class="hljs-keyword">SELECT</span> C.V
+      <span class="hljs-keyword">FROM</span> C
+      <span class="hljs-keyword">WHERE</span> C.BID <span class="hljs-operator">=</span> B.ID
+    )
+);</code></pre>
+<p>This composes EXISTS, IN and aggregation without materializing the nested result sets. NULL behavior and scalar-cardinality failures have separate cases in the <a href="tested-queries.html#depth-2-scalar-in-null-and-aggregate-queries">depth-2 test catalog</a>.</p>
+<p>Source: <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/ReuSQL64/src/nested_main.c"><code>SQL_AGG_IN</code> in the nested-query client</a>.</p>
+<h3 id="grouped-string-expressions-over-three-joined-sources">Grouped string expressions over three joined sources</h3>
+<p>This case combines three sources, LENGTH, concatenation, grouping and ordering by a computed projection:</p>
+<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(A0.K),A0.K<span class="hljs-operator">||</span>Z.K,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<span class="hljs-keyword">FROM</span> D <span class="hljs-keyword">AS</span> A0
+<span class="hljs-keyword">JOIN</span> E <span class="hljs-keyword">AS</span> Y <span class="hljs-keyword">ON</span> Y.K<span class="hljs-operator">=</span><span class="hljs-string">&#x27;AX&#x27;</span>
+<span class="hljs-keyword">JOIN</span> F <span class="hljs-keyword">AS</span> Z <span class="hljs-keyword">ON</span> Z.BID<span class="hljs-operator">=</span>Y.ID
+<span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> A0.K,Z.K
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">2</span> <span class="hljs-keyword">DESC</span>;</code></pre>
+<p><code>ORDER BY 2</code> selects the concatenated result, not the second source table. The fixture emits <code>ZBY</code> before <code>BYBY</code>; the engine recomputes and compares grouped values through bounded row-identity replay. The <a href="tested-queries.html#scalar-expressions-in-grouped-aggregate-results">grouped scalar catalog</a> also preserves the joined and correlated DISTINCT cases.</p>
+<p>Source: <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/ReuSQL64/src/nested_main.c"><code>SQL_ORDER_WIDE_GROUP_SCALAR</code> in the nested-query client</a>.</p>
+<h3 id="make-expensive-work-reusable-with-temp-tables">Make expensive work reusable with TEMP tables</h3>
+<p>The staged sales benchmark filters into <code>FILTERED_ORDERS</code>, joins into <code>CUSTOMER_SALES</code>, joins again into <code>READY_SALES</code>, and builds explicit indexes between those boundaries. The final statement is:</p>
+<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C3, C4, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(C1), <span class="hljs-built_in">AVG</span>(C2), <span class="hljs-built_in">MIN</span>(C1), <span class="hljs-built_in">MAX</span>(C1)
+<span class="hljs-keyword">FROM</span> READY_SALES <span class="hljs-keyword">USING</span> INDEX READY_REGION_CATEGORY
+<span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> C3, C4
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> C3, C4;</code></pre>
+<p>Here C1/C2 are order total/item count, and C3/C4 are region/category. CTAS derives column names <code>C1..Cn</code>; the full <a href="performance.html#the-tested-seven-step-pipeline">seven-step pipeline</a> shows how each intermediate schema is built. This is a measured alternative execution strategy, not an optimizer rewrite performed automatically.</p>
 <h2 id="try-the-committed-interactive-image">Try the committed interactive image</h2>
-<p>Mount <a href="../downloads/rsql64_shell.d81">build/rsql64_shell.d81</a> as device 8 with a 512 KB–16 MB REU enabled. The disk contains the shell and its required overlays. Load it with:</p>
+<p>Mount <a href="../downloads/rsql64_shell.d81">build/rsql64_shell.d81</a> as device 8 with a 512 KB–16 MB
+REU enabled. The disk contains the shell and its required overlays. Load it with:</p>
 <pre><code class="language-basic">LOAD &quot;RSQL64&quot;,8,1
 RUN
 </code></pre>
-<p>The disk directory is authoritative for the bootstrap name. Enter <code>.HELP</code> for the client commands. A small session is:</p>
-<pre><code class="language-sql">CREATE TABLE NOTES (ID I16, BODY TEXT)
-INSERT INTO NOTES VALUES (1, &#39;HELLO REU&#39;)
-SELECT ID, BODY FROM NOTES
-</code></pre>
-<p>The database lives in REU memory, not on the boot disk. <code>.CHECKPOINT</code> quiesces state; saving a complete database additionally requires the host/VICE raw REU capture workflow. <code>.EXPORT</code> writes bounded selected query results, not a complete database backup.</p>
+<p>The disk directory is authoritative for the bootstrap name. Enter <code>.HELP</code> for the client
+commands. A small session is:</p>
+<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> NOTES (ID I16, BODY TEXT)
+<span class="hljs-keyword">INSERT INTO</span> NOTES <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>, <span class="hljs-string">&#x27;HELLO REU&#x27;</span>)
+<span class="hljs-keyword">SELECT</span> ID, BODY <span class="hljs-keyword">FROM</span> NOTES</code></pre>
+<p>The database lives in REU memory, not on the boot disk. <code>.CHECKPOINT</code> quiesces state;
+saving a complete database additionally requires the host/VICE raw REU capture workflow.
+<code>.EXPORT</code> writes bounded selected query results, not a complete database backup.</p>
 <h2 id="documentation-map">Documentation map</h2>
 <ul>
+<li><a href="performance.html">Performance and staged queries</a>: repeated scans, measured costs and the full TEMP-table pipeline.</li>
 <li><a href="shell.html">Interactive shell</a>: loading, editing, inspection, export and display limitations.</li>
 <li><a href="sql-language.html">SQL language</a> and <a href="tested-queries.html">target-tested statements</a>: supported syntax, examples and deliberate rejections.</li>
 <li><a href="architecture.html">Architecture</a>, <a href="memory-map.html">memory map</a>, and <a href="public-api.html">public ABI</a>: resident service, bounded cursors, overlays and client integration.</li>
 <li><a href="storage-format.html">Storage format</a> and <a href="export-format.html">export format</a>: persistence and interchange boundaries.</li>
 <li><a href="index.html">HTML documentation</a>: the same references in a static reading site.</li>
 </ul>
-<p>The verified storage milestone includes configurable 512KB-16MB REU probing,
-persistent page allocation, redundant superblocks, a catalog, all promised
-physical type widths, fixed rows, stable TEXT/BLOB handles with compaction,
-ENUM8/ENUM16 metadata, and overlay caching.</p>
-<p>The implemented SQL core is target-verified for CREATE TABLE and named
-ENUM8/ENUM16 types; fixed and variable INSERT; fixed and TEXT/BLOB UPDATE;
-DELETE; projected SELECT and streamed values; compound three-valued WHERE with
-LIKE; fixed-width plus streamed TEXT/BLOB GROUP BY across ordinary, joined, and
-correlated producers; and COUNT, SUM, AVG, MIN, and MAX over integer,
-signed Q8.8 <code>FIXED8_8</code>, and Commodore five-byte FLOAT columns. Persistent single-column and compound
-fixed-width indexes are available through explicit <code>USING INDEX</code> hints; indexed
-rows remain synchronized by transactional DML rebuilds. Every
-mutation path is journaled and replayed under injected write failures. See
-<code>docs/tested-queries.md</code> for the exact positive and rejection matrix. Two-source
-INNER, LEFT, and CROSS nested-loop joins support qualified projection, ON and
-WHERE predicates, named enums, NULL extension, and streamed variable values.
-Three-output-source INNER, LEFT, and CROSS scans now support fixed-width and
-streamed TEXT/BLOB projection,
-compound ON/WHERE programs, references across all three rows, named enums,
-CHAR comparison, fixed-width <code>GROUP BY</code>, COUNT/SUM/AVG/MIN/MAX over all three
-sources, bounded fixed <code>ORDER BY</code>/<code>DISTINCT</code>, and LIMIT/OFFSET over raw or
-grouped output. CHAR/literal/TEXT LENGTH, substring, and concatenation also
-compose with wide projection, ordinal ORDER BY, exact DISTINCT, and pagination.
-Raw TEXT/BLOB ORDER BY and DISTINCT plus streamed TEXT/BLOB literal predicates
-are live across all three rows. Each of the three sources may now name its own
-single-column or compound access path with source-local <code>USING INDEX</code>; the
-engine validates ownership and drives three independent leaf iterators without
-an optimizer. Wide CTAS now materializes fixed, raw TEXT/BLOB, streamed scalar,
-and grouped aggregate results through bounded destination staging.
-Ordinary scans also support fixed-width and raw streamed TEXT/BLOB <code>ORDER BY</code>,
-<code>DISTINCT</code>, and bounded <code>LIMIT</code>/<code>OFFSET</code>. Streamed comparison predicates and
-<code>LIKE</code> compose with that shaping without materializing payloads. Positive
-projection ordinals let <code>ORDER BY</code> consume fixed
-scalar expressions, and <code>DISTINCT</code> compares their computed values; sequential
-<code>LIMIT</code>/<code>OFFSET</code> composes with grouped aggregates,
-joins, correlated subqueries, and explicit index scans. Joined results can be
-ordered by up to two qualified fixed-width or raw streamed TEXT/BLOB source
-columns, including real column NULLs and LEFT JOIN NULL extension. Exact
-DISTINCT compares raw variable projections by logical value, and the same
-bounded restart/selection design composes with <code>LIMIT</code>/<code>OFFSET</code>.
-Correlated-subquery outer results use the same bounded rescans; fixed
-source/scalar keys and raw streamed variable source keys share the
-producer-owned shaping path.
-An ordinary two-source join may also contain one correlated <code>EXISTS</code>, <code>IN</code>, or
-scalar subquery over a third table scan. The subquery can reference either
-joined source, and the composed producer retains joined ORDER BY, DISTINCT,
-LIMIT, and OFFSET behavior without materialization.
-<code>ORDER BY</code> and <code>DISTINCT</code> also consume an explicitly named
-index without an optimizer or materialized result. Aggregate/grouped results
-support bounded ORDER BY over fixed group keys and aggregate projection
-ordinals. DISTINCT compares the exact projected grouped tuple even when the
-projection omits GROUP BY keys; provably unique cases are removed at bind time
-and other cases use bounded prior-group rescans. Joined and correlated DISTINCT
-likewise compare complete fixed projected tuples with prior producer rows.
-Ordinary grouped scalar projections such as <code>K||&#39;!&#39;</code> can also drive ordinal
-ORDER BY and exact DISTINCT, as can joined, correlated, and direct three-source
+<h2 id="capabilities-and-current-scope">Capabilities and current scope</h2>
+<h3 id="storage-types-and-transactions">Storage, types and transactions</h3>
+<p><img loading="lazy" decoding="async" width="760" height="680" src="diagrams/query-flow.svg" alt="How a query moves through the resident engine, overlays and
+REU"></p>
+<p><em>The resident coordinator keeps ownership while query phases share one overlay window.
+Rows and long values remain in REU memory.</em></p>
+<p>The verified storage milestone includes configurable 512KB-16MB REU probing, persistent
+page allocation, redundant superblocks, a catalog, all promised physical type widths,
+fixed rows, stable TEXT/BLOB handles with compaction, ENUM8/ENUM16 metadata, and overlay
+caching.</p>
+<h3 id="schema-changes-and-sql-foundations">Schema changes and SQL foundations</h3>
+<p>The implemented SQL core is target-verified for CREATE TABLE and named ENUM8/ENUM16
+types; fixed and variable INSERT; fixed and TEXT/BLOB UPDATE; DELETE; projected SELECT
+and streamed values; compound three-valued WHERE with LIKE; fixed-width plus streamed
+TEXT/BLOB GROUP BY across ordinary, joined, and correlated producers; and COUNT, SUM,
+AVG, MIN, and MAX over integer, signed Q8.8 <code>FIXED8_8</code>, and Commodore five-byte FLOAT
+columns.</p>
+<p>Persistent single-column and compound fixed-width indexes are available through explicit
+<code>USING INDEX</code> hints; indexed rows remain synchronized by transactional DML rebuilds.
+Every mutation path is journaled and replayed under injected write failures. See
+<code>docs/tested-queries.md</code> for the exact positive and rejection matrix.</p>
+<p>Two-source INNER, LEFT, and CROSS nested-loop joins support qualified projection, ON and
+WHERE predicates, named enums, NULL extension, and streamed variable values.</p>
+<h3 id="direct-three-source-queries">Direct three-source queries</h3>
+<p>Three-output-source INNER, LEFT, and CROSS scans now support fixed-width and streamed
+TEXT/BLOB projection, compound ON/WHERE programs, references across all three rows,
+named enums, CHAR comparison, fixed-width <code>GROUP BY</code>, COUNT/SUM/AVG/MIN/MAX over all
+three sources, bounded fixed <code>ORDER BY</code>/<code>DISTINCT</code>, and LIMIT/OFFSET over raw or grouped
+output. CHAR/literal/TEXT LENGTH, substring, and concatenation also compose with wide
+projection, ordinal ORDER BY, exact DISTINCT, and pagination.</p>
+<p>Raw TEXT/BLOB ORDER BY and DISTINCT plus streamed TEXT/BLOB literal predicates are live
+across all three rows. Each of the three sources may now name its own single-column or
+compound access path with source-local <code>USING INDEX</code>; the engine validates ownership and
+drives three independent leaf iterators without an optimizer. Wide CTAS now materializes
+fixed, raw TEXT/BLOB, streamed scalar, and grouped aggregate results through bounded
+destination staging.</p>
+<h3 id="ordering-duplicate-elimination-and-pagination">Ordering, duplicate elimination and pagination</h3>
+<p>Ordinary scans also support fixed-width and raw streamed TEXT/BLOB <code>ORDER BY</code>,
+<code>DISTINCT</code>, and bounded <code>LIMIT</code>/<code>OFFSET</code>. Streamed comparison predicates and <code>LIKE</code>
+compose with that shaping without materializing payloads. Positive projection ordinals
+let <code>ORDER BY</code> consume fixed scalar expressions, and <code>DISTINCT</code> compares their computed
+values; sequential <code>LIMIT</code>/<code>OFFSET</code> composes with grouped aggregates, joins, correlated
+subqueries, and explicit index scans.</p>
+<p>Joined results can be ordered by up to two qualified fixed-width or raw streamed
+TEXT/BLOB source columns, including real column NULLs and LEFT JOIN NULL extension.
+Exact DISTINCT compares raw variable projections by logical value, and the same bounded
+restart/selection design composes with <code>LIMIT</code>/<code>OFFSET</code>. Correlated-subquery outer
+results use the same bounded rescans; fixed source/scalar keys and raw streamed variable
+source keys share the producer-owned shaping path.</p>
+<h3 id="joins-with-a-correlated-third-source">Joins with a correlated third source</h3>
+<p>An ordinary two-source join may also contain one correlated <code>EXISTS</code>, <code>IN</code>, or scalar
+subquery over a third table scan. The subquery can reference either joined source, and
+the composed producer retains joined ORDER BY, DISTINCT, LIMIT, and OFFSET behavior
+without materialization.</p>
+<h3 id="explicit-indexes-and-exact-grouped-results">Explicit indexes and exact grouped results</h3>
+<p><code>ORDER BY</code> and <code>DISTINCT</code> also consume an explicitly named index without an optimizer or
+materialized result. Aggregate/grouped results support bounded ORDER BY over fixed group
+keys and aggregate projection ordinals. DISTINCT compares the exact projected grouped
+tuple even when the projection omits GROUP BY keys; provably unique cases are removed at
+bind time and other cases use bounded prior-group rescans.</p>
+<p>Joined and correlated DISTINCT likewise compare complete fixed projected tuples with
+prior producer rows. Ordinary grouped scalar projections such as <code>K||&#39;!&#39;</code> can also drive
+ordinal ORDER BY and exact DISTINCT, as can joined, correlated, and direct three-source
 grouped scalars. Joined/correlated aggregate comparison replays the complete
-representative outer/inner pair and evaluates the scalar without materializing
-the group.
-INNER, LEFT, and CROSS joins also feed COUNT/SUM/AVG/MIN/MAX and fixed or
-streamed TEXT/BLOB GROUP BY directly. Joined groups support WHERE, compound outer/inner keys,
-LEFT-null groups, aggregate/group-key ORDER BY, exact projected-tuple DISTINCT,
-and LIMIT/OFFSET through a dedicated bounded-rescan sidecar. That sidecar also
-evaluates a correlated scalar, IN, or EXISTS third-table rescan before
-accumulation, so joined aggregates and groups compose with the same
-three-source predicates without materializing rows.
-An ordinary single-table aggregate/group query may likewise contain one
-correlated scalar, IN, or EXISTS subquery. The aggregate sidecar rescans the
-outer table and correlated inner predicate directly, so ungrouped and grouped
-results retain ORDER BY, exact DISTINCT, LIMIT, OFFSET, and scalar-cardinality
-errors without a synthetic join or materialized result.
-Fixed scalar projection ordinals participate in joined and correlated
-<code>ORDER BY</code> and <code>DISTINCT</code>: the complex producer compares virtual LENGTH,
-substring, and concatenation values directly from row IDs without allocating a
-joined row or result buffer. Quoted-literal scalar operands are supported for
-joins and correlated outer scans; a packed parser pool keeps projection
-literals independent of the live inner predicate program.
-Variable scalar-result shaping now streams through ordinary, joined, and
-correlated ORDER BY/DISTINCT. Explicit-index variable grouping is also live.
-Whole-REU checkpoint/restore is implemented through a quiesce/capture/reopen
-ABI. Bounded selected-query export to D81, schema/storage introspection, and
-an interactive shell and a bounded second correlated EXISTS level are also
-implemented. That second level now supports scalar, IN/NOT IN, and
-EXISTS/NOT EXISTS predicates and feeds raw, ungrouped aggregate, and grouped
-aggregate producers with NULL and scalar-cardinality semantics. A third
-correlated level remains an active milestone.
-<code>CREATE [TEMP] TABLE ... AS SELECT</code> is now live for fixed columns, aggregates,
-raw TEXT/BLOB, and streamed TEXT substring/concatenation results. Materialized
-variable values receive new blob handles and remain valid after source handles
-are deleted and compacted. This covers ordinary, correlated, fully composed
-two-source, and direct three-output-source producers. TEMP tables
-are hidden and reclaimed automatically
-by shutdown and the next initialization. <code>DROP TABLE name</code> uses the same
-resumable path for persistent or temporary tables and releases owned indexes,
-rows, and TEXT/BLOB chains in bounded journaled steps. <code>DROP INDEX</code> and
-restricted <code>DROP TYPE</code> use matching restartable descriptor
-lifecycles. CTAS destinations are catalog-linked but hidden while building;
-rows and bounded variable payload chunks commit in transactions (240 bytes for
-ordinary/two-source producers and 64 bytes while a third source is live), and
-one final marker write publishes the completed table. Initialization reclaims
-an interrupted build. Verified fixed and variable results exceed the 16-page
-transaction journal without weakening rollback.
-Projection expressions support <code>LENGTH</code>, <code>SUBSTR</code>/<code>SUBSTRING</code>, binary <code>||</code>,
-and <code>CONCAT</code>: CHAR and literals support all four forms, while streamed TEXT
-supports <code>LENGTH</code>, zero-copy substring reads, and two-part concatenation with
-TEXT, CHAR, or one quoted literal in either operand order. Each TEXT handle is
-resolved sequentially and every read is streamed across the logical boundary;
-no combined value is materialized. Variable TEXT scalar values can be ordered
-and deduplicated through the same streamed descriptor comparator.</p>
+representative outer/inner pair and evaluates the scalar without materializing the
+group.</p>
+<h3 id="aggregation-over-joined-and-correlated-rows">Aggregation over joined and correlated rows</h3>
+<p>INNER, LEFT, and CROSS joins also feed COUNT/SUM/AVG/MIN/MAX and fixed or streamed
+TEXT/BLOB GROUP BY directly. Joined groups support WHERE, compound outer/inner keys,
+LEFT-null groups, aggregate/group-key ORDER BY, exact projected-tuple DISTINCT, and
+LIMIT/OFFSET through a dedicated bounded-rescan sidecar. That sidecar also evaluates a
+correlated scalar, IN, or EXISTS third-table rescan before accumulation, so joined
+aggregates and groups compose with the same three-source predicates without
+materializing rows.</p>
+<p>An ordinary single-table aggregate/group query may likewise contain one correlated
+scalar, IN, or EXISTS subquery. The aggregate sidecar rescans the outer table and
+correlated inner predicate directly, so ungrouped and grouped results retain ORDER BY,
+exact DISTINCT, LIMIT, OFFSET, and scalar-cardinality errors without a synthetic join or
+materialized result.</p>
+<h3 id="computed-and-streamed-string-values">Computed and streamed string values</h3>
+<p>Fixed scalar projection ordinals participate in joined and correlated <code>ORDER BY</code> and
+<code>DISTINCT</code>: the complex producer compares virtual LENGTH, substring, and concatenation
+values directly from row IDs without allocating a joined row or result buffer.
+Quoted-literal scalar operands are supported for joins and correlated outer scans; a
+packed parser pool keeps projection literals independent of the live inner predicate
+program. Variable scalar-result shaping now streams through ordinary, joined, and
+correlated ORDER BY/DISTINCT.</p>
+<p>Explicit-index variable grouping is also live.</p>
+<h3 id="checkpoint-export-and-nested-predicates">Checkpoint, export and nested predicates</h3>
+<p>Whole-REU checkpoint/restore is implemented through a quiesce/capture/reopen ABI.
+Bounded selected-query export to D81, schema/storage introspection, and an interactive
+shell and a bounded second correlated EXISTS level are also implemented. That second
+level now supports scalar, IN/NOT IN, and EXISTS/NOT EXISTS predicates and feeds raw,
+ungrouped aggregate, and grouped aggregate producers with NULL and scalar-cardinality
+semantics.</p>
+<p>A third correlated level remains an active milestone.</p>
+<h3 id="materialized-tables-and-resumable-cleanup">Materialized tables and resumable cleanup</h3>
+<p><code>CREATE [TEMP] TABLE ... AS SELECT</code> is now live for fixed columns, aggregates, raw
+TEXT/BLOB, and streamed TEXT substring/concatenation results. Materialized variable
+values receive new blob handles and remain valid after source handles are deleted and
+compacted.</p>
+<p>This covers ordinary, correlated, fully composed two-source, and direct
+three-output-source producers. TEMP tables are hidden and reclaimed automatically by
+shutdown and the next initialization. <code>DROP TABLE name</code> uses the same resumable path for
+persistent or temporary tables and releases owned indexes, rows, and TEXT/BLOB chains in
+bounded journaled steps.</p>
+<p><code>DROP INDEX</code> and restricted <code>DROP TYPE</code> use matching restartable descriptor lifecycles.
+CTAS destinations are catalog-linked but hidden while building; rows and bounded
+variable payload chunks commit in transactions (240 bytes for ordinary/two-source
+producers and 64 bytes while a third source is live), and one final marker write
+publishes the completed table. Initialization reclaims an interrupted build.</p>
+<p>Verified fixed and variable results exceed the 16-page transaction journal without
+weakening rollback.</p>
+<h3 id="string-expression-combinations">String expression combinations</h3>
+<p>Projection expressions support <code>LENGTH</code>, <code>SUBSTR</code>/<code>SUBSTRING</code>, binary <code>||</code>, and
+<code>CONCAT</code>: CHAR and literals support all four forms, while streamed TEXT supports
+<code>LENGTH</code>, zero-copy substring reads, and two-part concatenation with TEXT, CHAR, or one
+quoted literal in either operand order. Each TEXT handle is resolved sequentially and
+every read is streamed across the logical boundary; no combined value is materialized.
+Variable TEXT scalar values can be ordered and deduplicated through the same streamed
+descriptor comparator.</p>
 <h2 id="current-build">Current build</h2>
 <pre><code class="language-sh">make tools
 make
@@ -140,36 +220,43 @@ make test
 make memory-report
 make vice-test
 </code></pre>
-<p>Host tools resolve from environment variables first and then the known sibling
-tooling locations:</p>
+<p>Host tools resolve from environment variables first and then the known sibling tooling
+locations:</p>
 <ul>
 <li><code>RSQL_CC65</code>, <code>RSQL_CC</code>, <code>RSQL_CA65</code></li>
 <li><code>RSQL_ZIG</code></li>
 <li><code>RSQL_VICE</code></li>
 <li><code>RSQL_DOTNET</code>, <code>RSQL_VICE_TASKS</code></li>
 </ul>
-<p>The target build produces fifteen independent regression PRGs, each with eight
-hot execution sidecars plus one 17KB administrative sidecar, a D81, linker map,
-and labels. <code>make test</code> runs
-all compiled 6510 lanes in Peddle at both REU extremes. <code>make vice-test</code> drives
-all fifteen D81s in headless VICE on virtual 1581 drives through the sibling .NET binary-monitor harness
-and captures RAM, state, and sampled REU artifacts.</p>
-<p>D81 is the standard bootstrap and bounded export medium. The database itself
-remains REU-native and may be much larger than any disk image. Full-size
-database persistence uses whole-REU capture and restore through VICE. The
-automation uses binary-monitor REU banks when exposed and otherwise toggles
-VICE&#39;s native writable <code>-reuimage</code> backing to flush and reload an exact raw REU
-image. Future C64 Ultimate UCI support is deliberately outside the current
-scope.</p>
-<p>The interactive image is <code>build/rsql64_shell.d81</code>. It accepts SQL directly and
-adds <code>.HELP</code>, <code>.DATABASE</code>, <code>.TABLES</code>, <code>.SCHEMA table</code>, <code>.INDEXES</code>, <code>.TYPES</code>,
-<code>.MEMBERS type</code>, <code>.CHECKPOINT</code>, <code>.EXPORT file SELECT ...</code>, and <code>.QUIT</code>. See
-<code>docs/shell.md</code> for its exact behavior and current formatting limits.</p>
+<h3 id="regression-images-and-target-tests">Regression images and target tests</h3>
+<p>The target build produces fifteen independent regression PRGs, each with eight hot
+execution sidecars plus one 17KB administrative sidecar, a D81, linker map, and labels.
+<code>make test</code> runs all compiled 6510 lanes in Peddle at both REU extremes. <code>make vice-test</code> drives all fifteen D81s in headless VICE on virtual 1581 drives through the
+sibling .NET binary-monitor harness and captures RAM, state, and sampled REU artifacts.</p>
+<h3 id="boot-disks-database-images-and-persistence">Boot disks, database images and persistence</h3>
+<p>D81 is the standard bootstrap and bounded export medium. The database itself remains
+REU-native and may be much larger than any disk image. Full-size database persistence
+uses whole-REU capture and restore through VICE.</p>
+<p>The automation uses binary-monitor REU banks when exposed and otherwise toggles VICE&#39;s
+native writable <code>-reuimage</code> backing to flush and reload an exact raw REU image. Future
+C64 Ultimate UCI support is deliberately outside the current scope.</p>
+<p>The interactive image is <code>build/rsql64_shell.d81</code>. It accepts SQL directly and adds
+<code>.HELP</code>, <code>.DATABASE</code>, <code>.TABLES</code>, <code>.SCHEMA table</code>, <code>.INDEXES</code>, <code>.TYPES</code>, <code>.MEMBERS type</code>,
+<code>.CHECKPOINT</code>, <code>.EXPORT file SELECT ...</code>, and <code>.QUIT</code>. See <code>docs/shell.md</code> for its exact
+behavior and current formatting limits.</p>
 <h2 id="safety-boundary">Safety boundary</h2>
 <p>This project must not use the physical C64 Ultimate. Target-device automation is
 performed only against VICE through the .NET task harness.</p>
 <h2 id="repository-and-evidence-policy">Repository and evidence policy</h2>
-<p>ReuSQL64 shares the Ultimate Experiments Git repository. Its source, build definitions, tests and design references are committed, along with the interactive-shell D81. Other regression D81s, object files, caches, logs and internal working records are ignored.</p>
-<p>The 14 October 2026 cleanup retained only <code>logs/vice_auto_20260812_173646</code> (and its <code>vice_auto_latest</code> link), the final staged benchmark run. Earlier raw logs were deleted. Historical run references describe past verification, not evidence bundled with a new clone.</p>
-<p>The Peddle host tests currently require the pinned sibling source described in <a href="dependencies.html">third_party/README.md</a>. A standalone distribution must vendor that source and its license. Physical C64 Ultimate automation remains outside this project&#39;s test boundary.</p>
+<p>ReuSQL64 shares the Ultimate Experiments Git repository. Its source, build definitions,
+tests and design references are committed, along with the interactive-shell D81. Other
+regression D81s, object files, caches, logs and internal working records are ignored.</p>
+<p>The 14 October 2026 cleanup retained only <code>logs/vice_auto_20260812_173646</code> (and its
+<code>vice_auto_latest</code> link), the final staged benchmark run. Earlier raw logs were deleted.
+Historical run references describe past verification, not evidence bundled with a new
+clone.</p>
+<p>The Peddle host tests currently require the pinned sibling source described in
+<a href="dependencies.html">third_party/README.md</a>. A standalone distribution must vendor
+that source and its license. Physical C64 Ultimate automation remains outside this
+project&#39;s test boundary.</p>
 </main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

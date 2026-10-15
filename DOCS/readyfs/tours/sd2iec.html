@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS native SD2IEC screenshot walkthrough · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS native SD2IEC screenshot walkthrough"><link rel="stylesheet" href="../../style.css"></head>
-<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../../index.html">All experiments</a><details class="project-nav" data-project="readyfs" open><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../index.html">Overview and downloads</a></li><li><a href="../READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="editor.html">Editor screenshot tour</a></li><li><a href="sd2iec.html" aria-current="page">SD2IEC screenshot tour</a></li><li><a href="../READYFS_SAFETY.html">Safety</a></li><li><a href="../READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../reusql/index.html">Overview and downloads</a></li><li><a href="../../reusql/shell.html">Interactive shell</a></li><li><a href="../../reusql/sql-language.html">SQL language</a></li><li><a href="../../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../../reusql/architecture.html">Architecture</a></li><li><a href="../../reusql/memory-map.html">Memory map</a></li><li><a href="../../reusql/public-api.html">Public API</a></li><li><a href="../../reusql/storage-format.html">Storage format</a></li><li><a href="../../reusql/export-format.html">Export format</a></li><li><a href="../../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../c77/index.html">Overview and downloads</a></li><li><a href="../../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#setup-omitted-from-the-edited-video">Setup omitted from the edited video</a></li><li><a href="#01-find-the-sd2iec">01 · Find the SD2IEC</a></li><li><a href="#02-copy-a-nested-tree">02 · Copy a nested tree</a></li><li><a href="#03-bring-the-tree-back">03 · Bring the tree back</a></li><li><a href="#04-other-iec-endpoints">04 · Other IEC endpoints</a></li><li><a href="#05-open-an-sd-disk-image">05 · Open an SD disk image</a></li><li><a href="#06-copy-inside-both-images">06 · Copy inside both images</a></li><li><a href="#07-return-to-sd-folders">07 · Return to SD folders</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="sd2iec.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs-native-sd2iec-screenshot-walkthrough">ReadyFS native SD2IEC screenshot walkthrough</h1>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../../index.html">All experiments</a><details class="project-nav" data-project="readyfs" open><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../index.html">Overview and downloads</a></li><li><a href="../READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="editor.html">Editor screenshot tour</a></li><li><a href="sd2iec.html" aria-current="page">SD2IEC screenshot tour</a></li><li><a href="../READYFS_SAFETY.html">Safety</a></li><li><a href="../READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../reusql/index.html">Overview and downloads</a></li><li><a href="../../reusql/performance.html">Performance and staged queries</a></li><li><a href="../../reusql/shell.html">Interactive shell</a></li><li><a href="../../reusql/sql-language.html">SQL language</a></li><li><a href="../../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../../reusql/architecture.html">Architecture</a></li><li><a href="../../reusql/memory-map.html">Memory map</a></li><li><a href="../../reusql/public-api.html">Public API</a></li><li><a href="../../reusql/storage-format.html">Storage format</a></li><li><a href="../../reusql/export-format.html">Export format</a></li><li><a href="../../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../c77/index.html">Overview and downloads</a></li><li><a href="../../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#setup-omitted-from-the-edited-video">Setup omitted from the edited video</a></li><li><a href="#01-find-the-sd2iec">01 · Find the SD2IEC</a></li><li><a href="#02-copy-a-nested-tree">02 · Copy a nested tree</a></li><li><a href="#03-bring-the-tree-back">03 · Bring the tree back</a></li><li><a href="#04-other-iec-endpoints">04 · Other IEC endpoints</a></li><li><a href="#05-open-an-sd-disk-image">05 · Open an SD disk image</a></li><li><a href="#06-copy-inside-both-images">06 · Copy inside both images</a></li><li><a href="#07-return-to-sd-folders">07 · Return to SD folders</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="sd2iec.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs-native-sd2iec-screenshot-walkthrough">ReadyFS native SD2IEC screenshot walkthrough</h1>
 <p>These physical C64 Ultimate and attached-SD2IEC screenshots follow folder round trips and explicit image transitions. Device 10 and the named fixture roots belong to that recorded setup. Use a fresh folder of your own; consult the native support reference before making changes.</p>
 <p><a href="../READYFS_USER_GUIDE.html">User guide</a> · <a href="../READYFS_ACCEPTANCE.html">Current acceptance</a></p>
 <h2 id="setup-omitted-from-the-edited-video">Setup omitted from the edited video</h2>
@@ -13,7 +13,7 @@
 <p>Detect the attached SD2IEC through native IEC.</p>
 <pre><code class="language-text">PROBE IEC 10:
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-01.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-01.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -43,7 +43,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Inspect settings without changing or saving them.</p>
 <pre><code class="language-text">IEC 10: CONFIG
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-02.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-02.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -73,7 +73,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>The partition reply distinguishes mounted flat images from FAT/DNP.</p>
 <pre><code class="language-text">IEC 10: PARTITION 1
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-03.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-03.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -103,7 +103,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Create a fresh folder inside the owned SD test root.</p>
 <pre><code class="language-text">MKDIR 10.1:/rf261013085527/out/v163325
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-04.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-04.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -133,7 +133,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>CARD names this SD folder; it does not change its capabilities.</p>
 <pre><code class="language-text">ALIAS CARD 10.1:/rf261013085527/out/v163325
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-05.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-05.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -165,7 +165,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Five source files span alpha, beta and beta/deep.</p>
 <pre><code class="language-text">TREE @LAB:/SOURCE
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-06.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-06.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -195,7 +195,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Prepare the destination container.</p>
 <pre><code class="language-text">MD @CARD:/TREE
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-07.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-07.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -225,7 +225,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Preview every selected file and folder without writing. What-if previews the plan without changing storage.</p>
 <pre><code class="language-text">COPY @LAB:/SOURCE @CARD:/TREE -R -W
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-08.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">WOULD COPY DIR alpha
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-08.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">WOULD COPY DIR alpha
 WOULD COPY DIR beta
 WOULD COPY readme.seq
 WOULD COPY alpha/one.seq
@@ -255,7 +255,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Copy the complete tree; destination verification is enabled.</p>
 <pre><code class="language-text">COPY @LAB:/SOURCE @CARD:/TREE --recursive
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-09.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">VERIFY: IDENTICAL
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-09.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">VERIFY: IDENTICAL
 COPIED readme.seq: 38 BYTES
 COPYING U:/USB1/READYFS.TEST/READYFS-202
 61013-162951-8006/SOURCE/alpha/one.seq
@@ -285,7 +285,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>The SD destination keeps the nested layout.</p>
 <pre><code class="language-text">TREE @CARD:/TREE
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-10.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-10.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -317,7 +317,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Create a separate host destination for the return copy.</p>
 <pre><code class="language-text">MKDIR @LAB:/RETURNED
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-11.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-11.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -347,7 +347,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>The short CP and -R forms copy all five files back.</p>
 <pre><code class="language-text">CP @CARD:/TREE @LAB:/RETURNED -R
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-12.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">/TREE/readme
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-12.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">/TREE/readme
 VERIFY: IDENTICAL
 COPIED readme: 38 BYTES
 COPYING 10.1:/RF261013085527/OUT/V163325
@@ -377,7 +377,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Read the returned tree; SD logical names can omit type suffixes.</p>
 <pre><code class="language-text">TREE @LAB:/RETURNED
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-13.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-13.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -409,7 +409,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>SoftwareIEC is a mapped endpoint, separate from SD2IEC.</p>
 <pre><code class="language-text">AL SOFT s0:/READYFS_TEST/readyfs-20261013-162951-8006/
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-14.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-14.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -439,7 +439,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Copy a chosen nested file into the flat IEC image.</p>
 <pre><code class="language-text">COPY @CARD:/TREE/ALPHA/one 9:/V163325A
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-15.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-15.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -469,7 +469,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Copy the same chosen file through SoftwareIEC.</p>
 <pre><code class="language-text">CP @CARD:/TREE/ALPHA/one @SOFT:/V163325A
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-16.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-16.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -499,7 +499,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Copy a chosen nested file into the flat IEC image.</p>
 <pre><code class="language-text">COPY @CARD:/TREE/ALPHA/two 9:/V163325B
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-17.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-17.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -529,7 +529,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Copy the same chosen file through SoftwareIEC.</p>
 <pre><code class="language-text">CP @CARD:/TREE/ALPHA/two @SOFT:/V163325B
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-18.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-18.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -561,7 +561,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Mount only the owned test image; device 10 now shows its contents.</p>
 <pre><code class="language-text">MOUNT 10.1:/rf261013085527/out/i1013100749.d64 --force
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-19.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-19.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -591,7 +591,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>The native reply confirms the mounted D64 view.</p>
 <pre><code class="language-text">IEC 10: PARTITION 1
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-20.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-20.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -621,7 +621,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Inspect the actual disk-image directory.</p>
 <pre><code class="language-text">DIR 10.1:/
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-21.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">1    &quot;BC-SDS125515.SEQ&quot; SEQ
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-21.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">1    &quot;BC-SDS125515.SEQ&quot; SEQ
 1    &quot;BD-HDS125515.SEQ&quot; SEQ
 3    &quot;BD-HDP125515.PRG&quot; PRG
 1    &quot;BD-HDU125515.USR&quot; USR
@@ -653,7 +653,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Use the host return copy while the SD FAT folder is unavailable.</p>
 <pre><code class="language-text">COPY @LAB:/RETURNED/ALPHA/one 10.1:/V163325A
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-22.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-22.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -683,7 +683,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Write directly inside the separate, unmounted Ultimate D64.</p>
 <pre><code class="language-text">CP 10.1:/V163325A @LAB:/HOST.D64/one.SEQ
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-23.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-23.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -713,7 +713,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Use the host return copy while the SD FAT folder is unavailable.</p>
 <pre><code class="language-text">COPY @LAB:/RETURNED/ALPHA/two 10.1:/V163325B
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-24.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-24.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -743,7 +743,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Write directly inside the separate, unmounted Ultimate D64.</p>
 <pre><code class="language-text">CP 10.1:/V163325B @LAB:/HOST.D64/two.SEQ
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-25.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-25.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -773,7 +773,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Reverse the direction and preserve the PRG type.</p>
 <pre><code class="language-text">COPY @LAB:/HOST.D64/HELLO.PRG 10.1:/V163325P
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-26.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-26.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -803,7 +803,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>The native directory reports PRG, not just matching bytes.</p>
 <pre><code class="language-text">STAT 10.1:/V163325P
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-27.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-27.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -833,7 +833,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Save an intermediate file before returning to SD folders.</p>
 <pre><code class="language-text">COPY 10.1:/V163325P @LAB:/FROMIMG.PRG
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-28.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-28.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -865,7 +865,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Return partition 1 to its FAT directory view.</p>
 <pre><code class="language-text">DISMOUNT 10.1:/ --force
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-29.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-29.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -895,7 +895,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Complete image-to-SD-folder transfer through the intermediate host file.</p>
 <pre><code class="language-text">COPY @LAB:/FROMIMG.PRG @CARD:/FROMIMG.PRG
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-30.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-30.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -925,7 +925,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Both image styles and the final SD file contain the same PRG bytes.</p>
 <pre><code class="language-text">COMPARE @CARD:/FROMIMG.PRG @LAB:/HOST.D64/HELLO.PRG
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-31.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-31.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 
@@ -955,7 +955,7 @@ UP/DN HIST  F1/F3 PAGE
 <p>Configuration is unchanged; no EEPROM save was needed.</p>
 <pre><code class="language-text">IEC 10: CONFIG
 </code></pre>
-<p><img loading="lazy" decoding="async" src="sd2iec/step-32.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+<p><img loading="lazy" decoding="async" width="768" height="544" src="sd2iec/step-32.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
 
 
 

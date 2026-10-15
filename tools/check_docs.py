@@ -16,8 +16,14 @@ class Page(HTMLParser):
         self.ids = set()
         self.refs = []
         self.title = False
+        self.sql_blocks = []
+        self._sql = None
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if tag == 'code' and 'language-sql' in attrs.get('class', '').split():
+            self._sql = []
+            if 'hljs' not in attrs.get('class', '').split():
+                errors.append('SQL example is missing build-time highlighting')
         if tag == 'title': self.title = True
         if tag in ('video', 'audio', 'iframe'):
             errors.append(f'Unexpected media/embed element: {tag}')
@@ -26,6 +32,12 @@ class Page(HTMLParser):
             self.ids.add(attrs['id'])
         for key in ('href', 'src', 'poster'):
             if key in attrs: self.refs.append(attrs[key])
+    def handle_data(self, data):
+        if self._sql is not None: self._sql.append(data)
+    def handle_endtag(self, tag):
+        if tag == 'code' and self._sql is not None:
+            self.sql_blocks.append(''.join(self._sql))
+            self._sql = None
 
 pages = {}
 for file in DOCS.rglob('*.html'):
@@ -33,6 +45,11 @@ for file in DOCS.rglob('*.html'):
     page.feed(file.read_text())
     pages[file] = page
     if not page.title: errors.append(f'{file.relative_to(DOCS)} has no title')
+    markdown = file.with_suffix('.md')
+    if markdown.exists():
+        expected = [block.rstrip('\n') for block in re.findall(r'```sql\n([\s\S]*?)```', markdown.read_text())]
+        if expected != page.sql_blocks:
+            errors.append(f'{file.relative_to(DOCS)}: highlighted SQL differs from its Markdown source')
 
 def check_ref(file, url, anchors=False):
     parsed = urlsplit(url)
@@ -81,4 +98,4 @@ for original, download in [
         errors.append(f'Download differs from committed project image: {download}')
 if errors:
     raise SystemExit('\n'.join(errors))
-print(f'PASS: {len(pages)} HTML pages, Markdown links, anchors, local assets, no video or personal home paths, and 3 matching D81s.')
+print(f'PASS: {len(pages)} HTML pages, Markdown links, anchors, local assets, highlighted SQL preserved, no video or personal home paths, and 3 matching D81s.')
