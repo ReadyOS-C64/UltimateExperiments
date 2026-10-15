@@ -6,7 +6,8 @@
 .export dos64_cpu_instructions, dos64_cpu_yield, dos64_cpu_pending, dos64_cpu_irq_shadow
 .export dos64_cpu_value, dos64_cpu_word_read, dos64_cpu_word_write
 .export cpu_fetch8, cpu_fetch16, cpu_override, cpu_byte_registers
-.export cpu_complete, cpu_memory_error, cpu_unsupported
+.export cpu_complete, cpu_memory_error, cpu_unsupported, cpu_return, cpu_rep, cpu_relative
+.import dos64_strings_execute, dos64_string_pending, dos64_shifts_execute, dos64_control_execute
 .import dos64_stack_execute
 .import dos64_decode_rm, dos64_operand_read, dos64_operand_write, dos64_map_register
 .import dos64_operand_width, dos64_modrm_reg, dos64_modrm_mod, dos64_operand_offset
@@ -46,6 +47,7 @@ dos64_cpu_init:
     sta dos64_cpu_status,x
     dex
     bpl @clear
+    sta dos64_string_pending
     rts
 
 ; One instruction or bounded prefix slice. P except C preserved, A/X/Y clobbered.
@@ -63,6 +65,9 @@ dos64_cpu_step:
 @running:
     lda #0
     sta dos64_cpu_yield
+    lda dos64_string_pending
+    jne dos64_strings_execute
+    lda #0
     sta cpu_slice
     lda dos64_cpu_pending
     bne cpu_prefix
@@ -128,6 +133,35 @@ cpu_dispatch:
     lda #0
     sta dos64_cpu_pending
     lda dos64_cpu_opcode
+    cmp #$60
+    bcc @strings
+    cmp #$80
+    jcc dos64_control_execute
+@strings:
+    cmp #$A4
+    bcc @shift
+    cmp #$A8
+    jcc dos64_strings_execute
+    cmp #$AA
+    bcc @shift
+    cmp #$B0
+    jcc dos64_strings_execute
+@shift:
+    cmp #$D0
+    bcc @interrupt
+    cmp #$D4
+    jcc dos64_shifts_execute
+@interrupt:
+    cmp #$CC
+    bcc @loop
+    cmp #$D0
+    jcc dos64_control_execute
+@loop:
+    cmp #$E0
+    bcc @stack
+    cmp #$E4
+    jcc dos64_control_execute
+@stack:
     cmp #$50
     bcc @stack_table
     cmp #$60
@@ -743,6 +777,7 @@ cpu_fault:
     sta dos64_guest+G_IP+1
     lda #0
     sta dos64_cpu_pending
+    sta dos64_string_pending
 cpu_error_return:
     plp
     sec

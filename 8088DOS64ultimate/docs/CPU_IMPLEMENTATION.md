@@ -1,6 +1,6 @@
 # Original-8088 execution checkpoint
 
-Updated 2026-10-15 in `src/cpu.s`, `src/alu.s`, `src/operands.s` and `src/stack.s`. This is a functional execution checkpoint, not a complete 8088 or DOS boot. Target code is independently authored 6502 assembly and executes guest bytes through the coherent memory bus.
+Updated 2026-10-15 in `src/cpu.s`, `src/alu.s`, `src/operands.s`, `src/stack.s`, `src/strings.s`, `src/shifts.s` and `src/control.s`. This is a functional execution checkpoint, not a complete 8088 or DOS boot. Target code is independently authored 6502 assembly and executes guest bytes through the coherent memory bus.
 
 ## Current interface and instructions
 
@@ -13,17 +13,21 @@ Updated 2026-10-15 in `src/cpu.s`, `src/alu.s`, `src/operands.s` and `src/stack.
 | 88–8E, C4–C7 | General/segment MOV, LEA, LES/LDS and immediate MOV; C6/C7 extension aliases follow hardware vectors |
 | 50–5F, 06/07/0E/16/17/1E/1F | General and segment PUSH/POP, including original PUSH SP and POP SP ordering |
 | 9A, 9C–9F, E8, C2/C3/CA/CB | Direct far/near CALL and RET with optional stack cleanup, PUSHF/POPF, SAHF/LAHF |
+| 60–7F, E0–E3 | All Jcc conditions including original aliases, LOOPNE/LOOPE/LOOP/JCXZ with signed relative offsets |
+| A4–A7, AA–AF | MOVS/CMPS/STOS/LODS/SCAS byte/word, DF, source override, fixed ES destination, bounded REP |
+| D0–D3 | Rotate/shift through all CL counts, original SETMO/SETMOC extension 6 |
+| CC–CF | INT3, INT imm8, INTO and IRET through ordinary guest IVT/stack |
 | B0–BF | Immediate MOV to all byte/word general registers |
 | 90–97 | AX/register XCHG, including NOP |
 | A0–A3 | Accumulator/moffs loads and stores, byte/word, DS or segment override |
 | E9, EA, EB | Near-relative, far-absolute and short-relative jumps |
 | F4 | Halt latch; subsequent steps wait without advancing IP/count |
 | F5, F8–FD | CMC, CLC, STC, CLI, STI, CLD, STD guest flags |
-| 26, 2E, 36, 3E, F0, F2, F3 | Recognized prefixes; last segment override wins, LOCK/REP retained for future relevant instructions |
+| 26, 2E, 36, 3E, F0, F2, F3 | Recognized prefixes; last segment override wins, REP executes on strings, LOCK retained without bus-lock timing |
 
 Status 0 is running, 1 halted, 2 unsupported instruction and 3 host memory failure. Errors return carry set and latch; initialization is required to resume. Unsupported instructions restore IP to the instruction's first prefix/opcode for diagnostics and are **not** implemented as a guest invalid-opcode exception. A host memory error may leave partial memory writes; it is not a guest CPU exception either.
 
-Original 8088 prefixes have no modern 15-byte instruction limit. After 64 prefixes the step routine yields with pending state and IP advanced through those prefixes, without completing/counting the guest instruction. A subsequent step continues it. STI, loading SS, and POPF changing IF from zero to one record an interrupt shadow through the following complete instruction; actual interrupt/trap delivery and halt wake-up remain unimplemented.
+Original 8088 prefixes have no modern 15-byte instruction limit. After 64 prefixes the step routine yields with pending state and IP advanced through those prefixes, without completing/counting the guest instruction. A subsequent step continues it. STI, loading SS, and POPF changing IF from zero to one record an interrupt shadow through the following complete instruction; asynchronous hardware interrupt/trap delivery and halt wake-up remain unimplemented. Software INT/IRET routing is implemented.
 
 Instruction fetch wraps IP as a 16-bit register before translating each byte. It sees dirty cached code, including tested self-modification followed by a jump. There is no instruction prefetch-queue emulation or fast span fetch yet.
 
@@ -47,7 +51,7 @@ A failed push can leave SP decremented and a low byte written. Pop advances only
 
 ## Independent verification
 
-`make test` passes **75 Zig/Peddle + 15 tooling tests**, including **338 hardware cases**, in 5.21 seconds measured with build checks. `make test-cpu-corpus` passes all **1,622 hardware cases** in 11.57 seconds. The test executable itself reports about 2 seconds quick and 9 seconds full. These are host test times, not guest emulation rates.
+`make test` passes **95 Zig/Peddle + 15 tooling tests**, including **502 hardware cases**; `make test-cpu-corpus` passes all **2,278 hardware cases**. The full command took 15.82 seconds including build checks (test executable 13 seconds). These are host test times, not guest emulation rates.
 
 The pinned [SingleStepTests 8088](https://github.com/SingleStepTests/8088/tree/aea84484abc79d09639d855b7b0ab32bc9e4dbeb) projection and exact selection are recorded in [upstream hashes](../third_party/sst8088/UPSTREAM.json). The MIT license is retained. Import script: `build_support/fetch_8088_subset.py`; network is only needed for explicit import, not routine tests. The manifest checks fixture and license identity.
 
@@ -55,8 +59,20 @@ Each case seeds a fresh 1 MiB ALL_RAM guest, executes the actual assembly, compa
 
 The test runner batches bounded native Peddle stepping in C++, caches linker symbols and compiles the host engine with optimization while Zig assertions remain Debug. Three regressions compare the old and new loop's results, clocks, failure order, stack diagnostics and complete host RAM/write bitmap. Host test acceleration does not change target assembly or establish emulator throughput.
 
+## Strings, shifts and software interrupt routing
+
+Each step handles one ordinary string instruction or at most 16 REP iterations. CX0 performs no string access or flag change. MOVS/STOS/LODS repeat for either F2/F3; CMPS/SCAS test the actual comparison's ZF after the first iteration and stop on the requested REPE/REPNE condition. SI/DI wrap with DF and element width; destination ES is fixed. Pending host yields preserve opcode/prefixes, leave IP after the decoded opcode, and increment the guest instruction counter once on completion. Tests include 65prefixes before REP, forced eviction, overlap/self-overwrite, multi-slice comparisons and terminal failures after prior iterations.
+
+These host yields are scheduling boundaries, not asynchronous guest interrupts. Original-8088 REP interrupt restart (including multiple-prefix loss), traps and per-iteration hardware event sampling remain unimplemented; a future event dispatcher must implement their policy explicitly. Software INT cannot be fetched until the current REP completes.
+
+D0–D3 use the full 8-bit CL, without a modern 31 mask. Counts0 preserve destination and flags. Rotates preserve SZP; shifts update SZP with undefined AF deterministically cleared. OF follows the final single-bit operation where checked by the original vectors. Extension 6 is original SETMO/SETMOC, setting all operand bits for nonzero counts; its undefined arithmetic flags are masked by upstream metadata. Independent closed-form integer/ring tests include counts 0/1/8/9/16/17/31/32/255.
+
+Software INT reads both IVT words at segment 0 before pushing normalized FLAGS, CS and return IP; clears guest IF/TF; then transfers to the captured target. This preserves mutable guest hooks and a reference-derived IVT/stack alias ordering. INTO only routes vector 4 when OF is set. IRET pops IP/CS/FLAGS and applies the same normalized flags-load IF transition policy as POPF. Event timing is not proven by these state tests. Partial host errors can consume stack words or commit prior state and remain terminal. No native INT 21h replacement exists.
+
+Tests exercise normal guest handlers editing saved return flags, IVT overwritten by the interrupt stack, stack/address wrap, the last IVT entry, conditional INTO, and IVT-load failure. Hardware vectors compare complete functional registers/RAM, not interrupt-controller behavior.
+
 ## What remains
 
-Strings/REP execution, conditional branches/loops, shifts, divide/multiply, I/O, interrupt/trap handling and additional instructions are unfinished. Synthetic BIOS/ROM initialization, real DOS kernel boot, native display/keyboard, storage/UCI/IEC, calibrated speed and optimized fetch remain ahead. Startup initializes state and waits; it does not automatically execute a DOS image.
+Sign extension (CBW/CWD), multiply/divide, additional ALU/indirect control forms, port I/O, hardware interrupt/trap handling and further original-CPU corners remain unfinished. Synthetic BIOS/ROM initialization, real DOS kernel boot, native display/keyboard, storage/UCI/IEC, calibrated speed and optimized fetch remain ahead. Startup initializes state and waits; it does not automatically execute a DOS image.
 
-The unchanged disk-1 boot sector is an integration fixture: 16 instructions now complete through arithmetic, SS/SP initialization, segment moves, LDS and stack setup, then the core reports unsupported LODSB (AC) at 0000:7C51. The fixture has a zero IVT and a host-loaded sector; this is not a BIOS/DOS boot result. The first subsequent slice should implement strings and conditional flow, then normal interrupt routing and the small BIOS needed by the real sector.
+The unchanged disk-1 sector now reaches its disk-reset INT 13h request at 0000:7C6E. A deliberately supplied ordinary guest IRET stub verifies routing and returns to 7C70; JC and MOV AL then execute before unsupported CBW 98 at 0000:7C75. The fixture has a zero disk-parameter vector and does not supply BIOS disk services. It proves CPU progression and interrupt routing, not a BIOS/DOS boot or a successful disk operation.

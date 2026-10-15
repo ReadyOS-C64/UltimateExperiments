@@ -61,3 +61,13 @@
 - REU banking preserves DDR/output bits, not necessarily raw input-bit latches. A stack test expected raw $01=35 after DMA but saw F5; assert the established output-bit contract.
 - Batching host instruction stepping helps, but compiling the host Peddle engine with optimization is the larger test acceleration. Verify exact target clocks, all memory/write markers, failure precedence and diagnostics before using the faster runner. This does not accelerate the C64 target.
 - Explicitly set make's default goal when adding generated-file dependencies before the main target; otherwise a prerequisite can become the default build.
+
+
+## 2026-10-15 — strings, branches, shifts and interrupts
+
+- Original8088 /6 shifts are SETMO/SETMOC, not later SHL aliases. Follow original hardware vectors and metadata; original CL counts are unmasked. All new functional gates passed on their first execution.
+- A host REP yield is not a guest interrupt: retain decoded prefixes/opcode across scheduling and count only a completed instruction. Original multiple-prefix interrupt restart requires separate event work.
+- Compare an entire completed hardware string instruction, not one scheduling slice. Keep both per call and aggregate cycle/call budgets, and record maximum slices (currently 8).
+- INT/IRET must use guest IVT/stack and preserve mutable hooks; capture a reference-derived IVT target before overlapping stack writes. Test a normal guest handler modifying saved flags, not only a native callback.
+- A plain IRET fixture is useful CPU evidence but provides no BIOS disk service. Record real INT 13h entry and the subsequent missing CBW separately from target boot acceptance.
+- Freeze owned files after signaling integration readiness; extra assertions arriving after a global run require explicit revalidation and consistent manifests. Three material subagents were coordinated with parent integration/review in this slice.

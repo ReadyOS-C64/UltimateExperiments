@@ -43,3 +43,9 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D30 | Implemented, 2026-10-15 | Store decoded operands as segment/offset descriptors across fetch/eviction | Immediate bytes can evict a frame; raw cache pointers would become stale |
 | D31 | Implemented, 2026-10-15 | Accept original C6/C7 extension aliases shown by hardware cases | Modern documented /0-only decoding incorrectly rejected original-8088 behavior |
 | D32 | Implemented, 2026-10-15 | Batch Peddle host stepping and optimize host C++ engine; retain Debug Zig assertions | Preserve clocks/budgets/errors with old-vs-new regression evidence; accelerate checks without changing target code |
+
+
+| D33 | Implemented, 2026-10-15 | Yield REP after at most 16 iterations while retaining decoded state; count once at completion | Bound host work without refetching self-modified instructions; host yields are not original guest-interrupt restarts |
+| D34 | Implemented functional policy, 2026-10-15 | Software INT captures IVT target before stacking; ordinary IRET restores guest frame | Pinned original MartyPC ordering, independent alias test and hardware functional vectors; asynchronous event timing remains open |
+| D35 | Implemented, 2026-10-15 | Unmasked 8-bit shift count and original SETMO/SETMOC /6 | Original hardware vectors contradict later-CPU SHL alias assumption |
+| D36 | Implemented, 2026-10-15 | Support 60–6F Jcc aliases with 70–7F conditions | Pinned original hardware files and exhaustive flag truth-table tests |

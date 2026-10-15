@@ -14,7 +14,10 @@ ARITHMETIC=[f"{family+form:02X}" for family in range(0,0x40,8) for form in range
 GROUPS=[f"{op:02X}.{extension}" for op in range(0x80,0x84) for extension in range(8)]
 ADDED=(ARITHMETIC+[f"{op:02X}" for op in range(0x40,0x60)]+GROUPS+
        "06 07 0E 16 17 1E 1F 84 85 88 89 8A 8B 8C 8D 8E 9A 9C 9D 9E 9F C2 C3 C4 C5 C6 C7 CA CB E8".split())
-OPCODES=BASE_OPCODES+ADDED
+CONTROL_STRINGS=([f"{op:02X}" for op in range(0x60,0x80)]+
+                 "E0 E1 E2 E3 A4 A5 A6 A7 AA AB AC AD AE AF CC CD CE CF".split())
+SHIFTS=[f"{op:02X}.{extension}" for op in range(0xd0,0xd4) for extension in range(8)]
+OPCODES=BASE_OPCODES+ADDED+CONTROL_STRINGS+SHIFTS
 project=Path(__file__).resolve().parents[1]
 scratch=project/"agentworking/scratch/sst8088"
 vendor=project/"third_party/sst8088"

@@ -2,7 +2,7 @@
 
 Updated: 2026-10-15, America/Los_Angeles.
 
-**Phase: implementation active. Current quick checks: 75 Zig/Peddle + 15 tooling; all 1,622 pinned CPU cases have also passed.** User authorized implementing the plan, progressively verifying, and making local commits without pushing. Planning baseline committed as `67b6954`.
+**Phase: implementation active. Current quick checks: 95 Zig/Peddle + 15 tooling; all 2,278 pinned CPU cases have also passed.** User authorized implementing the plan, progressively verifying, and making local commits without pushing. Planning baseline committed as `67b6954`.
 
 ## User decisions to preserve
 
@@ -87,3 +87,12 @@ Existing unrelated ReadyFS edits and the large dirty sibling ZeroPage checkout w
 - Real unchanged disk-1 sector completes16 instructions, then unsupported LODSB AC at 0000:7C51. IVT is zero in that fixture; no BIOS/DOS boot claim. Next: strings and conditional flow, then interrupt/BIOS/boot transport.
 - Runtime CODE 4,394, RODATA 305, BSS 116, ZP 16; PRG 4,713. Hardware probe bytes still match prior VICE captures; no new physical run warranted by CPU-only changes. [Evidence](evidence/cpu-arithmetic-operands-stack-20261015.json), [contract/limits](../docs/CPU_IMPLEMENTATION.md), [ledger](MEMORY_BUDGET.md).
 - Three user-authorized subagents owned stack, operand/corpus tests and runner improvements; parent integrated arithmetic/CPU, reviewed, verified and retained all context under this project. No pushes.
+
+
+## Verified strings, control and software interrupt slice — 2026-10-15
+
+- Implemented all 10 byte/word string forms with DF/segment rules and bounded 16-iteration REP continuation. Host yields preserve decoded state and count one completed instruction; asynchronous interrupt restart remains future work.
+- Added all 32 Jcc encodings (including 60–6F original aliases), LOOPNE/LOOPE/LOOP/JCXZ, D0–D3 rotates/shifts with unmasked CL and original SETMO/SETMOC, INT3/INT/INTO/IRET normal guest routing.
+- **95/95 Zig/Peddle + 15/15 tooling pass**; quick 502/full 2,278 hardware cases. Independent assertions include 1,024 branch flag combinations, 64 LOOP cases, 1,748 shift/rotate cases, 8 string tests and 4 interrupt tests. Full command 15.82 seconds. Hardware corpus's longest instruction uses 8 bounded host calls.
+- Unchanged disk sector reaches real INT 13h disk reset; explicit guest IRET fixture returns to 7C70; first missing CPU instruction is CBW 98 at 7C75. No native BIOS/disk service, genuine target DOS boot or throughput claim. Next priority: CBW/CWD and multiply/divide, then BIOS ROM/IVT/BDA and coherent disk range support.
+- Runtime CODE 6,094, RODATA 305, BSS 137, ZP 16; PRG 6,413. Standalone hardware probe images remain unchanged. [Evidence](evidence/cpu-strings-control-20261015.json), [API and remaining limitations](../docs/CPU_IMPLEMENTATION.md).

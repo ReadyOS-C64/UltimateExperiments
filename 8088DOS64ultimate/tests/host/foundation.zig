@@ -112,3 +112,7 @@ test "actual PRG entry initializes mailbox, CPU, bank latch and host stack" {
 test { _ = @import("operands.zig"); }
 
 test { _ = @import("runner.zig"); }
+
+test { _ = @import("interrupts.zig"); }
+test { _ = @import("shifts.zig"); }
+test { _ = @import("strings.zig"); }

@@ -143,29 +143,52 @@ test "word high-byte load failure restores input offset and returns failure" {
     try std.testing.expectEqual(@as(u16,0xffff),f.word(try f.symbol("dos64_offset")));
 }
 
-test "supplied DOS boot sector reaches first string instruction through real arithmetic and stack" {
+test "supplied boot sector requests disk BIOS and normal interrupt routing returns to first missing CBW" {
     const disk=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,"reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img",allocator,.limited(400*1024));defer allocator.free(disk);
     try std.testing.expectEqual(@as(usize,360*1024),disk.len);
     var f=try init(32,0);defer f.deinit();
     try program(&f,0,0x7c00,disk[0..512]);try reg(&f,0,0x87aa);try reg(&f,13,0xf202);
-    // This is an instruction-level fixture with a zero IVT, not a BIOS boot.
-    for(0..16) |_| try step(&f);
+    // A plain guest IRET is an explicit CPU fixture, not a BIOS implementation
+    // or disk service. The rest of the IVT and PC memory start at zero.
+    c.dos64_reu_poke(f.machine,0x4c,0);c.dos64_reu_poke(f.machine,0x4d,2);
+    c.dos64_reu_poke(f.machine,0x4e,0);c.dos64_reu_poke(f.machine,0x4f,0);
+    c.dos64_reu_poke(f.machine,0x200,0xcf);
     const g=try f.symbol("dos64_guest");
-    try std.testing.expectEqual(@as(u16,0),f.word(g));
-    try std.testing.expectEqual(@as(u16,11),f.word(g+2));
-    try std.testing.expectEqual(@as(u16,0x78),f.word(g+6));
+    var reached=false;
+    for(0..256) |_| {
+        if(f.word(g+24)==0x7c6e) {reached=true;break;}
+        try step(&f);
+    }
+    try std.testing.expect(reached);
+    try std.testing.expectEqual(@as(u16,0),f.word(g)); // AH=0 disk reset request
+    try std.testing.expectEqual(@as(u16,0),f.word(g+4));
+    try std.testing.expectEqual(@as(u16,0),f.word(g+2));
     try std.testing.expectEqual(@as(u16,0x7bf8),f.word(g+8));
-    try std.testing.expectEqual(@as(u16,0),f.word(g+12));
-    try std.testing.expectEqual(@as(u16,0x7c2b),f.word(g+14));
-    try std.testing.expectEqual(@as(u16,0),f.word(g+16));
-    try std.testing.expectEqual(@as(u16,0),f.word(g+20));
-    try std.testing.expectEqual(@as(u16,0),f.word(g+22));
-    try std.testing.expectEqual(@as(u16,0xf046),f.word(g+26));
+    const saved_flags=f.word(g+26);const completed=f.word(try f.symbol("dos64_cpu_instructions"));
+    try step(&f);
+    try std.testing.expectEqual(@as(u16,0x200),f.word(g+24));
+    try std.testing.expectEqual(@as(u16,0),f.word(g+18));
+    try std.testing.expectEqual(@as(u16,0x7bf2),f.word(g+8));
+    try std.testing.expectEqual(saved_flags&~@as(u16,0x300),f.word(g+26));
+    _=try f.call("dos64_cache_flush",100_000);
+    try std.testing.expectEqual(@as(u8,0x70),c.dos64_reu_peek(f.machine,0x7bf2));
+    try std.testing.expectEqual(@as(u8,0x7c),c.dos64_reu_peek(f.machine,0x7bf3));
+    try std.testing.expectEqual(@as(u8,0),c.dos64_reu_peek(f.machine,0x7bf4));
+    try std.testing.expectEqual(@as(u8,0),c.dos64_reu_peek(f.machine,0x7bf5));
+    try std.testing.expectEqual(@as(u8,@truncate(saved_flags)),c.dos64_reu_peek(f.machine,0x7bf6));
+    try std.testing.expectEqual(@as(u8,@truncate(saved_flags>>8)),c.dos64_reu_peek(f.machine,0x7bf7));
+    try step(&f); // IRET
+    try std.testing.expectEqual(@as(u16,0x7c70),f.word(g+24));
+    try std.testing.expectEqual(@as(u16,0x7bf8),f.word(g+8));
+    try std.testing.expectEqual(saved_flags,f.word(g+26));
+    try step(&f);try step(&f); // JC falls through, MOV AL reads the BPB
+    try std.testing.expectEqual(@as(u16,0x7c75),f.word(g+24));
+    try std.testing.expectEqual(@as(u16,disk[0x10]),f.word(g));
     const r=try f.call("dos64_cpu_step",10_000);
     try std.testing.expectEqual(@as(u8,1),r.p&1);
-    try std.testing.expectEqual(@as(u8,0xac),f.peek(try f.symbol("dos64_cpu_opcode")));
-    try std.testing.expectEqual(@as(u16,0x7c51),f.word(g+24));
-    try std.testing.expectEqual(@as(u16,16),f.word(try f.symbol("dos64_cpu_instructions")));
+    try std.testing.expectEqual(@as(u8,0x98),f.peek(try f.symbol("dos64_cpu_opcode")));
+    try std.testing.expectEqual(@as(u16,0x7c75),f.word(g+24));
+    try std.testing.expectEqual(completed+4,f.word(try f.symbol("dos64_cpu_instructions")));
 }
 
 test "pinned hardware-generated original 8088 cases match registers and complete RAM" {
@@ -173,7 +196,7 @@ test "pinned hardware-generated original 8088 cases match registers and complete
     const parsed=try std.json.parseFromSlice([]Case,allocator,raw,.{});defer parsed.deinit();
     const expected_ram=try allocator.alloc(u8,1024*1024);defer allocator.free(expected_ram);
     const full=@import("test_options").full_cpu_corpus;
-    var executed:usize=0;
+    var executed:usize=0;var maximum_slices:usize=0;
     for(parsed.value) |t| {
         if(!full and !t.quick) continue;
         executed+=1;
@@ -186,8 +209,22 @@ test "pinned hardware-generated original 8088 cases match registers and complete
             const a=(@as(u32,cs)*16+(ip+%@as(u16,@intCast(i))))&0xfffff;
             c.dos64_reu_poke(f.machine,a,v);expected_ram[a]=v;
         }
-        const r=try f.call("dos64_cpu_step",100_000);
-        if((r.p&1)!=0) {std.debug.print("Hardware case failed {s} idx={d} {s}\n",.{t.opcode,t.idx,t.name});return error.HardwareCaseFault;}
+        // A single hardware string instruction can span bounded target slices.
+        // Stop only at one completed guest instruction, never at an arbitrary
+        // intermediate REP state, with finite call and aggregate cycle limits.
+        const completed=try f.symbol("dos64_cpu_instructions");
+        var continuations:usize=0;var total_cycles:u64=0;
+        while(f.word(completed)==0) {
+            if(continuations>=256 or total_cycles>=10_000_000) {
+                std.debug.print("Hardware continuation budget {s} idx={d} slices={d} cycles={d}\n",.{t.opcode,t.idx,continuations,total_cycles});return error.HardwareContinuationBudget;
+            }
+            const before=c.dos64_get_regs(f.machine).cycles;
+            const r=try f.call("dos64_cpu_step",100_000);
+            total_cycles+=r.cycles-before;continuations+=1;
+            if((r.p&1)!=0) {std.debug.print("Hardware case failed {s} idx={d} {s}\n",.{t.opcode,t.idx,t.name});return error.HardwareCaseFault;}
+        }
+        try std.testing.expectEqual(@as(u16,1),f.word(completed));
+        maximum_slices=@max(maximum_slices,continuations);
         inline for(names,0..) |name,i| {
             const expected=@field(t.final.regs,name) orelse @field(t.initial.regs,name).?;
             const actual=f.word(g+@as(u16,@intCast(i*2)));
@@ -202,8 +239,8 @@ test "pinned hardware-generated original 8088 cases match registers and complete
             std.debug.print("First RAM divergence {s} idx={d} address={x} expected={x} actual={x}\n",.{t.opcode,t.idx,a,expected_ram[a],c.dos64_reu_peek(f.machine,a)});return error.HardwareMemoryMismatch;
         }
     }
-    var buffer:[128]u8=undefined;
-    const profile=try std.fmt.bufPrint(&buffer,"{{\"hardware_cases\":{d},\"full_pinned_corpus\":{s},\"cycle_accuracy\":false}}\n",.{executed,if(full) "true" else "false"});
+    var buffer:[192]u8=undefined;
+    const profile=try std.fmt.bufPrint(&buffer,"{{\"hardware_cases\":{d},\"full_pinned_corpus\":{s},\"cycle_accuracy\":false,\"maximum_slices\":{d}}}\n",.{executed,if(full) "true" else "false",maximum_slices});
     try std.Io.Dir.cwd().writeFile(std.Options.debug_io,.{.sub_path=if(full) "build/cpu-corpus-full.json" else "build/cpu-corpus-fast.json",.data=profile});
 }
 
@@ -217,4 +254,55 @@ test "full RAM oracle comparator detects first middle last mismatches and bounds
         c.dos64_reu_poke(f.machine,a,0);
     }
     try std.testing.expectEqual(@as(u32,0xfffffffe),c.dos64_reu_compare(f.machine,0x3fffff,oracle.ptr,2));
+}
+
+fn branchCondition(condition:usize,flags:u16) bool {
+    const carry=(flags&1)!=0;const parity=(flags&4)!=0;const zero=(flags&0x40)!=0;
+    const sign=(flags&0x80)!=0;const overflow=(flags&0x800)!=0;
+    return switch(condition) {
+        0=>overflow,1=>!overflow,2=>carry,3=>!carry,4=>zero,5=>!zero,
+        6=>carry or zero,7=>!carry and !zero,8=>sign,9=>!sign,
+        10=>parity,11=>!parity,12=>sign!=overflow,13=>sign==overflow,
+        14=>zero or sign!=overflow,15=>!zero and sign==overflow,
+        else=>unreachable,
+    };
+}
+
+test "all original Jcc conditions and 60 aliases match every relevant flag combination" {
+    var f=try init(2,1);defer f.deinit();const g=try f.symbol("dos64_guest");
+    for([_]u8{0x60,0x70}) |base| for(0..16) |condition| {
+        // Opcode at FFFF and displacement at 0000 guard instruction-offset wrap.
+        _=try f.call("dos64_cache_init",50_000);
+        try program(&f,0x1234,0xffff,&.{base+@as(u8,@intCast(condition)),0x80});
+        for(0..32) |combination| {
+            var flags:u16=0xf602;
+            for([_]u16{1,4,0x40,0x80,0x800},0..) |mask,bit| if((combination&(@as(usize,1)<<@as(u6,@intCast(bit))))!=0) {flags|=mask;};
+            setWord(&f,g+24,0xffff);setWord(&f,g+26,flags);try step(&f);
+            const expected:u16=if(branchCondition(condition,flags)) 0xff81 else 1;
+            if(f.word(g+24)!=expected) {
+                std.debug.print("Jcc mismatch opcode={x} flags={x} ip={x} expected={x}\n",.{base+condition,flags,f.word(g+24),expected});return error.BranchConditionMismatch;
+            }
+            try std.testing.expectEqual(flags,f.word(g+26));
+            try std.testing.expectEqual(@as(u16,0x1234),f.word(g+18));
+        }
+    };
+    try std.testing.expectEqual(@as(u16,1024),f.word(try f.symbol("dos64_cpu_instructions")));
+}
+
+test "LOOP family wraps counters preserves flags and applies signed prefixed displacement" {
+    var f=try init(2,1);defer f.deinit();const g=try f.symbol("dos64_guest");
+    for(0..4) |operation| for([_]u8{0x80,0x7f}) |displacement| {
+        _=try f.call("dos64_cache_init",50_000);
+        try program(&f,0x1234,0xffff,&.{0x2e,0xe0+@as(u8,@intCast(operation)),displacement});
+        for([_]u16{0,1,2,0xffff}) |cx| for([_]bool{false,true}) |zero| {
+            const flags:u16=0xf797|(if(zero) @as(u16,0x40) else 0);
+            const after:u16=if(operation==3) cx else cx-%1;
+            const taken=if(operation==3) cx==0 else after!=0 and (operation==2 or (operation==0 and !zero) or (operation==1 and zero));
+            setWord(&f,g+2,cx);setWord(&f,g+24,0xffff);setWord(&f,g+26,flags);try step(&f);
+            const target:u16=if(displacement==0x80) 0xff82 else 0x81;
+            try std.testing.expectEqual(if(taken) target else @as(u16,2),f.word(g+24));
+            try std.testing.expectEqual(after,f.word(g+2));try std.testing.expectEqual(flags,f.word(g+26));
+        };
+    };
+    try std.testing.expectEqual(@as(u16,64),f.word(try f.symbol("dos64_cpu_instructions")));
 }

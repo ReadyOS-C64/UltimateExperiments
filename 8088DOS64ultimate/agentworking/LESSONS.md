@@ -19,3 +19,6 @@
 
 - Preserve original-8088 alias evidence; do not filter failing undocumented cases merely to fit a documented-only decoder.
 - Keep decoded segment/offset destinations stable across immediate fetch and cache eviction.
+
+- Separate bounded host REP continuation from original-CPU interrupt restart; compare completed instructions with aggregate budgets.
+- Preserve guest interrupt routing through IVT/stack; a guest IRET test stub is not a native BIOS service.
