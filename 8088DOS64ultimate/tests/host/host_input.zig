@@ -331,6 +331,6 @@ fn bootstrap(f: *Fixture) !void {
     c.dos64_enable_reu(f.machine);
     _ = try f.call("dos64_overlay_init", 100_000);
     f.poke(try f.symbol("dos64_overlay_reu_mib"), 4);
-    const boot = try f.call("dos64_overlay_bootstrap", 100_000);
+    const boot = try f.call("dos64_overlay_bootstrap", 300_000);
     try std.testing.expectEqual(@as(u8, 0), boot.p & 1);
 }

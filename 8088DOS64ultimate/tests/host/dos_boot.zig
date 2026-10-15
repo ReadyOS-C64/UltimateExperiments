@@ -438,7 +438,7 @@ test "unchanged DOS boot sector loads FAT12 IO.SYS through real BIOS and reaches
     lane.setup_native_cycles += overlay_result.cycles - overlay_start;
     lane.f.poke(try lane.f.symbol("dos64_overlay_reu_mib"), 4);
     overlay_start = c.dos64_get_regs(lane.f.machine).cycles;
-    overlay_result = try lane.f.call("dos64_overlay_bootstrap", 50_000);
+    overlay_result = try lane.f.call("dos64_overlay_bootstrap", 300_000);
     try std.testing.expectEqual(@as(u8, 0), overlay_result.p & 1);
     lane.setup_native_cycles += overlay_result.cycles - overlay_start;
     lane.f.poke(try lane.f.symbol("dos64_cache_limit"), 32);

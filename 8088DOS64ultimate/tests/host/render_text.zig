@@ -13,7 +13,7 @@ fn init(frames: u8) !Fixture {
     c.dos64_enable_reu(f.machine);
     _ = try f.call("dos64_overlay_init", 10_000);
     f.poke(try f.symbol("dos64_overlay_reu_mib"), 4);
-    _ = try f.call("dos64_overlay_bootstrap", 10_000);
+    _ = try f.call("dos64_overlay_bootstrap", 300_000);
     // Acquire the renderer once before injecting range/cache DMA failures, so
     // those injections continue to target the original coherent reads.
     f.poke(try f.symbol("dos64_overlay_requested"), 2);

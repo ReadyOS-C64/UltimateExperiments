@@ -22,7 +22,7 @@ fn init() !F {
     c.dos64_enable_reu(f.machine);
     try call(&f, "dos64_overlay_init", 0, 50_000);
     try put(&f, "dos64_overlay_reu_mib", 4);
-    try call(&f, "dos64_overlay_bootstrap", 0, 50_000);
+    try call(&f, "dos64_overlay_bootstrap", 0, 300_000);
     return f;
 }
 test "cold release requires bootstrap BIOS readiness and no live overlay owner" {
@@ -84,7 +84,7 @@ test "released first four cache frames cannot alter committed INPUT code asset" 
     var f = try init();
     defer f.deinit();
     const allocator = std.testing.allocator;
-    const blob = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", allocator, .limited(10241));
+    const blob = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", allocator, .limited(12289));
     defer allocator.free(blob);
     for (0x8000..0x8800) |a| f.poke(@intCast(a), 0xee);
     try put(&f, "dos64_overlay_requested", 3);

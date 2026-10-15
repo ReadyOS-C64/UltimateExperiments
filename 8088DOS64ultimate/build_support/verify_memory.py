@@ -7,7 +7,7 @@ import struct
 import hashlib
 
 
-def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payload=None):
+def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payload=None, shadow_payload=None):
     errors = []
     symbols = {name.lstrip("."): int(addr, 16) for addr, name in
                re.findall(r"^al ([0-9A-Fa-f]+) (\S+)", labels_text, re.M)}
@@ -27,6 +27,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
               "NATIVESTATE": (0x080D,0x3FFF), "INPUTCODE": (0xC900,0xCFFF),
               "UCIBUFFER": (0xC100, 0xC8FF),
               "IRQMAIN":(0xC900,0xCFFF),"IRQDEVICE":(0xC900,0xCFFF),"PITCODE":(0xC900,0xCFFF),"GFXCODE":(0xC900,0xCFFF),
+              "HDCODE": (0xC900,0xCFFF),"HDBIOS":(0xF000,0xFDFF),
               "FILECODE": (0xC900, 0xCFFF), "RENDERCODE": (0xC900, 0xCFFF), "DISPLAYCODE": (0xC900,0xCFFF),
               "NARROWFONT": (0x4400,0x47FF), "FULLFONT": (0x4800,0x4FFF),
               "RANGEBUFFER": (0xC000, 0xC0FF), "BSS": (0xE000, 0xE0FF), "PAGEMAP": (0xE100, 0xE8FF),
@@ -45,7 +46,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     for index, seg in enumerate(segments):
         for other in segments[index+1:]:
             # Only these two separately emitted images may share a run window.
-            variant={"FILECODE":"FILE","RENDERCODE":"TEXT","DISPLAYCODE":"TEXT","INPUTCODE":"INPUT","IRQMAIN":"PIT","IRQDEVICE":"PIT","PITCODE":"PIT","GFXCODE":"GFX"}
+            variant={"FILECODE":"FILE","RENDERCODE":"TEXT","DISPLAYCODE":"TEXT","INPUTCODE":"INPUT","IRQMAIN":"PIT","IRQDEVICE":"PIT","PITCODE":"PIT","GFXCODE":"GFX","HDCODE":"HD"}
             exclusive_overlays = seg["name"] in variant and other["name"] in variant and variant[seg["name"]]!=variant[other["name"]]
             if not exclusive_overlays and max(seg['start'], other['start']) <= min(seg['end'], other['end']):
                 errors.append(f"Overlapping segments {seg['name']} and {other['name']}")
@@ -89,7 +90,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
         if any(s["name"] in ("DEVICECODE", "UCIBUFFER") for s in segments):
             errors.append("Runtime-only segments require the contiguous runtime layout")
     overlays = {seg["name"]: seg for seg in segments
-                if seg["name"] in ("FILECODE", "RENDERCODE", "INPUTCODE","IRQMAIN","GFXCODE")}
+                if seg["name"] in ("FILECODE", "RENDERCODE", "INPUTCODE","IRQMAIN","GFXCODE","HDCODE")}
     display=[x for x in segments if x["name"]=="DISPLAYCODE"]
     if overlays:
         renderer=overlays.get("RENDERCODE")
@@ -127,8 +128,10 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     if overlays:
         if not runtime:
             errors.append("Overlays require the runtime layout")
-        if len(overlays) != 5:
-            errors.append("All five FILE/TEXT/INPUT/PIT/GFX exclusive overlays are required")
+        hd_layout="HDCODE"in overlays
+        expected_overlay_count=6 if hd_layout else 5
+        if len(overlays) != expected_overlay_count:
+            errors.append("Complete FILE/TEXT/INPUT/PIT/GFX and optional paired HD/shadow overlay set required")
         device_end = load["end_exclusive"]
         if device_end > 0x6000:
             errors.append("Resident payload overlaps startup overlay sources")
@@ -138,7 +141,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
                                     "file_offset": device_end-0x0801+2, "value": 0})
         load["resident_end_exclusive"] = device_end
         load["end_exclusive"] = 0x7000
-        variants = (("FILECODE", "FILE", b"FILE"), ("RENDERCODE", "RENDER", b"TEXT"), ("INPUTCODE", "INPUT", b"KEYS"),("IRQMAIN","PIT",b"TIME"),("GFXCODE","GFX",b"CGA "))
+        variants = (("FILECODE", "FILE", b"FILE"), ("RENDERCODE", "RENDER", b"TEXT"), ("INPUTCODE", "INPUT", b"KEYS"),("IRQMAIN","PIT",b"TIME"),("GFXCODE","GFX",b"CGA "))+((("HDCODE","HD",b"HD  "),)if hd_layout else ())
         for index, (segment_name, area_name, tag) in enumerate(variants):
             if segment_name not in overlays:
                 continue
@@ -155,7 +158,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             if not 1 <= seg["bytes"] <= 0x700:
                 errors.append(f"{segment_name} payload size must fit the exclusive window")
                 continue
-            source = (0x6000,0x6800,0x8000,0x8800,0x9000)[index]
+            source = (0x6000,0x6800,0x8000,0x8800,0x9000,0x9800)[index]
             item = {"name": segment_name, "startup_source": source,
                     "reu_slot": 0x340000+index*0x800, "slot_bytes": 0x800,
                     "payload_bytes": seg["bytes"], "run": 0xC900,
@@ -199,7 +202,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             for suffix,value in (("LOAD",item["start"]),("RUN",item["start"]),("SIZE",item["bytes"])):
                 if symbols.get("__"+item["name"]+"_"+suffix+"__")!=value:
                     errors.append("Cold segment metadata mismatch")
-        if not runtime or len(overlays) != 5:
+        if not runtime or len(overlays) not in (5,6):
             errors.append("Cold importer requires runtime and both committed overlay source phases")
         fields = {"__IMPORT_START__": 0x7000, "__IMPORT_SIZE__": 0x1000,
                   "__IMPORT_FILEOFFS__": 0, "__IMPORT_LAST__": cold_end,
@@ -234,10 +237,10 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     elif import_payload is not None or symbols.get("__IMPORTCODE_SIZE__", 0):
         errors.append("Linked cold importer segment is missing")
     if "INPUTCODE" in overlays:
-        load["end_exclusive"]=0x9800
+        load["end_exclusive"]=0xa000 if "HDCODE"in overlays else 0x9800
         state=[seg for seg in segments if seg["name"]=="NATIVESTATE"]
         native_runtime = "dos64_native_entry" in symbols
-        initialized = b"\xa5\x00\x00" if native_runtime else b"\xa5\x00"
+        initialized = (b"\xa5\x00\x00\x00\x00"if "HDCODE"in overlays else b"\xa5\x00\x00") if native_runtime else b"\xa5\x00"
         if len(state)!=1 or state[0]["bytes"]!=len(initialized) or symbols.get("dos64_cold_open")!=state[0]["start"] or symbols.get("dos64_cold_error")!=state[0]["start"]+1:
             errors.append("Cold/native reload guards must be initialized resident state bytes")
         elif native_runtime and (symbols.get("n_started")!=state[0]["start"]+2 or symbols.get("dos64_native_started")!=state[0]["start"]+2):
@@ -246,12 +249,32 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             offset=state[0]["start"]-0x0801+2
             if prg[offset:offset+len(initialized)]!=initialized:
                 errors.append("Cold/native reload guards must load A5,error00,started00 with the PRG")
+    shadow=[seg for seg in segments if seg["name"]=="HDBIOS"]
+    load["shadow"]=None
+    if "HDCODE"in overlays or shadow or shadow_payload is not None:
+        if "HDCODE"not in overlays or len(shadow)!=1:
+            errors.append("HD and one separate shadow image must be paired")
+        else:
+            part=shadow[0];count=part["bytes"]
+            expected={"__HDEXT_START__":0xf000,"__HDEXT_SIZE__":0xe00,"__HDEXT_FILEOFFS__":0,"__HDEXT_LAST__":part["end"]+1,"__HDBIOS_LOAD__":0xf000,"__HDBIOS_RUN__":0xf000,"__HDBIOS_SIZE__":count}
+            if part["start"]!=0xf000 or not 1<=count<=3584 or any(symbols.get(k)!=v for k,v in expected.items()):errors.append("Shadow linked placement/length metadata mismatch")
+            state=next((seg for seg in segments if seg["name"]=="NATIVESTATE"),None)
+            if state is None or symbols.get("hdb_boot_drive")!=state["start"]+3 or symbols.get("hdb_extension_ready")!=state["start"]+4:errors.append("HD shadow/reload guards must be explicit initialized resident bytes")
+            if prg is not None and shadow_payload is None:errors.append("HD shadow exact linked bytes are required for packaged verification")
+            if shadow_payload is not None and(len(shadow_payload)!=count or(prg is not None and prg[0xa000-0x801+2:0xa000-0x801+2+count]!=shadow_payload)):errors.append("Shadow source differs from exact linked bytes")
+            load["padding"].append({"name":"shadow_source_tail_zero","start":0xa000+count,"end":0xadff,"bytes":3584-count,"file_offset":0xa000+count-0x801+2,"value":0})
+            load["shadow"]={"source":0xa000,"run":0xf000,"window_bytes":3584,"linked_bytes":count,"payload_checked":shadow_payload is not None,"excludes":"FE00-FFFF hardware vectors","ownership":"verified cold copy before guest cache; permanent RAM+IO/no KERNAL"}
+            load["end_exclusive"]=0xae00
+    load["startup_cache_phase"]={"start":0x8000,"end_exclusive":0xae00 if "HDCODE"in overlays else 0x9800,"cache_frames":23 if "HDCODE"in overlays else 12,"overlay_frames":16 if "HDCODE"in overlays else 12,"shadow_frames":7 if "HDCODE"in overlays else 0}if overlays else None
     load["exclusive_overlay_window_bytes"] = 0x700 if overlays else 0
     load["max_linked_overlay_bytes"] = max((s["bytes"] for s in overlays.values()), default=0)
     load["overlay_source_bytes"] = sum(s["bytes"] for s in overlays.values())
     load["startup_overlay_bytes"] = len(load["overlays"])*0x800
     load["padding_bytes"] = sum(p["bytes"] for p in load["padding"])
+    load["shadow_source_bytes"]=load["shadow"]["linked_bytes"]if load["shadow"]else 0
     load["payload_bytes"] = load["end_exclusive"] - load["start"]
+    load["accounted_payload_bytes"]=load["linked_file_bytes"]+load["startup_overlay_bytes"]+load["padding_bytes"]+load["shadow_source_bytes"]
+    if load["accounted_payload_bytes"]!=load["payload_bytes"]:errors.append("Packaged bytes are not completely accounted by linked sources, slots and exact initialization padding")
     load["prg_bytes"] = load["payload_bytes"] + 2
     if prg is not None:
         if prg[:2] != b"\x01\x08":
@@ -277,6 +300,8 @@ if __name__ == "__main__":
     parser.add_argument("--overlay-input",type=Path)
     parser.add_argument("--overlay-pit",type=Path)
     parser.add_argument("--overlay-gfx",type=Path)
+    parser.add_argument("--overlay-hd",type=Path)
+    parser.add_argument("--shadow",type=Path)
     parser.add_argument("--import-code", type=Path)
     args = parser.parse_args()
     map_path = args.map
@@ -287,7 +312,11 @@ if __name__ == "__main__":
             parser.error("All three linked overlay payload files are required")
         payloads = {"FILECODE": args.overlay_files.read_bytes(),
                     "RENDERCODE": args.overlay_render.read_bytes(),"INPUTCODE":args.overlay_input.read_bytes(),"IRQMAIN":args.overlay_pit.read_bytes(),"GFXCODE":args.overlay_gfx.read_bytes()}
-    report = verify(map_path.read_text(), args.labels.read_text(), prg_path.read_bytes(), payloads, args.import_code.read_bytes() if args.import_code else None)
+    if bool(args.overlay_hd)!=bool(args.shadow):parser.error("HD/shadow payloads must be paired")
+    if args.overlay_hd:
+        if payloads is None:parser.error("HD requires all five baseline payload files")
+        payloads["HDCODE"]=args.overlay_hd.read_bytes()
+    report = verify(map_path.read_text(), args.labels.read_text(), prg_path.read_bytes(), payloads, args.import_code.read_bytes() if args.import_code else None,args.shadow.read_bytes()if args.shadow else None)
     map_path.with_suffix(".memory.json").write_text(json.dumps(report, indent=2)+"\n")
     if report["errors"]:
         raise SystemExit("\n".join(report["errors"]))

@@ -62,7 +62,7 @@ fn guest32(f: *F) !u32 {
 fn ready(f: *F) !void {
     try call(f, "dos64_overlay_init", 10000, 0);
     try p(f, "dos64_overlay_reu_mib", 4);
-    try call(f, "dos64_overlay_bootstrap", 10000, 0);
+    try call(f, "dos64_overlay_bootstrap", 300_000, 0);
     try call(f, "dos64_cpu_init", 10000, 0);
     try p(f, "dos64_cache_limit", 32);
     try call(f, "dos64_cache_init", 50000, 0);

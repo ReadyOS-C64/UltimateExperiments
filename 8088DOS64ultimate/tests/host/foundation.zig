@@ -159,3 +159,5 @@ test { _ = @import("native_cga.zig"); }
 test { _ = @import("unit_cold_lifetime.zig"); }
 
 comptime { _ = @import("video_xt_compat.zig"); }
+
+test { _ = @import("video_spans.zig"); }

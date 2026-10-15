@@ -122,3 +122,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 | D86 | Physically verified recovery only,2026-10-15 | Accept one-file native4MiB restore independently of failednew5DOSapplication | Freshbackup/all4194304bytesequal/CRC8192knownCLOSE/strictcode/firstattempt/231.923s/configmediareset; app180secondfailure staysfailed; upper12MiBuncompared |
 | D87 | Implemented/host verified,2026-10-15 | Explicit bounded observation cadence/application duration preserve0.25s/180s defaults | Optional0.25–2.0s/10–600s,stableAH00prompt/periodicAH01,allkeys/pagination; distinguishoverallbudgetfrom12sACK; no pendingcommandreissue/performanceclaim |
+
+| D88 | Implemented/Peddle verified,2026-10-15 | SixthHDoverlay plus separately verified F000–FDFF copiedcode for HD/scroll; all23startupcacheframes released onlyaftercopy | Minimum4MiB budget,explicitdisabledD64H,residentconfig,asyncFILElease/readbackauthority;root417/597/218/nativeDOS/MODE/HD and exactreviewedfullproof;physicalpending |
+| D89 | Implemented/host verified,2026-10-15 | Physicalrunner requires pinned pairedshadowmetadata andimmutablePRGsource comparison for all3584runbytes/A5guard | LiveA000cache neverauthority;FEvectors excluded;RESTunderlyingRAM cannotproveCPUportbanking;no nativebytechange |

@@ -105,3 +105,12 @@ MODE/XTcompatibility follow-up: runtime3c2627a4/unit6280024d changes only loaded
 
 
 Opt-in standalone native-file restore is separate from emulator resident allocation:4624bytePRG0801–1A0E,DRFconfig1985/138,ZP20–25,2KiBstaging8000–87FF,UCI C100–C8FF,descriptorE000–E009,stateEA00–EA78,32bytemailbox6000–601F. No overlays/cache/guest/renderer. Exactly2048×2048byteDMAs addressREU[0,4MiB); uppercapacityexcluded. Source/export-onlyFILEalias changesnoemulator/helperbytes. OriginalstandaloneDRS1592bytesunchanged. [Sourcebuild/contract](../docs/NATIVE_FILE_RECOVERY.md).
+
+
+## Current six-overlay HD and coherent-scroll maps — 2026-10-15
+
+Supersedes the five-overlay current totals. Runtime/unit PRGs are 42,497 bytes, load0801–ADFF, SHA98fcd115/6eba1ee7. Runtime/unit MAIN free115/114, DEVICE22, cold1093/118. HDBIOS2144bytes in F000–FDFF leaves1440 zero-tail bytes; FE00–FFFF stays excluded. Actual unit975-byte cold helpers and one-byte resident return sentinel are included. Runtime/unit ZP18/30, BSS223 (new bios_disk_is_hd atE0DE), DEVICESTATE659 (growth314 plus BSS1 =315 controlbytes), PAGEMAP2048, CACHEMETA192, range256, UCI2048. Staticcontrol223+2048+192+659=3122,leaving974 includinggaps; pre-mapBSS33. Per-window space remains non-interchangeable.
+
+HD1427 joins FILE1088/TEXT963/INPUT882/PIT1662/GFX1278 as alternative C900 payloads. All12288 startupassetbytes at6000/6800/8000/8800/9000/9800 commit toREU340000–342FFF. Separate A000–ADFF shadow source overlaps7cacheframes; overlay sources8000–9FFF overlap16, for23 total. All commit/copy/byte-verify beforecache/BIOS. Default disabledHD still loads shadow forscroll/modeclear. HostF000 and guestphysicalF000/F0000 are distinct address spaces.
+
+HDextentcacheREU200000–2FFFFF holdsup32×32KiB; authoritativeuncertainsector350000–3501FF and guesthandoff352000–3521FF fit minimum4MiB. No largerREU assumption. Exactrootmaps/package/memory/sourcebinaryproof live in `agentworking/runs/hd-production-20261015-root`; independentnormalreview verifiescomplete65536-bytehostaccounting and both entirePRGs. [Contract](../docs/HD_IMPLEMENTATION.md).

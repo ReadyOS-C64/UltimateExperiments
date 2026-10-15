@@ -11,12 +11,13 @@ import sys
 PROJECT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(PROJECT/'build_support'))
 from c64u_native_application import Application,labels_from,resident_from_map,pinned_hashes
+from c64u_native_shadow_identity import metadata_from_paths
 from c64u_probe import Client
 from c64u_bulk_reu_recovery import run_with_recovery,Journal,dump,durable_write
 from c64u_ftp_put_transport import FtpPutClient,sha
 from c64u_delta_reu_recovery import DeltaService
 SOURCE_NAMES=('c64u_native_ftp_put_runner.py','c64u_ftp_put_transport.py','c64u_delta_reu_recovery.py',
-              'c64u_native_application.py','c64u_native_application_support.py','c64u_bulk_reu_recovery.py','c64u_probe.py')
+              'c64u_native_application.py','c64u_native_shadow_identity.py','c64u_native_application_support.py','c64u_bulk_reu_recovery.py','c64u_probe.py')
 REJECTED_NATIVE='e7fe23622f50bec7d055d4fd1c82c604f3ad53d0e5b7e0a024d471a6de0b617c'
 
 
@@ -28,6 +29,7 @@ def main():
         parser.add_argument('--'+name.replace('_','-'),required=True)
     parser.add_argument('--host')
     parser.add_argument('--staging-manifest')
+    parser.add_argument('--shadow-package');parser.add_argument('--shadow-memory')
     args=parser.parse_args()
     if args.expected_prg_sha256==REJECTED_NATIVE:parser.error('Superseded native blink-bug PRG is explicitly rejected')
     out=Path(args.output).resolve()
@@ -37,7 +39,8 @@ def main():
         if sha(Path(file).read_bytes()) not in pins:parser.error('Source/binary artifact is absent from reviewed build manifest: '+file)
     app=Application(Path(args.prg).read_bytes(),labels_from(args.labels),json.loads(Path(args.media_manifest).read_text()),
                     args.source,Path(args.service).read_bytes(),args.expected_prg_sha256,
-                    resident_segments=resident_from_map(args.map),build_identity=identity)
+                    resident_segments=resident_from_map(args.map),build_identity=identity,
+                    shadow_metadata=metadata_from_paths(args.shadow_package,args.shadow_memory,pins))
     if args.prepare_only:
         out.mkdir(parents=True,exist_ok=False)
         durable_write(out/'NATIVE-DOS.PRG',app.prg);durable_write(out/'REU-RECOVERY.PRG',app.service_prg)

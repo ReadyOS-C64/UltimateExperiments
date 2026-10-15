@@ -10,6 +10,7 @@ from pathlib import Path
 import sys
 import time
 sys.path.insert(0,str(Path(__file__).resolve().parent))
+import c64u_native_shadow_identity as shadow_identity
 from c64u_probe import Client,speed_option
 from c64u_bulk_reu_recovery import Service,Journal,run_with_recovery,durable_write,dump,CHUNK
 from c64u_native_application_support import verified_media,patch_config,decode_screen,Builtins,sha,SOURCE_SHA
@@ -37,7 +38,7 @@ def resident_from_map(path):
             if not length or end-start+1!=length:raise ValueError('Invalid resident segment span')
             segments.append({'name':match[1],'start':start,'length':length})
     if not {'BASIC','CODE','RODATA','DEVICECODE'}.issubset({x['name'] for x in segments}):raise ValueError('Required resident source segments are missing')
-    return segments
+    return segments+shadow_identity.shadow_from_map(text)
 
 
 def pinned_hashes(value):
@@ -89,10 +90,13 @@ class NativeDeadlineError(TimeoutError):
 class Application:
     def __init__(self,prg,labels,media,source,service_prg,expected_prg_sha,seconds=180,
                  clock=time.monotonic,sleep=time.sleep,resident_segments=None,build_identity=None,
-                 observation_interval=0.25):
+                 observation_interval=0.25,shadow_metadata=None):
         self.observation_interval=checked_observation_interval(observation_interval)
         if sha(prg)!=expected_prg_sha:raise ValueError('Runtime PRG differs from reviewed build identity')
         seconds=checked_application_seconds(seconds)
+        # Validate the copied execution image locally before device contact or media access.
+        self.shadow_identity=shadow_identity.prepare(prg,labels,resident_segments or [],shadow_metadata)
+        self.shadow_build_metadata=json.loads(json.dumps(shadow_metadata)) if shadow_metadata is not None else None
         data,path=verified_media(media,source)
         config_offset=labels['dos64_native_config']-0x801+2
         if int.from_bytes(prg[config_offset+8:config_offset+10],'little')!=0xdf1c:
@@ -173,7 +177,7 @@ class Application:
         screen.update(guest_instructions=count,coherent=True,host_elapsed_seconds=self.clock()-self.started)
         self.journal('coherent_screen',guest_instructions=count,sha256=sha(video),stage=self.script.stage)
         return screen
-    def verify_resident(self,ram):
+    def verify_resident(self,ram,cpu_port_snapshot=None):
         if len(ram)!=65536:raise ValueError('Resident identity requires a complete64KiB capture')
         proofs=[]
         mutable=[]
@@ -191,6 +195,7 @@ class Application:
                             'buffer_start':base,'buffer_bytes':896,
                             'valid':(value==0xffff and self.script.stage!='done') or base<=value<base+896})
         for segment in self.resident_segments:
+            if segment['name']=='HDBIOS':continue # Separate immutable source-to-run copy below.
             start=segment['start'];length=segment['length'];offset=start-0x801+2
             if offset<2 or offset+length>len(self.prg):raise ValueError('Resident segment outside source PRG')
             expected=self.prg[offset:offset+length];actual=ram[start:start+length]
@@ -206,6 +211,7 @@ class Application:
             if not static_match:
                 first=next(i for i,(x,y) in enumerate(zip(normalized,expected)) if x!=y)
                 proof['first_difference_address']=start+first
+        if self.shadow_identity is not None:proofs.append(shadow_identity.verify(self.shadow_identity,ram,cpu_port_snapshot=cpu_port_snapshot))
         dump(self.output/'captured-resident-identity.json',proofs)
         if any(not p['matches'] for p in proofs):raise ValueError('Captured resident executable differs from uploaded reviewed code')
         return proofs
@@ -256,10 +262,13 @@ class Application:
         dump(self.output/'native-patch.json',self.patch);dump(self.output/'media-fixture-input.json',self.media)
         dump(self.output/'runtime-symbols.json',self.labels)
         dump(self.output/'runtime-build-identity.json',self.build_identity)
+        if self.shadow_build_metadata is not None:
+            dump(self.output/'copied-shadow-build-metadata.json',self.shadow_build_metadata)
         source_identity={}
         for path in (Path(__file__).resolve(),Path(__file__).resolve().with_name('c64u_native_application_support.py'),
                      Path(__file__).resolve().with_name('c64u_bulk_reu_recovery.py'),
-                     Path(__file__).resolve().with_name('c64u_probe.py')):
+                     Path(__file__).resolve().with_name('c64u_probe.py'),
+                     Path(__file__).resolve().with_name('c64u_native_shadow_identity.py')):
             body=path.read_bytes();source_identity[str(path)]={'sha256':sha(body),'bytes':len(body)}
             durable_write(self.output/('runner-source-'+path.name),body)
         dump(self.output/'runner-source-identities.json',source_identity)
@@ -353,6 +362,7 @@ def main():
                         help='Coherent screen cadence0.25..2.0seconds; stable blocking input is serviced promptly')
     parser.add_argument('--application-seconds',type=checked_application_seconds,default=180,
                         help='Application/evidence bound10..600seconds; larger budgets require an explicit option')
+    parser.add_argument('--shadow-package');parser.add_argument('--shadow-memory')
     args=parser.parse_args()
     project=Path(__file__).resolve().parents[1]
     out=Path(args.output).resolve()
@@ -367,7 +377,8 @@ def main():
     app=Application(Path(args.prg).read_bytes(),symbols,json.loads(Path(args.media_manifest).read_text()),
                     args.source,Path(args.service).read_bytes(),args.expected_prg_sha256,
                     seconds=args.application_seconds,resident_segments=resident,build_identity=build_identity,
-                    observation_interval=args.observation_interval)
+                    observation_interval=args.observation_interval,
+                    shadow_metadata=shadow_identity.metadata_from_paths(args.shadow_package,args.shadow_memory,pins))
     # Root launches through Terminal after reviewing frozen source/binary/media
     # identities. Importing this module or running mocked tests contacts no host.
     result=run_with_recovery(Client(args.host),app.service_prg,out,application=app)

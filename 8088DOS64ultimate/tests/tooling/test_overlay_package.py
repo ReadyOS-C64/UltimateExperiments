@@ -21,19 +21,19 @@ class OverlayPackageTests(unittest.TestCase):
             self.assertEqual(expected, int(value.group(1), 16), name)
 
     def test_exact_slots_identity_padding_and_payload(self):
-        for identity in (1, 2, 3, 4, 5):
+        for identity in (1, 2, 3, 4, 5, 6):
             for n in (1, 255, 256, 1088, 1792):
                 payload = bytes(i % 251 for i in range(n))
                 slot = m.slot(payload, identity)
                 self.assertEqual(2048, len(slot))
                 self.assertEqual(b"D64O" + bytes((1, identity)), slot[:6])
                 self.assertEqual((n, 0xC900, 0), struct.unpack("<HHH", slot[6:12]))
-                self.assertEqual({1:b"FILE",2:b"TEXT",3:b"KEYS",4:b"TIME",5:b"CGA "}[identity], slot[12:16])
+                self.assertEqual({1:b"FILE",2:b"TEXT",3:b"KEYS",4:b"TIME",5:b"CGA ",6:b"HD  "}[identity], slot[12:16])
                 self.assertEqual(payload, slot[16:16+n])
                 self.assertEqual(bytes(2032-n), slot[16+n:])
 
     def test_reject_empty_oversize_and_unknown(self):
-        for payload, identity in ((b"", 1), (bytes(1793), 2), (b"x", 0), (b"x", 6), (b"x", 255)):
+        for payload, identity in ((b"", 1), (bytes(1793), 2), (b"x", 0), (b"x", 7), (b"x", 255)):
             with self.assertRaises(ValueError):
                 m.slot(payload, identity)
 

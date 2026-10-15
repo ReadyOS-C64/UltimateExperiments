@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import sys
 import c64u_native_file_recovery as h
+from c64u_native_shadow_identity import metadata_from_paths
 from c64u_bulk_reu_recovery import run_with_recovery,dump,sha
 from c64u_native_application import Application,labels_from,resident_from_map,pinned_hashes,checked_observation_interval,checked_application_seconds
 
@@ -30,7 +31,7 @@ def checked_application(application):
 
 def identities():
     support=Path(__file__).resolve().parent
-    paths=[support/'c64u_native_file_recovery.py',support/'c64u_native_file_runner.py',h.PROJECT/'build/dos64-native-file-restore.prg']+[h.PROJECT/'build_support'/name for name in ('c64u_bulk_reu_recovery.py','c64u_ftp_put_transport.py','c64u_probe.py','c64u_native_application.py','c64u_native_application_support.py')]
+    paths=[support/'c64u_native_file_recovery.py',support/'c64u_native_file_runner.py',h.PROJECT/'build/dos64-native-file-restore.prg']+[h.PROJECT/'build_support'/name for name in ('c64u_bulk_reu_recovery.py','c64u_ftp_put_transport.py','c64u_probe.py','c64u_native_application.py','c64u_native_shadow_identity.py','c64u_native_application_support.py')]
     return {str(p):{'sha256':sha(p.read_bytes()),'bytes':p.stat().st_size} for p in paths}
 
 
@@ -48,6 +49,7 @@ def main(argv=None):
                         help='Coherent screen cadence0.25..2.0seconds; stable blocking input is serviced promptly')
     parser.add_argument('--application-seconds',type=checked_application_seconds,default=180,
                         help='Application/evidence bound10..600seconds; larger budgets require an explicit option')
+    parser.add_argument('--shadow-package');parser.add_argument('--shadow-memory')
     args=parser.parse_args(argv)
     output=Path(args.output).resolve()
     if not output.is_relative_to((h.PROJECT/'agentworking/runs').resolve()):parser.error('Output must be a fresh project-owned agentworking/runs directory')
@@ -66,7 +68,7 @@ def main(argv=None):
         identity=json.loads(Path(args.build_manifest).read_text());pins=pinned_hashes(identity)
         for artifact in (args.prg,args.labels,args.map):
             if sha(Path(artifact).read_bytes()) not in pins:parser.error('Runtime artifact absent from reviewed build manifest: '+artifact)
-        app=Application(Path(args.prg).read_bytes(),labels_from(args.labels),json.loads(Path(args.media_manifest).read_text()),args.source,Path(args.service).read_bytes(),args.expected_prg_sha256,seconds=args.application_seconds,resident_segments=resident_from_map(args.map),build_identity=identity,observation_interval=args.observation_interval)
+        app=Application(Path(args.prg).read_bytes(),labels_from(args.labels),json.loads(Path(args.media_manifest).read_text()),args.source,Path(args.service).read_bytes(),args.expected_prg_sha256,seconds=args.application_seconds,resident_segments=resident_from_map(args.map),build_identity=identity,observation_interval=args.observation_interval,shadow_metadata=metadata_from_paths(args.shadow_package,args.shadow_memory,pins))
         native=app.prg;diag=app.base;service=app.service_prg;application=checked_application(app)
     if sha(service)!=h.SERVICE_SHA:parser.error('Original frozen40fe DRS1 recovery service required')
     stage=json.loads(Path(args.staging_manifest).read_text())

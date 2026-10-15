@@ -7,7 +7,7 @@ class FiveOverlayContract(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
   cls.mp=Path('build/dos64-tests.map').read_text();cls.labels=Path('build/dos64-tests.labels').read_text();cls.prg=Path('build/dos64-tests.prg').read_bytes()
- def check(self,mp=None,labels=None):return verify(self.mp if mp is None else mp,self.labels if labels is None else labels,self.prg)
+ def check(self,mp=None,labels=None):return verify(self.mp if mp is None else mp,self.labels if labels is None else labels,self.prg,shadow_payload=Path("build/dos64-tests-resident.prg.hdb.bin").read_bytes())
  def change(self,name):
   changed=re.sub(r'^(al )([0-9A-F]+)( \.'+name+r')$',lambda m:m[1]+f'{int(m[2],16)+1:06X}'+m[3],self.labels,flags=re.M)
   self.assertNotEqual(changed,self.labels);return changed

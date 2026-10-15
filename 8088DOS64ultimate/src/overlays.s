@@ -1,5 +1,6 @@
 .include "overlays.inc"
 .include "reu.inc"
+.import hdb_load_extension,hd_init,hd_prepare,hd_advance,hd_retry,hd_chs_to_lba,__HDCODE_SIZE__
 .import dos64_pit_init, dos64_pit_rebase, dos64_pit_advance, dos64_pit_poll
 .import dos64_irq_pulse, dos64_irq_select, dos64_irq_try, dos64_irq_repeat
 .import __IRQMAIN_SIZE__, __IRQDEVICE_SIZE__, __PITCODE_SIZE__
@@ -30,7 +31,7 @@ TEXT_SIZE = __RENDERCODE_SIZE__ + __DISPLAYCODE_SIZE__
 .export dos64_overlay_boot_code_start, dos64_overlay_boot_code_end
 .export dos64_overlay_headers
 .assert OV_ASSETS >= $340000, error, "overlay assets below owned staging slice"
-.assert OV_ASSETS+5*OV_SLOT_SIZE <= $380000, error, "overlay assets exceed owned staging slice"
+.assert OV_ASSETS+6*OV_SLOT_SIZE <= $380000, error, "overlay assets exceed owned staging slice"
 .assert (OV_ASSETS & (OV_SLOT_SIZE-1)) = 0, error, "overlay slots require 2 KiB alignment"
 .assert OV_HEADER+OV_WINDOW_SIZE <= OV_SLOT_SIZE, error, "overlay header/payload exceeds slot"
 .assert __FILECODE_SIZE__ > 0, lderror, "empty file overlay"
@@ -67,7 +68,7 @@ dos64_overlay_acquire:
     lda dos64_overlay_requested
     cmp #OV_FILE
     bcc ov_bad_id
-    cmp #6
+    cmp #7
     bcs ov_bad_id
     inc dos64_overlay_busy
     cmp dos64_overlay_current
@@ -79,7 +80,7 @@ dos64_overlay_acquire:
     asl
     asl
     clc
-    adc #32                      ; variant header descriptor base
+    adc #40                      ; variant header descriptor base
     tax
     jsr ov_dma
     bcs ov_dma_failed
@@ -105,7 +106,7 @@ dos64_overlay_acquire:
     asl
     asl
     clc
-    adc #72                      ; variant payload descriptor base
+    adc #88                      ; variant payload descriptor base
     tax
     jsr ov_dma
     bcs ov_dma_failed
@@ -213,6 +214,18 @@ WRAP dos64_overlay_render_graphics_line, OV_GFX, dos64_render_graphics_line, 1
 .export dos64_overlay_present_graphics_line
 WRAP dos64_overlay_present_graphics_line, OV_GFX, dos64_present_graphics_line, 1
 
+.segment "HDBIOS"
+.export dos64_overlay_hd_init
+WRAP dos64_overlay_hd_init, OV_HD, hd_init
+.export dos64_overlay_hd_prepare
+WRAP dos64_overlay_hd_prepare, OV_HD, hd_prepare
+.export dos64_overlay_hd_advance
+WRAP dos64_overlay_hd_advance, OV_HD, hd_advance
+.export dos64_overlay_hd_retry
+WRAP dos64_overlay_hd_retry, OV_HD, hd_retry
+.export dos64_overlay_hd_chs_to_lba
+WRAP dos64_overlay_hd_chs_to_lba, OV_HD, hd_chs_to_lba
+.segment "CODE"
 ; Descriptors are reversed for the eight-byte loop into request[7..0].
 ov_dma:
     ldy #7
@@ -231,16 +244,19 @@ ov_requests:
     REQUEST OV_INPUT_SOURCE, OV_ASSETS+2*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
     REQUEST OV_PIT_SOURCE, OV_ASSETS+3*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
     REQUEST OV_GFX_SOURCE, OV_ASSETS+4*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
+    REQUEST OV_HD_SOURCE, OV_ASSETS+5*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
     REQUEST $C000, OV_ASSETS, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+2*OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+3*OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+4*OV_SLOT_SIZE, OV_HEADER, 1
+    REQUEST $C000, OV_ASSETS+5*OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST OV_WINDOW, OV_ASSETS+OV_HEADER, __FILECODE_SIZE__, 1
     REQUEST OV_WINDOW, OV_ASSETS+OV_SLOT_SIZE+OV_HEADER, TEXT_SIZE, 1
     REQUEST OV_WINDOW, OV_ASSETS+2*OV_SLOT_SIZE+OV_HEADER, __INPUTCODE_SIZE__, 1
     REQUEST OV_WINDOW, OV_ASSETS+3*OV_SLOT_SIZE+OV_HEADER, PIT_SIZE, 1
     REQUEST OV_WINDOW, OV_ASSETS+4*OV_SLOT_SIZE+OV_HEADER, __GFXCODE_SIZE__, 1
+    REQUEST OV_WINDOW, OV_ASSETS+5*OV_SLOT_SIZE+OV_HEADER, __HDCODE_SIZE__, 1
 dos64_overlay_headers:
     .byte "D64O",1,OV_FILE
     .word __FILECODE_SIZE__,OV_WINDOW
@@ -262,6 +278,10 @@ dos64_overlay_headers:
     .word __GFXCODE_SIZE__,OV_WINDOW
     .word 0
     .byte "CGA "
+    .byte "D64O",1,OV_HD
+    .word __HDCODE_SIZE__,OV_WINDOW
+    .word 0
+    .byte "HD  "
 dos64_overlay_code_end:
 
 ; Bootstrap is cold resident CODE to keep DEVICECODE budget below 400 bytes.
@@ -334,6 +354,9 @@ dos64_overlay_cold_bootstrap:
     lda OV_GFX_SOURCE,x
     cmp dos64_overlay_headers+4*OV_HEADER,x
     jne ov_header_failed
+    lda OV_HD_SOURCE,x
+    cmp dos64_overlay_headers+5*OV_HEADER,x
+    jne ov_header_failed
     dex
     bpl @headers
     ldx #0
@@ -350,6 +373,11 @@ dos64_overlay_cold_bootstrap:
     jcs ov_dma_failed
     ldx #32
     jsr ov_dma
+    jcs ov_dma_failed
+    ldx #40
+    jsr ov_dma
+    jcs ov_dma_failed
+    jsr hdb_load_extension
     jcs ov_dma_failed
     lda #OV_READY
     sta dos64_overlay_ready

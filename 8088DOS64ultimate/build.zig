@@ -27,6 +27,16 @@ pub fn build(b: *std.Build) void {
     const run_reu_file=b.addRunArtifact(reu_file);run_reu_file.setCwd(b.path("."));
     b.step("native-file-recovery","Opt-in actual6502 full4MiB recovery and failure proof").dependOn(&run_reu_file.step);
     b.step("native-file-recovery-compile","Compile opt-in recovery fixture without executing full4MiB tests").dependOn(&reu_file.step);
+    const hd_options = b.addOptions();
+    hd_options.addOption(bool, "long_hd", b.option(bool, "long-hd", "Run opt-in genuine HD boot using explicit pinned manifests") orelse false);
+    hd_options.addOption(?[]const u8, "small_manifest", b.option([]const u8, "hd-small-manifest", "Path to pinned small HD fixture manifest"));
+    hd_options.addOption(?[]const u8, "large_manifest", b.option([]const u8, "hd-large-manifest", "Path to pinned large HD fixture manifest"));
+    for ([_]struct { name: []const u8, file: []const u8 }{ .{ .name = "hd-fixtures", .file = "tests/host/hd_fixtures.zig" }, .{ .name = "hd-backend", .file = "tests/host/hd_backend.zig" }, .{ .name = "hd-bios", .file = "tests/host/hd_integration.zig" }, .{ .name = "hd-cold", .file = "tests/host/hd_cold_start.zig" } }) |entry| {
+        const t = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path(entry.file), .target = target, .optimize = .Debug }) });
+        t.root_module.addOptions("hd_options", hd_options);
+        addPeddle(t.root_module, b);
+        b.step(entry.name, "Opt-in actual HD assembly integration").dependOn(&b.addRunArtifact(t).step);
+    }
     const workflows=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_builtin_workflows.zig"),.target=target,.optimize=.Debug}),.filters=&.{"internal disposable", "ASCII mapping"}});
     addPeddle(workflows.root_module,b);b.step("native-builtins","Opt-in genuine native DOS disposable workflows").dependOn(&b.addRunArtifact(workflows).step);
     const modes=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_builtin_workflows.zig"),.target=target,.optimize=.Debug}),.filters=&.{"MODE COM"}});

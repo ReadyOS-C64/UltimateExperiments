@@ -4,7 +4,7 @@
 .macpack longbranch
 .importzp dos64_address
 .import dos64_reu_request, dos64_reu_transfer
-.export dos64_cache_init, dos64_mem_read, dos64_mem_write
+.export dos64_cache_init, dos64_mem_read, dos64_mem_write, dos64_mem_write_span_byte
 .export dos64_cache_acquire, dos64_cache_release, dos64_cache_flush
 .export dos64_cache_limit, dos64_memory_mode, dos64_memory_error
 .export dos64_cache_map, dos64_cache_tags_lo, dos64_cache_tags_hi
@@ -148,6 +148,7 @@ dos64_mem_write:
     jsr mem_resolve
     jcs mem_failure
     ldy #0
+mem_store:
     lda dos64_mem_value
     sta (dos64_mem_pointer),y
     ldx dos64_cache_selected
@@ -172,6 +173,18 @@ dos64_mem_write:
     lda #1
     sta dos64_video_dirty
     jmp mem_success
+
+; Continuation of a successful writable RAM/CGA mem_write. ROM/hole ignored
+; writes never establish this capability. No intervening bus/cache access.
+; In: same selected frame, pointer, access kind; Y bounded within that page;
+; mem_value byte. Caller guarantees no page/region seam or cache mutation.
+; Same dirty/generation/epoch/video publication per byte as ordinary writes.
+; Does not acquire or resolve; synchronous, preserve P except C, clobber A/X.
+dos64_mem_write_span_byte:
+    php
+    sei
+    cld
+    jmp mem_store
 
 ; Read-only acquisition, including ROM. Pins selected frame and exposes pointer.
 ; Caller may read only through page end; must release before yielding. Writes

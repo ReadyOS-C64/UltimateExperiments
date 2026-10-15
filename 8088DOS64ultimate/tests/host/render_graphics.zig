@@ -12,7 +12,7 @@ fn init() !Fixture {
     color_model.dos64_graphics_color_enable(@ptrCast(f.machine));
     _=try f.call("dos64_overlay_init",10000);
     f.poke(try f.symbol("dos64_overlay_reu_mib"),4);
-    _=try f.call("dos64_overlay_bootstrap",10000);
+    _=try f.call("dos64_overlay_bootstrap",300_000);
     f.poke(try f.symbol("dos64_overlay_requested"),5);
     const loaded=try f.call("dos64_overlay_acquire",10000);
     try std.testing.expectEqual(@as(u8,0),loaded.p&1);

@@ -33,7 +33,7 @@ fn diagnostic(f: *F, stage: u8, error_code: u8, detail: u8) !void {
     try std.testing.expectEqual(detail, f.peek(d + 2));
 }
 fn blob() ![]u8 {
-    return std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", std.testing.allocator, .limited(10241));
+    return std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", std.testing.allocator, .limited(12289));
 }
 
 test "configured native entry commits all real overlays before starting read-only import" {
@@ -44,7 +44,7 @@ test "configured native entry commits all real overlays before starting read-onl
     const bytes = try blob();
     defer std.testing.allocator.free(bytes);
     c.dos64_reu_poke(f.machine, 0x33ffff, 0x83);
-    c.dos64_reu_poke(f.machine, 0x342800, 0x29);
+    c.dos64_reu_poke(f.machine, 0x343000, 0x29);
     try entry(&f, true);
     try diagnostic(&f, 2, 0, 0);
     try std.testing.expectEqual(@as(u8, 0xa5), try get(&f, "dos64_overlay_ready"));
@@ -52,10 +52,10 @@ test "configured native entry commits all real overlays before starting read-onl
     try std.testing.expectEqual(@as(u8, 0), try get(&f, "dos64_overlay_busy"));
     try std.testing.expectEqual(@as(u8, 4), try get(&f, "dos64_overlay_reu_mib"));
     try std.testing.expectEqual(@as(u8, 0), try get(&f, "dos64_disk_loaded"));
-    try std.testing.expectEqual(@as(u64, 7), c.dos64_dma_transfers(f.machine));
+    try std.testing.expectEqual(@as(u64, 8), c.dos64_dma_transfers(f.machine));
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x340000, bytes.ptr, bytes.len));
     try std.testing.expectEqual(@as(u8, 0x83), c.dos64_reu_peek(f.machine, 0x33ffff));
-    try std.testing.expectEqual(@as(u8, 0x29), c.dos64_reu_peek(f.machine, 0x342800));
+    try std.testing.expectEqual(@as(u8, 0x29), c.dos64_reu_peek(f.machine, 0x343000));
 }
 
 test "configured native malformed overlay header fails before REU writes and SYS cannot reset evidence" {
@@ -75,14 +75,14 @@ test "configured native malformed overlay header fails before REU writes and SYS
     try diagnostic(&f, 0xe1, 2, 4);
     // Explicit cold bootstrap repair remains independently legal; this does
     // not restart the high-level owner or pretend an active file is closed.
-    _ = try f.call("dos64_overlay_bootstrap", 10000);
+    _ = try f.call("dos64_overlay_bootstrap", 300_000);
     try std.testing.expectEqual(@as(u8, 0xa5), try get(&f, "dos64_overlay_ready"));
 }
 
 test "configured native partial bootstrap stays unpublished and explicit cold repair restores exact assets" {
     const bytes = try blob();
     defer std.testing.allocator.free(bytes);
-    for (0..5) |skip| for ([_]u32{ 0, 1, 17, 2047, 2048 }) |prefix| {
+    for (0..6) |skip| for ([_]u32{ 0, 1, 17, 2047, 2048 }) |prefix| {
         var f = try F.init();
         defer f.deinit();
         c.dos64_enable_reu(f.machine);
@@ -92,7 +92,7 @@ test "configured native partial bootstrap stays unpublished and explicit cold re
         try diagnostic(&f, 0xe1, 2, 5);
         try std.testing.expectEqual(@as(u8, 0), try get(&f, "dos64_overlay_ready"));
         try std.testing.expectEqual(@as(u8, 0), try get(&f, "dos64_overlay_busy"));
-        _ = try f.call("dos64_overlay_bootstrap", 10000);
+        _ = try f.call("dos64_overlay_bootstrap", 300_000);
         try std.testing.expectEqual(@as(u8, 0xa5), try get(&f, "dos64_overlay_ready"));
         try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x340000, bytes.ptr, bytes.len));
     };
@@ -104,7 +104,7 @@ test "loaded FILE direct ABI retains register flag and mapping coverage under ov
     c.dos64_enable_reu(f.machine);
     _ = try f.call("dos64_overlay_init", 10_000);
     try put(&f, "dos64_overlay_reu_mib", 4);
-    _ = try f.call("dos64_overlay_bootstrap", 10_000);
+    _ = try f.call("dos64_overlay_bootstrap", 300_000);
     try put(&f, "dos64_overlay_requested", 1);
     _ = try f.call("dos64_overlay_acquire", 10_000);
     for ([_]u8{ 0, 7, 0x2f, 0xff }) |ddr| for ([_]u8{ 0x30, 0x35, 0x37 }) |port| {

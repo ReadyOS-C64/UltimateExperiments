@@ -46,7 +46,7 @@ fn setup(data: []const u8) !F {
     host.c.dos64_enable_reu(f.machine);
     _ = try f.call("dos64_overlay_init", 10_000);
     try p(&f, "dos64_overlay_reu_mib", 4);
-    _ = try f.call("dos64_overlay_bootstrap", 10_000);
+    _ = try f.call("dos64_overlay_bootstrap", 300_000);
     c.dos64_uci_model_enable(f.machine, 0xdf1c, 3, 0xc9);
     c.import_model_source(f.machine, data.ptr, data.len);
     _ = try f.call("dos64_uci_init", 10_000);
@@ -65,7 +65,7 @@ fn setup(data: []const u8) !F {
     // Install actual packaged assets after filling the independent REU oracle.
     _ = try f.call("dos64_overlay_init", 10_000);
     try p(&f, "dos64_overlay_reu_mib", 4);
-    _ = try f.call("dos64_overlay_bootstrap", 10_000);
+    _ = try f.call("dos64_overlay_bootstrap", 300_000);
     for (try f.symbol("__IMPORT_LAST__")..0x8000) |i| f.poke(@intCast(i), 0xa6);
     return f;
 }

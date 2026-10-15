@@ -16,7 +16,7 @@ fn fixture(color:bool)!F{
  if(color)im.dos64_graphics_color_enable(@ptrCast(f.machine));
  c.dos64_cia_clock_enable(f.machine);im.dos64_host_input_model_enable(@ptrCast(f.machine));
  _=try call(&f,"dos64_overlay_init",10000,0);try set(&f,"dos64_overlay_reu_mib",4);
- _=try call(&f,"dos64_overlay_bootstrap",10000,0);
+ _=try call(&f,"dos64_overlay_bootstrap",300_000,0);
  _=try call(&f,"dos64_cpu_init",10000,0);try set(&f,"dos64_cache_limit",32);
  _=try call(&f,"dos64_cache_init",50000,0);_=try call(&f,"dos64_disk_init",10000,0);
  _=try call(&f,"dos64_bios_init",40_000_000,0);

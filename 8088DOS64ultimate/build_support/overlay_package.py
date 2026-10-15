@@ -27,11 +27,11 @@ IMPORT_SIZE = 0x1000
 
 
 def slot(payload, identity):
-    if identity not in (1, 2, 3, 4, 5):
+    if identity not in (1, 2, 3, 4, 5, 6):
         raise ValueError("unknown overlay identity")
     if not 1 <= len(payload) <= WINDOW_SIZE:
         raise ValueError("overlay payload must fit C900–CFFF and be nonempty")
-    tag = {1:b"FILE",2:b"TEXT",3:b"KEYS",4:b"TIME",5:b"CGA "}[identity]
+    tag = {1:b"FILE",2:b"TEXT",3:b"KEYS",4:b"TIME",5:b"CGA ",6:b"HD  "}[identity]
     header = b"D64O" + bytes((1, identity)) + struct.pack("<HHH", len(payload), WINDOW, 0) + tag
     return header + payload + bytes(SLOT_SIZE - HEADER - len(payload))
 
@@ -94,7 +94,7 @@ def append_input(prg,payload,labels):
     return prg+block,block
 
 
-def append_variant(prg,payload,labels,identity,area,members,source):
+def validate_variant(payload,labels,area,members):
     symbols={name.lstrip("."):int(addr,16) for addr,name in re.findall(r"^al ([0-9A-Fa-f]+) (\S+)",labels,re.M)}
     cursor=WINDOW
     for name in members:
@@ -103,8 +103,13 @@ def append_variant(prg,payload,labels,identity,area,members,source):
             raise ValueError(area+" member placement differs from linked output")
         cursor+=size
     expected={"__"+area+"_START__":WINDOW,"__"+area+"_SIZE__":WINDOW_SIZE,"__"+area+"_FILEOFFS__":0,"__"+area+"_LAST__":cursor}
-    if len(prg)!=source-0x801+2 or cursor-WINDOW!=len(payload) or any(symbols.get(k)!=v for k,v in expected.items()):
-        raise ValueError(area+" source/length differs from linked output")
+    if cursor-WINDOW!=len(payload) or any(symbols.get(k)!=v for k,v in expected.items()):
+        raise ValueError(area+" length differs from linked output")
+
+def append_variant(prg,payload,labels,identity,area,members,source):
+    validate_variant(payload,labels,area,members)
+    if prg[:2]!=b"\x01\x08"or len(prg)!=source-0x801+2:
+        raise ValueError(area+" source differs from linked output")
     block=slot(payload,identity)
     return prg+block,block
 
@@ -115,6 +120,15 @@ def validate_text(payload,labels):
         raise ValueError("TEXT payload must include canonical contiguous718-byte renderer+245-byte VIC setup")
 
 
+def append_shadow(prg,payload,labels):
+    """Separate resident RAM shadow; never a C900 overlay and excludes vectors."""
+    symbols={name.lstrip("."):int(addr,16)for addr,name in re.findall(r"^al ([0-9A-Fa-f]+) (\S+)",labels,re.M)}
+    expected={"__HDEXT_START__":0xf000,"__HDEXT_SIZE__":0xe00,"__HDEXT_FILEOFFS__":0,"__HDEXT_LAST__":0xf000+len(payload),"__HDBIOS_LOAD__":0xf000,"__HDBIOS_RUN__":0xf000,"__HDBIOS_SIZE__":len(payload)}
+    if prg[:2]!=b"\x01\x08"or len(prg)!=0xa000-0x801+2 or not 1<=len(payload)<=0xe00 or any(symbols.get(k)!=v for k,v in expected.items()):
+        raise ValueError("shadow must be exact linked F000-FDFF image after complete six-overlay sources")
+    return prg+payload+bytes(0xe00-len(payload))
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--resident-prg", type=pathlib.Path, required=True)
@@ -123,6 +137,8 @@ def main():
     p.add_argument("--input",type=pathlib.Path,required=True)
     p.add_argument("--pit",type=pathlib.Path,required=True)
     p.add_argument("--gfx",type=pathlib.Path,required=True)
+    p.add_argument("--hd",type=pathlib.Path)
+    p.add_argument("--shadow",type=pathlib.Path)
     p.add_argument("--import-code", type=pathlib.Path,required=True)
     p.add_argument("--labels", type=pathlib.Path)
     p.add_argument("--output-prg", type=pathlib.Path, required=True)
@@ -131,7 +147,9 @@ def main():
     a = p.parse_args()
     if not a.labels or bool(a.import_code) != bool(a.labels):
         p.error("cold importer requires both linked code and labels")
-    inputs = (a.resident_prg,a.files,a.render,a.import_code,a.labels,a.input,a.pit,a.gfx)
+    if bool(a.hd)!=bool(a.shadow):
+        p.error("HD and shadow linked outputs must be supplied together")
+    inputs = (a.resident_prg,a.files,a.render,a.import_code,a.labels,a.input,a.pit,a.gfx)+((a.hd,a.shadow)if a.hd else ())
     outputs = (a.output_prg, a.output_assets) + ((a.manifest,) if a.manifest else ())
     resolved = [path.resolve() for path in inputs + outputs]
     if len(set(resolved)) != len(resolved):
@@ -139,6 +157,10 @@ def main():
     raw = [path.read_bytes() for path in inputs]
     try:
         validate_text(raw[2],raw[4].decode())
+        validate_variant(raw[1],raw[4].decode(),"FILE",("FILECODE",))
+        validate_variant(raw[2],raw[4].decode(),"RENDER",("RENDERCODE","DISPLAYCODE"))
+        if not a.hd and re.search(r"^al (?!000000)[0-9A-Fa-f]+ \.__HDCODE_SIZE__$",raw[4].decode(),re.M):
+            raise ValueError("linked HD requires paired HD and shadow inputs")
         prg, assets = package(*raw[:3])
         if a.import_code:
             prg = append_import(prg,raw[3],raw[4].decode())
@@ -147,6 +169,10 @@ def main():
         prg,pit_slot=append_variant(prg,raw[6],raw[4].decode(),4,"PIT",("IRQMAIN","IRQDEVICE","PITCODE"),0x8800)
         prg,gfx_slot=append_variant(prg,raw[7],raw[4].decode(),5,"GFX",("GFXCODE",),0x9000)
         assets+=pit_slot+gfx_slot
+        if a.hd:
+            prg,hd_slot=append_variant(prg,raw[8],raw[4].decode(),6,"HD",("HDCODE",),0x9800)
+            assets+=hd_slot
+            prg=append_shadow(prg,raw[9],raw[4].decode())
     except ValueError as e:
         p.error(str(e))
     # Compute and validate all results before opening outputs. Build outputs are
@@ -159,11 +185,13 @@ def main():
                              for path, data in zip(inputs, raw)},
                   "window": WINDOW, "window_size": WINDOW_SIZE,
                   "startup_source": SOURCE, "reu_assets": ASSETS,
-                  "slot_size": SLOT_SIZE, "payload_lengths": [len(raw[1]),len(raw[2]),len(raw[5]),len(raw[6]),len(raw[7])],
-                  "startup_sources": [0x6000,0x6800,0x8000,0x8800,0x9000],
+                  "slot_size": SLOT_SIZE, "payload_lengths": [len(raw[1]),len(raw[2]),len(raw[5]),len(raw[6]),len(raw[7])]+([len(raw[8])]if a.hd else []),
+                  "startup_sources": [0x6000,0x6800,0x8000,0x8800,0x9000]+([0x9800]if a.hd else []),
+                  "shadow": ({"source":0xa000,"run":0xf000,"window_bytes":3584,"linked_bytes":len(raw[9]),"tail_zero_bytes":3584-len(raw[9]),"sha256":hashlib.sha256(raw[9]).hexdigest(),"ownership":"verified copy before cache; permanent RAM+IO, no KERNAL, excludes FE00-FFFF"}if a.hd else None),
                   "text_members": {"RENDERCODE":718,"DISPLAYCODE":245},
                   "fonts": {"narrow":{"start":0x4400,"bytes":1024,"executable":False,"sha256":hashlib.sha256(raw[0][0x4400-0x801+2:0x4800-0x801+2]).hexdigest()},"full":{"start":0x4800,"bytes":2048,"executable":False,"sha256":hashlib.sha256(raw[0][0x4800-0x801+2:0x5000-0x801+2]).hexdigest()}},
-                  "input_source_ownership": "copied before any guest cache use; then first four cache frames",
+                  "input_source_ownership": "INPUT copied before any guest cache use; then first four frames",
+                  "startup_cache_phase": {"start":0x8000,"end_exclusive":0xae00 if a.hd else 0x9800,"cache_frames":23 if a.hd else 12,"overlay_frames":16 if a.hd else 12,"shadow_frames":7 if a.hd else 0,"ownership":"all assets and complete shadow verified before any of these frames can be reused"},
                   "input_sha256": hashlib.sha256(raw[5]).hexdigest(),
                   "cold_import": ({"start": IMPORT_START, "window_bytes": IMPORT_SIZE,
                                    "linked_bytes": len(raw[3]), "tail_zero_bytes": IMPORT_SIZE-len(raw[3]),

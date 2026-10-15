@@ -4,6 +4,9 @@
 .include "host_input.inc"
 .include "render_graphics.inc"
 .macpack longbranch
+.import hdb_native_burst,hdb_active,hdc_copy,hdc_begin,hdc_poll,hdc_config
+.import hdc_enabled,hdc_flags,hdc_phase,hdc_error
+.export n_cpu_error,n_tick_return,n_burst,n_timer_cpu_error
 .import dos64_mem_read
 .importzp dos64_address
 .import dos64_render_graphics_request, dos64_overlay_present_graphics_line
@@ -77,7 +80,10 @@ dos64_native_entry:
 dos64_native_loop:
  lda n_stage
  cmp #2
+ beq @cold
+ cmp #6
  bne :+
+@cold:
  jsr dos64_native_cold_poll
  jmp dos64_native_loop
 : jsr dos64_native_tick
@@ -104,8 +110,10 @@ dos64_native_cold_poll:
  bne n_reject
  lda n_stage
  cmp #2
+ beq :+
+ cmp #6
  bne n_reject
- jmp n_cold_poll_impl
+: jmp n_cold_poll_impl
 dos64_native_nmi:
  rti
 ; A=error category, X=detail. Never touches cold state after display ownership.
@@ -155,6 +163,9 @@ n_key_request:
  bcs n_bad_request
  bcc n_ack_ok
 n_snapshot:
+ lda hdb_active
+ cmp #1
+ jeq n_bad_request
  lda n_stage
  cmp #4
  beq :+
@@ -344,14 +355,7 @@ n_present:
  rts
 .segment "CODE"
 n_cpu_burst:
- lda #16
- sta n_burst
-@next:
- jsr dos64_native_timer_step
- bcs n_timer_cpu_error
- dec n_burst
- bne @next
- jmp n_tick_return
+ jmp hdb_native_burst
 n_timer_cpu_error:
  lda dos64_irq_result
  cmp #2
@@ -477,6 +481,14 @@ dos64_native_cold_start:
  jcc n_config_bad
  cmp #3
  jcs n_config_bad
+ lda hdc_config+4
+ beq @floppy_path
+ cmp #$a5
+ jne n_config_bad
+ lda hdc_config+5
+ and #1
+ beq @path_valid
+@floppy_path:
  lda dos64_native_config+7
  cmp #2
  jcc n_config_bad
@@ -492,6 +504,7 @@ dos64_native_cold_start:
  jeq n_config_bad
  dex
  bpl @path_check
+@path_valid:
  ; Destructive machine takeover, prior machine state recovered by developer
  ; harness reset, never claimed resumable. Mask CIA interrupts before owning
  ; timer/NMI. RAM NMI vector points only at resident RTI.
@@ -534,7 +547,9 @@ dos64_native_cold_start:
  sta dos64_overlay_reu_mib
  jsr dos64_overlay_bootstrap
  jcs n_overlay_bad
- ; INPUT source8000 is now committed before cache frames can overwrite it.
+ jsr hdc_copy
+ jcs n_config_bad
+ ; All immutable code, shadow extension and resident HD config now committed.
  jsr dos64_cpu_init
  lda #32
  sta dos64_cache_limit
@@ -557,6 +572,12 @@ dos64_native_cold_start:
  jcs n_overlay_bad
  jsr dos64_import_init
  jcs n_import_bad
+ lda hdc_enabled
+ beq @import_floppy
+ lda hdc_flags
+ and #1
+ jeq n_after_import
+@import_floppy:
  lda dos64_native_config+6
  sta dos64_files_target
  lda dos64_native_config+7
@@ -585,6 +606,10 @@ dos64_native_cold_start:
  sta n_stage
  clc
  rts
+n_hd_bad:
+ ldx hdc_error
+ lda #11
+ jmp n_fail
 n_config_bad:
  ldx #0
  lda #1
@@ -613,22 +638,41 @@ n_cold_poll_impl:
  bcc :+
  lda dos64_host_clock_status
  cmp #HC_ERR_SAMPLE
- beq @defer
+ jeq n_hd_defer
  jmp n_clock_bad
-: jsr n_import_clock
+: lda n_stage
+ cmp #6
+ jeq n_hd_poll
+ jsr n_import_clock
  jsr dos64_import_poll
  jcs n_import_bad
  lda dos64_import_state
  cmp #IMPORT_BUSY
- beq @defer
+ jeq n_hd_defer
  cmp #IMPORT_DONE
  jne n_import_bad
+n_after_import:
  lda #3
  sta n_stage
  jsr dos64_bios_init
- bcs @bios_bad
+ jcs n_bios_bad
  jsr dos64_overlay_input_init
  jcs n_overlay_bad
+ jsr hdc_begin
+ jcs n_hd_bad
+ lda hdc_enabled
+ beq n_finish_cold
+ lda #6
+ sta n_stage
+ clc
+ rts
+n_hd_poll:
+ jsr hdc_poll
+ jcs n_hd_bad
+ lda hdc_phase
+ cmp #2
+ jne n_hd_defer
+n_finish_cold:
  lda #0
  sta n_attempts
 @timer_sample:
@@ -651,16 +695,16 @@ n_cold_poll_impl:
  jmp n_fail
 :
  jsr dos64_cold_release
- bcs @phase_bad
+ jcs n_phase_bad
  jmp n_activate
-@defer:
+n_hd_defer:
  clc
  rts
-@bios_bad:
+n_bios_bad:
  ldx dos64_bios_host_error
  lda #5
  jmp n_fail
-@phase_bad:
+n_phase_bad:
  ldx #0
  lda #10
  jmp n_fail

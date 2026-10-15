@@ -2,6 +2,9 @@
 .include "video.inc"
 .macpack longbranch
 .import dos64_guest, dos64_mem_read, dos64_mem_write
+.import dos64_mem_write_span_byte, dos64_cache_acquire, dos64_cache_release
+.import dos64_cache_selected, dos64_cache_limit, dos64_memory_error
+.importzp dos64_mem_pointer
 .importzp dos64_address, dos64_mem_value, dos64_segment
 .export dos64_video_service, dos64_video_host_error
 
@@ -55,7 +58,7 @@ dos64_video_service:
     sta dos64_video_host_error
     lda dos64_guest+G_AX+1
     cmp #$10
-    jcs v_done ; Original 11/08/82 XT VIDEO_IO out-of-range function is a no-op.
+    jcs v_done
     asl
     tax
     lda v_dispatch,x
@@ -301,7 +304,14 @@ v_set_mode:
     tax
     lda v_blank,x
 @store:
+    sta dos64_mem_value
+    ldy dos64_address
+    beq @resolve
+    jsr dos64_mem_write_span_byte
+    jmp @stored
+@resolve:
     jsr v_write
+@stored:
     jsr v_next
     lda dos64_address+1
     cmp #$C0
@@ -557,6 +567,10 @@ v_scroll_window:
 @bytes:
     lda v_width
     sta v_count
+    lda v_fill
+    bne @byte
+    jsr v_copy_spans
+    bcc @row_done
 @byte:
     lda v_fill
     beq @copy
@@ -595,6 +609,7 @@ v_scroll_window:
 @advance:
     dec v_count
     bne @byte
+@row_done:
     lda v_down
     bne @previous
     lda v_row
@@ -613,6 +628,119 @@ v_scroll_window:
 @done:
     rts
 
+.segment "HDBIOS"
+; Copy remaining row bytes in exact forward order. Source stays pinned while
+; destination resolves. Zero spare frames/pin overflow falls back before any
+; byte of the current span. Single-frame caches always use scalar traversal.
+; v_char=chunk size; v_byte=source frame, segment=source pointer, Y=index.
+v_copy_spans:
+    lda dos64_cache_limit
+    cmp #2
+    jcc @fallback
+@chunk:
+    lda v_count
+    sta v_char
+    lda v_src
+    beq @dst_bound
+    eor #$FF
+    clc
+    adc #1
+    cmp v_char
+    bcs @dst_bound
+    sta v_char
+@dst_bound:
+    lda v_dst
+    beq @acquire
+    eor #$FF
+    clc
+    adc #1
+    cmp v_char
+    bcs @acquire
+    sta v_char
+@acquire:
+    lda v_src
+    sta v_ptr
+    lda v_src+1
+    sta v_ptr+1
+    jsr v_vram_address
+    jsr dos64_cache_acquire
+    bcc @pinned
+    lda dos64_memory_error
+    cmp #7                  ; pin overflow: scalar read needs no new pin
+    jeq @fallback
+    jmp v_failed
+@pinned:
+    lda dos64_cache_selected
+    sta v_byte
+    lda dos64_mem_pointer
+    sta dos64_segment
+    lda dos64_mem_pointer+1
+    sta dos64_segment+1
+    ldy #0
+    lda (dos64_segment),y
+    pha
+    lda v_dst
+    sta v_ptr
+    lda v_dst+1
+    sta v_ptr+1
+    jsr v_vram_address
+    pla
+    sta dos64_mem_value
+    jsr dos64_mem_write
+    jcs @write_failed
+    ldy #1
+    cpy v_char
+    beq @release
+@copy:
+    lda (dos64_segment),y
+    sta dos64_mem_value
+    jsr dos64_mem_write_span_byte
+    iny
+    cpy v_char
+    bne @copy
+@release:
+    lda v_byte
+    sta dos64_cache_selected
+    jsr dos64_cache_release
+    clc
+    lda v_src
+    adc v_char
+    sta v_src
+    bcc @dst
+    inc v_src+1
+@dst:
+    clc
+    lda v_dst
+    adc v_char
+    sta v_dst
+    bcc @count
+    inc v_dst+1
+@count:
+    sec
+    lda v_count
+    sbc v_char
+    sta v_count
+    jne @chunk
+    clc
+    rts
+.segment "HDBIOS"
+@write_failed:
+    lda dos64_memory_error
+    pha
+    lda v_byte
+    sta dos64_cache_selected
+    jsr dos64_cache_release
+    pla
+    sta dos64_memory_error
+    cmp #2                  ; no evictable destination while source pinned
+    jeq @fallback
+    jmp v_failed
+@fallback:
+    sec
+    rts
+.segment "HDBIOS"
+
+.segment "DEVICECODE"
 v_tty:
     jsr v_text
     ; Original XT teletype uses ACTIVE_PAGE, independent of caller BH.

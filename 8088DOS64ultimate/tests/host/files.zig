@@ -39,7 +39,7 @@ fn setup() !F {
     host.c.dos64_enable_reu(f.machine);
     _ = try f.call("dos64_overlay_init", 10_000);
     try p(&f, "dos64_overlay_reu_mib", 4);
-    _ = try f.call("dos64_overlay_bootstrap", 10_000);
+    _ = try f.call("dos64_overlay_bootstrap", 300_000);
     m.dos64_uci_model_enable(f.machine, 0xdf1c, 7, 0xc9);
     try call(&f, "dos64_uci_init", 0);
     try call(&f, "dos64_files_init", 0);

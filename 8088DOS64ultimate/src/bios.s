@@ -2,6 +2,7 @@
 .include "memory.inc"
 .include "bios.inc"
 .include "video.inc"
+.import hdb_service,hdb_cf,hdb_boot_drive,hdb_extension_ready
 .macpack longbranch
 .import dos64_guest, dos64_cpu_value
 .import dos64_io_init, dos64_overlay_ready, dos64_cold_open
@@ -30,6 +31,7 @@ bios_mode: .res 1
 bios_count: .res 2
 bios_fill: .res 1
 bios_port: .res 1
+bios_disk_is_hd: .res 1
 
 .segment "CODE"
 ; Cold BIOS ownership: IVT 00000..003FF, BDA 00400..004FF and the entire
@@ -220,11 +222,18 @@ dos64_bios_port:
     lda bios_port
     cmp #BIOS_DISK_PORT
     jne bios_unrecognized
-    jsr dos64_disk_transfer
+    jsr bios_disk_dispatch
+    lda dos64_bios_waiting
+    jne bios_handled
     lda dos64_disk_host_error
     jne bios_host_failed
     ; The primitive leaves BIOS status in guest AH. Saved FLAGS belongs to the
     ; normal INT or PUSHF/CALL FAR frame; the ROM's ordinary IRET consumes it.
+    lda bios_disk_is_hd
+    beq @floppy_cf
+    lda hdb_cf
+    jmp @clear_carry
+@floppy_cf:
     lda dos64_guest+G_AX+1
     beq @clear_carry
     lda #1
@@ -261,8 +270,9 @@ dos64_bios_port:
     sta dos64_guest+G_ES+1
     sta dos64_guest+G_BX
     sta dos64_guest+G_CX+1
-    sta dos64_guest+G_DX
     sta dos64_guest+G_DX+1
+    lda hdb_boot_drive
+    sta dos64_guest+G_DX
     lda #$7C
     sta dos64_guest+G_BX+1
     lda #1
@@ -270,13 +280,16 @@ dos64_bios_port:
     sta dos64_guest+G_AX
     lda #2
     sta dos64_guest+G_AX+1
-    jsr dos64_disk_transfer
+    jsr bios_disk_dispatch
+    lda dos64_bios_waiting
+    jne bios_handled
+    lda dos64_guest+G_AX+1
     sta dos64_bios_boot_status
     lda dos64_disk_host_error
     jne bios_host_failed
     lda dos64_bios_boot_status
     ; Loading the status above must not replace transfer's success/failure C.
-    jcs bios_handled
+    jne bios_handled
     lda #0
     sta dos64_guest+G_CS
     sta dos64_guest+G_CS+1
@@ -294,6 +307,20 @@ dos64_bios_port:
     lda #$F2
     sta dos64_guest+G_FLAGS+1
     jmp bios_handled
+bios_disk_dispatch:
+    lda #0
+    sta bios_disk_is_hd
+    lda dos64_guest+G_DX
+    cmp #$80
+    bne @floppy
+    lda hdb_extension_ready
+    cmp #$a5
+    bne @floppy
+    inc bios_disk_is_hd
+    jmp hdb_service
+@floppy:
+    jmp dos64_disk_transfer
+
 bios_other_gate:
     cmp #$A2
     jeq bios_timer_gate

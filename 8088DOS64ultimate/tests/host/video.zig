@@ -15,6 +15,11 @@ fn init(frames: u8) !Fixture {
     var f = try Fixture.init();
     errdefer f.deinit();
     c.dos64_enable_reu(f.machine);
+    _ = try f.call("dos64_overlay_init", 10_000);
+    f.poke(try f.symbol("dos64_overlay_reu_mib"),4);
+    const boot = try f.call("dos64_overlay_bootstrap",300_000);
+    try std.testing.expectEqual(@as(u8,0),boot.p&1);
+    try std.testing.expectEqual(@as(u8,0xa5),f.peek(try f.symbol("hdb_extension_ready")));
     f.poke(try f.symbol("dos64_cache_limit"), frames);
     _ = try f.call("dos64_cache_init", 50_000);
     _ = try f.call("dos64_cpu_init", 10_000);

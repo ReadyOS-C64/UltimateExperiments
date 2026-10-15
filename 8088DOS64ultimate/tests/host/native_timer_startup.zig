@@ -28,7 +28,7 @@ test "bounded native cold timer seam seeds fresh raw epoch before enabling and T
  im.dos64_host_input_model_enable(@ptrCast(f.machine));
  try call(&f,"dos64_overlay_init",10000,0);
  try p(&f,"dos64_overlay_reu_mib",4);
- try call(&f,"dos64_overlay_bootstrap",100000,0);
+ try call(&f,"dos64_overlay_bootstrap",300_000,0);
  try call(&f,"dos64_cpu_init",10000,0);
  try p(&f,"dos64_cache_limit",32);
  try call(&f,"dos64_cache_init",100000,0);

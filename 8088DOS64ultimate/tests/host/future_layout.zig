@@ -18,6 +18,7 @@ fn init() !F {
     c.dos64_enable_reu(f.machine);
     try call(&f, "dos64_overlay_init", 0);
     try put(&f, "dos64_overlay_reu_mib", 4);
+    for(0xfe00..0x10000)|at|f.poke(@intCast(at),@truncate(at^0xa5));
     try call(&f, "dos64_overlay_bootstrap", 0);
     return f;
 }
@@ -28,15 +29,19 @@ fn acquire(f: *F, id: u8) !void {
 fn release(f: *F) !void {
     try call(f, "dos64_overlay_release", 0);
 }
-test "five assets commit before cache frames are reclaimed and every payload switches exactly" {
+test "six assets commit before cache frames are reclaimed and every payload switches exactly" {
     var f = try init();
     defer f.deinit();
-    const assets = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", std.testing.allocator, .limited(10241));
+    const assets = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", std.testing.allocator, .limited(12289));
     defer std.testing.allocator.free(assets);
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x340000, assets.ptr, assets.len));
-    try std.testing.expectEqual(@as(u64, 5), c.dos64_dma_transfers(f.machine));
-    for (0x8000..0x9800) |a| f.poke(@intCast(a), 0xee);
-    for ([_]u8{ 4, 5, 1, 2, 3, 5, 4 }) |id| {
+    try std.testing.expectEqual(@as(u64, 6), c.dos64_dma_transfers(f.machine));
+    var shadow:[3584]u8=undefined;for(&shadow,0..)|*v,i|{v.*=f.peek(@intCast(0xa000+i));try std.testing.expectEqual(v.*,f.peek(@intCast(0xf000+i)));}
+    for(0xfe00..0x10000)|at|try std.testing.expectEqual(@as(u8,@truncate(at^0xa5)),f.peek(@intCast(at)));
+    try std.testing.expectEqual(@as(u8,0xa5),try get(&f,"hdb_extension_ready"));
+    // Four asset slots use16 cacheframes; separate3584-byte source uses7.
+    for (0x8000..0xae00) |a| f.poke(@intCast(a), 0xee);
+    for ([_]u8{ 4, 5, 6, 1, 2, 3, 6, 5, 4 }) |id| {
         try acquire(&f, id);
         try std.testing.expectEqual(@as(u8, 1), try get(&f, "dos64_overlay_busy"));
         const slot = assets[(@as(usize, id) - 1) * 2048 ..][0..2048];
@@ -46,6 +51,7 @@ test "five assets commit before cache frames are reclaimed and every payload swi
         try std.testing.expectEqual(@as(u8, 0), try get(&f, "dos64_overlay_busy"));
     }
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x340000, assets.ptr, assets.len));
+    for(shadow,0..)|v,i|try std.testing.expectEqual(v,f.peek(@intCast(0xf000+i)));
 }
 test "PIT wrappers hold one combined image for nested helper calls and release success and failure carry" {
     var f = try init();

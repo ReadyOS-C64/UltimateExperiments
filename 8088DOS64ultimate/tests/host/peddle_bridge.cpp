@@ -3,6 +3,8 @@
 #include "reu_model.h"
 #include "uci_model.h"
 #include "image_import_model.h"
+#include "hd_file_model.h"
+#include "hd_trace.h"
 #include "cia_clock_model.h"
 #include "clock_probe_model.h"
 #include "host_input_model.h"
@@ -25,6 +27,27 @@ public:
     std::unique_ptr<UciModel> uci;
     // Explicit read-only filesystem source fixture; disabled in ordinary UCI.
     std::unique_ptr<ImageImportModel> image_import;
+    std::unique_ptr<HdFileModel> hd_file;
+    struct HdRequest {std::array<uint16_t,14> regs;uint16_t ret_ip,ret_cs,ret_flags;uint8_t profile,phase;std::vector<uint8_t> data;};
+    std::vector<HdRequest> hd_requests;
+    uint16_t hd_trace_pc=0,hd_trace_guest=0,hd_trace_active=0,hd_trace_profile=0;
+    uint8_t hd_trace_phase_id=0;bool hd_trace_good=true;
+    uint8_t hd_guest_byte(uint32_t physical){
+      physical&=0xfffff;const uint16_t page=physical>>9;const uint8_t frame=ram[0xe100+page];
+      if(frame==0xff)return reu->bytes[physical];
+      if(frame>=32 || !(ram[0xe940+frame]&1) || (uint16_t(ram[0xe900+frame])|(uint16_t(ram[0xe920+frame])<<8))!=page){hd_trace_good=false;return 0;}
+      return ram[0x8000+512*frame+(physical&511)];
+    }
+    void observe_hd(){
+      if(!hd_trace_pc||reg.pc!=hd_trace_pc||ram[hd_trace_active]||!reu)return;
+      HdRequest q{};for(unsigned i=0;i<14;++i)q.regs[i]=uint16_t(ram[hd_trace_guest+2*i])|(uint16_t(ram[hd_trace_guest+2*i+1])<<8);
+      const uint8_t op=q.regs[0]>>8;if(op<2||op>4)return;
+      q.profile=ram[hd_trace_profile];q.phase=hd_trace_phase_id;
+      auto sw=[&](unsigned delta){const uint16_t off=q.regs[4]+delta;uint32_t a=(uint32_t(q.regs[10])*16+off)&0xfffff;return uint16_t(hd_guest_byte(a))|(uint16_t(hd_guest_byte(a+1))<<8);};
+      q.ret_ip=sw(0);q.ret_cs=sw(2);q.ret_flags=sw(4);
+      if(op==3){uint32_t begin=(uint32_t(q.regs[8])*16+q.regs[3])&0xfffff;for(unsigned i=0;i<(q.regs[0]&255)*512;++i)q.data.push_back(hd_guest_byte(begin+i));}
+      hd_requests.push_back(q);
+    }
     // Explicitly enabled per fixture; its PHI2 advances are independent of CPU.
     std::unique_ptr<CiaClockModel> cia_clock;
     bool native_runtime_control=false;
@@ -43,6 +66,7 @@ public:
         reg.sp = r.sp; reg.a = r.a; reg.x = r.x; reg.y = r.y; setP(r.p);
     }
     void step() {
+        observe_hd();
         // Peddle's embedding application owns clock advancement. Its
         // executeInstruction() does not increment clock. Step microcycles here
         // so budgets, delayed interrupt inputs and timing assertions are real.
@@ -108,6 +132,7 @@ protected:
             if (a>=0xdc00 && a<=0xdc0f && host_input) {host_input->write(a-0xdc00,v);return;}
             if (uci && uci->owns(a)) {
                 if (image_import && !image_import->prepare(*uci, a, v)) return;
+                if(hd_file){hd_file->owner=hd_requests.empty()?0xffffffff:uint32_t(hd_requests.size()-1);hd_file->phase=hd_trace_phase_id;if(!hd_file->prepare(*uci,a,v))return;}
                 uci->write(a, v); return;
             }
             if (a >= 0xdd00 && a <= 0xdd0f && cia_clock) {
@@ -348,3 +373,31 @@ extern "C" uint8_t native_runtime_nmi_checked(Dos64Machine *m){return m->cpu.nat
 
 extern "C" void dos64_graphics_color_enable(Dos64Machine *m){m->cpu.graphics_color_ram=true;}
 extern "C" uint8_t dos64_graphics_color_peek(Dos64Machine *m,uint16_t a){return m->cpu.io[a-0xd000];}
+
+extern "C" {
+void hd_model_source(void *p,const uint8_t *s,size_t n){auto &m=static_cast<Dos64Machine*>(p)->cpu;if(!m.uci||n>20971521){m.unsupported=true;return;}m.image_import.reset();m.hd_file=std::make_unique<HdFileModel>();m.hd_file->source.assign(s,s+n);}
+void hd_model_faults(void *p,int command,int short_offset,int partial_write){auto &m=static_cast<Dos64Machine*>(p)->cpu;if(!m.hd_file){m.unsupported=true;return;}m.hd_file->fail_command=command;m.hd_file->short_offset=short_offset;m.hd_file->partial_write=partial_write;}
+uint32_t hd_model_commands(void *p){auto &m=static_cast<Dos64Machine*>(p)->cpu;return m.hd_file?m.hd_file->history.size():0;}
+uint8_t hd_model_byte(void *p,uint32_t a){auto &m=static_cast<Dos64Machine*>(p)->cpu;return m.hd_file&&a<m.hd_file->source.size()?m.hd_file->source[a]:0;}
+uint32_t hd_model_reads_at(void *p,uint32_t a){auto &m=static_cast<Dos64Machine*>(p)->cpu;uint32_t pos=0,n=0;if(!m.hd_file)return 0;for(auto &c:m.hd_file->history){if(c[1]==6)pos=uint32_t(c[2])|(uint32_t(c[3])<<8)|(uint32_t(c[4])<<16)|(uint32_t(c[5])<<24);if(c[1]==4){if(pos==a)++n;pos+=c[2]+256*c[3];}}return n;}
+}
+
+extern "C" {
+void hd_model_floppy(void *p,const uint8_t *s,size_t n){auto &m=static_cast<Dos64Machine*>(p)->cpu;if(!m.hd_file||n>368640){m.unsupported=true;return;}m.hd_file->floppy.assign(s,s+n);}
+void hd_model_path(void *p,const uint8_t *s,size_t n){auto &m=static_cast<Dos64Machine*>(p)->cpu;if(!m.hd_file||n>127){m.unsupported=true;return;}m.hd_file->hd_path.assign(s,s+n);}
+uint8_t hd_model_handle_open(void *p){auto &m=static_cast<Dos64Machine*>(p)->cpu;return m.hd_file&&m.hd_file->opened;}
+uint32_t hd_model_count_op(void *p,uint8_t op){auto &m=static_cast<Dos64Machine*>(p)->cpu;uint32_t n=0;if(m.hd_file)for(auto &c:m.hd_file->history)if(c.size()>1&&c[1]==op)++n;return n;}
+}
+
+extern "C" {
+void hd_trace_enable(void *p,uint16_t pc,uint16_t guest,uint16_t active,uint16_t profile){auto &m=static_cast<Dos64Machine*>(p)->cpu;m.hd_trace_pc=pc;m.hd_trace_guest=guest;m.hd_trace_active=active;m.hd_trace_profile=profile;}
+void hd_trace_phase(void *p,uint8_t phase){static_cast<Dos64Machine*>(p)->cpu.hd_trace_phase_id=phase;}
+uint8_t hd_trace_valid(void *p){return static_cast<Dos64Machine*>(p)->cpu.hd_trace_good;}
+uint32_t hd_trace_requests(void *p){return static_cast<Dos64Machine*>(p)->cpu.hd_requests.size();}
+uint32_t hd_trace_field(void *p,uint32_t n,uint8_t field){auto &q=static_cast<Dos64Machine*>(p)->cpu.hd_requests.at(n);if(field<14)return q.regs[field];switch(field){case 14:return q.ret_ip;case 15:return q.ret_cs;case 16:return q.ret_flags;case 17:return q.profile;case 18:return q.phase;case 19:return q.data.size();}return 0;}
+uint8_t hd_trace_data(void *p,uint32_t n,uint32_t off){return static_cast<Dos64Machine*>(p)->cpu.hd_requests.at(n).data.at(off);}
+uint32_t hd_trace_writes(void *p){auto &m=static_cast<Dos64Machine*>(p)->cpu;return m.hd_file?m.hd_file->writes.size():0;}
+uint32_t hd_trace_write_field(void *p,uint32_t n,uint8_t field){auto &q=static_cast<Dos64Machine*>(p)->cpu.hd_file->writes.at(n);switch(field){case 0:return q.offset;case 1:return q.owner;case 2:return q.phase;case 3:return q.data.size();}return 0;}
+uint8_t hd_trace_write_data(void *p,uint32_t n,uint32_t off){return static_cast<Dos64Machine*>(p)->cpu.hd_file->writes.at(n).data.at(off);}
+uint8_t hd_model_copy_source(void *p,uint8_t *out,size_t n){auto &m=static_cast<Dos64Machine*>(p)->cpu;if(!m.hd_file||m.hd_file->source.size()!=n)return 0;std::copy_n(m.hd_file->source.data(),n,out);return 1;}
+}

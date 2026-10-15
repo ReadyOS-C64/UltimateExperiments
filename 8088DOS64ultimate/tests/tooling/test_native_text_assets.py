@@ -21,9 +21,9 @@ class NativeTextAssets(unittest.TestCase):
   with self.assertRaises(ValueError):pack.validate_text(payload,changed)
  def test_loaded_fonts_and_matrix_gap_have_independent_contracts(self):
   mp=(ROOT/'build/dos64-tests.map').read_text();labels=(ROOT/'build/dos64-tests.labels').read_text();raw=(ROOT/'build/dos64-tests.prg').read_bytes()
-  self.assertTrue(m.verify(mp,labels,raw)['passed'])
+  self.assertTrue(m.verify(mp,labels,raw,shadow_payload=(ROOT/"build/dos64-tests-resident.prg.hdb.bin").read_bytes())['passed'])
   for at in (0x43e8,0x43ff,0x4400,0x47ff,0x4800,0x4fff):
-   b=bytearray(raw);b[at-0x801+2]^=1;self.assertFalse(m.verify(mp,labels,b)['passed'])
+   b=bytearray(raw);b[at-0x801+2]^=1;self.assertFalse(m.verify(mp,labels,b,shadow_payload=(ROOT/"build/dos64-tests-resident.prg.hdb.bin").read_bytes())['passed'])
  def test_same_text_member_overlap_is_rejected(self):
   mp=(ROOT/'build/dos64-tests.map').read_text();labels=(ROOT/'build/dos64-tests.labels').read_text();changed=mp.replace('DISPLAYCODE           00CBCE  00CCC2','DISPLAYCODE           00CBCD  00CCC1');self.assertNotEqual(mp,changed);self.assertFalse(m.verify(changed,labels)['passed'])
  def test_manifest_includes_both_fonts_and_exact_text_payload(self):
