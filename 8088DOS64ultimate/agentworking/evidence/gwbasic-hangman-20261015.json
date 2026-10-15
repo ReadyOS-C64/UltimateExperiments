@@ -1,0 +1,111 @@
+{
+  "status": "PROMOTED_MODEL_AND_GENUINE_DOS_FUNCTIONAL",
+  "physical_game_video_accepted": false,
+  "runtime_sha256": "ed7462bad54947a32092cf7cd3f6ac4e6f962cea98757555e104c0ebffdcedd8",
+  "unit_sha256": "d530c37556d148e0972766b5f9a7bbdc7bba39d83d06792ce22661163a8e03ea",
+  "prg_bytes": 42497,
+  "root_tests": {
+    "zig_peddle": 425,
+    "quick_cpu_cases": 597,
+    "tooling": 290
+  },
+  "independent_review": {
+    "checks": 58571,
+    "extra_device_cycles": 4088,
+    "focused_ports": 10,
+    "cpu_io": 4,
+    "fixture": 4,
+    "additional_tests": 3
+  },
+  "reused_exact_native_proof": {
+    "guest_instructions": 3949737,
+    "modeled_native_cpu_cycles": 11575240395,
+    "all_guesses": 10,
+    "win": "ULTIMATE",
+    "misses": 3,
+    "real_LIST_pages": 4,
+    "all_source_lines": 37,
+    "final_dos_files": 34,
+    "final_dos_free_bytes": 7168,
+    "full_derived_floppy_unchanged": true,
+    "native_execution_sources_matching_root": 362,
+    "only_source_difference": "build.zig registration-only; reviewed separately"
+  },
+  "layout": {
+    "code_bytes": 13418,
+    "code_growth": 95,
+    "main_free_runtime": 20,
+    "main_free_unit": 19,
+    "device_free": 22,
+    "device_state": 661,
+    "bss": 223,
+    "zp_runtime": 18,
+    "zp_unit": 30,
+    "shadow_code": 2361,
+    "shadow_zero_tail": 1223
+  },
+  "compatibility": "OriginalXT PPI61 outputlatch48h, samefixed65536PITzero-pair phase-preserving40hwrite, configuredabsent201hbyteFFh; unsupportedcyclesrejectbeforeeffects",
+  "limitations": [
+    "No physicalgame/video acceptance yet",
+    "No speaker waveform/keyboard wire/parity or generalprogrammablePIT",
+    "ModelcyclesexcludeDMA/VICstalls; noXTpercent",
+    "Separateperformanceunionnotpromoted"
+  ],
+  "files": [
+    {
+      "path": "agentworking/scratch/gwbasic-hangman-demo/PACKAGE_MANIFEST.json",
+      "bytes": 168090,
+      "sha256": "a0600479baf527b5dc2382fc5e1caf69ad10b488cb060ff8cbf372bc2e1499c4"
+    },
+    {
+      "path": "agentworking/scratch/gwbasic-independent-review/REVIEW_MANIFEST.json",
+      "bytes": 270273,
+      "sha256": "a81f3cfbabd7a72ad12d5587d6ac8e0e3117116fd442bbeb7963288fdae66747"
+    },
+    {
+      "path": "agentworking/scratch/gwbasic-independent-review/REVIEW.md",
+      "bytes": 5005,
+      "sha256": "94035045fda7d1a06a0d71ff39948888f78749a11c681d71a0993fd9d5ab42cb"
+    },
+    {
+      "path": "agentworking/scratch/gwbasic-root-promotion/final-source-binary-check.json",
+      "bytes": 574,
+      "sha256": "0128d6bde0aa31403a80225e5738d18e7da0027f666e78e5e2301a21948a8586"
+    },
+    {
+      "path": "agentworking/runs/gwbasic-root-promotion-20261015.log",
+      "bytes": 41372,
+      "sha256": "c7e224b4cf6e4f881babf71e2635cf04d7299f9a695ba4374caa061ce8019515"
+    },
+    {
+      "path": "build/manifest.json",
+      "bytes": 50275,
+      "sha256": "0d02263423def81c1addf4f9a94b45bc17699aa800db9c8ff84cd2b7ac415970"
+    },
+    {
+      "path": "build/dos64.map",
+      "bytes": 69099,
+      "sha256": "219b56a2f2dffdbc0ade86f467252e5a98c9b915763626c91e787e5cd2cba3c3"
+    },
+    {
+      "path": "build/dos64-tests.map",
+      "bytes": 72108,
+      "sha256": "83f0496057e2993cde4d43742e79d3842f6ea0f6cbb4709102b28c4905ff0e2e"
+    },
+    {
+      "path": "build/dos64.prg",
+      "bytes": 42497,
+      "sha256": "ed7462bad54947a32092cf7cd3f6ac4e6f962cea98757555e104c0ebffdcedd8"
+    },
+    {
+      "path": "build/dos64-tests.prg",
+      "bytes": 42497,
+      "sha256": "d530c37556d148e0972766b5f9a7bbdc7bba39d83d06792ce22661163a8e03ea"
+    },
+    {
+      "path": "agentworking/scratch/gwbasic-hangman-demo/work/build/native-gwbasic-workflow.json",
+      "bytes": 1146696,
+      "sha256": "198b311e3aa932284dd665e29e76e395e73c3f6c714bea4f3bf572ac5e25b989"
+    }
+  ]
+}

@@ -8,6 +8,7 @@
 .export dos64_pic_phase, dos64_pic_priority, dos64_pic_read_isr
 .export dos64_pic_special_mask, dos64_pic_rotate_auto
 .export dos64_io_state_start, dos64_io_state_end
+.export dos64_ppi_port_b, dos64_pit_write_phase
 
 ; Independent implementation from Intel8259A231468-003 pp9–17 and original
 ; IBM5160 XTBIOS.ASM PIC setup:13h/08h/09h, then BIOS maskFCh. References
@@ -32,6 +33,9 @@ dos64_pic_special_mask: .res 1
 dos64_pic_rotate_auto: .res 1
 io_command: .res 1
 io_candidates: .res 1
+; XT8255 port B mode0 output latch; no speaker waveform/keyboard wire model.
+dos64_ppi_port_b: .res 1
+dos64_pit_write_phase: .res 1 ; next40h byte:0=LSB,1=MSB; onlyzero divisor supported
 dos64_io_state_end:
 
 .segment "CODE"
@@ -45,6 +49,8 @@ dos64_io_init:
     sta dos64_io_state_start,x
     dex
     bpl @clear
+    lda #$48
+    sta dos64_ppi_port_b
     lda #$FC
     sta dos64_pic_imr
     lda #8
@@ -71,8 +77,11 @@ io_validate:
     lda dos64_io_port
     cmp #$20
     beq @ok
+    cmp #$61
+    beq @byte
     cmp #$21
     bne @fail
+@byte:
     lda dos64_io_width
     bne @fail
 @ok:
@@ -86,9 +95,25 @@ dos64_io_read:
     php
     sei
     cld
+    ; No game adapter is installed. Its byte input is the pulled-up XT
+    ; expansion bus (FFh), not simulated joystick movement/buttons.
+    lda dos64_io_width
+    bne @pic
+    lda dos64_io_port+1
+    cmp #2
+    bne @pic
+    lda dos64_io_port
+    cmp #1
+    bne @pic
+    lda #$ff
+    sta dos64_io_value
+    jmp io_success
+@pic:
     jsr io_validate
     jcs io_unsupported
     lda dos64_io_port
+    cmp #$61
+    beq @ppi
     cmp #$21
     beq @imr
     lda dos64_pic_read_isr
@@ -97,6 +122,9 @@ dos64_io_read:
     jmp @value
 @irr:
     lda dos64_pic_irr
+    jmp @value
+@ppi:
+    lda dos64_ppi_port_b
     jmp @value
 @imr:
     lda dos64_pic_imr
@@ -135,9 +163,30 @@ dos64_io_write:
     bcs @pic
     jmp io_success
 @pic:
+    ; Fixed BIOS counter0 binary mode3/RWlohi profile. Rewriting the SAME
+    ; zero=>65536 divisor does not restart current mode3 counting. Track the
+    ; two-byte write sequence; reject all other divisors/reads/control words.
+    lda dos64_io_width
+    bne @validate
+    lda dos64_io_port+1
+    bne @validate
+    lda dos64_io_port
+    cmp #$40
+    bne @validate
+    lda dos64_io_value
+    bne @bad_pit
+    lda dos64_pit_write_phase
+    eor #1
+    sta dos64_pit_write_phase
+    jmp io_success
+@bad_pit:
+    jmp io_unsupported
+@validate:
     jsr io_validate
     bcs io_unsupported
     lda dos64_io_port
+    cmp #$61
+    beq @ppi
     cmp #$21
     beq @data
     lda dos64_io_value
@@ -156,6 +205,10 @@ dos64_io_write:
     beq io_success
     lda dos64_io_value+1
     jsr pic_data
+    jmp io_success
+@ppi:
+    lda dos64_io_value
+    sta dos64_ppi_port_b
     jmp io_success
 @data:
     lda dos64_io_value

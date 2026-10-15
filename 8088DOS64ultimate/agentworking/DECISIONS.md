@@ -164,3 +164,5 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D104 | User directed,2026-10-15 | Record actualC64U video of GW-BASIC autoplayhangman, LIST, SYSTEM, DIR | Explicit recording request authorizes owned video endpoint/start/stop; stop only own stream, preserve known settings, never claim unknown prior stream restored; no audio/debug needed |
 
 | D105 | Physically verified capture foundation,2026-10-15 | Actual VIC stream left pixel is low nibble; use explicit shared CLOCK_MONOTONIC for host chapter alignment |505 actual frames/383,616 independent known pixels/18tests; owned stream stopped, no game or unknown-prior-stream restoration claim; original wrong-order evidence retained |
+
+| D106 | Implemented/independently reviewed,2026-10-15 | Original XT PPI61 output latch, fixed-PIT same-divisor zero-pair writes, explicitly absent game adapter201h enable genuine suppliedGW-BASIC |425/290root,58571independentchecks/4088cycles; actualnativeWIN/fourLIST/SYSTEM/DIR/fullfloppy proof; programmablePIT/speaker/physicalvideo excluded |

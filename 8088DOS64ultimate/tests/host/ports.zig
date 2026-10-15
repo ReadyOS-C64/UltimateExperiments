@@ -233,7 +233,7 @@ test "PIC word cycles preserve descriptors and preflight unsupported widths and 
         _ = try cycle(&f, port, 0x7766, 1, true, 1);
         try expectState(&f, "dos64_pic_imr", imr);
         try expectState(&f, "dos64_pic_phase", phase);
-        if (port != 0x21) {
+        if (port != 0x21 and port != 0x61) {
             _ = try cycle(&f, port, 0x3311, 0, false, 1);
             _ = try cycle(&f, port, 0x7766, 0, true, 1);
         }
@@ -264,4 +264,51 @@ test "DOS shared IRQ global rearm accepts only documented absent-board byte broa
         _=try cycle(&f,@intCast(port_number),0xffff,1,false,1);
     }
     for([_]u16{0x2f1,0x2f8,0x1f2,0x3f2}) |port_number| _=try cycle(&f,port_number,0xff,0,false,1);
+}
+
+
+test "XT8255 port B readback all mode0 output latch bits and no adjacent word side effects" {
+    var f=try init();defer f.deinit();
+    try expectState(&f,"dos64_ppi_port_b",0x48);
+    for(0..256)|n| {
+        try out(&f,0x61,@intCast(n));
+        try std.testing.expectEqual(@as(u16,0xa500|@as(u16,@intCast(n))),try cycle(&f,0x61,0xa5ff,0,true,0));
+        for([_]u16{0x60,0x61,0x62,0x63,0x161})|port| {
+            _=try cycle(&f,port,0x7234,1,true,1);
+            _=try cycle(&f,port,0x7234,1,false,1);
+        }
+        try expectState(&f,"dos64_ppi_port_b",@intCast(n));
+        try expectState(&f,"dos64_pic_imr",0xfc);
+    }
+}
+
+
+test "fixed BIOS PIT accepts only same divisor zero lohi rewrites preserving all timer IRQ state" {
+    var f=try init();defer f.deinit();
+    const a=try f.symbol("dos64_pit_state_start");const z=try f.symbol("dos64_pit_state_end");
+    for(a..z)|i|f.poke(@intCast(i),@truncate(i*17+3));
+    const irr=try f.symbol("dos64_pic_irr");f.poke(irr,0x91);
+    for(0..8)|n| {
+        try out(&f,0x40,0);
+        try expectState(&f,"dos64_pit_write_phase",@intCast((n+1)&1));
+        for(a..z)|i|try std.testing.expectEqual(@as(u8,@truncate(i*17+3)),f.peek(@intCast(i)));
+        try expectState(&f,"dos64_pic_irr",0x91);
+        _=try cycle(&f,0x40,0,0,true,1);
+        _=try cycle(&f,0x40,0,1,false,1);
+        _=try cycle(&f,0x40,0,1,true,1);
+        _=try cycle(&f,0x140,0,0,false,1);
+        for(1..256)|value|_=try cycle(&f,0x40,@intCast(value),0,false,1);
+        try expectState(&f,"dos64_pit_write_phase",@intCast((n+1)&1));
+        for([_]u16{0x41,0x42,0x43})|port| { for(0..256)|value| { _=try cycle(&f,port,@intCast(value),0,false,1); } }
+    }
+}
+
+
+test "absent XT game adapter byte input is pulled high without pretending joystick hardware" {
+    var f=try init();defer f.deinit();
+    try std.testing.expectEqual(@as(u16,0x92ff),try cycle(&f,0x201,0x9217,0,true,0));
+    _=try cycle(&f,0x201,0x1234,1,true,1);
+    _=try cycle(&f,0x201,0x1234,0,false,1);
+    _=try cycle(&f,0x201,0x1234,1,false,1);
+    for([_]u16{0x200,0x202,0x301,0x1201})|port|_=try cycle(&f,port,0x1234,0,true,1);
 }

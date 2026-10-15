@@ -12,6 +12,16 @@ PIC_DATA_PORT = $0021
 ;
 ; PIC20/21 and byte GLOBAL REARM writes02F2..02F7 (absent boards) are
 ; supported. The latter ignore data and never mutate PIC state.
+; XT8255 port61 byte read/write exposes its mode0 output latch, initially48h
+; as at original XT BIOS boot. This is not ATport61 timer/status semantics.
+; Speaker waveform, parity faults, keyboard wire/reset effects are not modeled.
+; Fixed BIOS PITcounter0 binary mode3/divisor65536/RWlohi additionally accepts
+; only zero byte writes40h, tracking the nextLSB/MSB phase. Same-divisor writes
+; retain the current phase, rational remainder, edge accounting and PIC state.
+; Nonzero data, reads, words, controls43h and other PIT channels are rejected.
+; Absent game adapter201h has explicit byte inputFFh. This is an absent-device
+; profile; no joystick/button support or broader unknown-port fallback exists.
+; Writes/words and neighboring/high-alias game addresses remain rejected.
 ; PIC word cycles preflight both 16-bit consecutive
 ; ports; therefore only a word at0020 succeeds. Failed cycles have no device
 ; effect and leave value untouched. No mirrored ports are claimed.

@@ -23,6 +23,9 @@ pub fn build(b: *std.Build) void {
     const cgaw=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_cga_workflow.zig"),.target=target,.optimize=.Debug})});
     addPeddle(cgaw.root_module,b);
     b.step("native-cga-workflow","Genuine DOS loads guest CGA COM").dependOn(&b.addRunArtifact(cgaw).step);
+    const gw=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_gwbasic_workflow.zig"),.target=target,.optimize=.Debug})});
+    addPeddle(gw.root_module,b);
+    b.step("native-gwbasic","Genuine supplied GW-BASIC ASCII hangman").dependOn(&b.addRunArtifact(gw).step);
     // Explicit slow native recovery proof; no dependency from default test.
     const reu_file=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/native_file_recovery/actual_assembly.zig"),.target=target,.optimize=.Debug})});
     reu_file.root_module.addIncludePath(b.path("tests/native_file_recovery/fixture"));

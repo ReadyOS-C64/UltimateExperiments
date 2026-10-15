@@ -121,3 +121,8 @@ HDextentcacheREU200000–2FFFFF holdsup32×32KiB; authoritativeuncertainsector35
 Supersedes only the current six-overlay target identity and shadow/PIT code totals above. Runtime22f82091/unit8a84329c remain42497bytes,0801–ADFF. HDBIOS2361bytes endsF938,1223zero-tail bytes throughFDFF; copy/verify remains3584bytes excludingFE00–FFFF. Owned clock entries add217bytes without additional ZP/BSS/state or MAIN/DEVICE allocation. PIT1664 leaves128bytes inC900–CFFF. The six alternative payloads total7302bytes:FILE1088,TEXT963,INPUT882,PIT1664,GFX1278,HD1427. Startup asset reservation remains12288bytes;23 startup-overlapped cache frames remain unchanged.
 
 MAIN115/114,DEVICE22,cold1093/118,ZP18/30,BSS223,DEVICESTATE659 remain unchanged. Nine standalone helper PRGs are byte-identical. Full root map/package/memory and executed native DOS/MODE identities are pinned in [performance evidence](evidence/boundary-performance-20261015.json). No pooled headroom or larger REU assumption is introduced.
+
+
+## Current GW-BASIC compatibility maps — 2026-10-15
+
+Supersedes currentproductionidentity only: runtimeed7462bad54947a32092cf7cd3f6ac4e6f962cea98757555e104c0ebffdcedd8/unitd530c37556d148e0972766b5f9a7bbdc7bba39d83d06792ce22661163a8e03ea,42497bytes0801–ADFF. Actual CODE13418(+95), MAIN20runtime/19unitfree, DEVICE4074/22free, BSS223,ZP18/30, DEVICESTATE661(+2PPI/PITwritephase). Staticcontrol3124leaves972includinggaps; pre-mapBSS33. Shadow2361/1223tail,PIT1664 and allsixoverlay lengths/12288startupreservation unchanged. [Exactrootmaps/evidence](evidence/gwbasic-hangman-20261015.json). LayoutmakesnoextraREUassumption; full-systemstackboundremainsunmeasured. Privateperformanceunion10/9MAIN isnotproductionorbehavioraccepted.
