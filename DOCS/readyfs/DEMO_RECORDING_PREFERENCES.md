@@ -14,13 +14,6 @@ User preference, updated 12 October 2026. Apply by default to future recordings 
 
 The current request is an edit of existing footage. Do not rerecord merely to apply these preferences.
 
-## Viewer-facing headings (14 October)
-
-- Use the first editor tour's rounded title cards, cyan accent and concise explanation above the complete C64 picture.
-- Do not put production commentary in videos or player notes: typing/playback rates, operation rates, ownership checks, omitted setup and similar editing details belong in evidence reports.
-- Keep the SD2IEC name visible in its top card throughout the walkthrough. Update the action and explanation to describe the actual command, endpoint and transfer direction being shown. Distinguish SD2IEC, SoftwareIEC and Ultimate disk images accurately.
-- Use helpful action headings in appended chapters, including script preview, verified backup, overwrite refusal and the saved counter. Do not leave a persistent generic production note in place of useful headings.
-
 ## Comprehension edit (12 October)
 
 - Budget time by meaning: introduce a concept, show its action, then let the viewer recognize its result. Do not remove pauses solely because the screen is still.

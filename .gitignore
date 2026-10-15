@@ -8,6 +8,9 @@
 **/[Aa]gents[Ww]orking/
 /ReadyFS/agent.md
 
+# Local recording helper.
+/ReadyFS/build_support/readyfs_heading_cards.py
+
 # OS metadata and interpreter caches.
 .DS_Store
 ._*
