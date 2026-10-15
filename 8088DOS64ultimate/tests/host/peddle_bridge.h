@@ -5,6 +5,11 @@
 extern "C" {
 #endif
 typedef struct Dos64Machine Dos64Machine;
+void dos64_native_display_enable(struct Dos64Machine *);
+void dos64_native_display_seed(struct Dos64Machine *,const uint8_t *);
+uint8_t dos64_native_display_reg(struct Dos64Machine *,uint8_t);
+uint32_t dos64_native_display_reads(struct Dos64Machine *,uint8_t);
+uint32_t dos64_native_display_writes(struct Dos64Machine *,uint8_t);
 typedef struct Dos64Regs {
     uint16_t pc;
     uint8_t sp, a, x, y, p;

@@ -28,9 +28,9 @@ rt_count: .res 1
 ; Entry may have BASIC/KERNAL visible. Code must remain in C900-CFFF while bank
 ; switching; port saved on native stack before accessing state under KERNAL.
 ; Guest BDA/VRAM read exclusively through coherent memory. No guest writes.
-; Inputs: native font 4800-4FFF, descriptor row/blink, coherent BDA text mode.
+; Inputs: native fonts 4400-47FF (packed4x8) and 4800-4FFF (8x8), descriptor row/blink, coherent BDA text mode.
 ; Outputs: matrix 4000-43E7, hires bitmap 6000-7F3F, selected row only.
-; 80 cols: OR adjacent font pixels; both halves share LEFT cell fg/bg. Blink
+; 80 cols: packed four-pixel glyphs at4400; both halves share LEFT cell fg/bg. Blink
 ; suppresses each half independently. No cursor overlay, VIC setup or font asset.
 dos64_render_text_row:
     php
@@ -181,6 +181,8 @@ rt_cell:
     jsr rt_font_pointer
     sta rt_font_left+1
     stx rt_font_left+2
+    sta rt_narrow_left+1
+    stx rt_narrow_left+2
     lda rt_cols
     cmp #40
     beq @draw
@@ -217,24 +219,53 @@ rt_matrix:
     sta $4000
     ldy #0
 rt_scanline:
+    lda rt_cols
+    cmp #40
+    bne rt_narrow_scanline
 rt_font_left:
     lda $4800,y
     and rt_mask_left
-    ldx rt_cols
-    cpx #40
-    beq rt_store
+    jmp rt_store
+rt_narrow_scanline:
+    tya
+    lsr
     tax
-    lda rt_reduce,x
+rt_narrow_left:
+    lda $4400,x
+    and rt_mask_left
+    sta rt_bits
+    tya
+    and #1
+    beq rt_narrow_even
+    lda rt_bits
     asl
     asl
     asl
     asl
     sta rt_bits
+    jmp rt_narrow_right
+rt_narrow_even:
+    lda rt_bits
+    and #$F0
+    sta rt_bits
+rt_narrow_right:
 rt_font_right:
-    lda $4800,y
+    lda $4400,x
     and rt_mask_right
     tax
-    lda rt_reduce,x
+    tya
+    and #1
+    bne rt_narrow_odd_right
+    txa
+    lsr
+    lsr
+    lsr
+    lsr
+    jmp rt_narrow_combine
+rt_narrow_odd_right:
+    txa
+    and #$0F
+rt_narrow_combine:
     ora rt_bits
 rt_store:
 rt_bitmap:
@@ -322,7 +353,20 @@ rt_blink_mask:
     lda #$FF
     rts
 rt_font_pointer:
-    ; Font index *8 + 4800. Return low A / high X.
+    ldx rt_cols
+    cpx #40
+    beq rt_wide_pointer
+    ; Packed narrow index*4 at4400, always four bytes per glyph.
+    ldx #$44
+    asl
+    bcc :+
+    inx
+    inx
+:   asl
+    bcc :+
+    inx
+:   rts
+rt_wide_pointer:
     ldx #$48
     asl
     bcc :+
@@ -330,23 +374,16 @@ rt_font_pointer:
     inx
     inx
     inx
-:
-    asl
+:   asl
     bcc :+
     inx
     inx
-:
-    asl
+:   asl
     bcc :+
     inx
-:
-    rts
+:   rts
 ; IBM RGBI -> deterministic C64 palette: black, blue, green, cyan, red,
 ; purple, brown, light gray, gray, light blue, light green, cyan, light red,
 ; purple, yellow, white. Bright cyan/magenta use closest selected C64 hue.
 rt_palette:
     .byte 0,6,5,3,2,4,9,15,12,14,13,3,10,4,7,1
-rt_reduce:
-.repeat 256, I
-    .byte (((I & $C0) <> 0) * 8) | (((I & $30) <> 0) * 4) | (((I & $0C) <> 0) * 2) | ((I & $03) <> 0)
-.endrepeat

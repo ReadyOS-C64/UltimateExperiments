@@ -1,7 +1,7 @@
 from pathlib import Path
 import re, unittest
 import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'build_support'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/"build_support"))
 from verify_memory import verify
 BASE = Path('build')
 
@@ -12,21 +12,21 @@ class OverlayMemoryContract(unittest.TestCase):
         cls.map = (BASE / 'dos64-tests.map').read_text()
         cls.labels = (BASE / 'dos64-tests.labels').read_text()
         cls.prg = (BASE / 'dos64-tests.prg').read_bytes()
-        cls.payloads = {'FILECODE': (BASE / 'dos64-tests-resident.prg.files.bin').read_bytes(), 'RENDERCODE': (BASE / 'dos64-tests-resident.prg.render.bin').read_bytes()}
+        cls.payloads = {'FILECODE': (BASE / 'dos64-tests-resident.prg.files.bin').read_bytes(), 'RENDERCODE': (BASE / 'dos64-tests-resident.prg.render.bin').read_bytes(), 'INPUTCODE': (BASE / 'dos64-tests-resident.prg.input.bin').read_bytes()}
 
     def check(self, map=None, labels=None, prg=None, payloads=None):
-        return verify(self.map if map is None else map, self.labels if labels is None else labels, self.prg if prg is None else prg, self.payloads if payloads is None else payloads)
+        return verify(self.map if map is None else map, self.labels if labels is None else labels, self.prg if prg is None else prg, self.payloads if payloads is None else payloads,(BASE/"dos64-tests-resident.prg.import.bin").read_bytes())
 
     def test_real_exclusive_layout_and_packaged_outputs(self):
         r = self.check()
         self.assertTrue(r['passed'], r['errors'])
         self.assertEqual(r['load']['exclusive_overlay_window_bytes'], 1792)
-        self.assertEqual(r['load']['overlay_source_bytes'], 1994)
-        self.assertEqual(r['load']['startup_overlay_bytes'], 4096)
-        self.assertEqual(r['load']['prg_bytes'], 30721)
+        self.assertEqual(r['load']['overlay_source_bytes'],2927)
+        self.assertEqual(r['load']['startup_overlay_bytes'],6144)
+        self.assertEqual(r['load']['prg_bytes'],32769)
 
     def test_header_every_byte_fault_is_rejected(self):
-        for start in (24576, 26624):
+        for start in (24576, 26624, 32768):
             for i in range(16):
                 data = bytearray(self.prg)
                 data[start - 2049 + 2 + i] ^= 255
@@ -41,7 +41,7 @@ class OverlayMemoryContract(unittest.TestCase):
             self.assertFalse(self.check(payloads=data)['passed'])
 
     def test_slot_tail_and_device_gap_must_be_zero(self):
-        for address in (24575, 26623, 28671):
+        for address in (24575,26623,28671,32767,34815):
             data = bytearray(self.prg)
             data[address - 2049 + 2] ^= 255
             self.assertFalse(self.check(prg=data)['passed'])
@@ -65,7 +65,7 @@ class OverlayMemoryContract(unittest.TestCase):
         self.assertFalse(self.check(map=changed)['passed'])
 
     def test_wrong_overlay_linker_file_offsets_and_sizes_fail(self):
-        for symbol in ('__FILE_FILEOFFS__', '__RENDER_FILEOFFS__', '__FILECODE_SIZE__', '__RENDERCODE_RUN__'):
+        for symbol in ('__FILE_FILEOFFS__', '__RENDER_FILEOFFS__', '__FILECODE_SIZE__', '__RENDERCODE_RUN__','__INPUTCODE_RUN__'):
             changed = re.sub('^(al )([0-9A-F]+)( \\.' + symbol + ')$', lambda m: m[1] + f'{int(m[2], 16) + 1:06X}' + m[3], self.labels, flags=re.M)
             self.assertNotEqual(changed, self.labels)
             self.assertFalse(self.check(labels=changed)['passed'])
@@ -82,5 +82,20 @@ class OverlayMemoryContract(unittest.TestCase):
         r = verify(base.with_suffix('.map').read_text(), base.with_suffix('.labels').read_text(), base.with_suffix('.prg').read_bytes())
         self.assertTrue(r['passed'], r['errors'])
         self.assertEqual(r['load']['startup_overlay_bytes'], 0)
+class ColdPhaseMemoryContract(unittest.TestCase):
+    setUpClass=classmethod(OverlayMemoryContract.setUpClass.__func__)
+    check=OverlayMemoryContract.check
+    def test_loaded_guard_is_initialized_once(self):
+        import re
+        at=int(re.search(r"^al ([0-9A-F]+) \.dos64_cold_open$",self.labels,re.M)[1],16)
+        for value in (0,1,0xff):
+            data=bytearray(self.prg);data[at-0x801+2]=value
+            self.assertFalse(self.check(prg=data)["passed"])
+    def test_combined_cold_output_is_exact(self):
+        cold=bytearray((BASE/"dos64-tests-resident.prg.import.bin").read_bytes());cold[1000]^=255
+        self.assertFalse(verify(self.map,self.labels,self.prg,self.payloads,cold)["passed"])
+    def test_cold_segment_order_must_be_contiguous(self):
+        changed=self.map.replace("COLDINIT              0073A3  00752C", "COLDINIT              0073A4  00752D")
+        self.assertNotEqual(changed,self.map);self.assertFalse(self.check(map=changed)["passed"])
 if __name__ == '__main__':
     unittest.main(verbosity=2)

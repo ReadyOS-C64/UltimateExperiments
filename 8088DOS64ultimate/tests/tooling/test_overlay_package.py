@@ -33,7 +33,7 @@ class OverlayPackageTests(unittest.TestCase):
                 self.assertEqual(bytes(2032-n), slot[16+n:])
 
     def test_reject_empty_oversize_and_unknown(self):
-        for payload, identity in ((b"", 1), (bytes(1793), 2), (b"x", 0), (b"x", 3), (b"x", 255)):
+        for payload, identity in ((b"", 1), (bytes(1793), 2), (b"x", 0), (b"x", 4), (b"x", 255)):
             with self.assertRaises(ValueError):
                 m.slot(payload, identity)
 

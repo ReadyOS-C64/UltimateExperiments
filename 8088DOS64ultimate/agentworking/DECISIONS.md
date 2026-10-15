@@ -81,3 +81,9 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D60 | Phase policy for next slice, 2026-10-15 | Cold import code/state may occupy 7000–7FFF only until bitmap ownership | Native image load must finish and publish resident media state before display overwrites cold bytes; startup assets 6000–6FFF are a different earlier lifetime; runtime reload/save needs a separate design |
 
 | D61 | Linked and functionally verified, 2026-10-15 | Cold 360 KiB import requires exact chunks, EOF, independent native CRC and known closure before publishing media | Startup-only 7000–7FFF; loaded=0 on all failures; original file read-only; no runtime export/persistence or physical UCI claim |
+
+| D62 | Implemented/verified,2026-10-15 | Third INPUT startup asset8000–87FF commits toREU341000 before guest cache/BIOS use | All6144 asset bytes independently checked; guest cache frames become available only after complete bootstrap |
+| D63 | Implemented/verified,2026-10-15 | Initialized resident cold_openA5 clears irreversibly before bitmap ownership | Cold public gateways reject before discarded state/code; no init reopens lifetime; TEXT requires release |
+| D64 | Implemented/verified,2026-10-15 | TEXT is canonical renderer718+VIC239; fonts are explicit non-executable data | NarrowASCII4×8 improves80-column VICE output; paired colors/extended fallbacks/cursor limits explicit; physical acceptance pending |
+| D65 | Implemented/verified,2026-10-15 | Native deadline units are exact rawCIA>>12,4096 phi2 ticks each | Tested banking,wrap and failure publication; caller supplies ownership and bounded polling; runtime use pending |
+| D66 | Development tools verified,physical execution pending | Snapshot/restore all first4MiB with sequenced native service and verified local backup; FTP uses a fresh owned directory | Full readback and failure-before-reset capture; never claim CPU/timer execution recovery or native persistence |

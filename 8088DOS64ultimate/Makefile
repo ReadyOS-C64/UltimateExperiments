@@ -5,7 +5,7 @@ DOS64_PYTHON ?= python3
 
 .DEFAULT_GOAL := all
 
-ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s
+ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s src/host_input.s src/cold.s src/elapsed.s src/native_text_display.s src/native_text_fonts.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
 build/alu.o: include/parity.inc Makefile
 build/range.o: include/range.inc Makefile
@@ -22,6 +22,11 @@ build/render_text.o: include/render_text.inc Makefile
 build/overlays.o: include/overlays.inc include/reu.inc Makefile
 build/image_import.o: include/image_import.inc include/files.inc include/uci.inc include/overlays.inc include/reu.inc Makefile
 build/boot.o: include/overlays.inc Makefile
+build/host_input.o: include/host_input.inc Makefile
+build/cold.o: include/overlays.inc include/bios.inc include/image_import.inc Makefile
+build/elapsed.o: include/elapsed.inc include/host_clock.inc Makefile
+build/native_text_display.o: include/native_text_display.inc Makefile
+build/native_text_fonts.o: assets/native-text/cp437-narrow4x8.bin assets/native-text/cp437-unscii8.bin Makefile
 build/aux_bios.o: include/aux_bios.inc Makefile
 build/range_probe.o: include/range.inc Makefile
 build/host_clock_probe.o: include/host_clock.inc Makefile
@@ -115,6 +120,11 @@ test-image-import: build
 	$(DOS64_PYTHON) -m unittest discover -s tests/tooling -p test_image_import_contract.py -v
 	$(DOS64_ZIG) build image-import --summary all
 
+.PHONY: test-native-text
+test-native-text: build
+	$(DOS64_PYTHON) -m unittest discover -s tests/tooling -p test_native_text_assets.py -v
+	$(DOS64_ZIG) build native-text --summary all
+
 .PHONY: test-overlays
 test-overlays: build
 	$(DOS64_PYTHON) -m unittest discover -s tests/tooling -p test_overlay_package.py -v
@@ -148,18 +158,18 @@ test-cache-vice: cache-probe
 
 build/dos64.prg: $(OBJECTS) cfg/dos64-runtime.cfg build_support/overlay_package.py Makefile
 	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o build/dos64-resident.prg -m build/dos64.map -Ln build/dos64.labels $(OBJECTS)
-	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-resident.prg --files build/dos64-resident.prg.files.bin --render build/dos64-resident.prg.render.bin --import-code build/dos64-resident.prg.import.bin --labels build/dos64.labels --output-prg $@ --output-assets build/dos64-overlay-startup.bin --manifest build/dos64-overlay-package.json
+	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-resident.prg --files build/dos64-resident.prg.files.bin --render build/dos64-resident.prg.render.bin --input build/dos64-resident.prg.input.bin --import-code build/dos64-resident.prg.import.bin --labels build/dos64.labels --output-prg $@ --output-assets build/dos64-overlay-startup.bin --manifest build/dos64-overlay-package.json
 
 build/dos64-tests.prg: $(OBJECTS) build/fixtures.o build/reu_probe.o build/cache_probe.o build/reu_snapshot.o build/range_probe.o build/range_snapshot.o cfg/dos64-runtime.cfg build_support/overlay_package.py Makefile
 	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o build/dos64-tests-resident.prg -m build/dos64-tests.map -Ln build/dos64-tests.labels $(OBJECTS) build/fixtures.o build/reu_probe.o build/cache_probe.o build/reu_snapshot.o build/range_probe.o build/range_snapshot.o
-	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-tests-resident.prg --files build/dos64-tests-resident.prg.files.bin --render build/dos64-tests-resident.prg.render.bin --import-code build/dos64-tests-resident.prg.import.bin --labels build/dos64-tests.labels --output-prg $@ --output-assets build/dos64-tests-overlay-startup.bin --manifest build/dos64-tests-overlay-package.json
+	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-tests-resident.prg --files build/dos64-tests-resident.prg.files.bin --render build/dos64-tests-resident.prg.render.bin --input build/dos64-tests-resident.prg.input.bin --import-code build/dos64-tests-resident.prg.import.bin --labels build/dos64-tests.labels --output-prg $@ --output-assets build/dos64-tests-overlay-startup.bin --manifest build/dos64-tests-overlay-package.json
 
 build/dos64-tests.bin: build/dos64-tests.prg
 	$(DOS64_PYTHON) build_support/raw_payload.py $< $@
 
 verify-memory: build/dos64.prg build/dos64-tests.prg
-	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64.map build/dos64.labels --overlay-files build/dos64-resident.prg.files.bin --overlay-render build/dos64-resident.prg.render.bin --import-code build/dos64-resident.prg.import.bin
-	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64-tests.map build/dos64-tests.labels --overlay-files build/dos64-tests-resident.prg.files.bin --overlay-render build/dos64-tests-resident.prg.render.bin --import-code build/dos64-tests-resident.prg.import.bin
+	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64.map build/dos64.labels --overlay-files build/dos64-resident.prg.files.bin --overlay-render build/dos64-resident.prg.render.bin --overlay-input build/dos64-resident.prg.input.bin --import-code build/dos64-resident.prg.import.bin
+	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64-tests.map build/dos64-tests.labels --overlay-files build/dos64-tests-resident.prg.files.bin --overlay-render build/dos64-tests-resident.prg.render.bin --overlay-input build/dos64-tests-resident.prg.input.bin --import-code build/dos64-tests-resident.prg.import.bin
 
 manifest: build/dos64.prg build/dos64-tests.prg verify-memory
 	$(DOS64_PYTHON) build_support/manifest.py --zig "$(DOS64_ZIG)" --ca65 "$(DOS64_CA65)" --ld65 "$(DOS64_LD65)"

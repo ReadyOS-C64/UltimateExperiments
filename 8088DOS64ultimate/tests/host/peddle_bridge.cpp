@@ -5,6 +5,8 @@
 #include "image_import_model.h"
 #include "cia_clock_model.h"
 #include "clock_probe_model.h"
+#include "host_input_model.h"
+#include "native_display_model.h"
 #include <array>
 #include <algorithm>
 #include <cstring>
@@ -26,6 +28,8 @@ public:
     std::unique_ptr<CiaClockModel> cia_clock;
     // Isolated calibration fixture only; default machines still reject VIC.
     std::unique_ptr<ClockProbeModel> clock_probe;
+    std::unique_ptr<HostInputModel> host_input;
+    std::unique_ptr<NativeDisplayModel> native_display;
     Machine() {
         setModel(peddle::MOS_6510); reset(); reg.sp = 0xff;
         reg.pport.direction = 0x2f; reg.pport.data = 0x35;
@@ -73,6 +77,8 @@ protected:
         if (a >= 0xe000 && (port & 2)) return 0xea;
         if (a >= 0xd000 && a <= 0xdfff && (port & 3)) {
             if (!(port & 4)) return 0xcc;
+            if (native_display && native_display->owns(a)) return native_display->read(a);
+            if (a>=0xdc00 && a<=0xdc0f && host_input) return host_input->read(a-0xdc00);
             if (clock_probe && clock_probe->owns(a)) return clock_probe->read(a, cia_clock.get());
             if (uci && uci->owns(a)) return uci->read(a);
             if (a >= 0xdf00 && a <= 0xdf0a && reu) return reu->read(a-0xdf00);
@@ -86,6 +92,8 @@ protected:
         const auto port = readPort();
         written[a] = 1;
         if (a >= 0xd000 && a <= 0xdfff && (port & 3) && (port & 4)) {
+            if (native_display && native_display->owns(a)) {native_display->write(a,v);return;}
+            if (a>=0xdc00 && a<=0xdc0f && host_input) {host_input->write(a-0xdc00,v);return;}
             if (uci && uci->owns(a)) {
                 if (image_import && !image_import->prepare(*uci, a, v)) return;
                 uci->write(a, v); return;
@@ -144,9 +152,9 @@ Dos64RunResult dos64_run(Dos64Machine *m, uint16_t sentinel, uint64_t cycle_budg
 void dos64_clear_writes(Dos64Machine *m) { m->cpu.written.fill(0); }
 uint8_t dos64_was_written(const Dos64Machine *m, uint16_t a) { return m->cpu.written[a]; }
 uint8_t dos64_model_fault(const Dos64Machine *m) {
-    return m->cpu.unsupported || (m->cpu.reu && m->cpu.reu->unsupported) ||
+    return m->cpu.unsupported || (m->cpu.native_display && m->cpu.native_display->fault) || (m->cpu.reu && m->cpu.reu->unsupported) ||
            (m->cpu.uci && m->cpu.uci->fault) ||
-           (m->cpu.cia_clock && m->cpu.cia_clock->unsupported);
+           (m->cpu.cia_clock && m->cpu.cia_clock->unsupported) || (m->cpu.host_input && m->cpu.host_input->fault);
 }
 void dos64_enable_reu(Dos64Machine *m) { m->cpu.reu = std::make_unique<ReuModel>(); }
 uint8_t dos64_enable_reu_sized(Dos64Machine *m, uint32_t size_kib) {
@@ -307,3 +315,16 @@ uint8_t import_model_open(void *p) {
  return m.image_import ? m.image_import->opened : 0;
 }
 }
+
+void dos64_host_input_model_enable(Dos64Machine *m) {m->cpu.host_input=std::make_unique<HostInputModel>();}
+void dos64_host_input_model_keys(Dos64Machine *m,const uint8_t *p) {std::copy_n(p,8,m->cpu.host_input->keys.data());}
+void dos64_host_input_model_seed(Dos64Machine *m,const uint8_t *p) {std::copy_n(p,4,m->cpu.host_input->regs.data());}
+uint8_t dos64_host_input_model_reg(Dos64Machine *m,uint8_t r) {return m->cpu.host_input->regs[r];}
+uint32_t dos64_host_input_model_reads(Dos64Machine *m,uint8_t r) {return m->cpu.host_input->reads[r];}
+uint32_t dos64_host_input_model_writes(Dos64Machine *m,uint8_t r) {return m->cpu.host_input->writes[r];}
+
+void dos64_native_display_enable(Dos64Machine *m){m->cpu.native_display=std::make_unique<NativeDisplayModel>();}
+void dos64_native_display_seed(Dos64Machine *m,const uint8_t *p){std::copy_n(p,8,m->cpu.native_display->regs.data());m->cpu.native_display->reads.fill(0);m->cpu.native_display->writes.fill(0);}
+uint8_t dos64_native_display_reg(Dos64Machine *m,uint8_t r){return r<8?m->cpu.native_display->regs[r]:0;}
+uint32_t dos64_native_display_reads(Dos64Machine *m,uint8_t r){return r<8?m->cpu.native_display->reads[r]:0;}
+uint32_t dos64_native_display_writes(Dos64Machine *m,uint8_t r){return r<8?m->cpu.native_display->writes[r]:0;}

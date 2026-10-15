@@ -2,6 +2,8 @@
 DOS64_OVERLAYS_INC = 1
 OV_FILE = 1
 OV_TEXT = 2
+OV_INPUT = 3
+OV_INPUT_SOURCE = $8000
 OV_READY = $A5
 OV_WINDOW = $C900
 OV_WINDOW_SIZE = $0700
@@ -16,14 +18,19 @@ OV_ERR_HEADER = 4
 OV_ERR_DMA = 5
 OV_ERR_CAPACITY = 6
 OV_ERR_ORIGIN = 7
+OV_ERR_COLD = 8
 ; Resident synchronous, nonreentrant manager; same RAM+I/O map contract as cache.
 ; All APIs preserve native P except C, clobber A/X/Y. init is startup-only.
-; bootstrap validates both source headers before writing either immutable slot.
+; bootstrap validates all three source headers before any immutable-slot copy.
 ; Only a successful bootstrap releases 6000–6FFF to the bitmap owner. It is
 ; idempotent thereafter: the startup bytes are never consulted again.
 ; acquire uses dos64_overlay_requested and HOLDS busy until release. Only call
 ; acquire/release from resident code. All overlaid entry calls MUST occur while
-; busy is held. Resident wrappers below enforce this for files and text rows.
+; busy is held. Resident wrappers enforce this for files, INPUT and TEXT.
+; TEXT is canonical718-byte renderer +239-byte VIC setup/restore, total957.
+; TEXT row/setup/restore reject cold_open!=0 after busy/reentry checks; only
+; dos64_cold_release grants bitmap/VIC ownership after real BIOS/import cleanup.
+; Fonts4400–47FF and4800–4FFF are loaded non-executable data, never overlays.
 ; Wrappers reject reentry without changing requested/current/busy ownership.
 ; Failed replacement invalidates current, releases lock, and never calls code.
 ; REU assets are immutable after bootstrap: exact headers are checked on every

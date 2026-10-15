@@ -126,3 +126,8 @@
 - Source freeze plus independent artifact hashes lets full corpus, genuine DOS and profiles run concurrently without racing build mutations. Host wall time from that concurrency is not target throughput.
 
 A run manifest must be generated after every artifact-producing prerequisite, including isolated hardware helpers. A correct native binary does not make an earlier helper-map identity current. Cold startup code/state is another lifetime: exact loaded bytes and zero tails need verification, and a resident publication flag must protect partially loaded media.
+
+- Startup-only memory needs an initialized resident phase guard; checking overwritten cold state cannot prove lifetime. Commit assets that overlap future cache frames before any BIOS/cache access.
+- A jointly linked overlay must validate and DMA its complete canonical member sum; a renderer-only length silently omits following VIC code.
+- Eighty-column legibility needs a designed narrow font; OR-compressing every full-width glyph loses distinct letters. Keep licensed sources, byte hashes and physical readability separate.
+- Establish RAM banking before reading resident outputs under KERNAL ROM; the elapsed adapter owns that precondition rather than relying on its caller's mapping.

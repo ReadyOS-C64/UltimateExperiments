@@ -45,3 +45,8 @@
 - CIA phi2 ticks, native CPU cycles, guest timer ticks and REST duration are different clocks. Establish physical timer progress/turbo independence before using real-time deadlines.
 
 Current overlays are exclusive native owners, not arbitrary function-pointer storage. Keep every return and persistent state resident, release startup sources only after bootstrap, and preserve exact DOS observation/RAM oracles after performance changes. Unit MAIN has 76 bytes and DEVICE 49; cold lifetime design must precede further resident growth.
+
+- Startup-only memory needs an initialized resident phase guard; checking overwritten cold state cannot prove lifetime. Commit assets that overlap future cache frames before any BIOS/cache access.
+- A jointly linked overlay must validate and DMA its complete canonical member sum; a renderer-only length silently omits following VIC code.
+- Eighty-column legibility needs a designed narrow font; OR-compressing every full-width glyph loses distinct letters. Keep licensed sources, byte hashes and physical readability separate.
+- Establish RAM banking before reading resident outputs under KERNAL ROM; the elapsed adapter owns that precondition rather than relying on its caller's mapping.

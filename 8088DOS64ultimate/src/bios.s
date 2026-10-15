@@ -4,7 +4,7 @@
 .include "video.inc"
 .macpack longbranch
 .import dos64_guest, dos64_cpu_value
-.import dos64_io_init
+.import dos64_io_init, dos64_overlay_ready, dos64_cold_open
 .import dos64_video_service, dos64_video_host_error
 .import dos64_aux_bios_service, dos64_aux_bios_vector, dos64_aux_bios_host_error
 .import dos64_clock_service, dos64_clock_host_error
@@ -36,6 +36,29 @@ bios_port: .res 1
 ; configuration and conventional RAM outside the IVT/BDA remain caller-owned.
 ; Host P except carry preserved, A/X/Y and public address scratch clobbered.
 dos64_bios_init:
+    php
+    sei
+    lda dos64_cold_open
+    cmp #$a5
+    beq :+
+    lda #2
+    sta dos64_bios_host_error
+    plp
+    sec
+    rts
+:   lda dos64_overlay_ready
+    cmp #$a5
+    beq :+
+    lda #3
+    sta dos64_bios_host_error
+    plp
+    sec
+    rts
+:   plp
+    jmp dos64_bios_cold_init
+.segment "COLDINIT"
+.export dos64_bios_cold_init, dos64_bios_cold_end
+dos64_bios_cold_init:
     php
     sei
     cld
@@ -156,6 +179,8 @@ bios_fill_bytes:
 @return:
     rts
 
+dos64_bios_cold_end:
+.segment "CODE"
 ; Called only by OUT imm8,AL dispatch, with A=port and IP after both bytes.
 ; A physical whitelist admits segment aliases of our exact opcode addresses.
 ; C clear means handled, including guest disk errors; C set with host_error=0
@@ -372,7 +397,7 @@ bios_unrecognized:
     sec
     rts
 
-.segment "RODATA"
+.segment "COLDRODATA"
 .macro patch address, value
     .byte <address, >address, ^address, value
 .endmacro

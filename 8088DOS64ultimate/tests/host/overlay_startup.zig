@@ -17,7 +17,7 @@ fn entry(f: *F) !void {
     try std.testing.expectEqual(@as(u8, 0x25), f.peek(1) & 0x2f);
 }
 fn blob() ![]u8 {
-    return std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", std.testing.allocator, .limited(4097));
+    return std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", std.testing.allocator, .limited(6145));
 }
 
 test "native entry commits both real overlays before publishing ready" {
@@ -27,7 +27,7 @@ test "native entry commits both real overlays before publishing ready" {
     const bytes = try blob();
     defer std.testing.allocator.free(bytes);
     c.dos64_reu_poke(f.machine, 0x33ffff, 0x83);
-    c.dos64_reu_poke(f.machine, 0x341000, 0x29);
+    c.dos64_reu_poke(f.machine, 0x341800, 0x29);
     try entry(&f);
     try f.expectStatus(1);
     try std.testing.expectEqual(@as(u8, 0xa5), try get(&f, "dos64_overlay_ready"));
@@ -35,11 +35,11 @@ test "native entry commits both real overlays before publishing ready" {
     try std.testing.expectEqual(@as(u8, 0), try get(&f, "dos64_overlay_busy"));
     try std.testing.expectEqual(@as(u8, 4), try get(&f, "dos64_overlay_reu_mib"));
     try std.testing.expectEqual(@as(u8, 5), f.peek(0xd020));
-    try std.testing.expectEqual(@as(u64, 2), c.dos64_dma_transfers(f.machine));
+    try std.testing.expectEqual(@as(u64, 3), c.dos64_dma_transfers(f.machine));
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x340000, bytes.ptr, bytes.len));
     try std.testing.expectEqual(@as(u8, 0x83), c.dos64_reu_peek(f.machine, 0x33ffff));
-    try std.testing.expectEqual(@as(u8, 0x29), c.dos64_reu_peek(f.machine, 0x341000));
-    for (bytes, 0..) |v, i| try std.testing.expectEqual(v, f.peek(0x6000 + @as(u16, @intCast(i))));
+    try std.testing.expectEqual(@as(u8, 0x29), c.dos64_reu_peek(f.machine, 0x341800));
+    for (bytes, 0..) |v, i| try std.testing.expectEqual(v, f.peek((if (i < 4096) @as(u16, 0x6000) else @as(u16, 0x7000)) + @as(u16, @intCast(i))));
 }
 
 test "native entry malformed overlay header reports failure before either REU write" {
@@ -62,7 +62,7 @@ test "native entry malformed overlay header reports failure before either REU wr
 test "native entry partial bootstrap never claims ready and cold retry repairs exact assets" {
     const bytes = try blob();
     defer std.testing.allocator.free(bytes);
-    for (0..2) |skip| for ([_]u32{ 0, 1, 17, 2047, 2048 }) |prefix| {
+    for (0..3) |skip| for ([_]u32{ 0, 1, 17, 2047, 2048 }) |prefix| {
         var f = try F.init();
         defer f.deinit();
         c.dos64_enable_reu(f.machine);
@@ -73,7 +73,7 @@ test "native entry partial bootstrap never claims ready and cold retry repairs e
         try std.testing.expectEqual(@as(u8, 0), try get(&f, "dos64_overlay_ready"));
         try std.testing.expectEqual(@as(u8, 0), try get(&f, "dos64_overlay_busy"));
         try std.testing.expectEqual(@as(u8, 2), f.peek(0xd020));
-        for (bytes, 0..) |v, i| try std.testing.expectEqual(v, f.peek(0x6000 + @as(u16, @intCast(i))));
+        for (bytes, 0..) |v, i| try std.testing.expectEqual(v, f.peek((if (i < 4096) @as(u16, 0x6000) else @as(u16, 0x7000)) + @as(u16, @intCast(i))));
         try entry(&f);
         try f.expectStatus(1);
         try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x340000, bytes.ptr, bytes.len));

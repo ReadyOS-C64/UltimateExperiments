@@ -1,0 +1,922 @@
+{
+  "schema": 1,
+  "result": "passed",
+  "baseline_commit": "a4288ae",
+  "scope": "Third INPUT overlay, irreversible cold lifetime, initialized fonts and native text VIC setup, elapsed adapter; native boot still idles",
+  "root_checks": {
+    "quick_zig": 326,
+    "quick_hardware_cases": 597,
+    "tooling": 129,
+    "quick_wall_seconds": 46.43,
+    "quick_test_seconds": 38,
+    "tooling_seconds": 3.741,
+    "image_import_zig": 8,
+    "image_import_wall_seconds": 21.88,
+    "genuine_dos_zig": 1,
+    "genuine_dos_wall_seconds": 17.07,
+    "cpu_profile_zig": 1,
+    "profile_wall_seconds": 2.75,
+    "prior_full_hardware_cases_retained": 5701,
+    "full_corpus_repeated": false
+  },
+  "raw_run": "agentworking/runs/native-text-input-20261015-root",
+  "dos_comparison": {
+    "baseline_commit": "1fb3fe7",
+    "baseline_raw_run": "agentworking/runs/dos-builtins-20261015-030029",
+    "result": "passed",
+    "exact_matches": {
+      "kernel_handoff": true,
+      "kernel_bytes_verified": true,
+      "command_prompt_accepted": true,
+      "script_stage": true,
+      "initial_prompt_seen": true,
+      "ver_accepted": true,
+      "dir_accepted": true,
+      "directory_entries": true,
+      "expected_free_bytes": true,
+      "directory_header_seen": true,
+      "directory_summary_seen": true,
+      "input_history": true,
+      "screen_observations": true,
+      "last_screen": true,
+      "stop_reason": true,
+      "guest_ram_sha256": true,
+      "cga_vram_sha256": true,
+      "missing_bios_vector": true,
+      "cpu_status": true,
+      "cpu_opcode": true,
+      "register_order": true,
+      "state": true,
+      "instruction_bytes_hex": true,
+      "previous_state": true,
+      "previous_bytes_hex": true,
+      "instruction_bytes_coherent": true,
+      "native_calls": true,
+      "handoff_guest_instructions": true,
+      "handoff_read_count": true,
+      "bios_reads": true,
+      "last_trace": true,
+      "limits": true,
+      "dos-boot-memory.bin": true,
+      "dos-boot-video.bin": true
+    },
+    "observation_count": 939,
+    "input_count": 10,
+    "baseline_cycles": 1269694142,
+    "current_cycles": 1164555140,
+    "support_cycles": 9698220,
+    "setup_cycles": 26367081,
+    "instructions": 588937,
+    "calls": 592171,
+    "current_artifacts": {
+      "source_sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+      "oracle_sha256": "6b99967e3861777a1e6a07fb6dc6c49d110fa534cf3bcbf25f006141fb15f3ca",
+      "linked_prg_sha256": "d850cd8e6fb7cea955bed76cff8a10baa87cd8337894f2c182932cac301c9b09",
+      "linked_labels_sha256": "fa562a4bdc3ca11b67cd526eea5d551b68b0229d79e65492649bda1c2fc8be2e",
+      "host_test_sha256": "d452204e12cdbf93eb1a364d9fbe91a6ac005ee97477ecf536dfcb5f923bb268"
+    },
+    "guest_ram_sha256": "135149725d1c8821c8cf5914fb459ff280d953a5716e7c870625f2984878eb42",
+    "cga_vram_sha256": "1bca3ea5b94aaa61deba0ffd4b8c6177277d42b96e8699b245fd9e92633649e9",
+    "timing_scope": "CPU-step cycles exclude caller JSR and REU DMA stalls; support cycles separately count coherent observations and native keyboard enqueue. Not physical elapsed time or XT speed."
+  },
+  "profile": {
+    "samples": 12,
+    "source_identity_sha256": "3d8da0c599671a8a8d819d79b2f18041bd3ee4121cd86ed6dc8a7e91ff31d0a2",
+    "totals": {
+      "completed_guest_instructions": 10314,
+      "scheduling_calls": 12902,
+      "counters": {
+        "host_cpu_cycles": 59857246,
+        "native_peddle_instructions": 17428500,
+        "dma_operations": 223,
+        "dma_bytes": 114176
+      },
+      "host_cpu_cycles_per_guest_instruction": 5803.4948613535,
+      "native_instructions_per_guest_instruction": 1689.7905759162304,
+      "dma_operations_per_guest_instruction": 0.021621097537327903,
+      "dma_bytes_per_guest_instruction": 11.070001939111886,
+      "averages_are_instruction_weighted": true
+    },
+    "all_final_state_checks_passed": true,
+    "exclusions": [
+      "Synthetic host caller JSR (6 CPU cycles per scheduling call)",
+      "REU DMA stall/transfer elapsed time",
+      "VIC contention, hardware timers, rendering, UCI/IEC waits",
+      "Guest 8088 cycle timing, XT ratio and physical C64U elapsed time"
+    ]
+  },
+  "maps": {
+    "dos64": {
+      "segments": [
+        {
+          "name": "LOADADDR",
+          "start": 0,
+          "end": 1,
+          "bytes": 2
+        },
+        {
+          "name": "ZEROPAGE",
+          "start": 32,
+          "end": 49,
+          "bytes": 18
+        },
+        {
+          "name": "BASIC",
+          "start": 2049,
+          "end": 2060,
+          "bytes": 12
+        },
+        {
+          "name": "CODE",
+          "start": 2061,
+          "end": 14350,
+          "bytes": 12290
+        },
+        {
+          "name": "RODATA",
+          "start": 14351,
+          "end": 15230,
+          "bytes": 880
+        },
+        {
+          "name": "NATIVESTATE",
+          "start": 15231,
+          "end": 15232,
+          "bytes": 2
+        },
+        {
+          "name": "NARROWFONT",
+          "start": 17408,
+          "end": 18431,
+          "bytes": 1024
+        },
+        {
+          "name": "FULLFONT",
+          "start": 18432,
+          "end": 20479,
+          "bytes": 2048
+        },
+        {
+          "name": "DEVICECODE",
+          "start": 20480,
+          "end": 24235,
+          "bytes": 3756
+        },
+        {
+          "name": "IMPORTCODE",
+          "start": 28672,
+          "end": 29602,
+          "bytes": 931
+        },
+        {
+          "name": "COLDINIT",
+          "start": 29603,
+          "end": 29996,
+          "bytes": 394
+        },
+        {
+          "name": "COLDRODATA",
+          "start": 29997,
+          "end": 30492,
+          "bytes": 496
+        },
+        {
+          "name": "RANGEBUFFER",
+          "start": 49152,
+          "end": 49407,
+          "bytes": 256
+        },
+        {
+          "name": "UCIBUFFER",
+          "start": 49408,
+          "end": 51455,
+          "bytes": 2048
+        },
+        {
+          "name": "FILECODE",
+          "start": 51456,
+          "end": 52543,
+          "bytes": 1088
+        },
+        {
+          "name": "INPUTCODE",
+          "start": 51456,
+          "end": 52337,
+          "bytes": 882
+        },
+        {
+          "name": "RENDERCODE",
+          "start": 51456,
+          "end": 52173,
+          "bytes": 718
+        },
+        {
+          "name": "DISPLAYCODE",
+          "start": 52174,
+          "end": 52412,
+          "bytes": 239
+        },
+        {
+          "name": "BSS",
+          "start": 57344,
+          "end": 57565,
+          "bytes": 222
+        },
+        {
+          "name": "PAGEMAP",
+          "start": 57600,
+          "end": 59647,
+          "bytes": 2048
+        },
+        {
+          "name": "CACHEMETA",
+          "start": 59648,
+          "end": 59839,
+          "bytes": 192
+        },
+        {
+          "name": "DEVICESTATE",
+          "start": 59904,
+          "end": 60147,
+          "bytes": 244
+        }
+      ],
+      "load": {
+        "layout": "runtime",
+        "start": 2049,
+        "linked_file_bytes": 21833,
+        "padding": [
+          {
+            "name": "unused_main",
+            "start": 15233,
+            "end": 16383,
+            "bytes": 1151,
+            "file_offset": 13186,
+            "value": 0
+          },
+          {
+            "name": "display_matrix_and_guard_zero",
+            "start": 16384,
+            "end": 17407,
+            "bytes": 1024,
+            "file_offset": 14337,
+            "value": 0
+          },
+          {
+            "name": "unused_device",
+            "start": 24236,
+            "end": 24575,
+            "bytes": 340,
+            "file_offset": 22189,
+            "value": 0
+          },
+          {
+            "name": "cold_import_tail_zero",
+            "start": 30493,
+            "end": 32767,
+            "bytes": 2275,
+            "file_offset": 28446,
+            "value": 0
+          }
+        ],
+        "payload_checked": true,
+        "end_exclusive": 34816,
+        "startup_fonts": [
+          {
+            "name": "NARROWFONT",
+            "start": 17408,
+            "bytes": 1024,
+            "sha256": "c15f11a5ae43771657dd24295e37cff5886280b3c32d80c5fe62757eb4e38dfe",
+            "executable": false,
+            "ownership": "matrix/input phase must be released before display; persistent across code overlays"
+          },
+          {
+            "name": "FULLFONT",
+            "start": 18432,
+            "bytes": 2048,
+            "sha256": "94fb2992461e7b79fcb3514d077727f33e5ee4f9d993f40f0aaeabf9c8f1ac30",
+            "executable": false,
+            "ownership": "matrix/input phase must be released before display; persistent across code overlays"
+          }
+        ],
+        "overlays": [
+          {
+            "name": "FILECODE",
+            "startup_source": 24576,
+            "reu_slot": 3407872,
+            "slot_bytes": 2048,
+            "payload_bytes": 1088,
+            "run": 51456,
+            "members": [
+              {
+                "name": "FILECODE",
+                "bytes": 1088
+              }
+            ],
+            "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+          },
+          {
+            "name": "RENDERCODE",
+            "startup_source": 26624,
+            "reu_slot": 3409920,
+            "slot_bytes": 2048,
+            "payload_bytes": 957,
+            "run": 51456,
+            "members": [
+              {
+                "name": "RENDERCODE",
+                "bytes": 718
+              },
+              {
+                "name": "DISPLAYCODE",
+                "bytes": 239
+              }
+            ],
+            "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+          },
+          {
+            "name": "INPUTCODE",
+            "startup_source": 32768,
+            "reu_slot": 3411968,
+            "slot_bytes": 2048,
+            "payload_bytes": 882,
+            "run": 51456,
+            "members": [
+              {
+                "name": "INPUTCODE",
+                "bytes": 882
+              }
+            ],
+            "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+          }
+        ],
+        "resident_end_exclusive": 24236,
+        "cold_import": {
+          "start": 28672,
+          "end": 30492,
+          "linked_bytes": 1821,
+          "state_bytes": 26,
+          "window_bytes": 4096,
+          "payload_checked": true,
+          "ownership": "startup-only after overlay bootstrap; code/state discarded before bitmap ownership"
+        },
+        "exclusive_overlay_window_bytes": 1792,
+        "max_linked_overlay_bytes": 1088,
+        "overlay_source_bytes": 2927,
+        "startup_overlay_bytes": 6144,
+        "padding_bytes": 4790,
+        "payload_bytes": 32767,
+        "prg_bytes": 32769
+      },
+      "errors": [],
+      "passed": true
+    },
+    "dos64-tests": {
+      "segments": [
+        {
+          "name": "LOADADDR",
+          "start": 0,
+          "end": 1,
+          "bytes": 2
+        },
+        {
+          "name": "ZEROPAGE",
+          "start": 32,
+          "end": 61,
+          "bytes": 30
+        },
+        {
+          "name": "BASIC",
+          "start": 2049,
+          "end": 2060,
+          "bytes": 12
+        },
+        {
+          "name": "CODE",
+          "start": 2061,
+          "end": 15266,
+          "bytes": 13206
+        },
+        {
+          "name": "RODATA",
+          "start": 15267,
+          "end": 16170,
+          "bytes": 904
+        },
+        {
+          "name": "TESTCODE",
+          "start": 16171,
+          "end": 16206,
+          "bytes": 36
+        },
+        {
+          "name": "NATIVESTATE",
+          "start": 16207,
+          "end": 16208,
+          "bytes": 2
+        },
+        {
+          "name": "NARROWFONT",
+          "start": 17408,
+          "end": 18431,
+          "bytes": 1024
+        },
+        {
+          "name": "FULLFONT",
+          "start": 18432,
+          "end": 20479,
+          "bytes": 2048
+        },
+        {
+          "name": "DEVICECODE",
+          "start": 20480,
+          "end": 24235,
+          "bytes": 3756
+        },
+        {
+          "name": "IMPORTCODE",
+          "start": 28672,
+          "end": 29602,
+          "bytes": 931
+        },
+        {
+          "name": "COLDINIT",
+          "start": 29603,
+          "end": 29996,
+          "bytes": 394
+        },
+        {
+          "name": "COLDRODATA",
+          "start": 29997,
+          "end": 30492,
+          "bytes": 496
+        },
+        {
+          "name": "RANGEBUFFER",
+          "start": 49152,
+          "end": 49407,
+          "bytes": 256
+        },
+        {
+          "name": "UCIBUFFER",
+          "start": 49408,
+          "end": 51455,
+          "bytes": 2048
+        },
+        {
+          "name": "FILECODE",
+          "start": 51456,
+          "end": 52543,
+          "bytes": 1088
+        },
+        {
+          "name": "INPUTCODE",
+          "start": 51456,
+          "end": 52337,
+          "bytes": 882
+        },
+        {
+          "name": "RENDERCODE",
+          "start": 51456,
+          "end": 52173,
+          "bytes": 718
+        },
+        {
+          "name": "DISPLAYCODE",
+          "start": 52174,
+          "end": 52412,
+          "bytes": 239
+        },
+        {
+          "name": "BSS",
+          "start": 57344,
+          "end": 57565,
+          "bytes": 222
+        },
+        {
+          "name": "PAGEMAP",
+          "start": 57600,
+          "end": 59647,
+          "bytes": 2048
+        },
+        {
+          "name": "CACHEMETA",
+          "start": 59648,
+          "end": 59839,
+          "bytes": 192
+        },
+        {
+          "name": "DEVICESTATE",
+          "start": 59904,
+          "end": 60147,
+          "bytes": 244
+        }
+      ],
+      "load": {
+        "layout": "runtime",
+        "start": 2049,
+        "linked_file_bytes": 22809,
+        "padding": [
+          {
+            "name": "unused_main",
+            "start": 16209,
+            "end": 16383,
+            "bytes": 175,
+            "file_offset": 14162,
+            "value": 0
+          },
+          {
+            "name": "display_matrix_and_guard_zero",
+            "start": 16384,
+            "end": 17407,
+            "bytes": 1024,
+            "file_offset": 14337,
+            "value": 0
+          },
+          {
+            "name": "unused_device",
+            "start": 24236,
+            "end": 24575,
+            "bytes": 340,
+            "file_offset": 22189,
+            "value": 0
+          },
+          {
+            "name": "cold_import_tail_zero",
+            "start": 30493,
+            "end": 32767,
+            "bytes": 2275,
+            "file_offset": 28446,
+            "value": 0
+          }
+        ],
+        "payload_checked": true,
+        "end_exclusive": 34816,
+        "startup_fonts": [
+          {
+            "name": "NARROWFONT",
+            "start": 17408,
+            "bytes": 1024,
+            "sha256": "c15f11a5ae43771657dd24295e37cff5886280b3c32d80c5fe62757eb4e38dfe",
+            "executable": false,
+            "ownership": "matrix/input phase must be released before display; persistent across code overlays"
+          },
+          {
+            "name": "FULLFONT",
+            "start": 18432,
+            "bytes": 2048,
+            "sha256": "94fb2992461e7b79fcb3514d077727f33e5ee4f9d993f40f0aaeabf9c8f1ac30",
+            "executable": false,
+            "ownership": "matrix/input phase must be released before display; persistent across code overlays"
+          }
+        ],
+        "overlays": [
+          {
+            "name": "FILECODE",
+            "startup_source": 24576,
+            "reu_slot": 3407872,
+            "slot_bytes": 2048,
+            "payload_bytes": 1088,
+            "run": 51456,
+            "members": [
+              {
+                "name": "FILECODE",
+                "bytes": 1088
+              }
+            ],
+            "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+          },
+          {
+            "name": "RENDERCODE",
+            "startup_source": 26624,
+            "reu_slot": 3409920,
+            "slot_bytes": 2048,
+            "payload_bytes": 957,
+            "run": 51456,
+            "members": [
+              {
+                "name": "RENDERCODE",
+                "bytes": 718
+              },
+              {
+                "name": "DISPLAYCODE",
+                "bytes": 239
+              }
+            ],
+            "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+          },
+          {
+            "name": "INPUTCODE",
+            "startup_source": 32768,
+            "reu_slot": 3411968,
+            "slot_bytes": 2048,
+            "payload_bytes": 882,
+            "run": 51456,
+            "members": [
+              {
+                "name": "INPUTCODE",
+                "bytes": 882
+              }
+            ],
+            "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+          }
+        ],
+        "resident_end_exclusive": 24236,
+        "cold_import": {
+          "start": 28672,
+          "end": 30492,
+          "linked_bytes": 1821,
+          "state_bytes": 26,
+          "window_bytes": 4096,
+          "payload_checked": true,
+          "ownership": "startup-only after overlay bootstrap; code/state discarded before bitmap ownership"
+        },
+        "exclusive_overlay_window_bytes": 1792,
+        "max_linked_overlay_bytes": 1088,
+        "overlay_source_bytes": 2927,
+        "startup_overlay_bytes": 6144,
+        "padding_bytes": 3814,
+        "payload_bytes": 32767,
+        "prg_bytes": 32769
+      },
+      "errors": [],
+      "passed": true
+    }
+  },
+  "delegated": {
+    "overlay_checks": {
+      "shared_overlay_zig": 58,
+      "shared_package": 5,
+      "shared_overlay_memory": 15,
+      "shared_importer_zig": 8,
+      "shared_importer_contract": 10,
+      "shared_existing_memory": 17,
+      "private_BIOS_overlay_INPUT_phase_zig": 46,
+      "private_genuine_DOS_long": 1,
+      "private_package": 6
+    },
+    "display_checks": {
+      "native_text_zig": 14,
+      "combined_overlay_zig": 64,
+      "font_and_text_tooling": 6,
+      "overlay_memory_tooling": 15,
+      "existing_memory_tooling": 17,
+      "package_tooling": 5
+    }
+  },
+  "font_vice": {
+    "private_evidence": "agentworking/scratch/native-text-display/narrow/evidence.json",
+    "private_evidence_sha256": "c52247fc348bfc58d5e772e1435b167106feddda59701499f5f7bee0aff0a95f",
+    "mode40": {
+      "accepted": true,
+      "kind": "presentation-only",
+      "mode": 0,
+      "columns": 40,
+      "mailbox_hex": "445450310100a500e03180a9f64f",
+      "ram_sha256": "7c07cfcbac3fbbbea202a0361bf9fae698747c2703e990c7f1663834a8fb84d5",
+      "prg_sha256": "3a9351e9a5c8aa6082bd743eb80d61307e27b43c97a6ee5d5326d14b2169880f",
+      "bitmap_sha256": "0ccca72ed803711dca4c430394fa746c6ef1e256c2cc395575f031a5fc5734a2",
+      "matrix_sha256": "3e022e1be47239953f01b5dbf53d46c859023f59283376cd9770bb7fad596d16",
+      "font_sha256": "94fb2992461e7b79fcb3514d077727f33e5ee4f9d993f40f0aaeabf9c8f1ac30",
+      "narrow_font_sha256": "c15f11a5ae43771657dd24295e37cff5886280b3c32d80c5fe62757eb4e38dfe",
+      "verified_immutable_code_bytes": 2874,
+      "excluded_self_modified_operand_bytes": 14,
+      "limitations": [
+        "No DOS execution",
+        "No raster/DMA/timing model",
+        "Physical visual readability requires screenshot and inspection",
+        "VIC/CIA settings need independent register capture"
+      ],
+      "harness_run": "agentworking/runs/vice-narrow-text-20261015-034924/mode-0/logs/vice_auto_20261015_034929",
+      "harness_status": "success",
+      "artifacts": {
+        "logs/vice_auto_20261015_034929/vice_stdout.log": "f1945cd6c19e56b3c1c78943ef5ec18116907a4ca1efc40a57d48ab1db7adfc5",
+        "logs/vice_auto_20261015_034929/events.ndjson": "8d8bf23c890601829488840e2e652999d5a8d0b23422970104a07a33b5f9e6b6",
+        "logs/vice_auto_20261015_034929/manifest.json": "ae5b328f80a93c689c035b64707c353dd48d2f1f1445e1be0bbe300d9a389fc8",
+        "logs/vice_auto_20261015_034929/trace.md": "0bf20adcfefc5b15af7ec28916fa957721cb9909974c16f836469ca7c8632dcb",
+        "logs/vice_auto_20261015_034929/dumps/reu_state_native_text_mode_0_ovl1_preview_0x400000_256b.bin": "5341e6b2646979a70e57653007a1f310169421ec9bdd9f1a5648f75ade005af1",
+        "logs/vice_auto_20261015_034929/dumps/reu_end_of_run_full.img": "f91eaf28a0c4577edb803ab05c0bf57745a8e3d6b8b7a2eb01d164c131259d10",
+        "logs/vice_auto_20261015_034929/dumps/reu_state_native_text_mode_0_dbg_head_0x43F000_2b.bin": "06eb7d6a69ee19e5fbdf749018d3d2abfa04bcbd1365db312eb86dc7169389b8",
+        "logs/vice_auto_20261015_034929/dumps/reu_state_native_text_mode_0_dbg_ring_0x43F010_512b.bin": "aa691b6893d3e8485e82f29fcc32b1514ca9d2815e34a18531bf4868abfd77dc",
+        "logs/vice_auto_20261015_034929/dumps/mem_end_of_run.bin": "7c07cfcbac3fbbbea202a0361bf9fae698747c2703e990c7f1663834a8fb84d5",
+        "logs/vice_auto_20261015_034929/dumps/reu_state_native_text_mode_0_index.json": "290f459c2094183eebd69d6742a83b818ae87e1d94b3dea93ee84e4b9d017607",
+        "logs/vice_auto_20261015_034929/dumps/reu_state_native_text_mode_0_ovl2_preview_0x410000_256b.bin": "0d1b5807a072040df4aab5871837e4296ddafc56a83226a1d098e6e86961c001",
+        "logs/vice_auto_20261015_034929/dumps/reu_end_of_run_index.json": "4c62d0e7678f1290333b2e4222de491985ccb817324bceac526cd573ff9006cc",
+        "logs/vice_auto_20261015_034929/dumps/reu_state_native_text_mode_0_ovl3_preview_0x420000_256b.bin": "0d1b5807a072040df4aab5871837e4296ddafc56a83226a1d098e6e86961c001",
+        "logs/vice_auto_20261015_034929/screen_decoded/boot_initial.txt": "a10237955c8cdef48705e3c0cc412eb44084cb55846866c188f0efd1338ef44e",
+        "logs/vice_auto_20261015_034929/screen_decoded/final_warp_off.txt": "507ed0b011dfddf8f6ee79ae38d85bb7df1c0930628860daf0dad085563dccae",
+        "logs/vice_auto_20261015_034929/stages/capture/state.json": "e2d30c82a616fe762d2e9bab49cf6ef238316560cafa70c521d7803afbfd17cd",
+        "logs/vice_auto_20261015_034929/stages/capture/step.json": "bdceb3094483d32ca8805ff4218941c28c9b870ec0a00b2dff0d5b53c3867194",
+        "logs/vice_auto_20261015_034929/stages/dump/mailbox.bin": "1b0894c92758ae6f6aa009179336eb2e5c65204d75435a966789f5d5b5fbc619",
+        "logs/vice_auto_20261015_034929/stages/dump/step.json": "de690e542bddd5cf987adf0ba37159351b322737fc01e1be05c75050a83a36e6",
+        "logs/vice_auto_20261015_034929/stages/dump/vic.bin": "acdd8c6193ad9e605f259496f15790f8860ee0ef63eb3b707f631ea930d7a7b3",
+        "logs/vice_auto_20261015_034929/stages/dump/vic.hex.txt": "645aad8f172977b1c553c3b5739d260975b5621dd40bd2765d006ec486f76f90",
+        "logs/vice_auto_20261015_034929/stages/dump/cia2_bank_pins.hex.txt": "e8d445970fc079201e7842fd87c73683d6452019ea3b99692b07b8902aa1b0df",
+        "logs/vice_auto_20261015_034929/stages/dump/mailbox.hex.txt": "05f92047c699305aeb2f3bb1b6c84b2ab2b4c8d9d938486eee04f2511268346a",
+        "logs/vice_auto_20261015_034929/stages/dump/cia2_bank_pins.bin": "c287abcb3238787ef9a26d25ae774aafdc032ab8c907ae382651afdf0e0253b5",
+        "logs/vice_auto_20261015_034929/stages/complete/step.json": "af59f1c5a68855af3235f76de031f5981214fba5b6e3a95ae44cca05a54a7587",
+        "logs/vice_auto_20261015_034929/stages/launch/decoded.txt": "a10237955c8cdef48705e3c0cc412eb44084cb55846866c188f0efd1338ef44e",
+        "logs/vice_auto_20261015_034929/stages/launch/step.json": "97f7e64181b634d8326ba365302b768a88605209f65b494c3b17eb49d0924dfd",
+        "logs/vice_auto_20261015_034929/stages/launch/screen.png": "fd8ba54e1228538b9edf80d56dd4c3cc75ae48f31e283092efce42c22213df0f",
+        "logs/vice_auto_20261015_034929/stages/warp_off/decoded.txt": "507ed0b011dfddf8f6ee79ae38d85bb7df1c0930628860daf0dad085563dccae",
+        "logs/vice_auto_20261015_034929/stages/warp_off/state.json": "84265ce813f559589747b94bd3aba92f3242bd7df4a0751fbbb195e322a35e5a",
+        "logs/vice_auto_20261015_034929/stages/warp_off/step.json": "83ad7d6f82e965857824f4a9e94e51fec5ece544de892ebb14efef67098627c1",
+        "logs/vice_auto_20261015_034929/stages/warp_off/warp_response.txt": "c0a1aa0f4640e91a141937e157ec98ce4ca6826343736ed4a8eba77ee1a6e974",
+        "logs/vice_auto_20261015_034929/stages/warp_off/screen.png": "4724b129d99b744895d3655af02a98e73a793c8274a62156cba440969d0fd28d",
+        "logs/vice_auto_20261015_034929/stages/no_error/step.json": "328c9e896d1992ab9fb4560e927c2f6984e6707940a932a4310b036c2da0e888",
+        "logs/vice_auto_20261015_034929/state/final_warp_off.json": "84265ce813f559589747b94bd3aba92f3242bd7df4a0751fbbb195e322a35e5a",
+        "logs/vice_auto_20261015_034929/state/native_text_mode_0.json": "e2d30c82a616fe762d2e9bab49cf6ef238316560cafa70c521d7803afbfd17cd",
+        "logs/vice_auto_20261015_034929/screens/boot_initial.png": "fd8ba54e1228538b9edf80d56dd4c3cc75ae48f31e283092efce42c22213df0f",
+        "logs/vice_auto_20261015_034929/screens/final_warp_off.png": "4724b129d99b744895d3655af02a98e73a793c8274a62156cba440969d0fd28d"
+      },
+      "vic_hex": "00000000000000000000000000000000003b00000000c8000971f00000000000f0",
+      "cia2_bank_pins_hex": "c6ff3f00",
+      "reu_size": 16777216,
+      "reu_sha256": "f91eaf28a0c4577edb803ab05c0bf57745a8e3d6b8b7a2eb01d164c131259d10",
+      "vic_bank_accepted": true
+    },
+    "mode80": {
+      "accepted": true,
+      "kind": "presentation-only",
+      "mode": 3,
+      "columns": 80,
+      "mailbox_hex": "445450310103a500cfad80a9f64f",
+      "ram_sha256": "303096fd9c523eaa103afa7734a7e6488309f48bf26c38f94ace5e14506efcd0",
+      "prg_sha256": "051cdfcb4dee17450e2297e8add775e69987522c4f1de62eb4e21cda74c0f916",
+      "bitmap_sha256": "f0a3ad2f98af0f98c07545f9de725b5497721388b90c9b4f2f15ee084c8f7950",
+      "matrix_sha256": "3e022e1be47239953f01b5dbf53d46c859023f59283376cd9770bb7fad596d16",
+      "font_sha256": "94fb2992461e7b79fcb3514d077727f33e5ee4f9d993f40f0aaeabf9c8f1ac30",
+      "narrow_font_sha256": "c15f11a5ae43771657dd24295e37cff5886280b3c32d80c5fe62757eb4e38dfe",
+      "verified_immutable_code_bytes": 3555,
+      "excluded_self_modified_operand_bytes": 16,
+      "limitations": [
+        "No DOS execution",
+        "No raster/DMA/timing model",
+        "Physical visual readability requires screenshot and inspection",
+        "VIC/CIA settings need independent register capture"
+      ],
+      "harness_run": "agentworking/runs/vice-narrow-text-20261015-034924/mode-3/logs/vice_auto_20261015_035028",
+      "harness_status": "success",
+      "artifacts": {
+        "logs/vice_auto_20261015_035028/vice_stdout.log": "f1945cd6c19e56b3c1c78943ef5ec18116907a4ca1efc40a57d48ab1db7adfc5",
+        "logs/vice_auto_20261015_035028/events.ndjson": "2e608867bc2a02e14bb0bf39fd7b74d2f052c9d58a5513e5505d224d38782a62",
+        "logs/vice_auto_20261015_035028/manifest.json": "f6b107ca16c5eff2c3a4d3683d5dade0b916c6c09575ac95f94e794bb05956b2",
+        "logs/vice_auto_20261015_035028/trace.md": "a9ec2eee11a9865ae717bbf03c7ee80fc0418a22ece9d28b00f1d4743c678766",
+        "logs/vice_auto_20261015_035028/dumps/reu_state_native_text_mode_3_ovl2_preview_0x410000_256b.bin": "0d1b5807a072040df4aab5871837e4296ddafc56a83226a1d098e6e86961c001",
+        "logs/vice_auto_20261015_035028/dumps/reu_state_native_text_mode_3_ovl3_preview_0x420000_256b.bin": "0d1b5807a072040df4aab5871837e4296ddafc56a83226a1d098e6e86961c001",
+        "logs/vice_auto_20261015_035028/dumps/reu_state_native_text_mode_3_index.json": "676eb9f9c7f4bbb089eab798c7cc25c00d2bf775f46f20e6879bc22a86567ac9",
+        "logs/vice_auto_20261015_035028/dumps/reu_state_native_text_mode_3_dbg_head_0x43F000_2b.bin": "06eb7d6a69ee19e5fbdf749018d3d2abfa04bcbd1365db312eb86dc7169389b8",
+        "logs/vice_auto_20261015_035028/dumps/reu_state_native_text_mode_3_dbg_ring_0x43F010_512b.bin": "aa691b6893d3e8485e82f29fcc32b1514ca9d2815e34a18531bf4868abfd77dc",
+        "logs/vice_auto_20261015_035028/dumps/reu_end_of_run_full.img": "dc7953fcd30376545ac38b161661b5bf6e273e4c549c4fa668cf2f3ebcd868db",
+        "logs/vice_auto_20261015_035028/dumps/reu_state_native_text_mode_3_ovl1_preview_0x400000_256b.bin": "5341e6b2646979a70e57653007a1f310169421ec9bdd9f1a5648f75ade005af1",
+        "logs/vice_auto_20261015_035028/dumps/mem_end_of_run.bin": "303096fd9c523eaa103afa7734a7e6488309f48bf26c38f94ace5e14506efcd0",
+        "logs/vice_auto_20261015_035028/dumps/reu_end_of_run_index.json": "48ae5b6d279f0390e71828bb4f10a5906bf4d9ceb9ea6f3ffd0717d8cbe4274f",
+        "logs/vice_auto_20261015_035028/screen_decoded/boot_initial.txt": "9175b033db9d16094b58a2b25fee9243296f2e217473ff8fcd752bf23f70a02e",
+        "logs/vice_auto_20261015_035028/screen_decoded/final_warp_off.txt": "b203e74650ba29e338862d2935a8838444bff23c59a73f5a1389c828e132d62e",
+        "logs/vice_auto_20261015_035028/stages/capture/state.json": "fc407597accd515db67e2e6fe34c9d02f4603e8a22687409c4d70db8da87c8c9",
+        "logs/vice_auto_20261015_035028/stages/capture/step.json": "29922020597fa57b66a05d390d6c95cea98abc9db82b5fd0066ff883cbde8af1",
+        "logs/vice_auto_20261015_035028/stages/dump/mailbox.bin": "ba022e07734cb84777166ce52928fb2137aacb376e3099816d0719c99e01169d",
+        "logs/vice_auto_20261015_035028/stages/dump/step.json": "7cb1a6f3e4315d1118f6c110f86ebce886121b39ac7334faf2be1ab366d5a9c3",
+        "logs/vice_auto_20261015_035028/stages/dump/vic.bin": "acdd8c6193ad9e605f259496f15790f8860ee0ef63eb3b707f631ea930d7a7b3",
+        "logs/vice_auto_20261015_035028/stages/dump/vic.hex.txt": "645aad8f172977b1c553c3b5739d260975b5621dd40bd2765d006ec486f76f90",
+        "logs/vice_auto_20261015_035028/stages/dump/cia2_bank_pins.hex.txt": "e8d445970fc079201e7842fd87c73683d6452019ea3b99692b07b8902aa1b0df",
+        "logs/vice_auto_20261015_035028/stages/dump/mailbox.hex.txt": "144221d011543ca540f70663b9c613052ac1c8d226ce57c4fb965f8c9e3915d1",
+        "logs/vice_auto_20261015_035028/stages/dump/cia2_bank_pins.bin": "c287abcb3238787ef9a26d25ae774aafdc032ab8c907ae382651afdf0e0253b5",
+        "logs/vice_auto_20261015_035028/stages/complete/step.json": "384d38201cc8b4932e12c61c1d02ed93650f34ea38c47f25684b79a4e24447c3",
+        "logs/vice_auto_20261015_035028/stages/launch/decoded.txt": "9175b033db9d16094b58a2b25fee9243296f2e217473ff8fcd752bf23f70a02e",
+        "logs/vice_auto_20261015_035028/stages/launch/step.json": "3f0129c68ba0c496faea521e9612d3c062bdc4c0352141259dc243f7a22b5a98",
+        "logs/vice_auto_20261015_035028/stages/launch/screen.png": "fcaa6955069bbc5094140fd03cf0254a67cda618df8c246935fdb915c93f426b",
+        "logs/vice_auto_20261015_035028/stages/warp_off/decoded.txt": "b203e74650ba29e338862d2935a8838444bff23c59a73f5a1389c828e132d62e",
+        "logs/vice_auto_20261015_035028/stages/warp_off/state.json": "e8e0fc427136dc2777dcdd4b2844466f47eefb701226ced65d5a655deb47125e",
+        "logs/vice_auto_20261015_035028/stages/warp_off/step.json": "9d50464521ee128a0291ef68592d4b4485f4726cb9524d51c34e2ea1d6cfee70",
+        "logs/vice_auto_20261015_035028/stages/warp_off/warp_response.txt": "c0a1aa0f4640e91a141937e157ec98ce4ca6826343736ed4a8eba77ee1a6e974",
+        "logs/vice_auto_20261015_035028/stages/warp_off/screen.png": "26acc5cc342d37afabf62a45decf6ad67b647f50ee8beb1ace8d4eb75faea0c1",
+        "logs/vice_auto_20261015_035028/stages/no_error/step.json": "328c9e896d1992ab9fb4560e927c2f6984e6707940a932a4310b036c2da0e888",
+        "logs/vice_auto_20261015_035028/state/final_warp_off.json": "e8e0fc427136dc2777dcdd4b2844466f47eefb701226ced65d5a655deb47125e",
+        "logs/vice_auto_20261015_035028/state/native_text_mode_3.json": "fc407597accd515db67e2e6fe34c9d02f4603e8a22687409c4d70db8da87c8c9",
+        "logs/vice_auto_20261015_035028/screens/boot_initial.png": "fcaa6955069bbc5094140fd03cf0254a67cda618df8c246935fdb915c93f426b",
+        "logs/vice_auto_20261015_035028/screens/final_warp_off.png": "26acc5cc342d37afabf62a45decf6ad67b647f50ee8beb1ace8d4eb75faea0c1"
+      },
+      "vic_hex": "00000000000000000000000000000000003b00000000c8000971f00000000000f0",
+      "cia2_bank_pins_hex": "c6ff3f00",
+      "reu_size": 16777216,
+      "reu_sha256": "dc7953fcd30376545ac38b161661b5bf6e273e4c549c4fa668cf2f3ebcd868db",
+      "vic_bank_accepted": true
+    },
+    "visual_result": "Ordinary80-column DOS text visibly clearer with separated strokes and open counters; intentionally tiny4-pixel cell still needs physical inspection. Extended fallback glyphs remain compressed.40 unchanged.",
+    "forty_screenshot_byte_identical": true,
+    "machine_configuration": "Existing harness defaults/warp/16MiB REU; explicit PAL/NTSC resource not captured",
+    "physical_run": false
+  },
+  "files": {
+    "Makefile": "472978db7a5583123f5a3ee3fb7f78e8b1c3c2b943bdc12914da469d3676a7a6",
+    "build.zig": "5f9aeede608e6013de89d914c855b0e9cd3bd1190f47931fcef2c249fca97da0",
+    "build/dos64-overlay-package.json": "344159f42a812e25218b3b6b6b0d01c5964617f613c4310d87b82060fc075c47",
+    "build/dos64-overlay-startup.bin": "0a9eced32164e0bbcc954f8aeb9aeb94790cab424def341973a1a3bd134da54b",
+    "build/dos64-resident.prg.files.bin": "5b25af52a8590a12c72576e6548372e6789cbbce16b0b17b150e8bf52f22ad5b",
+    "build/dos64-resident.prg.import.bin": "1c99308de12f76d8321dda9c11a9aa78a1f5840a60bbb2b845a2bf1fe219b224",
+    "build/dos64-resident.prg.input.bin": "89028a5e0168136860243686902753406dd514d9f7eb6bad091de37072a4ce77",
+    "build/dos64-resident.prg.render.bin": "eeb00f8553dd59aa8fb86f1d2928fe3593235de91305b8995741346fa13f98a1",
+    "build/dos64-tests-overlay-package.json": "78bb87198f1411cb8eb57d5b7f3621ea7e2658235cc117cedb09c4dd0a4ee619",
+    "build/dos64-tests-overlay-startup.bin": "0a9eced32164e0bbcc954f8aeb9aeb94790cab424def341973a1a3bd134da54b",
+    "build/dos64-tests-resident.prg.files.bin": "5b25af52a8590a12c72576e6548372e6789cbbce16b0b17b150e8bf52f22ad5b",
+    "build/dos64-tests-resident.prg.import.bin": "1c99308de12f76d8321dda9c11a9aa78a1f5840a60bbb2b845a2bf1fe219b224",
+    "build/dos64-tests-resident.prg.input.bin": "89028a5e0168136860243686902753406dd514d9f7eb6bad091de37072a4ce77",
+    "build/dos64-tests-resident.prg.render.bin": "eeb00f8553dd59aa8fb86f1d2928fe3593235de91305b8995741346fa13f98a1",
+    "build/dos64-tests.labels": "fa562a4bdc3ca11b67cd526eea5d551b68b0229d79e65492649bda1c2fc8be2e",
+    "build/dos64-tests.map": "6aa1a73577d9c2b7ad32ab02efa96a585e0d93cc2a2f9c79750c12f133dc930c",
+    "build/dos64-tests.memory.json": "571a79e52655cb00b6b1b46e57b803e572f0e7ef00256ca46685326fecfdb180",
+    "build/dos64-tests.prg": "d850cd8e6fb7cea955bed76cff8a10baa87cd8337894f2c182932cac301c9b09",
+    "build/dos64.labels": "86e4ef8f6561fc5543170b37166257bfdbcfb2c5248fae4b166f6f5b0d0c52a5",
+    "build/dos64.map": "c6b3e7c6986958f3c3587cf2a3a2d59d4cee61f26757604d0ec30932e3144e37",
+    "build/dos64.memory.json": "f9223fef878265cd7c47b7d93955125b645add52950bc25409d896d635243ba2",
+    "build/dos64.prg": "7a7cea8150b87e878f97faf03f220b02ad52fc51e945920229024e3a19fdd705",
+    "build_support/overlay_package.py": "26a6c783ff923157b92adf425dc98a823b9f9309f77d8763ff5b5acd74e68872",
+    "build_support/verify_memory.py": "eba1234b9bc6227bde739a6846b210bc86e127335df7b52ceb835cbe6ed1805a",
+    "cfg/dos64-runtime.cfg": "922dd5cce4985c039e4f0e09d5e5c62de61ac533bd9e80cb4f6fb0bca72c9053",
+    "include/elapsed.inc": "69475baba5b20c6e03a11e3b40286f7e26b1b6ff3502d65561f3c5d938708dba",
+    "include/host_input.inc": "5796c99f8f7ebc6a2bd369797aa907f7eea814b125995ef887f5ea14c8ba367a",
+    "include/image_import.inc": "980f4851b446c728fe9b60a5cd61301f6d3561cb125e8fd718bd2fa02bdf85bf",
+    "include/overlays.inc": "00a5bf0523235745ea1093cb03419941317efce69209307c2f5deb7f2b8ed42d",
+    "src/address.s": "09805aa9fe6249726447d7c093223b884de04fea9fbb7f65068c96b90507ee01",
+    "src/adjust.s": "8373cca0aaf311f0cbd859780e2d8e05e503a643ec516eba5fdeb19e1b549490",
+    "src/alu.s": "9c5c4aeadddb9c65c4b441c7fb30530cc7433a7846c82a7df1bc6168f1fb4500",
+    "src/aux_bios.s": "4be68451703004b131498afa80a3e8ca52af092931c21f9540bd486765c9c606",
+    "src/bios.s": "120d5c2fce8c37f107e623f2fe6070e51dc14d82536bb208b5aaa69f1e66d2c4",
+    "src/boot.s": "e450012e89b8eb07a4f4b8601de6bc09cf82aad7f436734dd6eb76c5d54db64f",
+    "src/clock.s": "e949ebf02887e83773acfcb61cfe91415db761baf77147b4178f83044af8297c",
+    "src/cold.s": "274bb6ea81c9e0d314f6ed2c9d96e6d0ad4d1f62bb5bd433dc8f43f847059e14",
+    "src/control.s": "9c49f31c51646213430124c9ff3c5fb12b2bb4cd71e3d17f71b52d2ae398f295",
+    "src/cpu.s": "25f7a2a2766bdb1da0545a34d2391e3bb3a962c1b748a628817694cd966a155a",
+    "src/cpu_state.s": "77c0e8db8217b15bc5d9a031fc4554eeaec14c38b8212b0faabee4d7ac65563f",
+    "src/disk.s": "2783fc60f7c59b904e04d72e5ce9326eda67b4d60fa83d02ebc90b59fb56b3dd",
+    "src/elapsed.s": "f59d12ae23ce2b3035e34f3603a5ae49e7cbd6a575ce9e6eac9f7e5f8fc0593f",
+    "src/fetch.s": "7824ce0b4a4e326c9fb6cffa20a22836443b4f60597152d1e22862442b75fbf8",
+    "src/files.s": "700ac81618a92ee21a6b387a1feb4765e119e19518cd5b6f358a383b2fea876c",
+    "src/host_clock.s": "9b837c5ad775f0b3d824ed50869bc06fa0834ada353ad1bab1153638a8ff0ec1",
+    "src/host_input.s": "e8670f5b59b17a3c5c613560e7f5aa368dedc617b40fe1557f150985980c325b",
+    "src/image_import.s": "af436509b87088a03aa87223d4ace555851c5f5de1e21c386a70afa2a86bf94b",
+    "src/indirect.s": "036c7638d20cb50aaef716d20a39cf0f38095b0fe3f7bf1ed77deac42399c23d",
+    "src/keyboard.s": "cb22e7f3f22ffe48bee84d24d3fe07c86764160304bddda9d66cea33883c9d56",
+    "src/math.s": "fa98bbb7559519e494568bcdbc78d395007f0ba5279bc96ea5ce0ecda8f3242f",
+    "src/memory.s": "5dd3276aa320ce76e5d7ce0ee688f723b7a49a25d39b11e8dc80515ee3aa52cb",
+    "src/operands.s": "90ec334ea77d3bd2c555f403879eb578d2b918837a0f0aad814365f50c415fdd",
+    "src/overlays.s": "1be80e196c7261269b8bab46a18e06e62db4f35b7d72475a3b470c0b5fe711e8",
+    "src/ports.s": "fec6cbe5536ab9b448963aec33d9f9aaaca918f32555c90047ac4be8615f7164",
+    "src/range.s": "668e5b1bf583089e5a5abaf99b279a86a750d94e5bbb4dc0ab68f7743ed54574",
+    "src/render_text.s": "7d7468ceda01bcdfadeedc5e23f6373f0c51739e8c58d55d59a8fb28ac090a1c",
+    "src/reu.s": "e51b31fff8da86894156fcc004b2339567d240e66b7aee1fd42d4117bf5c73d2",
+    "src/shifts.s": "3acdd0bbcbe0708125370d629fc144e893dde5e8b5b3a04775c3be1047a0a2ed",
+    "src/stack.s": "97bad438a6c4d7b07927197ad7a43079842383e8741f3dcb474eb9ae98da36b3",
+    "src/strings.s": "54867f5e9558d86222ef4bcddda35b1f584acd001582d938fe864298801d5106",
+    "src/uci.s": "28d6cd5d77a936e3b5de9cd7d5cce17443d622ae41a87ce273ea950cc1fa8898",
+    "src/video.s": "04bfcf60b35eaf0af6974962800e09ce1762de535877cf872705720501028437",
+    "tests/host/bios.zig": "631beed9d71d3beddcf285f97b0dd810861d72ed7fe2cd87c67ae0b3c8e339cc",
+    "tests/host/cold_phase.zig": "0ecc512ac666a4723b5ff28a1c3ecbee3077740945b34dd984e9ed2999c2aa4d",
+    "tests/host/dos_boot.zig": "d452204e12cdbf93eb1a364d9fbe91a6ac005ee97477ecf536dfcb5f923bb268",
+    "tests/host/elapsed.zig": "d28c2798bc424ea009a614f8cc2b54f3b2402b9f27eb2c47b1ca8727ca2b7bf3",
+    "tests/host/foundation.zig": "f97d3648f09d279042bb13de15df30a1edacf055854796df522826c8952ea307",
+    "tests/host/host_input.zig": "ea1d46d0b95a848cbe5326e3f93d5951b220696b98487c3754941741e7af79dc",
+    "tests/host/host_input_model.h": "6df183ace33369d8ac8111a3de5ca4aa60d21d3373e119865889db77be48a1af",
+    "tests/host/image_import.zig": "4ff2ef4d48e24206420d8b6ab2a93650b830426f1f8507410f23c452e105ed1f",
+    "tests/host/overlay_integration.zig": "afce4ce8a84264aaf4093e811d3ef2762179d0a3cb9a4fb32a02c1cc6e2f579c",
+    "tests/host/overlay_startup.zig": "fd6108e0ff50d37137393c9505745a7e4dc2badd125b8755074c54491999c6b4",
+    "tests/host/overlays.zig": "8976f8098a744e75744fdaf0777754611f7e89250956217c20ea6f62d3b510a7",
+    "tests/host/peddle_bridge.cpp": "7aba49af225bc921089834274d4a3871165f336e1d2ea440c2b6e14482214cdc",
+    "tests/host/peddle_bridge.h": "1709934c34fed80589a9a4467c6db230a2d099b345e1c36f0810b61f482067a9",
+    "tests/tooling/test_image_import_contract.py": "21a8ebc919d469b9f49a50c1a756cb23e6583b30a73ea3dfdeffb8c2e208b34d",
+    "tests/tooling/test_overlay_memory_contract.py": "0154131354678f81c9b0df0ba5e8fc51775a27534bc06c4ff45402574d60f1eb",
+    "tests/tooling/test_overlay_package.py": "d056bb8ac7a2575fbcdbecb7599eed73adf80742356806b32a2e6719e17d93ee",
+    "agentworking/runs/native-text-input-20261015-root/bulk-reu.log": "c89564a42151af983bc425d7a88e294267c44b7d506b595458df3f8d6c7b624e",
+    "agentworking/runs/native-text-input-20261015-root/cpu-profile.json": "ba72923434867d42990c5427fbea6068e69c5ad99f96ccfa10128c8c351478a9",
+    "agentworking/runs/native-text-input-20261015-root/dos-boot-first.json": "d4ebf957e0dae3a3cff0035af1de6069fea8663115021f5ba4d7781d3f9708cc",
+    "agentworking/runs/native-text-input-20261015-root/dos-boot-kernel.json": "68bea37427a81584fed58d94957c7523ccfd4bc71e6fe4291e8ddec8cb32fb95",
+    "agentworking/runs/native-text-input-20261015-root/dos-boot-memory.bin": "135149725d1c8821c8cf5914fb459ff280d953a5716e7c870625f2984878eb42",
+    "agentworking/runs/native-text-input-20261015-root/dos-boot-video.bin": "1bca3ea5b94aaa61deba0ffd4b8c6177277d42b96e8699b245fd9e92633649e9",
+    "agentworking/runs/native-text-input-20261015-root/dos-boot.log": "aaee87f46b02a84cffc85f6e55509220f2cda84c3a6487710bfd52d4d17c1adc",
+    "agentworking/runs/native-text-input-20261015-root/dos-comparison.json": "4981196c44b9b7cb859d1158d1ad77bd560b24d6930dcca9859eb7f865fa016e",
+    "agentworking/runs/native-text-input-20261015-root/dos64-overlay-package.json": "344159f42a812e25218b3b6b6b0d01c5964617f613c4310d87b82060fc075c47",
+    "agentworking/runs/native-text-input-20261015-root/dos64-overlay-startup.bin": "0a9eced32164e0bbcc954f8aeb9aeb94790cab424def341973a1a3bd134da54b",
+    "agentworking/runs/native-text-input-20261015-root/dos64-tests-overlay-package.json": "78bb87198f1411cb8eb57d5b7f3621ea7e2658235cc117cedb09c4dd0a4ee619",
+    "agentworking/runs/native-text-input-20261015-root/dos64-tests-overlay-startup.bin": "0a9eced32164e0bbcc954f8aeb9aeb94790cab424def341973a1a3bd134da54b",
+    "agentworking/runs/native-text-input-20261015-root/dos64-tests.labels": "fa562a4bdc3ca11b67cd526eea5d551b68b0229d79e65492649bda1c2fc8be2e",
+    "agentworking/runs/native-text-input-20261015-root/dos64-tests.map": "6aa1a73577d9c2b7ad32ab02efa96a585e0d93cc2a2f9c79750c12f133dc930c",
+    "agentworking/runs/native-text-input-20261015-root/dos64-tests.memory.json": "571a79e52655cb00b6b1b46e57b803e572f0e7ef00256ca46685326fecfdb180",
+    "agentworking/runs/native-text-input-20261015-root/dos64-tests.prg": "d850cd8e6fb7cea955bed76cff8a10baa87cd8337894f2c182932cac301c9b09",
+    "agentworking/runs/native-text-input-20261015-root/dos64.labels": "86e4ef8f6561fc5543170b37166257bfdbcfb2c5248fae4b166f6f5b0d0c52a5",
+    "agentworking/runs/native-text-input-20261015-root/dos64.map": "c6b3e7c6986958f3c3587cf2a3a2d59d4cee61f26757604d0ec30932e3144e37",
+    "agentworking/runs/native-text-input-20261015-root/dos64.memory.json": "f9223fef878265cd7c47b7d93955125b645add52950bc25409d896d635243ba2",
+    "agentworking/runs/native-text-input-20261015-root/dos64.prg": "7a7cea8150b87e878f97faf03f220b02ad52fc51e945920229024e3a19fdd705",
+    "agentworking/runs/native-text-input-20261015-root/image-import.log": "427597bf4d15f5b2af55b07e07b8408ccc2ff9cbc0eb7b0f7bc50ed9724007ce",
+    "agentworking/runs/native-text-input-20261015-root/profile.log": "e402ef38ba092233215a402ebede670c5e6bcb10e63939d516f34a246c55a31a",
+    "agentworking/runs/native-text-input-20261015-root/quick.log": "806ee788921d44af28f3b9713435b0d0b9fcc553fa5795583729675cd3ec4f8c"
+  },
+  "limitations": [
+    "Native entry initializes and commits overlays then idles; no physical DOS import/boot yet",
+    "VICE component screenshot and RAM proofs do not establish combined physical display or keyboard acceptance",
+    "No asynchronous IRQ/PIT schedule, CGA presentation, native image export/persistence, IEC runtime or hard disk yet",
+    "Peddle cycles exclude DMA stalls and are not physical elapsed time or an XT-speed result",
+    "80-column paired colors use left attribute; uncommon compressed glyphs are explicit fallbacks; cursor hidden",
+    "Third INPUT startup source8000..87FF must be committed before any cache/BIOS access; 7000..7FFF cold code cannot run after release"
+  ]
+}

@@ -19,6 +19,11 @@ fn init(frames: u8) !Fixture {
     f.poke(try f.symbol("dos64_overlay_requested"), 2);
     _ = try f.call("dos64_overlay_acquire", 10_000);
     _ = try f.call("dos64_overlay_release", 10_000);
+    f.poke(try f.symbol("dos64_cache_limit"),32);
+    _=try f.call("dos64_cache_init",50_000);
+    _=try f.call("dos64_bios_init",40_000_000);
+    _=try f.call("dos64_cache_flush",2_000_000);
+    _=try f.call("dos64_cold_release",10_000);
     f.poke(try f.symbol("dos64_cache_limit"), frames);
     _ = try f.call("dos64_cache_init", 50_000);
     f.initial_status = 0xec;
@@ -104,17 +109,19 @@ fn half(byte: u8) u8 {
 }
 const Screen = struct {
     font: [2048]u8,
+    narrow_font: [1024]u8,
     vram: [16384]u8,
     bitmap: [8000]u8 = @splat(0xa7),
     matrix: [1000]u8 = @splat(0x5c),
     resident_first: u8,
     fn seed(f: *Fixture, seed_value: u32) Screen {
-        var s = Screen{ .font = undefined, .vram = undefined, .resident_first = f.peek(0x5000) };
+        var s = Screen{ .font = undefined, .narrow_font = undefined, .vram = undefined, .resident_first = f.peek(0x5000) };
         var state = seed_value;
         for (&s.font, 0..) |*v, i| {
             v.* = random(&state);
             f.poke(0x4800 + @as(u16, @intCast(i)), v.*);
         }
+        for (&s.narrow_font,0..) |*v,i|{v.*=random(&state);f.poke(0x4400+@as(u16,@intCast(i)),v.*);}
         for (&s.vram, 0..) |*v, i| {
             v.* = random(&state);
             c.dos64_reu_poke(f.machine, 0xb8000 + @as(u32, @intCast(i)), v.*);
@@ -125,7 +132,7 @@ const Screen = struct {
     fn clear(s: *Screen, f: *Fixture) void {
         @memset(&s.bitmap, 0xa7);
         @memset(&s.matrix, 0x5c);
-        for (0x4000..0x4800) |a| f.poke(@intCast(a), 0x5c);
+        for (0x4000..0x4400) |a| f.poke(@intCast(a), 0x5c);
         for (0x6000..0x8000) |a| f.poke(@intCast(a), 0xa7);
         f.poke(0x3fff, 0x39);
         // 5000 is live resident DEVICECODE in the combined link; never corrupt it.
@@ -144,7 +151,10 @@ const Screen = struct {
                 var pixels = left;
                 if (cols == 80) {
                     const right = if (!blink and s.vram[offset + 3] & 0x80 != 0) @as(u8, 0) else s.font[@as(usize, s.vram[offset + 2]) * 8 + line];
-                    pixels = half(left) * 16 + half(right);
+                    _=right;
+                    const ln=if(!blink and left_attr&0x80!=0) @as(u8,0) else narrow(&s.narrow_font,s.vram[offset],line);
+                    const rn=if(!blink and s.vram[offset+3]&0x80!=0) @as(u8,0) else narrow(&s.narrow_font,s.vram[offset+2],line);
+                    pixels=ln*16+rn;
                 }
                 s.bitmap[@as(usize, row_number) * 320 + cell * 8 + line] = pixels;
             }
@@ -158,7 +168,8 @@ const Screen = struct {
         }
         for (s.matrix, 0..) |v, i| try std.testing.expectEqual(v, f.peek(0x4000 + @as(u16, @intCast(i))));
         for (s.font, 0..) |v, i| try std.testing.expectEqual(v, f.peek(0x4800 + @as(u16, @intCast(i))));
-        for (0x43e8..0x4800) |a| try std.testing.expectEqual(@as(u8, 0x5c), f.peek(@intCast(a)));
+        for (s.narrow_font,0..) |v,i|try std.testing.expectEqual(v,f.peek(0x4400+@as(u16,@intCast(i))));
+        for (0x43e8..0x4400) |a| try std.testing.expectEqual(@as(u8, 0x5c), f.peek(@intCast(a)));
         for (0x7f40..0x8000) |a| try std.testing.expectEqual(@as(u8, 0xa7), f.peek(@intCast(a)));
         try std.testing.expectEqual(@as(u8, 0x39), f.peek(0x3fff));
         try std.testing.expectEqual(s.resident_first, f.peek(0x5000));
@@ -353,3 +364,5 @@ test "text renderer all 256 text attributes retain left palette and blink policy
     }
     try s.guestUnchanged(&f);
 }
+
+fn narrow(p:[]const u8,ci:usize,y:usize)u8{return if(y&1==0)p[ci*4+y/2]>>4 else p[ci*4+y/2]&15;}

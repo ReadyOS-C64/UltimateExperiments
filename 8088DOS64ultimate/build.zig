@@ -49,7 +49,12 @@ pub fn build(b: *std.Build) void {
     }) });
     addPeddle(overlay.root_module, b);
     const run_overlay = b.addRunArtifact(overlay);
-    b.step("overlays", "Verify FILE/TEXT overlays and bounded startup ownership").dependOn(&run_overlay.step);
+    b.step("overlays", "Verify FILE/TEXT/INPUT overlays and bounded startup ownership").dependOn(&run_overlay.step);
+    const display = b.addTest(.{ .root_module = b.createModule(.{
+        .root_source_file = b.path("tests/host/native_text_integration.zig"), .target = target, .optimize = .Debug,
+    }) });
+    addPeddle(display.root_module, b);
+    b.step("native-text", "Verify packed fonts, TEXT overlay and bounded VIC setup").dependOn(&b.addRunArtifact(display).step);
     // Full360KiB source/CRC/failure oracle is deliberately opt-in.
     const image_import = b.addTest(.{ .root_module = b.createModule(.{
         .root_source_file = b.path("tests/host/image_import.zig"),

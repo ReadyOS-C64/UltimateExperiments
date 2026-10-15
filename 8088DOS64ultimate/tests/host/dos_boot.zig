@@ -432,6 +432,15 @@ test "unchanged DOS boot sector loads FAT12 IO.SYS through real BIOS and reaches
     lane.guest = try lane.f.symbol("dos64_guest");
     lane.counter = try lane.f.symbol("dos64_cpu_instructions");
     c.dos64_enable_reu(lane.f.machine);
+    var overlay_start = c.dos64_get_regs(lane.f.machine).cycles;
+    var overlay_result = try lane.f.call("dos64_overlay_init", 50_000);
+    try std.testing.expectEqual(@as(u8, 0), overlay_result.p & 1);
+    lane.setup_native_cycles += overlay_result.cycles - overlay_start;
+    lane.f.poke(try lane.f.symbol("dos64_overlay_reu_mib"), 4);
+    overlay_start = c.dos64_get_regs(lane.f.machine).cycles;
+    overlay_result = try lane.f.call("dos64_overlay_bootstrap", 50_000);
+    try std.testing.expectEqual(@as(u8, 0), overlay_result.p & 1);
+    lane.setup_native_cycles += overlay_result.cycles - overlay_start;
     lane.f.poke(try lane.f.symbol("dos64_cache_limit"), 32);
     for ([_]struct { name: []const u8, budget: u64 }{ .{ .name = "dos64_cache_init", .budget = 50_000 }, .{ .name = "dos64_disk_init", .budget = 10_000 } }) |setup| {
         const start = c.dos64_get_regs(lane.f.machine).cycles;

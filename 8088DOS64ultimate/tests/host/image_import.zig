@@ -66,7 +66,7 @@ fn setup(data: []const u8) !F {
     _ = try f.call("dos64_overlay_init", 10_000);
     try p(&f, "dos64_overlay_reu_mib", 4);
     _ = try f.call("dos64_overlay_bootstrap", 10_000);
-    for (try f.symbol("dos64_import_code_end")..0x8000) |i| f.poke(@intCast(i), 0xa6);
+    for (try f.symbol("__IMPORT_LAST__")..0x8000) |i| f.poke(@intCast(i), 0xa6);
     return f;
 }
 fn run(f: *F, start: u16, step: u16) !void {
@@ -97,8 +97,12 @@ fn guards(f: *F) !void {
     defer a.free(prg);
     const load = std.mem.readInt(u16, prg[0..2], .little);
     for (try f.symbol("dos64_import_code_start")..try f.symbol("dos64_import_state_start")) |i| try std.testing.expectEqual(prg[2 + i - load], f.peek(@intCast(i)));
-    for (try f.symbol("dos64_import_code_end")..0x8000) |i| try std.testing.expectEqual(@as(u8, 0xa6), f.peek(@intCast(i)));
-    for (0..4096) |i| try std.testing.expectEqual(f.peek(@intCast(0x6000 + i)), host.c.dos64_reu_peek(f.machine, @intCast(0x340000 + i)));
+    for (try f.symbol("dos64_import_code_end")..try f.symbol("__IMPORT_LAST__")) |i| try std.testing.expectEqual(prg[2 + i - load], f.peek(@intCast(i)));
+    for (try f.symbol("__IMPORT_LAST__")..0x8000) |i| try std.testing.expectEqual(@as(u8, 0xa6), f.peek(@intCast(i)));
+    for (0..6144) |i| {
+        const source = if (i < 4096) 0x6000 + i else 0x8000 + i - 4096;
+        try std.testing.expectEqual(f.peek(@intCast(source)), host.c.dos64_reu_peek(f.machine, @intCast(0x340000 + i)));
+    }
     try std.testing.expectEqual(@as(u8, 0xa5), host.c.dos64_reu_peek(f.machine, 0x0fffff));
     try std.testing.expectEqual(@as(u8, 0xa5), host.c.dos64_reu_peek(f.machine, 0x15a000));
 }
@@ -125,8 +129,8 @@ test "import exact whole360K image CRC native wrappers all REU guards and monoto
     try std.testing.expectEqual(@as(u32, 0xffffffff), host.c.dos64_reu_compare(f.machine, 0x100000, &data, data.len));
     for (0..4 * 1024 * 1024) |i| {
         if (i >= 0x100000 and i < 0x15a000) continue;
-        if (i >= 0x340000 and i < 0x341000) {
-            try std.testing.expectEqual(f.peek(@intCast(0x6000 + i - 0x340000)), host.c.dos64_reu_peek(f.machine, @intCast(i)));
+        if (i >= 0x340000 and i < 0x341800) {
+            try std.testing.expectEqual(f.peek(@intCast(if (i < 0x341000) 0x6000 + i - 0x340000 else 0x8000 + i - 0x341000)), host.c.dos64_reu_peek(f.machine, @intCast(i)));
             continue;
         }
         try std.testing.expectEqual(@as(u8, 0xa5), host.c.dos64_reu_peek(f.machine, @intCast(i)));

@@ -1,24 +1,25 @@
 # Memory budget checkpoint
 
-Status: FILE/TEXT REU overlays and direct CPU dispatch are linked and verified by 298 tests/all 5,701 hardware cases, 89 tooling checks, genuine DOS equality and profile. The accepted physical PAL CIA clock matrix is separate from linker validity. Runtime CODE 11,895, RODATA 1,376, DEVICE 4,047, BASIC 12, ZP 18, BSS 222, DEVICESTATE 197, PAGEMAP 2,048, CACHEMETA 192, RANGEBUFFER 256 and UCIBUFFER 2,048; unit CODE 12,811, RODATA 1,400, TEST 36, ZP 30. FILE 1,088 and TEXT 906 share C900–CFFF. All linked variants total 24,307/25,295; resident excluding variants 22,313/23,301; maximum concurrently loaded linked bytes 23,401/24,389. These include static reservations/header/ZP, not just executable file bytes. Final PRG 26,625 has resident file 17,330/18,306 + zero padding 5,197/4,221 + startup assets 4,096 + header 2. MAIN free 1,052/76; DEVICE free 49. [Exact maps/package/evidence](evidence/overlays-dispatch-20261015.json).
-
+Status: current accepted layout passes326 Zig/129 tooling/597 quick cases, dedicated import8, genuine DOS equality and12 profile samples. Runtime/unit CODE12290/13206, RODATA880/904, initialized NATIVESTATE2; unit TESTCODE36. DEVICE3756, fonts3072, FILE1088/TEXT957/INPUT882, cold1821, BSS222, ZP18/30, DEVICESTATE244. All-linked totals29790/30778 include mutually exclusive variants and cold data. Resident excluding variants/cold25042/26030 includes fonts/static reservations; maximum concurrently loaded resident totals26130/27118. These are not executable/file-length totals. [Exact maps](evidence/native-text-input-20261015.json).
 
 | Resource | Budget | Measured used | Gate |
 |---|---:|---:|---|
-| Resident/hot executable ranges | 20,223 bytes across MAIN/DEVICE/overlay | Resident file 17,330 + maximum loaded overlay 1,088 = 18,418 | MAIN/DEVICECODE boundaries; C000 staging and linked C100–C8FF UCI buffer leave C900–CFFF |
-| Cold startup lifetime | 4 KiB | 931 linked importer bytes plus 3,165 checked zeros | 7000–7FFF before bitmap ownership; no runtime reentry |
-| Host guest-cache frames | 16 KiB | 32 × 512 bytes reserved/used | 8000–BFFF, direct physical tags; tests cover all frames |
-| Host control/metadata | 4 KiB | 2,659 static bytes; 1,437 remaining including gaps | BSS 222 + map 2,048 + frame metadata 192 + DEVICESTATE 197; only 34 BSS bytes before E100 |
-| Host range staging | 256 bytes | 256 reserved, not PRG payload | C000–C0FF; linker/map gate forbids graphics/cache overlap |
-| Host UCI storage | 2 KiB | 2,048 linked writable bytes, not PRG payload | C100–C8FF; command/data/status storage stays outside banked/I/O memory |
-| Host low memory | 2 KiB | Runtime ZP 18; stack measured by probe | Full-system stack/IRQ/KERNAL bound not established |
-| Video matrix/fonts/bitmap | 12 KiB | 4 KiB startup zeros, 4 KiB temporary overlay assets; row renderer tested, font/VIC still unlinked | Startup zeros are file bytes; preserve VIC bank/font/bitmap alignment |
-| I/O reservation | 4 KiB | Reserved | Never allocated as RAM |
-| REU guest physical arena | 1 MiB | Reserved design | Guest bus holes/ROM enforced |
-| REU whole floppies | 2 × 512 KiB | 360 KiB each fixture | Actual image lengths, no tail in exports |
-| REU HD cache | 1 MiB at baseline | Unknown | Metadata fits; force smaller cache in small-disk tests |
-| REU assets/staging/trace | 3 × 256 KiB | 4,096 immutable overlay asset bytes at 340000–340FFF | Ownership and versioned descriptors |
-| REU unallocated | 256 KiB at baseline | Unknown | Cannot be borrowed silently |
+| Resident/hot executable ranges |20223 MAIN/DEVICE/overlay bytes|Resident BASIC/code/data16940 plus max overlay1088 =18028|MAIN free1151 runtime/175 unit; DEVICE340; TEXT835|
+| Cold startup lifetime |4096|1821 linked: importer931, BIOS/bootstrap init394, patches496; tail2275|7000–7FFF, irreversible initialized resident guard before every public cold entry|
+| Host guest cache |16384|32×512 bytes|8000–BFFF; first2048 initiallyINPUT asset, committed before any cache use|
+| Host control |4096|2706 static;1390 gaps/headroom|BSS222+map2048+metadata192+DEVICESTATE244; only34 BSS bytes beforeE100|
+| Range staging |256|256|C000–C0FF|
+| UCI storage |2048|2048|C100–C8FF, outside overlaid code|
+| Host low memory |2048|ZP18 runtime/30 unit|Full-system stack/IRQ bound unmeasured|
+| Matrix/fonts/bitmap |12288|Matrix1000+guard24, narrowfont1024, fullfont2048; bitmap8192 reserved|Fonts4400/4800 explicit non-executable PRG data; TEXT only after cold release|
+| I/O reservation |4096|Reserved|Never allocated as RAM|
+| REU guest arena |1048576|Reserved/functional|640KiB RAM plus holes/ROM/CGA policy|
+| REU floppies |2×524288|360KiB fixture slots|Exact image length, no export tail|
+| REU HD cache |1048576|Proposed|Not yet implemented|
+| REU assets/staging/trace |3×262144|6144 overlay asset bytes340000–3417FF|FILE/TEXT/INPUT headers+exact linked payloads|
+| REU unallocated |262144|Reserved|No silent borrowing|
+
+PRGs are32769 bytes, load0801–87FF. Runtime/unit linked file content21833/22809 plus4790/3814 checked padding plus6144 startup assets plus two-byte header equals exact PRG length. Linked file content includes3072 font data and1821 disposable cold bytes; resident emitted code/data is16940/17916. The three linked overlay payloads total2927 but only maximum1088 can occupyC900–CFFF at once. Historical checkpoints below retain their original scope and are superseded by this current ledger.
 
 The 4 KiB metadata budget is particularly tight: a full 512-byte-page map alone takes 2 KiB. Charge disk-cache descriptors and all bounce buffers here; move cold metadata to REU or reduce cache capacity if the measured ledger exceeds the budget. A larger cache advertised without its metadata is not a valid budget.
 

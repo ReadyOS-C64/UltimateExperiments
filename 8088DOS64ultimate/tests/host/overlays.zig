@@ -35,7 +35,7 @@ fn setup(boot: bool) !F {
     return f;
 }
 fn assets() ![]u8 {
-    return std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", allocator, .limited(4097));
+    return std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", allocator, .limited(6145));
 }
 fn release(f: *F) !void {
     _ = try call(f, "dos64_overlay_release", 0);
@@ -76,21 +76,22 @@ test "overlays bootstrap exact whole 4 MiB REU oracle and startup phase ownershi
     defer allocator.free(expected);
     @memset(expected, 0);
     expected[0x33ffff] = 0x39;
-    expected[0x341000] = 0x73;
+    expected[0x341800] = 0x73;
     c.dos64_reu_poke(f.machine, 0x33ffff, 0x39);
-    c.dos64_reu_poke(f.machine, 0x341000, 0x73);
-    @memcpy(expected[0x340000..0x341000], blob);
+    c.dos64_reu_poke(f.machine, 0x341800, 0x73);
+    @memcpy(expected[0x340000..0x341800], blob);
     _ = try call(&f, "dos64_overlay_bootstrap", 0);
     try state(&f, 0xa5, 0, 0, 0);
-    try std.testing.expectEqual(@as(u64, 2), c.dos64_dma_transfers(f.machine));
-    try std.testing.expectEqual(@as(u64, 4096), c.dos64_dma_bytes(f.machine));
+    try std.testing.expectEqual(@as(u64, 3), c.dos64_dma_transfers(f.machine));
+    try std.testing.expectEqual(@as(u64, 6144), c.dos64_dma_bytes(f.machine));
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0, expected.ptr, expected.len));
-    try native(&f, 0x6000, blob);
+    try native(&f, 0x6000, blob[0..4096]);
+    try native(&f, 0x8000, blob[4096..]);
     // The released startup region is now owned by the bitmap; bootstrap must
     // neither read it nor overwrite immutable assets on subsequent calls.
     for (0x6000..0x7000) |a| f.poke(@intCast(a), 0xee);
     _ = try call(&f, "dos64_overlay_bootstrap", 0);
-    try std.testing.expectEqual(@as(u64, 2), c.dos64_dma_transfers(f.machine));
+    try std.testing.expectEqual(@as(u64, 3), c.dos64_dma_transfers(f.machine));
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0, expected.ptr, expected.len));
 }
 
@@ -103,9 +104,9 @@ test "overlays exact replacement image and immutable source guards across switch
     const full_reu = try allocator.alloc(u8, 4 * 1024 * 1024);
     defer allocator.free(full_reu);
     @memset(full_reu, 0);
-    @memcpy(full_reu[0x340000..0x341000], blob);
+    @memcpy(full_reu[0x340000..0x341800], blob);
     var old: [1792]u8 = @splat(0x97);
-    var transfers: u64 = 2;
+    var transfers: u64 = 3;
     for ([_]u8{ 1, 2, 1, 2, 2, 1 }) |id| {
         const base: usize = @as(usize, id - 1) * 2048;
         const size = std.mem.readInt(u16, blob[base + 6 ..][0..2], .little);
@@ -123,10 +124,10 @@ test "overlays exact replacement image and immutable source guards across switch
 }
 
 test "overlays reject every malformed startup header byte before either copy" {
-    for (0..32) |index| {
+    for (0..48) |index| {
         var f = try setup(false);
         defer f.deinit();
-        const a: u16 = 0x6000 + @as(u16, @intCast(index / 16 * 2048 + index % 16));
+        const a: u16 = if (index < 32) 0x6000 + @as(u16, @intCast(index / 16 * 2048 + index % 16)) else 0x8000 + @as(u16, @intCast(index % 16));
         f.poke(a, f.peek(a) ^ 0xff);
         _ = try call(&f, "dos64_overlay_bootstrap", 1);
         try state(&f, 0, 0, 0, 4);
@@ -144,7 +145,7 @@ test "overlays replacement checks all REU header bytes and rejects wrong slot id
             c.dos64_reu_poke(f.machine, a, c.dos64_reu_peek(f.machine, a) ^ 0xff);
             try acquire(&f, id, 1);
             try state(&f, 0xa5, 0, 0, 4);
-            try std.testing.expectEqual(@as(u64, 3), c.dos64_dma_transfers(f.machine));
+            try std.testing.expectEqual(@as(u64, 4), c.dos64_dma_transfers(f.machine));
             for (0xc900..0xd000) |n| try std.testing.expectEqual(@as(u8, 0x97), f.peek(@intCast(n)));
             try guard(&f);
         }
@@ -161,7 +162,7 @@ test "overlays replacement checks all REU header bytes and rejects wrong slot id
 test "overlays partial bootstrap DMA never publishes ready and full retry repairs both slots" {
     const blob = try assets();
     defer allocator.free(blob);
-    for (0..2) |skip| {
+    for (0..3) |skip| {
         for ([_]u32{ 0, 1, 17, 2047, 2048 }) |prefix| {
             var f = try setup(false);
             defer f.deinit();
@@ -222,7 +223,7 @@ test "overlays capacity identity unready and busy guards preserve ownership with
     }
     var f = try setup(true);
     defer f.deinit();
-    for ([_]u8{ 0, 3, 255 }) |id| {
+    for ([_]u8{ 0, 4, 255 }) |id| {
         try acquire(&f, id, 1);
         try state(&f, 0xa5, 0, 0, 3);
     }
@@ -237,8 +238,18 @@ test "overlays capacity identity unready and busy guards preserve ownership with
     try release(&f);
 }
 
+fn releaseCold(f:*F)!void {
+    try put(f,"dos64_cache_limit",32);
+    _=try call(f,"dos64_cache_init",0);
+    // Real BIOS initialization is cold code; flush before fixture cache reset.
+    const r=try f.call("dos64_bios_init",40_000_000);
+    try std.testing.expectEqual(@as(u8,0),r.p&1);
+    _=try call(f,"dos64_cache_flush",0);
+    _=try call(f,"dos64_cold_release",0);
+}
 fn geometry(f: *F) void {
     for ([_]struct { a: u32, v: u8 }{ .{ .a = 0x449, .v = 3 }, .{ .a = 0x44a, .v = 80 }, .{ .a = 0x44b, .v = 0 }, .{ .a = 0x44c, .v = 0 }, .{ .a = 0x44d, .v = 16 }, .{ .a = 0x44e, .v = 0 }, .{ .a = 0x44f, .v = 0 }, .{ .a = 0x462, .v = 0 } }) |x| c.dos64_reu_poke(f.machine, x.a, x.v);
+    for (0..1024) |i| f.poke(0x4400 + @as(u16,@intCast(i)),0xff);
     for (0..2048) |i| f.poke(0x4800 + @as(u16, @intCast(i)), 0xff);
     for (0..160) |i| c.dos64_reu_poke(f.machine, 0xb8000 + @as(u32, @intCast(i)), if (i % 2 == 0) 65 else 7);
     for (0x6000..0x8000) |a| f.poke(@intCast(a), 0);
@@ -263,6 +274,7 @@ fn render(f: *F) !void {
 test "overlays real file transaction survives rendering switch between asynchronous native polls" {
     var f = try setup(true);
     defer f.deinit();
+    try releaseCold(&f);
     try put(&f, "dos64_cache_limit", 1);
     _ = try call(&f, "dos64_cache_init", 0);
     geometry(&f);
@@ -333,7 +345,7 @@ test "overlays reject direct replacement with native return inside execution win
         try std.testing.expectEqual(@as(u8, 1), r.regs.p & 1);
         try std.testing.expectEqual(@as(u8, 0x0c), r.regs.p & 0xce);
         try state(&f, 0xa5, 0, 0, 7);
-        try std.testing.expectEqual(@as(u64, 2), c.dos64_dma_transfers(f.machine));
+        try std.testing.expectEqual(@as(u64, 3), c.dos64_dma_transfers(f.machine));
     }
 }
 
@@ -355,6 +367,7 @@ test "overlays preserve wrapped target carry and measure verified native manager
     try acquire(&f, 2, 0);
     const text_cycles = c.dos64_get_regs(f.machine).cycles - before;
     try release(&f);
+    try releaseCold(&f);
     // Invalid row is a real target failure, distinct from manager failure.
     const r = try f.symbol("dos64_render_text_request");
     f.poke(r, 25);

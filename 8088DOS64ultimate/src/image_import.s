@@ -11,7 +11,7 @@
 .import dos64_files_count, dos64_files_actual, dos64_files_now
 .import dos64_uci_data, dos64_uci_abort, dos64_uci_now
 .import dos64_reu_request, dos64_reu_transfer, dos64_disk_loaded
-.export dos64_import_init, dos64_import_start, dos64_import_poll
+.export dos64_import_cold_init, dos64_import_cold_start, dos64_import_cold_poll
 .export dos64_import_state, dos64_import_error, dos64_import_cleanup_error
 .export dos64_import_now, dos64_import_timeout, dos64_import_expected_crc
 .export dos64_import_crc, dos64_import_sectors, dos64_import_phase
@@ -60,7 +60,7 @@ import_launch:
  jsr import_clock
  jmp dos64_overlay_files_start
 
-dos64_import_init:
+dos64_import_cold_init:
  ENTER
  lda #0
  ldx #dos64_import_state_end-dos64_import_state_start-1
@@ -71,7 +71,7 @@ dos64_import_init:
  sta dos64_disk_loaded
  LEAVE 0
 
-dos64_import_start:
+dos64_import_cold_start:
  ENTER
  lda dos64_import_state
  cmp #IMPORT_BUSY
@@ -131,7 +131,7 @@ dos64_import_start:
 import_reject:
  LEAVE 1
 
-dos64_import_poll:
+dos64_import_cold_poll:
  ENTER
  lda dos64_import_state
  cmp #IMPORT_BUSY
