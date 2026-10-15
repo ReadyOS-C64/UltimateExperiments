@@ -66,7 +66,209 @@ RUN remains bounded to a 16 KiB staged script and 255 bytes per expanded line, w
 This is a bounded DOS-style language. Loops use labels, arithmetic and conditional GOTO; CALL targets labels in the same file. Nested RUN, external-script CALL, FOR, SETLOCAL, pipes and redirection are not implemented. Scripts share aliases and the current directory, and relative paths resolve against that directory rather than the directory containing the script.
 
 
-The recipes below are syntax examples reviewed against the implementation and existing batch fixtures; they are **not additional steps in the recorded 37-step video**. Set `@lab`, `@src` and `@dst` to your own intended locations before use. Mutation examples belong in a fresh disposable test folder.
+### Parameters: arguments, environment and local subroutines
+
+`RUN` supplies a new set of up to nine positional arguments for that top-level run. `%0` is the script path; `%1` through `%9` are its inputs. Missing arguments become empty text. Use quotes to keep a path or value containing spaces together:
+
+```text
+SET SOURCE=@lab:/source/readme.seq
+SET TARGET=@lab:/saved notes.seq
+RUN @lab:/BACKUP.SEQ "%SOURCE%" "%TARGET%" PREVIEW
+```
+
+Inside BACKUP.SEQ, `%1` is the source, `%2` the destination, and `%3` the mode. The outer quotes group an argument and are not part of its value; quote it again when expanding it into a command. `$1`, `%*`, SHIFT and `%~1` modifiers are not implemented. RUN options are not special: `RUN file.seq --yes` passes the ordinary string `--yes` as `%1`; confirmation must be on the intended filesystem command.
+
+Named variables are session-wide. A script can read variables set at the prompt, and its changes remain after it returns. Aliases and the current directory also remain shared. There are no local scopes or automatic save/restore of working variables.
+
+`CALL :LABEL` runs a subroutine in the **same file**. It accepts only the label: `CALL :COPYONE source destination` is not implemented. The routine sees the original RUN arguments and the shared named environment. Pass different inputs by setting named variables before each call:
+
+```text
+SET WHO=ALPHA
+CALL :GREET
+SET WHO=BETA
+CALL :GREET
+EXIT /B 0
+:GREET
+ECHO HELLO %WHO%
+GOTO :EOF
+```
+
+The two calls print ALPHA and BETA. `GOTO :EOF` returns to the caller; `EXIT /B code` also supplies a result. At top level both end the script. Calls can nest eight levels deep, but each level still shares named variables and the original RUN arguments. Keep the top-level `EXIT /B` before routine definitions to prevent execution from falling through into a routine.
+
+**Separate script files cannot call each other yet.** Nested RUN and external-script CALL are unavailable. Two scripts run sequentially from the interactive prompt can exchange named variables. This differs from DOS 6.2, where `CALL OTHER.BAT %1 %2` calls a separate file with its own positional arguments and returns when that file ends.
+
+### Worked example: preview and verify a single-file backup
+
+This is the one downloadable example used in the appended physical C64 Ultimate video chapter. It takes source, destination and PREVIEW/APPLY arguments, refuses an existing destination on APPLY, calls a local copy/compare routine, and increments a session counter only after success. It deliberately does not replace an existing file. Create the destination's parent folder first.
+
+[Download BACKUP.SEQ](examples/BACKUP.SEQ). The download contains uppercase ASCII command and option bytes and real CR line endings, matching the physical recording fixture. Host-created script options must also use uppercase bytes (for example --WHATIF); do not rely on lowercase ASCII option spelling being normalized like interactive keyboard input.
+
+```text
+REM BACKUP SOURCE DEST PREVIEW OR APPLY
+ONERROR STOP
+SET "SRC=%1"
+SET "DST=%2"
+IF "%SRC%"=="" GOTO USAGE
+IF "%DST%"=="" GOTO USAGE
+IF NOT EXIST "%SRC%" GOTO MISSING
+IF "%3"=="PREVIEW" GOTO PREVIEW
+IF NOT "%3"=="APPLY" GOTO USAGE
+IF EXIST "%DST%" GOTO EXISTS
+CALL :COPYONE
+IF NOT DEFINED BACKUPS SET BACKUPS=0
+SET /A BACKUPS=BACKUPS+1
+ECHO BACKUPS THIS SESSION: %BACKUPS%
+EXIT /B 0
+:COPYONE
+COPY "%SRC%" "%DST%"
+COMPARE "%SRC%" "%DST%"
+ECHO BACKUP VERIFIED
+EXIT /B 0
+:PREVIEW
+COPY "%SRC%" "%DST%" --WHATIF
+EXIT /B
+:EXISTS
+ECHO DEST EXISTS - CHOOSE NEW NAME
+EXIT /B 6
+:MISSING
+ECHO SOURCE NOT FOUND: "%SRC%"
+EXIT /B 5
+:USAGE
+ECHO RUN BACKUP SOURCE DEST PREVIEW
+ECHO RUN BACKUP SOURCE DEST APPLY
+EXIT /B 4
+```
+
+With LAB pointing at your own fresh test folder containing `source/readme.seq` and the downloaded script:
+
+```text
+SET BACKUPS=0
+TYPE @lab:/BACKUP.SEQ
+RUN @lab:/BACKUP.SEQ @lab:/source/readme.seq @lab:/saved.seq PREVIEW
+RUN @lab:/BACKUP.SEQ @lab:/source/readme.seq @lab:/saved.seq APPLY
+TYPE @lab:/saved.seq
+ECHO COMPLETED BACKUPS: %BACKUPS%
+```
+
+![The actual BACKUP.SEQ argument checks and local CALL, read through C64 output history](guide-assets/batch-script.png)
+
+*Physical C64 Ultimate: TYPE reads the real file; F1 reveals the earlier lines after streaming.*
+
+![Parameterized APPLY copies and compares the backup, then reports count one and result zero](guide-assets/batch-backup-result.png)
+
+*The actual APPLY run reports both verification checks, the shared counter and RUN result 0.*
+
+TYPE streams the file onto the display. Use F1 to enter output history and move to earlier lines, F3 for newer lines, and RUN/STOP to return to live input. The video reads both halves this way.
+
+The preview writes nothing and does not increment BACKUPS. APPLY copies and compares, then reports `BACKUPS THIS SESSION: 1` and result 0. Running APPLY again with the same destination prints `DEST EXISTS - CHOOSE NEW NAME`, returns 6 and leaves the count at 1. Missing source returns 5; absent arguments or a mode other than uppercase PREVIEW/APPLY return 4. An empty destination is checked before any write. The script uses three named variable slots: SRC, DST and BACKUPS.
+
+STOP is deliberate: a failed copy or comparison terminates the whole run, including from inside CALL. Read the filesystem reports as well as the final RC; legacy result mapping is not complete and COPY/COMPARE are not a transaction. The preview is not a queued operation or proof of later write capability. BACKUPS counts successful script runs, not every copy ever made, and its arithmetic wraps after 65535. Avoid reusing these working variable names for unrelated session values.
+
+### More examples: conditions, loops, results and persistence
+
+These short examples supplement the recorded backup script. They are reference recipes, not claims that every branch is demonstrated in the video.
+
+**Comments, missing parameters and literal percent signs**
+
+```text
+REM FULL-LINE DOS-STYLE COMMENT
+# ANOTHER FULL-LINE COMMENT
+ECHO SCRIPT: %0
+IF "%1"=="" GOTO USAGE
+ECHO FIRST ARGUMENT: "%1"
+ECHO LITERAL PERCENT: 100%%
+EXIT /B 0
+:USAGE
+ECHO PLEASE SUPPLY ONE ARGUMENT
+EXIT /B 4
+```
+
+**String, defined-variable and existence conditions**
+
+```text
+IF NOT DEFINED MODE SET MODE=PREVIEW
+IF "%MODE%"=="PREVIEW" ECHO PREVIEW SELECTED
+IF NOT "%MODE%"=="APPLY" ECHO WRITES DISABLED
+IF EXIST "@lab:/source/readme.seq" ECHO SOURCE PRESENT
+IF NOT EXIST "@lab:/missing.seq" ECHO NO SUCH FILE
+IF DEFINED MODE IF NOT "%MODE%"=="APPLY" ECHO NO WRITE MODE
+```
+
+The last line combines two tests by nesting IF. OR-style decisions need separate branches. Each IF executes a single command, which can itself be IF, GOTO, CALL or EXIT. There are no ELSE blocks. String comparisons are case-sensitive. IF EXIST performs a normal path lookup; an I/O lookup error stops the run with 8 rather than being treated as an absent file.
+
+**A counted loop and every numeric comparison**
+
+```text
+SET /A N=0
+:LOOP
+SET /A N=N+1
+ECHO PASS %N%
+IF %N% LSS 3 GOTO LOOP
+IF %N% EQU 3 ECHO EQUAL TO THREE
+IF %N% NEQ 0 ECHO NOT ZERO
+IF %N% LEQ 3 ECHO AT MOST THREE
+IF %N% GTR 2 ECHO GREATER THAN TWO
+IF %N% GEQ 3 ECHO AT LEAST THREE
+IF NOT %N% EQU 4 ECHO NOT FOUR
+SET /A N=N-1
+ECHO AFTER SUBTRACTION: %N%
+EXIT /B 0
+```
+
+Numeric IF operands must be unsigned decimal values from 0 to 65535; expand variables explicitly. Arithmetic can assign a literal or variable, or perform one addition/subtraction; an undefined arithmetic variable is zero. There is no multiplication, division, signed arithmetic or expression precedence. An invalid numeric value causes result 4, not a false test. For example, `IF %MAXTRIES% LSS 1` cannot validate that MAXTRIES is numeric before checking its range. Every revisited line counts toward the 10,000-line execution limit.
+
+**Inspect and preserve a failure result**
+
+```text
+ONERROR CONTINUE
+NOTACOMMAND
+EXPECT RC 1
+SET LAST=%ERRORLEVEL%
+ECHO SAVED RESULT: %LAST%
+IF %LAST% EQU 1 ECHO EXPECTED UNKNOWN COMMAND
+IF %LAST% NEQ 1 EXIT /B 9
+ONERROR STOP
+EXIT /B 0
+```
+
+NOTACOMMAND deliberately returns 1. Successful EXPECT leaves that result available for capture. SET captures the preceding result before replacing it with SET's own result; subsequent ECHO cannot change LAST. `IF ERRORLEVEL 1` means result >= 1, not equality; `IF NOT ERRORLEVEL 1` means result 0. Test it immediately after the operation, or capture `%ERRORLEVEL%` before another command changes it. STOP is the default and must be changed **before** an expected failure. EXPECT accepts only one-digit codes 0–9; EXIT /B can return 0–255.
+
+**Save only selected variables, then load them explicitly**
+
+```text
+SET PRIVATE=THIS SESSION
+SET /P SAVED=KEEP ME
+SET /P /A TOTAL=TOTAL+1
+CONFIG SAVE @lab:/batch-config.seq
+SET SAVED=CHANGED
+CONFIG LOAD @lab:/batch-config.seq
+ECHO RESTORED: %SAVED%
+ECHO SESSION: %PRIVATE%
+SET SAVED
+SET
+SET PRIVATE=
+```
+
+Use a new config filename for the save. SAVED and TOTAL are marked persistent; PRIVATE is not. Loading restores saved values and preserves unrelated session variables. Plain `SET SAVED=CHANGED` clears its persistent flag until LOAD restores the saved record. `SET PRIVATE=` deletes that variable. CONFIG does not load automatically after launch. The table has only 16 slots, so a load whose merged variables would overflow it fails without changing the environment.
+
+### Compared with MS-DOS 6.2 / 6.22
+
+The target here is classic COMMAND.COM batch, not Windows cmd.exe. Both languages offer `%1`–`%9`, `%NAME%`, SET, REM, ECHO, labels/GOTO, NOT, IF EXIST, case-sensitive string equality and threshold IF ERRORLEVEL.
+
+| Classic DOS facility | ReadyFS boundary |
+|---|---|
+| `CALL OTHER.BAT arguments` | No external-file calls. ReadyFS instead adds same-file `CALL :LABEL` with shared inputs. |
+| `SHIFT` | No parameter shifting and no access to arguments beyond nine. |
+| `FOR %%F IN (*.SEQ) DO command` | No iteration over filename selections or literal lists. Counter loops use IF/GOTO. |
+| CHOICE / PAUSE | No batch menu/keypress command or pause command. |
+| Pipes and input/output redirection | No `|`, `<`, `>` or `>>`; filesystem WRITE/APPEND are explicit operations. |
+| `@ECHO OFF`, `@command`, `ECHO.` | No DOS command-echo control syntax; ECHO prints text (bare ECHO prints a blank line). |
+
+ELSE/parenthesized command blocks, IF /I, SETLOCAL, `%*`, `%~` modifiers, delayed expansion, FOR /F and SET /A were **not standard DOS 6.2 batch features**. Their absence is not a gap against this target. ReadyFS already adds numeric IF comparisons, IF DEFINED, simple SET /A arithmetic, local label calls, EXIT /B result codes and explicitly saved variables.
+
+For historical syntax, see Microsoft's archived [DOS CALL](https://www.infania.net/misc/dos622help/call.html), [SHIFT](https://www.infania.net/misc/dos622help/shift.html), [FOR](https://www.infania.net/misc/dos622help/for.html), [IF](https://www.infania.net/misc/dos622help/if.html) and [SET](https://www.infania.net/misc/dos622help/set.html) help.
+
+The five original recipes below remain reference examples. The parameterized backup example above is the one demonstrated in the appended batch video chapter; the other recipes are not additional recorded steps. Set `@lab`, `@src` and `@dst` to your own intended locations before use. Mutation examples belong in a fresh disposable test folder.
 
 ### Example 1 — a small read-only script
 
@@ -96,9 +298,9 @@ RUN @lab:/INSPECT.SEQ
 You can create a tiny script directly in ReadyFS, using a new filename:
 
 ```text
-WRITE @lab:/CHECK.SEQ "ONERROR STOP" --line
-APPEND @lab:/CHECK.SEQ "PWD" --line
-APPEND @lab:/CHECK.SEQ "EXPECT RC 0" --line
+WRITE @lab:/CHECK.SEQ "ONERROR STOP" --LINE
+APPEND @lab:/CHECK.SEQ "PWD" --LINE
+APPEND @lab:/CHECK.SEQ "EXPECT RC 0" --LINE
 HEAD @lab:/CHECK.SEQ 10
 RUN @lab:/CHECK.SEQ
 ```
@@ -111,9 +313,9 @@ Save this as `PREVIEW.SEQ`:
 
 ```text
 ONERROR STOP
-COPY @src:/README.SEQ @dst:/README.SEQ --whatif
+COPY @src:/README.SEQ @dst:/README.SEQ --WHATIF
 EXPECT RC 0
-COPY @src:/ALPHA/ONE.SEQ @dst:/ONE.SEQ --whatif
+COPY @src:/ALPHA/ONE.SEQ @dst:/ONE.SEQ --WHATIF
 EXPECT RC 0
 ```
 
@@ -140,7 +342,7 @@ First create `PLAN.SEQ`:
 
 ```text
 ONERROR STOP
-COPY @src:/ @dst:/ --recursive --whatif
+COPY @src:/ @dst:/ --RECURSIVE --WHATIF
 EXPECT RC 0
 ```
 
@@ -152,7 +354,7 @@ For the real operation, prepare `COPYTREE.SEQ` separately:
 ONERROR STOP
 MKDIR @dst:/
 EXPECT RC 0
-COPY @src:/ @dst:/ --recursive
+COPY @src:/ @dst:/ --RECURSIVE
 EXPECT RC 0
 TREE @dst:/
 EXPECT RC 0

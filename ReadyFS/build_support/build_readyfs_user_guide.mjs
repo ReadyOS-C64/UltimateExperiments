@@ -41,7 +41,7 @@ content=content.replace(/<a href="([^"#]+)"/g,(tag,href)=>{
  if(href==='READYFS_USER_GUIDE.html') return '<a href="#top"';
  const file=path.resolve(docs,href);
  if(!file.startsWith(docs+path.sep) || !fs.existsSync(file)) throw new Error(`Missing guide source link: ${href}`);
- const mime=href.endsWith('.json')?'application/json':'text/markdown';
+ const mime=href.endsWith('.json')?'application/json':href.toLowerCase().endsWith('.seq')?'text/plain':'text/markdown';
  return `<a download="${escape(path.basename(file))}" href="data:${mime};base64,${fs.readFileSync(file).toString('base64')}"`;
 });
 // Chapters are independent print sections. The short contents remain on the opening page.
@@ -59,5 +59,5 @@ const output=path.join(docs,'READYFS_USER_GUIDE.html');fs.writeFileSync(output,h
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
 for(const match of html.matchAll(/href="#([^"]+)"/g)) if(!ids.includes(match[1])) throw new Error(`Broken guide anchor: ${match[1]}`);
 if(new Set(ids).size!==ids.length) throw new Error('Duplicate guide anchors');
-if(imageCount!==26 || headings.length!==12 || html.includes('<img src="guide-assets/')) throw new Error('Incomplete illustrated guide');
+if(imageCount!==28 || headings.length!==12 || html.includes('<img src="guide-assets/')) throw new Error('Incomplete illustrated guide');
 console.log(JSON.stringify({output,chapters:headings.length,embedded_images:imageCount,words:source.split(/\s+/).length,bytes:Buffer.byteLength(html)}));

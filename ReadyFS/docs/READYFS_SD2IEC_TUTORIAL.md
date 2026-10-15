@@ -128,7 +128,7 @@ CP @soft:/DEMO-TWO @card:/froms-two
 
 These reverse recipes use the same ordinary file operations verified by the full four-endpoint acceptance matrix. The new video shows representative selected-file transfers plus the complete nested-folder round trip. Use COMPARE to check any returned file against its retained source.
 
-For a repeatable multi-file job, the same explicit COPY commands can go in a ReadyFS text script with `ONERROR STOP`, executed using `RUN @lab:/COPYSET.SEQ`. `RUN` accepts one script path; source/destination parameters belong on the commands inside it. Inspect the individual results as well as the final result code. This is a scripting recipe, separate from the newly recorded interactive examples.
+For a repeatable multi-file job, the same explicit COPY commands can go in a ReadyFS text script with `ONERROR STOP`, executed using `RUN @lab:/COPYSET.SEQ`. `RUN script-path [arg1 ... arg9]` accepts up to nine arguments, available as `%1`–`%9` inside the commands. Named variables and local label subroutines are also supported; external-file CALL and nested RUN are not. See the [RUN guide](READYFS_RUN_GUIDE.md) for the parameterized BACKUP.SEQ example and the complete batch reference. Inspect the individual results as well as the final result code. This is a scripting recipe, separate from the newly recorded interactive examples.
 
 ## 5. Work inside an image stored on SD2IEC
 

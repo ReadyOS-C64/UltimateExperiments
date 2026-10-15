@@ -1,7 +1,7 @@
 # ReadyFS interactive editor and REU output history
 
 The full interactive application is **readyfs-overlay.prg**, with
-**readyfs-overlay-lab.d81** mounted on IEC device 8. Keep all fourteen sidecars
+**readyfs-overlay-lab.d81** mounted on IEC device 8. Keep all 28 sidecars
 on that disk; startup caches them in the REU. `readyfs.prg` is the smaller
 monolithic diagnostic variant and retains its basic input reader. Use the
 overlay application for this editor, option shorthand, scripts, and scrollback.
@@ -9,6 +9,10 @@ overlay application for this editor, option shorthand, scripts, and scrollback.
 For a concepts-first walkthrough with screenshots and a full command reference,
 see the [illustrated user guide](READYFS_USER_GUIDE.md) or its
 [standalone print edition](READYFS_USER_GUIDE.html).
+
+## Batch scripts
+
+Use `RUN script-path [arg1 ... arg9]` or `RU`. The [RUN reference](READYFS_RUN_GUIDE.md) documents session/persistent variables, `%0`–`%9`, conditions, counter loops, same-file CALL and shared subroutine inputs, result handling and all limits. Its BACKUP.SEQ example is demonstrated in the appended physical video chapter. Separate-file CALL, nested RUN, SHIFT and FOR are not supported. TYPE streams the script; use F1/F3 output history to read earlier lines.
 
 ## Editing
 

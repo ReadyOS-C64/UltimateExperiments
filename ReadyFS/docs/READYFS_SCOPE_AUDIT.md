@@ -1,5 +1,8 @@
 # ReadyFS Original-Scope Audit
 
+> Current status: the [acceptance summary](READYFS_ACCEPTANCE.md) supersedes older SD2IEC and overlay milestones below. Native folder/image acceptance completed on the attached device; the build now has 28 sidecars. Earlier run IDs are historical: the owner-requested October 2026 cleanup deleted old raw logs. Remaining broader backend and typed-result gaps are still substantive.
+
+
 Status: active implementation checklist. This is deliberately broader than
 the 60-case UI matrix; a green matrix is not permission to call the original
 application scope complete.
@@ -10,7 +13,7 @@ application scope complete.
 |---|---|---|
 | discovery | `probe`, `drives`, `profile`, `native`, `capabilities` | endpoint capabilities and limits are dispatched; physical backend coverage incomplete |
 | navigation | `pwd`, `cd`, `dir`/`ls`, `stat`, `volume`/`free` | flat IEC plus physically proven nested UltimateDOS/SoftwareIEC paths; lowercase Ultimate host/access, exact byte size, contained D81 volume identity, C64 blocks, and unavailable SoftIEC capacity are physically proven |
-| shell | `help`, `history`, `status`, `clear`/`cls`, `alias`, `unalias`, `config`, `test`, `run` | implemented slices; `run` stages a bounded SEQ in a dedicated REU bank, closes the source, then cooperatively dispatches comments/commands with `onerror` and `expect rc`; prompts are forbidden in batch mode; status reports the stable typed result of the previous command while conversion of legacy handlers remains incomplete |
+| shell | `help`, `history`, `status`, `clear`/`cls`, `alias`, `unalias`, `config`, `test`, `run` | implemented slices; `run` stages a bounded SEQ in a dedicated REU bank, closes the source, then cooperatively dispatches comments/commands with SET/persistent variables, `%0`–`%9`, IF/GOTO, arithmetic, local CALL, `onerror` and `expect rc`; external-file CALL, SHIFT and FOR are absent; prompts are forbidden in batch mode; status reports the stable typed result of the previous command while conversion of legacy handlers remains incomplete |
 | matching | `match`, `--include`, `--exclude`, `--native-pattern` | component, relative-stem, and exact-name native plan behavior proven |
 | content | `type`/`cat`, `head`, `tail`, `crc32`, `compare`/`verify` | resident-owned streaming I/O with slot-9 rendering; bounded line views, explicit tail truncation, and a backend-neutral CRC-32 stream checksum |
 | nested discovery | `tree`, `find` | bounded breadth-first controller with resident UltimateDOS, SoftIEC, flat regular-IEC, and profile-gated CMD/SD2IEC adapters dispatched; `find` caches and applies positional or `--include`/`--exclude` patterns to complete relative stems; VICE proves CMD/SD2IEC root translation and resident handoff, while real nested device enumeration remains incomplete |

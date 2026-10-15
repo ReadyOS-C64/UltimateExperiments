@@ -17,6 +17,7 @@ log=(OUT/'events.jsonl').open('a',buffering=1)
 random.seed(64)
 steps=[]
 SD_DEMO=os.environ.get('READYFS_SD2IEC_BASELINE')=='9'
+BATCH_DEMO=os.environ.get('READYFS_BATCH_DEMO')=='1'
 BATCH_BASELINE=os.environ.get('READYFS_BATCH_BASELINE')=='1'
 FAST=(BATCH_BASELINE or os.environ.get('READYFS_DEMO_PREFLIGHT')=='1' or
       os.environ.get('READYFS_SD2IEC_BASELINE','0')!='0') and not SD_DEMO
@@ -367,7 +368,12 @@ try:
     event(phase='sidecar-load-passive-wait',timeout_seconds=300)
     wait_ready(5,timeout=300)
     check('boot','UP/DN HIST');speed(1)
-    if SD_DEMO:
+    if BATCH_DEMO:
+        from readyfs_batch_demo import BatchDemo
+        extra_baseline=BatchDemo(globals())
+        extra_baseline.run()
+        rc=0
+    elif SD_DEMO:
         from readyfs_sd2iec_demo import Sd2iecDemo
         extra_baseline=Sd2iecDemo(globals())
         extra_baseline.run()
