@@ -133,178 +133,102 @@ cpu_prefix:
     sta dos64_cpu_yield
     jmp cpu_return
 
+; Tail dispatch keeps cpu_step's saved P on the stack. Prefix handling and
+; pending REP continuation remain above this entry. A is an internal handler
+; input (notably MOV-immediate and XCHG), so restore the opcode after lookup.
+; cpu_jump is synchronous scratch; no retained operand/state depends on it here.
 cpu_dispatch:
     lda #0
     sta dos64_cpu_pending
+    ldx dos64_cpu_opcode
+    lda cpu_table_lo,x
+    sta cpu_jump
+    lda cpu_table_hi,x
+    sta cpu_jump+1
     lda dos64_cpu_opcode
-    cmp #$27
-    jeq dos64_adjust_execute
-    cmp #$2F
-    jeq dos64_adjust_execute
-    cmp #$37
-    jeq dos64_adjust_execute
-    cmp #$3F
-    jeq dos64_adjust_execute
-    cmp #$D4
-    bcc @math
-    cmp #$D8
-    jcc dos64_adjust_execute
-@math:
-    cmp #$F6
-    bcc @indirect
-    cmp #$F8
-    jcc dos64_math_execute
-@indirect:
-    cmp #$FE
-    jcs dos64_indirect_execute
-    cmp #$86
-    bcc @short_branches
-    cmp #$88
-    jcc dos64_indirect_execute
-    cmp #$8F
-    jeq dos64_indirect_execute
-    cmp #$98
-    bcc @test_accumulator
-    cmp #$9A
-    jcc dos64_indirect_execute
-@test_accumulator:
-    cmp #$A8
-    bcc @short_branches
-    cmp #$AA
-    jcc dos64_indirect_execute
-@short_branches:
-    cmp #$60
-    bcc @strings
-    cmp #$80
-    jcc dos64_control_execute
-@strings:
-    cmp #$A4
-    bcc @shift
-    cmp #$A8
-    jcc dos64_strings_execute
-    cmp #$AA
-    bcc @shift
-    cmp #$B0
-    jcc dos64_strings_execute
-@shift:
-    cmp #$D0
-    bcc @interrupt
-    cmp #$D4
-    jcc dos64_shifts_execute
-@interrupt:
-    cmp #$CC
-    bcc @loop
-    cmp #$D0
-    jcc dos64_control_execute
-@loop:
-    cmp #$E0
-    bcc @stack
-    cmp #$E4
-    jcc dos64_control_execute
-@stack:
-    cmp #$50
-    bcc @stack_table
-    cmp #$60
-    jcc dos64_stack_execute
-@stack_table:
-    ldx #16
-@stack_scan:
-    cmp cpu_stack_opcodes,x
-    jeq dos64_stack_execute
-    dex
-    bpl @stack_scan
-    cmp #$40
-    bcs @inc_dec
-    and #7
-    cmp #6
-    jcc cpu_arithmetic
-    lda dos64_cpu_opcode
-@inc_dec:
-    cmp #$40
-    bcc @binary
-    cmp #$50
-    jcc cpu_inc_dec
-@binary:
-    cmp #$80
-    bcc @move
-    cmp #$84
-    jcc cpu_group_immediate
-    cmp #$86
-    jcc cpu_test_rm
-@move:
-    lda dos64_cpu_opcode
-    cmp #$88
-    bcc @immediate
-    cmp #$8C
-    jcc cpu_move_rm
-    cmp #$8C
-    jeq cpu_move_segment
-    cmp #$8D
-    jeq cpu_lea
-    cmp #$8E
-    jeq cpu_move_segment
-@immediate:
-    lda dos64_cpu_opcode
-    cmp #$C4
-    jeq cpu_load_far
-    cmp #$C5
-    jeq cpu_load_far
-    cmp #$C6
-    jeq cpu_move_rm_immediate
-    cmp #$C7
-    jeq cpu_move_rm_immediate
-    cmp #$B0
-    bcc @exchange
-    cmp #$C0
-    jcc cpu_mov_immediate
-@exchange:
-    cmp #$90
-    bcc @moffs
-    cmp #$98
-    jcc cpu_exchange
-@moffs:
-    cmp #$A0
-    bcc @control
-    cmp #$A4
-    jcc cpu_moffs
-@control:
-    cmp #$E4
-    bcc @jump
-    cmp #$E8
-    jcc cpu_io
-    cmp #$EC
-    bcc @jump
-    cmp #$F0
-    jcc cpu_io
-@jump:
-    cmp #$EA
-    jeq cpu_far_jump
-    cmp #$E9
-    jeq cpu_near_jump
-    cmp #$EB
-    jeq cpu_short_jump
-    cmp #$F4
-    beq @halt
-    cmp #$F5
-    jeq cpu_cmc
-    cmp #$F8
-    jeq cpu_clc
-    cmp #$F9
-    jeq cpu_stc
-    cmp #$FA
-    jeq cpu_cli
-    cmp #$FB
-    jeq cpu_sti
-    cmp #$FC
-    jeq cpu_cld
-    cmp #$FD
-    jeq cpu_std
+    jmp (cpu_jump)
+cpu_table_unsupported:
     lda #2
     jmp cpu_fault
-@halt:
+cpu_table_halt:
     lda #1
     sta dos64_cpu_status
     jmp cpu_complete
+; Every byte has an explicit target. Prefix bytes have fault entries here
+; because cpu_prefix consumes them before dispatch. Unsupported forms keep the
+; diagnostic exit; instruction families still validate ModR/M and sub-opcodes.
+.segment "RODATA"
+cpu_table_lo:
+    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<dos64_stack_execute,<dos64_stack_execute
+    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<dos64_stack_execute,<cpu_table_unsupported
+    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<dos64_stack_execute,<dos64_stack_execute
+    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<dos64_stack_execute,<dos64_stack_execute
+    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_table_unsupported,<dos64_adjust_execute
+    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_table_unsupported,<dos64_adjust_execute
+    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_table_unsupported,<dos64_adjust_execute
+    .byte <cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_arithmetic,<cpu_table_unsupported,<dos64_adjust_execute
+    .byte <cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec
+    .byte <cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec,<cpu_inc_dec
+    .byte <dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute
+    .byte <dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute
+    .byte <dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute
+    .byte <dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute
+    .byte <dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute
+    .byte <dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute
+    .byte <cpu_group_immediate,<cpu_group_immediate,<cpu_group_immediate,<cpu_group_immediate,<cpu_test_rm,<cpu_test_rm,<dos64_indirect_execute,<dos64_indirect_execute
+    .byte <cpu_move_rm,<cpu_move_rm,<cpu_move_rm,<cpu_move_rm,<cpu_move_segment,<cpu_lea,<cpu_move_segment,<dos64_indirect_execute
+    .byte <cpu_exchange,<cpu_exchange,<cpu_exchange,<cpu_exchange,<cpu_exchange,<cpu_exchange,<cpu_exchange,<cpu_exchange
+    .byte <dos64_indirect_execute,<dos64_indirect_execute,<dos64_stack_execute,<cpu_table_unsupported,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute
+    .byte <cpu_moffs,<cpu_moffs,<cpu_moffs,<cpu_moffs,<dos64_strings_execute,<dos64_strings_execute,<dos64_strings_execute,<dos64_strings_execute
+    .byte <dos64_indirect_execute,<dos64_indirect_execute,<dos64_strings_execute,<dos64_strings_execute,<dos64_strings_execute,<dos64_strings_execute,<dos64_strings_execute,<dos64_strings_execute
+    .byte <cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate
+    .byte <cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate
+    .byte <cpu_table_unsupported,<cpu_table_unsupported,<dos64_stack_execute,<dos64_stack_execute,<cpu_load_far,<cpu_load_far,<cpu_move_rm_immediate,<cpu_move_rm_immediate
+    .byte <cpu_table_unsupported,<cpu_table_unsupported,<dos64_stack_execute,<dos64_stack_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute
+    .byte <dos64_shifts_execute,<dos64_shifts_execute,<dos64_shifts_execute,<dos64_shifts_execute,<dos64_adjust_execute,<dos64_adjust_execute,<dos64_adjust_execute,<dos64_adjust_execute
+    .byte <cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported
+    .byte <dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<cpu_io,<cpu_io,<cpu_io,<cpu_io
+    .byte <dos64_stack_execute,<cpu_near_jump,<cpu_far_jump,<cpu_short_jump,<cpu_io,<cpu_io,<cpu_io,<cpu_io
+    .byte <cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_halt,<cpu_cmc,<dos64_math_execute,<dos64_math_execute
+    .byte <cpu_clc,<cpu_stc,<cpu_cli,<cpu_sti,<cpu_cld,<cpu_std,<dos64_indirect_execute,<dos64_indirect_execute
+.assert *-cpu_table_lo = 256, error, "opcode low table must contain 256 entries"
+cpu_table_hi:
+    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>dos64_stack_execute,>dos64_stack_execute
+    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>dos64_stack_execute,>cpu_table_unsupported
+    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>dos64_stack_execute,>dos64_stack_execute
+    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>dos64_stack_execute,>dos64_stack_execute
+    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_table_unsupported,>dos64_adjust_execute
+    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_table_unsupported,>dos64_adjust_execute
+    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_table_unsupported,>dos64_adjust_execute
+    .byte >cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_arithmetic,>cpu_table_unsupported,>dos64_adjust_execute
+    .byte >cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec
+    .byte >cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec,>cpu_inc_dec
+    .byte >dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute
+    .byte >dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute
+    .byte >dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute
+    .byte >dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute
+    .byte >dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute
+    .byte >dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute
+    .byte >cpu_group_immediate,>cpu_group_immediate,>cpu_group_immediate,>cpu_group_immediate,>cpu_test_rm,>cpu_test_rm,>dos64_indirect_execute,>dos64_indirect_execute
+    .byte >cpu_move_rm,>cpu_move_rm,>cpu_move_rm,>cpu_move_rm,>cpu_move_segment,>cpu_lea,>cpu_move_segment,>dos64_indirect_execute
+    .byte >cpu_exchange,>cpu_exchange,>cpu_exchange,>cpu_exchange,>cpu_exchange,>cpu_exchange,>cpu_exchange,>cpu_exchange
+    .byte >dos64_indirect_execute,>dos64_indirect_execute,>dos64_stack_execute,>cpu_table_unsupported,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute
+    .byte >cpu_moffs,>cpu_moffs,>cpu_moffs,>cpu_moffs,>dos64_strings_execute,>dos64_strings_execute,>dos64_strings_execute,>dos64_strings_execute
+    .byte >dos64_indirect_execute,>dos64_indirect_execute,>dos64_strings_execute,>dos64_strings_execute,>dos64_strings_execute,>dos64_strings_execute,>dos64_strings_execute,>dos64_strings_execute
+    .byte >cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate
+    .byte >cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate
+    .byte >cpu_table_unsupported,>cpu_table_unsupported,>dos64_stack_execute,>dos64_stack_execute,>cpu_load_far,>cpu_load_far,>cpu_move_rm_immediate,>cpu_move_rm_immediate
+    .byte >cpu_table_unsupported,>cpu_table_unsupported,>dos64_stack_execute,>dos64_stack_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute
+    .byte >dos64_shifts_execute,>dos64_shifts_execute,>dos64_shifts_execute,>dos64_shifts_execute,>dos64_adjust_execute,>dos64_adjust_execute,>dos64_adjust_execute,>dos64_adjust_execute
+    .byte >cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported
+    .byte >dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>cpu_io,>cpu_io,>cpu_io,>cpu_io
+    .byte >dos64_stack_execute,>cpu_near_jump,>cpu_far_jump,>cpu_short_jump,>cpu_io,>cpu_io,>cpu_io,>cpu_io
+    .byte >cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_halt,>cpu_cmc,>dos64_math_execute,>dos64_math_execute
+    .byte >cpu_clc,>cpu_stc,>cpu_cli,>cpu_sti,>cpu_cld,>cpu_std,>dos64_indirect_execute,>dos64_indirect_execute
+
+.assert *-cpu_table_hi = 256, error, "opcode high table must contain 256 entries"
+
+.segment "CODE"
 
 cpu_io:
     lda dos64_cpu_opcode

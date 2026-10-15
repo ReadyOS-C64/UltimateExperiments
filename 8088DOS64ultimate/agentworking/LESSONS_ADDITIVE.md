@@ -117,3 +117,10 @@
 - Pre-commit clock diagnostic correction: capture full RAM/mailbox/40-byte DCK1 before cleanup resets the evidence. The first error-3 subreason remains unknown. The updated probe's 16-PAL-line endpoint window permits ±1,008 raw ticks, independently checked; six Peddle tests/15 tooling checks do not imply a physical pass. Three added diagnostic cases raise selected feature tooling from 69 to 72 and the working set from 74 to 77 (five unlinked overlay-package tests remain excluded).
 
 - Corrected physical matrix passed all three speeds within independently derived 16-line bounds. This validates raw CIA/raster domain and observed turbo independence, while native deadline conversion and throughput remain separate work. The new 1 MHz 8/8 endpoint observation is a plausible explanation for the first narrow-window failure, not proof of its missing old subreason.
+
+## 2026-10-15 — overlay and dispatch integration
+
+- Measure a real DOS workload before changing dispatch. Preserving the opcode accumulator at family entry is part of the internal ABI; the original unchanged kernel oracle caught the omitted reload in the private prototype. Full hardware cases and complete screen/register/RAM equality then accepted the integrated change.
+- Separate linked variant totals, maximum simultaneous overlay bytes, resident file bytes, startup assets and zero padding. Summing two mutually exclusive payloads as permanently resident would misstate the available host RAM.
+- Save/restore observable 6510 DDR/output bits. Input-configured port bits are not readable copies of the output latch; exact hidden-latch assertions can reject correct hardware behavior.
+- Source freeze plus independent artifact hashes lets full corpus, genuine DOS and profiles run concurrently without racing build mutations. Host wall time from that concurrency is not target throughput.

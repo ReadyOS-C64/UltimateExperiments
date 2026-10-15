@@ -43,3 +43,5 @@
 - Preserve the guest interrupt frame across an empty keyboard wait and retry only its exact owned ROM instruction; do not increment completed instructions or fabricate keys.
 - Generic UCI completion is transport state, not image-file success. Operation-specific status, exact byte counts and persistence remain separate native integration work.
 - CIA phi2 ticks, native CPU cycles, guest timer ticks and REST duration are different clocks. Establish physical timer progress/turbo independence before using real-time deadlines.
+
+Current overlays are exclusive native owners, not arbitrary function-pointer storage. Keep every return and persistent state resident, release startup sources only after bootstrap, and preserve exact DOS observation/RAM oracles after performance changes. Unit MAIN has 76 bytes and DEVICE 49; cold lifetime design must precede further resident growth.

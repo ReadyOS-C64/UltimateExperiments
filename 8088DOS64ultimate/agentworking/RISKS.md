@@ -60,3 +60,7 @@ The failed physical clock attempt restored machine/turbo/media configuration and
 
 
 Corrected physical clock matrix: K14's raw CIA-versus-PAL-raster/turbo-independence uncertainty is resolved for firmware 3.14/FPGA 121/core 1.47 at Manual 1/16/64 MHz. Deltas 1,965,627/1,965,599/1,965,600 over 100 frames meet ±1,008-tick bounds with zero retries and 28-tick spread; configuration restoration/reset-resume passed. Native clock→scheduler/UCI deadline conversion remains unwired. K01/K02 CPU/REU/XT throughput, absolute-time fidelity and physical native DOS remain open. The initial error-3 cause remains unproven despite the corrected 1 MHz 8/8 post-read raster endpoints suggesting the former narrow window.
+
+## Current overlay/dispatch boundary
+
+Full 298/all 5,701 and exact genuine DOS equality resolve the integrated dispatch regression risk for the exercised profile; near-XT speed remains unproved. FILE/TEXT share one bounded window with tested failures, but assets are trusted immutable after bootstrap and native payload corruption is not CRC-detected. Unit MAIN 76 bytes/DEVICE 49 bytes make additional resident wrappers/scheduling a layout risk. Cold startup code must never be called after bitmap takeover. File READ/WRITE/CLOSE firmware limitations still require import CRC and reopen/read verification before accepting persistence; physical UCI and VIC/input/runtime remain unfinished.

@@ -5,6 +5,7 @@
 .ifndef DOS64_RANGE_PROBE
 DOS64_CORE_BOOT = 1
 .import dos64_cpu_init
+.import dos64_overlay_init, dos64_overlay_bootstrap, dos64_overlay_reu_mib, dos64_overlay_error
 .endif
 .endif
 .endif
@@ -69,6 +70,23 @@ dos64_entry:
     sta dos64_mailbox+MB_VERSION
     lda #STATUS_READY
     sta dos64_mailbox+MB_STATUS
+.ifdef DOS64_CORE_BOOT
+    ; Cold phase: commit startup assets before any live bitmap owner may use
+    ; 6000-6FFF. Four MiB is the binding minimum, not a REC auto-detection.
+    jsr dos64_overlay_init
+    lda #4
+    sta dos64_overlay_reu_mib
+    jsr dos64_overlay_bootstrap
+    bcc :+
+    lda #STATUS_FAIL
+    sta dos64_mailbox+MB_STATUS
+    lda dos64_overlay_error
+    sta dos64_mailbox+MB_ERROR
+    lda #2
+    sta $D020
+    jmp dos64_idle
+:
+.endif
     lda #5
     sta $D020
 .ifdef DOS64_PROBE

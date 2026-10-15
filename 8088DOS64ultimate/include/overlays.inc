@@ -1,0 +1,37 @@
+.ifndef DOS64_OVERLAYS_INC
+DOS64_OVERLAYS_INC = 1
+OV_FILE = 1
+OV_TEXT = 2
+OV_READY = $A5
+OV_WINDOW = $C900
+OV_WINDOW_SIZE = $0700
+OV_HEADER = $0010
+OV_SLOT_SIZE = $0800
+OV_SOURCE = $6000
+OV_ASSETS = $340000
+OV_ERR_BUSY = 1
+OV_ERR_UNREADY = 2
+OV_ERR_ID = 3
+OV_ERR_HEADER = 4
+OV_ERR_DMA = 5
+OV_ERR_CAPACITY = 6
+OV_ERR_ORIGIN = 7
+; Resident synchronous, nonreentrant manager; same RAM+I/O map contract as cache.
+; All APIs preserve native P except C, clobber A/X/Y. init is startup-only.
+; bootstrap validates both source headers before writing either immutable slot.
+; Only a successful bootstrap releases 6000–6FFF to the bitmap owner. It is
+; idempotent thereafter: the startup bytes are never consulted again.
+; acquire uses dos64_overlay_requested and HOLDS busy until release. Only call
+; acquire/release from resident code. All overlaid entry calls MUST occur while
+; busy is held. Resident wrappers below enforce this for files and text rows.
+; Wrappers reject reentry without changing requested/current/busy ownership.
+; Failed replacement invalidates current, releases lock, and never calls code.
+; REU assets are immutable after bootstrap: exact headers are checked on every
+; replacement, but payload CRC is not recomputed; external mutation/corruption
+; of payload or execution window is outside this contract. No persistent code
+; pointers. State is resident; file poll and whole-row retries survive switches.
+; Exclusive REU and C000–C00F scratch ownership during bootstrap/acquire; no
+; interrupt may invoke REU/cache/range/overlay operations. Hardware capacity
+; >=4 MiB is supplied by caller in reu_mib (4..16) AFTER init, based on
+; separately verified hardware configuration, never inferred from REC bits.
+.endif

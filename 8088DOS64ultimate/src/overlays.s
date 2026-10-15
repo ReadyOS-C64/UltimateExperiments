@@ -1,0 +1,245 @@
+.include "overlays.inc"
+.include "reu.inc"
+.macpack longbranch
+.import dos64_reu_transfer, dos64_reu_request
+.import dos64_files_init, dos64_files_start, dos64_files_poll, dos64_render_text_row
+.import __FILECODE_SIZE__, __RENDERCODE_SIZE__
+.export dos64_overlay_init, dos64_overlay_bootstrap, dos64_overlay_acquire, dos64_overlay_release
+.export dos64_overlay_files_init, dos64_overlay_files_start, dos64_overlay_files_poll
+.export dos64_overlay_render_text_row
+.export dos64_overlay_ready, dos64_overlay_current, dos64_overlay_busy
+.export dos64_overlay_requested, dos64_overlay_error, dos64_overlay_reu_mib
+.export dos64_overlay_code_start, dos64_overlay_code_end
+.export dos64_overlay_boot_code_start, dos64_overlay_boot_code_end
+.export dos64_overlay_headers
+.assert OV_ASSETS >= $340000, error, "overlay assets below owned staging slice"
+.assert OV_ASSETS+2*OV_SLOT_SIZE <= $380000, error, "overlay assets exceed owned staging slice"
+.assert (OV_ASSETS & (OV_SLOT_SIZE-1)) = 0, error, "overlay slots require 2 KiB alignment"
+.assert OV_HEADER+OV_WINDOW_SIZE <= OV_SLOT_SIZE, error, "overlay header/payload exceeds slot"
+.assert __FILECODE_SIZE__ > 0, lderror, "empty file overlay"
+.assert __RENDERCODE_SIZE__ > 0, lderror, "empty text overlay"
+.assert __FILECODE_SIZE__ <= OV_WINDOW_SIZE, lderror, "file overlay exceeds window"
+.assert __RENDERCODE_SIZE__ <= OV_WINDOW_SIZE, lderror, "text overlay exceeds window"
+
+.segment "DEVICESTATE"
+dos64_overlay_ready: .res 1
+dos64_overlay_current: .res 1
+dos64_overlay_busy: .res 1
+dos64_overlay_requested: .res 1
+dos64_overlay_error: .res 1
+dos64_overlay_reu_mib: .res 1
+
+.segment "DEVICECODE"
+dos64_overlay_code_start:
+; PHP precedes CLD so decimal/IRQ/other native flags survive every public exit.
+dos64_overlay_acquire:
+    php
+    sei
+    cld
+    tsx
+    lda $0103,x                 ; immediate native return address high byte
+    cmp #>OV_WINDOW
+    bcc :+
+    cmp #>(OV_WINDOW+OV_WINDOW_SIZE)
+    bcc ov_origin
+:   lda dos64_overlay_busy
+    bne ov_busy
+    lda dos64_overlay_ready
+    cmp #OV_READY
+    bne ov_unready
+    lda dos64_overlay_requested
+    cmp #OV_FILE
+    bcc ov_bad_id
+    cmp #OV_TEXT+1
+    bcs ov_bad_id
+    inc dos64_overlay_busy
+    cmp dos64_overlay_current
+    beq ov_ok
+    lda #0
+    sta dos64_overlay_current
+    lda dos64_overlay_requested
+    asl
+    asl
+    asl
+    clc
+    adc #8                       ; header descriptors 16,24
+    tax
+    jsr ov_dma
+    bcs ov_dma_failed
+    lda dos64_overlay_requested
+    cmp #OV_TEXT
+    ldx #0
+    bcc :+
+    ldx #OV_HEADER
+:   ldy #0
+@header:
+    lda dos64_overlay_headers,x
+    cmp $C000,y
+    bne ov_header_failed
+    inx
+    iny
+    cpy #OV_HEADER
+    bne @header
+    lda dos64_overlay_requested
+    asl
+    asl
+    asl
+    clc
+    adc #24                      ; payload descriptors 32,40
+    tax
+    jsr ov_dma
+    bcs ov_dma_failed
+    lda dos64_overlay_requested
+    sta dos64_overlay_current
+ov_ok:
+    lda #0
+    sta dos64_overlay_error
+    plp
+    clc
+    rts
+ov_busy:
+    lda #OV_ERR_BUSY
+    bne ov_error                 ; never steal another owner's lock
+ov_unready:
+    lda #OV_ERR_UNREADY
+    bne ov_error
+ov_origin:
+    lda #OV_ERR_ORIGIN
+    bne ov_error
+ov_capacity:
+    lda #OV_ERR_CAPACITY
+    bne ov_error
+ov_bad_id:
+    lda #OV_ERR_ID
+    bne ov_error
+ov_header_failed:
+    lda #OV_ERR_HEADER
+    bne ov_failed
+ov_dma_failed:
+    lda #OV_ERR_DMA
+ov_failed:
+    ldx #0
+    stx dos64_overlay_busy
+ov_error:
+    sta dos64_overlay_error
+    plp
+    sec
+    rts
+
+dos64_overlay_release:
+    php
+    sei
+    lda #0
+    sta dos64_overlay_busy
+    plp
+    rts                          ; preserve wrapped target carry
+
+; Entry wrappers keep all native returns outside C900–CFFF during replacement.
+; An overlaid callback cannot recursively enter any wrapper while busy is held.
+.macro WRAP name, id, target
+name:
+    php
+    sei
+    lda dos64_overlay_busy
+    bne ov_busy
+    lda #id
+    sta dos64_overlay_requested
+    plp
+    jsr dos64_overlay_acquire
+    bcs :+
+    jsr target
+    jmp dos64_overlay_release
+:   rts
+.endmacro
+WRAP dos64_overlay_files_init, OV_FILE, dos64_files_init
+WRAP dos64_overlay_files_start, OV_FILE, dos64_files_start
+WRAP dos64_overlay_files_poll, OV_FILE, dos64_files_poll
+WRAP dos64_overlay_render_text_row, OV_TEXT, dos64_render_text_row
+
+; Descriptors are reversed for the eight-byte loop into request[7..0].
+ov_dma:
+    ldy #7
+:   lda ov_requests,x
+    sta dos64_reu_request,y
+    inx
+    dey
+    bpl :-
+    jmp dos64_reu_transfer
+ov_requests:
+.macro REQUEST host, far, length, direction
+    .byte direction, .hibyte(length), .lobyte(length), .bankbyte(far), .hibyte(far), .lobyte(far), .hibyte(host), .lobyte(host)
+.endmacro
+    REQUEST OV_SOURCE, OV_ASSETS, OV_SLOT_SIZE, 0
+    REQUEST OV_SOURCE+OV_SLOT_SIZE, OV_ASSETS+OV_SLOT_SIZE, OV_SLOT_SIZE, 0
+    REQUEST $C000, OV_ASSETS, OV_HEADER, 1
+    REQUEST $C000, OV_ASSETS+OV_SLOT_SIZE, OV_HEADER, 1
+    REQUEST OV_WINDOW, OV_ASSETS+OV_HEADER, __FILECODE_SIZE__, 1
+    REQUEST OV_WINDOW, OV_ASSETS+OV_SLOT_SIZE+OV_HEADER, __RENDERCODE_SIZE__, 1
+dos64_overlay_headers:
+    .byte "D64O",1,OV_FILE
+    .word __FILECODE_SIZE__,OV_WINDOW
+    .word 0
+    .byte "FILE"
+    .byte "D64O",1,OV_TEXT
+    .word __RENDERCODE_SIZE__,OV_WINDOW
+    .word 0
+    .byte "TEXT"
+dos64_overlay_code_end:
+
+; Bootstrap is cold resident CODE to keep DEVICECODE budget below 400 bytes.
+.segment "CODE"
+dos64_overlay_boot_code_start:
+dos64_overlay_init:
+    php
+    sei
+    lda #0
+    sta dos64_overlay_ready
+    sta dos64_overlay_current
+    sta dos64_overlay_busy
+    sta dos64_overlay_requested
+    sta dos64_overlay_reu_mib
+    sta dos64_overlay_error
+    plp
+    clc
+    rts
+
+dos64_overlay_bootstrap:
+    php
+    sei
+    cld
+    lda dos64_overlay_busy
+    jne ov_busy
+    lda dos64_overlay_ready
+    cmp #OV_READY
+    jeq ov_ok                     ; source already belongs to bitmap
+    lda dos64_overlay_reu_mib
+    cmp #4
+    jcc ov_capacity
+    cmp #17
+    jcs ov_capacity
+    lda #0
+    sta dos64_overlay_ready
+    sta dos64_overlay_current
+    inc dos64_overlay_busy
+    ldx #OV_HEADER-1
+@headers:
+    lda OV_SOURCE,x
+    cmp dos64_overlay_headers,x
+    jne ov_header_failed
+    lda OV_SOURCE+OV_SLOT_SIZE,x
+    cmp dos64_overlay_headers+OV_HEADER,x
+    jne ov_header_failed
+    dex
+    bpl @headers
+    ldx #0
+    jsr ov_dma
+    jcs ov_dma_failed
+    ldx #8
+    jsr ov_dma
+    jcs ov_dma_failed
+    lda #OV_READY
+    sta dos64_overlay_ready
+    lda #0
+    sta dos64_overlay_busy
+    jmp ov_ok
+ dos64_overlay_boot_code_end:

@@ -5,7 +5,7 @@ DOS64_PYTHON ?= python3
 
 .DEFAULT_GOAL := all
 
-ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s
+ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
 build/alu.o: include/parity.inc Makefile
 build/range.o: include/range.inc Makefile
@@ -17,6 +17,10 @@ build/clock.o: include/clock.inc Makefile
 build/keyboard.o: include/keyboard.inc Makefile
 build/uci.o: include/uci.inc Makefile
 build/host_clock.o: include/host_clock.inc Makefile
+build/files.o: include/files.inc include/uci.inc Makefile
+build/render_text.o: include/render_text.inc Makefile
+build/overlays.o: include/overlays.inc include/reu.inc Makefile
+build/boot.o: include/overlays.inc Makefile
 build/aux_bios.o: include/aux_bios.inc Makefile
 build/range_probe.o: include/range.inc Makefile
 build/host_clock_probe.o: include/host_clock.inc Makefile
@@ -105,6 +109,12 @@ test-range-vice: range-probe
 test-dos-boot: build
 	$(DOS64_ZIG) build dos-boot --summary all
 
+.PHONY: test-overlays
+test-overlays: build
+	$(DOS64_PYTHON) -m unittest discover -s tests/tooling -p test_overlay_package.py -v
+	$(DOS64_PYTHON) -m unittest discover -s tests/tooling -p test_overlay_memory_contract.py -v
+	$(DOS64_ZIG) build overlays --summary all
+
 profile-cpu: build
 	$(DOS64_ZIG) build profile-cpu --summary all
 
@@ -130,18 +140,20 @@ cache-probe: build/dos64-cache-probe.prg
 test-cache-vice: cache-probe
 	$(DOS64_PYTHON) build_support/vice_probe.py --kind cache
 
-build/dos64.prg: $(OBJECTS) cfg/dos64-runtime.cfg Makefile
-	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o $@ -m build/dos64.map -Ln build/dos64.labels $(OBJECTS)
+build/dos64.prg: $(OBJECTS) cfg/dos64-runtime.cfg build_support/overlay_package.py Makefile
+	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o build/dos64-resident.prg -m build/dos64.map -Ln build/dos64.labels $(OBJECTS)
+	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-resident.prg --files build/dos64-resident.prg.files.bin --render build/dos64-resident.prg.render.bin --output-prg $@ --output-assets build/dos64-overlay-startup.bin --manifest build/dos64-overlay-package.json
 
-build/dos64-tests.prg: $(OBJECTS) build/fixtures.o build/reu_probe.o build/cache_probe.o build/reu_snapshot.o build/range_probe.o build/range_snapshot.o cfg/dos64-runtime.cfg Makefile
-	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o $@ -m build/dos64-tests.map -Ln build/dos64-tests.labels $(OBJECTS) build/fixtures.o build/reu_probe.o build/cache_probe.o build/reu_snapshot.o build/range_probe.o build/range_snapshot.o
+build/dos64-tests.prg: $(OBJECTS) build/fixtures.o build/reu_probe.o build/cache_probe.o build/reu_snapshot.o build/range_probe.o build/range_snapshot.o cfg/dos64-runtime.cfg build_support/overlay_package.py Makefile
+	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o build/dos64-tests-resident.prg -m build/dos64-tests.map -Ln build/dos64-tests.labels $(OBJECTS) build/fixtures.o build/reu_probe.o build/cache_probe.o build/reu_snapshot.o build/range_probe.o build/range_snapshot.o
+	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-tests-resident.prg --files build/dos64-tests-resident.prg.files.bin --render build/dos64-tests-resident.prg.render.bin --output-prg $@ --output-assets build/dos64-tests-overlay-startup.bin --manifest build/dos64-tests-overlay-package.json
 
 build/dos64-tests.bin: build/dos64-tests.prg
 	$(DOS64_PYTHON) build_support/raw_payload.py $< $@
 
 verify-memory: build/dos64.prg build/dos64-tests.prg
-	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64.map build/dos64.labels
-	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64-tests.map build/dos64-tests.labels
+	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64.map build/dos64.labels --overlay-files build/dos64-resident.prg.files.bin --overlay-render build/dos64-resident.prg.render.bin
+	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64-tests.map build/dos64-tests.labels --overlay-files build/dos64-tests-resident.prg.files.bin --overlay-render build/dos64-tests-resident.prg.render.bin
 
 manifest: build/dos64.prg build/dos64-tests.prg
 	$(DOS64_PYTHON) build_support/manifest.py --zig "$(DOS64_ZIG)" --ca65 "$(DOS64_CA65)" --ld65 "$(DOS64_LD65)"

@@ -36,13 +36,24 @@ pub fn build(b: *std.Build) void {
     // tests control flow only. This lane does not use runtime/unit PRG files.
     const clock_probe = b.addTest(.{ .root_module = b.createModule(.{
         .root_source_file = b.path("tests/host/host_clock_probe.zig"),
-        .target = target, .optimize = .Debug,
+        .target = target,
+        .optimize = .Debug,
     }) });
     addPeddle(clock_probe.root_module, b);
     const run_clock_probe = b.addRunArtifact(clock_probe);
     b.step("clock-probe", "Verify bounded native CIA/VIC calibration fixture").dependOn(&run_clock_probe.step);
+    const overlay = b.addTest(.{ .root_module = b.createModule(.{
+        .root_source_file = b.path("tests/host/overlay_integration.zig"),
+        .target = target,
+        .optimize = .Debug,
+    }) });
+    addPeddle(overlay.root_module, b);
+    const run_overlay = b.addRunArtifact(overlay);
+    b.step("overlays", "Verify FILE/TEXT overlays and bounded startup ownership").dependOn(&run_overlay.step);
     const boot = b.addTest(.{ .root_module = b.createModule(.{
-        .root_source_file = b.path("tests/host/dos_boot.zig"), .target = target, .optimize = .Debug,
+        .root_source_file = b.path("tests/host/dos_boot.zig"),
+        .target = target,
+        .optimize = .Debug,
     }) });
     const boot_options = b.addOptions();
     boot_options.addOption(bool, "long_dos_boot", true);

@@ -93,6 +93,7 @@ test "unsupported REU access is rejected rather than treated as ordinary RAM" {
 test "actual PRG entry initializes mailbox, CPU, bank latch and host stack" {
     var f = try Fixture.init();
     defer f.deinit();
+    host.c.dos64_enable_reu(f.machine);
     const idle = try f.symbol("dos64_idle");
     host.c.dos64_set_regs(f.machine, .{ .pc = try f.symbol("dos64_entry"), .sp = 0x57, .a = 0, .x = 0, .y = 0, .p = 0x28, .cycles = 0, .instructions = 0 });
     while (host.c.dos64_get_regs(f.machine).pc != idle) {
@@ -102,7 +103,10 @@ test "actual PRG entry initializes mailbox, CPU, bank latch and host stack" {
     const mb = try f.symbol("dos64_mailbox");
     try std.testing.expectEqual(@as(u8, 1), f.peek(mb));
     try std.testing.expectEqual(@as(u8, 1), f.peek(mb+1));
-    try std.testing.expectEqual(@as(u8, 0x35), f.peek(1));
+    // REU banking preserves DDR/output bits. Input-configured latch bits
+    // are unreadable on a 6510 and may return high when the port is sampled.
+    try std.testing.expectEqual(@as(u8, 0x2f), f.peek(0));
+    try std.testing.expectEqual(@as(u8, 0x25), f.peek(1) & 0x2f);
     try std.testing.expectEqual(@as(u8, 5), f.peek(0xd020));
     const regs = host.c.dos64_get_regs(f.machine);
     try std.testing.expectEqual(@as(u8, 0xff), regs.sp);
@@ -140,3 +144,8 @@ test { _ = @import("clock.zig"); }
 test { _ = @import("keyboard.zig"); }
 test { _ = @import("uci.zig"); }
 test { _ = @import("host_clock.zig"); }
+
+test { _ = @import("files.zig"); }
+test { _ = @import("render_text.zig"); }
+test { _ = @import("overlays.zig"); }
+test { _ = @import("overlay_startup.zig"); }

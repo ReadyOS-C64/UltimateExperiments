@@ -1,0 +1,13 @@
+# Native FILE/TEXT code overlays
+
+The linked resident manager copies one of two real linked payloads into C900–CFFF. FILE is 1,088 bytes, TEXT is 906; they occupy one 1,792-byte execution window. State remains resident at EA00 onward. Public resident wrappers hold the busy lock across the complete overlaid call. No overlaid return address or persistent function pointer may survive a replacement. Reentry and acquisition from the overlay execution window are rejected.
+
+The runtime and unit variants separately link `%O.files.bin` and `%O.render.bin`. The packager places each exact payload behind a 16-byte identity/version/length/run-address header in its own 2,048-byte slot. Final PRGs load 0801–6FFF: resident code, intentional zero padding, then startup slots at 6000/6800. Cold bootstrap validates both headers before writing either slot to REU 340000/340800. Ready A5 is published only after both complete transfers. Failure remains unready, latches an explicit mailbox error/red border, and can be retried through a cold restart. Only successful bootstrap releases 6000–6FFF to the bitmap owner.
+
+Acquisition reads and validates the requested REU header before loading its exact linked length. Replacement invalidates current identity before DMA and publishes the new identity only after success. Partial transfer never enters the replacement. A same-image hit avoids DMA. REU assets and loaded code are trusted immutable after bootstrap; native metadata checks do not recompute payload CRC. Build verification independently compares packaged bytes with each linked output, checks all gaps/tails and allows only FILE/TEXT overlap.
+
+Manager APIs require RAM plus I/O mapping, exclusive REU/C000 scratch ownership and resident callers. They preserve native P except carry and clobber A/X/Y. The underlying FILE/TEXT direct ABIs are separately tested under a held lock. No interrupt may enter the manager/cache/range/REU owner. Capacity is caller-declared from the binding minimum 4 MiB; REC status does not establish capacity.
+
+The 40 focused assembly tests cover file/render behavior, arbitrary banking under locked direct calls, complete 4 MiB REU oracles, switches during asynchronous file polling, partial DMA/header failures, busy/reentry/origin rules, native entry and retry. The combined gate passes 298 tests/all 5,701 pinned CPU cases and 89 tooling checks. [Evidence](../agentworking/evidence/overlays-dispatch-20261015.json).
+
+Native startup initializes CPU/cache and overlays, then idles. Actual image loading, scheduling, C64 presentation/input and persistence remain separate integrations. This manager is functionally tested in Peddle; no physical overlay-runtime acceptance is claimed.

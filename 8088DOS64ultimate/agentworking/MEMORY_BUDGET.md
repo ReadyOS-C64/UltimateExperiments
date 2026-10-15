@@ -1,23 +1,23 @@
 # Memory budget checkpoint
 
-Status: current linked clock/keyboard/UCI/native-clock slice has genuine Peddle DOS built-ins acceptance; default quick/profile and genuine long DOS tests pass; physical clock calibration failed and is not accepted. Runtime and unit use `cfg/dos64-runtime.cfg`; original hardware helpers retain isolated configurations. Final current runtime CODE **12,138**, RODATA **864**, DEVICECODE **3,684**, BASIC **12**, BSS **222**, DEVICESTATE **147**, PAGEMAP **2,048**, CACHEMETA **192**, RANGEBUFFER **256**, UCIBUFFER **2,048**, ZP **18**. Linked total **21,631**, PRG **22,117**, including **5,417** padding/startup-zero bytes. Unit CODE **13,054**, RODATA **888**, TESTCODE **36**, DEVICECODE **3,684**, ZP **30**; linked total **22,619**, same PRG **22,117**, including **4,441** padding/startup zeros. The final gate/evidence confirms these allocations; the physical clock failure is separate from linker validity.
+Status: FILE/TEXT REU overlays and direct CPU dispatch are linked and verified by 298 tests/all 5,701 hardware cases, 89 tooling checks, genuine DOS equality and profile. The accepted physical PAL CIA clock matrix is separate from linker validity. Runtime CODE 11,895, RODATA 1,376, DEVICE 4,047, BASIC 12, ZP 18, BSS 222, DEVICESTATE 197, PAGEMAP 2,048, CACHEMETA 192, RANGEBUFFER 256 and UCIBUFFER 2,048; unit CODE 12,811, RODATA 1,400, TEST 36, ZP 30. FILE 1,088 and TEXT 906 share C900–CFFF. All linked variants total 24,307/25,295; resident excluding variants 22,313/23,301; maximum concurrently loaded linked bytes 23,401/24,389. These include static reservations/header/ZP, not just executable file bytes. Final PRG 26,625 has resident file 17,330/18,306 + zero padding 5,197/4,221 + startup assets 4,096 + header 2. MAIN free 1,052/76; DEVICE free 49. [Exact maps/package/evidence](evidence/overlays-dispatch-20261015.json).
 
 
 | Resource | Budget | Measured used | Gate |
 |---|---:|---:|---|
-| Resident/hot executable ranges | 20,224 bytes with linked UCI buffer | CODE 12,138 + RODATA 864 + BASIC 12 + DEVICECODE 3,684 = 16,698 | MAIN/DEVICECODE boundaries; C000 staging and linked C100–C8FF UCI buffer leave C900–CFFF |
+| Resident/hot executable ranges | 20,223 bytes across MAIN/DEVICE/overlay | Resident file 17,330 + maximum loaded overlay 1,088 = 18,418 | MAIN/DEVICECODE boundaries; C000 staging and linked C100–C8FF UCI buffer leave C900–CFFF |
 | Cold window including vectors | 4 KiB | Unknown | Must preserve IRQ/NMI/reset vectors and return gateways |
 | Host guest-cache frames | 16 KiB | 32 × 512 bytes reserved/used | 8000–BFFF, direct physical tags; tests cover all frames |
-| Host control/metadata | 4 KiB | 2,609 static bytes; 1,487 remaining including gaps | BSS 222 + map 2,048 + frame metadata 192 + DEVICESTATE 147; only 34 BSS bytes before E100 |
+| Host control/metadata | 4 KiB | 2,659 static bytes; 1,437 remaining including gaps | BSS 222 + map 2,048 + frame metadata 192 + DEVICESTATE 197; only 34 BSS bytes before E100 |
 | Host range staging | 256 bytes | 256 reserved, not PRG payload | C000–C0FF; linker/map gate forbids graphics/cache overlap |
 | Host UCI storage | 2 KiB | 2,048 linked writable bytes, not PRG payload | C100–C8FF; command/data/status storage stays outside banked/I/O memory |
 | Host low memory | 2 KiB | Runtime ZP 18; stack measured by probe | Full-system stack/IRQ/KERNAL bound not established |
-| Video matrix/fonts/bitmap | 12 KiB | 4 KiB startup zero initialization; no renderer/font yet | Startup zeros are file bytes; preserve VIC bank/font/bitmap alignment |
+| Video matrix/fonts/bitmap | 12 KiB | 4 KiB startup zeros, 4 KiB temporary overlay assets; row renderer tested, font/VIC still unlinked | Startup zeros are file bytes; preserve VIC bank/font/bitmap alignment |
 | I/O reservation | 4 KiB | Reserved | Never allocated as RAM |
 | REU guest physical arena | 1 MiB | Reserved design | Guest bus holes/ROM enforced |
 | REU whole floppies | 2 × 512 KiB | 360 KiB each fixture | Actual image lengths, no tail in exports |
 | REU HD cache | 1 MiB at baseline | Unknown | Metadata fits; force smaller cache in small-disk tests |
-| REU assets/staging/trace | 3 × 256 KiB | Unknown | Ownership and versioned descriptors |
+| REU assets/staging/trace | 3 × 256 KiB | 4,096 immutable overlay asset bytes at 340000–340FFF | Ownership and versioned descriptors |
 | REU unallocated | 256 KiB at baseline | Unknown | Cannot be borrowed silently |
 
 The 4 KiB metadata budget is particularly tight: a full 512-byte-page map alone takes 2 KiB. Charge disk-cache descriptors and all bounce buffers here; move cold metadata to REU or reduce cache capacity if the measured ledger exceeds the budget. A larger cache advertised without its metadata is not a valid budget.
