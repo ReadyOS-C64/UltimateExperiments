@@ -1,0 +1,274 @@
+{
+  "schema": 1,
+  "status": "PHYSICAL_CALIBRATION_COMPLETED_WITH_MISSES_FULL_RECOVERY_PASSED",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-cia1-calibration-20261015-153144",
+  "root_review": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cia1-calibration-root-20261015-153144",
+  "program_sha256": "56a1e5c0340e414b417dddfb44288c6df62f9d48dab4af988aabbd919348293a",
+  "adapter_manifest_sha256": "af600d70d5d2a4a0812b42e84c6afd7811cb5c16e5a7e283c874cfc20ea0d3cb",
+  "fixture_independent_review_sha256": "71a187c450fb063f4d9c395ce62ddf48632dce898f2b6ffc6c9b4d93282b44be",
+  "adapter_independent_review_sha256": "fcb42de63e281d6f4d0599b5b6faf4a6a5090838b5c658c4ce31a8e436fed4aa",
+  "physical_profile": "PAL Manual64; active readback before each registered fixture/helper launch; text VIC configuration captured",
+  "VIC_stored": {
+    "d011": 27,
+    "d016": 200,
+    "d018": 21
+  },
+  "records": [
+    {
+      "profile": 0,
+      "margin_raw_ticks": 64,
+      "mode": "plain",
+      "raw_start": 361,
+      "raw_end": 433301,
+      "raw_elapsed": 432940,
+      "exact_PIT_edges": 8,
+      "boundaries": 11307,
+      "edge_boundaries": 8,
+      "ready_boundaries": 0,
+      "missed_ready_boundaries": 8,
+      "first_missed_epoch": 54505,
+      "first_missed_entry_ICR": 0,
+      "forced_markers": 0,
+      "transient_sample_errors": 36,
+      "margin_passed_observed_boundaries": false
+    },
+    {
+      "profile": 1,
+      "margin_raw_ticks": 64,
+      "mode": "DMA",
+      "raw_start": 433516,
+      "raw_end": 866470,
+      "raw_elapsed": 432954,
+      "exact_PIT_edges": 8,
+      "boundaries": 11198,
+      "edge_boundaries": 8,
+      "ready_boundaries": 0,
+      "missed_ready_boundaries": 8,
+      "first_missed_epoch": 487640,
+      "first_missed_entry_ICR": 0,
+      "forced_markers": 0,
+      "transient_sample_errors": 42,
+      "margin_passed_observed_boundaries": false
+    },
+    {
+      "profile": 2,
+      "margin_raw_ticks": 64,
+      "mode": "DMA forced fallback",
+      "raw_start": 866683,
+      "raw_end": 1299642,
+      "raw_elapsed": 432959,
+      "exact_PIT_edges": 8,
+      "boundaries": 11200,
+      "edge_boundaries": 8,
+      "ready_boundaries": 38,
+      "missed_ready_boundaries": 7,
+      "first_missed_epoch": 974916,
+      "first_missed_entry_ICR": 0,
+      "forced_markers": 1,
+      "transient_sample_errors": 32,
+      "margin_passed_observed_boundaries": false
+    },
+    {
+      "profile": 3,
+      "margin_raw_ticks": 256,
+      "mode": "plain",
+      "raw_start": 1299863,
+      "raw_end": 1732822,
+      "raw_elapsed": 432959,
+      "exact_PIT_edges": 8,
+      "boundaries": 11165,
+      "edge_boundaries": 8,
+      "ready_boundaries": 21,
+      "missed_ready_boundaries": 0,
+      "first_missed_epoch": null,
+      "first_missed_entry_ICR": null,
+      "forced_markers": 0,
+      "transient_sample_errors": 41,
+      "margin_passed_observed_boundaries": true
+    },
+    {
+      "profile": 4,
+      "margin_raw_ticks": 256,
+      "mode": "DMA",
+      "raw_start": 1733040,
+      "raw_end": 2165989,
+      "raw_elapsed": 432949,
+      "exact_PIT_edges": 8,
+      "boundaries": 11199,
+      "edge_boundaries": 8,
+      "ready_boundaries": 22,
+      "missed_ready_boundaries": 0,
+      "first_missed_epoch": null,
+      "first_missed_entry_ICR": null,
+      "forced_markers": 0,
+      "transient_sample_errors": 41,
+      "margin_passed_observed_boundaries": true
+    },
+    {
+      "profile": 5,
+      "margin_raw_ticks": 256,
+      "mode": "DMA forced fallback",
+      "raw_start": 2166207,
+      "raw_end": 2599153,
+      "raw_elapsed": 432946,
+      "exact_PIT_edges": 8,
+      "boundaries": 11199,
+      "edge_boundaries": 8,
+      "ready_boundaries": 54,
+      "missed_ready_boundaries": 0,
+      "first_missed_epoch": null,
+      "first_missed_entry_ICR": null,
+      "forced_markers": 1,
+      "transient_sample_errors": 36,
+      "margin_passed_observed_boundaries": true
+    },
+    {
+      "profile": 6,
+      "margin_raw_ticks": 1024,
+      "mode": "plain",
+      "raw_start": 2599368,
+      "raw_end": 3032310,
+      "raw_elapsed": 432942,
+      "exact_PIT_edges": 8,
+      "boundaries": 11308,
+      "edge_boundaries": 8,
+      "ready_boundaries": 183,
+      "missed_ready_boundaries": 0,
+      "first_missed_epoch": null,
+      "first_missed_entry_ICR": null,
+      "forced_markers": 0,
+      "transient_sample_errors": 39,
+      "margin_passed_observed_boundaries": true
+    },
+    {
+      "profile": 7,
+      "margin_raw_ticks": 1024,
+      "mode": "DMA",
+      "raw_start": 3032526,
+      "raw_end": 3465478,
+      "raw_elapsed": 432952,
+      "exact_PIT_edges": 8,
+      "boundaries": 11197,
+      "edge_boundaries": 8,
+      "ready_boundaries": 183,
+      "missed_ready_boundaries": 0,
+      "first_missed_epoch": null,
+      "first_missed_entry_ICR": null,
+      "forced_markers": 0,
+      "transient_sample_errors": 33,
+      "margin_passed_observed_boundaries": true
+    },
+    {
+      "profile": 8,
+      "margin_raw_ticks": 1024,
+      "mode": "DMA forced fallback",
+      "raw_start": 3465693,
+      "raw_end": 3898619,
+      "raw_elapsed": 432926,
+      "exact_PIT_edges": 8,
+      "boundaries": 11199,
+      "edge_boundaries": 8,
+      "ready_boundaries": 193,
+      "missed_ready_boundaries": 0,
+      "first_missed_epoch": null,
+      "first_missed_entry_ICR": null,
+      "forced_markers": 1,
+      "transient_sample_errors": 42,
+      "margin_passed_observed_boundaries": true
+    }
+  ],
+  "total_missed_ready_boundaries": 23,
+  "conclusion": "64rawtick margin failed;256/1024 margins had no misses in these nine bounded actual kernels. Full CIA2/PIT sampling remained authoritative.",
+  "source_shadow_vectors_verified_before_helper": true,
+  "owned_REU_pattern_and_neighbors": {
+    "status": "passed",
+    "pattern_bytes": 4096,
+    "upper_neighbor_bytes": 12288,
+    "lower_neighbor_bytes": 16384,
+    "source_capture_preceded_helper": true
+  },
+  "recovery_audit": {
+    "status": "CALIBRATION_CAPTURE_AND_FULL_RECOVERY_VERIFIED",
+    "root_guard_sha256": "25e21f985b42e618d5f0ea64e0c667cb30ec7f2e136c57fca3f4182f29287a2f",
+    "frozen_inputs": 822,
+    "all_inputs_exact": true,
+    "reu_compared_bytes": 4194304,
+    "reu_before_after_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+    "configuration_media_restored": true,
+    "reset_resumed": true,
+    "post_FTP_pending": false,
+    "both_owned_PRGs_full_readback_exact": true
+  },
+  "registered_launches": [
+    {
+      "sha256": "40fe690953c245c8093c7cd5e5cb91684df7290602d8afa44dbd2e0b5b30d09e",
+      "completion_clear_address": 24580,
+      "active": {
+        "System Mode": "PAL",
+        "Turbo Control": "Manual",
+        "CPU Speed": "64"
+      }
+    },
+    {
+      "sha256": "56a1e5c0340e414b417dddfb44288c6df62f9d48dab4af988aabbd919348293a",
+      "completion_clear_address": 24583,
+      "active": {
+        "System Mode": "PAL",
+        "Turbo Control": "Manual",
+        "CPU Speed": "64"
+      }
+    },
+    {
+      "sha256": "40fe690953c245c8093c7cd5e5cb91684df7290602d8afa44dbd2e0b5b30d09e",
+      "completion_clear_address": 24580,
+      "active": {
+        "System Mode": "PAL",
+        "Turbo Control": "Manual",
+        "CPU Speed": "64"
+      }
+    },
+    {
+      "sha256": "40fe690953c245c8093c7cd5e5cb91684df7290602d8afa44dbd2e0b5b30d09e",
+      "completion_clear_address": 24580,
+      "active": {
+        "System Mode": "PAL",
+        "Turbo Control": "Manual",
+        "CPU Speed": "64"
+      }
+    }
+  ],
+  "recovery_delta": [
+    {
+      "utc": "2026-10-15T22:40:44.547967+00:00",
+      "event": "delta_scan_complete",
+      "scope_bytes": 4194304,
+      "compared_chunks": 256,
+      "changed_chunks": 1,
+      "restoration_bytes": 16384,
+      "unchanged_chunks": 255
+    },
+    {
+      "utc": "2026-10-15T22:40:50.656515+00:00",
+      "event": "delta_write_complete",
+      "scope_bytes": 4194304,
+      "changed_chunks": 1,
+      "independent_full_readback_required": true
+    }
+  ],
+  "limitations": [
+    "Empirical finite profiles, not a universal alarm latency bound.",
+    "No production sampling-skipping policy is authorized by this calibration.",
+    "No DOS boot/game/video or4MHz8088speed acceptance.",
+    "First4MiB fully compared; upper12MiB not independently read back.",
+    "VIC captured in text configuration; productionbitmap timing is a separate profile."
+  ],
+  "proof_files": {
+    "agentworking/runs/c64u-cia1-calibration-20261015-153144/result.json": "e28e8f07ebf2e8f6a7caf7fc0254f17be0f01970fcd6a4ef9e081ead3eb1b9d4",
+    "agentworking/runs/c64u-cia1-calibration-20261015-153144/calibration-application.json": "126ff9b93ccaab97a08dbea2812623b3342d1ed33124e661fc4f81c6129b88a4",
+    "agentworking/runs/c64u-cia1-calibration-20261015-153144/fixture-original-64k.bin": "cfd840a1693215bc81d8ed047f493a0a4056e5c08d80490a52e9dfae5d5924b1",
+    "agentworking/runs/c64u-cia1-calibration-20261015-153144/calibration-reu-pattern.json": "53d24c6e2ed496a261fc4b5ac7299f02d1a9fdd6ad9751b339c9a26978456e56",
+    "agentworking/scratch/cia1-calibration-root-20261015-153144/root-guard.json": "25e21f985b42e618d5f0ea64e0c667cb30ec7f2e136c57fca3f4182f29287a2f",
+    "agentworking/scratch/cia1-calibration-root-20261015-153144/root-completed-run-audit.json": "b1192fac0ab0f3a67576f5e68ae15818af5a2dab3759de6018ccaf9ce3ba9dad",
+    "agentworking/scratch/cia1-calibration-root-20261015-153144/post-ftp.json": "b90d59dcf81225c58ff3a5f2f878496c7ff667878a62f1b9f500fe7db111d2da"
+  }
+}

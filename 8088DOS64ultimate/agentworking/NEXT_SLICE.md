@@ -38,3 +38,6 @@ Parallelmaterialbranches: standaloneCIA1alarmphysicalcalibration(noUCI/DOS) andg
 
 
 Third hardware game attempt150139 failed before command upload: initial interface ID check rejects, importINPUT1/filesTRANSPORT2/UCIID2. Actual ID byte is missing and UCF1 unpublished, so causal reason remains unresolved; no new handle established. Full configured resident/shadow match. Complete first4MiB restorationac43/attempt1/settingsmediareset,1194live/818historical exact, threecompletepostFTP inputs exact. No DOS/video/performance acceptance. [Evidence](evidence/c64u-gwbasic-id-failure-20261015.json). Main thread prioritizes functional startup and performance; website work remains delegated.
+
+
+Physical CIA1 calibration atPALManual64 completed:64rawtick margin missed23readyboundaries, while256/1024 hadzero acrossplain/actualREUDMA/forcedfallback profiles. FullCIA2/exactPITsampling remainedauthoritative. Immutablecode/all3584shadow/vectors/nineexactrawrationalrecords passed beforehelper; owned4KiBpattern/neighbors passed. All4194304REUbytes restoredac43/attempt1/settingsmediareset/822frozeninputs/twofullpostFTPPRGs exact. Finite empiricalmargin guidance only, no universalS/sample-skipping/XTacceptance. [Evidence](evidence/c64u-cia1-calibration-20261015.json).

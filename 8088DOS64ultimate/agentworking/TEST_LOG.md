@@ -463,3 +463,6 @@ Performance assessment exact7input hashes/rootmath checked:1348cycle fixedrawNOP
 
 
 2026-10-15 third physical GW-BASIC attempt150139: Terminal1413 exit1,2.388992458s application failure e1040100. Root audited1194frozenlive+818historical SHA/lengths and4194304before/afterbytes; all exact. Settings/media/reset verified; Terminal1414 exit0/full3FTP inputs match. Offline decode_uci_trace.py on original64KiB capture reports not-published. Current state UCIID2 beforeupload, actualIDbyte unavailable. See evidence/c64u-gwbasic-id-failure-20261015.json; no game/video/XT success.
+
+
+2026-10-15 standaloneCIA1 physicalpilot: Terminal1415 freshFTPstagepass;1416rootguard25e21f98/822inputs,exit0;1417bothpostFTPPRGspass. 60sapplication/10sfailurecapture/600srecoveryboundsunchanged.9profiles*8PITedges withrawelapsed~432940ticks;64margin23misses,256/1024zero. Allfirst4MiBbefore/afterac43exact,settings/media/reset/identityguards pass. See evidence/c64u-cia1-calibration-20261015.json. Firstguardconstructionfailedbeforelaunchonabsolute reviewerpath; retainedfixusesmanifestkeysdirectly.
