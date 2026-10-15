@@ -293,3 +293,8 @@ Single prior98fc comparable run had118.151354sfinal/138.699888sapp; timing andgu
 Thirteen exact additive files,38dependencies andminimalIEC-preservingMake/Zigregistration. Root12actualPeddle tests/39scenarios+5packagechecks pass; independent6tests/8extra scenarios pass. NativeCREATE_NEW|WRITE6 writes720sectors, closes/reopens, compares everybyte toauthoritativeREU, checksEOF/finalknownCLOSE. Full4MiBsource/otherguards preserved; lostWRITEreply remainsuncertain; existingfile untouched. Disabled3817PRG556e61c4 cannotissueI/Othroughitsloopentry. Code1265/state164 do notfit1223shadowtail. [Evidence](evidence/floppy-native-export-20261015.json),[contract](../docs/FLOPPY_EXPORT_PROTOTYPE.md).
 
 Realnativeclock/FILEownership/pausedmodalSAVER/cacheborrowing/UI andphysicalsave remainprivatework. Existingnative22f/8a PRGs unchanged; no partialintegrationclaimed.
+
+
+## Genuine DOS CGA probe promoted
+
+Six additive probe/oracle/test/documentation files and three opt-in Zig registration statements are promoted. Root286tooling checks pass; exact22f/8a pair and177 actual-native/testsource identities retain the genuine DOS-loaded127byte COM run through modes4/5/6 and returnedA>. Independent full pixel checks and repaired BDA page/offset/palette rejection pass8tests/23captureadversaries/30additionalcontrols. No native runtime/layout change or physical graphics acceptance. [Evidence](evidence/genuine-cga-workflow-20261015.json).

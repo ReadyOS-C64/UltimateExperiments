@@ -204,3 +204,5 @@ Do not freeze a proposed expanded assertion count as a passed audit before that 
 ## 2026-10-15 — file success needs reopened content
 
 A successful firmware WRITE can hide a short transfer, and CLOSE can discard underlying errors. Keep REU authoritative until complete native reopen/readback/EOF/knownclosure succeeds. Lost replies remain uncertain even when a model independently sees committed bytes. A source-complete engine with caller ownership attestations is a prototype until actual runtime leases, clock and UI enforce those conditions.
+
+- A reusable capture oracle must reject inconsistent BDA page size, page offset and mode-dependent palette before indexing, even if the original execution test independently checked those fields. Preserve genuine raw capture proofs and regression-test corruption of both bytes.

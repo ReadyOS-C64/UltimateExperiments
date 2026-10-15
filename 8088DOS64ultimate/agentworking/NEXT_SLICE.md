@@ -10,3 +10,5 @@ Current combined runtime22f82091/unit8a84329c is root-promoted:421default/597qui
 6. Standalonefloppyexport/reopen ispromoted/root12Peddle39scenarios+5host; integrate realclock/leases/pausedmodalSAVER/cacheborrow andphysicalsave, thenfloppyB,durableHDrecovery andremainingapplicableDOSutilities. Measure physicalCPU/REU/display/timer workloadcost andhonestXT ratios.
 
 Keep up to three useful subagents on independent work; reuse only close continuations. Context/scratch stays in this project. Commit verified slices locally; never push. Avoid repeating slow unchanged gates; retain exact source/executable identity for reused proofs. Hardware remains root/Terminal-owned.
+
+Current user priority: actual40/80 DIR screenshots with guestDOS-buffer rendering beside actualC64bitmap. VER/TYPE captures pass on22f/8a, but both native-file restoration attempts failed; originalac43 backup is retained and separately reviewed PUT/DRS1 delta disaster recovery is underway. Preserve failed runs; do not start another application before complete restoration. Genuine CGA host probe is now promoted/root286tooling; privateVIDCAP/physicalobserver requires further review.

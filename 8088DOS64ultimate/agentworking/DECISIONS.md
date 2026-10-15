@@ -151,3 +151,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 | D99 | Implemented/prototype verified, 2026-10-15 | Native whole-floppy create-new/write/CLOSE/reopen/allbyteverify/EOF/CLOSE pipeline as opt-in standalone fixture | Root12Peddle/39scenarios/5host; independent6/8additional; all4MiBauthority/guards, lostreplyuncertainty, noexistingoverwrite; normal22f/8a unchanged; realclock/leases/modal/UI/physicalintegrationpending |
+
+
+| D100 | Implemented/model verified,2026-10-15 | Genuine DOS loads a small CGA4/5/6 COM fixture; independent reusable pixel oracle validates BDA geometry/palette | Six additive files/opt-in Zig, root286tooling; exact22f/8a+177source nativeproof,8focused/23capture/30additionalcontrols; no physical graphics acceptance |
