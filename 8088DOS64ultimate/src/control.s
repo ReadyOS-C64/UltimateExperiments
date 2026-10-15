@@ -4,7 +4,7 @@
 .import cpu_fetch8, cpu_relative, cpu_complete, cpu_memory_error
 .import dos64_cpu_word_read, dos64_stack_push, dos64_stack_pop
 .importzp dos64_segment, dos64_offset
-.export dos64_control_execute
+.export dos64_control_execute, dos64_interrupt_enter
 
 .segment "BSS"
 control_truth: .res 1
@@ -30,16 +30,16 @@ dos64_control_execute:
     and #8
     jeq cpu_complete
     lda #4
-    bne @enter
+    bne dos64_interrupt_enter
 @vector:
     cmp #$CC
     bne @immediate
     lda #3
-    bne @enter
+    bne dos64_interrupt_enter
 @immediate:
     jsr cpu_fetch8
     jcs cpu_memory_error
-@enter:
+dos64_interrupt_enter:
     sta control_vector
     lda #0
     sta control_vector+1

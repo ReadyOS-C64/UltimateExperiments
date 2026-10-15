@@ -1,0 +1,854 @@
+{
+  "schema": 1,
+  "milestone": "genuine IO.SYS kernel entry; complete DOS boot remains separate",
+  "kernel_handoff": true,
+  "kernel_bytes_verified": true,
+  "command_prompt_accepted": false,
+  "stop_reason": "unsupported guest instruction",
+  "artifacts": {
+    "source_sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+    "oracle_sha256": "6b99967e3861777a1e6a07fb6dc6c49d110fa534cf3bcbf25f006141fb15f3ca",
+    "linked_prg_sha256": "c035afe39e8c25239a7b17664b36c9688186e29b6adbef6ff01d3f3a2c01e6ab",
+    "linked_labels_sha256": "dfbe81572245f66537dde626365663ba0c9fdb1a7c7d0f9633a21f1350424c5f"
+  },
+  "missing_bios_vector": null,
+  "cpu_status": 2,
+  "cpu_opcode": 230,
+  "register_order": [
+    "ax",
+    "cx",
+    "dx",
+    "bx",
+    "sp",
+    "bp",
+    "si",
+    "di",
+    "es",
+    "cs",
+    "ss",
+    "ds",
+    "ip",
+    "flags"
+  ],
+  "state": {
+    "registers": [
+      34336,
+      64770,
+      0,
+      12,
+      1788,
+      31714,
+      65535,
+      21009,
+      65535,
+      112,
+      0,
+      0,
+      11259,
+      62023
+    ],
+    "guest_instructions": 2335
+  },
+  "instruction_bytes_hex": "e620be3602e83307",
+  "previous_state": {
+    "registers": [
+      34336,
+      64770,
+      0,
+      12,
+      1788,
+      31714,
+      65535,
+      21009,
+      65535,
+      112,
+      0,
+      0,
+      11259,
+      62023
+    ],
+    "guest_instructions": 2335
+  },
+  "previous_bytes_hex": "e620be3602e83307",
+  "instruction_bytes_coherent": true,
+  "native_cycles": 26653642,
+  "setup_native_cycles": 20835502,
+  "native_calls": 2388,
+  "maximum_call_cycles": 1882098,
+  "handoff_guest_instructions": 392,
+  "handoff_native_cycles": 12019126,
+  "handoff_read_count": 7,
+  "bios_reads": [
+    {
+      "lba": 5,
+      "count": 1,
+      "destination": 1280
+    },
+    {
+      "lba": 12,
+      "count": 6,
+      "destination": 1792
+    },
+    {
+      "lba": 18,
+      "count": 9,
+      "destination": 4864
+    },
+    {
+      "lba": 27,
+      "count": 9,
+      "destination": 9472
+    },
+    {
+      "lba": 36,
+      "count": 9,
+      "destination": 14080
+    },
+    {
+      "lba": 45,
+      "count": 9,
+      "destination": 18688
+    },
+    {
+      "lba": 54,
+      "count": 9,
+      "destination": 23296
+    },
+    {
+      "lba": 1,
+      "count": 2,
+      "destination": 32768
+    },
+    {
+      "lba": 14,
+      "count": 2,
+      "destination": 2321
+    },
+    {
+      "lba": 16,
+      "count": 2,
+      "destination": 3345
+    },
+    {
+      "lba": 18,
+      "count": 2,
+      "destination": 4369
+    },
+    {
+      "lba": 20,
+      "count": 2,
+      "destination": 5393
+    },
+    {
+      "lba": 22,
+      "count": 2,
+      "destination": 6417
+    },
+    {
+      "lba": 24,
+      "count": 2,
+      "destination": 7441
+    },
+    {
+      "lba": 26,
+      "count": 1,
+      "destination": 8465
+    },
+    {
+      "lba": 27,
+      "count": 1,
+      "destination": 8977
+    },
+    {
+      "lba": 28,
+      "count": 2,
+      "destination": 9489
+    },
+    {
+      "lba": 30,
+      "count": 2,
+      "destination": 10513
+    },
+    {
+      "lba": 32,
+      "count": 2,
+      "destination": 11537
+    },
+    {
+      "lba": 34,
+      "count": 2,
+      "destination": 12561
+    },
+    {
+      "lba": 36,
+      "count": 2,
+      "destination": 13585
+    },
+    {
+      "lba": 38,
+      "count": 2,
+      "destination": 14609
+    },
+    {
+      "lba": 40,
+      "count": 2,
+      "destination": 15633
+    },
+    {
+      "lba": 42,
+      "count": 2,
+      "destination": 16657
+    },
+    {
+      "lba": 44,
+      "count": 1,
+      "destination": 17681
+    },
+    {
+      "lba": 45,
+      "count": 1,
+      "destination": 18193
+    },
+    {
+      "lba": 46,
+      "count": 2,
+      "destination": 18705
+    },
+    {
+      "lba": 48,
+      "count": 2,
+      "destination": 19729
+    },
+    {
+      "lba": 50,
+      "count": 2,
+      "destination": 20753
+    },
+    {
+      "lba": 52,
+      "count": 2,
+      "destination": 21777
+    },
+    {
+      "lba": 54,
+      "count": 2,
+      "destination": 22801
+    }
+  ],
+  "last_trace": [
+    {
+      "registers": [
+        0,
+        64772,
+        0,
+        12,
+        31714,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11179,
+        62022
+      ],
+      "guest_instructions": 2304
+    },
+    {
+      "registers": [
+        0,
+        64772,
+        0,
+        12,
+        31714,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11181,
+        62022
+      ],
+      "guest_instructions": 2305
+    },
+    {
+      "registers": [
+        1,
+        64772,
+        0,
+        12,
+        31714,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11182,
+        61954
+      ],
+      "guest_instructions": 2306
+    },
+    {
+      "registers": [
+        1,
+        64772,
+        0,
+        12,
+        31714,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11187,
+        61954
+      ],
+      "guest_instructions": 2307
+    },
+    {
+      "registers": [
+        2,
+        64772,
+        0,
+        12,
+        31714,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11188,
+        61954
+      ],
+      "guest_instructions": 2308
+    },
+    {
+      "registers": [
+        2,
+        64770,
+        0,
+        12,
+        31714,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11190,
+        61954
+      ],
+      "guest_instructions": 2309
+    },
+    {
+      "registers": [
+        2,
+        64770,
+        0,
+        12,
+        31714,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11193,
+        62022
+      ],
+      "guest_instructions": 2310
+    },
+    {
+      "registers": [
+        2,
+        64770,
+        0,
+        12,
+        31714,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11195,
+        62022
+      ],
+      "guest_instructions": 2311
+    },
+    {
+      "registers": [
+        0,
+        64770,
+        0,
+        12,
+        31714,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11197,
+        62022
+      ],
+      "guest_instructions": 2312
+    },
+    {
+      "registers": [
+        0,
+        64770,
+        0,
+        12,
+        31714,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11199,
+        62022
+      ],
+      "guest_instructions": 2313
+    },
+    {
+      "registers": [
+        0,
+        64770,
+        0,
+        12,
+        31714,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11200,
+        61510
+      ],
+      "guest_instructions": 2314
+    },
+    {
+      "registers": [
+        0,
+        64770,
+        0,
+        12,
+        31714,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11202,
+        61510
+      ],
+      "guest_instructions": 2315
+    },
+    {
+      "registers": [
+        0,
+        64770,
+        0,
+        12,
+        1792,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11205,
+        61510
+      ],
+      "guest_instructions": 2316
+    },
+    {
+      "registers": [
+        0,
+        64770,
+        0,
+        12,
+        1792,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11206,
+        62022
+      ],
+      "guest_instructions": 2317
+    },
+    {
+      "registers": [
+        0,
+        64770,
+        0,
+        12,
+        1790,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11207,
+        62022
+      ],
+      "guest_instructions": 2318
+    },
+    {
+      "registers": [
+        0,
+        64770,
+        0,
+        12,
+        1790,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11212,
+        62022
+      ],
+      "guest_instructions": 2319
+    },
+    {
+      "registers": [
+        64768,
+        64770,
+        0,
+        12,
+        1790,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11214,
+        62022
+      ],
+      "guest_instructions": 2320
+    },
+    {
+      "registers": [
+        64768,
+        64770,
+        0,
+        12,
+        1788,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11215,
+        62022
+      ],
+      "guest_instructions": 2321
+    },
+    {
+      "registers": [
+        49152,
+        64770,
+        0,
+        12,
+        1788,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11217,
+        62022
+      ],
+      "guest_instructions": 2322
+    },
+    {
+      "registers": [
+        49152,
+        64770,
+        0,
+        12,
+        1782,
+        31714,
+        34,
+        21009,
+        112,
+        61440,
+        0,
+        0,
+        320,
+        61510
+      ],
+      "guest_instructions": 2323
+    },
+    {
+      "registers": [
+        49152,
+        64770,
+        0,
+        12,
+        1780,
+        31714,
+        34,
+        21009,
+        112,
+        61440,
+        0,
+        0,
+        321,
+        61510
+      ],
+      "guest_instructions": 2324
+    },
+    {
+      "registers": [
+        49152,
+        64770,
+        0,
+        12,
+        1780,
+        1780,
+        34,
+        21009,
+        112,
+        61440,
+        0,
+        0,
+        323,
+        61510
+      ],
+      "guest_instructions": 2325
+    },
+    {
+      "registers": [
+        49152,
+        64770,
+        0,
+        12,
+        1780,
+        1780,
+        34,
+        21009,
+        112,
+        61440,
+        0,
+        0,
+        327,
+        61574
+      ],
+      "guest_instructions": 2326
+    },
+    {
+      "registers": [
+        34304,
+        64770,
+        0,
+        12,
+        1780,
+        1780,
+        34,
+        21009,
+        112,
+        61440,
+        0,
+        0,
+        329,
+        61574
+      ],
+      "guest_instructions": 2327
+    },
+    {
+      "registers": [
+        34304,
+        64770,
+        0,
+        12,
+        1782,
+        31714,
+        34,
+        21009,
+        112,
+        61440,
+        0,
+        0,
+        330,
+        61574
+      ],
+      "guest_instructions": 2328
+    },
+    {
+      "registers": [
+        34304,
+        64770,
+        0,
+        12,
+        1788,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11219,
+        62023
+      ],
+      "guest_instructions": 2329
+    },
+    {
+      "registers": [
+        34304,
+        64770,
+        0,
+        12,
+        1788,
+        31714,
+        34,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11244,
+        62023
+      ],
+      "guest_instructions": 2330
+    },
+    {
+      "registers": [
+        34304,
+        64770,
+        0,
+        12,
+        1788,
+        31714,
+        65535,
+        21009,
+        112,
+        112,
+        0,
+        0,
+        11247,
+        62023
+      ],
+      "guest_instructions": 2331
+    },
+    {
+      "registers": [
+        34304,
+        64770,
+        0,
+        12,
+        1788,
+        31714,
+        65535,
+        21009,
+        65535,
+        112,
+        0,
+        0,
+        11249,
+        62023
+      ],
+      "guest_instructions": 2332
+    },
+    {
+      "registers": [
+        34558,
+        64770,
+        0,
+        12,
+        1788,
+        31714,
+        65535,
+        21009,
+        65535,
+        112,
+        0,
+        0,
+        11253,
+        62023
+      ],
+      "guest_instructions": 2333
+    },
+    {
+      "registers": [
+        34558,
+        64770,
+        0,
+        12,
+        1788,
+        31714,
+        65535,
+        21009,
+        65535,
+        112,
+        0,
+        0,
+        11257,
+        62023
+      ],
+      "guest_instructions": 2334
+    },
+    {
+      "registers": [
+        34336,
+        64770,
+        0,
+        12,
+        1788,
+        31714,
+        65535,
+        21009,
+        65535,
+        112,
+        0,
+        0,
+        11259,
+        62023
+      ],
+      "guest_instructions": 2335
+    }
+  ],
+  "limits": {
+    "per_call_native_cycles": 5000000,
+    "aggregate_native_cycles": 200000000,
+    "completed_guest_instructions": 20000,
+    "native_calls": 50000
+  }
+}

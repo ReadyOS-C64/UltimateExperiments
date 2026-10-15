@@ -2,8 +2,10 @@
 .ifndef DOS64_PROBE
 .ifndef DOS64_SNAPSHOT
 .ifndef DOS64_CACHE_PROBE
+.ifndef DOS64_RANGE_PROBE
 DOS64_CORE_BOOT = 1
 .import dos64_cpu_init
+.endif
 .endif
 .endif
 .endif
@@ -21,6 +23,9 @@ DOS64_CORE_BOOT = 1
 .endif
 .ifdef DOS64_CACHE_PROBE
 .import dos64_cache_probe
+.endif
+.ifdef DOS64_RANGE_PROBE
+.import dos64_range_probe
 .endif
 .export dos64_entry, dos64_idle
 
@@ -71,6 +76,9 @@ dos64_entry:
 .endif
 .ifdef DOS64_CACHE_PROBE
     jsr dos64_cache_probe
+.endif
+.ifdef DOS64_RANGE_PROBE
+    jsr dos64_range_probe
 .endif
 .ifdef DOS64_SNAPSHOT
 .ifdef DOS64_RESTORE

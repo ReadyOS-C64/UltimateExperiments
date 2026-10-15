@@ -1,6 +1,6 @@
 # Original-8088 execution checkpoint
 
-Updated 2026-10-15 in `src/cpu.s`, `src/alu.s`, `src/operands.s`, `src/stack.s`, `src/strings.s`, `src/shifts.s` and `src/control.s`. This is a functional execution checkpoint, not a complete 8088 or DOS boot. Target code is independently authored 6502 assembly and executes guest bytes through the coherent memory bus.
+Updated 2026-10-15 in `src/cpu.s`, `src/alu.s`, `src/operands.s`, `src/stack.s`, `src/strings.s`, `src/shifts.s`, `src/control.s`, `src/math.s` and `src/indirect.s`. This is a functional execution checkpoint, not a complete 8088 or complete DOS boot. Target code is independently authored 6502 assembly and executes guest bytes through the coherent memory bus.
 
 ## Current interface and instructions
 
@@ -21,6 +21,10 @@ Updated 2026-10-15 in `src/cpu.s`, `src/alu.s`, `src/operands.s`, `src/stack.s`,
 | 90–97 | AX/register XCHG, including NOP |
 | A0–A3 | Accumulator/moffs loads and stores, byte/word, DS or segment override |
 | E9, EA, EB | Near-relative, far-absolute and short-relative jumps |
+| 86/87, 8F /0, 98/99, A8/A9 | General XCHG, POP r/m16, CBW/CWD and accumulator TEST |
+| FE /0–1, FF /0–7 | Byte/word INC/DEC; word indirect near/far CALL/JMP and PUSH, including /7 PUSH alias; far register forms excluded |
+| F6/F7 | TEST (/0 and /1 alias), NOT, NEG, MUL, IMUL, DIV and IDIV |
+| E6 at owned ROM entries | Private BIOS callbacks for disk/bootstrap; arbitrary port OUT remains unsupported |
 | F4 | Halt latch; subsequent steps wait without advancing IP/count |
 | F5, F8–FD | CMC, CLC, STC, CLI, STI, CLD, STD guest flags |
 | 26, 2E, 36, 3E, F0, F2, F3 | Recognized prefixes; last segment override wins, REP executes on strings, LOCK retained without bus-lock timing |
@@ -45,13 +49,13 @@ The independent assembly ALU eagerly computes CF/PF/AF/ZF/SF/OF for arithmetic a
 
 ModR/M decoding covers all 16-bit addressing forms, signed displacement bytes, wrapping displacement words, default SS for BP forms and DS for the direct displacement form, and the last segment override. The descriptor retains segment/offset values rather than an evictable host pointer; immediate fetching cannot invalidate its destination. LES/LDS read both words before committing registers. LEA/LES/LDS register forms remain explicit unsupported diagnostics pending an audited undocumented-behavior policy. Segment-register fields use the original two-bit alias selection. C6/C7 ignore their reg extension, as exercised by hardware rows for every extension.
 
-Stack helpers wrap SP and each byte's offset. PUSH SP stores the decremented SP; POP SP finishes with the popped word. POPF normalizes FLAGS with `(value & 0x0FD5) | 0xF002`; PUSHF/SAHF/LAHF retain original reserved-bit policy. Evidence: pinned [MartyPC stack implementation](https://github.com/dbalsom/martypc/blob/05c0d088e84ad6bbfac9b3f0d051e7eadefd9f44/crates/lib/marty_core/src/cpu_808x/stack.rs) and imported original-hardware vectors. No source was copied. Trap delivery is not implemented even when TF is set. Opcode 0F POP CS, 8F POP r/m and indirect FF call/push forms remain unfinished.
+Stack helpers wrap SP and each byte's offset. PUSH SP stores the decremented SP; POP SP finishes with the popped word. POPF normalizes FLAGS with `(value & 0x0FD5) | 0xF002`; PUSHF/SAHF/LAHF retain original reserved-bit policy. Evidence: pinned [MartyPC stack implementation](https://github.com/dbalsom/martypc/blob/05c0d088e84ad6bbfac9b3f0d051e7eadefd9f44/crates/lib/marty_core/src/cpu_808x/stack.rs) and imported original-hardware vectors. No source was copied. Trap delivery is not implemented even when TF is set. Opcode 0F POP CS remains unfinished. POP r/m16 and word FF near/far control/PUSH forms are implemented; undefined far register pointers and unaudited FE control/stack forms remain explicit unsupported diagnostics.
 
 A failed push can leave SP decremented and a low byte written. Pop advances only after a complete word succeeds; a far return can consume its first word before a later read fails. ALU flags may commit before a destination write fails. These are terminal host-memory diagnostics, not retryable guest exceptions.
 
 ## Independent verification
 
-`make test` passes **95 Zig/Peddle + 15 tooling tests**, including **502 hardware cases**; `make test-cpu-corpus` passes all **2,278 hardware cases**. The full command took 15.82 seconds including build checks (test executable 13 seconds). These are host test times, not guest emulation rates.
+The final quick gate passes **150 Zig/Peddle + 45 tooling tests**. The final broader CPU gate passes **150 Zig/Peddle tests including all 2,555 hardware cases**, in 23.70 host seconds, including the newly added math and indirect forms. [Retained baseline evidence](../agentworking/evidence/storage-bootstrap-20261015.json) pins tools, source and artifacts. The math/indirect checkpoint itself passed 114 Zig tests and 15 tooling tests in 8.00 seconds quick, then 114 Zig tests with the full corpus in 17.73 seconds. Later storage/BIOS tests extend that baseline; host command durations are not guest emulation rates.
 
 The pinned [SingleStepTests 8088](https://github.com/SingleStepTests/8088/tree/aea84484abc79d09639d855b7b0ab32bc9e4dbeb) projection and exact selection are recorded in [upstream hashes](../third_party/sst8088/UPSTREAM.json). The MIT license is retained. Import script: `build_support/fetch_8088_subset.py`; network is only needed for explicit import, not routine tests. The manifest checks fixture and license identity.
 
@@ -71,8 +75,14 @@ Software INT reads both IVT words at segment 0 before pushing normalized FLAGS, 
 
 Tests exercise normal guest handlers editing saved return flags, IVT overwritten by the interrupt stack, stack/address wrap, the last IVT entry, conditional INTO, and IVT-load failure. Hardware vectors compare complete functional registers/RAM, not interrupt-controller behavior.
 
+## Math and indirect control
+
+F6/F7 executes byte/word TEST (including /1 alias), NOT, NEG, unsigned/signed multiplication and division in actual assembly. Multiplication is bounded by 8/16 shifts and restoring division by 8/16 steps. Independent integer oracles cover edge values, seeded inputs, both widths and F2/F3 cases. CF/OF report multiplication overflow; undefined flags are compared only under the pinned metadata masks. Divide faults use ordinary guest vector 0 and stack routing, preserving original post-instruction return IP rather than later-CPU fault restart semantics. The original signed minimum quotient magnitude 80h/8000h faults; signed REP division negates the quotient. Pinned hardware rows cover zero divisor, minimum signed quotient and successful/error REP IDIV. The selected MUL/IMUL/unsigned DIV sources have no REP prefixes: those additional cases are independent/source-derived evidence, not hardware-corpus coverage. No reference implementation code was copied.
+
+General XCHG writes the decoded memory destination before replacing a base register. POP r/m16 retains its decoded destination across stack access and eviction. FF CALL/JMP captures target words before overlapping pushes; far memory pointers wrap their 16-bit offset. PUSH SP uses its decremented value, including the /7 alias. Independent tests cover aliases, all register widths, stack overlap, wrap, flags and unsupported forms.
+
 ## What remains
 
-Sign extension (CBW/CWD), multiply/divide, additional ALU/indirect control forms, port I/O, hardware interrupt/trap handling and further original-CPU corners remain unfinished. Synthetic BIOS/ROM initialization, real DOS kernel boot, native display/keyboard, storage/UCI/IEC, calibrated speed and optimized fetch remain ahead. Startup initializes state and waits; it does not automatically execute a DOS image.
+Port I/O and PC devices beyond private BIOS entry gates, BCD adjust/AAM/AAD/XLAT, original POP CS, hardware interrupt/trap handling, halt wake-up and further original-CPU corners remain unfinished. Native display/keyboard, Ultimate/IEC file loading and persistence, complete DOS boot, calibrated speed and optimized fetch remain ahead. `src/fetch.s` and its tests are future work and are not linked into this baseline; no fetch optimization result is claimed. Startup initializes state and waits; it does not automatically execute a DOS image.
 
-The unchanged disk-1 sector now reaches its disk-reset INT 13h request at 0000:7C6E. A deliberately supplied ordinary guest IRET stub verifies routing and returns to 7C70; JC and MOV AL then execute before unsupported CBW 98 at 0000:7C75. The fixture has a zero disk-parameter vector and does not supply BIOS disk services. It proves CPU progression and interrupt routing, not a BIOS/DOS boot or a successful disk operation.
+The [synthetic BIOS](BIOS_IMPLEMENTATION.md) and [disk primitive](DISK_IMPLEMENTATION.md) now execute reset at FFFF:0000, load the original sector at 0000:7C00 and let that sector load IO.SYS into 0070:0000. The full 22,398-byte file and 51 raw sectors, including padding and bootloader overread, match the unchanged floppy. This takes 392 completed guest instructions and 12,019,126 native CPU step cycles, excluding setup. The continuation reaches unsupported `E6 20` (`OUT 20h,AL`) at 0070:2BFB after 2,335 instructions. This is a real kernel handoff and useful next-failure trace; the COMMAND.COM prompt remains unaccepted.

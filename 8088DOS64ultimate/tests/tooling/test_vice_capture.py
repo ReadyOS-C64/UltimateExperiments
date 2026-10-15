@@ -71,3 +71,45 @@ class ViceCapture(unittest.TestCase):
         self.assertEqual(verify_capture(self.run,self.project,"cache")["restored_bytes"],1536)
         with self.assertRaisesRegex(ValueError,"successful"):
             verify_capture(self.run,self.project,"reu")
+
+
+    def range_fixture(self):
+        self.manifest["plan_id"] = "dos64_range_integrity"
+        self.write_manifest()
+        (self.project/"build/dos64-range-probe.prg").write_bytes(
+            (self.project/"build/dos64-reu-probe.prg").read_bytes())
+        # Inverse permutations, independently constructed per page.
+        data = bytearray(1536)
+        for page in range(6):
+            for value in range(256):
+                data[page*256+(value ^ page ^ 0xa7)] = value
+            data[page*256] ^= 0x5a
+        (self.run/"stages/dump/restored_data.bin").write_bytes(data)
+
+    def test_range_capture_includes_dirty_cache_edits(self):
+        self.range_fixture()
+        result = verify_capture(self.run, self.project, "range")
+        self.assertEqual(result["restored_bytes"], 1536)
+        self.assertIn("256th byte XOR 5A", result["pattern"])
+
+    def test_range_success_mailbox_cannot_hide_stale_dirty_byte(self):
+        self.range_fixture()
+        path = self.run/"stages/dump/restored_data.bin"
+        data = bytearray(path.read_bytes())
+        data[1280] ^= 0x5a
+        path.write_bytes(data)
+        with self.assertRaisesRegex(ValueError, "first=1280"):
+            verify_capture(self.run, self.project, "range")
+
+    def test_range_capture_requires_its_own_executable(self):
+        self.range_fixture()
+        (self.project/"build/dos64-range-probe.prg").write_bytes(bytes([1,8,0xea]))
+        with self.assertRaisesRegex(ValueError, "executable"):
+            verify_capture(self.run, self.project, "range")
+
+    def test_range_capture_rejects_truncated_data(self):
+        self.range_fixture()
+        path = self.run/"stages/dump/restored_data.bin"
+        path.write_bytes(path.read_bytes()[:-1])
+        with self.assertRaisesRegex(ValueError, "bytes=1535"):
+            verify_capture(self.run, self.project, "range")

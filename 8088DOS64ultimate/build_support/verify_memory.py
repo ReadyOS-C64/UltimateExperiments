@@ -19,7 +19,7 @@ def verify(map_text, labels_text):
     bounds = {"LOADADDR": (0, 1), "BASIC": (0x0801, 0x080C),
               "CODE": (0x080D, 0x3FFF), "RODATA": (0x080D, 0x3FFF),
               "TESTCODE": (0x080D, 0x3FFF), "ZEROPAGE": (0x20, 0xDF),
-              "BSS": (0xE000, 0xE0FF), "PAGEMAP": (0xE100, 0xE8FF),
+              "RANGEBUFFER": (0xC000, 0xC0FF), "BSS": (0xE000, 0xE0FF), "PAGEMAP": (0xE100, 0xE8FF),
               "CACHEMETA": (0xE900, 0xEFFF)}
     segments = []
     for name, first, last, size in re.findall(

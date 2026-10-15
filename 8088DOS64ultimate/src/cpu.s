@@ -8,7 +8,8 @@
 .export cpu_fetch8, cpu_fetch16, cpu_override, cpu_byte_registers
 .export cpu_complete, cpu_memory_error, cpu_unsupported, cpu_return, cpu_rep, cpu_relative
 .import dos64_strings_execute, dos64_string_pending, dos64_shifts_execute, dos64_control_execute
-.import dos64_stack_execute
+.import dos64_stack_execute, dos64_math_execute, dos64_indirect_execute
+.import dos64_bios_port, dos64_bios_host_error
 .import dos64_decode_rm, dos64_operand_read, dos64_operand_write, dos64_map_register
 .import dos64_operand_width, dos64_modrm_reg, dos64_modrm_mod, dos64_operand_offset
 .import dos64_operand_kind, dos64_operand_segment
@@ -133,6 +134,29 @@ cpu_dispatch:
     lda #0
     sta dos64_cpu_pending
     lda dos64_cpu_opcode
+    cmp #$F6
+    bcc @indirect
+    cmp #$F8
+    jcc dos64_math_execute
+@indirect:
+    cmp #$FE
+    jcs dos64_indirect_execute
+    cmp #$86
+    bcc @short_branches
+    cmp #$88
+    jcc dos64_indirect_execute
+    cmp #$8F
+    jeq dos64_indirect_execute
+    cmp #$98
+    bcc @test_accumulator
+    cmp #$9A
+    jcc dos64_indirect_execute
+@test_accumulator:
+    cmp #$A8
+    bcc @short_branches
+    cmp #$AA
+    jcc dos64_indirect_execute
+@short_branches:
     cmp #$60
     bcc @strings
     cmp #$80
@@ -228,6 +252,8 @@ cpu_dispatch:
     cmp #$A4
     jcc cpu_moffs
 @control:
+    cmp #$E6
+    jeq cpu_out_immediate
     cmp #$EA
     jeq cpu_far_jump
     cmp #$E9
@@ -256,6 +282,15 @@ cpu_dispatch:
     lda #1
     sta dos64_cpu_status
     jmp cpu_complete
+
+cpu_out_immediate:
+    jsr cpu_fetch8
+    jcs cpu_memory_error
+    jsr dos64_bios_port
+    jcc cpu_complete
+    lda dos64_bios_host_error
+    jne cpu_memory_error
+    jmp cpu_unsupported
 
 cpu_unsupported:
     lda #2

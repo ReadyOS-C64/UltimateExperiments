@@ -71,3 +71,18 @@
 - INT/IRET must use guest IVT/stack and preserve mutable hooks; capture a reference-derived IVT target before overlapping stack writes. Test a normal guest handler modifying saved flags, not only a native callback.
 - A plain IRET fixture is useful CPU evidence but provides no BIOS disk service. Record real INT 13h entry and the subsequent missing CBW separately from target boot acceptance.
 - Freeze owned files after signaling integration readiness; extra assertions arriving after a global run require explicit revalidation and consistent manifests. Three material subagents were coordinated with parent integration/review in this slice.
+
+
+## 2026-10-15 — math, indirect control and genuine storage bootstrap
+
+- Original-8088 math policy differs from later x86 at signed minimum quotient and divide saved IP. Keep zero-divisor, REP IDIV, minimum-quotient and PUSH SP alias rows pinned; no REP MUL/IMUL/unsigned DIV source rows exist at this corpus pin, so label independent coverage correctly.
+- Capture indirect near/far targets before stack pushes when pointers and stack overlap. XCHG must preserve the original decoded EA while replacing a base register; POP memory must retain its decoded destination across stack reads/eviction.
+- Coherent range import must merge through the guest bus so dirty neighboring bytes survive. Export must read dirty cache authority. Direct REU overwrite followed by cache flush would resurrect stale data.
+- The range bounce added a genuine layout allocation: C000–C0FF. The memory gate caught a missing RANGEBUFFER reservation, forcing the complete host map and resident budget to account for it. The extra resident-code window is now C100–CFFF, 3,840 bytes.
+- Adding a privately compiled, older object to a Makefile's link list did not trigger relinking when prerequisites omitted the Makefile. Fixed link prerequisites; verify maps and final binaries after changing the object set, not only build exit status.
+- A host FAT12 oracle initially counted only the rounded IO.SYS file length (44 sectors); the actual unchanged bootloader reads 51. Preserve and compare the complete raw extent, all padding and overread, rather than changing the guest or relaxing checks.
+- BIOS native callbacks must be physically whitelisted at the owned ROM opcode, not merely a port number or INT vector. Ordinary INT/IRET and PUSHF/CALL FAR chaining prove real guest hooks and saved carry behavior.
+- INT 11h/12h queries read mutable BDA through normal guest code, including dirty resident bytes. INT 15h on the XT returns unsupported AH=86h/CF=1; pretending an AT configuration pointer exists would send this real kernel down the wrong branch.
+- Physical range recovery must cover all three touched envelopes, 5,120 bytes total, not only the previous cache probe's guest 2 KiB. Six descriptors explicitly split bank seams; restore failure can write a prefix, so retry the whole owned snapshot and independently re-read it.
+- Real reset→boot sector→IO.SYS handoff is accepted independently from continuation. The next missing PIC OUT 20h at 0070:2BFB is retained rather than faked. Kernel entry and a passing integration test do not establish a COMMAND.COM prompt or native startup/media loading.
+- Real-assembly profiles establish a costly pre-optimization baseline (warm register/branch about 1,762 cycles/instruction; 20 KiB REP about 1,081 cycles/byte). Report caller/setup/validation/DMA/VIC/physical exclusions. Unlinked optimization files are not evidence of an optimized runtime.

@@ -2,7 +2,9 @@
 
 Updated: 2026-10-15, America/Los_Angeles.
 
-**Phase: implementation active. Current quick checks: 95 Zig/Peddle + 15 tooling; all 2,278 pinned CPU cases have also passed.** User authorized implementing the plan, progressively verifying, and making local commits without pushing. Planning baseline committed as `67b6954`.
+**Phase: implementation active toward the entire real DOS 3.3 emulator.** The final quick checkpoint passes **150 Zig/Peddle + 45 tooling tests**; the final full CPU checkpoint passes all **2,555 pinned hardware cases**. Genuine guest reset and unchanged boot-sector execution reach IO.SYS at **0070:0000**, with all **22,398 file bytes and 51 raw sectors** independently checked. Continuing IO.SYS reaches unsupported PIC **OUT 20h at 0070:2BFB after 2,335 completed instructions**. COMMAND.COM prompt acceptance remains false. Native startup still initializes then idles; actual Ultimate/IEC loading and a native runtime loop are not implemented.
+
+Implementation and verified local commits are authorized; never push. Last accepted checkpoint before this integration is `c7450ff`. The final quick, full-corpus, profile and physical range gates passed. [Baseline evidence](evidence/storage-bootstrap-20261015.json) records source/tool/artifact identity and the actual scope; [kernel trace](evidence/dos-kernel-handoff-20261015.json) and [profile](evidence/cpu-profile-baseline-20261015.json) are retained separately.
 
 ## User decisions to preserve
 
@@ -34,9 +36,9 @@ Updated: 2026-10-15, America/Los_Angeles.
 - DOSBox-X boots a cloned supplied disk 1 with original CONFIG.SYS and an injected evidence AUTOEXEC. Guest VER reports **MS-DOS Version 3.30**; DIR and completion marker were read back from the guest floppy; original SHA-256 matches.
 - Found and fixed clock integration: Peddle's embedding application must increment `clock` after each microcycle. The first runaway test exposed the missing clock advancement; exact LDA/RTS timing now guards it.
 
-## What is not established
+## Limits at the historical M0 checkpoint
 
-The target has an initial instruction subset but no full interpreter, BIOS, UCI/file backend or target DOS boot. Physical C64U timing and XT performance remain unmeasured. The reference DOSBox process was stopped after its guest output files closed; this is not a clean-storage-shutdown test. Original CONFIG diagnostics were not captured as screen text.
+At that checkpoint the target had an initial instruction subset but no full interpreter, BIOS, UCI/file backend or target DOS boot. Physical C64U timing and XT performance remain unmeasured. The reference DOSBox process was stopped after its guest output files closed; this is not a clean-storage-shutdown test. Original CONFIG diagnostics were not captured as screen text.
 
 ## Verified implementation slice: REU primitive
 
@@ -96,3 +98,21 @@ Existing unrelated ReadyFS edits and the large dirty sibling ZeroPage checkout w
 - **95/95 Zig/Peddle + 15/15 tooling pass**; quick 502/full 2,278 hardware cases. Independent assertions include 1,024 branch flag combinations, 64 LOOP cases, 1,748 shift/rotate cases, 8 string tests and 4 interrupt tests. Full command 15.82 seconds. Hardware corpus's longest instruction uses 8 bounded host calls.
 - Unchanged disk sector reaches real INT 13h disk reset; explicit guest IRET fixture returns to 7C70; first missing CPU instruction is CBW 98 at 7C75. No native BIOS/disk service, genuine target DOS boot or throughput claim. Next priority: CBW/CWD and multiply/divide, then BIOS ROM/IVT/BDA and coherent disk range support.
 - Runtime CODE 6,094, RODATA 305, BSS 137, ZP 16; PRG 6,413. Standalone hardware probe images remain unchanged. [Evidence](evidence/cpu-strings-control-20261015.json), [API and remaining limitations](../docs/CPU_IMPLEMENTATION.md).
+
+
+## In progress after c7450ff
+
+Math/sign-extension/indirect execution now passes 114 Zig/Peddle +15 tooling and 2,555 full hardware cases (581quick); not yet committed. Real unchanged sector computes root LBA5/data LBA12 and requests CHS0/0/6 into0000:0500 before fixture stops at7D73. New coherent range copying with reserved C000–C0FF staging is being integrated; disk sector primitive, BIOS bootstrap/ROM gates and host image tools are parallel work. These new storage/BIOS paths are not yet accepted or physically verified. Preserve standalone probe identity and immutable inputs.
+
+## CPU, BIOS and storage baseline — 2026-10-15
+
+- Actual assembly adds CBW/CWD, general XCHG, accumulator TEST, FE INC/DEC, FF indirect CALL/JMP/PUSH including /7 alias, POP r/m16 and F6/F7 TEST/NOT/NEG/MUL/IMUL/DIV/IDIV. Math and indirect checkpoint: 114 Zig + 15 tooling quick; 2,555 full hardware cases. Original signed minimum quotient and REP IDIV/divide-return-IP policies retain pinned evidence and explicit source gaps.
+- Coherent guest/REU ranges use a linker-enforced 256-byte staging buffer at C000–C0FF, <=256-byte chunks and explicit REU bank splits. Every guest byte uses the memory bus. Dirty import neighbors/export authority, PC ROM/hole/CGA policy, wrap, input rejection and partial failures/retry are checked. Additional resident code budget is now C100–CFFF, 3,840 bytes.
+- Disk A defaults unloaded at REU 100000, 720×512 bytes, 40×2×9 geometry. Actual assembly reset/read/write/verify checks all 720 CHS positions, physical DMA boundaries, exact slot end and errors. Writes are volatile REU mutations; Ultimate/IEC persistence and floppy B/HD remain unfinished.
+- Synthetic BIOS populates owned ROM/IVT/BDA through coherent writes. Only exact owned physical OUT opcode entries invoke native bootstrap/disk service; ordinary INT/IRET and mutable hooks remain intact. INT 11h/12h are ordinary guest ROM handlers reading dirty mutable BDA; INT 15h returns original XT AH=86h/CF=1. Wider BIOS/video/input/clock services are absent.
+- Genuine boot integration seeds only the whole immutable floppy image into its owned REU slot. Reset→original sector→IO.SYS requires 392 completed guest instructions and 12,019,126 native step cycles excluding setup. All 51 raw sectors, including the bootloader's overread beyond the 44 rounded IO.SYS sectors, match the independent oracle. Source image and in-REU floppy remain unchanged. No host kernel/application loader or native INT 21h replacement exists. Current continuation stops at PIC OUT 20h, and the complete DOS prompt remains ahead.
+- Native coherent range probe passed VICE run `logs/vice_auto_20261015_011028`: all 1,536 output bytes include dirty edits and match independently; captured executable matches. Previous four hardware PRG identities remain unchanged. New physical range probe passed Manual 64 MHz with independent exact restoration of 5,120 guest/source/destination bytes and prior machine/turbo/drive JSON equality. [Physical evidence](evidence/c64u-range-20261015.json).
+- Final quick integration `build/storage-bootstrap-test.log`: 150 Zig/Peddle + 45 tooling pass, 12.45 seconds. Final full corpus `build/storage-bootstrap-corpus.log`: 150 Zig/Peddle, all 2,555 hardware cases, 23.70 seconds. Runtime map: CODE 9,702, RODATA 673, BSS 211, ZP 16; PRG 10,389 bytes. See [memory ledger](MEMORY_BUDGET.md) for actual boundaries and 45 BSS bytes remaining before E100. Unit helper changes do not change runtime bytes.
+- `build/cpu-profile.json` contains 12 validated real-assembly cold/warm samples. Warm register/branch cost is 1,762.55 native cycles/instruction; 20 KiB REP is 1,081.19 cycles/copied byte, before DMA stalls and physical effects. This pre-optimization baseline does not establish XT speed. Unlinked fetch/PC-port/video work is future work, excluded from accepted functionality/performance.
+
+Next acceptance is the full real DOS prompt followed by applicable command/application tests, 640 KiB RAM, 40/80 text and limited CGA, keyboard, native Ultimate/IEC media and 2 MiB→20 MiB file-backed HD persistence. Kernel entry does not reduce that scope. See [NEXT_SLICE](NEXT_SLICE.md) and the [BIOS](../docs/BIOS_IMPLEMENTATION.md), [disk](../docs/DISK_IMPLEMENTATION.md), [range](../docs/RANGE_IMPLEMENTATION.md) contracts.

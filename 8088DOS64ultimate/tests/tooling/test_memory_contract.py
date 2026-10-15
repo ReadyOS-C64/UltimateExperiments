@@ -23,6 +23,13 @@ class MemoryContract(unittest.TestCase):
         self.assertNotEqual(changed, self.map)
         self.assertFalse(verify(changed, self.labels)["passed"])
 
+    def test_range_staging_cannot_move_into_VIC_bitmap(self):
+        changed = re.sub(r"^(RANGEBUFFER\s+)([0-9A-F]{6})(\s+)([0-9A-F]{6})",
+                         lambda m: f"{m[1]}006000{m[3]}0060FF",
+                         self.map, flags=re.M)
+        self.assertNotEqual(changed, self.map)
+        self.assertFalse(verify(changed, self.labels)["passed"])
+
     def test_changed_entry_point_fails(self):
         changed = self.labels.replace("00080D .dos64_entry", "00080E .dos64_entry")
         self.assertFalse(verify(self.map, changed)["passed"])

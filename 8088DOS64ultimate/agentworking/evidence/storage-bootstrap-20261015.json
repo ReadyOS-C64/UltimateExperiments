@@ -1,0 +1,294 @@
+{
+  "slice": "8088 math/indirect, coherent REU ranges, floppy BIOS and genuine DOS IO.SYS handoff",
+  "date": "2026-10-15",
+  "result": "passed",
+  "commands": [
+    "make test",
+    "make test-cpu-corpus",
+    "make profile-cpu",
+    "make test-range-vice",
+    "Terminal-owned build_support/c64u_range_probe.py run"
+  ],
+  "zig_tests": 150,
+  "tooling_tests": 45,
+  "quick_hardware_cases": 581,
+  "full_hardware_cases": 2555,
+  "quick_wall_seconds": 12.45,
+  "full_wall_seconds": 23.7,
+  "profile_wall_seconds": 3.27,
+  "manifest": {
+    "schema": 1,
+    "tools": {
+      "zig": {
+        "path": "/Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig",
+        "version": "0.16.0",
+        "sha256": "e6cd688d25664983833aae272f501d4bceeae304875b8f1741209d15fd13a4ec"
+      },
+      "ca65": {
+        "path": "/opt/homebrew/Cellar/cc65/2.19/bin/ca65",
+        "version": "ca65 V2.18 - N/A",
+        "sha256": "1a57997819fd98814e4601b5160df589e7a1a24e1888a80fee51ae450d8fd0ea"
+      },
+      "ld65": {
+        "path": "/opt/homebrew/Cellar/cc65/2.19/bin/ld65",
+        "version": "ld65 V2.18 - N/A",
+        "sha256": "36bb196207a6b2c90a4aa991b419d6113885303951b14b60b455f51c777b3339"
+      }
+    },
+    "files": {
+      "Makefile": "70e1561f010122fc92864f5f299791757f1ce24ab4ee2a8fa8f1ff98bb7def3b",
+      "build.zig": "85f7cf2cc6aebd3de072d4334a113bf9920650f26e3ef1d4e6d14982e0640d57",
+      "build_support/c64u_preflight.py": "04d8e2f39bb04a97e97f4cfc5b965bbaa78a84f48c74fc591f924d230c45c651",
+      "build_support/c64u_probe.py": "4067f05248f0a22a5fb254aa7031fda06ae8e011ea69b5b6c660157809e5d614",
+      "build_support/c64u_range_probe.py": "c29d1d3a09af5fda01ed55e24b9db4af295eb04846d9482b46bd957f908a78f2",
+      "build_support/dos_boot_oracle.py": "708919f8fe30d3e14ebf23d7da54ae472fc6421e78e87d42b94c000de48f365d",
+      "build_support/dos_image.py": "2eb2ed0409dd401c803735a95ca4a1e31c7e67f35a51f6bd8d2ababa9962b905",
+      "build_support/fetch_8088_subset.py": "8da062ebf24e42e065fd48eb7b156757e22d66d1f11820815c1018d641002684",
+      "build_support/manifest.py": "33d13438c3261b804755980e8034badfd0a6ad5a3859aac78fcde25e200d8236",
+      "build_support/raw_payload.py": "f10ed30c1096a4789ac77135186a97847f68a6eb515f21fb005bd3c400e2b4f3",
+      "build_support/reference_boot.py": "adeb5344f93c721b15e892a0a56fddc93806dcb5dcfda85e3fcca5281f455c8c",
+      "build_support/verify_memory.py": "4704dd74a716e9fb07950d960dac4833e040e2a3dd0a0548a6c8206bd9d8c3e1",
+      "build_support/vice_capture.py": "95a192b79d81a39f9cee1c7b93e1925d2bf527ccb3e6149e683b70241fd8b3e8",
+      "build_support/vice_probe.py": "6f4d04665a5dc170038976197f3a97fbbb6f40edf3e563a72e19de8cd2002a7a",
+      "src/address.s": "09805aa9fe6249726447d7c093223b884de04fea9fbb7f65068c96b90507ee01",
+      "src/alu.s": "9c5c4aeadddb9c65c4b441c7fb30530cc7433a7846c82a7df1bc6168f1fb4500",
+      "src/bios.s": "628b96faa2f478df18a9e4ca396029d5b0a83beef232dbfe64b043dec6fbf60a",
+      "src/boot.s": "946f0026fa6114e43412b3b23e8a852501db63653a21530e165ade04517bd661",
+      "src/cache_probe.s": "bf3e74d9b1cd482c57161ecf0b6a1d1d18f395bb89aa91d36df1548aa0bcac4e",
+      "src/control.s": "9c49f31c51646213430124c9ff3c5fb12b2bb4cd71e3d17f71b52d2ae398f295",
+      "src/cpu.s": "0fb8dc922d51150d9c6e369b6c7a8c2b3cf98e0110385b4b88fca27c4cbacce3",
+      "src/cpu_state.s": "77c0e8db8217b15bc5d9a031fc4554eeaec14c38b8212b0faabee4d7ac65563f",
+      "src/disk.s": "2783fc60f7c59b904e04d72e5ce9326eda67b4d60fa83d02ebc90b59fb56b3dd",
+      "src/indirect.s": "036c7638d20cb50aaef716d20a39cf0f38095b0fe3f7bf1ed77deac42399c23d",
+      "src/math.s": "fa98bbb7559519e494568bcdbc78d395007f0ba5279bc96ea5ce0ecda8f3242f",
+      "src/memory.s": "5dd3276aa320ce76e5d7ce0ee688f723b7a49a25d39b11e8dc80515ee3aa52cb",
+      "src/operands.s": "90ec334ea77d3bd2c555f403879eb578d2b918837a0f0aad814365f50c415fdd",
+      "src/range.s": "668e5b1bf583089e5a5abaf99b279a86a750d94e5bbb4dc0ab68f7743ed54574",
+      "src/range_probe.s": "01b09c4d34044ce136123580943f6774e37a94a4b6be1f37651d42aea30b4849",
+      "src/range_snapshot.s": "dbf5ea21cfb6d24b9bbddfd024022381db000828e73f61b35e6cd658b0ae8d5b",
+      "src/reu.s": "e51b31fff8da86894156fcc004b2339567d240e66b7aee1fd42d4117bf5c73d2",
+      "src/reu_probe.s": "09dbcef1ecd8a757ec11771097564b8b46f2a1663c63466fa4a72b893308751d",
+      "src/reu_snapshot.s": "2286f662181ecb26dfd8523e9aef4c405701a3b5ccaeb0b35425bc8c7f607b7f",
+      "src/shifts.s": "3acdd0bbcbe0708125370d629fc144e893dde5e8b5b3a04775c3be1047a0a2ed",
+      "src/stack.s": "97bad438a6c4d7b07927197ad7a43079842383e8741f3dcb474eb9ae98da36b3",
+      "src/strings.s": "54867f5e9558d86222ef4bcddda35b1f584acd001582d938fe864298801d5106",
+      "include/abi.inc": "74a874c245aed278ba884d33923279bde901bed97427452096dd414ba67e08d6",
+      "include/bios.inc": "ff22fa832fa24b8f1d35c934e30a4ada0412dfc97777fffba8bd17621ea14749",
+      "include/disk.inc": "b7d571420a26f59cfdc85cf9bc57d78cfe2047cd107adee229fc568873b4b050",
+      "include/memory.inc": "26c5be0321b5678fa17e7881792760c90771f398ab1ca7c4b23d071dca4ce428",
+      "include/parity.inc": "52b5bbf6f9cd159297e3b8abd5b9e78ec4f4a3e3d1f07a931a869b1a7f46668e",
+      "include/range.inc": "cd22a54aa28af068c612ef1606c303107891c0c2accf4f35e8ab7f0a18e42987",
+      "include/reu.inc": "47a4eac6be6d727dc506c2d8e808e1028aefb2f8321b89aff3d333bff94c5e05",
+      "cfg/dos64.cfg": "6cc20618043e74214b66025caffd495acb448004f7a44e172271ad5b9eee4f1a",
+      "tests/host/alu.zig": "515e580ae16c0176912adccec1dbee00422dda1ab48c144c43bfad70c33e0500",
+      "tests/host/bios.zig": "174ea43d7dbab13e0e371d0256c4601f3e667d39993a39234fdbadde15c4effe",
+      "tests/host/cpu.zig": "3881a1dfa2e1ede1da8bb10795756a09079cd2e6fb06c2fa3c33266c56668fab",
+      "tests/host/disk.zig": "01512a80dc12e35141f6c575dae0978e2d951ef6d9689e376e7d233dcc87bca5",
+      "tests/host/dos_boot.zig": "d648d6297ddbe8e4d9f4d07d8e99bfccbf65b205468ce03b28563bc4df9427ca",
+      "tests/host/foundation.zig": "5c03c37d3ca6803ee3c3bc6f3a236ff72c0f4be7012e9c81a11cf5e5d0200d97",
+      "tests/host/indirect.zig": "54f1736903d88caff623367def3934ceb78fcd3df5d8c459674822b75a1ec64a",
+      "tests/host/interrupts.zig": "b86c73d97640c10b4537fe4eca0c705dc583bc0adab46b9e9c299b9874a454a5",
+      "tests/host/machine.zig": "b823a6d6fda157299dac11a4e53b2a7c91d5a35c943c4127e17adb95b417f897",
+      "tests/host/math.zig": "0f9b787db239251d957179950434742cf45bcb8484102356510f98d97ba850c5",
+      "tests/host/memory.zig": "3eae690ec99f994e1e749c998410ca3a3d5a803a6727725861340131e0c9574f",
+      "tests/host/operands.zig": "86aebda6cc476d434eb91836dece613eac3124698b8f66fcd48c3f8fa01d6451",
+      "tests/host/peddle_bridge.cpp": "669d9aa68414dda5c27c305b033aaba772d1bd6022b090b92fe39f7579f50d39",
+      "tests/host/peddle_bridge.h": "b0aa6ada6186c16deb3acec12130615f1223121b8fb4bd7aa0156a970c4e8ec5",
+      "tests/host/profile.zig": "9b5fcf8518e7eb103b2c0c9d198eaf5df97287e21ab30ec0d7bb7584702bafc7",
+      "tests/host/range.zig": "78ca5d6d1039925c6a648a535e7783c419c9a46f0be2d38e5d9a148f3ae77507",
+      "tests/host/range_probe.zig": "b17a079c3adbcf7745147ceaad32500c17cf33789773c53b1f05e0ab12c9b882",
+      "tests/host/range_snapshot.zig": "0dabc86f6feb1d9d1824d13ff81ea6633cab8e4ad133f26ce0e4779b238ecd34",
+      "tests/host/reu.zig": "9300e1c88c7ea435651500eee6e9d9dc1f213c6f86675ce0084cb16f3ff12b81",
+      "tests/host/reu_model.h": "f43b161b3838621aa02902d0629f23c212d527ab363f387eebfb4f9d3c957168",
+      "tests/host/runner.zig": "2189eee754a65cf012f781046bd97a9a35ae165fa5ef06063d9d67274c53a49f",
+      "tests/host/shifts.zig": "e172e0a6732e5d90e1f67c7134a0ee6324d743aeac1b7d00ba2db893d4d7ca56",
+      "tests/host/stack.zig": "332e9b12ac6cd3fa8173e4f2fbad35335e04741605774deb9248e680be18e7b4",
+      "tests/host/strings.zig": "247195ec84139c3cc1a920a4e6ebd2c2ce744e6549ca8375649cca0f5fe50be8",
+      "tests/fixtures/8088-subset.json": "ac0aec1995ab621589439c6db0ade54cc8d45c7c5b25f216a2f6466993fe5fe1",
+      "tests/fixtures/dos-boot-oracle.json": "6b99967e3861777a1e6a07fb6dc6c49d110fa534cf3bcbf25f006141fb15f3ca",
+      "tests/fixtures/foundation.s": "3e5d8539cd2694b598aeeb4e86a645d877a9387707dabf92e7d0e2d155fc759b",
+      "tests/tooling/test_c64u_probe.py": "ded4b08cd067ee9ca8e3bdd5514aca78aa690e169775c697ceafdf8c9a92a1c9",
+      "tests/tooling/test_c64u_range_probe.py": "9c212c9c60a66303b8bfde4858ea62281c48488ffd833b98ba6754dbab1fb452",
+      "tests/tooling/test_dos_image.py": "ede41ba71b0f1a82c1109d4299ce32472588cb1423b646d1f3eff718fa150249",
+      "tests/tooling/test_memory_contract.py": "8394fba53c8f1d7f07be2a96757e67f11fa6f1720044b90f3c2a8c4702fc5484",
+      "tests/tooling/test_vice_capture.py": "0f8bc77a36d326374d6c5849e1fdb30ea6cf30ac1b1230e177a45d0bd443fb71",
+      "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+      "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 2 of 3.img": "91a624fc448c1c423d159ae21f51cc416393d8e19a73d3858afc3af92af041c2",
+      "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 3 of 3.img": "c69238c738bab18db840b5ae72b2470c0d594832d91103573a6d8273dce300e9",
+      "build/dos64-backup.prg": "fc46ea72ab23a4bece154350a68c5c946d3e856e37d3639028446fa0ed6434d0",
+      "build/dos64-cache-probe.prg": "b4c403e909dd489daa4c3a9fca2c438075facd0b2fce7edd2c807b46522abc9d",
+      "build/dos64-range-backup.prg": "3ac011f03e6418185bffde2c513774412056a78d96a1aa8f6c29831370e693ef",
+      "build/dos64-range-probe.prg": "e7b46c87bff1c84c37d0b32044310265ebfa34a966dbee4bf5a9349f1669b69d",
+      "build/dos64-range-restore.prg": "33f4135e9499a0cb35b7754972ec5ddee02ec55d3b548a243e6af3034c025ecc",
+      "build/dos64-restore.prg": "23a6b7658d61ad5092596b377ef76f0ba37fab487f9883ff833bdad9b99d814d",
+      "build/dos64-reu-probe.prg": "a1e277d2ed8bfad12796efa4a54eec3b4e57e355086b228c030dd9ccb2d3291e",
+      "build/dos64-tests.prg": "c035afe39e8c25239a7b17664b36c9688186e29b6adbef6ff01d3f3a2c01e6ab",
+      "build/dos64.prg": "0b3192c36196abbdda062d71c8d8600f55a64ee249310e57640a1721de95ef79"
+    },
+    "peddle_commit": "c23e34a7e6516b284750b8c7caaa8c41948a407a",
+    "8088_corpus_commit": "aea84484abc79d09639d855b7b0ab32bc9e4dbeb"
+  },
+  "linked_segments": {
+    "dos64": {
+      "LOADADDR": {
+        "start": 0,
+        "end": 1,
+        "bytes": 2
+      },
+      "ZEROPAGE": {
+        "start": 32,
+        "end": 47,
+        "bytes": 16
+      },
+      "BASIC": {
+        "start": 2049,
+        "end": 2060,
+        "bytes": 12
+      },
+      "CODE": {
+        "start": 2061,
+        "end": 11762,
+        "bytes": 9702
+      },
+      "RODATA": {
+        "start": 11763,
+        "end": 12435,
+        "bytes": 673
+      },
+      "RANGEBUFFER": {
+        "start": 49152,
+        "end": 49407,
+        "bytes": 256
+      },
+      "BSS": {
+        "start": 57344,
+        "end": 57554,
+        "bytes": 211
+      },
+      "PAGEMAP": {
+        "start": 57600,
+        "end": 59647,
+        "bytes": 2048
+      },
+      "CACHEMETA": {
+        "start": 59648,
+        "end": 59839,
+        "bytes": 192
+      }
+    },
+    "dos64-tests": {
+      "LOADADDR": {
+        "start": 0,
+        "end": 1,
+        "bytes": 2
+      },
+      "ZEROPAGE": {
+        "start": 32,
+        "end": 59,
+        "bytes": 28
+      },
+      "BASIC": {
+        "start": 2049,
+        "end": 2060,
+        "bytes": 12
+      },
+      "CODE": {
+        "start": 2061,
+        "end": 12678,
+        "bytes": 10618
+      },
+      "RODATA": {
+        "start": 12679,
+        "end": 13375,
+        "bytes": 697
+      },
+      "TESTCODE": {
+        "start": 13376,
+        "end": 13411,
+        "bytes": 36
+      },
+      "RANGEBUFFER": {
+        "start": 49152,
+        "end": 49407,
+        "bytes": 256
+      },
+      "BSS": {
+        "start": 57344,
+        "end": 57554,
+        "bytes": 211
+      },
+      "PAGEMAP": {
+        "start": 57600,
+        "end": 59647,
+        "bytes": 2048
+      },
+      "CACHEMETA": {
+        "start": 59648,
+        "end": 59839,
+        "bytes": 192
+      }
+    }
+  },
+  "runtime_prg_bytes": 10389,
+  "unit_prg_bytes": 11365,
+  "profile_evidence": "cpu-profile-baseline-20261015.json",
+  "dos_evidence": "dos-kernel-handoff-20261015.json",
+  "physical_evidence": "c64u-range-20261015.json",
+  "vice_run": "logs/vice_auto_20261015_011028",
+  "vice_evidence": {
+    "schema": 1,
+    "run_id": "vice_auto_20261015_011028",
+    "status": "passed",
+    "finished_utc": "2026-10-15T08:10:41Z",
+    "raw_run": "logs/vice_auto_20261015_011028",
+    "manifest_sha256": "4be166ad0dbfbe4e255d5f4aa7643592df55d843246915b07107a9f9f0205cba",
+    "probe_prg_sha256": "e7b46c87bff1c84c37d0b32044310265ebfa34a966dbee4bf5a9349f1669b69d",
+    "captured_executable_identical": true,
+    "restored_bytes": 1536,
+    "pattern": "low_byte(index) XOR high_byte(index) XOR A7; each 256th byte XOR 5A",
+    "restored_sha256": "c3fb4990ccd22c9a06a78e6cffa3b198814e992e392ac914b9f83dc6e0fe3ada",
+    "mailbox_hex": "01a5000000000000",
+    "all_steps_passed": true,
+    "configuration": {
+      "reu_kib": 16384,
+      "warp": true,
+      "headless": true
+    },
+    "limitations": [
+      "Functional integrity probe below the 4 MiB baseline",
+      "Harness uses 16 MiB REU; not physical capacity validation",
+      "No C64U firmware or 64 MHz timing evidence"
+    ]
+  },
+  "excluded_unlinked_work": [
+    "include/ports.inc",
+    "include/video.inc",
+    "src/adjust.s",
+    "src/fetch.s",
+    "src/ports.s",
+    "src/video.s",
+    "tests/host/adjust.zig",
+    "tests/host/fetch.zig",
+    "tests/host/ports.zig",
+    "tests/host/video.zig"
+  ],
+  "limits": [
+    "Kernel handoff is accepted; COMMAND.COM prompt is not reached.",
+    "Native startup initializes then idles; runtime image loading/saving, keyboard/rendering, asynchronous IRQ scheduling and HD are incomplete.",
+    "Functional selected 8088 corpus, not complete instruction/bus/cycle conformance.",
+    "Peddle clocks exclude REU stalls, caller JSR and physical elapsed time.",
+    "Physical probe verifies range transfer and restored envelopes at manual64, not full DOS or XT speed."
+  ],
+  "quick_profile": {
+    "hardware_cases": 581,
+    "full_pinned_corpus": false,
+    "cycle_accuracy": false,
+    "maximum_slices": 8
+  },
+  "full_profile": {
+    "hardware_cases": 2555,
+    "full_pinned_corpus": true,
+    "cycle_accuracy": false,
+    "maximum_slices": 8
+  }
+}

@@ -2,7 +2,9 @@
 
 Planning and implementation of a C64 Ultimate program that boots the supplied **real MS-DOS 3.3**, emulates the 8086/8088 instruction set, and provides 640 KiB of conventional PC memory through the REU. Target hardware is the user's 64 MHz C64U with **4 MiB or larger REU**.
 
-**Status: implementation underway; assembly foundation, REU primitive and coherent guest byte cache verified.** `make test` runs 95 Zig/Peddle behavior tests and 15 tooling tests, including 502 hardware-generated CPU cases. Arithmetic, ModR/M, segment moves, stack/calls, strings/REP, conditional flow, shifts and software interrupts are implemented; `make test-cpu-corpus` passes all 2,278 pinned hardware cases. Shared probes pass Peddle/VICE; the cache probe also passes physical C64U at 1/16/64 MHz settings with verified readback and REU/configuration restoration. Calibrated timing and target DOS boot remain future milestones. The supplied disk boots in DOSBox-X and reports MS-DOS 3.30.
+**Status: verified CPU, coherent storage and synthetic BIOS baseline; full DOS boot remains active work.** The final quick gate passes 150 Zig/Peddle behavior tests and 45 tooling tests. The broader CPU lane passes all 2,555 pinned original-8088 hardware cases. From guest reset, the unchanged disk-1 boot sector uses the real assembly BIOS to load IO.SYS and reach `0070:0000`; all 22,398 kernel bytes and the bootloader's entire 51-sector raw extent match the immutable image. Continuing IO.SYS reaches unsupported PIC `OUT 20h` at `0070:2BFB` after 2,335 completed instructions. COMMAND.COM has not reached a prompt, and native startup still initializes then idles.
+
+REU/cache integrity passed Peddle, VICE and physical C64U at 1/16/64 MHz settings with verified restoration. The new coherent range probe also passed VICE and physical C64U at Manual 64 MHz: all 1,536 result bytes and executable identity were checked, and all 5,120 touched REU bytes/configuration were restored exactly. Native Ultimate/IEC image loading, persistence, PC devices, display and keyboard remain ahead. Calibrated physical timing and XT speed are unmeasured. The supplied disk independently boots in DOSBox-X and reports MS-DOS 3.30. [Verified baseline evidence](agentworking/evidence/storage-bootstrap-20261015.json) retains the current gates, identities and limitations.
 
 Compatibility targets the **original 8088 and IBM PC/XT**, with the shared 8086 instruction set. Existing 8086 implementations are references; they do not define our CPU profile or reduce the required functionality.
 
@@ -15,6 +17,8 @@ make test-cpu-corpus  # broader pinned 8088 functional corpus after CPU changes
 make probe            # standalone REU integrity PRG and symbol-based VICE plan
 make test-vice        # slower VICE run plus independent captured-byte checks
 make test-cache-vice  # slower coherent-cache probe with forced dirty eviction
+make test-range-vice  # coherent disk-range integrity across guest/REU bank seams
+make profile-cpu      # real linked interpreter cycle/counter baseline, not physical timing
 make hardware-helpers # prepare physical backup/restore/cache probe images
 ```
 
@@ -28,9 +32,9 @@ Tool overrides: `DOS64_ZIG`, `DOS64_CA65`, `DOS64_LD65`, `DOS64_PYTHON`, `DOS64_
 4. [Tests and acceptance](docs/TESTING.md) — Zig/Peddle, PC references, VICE, real C64U, DOS utilities.
 5. [Performance experiments](docs/PERFORMANCE.md) — what must be measured before promising XT speed.
 
-Details: [storage](docs/STORAGE.md), [display and keyboard](docs/DISPLAY_INPUT.md), [research and sources](docs/RESEARCH.md), [existing emulator references](docs/EXISTING_EMULATORS.md), [REU implementation](docs/REU_IMPLEMENTATION.md), [memory implementation](docs/MEMORY_IMPLEMENTATION.md), [CPU implementation](docs/CPU_IMPLEMENTATION.md), [physical tests](docs/HARDWARE_TESTING.md), [requirements coverage](docs/REQUIREMENTS.md).
+Details: [storage](docs/STORAGE.md), [display and keyboard](docs/DISPLAY_INPUT.md), [research and sources](docs/RESEARCH.md), [existing emulator references](docs/EXISTING_EMULATORS.md), [REU implementation](docs/REU_IMPLEMENTATION.md), [memory implementation](docs/MEMORY_IMPLEMENTATION.md), [CPU implementation](docs/CPU_IMPLEMENTATION.md), [BIOS implementation](docs/BIOS_IMPLEMENTATION.md), [disk implementation](docs/DISK_IMPLEMENTATION.md), [coherent ranges](docs/RANGE_IMPLEMENTATION.md), [physical tests](docs/HARDWARE_TESTING.md), [requirements coverage](docs/REQUIREMENTS.md).
 
-## Main decisions proposed
+## Main decisions and remaining scope
 
 - Boot disk 1 through a small synthetic PC BIOS; execute `IO.SYS`, `MSDOS.SYS`, `COMMAND.COM`, and DOS applications as guest instructions. DOS owns FAT, files, handles, the PSP, and EXE loading. No native replacement for INT 21h.
 - Keep each floppy's complete raw image in a dedicated REU slot. Start with the actual 360 KiB fixtures, then use file-backed cached extents for an approximately 2 MiB hard disk and a 20 MiB hard disk.

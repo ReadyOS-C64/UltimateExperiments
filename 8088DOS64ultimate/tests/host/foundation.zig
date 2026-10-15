@@ -116,3 +116,13 @@ test { _ = @import("runner.zig"); }
 test { _ = @import("interrupts.zig"); }
 test { _ = @import("shifts.zig"); }
 test { _ = @import("strings.zig"); }
+
+test { _ = @import("math.zig"); }
+test { _ = @import("indirect.zig"); }
+
+test { _ = @import("range.zig"); }
+test { _ = @import("disk.zig"); }
+test { _ = @import("bios.zig"); }
+test { _ = @import("range_probe.zig"); }
+test { _ = @import("dos_boot.zig"); }
+test { _ = @import("range_snapshot.zig"); }

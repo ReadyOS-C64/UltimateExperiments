@@ -3,7 +3,37 @@
   "commit": "aea84484abc79d09639d855b7b0ab32bc9e4dbeb",
   "license": "MIT; LICENSE retained alongside this record",
   "selection": "first24 per baseline opcode plus audited boundary rows; first8 per added opcode/extension including first hardware C6/C7 case of every extension alias; quick rows explicit",
-  "limitations": "Functional state only; cycles/queue omitted, no interrupt or throughput coverage",
+  "limitations": "Functional state only; cycles/queue omitted; register flags use upstream-defined masks; divide-error saved FLAGS masks only the same undefined arithmetic bits; no throughput coverage",
+  "audited_extra_rows": {
+    "F6.6": {
+      "197": "zero divisor",
+      "2152": "byte operand effective offset FFFF"
+    },
+    "F6.7": {
+      "11": "successful REP F3 quotient negation",
+      "14": "REP F2 divide overflow",
+      "54": "successful REP F2 quotient negation",
+      "213": "zero divisor",
+      "1828": "minimum signed quotient raises divide error"
+    },
+    "F7.7": {
+      "110": "REP F2 divide overflow",
+      "143": "successful REP F3 quotient negation",
+      "612": "successful REP F2 quotient negation",
+      "9837": "zero divisor"
+    },
+    "FF.6": {
+      "68": "original PUSH SP ordering"
+    },
+    "FF.7": {
+      "81": "PUSH SP alias ordering"
+    }
+  },
+  "source_gaps": [
+    "FE.2 through FE.7 are absent at this pin",
+    "8F source contains only /0",
+    "F6/F7 MUL, IMUL and unsigned DIV sources contain no REP prefixes; IDIV prefixes are covered"
+  ],
   "source_files": [
     {
       "path": "LICENSE",
@@ -988,9 +1018,141 @@
     {
       "path": "v2/D3.7.json.gz",
       "sha256": "4e6ab09c4975902d9ea33bf5ae27b610699d4812168af81203b0013f8ca135f0"
+    },
+    {
+      "path": "v2/F6.0.json.gz",
+      "sha256": "575615b2b835d2fe71fa6d657a3f967da921960f31635efbce1f68b0fdcb6df0"
+    },
+    {
+      "path": "v2/F6.1.json.gz",
+      "sha256": "3e3486e44938f4a1c809a8e2732696b72bf16821be2afd0a15a8110e2af4bd5f"
+    },
+    {
+      "path": "v2/F6.2.json.gz",
+      "sha256": "8aacdc89629ffd1be8e3995528f1aa2898040b505e6928059d74e4acd8fc8a3c"
+    },
+    {
+      "path": "v2/F6.3.json.gz",
+      "sha256": "03eb2dee7c9016c945d9e3f8a8e993d1c9a53ccee092298243ddb3ca56d73cc0"
+    },
+    {
+      "path": "v2/F6.4.json.gz",
+      "sha256": "64dc993901212d6693c067cfe2a1ac83a50a74ca6899639a43e2dee958c63140"
+    },
+    {
+      "path": "v2/F6.5.json.gz",
+      "sha256": "00d39107b63cbb1da0ee7bebf97a654383e6962c21b8f96ce787b205cf41e2a6"
+    },
+    {
+      "path": "v2/F6.6.json.gz",
+      "sha256": "97051597c3b93c26bbcdba0359fa7d1cce48ee678eaa25b05f0d9b27fe7cae1f"
+    },
+    {
+      "path": "v2/F6.7.json.gz",
+      "sha256": "7e851ce48d4b04b147f7687748edc6399390f2a8eb43875755116feb51c2d43b"
+    },
+    {
+      "path": "v2/F7.0.json.gz",
+      "sha256": "d92499b33810626323240ab298bb38302b0d413f497c0ff0ab7fe294dfa8e413"
+    },
+    {
+      "path": "v2/F7.1.json.gz",
+      "sha256": "cd4cf863092ec45a898583f68d01110b235a32f29a98e1b59b5c3d69e4cd2f9a"
+    },
+    {
+      "path": "v2/F7.2.json.gz",
+      "sha256": "630027e625ab4f984232431815095dbab354477cb614cf6274a38db4713cc124"
+    },
+    {
+      "path": "v2/F7.3.json.gz",
+      "sha256": "662266e5db44a0a537cd863da526165acf41254590ccffc72a6403e91b7dd793"
+    },
+    {
+      "path": "v2/F7.4.json.gz",
+      "sha256": "b23b4e4f34c6ffe6fe787e0dcd25fe81f55a805655b6537bc1cbee93ad1dc727"
+    },
+    {
+      "path": "v2/F7.5.json.gz",
+      "sha256": "7828e78e99fa531c71c25a533abb814601d79db17ee82210aec6344f17051743"
+    },
+    {
+      "path": "v2/F7.6.json.gz",
+      "sha256": "cff5ad2ea5099edfa74a20df5311cff2d72cfa1221859a2b37d71cc637e2a64b"
+    },
+    {
+      "path": "v2/F7.7.json.gz",
+      "sha256": "d442dcf65e9aff9ab38f7bdc42839f66d465cc86ccd0dc6c9cf2b6396f4f1e51"
+    },
+    {
+      "path": "v2/FF.0.json.gz",
+      "sha256": "c7b4052be3410d09d03d1b9cf4a352a0f619a90b3c3831805119d3f7ebc304d3"
+    },
+    {
+      "path": "v2/FF.1.json.gz",
+      "sha256": "2a6a0159d09d885b89b6e0be876b2feceb10da9cf5c636c6e11be2d3dfdcbe22"
+    },
+    {
+      "path": "v2/FF.2.json.gz",
+      "sha256": "a58bd1dcbb2a3f640d0cf84d65115c094b96936de94eb2e2bc33e7812c7030bb"
+    },
+    {
+      "path": "v2/FF.3.json.gz",
+      "sha256": "b9d57242d67118577ee9e5b22fcc0c5834ba060014f0c79ac2f585298cdfbd00"
+    },
+    {
+      "path": "v2/FF.4.json.gz",
+      "sha256": "1ed22f6d159c0a3b93fb3ab03fe1dd9fb6b66e0923d850f8ecf26083924eb389"
+    },
+    {
+      "path": "v2/FF.5.json.gz",
+      "sha256": "1f44dea1e67f552a5c96d392da717808ee4fea9ba9472cffc0d0188a17bd9835"
+    },
+    {
+      "path": "v2/FF.6.json.gz",
+      "sha256": "ed9edd78998ce037067669066db15a3f4d62674dc8b11039de5bc3ca351f827c"
+    },
+    {
+      "path": "v2/FF.7.json.gz",
+      "sha256": "cf7024688e69bd44f12ce423717c19cce405508775b676da0dffc7b2823b1229"
+    },
+    {
+      "path": "v2/FE.0.json.gz",
+      "sha256": "407c823786fe41c1e7e7c8af844879f05722f515d10a40a4c06120300fa09202"
+    },
+    {
+      "path": "v2/FE.1.json.gz",
+      "sha256": "f066cc8f96f552751aab43ee5fcc8e7e0215c86af9578b290cd7bf3c07c0fde2"
+    },
+    {
+      "path": "v2/8F.json.gz",
+      "sha256": "4ada59de12184bd7b1e9471322edd2c4d9d60a63549513d77a127743b08f854c"
+    },
+    {
+      "path": "v2/98.json.gz",
+      "sha256": "b4684d86ec6eb82d1710a9a4aa6d11a5b8342ccbd918fc8495a06623c97a385a"
+    },
+    {
+      "path": "v2/99.json.gz",
+      "sha256": "eab622a68a0036e43469b4ea1e1e30e160d63f795b6647fd4d5602054e80be5b"
+    },
+    {
+      "path": "v2/86.json.gz",
+      "sha256": "066b37f0436aaad4e251f2670979cb0a29045b01e1842a8b1996f4d4bc7ec944"
+    },
+    {
+      "path": "v2/87.json.gz",
+      "sha256": "88cf0eb33da4a83d7b69b772821e3a650fdd9c135337827ae82f61f4e05bdc88"
+    },
+    {
+      "path": "v2/A8.json.gz",
+      "sha256": "266c0fa0928f7beec8eed74b6b05092fc6aabf2e7e0ea8e6d13d59bcc571c4c0"
+    },
+    {
+      "path": "v2/A9.json.gz",
+      "sha256": "3ca66c60a7aafc0a82389ace38a561db98013a34d38d94a403c31dbdca746934"
     }
   ],
   "fixture": "tests/fixtures/8088-subset.json",
-  "fixture_sha256": "80b5ee9a45a38c6be33bbda351aad3067c63e2111d844e0f2a036dc552eb2138",
-  "cases": 2278
+  "fixture_sha256": "ac0aec1995ab621589439c6db0ade54cc8d45c7c5b25f216a2f6466993fe5fe1",
+  "cases": 2555
 }

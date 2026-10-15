@@ -51,3 +51,25 @@ Start with source-controlled guest microbenchmarks; add actual boot-to-prompt, D
 7. Consider compact predecode only after measuring its RAM cost and invalidation overhead. Dynamic translation is a separate later decision, not a v1 assumption.
 
 For each change save baseline artifact/hash, cycles, elapsed times, linked bytes, cache hit/miss profile, and functional results. Reject optimizations that win a microbenchmark while regressing representative DOS work or persistence correctness. A compiler change is not a substitute for measuring the assembly actually executed.
+
+## Measured interpreter baseline — 2026-10-15
+
+`make profile-cpu` executes six real linked 6510 workloads in cold and warm cache states, producing 12 samples in `build/cpu-profile.json`, retained as [profile evidence](../agentworking/evidence/cpu-profile-baseline-20261015.json). Workloads are a register/branch loop, dirty ModR/M copy, stack calls, 256-byte REP, 20 KiB REP and multiply/divide. The harness validates exact final registers and all 1 MiB RAM against independently constructed expectations, records source/binary identities and bounds each call/sample. All profile state checks passed. This is the pre-optimization baseline; unlinked fetch/PC-port/video work is excluded from accepted performance claims.
+
+| Warm sample | Measured cost |
+|---|---:|
+| Register/branch loop | 1,762.55 host CPU cycles per guest instruction |
+| Dirty memory copy | 2,192.84 host CPU cycles per guest instruction; 5,492.82 per copied byte |
+| Stack calls | 1,802.78 host CPU cycles per guest instruction |
+| 256-byte REP copy | 1,127.23 host CPU cycles per copied byte |
+| 20 KiB REP copy, larger than cache | 1,081.19 host CPU cycles per copied byte |
+| Multiply/divide loop | 2,169.74 host CPU cycles per guest instruction |
+
+Each interval starts at the assembly step entry and includes RTS. It excludes the synthetic caller's six-cycle JSR, initialization, final validation flush, REU DMA stalls, VIC contention, rendering, UCI/IEC waits and physical elapsed time. REP instruction count alone gives a misleading per-instruction ratio, so copied bytes and scheduling calls are reported too. Warm means the same fixture/cache after its previous workload and validation flush, with guest state reset; a working set larger than the cache does not become fully resident by that definition.
+
+The warm register result exceeds the illustrative 161-cycle instruction allowance above by about eleven times before missing physical costs. This identifies substantial optimization work; it is not a calibrated XT ratio, since no corresponding guest workload timing on an XT is measured. The earlier 221-cycle public warm byte read remains a helper measurement. Host test-runner speedups reduce validation time without reducing these target costs.
+
+The genuine reset-to-IO.SYS handoff separately reports 392 completed guest instructions and 12,019,126 native step cycles, excluding 20,835,495 setup cycles. Bulk BIOS work and REP make that aggregate unsuitable as a register-dispatch benchmark. Complete boot-to-prompt latency, physical timer/DMA calibration and representative DOS utility ratios remain open.
+
+
+Final frozen-baseline profile rerun passed 1/1 in 3.27 host seconds: 10,314 guest instructions, 12,902 scheduling calls, 65,680,572 host CPU cycles, 19,297,856 native instructions, 223 DMA operations and 114,176 DMA bytes. All state checks passed. Ordered source identity is `95fd4e36c3744e01fd0ddd61f5bbd2bafdd993c489f2bb70029a00e919df1f02`; final linked unit PRG SHA-256 is `c035afe39e8c25239a7b17664b36c9688186e29b6adbef6ff01d3f3a2c01e6ab`. The table uses this final rerun. Counter totals are not physical timing; the instruction-weighted aggregate combines very different workloads and does not replace their individual costs.

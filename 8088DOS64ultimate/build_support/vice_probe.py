@@ -11,7 +11,7 @@ from vice_capture import verify_capture
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--prepare", action="store_true")
-parser.add_argument("--kind", choices=("reu","cache"), default="reu")
+parser.add_argument("--kind", choices=("reu","cache","range"), default="reu")
 parser.add_argument("--verify-existing", type=Path)
 parser.add_argument("--evidence", type=Path)
 args = parser.parse_args()

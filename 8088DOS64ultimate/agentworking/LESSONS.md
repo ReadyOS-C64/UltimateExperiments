@@ -22,3 +22,12 @@
 
 - Separate bounded host REP continuation from original-CPU interrupt restart; compare completed instructions with aggregate budgets.
 - Preserve guest interrupt routing through IVT/stack; a guest IRET test stub is not a native BIOS service.
+
+- Keep the complete raw bootloader read extent in the oracle. IO.SYS file length rounds to 44 sectors, but this sector reads 51; compare padding/overread as observed.
+- Reset→IO.SYS through actual BIOS is a useful milestone. COMMAND.COM prompt, native media loading, runtime execution and the remaining machine/storage requirements still determine completion.
+- Recognize native BIOS service only at exact owned physical ROM opcodes, and patch saved guest flags before ordinary IRET. INT 11h/12h must see mutable dirty BDA.
+- A zero range length differs from zero low-level DMA count. Validate before touching bytes, split REU banks and publish only committed progress; a failed DMA's uncertain chunk must be repeated.
+- Charge every linked staging reservation to the full host map. C000–C0FF belongs to range staging; resident growth begins C100, and BSS headroom before E100 is only 45 bytes in this checkpoint.
+- Listing an already older object in a changed Makefile does not force a relink without the Makefile/object prerequisites. Check linker/map/binary identity, not compilation messages alone.
+- Preserve every physical range a probe mutates, including dirty guest-page neighbors and external source/destination arenas. Backup read-only, restore exact bytes, then independently compare a fresh readback.
+- State the profile interval and omitted costs. Peddle CPU cycles are target instruction work, while faster host testing, REU stalls and physical elapsed time are different measurements.

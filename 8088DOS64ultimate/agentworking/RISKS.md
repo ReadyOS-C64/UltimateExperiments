@@ -26,3 +26,14 @@ No risk is marked resolved by the existence of this plan. Add measurements/evide
 2026-10-15: arithmetic, effective-address and stack functional coverage expanded; K12 remains open for traps, prefetch, undocumented memory forms and original hardware boundary corners. Faster host testing does not resolve K01 physical throughput. Host-memory failure can leave partially committed CPU/stack state and is currently terminal rather than retryable.
 
 2026-10-15 strings/control checkpoint: functional CPU evidence now includes original shifts/Jcc aliases, bounded REP and software interrupt routing. K12 remains open for hardware IRQ/traps, REP interrupted-prefix behavior, segment-register inhibition and other timing corners. K04 remains high: no actual BIOS disk service or target DOS boot. Runtime CODE 6,094+BSS 137 remain inside link gates; future BIOS/storage/display still consume the host budget.
+
+
+2026-10-15 CPU/BIOS/storage checkpoint: K04 now has actual native disk/bootstrap/query contracts and genuine unchanged reset→IO.SYS entry, but remains high: COMMAND.COM is unaccepted and the current first failure is PIC OUT 20h at 0070:2BFB after 2,335 instructions. Video/keyboard/clock BIOS, ports/events, native execution loop and UCI/IEC image import are still required. Tests seed a complete immutable image in REU; they do not establish target file loading or persistence.
+
+K03 remains high. Current runtime CODE 9,702, RODATA 673, BSS 211 and the new C000–C0FF 256-byte range staging fit current gates. Only 45 BSS bytes remain before E100; additional resident code is limited to C100–CFFF. Future metadata/state growth needs explicit layout work rather than silently consuming alignment gaps or graphics memory.
+
+K05/K06 have stronger independent evidence: all 720 CHS addresses, coherent range dirty/partial-page/error tests, complete raw DOS extent identity and native range probe in VICE. New physical range recovery includes 5,120 guest/source/destination bytes; physical Manual 64 MHz integrity and independent restored-byte/configuration comparison passed; calibrated timing remains absent. Guest disk writes remain volatile REU mutations. Ultimate/IEC transferred-count, persistence/reopen/export and failure recovery are still unverified.
+
+K01/K02 remain high. Twelve real-assembly profile samples show warm register/branch cost 1,762.55 host CPU cycles/instruction and 20 KiB REP 1,081.19 cycles/copied byte before unmodeled DMA stalls. No physical timer/DMA calibration or XT benchmark ratio exists. Unlinked fetch optimization does not resolve this risk.
+
+K12 remains open despite 2,555 pinned hardware cases: absent FE control forms, POP CS, BCD/remaining ISA, exact word-FFFF original-hardware evidence, asynchronous IRQ/traps, REP interrupted-prefix behavior and segment inhibition timing remain gaps. Corpus masks and unsupported encoding policies must be retained as scope expands.

@@ -6,7 +6,7 @@ const allocator=std.testing.allocator;
 const names=[_] []const u8{"ax","cx","dx","bx","sp","bp","si","di","es","cs","ss","ds","ip","flags"};
 const Registers=struct {ax:?u16=null,cx:?u16=null,dx:?u16=null,bx:?u16=null,sp:?u16=null,bp:?u16=null,si:?u16=null,di:?u16=null,es:?u16=null,cs:?u16=null,ss:?u16=null,ds:?u16=null,ip:?u16=null,flags:?u16=null};
 const State=struct {regs:Registers,ram:[]const [2]u32};
-const Case=struct {name:[]const u8,bytes:[]const u8,initial:State,final:State,hash:[]const u8,idx:u32,opcode:[]const u8,flags_mask:u16,quick:bool};
+const Case=struct {name:[]const u8,bytes:[]const u8,initial:State,final:State,hash:[]const u8,idx:u32,opcode:[]const u8,flags_mask:u16,quick:bool,ram_masks:[]const [2]u32=&.{}};
 
 fn setWord(f:*Fixture,address:u16,value:u16) void {f.poke(address,@truncate(value));f.poke(address+1,@truncate(value>>8));}
 fn reg(f:*Fixture,index:u16,value:u16) !void {setWord(f,(try f.symbol("dos64_guest"))+index*2,value);}
@@ -31,6 +31,26 @@ fn step(f:*Fixture) !void {
     if((r.p&1)!=0) {
         std.debug.print("CPU fault status={d} opcode={x}\n",.{f.peek(try f.symbol("dos64_cpu_status")),f.peek(try f.symbol("dos64_cpu_opcode"))});
         return error.CpuFault;
+    }
+}
+
+fn normalizeUndefinedSavedFlags(t:Case,f:*Fixture,expected_ram:[]u8) !void {
+    if(t.ram_masks.len==0)return;
+    const divide=std.mem.eql(u8,t.opcode,"F6.6") or std.mem.eql(u8,t.opcode,"F6.7") or std.mem.eql(u8,t.opcode,"F7.6") or std.mem.eql(u8,t.opcode,"F7.7");
+    const initial_sp=t.initial.regs.sp orelse return error.InvalidRamMask;
+    const ss=t.initial.regs.ss orelse return error.InvalidRamMask;
+    if(!divide or t.ram_masks.len!=2 or t.flags_mask!=0xf72a or t.final.regs.sp!=initial_sp-%6)return error.InvalidRamMask;
+    const offset=initial_sp-%2;
+    for(t.ram_masks,0..) |masked,i| {
+        const address=(@as(u32,ss)*16+(offset+%@as(u16,@intCast(i))))&0xfffff;
+        const bits:u32=if(i==0) t.flags_mask&255 else t.flags_mask>>8;
+        if(masked[0]!=address or masked[1]!=bits or address>=expected_ram.len)return error.InvalidRamMask;
+    }
+    // Only source-projected DIV error frames may ignore undefined arithmetic
+    // bits. Reserved/control bits and all adjacent memory remain exact.
+    for(t.ram_masks) |masked| {
+        const mask:u8=@intCast(masked[1]);
+        expected_ram[masked[0]]=(expected_ram[masked[0]]&mask)|(c.dos64_reu_peek(f.machine,masked[0])&~mask);
     }
 }
 
@@ -143,7 +163,7 @@ test "word high-byte load failure restores input offset and returns failure" {
     try std.testing.expectEqual(@as(u16,0xffff),f.word(try f.symbol("dos64_offset")));
 }
 
-test "supplied boot sector requests disk BIOS and normal interrupt routing returns to first missing CBW" {
+test "supplied boot sector computes real root and data LBAs and requests the first disk read" {
     const disk=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,"reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img",allocator,.limited(400*1024));defer allocator.free(disk);
     try std.testing.expectEqual(@as(usize,360*1024),disk.len);
     var f=try init(32,0);defer f.deinit();
@@ -164,7 +184,7 @@ test "supplied boot sector requests disk BIOS and normal interrupt routing retur
     try std.testing.expectEqual(@as(u16,0),f.word(g+4));
     try std.testing.expectEqual(@as(u16,0),f.word(g+2));
     try std.testing.expectEqual(@as(u16,0x7bf8),f.word(g+8));
-    const saved_flags=f.word(g+26);const completed=f.word(try f.symbol("dos64_cpu_instructions"));
+    const saved_flags=f.word(g+26);
     try step(&f);
     try std.testing.expectEqual(@as(u16,0x200),f.word(g+24));
     try std.testing.expectEqual(@as(u16,0),f.word(g+18));
@@ -181,14 +201,24 @@ test "supplied boot sector requests disk BIOS and normal interrupt routing retur
     try std.testing.expectEqual(@as(u16,0x7c70),f.word(g+24));
     try std.testing.expectEqual(@as(u16,0x7bf8),f.word(g+8));
     try std.testing.expectEqual(saved_flags,f.word(g+26));
-    try step(&f);try step(&f); // JC falls through, MOV AL reads the BPB
-    try std.testing.expectEqual(@as(u16,0x7c75),f.word(g+24));
-    try std.testing.expectEqual(@as(u16,disk[0x10]),f.word(g));
-    const r=try f.call("dos64_cpu_step",10_000);
-    try std.testing.expectEqual(@as(u8,1),r.p&1);
-    try std.testing.expectEqual(@as(u8,0x98),f.peek(try f.symbol("dos64_cpu_opcode")));
-    try std.testing.expectEqual(@as(u16,0x7c75),f.word(g+24));
-    try std.testing.expectEqual(completed+4,f.word(try f.symbol("dos64_cpu_instructions")));
+    reached=false;
+    for(0..256) |_| {
+        if(f.word(g+24)==0x7d73) {reached=true;break;}
+        try step(&f);
+    }
+    try std.testing.expect(reached);
+    // Stop before the read interrupt. The reset IRET stub supplies no data.
+    try std.testing.expectEqual(@as(u16,0x0201),f.word(g)); // AH=read, AL=one sector
+    try std.testing.expectEqual(@as(u16,0x0500),f.word(g+6));
+    try std.testing.expectEqual(@as(u16,0),f.word(g+16)); // ES:BX=0000:0500
+    try std.testing.expectEqual(@as(u16,0x0006),f.word(g+2)); // cylinder0, sector6
+    try std.testing.expectEqual(@as(u16,0),f.word(g+4)); // head0, drive0
+    _=try f.call("dos64_cache_flush",100_000);
+    const root_lba=@as(u16,c.dos64_reu_peek(f.machine,0x7c3f))|(@as(u16,c.dos64_reu_peek(f.machine,0x7c40))<<8);
+    const data_lba=@as(u16,c.dos64_reu_peek(f.machine,0x7c37))|(@as(u16,c.dos64_reu_peek(f.machine,0x7c38))<<8);
+    try std.testing.expectEqual(@as(u16,5),root_lba);
+    try std.testing.expectEqual(@as(u16,12),data_lba);
+
 }
 
 test "pinned hardware-generated original 8088 cases match registers and complete RAM" {
@@ -219,7 +249,9 @@ test "pinned hardware-generated original 8088 cases match registers and complete
                 std.debug.print("Hardware continuation budget {s} idx={d} slices={d} cycles={d}\n",.{t.opcode,t.idx,continuations,total_cycles});return error.HardwareContinuationBudget;
             }
             const before=c.dos64_get_regs(f.machine).cycles;
-            const r=try f.call("dos64_cpu_step",100_000);
+            const r=f.call("dos64_cpu_step",100_000) catch |err| {
+                std.debug.print("Hardware execution error {s} idx={d} slice={d}: {s}\n",.{t.opcode,t.idx,continuations,@errorName(err)});return err;
+            };
             total_cycles+=r.cycles-before;continuations+=1;
             if((r.p&1)!=0) {std.debug.print("Hardware case failed {s} idx={d} {s}\n",.{t.opcode,t.idx,t.name});return error.HardwareCaseFault;}
         }
@@ -233,6 +265,7 @@ test "pinned hardware-generated original 8088 cases match registers and complete
         }
         _=try f.call("dos64_cache_flush",100_000);
         for(t.final.ram) |cell| expected_ram[cell[0]]=@intCast(cell[1]);
+        try normalizeUndefinedSavedFlags(t,&f,expected_ram);
         const a=c.dos64_reu_compare(f.machine,0,expected_ram.ptr,expected_ram.len);
         if(a!=0xffffffff) {
             if(a>=expected_ram.len)return error.ComparisonBounds;
@@ -305,4 +338,35 @@ test "LOOP family wraps counters preserves flags and applies signed prefixed dis
         };
     };
     try std.testing.expectEqual(@as(u16,64),f.word(try f.symbol("dos64_cpu_instructions")));
+}
+
+
+test "divide-error RAM masks admit only undefined saved flags and detect control or adjacent corruption" {
+    var f=try init(32,1);defer f.deinit();
+    const expected=try allocator.alloc(u8,1024*1024);defer allocator.free(expected);
+    const masks=[_][2]u32{.{0xfe,0x2a},.{0xff,0xf7}};
+    const t=Case{.name="DIV error mask fixture",.bytes=&.{0xf6,0xf0},.hash="host-mask-negative-test",.idx=0,.opcode="F6.6",.flags_mask=0xf72a,.quick=true,.ram_masks=&masks,
+        .initial=.{.regs=.{.ss=0,.sp=0x100},.ram=&.{}},.final=.{.regs=.{.sp=0xfa},.ram=&.{}}};
+    @memset(expected,0);expected[0xfe]=2;expected[0xff]=0xf2;
+    c.dos64_reu_poke(f.machine,0xfe,2^0xd5);c.dos64_reu_poke(f.machine,0xff,0xf2^8);
+    try normalizeUndefinedSavedFlags(t,&f,expected);
+    try std.testing.expectEqual(@as(u32,0xffffffff),c.dos64_reu_compare(f.machine,0,expected.ptr,expected.len));
+    // Reserved low bits; TF/IF/DF; reserved high bits; adjacent return-frame byte.
+    for([_][2]u32{.{0xfe,2},.{0xfe,8},.{0xfe,0x20},.{0xff,1},.{0xff,2},.{0xff,4},.{0xff,0x10},.{0xfd,1}}) |corruption| {
+        @memset(expected,0);expected[0xfe]=2;expected[0xff]=0xf2;
+        c.dos64_reu_poke(f.machine,0xfd,0);c.dos64_reu_poke(f.machine,0xfe,2);c.dos64_reu_poke(f.machine,0xff,0xf2);
+        const address=corruption[0];c.dos64_reu_poke(f.machine,address,c.dos64_reu_peek(f.machine,address)^@as(u8,@intCast(corruption[1])));
+        try normalizeUndefinedSavedFlags(t,&f,expected);
+        try std.testing.expectEqual(address,c.dos64_reu_compare(f.machine,0,expected.ptr,expected.len));
+    }
+    var invalid=t;invalid.opcode="F6.4";
+    try std.testing.expectError(error.InvalidRamMask,normalizeUndefinedSavedFlags(invalid,&f,expected));
+    invalid=t;invalid.final.regs.sp=0x100;
+    try std.testing.expectError(error.InvalidRamMask,normalizeUndefinedSavedFlags(invalid,&f,expected));
+    invalid=t;invalid.flags_mask=0xffff;
+    try std.testing.expectError(error.InvalidRamMask,normalizeUndefinedSavedFlags(invalid,&f,expected));
+    invalid=t;invalid.ram_masks=&.{.{0xfd,0x2a},.{0xff,0xf7}};
+    try std.testing.expectError(error.InvalidRamMask,normalizeUndefinedSavedFlags(invalid,&f,expected));
+    invalid=t;invalid.ram_masks=&.{.{0xfe,0},.{0xff,0xf7}};
+    try std.testing.expectError(error.InvalidRamMask,normalizeUndefinedSavedFlags(invalid,&f,expected));
 }

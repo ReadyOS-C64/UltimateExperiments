@@ -1,6 +1,6 @@
 # Memory, paging, and coherence
 
-These are full-system budgets; current measured subsets are recorded in [MEMORY_BUDGET](../agentworking/MEMORY_BUDGET.md) and [MEMORY_IMPLEMENTATION](MEMORY_IMPLEMENTATION.md). The 512-byte coherent byte cache is now implemented and functionally tested; page size and future optimizations remain candidates. All ranges below are inclusive unless a length is explicitly given.
+These are full-system budgets; current measured subsets are recorded in [MEMORY_BUDGET](../agentworking/MEMORY_BUDGET.md) and [MEMORY_IMPLEMENTATION](MEMORY_IMPLEMENTATION.md). The 512-byte coherent byte cache and bytewise coherent guest/REU range transfers are implemented and functionally tested; page size and future optimizations remain candidates. All ranges below are inclusive unless a length is explicitly given.
 
 ## Guest address space
 
@@ -29,11 +29,12 @@ Compute an effective offset with 16-bit arithmetic; then `physical = ((segment <
 | `5000–5FFF` | 4,096 | Resident renderer and related code |
 | `6000–7FFF` | 8,192 | VIC bitmap reservation (8,000 displayed bytes) |
 | `8000–BFFF` | 16,384 | Guest cache frames; includes RAM under BASIC |
-| `C000–CFFF` | 4,096 | Additional resident CPU/BIOS/storage code |
+| `C000–C0FF` | 256 | Coherent range staging buffer; linker-enforced reservation |
+| `C100–CFFF` | 3,840 | Additional resident CPU/BIOS/storage code |
 | `D000–DFFF` | 4,096 | I/O visible: VIC, SID, color RAM, CIA, REU/UCI |
 | `E000–EFFF` | 4,096 | State, page map, descriptors, dirty maps, bounce buffers |
 | `F000–FFFF` | 4,096 | Cold-code window / spare; reserve hardware vectors within it |
-| **Total** | **65,536** | Hot/resident executable ceiling: 22 KiB |
+| **Total** | **65,536** | Hot/resident executable ceiling: 22,272 bytes (21.75 KiB) |
 
 The VIC bank is `4000–7FFF`: the matrix at 4000 and bitmap at 6000 are in the **same** 16 KiB bank. This must be asserted, not inferred from total free bytes. Font alignment and VIC character-ROM visibility must also be checked. Color RAM is at D800 and is already inside the I/O reservation, not another 1 KiB of ordinary RAM.
 
@@ -56,7 +57,7 @@ The overlay window is not assumed to solve arbitrary code growth. Only cold oper
 
 User clarification 2026-10-14: assume **4 MiB or larger**, including room for overlays. This supersedes the initial 16 MiB minimum proposal. The supplied 360 KiB disks fit both 512 KiB slots. Larger REUs can expand the HD cache and floppy slots through a capacity-aware allocator; 720 KiB and larger floppy support requires that expanded profile, never truncation. No runtime feature may require memory above the 4 MiB baseline. REU is volatile: arena allocation is not persistence. A 20 MiB hard disk remains file-backed.
 
-Expanded REC DMA counters may wrap within 512 KiB without carrying into the upper bank latch. The implemented low-level routine accepts only a nonzero, single-64-KiB-bank chunk and rejects crossing ranges; future range operations must split and explicitly reload the bank. This is conservative for differing firmware and keeps page transfers safe. See [implemented REU contract](REU_IMPLEMENTATION.md).
+Expanded REC DMA counters may wrap within 512 KiB without carrying into the upper bank latch. The implemented low-level routine accepts only a nonzero, single-64-KiB-bank chunk and rejects crossing ranges; implemented range operations split and explicitly reload the bank. This is conservative for differing firmware and keeps page transfers safe. See [implemented REU contract](REU_IMPLEMENTATION.md) and [coherent range contract](RANGE_IMPLEMENTATION.md).
 
 ## Guest page cache
 
@@ -78,3 +79,11 @@ Fast fetch stores a host pointer, physical tag, valid span, and generation. The 
 8. Reads/writes crossing RAM/ROM/video boundaries dispatch each affected byte/part under the bus contract. An optimization may not bypass ROM protection or dirty-video notification.
 
 Tests include alias writes, eviction during instruction fetch, dirty code replacement, BIOS DMA into partial cached pages, dirty video reads, zero-length bulk operations, 64 KiB count encoding, pin exhaustion, forced minimum-frame tests, and fault injection before/after each ownership transition.
+
+## Current BIOS and storage ownership
+
+The BIOS initializer owns guest IVT/BDA 00000–004FF and ROM F0000–FFFFF. It uses the coherent bus under a temporary all-RAM initialization mode and restores the prior mode; normal guest writes cannot change ROM. Conventional RAM outside IVT/BDA and configured media remain caller-owned. INT 11h/12h ordinary ROM code reads mutable BDA through the CPU bus, including dirty resident bytes.
+
+Whole floppy A begins at REU 100000 and must be explicitly loaded before setting its loaded flag. Disk reads/writes use [range copying](RANGE_IMPLEMENTATION.md), so partial cached-page neighbors and dirty export bytes retain their authority. C000–C0FF is a separate 256-byte host bounce buffer, unavailable to resident code. It is not embedded in the PRG. The remaining C100–CFFF code budget is 3,840 bytes; the full inclusive host map above still totals 65,536.
+
+A range is linear physical guest memory with 20-bit wrap, unlike CPU segmented word helpers that wrap a 16-bit offset. The disk BIOS checks the translated physical 64 KiB DMA boundary independently from ES:BX wrapping. REU ranges must be outside guest backing and within the minimum 4 MiB arena; range length zero means no bytes, whereas the low-level DMA primitive rejects zero.
