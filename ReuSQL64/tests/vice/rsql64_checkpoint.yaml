@@ -1,0 +1,109 @@
+version: 1
+kind: vice_task_plan
+plan_id: reusql64_checkpoint_restore
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6912
+  monitor_port_span: 40
+  retry_policy:
+    max_attempts: 1
+    backoff_ms: 250
+    jitter: false
+  timeouts:
+    launch_s: 45
+    step_s: 300
+    read_s: 5
+  artifact_policy:
+    capture_screen: true
+    capture_state: true
+    capture_dump: false
+  vice:
+    autostart_prg: "build/rsql64_checkpoint.d81"
+    disk8: "build/rsql64_checkpoint.d81"
+    drive8_enabled: true
+    drive8_type: 1581
+    true_drive: false
+    drive9_enabled: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch
+    type: vice.launch
+    params:
+      kill_stale: true
+  - id: wait_checkpoint_quiesced
+    type: assert.memory
+    retry:
+      max_attempts: 90
+      backoff_ms: 500
+      jitter: false
+    params:
+      start: 53232
+      end: 53232
+      equals_hex: "c1"
+  - id: save_database_reu
+    type: dump.reu
+    params:
+      mode: full
+      stage_tag: database_checkpoint
+  - id: continue_to_mutation
+    type: memory.write
+    params:
+      start: 53247
+      bytes_hex: "01"
+  - id: wait_database_mutated
+    type: assert.memory
+    retry:
+      max_attempts: 60
+      backoff_ms: 500
+      jitter: false
+    params:
+      start: 53232
+      end: 53232
+      equals_hex: "c2"
+  - id: restore_database_reu
+    type: load.reu
+  - id: continue_to_reopen
+    type: memory.write
+    params:
+      start: 53247
+      bytes_hex: "02"
+  - id: assert_success_sentinel
+    type: assert.memory
+    retry:
+      max_attempts: 90
+      backoff_ms: 500
+      jitter: false
+    params:
+      start: 53232
+      end: 53232
+      equals_hex: "a5"
+  - id: assert_green_border
+    type: assert.memory
+    params:
+      start: 53280
+      end: 53280
+      equals_hex: "f5"
+  - id: capture_success
+    type: screen.capture
+    params:
+      label: checkpoint_success
+  - id: state_success
+    type: state.capture
+    params:
+      label: checkpoint_success
+  - id: dump_contract_regions
+    type: dump.memory_ranges
+    params:
+      ranges:
+        - label: client_tail
+          start: 12032
+          end: 12543
+        - label: resident_head
+          start: 12544
+          end: 13055
+        - label: abi
+          start: 49152
+          end: 49215
