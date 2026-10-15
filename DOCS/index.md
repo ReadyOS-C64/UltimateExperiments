@@ -6,7 +6,7 @@ Outside ReadyOS—and sometimes before ReadyOS—we do random experiments for th
 
 ## ReadyFS
 
-ReadyFS aims to provide a full set of command-line tools and a coherent way to work with Ultimate DOS drives, mounted disk images or real C64 drives, SOFTIEC, and SD2IEC. That includes mounting disk images and accessing disk images on the Ultimate **without mounting them**, as if they were folders.
+ReadyFS aims to provide a full set of command-line tools and a coherent way to work with Ultimate DOS drives, mounted disk images or real C64 drives, SOFTIEC, and SD2IEC. That includes mounting disk images and accessing disk images on the Ultimate **without mounting them**, as if they were folders. A **unified path syntax** spans all these drive types, and disk operations such as **copy and move work between drive types**, so files can move from one kind of storage to another.
 
 ![ReadyFS command-line editor on a physical C64](readyfs/guide-assets/06-long-line.png)
 
