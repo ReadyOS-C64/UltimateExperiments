@@ -44,7 +44,7 @@
 - Generic UCI completion is transport state, not image-file success. Operation-specific status, exact byte counts and persistence remain separate native integration work.
 - CIA phi2 ticks, native CPU cycles, guest timer ticks and REST duration are different clocks. Establish physical timer progress/turbo independence before using real-time deadlines.
 
-Current overlays are exclusive native owners, not arbitrary function-pointer storage. Keep every return and persistent state resident, release startup sources only after bootstrap, and preserve exact DOS observation/RAM oracles after performance changes. Unit MAIN has 76 bytes and DEVICE 49; cold lifetime design must precede further resident growth.
+Current overlays are exclusive native owners, not arbitrary function-pointer storage. Keep every return and persistent state resident, release startup sources only after bootstrap, and preserve exact DOS observation/RAM oracles after performance changes. Current six-overlay MAIN has115 runtime/114 unit bytes, DEVICE22 and copied-code tail1440; measured per-window fit must precede further growth.
 
 - Startup-only memory needs an initialized resident phase guard; checking overwritten cold state cannot prove lifetime. Commit assets that overlap future cache frames before any BIOS/cache access.
 - A jointly linked overlay must validate and DMA its complete canonical member sum; a renderer-only length silently omits following VIC code.
@@ -58,3 +58,6 @@ Current overlays are exclusive native owners, not arbitrary function-pointer sto
 
 - Preserve REP's bounded host quota while checking real IRQ acceptance at every eligible element; period counts and guest BIOS ticks need not match.
 - Keep accepted physical binaries separate from newer Peddle targets, and reuse expensive gates only under exact reviewed executable/source identity.
+
+- Copied-code expectations come from immutable packaged bytes; a live startup source may already be cache-owned. REST underlying RAM at6510 port addresses does not prove live banking.
+- Preserve new uncertain HD write authority before restoring a pre-run REU backup. Old backup identity does not recover new data.

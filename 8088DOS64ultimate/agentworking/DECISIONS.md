@@ -127,3 +127,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D89 | Implemented/host verified,2026-10-15 | Physicalrunner requires pinned pairedshadowmetadata andimmutablePRGsource comparison for all3584runbytes/A5guard | LiveA000cache neverauthority;FEvectors excluded;RESTunderlyingRAM cannotproveCPUportbanking;no nativebytechange |
 
 | D90 | Measured research/next experiment,2026-10-15 | Prioritize owned clock ABI and coherent memory/fetch cost before broad runtime translation | Actual DOSprofile601936calls,60.32%memory/fetch/address;register-onlyzero-cost ceiling1.081×diagnostic harness;allIRQ/REP sampling retained;translator unimplemented/noXTclaim |
+
+| D91 | Physically verified,2026-10-15 | Accept six-overlay98fc/config1ff1 floppy-only nativeDOS atManual64,explicit2s/360s observer |37screens/14keys/35entries/9216free/returnedprompt,all3584shadow/A5/fullbitmapmatrix,all4MiBrestore222.093s/configmediareset;HDdisabled,noMODE/readability/XTclaim;failedfive staysfailed |
+| D92 | Implemented/host verified,2026-10-15 | OptionalMODErunner requires explicitSHA-bound actualunit proof pluspairedruntime/source/bitmap identity |Root238tooling,independent26testsperlayout/10offlineCLI;defaultVERDIRunchanged,strictshadowand600recovery retained;physicalMODEpending |

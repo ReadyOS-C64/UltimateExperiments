@@ -75,3 +75,8 @@ The cold importer mitigates stale READ status with exact length/EOF/CRC, but is 
 
 
 Physicalnew5run080121 fails180secondfunctionalobservationbudgetwhilefullnativefile4MiBrecoverypasses. Journalsshowmaterialguest-pausedobserverduty,butdonotisolateinterpreter/PIT/MMIO/REUcost; noXTspeedratiofollows. Optional2s/360stestbudgetneedsafresh-backedretry,notreclassificationofoldfailure. RawRESTlowportbytescannotproveCPUbank; hostshadowproofmustusesource-to-runidentityandscopebankingevidenceseparately.
+
+
+2026-10-15 six-overlay HD/scroll: K03 remains HIGH despite successful fit: MAIN115/114,DEVICE22,cold1093/118,shadow1440tail,BSS33pre-map. Runtime expansion must charge real windows. K10/K11 now have forced-cache,complete2/20MiB nativeDOS andabove16MiB addressing/reopen mock evidence; physicalHDremainopen. K15 geometry uncertainty is resolved for actualsuppliedDOSBox-XFDISK/FORMAT/SYS/CHKDSK fixtures, not arbitraryDOSversions. K06 requires preserving newly authoritative uncertainREU350000sector/handoff352000 before restoringoldbackup.
+
+K01/K02 remain HIGH. Actual nativeDOS profile has1169895754CPUstepclocks/601936calls and60.32%memory/fetch/address;658267timer callbacks cost873806129inclusiveclocks withREPoverlap. Broadregister-onlytranslator's idealzero-costceiling is only1.081×thisdiagnostic harness. Nextowned-clockABI experiment retains everyIRQ/REPboundary; no physicalspeedratio is established. IECtrapcoldimportprivatefourcaseproofawaitsreview; K09truedrive/serial remainsseparate.

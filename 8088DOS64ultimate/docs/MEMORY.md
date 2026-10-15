@@ -18,7 +18,7 @@ Compute an effective offset with 16-bit arithmetic; then `physical = ((segment <
 
 ## C64 host map: 64 KiB fully accounted for
 
-| Host range | Bytes | Proposed use |
+| Host range | Bytes | Current allocation / remaining budget |
 |---|---:|---|
 | `0000–01FF` | 512 | 6510 port, allocated ZP, hardware stack |
 | `0200–07FF` | 1,536 | KERNAL-compatible work areas, bootstrap, host input/buffers |
@@ -26,22 +26,23 @@ Compute an effective offset with 16-bit arithmetic; then `physical = ((segment <
 | `4000–43FF` | 1,024 | VIC bitmap color matrix / text screen |
 | `4400–47FF` | 1,024 | Packed 4×8 CP437 font source |
 | `4800–4FFF` | 2,048 | 8×8 CP437 font source / aligned character generator |
-| `5000–5FFF` | 4,096 | Resident DEVICECODE; logical video uses 5000–569F, renderer shares remaining budget |
+| `5000–5FFF` | 4,096 | Resident DEVICECODE, current 4,074 bytes plus 22-byte tail |
 | `6000–7FFF` | 8,192 | VIC bitmap reservation (8,000 displayed bytes) |
 | `8000–BFFF` | 16,384 | Guest cache frames; includes RAM under BASIC |
 | `C000–C0FF` | 256 | Coherent range staging buffer; linker-enforced reservation |
 | `C100–C8FF` | 2,048 | Linked UCIBUFFER: command/data/status transport storage |
-| `C900–CFFF` | 1,792 | Additional resident CPU/BIOS/storage code |
+| `C900–CFFF` | 1,792 | Exclusive FILE/TEXT/INPUT/PIT/GFX/HD overlay window |
 | `D000–DFFF` | 4,096 | I/O visible: VIC, SID, color RAM, CIA, REU/UCI |
 | `E000–EFFF` | 4,096 | State, page map, descriptors, dirty maps, bounce buffers |
-| `F000–FFFF` | 4,096 | Cold-code window / spare; reserve hardware vectors within it |
-| **Total** | **65,536** | Hot/resident executable ceiling with the linked UCI buffer reserved: 20,224 bytes (19.75 KiB) |
+| `F000–FDFF` | 3,584 | Copied HD/scroll code: 2,144 bytes plus 1,440-byte zero tail |
+| `FE00–FFFF` | 512 | Excluded vector/gateway reserve |
+| **Total** | **65,536** | Executable windows total 23,808 bytes; C900 is shared, not six simultaneous allocations |
 
 The VIC bank is `4000–7FFF`: the matrix at 4000 and bitmap at 6000 are in the **same** 16 KiB bank. This must be asserted, not inferred from total free bytes. Font alignment and VIC character-ROM visibility must also be checked. Color RAM is at D800 and is already inside the I/O reservation, not another 1 KiB of ordinary RAM.
 
 Host normal mapping exposes RAM under BASIC/KERNAL while leaving I/O visible. KERNAL calls use a resident gateway outside hidden memory; save/restore `$00/$01`, needed ZP, IRQ state, stack, return registers, and channel state. Guest frames under BASIC and metadata under KERNAL remain protected from accidental CPU access during that mapping. REU staging buffers stay in known visible RAM. Initially avoid DMA into I/O and avoid using RAM under I/O altogether. IRQ/NMI vectors and handlers must remain valid across all maps; test RESTORE/NMI and error exits.
 
-The overlay window is not assumed to solve arbitrary code growth. Only cold operations such as disk selection/help/export can be overlaid initially. The CPU, active BIOS callbacks, pager, and IRQ gateways must stay callable without overlay faults. Record separate CODE/RODATA/BSS boundaries; do not execute embedded constants or overwrite persistent state with an overlay.
+The six current overlay variants have resident wrappers, exclusive ownership and explicit load/release failure paths. Resident CPU/pager and guest interrupt routing remain callable; FILE/HD cannot nest leases. Startup sources and copied code must be committed before the cache reuses 23 overlapped frames. Record separate CODE/RODATA/BSS boundaries; do not execute embedded constants or overwrite persistent state with an overlay. See [HD and copied-code contract](HD_IMPLEMENTATION.md).
 
 ## REU arena: 4 MiB minimum profile
 
@@ -52,7 +53,7 @@ The overlay window is not assumed to solve arbitrary code growth. Only cold oper
 | `180000–1FFFFF` | 512 KiB | Complete floppy B image |
 | `200000–2FFFFF` | 1 MiB | Hard-disk extent cache, independent of guest RAM cache |
 | `300000–33FFFF` | 256 KiB | Cold assembly payloads / fonts / immutable assets |
-| `340000–37FFFF` | 256 KiB | Storage transfer/recovery staging |
+| `340000–37FFFF` | 256 KiB | Six immutable slots340000–342FFF; authoritative sector350000; handoff352000; remaining transfer reserve |
 | `380000–3BFFFF` | 256 KiB | Optional bounded trace/checkpoint scratch |
 | `3C0000–3FFFFF` | 256 KiB | Unallocated reserve; no implicit ownership |
 

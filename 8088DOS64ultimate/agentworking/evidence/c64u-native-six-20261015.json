@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "status": "passed physical six-overlay native DOS and complete recovery",
+  "raw_run": "agentworking/runs/c64u-native-six-file-20261015-085647",
+  "target_runtime_sha256": "98fcd115338c43c8976d35f24feea468a040897f11ee143f8c52c9b477d07ff7",
+  "configured_runtime_sha256": "1ff1d53b39bf46c8ed29809d1486ef140b1275d175e8140d0c0b3c0e0d334671",
+  "target_bytes": 42497,
+  "hd_configuration_disabled": true,
+  "observer_interval_seconds": 2.0,
+  "application_bound_seconds": 360,
+  "prior_failed_five_run_reclassified": false,
+  "hardware": {
+    "host": "10.0.0.79",
+    "firmware": "3.14",
+    "fpga": 121,
+    "core": "1.47",
+    "system": "PAL",
+    "reu_mib": 16,
+    "cpu_speed": "Manual64MHz",
+    "badline_timing": "Disabled"
+  },
+  "application": {
+    "status": "passed",
+    "native_import_genuine_DOS_COMMAND_VER_DIR": true,
+    "screens": 37,
+    "keys": 14,
+    "pagination_keys": 1,
+    "entries": 35,
+    "free_bytes": 9216,
+    "returned_prompt": true,
+    "final_guest_instructions": 684371,
+    "final_screen_host_seconds": 118.15135358399999,
+    "application_and_evidence_seconds": 138.699888042,
+    "physical_runtime_resident_segments": 5,
+    "all_resident_match": true,
+    "copied_shadow_bytes": 3584,
+    "copied_zero_tail_bytes": 1440,
+    "loaded_guard": 165,
+    "live_CPU_port_verified": false,
+    "cga16k_matches_actual_Peddle": true,
+    "floppy_source_and_import_exact": true
+  },
+  "native_state": {
+    "dos64_irq_callback_enabled": {
+      "address": 60168,
+      "value": 1
+    },
+    "dos64_pit_poll_enabled": {
+      "address": 60201,
+      "value": 1
+    },
+    "dos64_pit_ready": {
+      "address": 60198,
+      "value": 1
+    },
+    "dos64_pit_error": {
+      "address": 60199,
+      "value": 0
+    },
+    "dos64_pit_poll_error": {
+      "address": 60200,
+      "value": 0
+    },
+    "dos64_pit_total": {
+      "address": 60194,
+      "value": 1351
+    },
+    "hdb_extension_ready": {
+      "address": 16268,
+      "value": 165
+    }
+  },
+  "native_bitmap_proof": {
+    "status": "passed",
+    "physical_capture": true,
+    "mode": 3,
+    "columns": 80,
+    "returned_prompt": true,
+    "bitmap_bytes": 8000,
+    "matrix_bytes": 1000,
+    "complete_bitmap_equal": true,
+    "complete_matrix_equal": true,
+    "source_fonts_exact": true,
+    "bitmap_sha256": "5586ec535aa94ca266bd50c12f1ebc9e2d51c459d66b64fd73def3f135435cc2",
+    "matrix_sha256": "3e022e1be47239953f01b5dbf53d46c859023f59283376cd9770bb7fad596d16",
+    "oracle_source_sha256": "2f54b88479911bbcff03774ecb82d3f3423c582a48c0a4f57551ca43cdc373d1",
+    "host_ram_sha256": "37560489ffe3d9cf6c4877742b73b59446e50d2a78fba595b234c75822cb8637",
+    "guest640k_sha256": "977a8c2134893340f2121df3b16cb02afffec5eb97c80f12133b5645d81b49ea",
+    "cga16k_sha256": "a4c3351af444b5f6b5930ef487021540e27766b2eef02b5e155399cc7b7d220c",
+    "limitations": [
+      "RAM bytes only; no externalHDMI/readability evidence",
+      "Native BIOS ring input; no physicalmatrix proof",
+      "No liveCPUport proof"
+    ],
+    "first_local_check_failure": "ModuleNotFoundError because privateproposal import lacked explicit productionbuild_support path; correctedhostimportpath only, no targetchange"
+  },
+  "recovery": {
+    "fresh_backup_before_application": true,
+    "all_bytes_independently_equal": 4194304,
+    "backup_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+    "attempts": 1,
+    "native_restore_done": {
+      "mailbox_hex": "44524631a50000060000000000000000a2a16565a2a165657559000000200000",
+      "configured_prg_sha256": "3799e533f23d4562423cc67977d7a99c3ab3eddd62e3f4efb530c62b62a3e23c",
+      "base_prg_sha256": "38806976236c39df7b392b8dbf5312adb92c4ac4f9ac60460f664a3eb61e905b",
+      "backup_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+      "backup_crc32": 1701159330,
+      "elapsed_host_seconds": 144.63595712499995
+    },
+    "complete_restore_phase_seconds": 222.092751,
+    "full_readback_chunks": 256,
+    "phase_bound_seconds": 600,
+    "configuration_restored": true,
+    "mounted_media_equal": true,
+    "reset_resumed": true,
+    "upper12MiB_independently_compared": false
+  },
+  "whole_workflow_seconds": 436.493201,
+  "post_FTP_owned_source_and_PRGs_exact": true,
+  "root_audit_checks": 306,
+  "provenance": {
+    "agentworking/runs/c64u-native-six-file-20261015-085647/result.json": {
+      "sha256": "bf06a2145dec3f027c8edbf251c4e4fc4455034782d25d254638ad895297f8f7",
+      "bytes": 99067
+    },
+    "agentworking/runs/c64u-native-six-file-20261015-085647/application-result.json": {
+      "sha256": "022dfefd929767cfad15f0b3a1df18706f87e578953eb1ce84ae538a91c9e6c8",
+      "bytes": 96065
+    },
+    "agentworking/runs/c64u-native-six-file-20261015-085647/journal.jsonl": {
+      "sha256": "bef56a5f9f3d632c8e13cf5190a2ef5b5a1af03a7ed6cb94d804ba0b9744e316",
+      "bytes": 447435
+    },
+    "agentworking/runs/c64u-native-six-file-20261015-085647/application-journal.jsonl": {
+      "sha256": "506b1cd1778e29e6df48fe15e51eadc53886f3a940334d8d8fbf8a5cd4ae8441",
+      "bytes": 89680
+    },
+    "agentworking/runs/c64u-native-six-file-20261015-085647/captured-resident-identity.json": {
+      "sha256": "13de477490baa25c6b0aca73bb48bb843f2ea92e6b04befcc896e6c44968ae5e",
+      "bytes": 3130
+    },
+    "agentworking/runs/c64u-native-six-file-20261015-085647/reu-before.json": {
+      "sha256": "abccf7b01e33db5881b9a401f7b655ba45fb5d53550d2735b7a627b31aacdb96",
+      "bytes": 302
+    },
+    "agentworking/runs/c64u-native-six-file-20261015-085647/post-ftp-identity.json": {
+      "sha256": "abc38049c0a6bbdf4700f8a00d79d58be82f39f86c76f2c3ec0ac868b3541f4d",
+      "bytes": 897
+    },
+    "agentworking/runs/c64u-native-six-file-20261015-085647/root-reviewed-native-file-inputs.json": {
+      "sha256": "90b1c26339cb476a448198fc4cf7dfabaa3105ed879938b4f851937f32337b48",
+      "bytes": 60538
+    },
+    "agentworking/runs/c64u-native-six-file-20261015-085647/root-audit/verification.json": {
+      "sha256": "e33064e67663b60d2000726f74662f5553d011d37c3445084ec689e7b67cabc1",
+      "bytes": 11827
+    },
+    "agentworking/runs/c64u-native-six-file-20261015-085647/native-bitmap-oracle.json": {
+      "sha256": "bfc2bb08b7c34efd2767eb04798381fdb601896e4ba81c4c6c473030b8b772d7",
+      "bytes": 1131
+    },
+    "agentworking/scratch/physical-six-preflight-review/REVIEW.md": {
+      "sha256": "5cd7a6127f7f5403651403197c26f46e835f8218fddbe5e9f3a8c9e11ba8037b",
+      "bytes": 4410
+    }
+  },
+  "limitations": [
+    "Only first4MiB independently restored/compared; upper12MiB not independently read back",
+    "Prior CPU/timer execution is not restored by reset/resume",
+    "REST underlying RAM identity does not prove liveCPUport banking",
+    "Native BIOS ring keys; physical matrix input not tested",
+    "RAM bitmap/matrix proof; no HDMI/readability acceptance",
+    "HDdisabled: no physical HDread/write/persistence acceptance",
+    "MODE40/80 and CGAgraphics physical gates remain separate",
+    "Observerelapsed is not an XT ratio; no nearXT claim",
+    "DOS image is earlier verified read-only owned fixture, not freshly staged in this run"
+  ],
+  "independent_audit": {
+    "checks": 849,
+    "report": "agentworking/scratch/native-six-physical-audit/REVIEW.md",
+    "report_sha256": "d2dff544a8322f900e43c3ab51d5f78b5e5b613e4fe2ce7455c870c2beba2f17",
+    "manifest_sha256": "f10fb77be04345502627f8411ec1908cfa330f549e792520c428f864dbac4923",
+    "result_sha256": "4fa1d3f61899f0f58f81095d9198d28de9204cf23cf20e4a72b91098fc3f2179",
+    "new_network_or_hardware": false
+  }
+}

@@ -26,3 +26,6 @@ Planning coverage means each request has an implementation/test destination. It 
 
 
 2026-10-15 accepted scope: R03/R11 now have realC64U Manual64MHz native UCIboot/COMMAND.COM/VER/DIR proof, with exact35entries/9216free/returnedprompt and complete4MiB/configuration recovery. R09 native wholefloppy loading is physically accepted; save/reopen remains pending. R14 physical80column bitmap/matrix bytes match independent oracle, but human readability/keyboard/40column remain pending. R10/12/15/16 persistence/HD/IEC/nativephysicalCGA/XTperformance are not complete. [Physical evidence](../agentworking/evidence/c64u-native-dos-20261015.json).
+
+
+2026-10-15 six-overlay checkpoint: R10 now has source-complete32KiB cached extents, actual DOS2/20MiB boot/eviction/read-only/write-uncertainty/32-bit-offset/reopen model evidence and root focusedHD gates. GenuineFDISK/FORMAT/SYS/CHKDSK fixture creation is separately accepted in DOSBox-X. Physical HDpersistence is still required. R14 has actual suppliedMODE CO40/CO80 andcomplete bitmap/matrix Peddleproof; externalreadability/humanmatrix remainopen. R16 now has an instrumentedrealDOScostprofile; no nearXTclaim ortranslatorimplementation follows. [HD](../agentworking/evidence/hd-production-20261015.json),[profile](../agentworking/evidence/dos-performance-profile-20261015.json).

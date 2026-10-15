@@ -2,7 +2,7 @@
 
 Planning and implementation of a C64 Ultimate program that boots the supplied **real MS-DOS 3.3**, emulates the 8086/8088 instruction set, and provides 640 KiB of conventional PC memory through the REU. Target hardware is the user's 64 MHz C64U with **4 MiB or larger REU**.
 
-**Status: genuine DOS 3.3 boots on the physical C64U at Manual 64 MHz.** The frozen three-overlay runtime imports the unchanged floppy through native UCI, runs DOS and COMMAND.COM, and passes VER and DIR /P: all 35 filenames/sizes, 9,216 free bytes and the returned `A>` prompt. Complete first-4-MiB REU restoration, prior configuration/media and reset/resume pass. [Physical evidence](agentworking/evidence/c64u-native-dos-20261015.json). DOS owns INT 21h, FAT and application loading.
+**Status: the current six-overlay target boots genuine DOS 3.3 on the physical C64U at Manual64 MHz.** Runtime98fc/configured1ff1 passes native UCI import, DOS/COMMAND.COM, VER and DIR /P: all35 filenames/sizes,9,216 free bytes and returned`A>`. Complete first4MiB restoration, settings/media/reset and strict copied-code identity pass. HD was disabled for this hardware run. [Physical evidence](agentworking/evidence/c64u-native-six-20261015.json). DOS owns INT21h,FAT and application loading.
 
 The current six-overlay target adds a cached 2/20 MiB HD backend, verified copied code beneath KERNAL ROM and faster coherent scrolling, on top of timer IRQ0 and native CGA modes 4/5/6. Root checks pass **417 Zig/Peddle tests, 597 quick CPU cases and 218 tooling checks**, plus genuine native DOS/MODE and focused HD gates. The reviewed full 5,701-case CPU and long HD proofs apply by exact source/binary identity. [Current evidence](agentworking/evidence/hd-production-20261015.json). HD and floppy startup remain disabled until explicitly configured.
 
@@ -10,7 +10,7 @@ Genuine internal DOS file workflows also pass through native startup and ticks: 
 
 The supplied MODE utility also passes CO40 and CO80 with exact BDA geometry and complete native bitmap/matrix checks. A one-byte BIOS fix follows original XT ignored-function behavior. [MODE evidence](agentworking/evidence/dos-mode-xt-20261015.json).
 
-The five-overlay physical attempt reached DOS but exceeded its observation budget; recovery passed. The current six-overlay target has not yet run physically. Human matrix input, physical 40/80-column readability, native graphics on the display, persistent floppy/HD/IEC images and XT performance remain unfinished. Graphics reduction and palette compromises are explicit; guest VRAM is preserved. CPU profiles exclude DMA stalls and cannot establish a physical XT speed ratio. Historical failures and earlier accepted targets remain in the working records.
+The earlier five-overlay physical attempt remains failed after exceeding its observation budget; recovery passed. The six-overlay floppy-only run passed with explicit2s/360s observer settings. Human matrix input, physical 40/80-column readability, native graphics on the display, persistent floppy/HD/IEC images and XT performance remain unfinished. Graphics reduction and palette compromises are explicit; guest VRAM is preserved. CPU profiles exclude DMA stalls and cannot establish a physical XT speed ratio. Historical failures and earlier accepted targets remain in the working records.
 
 Compatibility targets the **original 8088 and IBM PC/XT**, with the shared 8086 instruction set. Existing 8086 implementations are references; they do not define our CPU profile or reduce the required functionality.
 

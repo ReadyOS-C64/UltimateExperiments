@@ -29,3 +29,10 @@ This accepts scripted native DOS execution and physical bitmap bytes, not human 
 ## Physical native-file recovery and retained new-target failure
 
 Run080121 restores the freshfirst4MiB exactly onattempt1,withnativeCRC/8192sectors/knownCLOSE/strictcodeandoriginalservicefullreadback. Complete stage231.923seconds,configuration/media/resetpass. The same run's five-overlayDOSapplication failsits180secondobservationboundbeforeVER/DIRcomplete; it is not a passedDOSrun. Finalfailurecapturehas READackA5/command0,so generictimeouttextdoesnotproveanative12secondhang. [Evidence](../agentworking/evidence/c64u-native-file-recovery-20261015.json). Old064456three-overlayDOSacceptance remainsseparate. Optional boundedobservercadence/budget nowpreserves olddefaults andreportstimeoutscope. RawREST0000/0001cannotbeusedasaliveCPUbankproof; copiedHDBIOSidentitymustcompareimmutablePRGsourceA000–ADFFtoactualF000–FDFF,withseparatebank-evidencescope.
+
+
+## Current six-overlay floppy-only acceptance
+
+Terminal run085647 passes runtime98fc/configured1ff1 atManual64/PAL/firmware3.14. HDdisabled. GenuineDOS/VER/DIR /P exact35entries/9216free/returnedprompt andall3584copiedshadowbytes/A5guard pass. Completebitmap/matrix matchindependentlicensedfontoracle. Freshfull4MiBbackup/nativefile restore/allbytecompare/configmediareset pass,222.093srestore/436.493swhole. [Evidence](../agentworking/evidence/c64u-native-six-20261015.json). Explicit2s/360sobserverfunctionaloptions wereused; oldfailedfive180srun staysfailed. No externalHDMI/physicalmatrix/MODE/CGAgraphics/HDpersist/upper12MiB/XTacceptance follows.
+
+The opt-in [MODE runner](../build_support/c64u_native_display_runner.py) requires explicitactualunitproof SHA,pinnedpairedruntime/source/bitmap inputs,rolespecificshadowmetadata,freshownedfloppy/PRGs andcompleteREUrecovery. Localvalidate andindependentpreflight precedeTerminalexecution. [Hostevidence](../agentworking/evidence/mode-host-production-20261015.json).

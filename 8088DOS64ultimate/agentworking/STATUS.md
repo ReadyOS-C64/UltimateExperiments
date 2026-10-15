@@ -2,7 +2,7 @@
 
 Updated: 2026-10-15, America/Los_Angeles.
 
-**Phase: six-overlay HD/scroll target promoted and accepted in Peddle; fresh physical acceptance pending.** Implementation remains active, with local commits only.
+**Phase: six-overlay floppy-only native DOS and complete recovery accepted physically; HD and MODE physical gates pending.** Implementation remains active, with local commits only.
 
 Current runtime98fcd115/unit6eba1ee7,42497-byte PRGs load0801–ADFF. Root417default/597quick/218tooling plus nativeDOS1/MODE1/HDfixtures1/backend14/BIOS12/cold6 pass. Three optional long cases skip in the root quick lane; reviewed eight-case long HD and5701CPU proofs are retained by exact bothPRG/203execution-test-source identity. All398frozen dependencies independently checked. Independent normalproduction review13 and shadowhost28 pass. Required Make range.inc dependency fixed without nativebytechange. Actual rootDOS64KiB capture passes sixresidentproofs/all3584shadowbytes/A5guard. [Evidence](evidence/hd-production-20261015.json).
 
@@ -10,7 +10,7 @@ Sixassets commit12288bytes toREU340000–342FFF; separate A000–ADFF copies to 
 
 Frozen three-overlay647eca has physicalC64U Manual64MHz/PAL/firmware3.14 DOS/VER/DIR /P/all35entries/9216free/returnedA> andfirst4MiB/config/media/reset acceptance. Currentfive3c physicalattemptfailed180s beforeVERcomplete; native-file4MiBrestorepassed231.923s. Those scopes remain unchanged. [EarlierDOS](evidence/c64u-native-dos-20261015.json),[failedapp/recovery](evidence/c64u-native-file-recovery-20261015.json).
 
-Next physicalsix run is floppy-only with D64Hdisabled, freshbackup, strictimmutable shadowidentity andexplicit2s/360s observer. RESTunderlyingRAM0000/0001 does notprove liveCPUbanking. Humanmatrixkeyboard/external40/80readability/CGA/physicalHDpersistence/IEC runtime/nearXTspeed remainopen. PrivateMODEproductionworkflow, IECVICEloader andprofile/translation work are separately under review; no privateproof expands shared acceptance. Historicalrecords below retain their original scope andfailures.
+Fresh Terminal physicalsix run085647 PASSES with D64Hdisabled,37coherentscreens/14keys/35entries/9216free/returnedA>,684371guest at118.151s;app+evidence138.700s. Allfivephysicalresidentsegments,3584shadowbytes/1440tail/A5guard andfull8000bitmap/1000matrix match. PITenabled/ready1/errors0,total1351. Fresh4MiBbackup beforeapp andallbyteaftercompare,firstattemptnativefile222.093s<600,priorconfig/media/resetpass;whole436.493s/exit0. Ownedfloppy/twoPRGs postFTP exact. [Currentphysical](evidence/c64u-native-six-20261015.json). OptionalMODEhostproduction nowpromoted/root238tooling;both targetPRGsunchanged. [MODEhost](evidence/mode-host-production-20261015.json). RESTunderlyingRAM0000/0001 does notprove liveCPUbanking. Humanmatrixkeyboard/external40/80readability/CGA/physicalHDpersistence/IEC runtime/nearXTspeed remainopen. PrivateIECfix/coldprofile, HDfailureevidencehook andowned-clockperformance are separately under review; no privateproof expands shared acceptance. Historicalrecords below retain their original scope andfailures.
 
 ## User decisions to preserve
 
