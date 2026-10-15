@@ -24,16 +24,30 @@ python3 -m http.server 8765 --directory DOCS
 
 Open `http://localhost:8765/`. The site uses relative URLs so it works beneath a GitHub repository path as well as a custom domain.
 
-## Enable GitHub Pages
+## GitHub Pages
 
-1. Push the repository and these commits to GitHub. This checkout has no remote configured, so no repository or public deployment has been created automatically.
+Repository: [ReadyOS-C64/UltimateExperiments](https://github.com/ReadyOS-C64/UltimateExperiments). Website: [Ultimate Experiments documentation](https://readyos-c64.github.io/UltimateExperiments/). Pages uses the GitHub Actions workflow on `main`.
+
+To configure a new copy of this repository:
+
+1. Push the repository and documentation commits to GitHub. The original checkout tracks `ReadyOS-C64/UltimateExperiments` through its `origin` remote.
 2. In **Settings → Pages → Build and deployment**, choose **GitHub Actions**.
 3. Merge the documentation to `main`, or run **Publish documentation** manually from the branch you want to publish. Check that the `github-pages` environment permits that branch.
-4. The workflow installs the pinned Markdown dependency, rebuilds and validates `DOCS/`, uploads only that folder, and deploys it. Its deployment output supplies the real website URL.
+4. The workflow installs the pinned Markdown dependency, rebuilds and validates `DOCS/`, uploads only that folder, deploys it, and checks every published file against its SHA-256 hash. Its deployment output supplies the real website URL.
 
 The workflow triggers on relevant pushes to `main` and supports manual dispatch. Pull requests run a separate validation workflow without deployment. It does not publish the entire repository tree or fetch the independently managed demo websites.
 
 GitHub's [custom Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages) describes the deployment permissions, artifact and environment setup used here. No Jekyll processing is required; `.nojekyll` is included. The existing externally hosted ReadyFS demonstration remains independent.
+
+## Validate the live site
+
+After deployment, run:
+
+```sh
+npm run check:live -- --base-url https://readyos-c64.github.io/UltimateExperiments/
+```
+
+The live validator requests every published page, screenshot, Markdown source, supporting asset and main D81. It requires HTTP 200 and exact SHA-256 equality with the checkout, with bounded retries for deployment propagation. The deployment workflow runs this automatically after publishing. Local link/anchor and media/privacy checks run before upload.
 
 ## Evidence and privacy
 

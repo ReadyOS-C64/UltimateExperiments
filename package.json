@@ -4,8 +4,13 @@
   "type": "module",
   "scripts": {
     "build:docs": "node tools/build-docs.mjs",
-    "check:docs": "python3 tools/check_docs.py"
+    "check:docs": "python3 tools/check_docs.py",
+    "check:live": "python3 tools/check_live_docs.py"
   },
-  "engines": { "node": ">=20" },
-  "devDependencies": { "marked": "17.0.5" }
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "marked": "17.0.5"
+  }
 }

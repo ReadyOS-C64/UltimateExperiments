@@ -28,6 +28,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build:docs
       - run: npm run check:docs
+      - run: git diff --exit-code -- DOCS
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
@@ -42,6 +43,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v6
       - name: Deploy documentation
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Validate published pages and downloads
+        env:
+          PAGES_URL: ${{ steps.deployment.outputs.page_url }}
+        run: python3 tools/check_live_docs.py --base-url "$PAGES_URL"

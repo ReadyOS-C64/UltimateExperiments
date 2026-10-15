@@ -1,5 +1,7 @@
 # Ultimate Experiments
 
+[Source repository on GitHub](https://github.com/ReadyOS-C64/UltimateExperiments)
+
 Outside ReadyOS—and sometimes before ReadyOS—we do random experiments for the Commodore 64 Ultimate. Some may become supported projects; some are one-offs and throwaways. These guides describe what each experiment currently does and how to try it.
 
 ## Pick an experiment
