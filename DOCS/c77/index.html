@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>C77 Cyberpunk 77 · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: C77 Cyberpunk 77"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">Start</a><a href="../readyfs/index.html">ReadyFS</a><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated guide</a><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch</a><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC</a><a href="../readyfs/tours/editor.html">Editor tour</a><a href="../readyfs/tours/sd2iec.html">SD2IEC tour</a><a href="../reusql/index.html">ReuSQL64</a><a href="../reusql/sql-language.html">SQL language</a><a href="index.html" aria-current="page">C77 gallery</a></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#what-is-preserved">What is preserved</a></li><li><a href="#character-rom-behavior">Character-ROM behavior</a></li><li><a href="#use-and-reproduce">Use and reproduce</a></li><li><a href="#layout">Layout</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="c77-cyberpunk-77">C77 Cyberpunk 77</h1>
+<p>This is the Commodore 77 dual-bank character-ROM and Cyberpunk 77 palette experiment, originally developed in a ReadyOS checkout and preserved here as an independent experiment. It explores how a reconstructed text face and a deliberately vivid palette look across a full set of ReadyOS applications, including a CRT-style presentation.</p>
+<h2 id="what-is-preserved">What is preserved</h2>
+<ul>
+<li><a href="C77CYBER.VPL">C77CYBER.VPL</a>: a 16-color palette for VICE/Ultimate use.</li>
+<li><a href="assets/c77-photo-reconstruction-readyos-v3-chargen.bin">Dual-bank character ROM</a>: a 4,096-byte character ROM with the reconstructed A–Z/0–9 face in both selectable C64 banks.</li>
+<li><a href="assets/c77-photo-reconstruction-readyos-v3.64c">Editor-compatible first bank</a>: a corresponding <code>.64c</code> file.</li>
+<li><a href="screenshots/c77-cyberpunk-77-charrom/README.html">Clean dual-bank gallery</a>: 21 ReadyOS states, including the loader, launcher, editor, files, shell, utilities, games, IRC and UCI tester.</li>
+<li><a href="screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a>: the same application states with blur, scanlines and double-scan presentation.</li>
+<li><a href="screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a>: the retained first pass.</li>
+</ul>
+<p><img loading="lazy" decoding="async" src="screenshots/c77-cyberpunk-77-charrom/01_launcher.png" alt="ReadyOS launcher with the C77 character ROM"></p>
+<h2 id="character-rom-behavior">Character-ROM behavior</h2>
+<p>The loader uses character bank 0 while ReadyOS applications select bank 1, so a single-bank replacement is insufficient. The experimental ROM changes letters, digits and their reverse-video equivalents in both banks. Bank 1 also receives uppercase aliases at screen codes 65–90 for applications that write screen codes directly. Punctuation, graphics and unrelated glyphs remain stock.</p>
+<p>The clean captures are native 320×200 frames. Enlargements and contact sheets make comparisons easier. VICE&#39;s automation framebuffer is captured before its display shader; the CRT previews reproduce the selected blur/scanline treatment from those frames. <code>FONT-VERIFICATION.txt</code> in the CRT gallery records the bank-1 glyph comparison.</p>
+<h2 id="use-and-reproduce">Use and reproduce</h2>
+<p>Load the palette and character-ROM files with your emulator&#39;s palette/character-ROM settings and a compatible ReadyOS image. The preserved screenshots use the ReadyOS Precog D81; this project does not ship that whole operating-system image as a new standalone release.</p>
+<p><code>build_support/</code> contains a ROM-bank probe, gallery plan generator, screenshot collector, CRT renderer and Ultimate deployment helper. The palette apply/cycle scripts are snapshots of ReadyOS helpers. Some generation and deployment steps still assume a compatible ReadyOS source/release tree and the sibling automation harness; configure their documented input/output variables before use. The CRT renderer uses the ROM under <code>assets/</code> by default. Python image processing requires Pillow.</p>
+<p>The recorded CRT settings include:</p>
+<pre><code class="language-text">VICIIfilter=1
+VICIIdscan=enabled
+VICIIcrtblur=350
+VICIIcrtscanlineshade=650
+VICIIoddlinesphase=1250
+VICIIoddlinesoffset=1000
+</code></pre>
+<p>The original captures used IEC traps with true-drive emulation disabled. Different display settings and firmware may produce different results. The deployment helper writes to hardware; review and configure it before running it.</p>
+<h2 id="layout">Layout</h2>
+<p><code>assets/</code> preserves the ROM experiment; <code>screenshots/</code> holds the galleries and their text metadata; <code>build_support/</code> holds reproducibility helpers. Generated <code>build/</code> packages, preview ZIPs and <code>logs/</code> stay local and ignored. The experiment shares the Ultimate Experiments repository rather than having its own Git history.</p>
+<p><a href="index.html">HTML project overview</a> · <a href="../index.html">All experiments</a></p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

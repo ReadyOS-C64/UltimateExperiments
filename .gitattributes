@@ -3,3 +3,6 @@
 *.jpg binary
 *.bin binary
 *.64c binary
+# C64 scripts intentionally retain CR/PETSCII bytes without text conversion.
+*.seq binary
+*.SEQ binary

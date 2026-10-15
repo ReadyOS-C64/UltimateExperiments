@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="410" viewBox="0 0 1000 410" role="img" aria-labelledby="title desc">
+<title id="title">ReadyFS path resolution</title><desc id="desc">Endpoint and location form a path. Alias and relative spellings resolve to an absolute canonical path, then a capable driver performs the operation.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6" fill="none" stroke="#58637e" stroke-width="1.5"/></marker></defs>
+<rect x="1" y="1" width="998" height="408" rx="16" fill="#f6f8ff" stroke="#d7deef"/>
+<g font-family="Arial, sans-serif" fill="#18213b">
+<text x="32" y="40" font-size="17" font-weight="700" letter-spacing="1">ONE PATH MODEL</text>
+<rect x="32" y="60" width="96" height="62" rx="8" fill="#40318d"/><text x="55" y="101" font-family="monospace" font-size="32" fill="white">u:</text>
+<rect x="140" y="60" width="828" height="62" rx="8" fill="#e5eafa"/><text x="160" y="100" font-family="monospace" font-size="25">/usb1/READYFS_TEST/my-run/source/readme.seq</text>
+<text x="32" y="149" font-size="17" fill="#40318d">Endpoint</text><text x="141" y="149" font-size="17" fill="#43516e">Location on that endpoint</text>
+<rect x="32" y="185" width="282" height="96" rx="10" fill="white" stroke="#c9d2e7"/>
+<text x="49" y="211" font-size="14" font-weight="700" fill="#006e82">YOUR SPELLING</text>
+<text x="49" y="237" font-size="17" font-family="monospace">@lab:/source/readme.seq</text><text x="49" y="262" font-size="15" fill="#58637e">or readme.seq + current location</text>
+<path d="M318 232H352" stroke="#58637e" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="364" y="185" width="280" height="96" rx="10" fill="white" stroke="#c9d2e7"/>
+<text x="381" y="211" font-size="14" font-weight="700" fill="#40318d">RESOLVED IDENTITY</text><text x="381" y="237" font-size="17">Absolute endpoint + location</text><text x="381" y="262" font-size="15" fill="#58637e">Normalize . and /; check length</text>
+<path d="M648 232H682" stroke="#58637e" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="694" y="185" width="274" height="96" rx="10" fill="white" stroke="#c9d2e7"/>
+<text x="711" y="211" font-size="14" font-weight="700" fill="#9a5610">DEVICE OPERATION</text><text x="711" y="237" font-size="17">Check driver capability</text><text x="711" y="262" font-size="15" fill="#58637e">Translate and perform I/O</text>
+<path d="M32 314H968" stroke="#d7deef"/>
+<text x="32" y="346" font-size="18" font-weight="700">A valid path is a description of a place.</text><text x="32" y="375" font-size="18">Support for an operation still depends on the endpoint, driver, and path shape.</text>
+</g></svg>

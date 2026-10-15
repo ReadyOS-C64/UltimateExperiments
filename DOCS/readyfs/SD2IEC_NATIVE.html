@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Native SD2IEC and IEC support · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Native SD2IEC and IEC support"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">Start</a><a href="index.html">ReadyFS</a><a href="READYFS_USER_GUIDE.html">Illustrated guide</a><a href="READYFS_RUN_GUIDE.html">RUN / batch</a><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC</a><a href="tours/editor.html">Editor tour</a><a href="tours/sd2iec.html">SD2IEC tour</a><a href="../reusql/index.html">ReuSQL64</a><a href="../reusql/sql-language.html">SQL language</a><a href="../c77/index.html">C77 gallery</a></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#device-partition-and-directory-are-different-things">Device, partition, and directory are different things</a></li><li><a href="#automatic-detection-and-explicit-inspection">Automatic detection and explicit inspection</a></li><li><a href="#configuration-commands">Configuration commands</a></li><li><a href="#file-and-folder-examples">File and folder examples</a></li><li><a href="#images-and-boundaries">Images and boundaries</a></li><li><a href="#verified-evidence">Verified evidence</a></li><li><a href="#illustrated-multi-file-walkthrough">Illustrated multi-file walkthrough</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="SD2IEC_NATIVE.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="native-sd2iec-and-iec-support">Native SD2IEC and IEC support</h1>
+<p>This document tracks the current standalone ReadyFS implementation. It does not
+require a Mac relay, HTTP, REST, or a network connection while ReadyFS runs.
+Development automation uses the C64 Ultimate&#39;s external interfaces to install
+and observe test builds; that automation is separate from the C64 program.</p>
+<h2 id="device-partition-and-directory-are-different-things">Device, partition, and directory are different things</h2>
+<table>
+<thead>
+<tr>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>10:</code></td>
+<td>IEC device 10, as used by configuration commands</td>
+</tr>
+<tr>
+<td><code>10:/folder/file</code></td>
+<td>A path on device 10; ReadyFS queries and pins its current partition for this operation</td>
+</tr>
+<tr>
+<td><code>10.1:/folder/file</code></td>
+<td>A path explicitly on partition 1 of device 10</td>
+</tr>
+<tr>
+<td><code>9:/FILE</code></td>
+<td>A file on a conventional flat IEC disk/image</td>
+</tr>
+<tr>
+<td><code>s0:/folder/file</code></td>
+<td>Ultimate SoftwareIEC partition 0, a separate endpoint</td>
+</tr>
+<tr>
+<td><code>u:/usb1/folder/file</code></td>
+<td>UltimateDOS host storage</td>
+</tr>
+</tbody></table>
+<p>SD2IEC FAT partitions support nested directories. A mounted D64/D71/D81 is a
+flat disk filesystem: <code>10.1:/FILE</code> refers to its contents while it is mounted.
+A DNP has directories, but the firmware&#39;s partition-type reply cannot distinguish
+it from FAT. <strong>The same text path can refer to different media after a mount.</strong>
+An alias shortens a location; it does not remove these device capabilities or
+media-state boundaries.</p>
+<p>Native components are limited to 16 bytes by this first implementation, even
+where FAT itself permits longer names. Wildcards and DOS command separators are
+rejected in exact file-operation names. REL files are not ordinary byte streams
+and are not supported by the copy pump. SEQ, PRG, and USR retain their CBM type.</p>
+<h2 id="automatic-detection-and-explicit-inspection">Automatic detection and explicit inspection</h2>
+<p>The first native file operation queries the drive identity and caches its
+classification in the ReadyFS session. SD2IEC operations then query <code>G-P</code> to
+resolve the current or requested partition and distinguish hierarchical media
+from a flat image. A descriptor retains its partition during staging, verified
+commit, and MOVE cleanup. Detection does not silently change extension settings,
+select a different current partition, or mount an image.</p>
+<pre><code class="language-text">probe iec 10:
+profile iec 10:
+iec 10: version
+iec 10: partitions
+iec 10: partition
+iec 10: partition 1
+</code></pre>
+<p>A cached identity can become stale if hardware is replaced or readdressed outside
+ReadyFS. Use <code>probe iec 10:</code> again after such changes. ReadyFS&#39;s native reset,
+address, raw-DOS, and partition-selection paths invalidate affected session data.
+Device absence and an unsupported media/path combination are different failures.</p>
+<h2 id="configuration-commands">Configuration commands</h2>
+<p><code>help iec</code> lists the command syntax. These commands run on the C64 over IEC.
+SD2IEC-specific operations first check the actual device identity.</p>
+<h3 id="general-iec-operations">General IEC operations</h3>
+<pre><code class="language-text">iec 10: status
+iec 10: version
+iec 10: initialize
+iec 10: reset soft
+iec 10: dos &quot;UI&quot;
+iec 10: dos --hex &quot;55 49&quot;
+</code></pre>
+<p><code>status</code> reads the current DOS reply. <code>version</code> sends <code>UI</code>. <code>initialize</code> sends
+<code>I</code>; <code>reset soft</code> sends <code>UJ</code>. Their effect and support depend on the drive&#39;s DOS.
+Raw <code>dos</code> is an expert escape hatch, not a portability layer: the supplied bytes
+are sent to that device and its actual status is shown. Hex bytes are needed for
+binary parameters; typing decimal digits is not equivalent to a binary byte.</p>
+<h3 id="sd2iec-settings-and-persistence">SD2IEC settings and persistence</h3>
+<pre><code class="language-text">iec 10: config
+iec 10: extensions 2
+iec 10: hide-extensions on
+iec 10: images both
+iec 10: wildcard 1581
+iec 10: partition 1 --select
+iec 10: save-config
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Accepted values</th>
+<th>Native command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>extensions</code></td>
+<td><code>0</code> through <code>4</code></td>
+<td><code>XE0</code> through <code>XE4</code></td>
+</tr>
+<tr>
+<td><code>hide-extensions</code></td>
+<td><code>on</code>, <code>off</code></td>
+<td><code>XE+</code>, <code>XE-</code></td>
+</tr>
+<tr>
+<td><code>images</code></td>
+<td><code>files</code>, <code>dirs</code>, <code>both</code></td>
+<td><code>XI0</code>, <code>XI1</code>, <code>XI2</code></td>
+</tr>
+<tr>
+<td><code>wildcard</code></td>
+<td><code>1541</code>, <code>1581</code></td>
+<td><code>X*-</code>, <code>X*+</code></td>
+</tr>
+<tr>
+<td><code>partition N --select</code></td>
+<td>Valid partition number</td>
+<td><code>CPN</code></td>
+</tr>
+<tr>
+<td><code>save-config</code></td>
+<td>No argument</td>
+<td><code>XW</code></td>
+</tr>
+</tbody></table>
+<p>Extension modes on the detected firmware:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Normal FAT file creation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>0</code></td>
+<td>No X00 wrapper for names representable directly in FAT</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td>X00 for SEQ/USR/REL; ordinary PRG stays raw</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td>X00 for ordinary file types</td>
+</tr>
+<tr>
+<td><code>3</code></td>
+<td>SEQ/USR/REL filename extensions, without X00 headers</td>
+</tr>
+<tr>
+<td><code>4</code></td>
+<td>As mode 3, including PRG extensions</td>
+</tr>
+</tbody></table>
+<p>Modes 3/4 also enable extension hiding. With hiding enabled, a FAT
+<code>README.SEQ</code> is presented as the logical SEQ file <code>README</code>. Disk-image names
+have special firmware rules; the raw-image procedure below accounts for
+ReadyFS&#39;s staging and rename behavior. <code>images both</code> lists each image twice,
+with its file type and as a directory. <code>wildcard 1581</code> makes text after <code>*</code>
+participate in matching; <code>1541</code> ignores that trailing text in native matching.</p>
+<p>These settings affect the drive globally, including other C64 software.
+<code>config</code> shows the native <code>X</code> response rather than guessing settings from a
+ReadyFS preference. Extension mode and extension hiding are related firmware
+settings; inspect <code>config</code> after changing either. Image listing as directories
+is a presentation setting, not proof that a filesystem entry is an ordinary
+FAT directory. On the tested firmware, image files are rejected as intermediate
+path components. Recursive planning therefore stops if a listing presents an
+image as a directory; it does not silently mount, skip, or recurse into it. Use
+<code>images files</code> explicitly when you want image containers treated as files.
+Running changes and EEPROM persistence are separate: use
+<code>save-config</code> only when the current drive settings are the ones to retain.</p>
+<h3 id="device-address">Device address</h3>
+<pre><code class="language-text">iec 8: address 10
+iec 8: address 10 --save
+iec 10: reset hard
+</code></pre>
+<p>The address command sends a <strong>binary</strong> <code>U0&gt;</code> address, checks for a conflicting
+listener, and verifies the result on the new address. <code>--save</code> persists it with
+<code>XW</code>. Use the old address in the command and the new address afterward. Hard
+restart is SD2IEC-specific (<code>U</code> followed by <code>$CA</code>). If two devices already answer
+on the same address, resolve that collision before discovery or readdressing.</p>
+<p><code>save-config</code> saves supported current extended settings together, including the
+address; it does not save the current folder, selected partition, or mounted
+image. On hardware with address jumpers, changing the jumper setting can
+override the saved address.</p>
+<p>The user&#39;s external SD2IEC was found on 8, moved to 10, saved, and verified after
+a hard restart. Ultimate A was temporarily disabled during that repair and then
+restored to its original image/settings.</p>
+<h2 id="file-and-folder-examples">File and folder examples</h2>
+<p>Replace <code>demo</code> with a directory you own. These are ordinary ReadyFS commands;
+mutating examples are not requests to run them against existing user files.</p>
+<pre><code class="language-text">dir 10:/demo/
+volume 10.1:/demo/
+tree 10.1:/demo/
+alias card 10.1:/demo
+copy @card:/notes u:/usb1/notes.seq
+copy u:/usb1/notes.seq @card:/notes2
+compare @card:/notes2 u:/usb1/notes.seq
+mkdir @card:/work
+rename @card:/notes2 @card:/renamed
+move @card:/renamed @card:/work/notes
+</code></pre>
+<p><code>COPY</code> stages a new destination, closes it, verifies content, and commits it.
+<code>MOVE</code> removes its source only after successful copy/verification. Empty Ultimate destination folders are valid: the firmware
+reply <code>01,DIRECTORY EMPTY</code> means the requested file is absent, not that lookup
+failed. Failed native
+OPEN/CLOSE and DOS statuses are propagated instead of becoming an empty file or
+successful operation. The native status reader uses the existing command channel
+without closing channel 15, which would discard SD2IEC&#39;s other open buffers.</p>
+<p>Folder removal uses a partition-qualified parent change followed by a leaf-only
+<code>RD</code> command: SD2IEC rejects slash paths in <code>RD</code>. Consequently removal can change
+that partition&#39;s native current directory to the removed folder&#39;s parent. It
+must be empty; recursive deletion is a separate ReadyFS operation.</p>
+<h2 id="images-and-boundaries">Images and boundaries</h2>
+<p>Explicit native image operations use a partition-qualified path:</p>
+<pre><code class="language-text">probe iec 10:
+mount 10.1:/demo/work.d64 --force
+dir 10.1:/
+copy 10.1:/HELLO u:/usb1/hello.prg
+copy u:/usb1/notes.seq 10.1:/NOTES
+dismount 10.1:/ --force
+</code></pre>
+<p>The mount changes SD2IEC&#39;s filesystem context. Subsequent operations query the
+new partition type. Native image unmount first goes to the specified partition&#39;s
+root and then sends its BACK command; it does not use whichever partition happens
+to be current. The real-device mount, directory, volume, read/write, MOVE,
+DELETE, unmount, and return-to-FAT checks have passed. Independent c1541 inspection of the exported modified image also passed: raw
+geometry, bytes, CBM types, and removed MOVE/delete sources were checked.</p>
+<table>
+<thead>
+<tr>
+<th>Transfer</th>
+<th>Implementation boundary</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SD FAT ↔ UltimateDOS</td>
+<td>Normal verified byte-stream transfer</td>
+</tr>
+<tr>
+<td>SD FAT ↔ another IEC image</td>
+<td>Normal verified byte-stream transfer</td>
+</tr>
+<tr>
+<td>SD FAT ↔ SoftwareIEC</td>
+<td>Normal verified byte-stream transfer</td>
+</tr>
+<tr>
+<td>Mounted SD image ↔ a different device/endpoint</td>
+<td>COPY/MOVE with UltimateDOS, IEC9 and SoftwareIEC passed</td>
+</tr>
+<tr>
+<td>SD FAT ↔ image mounted on the <strong>same SD device</strong></td>
+<td>Use an intermediate file on another endpoint and explicit mount/unmount</td>
+</tr>
+<tr>
+<td><code>10.1:/work.d64!/FILE</code></td>
+<td>Not yet implemented as an automatic media transition</td>
+</tr>
+<tr>
+<td><code>u:/usb1/work.d81/FILE</code></td>
+<td>UltimateDOS embedded-filesystem traversal; typed COPY/MOVE and replacement/rename passed with a D64</td>
+</tr>
+</tbody></table>
+<h3 id="ultimatedos-contained-file-paths">UltimateDOS contained-file paths</h3>
+<p>The Ultimate firmware can enter an unmounted image through an ordinary slash
+path such as <code>u:/usb1/work.d81/HELLO</code>. That is separate from native SD image
+mounting. It can also open a typed contained-file name such as <code>HELLO.prg</code> or
+<code>NOTES.seq</code>.</p>
+<p>The 24-overlay build has typed file control for SEQ, PRG, and USR entries.
+A bare destination name inherits the source type; an explicit <code>.seq</code>, <code>.prg</code>,
+or <code>.usr</code> must agree with it. Stages, backups, commit renames, and rollback
+renames carry explicit types on the wire. REL streams remain unsupported.
+When a bare name matches several types, use an explicit suffix. Names are
+limited to 16 decoded CBM bytes; malformed hexadecimal escapes and wildcard
+parents are rejected. Equivalent spellings such as <code>NOTE.seq</code> and <code>NOTE</code>
+cannot be used to copy, move, or rename an entry onto itself.</p>
+<p><strong>The full contained-image transfer matrix has passed on hardware.</strong>
+The actual resident gateway and cold phases also pass host fault tests and 29
+linked 6502 cases with 168 real REU DMA transfers. Matrix-b passed 10 COPY/10 MOVE
+pairs, including SEQ/PRG/USR in both directions, forced replacement, rename,
+type-conflict rejection, self-entry rejection, and independent saved Ultimate
+image byte/type/source-removal checks. SD destination bytes were independently
+hashed after remounting. The focused retained-types run confirmed all 12 retained
+SD-image entry types and the returned FAT PRG type through native STAT.
+Use retained owned fixtures for this acceptance work. Do not access a container
+through this route while it is also mounted on an IEC drive.</p>
+<p>Mount/unmount can close all buffers on an SD2IEC device, including buffers on
+other partitions. It cannot safely occur in the middle of ordinary simultaneous
+source/destination streaming. A future automatic media controller needs whole
+file spooling (with capacity checks), closed-channel transitions, and verified
+source cleanup. The current implementation does not claim that capability.</p>
+<p>ReadyFS remembers mounts it performs as session hints where implemented. An
+unknown previous native image/current directory cannot be reconstructed from
+<code>G-P</code>. Never interpret a remembered path as proof that another program or the
+Ultimate menu has not since changed the media.</p>
+<h2 id="verified-evidence">Verified evidence</h2>
+<ul>
+<li>Exact detected firmware: <code>SD2IEC V1.0.0ATENTDEAD0-36</code>.</li>
+<li>Config CLI, partition queries, and temporary configuration restoration passed
+on the real C64U at 1, 16, and 64 MHz.</li>
+<li>Existing UltimateDOS/IEC-image/SoftwareIEC directed COPY/MOVE baseline passed
+with the SD2IEC present.</li>
+<li>A fresh marked native SD root and a 1,025-byte binary fixture were created and
+reread byte-for-byte. Existing user files were preserved.</li>
+<li>The expanded four-endpoint matrix passed all 12 directed COPY/COMPARE and
+12 MOVE/COMPARE pairs. SD destinations were exported and host-hashed; the
+persisted IEC image was independently checked for bytes, types, and removed
+MOVE sources. Machine settings were restored.</li>
+<li>Automatic directory/tree and VOLUME passed physical acceptance, including
+recursive copy/move in both directions, independent nested-file hashes,
+what-if preservation, and deletion of created descendants. The directories-e
+run also passed native DIR/VOLUME/owner reads at 16/64 MHz and restored the
+original machine settings.</li>
+<li>The latest 24-overlay typed-image matrix and final four-endpoint regression
+passed on identical runtime binaries. Native STAT confirmed all six new FAT
+SEQ destinations, 12 retained SD-image entries and the returned FAT PRG. All
+jobs finished with machine restoration confirmed and their processes exited.</li>
+</ul>
+<p>Detailed chronological evidence, retained failed probes, firmware findings, and
+run paths are in <code>agentworking/readyFS/SD2IEC_2026-10-12.md</code> at repository root.</p>
+<h3 id="copying-a-disk-image-container-onto-sd-fat">Copying a disk-image container onto SD FAT</h3>
+<p>SD2IEC&#39;s normal extension modes may create X00 wrappers. ReadyFS reads the
+logical bytes inside those wrappers, so a successful <code>COMPARE</code> alone does not
+prove that the underlying FAT file is a mountable disk image. In particular,
+renaming an X00 file changes its internal CBM name, not its outer FAT container.</p>
+<p>The current explicit procedure is to inspect <code>iec 10: config</code>, temporarily use
+<code>iec 10: extensions 0</code>, copy to an unused owned <code>.d64</code>/<code>.d71</code>/<code>.d81</code> filename,
+and restore the exact previous extension mode and hiding flag. Restore the mode
+first, then hiding, because modes 3 and 4 enable hiding. Do not save this temporary
+setting to EEPROM. ReadyFS now uses FAT-safe stage names so XE0 can produce a raw
+file. Mounting the resulting image is an additional required check. This procedure
+has passed copying, logical comparison, and actual D64 mounting. The modified
+image export passed independent geometry, byte, and type checks; automatic raw-image creation across all
+five extension modes is not claimed.</p>
+<h2 id="illustrated-multi-file-walkthrough">Illustrated multi-file walkthrough</h2>
+<p>See <a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC folders, batches and disk images</a> for complete recursive round-trip recipes, selected files to IEC/SoftwareIEC, image-to-image copies and the same-device intermediate-folder workflow. The <a href="https://readyfs-editor-demo.klumsy.chatgpt.site/sd2iec.html">new physical video</a> includes chapters, actual command/output captures and an MP4 download.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

@@ -1,0 +1,11 @@
+{
+  "name": "ultimate-experiments-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:docs": "node tools/build-docs.mjs",
+    "check:docs": "python3 tools/check_docs.py"
+  },
+  "engines": { "node": ">=20" },
+  "devDependencies": { "marked": "17.0.5" }
+}

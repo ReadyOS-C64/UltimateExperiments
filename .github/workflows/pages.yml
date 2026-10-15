@@ -1,0 +1,47 @@
+name: Publish documentation
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'DOCS/**'
+      - 'ReadyFS/**'
+      - 'ReuSQL64/**'
+      - 'C77Cyberpunk77/**'
+      - 'tools/**'
+      - 'package*.json'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build:docs
+      - run: npm run check:docs
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: DOCS
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy documentation
+        id: deployment
+        uses: actions/deploy-pages@v4

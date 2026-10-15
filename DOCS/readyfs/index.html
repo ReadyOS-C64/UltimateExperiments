@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">Start</a><a href="index.html" aria-current="page">ReadyFS</a><a href="READYFS_USER_GUIDE.html">Illustrated guide</a><a href="READYFS_RUN_GUIDE.html">RUN / batch</a><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC</a><a href="tours/editor.html">Editor tour</a><a href="tours/sd2iec.html">SD2IEC tour</a><a href="../reusql/index.html">ReuSQL64</a><a href="../reusql/sql-language.html">SQL language</a><a href="../c77/index.html">C77 gallery</a></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#try-the-committed-disk">Try the committed disk</a></li><li><a href="#what-it-does">What it does</a></li><li><a href="#documentation-and-screenshot-tours">Documentation and screenshot tours</a></li><li><a href="#current-scope-and-boundaries">Current scope and boundaries</a></li><li><a href="#build-and-verify">Build and verify</a></li><li><a href="#physical-automation-and-safety">Physical automation and safety</a></li><li><a href="#layout-and-local-evidence">Layout and local evidence</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs">ReadyFS</h1>
+<p>ReadyFS is a standalone Commodore 64 filesystem laboratory and DOS-like command shell. It explores a common path and command model across UltimateDOS host storage, IEC disks, SoftwareIEC, native SD2IEC folders and disk images, with sequential tape support. It belongs to Ultimate Experiments and is separate from ReadyOS integration.</p>
+<h2 id="try-the-committed-disk">Try the committed disk</h2>
+<p>Use <a href="../downloads/readyfs-overlay-lab.d81">readyfs-overlay-lab.d81</a> for normal interactive use. It contains the main program and all 28 sidecars; keep the disk available while loading. Configure at least <strong>1 MiB REU</strong>, mount the image as device 8, then enter:</p>
+<pre><code class="language-basic">LOAD &quot;READYFS-OVERLAY&quot;,8,1
+RUN
+</code></pre>
+<p>Start with <code>HELP</code>, <code>HELP DIR</code>, <code>DRIVES</code>, and <code>DIR 8:/</code>. Discovery and directory reads are useful first steps before preparing disposable write tests. On an Ultimate, UCI-dependent endpoints need the Command Interface enabled. Native SD2IEC remains an IEC device with its own address, partition and filesystem view.</p>
+<p><a href="../downloads/readyfs-lab.d81">readyfs-lab.d81</a> contains the monolithic diagnostic build. It retains a simpler input reader and an earlier command surface; the overlay program is the main shell. Device selection and exact loading behavior are described in the <a href="READYFS_USER_GUIDE.html">user guide</a>.</p>
+<h2 id="what-it-does">What it does</h2>
+<ul>
+<li><strong>Paths and endpoints:</strong> distinguish IEC devices, Ultimate host storage, SoftwareIEC, native SD partitions and contained Ultimate disk-image entries. Aliases name exact locations without changing their capabilities.</li>
+<li><strong>Navigation and inspection:</strong> <code>DIR</code>, <code>TREE</code>, <code>FIND</code>, <code>STAT</code>, <code>VOLUME</code>, drive discovery, backend capability reports and native IEC configuration.</li>
+<li><strong>File work:</strong> typed stream COPY/COMPARE/MOVE, rename, delete, directory creation/removal, content reads, CRC checks, and bounded recursive plans with include/exclude filters and WhatIf previews.</li>
+<li><strong>Interactive shell:</strong> a wrapped 255-byte editor, editable 32-command REU history, output paging, command shortcuts and compact contextual help.</li>
+<li><strong>DOS-style scripts:</strong> staged SEQ files, <code>%0</code>–<code>%9</code>, session/persistent SET variables, arithmetic, IF/GOTO, same-file CALL, result checks and explicit config save/load. <a href="examples/BACKUP.SEQ">BACKUP.SEQ</a> demonstrates guarded PREVIEW/APPLY and verified copy.</li>
+<li><strong>Native SD2IEC:</strong> identity/configuration, partitions, hierarchical folders, explicit image mounts, and type-preserving SEQ/PRG/USR transfers.</li>
+</ul>
+<p>The application uses native IEC and UCI. REST/FTP and host recording tools are development automation, not runtime dependencies of the C64 program.</p>
+<h2 id="documentation-and-screenshot-tours">Documentation and screenshot tours</h2>
+<table>
+<thead>
+<tr>
+<th>Read</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="READYFS_USER_GUIDE.html">Illustrated user guide</a></td>
+<td>Path model, every command, options and worked examples</td>
+</tr>
+<tr>
+<td><a href="portable-guide.html">Portable HTML guide</a></td>
+<td>Self-contained offline/print edition with illustrations</td>
+</tr>
+<tr>
+<td><a href="index.html">Documentation site</a></td>
+<td>HTML references and screenshot walkthroughs without bundled video</td>
+</tr>
+<tr>
+<td><a href="READYFS_INTERACTIVE_UI.html">Interactive UI</a></td>
+<td>Editing, history, paging and display limits</td>
+</tr>
+<tr>
+<td><a href="READYFS_RUN_GUIDE.html">RUN and batch guide</a></td>
+<td>Variables, arguments, flow control, results and complete backup example</td>
+</tr>
+<tr>
+<td><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></td>
+<td>Folder round trips, image views and intermediate-endpoint workflows</td>
+</tr>
+<tr>
+<td><a href="READYFS_IEC_CONFIGURATION.html">IEC configuration</a></td>
+<td>Read settings, make explicit changes, and understand persistence</td>
+</tr>
+<tr>
+<td><a href="SD2IEC_NATIVE.html">Native SD2IEC reference</a></td>
+<td>Firmware caveats, CBM types, path limits and tested routes</td>
+</tr>
+<tr>
+<td><a href="READYFS_SAFETY.html">Safety</a></td>
+<td>Disposable fixtures and ownership gates</td>
+</tr>
+<tr>
+<td><a href="READYFS_ACCEPTANCE.html">Acceptance summary</a></td>
+<td>Current verified scope and retained-evidence policy</td>
+</tr>
+</tbody></table>
+<p>The external demonstration website is independently maintained. Its Git repository and video files are not included here. The repository&#39;s <code>DOCS/</code> editions retain screenshots and written walkthroughs.</p>
+<h2 id="current-scope-and-boundaries">Current scope and boundaries</h2>
+<p>The attached SD2IEC/C64 Ultimate acceptance covered the twelve directed COPY and MOVE routes between Ultimate host storage, mounted IEC9, SoftwareIEC and native SD FAT, recursive folder round trips, and an expanded image matrix with SEQ/PRG/USR type checks. Native reads/configuration were exercised at 1, 16 and 64 MHz. This does not establish compatibility with every firmware, drive, partition or physical tape device.</p>
+<p>The current build uses 28 cached sidecars. Its retained build report places resident code at <code>$B536</code>, leaving 117 safe bytes before KERNAL scratch; the monolithic end is <code>$C5F7</code>. These are build-specific measurements, not spare capacity guarantees.</p>
+<p>Important limits:</p>
+<ul>
+<li>Native SD components are limited to 16 bytes. REL is not a supported native SD byte stream.</li>
+<li>SD image transitions require explicit MOUNT/DISMOUNT. Automatic native <code>image.d64!/FILE</code> traversal is not implemented. SD FAT↔an image mounted on that same device requires an intermediate endpoint.</li>
+<li>SoftwareIEC partition map/unmap remains provisional on firmware without the required commands. Broader backend/recursive coverage and legacy typed-result conversion remain incomplete.</li>
+<li>Scripts are bounded to 16 KiB, 255-byte expanded lines, 16 variables, nine positional inputs, eight local calls and 10,000 executed lines. External-script CALL, nested RUN, SHIFT, FOR, pipes and redirection are unavailable.</li>
+<li>Host-created batch option bytes must be uppercase, such as <code>--WHATIF</code>. Preview and verification do not provide transaction rollback for an entire script.</li>
+</ul>
+<h2 id="build-and-verify">Build and verify</h2>
+<p>Requirements: cc65 (<code>cl65</code>), VICE tools (<code>c1541</code>, <code>x64sc</code>), Python 3, Clang, and .NET for the external VICE harness. From this folder:</p>
+<pre><code class="language-sh">make readyfs
+make readyfs-host-tests
+make readyfs-build-report
+make readyfs-vice-smoke
+</code></pre>
+<p><code>make readyfs</code> builds the monolithic and overlay programs, all 28 sidecars, disks and tape fixtures, host tests, UCI source-contract checks, and memory/REU reports. VICE launchers resolve <code>VICE_TASKS_REPO</code> or the sibling <code>../../agenticdevharness</code> checkout.</p>
+<p>Run <code>node build_support/build_readyfs_user_guide.mjs</code> to rebuild the portable guide. Install the root documentation dependencies with <code>npm ci</code>, or supply <code>READYFS_MARKED_PATH</code> for its Markdown renderer. Rebuild the public documentation with <code>npm run build:docs</code> from the repository root.</p>
+<h2 id="physical-automation-and-safety">Physical automation and safety</h2>
+<p>Use <code>build_support/start_readyfs_*_terminal.sh</code> wrappers for Terminal-owned REST/FTP automation. Read <a href="AGENTS.html">AGENTS.md</a> and the safety guide before hardware work. Mutation suites create fresh marker-owned run roots under <code>/usb1/READYFS_TEST/&lt;run-id&gt;</code> or <code>/sdcard/READYFS_TEST/&lt;run-id&gt;</code>, with separate native SD ownership gates. They preserve original files and restore touched hardware settings.</p>
+<h2 id="layout-and-local-evidence">Layout and local evidence</h2>
+<p><code>src/apps/readyfs/</code> contains C and 6502 assembly; <code>cfg/</code> contains the linker layout; <code>build_support/</code> holds tests and automation; <code>docs/</code> holds the maintained references. <code>artifacts/readyfs/</code> is generated except for the two committed main D81s. Logs and internal working records are ignored.</p>
+<p>The 14 October 2026 cleanup keeps <code>logs/readyfs_c64u/batch-demo-20261013b</code> and its final <code>demo-v8-batch-appended-20261013</code> output. Earlier raw run directories were deleted at the owner&#39;s request. Historical design documents retain run identifiers as provenance; those directories are no longer distributed or guaranteed to exist. See <a href="PROJECT_INVENTORY.html">PROJECT_INVENTORY.md</a> for the source and build map.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

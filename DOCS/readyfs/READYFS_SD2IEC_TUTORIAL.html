@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>SD2IEC: folders, batches and disk-image contents · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: SD2IEC: folders, batches and disk-image contents"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">Start</a><a href="index.html">ReadyFS</a><a href="READYFS_USER_GUIDE.html">Illustrated guide</a><a href="READYFS_RUN_GUIDE.html">RUN / batch</a><a href="READYFS_SD2IEC_TUTORIAL.html" aria-current="page">SD2IEC</a><a href="tours/editor.html">Editor tour</a><a href="tours/sd2iec.html">SD2IEC tour</a><a href="../reusql/index.html">ReuSQL64</a><a href="../reusql/sql-language.html">SQL language</a><a href="../c77/index.html">C77 gallery</a></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#the-short-answer">The short answer</a></li><li><a href="#1-inspect-the-device-and-choose-your-roots">1. Inspect the device and choose your roots</a></li><li><a href="#2-copy-a-whole-nested-folder-to-sd2iec">2. Copy a whole nested folder to SD2IEC</a></li><li><a href="#3-copy-the-tree-back-or-move-an-owned-copy">3. Copy the tree back, or move an owned copy</a></li><li><a href="#4-copy-several-files-to-other-iec-endpoints">4. Copy several files to other IEC endpoints</a></li><li><a href="#5-work-inside-an-image-stored-on-sd2iec">5. Work inside an image stored on SD2IEC</a></li><li><a href="#6-copy-between-sd-image-contents-and-an-ultimate-image">6. Copy between SD image contents and an Ultimate image</a></li><li><a href="#7-move-data-between-sd-folders-and-an-image-on-that-same-sd2iec">7. Move data between SD folders and an image on that same SD2IEC</a></li><li><a href="#boundaries-at-a-glance">Boundaries at a glance</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="READYFS_SD2IEC_TUTORIAL.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="sd2iec-folders-batches-and-disk-image-contents">SD2IEC: folders, batches and disk-image contents</h1>
+<p>Updated 13 October 2026. Companion to the new <a href="https://readyfs-editor-demo.klumsy.chatgpt.site/sd2iec.html">physical SD2IEC walkthrough</a>. The examples below use short, readable locations; the recording uses uniquely named, marker-checked test folders. Substitute folders and images you own, with unused destination names.</p>
+<h2 id="the-short-answer">The short answer</h2>
+<p><strong>Yes, you can copy more than one file, preserve nested SD folders, and work on files inside an image stored on SD2IEC.</strong> The important difference is how you enter the image:</p>
+<ul>
+<li><strong>SD2IEC folders:</strong> <code>10.1:/demo/tree/alpha/one</code> is a native path on device 10, partition 1. Use <code>COPY … --recursive</code> for a whole supported folder tree.</li>
+<li><strong>SD2IEC image contents:</strong> first <code>MOUNT 10.1:/demo/work.d64 --force</code>, then use <code>10.1:/FILE</code>. Mounting changes what partition 1 exposes. Use <code>DISMOUNT 10.1:/ --force</code> to return to SD folders.</li>
+<li><strong>UltimateDOS image contents:</strong> <code>u:/usb1/work.d64/FILE.prg</code> accesses an entry inside an unmounted host image directly. It does not change SD2IEC&#39;s media view.</li>
+</ul>
+<p>Automatic native paths such as <code>10.1:/demo/work.d64/FILE</code> or <code>10.1:/demo/work.d64!/FILE</code> are <strong>not implemented</strong>. An alias cannot add that capability. Image-listing mode <code>dirs</code> or <code>both</code> changes the directory presentation; it does not make automatic traversal work on the tested SD2IEC firmware.</p>
+<p><img loading="lazy" decoding="async" src="guide-assets/sd2iec-boundaries.svg" alt="SD folders and mounted image contents are two views of one partition; UltimateDOS can directly address a separate unmounted image."></p>
+<p><em>SD mount/unmount is an explicit media transition. Keep the intermediate host folder accessible while the SD partition changes views.</em></p>
+<h2 id="1-inspect-the-device-and-choose-your-roots">1. Inspect the device and choose your roots</h2>
+<pre><code class="language-text">PROBE IEC 10:
+IEC 10: CONFIG
+IEC 10: PARTITIONS
+IEC 10: PARTITION 1
+ALIAS LAB u:/usb1/mydemo
+ALIAS CARD 10.1:/mydemo
+</code></pre>
+<p>Device <strong>10</strong> is the IEC address; <strong>1</strong> is the partition. <code>10:/</code> means the device&#39;s current partition, which ReadyFS queries and pins for the operation. <code>10.1:/</code> names the partition explicitly. A <code>G-P</code> type of FAT OR DNP is ambiguous between those two hierarchical formats; type <code>$02</code> identifies the D64 view used in the recording.</p>
+<p>Create the example roots separately before using these aliases. <code>CONFIG</code> is an inspection command. ReadyFS does not change extension modes just because you probe or copy. <code>save-config</code> explicitly saves firmware-supported extended settings together, including the address; it does not save your folder or mounted image. See the <a href="READYFS_IEC_CONFIGURATION.html">configuration reference</a>.</p>
+<h2 id="2-copy-a-whole-nested-folder-to-sd2iec">2. Copy a whole nested folder to SD2IEC</h2>
+<p>Assume <code>@lab:/source</code> contains this tree:</p>
+<pre><code class="language-text">source/
+  readme.seq
+  alpha/
+    one.seq
+    two.seq
+  beta/
+    four.seq
+    deep/
+      three.seq
+</code></pre>
+<pre><code class="language-text">TREE @lab:/source
+MKDIR @card:/tree
+COPY @lab:/source @card:/tree --recursive --whatif
+COPY @lab:/source @card:/tree --recursive
+TREE @card:/tree
+</code></pre>
+<p>The destination is an <strong>existing container</strong>. This copies the contents under <code>tree</code>, preserving the relative folder layout; it does not insert an extra <code>source</code> directory. <code>-R</code> is the short form of <code>--recursive</code>, and <code>-W</code> previews the plan. Ordinary path arguments do not expand shell wildcards: use the recursive selector and its <code>--include</code> / <code>--exclude</code> options when filtering.</p>
+<p>The preview lists selected entries without writing. Actual COPY verifies each destination by default. Read the final <code>FAIL 0</code> as well as the individual completions; the batch count includes directory actions, so it is not necessarily the number of files. A failed batch can leave completed earlier files in place; it is not an all-or-nothing transaction.</p>
+<p><img loading="lazy" decoding="async" src="guide-assets/sd2iec-tree.png" alt="Five files in a nested source tree on the physical C64."></p>
+<p><em>The source includes three subdirectories and five files. The recorded workflow keeps the original source intact.</em></p>
+<p><img loading="lazy" decoding="async" src="guide-assets/sd2iec-copy.png" alt="The completed recursive copy from UltimateDOS host storage to SD2IEC."></p>
+<p><em>One COPY command handles the tree. The walkthrough separately verifies every native destination against its source.</em></p>
+<h3 id="why-some-names-lose-seq">Why some names lose <code>.seq</code></h3>
+<p>Ultimate host names and CBM logical names are different. In the tested SD extension configuration, <code>one.seq</code> is exposed on SD as the logical SEQ name <code>ONE</code>. ReadyFS preserves the file type; this is not data loss. Inspect <code>DIR</code>, <code>STAT</code> and <code>IEC 10: CONFIG</code> instead of guessing an outer FAT filename from the logical name. Native components are limited to 16 bytes in this implementation.</p>
+<h2 id="3-copy-the-tree-back-or-move-an-owned-copy">3. Copy the tree back, or move an owned copy</h2>
+<pre><code class="language-text">MKDIR @lab:/returned
+CP @card:/tree @lab:/returned -R
+TREE @lab:/returned
+COMPARE @card:/tree/alpha/one @lab:/returned/alpha/one
+</code></pre>
+<p>The returned host tree uses the names enumerated by the SD directory. In this configuration those logical names omit the <code>.seq</code> suffix. The recording independently checks all five returned files, not just the example COMPARE above.</p>
+<p><img loading="lazy" decoding="async" src="guide-assets/sd2iec-return.png" alt="The nested SD tree copied back into a separate Ultimate host folder."></p>
+<p><em>The return copy exercises SD directory traversal and host directory creation, then checks the resulting bytes independently.</em></p>
+<p>MOVE uses the same selector but removes each source after its successful verified copy. For a disposable SD copy, prepare the destination first:</p>
+<pre><code class="language-text">MKDIR @card:/moved
+MOVE @card:/tree @card:/moved -R -W
+MOVE @card:/tree @card:/moved -R
+</code></pre>
+<p>This recipe changes the <code>tree</code> used above; run it only when finished with the copy examples. A partially completed MOVE is not a rollback transaction. The earlier hardware acceptance covers this recursive move and nested cleanup; the new recording concentrates on copying and image boundaries.</p>
+<h2 id="4-copy-several-files-to-other-iec-endpoints">4. Copy several files to other IEC endpoints</h2>
+<p>A mounted D64/D71/D81 is flat. A nested SD tree does not acquire a valid flat destination layout automatically. Choose the files and give them distinct short names:</p>
+<pre><code class="language-text">COPY @card:/tree/alpha/one 9:/DEMO-ONE
+COPY @card:/tree/alpha/two 9:/DEMO-TWO
+</code></pre>
+<p>Use your own mounted test image on device 9. The recording uses an owned image, not the user&#39;s existing mounted disk. Both entries are independently extracted after unmounting and checked for bytes and SEQ type.</p>
+<p>For SoftwareIEC, first identify its logical partition and mapping. <code>s0:</code> is <strong>not</strong> IEC device 0. If its root exposes <code>/USB1</code>, and the destination folder already exists:</p>
+<pre><code class="language-text">ALIAS SOFT s0:/mydemo
+CP @card:/tree/alpha/one @soft:/DEMO-ONE
+CP @card:/tree/alpha/two @soft:/DEMO-TWO
+</code></pre>
+<p>SoftwareIEC filename translation and folder operations depend on its firmware and mapping. The recording verifies these two files independently. It does not claim that recursive trees work on every SoftwareIEC implementation.</p>
+<p>To bring those file sets back, choose unused SD destination names:</p>
+<pre><code class="language-text">COPY 9:/DEMO-ONE @card:/from9-one
+COPY 9:/DEMO-TWO @card:/from9-two
+CP @soft:/DEMO-ONE @card:/froms-one
+CP @soft:/DEMO-TWO @card:/froms-two
+</code></pre>
+<p>These reverse recipes use the same ordinary file operations verified by the full four-endpoint acceptance matrix. The new video shows representative selected-file transfers plus the complete nested-folder round trip. Use COMPARE to check any returned file against its retained source.</p>
+<p>For a repeatable multi-file job, the same explicit COPY commands can go in a ReadyFS text script with <code>ONERROR STOP</code>, executed using <code>RUN @lab:/COPYSET.SEQ</code>. <code>RUN script-path [arg1 ... arg9]</code> accepts up to nine arguments, available as <code>%1</code>–<code>%9</code> inside the commands. Named variables and local label subroutines are also supported; external-file CALL and nested RUN are not. See the <a href="READYFS_RUN_GUIDE.html">RUN guide</a> for the parameterized BACKUP.SEQ example and the complete batch reference. Inspect the individual results as well as the final result code. This is a scripting recipe, separate from the newly recorded interactive examples.</p>
+<h2 id="5-work-inside-an-image-stored-on-sd2iec">5. Work inside an image stored on SD2IEC</h2>
+<pre><code class="language-text">MOUNT 10.1:/mydemo/work.d64 --force
+IEC 10: PARTITION 1
+DIR 10.1:/
+COPY @lab:/returned/alpha/one 10.1:/DEMO-ONE
+COPY @lab:/returned/alpha/two 10.1:/DEMO-TWO
+COPY 10.1:/DEMO-ONE @lab:/image-one.seq
+DISMOUNT 10.1:/ --force
+</code></pre>
+<p>The example assumes <code>work.d64</code> already exists as a valid mountable image. Copying an entire image file onto SD is a separate operation: some SD extension modes create X00 wrappers. A logical byte comparison alone does not prove that such a host file can be mounted. Use the explicit raw-image procedure in the <a href="SD2IEC_NATIVE.html">native support reference</a>, including restoration of the previous extension mode and hiding flag.</p>
+<p><strong>While the image is mounted, <code>10.1:/</code> is its directory.</strong> The earlier SD FAT path <code>10.1:/mydemo/tree/...</code> is no longer the same accessible view. This is why the example reads from the host return copy rather than simultaneously reading an SD FAT folder.</p>
+<p>The implementation supports ordinary COPY, COMPARE, MOVE, same-filesystem RENAME and DELETE for supported files inside the mounted image. SEQ, PRG and USR are supported byte streams; REL is not. Use explicit filenames and preserve file types. A normal flat disk image does not support arbitrary nested folders.</p>
+<p><img loading="lazy" decoding="async" src="guide-assets/sd2iec-image.png" alt="The real directory of an owned D64 mounted on SD2IEC."></p>
+<p><em>DIR operates inside the mounted SD image. The mount hint is session information, not a guarantee against changes made by another program.</em></p>
+<h2 id="6-copy-between-sd-image-contents-and-an-ultimate-image">6. Copy between SD image contents and an Ultimate image</h2>
+<p>Use a separate, writable Ultimate image that is <strong>not also mounted on an IEC drive</strong>:</p>
+<pre><code class="language-text">MOUNT 10.1:/mydemo/work.d64 --force
+COPY 10.1:/DEMO-ONE u:/usb1/other.d64/ONE.seq
+COPY 10.1:/DEMO-TWO u:/usb1/other.d64/TWO.seq
+COPY u:/usb1/other.d64/HELLO.prg 10.1:/DEMO-PRG
+STAT 10.1:/DEMO-PRG
+</code></pre>
+<p>Here the SD side uses a mounted media view, while the Ultimate side uses direct slash paths. The destination filename must be explicit; a trailing slash does not yet mean “keep the source filename.” A typed suffix on an Ultimate-contained destination must agree with the source type. The physical typed contained-image matrix covered D64; mounted IEC tests also covered D81. This is not evidence for every image format or firmware combination.</p>
+<p><img loading="lazy" decoding="async" src="guide-assets/sd2iec-prg.png" alt="A PRG copied from an Ultimate-contained image into the SD-mounted image retains PRG type."></p>
+<p><em>STAT reports the native type as <code>$11</code> (PRG). Independent byte checks and type checks answer different questions.</em></p>
+<h2 id="7-move-data-between-sd-folders-and-an-image-on-that-same-sd2iec">7. Move data between SD folders and an image on that same SD2IEC</h2>
+<p>Use host storage as an intermediate. Every command completes and closes its channels before the mount changes:</p>
+<pre><code class="language-text">COPY 10.1:/DEMO-PRG @lab:/fromimg.prg
+DISMOUNT 10.1:/ --force
+COPY @lab:/fromimg.prg @card:/fromimg.prg
+COMPARE @card:/fromimg.prg @lab:/fromimg.prg
+</code></pre>
+<p>For the opposite direction, copy the SD-folder files into an existing host staging folder first, mount the SD image, and copy the selected staging files into its root. A folder tree cannot be preserved inside a flat D64; explicitly choose names and avoid collisions. Keep the staging copy until verification finishes.</p>
+<p>This uses the C64&#39;s native filesystem commands. The intermediate is storage reached by ReadyFS, not a Mac relay or runtime network service.</p>
+<h2 id="boundaries-at-a-glance">Boundaries at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Multiple-file approach</th>
+<th>Image or folder boundary</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ultimate host folders ↔ SD folders</td>
+<td>Recursive COPY; nested five-file round trip recorded and independently checked</td>
+<td>Prepare the destination container; 16-byte native components</td>
+</tr>
+<tr>
+<td>SD folders → mounted IEC disk</td>
+<td>Explicit chosen files, or a reviewed command script</td>
+<td>Flat disk: no automatic flattening of a tree</td>
+</tr>
+<tr>
+<td>SD folders → SoftwareIEC</td>
+<td>Explicit chosen files in the verified mapping</td>
+<td>Firmware/mapping-dependent; no blanket recursive guarantee</td>
+</tr>
+<tr>
+<td>SD image contents ↔ Ultimate host or another IEC endpoint</td>
+<td>Mount SD image, then ordinary file operations</td>
+<td>Device path refers to the mounted image</td>
+</tr>
+<tr>
+<td>SD image contents ↔ Ultimate image contents</td>
+<td>Mounted SD paths on one side; ordinary Ultimate slash paths on the other</td>
+<td>Ultimate image must be separate and unmounted</td>
+</tr>
+<tr>
+<td>SD folders ↔ an image on the same SD device</td>
+<td>Intermediate host files plus explicit mount/unmount</td>
+<td>The partition cannot expose both views to one simultaneous stream</td>
+</tr>
+<tr>
+<td><code>10.1:/disk.d64/FILE</code> or <code>!/FILE</code></td>
+<td>Not automatic in this build</td>
+<td>Mount explicitly first</td>
+</tr>
+</tbody></table>
+<p>The <a href="SD2IEC_NATIVE.html">native support reference</a> and <a href="READYFS_IEC_CONFIGURATION.html">IEC configuration reference</a> document firmware caveats. Existing test roots and images are retained as evidence. No user files were deleted to make the demonstrations.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

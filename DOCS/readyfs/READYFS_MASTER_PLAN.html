@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS Lab Master Plan · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS Lab Master Plan"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">Start</a><a href="index.html">ReadyFS</a><a href="READYFS_USER_GUIDE.html">Illustrated guide</a><a href="READYFS_RUN_GUIDE.html">RUN / batch</a><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC</a><a href="tours/editor.html">Editor tour</a><a href="tours/sd2iec.html">SD2IEC tour</a><a href="../reusql/index.html">ReuSQL64</a><a href="../reusql/sql-language.html">SQL language</a><a href="../c77/index.html">C77 gallery</a></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#purpose-and-deliverables">Purpose and deliverables</a></li><li><a href="#canonical-path-model">Canonical path model</a></li><li><a href="#command-contract">Command contract</a></li><li><a href="#operation-and-metadata-semantics">Operation and metadata semantics</a></li><li><a href="#architecture-and-memory">Architecture and memory</a></li><li><a href="#uci-reliability-contract">UCI reliability contract</a></li><li><a href="#hardware-automation-safety">Hardware automation safety</a></li><li><a href="#verification-and-completion-criteria">Verification and completion criteria</a></li><li><a href="#current-physical-flat-copy-authority-2026-08-17">Current physical flat-copy authority (2026-08-17)</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="READYFS_MASTER_PLAN.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs-lab-master-plan">ReadyFS Lab Master Plan</h1>
+<p>Status: active long-horizon implementation contract. This file preserves the
+full intended scope across context compactions. Passing a narrow probe is not
+completion.</p>
+<h2 id="purpose-and-deliverables">Purpose and deliverables</h2>
+<p>ReadyFS Lab is a standalone C64 filesystem shell and experimental storage
+architecture. It is not yet a ReadyOS launcher app. Deliver:</p>
+<ul>
+<li><code>artifacts/readyfs/readyfs.prg</code></li>
+<li><code>artifacts/readyfs/readyfs-lab.d81</code></li>
+<li>host/parser/planner tests</li>
+<li>VICE UI automation with 25–100 cases and screenshots</li>
+<li>physical C64 Ultimate automation at 1, 16, and 64 MHz</li>
+<li>machine-readable and Markdown reports covering every suite</li>
+<li>documented proven versus provisional behavior suitable for later ReadyOS
+filesystem integration</li>
+</ul>
+<h2 id="canonical-path-model">Canonical path model</h2>
+<p>Endpoint-first paths use <code>/</code> separators:</p>
+<ul>
+<li><code>8:/FILE</code> through <code>30:/FILE</code>: IEC devices</li>
+<li><code>11.3:/folder/file.prg</code>: optional partition 3 on a detected CMD/SD2IEC-style
+IEC device (reserved syntax; not assumed from device number alone)</li>
+<li><code>u:/usb1/folder/file.prg</code>: UltimateDOS host filesystem</li>
+<li><code>s3:/folder/file.prg</code>: SoftIEC partition 3 through UCI bypass</li>
+<li><code>t:/NAME</code>: tape endpoint</li>
+<li><code>@work:/src/file.c</code>: alias rooted at an exact canonical location</li>
+<li><code>u:/usb1/disks/demo.d81!/PROGRAM</code>: explicit image boundary</li>
+<li><code>10.1:/games/demo.d64!/PROGRAM</code>: SD2IEC-compatible partition/image boundary</li>
+</ul>
+<p><code>!</code> always separates the host image file from its internal filesystem. Host
+filename, internal volume label/id, displayed PETSCII name, raw FAT name, and
+contained filename remain distinct metadata.</p>
+<p>The shell resolves every operation to an absolute logical path and does not
+trust mutable backend current-directory state. Canonical lines and expanded
+paths support 255 bytes. Each driver reports and enforces its native component,
+path, channel, and command limits before mutation.</p>
+<p>Shell matching supports <code>*</code> within a component, <code>?</code> for one character, and
+<code>**</code> across directories. <code>--include</code> and <code>--exclude</code> match the whole relative
+stem. Backend/C64-DOS pattern forwarding is explicit through
+<code>--native-pattern</code>; it is never confused with shell recursion.</p>
+<p>For mutating commands, a native pattern is selection syntax only. ReadyFS
+first performs a read-only native directory query, freezes every returned exact
+name in the REU plan, displays the complete WhatIf/confirmation set, and then
+executes ordinary exact-name actions. It never sends a wildcard scratch,
+rename, or write command to a device. Entry-limit truncation invalidates the
+plan instead of authorizing a partial mutation, and newly matching files are
+not included after confirmation.</p>
+<p>The standalone lab now implements both halves of this contract. <code>--whatif</code>
+enumerates, prints, and freezes exact targets while completing zero actions.
+A real native-pattern action additionally requires explicit <code>--apply</code>; the
+same invocation prints and freezes the complete set before its normal
+RFJ1-before-ACK exact-name executor starts. Bare <code>--native-pattern</code>, including
+with <code>--force</code>/<code>--yes</code>, is denied. <code>vice_auto_20260816_171906</code> proves singleton
+delete plus two-file IEC8-to-IEC9 copy and one-file move, byte comparison,
+source/destination postconditions, and parsed finished RFJ1 records. No raw
+wildcard mutation is issued. Regular flat IEC destinations are admitted only
+at their root, and <code>vice_auto_20260816_171852</code> proves a native match returning
+REL type <code>$13</code> invalidates the whole plan before any destination action.</p>
+<h2 id="command-contract">Command contract</h2>
+<p>Discovery/navigation:</p>
+<ul>
+<li><code>drives [scan]</code>, <code>probe [all|uci|udos|softiec|iec|tape|recover]</code></li>
+<li><code>capabilities [path]</code>, <code>status</code>, <code>pwd</code>, <code>cd</code></li>
+<li><code>dir</code>/<code>ls</code>, <code>tree</code>, <code>find</code>, <code>stat</code>, <code>volume</code>, <code>free</code></li>
+<li><code>type</code>/<code>cat</code>, <code>head</code>, <code>tail</code>, <code>compare</code>, <code>verify</code>, <code>crc32</code></li>
+</ul>
+<p>Mutation:</p>
+<ul>
+<li><code>new path [--type seq|prg|usr]</code></li>
+<li><code>write path &quot;text&quot; [--line]</code></li>
+<li><code>append path &quot;text&quot; [--line]</code></li>
+<li><code>copy</code>/<code>cp</code>, <code>move</code>/<code>mv</code>, <code>rename</code>/<code>ren</code></li>
+<li><code>delete</code>/<code>rm</code>, <code>mkdir</code>, <code>rmdir</code></li>
+<li><code>format endpoint --label NAME --id ID</code>, restricted to a confirmed disposable
+IEC image</li>
+</ul>
+<p>Mounting:</p>
+<ul>
+<li><code>mount u:/path/image.d81 8:</code> and <code>dismount 8:</code> through UltimateDOS UCI</li>
+<li><code>mount 10:/path/image.d64</code> and <code>dismount 10:</code> through CMD/SD2IEC semantics</li>
+<li><code>mount u:/usb1/root s3: --name READYFS</code> and <code>dismount s3:</code> for SoftIEC maps</li>
+<li><code>swap 8:</code> for Ultimate disk swap</li>
+<li>tape-image mounting reports REST-only unless a documented C64-side API is
+proven</li>
+</ul>
+<p>Shell management:</p>
+<ul>
+<li><code>alias</code>, <code>unalias</code>, <code>config load</code>, <code>config save</code></li>
+<li><code>history</code>, <code>clear</code>, <code>help</code></li>
+<li><code>run script.seq</code>, <code>test list</code>, <code>test run SUITE</code></li>
+</ul>
+<p>The command contract remains the authority even where dispatch is not yet
+implemented. <code>READYFS_SCOPE_AUDIT.md</code> records the current command-by-command
+gap list; the 60-case UI matrix is not a substitute for that broader audit.</p>
+<p>GNU-style options are canonical. Every mutator accepts <code>--dry-run</code>, with
+<code>--whatif</code> as an exact alias. Common options include <code>--recursive</code>, <code>--force</code>,
+<code>--skip-existing</code>, <code>--error-existing</code>, <code>--include</code>, <code>--exclude</code>, <code>--verify</code>,
+and <code>--yes</code>.</p>
+<p>Interactive conflicts prompt per destination. Batch mode never waits: an
+unspecified conflict is an error. Recursive deletion and format require a
+summary confirmation unless <code>--yes</code> is supplied.</p>
+<h2 id="operation-and-metadata-semantics">Operation and metadata semantics</h2>
+<p>Every mutation first creates a plan containing resolved source/destination,
+backend, recursion, conflicts, estimated entries/bytes/blocks, and unsupported
+steps. Dry-run prints that plan and opens nothing for writing.</p>
+<p>Same-backend rename is used only when the driver declares it safe.
+Cross-backend move is copy, close, byte-for-byte or CRC verification, then
+source deletion. Replacement is staged to a sibling, verified, swapped into
+place, and rolled back on failure. SD2IEC save-with-replace is prohibited.</p>
+<p>Recursive enumeration is client-side, depth/cycle bounded, deterministic, and
+records partial failures. Directory metadata includes kind, display/native
+names, C64 file type, exact byte size when known, block count, block-byte unit,
+free blocks/bytes, timestamps, attributes, volume label/id, image type, and
+capability bits.</p>
+<p>PRG, SEQ, and USR stream copies preserve bytes. REL listing/stat/delete/rename
+may be supported, but generic cross-backend REL copy is rejected unless record
+length and destination behavior are proven by a dedicated harness. Tape exposes
+only operations proven by its harness; unsupported directory/free/delete/
+recursive/mount operations fail explicitly.</p>
+<h2 id="architecture-and-memory">Architecture and memory</h2>
+<p>The resident executable owns only the shell loop, canonical resolver, overlay
+gateway, UCI transaction gateway, small transfer windows, and versioned result
+codes. The serialized planner, stackless walk, and cooperative executor occupy
+one <code>$B600</code> sidecar. The executor yields one action and waits for an explicit
+resident acknowledgement, so backend I/O—including a complete UCI
+transaction—finishes before the plan advances. Conflict policy,
+IEC/CMD/SD2IEC, UltimateDOS, SoftIEC, tape, and batch/self-test remain or move
+into overlays; extended help and the backend-neutral request composer occupy
+separate sidecars. The latter carries endpoint, unit, partition, image depth,
+and canonical source/destination paths across one-pointer dispatcher calls.
+All required sidecars preload into disjoint REU slots before drive 8 can be
+remounted. The backend is promoted only after a non-NULL C64 request succeeds
+through fetch/dispatch/matcher-restore and later help/matcher calls remain
+clean; host composition tests do not substitute for that C64 proof.</p>
+<p>The current accepted build uses ten 4 KiB sidecars: nine disjoint slices in
+the overlay bank and <code>rfbatch</code> at <code>$0000-$0FFF</code> of a dedicated batch bank. The
+seventh <code>rfutil</code> sidecar owns mutation-preview rendering and explicit history
+listing. The eighth <code>rftree</code> sidecar owns the cooperative breadth-first tree
+controller. The ninth <code>rfcontent</code> sidecar owns bounded <code>type</code>/<code>head</code>/<code>tail</code>
+rendering, streaming CRC-32, the compact RFT1 diagnostic, and the validation/
+composition half of disposable IEC format. Resident code retains the command-
+channel write and status read. Tree control checkpoints in the session bank
+and its bounded queue occupies overlay-bank <code>$9000-$FFEF</code>, above all nine
+main-bank cached sidecars. The tenth <code>rfbatch</code> sidecar owns the full command
+editor plus cooperative <code>run</code> parsing; its bank reserves <code>$1000-$4FFF</code> for a
+closed-before-dispatch script and <code>$5000-$50FF</code> for checkpoint state. Device
+I/O stays resident; walkers and content/batch controllers
+yield requests across the overlay gateway and resume from resident/REU state
+rather than call IEC/UCI from a sidecar.</p>
+<p>Full mode requires at least 1 MiB REU. Versioned REU regions hold overlays,
+console scrollback, command history, aliases/config working state, operation
+plans, batch event journal, diagnostics, and optional staging. The editor
+supports 255-byte logical lines, horizontal scrolling, insert/overwrite,
+left/right, Home/End, Delete, Up/Down history recall, and editable recalled
+commands. Console output has line and page scrolling; C=+Up/Down is the C64
+fallback for Page Up/Down.</p>
+<p>Aliases and history live in REU for the session. Only explicit <code>config save</code>
+writes settings. Batch scripts use one command per line, <code>#</code> comments,
+<code>onerror stop|continue</code>, and <code>expect rc N</code>. Nested <code>run</code> is rejected and any
+interactive confirmation becomes result 3 rather than reading a key. Result
+values are the one-digit dispatch classes 0–3 until all legacy handlers expose
+typed filesystem results. The first built-in <code>test</code> suite
+emits a versioned RFT1 manifest and pass count directly in the console; VICE
+tooling retains its screens and folds assertions into JSON/Markdown reports.
+Future multi-suite execution can add a versioned REU event journal
+without changing the atomic <code>test</code> command contract.</p>
+<h2 id="uci-reliability-contract">UCI reliability contract</h2>
+<p>ReadyFS uses the transport proven by ReadyIRC and UCI Tester:</p>
+<ol>
+<li>Synchronize to fully quiet IDLE; IDLE state alone is insufficient.</li>
+<li>Clear stale ERROR only during explicit recovery.</li>
+<li>Write the whole command while idle and issue PUSH exactly once.</li>
+<li>Treat PUSH as asynchronous; immediate IDLE is not completion.</li>
+<li>Wait for DATA_LAST or DATA_MORE.</li>
+<li>Drain both data and status queues completely, even after capture truncation.</li>
+<li>Issue DATA_ACC only after both availability flags clear.</li>
+<li>Require DATA_MORE to leave that state before accepting a next block.</li>
+<li>After DATA_LAST, wait for fully quiet IDLE.</li>
+<li>Request ABORT once, service pending state/queues, and wait for quiet IDLE.</li>
+<li>Bounds detect failure only; they never provide timing or reset forever.</li>
+<li>Validate physical behavior at 1, 16, and 64 MHz. VICE is not UCI evidence.</li>
+</ol>
+<p>Every ReadyFS UCI call site carries the nearby contract comment and
+<code>build_support/verify_readyfs_uci_protocol_contract.py</code> guards the source shape.</p>
+<h2 id="hardware-automation-safety">Hardware automation safety</h2>
+<p>C64 Ultimate REST/FTP work runs only in a genuinely independent
+Terminal-owned/background bash, never a foreground Codex curl. Each suite:</p>
+<ol>
+<li>Creates a unique run id.</li>
+<li>Creates <code>/usb1/READYFS_TEST/&lt;run-id&gt;</code> and/or
+<code>/sdcard/READYFS_TEST/&lt;run-id&gt;</code>.</li>
+<li>Writes a matching ownership marker.</li>
+<li>Validates normalized prefix and marker before every destructive action.</li>
+<li>Saves original Ultimate configuration before enabling Command Interface or
+SoftIEC and restores it in every exit path.</li>
+<li>Preserves roots and evidence by default. Cleanup is explicit and exact-id.</li>
+</ol>
+<p>No test may delete, overwrite, format, unmap, or clean up anything outside its
+owned roots or a newly generated disposable disk image.</p>
+<h2 id="verification-and-completion-criteria">Verification and completion criteria</h2>
+<p>Host tests cover path parsing, aliases, image boundaries, normalization,
+lengths, globs, filters, quoting, switches, conflicts, plans, dry-run, rollback,
+error mapping, and mocked drivers.</p>
+<p>VICE covers D64/D71/D81 IEC behavior, shell editing/history/scrollback,
+commands, scripts, dry-run invariants, files/types, empty/full/read-only media,
+mount-model UI, provisional CMD/SD2IEC semantics, and report generation.</p>
+<p>C64U covers owned USB1/SD-card roots, UltimateDOS, SoftIEC, mounted images,
+cross-backend files and trees, mount/dismount/swap/map, raw/display names, long
+paths, transport recovery, cancellation, and unchanged-state dry runs at
+1/16/64 MHz.</p>
+<p>Completion requires 25–100 numbered UI cases, screenshots at meaningful
+milestones, JSON and Markdown reports, no mutation outside owned roots, clean
+host/VICE/protocol gates, successful C64U speed matrix, and a requirement-by-
+requirement evidence audit. Provisional SD2IEC/tape behavior must remain
+clearly labeled until physical devices are available.</p>
+<h2 id="current-physical-flat-copy-authority-2026-08-17">Current physical flat-copy authority (2026-08-17)</h2>
+<p><code>cross-owned-20260817-iec-udos-roundtrip-k</code> is the authoritative flat
+IEC↔UltimateDOS file matrix. It uses an independently Terminal-owned REST
+attachment of a disposable D81, requires fresh exact USB1 and SD owner-marker
+reads before every mutation, copies a 4069-byte PRG both ways, preserves type
+<code>$11</code>, performs backend-neutral length/CRC comparisons, and restores Drive A
+exactly. The USB1 test folder is preserved and no host deletion occurs. Never
+delete or mutate outside the two exact marker-owned roots.</p>
+<p>This closes numbered cases 40/41 but does not close the original scope. The
+next physical cross-backend priorities remain UltimateDOS↔SoftIEC flat copy,
+recursive nested trees, and mount/map/swap restoration. Typed filesystem
+result codes also remain required before batch <code>expect rc</code> is semantically
+complete.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

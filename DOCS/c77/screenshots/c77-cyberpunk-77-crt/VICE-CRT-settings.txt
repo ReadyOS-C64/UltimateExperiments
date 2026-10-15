@@ -1,0 +1,10 @@
+VICE 3.10 CRT-mode run settings
+VICIIfilter=1 (CRT emulation)
+VICIIdscan=enabled
+VICIIcrtblur=350
+VICIIcrtscanlineshade=650
+VICIIoddlinesphase=1250
+VICIIoddlinesoffset=1000
+
+The automation framebuffer API captures before VICE's display shader.
+The PNG previews reproduce the enabled blur and scanline presentation.

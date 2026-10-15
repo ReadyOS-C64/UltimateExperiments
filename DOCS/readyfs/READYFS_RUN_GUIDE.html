@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS RUN guide · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS RUN guide"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">Start</a><a href="index.html">ReadyFS</a><a href="READYFS_USER_GUIDE.html">Illustrated guide</a><a href="READYFS_RUN_GUIDE.html" aria-current="page">RUN / batch</a><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC</a><a href="tours/editor.html">Editor tour</a><a href="tours/sd2iec.html">SD2IEC tour</a><a href="../reusql/index.html">ReuSQL64</a><a href="../reusql/sql-language.html">SQL language</a><a href="../c77/index.html">C77 gallery</a></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#run-scripts-parameters-previews-and-reliable-execution">RUN scripts: parameters, previews and reliable execution</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="READYFS_RUN_GUIDE.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs-run-guide">ReadyFS RUN guide</h1>
+<p>Updated 13 October 2026 for DOS-style batch scripting. This reference is also included in the <a href="READYFS_USER_GUIDE.html#run-scripts-parameters-previews-and-reliable-execution">illustrated user guide</a>.</p>
+<h2 id="run-scripts-parameters-previews-and-reliable-execution">RUN scripts: parameters, previews and reliable execution</h2>
+<p><code>RUN script-path [arg1 ... arg9]</code> (short form <code>RU</code>) executes a text script of ReadyFS commands in the <strong>overlay application with working REU and sidecars</strong>. It reads and stages the whole file, closes its input stream, then dispatches commands one at a time. This is ReadyFS command scripting; it does not load and start a C64 PRG or BASIC program.</p>
+<h3 id="what-parameters-belong-where">What parameters belong where?</h3>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RUN invocation</td>
+<td><code>RUN @lab:/INSPECT.SEQ</code></td>
+<td>Script path, optionally followed by up to nine arguments.</td>
+</tr>
+<tr>
+<td>Short invocation</td>
+<td><code>RU 8:/INSPECT</code></td>
+<td>Same command; use the actual disk directory name. IEC names do not automatically gain <code>.SEQ</code>.</td>
+</tr>
+<tr>
+<td>Quoted script path</td>
+<td><code>RUN &quot;@lab:/INSPECT NOTES.SEQ&quot;</code></td>
+<td>One path containing spaces.</td>
+</tr>
+<tr>
+<td>Inside the script</td>
+<td><code>COPY @src:/README.SEQ @dst:/README.SEQ --whatif</code></td>
+<td>COPY receives its source, destination and options.</td>
+</tr>
+<tr>
+<td>Session setup</td>
+<td><code>ALIAS SRC u:/usb1/READYFS_TEST/YOUR_FRESH_RUN/source</code></td>
+<td>An alias supplies a reusable location to script commands.</td>
+</tr>
+</tbody></table>
+<h3 id="dos-style-variables-and-flow-control">DOS-style variables and flow control</h3>
+<p>The current overlay build supports session variables, saved variables, script arguments, branches, counted loops and label subroutines. Type <code>HELP BATCH</code> or <code>HELP SET</code> on the C64 for the compact reference.</p>
+<table>
+<thead>
+<tr>
+<th>Command or expansion</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SET NAME=value</code></td>
+<td>Set a session variable. A plain SET changes an existing saved variable to session-only.</td>
+</tr>
+<tr>
+<td><code>SET /P NAME=value</code></td>
+<td>Mark this variable for the next <code>CONFIG SAVE</code>. <code>/P</code> means persistent in ReadyFS.</td>
+</tr>
+<tr>
+<td><code>SET NAME=</code></td>
+<td>Delete a variable, including its persistent flag.</td>
+</tr>
+<tr>
+<td><code>SET</code> / <code>SET NAME</code></td>
+<td>List variables with <code>/P</code> markers, or show one value.</td>
+</tr>
+<tr>
+<td><code>%NAME%</code> / <code>%ERRORLEVEL%</code></td>
+<td>Expand a variable or the preceding command result. Undefined variables expand to empty text. Names are case-insensitive. ERRORLEVEL is read-only.</td>
+</tr>
+<tr>
+<td><code>%0</code>, <code>%1</code> … <code>%9</code></td>
+<td>Script path and up to nine RUN arguments. Missing arguments expand to empty text.</td>
+</tr>
+<tr>
+<td><code>%%</code></td>
+<td>Insert a literal percent sign.</td>
+</tr>
+<tr>
+<td><code>SET /A N=N+1</code></td>
+<td>Evaluate an unsigned 16-bit integer, or one addition/subtraction. Operands are decimal literals or variable names; undefined operands are zero. Results wrap at 65536. Use <code>SET /P /A</code> to retain the persistent flag.</td>
+</tr>
+<tr>
+<td><code>ECHO text</code> / <code>REM comment</code></td>
+<td>Print text or ignore the whole line. Whole-line <code>#</code> comments also work.</td>
+</tr>
+<tr>
+<td><code>:LABEL</code> / <code>GOTO LABEL</code></td>
+<td>Declare a label or jump to it. Labels are case-insensitive, up to 16 bytes; the first matching label wins.</td>
+</tr>
+<tr>
+<td><code>CALL :LABEL</code></td>
+<td>Run a label subroutine in the same staged script, sharing variables and arguments. Maximum nesting: eight.</td>
+</tr>
+<tr>
+<td><code>EXIT /B [code]</code> / <code>GOTO :EOF</code></td>
+<td>Return from a subroutine, or finish the top-level script. EXIT /B can set a result from 0 to 255. Reaching the physical end of a subroutine also returns.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] ERRORLEVEL n command</code></td>
+<td>Run the command when the preceding result is <strong>greater than or equal to</strong> n, optionally negated.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] DEFINED name command</code></td>
+<td>Test whether a variable exists.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] EXIST path command</code></td>
+<td>Test the filesystem through ReadyFS&#39;s normal path and backend handling. A lookup failure stops the script with result 8.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] &quot;a&quot;==&quot;b&quot; command</code></td>
+<td>Compare exact, case-sensitive strings. A spaced <code>a == b</code> comparison also works.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] n EQU|NEQ|LSS|LEQ|GTR|GEQ n command</code></td>
+<td>Compare unsigned integers from 0 to 65535. Expand variables explicitly, for example <code>IF %N% LSS 3 GOTO LOOP</code>.</td>
+</tr>
+</tbody></table>
+<p>For example, save this with real line breaks and run <code>RUN 8:/COUNT WORLD</code>:</p>
+<pre><code class="language-text">REM ARGUMENTS AND A COUNTED LOOP
+SET WHO=%1
+SET /A N=0
+:LOOP
+SET /A N=N+1
+ECHO HELLO &quot;%WHO%&quot; %N%
+IF %N% LSS 3 GOTO LOOP
+CALL :FINISH
+EXIT /B 0
+:FINISH
+ECHO DONE
+EXIT /B
+</code></pre>
+<p>Expansion happens once before tokenization on each executed line. Quote an expanded value when it must remain one argument: <code>COPY &quot;%SOURCE%&quot; &quot;%TARGET%&quot;</code>. Values are not expanded recursively. To write literal variable references into a script from the interactive prompt, double their percent signs, for example <code>WRITE 8:/SHOW &quot;ECHO %%NAME%%&quot; --line</code>. RUN arguments such as <code>--yes</code> are ordinary <code>%1</code>/<code>%2</code> values; they do not become global confirmation or preview options. Put those options on the intended operation inside the script.</p>
+<p>There are 16 variable slots, with names up to 16 bytes and values up to 127 bytes. Names use letters, underscores and digits after the first character. Variables can be used interactively and inside scripts. <code>CONFIG SAVE</code> writes only variables marked <code>/P</code>, alongside the current directory and aliases, in the new RFC2 format. <code>CONFIG LOAD</code> validates the complete file before applying it, replaces the saved-variable set, and preserves unrelated session variables. A loaded saved variable takes precedence over a session variable with the same name. If the merged table would exceed 16 slots, loading fails without changing the session. Legacy RFC1 configs still load their directory and aliases and leave variables alone. Loading config is explicit after startup.</p>
+<p>RUN remains bounded to a 16 KiB staged script and 255 bytes per expanded line, with at most 12 tokens. Tabs and spaces separate arguments; balanced double quotes can occur within an argument. Excess tokens, unmatched quotes and invalid expansion produce result 4 before command dispatch. Scripts stop after 10,000 executed lines to bound accidental loops; RUN/STOP cancels execution between interpreted lines with result 3. Filesystem operations retain their existing cancellation behavior. ONERROR STOP remains the default; use ONERROR CONTINUE before a command whose failure you intend to inspect with IF ERRORLEVEL. Comments, labels and false IF branches preserve the preceding result; SET and ECHO produce their own result.</p>
+<p>This is a bounded DOS-style language. Loops use labels, arithmetic and conditional GOTO; CALL targets labels in the same file. Nested RUN, external-script CALL, FOR, SETLOCAL, pipes and redirection are not implemented. Scripts share aliases and the current directory, and relative paths resolve against that directory rather than the directory containing the script.</p>
+<h3 id="parameters-arguments-environment-and-local-subroutines">Parameters: arguments, environment and local subroutines</h3>
+<p><code>RUN</code> supplies a new set of up to nine positional arguments for that top-level run. <code>%0</code> is the script path; <code>%1</code> through <code>%9</code> are its inputs. Missing arguments become empty text. Use quotes to keep a path or value containing spaces together:</p>
+<pre><code class="language-text">SET SOURCE=@lab:/source/readme.seq
+SET TARGET=@lab:/saved notes.seq
+RUN @lab:/BACKUP.SEQ &quot;%SOURCE%&quot; &quot;%TARGET%&quot; PREVIEW
+</code></pre>
+<p>Inside BACKUP.SEQ, <code>%1</code> is the source, <code>%2</code> the destination, and <code>%3</code> the mode. The outer quotes group an argument and are not part of its value; quote it again when expanding it into a command. <code>$1</code>, <code>%*</code>, SHIFT and <code>%~1</code> modifiers are not implemented. RUN options are not special: <code>RUN file.seq --yes</code> passes the ordinary string <code>--yes</code> as <code>%1</code>; confirmation must be on the intended filesystem command.</p>
+<p>Named variables are session-wide. A script can read variables set at the prompt, and its changes remain after it returns. Aliases and the current directory also remain shared. There are no local scopes or automatic save/restore of working variables.</p>
+<p><code>CALL :LABEL</code> runs a subroutine in the <strong>same file</strong>. It accepts only the label: <code>CALL :COPYONE source destination</code> is not implemented. The routine sees the original RUN arguments and the shared named environment. Pass different inputs by setting named variables before each call:</p>
+<pre><code class="language-text">SET WHO=ALPHA
+CALL :GREET
+SET WHO=BETA
+CALL :GREET
+EXIT /B 0
+:GREET
+ECHO HELLO %WHO%
+GOTO :EOF
+</code></pre>
+<p>The two calls print ALPHA and BETA. <code>GOTO :EOF</code> returns to the caller; <code>EXIT /B code</code> also supplies a result. At top level both end the script. Calls can nest eight levels deep, but each level still shares named variables and the original RUN arguments. Keep the top-level <code>EXIT /B</code> before routine definitions to prevent execution from falling through into a routine.</p>
+<p><strong>Separate script files cannot call each other yet.</strong> Nested RUN and external-script CALL are unavailable. Two scripts run sequentially from the interactive prompt can exchange named variables. This differs from DOS 6.2, where <code>CALL OTHER.BAT %1 %2</code> calls a separate file with its own positional arguments and returns when that file ends.</p>
+<h3 id="worked-example-preview-and-verify-a-single-file-backup">Worked example: preview and verify a single-file backup</h3>
+<p>This is the one downloadable example used in the appended physical C64 Ultimate video chapter. It takes source, destination and PREVIEW/APPLY arguments, refuses an existing destination on APPLY, calls a local copy/compare routine, and increments a session counter only after success. It deliberately does not replace an existing file. Create the destination&#39;s parent folder first.</p>
+<p><a href="examples/BACKUP.SEQ">Download BACKUP.SEQ</a>. The download contains uppercase ASCII command and option bytes and real CR line endings, matching the physical recording fixture. Host-created script options must also use uppercase bytes (for example --WHATIF); do not rely on lowercase ASCII option spelling being normalized like interactive keyboard input.</p>
+<pre><code class="language-text">REM BACKUP SOURCE DEST PREVIEW OR APPLY
+ONERROR STOP
+SET &quot;SRC=%1&quot;
+SET &quot;DST=%2&quot;
+IF &quot;%SRC%&quot;==&quot;&quot; GOTO USAGE
+IF &quot;%DST%&quot;==&quot;&quot; GOTO USAGE
+IF NOT EXIST &quot;%SRC%&quot; GOTO MISSING
+IF &quot;%3&quot;==&quot;PREVIEW&quot; GOTO PREVIEW
+IF NOT &quot;%3&quot;==&quot;APPLY&quot; GOTO USAGE
+IF EXIST &quot;%DST%&quot; GOTO EXISTS
+CALL :COPYONE
+IF NOT DEFINED BACKUPS SET BACKUPS=0
+SET /A BACKUPS=BACKUPS+1
+ECHO BACKUPS THIS SESSION: %BACKUPS%
+EXIT /B 0
+:COPYONE
+COPY &quot;%SRC%&quot; &quot;%DST%&quot;
+COMPARE &quot;%SRC%&quot; &quot;%DST%&quot;
+ECHO BACKUP VERIFIED
+EXIT /B 0
+:PREVIEW
+COPY &quot;%SRC%&quot; &quot;%DST%&quot; --WHATIF
+EXIT /B
+:EXISTS
+ECHO DEST EXISTS - CHOOSE NEW NAME
+EXIT /B 6
+:MISSING
+ECHO SOURCE NOT FOUND: &quot;%SRC%&quot;
+EXIT /B 5
+:USAGE
+ECHO RUN BACKUP SOURCE DEST PREVIEW
+ECHO RUN BACKUP SOURCE DEST APPLY
+EXIT /B 4
+</code></pre>
+<p>With LAB pointing at your own fresh test folder containing <code>source/readme.seq</code> and the downloaded script:</p>
+<pre><code class="language-text">SET BACKUPS=0
+TYPE @lab:/BACKUP.SEQ
+RUN @lab:/BACKUP.SEQ @lab:/source/readme.seq @lab:/saved.seq PREVIEW
+RUN @lab:/BACKUP.SEQ @lab:/source/readme.seq @lab:/saved.seq APPLY
+TYPE @lab:/saved.seq
+ECHO COMPLETED BACKUPS: %BACKUPS%
+</code></pre>
+<p><img loading="lazy" decoding="async" src="guide-assets/batch-script.png" alt="The actual BACKUP.SEQ argument checks and local CALL, read through C64 output history"></p>
+<p><em>Physical C64 Ultimate: TYPE reads the real file; F1 reveals the earlier lines after streaming.</em></p>
+<p><img loading="lazy" decoding="async" src="guide-assets/batch-backup-result.png" alt="Parameterized APPLY copies and compares the backup, then reports count one and result zero"></p>
+<p><em>The actual APPLY run reports both verification checks, the shared counter and RUN result 0.</em></p>
+<p>TYPE streams the file onto the display. Use F1 to enter output history and move to earlier lines, F3 for newer lines, and RUN/STOP to return to live input. The video reads both halves this way.</p>
+<p>The preview writes nothing and does not increment BACKUPS. APPLY copies and compares, then reports <code>BACKUPS THIS SESSION: 1</code> and result 0. Running APPLY again with the same destination prints <code>DEST EXISTS - CHOOSE NEW NAME</code>, returns 6 and leaves the count at 1. Missing source returns 5; absent arguments or a mode other than uppercase PREVIEW/APPLY return 4. An empty destination is checked before any write. The script uses three named variable slots: SRC, DST and BACKUPS.</p>
+<p>STOP is deliberate: a failed copy or comparison terminates the whole run, including from inside CALL. Read the filesystem reports as well as the final RC; legacy result mapping is not complete and COPY/COMPARE are not a transaction. The preview is not a queued operation or proof of later write capability. BACKUPS counts successful script runs, not every copy ever made, and its arithmetic wraps after 65535. Avoid reusing these working variable names for unrelated session values.</p>
+<h3 id="more-examples-conditions-loops-results-and-persistence">More examples: conditions, loops, results and persistence</h3>
+<p>These short examples supplement the recorded backup script. They are reference recipes, not claims that every branch is demonstrated in the video.</p>
+<p><strong>Comments, missing parameters and literal percent signs</strong></p>
+<pre><code class="language-text">REM FULL-LINE DOS-STYLE COMMENT
+# ANOTHER FULL-LINE COMMENT
+ECHO SCRIPT: %0
+IF &quot;%1&quot;==&quot;&quot; GOTO USAGE
+ECHO FIRST ARGUMENT: &quot;%1&quot;
+ECHO LITERAL PERCENT: 100%%
+EXIT /B 0
+:USAGE
+ECHO PLEASE SUPPLY ONE ARGUMENT
+EXIT /B 4
+</code></pre>
+<p><strong>String, defined-variable and existence conditions</strong></p>
+<pre><code class="language-text">IF NOT DEFINED MODE SET MODE=PREVIEW
+IF &quot;%MODE%&quot;==&quot;PREVIEW&quot; ECHO PREVIEW SELECTED
+IF NOT &quot;%MODE%&quot;==&quot;APPLY&quot; ECHO WRITES DISABLED
+IF EXIST &quot;@lab:/source/readme.seq&quot; ECHO SOURCE PRESENT
+IF NOT EXIST &quot;@lab:/missing.seq&quot; ECHO NO SUCH FILE
+IF DEFINED MODE IF NOT &quot;%MODE%&quot;==&quot;APPLY&quot; ECHO NO WRITE MODE
+</code></pre>
+<p>The last line combines two tests by nesting IF. OR-style decisions need separate branches. Each IF executes a single command, which can itself be IF, GOTO, CALL or EXIT. There are no ELSE blocks. String comparisons are case-sensitive. IF EXIST performs a normal path lookup; an I/O lookup error stops the run with 8 rather than being treated as an absent file.</p>
+<p><strong>A counted loop and every numeric comparison</strong></p>
+<pre><code class="language-text">SET /A N=0
+:LOOP
+SET /A N=N+1
+ECHO PASS %N%
+IF %N% LSS 3 GOTO LOOP
+IF %N% EQU 3 ECHO EQUAL TO THREE
+IF %N% NEQ 0 ECHO NOT ZERO
+IF %N% LEQ 3 ECHO AT MOST THREE
+IF %N% GTR 2 ECHO GREATER THAN TWO
+IF %N% GEQ 3 ECHO AT LEAST THREE
+IF NOT %N% EQU 4 ECHO NOT FOUR
+SET /A N=N-1
+ECHO AFTER SUBTRACTION: %N%
+EXIT /B 0
+</code></pre>
+<p>Numeric IF operands must be unsigned decimal values from 0 to 65535; expand variables explicitly. Arithmetic can assign a literal or variable, or perform one addition/subtraction; an undefined arithmetic variable is zero. There is no multiplication, division, signed arithmetic or expression precedence. An invalid numeric value causes result 4, not a false test. For example, <code>IF %MAXTRIES% LSS 1</code> cannot validate that MAXTRIES is numeric before checking its range. Every revisited line counts toward the 10,000-line execution limit.</p>
+<p><strong>Inspect and preserve a failure result</strong></p>
+<pre><code class="language-text">ONERROR CONTINUE
+NOTACOMMAND
+EXPECT RC 1
+SET LAST=%ERRORLEVEL%
+ECHO SAVED RESULT: %LAST%
+IF %LAST% EQU 1 ECHO EXPECTED UNKNOWN COMMAND
+IF %LAST% NEQ 1 EXIT /B 9
+ONERROR STOP
+EXIT /B 0
+</code></pre>
+<p>NOTACOMMAND deliberately returns 1. Successful EXPECT leaves that result available for capture. SET captures the preceding result before replacing it with SET&#39;s own result; subsequent ECHO cannot change LAST. <code>IF ERRORLEVEL 1</code> means result &gt;= 1, not equality; <code>IF NOT ERRORLEVEL 1</code> means result 0. Test it immediately after the operation, or capture <code>%ERRORLEVEL%</code> before another command changes it. STOP is the default and must be changed <strong>before</strong> an expected failure. EXPECT accepts only one-digit codes 0–9; EXIT /B can return 0–255.</p>
+<p><strong>Save only selected variables, then load them explicitly</strong></p>
+<pre><code class="language-text">SET PRIVATE=THIS SESSION
+SET /P SAVED=KEEP ME
+SET /P /A TOTAL=TOTAL+1
+CONFIG SAVE @lab:/batch-config.seq
+SET SAVED=CHANGED
+CONFIG LOAD @lab:/batch-config.seq
+ECHO RESTORED: %SAVED%
+ECHO SESSION: %PRIVATE%
+SET SAVED
+SET
+SET PRIVATE=
+</code></pre>
+<p>Use a new config filename for the save. SAVED and TOTAL are marked persistent; PRIVATE is not. Loading restores saved values and preserves unrelated session variables. Plain <code>SET SAVED=CHANGED</code> clears its persistent flag until LOAD restores the saved record. <code>SET PRIVATE=</code> deletes that variable. CONFIG does not load automatically after launch. The table has only 16 slots, so a load whose merged variables would overflow it fails without changing the environment.</p>
+<h3 id="compared-with-ms-dos-62-622">Compared with MS-DOS 6.2 / 6.22</h3>
+<p>The target here is classic COMMAND.COM batch, not Windows cmd.exe. Both languages offer <code>%1</code>–<code>%9</code>, <code>%NAME%</code>, SET, REM, ECHO, labels/GOTO, NOT, IF EXIST, case-sensitive string equality and threshold IF ERRORLEVEL.</p>
+<table>
+<thead>
+<tr>
+<th>Classic DOS facility</th>
+<th>ReadyFS boundary</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>CALL OTHER.BAT arguments</code></td>
+<td>No external-file calls. ReadyFS instead adds same-file <code>CALL :LABEL</code> with shared inputs.</td>
+</tr>
+<tr>
+<td><code>SHIFT</code></td>
+<td>No parameter shifting and no access to arguments beyond nine.</td>
+</tr>
+<tr>
+<td><code>FOR %%F IN (*.SEQ) DO command</code></td>
+<td>No iteration over filename selections or literal lists. Counter loops use IF/GOTO.</td>
+</tr>
+<tr>
+<td>CHOICE / PAUSE</td>
+<td>No batch menu/keypress command or pause command.</td>
+</tr>
+<tr>
+<td>Pipes and input/output redirection</td>
+<td>No `</td>
+</tr>
+<tr>
+<td><code>@ECHO OFF</code>, <code>@command</code>, <code>ECHO.</code></td>
+<td>No DOS command-echo control syntax; ECHO prints text (bare ECHO prints a blank line).</td>
+</tr>
+</tbody></table>
+<p>ELSE/parenthesized command blocks, IF /I, SETLOCAL, <code>%*</code>, <code>%~</code> modifiers, delayed expansion, FOR /F and SET /A were <strong>not standard DOS 6.2 batch features</strong>. Their absence is not a gap against this target. ReadyFS already adds numeric IF comparisons, IF DEFINED, simple SET /A arithmetic, local label calls, EXIT /B result codes and explicitly saved variables.</p>
+<p>For historical syntax, see Microsoft&#39;s archived <a href="https://www.infania.net/misc/dos622help/call.html">DOS CALL</a>, <a href="https://www.infania.net/misc/dos622help/shift.html">SHIFT</a>, <a href="https://www.infania.net/misc/dos622help/for.html">FOR</a>, <a href="https://www.infania.net/misc/dos622help/if.html">IF</a> and <a href="https://www.infania.net/misc/dos622help/set.html">SET</a> help.</p>
+<p>The five original recipes below remain reference examples. The parameterized backup example above is the one demonstrated in the appended batch video chapter; the other recipes are not additional recorded steps. Set <code>@lab</code>, <code>@src</code> and <code>@dst</code> to your own intended locations before use. Mutation examples belong in a fresh disposable test folder.</p>
+<h3 id="example-1-a-small-read-only-script">Example 1 — a small read-only script</h3>
+<p>Save this as <code>INSPECT.SEQ</code>, with real line breaks:</p>
+<pre><code class="language-text"># READ-ONLY INSPECTION
+ONERROR STOP
+PWD
+EXPECT RC 0
+MATCH &quot;*&quot; &quot;ABC&quot;
+EXPECT RC 0
+HEAD @src:/README.SEQ 2
+EXPECT RC 0
+</code></pre>
+<p>Set its source location and run it:</p>
+<pre><code class="language-text">ALIAS LAB u:/usb1/READYFS_TEST/YOUR_FRESH_RUN
+ALIAS SRC @lab:/source
+RUN @lab:/INSPECT.SEQ
+</code></pre>
+<p><code>HEAD</code> receives two parameters: a filename and the number of lines to display. <code>MATCH</code> receives a pattern and a candidate string. Successful assertions print <code>EXPECT RC OK</code>. A complete successful run ends with a <code>RUN DONE ... RC 0</code> summary. The line/command totals depend on comments, directives and line endings; ordinary commands count separately from <code>ONERROR</code> and <code>EXPECT</code>.</p>
+<p>You can create a tiny script directly in ReadyFS, using a new filename:</p>
+<pre><code class="language-text">WRITE @lab:/CHECK.SEQ &quot;ONERROR STOP&quot; --LINE
+APPEND @lab:/CHECK.SEQ &quot;PWD&quot; --LINE
+APPEND @lab:/CHECK.SEQ &quot;EXPECT RC 0&quot; --LINE
+HEAD @lab:/CHECK.SEQ 10
+RUN @lab:/CHECK.SEQ
+</code></pre>
+<p>Each <code>--line</code> writes a real carriage return. Typing <code>\n</code> in a quoted string does not create a new script line. Existing-file replacement may prompt; use a fresh name unless replacement is intentional.</p>
+<h3 id="example-2-reuse-one-script-with-different-locations">Example 2 — reuse one script with different locations</h3>
+<p>Save this as <code>PREVIEW.SEQ</code>:</p>
+<pre><code class="language-text">ONERROR STOP
+COPY @src:/README.SEQ @dst:/README.SEQ --WHATIF
+EXPECT RC 0
+COPY @src:/ALPHA/ONE.SEQ @dst:/ONE.SEQ --WHATIF
+EXPECT RC 0
+</code></pre>
+<p>First location pair:</p>
+<pre><code class="language-text">ALIAS SRC @lab:/source
+ALIAS DST @lab:/first-copy
+RUN @lab:/PREVIEW.SEQ
+</code></pre>
+<p>Second location pair, same script:</p>
+<pre><code class="language-text">AL DST @lab:/second-copy
+RU @lab:/PREVIEW.SEQ
+</code></pre>
+<p>The script resolves the aliases when each command runs. These previews do not create destination folders or prove that source files exist, that media is writable, or that the backend supports the eventual copy. Inspect the paths separately before executing real writes. For a single-file COPY, the destination names a <strong>file</strong>; a recursive COPY uses an existing destination <strong>container</strong>.</p>
+<h3 id="example-3-preview-a-tree-then-execute-a-separate-copy-script">Example 3 — preview a tree, then execute a separate copy script</h3>
+<p>First create <code>PLAN.SEQ</code>:</p>
+<pre><code class="language-text">ONERROR STOP
+COPY @src:/ @dst:/ --RECURSIVE --WHATIF
+EXPECT RC 0
+</code></pre>
+<p>Set <code>@src</code> to the source directory and <code>@dst</code> to an intended new container, then run <code>RUN @lab:/PLAN.SEQ</code>. Read the named selection. A preview performs no mutation and is not a queued job.</p>
+<p>For the real operation, prepare <code>COPYTREE.SEQ</code> separately:</p>
+<pre><code class="language-text">ONERROR STOP
+MKDIR @dst:/
+EXPECT RC 0
+COPY @src:/ @dst:/ --RECURSIVE
+EXPECT RC 0
+TREE @dst:/
+EXPECT RC 0
+</code></pre>
+<p>Then execute it with <code>RUN @lab:/COPYTREE.SEQ</code>. The destination must be new for this recipe; MKDIR failing on an existing folder is a reason to stop and inspect it. Copy includes verification by default. <code>ONERROR STOP</code> stops after a nonzero command result; it does not roll back an earlier successful MKDIR or partially completed copy. Check the COPY reports, batch failure count and resulting tree as well as the script RC.</p>
+<p>For a deliberately chosen copy without destination readback, change the COPY line to:</p>
+<pre><code class="language-text">CP @src:/ @dst:/ -r -nv
+</code></pre>
+<p><code>--no-verify</code> / <code>-nv</code> is a COPY/MOVE option, not a RUN option. You can later run <code>COMPARE @src:/README.SEQ @dst:/README.SEQ</code> for a specific file. One comparison does not verify an entire tree.</p>
+<h3 id="example-4-supply-explicit-confirmation-inside-the-script">Example 4 — supply explicit confirmation inside the script</h3>
+<p>RUN cannot answer interactive confirmation prompts. An operation that would ask returns <code>BATCH NEEDS --YES</code> and script result 3 instead.</p>
+<table>
+<thead>
+<tr>
+<th>Intended script operation</th>
+<th>Parameters on that script line</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Preview deletion</td>
+<td><code>DELETE @lab:/scratch --recursive --whatif</code></td>
+</tr>
+<tr>
+<td>Delete only approved disposable descendants</td>
+<td><code>DELETE @lab:/scratch --recursive --yes</code></td>
+</tr>
+<tr>
+<td>Remove the resulting empty root</td>
+<td><code>RMDIR @lab:/scratch --yes</code></td>
+</tr>
+<tr>
+<td>Intentionally replace one destination file</td>
+<td><code>COPY @src:/README.SEQ @dst:/README.SEQ --force</code></td>
+</tr>
+<tr>
+<td>Ordinary fresh copy</td>
+<td><code>COPY @src:/README.SEQ @dst:/README.SEQ</code> — no replacement approval is needed if it is genuinely new.</td>
+</tr>
+</tbody></table>
+<p>Inspect each target before adding confirmation. <code>--force</code> authorizes supported replacement; it does not add a missing backend capability. Current confirmation lookup also accepts <code>--yes</code> where force is checked, so it can authorize replacement too. Use the option that expresses your intention rather than adding both to every line. Native-pattern mutations additionally require <code>--apply</code> on that command; formatting has separate disposable-media requirements. There is no universal “make this script succeed” switch.</p>
+<h3 id="example-5-expect-an-error-deliberately-then-continue">Example 5 — expect an error deliberately, then continue</h3>
+<pre><code class="language-text">ONERROR CONTINUE
+BOGUS
+EXPECT RC 1
+ONERROR STOP
+PWD
+EXPECT RC 0
+</code></pre>
+<p>This intentionally dispatches an unknown command, checks its code, then restores normal stopping. <code>ONERROR CONTINUE</code> must appear <strong>before</strong> a command whose nonzero result you want to examine; with STOP, execution ends before the following EXPECT can run.</p>
+<p>A mismatched EXPECT sets result 3. Under CONTINUE, the next ordinary command may overwrite that result, so a final <code>RC 0</code> does <strong>not</strong> prove every earlier command/assertion passed. Read all mismatch/error lines. An EXPECT that successfully checks a nonzero code does not reset that code to zero. RUN&#39;s printed RC is its latest stored result, not an accumulated error count. That final result is also available to STATUS and <code>%ERRORLEVEL%</code> after RUN.</p>
+<h3 id="result-codes-and-current-limits">Result codes and current limits</h3>
+<table>
+<thead>
+<tr>
+<th align="right">RC</th>
+<th>Meaning</th>
+<th align="right">RC</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0</td>
+<td>OK</td>
+<td align="right">6</td>
+<td>Destination conflict</td>
+</tr>
+<tr>
+<td align="right">1</td>
+<td>Unknown command</td>
+<td align="right">7</td>
+<td>Unsupported operation</td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td>Unavailable feature</td>
+<td align="right">8</td>
+<td>I/O failure</td>
+</tr>
+<tr>
+<td align="right">3</td>
+<td>Interaction denied / script assertion error</td>
+<td align="right">9</td>
+<td>Verification failure</td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td>Usage error</td>
+<td align="right">10</td>
+<td>Partial operation</td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td>Not found</td>
+<td align="right">11</td>
+<td>Internal failure</td>
+</tr>
+</tbody></table>
+<p><code>EXPECT RC N</code> currently accepts <strong>one digit, 0–9 only</strong>, even though result codes 10 and 11 exist. It checks the most recent command result, including SET/ECHO, and needs a preceding result; blank lines, comments and policy directives do not supply a new command result. Typed-result conversion is still incomplete across legacy handlers, so code 0 alone is not proof of all filesystem postconditions.</p>
+<p>Use plain C64/PETSCII-compatible text, uppercase command fixtures and real CR or LF line breaks. Avoid smart quotes, a UTF-8 BOM and host lowercase ASCII command files. CRLF is readable but its two terminators can increase reported line totals. The line total counts executed lines, including revisits in loops; the command total counts commands dispatched to the filesystem shell rather than interpreter builtins.</p>
+<h3 id="if-the-script-did-not-do-what-you-expected">If the script did not do what you expected</h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check or action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>RUN FILE [ARGS]</code> usage text</td>
+<td>Supply a script path and at most nine arguments; quote paths/arguments with spaces. Put operation options inside the script.</td>
+</tr>
+<tr>
+<td>File not found</td>
+<td>Use the actual directory entry: <code>DIR 8:/</code> then <code>RUN 8:/INSPECT</code> if the IEC name is INSPECT. Check aliases and the current directory.</td>
+</tr>
+<tr>
+<td><code>RUN NEEDS OVERLAY</code>, <code>BATCH OFF</code>, or REU trouble</td>
+<td>Use the overlay application with its matching sidecars and working REU.</td>
+</tr>
+<tr>
+<td><code>SCRIPT TOO LARGE</code> or <code>LINE TOO LONG</code></td>
+<td>Split into separate top-level runs or shorten lines. RUN cannot call another RUN.</td>
+</tr>
+<tr>
+<td>Several commands appear on one line</td>
+<td>Create real CR/LF separators; WRITE/APPEND <code>--line</code> adds CR.</td>
+</tr>
+<tr>
+<td>Unknown command from a host-created file</td>
+<td>Check C64-compatible text encoding, uppercase command bytes, BOM, smart quotes and tabs.</td>
+</tr>
+<tr>
+<td><code>BATCH NEEDS --YES</code> / RC 3</td>
+<td>Identify the specific operation that needs approval; put its explicit confirmation on that line.</td>
+</tr>
+<tr>
+<td>Only a plan appears</td>
+<td>Remove <code>--whatif</code> / <code>--dry-run</code> / <code>-w</code> from the intended operation in a separately reviewed execution script.</td>
+</tr>
+<tr>
+<td><code>EXPECT RC MISMATCH</code></td>
+<td>Read the preceding command&#39;s output and use the expected typed code; do not hide it with CONTINUE.</td>
+</tr>
+<tr>
+<td><code>BATCH FLOW ERROR</code> / RC 4</td>
+<td>Check label spelling, CALL depth, IF syntax and EXIT /B result range.</td>
+</tr>
+<tr>
+<td><code>BATCH STEP LIMIT</code> / RC 3</td>
+<td>Inspect loop termination; execution exceeded 10,000 lines.</td>
+</tr>
+<tr>
+<td>Script stops early</td>
+<td>STOP is the default. Inspect its first failure, complete arguments, device capability and destination state.</td>
+</tr>
+<tr>
+<td>Final RC 0 but earlier errors</td>
+<td>CONTINUE may have allowed a later success to replace an earlier error; inspect the entire output and filesystem results.</td>
+</tr>
+</tbody></table>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

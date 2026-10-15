@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>C64 and REU Memory Map · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: C64 and REU Memory Map"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">Start</a><a href="../readyfs/index.html">ReadyFS</a><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated guide</a><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch</a><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC</a><a href="../readyfs/tours/editor.html">Editor tour</a><a href="../readyfs/tours/sd2iec.html">SD2IEC tour</a><a href="index.html">ReuSQL64</a><a href="sql-language.html">SQL language</a><a href="../c77/index.html">C77 gallery</a></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#c64-ram">C64 RAM</a></li><li><a href="#reu">REU</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="memory-map.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="c64-and-reu-memory-map">C64 and REU Memory Map</h1>
+<h2 id="c64-ram">C64 RAM</h2>
+<ul>
+<li><code>$0801-$30FF</code>: client application; must remain untouched by engine loading,
+BSS, stack, or DMA staging. The interactive shell is the largest special
+client layout: code/data plus its 161-byte line buffer end at <code>$3080</code>,
+leaving <code>$3081-$30FF</code> free before the engine.</li>
+<li><code>$3100-$5B9F</code>: resident engine region. Current code ends at <code>$5B9C</code>.</li>
+<li><code>$5BA0-$77FF</code>: work RAM, row/value staging, parser workspace, and two shared
+256-byte metadata scratch pages. Shared BSS currently ends at <code>$7700</code>; the
+shell/export adapter is the largest current APPBSS and ends at <code>$77DE</code>,
+leaving <code>$77DF-$77FF</code> before the fixed C stack.</li>
+<li><code>$7800-$7BFF</code>: reserved 1KB cc65 software C stack.</li>
+<li><code>$7C00-$BFFF</code>: shared 17KB overlay window. RAM is exposed under BASIC ROM
+while executing code in <code>$A000-$BFFF</code>. Current ends are metadata <code>$BFF6</code>,
+row/aggregate <code>$BFEF</code>, parser <code>$BF71</code>, executor/index/lifecycle <code>$BFDD</code>,
+joined/subquery shaping <code>$BFBE</code>, ordinary result shaping <code>$BF9B</code>,
+joined/correlated aggregation <code>$BFBC</code>, administration <code>$BFEA</code>, and direct
+wide execution/shaping <code>$BB38</code>.</li>
+<li><code>$C000-$CFFF</code>: public JMP table, phase-neutral query glue, and resident
+BASIC-ROM float trampoline. The jump table is fixed at <code>$C000</code>, with
+checkpoint at <code>$C01B</code> and restore at <code>$C01E</code>. Normal ABI code ends at <code>$CFEE</code>; <code>$CFEF</code> is the
+Peddle BASIC-FLOAT activity marker and <code>$CFF0-$CFF6</code> are automation controls.
+A final resident predicate bridge occupies <code>$CFF7-$CFFE</code>; <code>$CFFF</code> is the
+checkpoint test-adapter handshake. The post-link verifier checks every fixed
+address and boundary.</li>
+</ul>
+<h2 id="reu">REU</h2>
+<p>REU addresses are 24-bit. The detected size is converted to a page count from
+2,048 pages (512KB) through 65,536 pages (16MB).</p>
+<ul>
+<li>Page 0: superblock A.</li>
+<li>Page 1: superblock B.</li>
+<li>Pages 2-33: allocation bitmap reservation.</li>
+<li>Pages 34-101: fixed administrative sidecar cache.</li>
+<li>Pages 102 through <code>page_count-561</code>: database allocator.</li>
+<li>The following 16 pages are statement-journal before images.</li>
+<li>Top 544 pages: eight 68-page (17KB) overlay slots.</li>
+</ul>
+<p>The shell reuses the caches. Direct wide execution owns the eighth top slot;
+administration remains fixed at pages 34-101. This reservation is recorded by
+storage version 4 so older raw images cannot be opened with overlapping data.</p>
+<p>The bitmap is deliberately reserved at its maximum size on every supported REU
+so physical page identities and format offsets do not depend on capacity.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

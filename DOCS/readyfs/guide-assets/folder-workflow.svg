@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="420" viewBox="0 0 1000 420" role="img" aria-labelledby="title desc">
+<title id="title">Nested folder workflow</title><desc id="desc">The original source remains through copy, move, and deletion. COPY holds a duplicate, then MOVED holds it, then the duplicate is deleted. What-if precedes each real operation.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6" fill="none" stroke="#58637e" stroke-width="1.5"/></marker></defs>
+<rect x="1" y="1" width="998" height="418" rx="16" fill="#f6f8ff" stroke="#d7deef"/>
+<g font-family="Arial, sans-serif" fill="#18213b">
+<text x="32" y="38" font-size="17" font-weight="700" letter-spacing="1">ONE ORIGINAL · ONE DISPOSABLE DUPLICATE</text>
+<g font-size="19" font-weight="700"><text x="42" y="82">1. Start</text><text x="284" y="82">2. Copy</text><text x="526" y="82">3. Move</text><text x="768" y="82">4. Delete</text></g>
+<g fill="#e3f3ef" stroke="#95c3b5"><rect x="32" y="101" width="210" height="68" rx="9"/><rect x="274" y="101" width="210" height="68" rx="9"/><rect x="516" y="101" width="210" height="68" rx="9"/><rect x="758" y="101" width="210" height="68" rx="9"/></g>
+<g font-family="monospace" font-size="22" fill="#165449"><text x="51" y="130">SOURCE</text><text x="293" y="130">SOURCE</text><text x="535" y="130">SOURCE</text><text x="777" y="130">SOURCE</text></g>
+<g font-size="15" fill="#165449"><text x="51" y="154">5 files · 3 child folders</text><text x="293" y="154">unchanged</text><text x="535" y="154">unchanged</text><text x="777" y="154">unchanged</text></g>
+<g stroke="#58637e" stroke-width="2" marker-end="url(#arrow)"><path d="M245 135H265"/><path d="M487 135H507"/><path d="M729 135H749"/></g>
+<g fill="white" stroke="#c9d2e7"><rect x="274" y="195" width="210" height="104" rx="9"/><rect x="516" y="195" width="210" height="104" rx="9"/><rect x="758" y="195" width="210" height="104" rx="9"/></g>
+<g font-family="monospace" font-size="22" fill="#40318d"><text x="293" y="225">COPY</text><text x="535" y="225">MOVED</text></g>
+<g font-size="15" fill="#58637e"><text x="293" y="252">duplicate descendants</text><text x="293" y="277">verified against SOURCE</text><text x="535" y="252">same duplicate</text><text x="535" y="277">COPY descendants gone</text><text x="777" y="225" font-size="20" fill="#9a5610">Copies removed</text><text x="777" y="252">empty roots removed</text><text x="777" y="277">outer run root remains</text></g>
+<g stroke="#58637e" stroke-width="2" marker-end="url(#arrow)"><path d="M487 246H507"/><path d="M729 246H749"/></g>
+<rect x="32" y="330" width="936" height="58" rx="9" fill="#fff3df"/><text x="51" y="354" font-size="17" font-weight="700" fill="#825018">Before each change: what-if → inspect → execute → check postconditions</text><text x="51" y="378" font-size="15" fill="#825018">What-if makes no changes. Removing the preview option starts a separate real command.</text>
+</g></svg>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Ultimate Experiments · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Ultimate Experiments"><link rel="stylesheet" href="style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="index.html" aria-current="page">Start</a><a href="readyfs/index.html">ReadyFS</a><a href="readyfs/READYFS_USER_GUIDE.html">Illustrated guide</a><a href="readyfs/READYFS_RUN_GUIDE.html">RUN / batch</a><a href="readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC</a><a href="readyfs/tours/editor.html">Editor tour</a><a href="readyfs/tours/sd2iec.html">SD2IEC tour</a><a href="reusql/index.html">ReuSQL64</a><a href="reusql/sql-language.html">SQL language</a><a href="c77/index.html">C77 gallery</a></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#pick-an-experiment">Pick an experiment</a></li><li><a href="#readyfs-in-pictures">ReadyFS in pictures</a></li><li><a href="#main-disk-images">Main disk images</a></li><li><a href="#read-offline-or-publish">Read offline or publish</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="ultimate-experiments">Ultimate Experiments</h1>
+<p>Outside ReadyOS—and sometimes before ReadyOS—we do random experiments for the Commodore 64 Ultimate. Some may become supported projects; some are one-offs and throwaways. These guides describe what each experiment currently does and how to try it.</p>
+<h2 id="pick-an-experiment">Pick an experiment</h2>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Explore</th>
+<th>Read</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ReadyFS</strong></td>
+<td>Filesystem paths, typed transfers, native SD2IEC and a DOS-style shell</td>
+<td><a href="readyfs/index.html">Project guide</a> · <a href="readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></td>
+</tr>
+<tr>
+<td><strong>ReuSQL64</strong></td>
+<td>A SQL-like database in REU memory, from tables and indexes to joins and aggregates</td>
+<td><a href="reusql/index.html">Project guide</a> · <a href="reusql/sql-language.html">SQL language</a></td>
+</tr>
+<tr>
+<td><strong>C77 Cyberpunk 77</strong></td>
+<td>Dual-bank character ROM, palette and ReadyOS screenshot galleries</td>
+<td><a href="c77/index.html">Project guide</a></td>
+</tr>
+</tbody></table>
+<h2 id="readyfs-in-pictures">ReadyFS in pictures</h2>
+<p><img loading="lazy" decoding="async" src="readyfs/guide-assets/06-long-line.png" alt="ReadyFS command-line editor on a physical C64"></p>
+<p>The <a href="readyfs/tours/editor.html">editor and filesystem walkthrough</a> follows help, editing, history, previews, transfers and a parameterized backup script. The <a href="readyfs/tours/sd2iec.html">SD2IEC walkthrough</a> follows real native folder and image operations. Every step includes a command, explanation and actual C64 screenshot. No video files are needed or bundled.</p>
+<h2 id="main-disk-images">Main disk images</h2>
+<ul>
+<li><a href="downloads/readyfs-overlay-lab.d81">ReadyFS overlay shell</a>: the main interactive build and all 28 sidecars; at least 1 MiB REU.</li>
+<li><a href="downloads/readyfs-lab.d81">ReadyFS monolithic diagnostic</a>: the earlier, simpler reader.</li>
+<li><a href="downloads/rsql64_shell.d81">ReuSQL64 interactive shell</a>: SQL client and engine overlays; 512 KB–16 MB REU.</li>
+</ul>
+<p>Read each project guide before loading an image. For filesystem writes, use disposable fixtures and follow the ownership rules. REU database state needs an explicit checkpoint/capture workflow to survive reset.</p>
+<h2 id="read-offline-or-publish">Read offline or publish</h2>
+<p>Every reference has a Markdown source and an HTML edition. Open <code>index.html</code> for the website, or browse the Markdown files directly. Images, styles and downloads are local; there is no runtime CDN dependency. The <a href="readyfs/portable-guide.html">portable ReadyFS guide</a> embeds its illustrations for printing and single-file offline reading.</p>
+<p><a href="README.html">Build and GitHub Pages instructions</a></p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="README.html">Build and publishing</a></footer></body></html>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS Path Research and Translation Notes · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS Path Research and Translation Notes"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">Start</a><a href="index.html">ReadyFS</a><a href="READYFS_USER_GUIDE.html">Illustrated guide</a><a href="READYFS_RUN_GUIDE.html">RUN / batch</a><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC</a><a href="tours/editor.html">Editor tour</a><a href="tours/sd2iec.html">SD2IEC tour</a><a href="../reusql/index.html">ReuSQL64</a><a href="../reusql/sql-language.html">SQL language</a><a href="../c77/index.html">C77 gallery</a></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#why-the-public-syntax-is-not-native-dos-syntax">Why the public syntax is not native DOS syntax</a></li><li><a href="#translation-rules">Translation rules</a></li><li><a href="#length-and-capability-policy">Length and capability policy</a></li><li><a href="#native-pattern-action-contract">Native-pattern action contract</a></li><li><a href="#sources">Sources</a></li><li><a href="#softwareiec-host-filetype-findings-on-firmware-314">SoftwareIEC host-file/type findings on firmware 3.14</a></li><li><a href="#softwareiec-directory-breadth-boundary">SoftwareIEC directory-breadth boundary</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="READYFS_PATH_RESEARCH.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs-path-research-and-translation-notes">ReadyFS Path Research and Translation Notes</h1>
+<h2 id="why-the-public-syntax-is-not-native-dos-syntax">Why the public syntax is not native DOS syntax</h2>
+<p>C64 OS combines device, partition, filename, and path as
+<code>device:partition:filename:path</code>. Its documentation explains that filename is
+placed before the path partly so a narrow status display keeps the filename
+visible. That is useful for its UI, but it makes a typed hierarchical shell
+path harder to read and makes an image-file boundary implicit.</p>
+<p>ReadyFS instead keeps the hierarchy in traversal order:</p>
+<ul>
+<li><code>8:/FILE</code> — unpartitioned/legacy IEC device</li>
+<li><code>11.3:/games/demo.d64!/PROGRAM</code> — IEC device 11, native partition 3,
+host-side folders, explicit image boundary, contained file</li>
+<li><code>u:/USB1/games/demo.d81!/PROGRAM</code> — UltimateDOS host path plus image</li>
+<li><code>s3:/games/PROGRAM</code> — SoftwareIEC logical partition 3</li>
+<li><code>@work:/src/file.c</code> — exact-place alias</li>
+</ul>
+<p>The optional <code>.partition</code> numeric suffix is reserved for CMD/SD2IEC-compatible
+IEC drivers. Existing <code>8:/</code> remains partition 0/default. Parsing this form does
+not grant directory capability: the detected driver must explicitly support
+partitioned paths before listing or mutation.</p>
+<h2 id="translation-rules">Translation rules</h2>
+<p>The public path is always normalized and absolute. A backend may temporarily
+change its own current directory, but every transaction starts by reasserting
+the public absolute location; ReadyFS never treats backend current-directory
+state as durable shell state.</p>
+<p>CMD/SD2IEC use a DOS command-string grammar in which a partition and directory
+path precede a colon-separated leaf. SD2IEC also treats a disk image as a
+directory for <code>CD</code>, and leaving it requires a separate parent/unmount command.
+ReadyFS does not leak that stateful behavior into its public path. <code>!</code> records
+the transition from host file to contained filesystem, so planning can reject
+an unsupported cross-image operation before changing device state.</p>
+<p>The pure CMD/SD2IEC translator is host-harness-proven for the following
+commands. The same source cc65-compiles into the cached <code>RFCMDPATH</code> sidecar
+(<code>$B600</code>, <code>$FFD</code> bytes) on the overlay lab D81. Boot loads it into REU slot 5,
+verifies its ABI, runs a compact <code>$:pattern</code> translation self-test, and restores
+the matcher before the prompt. The larger callable VICE suite proves file-open,
+rename, image-mount, two-command-unmount, and matcher restoration.
+The callable <code>native OP PATH [DEST]</code> diagnostic runs from the help sidecar,
+swaps into CMD path through resident scratch, restores help, prints the exact
+native result, and restores the matcher. A separate <code>RFDRIVE</code> sidecar classifies
+bounded status-channel replies while the resident exclusively owns KERNAL IEC
+I/O. <code>probe iec DRIVE:</code> is proven in VICE, but translated mutating commands are
+not issued until the detected profile explicitly grants their capabilities:</p>
+<p>Detected IEC profiles are stored per device in session REU <code>$0888-$08E3</code> as
+individually marked records. The registry is cleared at application boot and
+every lookup validates both marker and device number. <code>profile iec 8: mount</code>
+therefore answers from a durable, explicit capability record rather than the
+last transient status buffer. The current matrix requires <code>P</code> for open and
+scratch, <code>P+F</code> for directory and folder/rename operations, and <code>P+F+I</code> for
+image mount/unmount.</p>
+<table>
+<thead>
+<tr>
+<th>ReadyFS</th>
+<th>Native operation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>8:/RF* --native-pattern</code></td>
+<td><code>$:RF*</code> (flat read-only directory selection)</td>
+</tr>
+<tr>
+<td><code>11.3:/games/HELLO.PRG</code></td>
+<td><code>3//games/:HELLO.PRG</code></td>
+</tr>
+<tr>
+<td>directory <code>11.3:/games/tools</code></td>
+<td><code>$3//games/tools/</code></td>
+</tr>
+<tr>
+<td>scratch <code>11.3:/games/OLD.SEQ</code></td>
+<td><code>S3//games/:OLD.SEQ</code></td>
+</tr>
+<tr>
+<td>mkdir <code>11.3:/games/newdir</code></td>
+<td><code>MD3//games/:newdir</code></td>
+</tr>
+<tr>
+<td>rmdir <code>11.3:/games/old</code></td>
+<td><code>RD3//games/:old</code></td>
+</tr>
+<tr>
+<td>rename old to new</td>
+<td><code>R3//archive/:NEW.SEQ=3//games/:OLD.SEQ</code> (<code>new=old</code>)</td>
+</tr>
+<tr>
+<td>mount <code>11.3:/games/demo.d64</code></td>
+<td><code>CD3//games/demo.d64</code></td>
+</tr>
+<tr>
+<td>unmount partition root</td>
+<td><code>CD//</code>, then <code>CD</code> plus PETSCII back-arrow <code>$5F</code></td>
+</tr>
+<tr>
+<td><code>11.3:/games/demo.d64!/HELLO</code></td>
+<td>rejected as stateful until mount/open/restore transaction support exists</td>
+</tr>
+<tr>
+<td><code>s3:/games/HELLO</code></td>
+<td>SoftwareIEC KERNAL name <code>3:/games/HELLO</code> on discovered bus</td>
+</tr>
+</tbody></table>
+<p>The harness also rejects cross-device/cross-partition rename, partitionless
+legacy IEC paths, non-IEC endpoints, unsupported image extensions, components
+over 16 bytes, and image-contained access that would require hidden mutable
+device state. <code>make readyfs-host-tests</code> compiles and runs this contract.</p>
+<h2 id="length-and-capability-policy">Length and capability policy</h2>
+<ul>
+<li>ReadyFS canonical commands and expanded paths are at most 255 bytes.</li>
+<li>C64 OS documents a roughly 232–234 byte directory-path ceiling and 16-byte
+directory components for its CMD-style drivers. ReadyFS does not adopt its
+filename-before-path layout, but the limit is useful as a conservative
+compatibility profile.</li>
+<li>SD2IEC documents patterns/visible Commodore filenames up to 16 characters,
+partitions 1–254, CMD-compatible <code>CD</code>/<code>MD</code>/<code>RD</code>, and image mounting through
+<code>CD</code>. Native host long names and their displayed aliases must remain distinct
+metadata.</li>
+<li>Each driver preflights the fully translated command/open-name length, leaf
+length, partition range, supported image type, and maximum path profile.
+Unsupported or unproven operations fail before mutation.</li>
+<li><code>--native-pattern</code> is the only mode allowed to forward a C64-DOS pattern.
+Shell <code>*</code>, <code>?</code>, and <code>**</code> otherwise operate on complete ReadyFS relative stems.</li>
+</ul>
+<h2 id="native-pattern-action-contract">Native-pattern action contract</h2>
+<p>Native patterns may eventually select copy, move, and delete inputs, but they
+must never be forwarded as a wildcard mutation such as <code>S:RF*</code>. The accepted
+execution model is:</p>
+<ol>
+<li>Translate and open the backend pattern only as a read-only directory query.</li>
+<li>Ignore the directory header and serialize every exact returned filename,
+type, and block estimate into the existing bounded REU action plan. Hitting
+the entry limit invalidates the whole plan; it never means “apply the first
+N”.</li>
+<li>Apply <code>--include</code>/<code>--exclude</code>, if present, only after native enumeration and
+against each complete ReadyFS relative stem. This keeps backend selection
+and shell filtering distinct and inspectable.</li>
+<li><code>--whatif</code> prints every exact selected target plus totals and performs no
+write, scratch, rename, mount, or directory-changing command.</li>
+<li>A real run requires <code>--apply</code>, displays the complete selection, and freezes
+those exact names before execution. Bare <code>--native-pattern</code> remains denied
+even with <code>--force</code>/<code>--yes</code>. Each frozen target then uses the normal staged
+copy/move or exact-name delete path with RFJ1-before-ACK and stop/continue
+policy; the wildcard is never reissued as a mutation command.</li>
+<li>Copy/move require a directory destination when more than one source is
+selected. Directories and unsupported REL transfers reject the entire
+first-generation plan before mutation; per-type expansion comes only with
+dedicated evidence.</li>
+</ol>
+<p>Preview syntax is <code>copy 8:/RF* 9:/ --native-pattern --whatif</code>, <code>move ...</code>, and
+<code>delete 8:/RF* --native-pattern --whatif</code>; execution replaces <code>--whatif</code> with
+the explicit <code>--apply</code> opt-in (plus normal conflict/confirmation options).
+Users do not add <code>--recursive</code> merely because the implementation reuses the
+batch controller. In <code>171906</code>, resident IEC enumeration feeds exact names and
+types through the backend/matcher/recursive sidecars; filtered planning stays
+zero-write, singleton native delete succeeds, and native copy/move cross from
+IEC8 to IEC9 with exact byte/postcondition checks. Parsed RFJ1 dumps contain
+only <code>RFNC1</code>, <code>RFNC2</code>, and <code>RFNM1</code> exact-name actions. Wildcard scratch, write,
+and rename commands remain forbidden. Regular IEC collection destinations must
+be the flat root; <code>171852</code> additionally proves that a matched REL <code>$13</code> entry
+rejects the entire native plan with the destination still absent.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>C64 OS file-reference design and path limits:
+<a href="https://c64os.com/c64os/usersguide/filesystem">https://c64os.com/c64os/usersguide/filesystem</a></li>
+<li>C64 OS File Manager device/partition and recursive-operation behavior:
+<a href="https://www.c64os.com/c64os/usersguide/filemanager">https://www.c64os.com/c64os/usersguide/filemanager</a></li>
+<li>C64 OS discussion of absolute file references rather than shared mutable
+drive-directory pointers:
+<a href="https://c64os.com/post/cmdhdcurrentdirpointers">https://c64os.com/post/cmdhdcurrentdirpointers</a></li>
+<li>SD2IEC command manual derived from the firmware README, including partition,
+directory, and image <code>CD</code> semantics:
+<a href="https://c64os.com/post/sd2iecdocumentation">https://c64os.com/post/sd2iecdocumentation</a></li>
+<li>UltimateDOS reference:
+<a href="https://1541ultimate.net/content/download/ultimate_dos_v1.0.pdf">https://1541ultimate.net/content/download/ultimate_dos_v1.0.pdf</a></li>
+</ul>
+<h2 id="softwareiec-host-filetype-findings-on-firmware-314">SoftwareIEC host-file/type findings on firmware 3.14</h2>
+<ul>
+<li>The BASIC directory stream is not an exhaustive FAT enumeration authority.
+Physical traces can show the host-path header and one earlier file, then end
+before the requested later leaf. ReadyFS must not infer absence from that
+stream.</li>
+<li>Ordinary SoftwareIEC OPEN without an explicit type maps through <code>.???</code>;
+explicit SEQ/PRG/USR opens map to <code>.seq</code>, <code>.prg</code>, and <code>.usr</code>. ReadyFS probes
+only those three explicit types and consumes the DOS status reply.</li>
+<li>Never probe REL for existence. Firmware source opens REL with
+<code>FA_OPEN_ALWAYS</code>, so a read-style existence check can create a missing host
+<code>.rel</code> file. <code>rf065128/ap1000.rel</code> is the preserved proof artifact.</li>
+<li>UCI SoftwareIEC target command <code>$14</code> closes the data channel selected by its
+secondary-address byte. Firmware implements it synchronously through
+<code>get_data_channel(sa)-&gt;ext_close_file()-&gt;push_command($E0)</code>. ReadyFS uses it
+for read SA 2 and probe SA 6 via the complete ReadyIRC-derived UCI transport.</li>
+<li>UCI status and resident IEC DOS status intentionally share scratch storage.
+Therefore the exact order is KERNAL close, target-5 close, then DOS-status
+read. Checking DOS status before the UCI command lets the UCI reply overwrite
+the evidence and can misclassify an absent host leaf.</li>
+</ul>
+<h2 id="softwareiec-directory-breadth-boundary">SoftwareIEC directory-breadth boundary</h2>
+<p>The marker-owned run root eventually accumulated many deliberately preserved
+diagnostic folders. Firmware 3.14 then stopped entering newly appended root
+folders through direct <code>CD:</code> even though UltimateDOS listed them. Seeding
+<code>rf094315/rfseed.seq</code> and rebooting with exact SoftIEC config equality did not
+change the result. Creating a fresh child under already visible, uncrowded
+<code>rf091800</code> worked immediately, including a nested directory below it. This
+aligns with the truncated FAT/BASIC-directory behavior: path design cannot
+assume every raw host entry is reachable through SoftwareIEC at arbitrary
+parent breadth. Future integration should expose a capability/refresh boundary
+and prefer dedicated shallow SoftIEC-visible roots.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

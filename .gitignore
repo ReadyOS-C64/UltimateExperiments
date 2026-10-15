@@ -17,3 +17,6 @@ __pycache__/
 # Generated logs and build products; project rules allow the main D81s.
 **/logs/
 /C77Cyberpunk77/build/
+
+# Documentation tooling dependencies.
+/node_modules/

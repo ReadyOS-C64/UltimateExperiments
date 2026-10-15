@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS C64 Ultimate Test Safety · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS C64 Ultimate Test Safety"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">Start</a><a href="index.html">ReadyFS</a><a href="READYFS_USER_GUIDE.html">Illustrated guide</a><a href="READYFS_RUN_GUIDE.html">RUN / batch</a><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC</a><a href="tours/editor.html">Editor tour</a><a href="tours/sd2iec.html">SD2IEC tour</a><a href="../reusql/index.html">ReuSQL64</a><a href="../reusql/sql-language.html">SQL language</a><a href="../c77/index.html">C77 gallery</a></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#non-negotiable-boundary">Non-negotiable boundary</a></li><li><a href="#ultimate-access">Ultimate access</a></li><li><a href="#uci-transport">UCI transport</a></li><li><a href="#current-owned-scope-and-recursive-fixtures">Current owned scope and recursive fixtures</a></li><li><a href="#preserved-softwareiec-diagnostics-2026-08-17">Preserved SoftwareIEC diagnostics — 2026-08-17</a></li><li><a href="#2026-10-0809-explicitly-requested-nested-demo-deletion">2026-10-08/09 — explicitly requested nested demo deletion</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="READYFS_SAFETY.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs-c64-ultimate-test-safety">ReadyFS C64 Ultimate Test Safety</h1>
+<h2 id="non-negotiable-boundary">Non-negotiable boundary</h2>
+<p>Each automation run receives a unique run id and two optional owned roots:</p>
+<ul>
+<li><code>/usb1/READYFS_TEST/&lt;run-id&gt;</code></li>
+<li><code>/sdcard/READYFS_TEST/&lt;run-id&gt;</code></li>
+</ul>
+<p>The host setup creates the root and a marker containing that exact run id.
+Before a destructive command, both the normalized path prefix and marker must
+match. Prefix-only checks are insufficient. Symlink-like escapes, parent
+components, aliases that expand outside the root, and image boundaries whose
+host image is outside the root are rejected in automated destructive suites.</p>
+<p>Tests may create and remove leaves inside their own root. Run roots and logs
+remain after the suite unless an explicit cleanup request names the exact run
+id and its marker validates. Existing USB1, SD-card, disk-image, and IEC-device
+content is never a cleanup target.</p>
+<h2 id="ultimate-access">Ultimate access</h2>
+<p>C64 Ultimate REST/FTP commands run only from a Terminal-owned/background bash.
+The suite records the original Ultimate configuration before enabling Command
+Interface or Software IEC and restores it on every exit path.</p>
+<h2 id="uci-transport">UCI transport</h2>
+<p>ReadyFS follows the transport proven by ReadyIRC and UCI Tester. Commands start
+from fully quiescent IDLE, PUSH is asynchronous, both queues are completely
+drained, DATA_ACC must visibly advance state, ABORT is requested once and then
+serviced, and completion includes the final quiet-idle wait. Poll counts bound
+failure; they never pace commands. Physical acceptance runs at 1, 16, and
+64 MHz.</p>
+<h2 id="current-owned-scope-and-recursive-fixtures">Current owned scope and recursive fixtures</h2>
+<p>The only active mutation roots are the USB1/SD pair for
+<code>readyfs-20260815-190355-79014</code>, with marker
+<code>.readyfs-owner-readyfs-20260815-190355-79014</code>. The recursive fixture suite may
+create a uniquely timestamped subtree only below the USB1 root, revalidates the
+marker before every mkdir/write, performs no deletes, and preserves the tree.
+Runs ending <code>230322</code> and <code>231705</code> stopped after a successful marker comparison
+because REST launch reset; no filesystem command ran in either attempt.
+Run <code>recursive-owned-20260816-011419</code> stopped even earlier: all ten FTP marker
+fetches reset, so it did not validate ownership, launch ReadyFS, or issue any
+filesystem command. Preserve it and do not retry the C64U in a tight loop.</p>
+<p>The later true Terminal-owned SoftIEC attempt
+<code>softiec-owned-20260816-100658</code> also stopped at the first exact marker gate:
+ten FTP connection resets, an empty results table, and no ReadyFS launch,
+mapping, filesystem I/O, configuration change, or mutation. Preserve its logs
+and never bypass the marker because connectivity is intermittent.</p>
+<p>Audit invalidated <code>preflight-20260816-112357</code> as FTP evidence: its old script
+did not exit on curl failure, so three reset/empty FTP outputs were followed by
+a successful manifest write and a false <code>success</code> status. The preflight now
+uses <code>set -euo pipefail</code>, ten bounded attempts, FTP <code>--list-only</code>, and rejects
+empty outputs. Corrected independent run <code>preflight-20260816-113019</code> proves
+nonempty REST version/info/drive/config access but fails honestly at FTP root
+listing after ten resets. <code>softiec-owned-20260816-112412</code> likewise failed at
+the exact marker fetch with zero cases and no launch/map/I/O/mutation. Do not
+use the invalid earlier status to weaken the ownership gate.</p>
+<p>Local VICE run <code>vice_auto_20260816_121327</code> exercises direct and alias-resolved partition
+mutation gate only against a detected legacy profile. It stops at <code>PROFILE DENIED</code> before action BEGIN and before command-channel I/O. It is not physical
+storage evidence. No C64U retry, REST configuration change, FTP write, USB1
+mutation, or SD mutation accompanied this milestone; the owned roots and
+marker rule above remain unchanged.</p>
+<p>The latest local authority is <code>vice_auto_20260816_122410</code>; it additionally
+denies alias-resolved partition directory listing on the legacy VICE profile.
+No physical command or storage request is implied. Boot failures <code>121620</code> and
+<code>121741</code> were local memory-boundary diagnostics, and <code>122154</code> captured the
+KERNAL scratch collision. They did not contact the C64U or mutate storage.</p>
+<p>True Terminal-owned read-only preflight
+<code>preflight-20260816-1228-final-local</code> again obtained all seven nonempty REST
+documents, then failed strictly after ten FTP root-list resets. It did not
+reach SD/USB listing, marker retrieval, ReadyFS launch, configuration writes,
+or any filesystem mutation. Do not start a mutation run from its REST-only
+success; fresh exact marker access is still mandatory.</p>
+<h2 id="preserved-softwareiec-diagnostics-2026-08-17">Preserved SoftwareIEC diagnostics — 2026-08-17</h2>
+<p>All later SoftwareIEC automation remained inside the exact marker-owned USB1
+root and re-read the exact USB1 and SD markers before mutations. No suite is a
+cleanup authority. Preserve every created folder and file, including
+<code>rf065128/ap0840.seq</code>, <code>rf065128/ap1000.rel</code>, <code>rf065128/ap1030.seq</code>,
+<code>rf065128/ap1100.seq</code>, <code>rf065128/ap1115.seq</code>, folders <code>rf080727</code>, <code>rf081054</code>,
+<code>rf082251</code>, and <code>rf083856</code>, their <code>sfa.seq</code>/<code>fromu.seq</code> leaves, root
+<code>fs081054.seq</code>, <code>us081054.seq</code>, <code>fs082251.seq</code>, <code>us082251.seq</code>, and
+<code>rf083856/ap0853.seq</code>. The REL leaf was created only by an unsafe diagnostic
+existence probe; REL probing is now forbidden in production.</p>
+<p>Read-only authorities <code>softwrite-noftp-20260817-uci-close-trace</code>,
+<code>softwrite-noftp-20260817-uci-close-prod</code>, and
+<code>softwrite-noftp-20260817-ap0846-read2</code> pass exact owner checks before and
+after. Trace mutation authority <code>softwrite-noftp-20260817-uci-close6-trace2</code>
+created only <code>rf083856/ap0853.seq</code> after both pre-owner checks and passed both
+post-owner checks. Failed full run <code>softiec-owned-20260817-uci-close-full</code>
+created only <code>rf083856</code> before stopping; do not remove it. The follow-up full
+run <code>softiec-owned-20260817-close26-full2</code> uses another fresh exact-owned
+folder, performs no deletes, and must retain all artifacts regardless of its
+result.</p>
+<p>Later exact-owned artifacts are permanent: top-level <code>rf085532</code>, <code>rf090410</code>,
+<code>rf091228</code>, <code>rf091800</code>, and <code>rf094315</code>; nested <code>rf091800/rf100154</code>; raw roots
+<code>fs091800.seq</code>, <code>us091800.seq</code>, <code>fs100154.seq</code>, and <code>us100154.seq</code>; successful
+focused leaves including <code>ap0902.seq</code>, <code>ap0904.seq</code>, <code>ap0917.seq</code>,
+<code>fx0930.seq</code>, <code>fx0938.seq</code>, and <code>fx0940.seq</code>; <code>rf094315/rfseed.seq</code>; and the
+final case&#39;s <code>sfa.seq</code>, <code>fromu.seq</code>, and <code>nested/inside.seq</code>. Failed
+diagnostics may have additional partial artifacts, so these names are a
+minimum preserve set, never a cleanup allowlist.</p>
+<p>Corrected recursive destination <code>rf091800/rr111505</code> is now permanent too. It
+contains normal lowercase host files <code>sfa.seq</code>, <code>fromu.seq</code>, and
+<code>nested/inside.seq</code>, created by successful marker-gated <code>rr5-final3</code> and
+independently read by <code>rr5-verify</code>. Preserve earlier <code>rr111504</code> with its
+encoded-name diagnostics, failed/partial <code>rr5-final</code> and <code>rr5-final2</code>, every
+runner diagnostic log, and any partial runner-diagnostic folder if firmware
+accepted one before FTP reset. Neither successful suite nor any diagnostic is
+cleanup authority. Both successful suites restored Drive A to the exact
+captured empty-enabled-1581 baseline.</p>
+<p><code>softiec-owned-20260817-nested-parent-prod-full</code> issued no delete and gated
+every mutation with both exact 116-byte owner files. Its stale final uppercase
+directory oracle did not invalidate completed mutations. Read-only
+<code>softwrite-noftp-20260817-treeverify-final</code> subsequently verified the raw tree
+and both owner markers after all mutations. No run authorizes cleanup.</p>
+<h2 id="2026-10-0809-explicitly-requested-nested-demo-deletion">2026-10-08/09 — explicitly requested nested demo deletion</h2>
+<p>The user&#39;s new request authorizes copying, moving and deleting demo descendants
+only inside a fresh owned run root. It does not authorize cleanup of historical
+roots, source fixtures, or ownership markers.</p>
+<ul>
+<li><code>readyfs-20261009-064723-40789</code>: fresh USB1 source fixture; first recording
+stopped on a screen-decoder bracket assertion before any C64 mutation.
+Preserve the root, marker, source, and failed-take evidence.</li>
+<li><code>readyfs-20261009-065124-42760</code>: fresh USB1 source fixture for the revised
+recording. Allowed mutation descendants are <code>copy</code>, <code>moved</code>, and the
+what-if-only <code>field notes.seq</code>. Preserve <code>source</code>, the root, and its marker.
+The runner verifies an exact marker before each mutation command and takes
+independent recursive FTP snapshots before and after previews and actions.</li>
+</ul>
+<p>These are new per-run roots; they do not widen the historical August preserve
+set. Terminal-owned read-only preflight <code>preflight-20261008-233820</code> passed all
+REST and nonempty FTP checks before creation. No SD, user disk image, Software
+IEC mapping, or unrelated USB content is a mutation target.</p>
+<p>The alias-admission repair uses another fresh root,
+<code>readyfs-20261009-070006-46712</code>, for <code>demo-v2-20261009-000005</code>. Its permitted
+mutation descendants are <code>smoke</code>, <code>copy</code>, and <code>moved</code>; preserve its root, marker
+and <code>source</code>. <code>smoke</code> is the focused regression before filming. The previous
+root <code>readyfs-20261009-065124-42760</code> stopped before creating <code>copy</code> and remains
+preserved. No historical fixture is cleanup authority.</p>
+<h3 id="2026-10-09-canonical-lifetime-retake">2026-10-09 canonical-lifetime retake</h3>
+<p>Preserve the earlier 070006 root, including partial <code>smoke/work.seq</code> and
+<code>smoke/moved.seq</code> evidence after COPY OK / DELETE FAIL. Do not clean it up.
+The new run owns only <code>/USB1/READYFS_TEST/readyfs-20261009-071351-52789</code>.
+Marker and canonical prefix gates cover smoke regression and recorded copy,
+moved, and source descendants. The user authorized deleting only the newly
+created demonstration copies/moved descendants; preserve this run&#39;s source,
+root and ownership marker. No other run or original data is a cleanup target.</p>
+<h3 id="2026-10-09-literal-host-name-retake">2026-10-09 literal-host-name retake</h3>
+<p>Latest owned run: <code>/USB1/READYFS_TEST/readyfs-20261009-072020-56555</code>.
+The 071351 run is retained after a literal <code>.SEQ</code> lookup failure, with no
+cleanup permission for that earlier root. This fresh run alone may perform the
+smoke regression and delete its newly created copy/moved fixtures. Preserve
+its five original source files, source folders, root, and marker. Recorder
+snapshots the exact build before boot and checks completion passively from VIC
+before any REST RAM evidence reads.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

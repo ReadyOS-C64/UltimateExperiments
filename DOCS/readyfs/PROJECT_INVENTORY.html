@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS project inventory · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS project inventory"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">Start</a><a href="index.html">ReadyFS</a><a href="READYFS_USER_GUIDE.html">Illustrated guide</a><a href="READYFS_RUN_GUIDE.html">RUN / batch</a><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC</a><a href="tours/editor.html">Editor tour</a><a href="tours/sd2iec.html">SD2IEC tour</a><a href="../reusql/index.html">ReuSQL64</a><a href="../reusql/sql-language.html">SQL language</a><a href="../c77/index.html">C77 gallery</a></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#current-verification">Current verification</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="PROJECT_INVENTORY.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs-project-inventory">ReadyFS project inventory</h1>
+<p>ReadyFS is the standalone filesystem experiment in Ultimate Experiments. It is not integrated into the ReadyOS launcher.</p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Contents</th>
+<th>Version-control policy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>src/apps/readyfs/</code></td>
+<td>C and 6502 assembly sources and headers</td>
+<td>Committed</td>
+</tr>
+<tr>
+<td><code>cfg/readyfs_overlay.cfg</code></td>
+<td>Resident and 28-sidecar linker layout</td>
+<td>Committed</td>
+</tr>
+<tr>
+<td><code>Makefile</code>, <code>build_support/</code></td>
+<td>Builders, host tests, VICE plans, hardware automation and documentation tools</td>
+<td>Committed</td>
+</tr>
+<tr>
+<td><code>docs/</code></td>
+<td>User guide, UI, scripts, native configuration, safety and design references, screenshots</td>
+<td>Committed</td>
+</tr>
+<tr>
+<td><code>artifacts/readyfs/readyfs-overlay-lab.d81</code></td>
+<td>Main interactive shell and sidecars</td>
+<td>Committed</td>
+</tr>
+<tr>
+<td><code>artifacts/readyfs/readyfs-lab.d81</code></td>
+<td>Monolithic diagnostic disk</td>
+<td>Committed</td>
+</tr>
+<tr>
+<td><code>obj/</code>, other <code>artifacts/</code></td>
+<td>Objects, PRGs, fixtures, maps and generated reports</td>
+<td>Ignored</td>
+</tr>
+<tr>
+<td><code>logs/</code>, <code>AgentWorking/</code>, <code>agent.md</code></td>
+<td>Local run evidence and internal working history</td>
+<td>Ignored</td>
+</tr>
+<tr>
+<td><code>../DOCS/readyfs/</code></td>
+<td>Publishable Markdown/HTML references and screenshot tours</td>
+<td>Committed, rebuilt by the root docs tool</td>
+</tr>
+</tbody></table>
+<p><code>make readyfs</code> builds the complete project and performs its host/protocol/memory checks. VICE plans use <code>VICE_TASKS_REPO</code> or the default sibling <code>../../agenticdevharness</code> checkout. Hardware automation uses the Terminal-owned wrappers and ownership rules in <code>AGENTS.md</code>.</p>
+<h2 id="current-verification">Current verification</h2>
+<p>See <a href="READYFS_ACCEPTANCE.html">READYFS_ACCEPTANCE.md</a> for the current acceptance summary and <a href="index.html">README.md</a> for the public build and usage guide. Historical requirement ledgers contain dated milestones; they are not a list of raw log files shipped with a clone.</p>
+<p>The owner-requested cleanup on 14 October 2026 deleted earlier local runs, retaining the latest successful physical batch capture (<code>batch-demo-20261013b</code>) and its final appendix output (<code>demo-v8-batch-appended-20261013</code>). No on-device test roots or user media were touched by this host-filesystem cleanup.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

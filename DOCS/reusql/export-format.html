@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Selected-Query Export Format · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Selected-Query Export Format"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">Start</a><a href="../readyfs/index.html">ReadyFS</a><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated guide</a><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch</a><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC</a><a href="../readyfs/tours/editor.html">Editor tour</a><a href="../readyfs/tours/sd2iec.html">SD2IEC tour</a><a href="index.html">ReuSQL64</a><a href="sql-language.html">SQL language</a><a href="../c77/index.html">C77 gallery</a></nav></aside><main id="content"><div class="page-actions"><a href="export-format.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="selected-query-export-format">Selected-Query Export Format</h1>
+<p><code>rsql_export_d81()</code> streams any supported SELECT result to a CBM sequential
+file. D81/1581 is the standard target because it is the largest conventional
+Commodore disk used by this project, but export is intentionally bounded by
+free disk space. It is not a whole-database persistence format; databases too
+large for removable media use raw whole-REU capture through VICE.</p>
+<p>Version 1 is a compact typed row stream. All lengths and numeric payloads are
+little-endian. The file begins with:</p>
+<table>
+<thead>
+<tr>
+<th>Bytes</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>52 53 51 58</code></td>
+<td>Numeric ASCII signature <code>RSQLX</code></td>
+</tr>
+<tr>
+<td><code>01</code></td>
+<td>Export format version</td>
+</tr>
+<tr>
+<td><code>cc</code></td>
+<td>Selected column count</td>
+</tr>
+</tbody></table>
+<p>Each row begins with marker <code>52</code>. Every selected field then has a four-byte
+header <code>{type_tag, is_null, length_lo, length_hi}</code> followed by exactly <code>length</code>
+payload bytes unless <code>is_null</code> is nonzero. Fixed values retain their public
+cursor representation. TEXT and BLOB values are read in 64-byte chunks, so no
+variable result is materialized in C64 RAM. String payloads are raw C64 bytes
+(normally PETSCII); BLOB payloads are unchanged binary bytes.</p>
+<p>The stream ends with marker <code>FF</code> and a four-byte row count. A short KERNAL
+write, full disk, open failure, query error, or value-read error aborts the
+adapter and returns the relevant engine error or <code>RSQL_ERR_IO</code>; the cursor and
+file are closed on every path. A partial sequential file can therefore exist
+after an error and must not be treated as complete without the footer.</p>
+<p>The adapter is client-side source in <code>src/export_d81.c</code>, not a fixed-address
+ABI entry. This keeps disk naming and device policy out of the resident engine
+and leaves a future C64 Ultimate UCI adapter possible without implementing or
+testing UCI now.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

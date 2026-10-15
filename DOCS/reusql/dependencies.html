@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Third-party dependencies · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Third-party dependencies"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">Start</a><a href="../readyfs/index.html">ReadyFS</a><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated guide</a><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch</a><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC</a><a href="../readyfs/tours/editor.html">Editor tour</a><a href="../readyfs/tours/sd2iec.html">SD2IEC tour</a><a href="index.html">ReuSQL64</a><a href="sql-language.html">SQL language</a><a href="../c77/index.html">C77 gallery</a></nav></aside><main id="content"><div class="page-actions"><a href="dependencies.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="third-party-dependencies">Third-party dependencies</h1>
+<p>The host test runner currently resolves Peddle&#39;s core from the pinned sibling
+Zag64 checkout (<code>../../zig64/third_party/peddle</code>) so the foundation can share
+the already-audited MIT source at commit
+<code>c23e34a7e6516b284750b8c7caaa8c41948a407a</code>. ReuSQL64&#39;s configurable REU and
+bulk-image adapter is maintained locally under <code>third_party/peddle/</code>.</p>
+<p>Before ReuSQL64 becomes independently distributable, vendor that exact tree
+here with its LICENSE and replace the sibling paths in <code>build.zig</code>.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>
