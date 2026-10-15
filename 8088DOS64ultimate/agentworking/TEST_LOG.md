@@ -472,3 +472,6 @@ Performance assessment exact7input hashes/rootmath checked:1348cycle fixedrawNOP
 
 
 2026-10-15 physicalreadonlyIDprobe: Terminal1418freshFTPstagepass;1420guard5ea5e946/584inputs exit1, verifierprivateNMIvectordiffers. Programrestores37; capturedvector43FE/code701exact, raw2048IDC9/status00partialobservationsretainedwithoutacceptance. Full4194304before/afterac43/sourceguard/settingsmediaresetpass;1422bothFTPPRGsexact. See evidence/c64u-readonly-id-capture-failure-20261015.json.
+
+
+2026-10-15 rootUCF2+PIT: make test428/428Zig+290/290toolingpass39.095stooling;focuseduci-diagnostic27/27pass;newhost55/55pass5.944s. Actualtarget7122/22b4matchesindepunion28c0,340execution+immutablecopies exact;rootonlydiffsall256flagtest/PIT1764snapshot notexecutedbyDOS/BASIC. Tail1166→1142snapshotupdatedfromactuallinkbeforegate;allnegativechecksretained. Root367manifest and13standalonePRGsexact;genuinenativeDOS/BASICproofnotrerunredundantly. Evidenceucf2-pit-20261015.json.

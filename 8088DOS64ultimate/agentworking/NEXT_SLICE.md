@@ -47,3 +47,6 @@ CurrentPITperformance targetb29cb1a1/e374bb33 passesroot428Zig/290tooling/7froze
 
 
 StandaloneIDhardwareprobe1420 failedcapturecontractaftercomplete64Kcapture: immutable701codeexact/headercomplete, butterminalrestored37 andcapturedNMI43FE differedfromprivateRAM0916. Rawpartialdataall2048IDC9/status00retained, notfullprobeacceptance/nofuturestartupwaiver. Full4MiBac43/attempt1/settingsmediareset/584frozeninputs/twofullpostFTP exact. UIDP02successorkeeps35atterminal withbank-awarecapturemodel; priorfailureimmutable. [Evidence](evidence/c64u-readonly-id-capture-failure-20261015.json). Realhangmanvideo stillpending.
+
+
+Currentproduction7122c4e1/22b45779 promotesUCF2+PIT afterroot428Zig/290tooling/27UCIchecks,55hostworkflowchecks,367manifest/13standalonePRGsexact. FreshnativeDOS598702/2396040090 andBASIC3941545/10487012439 WIN03FF/all37LIST/SYSTEM/DIR3/finalA> reusedwith340exactfrozenactualinputs andtwoexplicitunrelatedtest-onlyrootdifferences. RawfirstID/prestartINPUT/IDfailurelogging nowcovered; noresetbarrier/causalfixclaimed. DEVICE4093/free3,shadow2442/free1142,state839,MAIN7/6,PIT1764/free28. Newfourthphysicalgameworkflow7660339d/staticreviewbd888b65 ready, rootfreshmedia160618staged, nativePRGstage/realguardpending. Actualvideo remainsunaccepted/pending. [Evidence](evidence/ucf2-pit-20261015.json).

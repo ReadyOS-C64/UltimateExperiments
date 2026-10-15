@@ -139,3 +139,6 @@ Runtime9ed3bc7b198d90ab3ef24c50ea0ce25f664457fed70a08e3382e9efb2ee11dda/unit8aa2
 
 
 2026-10-15 currentexactPITaccumulator: runtimeb29cb1a166c9939da35594af36656962d9e9ed8b5622a07dc20737cb87131841/unite374bb33c2d3e2a918346a2c4742fa5fb5dc338e3918fcbfd7d971651dac40a9. Both42497bytes; MAIN7/6,DEVICE4080/free16,HDBIOS2418/free1166,BSS205,DEVSTATE837,ZP36 unchanged. PITpayload1664→1764 in1792window/free28; totalsixpayload7302→7402. StartupREUreservation12288/23overlappedframes unchanged. Exactmaps/root367manifest+13standalonePRGsverified. Additional100bytesmustloadoneachPITmiss; CPUprofilingexcludesDMAstalls. Evidence:pit-inplace-performance-20261015.json.
+
+
+2026-10-15 currentUCF2+PIT7122c4e1/22b45779: normal/unit42497bytes. NativeUCIrawIDstore+3 andguardedprestarttrace+10→DEVICE4093/free3. HDBIOS2442/free1142; full3584copy/paddedtailstrict. UCF2record177+separatelastID1→DEVSTATE839(+2). MAIN7/6,ZP36,BSS205,cold3006/3981,PIT1764/free28 unchanged.13standalonePRGsbyteexact. Root367manifest/maps andindepunion28c0verified. NoSAVE/FILEINFO/nativecompilercompositionclaimed.

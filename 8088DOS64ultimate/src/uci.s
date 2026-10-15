@@ -11,7 +11,7 @@
 .export dos64_uci_blocks, dos64_uci_command, dos64_uci_data, dos64_uci_status
 .export dos64_uci_buffer_start, dos64_uci_buffer_end
 .ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
-.import hdb_extension_ready,dos64_uci_trace_first
+.import hdb_extension_ready,dos64_uci_trace_first,dos64_uci_trace_last_id
 .endif
 .segment "DEVICESTATE"
 dos64_uci_state_start:
@@ -131,6 +131,9 @@ uci_status_read: lda $df1c
  sta dos64_uci_last_status
  rts
 uci_id_read: lda $df1d
+.ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
+ sta dos64_uci_trace_last_id
+.endif
  rts
 uci_control_write: sta $df1c
  rts
@@ -292,6 +295,13 @@ dos64_uci_start:
 @id: lda #UCI_ERR_ID
 @failure:
  sta dos64_uci_error
+.ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
+ lda hdb_extension_ready
+ cmp #$a5
+ bne @no_start_trace
+ jsr dos64_uci_trace_first
+@no_start_trace:
+.endif
  lda #UCI_FAILED
  sta dos64_uci_state
 @reject:

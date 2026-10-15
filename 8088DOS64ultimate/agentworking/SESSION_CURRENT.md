@@ -1,0 +1,25 @@
+Current update: UCF2+PIT7122c4e1/22b45779 is promoted androot428/290/27+55 pass; see evidence/ucf2-pit-20261015.json. Fourthgame freshPRGstage/guard nowbeingprepared. No physicalrunactive.
+
+# Current implementation handoff — 2026-10-15
+
+User priority: main thread handles functional/performance progress, webpage delegated. User just asked whether GW-BASIC hangman video is on site; answered NO. It remains pending actual accepted game/LIST/SYSTEM/DIR recording. Existing private site already has four paired captures and highlighted BASIC, not game video.
+
+Production HEAD a4093f9; runtime b29cb1a166c9939da35594af36656962d9e9ed8b5622a07dc20737cb87131841, unit e374bb33c2d3e2a918346a2c4742fa5fb5dc338e3918fcbfd7d971651dac40a9. Exact PIT direct accumulator promoted c382f0c:428 Zig/290tooling/7reference groups all256P;367manifest/13standalonePRGsexact. PIT1764/1792/free28; MAIN7/6,DEVICE4080/free16,shadow2418/free1166,state837,ZP36 unchanged. Continuous64:1 model fixed4096NOP gains9.33%throughput; wholeBASIC costdown7.42% (differentguestcount). No physicalXTpercentage or newtargetDOSacceptance. Evidence pit-inplace-performance-20261015.json.
+
+Physical CIA64 calibration completed/committed7efa4c0. 64tick margin23misses;256/1024zero in9ownedkernels. Full sampling unchanged. All4MiBac43/settings/media/reset/822guard/twoFTPexact. Evidence c64u-cia1-calibration-20261015.json.
+
+Third game startup150139 failed initial UCIERR_ID2 before any command upload; UCF1 absent onprestartfailure. All4MiBac43/settings/media/reset/1194live+818history/threeFTPexact. Earlier second unknownfilehandle alreadyclosed by actual read-onlyprobe142018. No newhandle fromthirdrejection. Evidence c64u-gwbasic-id-failure-20261015.json.
+
+Read-onlyID physicalrun c64u-readonly-id-20261015-154728 FAILED strictcaptureNMIcheck afterprogramrestores37: mappedcapture43FE ROMvsprivate0916. Code701exact/headercomplete; provisionalall2048IDC9/status00 doesnotprovefuturestartup/cause. Full4MiBac43/584guard/settingsmediareset/twoFTPexact; freezeRELEASED. Evidence c64u-readonly-id-capture-failure-20261015.json. UIDP02keep35successor sealed privately; physicaldeferredforgamepriority.
+
+NEXT critical: minimal UCF2+PIT union being independently reviewed by gwbasic_hangman_demo. Private union scratch/ucf2-pit-independent-union/work, pair starts7122c4e1/22b45779; agent owns singlefreshgenuineBASIC+DOSpurposeproof andsourceclosure. UCF2original candidate scratch/uci-prestart-id-trace-successor/MANIFEST.json bd76c1fb2f0541117051135ed576d11c423986f89bba545927d3743d61bb1573; onlytwoASM+focusedtestchanges,DEVICE4093/free3,shadow2442/free1142,state839. No startupbehavior/retryfix, just exactrawID/prestartlogging. Rootpromoteonlyafterindepreview/proof, runnecessarydefault/focusedchecks, byteexactprivatepair/allsourceclosure, commit.
+
+uci_startup_failure_diagnosis owns successorGAMEHOST identity/proof/UCF2decoder bundle basedon old459pin gwbasic-trace-physical-workflow. All18recording/pacing/recoveryalgorithmsstayexact;1800app/2400video/600recovery. Coordinatewithunionagent; no duplicatedlongproof. SAVEcompositionauthorizedbutparkedbehindgamecriticalpath.
+
+Root freshmedia stagedTerminal1423 ONLY, noPRG/C64load: pointer scratch/gwbasic-ucf2-current-preparation.json; review native-gwbasic-ucf2-reviewed-20261015-160618; physicaloutput c64u-native-gwbasic-ucf2-20261015-160618. Freshmedia /usb1/DOS64_TEST/gwbasic-ucf2-media-20261015-160618/DOS33A.IMG exact2c19/fullFTPverified. purpose-bound-media.json changesonlypurpose. Nativepairpending; rootcopycurrentpromotedPRGs/maps/manifest, configure/stagefreshPRGs afterwards. Receiver10.0.0.15/en0, freshUDP19419; recheckavailability. RootonlyLAN/Terminal andfresh4MiBbackup/exhaustiverestore/sourcefreeze/postFTP. NO physicalrun active now.
+
+Parallel gwbasic_independent_review builds real fixed-work benchmark(noDOS/UCI), exactcurrenthotkernel,31NOP+EBDF128loops4096 andregistermath5120, internalrawCIAelapsed. Normalcoldtailends7F95/~106free; terminal35; header6000/completion6007 reusesoverlaystartuparea ONLYafterbootstrap. Firstquietobservation>=1s mustalreadybeA5 toqualify timing. ModelA127626/B212834rawticks; no physicalclaim. Agentstrengthensfixedwork/register/cache/noDMA/PITproof andverifier; rootmayrunonlyifgapbeforegameready. No blindbenchmarkwaiver.
+
+Compilerprototype independentlyreviewed83b13a03:371Breal6502compiler/916Bshadow/4KiBB000nativecache/24guestframes,NOP+MOVr16 only.12author+6independentgroups286cases, exact88cb/cda6. Normalnative_tick/writerinvalidation/epochrolloversNOTwired. Actualscheduler16, APIcapacity64. Clockper-readmodel12.7%warmNOP gainnotphysical. IRQobservere1acc9d8:18Bhandler/2state/11groups, keepsfullsampling; maskedI/lateflagread/hiddenIOnegatives forbidunjustifiedsample-skipping.
+
+Do notpush. PreserveunrelatedReadyFS/DOCSdirtyfiles/rootlogs/fourolduntrackednative_text_probe files. NestedSitesrepoagentworking/sites mustneverstagewholeparent. ROOTmainmustnotworkonSites; actualgamevideo stillpending. GoalACTIVE; notcomplete.
