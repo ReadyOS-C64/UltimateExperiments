@@ -172,3 +172,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-15 verified performance composition: promote only five reviewedCPU/memory/fetch/test files to1a17/4e43 after oldhardwarefreeze fully recovers. Immediate continuations require a fresh successful publicfirstbyte with no interveningcache/device/clock/gueststate mutation; seams use originalslowpath. Full clock/IRQ/REP cadence remains binding. Exactpairednativeproof reuse requires source/model/fixture closure, not just matchingPRGs. Physical acceptance stays perbuild. Firstfailedstartup protocol status must be latched before recovery changes it; later last_status is not causal evidence. Separate read-onlyprobe cannot waive readiness after anotherPRG/reset.
+
+
+2026-10-15 native command-interface diagnostics: retainoriginalgenericuci.o forstandalonehelpers; normalruntimeusesnative-uci.o withquietguards/stickyUCF1. FirstrecordpublishesA5lastandpersistsacrosscleanuptransactions untilfreshverifiedENTRYreset. This isdiagnostic/fail-closedguarding, notprovenatomicread/PUSHorresetbarrier. Exactnative/genuineBASICproof andnewpurpose-boundphysicalcohort requiredaftertargetchanges. Modeledgenerated6502blocks andearlyhardwarehint aretwoexplicitperformanceexperiments, separatefromproduction; retainfullsampling untilnewownedprofileproof.

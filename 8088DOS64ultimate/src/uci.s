@@ -10,6 +10,9 @@
 .export dos64_uci_data_len, dos64_uci_status_len, dos64_uci_data_seen, dos64_uci_status_seen
 .export dos64_uci_blocks, dos64_uci_command, dos64_uci_data, dos64_uci_status
 .export dos64_uci_buffer_start, dos64_uci_buffer_end
+.ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
+.import hdb_extension_ready,dos64_uci_trace_first
+.endif
 .segment "DEVICESTATE"
 dos64_uci_state_start:
 dos64_uci_base: .res 2
@@ -138,6 +141,9 @@ uci_data_read: lda $df1e
 uci_stat_read: lda $df1f
  rts
 ; Signed modular comparison is sound for caller's <8000 tick polling bound.
+.ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
+.segment "CODE"
+.endif
 uci_expired:
  lda dos64_uci_now
  sec
@@ -149,6 +155,9 @@ uci_expired:
  rts
 @yes: sec
  rts
+.ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
+.segment "DEVICECODE"
+.endif
 uci_set_deadline:
  lda dos64_uci_now
  clc
@@ -161,6 +170,13 @@ uci_set_deadline:
 ; A=first error. Keep it through recovery; a stuck recovery has its own flag.
 uci_recover:
  sta dos64_uci_error
+.ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
+ lda hdb_extension_ready
+ cmp #$a5
+ bne @no_trace
+ jsr dos64_uci_trace_first
+@no_trace:
+.endif
  lda #UCI_RECOVER
  sta dos64_uci_state
  lda dos64_uci_now
@@ -420,6 +436,10 @@ dos64_uci_poll:
  LEAVE 0
 
 .proc uci_upload
+.ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
+ jsr uci_quiet
+ bne stale
+.endif
  lda #16
  sta uci_work
 loop:
@@ -447,11 +467,20 @@ next: dec uci_work
  bne loop
  rts
 push:
+.ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
+ jsr uci_quiet
+ bne stale
+.endif
  lda #1
  jsr uci_control_write
  lda #UCI_WAIT
  sta dos64_uci_state
  rts
+.ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
+stale:
+ lda #UCI_ERR_STALE
+ jmp uci_recover
+.endif
 .endproc
 .export dos64_uci_upload_operand := uci_upload::read+1
 

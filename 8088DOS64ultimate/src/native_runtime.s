@@ -20,6 +20,7 @@
 .import dos64_overlay_init, dos64_overlay_bootstrap, dos64_overlay_reu_mib, dos64_overlay_error
 .import dos64_overlay_files_init, dos64_overlay_text_setup
 .import dos64_overlay_input_init, dos64_overlay_input_poll, dos64_overlay_render_text_row
+.import dos64_uci_trace_reset
 .import dos64_uci_init, dos64_uci_command, dos64_uci_timeout, dos64_uci_recovery_timeout
 .import dos64_uci_base, dos64_files_target, dos64_files_path_len
 .import dos64_import_init, dos64_import_start, dos64_import_poll
@@ -550,6 +551,7 @@ dos64_native_cold_start:
  jsr hdc_copy
  jcs n_config_bad
  ; All immutable code, shadow extension and resident HD config now committed.
+ jsr dos64_uci_trace_reset
  jsr dos64_cpu_init
  lda #32
  sta dos64_cache_limit

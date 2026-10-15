@@ -30,6 +30,7 @@ struct UciModel {
     uint8_t id = 0xc9, state = 0, handshake = 0;
     bool error = false, fault = false, stuck = false;
     uint32_t delay = 3, pending = 0, accept_clear = 0;
+    size_t publish_after_command = 0;
     uint8_t event = 0;
     size_t block = 0, dp = 0, sp = 0, cp = 0;
     uint64_t pushes = 0, accepts = 0, aborts = 0, clears = 0, data_reads = 0, stat_reads = 0;
@@ -77,7 +78,7 @@ struct UciModel {
         advance();
         if (address == base+1) {
             if (state) { fault = true; return; }
-            if(command.size()<=cp)command.resize(cp+1); command[cp]=value; if(cp<895)++cp; return;
+            if(command.size()<=cp)command.resize(cp+1); command[cp]=value; if(cp<895)++cp; if(publish_after_command && cp==publish_after_command){publish_after_command=0;publish();} return;
         }
         if (address != base || (value & 0xf0)) { fault = true; return; }
         if (value & 8) { ++clears; error = false; }

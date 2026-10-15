@@ -401,3 +401,5 @@ uint32_t hd_trace_write_field(void *p,uint32_t n,uint8_t field){auto &q=static_c
 uint8_t hd_trace_write_data(void *p,uint32_t n,uint32_t off){return static_cast<Dos64Machine*>(p)->cpu.hd_file->writes.at(n).data.at(off);}
 uint8_t hd_model_copy_source(void *p,uint8_t *out,size_t n){auto &m=static_cast<Dos64Machine*>(p)->cpu;if(!m.hd_file||m.hd_file->source.size()!=n)return 0;std::copy_n(m.hd_file->source.data(),n,out);return 1;}
 }
+
+extern "C" void diagnostic_publish_after_upload(void *p,size_t n){static_cast<Dos64Machine *>(p)->cpu.uci->publish_after_command=n;}
