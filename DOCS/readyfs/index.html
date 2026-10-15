@@ -18,6 +18,8 @@
 <h3 id="1-address-different-kinds-of-storage-directly">1. Address different kinds of storage directly</h3>
 <pre><code class="language-text">DRIVES
 DIR u:/usb1/demo
+STAT u:/usb1/other.d64/HELLO.prg
+STAT u:/usb1/demo/work.d81/README.seq
 DIR 9:/
 DIR s0:/demo
 PROBE IEC 10:
@@ -35,6 +37,14 @@ DIR 10.1:/demo
 <td>An Ultimate host folder, without going through an emulated floppy</td>
 </tr>
 <tr>
+<td><code>u:/usb1/other.d64/HELLO.prg</code></td>
+<td>The PRG entry <code>HELLO</code> inside an unmounted D64 on the Ultimate</td>
+</tr>
+<tr>
+<td><code>u:/usb1/demo/work.d81/README.seq</code></td>
+<td>The SEQ entry <code>README</code> inside an unmounted D81 on the Ultimate</td>
+</tr>
+<tr>
 <td><code>9:/</code></td>
 <td>The disk in IEC device 9: a physical drive or a mounted image</td>
 </tr>
@@ -47,6 +57,7 @@ DIR 10.1:/demo
 <td>Native IEC device 10, explicitly selecting partition 1</td>
 </tr>
 </tbody></table>
+<p>The image paths use an ordinary <strong><code>/</code> after the image filename</strong>, treating its contents like a folder without mounting it. Use existing images and entry names, and keep those images unmounted while accessing them this way.</p>
 <p>SoftwareIEC partition 0 is <strong>not device 0</strong>. <code>10:/</code> instead uses device 10&#39;s current partition. Device addresses, available host roots and SoftwareIEC mappings depend on your setup; <code>DRIVES</code> and <code>PROBE</code> establish what is there.</p>
 <h3 id="2-give-locations-names-then-mix-aliases-and-relative-paths">2. Give locations names, then mix aliases and relative paths</h3>
 <pre><code class="language-text">ALIAS USB u:/usb1/demo

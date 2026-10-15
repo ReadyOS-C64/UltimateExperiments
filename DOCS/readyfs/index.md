@@ -24,6 +24,8 @@ The interesting part is combining endpoints: **the command stays familiar while 
 ```text
 DRIVES
 DIR u:/usb1/demo
+STAT u:/usb1/other.d64/HELLO.prg
+STAT u:/usb1/demo/work.d81/README.seq
 DIR 9:/
 DIR s0:/demo
 PROBE IEC 10:
@@ -33,9 +35,13 @@ DIR 10.1:/demo
 | Path | What it addresses |
 |---|---|
 | `u:/usb1/demo` | An Ultimate host folder, without going through an emulated floppy |
+| `u:/usb1/other.d64/HELLO.prg` | The PRG entry `HELLO` inside an unmounted D64 on the Ultimate |
+| `u:/usb1/demo/work.d81/README.seq` | The SEQ entry `README` inside an unmounted D81 on the Ultimate |
 | `9:/` | The disk in IEC device 9: a physical drive or a mounted image |
 | `s0:/demo` | A folder in SoftwareIEC logical partition 0, using its existing mapping |
 | `10.1:/demo` | Native IEC device 10, explicitly selecting partition 1 |
+
+The image paths use an ordinary **`/` after the image filename**, treating its contents like a folder without mounting it. Use existing images and entry names, and keep those images unmounted while accessing them this way.
 
 SoftwareIEC partition 0 is **not device 0**. `10:/` instead uses device 10's current partition. Device addresses, available host roots and SoftwareIEC mappings depend on your setup; `DRIVES` and `PROBE` establish what is there.
 
