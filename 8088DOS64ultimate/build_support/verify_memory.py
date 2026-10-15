@@ -220,12 +220,16 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     if "INPUTCODE" in overlays:
         load["end_exclusive"]=0x8800
         state=[seg for seg in segments if seg["name"]=="NATIVESTATE"]
-        if len(state)!=1 or state[0]["bytes"]!=2 or symbols.get("dos64_cold_open")!=state[0]["start"] or symbols.get("dos64_cold_error")!=state[0]["start"]+1:
-            errors.append("Cold-open guard must be two initialized resident state bytes")
+        native_runtime = "dos64_native_entry" in symbols
+        initialized = b"\xa5\x00\x00" if native_runtime else b"\xa5\x00"
+        if len(state)!=1 or state[0]["bytes"]!=len(initialized) or symbols.get("dos64_cold_open")!=state[0]["start"] or symbols.get("dos64_cold_error")!=state[0]["start"]+1:
+            errors.append("Cold/native reload guards must be initialized resident state bytes")
+        elif native_runtime and symbols.get("n_started")!=state[0]["start"]+2:
+            errors.append("Native reload guard must follow cold-open/error state")
         elif prg is not None:
             offset=state[0]["start"]-0x0801+2
-            if prg[offset:offset+2]!=b"\xa5\x00":
-                errors.append("Cold-open guard must load A5 and error00 with the PRG")
+            if prg[offset:offset+len(initialized)]!=initialized:
+                errors.append("Cold/native reload guards must load A5,error00,started00 with the PRG")
     load["exclusive_overlay_window_bytes"] = 0x700 if overlays else 0
     load["max_linked_overlay_bytes"] = max((s["bytes"] for s in overlays.values()), default=0)
     load["overlay_source_bytes"] = sum(s["bytes"] for s in overlays.values())

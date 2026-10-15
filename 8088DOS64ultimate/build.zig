@@ -50,8 +50,23 @@ pub fn build(b: *std.Build) void {
     addPeddle(overlay.root_module, b);
     const run_overlay = b.addRunArtifact(overlay);
     b.step("overlays", "Verify FILE/TEXT/INPUT overlays and bounded startup ownership").dependOn(&run_overlay.step);
+    const native_runtime = b.addTest(.{ .root_module = b.createModule(.{
+        .root_source_file = b.path("tests/host/native_runtime_integration.zig"),
+        .target = target,
+        .optimize = .Debug,
+    }) });
+    addPeddle(native_runtime.root_module, b);
+    b.step("native-runtime", "Verify configured native startup, bounded runtime and development commands").dependOn(&b.addRunArtifact(native_runtime).step);
+    const native_dos = b.addTest(.{ .root_module=b.createModule(.{
+        .root_source_file=b.path("tests/host/native_dos_boot.zig"),.target=target,.optimize=.Debug,
+    }) });
+    addPeddle(native_dos.root_module,b);
+    b.step("native-dos","Opt-in genuine DOS through configured native startup and bounded runtime").dependOn(&b.addRunArtifact(native_dos).step);
+    b.step("native-dos-compile","Compile the native DOS long lane without executing it").dependOn(&native_dos.step);
     const display = b.addTest(.{ .root_module = b.createModule(.{
-        .root_source_file = b.path("tests/host/native_text_integration.zig"), .target = target, .optimize = .Debug,
+        .root_source_file = b.path("tests/host/native_text_integration.zig"),
+        .target = target,
+        .optimize = .Debug,
     }) });
     addPeddle(display.root_module, b);
     b.step("native-text", "Verify packed fonts, TEXT overlay and bounded VIC setup").dependOn(&b.addRunArtifact(display).step);

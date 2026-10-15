@@ -76,6 +76,9 @@ uint8_t import_model_open(void *);
 /* CIA clock is disabled until explicitly enabled. Advances/scripts are actual
  * model PHI2 inputs, never derived from Peddle CPU clocks or turbo settings.
  * Other helpers require an enabled model. */
+uint8_t native_runtime_nmi_checked(struct Dos64Machine *);
+void native_runtime_require_nmi_order(struct Dos64Machine *,uint16_t);
+void native_runtime_control_enable(struct Dos64Machine *);
 void dos64_cia_clock_enable(struct Dos64Machine *);
 void dos64_cia_clock_seed(struct Dos64Machine *, uint16_t a, uint16_t b);
 void dos64_cia_clock_advance(struct Dos64Machine *, uint32_t ticks);

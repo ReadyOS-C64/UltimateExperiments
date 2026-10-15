@@ -44,9 +44,7 @@ class MemoryContract(unittest.TestCase):
         self.assertFalse(verify(self.map, changed)["passed"])
 
     def test_device_state_cannot_take_vector_reservation(self):
-        changed = re.sub(r"^(DEVICESTATE\s+)([0-9A-F]{6})(\s+)([0-9A-F]{6})",
-                         lambda m: f"{m[1]}00EF00{m[3]}00EF{int(m[4],16)-int(m[2],16):02X}",
-                         self.map, flags=re.M)
+        changed = move_segment(self.map, "DEVICESTATE", 0xEF00)
         self.assertNotEqual(changed, self.map)
         self.assertFalse(verify(changed, self.labels)["passed"])
 

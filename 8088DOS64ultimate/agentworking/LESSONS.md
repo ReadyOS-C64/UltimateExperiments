@@ -50,3 +50,8 @@ Current overlays are exclusive native owners, not arbitrary function-pointer sto
 - A jointly linked overlay must validate and DMA its complete canonical member sum; a renderer-only length silently omits following VIC code.
 - Eighty-column legibility needs a designed narrow font; OR-compressing every full-width glyph loses distinct letters. Keep licensed sources, byte hashes and physical readability separate.
 - Establish RAM banking before reading resident outputs under KERNAL ROM; the elapsed adapter owns that precondition rather than relying on its caller's mapping.
+
+
+- Native observers must handle AH01 polling, not just AH00 blocking; pagination belongs to the active cursor. Convert bit masks to strict API booleans.
+- Retain KERNAL until the complete RAM NMI vector/CIA masks exist. Second SYS must reject before resetting live cold/import state.
+- Distinguish pre-load transport failure, native execution and verified REU restoration. Preserve the original failed report alongside independent recovery evidence.

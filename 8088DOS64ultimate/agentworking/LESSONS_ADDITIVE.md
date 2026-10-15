@@ -131,3 +131,6 @@ A run manifest must be generated after every artifact-producing prerequisite, in
 - A jointly linked overlay must validate and DMA its complete canonical member sum; a renderer-only length silently omits following VIC code.
 - Eighty-column legibility needs a designed narrow font; OR-compressing every full-width glyph loses distinct letters. Keep licensed sources, byte hashes and physical readability separate.
 - Establish RAM banking before reading resident outputs under KERNAL ROM; the elapsed adapter owns that precondition rather than relying on its caller's mapping.
+
+
+2026-10-15 native runtime: convert blink bits to strict0/1 at the target ABI, and exhaust all256 phases. AH01 polling need not set the BIOS AH00-wait flag; coherent periodic observers must still find prompts. Match pagination at the active cursor, not stale scrollback. A normal BIOS scroll can cost>3M CPU cycles; retain bounded measured budgets instead of assuming opcode-sized work. Keep cumulative Peddle clocks separate from incremental external phi2 modeling. Retain KERNAL until the RAM NMI vector and CIA masks are complete. A REST upload failure before PRG load is not native execution; independent settings equality is not full REU restoration. Preserve original failure reports and never delete unknown firmware Temp files to make a test pass.

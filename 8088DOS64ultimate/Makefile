@@ -5,7 +5,7 @@ DOS64_PYTHON ?= python3
 
 .DEFAULT_GOAL := all
 
-ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s src/host_input.s src/cold.s src/elapsed.s src/native_text_display.s src/native_text_fonts.s
+ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s src/host_input.s src/cold.s src/elapsed.s src/native_text_display.s src/native_text_fonts.s src/native_runtime.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
 build/alu.o: include/parity.inc Makefile
 build/range.o: include/range.inc Makefile
@@ -22,6 +22,7 @@ build/render_text.o: include/render_text.inc Makefile
 build/overlays.o: include/overlays.inc include/reu.inc Makefile
 build/image_import.o: include/image_import.inc include/files.inc include/uci.inc include/overlays.inc include/reu.inc Makefile
 build/boot.o: include/overlays.inc Makefile
+build/native_runtime.o: include/image_import.inc include/host_clock.inc include/host_input.inc Makefile
 build/host_input.o: include/host_input.inc Makefile
 build/cold.o: include/overlays.inc include/bios.inc include/image_import.inc Makefile
 build/elapsed.o: include/elapsed.inc include/host_clock.inc Makefile
@@ -191,3 +192,11 @@ test-reference:
 
 clean:
 	rm -rf build .zig-cache zig-out
+
+.PHONY: test-native-runtime
+test-native-runtime: build
+	$(DOS64_ZIG) build native-runtime --summary all
+
+.PHONY: test-native-dos
+test-native-dos: build
+	$(DOS64_ZIG) build native-dos --summary all

@@ -26,6 +26,9 @@ public:
     std::unique_ptr<ImageImportModel> image_import;
     // Explicitly enabled per fixture; its PHI2 advances are independent of CPU.
     std::unique_ptr<CiaClockModel> cia_clock;
+    bool native_runtime_control=false;
+    bool native_runtime_nmi_order=false, native_runtime_nmi_checked=false;
+    uint16_t native_runtime_nmi_vector=0;
     // Isolated calibration fixture only; default machines still reject VIC.
     std::unique_ptr<ClockProbeModel> clock_probe;
     std::unique_ptr<HostInputModel> host_input;
@@ -64,6 +67,10 @@ public:
 protected:
     uint8_t externalPortBits() const override { return 0xff; }
     void writePort(uint8_t v) override {
+        if(native_runtime_nmi_order && (v&7)==5){
+          if((uint16_t(ram[0xfffa])|(uint16_t(ram[0xfffb])<<8))!=native_runtime_nmi_vector || !cia_clock || cia_clock->mask || cia_clock->pending) unsupported=true;
+          native_runtime_nmi_order=false;native_runtime_nmi_checked=true;
+        }
         peddle::Peddle::writePort(v); ram[1] = v; written[1] = 1;
     }
     void writePortDir(uint8_t v) override {
@@ -77,6 +84,7 @@ protected:
         if (a >= 0xe000 && (port & 2)) return 0xea;
         if (a >= 0xd000 && a <= 0xdfff && (port & 3)) {
             if (!(port & 4)) return 0xcc;
+            if (native_runtime_control && (a==0xdc0d || a==0xdc0e || a==0xdc0f)) return io[a-0xd000];
             if (native_display && native_display->owns(a)) return native_display->read(a);
             if (a>=0xdc00 && a<=0xdc0f && host_input) return host_input->read(a-0xdc00);
             if (clock_probe && clock_probe->owns(a)) return clock_probe->read(a, cia_clock.get());
@@ -92,6 +100,7 @@ protected:
         const auto port = readPort();
         written[a] = 1;
         if (a >= 0xd000 && a <= 0xdfff && (port & 3) && (port & 4)) {
+            if (native_runtime_control && (a==0xdc0d || a==0xdc0e || a==0xdc0f)) {io[a-0xd000] = (a==0xdc0d ? 0 : v);return;}
             if (native_display && native_display->owns(a)) {native_display->write(a,v);return;}
             if (a>=0xdc00 && a<=0xdc0f && host_input) {host_input->write(a-0xdc00,v);return;}
             if (uci && uci->owns(a)) {
@@ -328,3 +337,8 @@ void dos64_native_display_seed(Dos64Machine *m,const uint8_t *p){std::copy_n(p,8
 uint8_t dos64_native_display_reg(Dos64Machine *m,uint8_t r){return r<8?m->cpu.native_display->regs[r]:0;}
 uint32_t dos64_native_display_reads(Dos64Machine *m,uint8_t r){return r<8?m->cpu.native_display->reads[r]:0;}
 uint32_t dos64_native_display_writes(Dos64Machine *m,uint8_t r){return r<8?m->cpu.native_display->writes[r]:0;}
+
+extern "C" void native_runtime_control_enable(Dos64Machine *m){m->cpu.native_runtime_control=true;}
+
+extern "C" void native_runtime_require_nmi_order(Dos64Machine *m,uint16_t vector){m->cpu.native_runtime_nmi_order=true;m->cpu.native_runtime_nmi_vector=vector;}
+extern "C" uint8_t native_runtime_nmi_checked(Dos64Machine *m){return m->cpu.native_runtime_nmi_checked;}

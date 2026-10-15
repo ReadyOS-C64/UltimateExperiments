@@ -76,7 +76,7 @@ test "released cold RAM traps cannot be entered by BIOS importer or overlay rein
     try std.testing.expectEqual(@as(u16, 0x192), f.word(g + 24));
     // A second SYS entry must never reopen the initialized resident guard.
     c.dos64_set_regs(f.machine, .{ .pc = try f.symbol("dos64_entry"), .sp = 0xff, .a = 0, .x = 0, .y = 0, .p = 0x24, .cycles = 0, .instructions = 0 });
-    const r = c.dos64_run(f.machine, try f.symbol("dos64_idle"), 50_000);
+    const r = c.dos64_run(f.machine, try f.symbol("dos64_native_idle"), 50_000);
     try std.testing.expectEqual(@as(c_uint, c.DOS64_RUN_RETURNED), r.status);
     try std.testing.expectEqual(@as(u8, 0), try byte(&f, "dos64_cold_open"));
 }

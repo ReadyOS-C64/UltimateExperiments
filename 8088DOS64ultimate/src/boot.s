@@ -39,6 +39,13 @@ DOS64_CORE_BOOT = 1
     .word 0
 
 .segment "CODE"
+.ifdef DOS64_CORE_BOOT
+.import dos64_native_entry
+dos64_entry:
+    jmp dos64_native_entry
+dos64_idle:
+    jmp dos64_idle
+.else
 dos64_entry:
     sei
     cld
@@ -107,3 +114,4 @@ dos64_entry:
 .endif
 dos64_idle:
     jmp dos64_idle
+.endif

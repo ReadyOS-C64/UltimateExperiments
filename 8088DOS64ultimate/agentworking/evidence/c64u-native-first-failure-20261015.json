@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "status": "failed before service PRG load; native application never invoked",
+  "raw_run": "agentworking/runs/c64u-native-dos-20261015-054149",
+  "result": {
+    "schema": 1,
+    "status": "failed",
+    "started_utc": "2026-10-15T12:41:49.678964+00:00",
+    "reu_restored": false,
+    "configuration_restored": false,
+    "reset_resumed": true,
+    "service_prg_sha256": "40fe690953c245c8093c7cd5e5cb91684df7290602d8afa44dbd2e0b5b30d09e",
+    "limitations": [
+      "Only REU[0,4MiB) is addressed; larger capacity remainder is untouched by this helper",
+      "C64 RAM and configuration are captured; prior CPU/timer/NMI execution cannot be resumed",
+      "No persistent media or UCI writes; REST is development control only",
+      "Application callback must enforce its own deadline and preserve media/configuration"
+    ],
+    "stage": "finished",
+    "error": "RuntimeError('POST runners:run_prg: HTTP 404: { \\n  \"errors\" : [ \"Cannot open file\" ]\\n}')",
+    "cleanup_errors": [
+      "RuntimeError('POST configs: HTTP 500: { \\n  \"errors\" : [ \"Could not buffer attachment.\" ]\\n}')"
+    ],
+    "finished_utc": "2026-10-15T12:41:51.415273+00:00"
+  },
+  "independent_inspection": {
+    "turbo": true,
+    "machine": true,
+    "drives": true,
+    "temp_listing": {
+      "entries": 328,
+      "generated_temp_names": 0
+    }
+  },
+  "backup_created": false,
+  "native_dos_ran": false,
+  "native_dma_issued": false,
+  "cause": "POST runners:run_prg returned404 Cannot open file; cleanup POST configs returned500 Could not buffer attachment. Underlying temporary-file failure unproven.",
+  "retained_ram": {
+    "ram-before-final-reset.bin": {
+      "bytes": 65536,
+      "sha256": "199ccf36e3e55fa8947abfd8907f5277467376ae5058215befdc7426e77dd8e2"
+    },
+    "ram-cleanup-failure-before-reset.bin": {
+      "bytes": 65536,
+      "sha256": "2bd6e09776885edf5f50210c590a4cfe72e4d9d4b695cbbf00e966e0b92a2dee"
+    },
+    "ram-before.bin": {
+      "bytes": 65536,
+      "sha256": "774d270859c61e7b1151a9b3116e44fe6790289654faf01a670758389ffeb9ff"
+    },
+    "ram-failure-before-recovery.bin": {
+      "bytes": 65536,
+      "sha256": "25f1b6f94d3fd3d4f97617833e5ccea88a0acd62f975d0d2470dc861ee0f9ac8"
+    }
+  },
+  "limits": [
+    "Original result remains failed; independent settings/media equality does not prove REU restoration",
+    "No unknown temporary files deleted; firmware not rebooted",
+    "Alternative bodyless PUT transport is being prepared privately"
+  ]
+}

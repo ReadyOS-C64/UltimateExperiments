@@ -41,7 +41,7 @@ class ImageImportContract(unittest.TestCase):
         self.assertTrue(r["passed"], r["errors"])
         cold = r["load"]["cold_import"]
         self.assertEqual(cold["start"], 0x7000)
-        self.assertEqual(cold["linked_bytes"], 1821)
+        self.assertEqual(cold["linked_bytes"], 2471)
         self.assertEqual(cold["state_bytes"], 26)
         self.assertTrue(cold["payload_checked"])
         self.assertEqual(r["load"]["prg_bytes"], 32769)

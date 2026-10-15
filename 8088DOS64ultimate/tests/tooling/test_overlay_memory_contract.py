@@ -91,11 +91,16 @@ class ColdPhaseMemoryContract(unittest.TestCase):
         for value in (0,1,0xff):
             data=bytearray(self.prg);data[at-0x801+2]=value
             self.assertFalse(self.check(prg=data)["passed"])
+    def test_native_reload_guard_is_initialized_once(self):
+        at=int(re.search(r"^al ([0-9A-F]+) \.n_started$",self.labels,re.M)[1],16)
+        for value in (1,0xa5,0xff):
+            data=bytearray(self.prg);data[at-0x801+2]=value
+            self.assertFalse(self.check(prg=data)["passed"])
     def test_combined_cold_output_is_exact(self):
         cold=bytearray((BASE/"dos64-tests-resident.prg.import.bin").read_bytes());cold[1000]^=255
         self.assertFalse(verify(self.map,self.labels,self.prg,self.payloads,cold)["passed"])
     def test_cold_segment_order_must_be_contiguous(self):
-        changed=self.map.replace("COLDINIT              0073A3  00752C", "COLDINIT              0073A4  00752D")
+        changed=re.sub(r"^(COLDINIT\s+)([0-9A-F]+)(\s+)([0-9A-F]+)",lambda m:m[1]+f"{int(m[2],16)+1:06X}"+m[3]+f"{int(m[4],16)+1:06X}",self.map,flags=re.M)
         self.assertNotEqual(changed,self.map);self.assertFalse(self.check(map=changed)["passed"])
 if __name__ == '__main__':
     unittest.main(verbosity=2)

@@ -1,6 +1,6 @@
 # Cold whole-floppy import
 
-`make test-image-import` exercises the linked startup-only importer against a separate filesystem/UCI source model. Native entry does not call it yet. It occupies 931 bytes at 7000–73A2, including 26 state bytes; no resident state or zero page is added. The remaining 3,165 bytes through 7FFF are checked zero padding. All importer code/state/configuration becomes invalid when bitmap ownership begins.
+`make test-image-import` exercises the linked startup-only importer against a separate filesystem/UCI source model. Configured native entry now calls it before BIOS/display ownership; see [native runtime](NATIVE_RUNTIME_IMPLEMENTATION.md). It occupies 931 bytes at 7000–73A2, including 26 state bytes; no resident state or zero page is added. The remaining 3,165 bytes through 7FFF are checked zero padding. All importer code/state/configuration becomes invalid when bitmap ownership begins.
 
 Caller first commits overlays, initializes the exclusive UCI/file owner, supplies an ASCII path/target, an independently derived expected reflected IEEE CRC32 and monotonic 16-bit elapsed ticks/timeouts. The importer opens READ, requests 720 exact 512-byte chunks, computes CRC on at most 16 received bytes per poll and transfers each chunk into REU 100000–159FFF. A final one-byte read must return EOF. CRC match, accepted CLOSE and known closed handle are required before disk_loaded becomes one. Exactly 723 read-only commands complete a successful import. Original source bytes are never written.
 
@@ -10,4 +10,4 @@ The dedicated lane passes eight tests: seven actual-assembly tests plus an optio
 
 The default gate passes 298 tests/597 selected hardware cases and 99 tooling checks. Existing 26,625-byte runtime/unit prefixes exactly match commit 28e4290; the new PRGs are 30,721 bytes through 7FFF. Full 5,701-case, long DOS and profile proofs are retained from that unchanged prefix; they were not redundantly rerun. [Evidence](../agentworking/evidence/image-import-linked-20261015.json).
 
-Runtime startup/elapsed conversion, physical UCI acceptance, image export/persistence, IEC/D81, alternate geometry and HD remain unfinished. Later cold-phase gateways must reject late calls before touching overwritten state; the current caller contract forbids such calls.
+Configured startup/elapsed conversion and resident cold guards are now linked and accepted in Peddle. Physical UCI acceptance, image export/persistence, IEC/D81, alternate geometry and HD remain unfinished. Resident gateways reject late calls before touching overwritten cold bytes. Historical sizes/gates above describe the initial importer checkpoint; current packaging includes other cold initialization/configuration and is recorded in the memory ledger.

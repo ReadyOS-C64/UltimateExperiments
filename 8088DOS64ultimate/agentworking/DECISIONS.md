@@ -87,3 +87,10 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 | D64 | Implemented/verified,2026-10-15 | TEXT is canonical renderer718+VIC239; fonts are explicit non-executable data | NarrowASCII4×8 improves80-column VICE output; paired colors/extended fallbacks/cursor limits explicit; physical acceptance pending |
 | D65 | Implemented/verified,2026-10-15 | Native deadline units are exact rawCIA>>12,4096 phi2 ticks each | Tested banking,wrap and failure publication; caller supplies ownership and bounded polling; runtime use pending |
 | D66 | Development tools verified,physical execution pending | Snapshot/restore all first4MiB with sequenced native service and verified local backup; FTP uses a fresh owned directory | Full readback and failure-before-reset capture; never claim CPU/timer execution recovery or native persistence |
+
+
+| D67 | Implemented/functional proof,2026-10-15 | Explicit D64N configuration gates native startup; initialized started/cold guards reject repeated SYS before mutations | Complete UCI/import/BIOS/input/text/native-tick DOS path accepted in Peddle; shipped config disabled |
+| D68 | Implemented/verified,2026-10-15 | ENTRY retains KERNAL until complete RAM NMI vector and CIA2 mask/ack, then RAM+I/O | Closes the incomplete-vector NMI window before hardware; callable APIs retain exclusive-owner preconditions |
+| D69 | Implemented/verified,2026-10-15 | Development SNAPSHOT flushes and pauses; bounded READ only while coherent PAUSED; KEY uses real BIOS ring | Guest DOS semantics unchanged; body/ack invalidation before command-last, result before clear-last |
+| D70 | Implemented/verified,2026-10-15 | Observe DOS periodically even without AH00 wait, and recognize pagination only at active cursor | Real COMMAND polls AH01; stale prompt elsewhere on screen must not queue extra keys |
+| D71 | Physical attempt failed,2026-10-15 | Preserve initial native hardware failure and independently inspect unchanged settings/media | No service/application/DMA loaded, no verified backup; reset/resume/equality does not imply full REU recovery |
