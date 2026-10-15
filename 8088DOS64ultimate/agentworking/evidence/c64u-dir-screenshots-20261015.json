@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "scope": "genuine DOS3.3 MODE/VER/DIR/W in40/80columns with paired same-pause guestDOS and actualC64framebuffer reconstruction",
+  "run": "agentworking/runs/c64u-native-dir-screenshot-file-20261015-115146",
+  "runtime_sha256": "22f8209108fca953f783116c0a6cf5bd0c788e08b586421e30406f6129be0369",
+  "unit_sha256": "8a84329ce41850fa42d89c0ee5f42d4e6f77a000a2c0a9abce8cae9c0092d94f",
+  "independent_review": {
+    "path": "agentworking/scratch/dir-screenshot-review/POSTRUN_MANIFEST.json",
+    "sha256": "ec424d1965e9d9ebab9bffb45d52f9d3b2157689faf925119efcb60dfe1b71df",
+    "capture_checks": 54,
+    "recovery_checks": 1404,
+    "evidence_checks": 1181,
+    "preflight_checks": 621
+  },
+  "application": {
+    "genuine_commands": 6,
+    "BIOS_key_words": 44,
+    "observations": 47,
+    "seconds_including_capture_evidence": 182.931542625,
+    "all35files_both_modes": true,
+    "free_bytes": 9216,
+    "returned_prompt_both_modes": true
+  },
+  "restoration": {
+    "backend": "originalDRS1 DeltaService via unchangedFtpPutClient",
+    "attempts": 1,
+    "full4194304bytes_equal": true,
+    "sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+    "ordered_ACKs": 805,
+    "fresh_backup_reads": 256,
+    "delta_scan_reads": 256,
+    "changed_chunk_writes": 37,
+    "independent_compare_reads": 256,
+    "configuration_media_reset_restored": true,
+    "live_and_readonly_historical_inputs": 580
+  },
+  "images": {
+    "40": {
+      "file": "docs/screenshots/dos33-dir-wide-40.png",
+      "sha256": "f455eecab7a1356a7520cfa8464ced0ae65e123eea35a2b940974f53b4805066",
+      "raw_checkpoint_proof_sha256": "1ce877c12a3522b4c31261df5c50a300219f2de186d1e23496aec79277ef3e9e",
+      "guest_instructions": 582903
+    },
+    "80": {
+      "file": "docs/screenshots/dos33-dir-wide-80.png",
+      "sha256": "ee50155aba11a4e54f5c68665b134ea9981be4700b91660af0b9baf6a046816c",
+      "raw_checkpoint_proof_sha256": "8a00121362929f1cd1239035ea5a8d92dcae1ab2ca088f6589dcb638de05f5b3",
+      "guest_instructions": 930024
+    }
+  },
+  "limitations": [
+    "GuestDOS panel uses pinned8pixel CP437Unscii presentation font, not IBMROM",
+    "C64 panel contains exact captured bitmap/matrix pixels with illustrative RGB; not directHDMI",
+    "40column genuineDOS /W output wraps its wide padded listing",
+    "NativeBIOS key injection is not physicalkeyboardmatrix acceptance",
+    "Applicationelapsed includesobservation/import/evidence and is not an XT benchmark"
+  ]
+}

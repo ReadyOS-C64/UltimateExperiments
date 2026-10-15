@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "original_run_status": "failed",
+  "captured_VER_TYPE_both_modes": "passed",
+  "original_native_file_restore_attempts": 2,
+  "original_restore_status": "bothfailed beforeDMA; originalfirmwarecauseunproved",
+  "original_result_sha256": "fd6faad9d14344cbec4f155e8d3f6bb7cff81ee13eff7001517a4cf88de7bb72",
+  "complete_original_backup_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+  "bad_POST_fallback": {
+    "run": "agentworking/runs/c64u-screenshot-delta-recovery-20261015-1149",
+    "status": "failed",
+    "reason": "bareClient usesfirmwareattachmentPOST; memory404/config500; noDRS1ACK"
+  },
+  "separate_PUT_delta_disaster_recovery": {
+    "run": "agentworking/runs/c64u-screenshot-put-delta-recovery-20261015-1153",
+    "status": "passed",
+    "full4194304bytes_equal": true,
+    "ordered_ACKs": 549,
+    "all_original_configuration_media_restored": true,
+    "independent_checks": 579,
+    "all_original_live_historical_inputs": 578,
+    "review_manifest_sha256": "de185fe9d58bcb9ae605d79abd4f6c02674980690f83558489319fdb704ef12c"
+  },
+  "limitations": [
+    "Separate successful recovery doesnot convertoriginalfailedrun intoPASS",
+    "Declaredzero-length UCIreply leavesstale bytes; unknown-handle OPEN/cleanup causeisnot inferredfromthosebytes"
+  ]
+}

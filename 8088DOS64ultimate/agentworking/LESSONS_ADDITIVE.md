@@ -206,3 +206,6 @@ Do not freeze a proposed expanded assertion count as a passed audit before that 
 A successful firmware WRITE can hide a short transfer, and CLOSE can discard underlying errors. Keep REU authoritative until complete native reopen/readback/EOF/knownclosure succeeds. Lost replies remain uncertain even when a model independently sees committed bytes. A source-complete engine with caller ownership attestations is a prototype until actual runtime leases, clock and UI enforce those conditions.
 
 - A reusable capture oracle must reject inconsistent BDA page size, page offset and mode-dependent palette before indexing, even if the original execution test independently checked those fields. Preserve genuine raw capture proofs and regression-test corruption of both bytes.
+
+- Disaster recovery must retain the established attachment-free FtpPutClient even when using original DRS1/DeltaService. BareClient POST memory/config routes fail on this firmware; a mocked entrypoint review did not establish transport compatibility. Separate successful disaster restoration does not change a failed application-run result.
+- Put dependent final checks and launches in one checked Python sequence. A shell newline can launch after a preceding guard/read fails; the frozen launcher must independently enforce every input, its own identity and exact host/output.

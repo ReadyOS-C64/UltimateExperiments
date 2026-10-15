@@ -154,3 +154,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 | D100 | Implemented/model verified,2026-10-15 | Genuine DOS loads a small CGA4/5/6 COM fixture; independent reusable pixel oracle validates BDA geometry/palette | Six additive files/opt-in Zig, root286tooling; exact22f/8a+177source nativeproof,8focused/23capture/30additionalcontrols; no physical graphics acceptance |
+
+
+| D101 | Physically verified,2026-10-15 | Publish same-pause guestDOS/C64pixelpairs fromgenuine40/80 DIR/W, with honestfont/RGB provenance | All35files/9216free/A>, full4MiBdelta/settingsmediareset,54capture/1404recovery/1181evidence; previousnativefilefailures retained andseparatelyrecovered; DIR|MORE pending |

@@ -298,3 +298,10 @@ Realnativeclock/FILEownership/pausedmodalSAVER/cacheborrowing/UI andphysicalsave
 ## Genuine DOS CGA probe promoted
 
 Six additive probe/oracle/test/documentation files and three opt-in Zig registration statements are promoted. Root286tooling checks pass; exact22f/8a pair and177 actual-native/testsource identities retain the genuine DOS-loaded127byte COM run through modes4/5/6 and returnedA>. Independent full pixel checks and repaired BDA page/offset/palette rejection pass8tests/23captureadversaries/30additionalcontrols. No native runtime/layout change or physical graphics acceptance. [Evidence](evidence/genuine-cga-workflow-20261015.json).
+
+
+## Actual40/80 DIR/W screenshot pairs
+
+Current22f/8a genuineMODE/VER/DIR/W hardware runPASSES: both35filecatalogs/9216free/A>, samepausedDOSbuffer versusactualC64pixelpairs, all4MiBdelta restoration805orderedACKs/37writes/settingsmediareset onattempt1. Independent54capture/1404recovery/1181evidence checks and621preflight; all580live/historicalpins exact. [Images](../docs/screenshots/README.md),[evidence](evidence/c64u-dir-screenshots-20261015.json). Native40wideoutputwraps; narrow80font legibility remainswork. NewuserpriorityDIR|MORE is privatework: actualpipelinepagination andtempfilepreservation required.
+
+EarlierVER/TYPE actualcaptures pass, but bothnativefile recoveryattemptsfailed; originalrunremainsfailed. BadbarePOSTfallbackalsoremainsfailed. SeparatelyreviewedbodylessPUT/DRS1delta disasterrecovery restoredalloriginal4MiB/settings with549ACKs and579independentchecks. [Recoveryrecord](evidence/c64u-text-capture-recovery-20261015.json). Do notinferfirmwarecause fromzero-length staleUCIreplybytes.
