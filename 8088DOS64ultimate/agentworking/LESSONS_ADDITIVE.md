@@ -212,3 +212,5 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 
 - Validate DOS pipe live temporary listings separately from final cleanup; retain actual bytes/SHA and permit only deleted-slot/originally-free-cluster residue with exact original allocation, metadata, content and slack.
 - Seal source review, physical preflight and postrun logs in separate directories; a reused validate-only stdout path can destroy historical evidence without changing executable inputs.
+
+- 2026-10-15: Two local video implementations disagreed on nibble order. Actual known C64 ROM glyphs established low-first across383,616 pixels. Preserve the original incorrect decoder/video rather than rewriting historical proof. On this Mac Python3.9 monotonic_ns has process-local origin; explicit clock_gettime(CLOCK_MONOTONIC) is required for cross-process ready age and game chapter alignment. Validate clock identity and interval in every chapter consumer.
