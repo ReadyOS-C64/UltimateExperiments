@@ -41,3 +41,10 @@ The opt-in [MODE runner](../build_support/c64u_native_display_runner.py) require
 ## Physical MODE acceptance
 
 Terminal MODE run092257 passes on98fc/configuredab50 with HDdisabled. Genuine CO40 and CO80 return prompts and pass complete bitmap/matrix/font/coherent state/code checks;22 BIOS keys/25 observations. Independent preflight741 and audit1,443 checks pass. First recovery fails before DMA, retains protocol/unknown-handle diagnostics; second restores all4MiB. Observed total restoration272.930seconds, whole461.177seconds;600seconds is configured per attempt. Fresh owned floppy/PRGs and final settings/media/reset pass. [Evidence](../agentworking/evidence/c64u-native-mode-20261015.json). This does not accept physical matrix input or external readability.
+
+
+## Current combined clock/PIC native DOS acceptance
+
+Run102259 passes22f82091/configuredea93 onPAL/Manual64/firmware3.14 withHDdisabled.33observations/14BIOSkeys/all35DIRentries/9216free/returnedprompt; all3584shadowbytes/code2361/tail1223/A5 andfullfont/bitmap/matrix match. Fresh4MiBbackup andfirstnative-file restore/allbytecompare/configmediareset pass,226.434srestore/430.775swhole. Independentrawaudit1524checks. Preflightcompleted745checks; provisional1105claimretractedwithoriginals preserved. [Evidence](../agentworking/evidence/c64u-native-performance-20261015.json).
+
+Finalscreen107.320s/app+evidence127.714s versusprevious98fc118.151/138.700s areobservedone-runcomparisons, notisolatedspeedup/XTbenchmarks. No newtargetMODE40/80/graphics/humanmatrix/externalHDMI/persistentHD/IEC/floppy-save/upper12MiB acceptance follows.

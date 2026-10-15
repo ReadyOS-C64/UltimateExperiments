@@ -2,7 +2,7 @@
 
 Updated: 2026-10-15, America/Los_Angeles.
 
-**Phase: combined clock/PIC target promoted; physical DOS/MODE acceptance remains exact98fc. New target physical gate, physical HD and external readability remain pending.** Implementation remains active, with local commits only.
+**Phase: combined clock/PIC target passes physical native DOS and complete recovery. MODE hardware remains exact98fc; physical HD and external readability remain pending.** Implementation remains active, with local commits only.
 
 Historical HD/scroll checkpoint runtime98fcd115/unit6eba1ee7,42497-byte PRGs load0801–ADFF. Root417default/597quick/218tooling plus nativeDOS1/MODE1/HDfixtures1/backend14/BIOS12/cold6 pass. Three optional long cases skip in the root quick lane; reviewed eight-case long HD and5701CPU proofs are retained by exact bothPRG/203execution-test-source identity. All398frozen dependencies independently checked. Independent normalproduction review13 and shadowhost28 pass. Required Make range.inc dependency fixed without nativebytechange. Actual rootDOS64KiB capture passes sixresidentproofs/all3584shadowbytes/A5guard. [Evidence](evidence/hd-production-20261015.json).
 
@@ -277,3 +277,12 @@ Standalone both-CIA-model VICE observations and exact rational timing arithmetic
 ## Standalone IEC development lane promoted
 
 Normal opt-in Make/Zig integration passes3actualPeddle tests/13scenarios and29host checks. Repaired launcher proves acceptedTCPtuple/livechildPID before everymonitorcommand, including cleanup; generatedoutputs rebuild whenmissing. Fresh root VICE original360KiB import passes720DMA/all4MiB/executable/guard/closure checks in16.549seconds. Existing main22f82091/8a84329c PRGs unchanged. [Evidence](evidence/iec-standalone-20261015.json),[contract](../docs/IEC_STANDALONE_IMPLEMENTATION.md). Production coldIEC/DOS-over-IEC/save/reopen/physicalIEC remainopen.
+
+
+## Current target physical acceptance
+
+Terminal run102259 PASSES runtime22f82091/configuredea93 withHDdisabled,33coherent observations/14keys/onepagination/all35entries/9216free/returnedA>. Final645453guest at107.320122s, app+evidence127.713652s. Allordinaryresident and3584shadow bytes/2361code/1223tail/A5,sourcefonts/full8000bitmap/1000matrix pass. IRQ/PITenabled/ready1,errors0,total1197.
+
+Fresh complete first4MiB backup precedesapp; firstattempt nativefileCRC/8192sectors/EOF/knownCLOSE plusoriginalserviceall512READACK/two256phases/all4194304bytesequal SHAac43 pass. Restorephase226.434181s,whole430.774553s, priorconfig/turbo/media/reset andpostreadonlyFTPfulloriginalfloppy/twoPRGs pass/Terminalexit0. Rootfinal358pins checked beforeunfreezing; readonlyhistoricalcopies preserveexpectations. Independent raw audit1524checks passes. Correctedpreflight745prelaunch is bound separately; provisional1105claim retracted/retainedexplicitly. [Evidence](evidence/c64u-native-performance-20261015.json).
+
+Single prior98fc comparable run had118.151354sfinal/138.699888sapp; timing andguestcountdifferences are observations, notisolatedcause orXTbenchmark. No newtargetMODE40/80/CGAgraphics/humanmatrix/HDMI/physicalHD/IEC/floppysave/upper12MiB claim. Oldfailures/oldMODEscope retained.

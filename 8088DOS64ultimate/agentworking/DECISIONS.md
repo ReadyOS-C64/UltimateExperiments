@@ -145,3 +145,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 | D97 | Implemented/VICE verified, 2026-10-15 | Opt-in standalone KERNAL/D81 import lane with proven fresh VICE process ownership |16additive files/minimalMakeZig;3Peddle/13scenarios/29host, fresh full360KiB/720DMA/all4MiB VICE pass; everymonitorcommand rechecksacceptedtuple/PID; missingproductsrebuild; no productionIEC/DOS/persistence/physical64MHz claim |
+
+
+| D98 | Physically verified, 2026-10-15 | Accept exact22f82091/configuredea93 native DOS VER/DIR with full recovery |33screens/14keys/35entries/9216free/returnedprompt,allshadow/fonts/bitmapmatrix,firstattemptall4MiBrestore226.434s/configmediareset; independent1524audit; actual745preflight/provisional1105retracted; observedone-run107.320vs118.151 finaltime is notXT/isolatedspeedclaim |

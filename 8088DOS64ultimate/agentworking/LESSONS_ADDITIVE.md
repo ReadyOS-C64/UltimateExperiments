@@ -194,3 +194,8 @@ Final RAM observations do not timestamp interrupt assertion during DMA. An arith
 ## 2026-10-15 — local monitor ownership and build products
 
 A reserved localhost port and live child do not prove that the accepted monitor belongs to that child. Prove the accepted connection's exact endpoints/PID before every command, and send no cleanup command when ownership is lost. A stamp file does not prove all generated outputs still exist: validate every output and input on explicit build invocation. Preserve valid products without unnecessary regeneration.
+
+
+## 2026-10-15 — final audit means completed execution
+
+Do not freeze a proposed expanded assertion count as a passed audit before that exact harness finishes. Preserve original executed source/output before extending a verifier; label reconstructed or overwritten-harness records as chronology. A provisional report can be withdrawn without discarding valid earlier checks, provided both provenance and limitations remain explicit. New raw independent rederivation should bind immutable inputs and report only its actually completed checks.

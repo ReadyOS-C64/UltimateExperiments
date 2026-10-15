@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "status": "passed physical combined-clock/PIC nativeDOS and complete recovery",
+  "raw_run": "agentworking/runs/c64u-native-perf-file-20261015-102259",
+  "runtime_sha256": "22f8209108fca953f783116c0a6cf5bd0c788e08b586421e30406f6129be0369",
+  "paired_unit_sha256": "8a84329ce41850fa42d89c0ee5f42d4e6f77a000a2c0a9abce8cae9c0092d94f",
+  "configured_runtime_sha256": "ea93ac8a25f051dacc5c86b29c08a1fb0b255f2902d3e05d3e32a7ccbf84de6f",
+  "PRG_bytes": 42497,
+  "hardware": {
+    "firmware": "3.14",
+    "FPGA": 121,
+    "core": "1.47",
+    "PAL": true,
+    "Manual_MHz": 64,
+    "REU_MiB": 16,
+    "badlines": "Disabled"
+  },
+  "application": {
+    "genuine_DOS_VER_DIR_P": true,
+    "observations": 33,
+    "BIOS_keys": 14,
+    "pagination": 1,
+    "entries": 35,
+    "free_bytes": 9216,
+    "returned_prompt": true,
+    "final_guest_instructions": 645453,
+    "final_screen_seconds": 107.320121708,
+    "application_evidence_seconds": 127.71365233300001,
+    "five_resident_segments_match": true,
+    "all_shadow_bytes": 3584,
+    "shadow_linked": 2361,
+    "zero_tail": 1223,
+    "loaded_guard": 165,
+    "all140_D64H_disabled_unchanged": true,
+    "D64N_changed_bytes": 56,
+    "full_16KiB_CGA_sha256": "a4c3351af444b5f6b5930ef487021540e27766b2eef02b5e155399cc7b7d220c",
+    "all_bitmap_matrix_fonts": {
+      "status": "passed",
+      "mode": 3,
+      "columns": 80,
+      "compared_bitmap_bytes": 8000,
+      "compared_matrix_bytes": 1000,
+      "source_fonts_exact": true,
+      "bitmap_sha256": "5586ec535aa94ca266bd50c12f1ebc9e2d51c459d66b64fd73def3f135435cc2",
+      "matrix_sha256": "3e022e1be47239953f01b5dbf53d46c859023f59283376cd9770bb7fad596d16",
+      "host_ram_sha256": "fd894e68fb14a2ac3d3dfc92d7e3649794da9348f48642c886d8b12380b2c3a3",
+      "oracle_source_sha256": "2f54b88479911bbcff03774ecb82d3f3423c582a48c0a4f57551ca43cdc373d1",
+      "scope": "capturedRAM only; noexternalHDMI/readability/matrix proof",
+      "first_local_failure": "root assumed wrong font/matrix addresses; corrected to actual source4400narrow/4800wide/4000matrix; no target or evidence changed"
+    },
+    "all_original_imported_floppy_bytes_equal": true
+  },
+  "native_state": {
+    "dos64_irq_callback_enabled": {
+      "address": 60154,
+      "value": 1
+    },
+    "dos64_pit_poll_enabled": {
+      "address": 60187,
+      "value": 1
+    },
+    "dos64_pit_ready": {
+      "address": 60184,
+      "value": 1
+    },
+    "dos64_pit_error": {
+      "address": 60185,
+      "value": 0
+    },
+    "dos64_pit_poll_error": {
+      "address": 60186,
+      "value": 0
+    },
+    "dos64_pit_total": {
+      "address": 60180,
+      "value": 1197
+    },
+    "hdb_extension_ready": {
+      "address": 16268,
+      "value": 165
+    }
+  },
+  "recovery": {
+    "fresh_complete_backup_before_app": true,
+    "attempts": 1,
+    "native_DONE": {
+      "mailbox_hex": "44524631a50000060000000000000000a2a16565a2a16565aa59000000200000",
+      "configured_prg_sha256": "c235a14994bf18d9a222ee8d5a9e1e366f0ee44ae78df9de46f4f08c8654ca4d",
+      "base_prg_sha256": "38806976236c39df7b392b8dbf5312adb92c4ac4f9ac60460f664a3eb61e905b",
+      "backup_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+      "backup_crc32": 1701159330,
+      "elapsed_host_seconds": 146.527584333
+    },
+    "all_bytes_independently_equal": 4194304,
+    "backup_and_after_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+    "service_ordered_READ_ACK_pairs": 512,
+    "complete_phase_seconds": 226.434181,
+    "configured_phase_bound_per_attempt_seconds": 600,
+    "max_attempts": 2,
+    "configuration_turbo_media_equal": true,
+    "reset_resumed": true,
+    "upper12MiB_independently_compared": false
+  },
+  "whole_seconds": 430.774553,
+  "postreadonlyFTP_all_floppy_and_two_PRGs_equal": true,
+  "historical_readonly_inputs": 358,
+  "complete_build_entries": 334,
+  "imports": 9,
+  "independent_audit_assertions": 1524,
+  "preflight": {
+    "completed_prelaunch_assertions": 745,
+    "provisional1105_claim_retracted": true,
+    "original745_stdout_survives": false,
+    "surviving745_result_checks_CLI_record_bound": true,
+    "supplemental358copy_checks_separately_ordered": true,
+    "original_provisional_files_preserved_with_label": true,
+    "no_source_or_target_mismatch": true
+  },
+  "observed_one_run_comparison": {
+    "old_runtime": "98fc",
+    "old_final_screen_seconds": 118.151353584,
+    "new_final_screen_seconds": 107.320121708,
+    "old_app_evidence_seconds": 138.699888042,
+    "new_app_evidence_seconds": 127.71365233300001,
+    "old_guest": 684371,
+    "new_guest": 645453,
+    "same_observer_seconds": 2.0,
+    "same_app_bound_seconds": 360,
+    "controlled_benchmark_or_isolated_cause": false,
+    "XT_ratio": null
+  },
+  "provenance": {
+    "agentworking/runs/c64u-native-perf-file-20261015-102259/result.json": {
+      "sha256": "86e901df83c1163a9fcffccec689ed9d0d46eea5bf2467ceae5597cda49b747a",
+      "bytes": 89494
+    },
+    "agentworking/runs/c64u-native-perf-file-20261015-102259/application-result.json": {
+      "sha256": "8acd3b53642d436332a0838cada5f8dc122430b4543aa757ed31f14dd5fc4241",
+      "bytes": 86595
+    },
+    "agentworking/runs/c64u-native-perf-file-20261015-102259/journal.jsonl": {
+      "sha256": "756d2cb7dd3cf8c20139e11de68032cdc91cff15a105e62032fbb6405922970e",
+      "bytes": 440888
+    },
+    "agentworking/runs/c64u-native-perf-file-20261015-102259/application-journal.jsonl": {
+      "sha256": "03a0ab2712c848cf6b480a5d903c1e4c4c2e48a8d7958812d7fdd29edf70c8bb",
+      "bytes": 82564
+    },
+    "agentworking/runs/c64u-native-perf-file-20261015-102259/captured-resident-identity.json": {
+      "sha256": "db5ddd27ed5cd9960eec23a2fc99cc5b88b7f9774ba67152d5858f92a458223a",
+      "bytes": 3130
+    },
+    "agentworking/runs/c64u-native-perf-file-20261015-102259/native-bitmap-oracle.json": {
+      "sha256": "3823ffe900e57644c65e1e91b354292668186a3afc806c2a974e098e53e8f5ee",
+      "bytes": 738
+    },
+    "agentworking/runs/c64u-native-perf-file-20261015-102259/reu-before.json": {
+      "sha256": "82911d4dd456073efdb2915f662cf21aeb60cde356bdd53741a94392f04070f9",
+      "bytes": 302
+    },
+    "agentworking/runs/c64u-native-perf-file-20261015-102259/post-ftp-identity.json": {
+      "sha256": "24f99e2685e4b70d6ca807e6a14f55f73ff99ca888b3b9e5668e1676627e3c01",
+      "bytes": 902
+    },
+    "agentworking/runs/c64u-native-perf-file-20261015-102259/root-final-input-and-REU-check.json": {
+      "sha256": "8b7297d6e14cfa2e3077ec7544967e7b728ecad44ff57dd7929ec157c9a94f58",
+      "bytes": 493
+    },
+    "agentworking/runs/c64u-native-perf-file-20261015-102259/native-restore-1/native-done.json": {
+      "sha256": "3ff13f58bae3876ec753e8e68fc1dd298dadfef06228d82828a58f7d06ecfd5d",
+      "bytes": 430
+    },
+    "agentworking/scratch/native-perf-physical-audit/REVIEW.md": {
+      "sha256": "04ce97e392426c10da83b266a5ddabd3f72fc502177b266a3ce9c6d765469e97",
+      "bytes": 7699
+    },
+    "agentworking/scratch/native-perf-physical-audit/manifest.json": {
+      "sha256": "621833e3ae8f7052291cdc7f0d8c2717acf511b6fec2c9a68fdd690e2bd2baa0",
+      "bytes": 97136
+    },
+    "agentworking/scratch/native-perf-physical-audit/result.json": {
+      "sha256": "4abf995ccd3fd203643744a2697a9e92622840e8f2a7d9c821960aa978f3cbf6",
+      "bytes": 2623
+    },
+    "agentworking/scratch/native-perf-physical-audit/verify_independent.py": {
+      "sha256": "826d76fc01ce36e7478321dda89647a3a0dd35930c459cd4ac752ae0d4351eb2",
+      "bytes": 24575
+    },
+    "agentworking/scratch/native-perf-physical-audit/output.log": {
+      "sha256": "4abf995ccd3fd203643744a2697a9e92622840e8f2a7d9c821960aa978f3cbf6",
+      "bytes": 2623
+    },
+    "agentworking/scratch/native-perf-physical-audit/first-failures.json": {
+      "sha256": "7c1c844ee7e48c387f5143ad7ca3a2b9913fbc6c9cf6137a7888b2dbf7bcc500",
+      "bytes": 962
+    },
+    "agentworking/scratch/native-perf-preflight-review/REVIEW.md": {
+      "sha256": "0ad64f9aa477af2c4d7debb29933d3e328d2c00ecd5292f8ed39c01e70c7a926",
+      "bytes": 5002
+    },
+    "agentworking/scratch/native-perf-preflight-review/manifest.json": {
+      "sha256": "b38ad8c693ab08e8d2d63a5888fbe4db9242fcbd5bb5c199ba0308efac23af4a",
+      "bytes": 3298
+    },
+    "agentworking/scratch/native-perf-preflight-review/chronology-and-supplement.json": {
+      "sha256": "b686c7618e70ad77dbd91ab24c1d36b9f8f70da21f778ee995db5818d3159d91",
+      "bytes": 2038
+    },
+    "agentworking/scratch/native-perf-reviewed-20261015-102259/native-perf-review.json": {
+      "sha256": "d1738d6335675aeba4720f97e03991ea092df254bc6b081c4bcd090df57a1d98",
+      "bytes": 85796
+    },
+    "agentworking/scratch/native-perf-reviewed-20261015-102259/frozen-inputs-index.json": {
+      "sha256": "aff53645e823061ec90e6a173f165c4fad5dbc55c9212e28efc54816548b83cb",
+      "bytes": 143473
+    },
+    "agentworking/scratch/native-perf-reviewed-20261015-102259/provisional-preflight-REVIEW.md": {
+      "sha256": "14652c73c74921459e7639f3fb2a6572238d880c93515936ffc1d3f4e8b4beeb",
+      "bytes": 5252
+    },
+    "agentworking/scratch/native-perf-reviewed-20261015-102259/provisional-preflight-manifest.json": {
+      "sha256": "db7b79614c378b08957ef2406c2e280f667947477542d5b244f3feb8d1441694",
+      "bytes": 1591
+    }
+  },
+  "limitations": [
+    "Only first4MiB independently compared; upper12MiB unproved",
+    "Reset/resume does not restore prior CPU execution",
+    "BIOS key ring, not human matrix input",
+    "FramebufferRAM proof, not externalVIC/HDMI/readability",
+    "No liveCPUport proof from underlyingREST RAM",
+    "HDdisabled; no physicalHD/IEC/floppysave persistence",
+    "NewtargetMODE40/80 and graphics4/5/6 not executed here; oldMODE98fc scope preserved",
+    "Observed single-run times do not establish isolatedcause or nearXTspeed",
+    "Preflightprovisional1105 claim explicitly retracted; actual745 and newindependent1524 evidence only"
+  ]
+}
