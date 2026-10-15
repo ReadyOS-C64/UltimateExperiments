@@ -6,7 +6,7 @@ chapter's typing is accelerated; operation and paging footage stays at 1x.
 """
 from pathlib import Path
 import hashlib, json, shutil, subprocess, sys
-from PIL import Image, ImageDraw, ImageFont
+from readyfs_heading_cards import batch_card
 src, site, out = (Path(p).resolve() for p in sys.argv[1:])
 out.mkdir(parents=True, exist_ok=True)
 assert (src/'status.txt').read_text().strip() == 'success'
@@ -28,28 +28,18 @@ old_steps = json.loads((base/'script.json').read_text())
 old_chapters = json.loads((base/'chapters.json').read_text())
 assert len(old_steps) == 37 and len(old_chapters) == 9
 work = out/'edit';work.mkdir(exist_ok=True)
-fonts = Path('/System/Library/Fonts/Supplemental')
-bold = ImageFont.truetype(str(fonts/'Arial Bold.ttf'), 25)
-small = ImageFont.truetype(str(fonts/'Arial.ttf'), 19)
 chapter = chapters[0];chapter['seconds'] = old_report['seconds'];chapter['callout_seconds'] = 4.8
 assert len(chapter['description'].split()) <= 10
-card = Image.new('RGBA', (856,104), (0,0,0,0));d = ImageDraw.Draw(card)
-d.rounded_rectangle((0,0,855,103),radius=16,fill=(23,32,51,242),outline=(83,105,137,242))
-d.text((30,14),chapter['title'].replace(' · ', ' / '),font=bold,fill=(245,248,255))
-d.text((30,57),chapter['description'],font=small,fill=(213,225,242));card.save(work/'card.png')
-notice = Image.new('RGBA',(960,32),(0,0,0,0));ImageDraw.Draw(notice).text((52,2),'New batch chapter · typing 1.4× · operations 1× · new owned test folder',font=ImageFont.truetype(str(fonts/'Arial.ttf'),16),fill=(158,177,207));notice.save(work/'notice.png')
 segments = [base/'readyfs-demo.mp4'];elapsed = old_report['seconds'];cuts=[];saved=0
 fps = raw['fps']
 for i, step in enumerate(steps):
     start, typed, result, end = (step[k] for k in ('start_seconds','typed_seconds','seconds','end_seconds'))
     assert start < typed < result < end
     dt = typed - start;duration=dt/1.4+end-typed;saved+=dt-dt/1.4
-    f=f'[0:v]split=2[a][b];[a]trim=duration={dt:.6f},setpts=(PTS-STARTPTS)/1.4[t];[b]trim=start={dt:.6f},setpts=PTS-STARTPTS[o];[t][o]concat=n=2:v=1:a=0,fps={fps},pad=960:720:96:144:color=0x090e1b,setsar=1[base];[base][2:v]overlay=0:111:shortest=1[label]'
-    if i==0:
-        f+=';[1:v]format=rgba,fade=t=in:st=0:d=0.2:alpha=1,fade=t=out:st=4.3:d=0.5:alpha=1[card];[label][card]overlay=52:8:enable=\'lt(t,4.8)\':shortest=1[v]'
-    else:f+=';[label]null[v]'
+    card_path=work/f'card-{i:02d}.png';batch_card(i).save(card_path)
+    f=f'[0:v]split=2[a][b];[a]trim=duration={dt:.6f},setpts=(PTS-STARTPTS)/1.4[t];[b]trim=start={dt:.6f},setpts=PTS-STARTPTS[o];[t][o]concat=n=2:v=1:a=0,fps={fps},pad=960:720:96:144:color=0x090e1b,setsar=1[base];[base][1:v]overlay=52:12:shortest=1[v]'
     seg=work/f'segment-{i:02d}.mp4'
-    subprocess.run(['ffmpeg','-v','error','-y','-ss',str(start),'-t',str(end-start),'-i',str(src/'readyfs-demo.mp4'),'-loop','1','-i',str(work/'card.png'),'-loop','1','-i',str(work/'notice.png'),'-filter_complex',f,'-map','[v]','-t',str(duration),'-c:v','libx264','-preset','fast','-crf','18','-pix_fmt','yuv420p','-video_track_timescale','13684',str(seg)],check=True)
+    subprocess.run(['ffmpeg','-v','error','-y','-ss',str(start),'-t',str(end-start),'-i',str(src/'readyfs-demo.mp4'),'-loop','1','-i',str(card_path),'-filter_complex',f,'-map','[v]','-t',str(duration),'-c:v','libx264','-preset','fast','-crf','18','-pix_fmt','yuv420p','-video_track_timescale','13684',str(seg)],check=True)
     actual=float(json.loads(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','json',str(seg)]))['format']['duration'])
     step['group']=9;step['start_seconds']=elapsed;step['typed_seconds']=elapsed+dt/1.4;step['seconds']=elapsed+dt/1.4+result-typed;step['end_seconds']=elapsed+actual;step['typing_rate']=1.4
     step['screenshot']='batch-'+step['screenshot'];shutil.copy2(src/step['screenshot'].removeprefix('batch-'),site/step['screenshot'])
