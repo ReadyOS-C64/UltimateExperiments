@@ -5,7 +5,8 @@
 .export dos64_cpu_init, dos64_cpu_step, dos64_cpu_status, dos64_cpu_opcode
 .export dos64_cpu_instructions, dos64_cpu_yield, dos64_cpu_pending, dos64_cpu_irq_shadow
 .export dos64_cpu_value, dos64_cpu_word_read, dos64_cpu_word_write
-.export cpu_fetch8, cpu_fetch16, cpu_override, cpu_byte_registers
+.export cpu_fetch8, cpu_fetch8_slow, cpu_fetch16, cpu_override, cpu_byte_registers
+.import dos64_fetch_init, dos64_fast_fetch
 .export cpu_complete, cpu_memory_error, cpu_unsupported, cpu_return, cpu_rep, cpu_relative
 .import dos64_strings_execute, dos64_string_pending, dos64_shifts_execute, dos64_control_execute
 .import dos64_stack_execute, dos64_math_execute, dos64_indirect_execute
@@ -42,6 +43,7 @@ cpu_stack_opcodes: .byte $06,$07,$0E,$16,$17,$1E,$1F,$9A,$9C,$9D,$9E,$9F,$C2,$C3
 .segment "CODE"
 dos64_cpu_init:
     jsr dos64_cpu_reset
+    jsr dos64_fetch_init
     lda #0
     ldx #8
 @clear:
@@ -819,6 +821,8 @@ cpu_error_return:
     rts
 
 cpu_fetch8:
+    jmp dos64_fast_fetch
+cpu_fetch8_slow:
     lda dos64_guest+G_CS
     sta dos64_segment
     lda dos64_guest+G_CS+1

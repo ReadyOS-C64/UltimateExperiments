@@ -73,3 +73,7 @@ The genuine reset-to-IO.SYS handoff separately reports 392 completed guest instr
 
 
 Final frozen-baseline profile rerun passed 1/1 in 3.27 host seconds: 10,314 guest instructions, 12,902 scheduling calls, 65,680,572 host CPU cycles, 19,297,856 native instructions, 223 DMA operations and 114,176 DMA bytes. All state checks passed. Ordered source identity is `95fd4e36c3744e01fd0ddd61f5bbd2bafdd993c489f2bb70029a00e919df1f02`; final linked unit PRG SHA-256 is `c035afe39e8c25239a7b17664b36c9688186e29b6adbef6ff01d3f3a2c01e6ab`. The table uses this final rerun. Counter totals are not physical timing; the instruction-weighted aggregate combines very different workloads and does not replace their individual costs.
+
+## Integrated fetch comparison
+
+Against source-pinned baseline `49 ac 73 f`, the same 12 workloads and all final-state checks pass after the fetch change. Warm cycles per guest instruction: register loop **1,383.78** (21.49% reduction), dirty memory **1,744.48** (20.45%), stack/calls **1,616.05** (10.36%), multiply/divide **1,774.18** (18.23%). The 20KiB REP workload increases about 0.08%; its DMA counts are unchanged. Aggregate CPU cycles fall 65,680,572→61,735,896, but this weighted total is not an XT ratio. The same exclusions and lack of calibrated physical timing apply. [Source identities, complete samples and baseline comparison](../agentworking/evidence/fetch-optimization-20261015.json).

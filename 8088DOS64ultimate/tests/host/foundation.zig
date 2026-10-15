@@ -126,3 +126,5 @@ test { _ = @import("bios.zig"); }
 test { _ = @import("range_probe.zig"); }
 test { _ = @import("dos_boot.zig"); }
 test { _ = @import("range_snapshot.zig"); }
+
+test { _ = @import("fetch.zig"); }

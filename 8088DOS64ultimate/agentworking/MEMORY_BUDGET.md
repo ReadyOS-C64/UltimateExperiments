@@ -1,16 +1,16 @@
 # Memory budget checkpoint
 
-Status: current CPU/BIOS/coherent floppy baseline measured; full CPU/devices/display/native file transport remain unfinished. Authoritative full-system ranges: [MEMORY.md](../docs/MEMORY.md). Latest inspected maps `build/dos64.map` / `build/dos64-tests.map`: runtime CODE **9,702**, RODATA **673**, BASIC **12**, BSS **211**, PAGEMAP **2,048**, CACHEMETA **192**, RANGEBUFFER **256**, ZP **16**, header **2**; PRG **10,389 bytes**. Unit CODE **10,618**, RODATA **697**, TESTCODE **36**, BASIC **12**, ZP **28**, PRG **11,365 bytes**. Final quick/helper integration passed; runtime bytes are unchanged and the extra recovery code is unit-only.
+Status: current CPU/BIOS/coherent floppy baseline measured; full CPU/devices/display/native file transport remain unfinished. Authoritative full-system ranges: [MEMORY.md](../docs/MEMORY.md). Storage/bootstrap baseline maps `build/dos64.map` / `build/dos64-tests.map`: runtime CODE **9,702**, RODATA **673**, BASIC **12**, BSS **211**, PAGEMAP **2,048**, CACHEMETA **192**, RANGEBUFFER **256**, ZP **16**, header **2**; PRG **10,389 bytes**. Unit CODE **10,618**, RODATA **697**, TESTCODE **36**, BASIC **12**, ZP **28**, PRG **11,365 bytes**. Final quick/helper integration passed; runtime bytes are unchanged and the extra recovery code is unit-only.
 
 
 | Resource | Budget | Measured used | Gate |
 |---|---:|---:|---|
-| Resident/hot executable ranges | 22,272 bytes | 9,702 CODE + 673 RODATA + 12 BASIC = 10,387 emitted | C000 staging removes 256 bytes from old 22 KiB code ceiling; additional window C100–CFFF |
+| Resident/hot executable ranges | 22,272 bytes | 9,999 CODE + 673 RODATA + 12 BASIC = 10,684 emitted | C000 staging removes 256 bytes from old 22 KiB code ceiling; additional window C100–CFFF |
 | Cold window including vectors | 4 KiB | Unknown | Must preserve IRQ/NMI/reset vectors and return gateways |
 | Host guest-cache frames | 16 KiB | 32 × 512 bytes reserved/used | 8000–BFFF, direct physical tags; tests cover all frames |
-| Host control/metadata | 4 KiB | 2,451 static bytes; 1,645 remaining including gaps | BSS 211 + map 2,048 + frame metadata 192; only 45 BSS bytes before E100 |
+| Host control/metadata | 4 KiB | 2,462 static bytes; 1,634 remaining including gaps | BSS 222 + map 2,048 + frame metadata 192; only 34 BSS bytes before E100 |
 | Host range staging | 256 bytes | 256 reserved, not PRG payload | C000–C0FF; linker/map gate forbids graphics/cache overlap |
-| Host low memory | 2 KiB | Runtime ZP 16; stack measured by probe | Full-system stack/IRQ/KERNAL bound not established |
+| Host low memory | 2 KiB | Runtime ZP 18; stack measured by probe | Full-system stack/IRQ/KERNAL bound not established |
 | Video matrix/fonts/bitmap | 12 KiB | Unknown | Correct VIC bank and font/bitmap alignment |
 | I/O reservation | 4 KiB | Reserved | Never allocated as RAM |
 | REU guest physical arena | 1 MiB | Reserved design | Guest bus holes/ROM enforced |
@@ -47,3 +47,7 @@ The full host table remains contiguous and totals 65,536 bytes after splitting C
 Standalone range probe map: CODE 080D–0FAE (**1,954**), BSS **81**, ZP **21**, staging **256**, map **2,048**, frame metadata **192**; PRG **1,968**, linked total **4,566**. It reserves two cache frames during execution but keeps the full 16 KiB cache address window. Source/destination REU ranges remain below 4 MiB. Existing cache/REU/backup/restore identities are unchanged.
 
 New physical range snapshot uses host 6000–73FF for a 5,120-byte recovery payload only while the standalone runner exclusively owns the machine; it is not production bitmap RAM available for resident growth. REU envelopes are guest 07FC00–0803FF, source 34FF00–3504FF and destination 35FF00–3604FF. The six bank-split descriptors recover all touched bytes; physical Manual 64 MHz integrity and exact 5,120-byte/configuration restoration passed. No new runtime REU arena or runtime ZP was added. Full-system IRQ/KERNAL/renderer stack bounds remain unmeasured.
+
+## Fetch optimization superseding current totals
+
+Runtime CODE080D–2F1B **9,999**, RODATA2F1C–31BC **673**, BSS E000–E0DD **222**, ZP0020–0031 **18**, PRG **10,686**. UnitCODE **10,915**, RODATA **697**, TESTCODE **36**, ends 358C, ZP **30**, PRG **11,662**. The module plus calls/wrapper cost 297 executable bytes,11BSS and 2ZP. Staticcontrol 222+2048+192=**2,462**, leaving **1,634** including gaps; pre-mapBSS headroom **34** bytes. MAIN runtime headroom 3,651. Range buffer/map/frame metadata remain unchanged. [Exact maps/evidence](evidence/fetch-optimization-20261015.json).

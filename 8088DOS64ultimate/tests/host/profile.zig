@@ -240,7 +240,7 @@ test "profile real linked CPU workloads with exact registers and complete RAM or
     const paths = [_][]const u8{
         "build/dos64-tests.prg",                      "build/dos64-tests.labels",                   "build.zig",                                  "Makefile",                                        "cfg/dos64.cfg",
         "src/boot.s",                                 "src/cpu_state.s",                            "src/reu.s",                                  "src/address.s",                                   "src/memory.s",
-        "src/cpu.s",                                  "src/alu.s",                                  "src/operands.s",                             "src/stack.s",                                     "src/strings.s",
+        "src/cpu.s", "src/fetch.s",                                  "src/alu.s",                                  "src/operands.s",                             "src/stack.s",                                     "src/strings.s",
         "src/shifts.s",                               "src/control.s",                              "src/math.s",                                 "src/indirect.s",                                  "src/range.s",
         "src/range_probe.s", "src/range_snapshot.s",                          "src/disk.s",                                 "src/bios.s",                                 "src/reu_probe.s",                                 "src/cache_probe.s",
         "src/reu_snapshot.s",                         "include/abi.inc",                            "include/reu.inc",                            "include/memory.inc",                              "include/parity.inc",

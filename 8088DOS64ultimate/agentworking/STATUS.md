@@ -2,7 +2,7 @@
 
 Updated: 2026-10-15, America/Los_Angeles.
 
-**Phase: implementation active toward the entire real DOS 3.3 emulator.** The final quick checkpoint passes **150 Zig/Peddle + 45 tooling tests**; the final full CPU checkpoint passes all **2,555 pinned hardware cases**. Genuine guest reset and unchanged boot-sector execution reach IO.SYS at **0070:0000**, with all **22,398 file bytes and 51 raw sectors** independently checked. Continuing IO.SYS reaches unsupported PIC **OUT 20h at 0070:2BFB after 2,335 completed instructions**. COMMAND.COM prompt acceptance remains false. Native startup still initializes then idles; actual Ultimate/IEC loading and a native runtime loop are not implemented.
+**Phase: implementation active toward the entire real DOS 3.3 emulator.** The final quick checkpoint passes **161 Zig/Peddle + 45 tooling tests**; the final full CPU checkpoint passes all **2,555 pinned hardware cases**. Genuine guest reset and unchanged boot-sector execution reach IO.SYS at **0070:0000**, with all **22,398 file bytes and 51 raw sectors** independently checked. Continuing IO.SYS reaches unsupported PIC **OUT 20h at 0070:2BFB after 2,335 completed instructions**. COMMAND.COM prompt acceptance remains false. Native startup still initializes then idles; actual Ultimate/IEC loading and a native runtime loop are not implemented.
 
 Implementation and verified local commits are authorized; never push. Last accepted checkpoint before this integration is `c7450ff`. The final quick, full-corpus, profile and physical range gates passed. [Baseline evidence](evidence/storage-bootstrap-20261015.json) records source/tool/artifact identity and the actual scope; [kernel trace](evidence/dos-kernel-handoff-20261015.json) and [profile](evidence/cpu-profile-baseline-20261015.json) are retained separately.
 
@@ -116,3 +116,9 @@ Math/sign-extension/indirect execution now passes 114 Zig/Peddle +15 tooling and
 - `build/cpu-profile.json` contains 12 validated real-assembly cold/warm samples. Warm register/branch cost is 1,762.55 native cycles/instruction; 20 KiB REP is 1,081.19 cycles/copied byte, before DMA stalls and physical effects. This pre-optimization baseline does not establish XT speed. Unlinked fetch/PC-port/video work is future work, excluded from accepted functionality/performance.
 
 Next acceptance is the full real DOS prompt followed by applicable command/application tests, 640 KiB RAM, 40/80 text and limited CGA, keyboard, native Ultimate/IEC media and 2 MiB→20 MiB file-backed HD persistence. Kernel entry does not reduce that scope. See [NEXT_SLICE](NEXT_SLICE.md) and the [BIOS](../docs/BIOS_IMPLEMENTATION.md), [disk](../docs/DISK_IMPLEMENTATION.md), [range](../docs/RANGE_IMPLEMENTATION.md) contracts.
+
+## Verified fetch optimization
+
+Following baseline commit `49 ac 73 f`, the CPU fetch helper now reuses an unpinned cache span only after validating CS/IP, cache readiness/limit/mode, frame validity/tag and generation. Writes, operand eviction, redirects, initialization, page ends and IP wrap force fresh coherent lookup. The former helper remains independently executable for differential tests. Full guest state and all 1 MiB of RAM match after the 261-instruction fast/slow comparison.
+
+Quick/full gates pass **161 Zig/Peddle +45 tooling**, all **2,555** selected hardware cases. Twelve profile samples pass; warm register/memory loops use about 21% fewer CPU cycles, multiply/divide 18%, stack calls 10%; large REP copies change about+0.08%. No hardware/XT timing claim. Runtime CODE9,999/RODATA673/BSS222/ZP18, PRG10,686. [Evidence](evidence/fetch-optimization-20261015.json). Genuine IO.SYS still stops at OUT20 h,2335 instructions. PIC/video/adjust/UCI modules remain unlinked work.
