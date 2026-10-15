@@ -174,3 +174,8 @@ Coherent screen inspection pauses guest execution across several commands. Measu
 Use the recorded restoration attempt count when selecting final readback files. Preserve every failed attempt before overwriting helper RAM. A status buffer with declared length zero is stale, even when its bytes resemble a useful firmware error. Check executable/diagnostic equality separately from changing I/O registers in repeated RAM captures. A successful retry establishes final restoration, not the cause of the first failure.
 
 Freeze complete source/artifact input bytes alongside hashes before later target changes. That preserves historical physical proof without pretending an old unit or hardware binary identifies the new target. Distinguish observed total restoration time from a configured per-attempt bound.
+
+
+## 2026-10-15 — cleanup cannot depend on well-formed evidence
+
+An optional evidence worker must not let interrupted waits, serialization errors or malformed results bypass recovery. Reap the child in all paths and independently validate artifacts in the parent. Preserve partial accepted bytes before publishing progress. A RAM-first collector only guarantees order relative to its own helper; bind the earlier application capture explicitly if another evidence path has already replaced native code.

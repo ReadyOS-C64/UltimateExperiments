@@ -133,3 +133,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 | D93 | Physically verified, 2026-10-15 | Accept genuine DOS MODE CO40/CO80 on exact98fc/configuredab50 with complete RAM framebuffer/code proof | Both returned prompts; independent1,443 assertions; first recovery protocol failure retained, second restores all4MiB; observed272.930s across attempts, configured600s per attempt; no human matrix/HDMI/graphics/HD/XT claim |
+
+
+| D94 | Implemented/host verified, 2026-10-15 | Optional bounded HD collector retains new authority/handoff/image before outer REU restoration | Root273tooling/27native-file host; independent273/no network/no children; interruptions/malformed results cannot skip recovery; original pre-helper appRAM must be preserved by future caller; no physicalHD trace/runner yet |

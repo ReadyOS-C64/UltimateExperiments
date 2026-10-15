@@ -251,3 +251,10 @@ Terminal run `c64u-native-mode-file-20261015-092257` passes genuine MODE CO40/CO
 The first recovery attempt failed at OPEN/cleanup with protocol error4, unknown handle and zero sectors before any restore DMA. Its failure RAM is retained; stale status bytes with declared length zero do not explain the firmware cause. Attempt two passed fresh staging/startup/CRC/EOF/known CLOSE and independent comparison of all4,194,304 bytes. Prior machine/media settings and reset/resume passed. Observed restoration across both attempts took272.930 seconds, whole workflow461.177 seconds; the configured600-second bound applies separately to each allowed attempt. Independent preflight741 and raw audit1,443 checks pass. All349 reviewed inputs have immutable historical copies. [Evidence](evidence/c64u-native-mode-20261015.json).
 
 This accepts BIOS-ring input and captured framebuffer bytes. Physical matrix input, external VIC/HDMI readability, graphics modes, physical HD/IEC/floppy-save persistence, upper12MiB and near-XT speed remain open. Shared target remains98fc/6eba. Private combined clock/PIC candidate passes421default/597quick/238tooling and54 focused/native gates, under independent review; it has no physical acceptance yet.
+
+
+## HD failure-evidence foundation
+
+Four reviewed host files are promoted. Root273tooling and27native-file host checks pass; independent clean-layout273 checks pass with networking forbidden and zero live children. Optional pre-restoration collection retains RAM, newly authoritative sector350000, handoff352000 and complete/partial owned remote image. Failed/interrupted collection and malformed reports cannot skip full REU/configuration/reset recovery. Default hook=None flow and target PRGs are unchanged. Original rejected/repair cohorts remain retained. [Evidence](evidence/hd-failure-evidence-foundation-20261015.json),[caller contract](../docs/HD_FAILURE_EVIDENCE.md).
+
+Future HD runner must retain the application's original pre-helper RAM; the later collector can see DRS1. Full physical guest-write tracing, owned HD stager/runner and persistence acceptance remain unfinished.

@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "status": "promoted host retention foundation; physical HD runner remains incomplete",
+  "root_tooling": {
+    "passed": 273,
+    "seconds": 32.541
+  },
+  "independent_clean_layout": {
+    "passed": 273,
+    "seconds": 32.849,
+    "network_forbidden": true,
+    "live_children": 0
+  },
+  "focused_repair_contract_cases": 52,
+  "old_blocked_cohorts_preserved": true,
+  "exact_execution_dependencies": 557,
+  "documentation_only_base_drift": "README physical MODE paragraph checked separately",
+  "default_hook_None_unchanged": true,
+  "target_assembly_or_PRG_changed": false,
+  "scope": [
+    "optional isolated bounded pre-restoration collector",
+    "RAM before its own helper, two512byte authority/handoff ranges, full/partial owned image retention",
+    "BaseException-safe child cleanup and report validation cannot skip full recovery",
+    "parent independently verifies retained artifacts including failure results"
+  ],
+  "limits": [
+    "Future caller must retain original pre-helper application RAM; later collector RAM may contain DRS1",
+    "No physical HD stager/runner or full AH03 trace yet",
+    "No physical HD persistence/powerloss durability acceptance",
+    "Remote HD image is retained, not restored by REU recovery",
+    "Cannot undo already accepted remote requests or guarantee interrupting an OS uninterruptible call"
+  ],
+  "provenance": {
+    "agentworking/scratch/hd-evidence-production/cohort-manifest.json": {
+      "sha256": "3da87f91b9fd607d9b4ff3d0a26455ccf31410b7dd1c37e5f08bab1c8553e045",
+      "bytes": 95576
+    },
+    "agentworking/scratch/hd-evidence-production/promotion.patch": {
+      "sha256": "3d60c046bf0d6f7c5b82cb5f85fc9807d5d84c308f75379bf7ee7e9398bcbc2d",
+      "bytes": 48624
+    },
+    "agentworking/scratch/hd-evidence-production-review/review-manifest.json": {
+      "sha256": "62778c782f36cf14927287543d124cf8ff80a2c2d7c1270a244446cda1f0e0bb",
+      "bytes": 1929
+    },
+    "agentworking/scratch/hd-evidence-production-review/REVIEW.md": {
+      "sha256": "86bde329a9d22e4d42ccd7a3a84c9ae55a39783c3b7cb65bb0c54929e6a3d932",
+      "bytes": 4627
+    },
+    "agentworking/runs/hd-evidence-promotion-20261015-root/base-audit.json": {
+      "sha256": "eb09ff12cabeb7a0a59bbc457f1f4466569bfdfc4117c54afda3b0f433a87c3a",
+      "bytes": 700
+    },
+    "agentworking/runs/hd-evidence-promotion-20261015-root/readme-only-base.diff": {
+      "sha256": "af9e9b91863bdf9bc682c1d0c1d8523c5eb3681f5d2c92bb87d3393b84303ebf",
+      "bytes": 1689
+    },
+    "agentworking/runs/hd-evidence-promotion-20261015-root/tooling-promoted.log": {
+      "sha256": "3c5f44cb5851595edebe2e0306e238ca7a0e0e859eb06dd967eee3bdfbf1cfa0",
+      "bytes": 28688
+    },
+    "build_support/c64u_bulk_reu_recovery.py": {
+      "sha256": "25f1874c615ad165b7c84cdef5718c44381ca291ab59475213099837eb736033",
+      "bytes": 21278
+    },
+    "build_support/c64u_hd_evidence.py": {
+      "sha256": "c42aaf5a223bba80b268b3482593db26d382c85f958a94e024335e1b8dce193a",
+      "bytes": 16108
+    },
+    "tests/tooling/test_c64u_hd_evidence.py": {
+      "sha256": "350f143cff392e5668d537b425008fa27fd1ff8a2a64b257cb3ee6f030bb586d",
+      "bytes": 14119
+    },
+    "tests/tooling/test_c64u_hd_evidence_repair.py": {
+      "sha256": "dd839614451125735e26026bfd1c53803a54d9cd71b9bbfa787cf42b10dcc865",
+      "bytes": 11831
+    },
+    "agentworking/runs/hd-evidence-promotion-20261015-root/native-file-host.log": {
+      "sha256": "9d32507702e654663cf9a4e7fba61e59c24c15de93fe94f039662231bd9efa68",
+      "bytes": 3188
+    }
+  },
+  "native_file_host_checks": {
+    "passed": 27,
+    "seconds": 1.532
+  }
+}

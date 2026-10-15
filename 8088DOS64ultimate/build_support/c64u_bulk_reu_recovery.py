@@ -34,6 +34,23 @@ def durable_write(path, value, mode="wb"):
 def dump(path, value): durable_write(path,(json.dumps(value,indent=2)+"\n").encode())
 
 
+def evidence_error(error):
+    """Small JSON-safe diagnostics, including cancellation during evidence cleanup."""
+    try:message=repr(error)[:2048]
+    except BaseException:message="Exception representation unavailable"
+    return {"type":type(error).__name__,"error":message,
+            "cancelled":isinstance(error,(KeyboardInterrupt,SystemExit))}
+
+
+def normalized_evidence_result(value):
+    """Never publish an unvalidated hook object into the recovery progress report."""
+    if not isinstance(value,dict) or value.get("status") not in ("passed","failed"):
+        raise ValueError("Evidence hook must return a dictionary with passed/failed status")
+    encoded=json.dumps(value,allow_nan=False)
+    if len(encoded)>65536:raise ValueError("Evidence hook result exceeds64KiB bound")
+    return json.loads(encoded)
+
+
 class Journal:
     def __init__(self, path): self.path=path;self.errors=[]
     def __call__(self, event, **fields):
@@ -177,7 +194,7 @@ class Service:
 
 
 def run_with_recovery(client, prg, output, application=None, backup_path=None, backup_manifest=None,
-                      service_factory=Service, restore_attempts=2):
+                      service_factory=Service, restore_attempts=2, pre_restore_evidence=None):
     """Snapshot, optional bounded application, restore+verify, then reset/resume.
 
     For disaster recovery pass an existing backup and its complete manifest.
@@ -188,6 +205,8 @@ def run_with_recovery(client, prg, output, application=None, backup_path=None, b
     validate_prg(prg)
     if restore_attempts not in (1,2,3):raise ValueError("Restoration attempts must be bounded1..3")
     if (backup_path is None)!=(backup_manifest is None):raise ValueError("Recovery needs both backup and manifest")
+    if pre_restore_evidence is not None:
+        pre_restore_evidence.preflight() # no device access; process/budget/input checks
     verified=None
     if backup_path is not None:
         verified=verify_backup(Path(backup_path),backup_manifest) # before takeover
@@ -200,13 +219,29 @@ def run_with_recovery(client, prg, output, application=None, backup_path=None, b
             "No persistent media or UCI writes; REST is development control only",
             "Application callback must enforce its own deadline and preserve media/configuration"]}
     durable_write(output/"service.prg",prg)
-    turbo=machine=drives=None;takeover=False
+    turbo=machine=drives=None;takeover=False;application_started=False
     service=service_factory(client,prg,journal)
+    def evidence_event(event,**fields):
+        try:journal(event,**fields)
+        except BaseException as error:
+            if pre_restore_evidence is None:raise
+            report["status"]="failed"
+            report.setdefault("journal_errors",[]).append(evidence_error(error))
+            journal.errors.append(evidence_error(error)["error"])
+            if isinstance(error,(KeyboardInterrupt,SystemExit)):report["cancelled"]=True
     def stage(name):
         report["stage"]=name
         try:dump(output/"progress.json",report)
-        except OSError as error:journal.errors.append(repr(error))
-        journal("stage",name=name)
+        except BaseException as error:
+            # Preserve the original default behavior. The opt-in evidence phase
+            # adds report surfaces whose errors must never escape cleanup.
+            if pre_restore_evidence is None and not isinstance(error,OSError):raise
+            if pre_restore_evidence is not None:
+                report["status"]="failed"
+                report.setdefault("progress_errors",[]).append(evidence_error(error))
+                if isinstance(error,(KeyboardInterrupt,SystemExit)):report["cancelled"]=True
+            journal.errors.append(evidence_error(error)["error"])
+        evidence_event("stage",name=name)
     def capture_failure(name):
         try:
             client.put("machine:pause")
@@ -242,12 +277,28 @@ def run_with_recovery(client, prg, output, application=None, backup_path=None, b
         if application is not None:
             if journal.errors:raise OSError("Application launch requires a healthy recovery journal")
             stage("application")
+            application_started=True
             report["application_result"]=application(client,output)
         report["status"]="passed"
     except Exception as error:
         report["status"]="failed";report["error"]=repr(error);journal("primary_failure",error=repr(error))
         if takeover:capture_failure("ram-failure-before-recovery.bin")
     finally:
+        if verified is not None and takeover and application_started and pre_restore_evidence is not None:
+            stage("retain new HD authority before restoration")
+            try:
+                value=pre_restore_evidence.run(client,prg,output,journal)
+                report["pre_restore_evidence"]=normalized_evidence_result(value)
+                if report["pre_restore_evidence"].get("status")!="passed":
+                    report["status"]="failed"
+                if report["pre_restore_evidence"].get("cancelled") is True:
+                    report["cancelled"]=True
+            except BaseException as error:
+                # Evidence errors must never skip the unchanged restoration block.
+                report["status"]="failed"
+                report["pre_restore_evidence"]={"status":"failed",**evidence_error(error)}
+                if isinstance(error,(KeyboardInterrupt,SystemExit)):report["cancelled"]=True
+                evidence_event("pre_restore_evidence_failed",**evidence_error(error))
         if verified is not None and takeover:
             stage("restore and full readback")
             for attempt in range(1,restore_attempts+1):
