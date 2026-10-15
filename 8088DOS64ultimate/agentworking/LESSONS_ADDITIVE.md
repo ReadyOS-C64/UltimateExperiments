@@ -52,3 +52,12 @@
 
 - A Zig 0.16 readFileAlloc limit equal to the file length produced StreamTooLong in the new boot fixture. Use bounded headroom and assert the expected image size separately.
 - Keep full-RAM comparison coverage when improving host test speed; test the comparator's mismatch and bounds paths independently.
+
+
+## 2026-10-15 — execution expansion
+
+- Original-8088 hardware vectors include undocumented opcode-extension aliases. C7 first row uses /6; rejecting every extension except /0 caused a real conformance failure. Preserve evidence and implement the observed alias, rather than remove failing vectors.
+- A decoded operand must survive later immediate fetch and eviction. Store its segment/offset, not a transient cache pointer.
+- REU banking preserves DDR/output bits, not necessarily raw input-bit latches. A stack test expected raw $01=35 after DMA but saw F5; assert the established output-bit contract.
+- Batching host instruction stepping helps, but compiling the host Peddle engine with optimization is the larger test acceleration. Verify exact target clocks, all memory/write markers, failure precedence and diagnostics before using the faster runner. This does not accelerate the C64 target.
+- Explicitly set make's default goal when adding generated-file dependencies before the main target; otherwise a prerequisite can become the default build.

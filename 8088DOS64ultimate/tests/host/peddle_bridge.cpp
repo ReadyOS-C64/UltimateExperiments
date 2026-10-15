@@ -98,6 +98,27 @@ Dos64Regs dos64_get_regs(const Dos64Machine *m) {
              static_cast<uint64_t>(c.clock), c.instructions };
 }
 void dos64_step(Dos64Machine *m) { m->cpu.step(); }
+Dos64RunResult dos64_run(Dos64Machine *m, uint16_t sentinel, uint64_t cycle_budget) {
+    auto &cpu = m->cpu;
+    const auto start = static_cast<uint64_t>(cpu.clock);
+    Dos64RunResult result{};
+    while (true) {
+        result.regs = dos64_get_regs(m);
+        result.stack_high_water = std::max(result.stack_high_water,
+                                          static_cast<uint8_t>(255-cpu.reg.sp));
+        // Preserve Fixture.call's failure precedence, including checking model
+        // faults at a return address before accepting completion. peek is the
+        // existing raw-RAM BRK guard, not an extra modeled bus access.
+        if (dos64_model_fault(m)) result.status = DOS64_RUN_MODEL_FAULT;
+        else if (cpu.reg.pc == sentinel) {
+            result.status = cpu.reg.sp == 0xff ? DOS64_RUN_RETURNED : DOS64_RUN_STACK_IMBALANCE;
+        }
+        else if (result.regs.cycles-start >= cycle_budget) result.status = DOS64_RUN_CYCLE_BUDGET;
+        else if (cpu.peek(cpu.reg.pc) == 0) result.status = DOS64_RUN_UNEXPECTED_BRK;
+        else { cpu.step(); continue; }
+        return result;
+    }
+}
 void dos64_clear_writes(Dos64Machine *m) { m->cpu.written.fill(0); }
 uint8_t dos64_was_written(const Dos64Machine *m, uint16_t a) { return m->cpu.written[a]; }
 uint8_t dos64_model_fault(const Dos64Machine *m) { return m->cpu.unsupported || (m->cpu.reu && m->cpu.reu->unsupported); }

@@ -1,6 +1,6 @@
 # Original-8088 execution checkpoint
 
-Implemented 2026-10-14 in `src/cpu.s`. This is the first functional execution slice, not a complete 8088 or DOS boot. Target code is independently authored 6502 assembly and executes guest bytes through the coherent memory bus.
+Updated 2026-10-15 in `src/cpu.s`, `src/alu.s`, `src/operands.s` and `src/stack.s`. This is a functional execution checkpoint, not a complete 8088 or DOS boot. Target code is independently authored 6502 assembly and executes guest bytes through the coherent memory bus.
 
 ## Current interface and instructions
 
@@ -8,6 +8,11 @@ Implemented 2026-10-14 in `src/cpu.s`. This is the first functional execution sl
 
 | Opcodes | Implemented behavior |
 |---|---|
+| 00–3D (six arithmetic forms per family) | Byte/word ADD, OR, ADC, SBB, AND, SUB, XOR, CMP with register/memory/accumulator operands |
+| 40–4F, 80–85 | Word register INC/DEC, immediate ALU groups (including signed 83), TEST register/memory |
+| 88–8E, C4–C7 | General/segment MOV, LEA, LES/LDS and immediate MOV; C6/C7 extension aliases follow hardware vectors |
+| 50–5F, 06/07/0E/16/17/1E/1F | General and segment PUSH/POP, including original PUSH SP and POP SP ordering |
+| 9A, 9C–9F, E8, C2/C3/CA/CB | Direct far/near CALL and RET with optional stack cleanup, PUSHF/POPF, SAHF/LAHF |
 | B0–BF | Immediate MOV to all byte/word general registers |
 | 90–97 | AX/register XCHG, including NOP |
 | A0–A3 | Accumulator/moffs loads and stores, byte/word, DS or segment override |
@@ -18,7 +23,7 @@ Implemented 2026-10-14 in `src/cpu.s`. This is the first functional execution sl
 
 Status 0 is running, 1 halted, 2 unsupported instruction and 3 host memory failure. Errors return carry set and latch; initialization is required to resume. Unsupported instructions restore IP to the instruction's first prefix/opcode for diagnostics and are **not** implemented as a guest invalid-opcode exception. A host memory error may leave partial memory writes; it is not a guest CPU exception either.
 
-Original 8088 prefixes have no modern 15-byte instruction limit. After 64 prefixes the step routine yields with pending state and IP advanced through those prefixes, without completing/counting the guest instruction. A subsequent step continues it. STI records an interrupt shadow through the following complete instruction; actual interrupt/trap delivery and halt wake-up remain unimplemented.
+Original 8088 prefixes have no modern 15-byte instruction limit. After 64 prefixes the step routine yields with pending state and IP advanced through those prefixes, without completing/counting the guest instruction. A subsequent step continues it. STI, loading SS, and POPF changing IF from zero to one record an interrupt shadow through the following complete instruction; actual interrupt/trap delivery and halt wake-up remain unimplemented.
 
 Instruction fetch wraps IP as a 16-bit register before translating each byte. It sees dirty cached code, including tested self-modification followed by a jump. There is no instruction prefetch-queue emulation or fast span fetch yet.
 
@@ -30,16 +35,28 @@ This policy follows the original-8088 path in [MartyPC's byte-bus word implement
 
 The imported hardware A3 case at index 9570 covers offset FFFE→FFFF. The audited A1/A3 corpus contained no offset-FFFF word case. Do not claim those random hardware cases prove that specific corner; the corner policy currently rests on the pinned reference implementation plus independent tests. Broader original-hardware corner/event evidence remains an open research item.
 
+## Arithmetic, operands and stack
+
+The independent assembly ALU eagerly computes CF/PF/AF/ZF/SF/OF for arithmetic and preserves control flags. INC/DEC preserve CF. Logical AF is undefined on the original CPU; this implementation clears it and applies upstream defined-flag masks in conformance comparisons. The host 6502 decimal flag is cleared inside execution and restored on return.
+
+ModR/M decoding covers all 16-bit addressing forms, signed displacement bytes, wrapping displacement words, default SS for BP forms and DS for the direct displacement form, and the last segment override. The descriptor retains segment/offset values rather than an evictable host pointer; immediate fetching cannot invalidate its destination. LES/LDS read both words before committing registers. LEA/LES/LDS register forms remain explicit unsupported diagnostics pending an audited undocumented-behavior policy. Segment-register fields use the original two-bit alias selection. C6/C7 ignore their reg extension, as exercised by hardware rows for every extension.
+
+Stack helpers wrap SP and each byte's offset. PUSH SP stores the decremented SP; POP SP finishes with the popped word. POPF normalizes FLAGS with `(value & 0x0FD5) | 0xF002`; PUSHF/SAHF/LAHF retain original reserved-bit policy. Evidence: pinned [MartyPC stack implementation](https://github.com/dbalsom/martypc/blob/05c0d088e84ad6bbfac9b3f0d051e7eadefd9f44/crates/lib/marty_core/src/cpu_808x/stack.rs) and imported original-hardware vectors. No source was copied. Trap delivery is not implemented even when TF is set. Opcode 0F POP CS, 8F POP r/m and indirect FF call/push forms remain unfinished.
+
+A failed push can leave SP decremented and a low byte written. Pop advances only after a complete word succeeds; a far return can consume its first word before a later read fails. ALU flags may commit before a destination write fails. These are terminal host-memory diagnostics, not retryable guest exceptions.
+
 ## Independent verification
 
-The pinned [SingleStepTests 8088](https://github.com/SingleStepTests/8088/tree/aea84484abc79d09639d855b7b0ab32bc9e4dbeb) projection contains **481 cases** across 20 selected opcode files. [Upstream pin/selection/hashes](../third_party/sst8088/UPSTREAM.json) and the MIT license are retained. Import script: `build_support/fetch_8088_subset.py`; network is only needed when explicitly importing, not for routine tests. The manifest rejects changes to the pinned fixture or license without regeneration.
+`make test` passes **75 Zig/Peddle + 15 tooling tests**, including **338 hardware cases**, in 5.21 seconds measured with build checks. `make test-cpu-corpus` passes all **1,622 hardware cases** in 11.57 seconds. The test executable itself reports about 2 seconds quick and 9 seconds full. These are host test times, not guest emulation rates.
 
-Tests load each case's initial registers/RAM and logical instruction bytes into a fresh 1 MiB ALL_RAM guest, execute the assembled core, and compare every guest register under the declared flag mask. After coherent flush, they compare **all 1 MiB** against an independent expected RAM buffer, including unchanged bytes. Cycles and instruction queues are intentionally excluded; this is functional verification, not timing or prefetch conformance.
+The pinned [SingleStepTests 8088](https://github.com/SingleStepTests/8088/tree/aea84484abc79d09639d855b7b0ab32bc9e4dbeb) projection and exact selection are recorded in [upstream hashes](../third_party/sst8088/UPSTREAM.json). The MIT license is retained. Import script: `build_support/fetch_8088_subset.py`; network is only needed for explicit import, not routine tests. The manifest checks fixture and license identity.
 
-`make test` passes 55 Zig/Peddle tests plus 15 tooling tests, including 41 hardware cases and boundary/guest-program tests, around six seconds warm. `make test-cpu-corpus` runs all 481 pinned cases and passes, around 26 seconds. Hand tests include all supported instruction families, reset-ROM far jump, loop budgets, fetch wrap, prefix continuation, STI shadow, self-modification and latched errors. The fast/full distinction keeps routine feedback short without redefining the broader conformance gate.
+Each case seeds a fresh 1 MiB ALL_RAM guest, executes the actual assembly, compares every register under the declared flag mask, coherently flushes, and compares all 1 MiB against an independent expected buffer. Cycles and instruction queues are intentionally excluded. Additional tests include 3,200 ALU edge/seed cases, 720 effective-address combinations, all register operand widths/high bytes, eviction across immediate fetching, stack wrap/order/flags, failure injection and guest programs.
+
+The test runner batches bounded native Peddle stepping in C++, caches linker symbols and compiles the host engine with optimization while Zig assertions remain Debug. Three regressions compare the old and new loop's results, clocks, failure order, stack diagnostics and complete host RAM/write bitmap. Host test acceleration does not change target assembly or establish emulator throughput.
 
 ## What remains
 
-Arithmetic/flags, general ModR/M operands, stack/call/return, strings/REP execution, divide/multiply, I/O, interrupt/trap handling and most other instructions are not implemented. Synthetic BIOS/ROM initialization, boot-sector execution, real DOS kernel boot, native display/keyboard, storage/UCI/IEC, calibrated speed and optimized fetch are also unfinished. The runtime initializes state and waits; it does not automatically execute a supplied DOS image yet.
+Strings/REP execution, conditional branches/loops, shifts, divide/multiply, I/O, interrupt/trap handling and additional instructions are unfinished. Synthetic BIOS/ROM initialization, real DOS kernel boot, native display/keyboard, storage/UCI/IEC, calibrated speed and optimized fetch remain ahead. Startup initializes state and waits; it does not automatically execute a DOS image.
 
-The supplied disk-1 boot sector is also an initial integration fixture: the core executes its entry jump and CLI, then explicitly reports the currently unsupported XOR at 0000:7C37. This is an entry-path check with a host-loaded sector, not a BIOS/DOS boot result. It identifies arithmetic/ModR/M and segment/stack execution as the next concrete work.
+The unchanged disk-1 boot sector is an integration fixture: 16 instructions now complete through arithmetic, SS/SP initialization, segment moves, LDS and stack setup, then the core reports unsupported LODSB (AC) at 0000:7C51. The fixture has a zero IVT and a host-loaded sector; this is not a BIOS/DOS boot result. The first subsequent slice should implement strings and conditional flow, then normal interrupt routing and the small BIOS needed by the real sector.

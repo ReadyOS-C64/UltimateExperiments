@@ -21,7 +21,7 @@ pub fn build(b: *std.Build) void {
             "third_party/peddle/Peddle/PeddleDisassembler.cpp",
             "third_party/peddle/Peddle/StrWriter.cpp",
         },
-        .flags = &.{ "-std=c++20", "-Wno-unused-parameter", "-Wno-unused-variable" },
+        .flags = &.{ "-std=c++20", "-O2", "-Wno-unused-parameter", "-Wno-unused-variable" },
     });
     tests.root_module.link_libcpp = true;
     const run = b.addRunArtifact(tests);

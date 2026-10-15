@@ -5,6 +5,7 @@ const allocator = std.testing.allocator;
 pub const Fixture = struct {
     machine: *c.Dos64Machine,
     labels: []u8,
+    symbols: std.StringHashMapUnmanaged(u16) = .empty,
     last_regs: ?c.Dos64Regs = null,
     stack_high_water: u8 = 0,
     initial_status: u8 = 0x24,
@@ -19,22 +20,28 @@ pub const Fixture = struct {
         errdefer c.dos64_destroy(machine);
         c.dos64_load(machine, address, bytes[2..].ptr, bytes.len-2);
         const labels = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests.labels", allocator, .limited(1024*1024));
-        return .{ .machine = machine, .labels = labels };
+        errdefer allocator.free(labels);
+        var symbols: std.StringHashMapUnmanaged(u16) = .empty;
+        errdefer symbols.deinit(allocator);
+        var lines = std.mem.splitScalar(u8, labels, '\n');
+        while (lines.next()) |line| {
+            var fields = std.mem.tokenizeAny(u8, line, " \t\r");
+            if (!std.mem.eql(u8, fields.next() orelse continue, "al")) continue;
+            const symbol_address = fields.next() orelse continue;
+            const raw_name = fields.next() orelse continue;
+            if (raw_name.len == 0) continue;
+            const name = if (raw_name[0] == '.') raw_name[1..] else raw_name;
+            if (!symbols.contains(name)) try symbols.put(allocator, name, try std.fmt.parseInt(u16, symbol_address, 16));
+        }
+        return .{ .machine = machine, .labels = labels, .symbols = symbols };
     }
     pub fn deinit(self: *Fixture) void {
+        self.symbols.deinit(allocator);
         allocator.free(self.labels);
         c.dos64_destroy(self.machine);
     }
     pub fn symbol(self: *const Fixture, name: []const u8) !u16 {
-        var lines = std.mem.splitScalar(u8, self.labels, '\n');
-        while (lines.next()) |line| {
-            var fields = std.mem.tokenizeAny(u8, line, " \t\r");
-            if (!std.mem.eql(u8, fields.next() orelse continue, "al")) continue;
-            const address = fields.next() orelse continue;
-            const raw_name = fields.next() orelse continue;
-            const candidate = if (raw_name[0] == '.') raw_name[1..] else raw_name;
-            if (std.mem.eql(u8, candidate, name)) return std.fmt.parseInt(u16, address, 16);
-        }
+        if (self.symbols.get(name)) |address| return address;
         std.debug.print("Missing linker symbol: {s}\n", .{name});
         return error.MissingSymbol;
     }
@@ -49,21 +56,17 @@ pub const Fixture = struct {
         self.poke(0x1fe, @truncate(return_address));
         c.dos64_clear_writes(self.machine);
         c.dos64_set_regs(self.machine, .{ .pc = try self.symbol(entry), .sp = 0xfd, .a = 0x71, .x = 0x82, .y = 0x93, .p = self.initial_status, .cycles = 0, .instructions = 0 });
-        const start = c.dos64_get_regs(self.machine).cycles;
-        while (true) {
-            const regs = c.dos64_get_regs(self.machine);
-            self.last_regs = regs;
-            self.stack_high_water = @max(self.stack_high_water, 255-regs.sp);
-            if (c.dos64_model_fault(self.machine) != 0) return error.UnsupportedDevice;
-            if (regs.pc == sentinel) {
-                if (regs.sp != 0xff) return error.StackImbalance;
-                if (c.dos64_model_fault(self.machine) != 0) return error.UnsupportedDevice;
-                return regs;
-            }
-            if (regs.cycles - start >= budget) return error.CycleBudget;
-            if (self.peek(regs.pc) == 0) return error.UnexpectedBrk;
-            c.dos64_step(self.machine);
-        }
+        const result = c.dos64_run(self.machine, sentinel, budget);
+        self.last_regs = result.regs;
+        self.stack_high_water = @max(self.stack_high_water, result.stack_high_water);
+        return switch (result.status) {
+            c.DOS64_RUN_RETURNED => result.regs,
+            c.DOS64_RUN_MODEL_FAULT => error.UnsupportedDevice,
+            c.DOS64_RUN_STACK_IMBALANCE => error.StackImbalance,
+            c.DOS64_RUN_CYCLE_BUDGET => error.CycleBudget,
+            c.DOS64_RUN_UNEXPECTED_BRK => error.UnexpectedBrk,
+            else => error.InvalidRunnerStatus,
+        };
     }
     pub fn expectStatus(self: *const Fixture, expected: u8) !void {
         if (self.peek(try self.symbol("dos64_mailbox")+1) != expected) return error.StatusMismatch;

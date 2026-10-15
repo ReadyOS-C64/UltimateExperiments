@@ -38,3 +38,8 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 ## Clarification history
 
 2026-10-14: Initial investigation considered C/assembly because user permitted Zig or C. Before implementation, the user explicitly chose assembly and emphasized Zig behavior tests. All current plans use assembly as target and Zig as host tooling. No target implementation was created or discarded.
+
+
+| D30 | Implemented, 2026-10-15 | Store decoded operands as segment/offset descriptors across fetch/eviction | Immediate bytes can evict a frame; raw cache pointers would become stale |
+| D31 | Implemented, 2026-10-15 | Accept original C6/C7 extension aliases shown by hardware cases | Modern documented /0-only decoding incorrectly rejected original-8088 behavior |
+| D32 | Implemented, 2026-10-15 | Batch Peddle host stepping and optimize host C++ engine; retain Debug Zig assertions | Preserve clocks/budgets/errors with old-vs-new regression evidence; accelerate checks without changing target code |

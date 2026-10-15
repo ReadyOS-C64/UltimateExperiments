@@ -5,6 +5,13 @@
 .export dos64_cpu_init, dos64_cpu_step, dos64_cpu_status, dos64_cpu_opcode
 .export dos64_cpu_instructions, dos64_cpu_yield, dos64_cpu_pending, dos64_cpu_irq_shadow
 .export dos64_cpu_value, dos64_cpu_word_read, dos64_cpu_word_write
+.export cpu_fetch8, cpu_fetch16, cpu_override, cpu_byte_registers
+.export cpu_complete, cpu_memory_error, cpu_unsupported
+.import dos64_stack_execute
+.import dos64_decode_rm, dos64_operand_read, dos64_operand_write, dos64_map_register
+.import dos64_operand_width, dos64_modrm_reg, dos64_modrm_mod, dos64_operand_offset
+.import dos64_operand_kind, dos64_operand_segment
+.import dos64_alu_apply, dos64_alu_lhs, dos64_alu_rhs, dos64_alu_result, dos64_alu_op, dos64_alu_width
 
 .segment "BSS"
 dos64_cpu_status: .res 1       ; 0 running, 1 halted, 2 unsupported, 3 host memory error
@@ -23,9 +30,12 @@ cpu_reg: .res 1
 cpu_byte: .res 1
 cpu_low: .res 1
 cpu_jump: .res 2
+cpu_direction: .res 1
+cpu_no_store: .res 1
 
 .segment "RODATA"
 cpu_byte_registers: .byte 0,2,4,6,1,3,5,7
+cpu_stack_opcodes: .byte $06,$07,$0E,$16,$17,$1E,$1F,$9A,$9C,$9D,$9E,$9F,$C2,$C3,$CA,$CB,$E8
 
 .segment "CODE"
 dos64_cpu_init:
@@ -118,10 +128,61 @@ cpu_dispatch:
     lda #0
     sta dos64_cpu_pending
     lda dos64_cpu_opcode
+    cmp #$50
+    bcc @stack_table
+    cmp #$60
+    jcc dos64_stack_execute
+@stack_table:
+    ldx #16
+@stack_scan:
+    cmp cpu_stack_opcodes,x
+    jeq dos64_stack_execute
+    dex
+    bpl @stack_scan
+    cmp #$40
+    bcs @inc_dec
+    and #7
+    cmp #6
+    jcc cpu_arithmetic
+    lda dos64_cpu_opcode
+@inc_dec:
+    cmp #$40
+    bcc @binary
+    cmp #$50
+    jcc cpu_inc_dec
+@binary:
+    cmp #$80
+    bcc @move
+    cmp #$84
+    jcc cpu_group_immediate
+    cmp #$86
+    jcc cpu_test_rm
+@move:
+    lda dos64_cpu_opcode
+    cmp #$88
+    bcc @immediate
+    cmp #$8C
+    jcc cpu_move_rm
+    cmp #$8C
+    jeq cpu_move_segment
+    cmp #$8D
+    jeq cpu_lea
+    cmp #$8E
+    jeq cpu_move_segment
+@immediate:
+    lda dos64_cpu_opcode
+    cmp #$C4
+    jeq cpu_load_far
+    cmp #$C5
+    jeq cpu_load_far
+    cmp #$C6
+    jeq cpu_move_rm_immediate
+    cmp #$C7
+    jeq cpu_move_rm_immediate
     cmp #$B0
     bcc @exchange
     cmp #$C0
-    bcc cpu_mov_immediate
+    jcc cpu_mov_immediate
 @exchange:
     cmp #$90
     bcc @moffs
@@ -160,6 +221,327 @@ cpu_dispatch:
 @halt:
     lda #1
     sta dos64_cpu_status
+    jmp cpu_complete
+
+cpu_unsupported:
+    lda #2
+    jmp cpu_fault
+
+cpu_set_width:
+    lda dos64_cpu_opcode
+    and #1
+    sta dos64_operand_width
+    sta dos64_alu_width
+    rts
+cpu_decode:
+    jsr cpu_set_width
+    jsr dos64_decode_rm
+    rts
+cpu_select_reg:
+    lda dos64_modrm_reg
+    jsr dos64_map_register
+    sta cpu_reg
+    rts
+cpu_get_reg:
+    ldx cpu_reg
+    lda dos64_guest,x
+    sta dos64_cpu_value
+    lda #0
+    ldy dos64_operand_width
+    beq @high
+    lda dos64_guest+1,x
+@high:
+    sta dos64_cpu_value+1
+    rts
+cpu_put_reg:
+    ldx cpu_reg
+    lda dos64_cpu_value
+    sta dos64_guest,x
+    lda dos64_operand_width
+    beq @done
+    lda dos64_cpu_value+1
+    sta dos64_guest+1,x
+@done:
+    rts
+cpu_lhs:
+    lda dos64_cpu_value
+    sta dos64_alu_lhs
+    lda dos64_cpu_value+1
+    sta dos64_alu_lhs+1
+    rts
+cpu_rhs:
+    lda dos64_cpu_value
+    sta dos64_alu_rhs
+    lda dos64_cpu_value+1
+    sta dos64_alu_rhs+1
+    rts
+cpu_result:
+    lda dos64_alu_result
+    sta dos64_cpu_value
+    lda dos64_alu_result+1
+    sta dos64_cpu_value+1
+    rts
+cpu_immediate_value:
+    lda dos64_operand_width
+    bne @word
+    jsr cpu_fetch8
+    bcs @failed
+    sta dos64_cpu_value
+    lda #0
+    sta dos64_cpu_value+1
+    clc
+@failed:
+    rts
+@word:
+    jmp cpu_fetch16
+
+cpu_arithmetic:
+    lda dos64_cpu_opcode
+    lsr
+    lsr
+    lsr
+    and #7
+    sta dos64_alu_op
+    lda #0
+    sta cpu_no_store
+    lda dos64_alu_op
+    cmp #7
+    bne @form
+    inc cpu_no_store
+@form:
+    lda dos64_cpu_opcode
+    and #7
+    cmp #4
+    bcs @accumulator
+    jsr cpu_decode
+    jcs cpu_memory_error
+    jsr cpu_select_reg
+    jsr dos64_operand_read
+    jcs cpu_memory_error
+    jsr cpu_lhs
+    jsr cpu_get_reg
+    jsr cpu_rhs
+    lda dos64_cpu_opcode
+    and #2
+    sta cpu_direction
+    beq cpu_alu_store
+    ; Direction one reverses lhs/rhs; subtraction and compare depend on order.
+    ldx #1
+@swap:
+    lda dos64_alu_lhs,x
+    pha
+    lda dos64_alu_rhs,x
+    sta dos64_alu_lhs,x
+    pla
+    sta dos64_alu_rhs,x
+    dex
+    bpl @swap
+    jmp cpu_alu_store
+@accumulator:
+    jsr cpu_set_width
+    lda #G_AX
+    sta cpu_reg
+    lda #1
+    sta cpu_direction
+    jsr cpu_get_reg
+    jsr cpu_lhs
+    jsr cpu_immediate_value
+    jcs cpu_memory_error
+    jsr cpu_rhs
+cpu_alu_store:
+    jsr dos64_alu_apply
+    lda cpu_no_store
+    jne cpu_complete
+    jsr cpu_result
+    lda cpu_direction
+    beq @rm
+    jsr cpu_put_reg
+    jmp cpu_complete
+@rm:
+    jsr dos64_operand_write
+    jcs cpu_memory_error
+    jmp cpu_complete
+
+cpu_group_immediate:
+    jsr cpu_decode
+    jcs cpu_memory_error
+    lda dos64_modrm_reg
+    sta dos64_alu_op
+    lda #0
+    sta cpu_direction
+    sta cpu_no_store
+    lda dos64_alu_op
+    cmp #7
+    bne @lhs
+    inc cpu_no_store
+@lhs:
+    jsr dos64_operand_read
+    jcs cpu_memory_error
+    jsr cpu_lhs
+    lda dos64_cpu_opcode
+    cmp #$83
+    beq @signed
+    jsr cpu_immediate_value
+    jcs cpu_memory_error
+    jmp @rhs
+@signed:
+    jsr cpu_fetch8
+    jcs cpu_memory_error
+    sta dos64_cpu_value
+    ldx #0
+    cmp #$80
+    bcc @positive
+    dex
+@positive:
+    stx dos64_cpu_value+1
+@rhs:
+    jsr cpu_rhs
+    jmp cpu_alu_store
+
+cpu_test_rm:
+    jsr cpu_decode
+    jcs cpu_memory_error
+    jsr cpu_select_reg
+    jsr dos64_operand_read
+    jcs cpu_memory_error
+    jsr cpu_lhs
+    jsr cpu_get_reg
+    jsr cpu_rhs
+    lda #4
+    sta dos64_alu_op
+    jsr dos64_alu_apply
+    jmp cpu_complete
+
+cpu_inc_dec:
+    lda #1
+    sta dos64_operand_width
+    sta dos64_alu_width
+    lda dos64_cpu_opcode
+    and #7
+    asl
+    sta cpu_reg
+    jsr cpu_get_reg
+    jsr cpu_lhs
+    lda dos64_cpu_opcode
+    and #8
+    lsr
+    lsr
+    lsr
+    ora #8
+    sta dos64_alu_op
+    jsr dos64_alu_apply
+    jsr cpu_result
+    jsr cpu_put_reg
+    jmp cpu_complete
+
+cpu_move_rm:
+    jsr cpu_decode
+    jcs cpu_memory_error
+    jsr cpu_select_reg
+    lda dos64_cpu_opcode
+    and #2
+    beq @write_rm
+    jsr dos64_operand_read
+    jcs cpu_memory_error
+    jsr cpu_put_reg
+    jmp cpu_complete
+@write_rm:
+    jsr cpu_get_reg
+    jsr dos64_operand_write
+    jcs cpu_memory_error
+    jmp cpu_complete
+
+cpu_move_rm_immediate:
+    jsr cpu_decode
+    jcs cpu_memory_error
+    ; Original 8088 ignores the reg extension on C6/C7 (hardware aliases).
+    jsr cpu_immediate_value
+    jcs cpu_memory_error
+    jsr dos64_operand_write
+    jcs cpu_memory_error
+    jmp cpu_complete
+
+cpu_decode_word:
+    lda #1
+    sta dos64_operand_width
+    sta dos64_alu_width
+    jmp dos64_decode_rm
+cpu_move_segment:
+    jsr cpu_decode_word
+    jcs cpu_memory_error
+    lda dos64_modrm_reg
+    and #3
+    asl
+    clc
+    adc #G_ES
+    sta cpu_reg
+    lda dos64_cpu_opcode
+    cmp #$8E
+    beq @read_rm
+    jsr cpu_get_reg
+    jsr dos64_operand_write
+    jcs cpu_memory_error
+    jmp cpu_complete
+@read_rm:
+    jsr dos64_operand_read
+    jcs cpu_memory_error
+    jsr cpu_put_reg
+    lda cpu_reg
+    cmp #G_SS
+    jne cpu_complete
+    lda #2
+    sta dos64_cpu_irq_shadow
+    jmp cpu_complete
+
+cpu_lea:
+    jsr cpu_decode_word
+    jcs cpu_memory_error
+    lda dos64_operand_kind
+    jeq cpu_unsupported
+    jsr cpu_select_reg
+    lda dos64_operand_offset
+    sta dos64_cpu_value
+    lda dos64_operand_offset+1
+    sta dos64_cpu_value+1
+    jsr cpu_put_reg
+    jmp cpu_complete
+
+cpu_load_far:
+    jsr cpu_decode_word
+    jcs cpu_memory_error
+    lda dos64_operand_kind
+    jeq cpu_unsupported
+    jsr cpu_select_reg
+    jsr dos64_operand_read
+    jcs cpu_memory_error
+    lda dos64_cpu_value
+    sta cpu_jump
+    lda dos64_cpu_value+1
+    sta cpu_jump+1
+    clc
+    lda dos64_operand_offset
+    adc #2
+    sta dos64_operand_offset
+    bcc @second
+    inc dos64_operand_offset+1
+@second:
+    jsr dos64_operand_read
+    jcs cpu_memory_error
+    ldx #G_ES
+    lda dos64_cpu_opcode
+    cmp #$C4
+    beq @segment
+    ldx #G_DS
+@segment:
+    lda dos64_cpu_value
+    sta dos64_guest,x
+    lda dos64_cpu_value+1
+    sta dos64_guest+1,x
+    lda cpu_jump
+    sta dos64_cpu_value
+    lda cpu_jump+1
+    sta dos64_cpu_value+1
+    jsr cpu_put_reg
     jmp cpu_complete
 
 cpu_mov_immediate:

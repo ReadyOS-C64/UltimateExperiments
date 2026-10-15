@@ -1,23 +1,20 @@
-# Next bounded slice: physical cache probe and original-8088 execution
+# Next bounded slice: strings and conditional flow toward the real boot sector
 
-Foundation, REU primitive, 20-bit addressing and coherent byte cache are verified in Peddle; shared DMA/cache probes pass VICE. Continue the full plan with local commits and no pushes. Target remains original 8088 / XT, assembly runtime, Zig/Peddle assertions and minimum 4 MiB REU.
+Implementation is authorized: progress with verified local commits and no pushes. Preserve original 8088/XT, assembly runtime, Zig/Peddle actual-code assertions, minimum 4 MiB REU and real DOS3.3. Read STATUS, DECISIONS and CPU_IMPLEMENTATION before continuing.
 
-1. Physical integrity at 1/16/64 MHz has now passed with verified REU/configuration recovery. Reuse the documented Terminal-owned runner only when target behavior warrants another slow run. Calibrated timer/DMA measurements remain outstanding; do not infer throughput from REST timing.
+1. The unchanged disk-1 sector now completes16 instructions through arithmetic, SS/SP setup, segment moves, LDS and stack operations; next missing instruction is LODSB AC at 0000:7C51. Implement string loads/stores/moves/compares/scans, DF progression, segment rules and bounded REP continuation; add Jcc/LOOP/JCXZ and needed arithmetic/shift/exchange forms. Use actual sector traces to choose the next bounded family, without replacing DOS behavior.
+2. Expand the pinned original 8088 corpus deliberately for each family, retaining source hashes, masks and aliases. Current quick 338/full 1,622 hardware cases plus independent boundary tests pass. Tests compare full 1 MiB RAM. Opcode0F POP CS, indirect stack/call forms and undocumented LEA/LES/LDS register forms still need an explicit audited policy. Trap/interrupt delivery is absent even though IF/TF and shadows are represented.
+3. Add normal INT/IRET routing and synthetic BIOS ROM/IVT/BDA initialization. The current host-loaded sector uses a zero IVT and is not a boot result. Preserve guest interrupt hooks; never replace INT21h or native-load COM/EXE as a shortcut.
+4. Add coherent range access for BIOS disk reads/writes and ROM loading before any direct REU path. Whole floppy slots and file persistence/UCI/IEC are still future work. Preserve original images and mutate owned clones only.
+5. Measure dispatch/address generation and implement fast span fetch based on evidence. Public ALL_RAM warm byte read still costs 221 CPU cycles; host test acceleration is not target optimization. Calibrated physical DMA/timer costs and XT workload ratios remain outstanding.
 
-2. Initial segmented word helpers and CPU execution are implemented; see CPU_IMPLEMENTATION.md. The real disk-1 entry now reaches unsupported XOR at 0000:7C37 after its jump and CLI. Expand arithmetic/defined flags and ModR/M register/memory operands next, then segment moves, stack/call/return and interrupt routing toward the real boot sector. Preserve the original-8088 corner policy and add direct hardware edge evidence where the imported corpus is silent.
-3. Use the existing step interface, guest-program tests and pinned hardware corpus for each opcode family. Default tests include 41 representative/boundary hardware cases; make test-cpu-corpus runs all 481 current cases. Add families/rows deliberately from the pinned source, preserving license/hash evidence. No native DOS INT 21h replacement.
-4. Add coherent range access for later BIOS disk reads/writes and ROM loading before using any direct REU path. Grow DOS image helpers as integration fixtures need them. Preserve originals and own all mutation clones.
-5. Measure address generation, dispatch and fast span fetch with real assembly. Public ALL_RAM warm byte read currently costs 221 host CPU cycles; every-byte use is not the final optimized fetch design. Calibrate physical DMA/timer costs before extrapolating throughput; 512-byte pages remain a candidate.
+Normal loop: `make test` (75 Zig/Peddle + 15 tooling, measured 5.21 seconds with 338 hardware cases). Broader gate `make test-cpu-corpus` passes 1,622 cases in 11.57 seconds including build checks. Reuse user-authorized 2–3 subagents for disjoint material work and coordinate file ownership/global checks.
 
-Before CPU design consult [existing emulator references](../docs/EXISTING_EMULATORS.md). NES86 supplies useful techniques; implement required behavior regardless of reference coverage. Substantial reuse requires pinning, notices, explicit license treatment and independent tests.
-
-Normal loop: `make test` (55 Zig/Peddle + 15 tooling tests at this checkpoint, about six seconds warm). Use `make test-reference` when reference fixtures change; `make test-vice` for low-level DMA changes, `make test-cache-vice` for pager/probe changes. Existing VICE captures can be rechecked without another slow run:
+Slow lanes only when behavior warrants them: `make test-reference` for reference fixture changes, `make test-vice` for DMA changes, `make test-cache-vice` for pager/probe changes, Terminal-owned physical runner for hardware behavior. Prior physical cache integrity passed 1/16/64 MHz with verified recovery; it does not establish throughput. Existing captures were rechecked against unchanged executable bytes on 2026-10-15:
 
 ```sh
 python3 build_support/vice_probe.py --verify-existing logs/vice_auto_20261014_222223
 python3 build_support/vice_probe.py --kind cache --verify-existing logs/vice_auto_20261014_225535
 ```
 
-The checker rejects mismatched executable bytes; retain/rebuild the corresponding probe before checking old evidence. Compact results are tracked in `agentworking/evidence/`; raw DOSBox runs and VICE logs stay ignored here.
-
-Limits: ROM sentinels are a banking test aid; unknown I/O fails; DMA does not stall the mock CPU. Cache owns REU guest arena only. API is non-reentrant, requires normal RAM/I/O mapping, and has no bulk/native-writer bypass. Cold init discards ownership; flush/unpin first. Only the documented initial instruction subset exists; BIOS/UCI/IEC, target boot and physical throughput remain absent. See [memory contract](../docs/MEMORY_IMPLEMENTATION.md).
+All scratch/runs stay in this project's agentworking. Errors remain terminal host diagnostics with possible partial CPU/memory effects; no automatic retry. Startup still initializes and waits, no target BIOS/UCI/IEC/display/DOS boot yet.

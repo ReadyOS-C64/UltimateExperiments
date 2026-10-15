@@ -4,6 +4,8 @@ const Fixture = host.Fixture;
 test { _ = @import("reu.zig"); }
 test { _ = @import("memory.zig"); }
 test { _ = @import("cpu.zig"); }
+test { _ = @import("alu.zig"); }
+test { _ = @import("stack.zig"); }
 
 test "assembly reset initializes original CPU state and preserves host ABI" {
     var f = try Fixture.init();
@@ -106,3 +108,7 @@ test "actual PRG entry initializes mailbox, CPU, bank latch and host stack" {
     try std.testing.expectEqual(@as(u8, 0xff), regs.sp);
     try std.testing.expectEqual(@as(u8, 0), regs.p & 8);
 }
+
+test { _ = @import("operands.zig"); }
+
+test { _ = @import("runner.zig"); }

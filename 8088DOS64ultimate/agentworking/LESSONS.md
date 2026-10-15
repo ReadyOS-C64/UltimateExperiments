@@ -16,3 +16,6 @@
 - 80-column text preserves guest attributes even when its rendered colors are approximated. Never corrupt guest VRAM to make the host picture easier.
 - VICE warp accelerates development; real C64U measurements determine 64 MHz/REU/UCI performance.
 - Keep all new context and scratch inside this project. A dirty sibling toolchain cannot be identified by HEAD alone.
+
+- Preserve original-8088 alias evidence; do not filter failing undocumented cases merely to fit a documented-only decoder.
+- Keep decoded segment/offset destinations stable across immediate fetch and cache eviction.

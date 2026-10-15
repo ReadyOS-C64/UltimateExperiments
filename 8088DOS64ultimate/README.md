@@ -2,7 +2,7 @@
 
 Planning and implementation of a C64 Ultimate program that boots the supplied **real MS-DOS 3.3**, emulates the 8086/8088 instruction set, and provides 640 KiB of conventional PC memory through the REU. Target hardware is the user's 64 MHz C64U with **4 MiB or larger REU**.
 
-**Status: implementation underway; assembly foundation, REU primitive and coherent guest byte cache verified.** `make test` runs 55 Zig/Peddle behavior tests and 15 tooling tests, including 41 hardware-generated CPU cases. The first 8088 execution subset is implemented; `make test-cpu-corpus` passes all 481 pinned hardware cases. Shared probes pass Peddle/VICE; the cache probe also passes physical C64U at 1/16/64 MHz settings with verified readback and REU/configuration restoration. Calibrated timing and target DOS boot remain future milestones. The supplied disk boots in DOSBox-X and reports MS-DOS 3.30.
+**Status: implementation underway; assembly foundation, REU primitive and coherent guest byte cache verified.** `make test` runs 75 Zig/Peddle behavior tests and 15 tooling tests, including 338 hardware-generated CPU cases. Arithmetic, ModR/M, segment moves, stack and direct calls/returns are implemented; `make test-cpu-corpus` passes all 1,622 pinned hardware cases. Shared probes pass Peddle/VICE; the cache probe also passes physical C64U at 1/16/64 MHz settings with verified readback and REU/configuration restoration. Calibrated timing and target DOS boot remain future milestones. The supplied disk boots in DOSBox-X and reports MS-DOS 3.30.
 
 Compatibility targets the **original 8088 and IBM PC/XT**, with the shared 8086 instruction set. Existing 8086 implementations are references; they do not define our CPU profile or reduce the required functionality.
 

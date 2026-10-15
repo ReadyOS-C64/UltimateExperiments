@@ -1,8 +1,8 @@
 # Current state
 
-Updated: 2026-10-14, America/Los_Angeles.
+Updated: 2026-10-15, America/Los_Angeles.
 
-**Phase: implementation active. Current quick checks: 55 Zig/Peddle + 15 tooling; all 481 pinned CPU cases have also passed.** User authorized implementing the plan, progressively verifying, and making local commits without pushing. Planning baseline committed as `67b6954`.
+**Phase: implementation active. Current quick checks: 75 Zig/Peddle + 15 tooling; all 1,622 pinned CPU cases have also passed.** User authorized implementing the plan, progressively verifying, and making local commits without pushing. Planning baseline committed as `67b6954`.
 
 ## User decisions to preserve
 
@@ -77,3 +77,13 @@ Existing unrelated ReadyFS edits and the large dirty sibling ZeroPage checkout w
 - Runtime CODE 2,019, RODATA 8, BSS 84, ZP 16, map 2,048, frame metadata 192; PRG 2,041 bytes. Probe binaries are isolated from the execution module and retain their physically tested identity.
 - Word transfers use wrapping 16-bit offset then 20-bit translation per byte, following pinned original-8088 MartyPC implementation. Hardware projection covers FFFE, but contains no audited FFFF word case; that particular hardware corner remains open.
 - No arithmetic/ModR/M/stack/string/I/O/interrupt execution, synthetic BIOS, target DOS boot or speed claim yet.
+
+
+## Verified arithmetic, operand and stack slice — 2026-10-15
+
+- 6502 ALU supports byte/word ADD/OR/ADC/SBB/AND/SUB/XOR/CMP/INC/DEC with eager guest flags, plus TEST. All 16-bit ModR/M forms, register/high-byte operands, general/segment MOV, LEA, LES/LDS, immediate groups and C6/C7 original extension aliases now execute.
+- Stack words, register/segment PUSH/POP, PUSHF/POPF/SAHF/LAHF, direct near/far CALL and RET with cleanup preserve original SP ordering and reserved flags. Interrupt shadows are recorded; interrupt/trap delivery remains absent.
+- **75/75 Zig/Peddle + 15/15 tooling pass**. Quick includes **338 hardware cases**, full **1,622**, all guest registers/defined flags and all 1 MiB RAM checked. Independent ALU 3,200 and address 720 case sets supplement hardware vectors. Measured commands: quick5.21 seconds, full 11.57 seconds, including build checks; host runner optimization accelerates feedback, not target execution.
+- Real unchanged disk-1 sector completes16 instructions, then unsupported LODSB AC at 0000:7C51. IVT is zero in that fixture; no BIOS/DOS boot claim. Next: strings and conditional flow, then interrupt/BIOS/boot transport.
+- Runtime CODE 4,394, RODATA 305, BSS 116, ZP 16; PRG 4,713. Hardware probe bytes still match prior VICE captures; no new physical run warranted by CPU-only changes. [Evidence](evidence/cpu-arithmetic-operands-stack-20261015.json), [contract/limits](../docs/CPU_IMPLEMENTATION.md), [ledger](MEMORY_BUDGET.md).
+- Three user-authorized subagents owned stack, operand/corpus tests and runner improvements; parent integrated arithmetic/CPU, reviewed, verified and retained all context under this project. No pushes.

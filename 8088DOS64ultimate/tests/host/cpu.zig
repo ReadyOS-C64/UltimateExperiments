@@ -6,7 +6,7 @@ const allocator=std.testing.allocator;
 const names=[_] []const u8{"ax","cx","dx","bx","sp","bp","si","di","es","cs","ss","ds","ip","flags"};
 const Registers=struct {ax:?u16=null,cx:?u16=null,dx:?u16=null,bx:?u16=null,sp:?u16=null,bp:?u16=null,si:?u16=null,di:?u16=null,es:?u16=null,cs:?u16=null,ss:?u16=null,ds:?u16=null,ip:?u16=null,flags:?u16=null};
 const State=struct {regs:Registers,ram:[]const [2]u32};
-const Case=struct {name:[]const u8,bytes:[]const u8,initial:State,final:State,hash:[]const u8,idx:u32,opcode:[]const u8,flags_mask:u16};
+const Case=struct {name:[]const u8,bytes:[]const u8,initial:State,final:State,hash:[]const u8,idx:u32,opcode:[]const u8,flags_mask:u16,quick:bool};
 
 fn setWord(f:*Fixture,address:u16,value:u16) void {f.poke(address,@truncate(value));f.poke(address+1,@truncate(value>>8));}
 fn reg(f:*Fixture,index:u16,value:u16) !void {setWord(f,(try f.symbol("dos64_guest"))+index*2,value);}
@@ -125,7 +125,7 @@ test "reset ROM far jump reaches guest code and repeated short loop stays bounde
 }
 
 test "STI shadow covers following instruction and unsupported instruction latches" {
-    var f=try init(2,1);defer f.deinit();try program(&f,0,0x100,&.{0xfb,0x90,0x31,0xc0});
+    var f=try init(2,1);defer f.deinit();try program(&f,0,0x100,&.{0xfb,0x90,0xd6,0xc0});
     try step(&f);try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_cpu_irq_shadow")));
     try step(&f);try std.testing.expectEqual(@as(u8,0),f.peek(try f.symbol("dos64_cpu_irq_shadow")));
     var r=try f.call("dos64_cpu_step",10_000);
@@ -143,20 +143,29 @@ test "word high-byte load failure restores input offset and returns failure" {
     try std.testing.expectEqual(@as(u16,0xffff),f.word(try f.symbol("dos64_offset")));
 }
 
-test "supplied DOS boot sector executes entry jump and CLI then reports missing XOR" {
+test "supplied DOS boot sector reaches first string instruction through real arithmetic and stack" {
     const disk=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,"reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img",allocator,.limited(400*1024));defer allocator.free(disk);
     try std.testing.expectEqual(@as(usize,360*1024),disk.len);
     var f=try init(32,0);defer f.deinit();
     try program(&f,0,0x7c00,disk[0..512]);try reg(&f,0,0x87aa);try reg(&f,13,0xf202);
-    try step(&f);const g=try f.symbol("dos64_guest");
-    try std.testing.expectEqual(@as(u16,0x7c36),f.word(g+24));
-    try step(&f);try std.testing.expectEqual(@as(u16,0xf002),f.word(g+26));
+    // This is an instruction-level fixture with a zero IVT, not a BIOS boot.
+    for(0..16) |_| try step(&f);
+    const g=try f.symbol("dos64_guest");
+    try std.testing.expectEqual(@as(u16,0),f.word(g));
+    try std.testing.expectEqual(@as(u16,11),f.word(g+2));
+    try std.testing.expectEqual(@as(u16,0x78),f.word(g+6));
+    try std.testing.expectEqual(@as(u16,0x7bf8),f.word(g+8));
+    try std.testing.expectEqual(@as(u16,0),f.word(g+12));
+    try std.testing.expectEqual(@as(u16,0x7c2b),f.word(g+14));
+    try std.testing.expectEqual(@as(u16,0),f.word(g+16));
+    try std.testing.expectEqual(@as(u16,0),f.word(g+20));
+    try std.testing.expectEqual(@as(u16,0),f.word(g+22));
+    try std.testing.expectEqual(@as(u16,0xf046),f.word(g+26));
     const r=try f.call("dos64_cpu_step",10_000);
     try std.testing.expectEqual(@as(u8,1),r.p&1);
-    try std.testing.expectEqual(@as(u8,0x33),f.peek(try f.symbol("dos64_cpu_opcode")));
-    try std.testing.expectEqual(@as(u16,0x7c37),f.word(g+24));
-    try std.testing.expectEqual(@as(u16,0x87aa),f.word(g));
-    try std.testing.expectEqual(@as(u16,2),f.word(try f.symbol("dos64_cpu_instructions")));
+    try std.testing.expectEqual(@as(u8,0xac),f.peek(try f.symbol("dos64_cpu_opcode")));
+    try std.testing.expectEqual(@as(u16,0x7c51),f.word(g+24));
+    try std.testing.expectEqual(@as(u16,16),f.word(try f.symbol("dos64_cpu_instructions")));
 }
 
 test "pinned hardware-generated original 8088 cases match registers and complete RAM" {
@@ -166,7 +175,7 @@ test "pinned hardware-generated original 8088 cases match registers and complete
     const full=@import("test_options").full_cpu_corpus;
     var executed:usize=0;
     for(parsed.value) |t| {
-        if(!full and t.idx>=2 and t.idx<24) continue;
+        if(!full and !t.quick) continue;
         executed+=1;
         var f=try init(32,1);defer f.deinit();@memset(expected_ram,0);
         const g=try f.symbol("dos64_guest");

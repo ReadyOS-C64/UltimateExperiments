@@ -3,8 +3,11 @@ DOS64_CA65 ?= ca65
 DOS64_LD65 ?= ld65
 DOS64_PYTHON ?= python3
 
-ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s
+.DEFAULT_GOAL := all
+
+ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/alu.s src/operands.s src/stack.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
+build/alu.o: include/parity.inc
 
 .PHONY: all build test verify-memory manifest clean
 all: build
