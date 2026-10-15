@@ -357,3 +357,6 @@ Physical CIA1 calibration atPALManual64 completed:64rawtick margin missed23ready
 
 
 CurrentPITperformance targetb29cb1a1/e374bb33 passesroot428Zig/290tooling/7frozenreferencegroups(all256nativeflags),367manifestinputs and13standalonePRGsexact. Directno-edge rationalaccumulator saves8.535%modeledCPU/+9.331%throughput onfixed4096NOP withcontinuous64:1 clock; genuinecontinuousGW-BASICWIN/all37LIST/SYSTEM/DIR passeswith7.421%lowerworkflowCPU(differingguestcounts). Generaledgeconverter/allclockIRQREPboundaries unchanged. PIT1764/1792,28free,+100reloadDMAbytes; resident/shadow/state unchanged. No physicalXT/newpairacceptance. [Evidence](evidence/pit-inplace-performance-20261015.json).
+
+
+StandaloneIDhardwareprobe1420 failedcapturecontractaftercomplete64Kcapture: immutable701codeexact/headercomplete, butterminalrestored37 andcapturedNMI43FE differedfromprivateRAM0916. Rawpartialdataall2048IDC9/status00retained, notfullprobeacceptance/nofuturestartupwaiver. Full4MiBac43/attempt1/settingsmediareset/584frozeninputs/twofullpostFTP exact. UIDP02successorkeeps35atterminal withbank-awarecapturemodel; priorfailureimmutable. [Evidence](evidence/c64u-readonly-id-capture-failure-20261015.json). Realhangmanvideo stillpending.
