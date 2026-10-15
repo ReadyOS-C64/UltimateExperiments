@@ -14,7 +14,7 @@ ALIAS LAB u:/USB1/READYFS_TEST/readyfs-20261013-162951-8006
 
 ## 01 · Find the SD2IEC
 
-Device, partition and folder are separate choices.
+Device, partition and folder are separate choices. In `10.1:/...`, **10 is the IEC device and .1 is partition 1**. The recording uses partition 1; another existing partition on the same device would use `10.2:/...`. `10:/...` means the current partition instead. `IEC 10: PARTITIONS` lists available partitions; `IEC 10: PARTITION 2` queries partition 2 without selecting it. See the [partition reference](../SD2IEC_NATIVE.md#more-than-one-partition-on-the-same-device) for explicit selection and image-mount behavior.
 
 ### Step 1
 

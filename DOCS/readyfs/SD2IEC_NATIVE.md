@@ -5,6 +5,8 @@ require a Mac relay, HTTP, REST, or a network connection while ReadyFS runs.
 Development automation uses the C64 Ultimate's external interfaces to install
 and observe test builds; that automation is separate from the C64 program.
 
+This reference covers **native IEC/SD2IEC devices**. The Ultimate's SoftwareIEC filesystem has its own [SoftwareIEC guide](READYFS_SOFTWAREIEC_GUIDE.md); its `sN:` logical mappings do not use these native device settings or partition-selection commands.
+
 ## Device, partition, and directory are different things
 
 | Example | Meaning |
@@ -12,6 +14,7 @@ and observe test builds; that automation is separate from the C64 program.
 | `10:` | IEC device 10, as used by configuration commands |
 | `10:/folder/file` | A path on device 10; ReadyFS queries and pins its current partition for this operation |
 | `10.1:/folder/file` | A path explicitly on partition 1 of device 10 |
+| `10.2:/folder/file` | A path on partition 2 of the same device, if that partition exists |
 | `9:/FILE` | A file on a conventional flat IEC disk/image |
 | `s0:/folder/file` | Ultimate SoftwareIEC partition 0, a separate endpoint |
 | `u:/usb1/folder/file` | UltimateDOS host storage |
@@ -27,6 +30,30 @@ Native components are limited to 16 bytes by this first implementation, even
 where FAT itself permits longer names. Wildcards and DOS command separators are
 rejected in exact file-operation names. REL files are not ordinary byte streams
 and are not supported by the copy pump. SEQ, PRG, and USR retain their CBM type.
+
+## More than one partition on the same device
+
+**Yes: `.1` is the partition number, not part of the IEC address.** In `10.1:/games/HELLO`, `10` selects the physical IEC device, `1` selects its native partition, and `/games/HELLO` selects the location within that partition. `10.2:/games/HELLO` selects partition 2 on the same device. ReadyFS supports explicit native partition numbers 1–254, but only partitions actually offered by the detected driver can be used; the syntax does not create partitions or make a conventional floppy partitioned.
+
+```text
+IEC 10: PARTITIONS
+IEC 10: PARTITION
+IEC 10: PARTITION 1
+IEC 10: PARTITION 2
+DIR 10.1:/
+DIR 10.2:/
+```
+
+Use the last query and DIR only if partition 2 is present. `PARTITIONS` lists the available partitions. Bare `PARTITION` queries the current one; `PARTITION N` queries a specific one. These inspection commands do not change the current selection. An unavailable partition is an error, not a fallback to partition 1.
+
+- **Explicit paths:** `10.1:/...` and `10.2:/...` qualify each operation with the requested partition; they do not require `--select` first or change the current selection.
+- **Current-partition paths:** `10:/...` queries and pins the device's current partition for that operation. A later operation can resolve differently after the current selection changes.
+- **Change the default deliberately:** `IEC 10: PARTITION 2 --SELECT` changes the current selection to partition 2 and clears the SD2IEC autoswap list. This is a state change, unlike the query without `--SELECT`.
+- **Number bases:** path suffixes and command arguments are decimal. The partition list displays `$`-prefixed hexadecimal numbers, so listed `$0A` is addressed as `10.10:/`, not `10.A:/`.
+
+Internally, zero means current/default for file paths; do not treat `10.0:/` as an ordinary data partition. The separate configuration query `IEC 10: PARTITION 0` inspects SYSTEM. `s0:/` is a SoftwareIEC logical partition and belongs to a different endpoint model.
+
+Mounting an image changes the media view of the specified partition: after mounting on partition 1, `10.1:/FILE` addresses image contents rather than its earlier FAT folder. It does not create partition 2. Mount/unmount can close buffers on the whole SD2IEC device, including other partitions; complete transfers before changing media. The folder/image example's restriction is specifically the two views of one partition, not a claim that ReadyFS only understands partition 1.
 
 ## Automatic detection and explicit inspection
 

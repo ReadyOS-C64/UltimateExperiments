@@ -23,14 +23,21 @@ architecture. It is not yet a ReadyOS launcher app. Deliver:
 Endpoint-first paths use `/` separators:
 
 - `8:/FILE` through `30:/FILE`: IEC devices
-- `11.3:/folder/file.prg`: optional partition 3 on a detected CMD/SD2IEC-style
-  IEC device (reserved syntax; not assumed from device number alone)
+- `11.3:/folder/file.prg`: partition 3 on IEC device 11, with support depending
+  on the detected driver; native SD2IEC implements this partition-qualified form
 - `u:/usb1/folder/file.prg`: UltimateDOS host filesystem
 - `s3:/folder/file.prg`: SoftIEC partition 3 through UCI bypass
 - `t:/NAME`: tape endpoint
 - `@work:/src/file.c`: alias rooted at an exact canonical location
 - `u:/usb1/disks/demo.d81!/PROGRAM`: explicit image boundary
 - `10.1:/games/demo.d64!/PROGRAM`: SD2IEC-compatible partition/image boundary
+
+The dot suffix selects a native partition, not another IEC device: `10.1:/`
+and `10.2:/` mean partitions 1 and 2 on device 10, if both exist. `10:/` uses
+its current partition. `IEC 10: PARTITIONS` inspects what is available;
+partition-qualified file operations do not themselves change the current
+selection. The [native reference](SD2IEC_NATIVE.md) describes implemented
+behavior and media-transition limits.
 
 `!` always separates the host image file from its internal filesystem. Host
 filename, internal volume label/id, displayed PETSCII name, raw FAT name, and

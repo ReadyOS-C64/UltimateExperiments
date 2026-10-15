@@ -99,6 +99,36 @@ The text before `:` selects the storage endpoint. The slash-separated part after
 
 **One syntax does not imply identical devices.** A floppy has C64 block counts and short names. Ultimate host storage has folders and host names. Tape cannot rename, delete, or recurse. SoftwareIEC behavior depends on firmware and the mapping. Use `CAPABILITIES path`, `PROBE IEC 8:`, and `PROFILE IEC 8:` to inspect the relevant model and detected profile; capability summaries are not guarantees for every path shape.
 
+### SoftwareIEC logical partitions and mappings
+
+SoftwareIEC is the Ultimate's software IEC filesystem. `s0:/games/HELLO` selects SoftwareIEC logical partition 0 and a location within its mapped root. `s3:/games/HELLO` selects logical partition 3. These are not IEC device addresses or native SD2IEC partitions. ReadyFS discovers the SoftwareIEC IEC bus through the Ultimate Command Interface.
+
+```text
+PROBE SOFTIEC
+DIR s0:/
+ALIAS SOFT s0:/demo
+DIR @soft:/
+```
+
+Use the mapping and folder names that exist in your setup. Mapping creation/removal and folder capabilities depend on the Ultimate firmware. The dedicated [SoftwareIEC guide](READYFS_SOFTWAREIEC_GUIDE.md) covers its commands, limits and a separate interoperability section.
+
+### Native SD2IEC device and partition numbers
+
+**`10.1:/games/HELLO` means IEC device 10, partition 1, then the path `/games/HELLO`.** `10.2:/games/HELLO` reaches partition 2 on the same SD2IEC, if it exists. ReadyFS is not restricted to the partition 1 used in the walkthrough. Explicit native partitions are 1–254 where the detected driver supports them; inspect the actual partition list rather than assuming that every number exists.
+
+```text
+IEC 10: PARTITIONS
+IEC 10: PARTITION
+IEC 10: PARTITION 2
+DIR 10.2:/
+```
+
+The last two commands assume partition 2 is present. The first lists partitions, the second queries the current one, and the third queries partition 2 without selecting it. Explicit `10.2:/...` paths qualify the operation directly and do not change the current selection. `10:/...` uses the current partition, queried and pinned for each operation. To change that default deliberately, use `IEC 10: PARTITION 2 --SELECT`; this also clears the SD2IEC autoswap list.
+
+Path suffixes and command arguments are decimal: a partition listed as `$0A` is addressed as `10.10:/`. `IEC 10: PARTITION 0` is the separate SYSTEM query, not an ordinary data-partition path. `s0:/` names a SoftwareIEC logical partition, not native partition 0 of device 10.
+
+A partition and a mounted image are also different things. Mounting an SD image changes what the chosen partition exposes; it does not create another partition. Mount/unmount can close channels on other partitions of the same device, so finish transfers first. See [native SD2IEC support](SD2IEC_NATIVE.md) for the complete rules.
+
 ### Absolute, relative, and endpoint-root paths
 
 Suppose `PWD` prints:
@@ -1122,18 +1152,34 @@ COPY 8:/RF* 9:/ --native-pattern --whatif
 
 The second example is a **preview syntax example**, not permission to modify any mounted media. A real native-pattern mutation needs explicit `--apply`, plus ordinary conflict/confirmation checks and disposable targets. Native multi-file IEC destinations must use the supported flat-root form. Unsupported directory or REL selections can reject the entire plan. Ordinary recursive host COPY does not require `--apply`; this extra gate is specific to native-pattern execution.
 
-### Mount, dismount, and swap
+### Mounted IEC images and disk swap
 
 ```text
 MOUNT u:/usb1/images/example.d81 8: --whatif
-MOUNT u:/usb1/READYFS_TEST/YOUR_FRESH_RUN s3: --name LAB --whatif
 DISMOUNT 8: --whatif
 SWAP 8: --whatif
 ```
 
-These are preview examples. Executing a mount changes media on an IEC drive, or creates a SoftwareIEC mapping. DISMOUNT detaches media or removes a supported mapping. **SWAP currently takes only `DRIVE:` and advances the firmware disk-swap list**; it does not take an image path. Do not replace the lab disk on device 8 casually while using the application.
+These are preview examples for an Ultimate image mounted on an IEC drive. Executing MOUNT changes its media; DISMOUNT detaches that media. SoftwareIEC folder mappings have a separate section below. **SWAP currently takes only `DRIVE:` and advances the firmware disk-swap list**; it does not take an image path. Do not replace the lab disk on device 8 casually while using the application.
 
-SoftwareIEC is provisional and firmware-sensitive. Some firmware versions have incomplete directory enumeration, folder-operation restrictions, or limits when a parent contains many host entries. Prefer dedicated shallow test roots. Tape uses `t:/NAME` with names up to sixteen bytes and sequential SEQ read/write behavior; do not expect directory browsing, deletion, rename, append, or move.
+### SoftwareIEC folder mappings
+
+These preview commands describe a host-folder mapping to SoftwareIEC logical partition 3, followed by removal of that mapping:
+
+```text
+MOUNT u:/usb1/READYFS_TEST/YOUR_FRESH_RUN s3: --name LAB --whatif
+DISMOUNT s3: --whatif
+```
+
+Execution requires firmware support for map/unmap; the tested Ultimate firmware 3.14 lacks those commands. Existing mappings can still be used for the verified file transfers. SoftwareIEC is provisional and firmware-sensitive. Some firmware versions have incomplete directory enumeration, folder-operation restrictions, or limits when a parent contains many host entries. Prefer dedicated shallow test roots. See the [SoftwareIEC guide](READYFS_SOFTWAREIEC_GUIDE.md).
+
+### Native SD2IEC configuration and image views
+
+Use `PROBE IEC 10:` for a native SD2IEC and `IEC 10: PARTITIONS` to discover its partitions. `10.1:/` is the native device/partition path. Native image MOUNT changes that partition's media view; it is different from the SoftwareIEC host-folder mapping above. The [SD2IEC walkthrough](READYFS_SD2IEC_TUTORIAL.md) and [native configuration reference](READYFS_IEC_CONFIGURATION.md) cover these operations and their limits.
+
+### Sequential tape
+
+Tape uses `t:/NAME` with names up to sixteen bytes and sequential SEQ read/write behavior; do not expect directory browsing, deletion, rename, append, or move.
 
 ### Formatting is a separate, deliberate operation
 
@@ -1299,6 +1345,8 @@ SEQ/PRG/USR types were also checked. The new SD2IEC walkthrough demonstrates the
 
 Updated 13 October 2026. Companion to the new [physical SD2IEC walkthrough](https://readyfs-editor-demo.klumsy.chatgpt.site/sd2iec.html). The examples below use short, readable locations; the recording uses uniquely named, marker-checked test folders. Substitute folders and images you own, with unused destination names.
 
+This guide is about the **native SD2IEC device**, addressed with paths such as `10.1:/`. Ultimate SoftwareIEC has its own [separate guide](READYFS_SOFTWAREIEC_GUIDE.md); the SoftwareIEC material below is explicitly about transfers between the two systems.
+
 ### The short answer
 
 **Yes, you can copy more than one file, preserve nested SD folders, and work on files inside an image stored on SD2IEC.** The important difference is how you enter the image:
@@ -1324,7 +1372,15 @@ ALIAS LAB u:/usb1/mydemo
 ALIAS CARD 10.1:/mydemo
 ```
 
-Device **10** is the IEC address; **1** is the partition. `10:/` means the device's current partition, which ReadyFS queries and pins for the operation. `10.1:/` names the partition explicitly. A `G-P` type of FAT OR DNP is ambiguous between those two hierarchical formats; type `$02` identifies the D64 view used in the recording.
+#### More than one partition on the same device
+
+**`10.1:` means device 10, partition 1.** The `.1` is not another device number or an image slot. ReadyFS can also address `10.2:/games` for partition 2, or another existing native partition on that same device. The examples use partition 1 because that is the recorded setup, not because ReadyFS is limited to it.
+
+Run `IEC 10: PARTITIONS` to see what the device offers. If partition 2 exists, `IEC 10: PARTITION 2` inspects it and `DIR 10.2:/` lists its root. These queries do not change the current selection. Explicit paths qualify their own operation; `10:/` instead uses the device's current partition, which ReadyFS queries and pins for that operation. `IEC 10: PARTITION 2 --SELECT` deliberately changes the current selection; it is not needed before an explicit `10.2:/...` path.
+
+Partition arguments and path suffixes are decimal, while `$`-prefixed numbers in the listing are hexadecimal. Available partitions depend on the card, device and firmware; naming one does not create it. An alias such as `ALIAS ARCHIVE 10.2:/backups` can bookmark a folder on an existing second partition. See the [native partition reference](SD2IEC_NATIVE.md).
+
+The media type is a separate question. A `G-P` type of FAT OR DNP is ambiguous between those two hierarchical formats; type `$02` identifies the D64 view used in the recording. Mounting an image changes the view of its selected partition, and mount/unmount may close buffers on other partitions of that device too. Finish open transfers before changing media.
 
 Create the example roots separately before using these aliases. `CONFIG` is an inspection command. ReadyFS does not change extension modes just because you probe or copy. `save-config` explicitly saves firmware-supported extended settings together, including the address; it does not save your folder or mounted image. See the [configuration reference](READYFS_IEC_CONFIGURATION.md).
 
@@ -1404,7 +1460,9 @@ COPY @card:/tree/alpha/two 9:/DEMO-TWO
 
 Use your own mounted test image on device 9. The recording uses an owned image, not the user's existing mounted disk. Both entries are independently extracted after unmounting and checked for bytes and SEQ type.
 
-For SoftwareIEC, first identify its logical partition and mapping. `s0:` is **not** IEC device 0. If its root exposes `/USB1`, and the destination folder already exists:
+#### Interoperability: native SD2IEC and SoftwareIEC
+
+SoftwareIEC is a distinct Ultimate backend, addressed with `s0:/...`; SD2IEC retains its native `10.1:/...` paths. For SoftwareIEC setup and standalone use, see its [own guide](READYFS_SOFTWAREIEC_GUIDE.md). For this cross-backend transfer, first identify its logical partition and mapping. `s0:` is **not** IEC device 0. If its root exposes `/USB1`, and the destination folder already exists:
 
 ```text
 ALIAS SOFT s0:/mydemo
@@ -1425,7 +1483,7 @@ CP @soft:/DEMO-TWO @card:/froms-two
 
 These reverse recipes use the same ordinary file operations verified by the full four-endpoint acceptance matrix. The new video shows representative selected-file transfers plus the complete nested-folder round trip. Use COMPARE to check any returned file against its retained source.
 
-For a repeatable multi-file job, the same explicit COPY commands can go in a ReadyFS text script with `ONERROR STOP`, executed using `RUN @lab:/COPYSET.SEQ`. `RUN script-path [arg1 ... arg9]` supplies positional inputs to commands through `%1`–`%9`; named variables, aliases and label subroutines can also be used. See the RUN reference and the parameterized BACKUP.SEQ example. Inspect the individual results as well as the final result code. This is a scripting recipe, separate from the newly recorded interactive examples.
+For a repeatable multi-file job, the same explicit COPY commands can go in a ReadyFS text script with `ONERROR STOP`, executed using `RUN @lab:/COPYSET.SEQ`. `RUN script-path [arg1 ... arg9]` accepts up to nine arguments, available as `%1`–`%9` inside the commands. Named variables and local label subroutines are also supported; external-file CALL and nested RUN are not. See the [RUN guide](READYFS_RUN_GUIDE.md) for the parameterized BACKUP.SEQ example and the complete batch reference. Inspect the individual results as well as the final result code. This is a scripting recipe, separate from the newly recorded interactive examples.
 
 ### 5. Work inside an image stored on SD2IEC
 

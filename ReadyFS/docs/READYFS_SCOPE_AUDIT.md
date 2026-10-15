@@ -1,6 +1,6 @@
 # ReadyFS Original-Scope Audit
 
-> Current status: the [acceptance summary](READYFS_ACCEPTANCE.md) supersedes older SD2IEC and overlay milestones below. Native folder/image acceptance completed on the attached device; the build now has 28 sidecars. Earlier run IDs are historical: the owner-requested October 2026 cleanup deleted old raw logs. Remaining broader backend and typed-result gaps are still substantive.
+> Current status: the [acceptance summary](READYFS_ACCEPTANCE.md) supersedes older SD2IEC and overlay milestones below. Native folder/image acceptance completed on the attached device; the build now has 28 sidecars. Remaining broader backend and typed-result gaps are still substantive.
 
 
 Status: active implementation checklist. This is deliberately broader than

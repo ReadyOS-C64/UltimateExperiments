@@ -2,6 +2,8 @@
 
 Updated 13 October 2026. Companion to the new [physical SD2IEC walkthrough](https://readyfs-editor-demo.klumsy.chatgpt.site/sd2iec.html). The examples below use short, readable locations; the recording uses uniquely named, marker-checked test folders. Substitute folders and images you own, with unused destination names.
 
+This guide is about the **native SD2IEC device**, addressed with paths such as `10.1:/`. Ultimate SoftwareIEC has its own [separate guide](READYFS_SOFTWAREIEC_GUIDE.md); the SoftwareIEC material below is explicitly about transfers between the two systems.
+
 ## The short answer
 
 **Yes, you can copy more than one file, preserve nested SD folders, and work on files inside an image stored on SD2IEC.** The important difference is how you enter the image:
@@ -27,7 +29,15 @@ ALIAS LAB u:/usb1/mydemo
 ALIAS CARD 10.1:/mydemo
 ```
 
-Device **10** is the IEC address; **1** is the partition. `10:/` means the device's current partition, which ReadyFS queries and pins for the operation. `10.1:/` names the partition explicitly. A `G-P` type of FAT OR DNP is ambiguous between those two hierarchical formats; type `$02` identifies the D64 view used in the recording.
+### More than one partition on the same device
+
+**`10.1:` means device 10, partition 1.** The `.1` is not another device number or an image slot. ReadyFS can also address `10.2:/games` for partition 2, or another existing native partition on that same device. The examples use partition 1 because that is the recorded setup, not because ReadyFS is limited to it.
+
+Run `IEC 10: PARTITIONS` to see what the device offers. If partition 2 exists, `IEC 10: PARTITION 2` inspects it and `DIR 10.2:/` lists its root. These queries do not change the current selection. Explicit paths qualify their own operation; `10:/` instead uses the device's current partition, which ReadyFS queries and pins for that operation. `IEC 10: PARTITION 2 --SELECT` deliberately changes the current selection; it is not needed before an explicit `10.2:/...` path.
+
+Partition arguments and path suffixes are decimal, while `$`-prefixed numbers in the listing are hexadecimal. Available partitions depend on the card, device and firmware; naming one does not create it. An alias such as `ALIAS ARCHIVE 10.2:/backups` can bookmark a folder on an existing second partition. See the [native partition reference](SD2IEC_NATIVE.md).
+
+The media type is a separate question. A `G-P` type of FAT OR DNP is ambiguous between those two hierarchical formats; type `$02` identifies the D64 view used in the recording. Mounting an image changes the view of its selected partition, and mount/unmount may close buffers on other partitions of that device too. Finish open transfers before changing media.
 
 Create the example roots separately before using these aliases. `CONFIG` is an inspection command. ReadyFS does not change extension modes just because you probe or copy. `save-config` explicitly saves firmware-supported extended settings together, including the address; it does not save your folder or mounted image. See the [configuration reference](READYFS_IEC_CONFIGURATION.md).
 
@@ -107,7 +117,9 @@ COPY @card:/tree/alpha/two 9:/DEMO-TWO
 
 Use your own mounted test image on device 9. The recording uses an owned image, not the user's existing mounted disk. Both entries are independently extracted after unmounting and checked for bytes and SEQ type.
 
-For SoftwareIEC, first identify its logical partition and mapping. `s0:` is **not** IEC device 0. If its root exposes `/USB1`, and the destination folder already exists:
+### Interoperability: native SD2IEC and SoftwareIEC
+
+SoftwareIEC is a distinct Ultimate backend, addressed with `s0:/...`; SD2IEC retains its native `10.1:/...` paths. For SoftwareIEC setup and standalone use, see its [own guide](READYFS_SOFTWAREIEC_GUIDE.md). For this cross-backend transfer, first identify its logical partition and mapping. `s0:` is **not** IEC device 0. If its root exposes `/USB1`, and the destination folder already exists:
 
 ```text
 ALIAS SOFT s0:/mydemo

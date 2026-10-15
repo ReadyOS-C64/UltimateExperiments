@@ -336,16 +336,12 @@ behavior and current formatting limits.
 This project must not use the physical C64 Ultimate. Target-device automation is
 performed only against VICE through the .NET task harness.
 
-## Repository and evidence policy
+## Repository and dependencies
 
 ReuSQL64 shares the Ultimate Experiments Git repository. Its source, build definitions,
 tests and design references are committed, along with the interactive-shell D81. Other
 regression D81s, object files, caches, logs and internal working records are ignored.
 
-The 14 October 2026 cleanup retained only `logs/vice_auto_20260812_173646` (and its
-`vice_auto_latest` link), the final staged benchmark run. Earlier raw logs were deleted.
-Historical run references describe past verification, not evidence bundled with a new
-clone.
 
 The Peddle host tests currently require the pinned sibling source described in
 [third_party/README.md](third_party/README.md). A standalone distribution must vendor

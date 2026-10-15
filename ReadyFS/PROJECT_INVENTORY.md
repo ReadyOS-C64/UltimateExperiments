@@ -18,6 +18,4 @@ ReadyFS is the standalone filesystem experiment in Ultimate Experiments. It is n
 
 ## Current verification
 
-See [READYFS_ACCEPTANCE.md](docs/READYFS_ACCEPTANCE.md) for the current acceptance summary and [README.md](README.md) for the public build and usage guide. Historical requirement ledgers contain dated milestones; they are not a list of raw log files shipped with a clone.
-
-The owner-requested cleanup on 14 October 2026 deleted earlier local runs, retaining the latest successful physical batch capture (`batch-demo-20261013b`) and its final appendix output (`demo-v8-batch-appended-20261013`). No on-device test roots or user media were touched by this host-filesystem cleanup.
+See [READYFS_ACCEPTANCE.md](docs/READYFS_ACCEPTANCE.md) for the current acceptance summary and [README.md](README.md) for the public build and usage guide.

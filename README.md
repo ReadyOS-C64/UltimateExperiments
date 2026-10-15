@@ -26,4 +26,4 @@ A reconstructed dual-bank character ROM, a Cyberpunk palette, and clean/CRT gall
 
 [DOCS/index.html](DOCS/index.html) is the static documentation site, with Markdown and HTML editions, screenshots, command references, walkthroughs and the main disk downloads on each experiment's child pages. See [publishing instructions](DOCS/README.md) to build or maintain it.
 
-The experiments share this Git repository, while their Makefiles, documentation and build rules remain independent. Firmware references, external demo websites, `.repoql`, internal working records, logs and generated builds remain local and ignored. The main ReadyFS and ReuSQL64 D81s are committed; their project READMEs explain how to use them. Historical test identifiers describe earlier evidence rather than raw logs shipped with a clone.
+The experiments share this Git repository, while their Makefiles, documentation and build rules remain independent. Firmware references, external demo websites, `.repoql`, internal working records, logs and generated builds remain local and ignored. The main ReadyFS and ReuSQL64 D81s are committed; their project READMEs explain how to use them.

@@ -49,6 +49,6 @@ npm run check:live -- --base-url https://readyos-c64.github.io/UltimateExperimen
 
 The live validator requests every published page, screenshot, Markdown source, supporting asset and main D81. It requires HTTP 200 and exact SHA-256 equality with the checkout, with bounded retries for deployment propagation. The deployment workflow runs this automatically after publishing. Local link/anchor and media/privacy checks run before upload.
 
-## Evidence and privacy
+## Example fixtures
 
-Screenshots and tour commands preserve historical test fixture names. They are examples, not locations to reuse for writes. Current scope and the deletion of old raw logs are explained in the [ReadyFS acceptance summary](readyfs/READYFS_ACCEPTANCE.md). Publishing this site does not remove personal information from older Git commits or change commit author metadata.
+Screenshots and tour commands preserve historical test fixture names. They are examples, not locations to reuse for writes.

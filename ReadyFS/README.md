@@ -9,6 +9,7 @@ ReadyFS aims to provide a full set of command-line tools and a coherent way to w
 - **File work:** typed stream COPY/COMPARE/MOVE, rename, delete, directory creation/removal, content reads, CRC checks, and bounded recursive plans with include/exclude filters and WhatIf previews.
 - **Interactive shell:** a wrapped 255-byte editor, editable 32-command REU history, output paging, command shortcuts and compact contextual help.
 - **DOS-style scripts:** staged SEQ files, `%0`–`%9`, session/persistent SET variables, arithmetic, IF/GOTO, same-file CALL, result checks and explicit config save/load. [BACKUP.SEQ](docs/examples/BACKUP.SEQ) demonstrates guarded PREVIEW/APPLY and verified copy.
+- **SoftwareIEC:** Ultimate logical partitions and mapped folders, with file transfers through existing mappings and firmware-specific mapping limits.
 - **Native SD2IEC:** identity/configuration, partitions, hierarchical folders, explicit image mounts, and type-preserving SEQ/PRG/USR transfers.
 
 The application uses native IEC and UCI. REST/FTP and host recording tools are development automation, not runtime dependencies of the C64 program.
@@ -27,9 +28,6 @@ DIR u:/usb1/demo
 STAT u:/usb1/other.d64/HELLO.prg
 STAT u:/usb1/demo/work.d81/README.seq
 DIR 9:/
-DIR s0:/demo
-PROBE IEC 10:
-DIR 10.1:/demo
 ```
 
 | Path | What it addresses |
@@ -43,7 +41,33 @@ DIR 10.1:/demo
 
 The image paths use an ordinary **`/` after the image filename**, treating its contents like a folder without mounting it. Use existing images and entry names, and keep those images unmounted while accessing them this way.
 
-SoftwareIEC partition 0 is **not device 0**. `10:/` instead uses device 10's current partition. Device addresses, available host roots and SoftwareIEC mappings depend on your setup; `DRIVES` and `PROBE` establish what is there.
+#### SoftwareIEC: an Ultimate logical mapping
+
+```text
+PROBE SOFTIEC
+DIR s0:/demo
+```
+
+`s0:` addresses SoftwareIEC logical partition 0, not device 0 or an SD2IEC partition. Its root comes from the SoftwareIEC mapping. See the separate [SoftwareIEC guide](docs/READYFS_SOFTWAREIEC_GUIDE.md) for discovery, mapped folders and firmware limits.
+
+#### Native SD2IEC: an IEC device and its partitions
+
+```text
+PROBE IEC 10:
+DIR 10.1:/demo
+```
+
+**Read `10.1:` as device 10, partition 1.** `10.2:/games` addresses partition 2 on that same SD2IEC, if it exists; ReadyFS is not limited to partition 1. `10:/games` uses the device's current partition, which ReadyFS queries and pins for each operation. List the available partitions first:
+
+```text
+IEC 10: PARTITIONS
+IEC 10: PARTITION
+IEC 10: PARTITION 2
+```
+
+These inspect the partition list, current partition and partition 2 respectively; they do not select a partition. Explicit file paths select their own partition without changing the drive's current selection. Path numbers are decimal, even when the partition listing shows hexadecimal numbers with `$`. See the [partition reference](docs/SD2IEC_NATIVE.md#more-than-one-partition-on-the-same-device).
+
+Available native partitions depend on your SD2IEC, card and firmware. See the separate [SD2IEC walkthrough](docs/READYFS_SD2IEC_TUTORIAL.md) for native folders and image mounts.
 
 ### 2. Give locations names, then mix aliases and relative paths
 
@@ -112,18 +136,19 @@ TREE @card:/seqtree
 
 `**/*.seq` selects matching names at the root and below it; `scratch/**` excludes that subtree. `-R` recurses and `-W` previews. The destination is a container created first: the source's selected descendants go inside `seqtree`, without an extra `source` folder. Native SD path components are limited to 16 bytes. In the tested extension mode, a host `one.seq` becomes logical SEQ name `ONE` on SD; use the names shown by `DIR` when reading it back.
 
-### 7. Transfer between SD folders and SoftwareIEC
+### 7. Work through a SoftwareIEC mapping
 
-With an existing writable `demo` folder in your SoftwareIEC mapping, and a native SD SEQ file named `NOTES` under `@card:/`:
+With an existing writable `demo` folder in SoftwareIEC logical partition 0:
 
 ```text
 ALIAS SOFT s0:/demo
-COPY @card:/NOTES @soft:/NOTES
-COMPARE @card:/NOTES @soft:/NOTES
-COPY @soft:/NOTES @card:/fromsoft
+DIR @soft:/
+COPY @usb:/source/readme.seq @soft:/README
+COMPARE @usb:/source/readme.seq @soft:/README
+COPY @soft:/README @usb:/fromsoft.seq
 ```
 
-Neither side is an Ultimate host path or a mounted floppy. ReadyFS opens each backend through the same COPY/COMPARE commands. SoftwareIEC behavior depends on the mapping and firmware; these single-file transfers do not imply universal folder-tree or map/unmap support.
+This uses the Ultimate's SoftwareIEC filesystem, with its own logical mapping and discovered IEC bus. Its filename handling and folder operations depend on the mapping and firmware. For transfers between SoftwareIEC and native SD2IEC, see the [interoperability section](docs/READYFS_SOFTWAREIEC_GUIDE.md#interoperability-softwareiec-and-native-sd2iec).
 
 ### 8. Bridge a mounted SD image and an unmounted Ultimate image
 
@@ -144,11 +169,11 @@ There are two different image models here: **SD2IEC must mount its image; Ultima
 
 ### 9. Move a file across drive types
 
-With SD2IEC back in its folder view, use a disposable source copy you are ready to remove:
+With SD2IEC back in its folder view and a disposable SEQ file `NOTES` in `@card:/`, move it to a new host filename:
 
 ```text
-MOVE @card:/fromsoft @usb:/moved.seq --WHATIF
-MOVE @card:/fromsoft @usb:/moved.seq
+MOVE @card:/NOTES @usb:/moved.seq --WHATIF
+MOVE @card:/NOTES @usb:/moved.seq
 DIR @card:/
 STAT @usb:/moved.seq
 ```
@@ -157,59 +182,41 @@ Cross-drive MOVE copies and normally verifies the destination, then removes the 
 
 ### 10. Turn the transfer into a reusable batch job
 
-The shell has a **DOS-style batch language**: arguments, named variables, arithmetic, conditions, labels, local subroutines and error handling. The same paths and aliases work inside scripts. This is the real [BACKUP.SEQ](docs/examples/BACKUP.SEQ) used in the physical demonstration; put the downloaded script in `@usb:/`:
+The shell has a **DOS-style batch language**: arguments, named variables, arithmetic, conditions, labels, local subroutines and error handling. The same paths and aliases work inside scripts. Here is a complete, small example; save it as `TRANSFER.SEQ`, or [download the ready-to-use script](docs/examples/TRANSFER.SEQ):
 
 ```text
-SET BACKUPS=0
-RUN @usb:/BACKUP.SEQ @disk:/HELLO @usb:/saved.prg PREVIEW
-RUN @usb:/BACKUP.SEQ @disk:/HELLO @usb:/saved.prg APPLY
-ECHO COMPLETED BACKUPS: %BACKUPS%
-```
-
-These two RUN lines use an IEC source and an Ultimate host destination. Keep the disk from example 3 available on device 9, or replace the source with another existing file. `PREVIEW` prints the proposed copy without writing; `APPLY` refuses an existing destination, copies, compares, then increments the session counter. Swap the source and destination arguments to reuse the script for another supported route.
-
-<details>
-<summary>Read the complete batch example: guards, a local subroutine and a counter</summary>
-
-```text
-REM BACKUP SOURCE DEST PREVIEW OR APPLY
 ONERROR STOP
-SET "SRC=%1"
-SET "DST=%2"
-IF "%SRC%"=="" GOTO USAGE
-IF "%DST%"=="" GOTO USAGE
-IF NOT EXIST "%SRC%" GOTO MISSING
+IF "%1"=="" GOTO USAGE
+IF "%2"=="" GOTO USAGE
 IF "%3"=="PREVIEW" GOTO PREVIEW
 IF NOT "%3"=="APPLY" GOTO USAGE
-IF EXIST "%DST%" GOTO EXISTS
-CALL :COPYONE
-IF NOT DEFINED BACKUPS SET BACKUPS=0
-SET /A BACKUPS=BACKUPS+1
-ECHO BACKUPS THIS SESSION: %BACKUPS%
-EXIT /B 0
-:COPYONE
-COPY "%SRC%" "%DST%"
-COMPARE "%SRC%" "%DST%"
-ECHO BACKUP VERIFIED
+COPY "%1" "%2"
+COMPARE "%1" "%2"
 EXIT /B 0
 :PREVIEW
-COPY "%SRC%" "%DST%" --WHATIF
-EXIT /B
-:EXISTS
-ECHO DEST EXISTS - CHOOSE NEW NAME
-EXIT /B 6
-:MISSING
-ECHO SOURCE NOT FOUND: "%SRC%"
-EXIT /B 5
+COPY "%1" "%2" --WHATIF
+EXIT /B 0
 :USAGE
-ECHO RUN BACKUP SOURCE DEST PREVIEW
-ECHO RUN BACKUP SOURCE DEST APPLY
+ECHO USE SOURCE DEST AND PREVIEW OR APPLY
 EXIT /B 4
 ```
 
-</details>
+Put the script in `@usb:/`, then **pass the source, destination and mode as parameters**:
 
-ReadyFS stages the script before executing it, so the script stream is closed during transfers. `ONERROR STOP` ends the run on a failed command; it does not undo completed work. Host-created scripts need uppercase option bytes and real line breaks. The [batch guide](docs/READYFS_RUN_GUIDE.md) covers up to nine arguments, session/persistent variables, IF/GOTO loops, local CALL, result codes and current limits.
+```text
+RUN @usb:/TRANSFER.SEQ @disk:/HELLO @usb:/saved.prg PREVIEW
+RUN @usb:/TRANSFER.SEQ @disk:/HELLO @usb:/saved.prg APPLY
+```
+
+| Script parameter | Value in these RUN commands |
+|---|---|
+| `%1` | `@disk:/HELLO` — the source on IEC device 9 |
+| `%2` | `@usb:/saved.prg` — the destination on Ultimate host storage |
+| `%3` | `PREVIEW` or `APPLY` — the selected branch |
+
+`IF` checks the arguments and mode; `GOTO` jumps to a label in this file. `PREVIEW` performs COPY with `--WHATIF`, then exits without writing. `APPLY` copies and compares, with normal destination-conflict checks. Missing path arguments or an invalid mode go to `USAGE` and return 4. Keep the source disk from example 3 available, choose an unused destination name, or substitute another supported pair of endpoints. Quote any RUN argument containing spaces; the script quotes `%1` and `%2` when using them.
+
+`ONERROR STOP` ends the run on a failed command; it does not undo completed work. ReadyFS stages the script before executing it, so the script stream is closed during transfers. Host-created scripts need uppercase option bytes and real line breaks; the download already has both. For explicit existence guards, a local `CALL` subroutine and a session counter, see the demonstrated [BACKUP.SEQ](docs/examples/BACKUP.SEQ) and the [full batch guide](docs/READYFS_RUN_GUIDE.md).
 
 ## Try the committed disk
 
@@ -233,13 +240,12 @@ Start with `HELP`, `HELP DIR`, `DRIVES`, and `DIR 8:/`. Discovery and directory 
 | [Documentation site](../DOCS/readyfs/index.html) | HTML references and screenshot walkthroughs without bundled video |
 | [Interactive UI](docs/READYFS_INTERACTIVE_UI.md) | Editing, history, paging and display limits |
 | [RUN and batch guide](docs/READYFS_RUN_GUIDE.md) | Variables, arguments, flow control, results and complete backup example |
+| [SoftwareIEC guide](docs/READYFS_SOFTWAREIEC_GUIDE.md) | Logical partitions, mapped folders, transfers and firmware limits |
 | [SD2IEC walkthrough](docs/READYFS_SD2IEC_TUTORIAL.md) | Folder round trips, image views and intermediate-endpoint workflows |
 | [IEC configuration](docs/READYFS_IEC_CONFIGURATION.md) | Read settings, make explicit changes, and understand persistence |
 | [Native SD2IEC reference](docs/SD2IEC_NATIVE.md) | Firmware caveats, CBM types, path limits and tested routes |
 | [Safety](docs/READYFS_SAFETY.md) | Disposable fixtures and ownership gates |
-| [Acceptance summary](docs/READYFS_ACCEPTANCE.md) | Current verified scope and retained-evidence policy |
-
-The external demonstration website is independently maintained. Its Git repository and video files are not included here. The repository's `DOCS/` editions retain screenshots and written walkthroughs.
+| [Acceptance summary](docs/READYFS_ACCEPTANCE.md) | Supported routes and current limitations |
 
 ## Current scope and boundaries
 
@@ -274,8 +280,8 @@ Run `node build_support/build_readyfs_user_guide.mjs` to rebuild the portable gu
 
 Use `build_support/start_readyfs_*_terminal.sh` wrappers for Terminal-owned REST/FTP automation. Read [AGENTS.md](AGENTS.md) and the safety guide before hardware work. Mutation suites create fresh marker-owned run roots under `/usb1/READYFS_TEST/<run-id>` or `/sdcard/READYFS_TEST/<run-id>`, with separate native SD ownership gates. They preserve original files and restore touched hardware settings.
 
-## Layout and local evidence
+## Project layout
 
 `src/apps/readyfs/` contains C and 6502 assembly; `cfg/` contains the linker layout; `build_support/` holds tests and automation; `docs/` holds the maintained references. `artifacts/readyfs/` is generated except for the two committed main D81s. Logs and internal working records are ignored.
 
-The 14 October 2026 cleanup keeps `logs/readyfs_c64u/batch-demo-20261013b` and its final `demo-v8-batch-appended-20261013` output. Earlier raw run directories were deleted at the owner's request. Historical design documents retain run identifiers as provenance; those directories are no longer distributed or guaranteed to exist. See [PROJECT_INVENTORY.md](PROJECT_INVENTORY.md) for the source and build map.
+See [PROJECT_INVENTORY.md](PROJECT_INVENTORY.md) for the source and build map.

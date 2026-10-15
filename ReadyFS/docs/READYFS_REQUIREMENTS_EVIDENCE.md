@@ -1,6 +1,6 @@
 # ReadyFS Requirements and Evidence Ledger
 
-> Current status: the [acceptance summary](READYFS_ACCEPTANCE.md) supersedes older SD2IEC and overlay milestones below. Native folder/image acceptance completed on the attached device; the build now has 28 sidecars. Earlier run IDs are historical: the owner-requested October 2026 cleanup deleted old raw logs. Remaining broader backend and typed-result gaps are still substantive.
+> Current status: the [acceptance summary](READYFS_ACCEPTANCE.md) supersedes older SD2IEC and overlay milestones below. Native folder/image acceptance completed on the attached device; the build now has 28 sidecars. Remaining broader backend and typed-result gaps are still substantive.
 
 
 Legend: `PROVEN`, `PARTIAL`, `MISSING`, `PROVISIONAL`.
@@ -68,6 +68,6 @@ resident `$B5A0`, monolithic `$C491`, and recursive sidecar `$F67`.
 
 The standalone RUN reference and illustrated Markdown/HTML guides now cover every scripting builtin, shared environment and positional arguments, same-file CALL inputs, all numeric conditions, counter loops, result handling, config persistence and the actual MS-DOS 6.2 boundary. BACKUP.SEQ is the single downloadable worked example. Host-created option bytes in this fixture are uppercase; a retained failed take exposed lowercase ASCII option recognition differing from interactive input.
 
-Physical `logs/readyfs_c64u/batch-demo-20261013b` passes 11 checks at 1 MHz with zero missing source frames: TYPE/output-history inspection, PREVIEW with identical before/after snapshots, APPLY with an independent 38-byte source/backup comparison, existing-destination refusal with unchanged storage, shared count one and source preservation. Original drive A, drive B and CPU settings are restored. The failed `batch-demo-20261013a` remains retained and is not used in the publication. The appended chapter uses a separate test root from the original tour.
+Physical `logs/readyfs_c64u/batch-demo-20261013b` passes 11 checks at 1 MHz with zero missing source frames: TYPE/output-history inspection, PREVIEW with identical before/after snapshots, APPLY with an independent 38-byte source/backup comparison, existing-destination refusal with unchanged storage, shared count one and source preservation. Original drive A, drive B and CPU settings are restored. The appended chapter uses a separate test root from the original tour.
 
 `append_readyfs_batch_demo.py` retains all 37 original step records, appends seven steps/chapter 10, and compares every decoded frame of the original MP4 prefix. Its evidence and original assets are retained under `logs/readyfs_c64u/demo-v8-batch-appended-20261013`. This is physical Ultimate proof of the demonstrated paths; the additional reference recipes are reviewed examples, not additional recorded hardware cases. `make readyfs` passed, including 25,636 scripting checks and the existing host/protocol/overlay checks.

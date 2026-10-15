@@ -64,6 +64,7 @@ const experiments=[
   ['Illustrated user guide','READYFS_USER_GUIDE.html'],
   ['Editor and history','READYFS_INTERACTIVE_UI.html'],
   ['RUN / batch scripting','READYFS_RUN_GUIDE.html'],
+  ['SoftwareIEC mappings','READYFS_SOFTWAREIEC_GUIDE.html'],
   ['SD2IEC walkthrough','READYFS_SD2IEC_TUTORIAL.html'],
   ['IEC configuration','READYFS_IEC_CONFIGURATION.html'],
   ['Native SD2IEC reference','SD2IEC_NATIVE.html'],

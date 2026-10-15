@@ -11,6 +11,8 @@ restart. This is not full physical coverage of every CLI setting.
 The monolithic diagnostic retains its earlier command set.
 The existing `native` translation preview is unchanged.
 
+This reference configures **native IEC/SD2IEC devices**, such as device 10. SoftwareIEC is the Ultimate's separate mapped filesystem; see its [own guide](READYFS_SOFTWAREIEC_GUIDE.md) for `sN:` paths and mapping behavior. These native configuration commands do not configure SoftwareIEC.
+
 ## Read first, change explicitly
 
 These commands run directly on the C64 using its IEC bus. They need no network,
@@ -37,6 +39,14 @@ shown with `$` are hexadecimal. `partition` queries the selected partition;
 `partition 0` queries SYSTEM, while `partition 1` queries partition 1. G-P type
 1 can mean FAT or a mounted DNP, so ReadyFS labels that ambiguity. A missing
 partition is an error. These queries do not select partitions or change images.
+
+## Device address versus partition number
+
+In the file path **`10.1:/games/HELLO`**, `10` is the IEC device address and `.1` is partition 1. A second existing partition uses `10.2:/games/HELLO`; the IEC address is still 10. `10:/games/HELLO` instead uses the current partition, queried and pinned by ReadyFS for each operation.
+
+`IEC 10: PARTITIONS` lists what the device offers. `IEC 10: PARTITION 2` inspects partition 2; adding `--SELECT` changes the device's current selection to it. An explicit `10.2:/...` file path does not need that selection step and does not change the default. File-path partitions are 1–254 where the detected driver supports them; nonexistent partitions fail. `PARTITION 0` is the SYSTEM query, not the usual data partition.
+
+Use decimal partition numbers in paths and command arguments. A partition listed as `$0A` is decimal 10: use `10.10:/`. See [native partition behavior](SD2IEC_NATIVE.md) for the distinction between explicit paths, the current partition, SoftwareIEC and mounted-image views.
 
 ## Change the running settings
 

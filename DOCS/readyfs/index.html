@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS"><link rel="stylesheet" href="../style.css"></head>
-<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs" open><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html" aria-current="page">Overview and downloads</a></li><li><a href="READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="tours/editor.html">Editor screenshot tour</a></li><li><a href="tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="READYFS_SAFETY.html">Safety</a></li><li><a href="READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#what-it-does">What it does</a></li><li><a href="#ten-ways-to-put-the-path-system-to-work">Ten ways to put the path system to work</a></li><li><a href="#try-the-committed-disk">Try the committed disk</a></li><li><a href="#documentation-and-screenshot-tours">Documentation and screenshot tours</a></li><li><a href="#current-scope-and-boundaries">Current scope and boundaries</a></li><li><a href="#build-and-verify">Build and verify</a></li><li><a href="#physical-automation-and-safety">Physical automation and safety</a></li><li><a href="#layout-and-local-evidence">Layout and local evidence</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs">ReadyFS</h1>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs" open><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html" aria-current="page">Overview and downloads</a></li><li><a href="READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="tours/editor.html">Editor screenshot tour</a></li><li><a href="tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="READYFS_SAFETY.html">Safety</a></li><li><a href="READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#what-it-does">What it does</a></li><li><a href="#ten-ways-to-put-the-path-system-to-work">Ten ways to put the path system to work</a></li><li><a href="#try-the-committed-disk">Try the committed disk</a></li><li><a href="#documentation-and-screenshot-tours">Documentation and screenshot tours</a></li><li><a href="#current-scope-and-boundaries">Current scope and boundaries</a></li><li><a href="#build-and-verify">Build and verify</a></li><li><a href="#physical-automation-and-safety">Physical automation and safety</a></li><li><a href="#project-layout">Project layout</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs">ReadyFS</h1>
 <p>ReadyFS aims to provide a full set of command-line tools and a coherent way to work with Ultimate DOS drives, mounted disk images or real C64 drives, SOFTIEC, and SD2IEC. That includes mounting disk images and accessing disk images on the Ultimate <strong>without mounting them</strong>, as if they were folders. A unified path syntax spans these endpoints, with operations such as COPY and MOVE between drive types. It is a standalone Commodore 64 filesystem experiment in Ultimate Experiments, separate from ReadyOS integration.</p>
 <h2 id="what-it-does">What it does</h2>
 <ul>
@@ -9,6 +9,7 @@
 <li><strong>File work:</strong> typed stream COPY/COMPARE/MOVE, rename, delete, directory creation/removal, content reads, CRC checks, and bounded recursive plans with include/exclude filters and WhatIf previews.</li>
 <li><strong>Interactive shell:</strong> a wrapped 255-byte editor, editable 32-command REU history, output paging, command shortcuts and compact contextual help.</li>
 <li><strong>DOS-style scripts:</strong> staged SEQ files, <code>%0</code>–<code>%9</code>, session/persistent SET variables, arithmetic, IF/GOTO, same-file CALL, result checks and explicit config save/load. <a href="examples/BACKUP.SEQ">BACKUP.SEQ</a> demonstrates guarded PREVIEW/APPLY and verified copy.</li>
+<li><strong>SoftwareIEC:</strong> Ultimate logical partitions and mapped folders, with file transfers through existing mappings and firmware-specific mapping limits.</li>
 <li><strong>Native SD2IEC:</strong> identity/configuration, partitions, hierarchical folders, explicit image mounts, and type-preserving SEQ/PRG/USR transfers.</li>
 </ul>
 <p>The application uses native IEC and UCI. REST/FTP and host recording tools are development automation, not runtime dependencies of the C64 program.</p>
@@ -21,9 +22,6 @@ DIR u:/usb1/demo
 STAT u:/usb1/other.d64/HELLO.prg
 STAT u:/usb1/demo/work.d81/README.seq
 DIR 9:/
-DIR s0:/demo
-PROBE IEC 10:
-DIR 10.1:/demo
 </code></pre>
 <table>
 <thead>
@@ -58,7 +56,22 @@ DIR 10.1:/demo
 </tr>
 </tbody></table>
 <p>The image paths use an ordinary <strong><code>/</code> after the image filename</strong>, treating its contents like a folder without mounting it. Use existing images and entry names, and keep those images unmounted while accessing them this way.</p>
-<p>SoftwareIEC partition 0 is <strong>not device 0</strong>. <code>10:/</code> instead uses device 10&#39;s current partition. Device addresses, available host roots and SoftwareIEC mappings depend on your setup; <code>DRIVES</code> and <code>PROBE</code> establish what is there.</p>
+<h4 id="softwareiec-an-ultimate-logical-mapping">SoftwareIEC: an Ultimate logical mapping</h4>
+<pre><code class="language-text">PROBE SOFTIEC
+DIR s0:/demo
+</code></pre>
+<p><code>s0:</code> addresses SoftwareIEC logical partition 0, not device 0 or an SD2IEC partition. Its root comes from the SoftwareIEC mapping. See the separate <a href="READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC guide</a> for discovery, mapped folders and firmware limits.</p>
+<h4 id="native-sd2iec-an-iec-device-and-its-partitions">Native SD2IEC: an IEC device and its partitions</h4>
+<pre><code class="language-text">PROBE IEC 10:
+DIR 10.1:/demo
+</code></pre>
+<p><strong>Read <code>10.1:</code> as device 10, partition 1.</strong> <code>10.2:/games</code> addresses partition 2 on that same SD2IEC, if it exists; ReadyFS is not limited to partition 1. <code>10:/games</code> uses the device&#39;s current partition, which ReadyFS queries and pins for each operation. List the available partitions first:</p>
+<pre><code class="language-text">IEC 10: PARTITIONS
+IEC 10: PARTITION
+IEC 10: PARTITION 2
+</code></pre>
+<p>These inspect the partition list, current partition and partition 2 respectively; they do not select a partition. Explicit file paths select their own partition without changing the drive&#39;s current selection. Path numbers are decimal, even when the partition listing shows hexadecimal numbers with <code>$</code>. See the <a href="SD2IEC_NATIVE.html#more-than-one-partition-on-the-same-device">partition reference</a>.</p>
+<p>Available native partitions depend on your SD2IEC, card and firmware. See the separate <a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a> for native folders and image mounts.</p>
 <h3 id="2-give-locations-names-then-mix-aliases-and-relative-paths">2. Give locations names, then mix aliases and relative paths</h3>
 <pre><code class="language-text">ALIAS USB u:/usb1/demo
 ALIAS CARD 10.1:/demo
@@ -104,14 +117,15 @@ COPY @usb:/source @card:/seqtree -R -I &quot;**/*.seq&quot; -X &quot;scratch/**&
 TREE @card:/seqtree
 </code></pre>
 <p><code>**/*.seq</code> selects matching names at the root and below it; <code>scratch/**</code> excludes that subtree. <code>-R</code> recurses and <code>-W</code> previews. The destination is a container created first: the source&#39;s selected descendants go inside <code>seqtree</code>, without an extra <code>source</code> folder. Native SD path components are limited to 16 bytes. In the tested extension mode, a host <code>one.seq</code> becomes logical SEQ name <code>ONE</code> on SD; use the names shown by <code>DIR</code> when reading it back.</p>
-<h3 id="7-transfer-between-sd-folders-and-softwareiec">7. Transfer between SD folders and SoftwareIEC</h3>
-<p>With an existing writable <code>demo</code> folder in your SoftwareIEC mapping, and a native SD SEQ file named <code>NOTES</code> under <code>@card:/</code>:</p>
+<h3 id="7-work-through-a-softwareiec-mapping">7. Work through a SoftwareIEC mapping</h3>
+<p>With an existing writable <code>demo</code> folder in SoftwareIEC logical partition 0:</p>
 <pre><code class="language-text">ALIAS SOFT s0:/demo
-COPY @card:/NOTES @soft:/NOTES
-COMPARE @card:/NOTES @soft:/NOTES
-COPY @soft:/NOTES @card:/fromsoft
+DIR @soft:/
+COPY @usb:/source/readme.seq @soft:/README
+COMPARE @usb:/source/readme.seq @soft:/README
+COPY @soft:/README @usb:/fromsoft.seq
 </code></pre>
-<p>Neither side is an Ultimate host path or a mounted floppy. ReadyFS opens each backend through the same COPY/COMPARE commands. SoftwareIEC behavior depends on the mapping and firmware; these single-file transfers do not imply universal folder-tree or map/unmap support.</p>
+<p>This uses the Ultimate&#39;s SoftwareIEC filesystem, with its own logical mapping and discovered IEC bus. Its filename handling and folder operations depend on the mapping and firmware. For transfers between SoftwareIEC and native SD2IEC, see the <a href="READYFS_SOFTWAREIEC_GUIDE.html#interoperability-softwareiec-and-native-sd2iec">interoperability section</a>.</p>
 <h3 id="8-bridge-a-mounted-sd-image-and-an-unmounted-ultimate-image">8. Bridge a mounted SD image and an unmounted Ultimate image</h3>
 <p>With <code>work.d64</code> already present and mountable in the native SD folder:</p>
 <pre><code class="language-text">MOUNT @card:/work.d64 --FORCE
@@ -125,61 +139,56 @@ COPY @usb:/fromimg.prg @card:/fromimg.prg
 </code></pre>
 <p>There are two different image models here: <strong>SD2IEC must mount its image; UltimateDOS can access a separate unmounted image directly.</strong> While mounted, <code>10.1:/</code> exposes the SD image&#39;s directory, and <code>@card:/</code> no longer reaches the earlier FAT folder. The final three commands stage a file on USB, dismount, then copy it into that SD folder. The intermediate endpoint makes the same-device transition possible. Automatic native <code>10.1:/work.d64/FILE</code> traversal is not implemented. <a href="READYFS_SD2IEC_TUTORIAL.html#5-work-inside-an-image-stored-on-sd2iec">See the illustrated image walkthrough</a>.</p>
 <h3 id="9-move-a-file-across-drive-types">9. Move a file across drive types</h3>
-<p>With SD2IEC back in its folder view, use a disposable source copy you are ready to remove:</p>
-<pre><code class="language-text">MOVE @card:/fromsoft @usb:/moved.seq --WHATIF
-MOVE @card:/fromsoft @usb:/moved.seq
+<p>With SD2IEC back in its folder view and a disposable SEQ file <code>NOTES</code> in <code>@card:/</code>, move it to a new host filename:</p>
+<pre><code class="language-text">MOVE @card:/NOTES @usb:/moved.seq --WHATIF
+MOVE @card:/NOTES @usb:/moved.seq
 DIR @card:/
 STAT @usb:/moved.seq
 </code></pre>
 <p>Cross-drive MOVE copies and normally verifies the destination, then removes the source. It is not an atomic rename: a failure can leave partial progress, so inspect both locations. COPY keeps the original. Both commands can operate between the supported host, IEC, SoftwareIEC and native SD endpoints; the <a href="READYFS_ACCEPTANCE.html">acceptance summary</a> records the tested routes.</p>
 <h3 id="10-turn-the-transfer-into-a-reusable-batch-job">10. Turn the transfer into a reusable batch job</h3>
-<p>The shell has a <strong>DOS-style batch language</strong>: arguments, named variables, arithmetic, conditions, labels, local subroutines and error handling. The same paths and aliases work inside scripts. This is the real <a href="examples/BACKUP.SEQ">BACKUP.SEQ</a> used in the physical demonstration; put the downloaded script in <code>@usb:/</code>:</p>
-<pre><code class="language-text">SET BACKUPS=0
-RUN @usb:/BACKUP.SEQ @disk:/HELLO @usb:/saved.prg PREVIEW
-RUN @usb:/BACKUP.SEQ @disk:/HELLO @usb:/saved.prg APPLY
-ECHO COMPLETED BACKUPS: %BACKUPS%
-</code></pre>
-<p>These two RUN lines use an IEC source and an Ultimate host destination. Keep the disk from example 3 available on device 9, or replace the source with another existing file. <code>PREVIEW</code> prints the proposed copy without writing; <code>APPLY</code> refuses an existing destination, copies, compares, then increments the session counter. Swap the source and destination arguments to reuse the script for another supported route.</p>
-<details>
-<summary>Read the complete batch example: guards, a local subroutine and a counter</summary>
-
-<pre><code class="language-text">REM BACKUP SOURCE DEST PREVIEW OR APPLY
-ONERROR STOP
-SET &quot;SRC=%1&quot;
-SET &quot;DST=%2&quot;
-IF &quot;%SRC%&quot;==&quot;&quot; GOTO USAGE
-IF &quot;%DST%&quot;==&quot;&quot; GOTO USAGE
-IF NOT EXIST &quot;%SRC%&quot; GOTO MISSING
+<p>The shell has a <strong>DOS-style batch language</strong>: arguments, named variables, arithmetic, conditions, labels, local subroutines and error handling. The same paths and aliases work inside scripts. Here is a complete, small example; save it as <code>TRANSFER.SEQ</code>, or <a href="examples/TRANSFER.SEQ">download the ready-to-use script</a>:</p>
+<pre><code class="language-text">ONERROR STOP
+IF &quot;%1&quot;==&quot;&quot; GOTO USAGE
+IF &quot;%2&quot;==&quot;&quot; GOTO USAGE
 IF &quot;%3&quot;==&quot;PREVIEW&quot; GOTO PREVIEW
 IF NOT &quot;%3&quot;==&quot;APPLY&quot; GOTO USAGE
-IF EXIST &quot;%DST%&quot; GOTO EXISTS
-CALL :COPYONE
-IF NOT DEFINED BACKUPS SET BACKUPS=0
-SET /A BACKUPS=BACKUPS+1
-ECHO BACKUPS THIS SESSION: %BACKUPS%
-EXIT /B 0
-:COPYONE
-COPY &quot;%SRC%&quot; &quot;%DST%&quot;
-COMPARE &quot;%SRC%&quot; &quot;%DST%&quot;
-ECHO BACKUP VERIFIED
+COPY &quot;%1&quot; &quot;%2&quot;
+COMPARE &quot;%1&quot; &quot;%2&quot;
 EXIT /B 0
 :PREVIEW
-COPY &quot;%SRC%&quot; &quot;%DST%&quot; --WHATIF
-EXIT /B
-:EXISTS
-ECHO DEST EXISTS - CHOOSE NEW NAME
-EXIT /B 6
-:MISSING
-ECHO SOURCE NOT FOUND: &quot;%SRC%&quot;
-EXIT /B 5
+COPY &quot;%1&quot; &quot;%2&quot; --WHATIF
+EXIT /B 0
 :USAGE
-ECHO RUN BACKUP SOURCE DEST PREVIEW
-ECHO RUN BACKUP SOURCE DEST APPLY
+ECHO USE SOURCE DEST AND PREVIEW OR APPLY
 EXIT /B 4
 </code></pre>
-</details>
-
-<p>ReadyFS stages the script before executing it, so the script stream is closed during transfers. <code>ONERROR STOP</code> ends the run on a failed command; it does not undo completed work. Host-created scripts need uppercase option bytes and real line breaks. The <a href="READYFS_RUN_GUIDE.html">batch guide</a> covers up to nine arguments, session/persistent variables, IF/GOTO loops, local CALL, result codes and current limits.</p>
+<p>Put the script in <code>@usb:/</code>, then <strong>pass the source, destination and mode as parameters</strong>:</p>
+<pre><code class="language-text">RUN @usb:/TRANSFER.SEQ @disk:/HELLO @usb:/saved.prg PREVIEW
+RUN @usb:/TRANSFER.SEQ @disk:/HELLO @usb:/saved.prg APPLY
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Script parameter</th>
+<th>Value in these RUN commands</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>%1</code></td>
+<td><code>@disk:/HELLO</code> — the source on IEC device 9</td>
+</tr>
+<tr>
+<td><code>%2</code></td>
+<td><code>@usb:/saved.prg</code> — the destination on Ultimate host storage</td>
+</tr>
+<tr>
+<td><code>%3</code></td>
+<td><code>PREVIEW</code> or <code>APPLY</code> — the selected branch</td>
+</tr>
+</tbody></table>
+<p><code>IF</code> checks the arguments and mode; <code>GOTO</code> jumps to a label in this file. <code>PREVIEW</code> performs COPY with <code>--WHATIF</code>, then exits without writing. <code>APPLY</code> copies and compares, with normal destination-conflict checks. Missing path arguments or an invalid mode go to <code>USAGE</code> and return 4. Keep the source disk from example 3 available, choose an unused destination name, or substitute another supported pair of endpoints. Quote any RUN argument containing spaces; the script quotes <code>%1</code> and <code>%2</code> when using them.</p>
+<p><code>ONERROR STOP</code> ends the run on a failed command; it does not undo completed work. ReadyFS stages the script before executing it, so the script stream is closed during transfers. Host-created scripts need uppercase option bytes and real line breaks; the download already has both. For explicit existence guards, a local <code>CALL</code> subroutine and a session counter, see the demonstrated <a href="examples/BACKUP.SEQ">BACKUP.SEQ</a> and the <a href="READYFS_RUN_GUIDE.html">full batch guide</a>.</p>
 <h2 id="try-the-committed-disk">Try the committed disk</h2>
 <p>Use <a href="../downloads/readyfs-overlay-lab.d81">readyfs-overlay-lab.d81</a> for normal interactive use. It contains the main program and all 28 sidecars; keep the disk available while loading. Configure at least <strong>1 MiB REU</strong>, mount the image as device 8, then enter:</p>
 <pre><code class="language-basic">LOAD &quot;READYFS-OVERLAY&quot;,8,1
@@ -216,6 +225,10 @@ RUN
 <td>Variables, arguments, flow control, results and complete backup example</td>
 </tr>
 <tr>
+<td><a href="READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC guide</a></td>
+<td>Logical partitions, mapped folders, transfers and firmware limits</td>
+</tr>
+<tr>
 <td><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></td>
 <td>Folder round trips, image views and intermediate-endpoint workflows</td>
 </tr>
@@ -233,10 +246,9 @@ RUN
 </tr>
 <tr>
 <td><a href="READYFS_ACCEPTANCE.html">Acceptance summary</a></td>
-<td>Current verified scope and retained-evidence policy</td>
+<td>Supported routes and current limitations</td>
 </tr>
 </tbody></table>
-<p>The external demonstration website is independently maintained. Its Git repository and video files are not included here. The repository&#39;s <code>DOCS/</code> editions retain screenshots and written walkthroughs.</p>
 <h2 id="current-scope-and-boundaries">Current scope and boundaries</h2>
 <p>The attached SD2IEC/C64 Ultimate acceptance covered the twelve directed COPY and MOVE routes between Ultimate host storage, mounted IEC9, SoftwareIEC and native SD FAT, recursive folder round trips, and an expanded image matrix with SEQ/PRG/USR type checks. Native reads/configuration were exercised at 1, 16 and 64 MHz. This does not establish compatibility with every firmware, drive, partition or physical tape device.</p>
 <p>The current build uses 28 cached sidecars. Its retained build report places resident code at <code>$B536</code>, leaving 117 safe bytes before KERNAL scratch; the monolithic end is <code>$C5F7</code>. These are build-specific measurements, not spare capacity guarantees.</p>
@@ -259,7 +271,7 @@ make readyfs-vice-smoke
 <p>Run <code>node build_support/build_readyfs_user_guide.mjs</code> to rebuild the portable guide. Install the root documentation dependencies with <code>npm ci</code>, or supply <code>READYFS_MARKED_PATH</code> for its Markdown renderer. Rebuild the public documentation with <code>npm run build:docs</code> from the repository root.</p>
 <h2 id="physical-automation-and-safety">Physical automation and safety</h2>
 <p>Use <code>build_support/start_readyfs_*_terminal.sh</code> wrappers for Terminal-owned REST/FTP automation. Read <a href="AGENTS.html">AGENTS.md</a> and the safety guide before hardware work. Mutation suites create fresh marker-owned run roots under <code>/usb1/READYFS_TEST/&lt;run-id&gt;</code> or <code>/sdcard/READYFS_TEST/&lt;run-id&gt;</code>, with separate native SD ownership gates. They preserve original files and restore touched hardware settings.</p>
-<h2 id="layout-and-local-evidence">Layout and local evidence</h2>
+<h2 id="project-layout">Project layout</h2>
 <p><code>src/apps/readyfs/</code> contains C and 6502 assembly; <code>cfg/</code> contains the linker layout; <code>build_support/</code> holds tests and automation; <code>docs/</code> holds the maintained references. <code>artifacts/readyfs/</code> is generated except for the two committed main D81s. Logs and internal working records are ignored.</p>
-<p>The 14 October 2026 cleanup keeps <code>logs/readyfs_c64u/batch-demo-20261013b</code> and its final <code>demo-v8-batch-appended-20261013</code> output. Earlier raw run directories were deleted at the owner&#39;s request. Historical design documents retain run identifiers as provenance; those directories are no longer distributed or guaranteed to exist. See <a href="PROJECT_INVENTORY.html">PROJECT_INVENTORY.md</a> for the source and build map.</p>
+<p>See <a href="PROJECT_INVENTORY.html">PROJECT_INVENTORY.md</a> for the source and build map.</p>
 </main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

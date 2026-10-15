@@ -18,9 +18,16 @@ ReadyFS instead keeps the hierarchy in traversal order:
 - `@work:/src/file.c` — exact-place alias
 
 The optional `.partition` numeric suffix is reserved for CMD/SD2IEC-compatible
-IEC drivers. Existing `8:/` remains partition 0/default. Parsing this form does
-not grant directory capability: the detected driver must explicitly support
-partitioned paths before listing or mutation.
+IEC drivers. For native SD2IEC, `10.1:/` selects partition 1 on device 10,
+while `10.2:/` selects an existing partition 2 on that same device. The suffix
+and IEC address are separate decimal numbers. Omitting the suffix, as in `10:/`,
+uses the device's current partition, queried and pinned for each operation;
+internal zero represents current/default, not a fixed data partition 0.
+`IEC 10: PARTITIONS` lists available partitions. Explicit paths do not change
+the current selection; `IEC 10: PARTITION N --SELECT` deliberately does.
+Parsing this form does not grant directory capability: the detected driver must
+explicitly support partitioned paths before listing or mutation. See
+[native SD2IEC support](SD2IEC_NATIVE.md) for the current implementation.
 
 ## Translation rules
 
