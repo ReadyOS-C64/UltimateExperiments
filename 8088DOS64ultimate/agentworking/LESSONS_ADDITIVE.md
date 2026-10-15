@@ -224,3 +224,6 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 
 
 2026-10-15 actualUCI diagnostic succeeds despiteearlierstartupfailure: verifiedclose/read-onlyopen/exactsector/knownclose resolvesownedcontext only. A separatePRGsuccess doesnotestablishreadinessafteranotherreset. FourlegitimateSMCoperandbytes mustbevalidatedasownedpointers, notexcludedwithoutbounds; reviewcaught0000falsepassbeforehardware. CancellationneedsboundedRAMcapturebeforeDRShelperoverwrite aswellasrecovery.
+
+
+2026-10-15: A first-error recorder attached only to transport recovery misses validation failures before transport acceptance. Preserve raw ID and pre-start failure state as distinct diagnostic fields. Current error and zero upload counters can localize rejection without identifying the failed hardware read.
