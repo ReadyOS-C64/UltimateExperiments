@@ -53,7 +53,8 @@ def labels_from(path):
         words=line.split()
         if len(words)==3 and words[0]=='al':labels[words[2].lstrip('.')]=int(words[1],16)
     for required in ('dos64_native_config','dos64_native_config_end','dos64_native_diag','dos64_native_diag_end',
-                     'dos64_cpu_instructions','dos64_bios_waiting'):
+                     'dos64_cpu_instructions','dos64_bios_waiting','dos64_uci_upload_operand',
+                     'dos64_uci_drain_operand','dos64_uci_command','dos64_uci_data'):
         if required not in labels:raise ValueError(f'Missing reviewed runtime symbol: {required}')
     if labels['dos64_native_config_end']-labels['dos64_native_config']!=FIELDS['size'] or labels['dos64_native_diag_end']-labels['dos64_native_diag']!=DIAG_SIZE:
         raise ValueError('Native ABI size differs from reviewed runner layout')
@@ -136,15 +137,37 @@ class Application:
         self.journal('coherent_screen',guest_instructions=count,sha256=sha(video),stage=self.script.stage)
         return screen
     def verify_resident(self,ram):
+        if len(ram)!=65536:raise ValueError('Resident identity requires a complete64KiB capture')
         proofs=[]
+        mutable=[]
+        for operand,buffer,opcode in (('dos64_uci_upload_operand','dos64_uci_command',0xad),
+                                      ('dos64_uci_drain_operand','dos64_uci_data',0x8d)):
+            if operand not in self.labels:continue # Small independent host fixtures omit UCI.
+            address=self.labels[operand];offset=address-0x801+2
+            if buffer not in self.labels or offset<3 or offset+2>len(self.prg):raise ValueError('Invalid reviewed UCI operand symbol')
+            if not any(s['start']<=address-1 and address+2<=s['start']+s['length'] for s in self.resident_segments):
+                raise ValueError('Reviewed UCI operand escapes captured resident code')
+            if self.prg[offset-1]!=opcode or self.prg[offset:offset+2]!=b'\xff\xff':
+                raise ValueError('Reviewed UCI opcode/initial operand differs from source contract')
+            value=int.from_bytes(ram[address:address+2],'little');base=self.labels[buffer]
+            mutable.append({'symbol':operand,'address':address,'bytes':2,'value':value,
+                            'buffer_start':base,'buffer_bytes':896,
+                            'valid':(value==0xffff and self.script.stage!='done') or base<=value<base+896})
         for segment in self.resident_segments:
             start=segment['start'];length=segment['length'];offset=start-0x801+2
             if offset<2 or offset+length>len(self.prg):raise ValueError('Resident segment outside source PRG')
             expected=self.prg[offset:offset+length];actual=ram[start:start+length]
-            proof={**segment,'source_sha256':sha(expected),'captured_sha256':sha(actual),'matches':actual==expected}
+            normalized=bytearray(actual)
+            operands=[m for m in mutable if start<=m['address'] and m['address']+2<=start+length]
+            for m in operands:
+                pos=m['address']-start;normalized[pos:pos+2]=expected[pos:pos+2]
+            static_match=bytes(normalized)==expected
+            proof={**segment,'source_sha256':sha(expected),'captured_sha256':sha(actual),
+                   'normalized_sha256':sha(bytes(normalized)),'raw_matches':actual==expected,
+                   'mutable_operands':operands,'matches':static_match and all(m['valid'] for m in operands)}
             proofs.append(proof)
-            if actual!=expected:
-                first=next(i for i,(x,y) in enumerate(zip(actual,expected)) if x!=y)
+            if not static_match:
+                first=next(i for i,(x,y) in enumerate(zip(normalized,expected)) if x!=y)
                 proof['first_difference_address']=start+first
         dump(self.output/'captured-resident-identity.json',proofs)
         if any(not p['matches'] for p in proofs):raise ValueError('Captured resident executable differs from uploaded reviewed code')

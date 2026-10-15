@@ -97,3 +97,7 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 | D72 | Measured/rejected bulk proposals,2026-10-15 | Keep bounded600second recovery phase; serial/parallel tiny PUT and256 packed PRG reloads are too slow | Actual RAM-only gates preserve settings/media; extrapolations~20/~17minutes precede REU writes; implement one-file native UCI restore instead |
+
+
+| D73 | Implemented/host verified,2026-10-15 | Exhaustively scan4MiB and restore changed chunks, then independently compare4MiB | Complete immutable backup remains authority, every retry rescans including unexpected/alias changes; same600second phase/bounded attempts; saves slow unchanged payload uploads |
+| D74 | Implemented/actual native Peddle verified,2026-10-15 | Normalize only four exported UCI pointer operand bytes after opcode/buffer checks | AD upload and8D drain self-modify legally; all other resident bytes exact; scoped debug aliases preserve target binary identity |

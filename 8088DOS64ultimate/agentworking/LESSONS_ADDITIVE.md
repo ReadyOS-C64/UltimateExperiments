@@ -137,3 +137,6 @@ A run manifest must be generated after every artifact-producing prerequisite, in
 
 
 2026-10-15 physical transport: measure request throughput before committing a multi-megabyte recovery path. Four/eight concurrent requests did not improve a serial firmware server. A file loader that correctly copies16KiB can still cost~2seconds per reset; extrapolate full-workflow work. Full readmem captures can include changing IO while CPU is paused; compare RAM ranges and exact payloads without calling volatile observations corruption. Never execute a known-over-budget restore merely to confirm the estimate.
+
+
+2026-10-15 recovery/codeidentity: optimize restoration by detecting unchanged data, not reducing protected scope. Every attempt must rescan all bytes after partial failure; unexpected alias changes need a test. Validate explicitly located self-modified operands and their allowed buffers rather than exempting an entire code segment. ca65 global export assignments reset cheap-local scope; scoped routines/local labels plus external export aliases can retain byte-identical target code. Confirm hashes after rebuilding, never rely on stale artifacts left by a failed compile.

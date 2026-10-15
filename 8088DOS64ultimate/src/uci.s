@@ -419,173 +419,178 @@ dos64_uci_poll:
 @return:
  LEAVE 0
 
-uci_upload:
+.proc uci_upload
  lda #16
  sta uci_work
-@loop:
+loop:
  lda uci_upload_pos
  cmp dos64_uci_command_len
- bne @byte
+ bne byte
  lda uci_upload_pos+1
  cmp dos64_uci_command_len+1
- beq @push
-@byte:
+ beq push
+byte:
  ; Self-modified absolute indexed access avoids consuming scarce zero page.
  lda #<dos64_uci_command
  clc
  adc uci_upload_pos
- sta @read+1
+ sta read+1
  lda #>dos64_uci_command
  adc uci_upload_pos+1
- sta @read+2
-@read: lda $ffff
+ sta read+2
+read: lda $ffff
  jsr uci_command_write
  inc uci_upload_pos
- bne @next
+ bne next
  inc uci_upload_pos+1
-@next: dec uci_work
- bne @loop
+next: dec uci_work
+ bne loop
  rts
-@push:
+push:
  lda #1
  jsr uci_control_write
  lda #UCI_WAIT
  sta dos64_uci_state
  rts
-uci_drain:
+.endproc
+.export dos64_uci_upload_operand := uci_upload::read+1
+
+.proc uci_drain
  lda #16
  sta uci_work
-@loop:
+loop:
  jsr uci_status_read
  and #8
- beq @ok
+ beq ok
  lda #UCI_ERR_PROTOCOL
  jmp uci_recover
-@ok:
+ok:
  lda dos64_uci_last_status
  and #$3f
  sta uci_work_status
  lda uci_more
  ora #$20
  cmp uci_work_status
- beq @valid_state
+ beq valid_state
  lda #UCI_ERR_PROTOCOL
  jmp uci_recover
-@valid_state:
+valid_state:
  lda dos64_uci_last_status
  and #$80
- beq @status
+ beq status
  lda uci_data_raw+1
  cmp #3
- bcc @data_allowed
+ bcc data_allowed
  lda uci_data_raw
  cmp #$80
- bcc @data_allowed
+ bcc data_allowed
  lda #UCI_ERR_PROTOCOL
  jmp uci_recover
-@data_allowed:
+data_allowed:
  inc uci_data_raw
- bne @data_read
+ bne data_read
  inc uci_data_raw+1
-@data_read:
+data_read:
  jsr uci_data_read
  pha
  inc dos64_uci_data_seen
- bne @counted
+ bne counted
  inc dos64_uci_data_seen+1
- bne @counted
+ bne counted
  inc dos64_uci_data_seen+2
- bne @counted
+ bne counted
  pla
  lda #UCI_ERR_OVERFLOW
  jmp uci_recover
-@counted:
+counted:
  lda dos64_uci_data_len+1
  cmp dos64_uci_data_capacity+1
- bcc @data_store
- bne @data_discard
+ bcc data_store
+ bne data_discard
  lda dos64_uci_data_len
  cmp dos64_uci_data_capacity
- bcs @data_discard
-@data_store:
+ bcs data_discard
+data_store:
  lda #<dos64_uci_data
  clc
  adc dos64_uci_data_len
- sta @store+1
+ sta store+1
  lda #>dos64_uci_data
  adc dos64_uci_data_len+1
- sta @store+2
+ sta store+2
  pla
-@store: sta $ffff
+store: sta $ffff
  inc dos64_uci_data_len
- bne @next
+ bne next
  inc dos64_uci_data_len+1
- jmp @next
-@data_discard:
+ jmp next
+data_discard:
  pla
  lda dos64_uci_flags
  ora #1
  sta dos64_uci_flags
- jmp @next
-@status:
+ jmp next
+status:
  lda dos64_uci_last_status
  and #$40
- beq @empty
+ beq empty
  lda uci_status_raw+1
- beq @status_allowed
+ beq status_allowed
  lda #UCI_ERR_PROTOCOL
  jmp uci_recover
-@status_allowed:
+status_allowed:
  inc uci_status_raw
- bne @status_read
+ bne status_read
  inc uci_status_raw+1
-@status_read:
+status_read:
  jsr uci_stat_read
  pha
  inc dos64_uci_status_seen
- bne @stat_counted
+ bne stat_counted
  inc dos64_uci_status_seen+1
- bne @stat_counted
+ bne stat_counted
  inc dos64_uci_status_seen+2
- bne @stat_counted
+ bne stat_counted
  pla
  lda #UCI_ERR_OVERFLOW
  jmp uci_recover
-@stat_counted:
+stat_counted:
  lda dos64_uci_status_len+1
  cmp dos64_uci_status_capacity+1
- bcc @stat_store
- bne @stat_discard
+ bcc stat_store
+ bne stat_discard
  lda dos64_uci_status_len
  cmp dos64_uci_status_capacity
- bcs @stat_discard
-@stat_store:
+ bcs stat_discard
+stat_store:
  ldx dos64_uci_status_len
  pla
  sta dos64_uci_status,x
  inc dos64_uci_status_len
- bne @next
+ bne next
  inc dos64_uci_status_len+1
- jmp @next
-@stat_discard:
+ jmp next
+stat_discard:
  pla
  lda dos64_uci_flags
  ora #2
  sta dos64_uci_flags
-@next:
+next:
  dec uci_work
- beq @return
- jmp @loop
-@empty:
+ beq return
+ jmp loop
+empty:
  inc dos64_uci_blocks
- bne @block
+ bne block
  inc dos64_uci_blocks+1
- bne @block
+ bne block
  lda #UCI_ERR_OVERFLOW
  jmp uci_recover
-@block:
+block:
  lda #UCI_BLOCK
  sta dos64_uci_state
-@return: rts
+return: rts
+.endproc
+.export dos64_uci_drain_operand := uci_drain::store+1
 
 dos64_uci_code_end:

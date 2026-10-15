@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "status": "host/model preparation plus verified FTP staging; full physical native run pending",
+  "tooling_tests": 168,
+  "tooling_wall_seconds": 7.25,
+  "focused_new_transport_tests": 17,
+  "focused_delta_tests": 7,
+  "native_dos_tests": 1,
+  "native_dos_wall_seconds": 27.29,
+  "native_dos_guest_instructions": 606910,
+  "native_uci_identity_run": "agentworking/runs/native-uci-identity-20261015-064006",
+  "runtime_prg_sha256": "647eca6fb65db56153067c6a6be0209cb7f63955a904e618400b6734e2dc1023",
+  "unit_prg_sha256": "ecc86eeeb8366ded34a04df29d149cf617275db67bd4a6874e8a2b2d89330997",
+  "runtime_bytes_unchanged": true,
+  "service_prg_sha256": "40fe690953c245c8093c7cd5e5cb91684df7290602d8afa44dbd2e0b5b30d09e",
+  "source_identities": {
+    "build_support/c64u_delta_reu_recovery.py": "ea25f194f06e1bfc1f04ad640f88e3f2c7a0eeafc4c545abd34b27ac2a5bfcd7",
+    "build_support/c64u_ftp_put_transport.py": "c11b16324aba6cc9941de84f9f5d8856c6156aa34cadf227eae02a56e74c6c41",
+    "build_support/c64u_native_ftp_put_runner.py": "9fefedb6162d9af86253e6b96af8c6337f6f272b5a6eeed003e0e9764f410732",
+    "build_support/c64u_native_application.py": "02c92064ce9ffcfd902d6dede666e738d96339ca7aca15fec0f8d8cf1771b61c",
+    "build_support/c64u_native_application_support.py": "78fd3ed6645154ea9253d1014f19f85214e7fae454e214349bc889d90df58ed9",
+    "build_support/c64u_bulk_reu_recovery.py": "22b45fdff7c039dfc0bf0571dfc005775ec9c13bb0f6c99bcf0227ffe28c0008",
+    "build_support/c64u_probe.py": "4067f05248f0a22a5fb254aa7031fda06ae8e011ea69b5b6c660157809e5d614",
+    "src/uci.s": "a7712cc5b4433a533e2331964624a5ebdf0ad3091e81a4434086820c72a3ef65",
+    "tests/host/native_dos_boot.zig": "6c23e22aebbe7fcf744ca03573caa11749a8db9c00965aead99977d497a8f97c",
+    "tests/tooling/test_c64u_delta_reu_recovery.py": "a2938defaf745330857bf2c09730f8fbad219d7c112fcf4f103881c7cf28c6a3",
+    "tests/tooling/test_c64u_ftp_put_transport.py": "9beb09f6fc5925858adcb9c75703704c638f69ac11e70f82440a5f41e3a12183",
+    "tests/tooling/test_c64u_native_application.py": "cf06da59eb84f3c9b2eccd9148b7f5ad625d16423379e193e0b7c8234e26d8d7"
+  },
+  "actual_ftp_staging": {
+    "schema": 1,
+    "project": "8088DOS64ultimate",
+    "purpose": "owned-native-development-prgs",
+    "status": "verified",
+    "run_id": "native-prgs-delta-20261015-062922",
+    "remote_directory": "/usb1/DOS64_TEST/native-prgs-delta-20261015-062922",
+    "created_directory": true,
+    "files": {
+      "recovery": {
+        "source_path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/native-ftp-delta-prepared-20261015-062844/REU-RECOVERY.PRG",
+        "sha256": "40fe690953c245c8093c7cd5e5cb91684df7290602d8afa44dbd2e0b5b30d09e",
+        "bytes": 592,
+        "remote_path": "/usb1/DOS64_TEST/native-prgs-delta-20261015-062922/REU-RECOVERY.PRG",
+        "remote_readback_bytes": 592,
+        "remote_readback_sha256": "40fe690953c245c8093c7cd5e5cb91684df7290602d8afa44dbd2e0b5b30d09e"
+      },
+      "native": {
+        "source_path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/native-ftp-delta-prepared-20261015-062844/NATIVE-DOS.PRG",
+        "sha256": "3103258f3d646ee4bfa835420dfa259aee5861e837ecb7ecff3681d03f4e6b91",
+        "bytes": 32769,
+        "remote_path": "/usb1/DOS64_TEST/native-prgs-delta-20261015-062922/NATIVE-DOS.PRG",
+        "remote_readback_bytes": 32769,
+        "remote_readback_sha256": "3103258f3d646ee4bfa835420dfa259aee5861e837ecb7ecff3681d03f4e6b91"
+      }
+    },
+    "source_files_unchanged": true,
+    "started_utc": "2026-10-15T13:29:22.922885+00:00",
+    "phase_seconds": 120,
+    "limitations": [
+      "Development FTP staging only; no C64 or REU execution",
+      "Remote files retained; no deletion or unrelated overwrite"
+    ],
+    "marker_sha256": "ecb506b81d08b0141d6a8584f9004577a83977b1eb3806393c4cc165f65022ef",
+    "marker_readback_sha256": "ecb506b81d08b0141d6a8584f9004577a83977b1eb3806393c4cc165f65022ef",
+    "marker_bytes": 354,
+    "finished_utc": "2026-10-15T13:29:25.152612+00:00"
+  },
+  "delta_contract": [
+    "Complete immutable4MiB backup verified before application",
+    "Every restoration attempt scans all4MiB under the same600second phase",
+    "Only changed16KiB chunks uploaded; source slices always from complete immutable backup",
+    "Fresh whole scan after partial failure, including unexpected alias changes",
+    "Original Service performs independent full4MiB compare; bounded2attempt recovery/reset/config/media checks retained"
+  ],
+  "uci_operand_contract": {
+    "exported_symbols": [
+      "dos64_uci_upload_operand",
+      "dos64_uci_drain_operand"
+    ],
+    "normalized_bytes": 4,
+    "source_opcode_bytes": [
+      "AD",
+      "8D"
+    ],
+    "buffer_bytes_each": 896,
+    "successful_capture_requires_initialized_buffer_address": true,
+    "all_other_resident_bytes_exact": true,
+    "actual_native_capture_verifier": "passed"
+  },
+  "first_failure": "Naive export-alias definition reset ca65 cheap-local scope; retained failed log, replaced with scoped .proc/local labels and external aliases; both binaries independently byte-identical",
+  "limits": [
+    "No full physical REU recovery or native DOS acceptance yet",
+    "Delta scan does not assume only expected regions changed; full scan detects other changes",
+    "One-file native UCI restore remains a separate private prototype",
+    "No persistence or XT-speed claim"
+  ]
+}

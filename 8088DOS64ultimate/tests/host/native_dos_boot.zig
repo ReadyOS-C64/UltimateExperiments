@@ -353,5 +353,18 @@ test "opt-in actual native file startup and bounded runtime boot genuine DOS33 V
     const after = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, source_path, alloc, .limited(368641));
     defer alloc.free(after);
     try std.testing.expectEqualSlices(u8, image, after);
+    var host_ram: [65536]u8 = undefined;
+    for (&host_ram, 0..) |*byte, address| byte.* = lane.f.peek(@intCast(address));
+    for ([_]struct { operand: []const u8, buffer: []const u8, opcode: u8 }{
+        .{ .operand = "dos64_uci_upload_operand", .buffer = "dos64_uci_command", .opcode = 0xad },
+        .{ .operand = "dos64_uci_drain_operand", .buffer = "dos64_uci_data", .opcode = 0x8d },
+    }) |item| {
+        const operand = try lane.f.symbol(item.operand);
+        const base = try lane.f.symbol(item.buffer);
+        const value = std.mem.readInt(u16, host_ram[operand..][0..2], .little);
+        try std.testing.expectEqual(item.opcode, host_ram[operand-1]);
+        try std.testing.expect(value >= base and value < base + 896);
+    }
+    try std.Io.Dir.cwd().writeFile(std.Options.debug_io, .{ .sub_path = "build/native-dos-host-64k.bin", .data = &host_ram });
     try lane.report("passed", image, sha(guest), sha(&video));
 }

@@ -162,6 +162,24 @@ class Tests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'Captured resident executable'):app.verify_resident(bytes(ram))
             evidence=json.loads((Path(d)/'captured-resident-identity.json').read_text())
             self.assertEqual(evidence[0]['first_difference_address'],0x810)
+    def test_only_two_bounded_uci_operands_are_normalized(self):
+        app=self.app();app.resident_segments=[{'name':'CODE','start':0x801,'length':32}]
+        source=bytearray(app.prg);source[6:9]=b'\xad\xff\xff';source[12:15]=b'\x8d\xff\xff';app.prg=bytes(source)
+        app.labels={**app.labels,'dos64_uci_upload_operand':0x806,'dos64_uci_drain_operand':0x80c,
+                    'dos64_uci_command':0xc100,'dos64_uci_data':0xc480}
+        with tempfile.TemporaryDirectory() as d:
+            app.output=Path(d);ram=bytearray(65536);ram[0x801:0x821]=app.prg[2:34]
+            ram[0x806:0x808]=(0xc101).to_bytes(2,'little');ram[0x80c:0x80e]=(0xc67f).to_bytes(2,'little')
+            proof=app.verify_resident(bytes(ram))[0]
+            self.assertTrue(proof['matches']);self.assertFalse(proof['raw_matches']);self.assertEqual(len(proof['mutable_operands']),2)
+            ram[0x80c:0x80e]=(0xd000).to_bytes(2,'little')
+            with self.assertRaisesRegex(ValueError,'Captured resident executable'):app.verify_resident(bytes(ram))
+            ram[0x80c:0x80e]=(0xc67f).to_bytes(2,'little');ram[0x80b]=0xea
+            with self.assertRaisesRegex(ValueError,'Captured resident executable'):app.verify_resident(bytes(ram))
+            proof=json.loads((Path(d)/'captured-resident-identity.json').read_text())[0]
+            self.assertEqual(proof['first_difference_address'],0x80b)
+            ram[0x80b]=0x8d;ram[0x806:0x808]=b'\xff\xff';app.script.stage='done'
+            with self.assertRaisesRegex(ValueError,'Captured resident executable'):app.verify_resident(bytes(ram))
     def test_final_source_read_failure_preserves_primary_native_failure(self):
         fake=Fake();fake.fail_stage=True;app=self.app()
         original=Path.read_bytes
