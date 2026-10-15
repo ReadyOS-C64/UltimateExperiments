@@ -388,3 +388,12 @@ Root private manifest freezer first included main resident packaging in standalo
 ## 2026-10-15 independent native timer research
 
 Retained author manifest14bddfcc43files and new independent manifest1b9dcdcc73files. Independent fresh797byteca65/ld65 probe exactly7ae6d815, both immutable VICE captures/36decoded observations and546875phaseedges pass;1,398,987 total assertions include identities/arithmetic/negative claims. No VICE rerun or LAN/hardware/sharedbuild/source change. Reviewer first fixed18vs19byte expected-slice error locally; source/captures unchanged. DMA evidence is notification observed after one transfer, not eventtimestamps/allseams. Synchronous fallback is next-eligible-boundary semantics, not physicalflag-before-imminentedge. No deployedFPGA121latencybound or productionfit. [Evidence](evidence/hardware-timer-research-20261015.json).
+
+
+## 2026-10-15 root standalone IEC promotion
+
+Read repaired sourcecomplete16file packagea80d1545 and independentfinalreview21db7bc7. `check_package.py --project-root . --predecessors` passes16files/25deps/24privateproofs/337preservedoldfiles. Initial no-argumentchecker onlychecked privateworkspace and0predecessors; reran with explicitroot/predecessors beforepromotion. Applied independentminimalregistrationpatch5676cee3; no replacementrootMake/buildzig/foundation. `make test-iec-standalone`:3/3Zig/13actualassemblyscenarios,29/29tooling12.327s.
+
+`make vice-iec-standalone`:freshrootruniec-standalone-20261015-104330-0a13fffe PASS16.548547s, sourcebca, fullPRG4a2308,360KiB/720DMAs, all4MiBexpected bytes, unchangedexecutable/F000guards/nativeerror0/loaded1/knownclosed1. NewlauncheractualOSownership child21854/server127.0.0.1:58061/client:58063/lsofacceptedESTABLISHED; fullresultpinsVICE/resources/argv/toolversions. No existingVICEsession controlled.
+
+`make manifest` passes; normalruntime22f/unit8a unchanged. Rawrootrecords`agentworking/runs/iec-promotion-20261015-root`;[evidence](evidence/iec-standalone-20261015.json). RootfirstpostFTPscriptlookupusednonexistentMODEname; correctedknownsixscriptandperfmetadata. PhysicalperfFTPfullfloppy/PRGs checkpassed/exit0. No productionIEC/DOSboot/physicalIEC/persistence/XT claim.

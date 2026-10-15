@@ -142,3 +142,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 | D96 | Research retained, 2026-10-15 | Native one-shot hint remains observational; full sampling policy unchanged | Independent exact797byteprobe/bothVICECIAcaptures/36observations/all546875phaseedges; deployedFPGA121latency/productionfit unproved; DMA/postnotification and imminentedge fallback limits explicit |
+
+
+| D97 | Implemented/VICE verified, 2026-10-15 | Opt-in standalone KERNAL/D81 import lane with proven fresh VICE process ownership |16additive files/minimalMakeZig;3Peddle/13scenarios/29host, fresh full360KiB/720DMA/all4MiB VICE pass; everymonitorcommand rechecksacceptedtuple/PID; missingproductsrebuild; no productionIEC/DOS/persistence/physical64MHz claim |

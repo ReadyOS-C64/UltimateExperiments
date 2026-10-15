@@ -261,3 +261,5 @@ build/hd_cold.o: include/files.inc
 .PHONY: test-hd
 test-hd: build
 	$(DOS64_ZIG) build hd-fixtures hd-backend hd-bios hd-cold --summary all
+
+include build_support/iec_standalone.mk

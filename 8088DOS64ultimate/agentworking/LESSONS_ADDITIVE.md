@@ -189,3 +189,8 @@ Compare the combination directly: savings from separate changes can interact thr
 ## 2026-10-15 — alarm evidence needs a boundary invariant
 
 Final RAM observations do not timestamp interrupt assertion during DMA. An arithmetic early-alarm inequality only holds with a proved hardware overhead premise and correct latch/start semantics. Phrase emulator safety at eligible guest boundaries, including every DMA return path. Keep full sampling until hint readiness or an unconditional fallback is proved at every due boundary.
+
+
+## 2026-10-15 — local monitor ownership and build products
+
+A reserved localhost port and live child do not prove that the accepted monitor belongs to that child. Prove the accepted connection's exact endpoints/PID before every command, and send no cleanup command when ownership is lost. A stamp file does not prove all generated outputs still exist: validate every output and input on explicit build invocation. Preserve valid products without unnecessary regeneration.

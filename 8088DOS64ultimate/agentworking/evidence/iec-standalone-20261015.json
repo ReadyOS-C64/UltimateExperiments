@@ -1,0 +1,183 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "scope": "source-complete opt-in standalone IEC development helper; no production runtime profile",
+  "date": "2026-10-15",
+  "full_prg_sha256": "4a2308ff3c6a369ed5f7cd7da03d91f429fcc20c716b450f38add97cc2863ba4",
+  "small_prg_sha256": "37e044cd94d71300297fbea4afd75762d31f40df8af87af84b8bba1c738d3cb5",
+  "prg_bytes": 1049,
+  "code_bytes": 1020,
+  "bss_bytes": 56,
+  "zp_bytes": 4,
+  "new_peddle": {
+    "zig_tests_passed": 3,
+    "actual_assembly_scenarios": 13,
+    "full_original_bytes": 368640,
+    "full_original_dma_chunks": 720,
+    "full_original_cycles_model_rts_only": 196331804,
+    "every_case_full_reu_oracle_bytes": 4194304,
+    "scenarios": [
+      "small original",
+      "small short",
+      "small long",
+      "small CRC",
+      "missing",
+      "OPEN error",
+      "CHKIN error",
+      "read error",
+      "drive status error",
+      "CLOSE error",
+      "late guard failure",
+      "partial DMA 11 bytes",
+      "full original 360 KiB"
+    ]
+  },
+  "new_tooling_tests": 22,
+  "packaged_make_checks_seconds": 25.08,
+  "clean_source_only_rebuild_byte_identical": true,
+  "retained_vice": {
+    "rerun": false,
+    "fixed_manifest_sha256": "41fc54ade6bbbd2f167842718821913807605d1dd0ddf3a7f07af142f776508a",
+    "fixed_review_checks": 193,
+    "actual_runs": 12,
+    "new_independent_normal_capture_checks": 10,
+    "fixed_manifest_files_rehashed": 256
+  },
+  "raw_package": "agentworking/scratch/iec-standalone-production",
+  "raw_log": "agentworking/scratch/iec-standalone-production/workspace/build/packaged-checks.log",
+  "source_image_sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+  "runtime_or_hardware_built_changed_executed": false,
+  "limitations": [
+    "KERNAL API substitutions are not ROM emulation or serial timing",
+    "External VICE deadline is not a bounded asynchronous FILE contract",
+    "No production IEC profile, DOS boot, persistence, physical IEC or XT throughput claim",
+    "No ROM redistribution",
+    "Fresh root original360KiB VICE smoke passes; no production DOS-over-IEC or physical IEC acceptance"
+  ],
+  "root_style_registration_rechecked": true,
+  "registration_final_log": "agentworking/scratch/iec-standalone-production/workspace/build/registration-final.log",
+  "registration_reuses_identical_cached_test_executable": true,
+  "packaging_repair": {
+    "status": "passed",
+    "review_manifest_sha256": "a15eab7ea6b5fd75965db6081edc85eca113e860ecb7d0c61602551c3d324964",
+    "raw_cohort": "agentworking/scratch/iec-standalone-production-repair",
+    "new_regression_tests": 7,
+    "all_tooling_tests": 29,
+    "tooling_wall_seconds": 10.09,
+    "python39_repair_tests": 7,
+    "ownership": "accepted ESTABLISHED exact reverse four-tuple and fresh live child PID checked before every monitor command; lsof required; fail closed",
+    "collision_monitor_bytes": 0,
+    "lost_ownership_cleanup_quit_sent": false,
+    "actual_localhost_os_positive_and_foreign_cases": 2,
+    "actual_make_invocations": 10,
+    "each_missing_generated_product_recovered": 7,
+    "unchanged_products_preserve_mtime": true,
+    "incomplete_stamp_rebuilt": true,
+    "target_or_peddle_sources_changed": false,
+    "new_peddle_vice_or_hardware_runs": 0
+  },
+  "root_promotion": {
+    "status": "passed",
+    "raw_run": "agentworking/runs/iec-promotion-20261015-root",
+    "package_sha256": "a80d154586d1f2857930a01784ae71df8ced3bbc441aae0cbdc7d24690f0b65d",
+    "independent_repair_review_sha256": "21db7bc718a84d30dcd93f84946a35534e83e59fce1921ba4d59eacc061bd7c8",
+    "exact_additive_files": 16,
+    "dependencies": 25,
+    "preserved_predecessor_files": 337,
+    "Zig_tests": 3,
+    "assembly_scenarios": 13,
+    "tooling_tests": 29,
+    "tooling_seconds": 12.327,
+    "native_PRGs_unchanged": true,
+    "default_all_test_no_new_dependency": true
+  },
+  "root_fresh_VICE_smoke": {
+    "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/iec-standalone-20261015-104330-0a13fffe",
+    "verification": {
+      "schema": 1,
+      "status": "passed",
+      "standalone_only": true,
+      "case": "original",
+      "kind": "full",
+      "prg_sha256": "4a2308ff3c6a369ed5f7cd7da03d91f429fcc20c716b450f38add97cc2863ba4",
+      "received_bytes": 368640,
+      "dma_chunks": 720,
+      "native_error": 0,
+      "loaded": 1,
+      "all_4_mib_equal": true,
+      "executable_equal": true,
+      "shadow_guards_equal": true,
+      "source_sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+      "known_closed": 1,
+      "result_sha256": "988395ed464aec3d226c0084fc550e77fcb38441b4393980a19e2e531cbbabff"
+    },
+    "actual_process_ownership": {
+      "method": "lsof accepted ESTABLISHED socket",
+      "child_pid": 21854,
+      "server": [
+        "127.0.0.1",
+        58061
+      ],
+      "client": [
+        "127.0.0.1",
+        58063
+      ],
+      "lsof_path": "/usr/sbin/lsof"
+    },
+    "elapsed_seconds": 16.548547167
+  },
+  "root_provenance": {
+    "agentworking/runs/iec-promotion-20261015-root/base-check.json": {
+      "sha256": "8a9ffbd899c08992fb85a08ff7464dd715c6f79481fee0f5c56a614719d05437",
+      "bytes": 150
+    },
+    "agentworking/runs/iec-promotion-20261015-root/test.log": {
+      "sha256": "4150578820b1499bd44fc493a279e7b0baeadb645397d4f9914fa6e21d6d03fb",
+      "bytes": 2712
+    },
+    "agentworking/runs/iec-promotion-20261015-root/vice-original.log": {
+      "sha256": "b815f75abc4876be545e9d4356aa35ed99f536f0f17f5afde67319f2b08144fa",
+      "bytes": 1586
+    },
+    "agentworking/runs/iec-promotion-20261015-root/vice-result.json": {
+      "sha256": "725a5fa3378eb2120ac9f43e0e4254d394e9a2e99cbe43c0b13ed766615570d6",
+      "bytes": 758
+    },
+    "agentworking/runs/iec-promotion-20261015-root/manifest.log": {
+      "sha256": "25faf4d6432963fcea25168c55ef420fe35fddc0342426daccdb0d66713c12d4",
+      "bytes": 7301
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/iec-standalone-20261015-104330-0a13fffe/result.json": {
+      "sha256": "988395ed464aec3d226c0084fc550e77fcb38441b4393980a19e2e531cbbabff",
+      "bytes": 9828
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/iec-standalone-20261015-104330-0a13fffe/verification.json": {
+      "sha256": "6786c33b1af1886f63a8325f85fc3c33b6952fff7a46a1dc8c07d3a894150ada",
+      "bytes": 557
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/iec-standalone-20261015-104330-0a13fffe/ram.bin": {
+      "sha256": "fea961305b170e401f124c18a3522a06e87600ed649050429036073dda326b48",
+      "bytes": 65536
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/iec-standalone-20261015-104330-0a13fffe/reu.img": {
+      "sha256": "a63894f4ca4ae76286877d4e4a0afa07aae56ad543ebe0981f7a732d91a82dc9",
+      "bytes": 4194304
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/iec-standalone-20261015-104330-0a13fffe/container.d81": {
+      "sha256": "caa266bc00d31ee10db05f5c397f9530cdca9c471ddf737e1c577062fc3b29f1",
+      "bytes": 819200
+    },
+    "agentworking/scratch/iec-package-repair-review/REVIEW.md": {
+      "sha256": "d42b61b023b2629dc02fcc11d462665782d5d28f4b26c6ad80945b165e3e0f90",
+      "bytes": 6395
+    },
+    "agentworking/scratch/iec-package-repair-review/REVIEW_MANIFEST.json": {
+      "sha256": "21db7bc718a84d30dcd93f84946a35534e83e59fce1921ba4d59eacc061bd7c8",
+      "bytes": 3080
+    },
+    "agentworking/scratch/iec-package-repair-review/minimal-registration.patch": {
+      "sha256": "5676cee32221ec4399afe60fddcd6257ef7176b2ff55e3e5a30af2c09cc3231e",
+      "bytes": 749
+    }
+  }
+}

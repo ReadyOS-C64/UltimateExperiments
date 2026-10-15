@@ -272,3 +272,8 @@ New actual MODE proof2526dfbd binds the new pair, executed report/fonts/assertio
 ## Native timer hint research retained
 
 Standalone both-CIA-model VICE observations and exact rational timing arithmetic are independently reviewed. No production timer implementation or sampling policy changes. C64UFPGA121 alarm latency and production fit remain unproved. Next experiment may observe CIA1ICR while keeping every full sample; an early hint must remain sticky through the exact edge. [Research](../docs/HARDWARE_TIMER_RESEARCH_20261015.md),[evidence](evidence/hardware-timer-research-20261015.json).
+
+
+## Standalone IEC development lane promoted
+
+Normal opt-in Make/Zig integration passes3actualPeddle tests/13scenarios and29host checks. Repaired launcher proves acceptedTCPtuple/livechildPID before everymonitorcommand, including cleanup; generatedoutputs rebuild whenmissing. Fresh root VICE original360KiB import passes720DMA/all4MiB/executable/guard/closure checks in16.549seconds. Existing main22f82091/8a84329c PRGs unchanged. [Evidence](evidence/iec-standalone-20261015.json),[contract](../docs/IEC_STANDALONE_IMPLEMENTATION.md). Production coldIEC/DOS-over-IEC/save/reopen/physicalIEC remainopen.
