@@ -1,3 +1,5 @@
+Opt-in hostrecovery coordinator is now publicbuild_support/c64u_full_recovery.py, exactindependentlyreviewed401759e1. ROOT10focused+full324toolingPASS;446source/tool/productinputs/copiesexact; emulatormaincea5unchanged. It latches returnedretentionfirstexceptionobject before normalization/restoration, thenrethrowsaftercleanupwithreport. Defaultcoordinator/native/dataalgorithms unchanged. Evidence full-recovery-first-cause-root-20261016.json. CIAfresh2Mrunner willcompose thisreviewedbody withdetachedactiveFTP/acceptedwholefilerestore; no new2Macceptanceyet.
+
 # Latest physical recovery checkpoint — 2026-10-16
 
 Original4MiB ac43 recovery COMPLETE. ROOTverifiedall325physicalseal files0ce2e435 and independentlycomparedall4,194,304 restoredbytes tooriginalbackup. ActiveFTPwholefile3880attempt1, strictnativeCRC/knownCLOSE,40feall256chunkcomparison, fullFTPbackup/restore/OWNER,187inputs/copies andsettings/media/reset allPASS. Device released; upper12MiB untouched/uncompared. Original2MiBcampaign remainsFAILED. Evidence native-bulk-active-wholefile-recovery-root-20261016.json. Earlierrecoverypendingentries below arehistorical.

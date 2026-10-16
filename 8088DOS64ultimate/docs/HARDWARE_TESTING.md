@@ -48,3 +48,12 @@ Terminal MODE run092257 passes on98fc/configuredab50 with HDdisabled. Genuine CO
 Run102259 passes22f82091/configuredea93 onPAL/Manual64/firmware3.14 withHDdisabled.33observations/14BIOSkeys/all35DIRentries/9216free/returnedprompt; all3584shadowbytes/code2361/tail1223/A5 andfullfont/bitmap/matrix match. Fresh4MiBbackup andfirstnative-file restore/allbytecompare/configmediareset pass,226.434srestore/430.775swhole. Independentrawaudit1524checks. Preflightcompleted745checks; provisional1105claimretractedwithoriginals preserved. [Evidence](../agentworking/evidence/c64u-native-performance-20261015.json).
 
 Finalscreen107.320s/app+evidence127.714s versusprevious98fc118.151/138.700s areobservedone-runcomparisons, notisolatedspeedup/XTbenchmarks. No newtargetMODE40/80/graphics/humanmatrix/externalHDMI/persistentHD/IEC/floppy-save/upper12MiB acceptance follows.
+
+
+## Background execution and recovery coordinator
+
+All Ultimate FTP/API/test jobs run in fully detached owned background shells, with stdin from `/dev/null`, logs and PID/exit records. One worker owns the device. See [execution policy](../agentworking/HARDWARE_BACKGROUND_EXECUTION.md). The user also permits REST resets/reboots when needed; verify the relevant state afterward.
+
+`build_support/c64u_full_recovery.py` provides an opt-in coordinator around the unchanged REU service/data algorithms. It completes bounded restoration, settings/media checks and reset/resume before re-raising the first exception, with its report attached as `dos64_recovery_report`. A retention hook may expose its caught first exception in optional `interruption`; the coordinator captures that object before report serialization or restoration. Failed reports without an exception remain failed reports. The original default coordinator is unchanged. Ten host tests use an in-memory device oracle; they do not establish physical recovery.
+
+The active-FTP whole-file recovery on2026-10-16 separately passed native3880 CRC/known-close, original40fe comparison of all4MiB, complete FTP readback and settings/media/reset. ROOT compared every restored byte to the original backup. [Evidence](../agentworking/evidence/native-bulk-active-wholefile-recovery-root-20261016.json). The earlier2MiB campaign remains failed.
