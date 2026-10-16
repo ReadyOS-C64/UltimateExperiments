@@ -61,5 +61,9 @@
       "bytes": 4050867,
       "sha256": "bb55f832d77e45adad1c6bd85daeae2ab345b6f29a8ac671bd48d00ad052fb55"
     }
-  }
+  },
+  "site_url": "https://dos64-ultimate-lab.klumsy.chatgpt.site/#video",
+  "site_download_video_button": true,
+  "site_publication_receipt": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/progress-site-actual-gwbasic-video-receipt-20261015.json",
+  "site_publication_receipt_sha256": "4018d54531a23ce5f28be09cb6b3479b19cdafed3a9ec1b7e6c7ba750a9d33db"
 }
