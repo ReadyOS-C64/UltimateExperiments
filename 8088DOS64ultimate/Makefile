@@ -286,3 +286,12 @@ test-reu-observer:
 .PHONY: test-native-save
 test-native-save: build
 	$(DOS64_ZIG) build native-save native-save-dos --summary all
+
+# Complete C image creation is explicit; vendor payload is locally supplied.
+.PHONY: complete-dos-fixture test-complete-fixture
+complete-dos-fixture:
+	@test -n "$(DOS64_COMPLETE_FIXTURE_INPUTS)" -a -n "$(DOS64_COMPLETE_FIXTURE_OUTPUT)" -a -n "$(DOS64_TP_TREE)" || (echo "Set DOS64_COMPLETE_FIXTURE_INPUTS, DOS64_COMPLETE_FIXTURE_OUTPUT and DOS64_TP_TREE"; exit 1)
+	$(DOS64_PYTHON) -B build_support/dos_complete_fixture.py --inputs "$(DOS64_COMPLETE_FIXTURE_INPUTS)" --output "$(DOS64_COMPLETE_FIXTURE_OUTPUT)" --tp-tree "$(DOS64_TP_TREE)"
+test-complete-fixture:
+	@test -n "$(DOS64_COMPLETE_FIXTURE_PACKAGE)" || (echo "Set DOS64_COMPLETE_FIXTURE_PACKAGE to the owned fixture package"; exit 1)
+	DOS64_COMPLETE_FIXTURE_PACKAGE="$(DOS64_COMPLETE_FIXTURE_PACKAGE)" PYTHONPATH=build_support $(DOS64_PYTHON) -B tests/complete_fixture/test_population.py
