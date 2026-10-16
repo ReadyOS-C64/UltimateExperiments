@@ -92,3 +92,11 @@ explicit A/B/C paths. No mounted D81, guessed current directory, firmware REST,
 guest DOS copying, bundled DOS image or preallocated HD template is required.
 
 Current components: public `make setup-release-tests` runs four actual Zig/Peddle descriptor groups and four host-tool groups. Private staging controller faa30 and main cold consumer ce482 have separate native proofs; their composition, runnable START, setup UI and physical acceptance remain pending. Physical bulk32K c5 is accepted with complete recovery; it does not accept this launcher.
+
+## Standalone launcher build
+
+`make start` produces `build/start/START.PRG`, a disabled template with persistent ownerFF/homeFF. `make start-tests` rebuilds a fresh test cohort and runs46 actual6510 groups, including genuine DOS from locally supplied reference images. The build requires cc65/ca65/ld65 and none.lib; model tests also require clang++. DOS64_CC65/CA65/LD65 and DOS64_CC65_LIB may select the toolchain. Neither target contacts the Ultimate.
+
+The launcher uses its native SYS2061 entry, explicit startup CLOSE1/CLOSE2 through the same FILES/UCI engine, coherent CIA elapsed time and Run/Stop cleanup. Its complete18,432-byte PRG loads0801..4FFE, leaving one byte below5000. CRC tables areC900..CCFF, software stackCD00..CFFF and the final112-byte trampoline occupies0200..026F. Default codec flags retain the original maker/decoder bytes; START opts into fast CRC and decoder-only compilation.
+
+Configured A/B model boot verifies the complete main payload and delivers NMIs through both the platform RTI and main5882 before genuine DOS VER/DIR. C backing-file transfer and real Ultimate acceptance remain separate. Native SETUP must validate a release-bound template descriptor before patching persistent home/base/owner and must fully verify the written launcher; the host patch in the tests is not an installer.

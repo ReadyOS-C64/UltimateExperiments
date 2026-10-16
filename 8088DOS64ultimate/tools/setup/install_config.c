@@ -1,3 +1,12 @@
+#ifndef D64_CONFIG_VALIDATE_ONLY
+#define D64_CONFIG_VALIDATE_ONLY 0
+#endif
+#ifndef D64_VALIDATOR_FAST_CRC
+#define D64_VALIDATOR_FAST_CRC 0
+#endif
+#if D64_VALIDATOR_FAST_CRC
+#include "validator_crc.h"
+#endif
 #include "install_config.h"
 #include <string.h>
 
@@ -7,9 +16,16 @@ unsigned char d64_path_source[D64_PATH_BYTES];
 unsigned char d64_path_relative[D64_PATH_BYTES];
 unsigned char d64_path_output[D64_PATH_BYTES];
 unsigned char d64_cfg_error;
+#if !D64_CONFIG_VALIDATE_ONLY
 static unsigned char prepared[D64_CFG_BYTES];
+#endif
 static unsigned char joined[D64_PATH_BYTES];
 
+#if D64_VALIDATOR_FAST_CRC
+static unsigned long crc32(const unsigned char *p,unsigned int n) {
+    return d64_fast_crc(p,n);
+}
+#else
 static unsigned long crc32(const unsigned char *p, unsigned int n) {
     unsigned long crc = 0xffffffffUL;
     unsigned char bit;
@@ -20,6 +36,8 @@ static unsigned long crc32(const unsigned char *p, unsigned int n) {
     }
     return crc ^ 0xffffffffUL;
 }
+
+#endif
 
 static unsigned char fail(unsigned char error) {
     d64_cfg_error = error;
@@ -101,6 +119,7 @@ static unsigned char fields_valid(const unsigned char *p) {
     return 1u;
 }
 
+#if !D64_CONFIG_VALIDATE_ONLY
 unsigned char d64_config_make(void) {
     unsigned long crc;
     unsigned char i;
@@ -117,6 +136,9 @@ unsigned char d64_config_make(void) {
     /* Reserved bytes cannot smuggle unvalidated settings into a record. */
     prepared[526] = prepared[527] = 0u;
     crc = crc32(prepared, D64_CFG_CRC);
+#if D64_VALIDATOR_FAST_CRC
+    if(c32_error)return fail(2u);
+#endif
     for (i = 0; i < 4u; ++i) {
         prepared[D64_CFG_CRC+i] = (unsigned char)crc;
         crc >>= 8;
@@ -124,6 +146,8 @@ unsigned char d64_config_make(void) {
     memcpy(d64_cfg_output, prepared, sizeof(prepared));
     return 1u;
 }
+
+#endif
 
 unsigned char d64_config_validate(void) {
     unsigned long crc;
@@ -139,6 +163,9 @@ unsigned char d64_config_validate(void) {
     for (i = D64_CFG_REU_BYTES+4u; i < D64_CFG_CRC; ++i)
         if (d64_cfg_input[i]) return fail(1u);
     crc = crc32(d64_cfg_input, D64_CFG_CRC);
+#if D64_VALIDATOR_FAST_CRC
+    if(c32_error)return fail(2u);
+#endif
     for (i = 0; i < 4u; ++i) {
         if (d64_cfg_input[D64_CFG_CRC+i] != (unsigned char)crc) return fail(2u);
         crc >>= 8;

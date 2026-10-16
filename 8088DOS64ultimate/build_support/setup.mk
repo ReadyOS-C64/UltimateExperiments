@@ -29,3 +29,10 @@ build/setup-release.prg: build/setup-config-entry.o build/setup-release-code.o t
 setup-release-tests: setup-release
 	$(DOS64_ZIG) build --build-file build_setup_release_tests.zig test --summary all
 	$(DOS64_PYTHON) -B tests/tooling/test_setup_release_descriptor.py -v
+
+# Folder-aware native launcher; default template remains disabled until SETUP.
+.PHONY: start start-tests
+start:
+	$(DOS64_PYTHON) -B build_support/start_launcher.py
+start-tests: build
+	$(DOS64_PYTHON) -B build_support/start_launcher.py --test

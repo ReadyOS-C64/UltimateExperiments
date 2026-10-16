@@ -1,3 +1,12 @@
+# Next work — 2026-10-16
+
+1. Commit the independently reviewed public START build and tests; qualify it on the real Ultimate using a fresh owned A/B installation. CIA remains the only hardware worker. REST-only staging must establish complete source and saved-file bytes without relying on unhealthy FTP.
+2. Integrate the repaired native selection UI, private browser authority and agreed D64Q capsule into a resident SETUP dispatcher. Preserve selected paths before retiring UI; implement explicit repeated A/B/C writer lifecycle and cooperative keyboard cancellation. Finish fully verified native outputs, checked D64S launcher patch and configuration-last publication.
+3. Continue independent interpreter/compiled-block performance work against genuine DOS, preserving every timing, interrupt and memory-coherence boundary. Installer speedups do not satisfy the XT target.
+4. Complete user-facing Save/Discard/Swap, C-online contexts, physical graphics/human tests, VICE/IEC and the rest of the original plan.
+
+Current main `cea57480`, native START `8b68d3b2`; 46 START groups, 10 default codec Zig groups, four release host checks and 324 tooling checks pass. SETUP selection is a reviewed private component, not a shipped installer. Keep all failed hardware/ownership/filename/first-cause proofs. No push. Older next-work entries below are historical.
+
 Latest: physicaloriginal4MiB ac43fullyrestored/ROOTall325seal+allbytesverified; device released. CIAonlynextcontrol: detachedwrapper+independenta204review thenfresh2MiBactiveFTP/nativewholefilerestorequalification. AllfutureUltimateFTP/API shellsfullydetached; occasionalRESTfullresetauthorizedwhenneeded. ActualSTART36b66 NOT_READY untilsharedCLOSE1/2unknownfirmwareownership+fastvalidatorCRC controls; SETUPoverlaymanagerfitswithSTATEB000, resident~2KiB dispatcherheadroom/privateBSS158B beforecloser. ROOTnextinstallercoordinator/UI after managerseal. Source/recoveryfactsinnewSTATUStop; olderpendingentrieshistorical.
 
 Current: ROOTcoldpromotion passed500/314+11/14/1(+14repeatedA-B),444closure, cea5/13a8.2MiBFAILED andoriginalREU recoveryPENDING; CIAexclusive deviceownership. Review frozen3880 whole-filefallback first. Memorysealsfastcontroller/actuallowDMA/NMI/genuineDOS; compiledtests3Fsourcecache. ROOTnext standaloneSTART entry/platform/persistenthome/UI, thenSETUPcoordinator/publication anddiskSaveSwapUI.50/85%XTgoalunmet. No push. See newSTATUS top before historicalitemsbelow.

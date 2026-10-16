@@ -1,3 +1,9 @@
+#ifndef D64_VALIDATOR_FAST_CRC
+#define D64_VALIDATOR_FAST_CRC 0
+#endif
+#if D64_VALIDATOR_FAST_CRC
+#include "validator_crc.h"
+#endif
 #include "release.h"
 #include <string.h>
 unsigned char d64_release_input[64], d64_release_output[64];
@@ -9,6 +15,11 @@ static unsigned int word(unsigned char n) {
 static unsigned long wide(unsigned char n) {
     return (unsigned long)word(n) | ((unsigned long)word(n+2u) << 16);
 }
+#if D64_VALIDATOR_FAST_CRC
+static unsigned long crc(void) {
+    return d64_fast_crc(d64_release_input,60u);
+}
+#else
 static unsigned long crc(void) {
     unsigned long v=0xffffffffUL;
     unsigned char n,b;
@@ -18,6 +29,8 @@ static unsigned long crc(void) {
     }
     return v^0xffffffffUL;
 }
+#endif
+
 static unsigned char fail(unsigned char n) { d64_release_error=n; return 0; }
 static unsigned char span(unsigned long at,unsigned int len,unsigned long size,
                            unsigned int lo,unsigned int hi) {
@@ -38,6 +51,9 @@ unsigned char d64_release_validate(void) {
        d64_release_input[4]!=1u || d64_release_input[5]!=1u || word(6)!=64u)
         return fail(1);
     if(crc()!=wide(60)) return fail(2);
+#if D64_VALIDATOR_FAST_CRC
+    if(c32_error)return fail(2);
+#endif
     if(word(16)!=0x0801u || word(26)!=0x5882u ||
        wide(40)!=0x3e0000UL || wide(44)!=0x3ff000UL || word(48)!=576u ||
        d64_release_input[50]!=32u || d64_release_input[51]!=0x40u ||
