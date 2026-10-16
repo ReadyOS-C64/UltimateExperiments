@@ -118,3 +118,5 @@ A separate [fast/slow fetch comparison](../agentworking/evidence/dos-fetch-diffe
 ## Verified direct dispatch table
 
 The integrated dispatcher uses 256 low/high handler addresses and reloads opcode A before entry. Prefix/REP continuation, explicit unsupported forms, BIOS keyboard wait and fault logic retain their contracts. CPU object CODE 2,179→1,770 (−409), RODATA 25→537 (+512), BSS 24 unchanged: net 103 MAIN bytes. Combined overlays/layout pass all 5,701 pinned hardware cases and 298 native tests. Full genuine DOS state/939 screens remains identical; measured CPU-step work drops 8.3436%. Exact [combined evidence](../agentworking/evidence/overlays-dispatch-20261015.json) supersedes the earlier private-only prototype status. No physical XT-speed claim.
+
+2026-10-16: Fixed absent8087 original8088 profile decodesESC D8..DF, performs dummywordREAD for memoryforms, never fabricates FPU state or writesnumericresults. WAIT9B stalls/yields atoriginalIP and consumes instructioninterruptshadow afterfirstwaittest, allowingeligiblePICinterrupt; IRETreturns toWAIT. No present/dynamic8087 model. ROOT4589/a827440native+597quickcorpus; numericalFPU outofscope.

@@ -2,7 +2,7 @@
 
 Planning and implementation of a C64 Ultimate program that boots the supplied **real MS-DOS 3.3**, emulates the 8086/8088 instruction set, and provides 640 KiB of conventional PC memory through the REU. Target hardware is the user's 64 MHz C64U with **4 MiB or larger REU**.
 
-**Status: current build `d883c678` boots genuine DOS 3.3 and passes COPY plus complete floppy SAVE on the physical C64U at Manual64 MHz.** Keyboard and40/80 text were accepted on earlier builds; the live GW-BASIC game recording is now verified. DOS owns INT21h,FAT and application loading. [Current physical evidence](agentworking/evidence/c64u-complete-split-save-20261015.json).
+**Status: last physically accepted build `d883c678` boots genuine DOS 3.3 and passes COPY plus complete floppy SAVE on the physical C64U at Manual64 MHz.** Keyboard and40/80 text were accepted on earlier builds; the live GW-BASIC game recording is now verified. DOS owns INT21h,FAT and application loading. [Current physical evidence](agentworking/evidence/c64u-complete-split-save-20261015.json).
 
 The current target (`d883c678`/`88669999`) passes genuine DOS COPY and complete whole-floppy SAVE on the physical Ultimate at Manual64/PAL. Each sector is written as two256-byte transfers, then all368640bytes are reopened and compared; independent retrieval before/after recovery matches the retained REU image. Complete4MiB recovery, settings/media/reset and all3446 frozen inputs/copies passed. The development host uses acknowledged load-only followed by observed BASIC READY and SYS2061. Native Save/Discard controls remain pending. [Physical SAVE acceptance](agentworking/evidence/c64u-complete-split-save-20261015.json).
 
@@ -69,6 +69,8 @@ Details: [storage](docs/STORAGE.md), [display and keyboard](docs/DISPLAY_INPUT.m
 - Prove the actual assembly through Zig assertions in Peddle, then VICE with REU and D81/IEC, then physical C64U at 1/16/64 MHz. Warp-mode VICE is a development accelerator, not a 64 MHz timing model.
 - Measure near-4.77 MHz XT performance early. It remains an objective, not an established capability.
 
+The current assembly successor `45896d10` / `a8274e7c` adds verified split HD writes, XT palette calls and correct absent-8087 ESC/WAIT behavior;440 Peddle tests,298 tooling tests and597 quick CPU cases pass. A complete20MiB C image with allDOSfloppies, GW-BASIC/Hangman and Turbo Pascal7.01 is staged on the Ultimate. Native physicalCdrive/editor acceptance is pending. [Installation and evidence](docs/TURBO_PASCAL.md).
+
 ## Continuation
 
 All project working records live here, under lowercase [agentworking](agentworking/STATUS.md), never in the enclosing repository's `agentworking` folder. Start with [STATUS](agentworking/STATUS.md), [NEXT_SLICE](agentworking/NEXT_SLICE.md), and [DECISIONS](agentworking/DECISIONS.md). [AGENTS.md](AGENTS.md) specifies the implementation workflow.
@@ -77,4 +79,4 @@ The three user-provided images remain unchanged in `reference/`. Their read-only
 
 The opt-in genuine DOS CGA probe now passes modes4/5/6 through DOS loading and an independent full-pixel oracle. This is model evidence; physical graphics capture remains separate. [Evidence](agentworking/evidence/genuine-cga-workflow-20261015.json).
 
-[Live progress lab](https://dos64-ultimate-lab.klumsy.chatgpt.site) — interactive diagrams, verified screenshots and highlighted BASIC source. [Publication/update process](docs/PROGRESS_SITE.md). Complete physical game video is pending the paced recording retry.
+[Live progress lab](https://dos64-ultimate-lab.klumsy.chatgpt.site) — interactive diagrams, verified screenshots and highlighted BASIC source. [Publication/update process](docs/PROGRESS_SITE.md). The actual game video and its download button are published.

@@ -46,7 +46,6 @@ cpu_no_store: .res 1
 
 .segment "RODATA"
 cpu_byte_registers: .byte 0,2,4,6,1,3,5,7
-cpu_stack_opcodes: .byte $06,$07,$0E,$16,$17,$1E,$1F,$9A,$9C,$9D,$9E,$9F,$C2,$C3,$CA,$CB,$E8
 
 .segment "CODE"
 dos64_cpu_init:
@@ -168,7 +167,7 @@ cpu_table_lo:
     .byte <cpu_group_immediate,<cpu_group_immediate,<cpu_group_immediate,<cpu_group_immediate,<cpu_test_rm,<cpu_test_rm,<dos64_indirect_execute,<dos64_indirect_execute
     .byte <cpu_move_rm,<cpu_move_rm,<cpu_move_rm,<cpu_move_rm,<cpu_move_segment,<cpu_lea,<cpu_move_segment,<dos64_indirect_execute
     .byte <cpu_exchange,<cpu_exchange,<cpu_exchange,<cpu_exchange,<cpu_exchange,<cpu_exchange,<cpu_exchange,<cpu_exchange
-    .byte <dos64_indirect_execute,<dos64_indirect_execute,<dos64_stack_execute,<cpu_table_unsupported,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute
+    .byte <dos64_indirect_execute,<dos64_indirect_execute,<dos64_stack_execute,<cpu_wait_test,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute,<dos64_stack_execute
     .byte <cpu_moffs,<cpu_moffs,<cpu_moffs,<cpu_moffs,<dos64_strings_execute,<dos64_strings_execute,<dos64_strings_execute,<dos64_strings_execute
     .byte <dos64_indirect_execute,<dos64_indirect_execute,<dos64_strings_execute,<dos64_strings_execute,<dos64_strings_execute,<dos64_strings_execute,<dos64_strings_execute,<dos64_strings_execute
     .byte <cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate,<cpu_mov_immediate
@@ -176,7 +175,7 @@ cpu_table_lo:
     .byte <cpu_table_unsupported,<cpu_table_unsupported,<dos64_stack_execute,<dos64_stack_execute,<cpu_load_far,<cpu_load_far,<cpu_move_rm_immediate,<cpu_move_rm_immediate
     .byte <cpu_table_unsupported,<cpu_table_unsupported,<dos64_stack_execute,<dos64_stack_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute
     .byte <dos64_shifts_execute,<dos64_shifts_execute,<dos64_shifts_execute,<dos64_shifts_execute,<dos64_adjust_execute,<dos64_adjust_execute,<dos64_adjust_execute,<dos64_adjust_execute
-    .byte <cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported,<cpu_table_unsupported
+    .byte <cpu_escape,<cpu_escape,<cpu_escape,<cpu_escape,<cpu_escape,<cpu_escape,<cpu_escape,<cpu_escape
     .byte <dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<dos64_control_execute,<cpu_io,<cpu_io,<cpu_io,<cpu_io
     .byte <dos64_stack_execute,<cpu_near_jump,<cpu_far_jump,<cpu_short_jump,<cpu_io,<cpu_io,<cpu_io,<cpu_io
     .byte $81,<cpu_table_unsupported,$80,$80,<cpu_table_halt,<cpu_cmc,<dos64_math_execute,<dos64_math_execute
@@ -202,7 +201,7 @@ cpu_table_hi:
     .byte >cpu_group_immediate,>cpu_group_immediate,>cpu_group_immediate,>cpu_group_immediate,>cpu_test_rm,>cpu_test_rm,>dos64_indirect_execute,>dos64_indirect_execute
     .byte >cpu_move_rm,>cpu_move_rm,>cpu_move_rm,>cpu_move_rm,>cpu_move_segment,>cpu_lea,>cpu_move_segment,>dos64_indirect_execute
     .byte >cpu_exchange,>cpu_exchange,>cpu_exchange,>cpu_exchange,>cpu_exchange,>cpu_exchange,>cpu_exchange,>cpu_exchange
-    .byte >dos64_indirect_execute,>dos64_indirect_execute,>dos64_stack_execute,>cpu_table_unsupported,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute
+    .byte >dos64_indirect_execute,>dos64_indirect_execute,>dos64_stack_execute,>cpu_wait_test,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute,>dos64_stack_execute
     .byte >cpu_moffs,>cpu_moffs,>cpu_moffs,>cpu_moffs,>dos64_strings_execute,>dos64_strings_execute,>dos64_strings_execute,>dos64_strings_execute
     .byte >dos64_indirect_execute,>dos64_indirect_execute,>dos64_strings_execute,>dos64_strings_execute,>dos64_strings_execute,>dos64_strings_execute,>dos64_strings_execute,>dos64_strings_execute
     .byte >cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate,>cpu_mov_immediate
@@ -210,7 +209,7 @@ cpu_table_hi:
     .byte >cpu_table_unsupported,>cpu_table_unsupported,>dos64_stack_execute,>dos64_stack_execute,>cpu_load_far,>cpu_load_far,>cpu_move_rm_immediate,>cpu_move_rm_immediate
     .byte >cpu_table_unsupported,>cpu_table_unsupported,>dos64_stack_execute,>dos64_stack_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute
     .byte >dos64_shifts_execute,>dos64_shifts_execute,>dos64_shifts_execute,>dos64_shifts_execute,>dos64_adjust_execute,>dos64_adjust_execute,>dos64_adjust_execute,>dos64_adjust_execute
-    .byte >cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported,>cpu_table_unsupported
+    .byte >cpu_escape,>cpu_escape,>cpu_escape,>cpu_escape,>cpu_escape,>cpu_escape,>cpu_escape,>cpu_escape
     .byte >dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>dos64_control_execute,>cpu_io,>cpu_io,>cpu_io,>cpu_io
     .byte >dos64_stack_execute,>cpu_near_jump,>cpu_far_jump,>cpu_short_jump,>cpu_io,>cpu_io,>cpu_io,>cpu_io
     .byte $80,>cpu_table_unsupported,$80,$80,>cpu_table_halt,>cpu_cmc,>dos64_math_execute,>dos64_math_execute
@@ -231,7 +230,7 @@ cpu_io:
     sta dos64_io_value+1
     lda dos64_cpu_opcode
     and #8
-    bne @dx
+    bne cpu_io_dx
     jsr cpu_fetch8
     jcs cpu_memory_error
     sta dos64_io_port
@@ -239,17 +238,26 @@ cpu_io:
     sta dos64_io_port+1
     lda dos64_cpu_opcode
     cmp #$E6
-    bne @cycle
+    bne cpu_io_cycle
     ; Private byte OUT callbacks require their exact owned synthetic ROM gate.
     lda dos64_io_port
     jsr dos64_bios_port
-    bcc @bios_result
+    bcc cpu_io_bios_result
     lda dos64_bios_host_error
     jne cpu_memory_error
-    jmp @cycle
-@bios_result:
+    jmp cpu_io_cycle
+cpu_io_bios_result:
     lda dos64_bios_waiting
     jeq cpu_complete
+    jmp cpu_wait
+cpu_wait_test:
+    ; A completed WAIT TEST cycle ends the one-instruction IRQ inhibition,
+    ; just as a completed REP primitive does, without retiring WAIT itself.
+    lda #0
+    sta dos64_cpu_irq_shadow
+cpu_wait:
+    ; Fixed absent8087 TEST inactive: WAIT yields at its original IP forever,
+    ; permitting native scheduler/IRQ work without retiring a guest instruction.
     lda cpu_start_ip
     sta dos64_guest+G_IP
     lda cpu_start_ip+1
@@ -257,33 +265,41 @@ cpu_io:
     lda #1
     sta dos64_cpu_yield
     jmp cpu_return
-@dx:
+cpu_io_dx:
     lda dos64_guest+G_DX
     sta dos64_io_port
     lda dos64_guest+G_DX+1
     sta dos64_io_port+1
-@cycle:
+cpu_io_cycle:
     lda dos64_cpu_opcode
     and #2
-    beq @read
+    beq cpu_io_read
     jsr dos64_io_write
     jcs cpu_unsupported
     jmp cpu_complete
-@read:
+cpu_io_read:
     jsr dos64_io_read
     jcs cpu_unsupported
     lda dos64_io_value
     sta dos64_guest+G_AX
     lda dos64_io_width
-    beq @done
+    beq cpu_io_done
     lda dos64_io_value+1
     sta dos64_guest+G_AX+1
-@done:
+cpu_io_done:
     jmp cpu_complete
 
-cpu_unsupported:
-    lda #2
-    jmp cpu_fault
+cpu_unsupported = cpu_table_unsupported
+
+; Original8088 ESC D8..DF is decoded even without8087. Memory forms perform
+; a dummy word READ through the ordinary coherent guest bus; no form writes
+; guest memory, registers or FLAGS, and no coprocessor status is invented.
+cpu_escape:
+    jsr cpu_decode_word
+    jcs cpu_memory_error
+    jsr dos64_operand_read
+    jcs cpu_memory_error
+    jmp cpu_complete
 
 cpu_set_width:
     lda dos64_cpu_opcode
@@ -293,8 +309,7 @@ cpu_set_width:
     rts
 cpu_decode:
     jsr cpu_set_width
-    jsr dos64_decode_rm
-    rts
+    jmp dos64_decode_rm
 cpu_select_reg:
     lda dos64_modrm_reg
     jsr dos64_map_register
@@ -742,8 +757,7 @@ cpu_far_jump:
 cpu_cmc:
     lda dos64_guest+G_FLAGS
     eor #1
-    bne cpu_low_flags
-    beq cpu_low_flags
+    jmp cpu_low_flags
 cpu_clc:
     lda dos64_guest+G_FLAGS
     and #$FE
@@ -809,8 +823,7 @@ cpu_error_return:
     sec
     rts
 
-cpu_fetch8:
-    jmp dos64_fast_fetch
+cpu_fetch8 = dos64_fast_fetch
 cpu_fetch8_slow:
     lda dos64_guest+G_CS
     sta dos64_segment

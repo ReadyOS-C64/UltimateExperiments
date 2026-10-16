@@ -1,0 +1,29 @@
+{
+  "status": "ROOT_ACCEPTED_ESC_WAIT_PALETTE_HD_COMPOSITION",
+  "runtime_sha256": "45896d100ddf7891e76ba18ac4be0b7a53db1d435de628cb0060514ec61b1af0",
+  "unit_sha256": "a8274e7c3ce8ed011045b93dc45fb5b732d2f97b665cbfac8c99b1cfb52a5010",
+  "root_default": "440Peddle/298tooling/597quick8088corpus; bothmemoryverifierspass",
+  "source_files_and_immutable_copies": 390,
+  "source_closure_sha256": "d3fb717492654e86db74b1c084004111fa2d74f14959c98eaa89ca3335120b3b",
+  "build_manifest_sha256": "7e1b91300624c28afc5706c4c4d6565a24153ce2f66ff585335040b0aab0ff4e",
+  "default_log_sha256": "2114cccbb73a3c7e5530ed209f27e55450390266ddabb200b86a0fc1748eb816",
+  "author_wait_shadow_manifest": "781695c9a3daf028eb2e704a90e8cc59bf713f5a674017f536703a264abdc4c5",
+  "peer_wait_shadow_manifest": "5e7756872008880738cedbd74f0266a549ed726339d9d30de38c97879ba9a526",
+  "old_ESC_predecessor": "a591 remainsNOTREADY independent217c247c proves STI;WAIT IRQshadow defect",
+  "contract": "Absent8087 ESC decodesModRM and dummywordread; no fake FPU or guestwrites. WAIT stalls/yields atoriginalIP, consumes IRQshadow after firstwaittest, permits eligiblePICinterrupt. SyntheticBIOSwait preservespriorbehavior. Allordinaryfulltimer/IRQ/REP boundariesretained.",
+  "independent_checks": "58direct CPU/ALU/BIOS/ESC/fetch groups incl597quickcorpus and old/newPICcounterexample; acceptedpalette31+4+35, hardwareunaltered",
+  "layout": {
+    "MAIN_free_runtime": 1,
+    "MAIN_free_unit": 0,
+    "HDBIOS_bytes": 2866,
+    "HDBIOS_free": 718,
+    "HDCODE_bytes": 1472,
+    "DEVICE_bytes": 4082,
+    "DEVICESTATE_bytes": 1009,
+    "ZP_runtime_bytes": 36
+  },
+  "combined_TPC_native_proof": "pendingfresh4589/a827proof; earlier9b7actualTPC/BASICproof is target-specific",
+  "physical_HD_accepted": false,
+  "TURBO_IDE_accepted": false,
+  "limitations": "No FPU numerical support; fixedabsentTEST; CGA3D4/3D5probe supportunderprivateimplementation; no speedpromotion."
+}

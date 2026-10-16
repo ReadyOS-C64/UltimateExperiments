@@ -4,6 +4,7 @@ const Fixture = host.Fixture;
 test { _ = @import("reu.zig"); }
 test { _ = @import("memory.zig"); }
 test { _ = @import("cpu.zig"); }
+test { _ = @import("escape.zig"); }
 test { _ = @import("alu.zig"); }
 test { _ = @import("stack.zig"); }
 

@@ -321,11 +321,14 @@ test "fast fetch improves a complete register and taken-branch guest workload wi
     defer p.deinit();
     const code = [_]u8{ 0xb8, 0, 0, 0xbb, 1, 0, 0xb9, 0x80, 0, 0x01, 0xd8, 0xe2, 0xfc, 0x3d, 0x80, 0, 0xf4 };
     for (code, 0..) |byte, i| p.backing(0x100 + @as(u32, @intCast(i)), byte);
-    // Route this second machine's CPU wrapper to the independent retained
+    // Route this second machine's aliased fetch entry to the independent retained
     // slow assembly helper. Host patching selects the implementation only;
     // all guest dispatch, arithmetic, branches and memory stay real assembly.
     const wrapper = try p.slow.symbol("cpu_fetch8");
-    try std.testing.expectEqual(@as(u8, 0x4c), p.slow.peek(wrapper));
+    try std.testing.expectEqual(try p.slow.symbol("dos64_fast_fetch"), wrapper);
+    try std.testing.expectEqual(@as(u8, 0xa5), p.slow.peek(wrapper));
+    try std.testing.expectEqual(@as(u8, @intCast(try p.slow.symbol("fetch_valid"))), p.slow.peek(wrapper + 1));
+    p.slow.poke(wrapper, 0x4c);
     word(&p.slow, wrapper + 1, try p.slow.symbol("cpu_fetch8_slow"));
     try routeSlowWord(&p.slow);
     const golden = try std.testing.allocator.alloc(u8, 1024 * 1024);

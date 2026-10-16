@@ -1,3 +1,11 @@
+# Current: accepted ESC/WAIT + palette + HD composition — 2026-10-16
+
+ROOT45896d10/a8274e7c passes440actualPeddle,298tooling,597quick8088 cases and both memoryverifiers. Immutable source/productcopies in runs/esc-palette-root-promotion-20261016. Absent8087 ESC dummyword semantics supported; WAIT stalls atoriginalIP but consumes interruptshadow afterfirsttest, allowing eligiblePICIRQ. SyntheticBIOSwait preservesoldbehavior. Independent58directgroups acceptcorrectedsuccessor781695c9/5e775687; earliera591 remainsNOTREADY217c247c. Palette/HDrepairsalreadyaccepted. NoCPUtimer/JITpolicy relaxation.
+
+Complete20MiB C andregularA are actually uploaded and fullybyte-compared onUltimate in /usb1/DOS64_TEST/ac-media-20261016-081300. Authoritative stagedrecord runs/ac-media-20261016-081300-readback/ac-media-staging.json includesexplicitadoption ofpriorROOTmetadatafailure; originalfailedrecordunchanged. Originalac43full4MiB restored andverified/settings/media/reset/5FTP inputs; noactiveC64app/sourcefreeze. Upper12MiBuntouched.
+
+Currentparallelwork: freshcombined4589/A827 actualDOS/TPC/BASICpurposeproof; originalTURBOIDE3D4/3D5 CRTCrepair afterretainedrealEEfailure; actualA+Cdevelopmenthost/readonlyCLOSE-reopenhelpertests; bounded4x64chunkDelta recoveryderivative because single600s restorecannotwriteall4MiB evenhealthy. No physicalCdriveboot/nativewrite/reopen orIDEacceptance yet. Nextphysicalhostrequiresexactnewsource/PRGs/proof, completeHD/FAT/REUretentionandcleanup. Localcommitsonly/nopush.
+
 # Current: complete C media and ROOT repairs committed; original REU recovered — 2026-10-16
 
 ROOT44d54c35/2635a47e = independentlyaccepted HDsplit256 +XTpalette. Localcommits8a7586f,d63ca74,d5052d9 (plus scope/media records); no push. CompleteC20MiB ac1cea54/regularA bb75cdeb reproduced exactly by committed helper tools,16tests plus independentall58archive/233TPpayload checks. CompleteTPtree has230unmodifiedvendor+3generatedsupport files, not233vendorfiles. Actualprivate9b7TPCcompiles/runsHELLO exactlyreference; BASICfromC/SYSTEM and allinitial360payload/FATchecks pass.
