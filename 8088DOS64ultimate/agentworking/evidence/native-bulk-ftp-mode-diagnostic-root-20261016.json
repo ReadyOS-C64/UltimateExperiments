@@ -1,0 +1,24 @@
+{
+  "status": "OBSERVED_PHYSICAL_FTP_MODE_DIFFERENCE_READONLY",
+  "expected_file_sha256": "40fe690953c245c8093c7cd5e5cb91684df7290602d8afa44dbd2e0b5b30d09e",
+  "expected_bytes": 592,
+  "passive": {
+    "path": "scratch/native-bulk-ftp-readonly-diagnostic/RESULT.json",
+    "sha256": "583ab990be588f102b4ee376a89d9fa7add0a06c26db7656ce08231c841914de",
+    "received": 0,
+    "error": "ConnectionResetError54 at datarecv",
+    "final226": true
+  },
+  "active_PORT": {
+    "path": "scratch/native-bulk-ftp-active-readonly-diagnostic/RESULT.json",
+    "sha256": "ff0d56fdc4692b0caab8d9e16f53f0aee27d9412e68a0401890668741422479a",
+    "received": 592,
+    "exact_sha256": true,
+    "normal_EOF": true,
+    "final226": true
+  },
+  "same_owned_remote_file": true,
+  "one_RETR_each": true,
+  "C64_CPU_REU_configuration_writes": false,
+  "conclusion": "ActiveFTP supports a fresh recovery transport successor; final226 alone is insufficient. Underlying cause unproven. Neither2MiBcampaign norrestoration accepted."
+}
