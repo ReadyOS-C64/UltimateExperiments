@@ -1,3 +1,5 @@
+Current: ROOTcoldpromotion passed500/314+11/14/1(+14repeatedA-B),444closure, cea5/13a8.2MiBFAILED andoriginalREU recoveryPENDING; CIAexclusive deviceownership. Review frozen3880 whole-filefallback first. Memorysealsfastcontroller/actuallowDMA/NMI/genuineDOS; compiledtests3Fsourcecache. ROOTnext standaloneSTART entry/platform/persistenthome/UI, thenSETUPcoordinator/publication anddiskSaveSwapUI.50/85%XTgoalunmet. No push. See newSTATUS top before historicalitemsbelow.
+
 Latest steering:128KiBphysicald02ec698passed+fullrecovery,2MiB76bd6b26nowTerminal1594/PID45580. CIA soledeviceowner. Controllerfaa30 isNOT_READY by05aa64e7; memoryagent fixesprivateleaf-result/firstcause thenactualmainintegration. Compiledagent sourcecache followssealedfastwriter22bf (42actual,20MiBfullcollection/cross16nativeproof), usingdisjointREU3F0000..3F7FFF. ROOTneedsreview/promotecoldce482, finishedSTART/frontend andSETUPpublication. Publicreleasecomponent99c5 isready/committed separately.
 
 # Immediate next — 2026-10-16

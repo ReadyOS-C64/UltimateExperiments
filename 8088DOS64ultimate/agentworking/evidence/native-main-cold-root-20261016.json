@@ -1,0 +1,36 @@
+{
+  "status": "PASS_MODEL_MAIN_COLD_PROMOTION",
+  "author_manifest_sha256": "ce482704473f3e56d8db775582817dbf41ab0c54b3527da253d3a5febdb5c499",
+  "source_tool_product_inputs_unchanged": 444,
+  "exact_copies": 444,
+  "base_tests": 500,
+  "tooling_tests": 314,
+  "focused_loader": 11,
+  "focused_legacy_startup": 14,
+  "genuine_preloaded_dos": 1,
+  "repeated_dual_floppy_controls": 14,
+  "seed_focused": 65108088,
+  "products": {
+    "dos64.prg": {
+      "sha256": "cea5748012ad0d70e260a6738b33cc522e6e96e6c19a7438c1892bd0e2584612",
+      "bytes": 47105
+    },
+    "dos64.labels": {
+      "sha256": "e472fe122afb6761ea5137600496727e93f63749cbd52f31bce3dd6d0cc1b9e2",
+      "bytes": 72600
+    },
+    "dos64-tests.prg": {
+      "sha256": "13a82a459dc33ac9d1c32a1cc1e26f2c6e39189c97c16b203bb824cce805098e",
+      "bytes": 47105
+    },
+    "dos64-tests.labels": {
+      "sha256": "082dc0620fe2b64fceacfc2db4f8287ba68e14e087455df1a68eb109298398b2",
+      "bytes": 74927
+    }
+  },
+  "physical_acceptance": false,
+  "standalone_START_SETUp_complete": false,
+  "root_delta": "incremental loader include dependencies and named make loader test targets; native bytes reproduce author",
+  "logs": "scratch/native-main-cold-root-review-20261016",
+  "source_review": "Native assembly and lifetime/map/packager changes independently reviewed; source impact17 files preserved, ROOT adds only build dependencies and named gates."
+}

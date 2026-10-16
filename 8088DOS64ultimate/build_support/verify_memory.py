@@ -22,6 +22,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
               "CODE": (0x080D, 0x3FFF), "RODATA": (0x080D, 0x3FFF),
               "TESTCODE": (0x080D, 0x3FFF), "ZEROPAGE": (0x20, 0xDF),
               "DEVICECODE": (0x5000, 0x5FFF),
+              "LOADERCOLD": (0x4000,0x43FF), "LOADERADOPT": (0x6000,0x617F),
               "IMPORTCODE": (0x7000, 0x7FFF),
               "COLDINIT": (0x7000,0x7FFF), "COLDRODATA": (0x7000,0x7FFF), "UNITCOLD": (0x7401,0x7FFF),
               "NATIVESTATE": (0x080D,0x3FFF), "INPUTCODE": (0xC900,0xCFFF),
@@ -57,7 +58,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     runtime = "__DEVICE_START__" in symbols
     load = {"layout": "runtime" if runtime else "standalone", "start": 0x0801,
             "linked_file_bytes": sum(s["bytes"] for s in segments
-                                     if s["name"] in ("BASIC", "CODE", "RODATA", "TESTCODE", "DEVICECODE", "IMPORTCODE", "COLDINIT", "COLDRODATA", "UNITCOLD", "NATIVESTATE", "NARROWFONT", "FULLFONT")),
+                                     if s["name"] in ("BASIC", "CODE", "RODATA", "TESTCODE", "DEVICECODE", "IMPORTCODE", "COLDINIT", "COLDRODATA", "UNITCOLD", "NATIVESTATE", "LOADERCOLD", "NARROWFONT", "FULLFONT")),
             "padding": [], "payload_checked": prg is not None}
     main_end = max((s["end"] + 1 for s in segments
                     if s["name"] in ("BASIC", "CODE", "RODATA", "TESTCODE", "NATIVESTATE")), default=0x0801)
@@ -80,7 +81,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
                 errors.append(f"{name}: expected ${value:04X}, got {symbols.get(name)}")
         load["end_exclusive"] = device_end
         for name, first, last in (("unused_main", main_end, 0x4000),
-                                  ("display_matrix_and_guard_zero", 0x4000, 0x4400 if any(x["name"]=="FULLFONT" for x in segments) else 0x5000)):
+                                  ("display_matrix_and_guard_zero", max((s['end']+1 for s in segments if s['name']=='LOADERCOLD'),default=0x4000), 0x4400 if any(x["name"]=="FULLFONT" for x in segments) else 0x5000)):
             if first < last:
                 load["padding"].append({"name": name, "start": first,
                                         "end": last-1, "bytes": last-first,
@@ -91,6 +92,27 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             errors.append("Runtime-only segments require the contiguous runtime layout")
     overlays = {seg["name"]: seg for seg in segments
                 if seg["name"] in ("FILECODE", "RENDERCODE", "INPUTCODE","IRQMAIN","GFXCODE","HDCODE","DISKCODE")}
+    loader=[s for s in segments if s['name']=='LOADERCOLD']
+    adopt=[s for s in segments if s['name']=='LOADERADOPT']
+    load['cold_loader']=None
+    if loader or adopt:
+        if len(loader)!=1 or len(adopt)!=1 or 'FILECODE' not in overlays:
+            errors.append('Cold loader requires paired phase1 and trailing FILE helper')
+        else:
+            engine=overlays['FILECODE'];helper=adopt[0];core=loader[0]
+            source=0x6010+engine['bytes'];far=0x340010+engine['bytes']
+            expected={'__LOADERCOLD_LOAD__':0x4000,'__LOADERCOLD_RUN__':0x4000,'__LOADERCOLD_SIZE__':core['bytes'],
+                      'dos64_loader_code_start':0x4000,'dos64_loader_code_end':core['end']+1,
+                      '__LOADERADOPT_LOAD__':engine['end']+1,'__LOADERADOPT_RUN__':0x6000,'__LOADERADOPT_SIZE__':helper['bytes'],
+                      'dos64_loader_adopt':0x6000,'dos64_loader_adopt_end':helper['end']+1,'dos64_native_nmi':0x5882}
+            if core['start']!=0x4000 or helper['start']!=0x6000 or not 0x100<helper['bytes']<=0x180 or helper['end']>=source or source+helper['bytes']>0x6800:
+                errors.append('Cold loader run/source/compare lifetime bounds invalid')
+            for name,value in expected.items():
+                if symbols.get(name)!=value:errors.append('Cold loader linked metadata mismatch: '+name)
+            overlays['FILECODE']={**engine,'engine_bytes':engine['bytes'],'helper_bytes':helper['bytes'],
+                                  'bytes':engine['bytes']+helper['bytes'],'end':engine['end']+helper['bytes']}
+            load['cold_loader']={'phase1':core,'phase2':helper,'source':source,'reu':far,
+                                 'trust':'START verified full PRG CRC; after bootstrap full helper byte comparison before execution; no FILE native CRC'}
     display=[x for x in segments if x["name"]=="DISPLAYCODE"]
     if overlays:
         renderer=overlays.get("RENDERCODE")
@@ -150,7 +172,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             fields = {f"__{area_name}_START__": 0xC900, f"__{area_name}_SIZE__": 0x700,
                       f"__{area_name}_FILEOFFS__": 0, f"__{area_name}_LAST__": seg["end"]+1,
                       f"__{segment_name}_LOAD__": 0xC900, f"__{segment_name}_RUN__": 0xC900,
-                      f"__{segment_name}_SIZE__": seg.get("renderer_bytes",seg.get("first_member_bytes",seg["bytes"]))}
+                      f"__{segment_name}_SIZE__": seg.get("engine_bytes",seg.get("renderer_bytes",seg.get("first_member_bytes",seg["bytes"])))}
             for name, value in fields.items():
                 if symbols.get(name) != value:
                     errors.append(f"{name}: expected ${value:04X}, got {symbols.get(name)}")
@@ -242,6 +264,10 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
         state=[seg for seg in segments if seg["name"]=="NATIVESTATE"]
         native_runtime = "dos64_native_entry" in symbols
         initialized = (b"\xa5\x00\x00\x00\x00"if "HDCODE"in overlays else b"\xa5\x00\x00") if native_runtime else b"\xa5\x00"
+        if loader:
+            initialized+=b'\x00'
+            if len(state)!=1 or symbols.get('dos64_loader_required')!=state[0]['end']:
+                errors.append('Serialized loader-required flag must be final resident initialized byte')
         if len(state)!=1 or state[0]["bytes"]!=len(initialized) or symbols.get("dos64_cold_open")!=state[0]["start"] or symbols.get("dos64_cold_error")!=state[0]["start"]+1:
             errors.append("Cold/native reload guards must be initialized resident state bytes")
         elif native_runtime and (symbols.get("n_started")!=state[0]["start"]+2 or symbols.get("dos64_native_started")!=state[0]["start"]+2):

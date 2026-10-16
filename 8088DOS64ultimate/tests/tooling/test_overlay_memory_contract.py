@@ -21,7 +21,7 @@ class OverlayMemoryContract(unittest.TestCase):
         r = self.check()
         self.assertTrue(r['passed'], r['errors'])
         self.assertEqual(r['load']['exclusive_overlay_window_bytes'], 1792)
-        self.assertEqual(r['load']['overlay_source_bytes'],1464+1248+1182+1764+1303+1472+1475)
+        self.assertEqual(r['load']['overlay_source_bytes'],1771+1248+1182+1764+1303+1472+1475)
         self.assertEqual(r['load']['startup_overlay_bytes'],16384)
         self.assertEqual(r['load']['prg_bytes'],47105)
 
@@ -85,6 +85,21 @@ class OverlayMemoryContract(unittest.TestCase):
 class ColdPhaseMemoryContract(unittest.TestCase):
     setUpClass=classmethod(OverlayMemoryContract.setUpClass.__func__)
     check=OverlayMemoryContract.check
+    def test_loader_split_layout_metadata_guard_and_payload_binding(self):
+        r=self.check();self.assertTrue(r['passed'],r['errors']);cold=r['load']['cold_loader']
+        self.assertEqual((cold['phase1']['start'],cold['phase1']['bytes']),(0x4000,963))
+        self.assertEqual((cold['phase2']['start'],cold['phase2']['bytes']),(0x6000,307))
+        self.assertEqual((cold['source'],cold['reu']),(0x65c8,0x3405c8))
+        for symbol in ('__LOADERCOLD_LOAD__','__LOADERCOLD_RUN__','__LOADERCOLD_SIZE__',
+                       '__LOADERADOPT_LOAD__','__LOADERADOPT_RUN__','__LOADERADOPT_SIZE__',
+                       'dos64_loader_required','dos64_loader_adopt','dos64_native_nmi'):
+            changed=re.sub(r'^(al )([0-9A-F]+)( \.'+symbol+r')$',lambda m:m[1]+f'{int(m[2],16)+1:06X}'+m[3],self.labels,flags=re.M)
+            self.assertNotEqual(changed,self.labels);self.assertFalse(self.check(labels=changed)['passed'],symbol)
+        at=int(re.search(r'^al ([0-9A-F]+) \.dos64_loader_required$',self.labels,re.M)[1],16)
+        for value in (1,0xa5,0xff):
+            b=bytearray(self.prg);b[at-0x801+2]=value;self.assertFalse(self.check(prg=b)['passed'])
+        for offset in range(307):
+            b=bytearray(self.prg);b[0x65c8-0x801+2+offset]^=1;self.assertFalse(self.check(prg=b)['passed'])
     def test_loaded_guard_is_initialized_once(self):
         import re
         at=int(re.search(r"^al ([0-9A-F]+) \.dos64_cold_open$",self.labels,re.M)[1],16)

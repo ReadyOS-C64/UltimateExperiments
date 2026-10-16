@@ -53,6 +53,10 @@ public:
     bool native_runtime_control=false;
     bool native_runtime_nmi_order=false, native_runtime_nmi_checked=false;
     uint16_t native_runtime_nmi_vector=0;
+    uint16_t nmi_test_pc=0;
+    bool nmi_test_armed=false;
+    uint32_t nmi_test_delivered=0;
+    void nmiDidTrigger() override {++nmi_test_delivered;}
     // Isolated calibration fixture only; default machines still reject VIC.
     std::unique_ptr<ClockProbeModel> clock_probe;
     std::unique_ptr<HostInputModel> host_input;
@@ -67,12 +71,13 @@ public:
     }
     void step() {
         observe_hd();
+        if(nmi_test_armed && reg.pc==nmi_test_pc){nmi_test_armed=false;pullDownNmiLine(1);}
         // Peddle's embedding application owns clock advancement. Its
         // executeInstruction() does not increment clock. Step microcycles here
         // so budgets, delayed interrupt inputs and timing assertions are real.
         for (unsigned cycle = 0; cycle < 32; ++cycle) {
             execute(); ++clock;
-            if (inFetchPhase()) { ++instructions; return; }
+            if (inFetchPhase()) { releaseNmiLine(1); ++instructions; return; }
         }
         unsupported = true; // jam/unsupported CPU path must never hang a test
     }
@@ -370,6 +375,8 @@ extern "C" void native_runtime_control_enable(Dos64Machine *m){m->cpu.native_run
 
 extern "C" void native_runtime_require_nmi_order(Dos64Machine *m,uint16_t vector){m->cpu.native_runtime_nmi_order=true;m->cpu.native_runtime_nmi_vector=vector;}
 extern "C" uint8_t native_runtime_nmi_checked(Dos64Machine *m){return m->cpu.native_runtime_nmi_checked;}
+extern "C" void dos64_nmi_at_pc(Dos64Machine *m,uint16_t pc){m->cpu.nmi_test_pc=pc;m->cpu.nmi_test_armed=true;}
+extern "C" uint32_t dos64_nmi_delivered(Dos64Machine *m){return m->cpu.nmi_test_delivered;}
 
 extern "C" void dos64_graphics_color_enable(Dos64Machine *m){m->cpu.graphics_color_ram=true;}
 extern "C" uint8_t dos64_graphics_color_peek(Dos64Machine *m,uint16_t a){return m->cpu.io[a-0xd000];}

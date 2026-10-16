@@ -6,6 +6,7 @@ DOS64_PYTHON ?= python3
 .DEFAULT_GOAL := all
 
 ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/floppy_control.s src/bios.s src/ports.s src/cga_crtc.s src/cga_status.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s src/host_input.s src/cold.s src/elapsed.s src/native_text_display.s src/native_text_fonts.s src/native_runtime.s src/native_timer.s src/virtual_irq.s src/virtual_pit.s src/render_graphics.s src/hd_cache.s src/hd_bios.s src/hd_extension_load.s src/hd_cold.s src/uci_diagnostic.s src/native_save.s
+ASM_SOURCES += src/loader_handoff.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
 OBJECTS := $(filter-out build/host_clock.o build/elapsed.o build/uci.o,$(OBJECTS)) build/owned-host_clock.o build/owned-elapsed.o build/native-uci.o
 OBJECTS := $(patsubst build/reu.o,build/native-reu.o,$(OBJECTS))
@@ -42,6 +43,7 @@ build/files.o: src/files.s include/files.inc include/uci.inc Makefile
 	$(DOS64_CA65) -g -D DOS64_FILES_INFO=1 -I include -o $@ $<
 build/render_text.o: include/render_text.inc Makefile
 build/overlays.o: include/overlays.inc include/reu.inc Makefile
+build/loader_handoff.o: include/overlays.inc include/reu.inc include/disk.inc Makefile
 build/image_import.o: include/image_import.inc include/files.inc include/uci.inc include/overlays.inc include/reu.inc Makefile
 build/boot.o: include/overlays.inc Makefile
 build/native_runtime.o: include/native_save.inc include/image_import.inc include/host_clock.inc include/host_input.inc include/render_graphics.inc Makefile
@@ -226,6 +228,12 @@ clean:
 .PHONY: test-native-runtime
 test-native-runtime: build
 	$(DOS64_ZIG) build native-runtime --summary all
+
+.PHONY: test-loader-handoff test-loader-dos
+test-loader-handoff: build
+	$(DOS64_ZIG) build loader-handoff --summary all
+test-loader-dos: build
+	$(DOS64_ZIG) build loader-dos --summary all
 
 .PHONY: test-native-dos
 test-native-dos: build

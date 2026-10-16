@@ -78,6 +78,9 @@ uint8_t import_model_open(void *);
  * Other helpers require an enabled model. */
 uint8_t native_runtime_nmi_checked(struct Dos64Machine *);
 void native_runtime_require_nmi_order(struct Dos64Machine *,uint16_t);
+/* Explicit test-only edge at an instruction boundary; runs real Peddle NMI. */
+void dos64_nmi_at_pc(struct Dos64Machine *,uint16_t);
+uint32_t dos64_nmi_delivered(struct Dos64Machine *);
 void native_runtime_control_enable(struct Dos64Machine *);
 void dos64_cia_clock_enable(struct Dos64Machine *);
 void dos64_cia_clock_seed(struct Dos64Machine *, uint16_t a, uint16_t b);

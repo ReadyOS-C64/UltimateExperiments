@@ -10,6 +10,7 @@
 .import hdc_enabled,hdc_flags,hdc_phase,hdc_error
 .export n_cpu_error,n_tick_return,n_burst,n_timer_cpu_error
 .import dos64_cga_cursor_sample
+.import dos64_loader_validate,dos64_loader_install,dos64_loader_adopt,dos64_loader_required
 .import dos64_mem_read
 .importzp dos64_address
 .import dos64_render_graphics_request, dos64_overlay_present_graphics_line
@@ -464,6 +465,8 @@ dos64_native_cold_start:
  bpl :-
  lda #1
  sta n_stage
+ jsr dos64_loader_validate
+ jcs n_config_bad
  ldx #3
 @magic:
  lda dos64_native_config,x
@@ -592,6 +595,14 @@ dos64_native_cold_start:
  jcs n_overlay_bad
  jsr dos64_import_init
  jcs n_import_bad
+ lda dos64_loader_required
+ beq @legacy_import
+ jsr dos64_loader_install
+ jcs n_config_bad
+ jsr dos64_loader_adopt
+ jcs n_import_bad
+ jmp n_after_import
+@legacy_import:
  lda hdc_enabled
  beq @import_floppy
  lda hdc_flags

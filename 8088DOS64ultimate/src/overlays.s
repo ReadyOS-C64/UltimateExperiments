@@ -17,6 +17,8 @@ PIT_SIZE = __IRQMAIN_SIZE__+__IRQDEVICE_SIZE__+__PITCODE_SIZE__
 .import dos64_reu_transfer, dos64_reu_request
 .import dos64_files_init, dos64_files_start, dos64_files_poll, dos64_render_text_row
 .import __FILECODE_SIZE__, __RENDERCODE_SIZE__, __DISPLAYCODE_SIZE__, __DISPLAYCODE_RUN__, __INPUTCODE_SIZE__
+.import __LOADERADOPT_SIZE__
+FILE_SIZE = __FILECODE_SIZE__+__LOADERADOPT_SIZE__
 .import dos64_native_text_setup, dos64_native_text_restore, dos64_native_text_state
 TEXT_SIZE = __RENDERCODE_SIZE__ + __DISPLAYCODE_SIZE__
 .assert __RENDERCODE_SIZE__ = 1003, lderror, "renderer canonical length changed"
@@ -40,7 +42,7 @@ TEXT_SIZE = __RENDERCODE_SIZE__ + __DISPLAYCODE_SIZE__
 .assert OV_HEADER+OV_WINDOW_SIZE <= OV_SLOT_SIZE, error, "overlay header/payload exceeds slot"
 .assert __FILECODE_SIZE__ > 0, lderror, "empty file overlay"
 .assert __RENDERCODE_SIZE__ > 0, lderror, "empty text overlay"
-.assert __FILECODE_SIZE__ <= OV_WINDOW_SIZE, lderror, "file overlay exceeds window"
+.assert FILE_SIZE <= OV_WINDOW_SIZE, lderror, "file overlay plus loader data exceeds window"
 .assert TEXT_SIZE <= OV_WINDOW_SIZE, lderror, "text overlay exceeds window"
 
 .segment "DEVICESTATE"
@@ -261,7 +263,7 @@ ov_requests:
     REQUEST $C000, OV_ASSETS+4*OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+5*OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_DISK_ASSET, OV_HEADER, 1
-    REQUEST OV_WINDOW, OV_ASSETS+OV_HEADER, __FILECODE_SIZE__, 1
+    REQUEST OV_WINDOW, OV_ASSETS+OV_HEADER, FILE_SIZE, 1
     REQUEST OV_WINDOW, OV_ASSETS+OV_SLOT_SIZE+OV_HEADER, TEXT_SIZE, 1
     REQUEST OV_WINDOW, OV_ASSETS+2*OV_SLOT_SIZE+OV_HEADER, __INPUTCODE_SIZE__, 1
     REQUEST OV_WINDOW, OV_ASSETS+3*OV_SLOT_SIZE+OV_HEADER, PIT_SIZE, 1
@@ -270,7 +272,7 @@ ov_requests:
     REQUEST OV_WINDOW, OV_DISK_ASSET+OV_HEADER, __DISKCODE_SIZE__, 1
 dos64_overlay_headers:
     .byte "D64O",1,OV_FILE
-    .word __FILECODE_SIZE__,OV_WINDOW
+    .word FILE_SIZE,OV_WINDOW
     .word 0
     .byte "FILE"
     .byte "D64O",1,OV_TEXT

@@ -42,7 +42,7 @@ def shadow_from_map(text):
     run,linked=rows['HDBIOS'];hd_run,hd_size=rows['HDCODE'];state,state_size=rows['NATIVESTATE']
     require(run==RUN and 1<=linked<=SIZE,'shadow linker range')
     require(hd_run==0xc900 and 1<=hd_size<=0x700,'HD overlay linker range')
-    require(LOAD<=state<state+state_size<=0x4000 and state_size==5,'initialized guard state range')
+    require(LOAD<=state<state+state_size<=0x4000 and state_size in (5,6),'initialized guard state range')
     return [{'name':'HDBIOS','start':RUN,'length':SIZE,'source_start':SOURCE,'linked_length':linked,
              'state_start':state,'state_length':state_size,'hd_linked_length':hd_size}]
 
@@ -70,7 +70,8 @@ def prepare(prg,labels,segments,metadata):
     require(all(integer(segment[k]) for k in segment if k!='name'),'map descriptor integer fields')
     linked=segment['linked_length'];state=segment['state_start'];hd_size=segment['hd_linked_length']
     require((segment['start'],segment['length'],segment['source_start'])==(RUN,SIZE,SOURCE),'source/run/window ranges')
-    require(1<=linked<=SIZE and segment['state_length']==5 and LOAD<=state<state+5<=0x4000,'linked image/state size')
+    state_size=segment['state_length']
+    require(1<=linked<=SIZE and state_size in (5,6) and LOAD<=state<state+state_size<=0x4000,'linked image/state size')
     require(1<=hd_size<=0x700,'HD payload size')
     saver_size=labels.get("__SAVERCODE_SIZE__",0)
     require(type(saver_size)is int and 0<=saver_size<=0x7f0,"SAVER linked size")
@@ -80,11 +81,15 @@ def prepare(prg,labels,segments,metadata):
     require(prg[:2]==LOAD.to_bytes(2,'little') and len(prg)==packaged_end-LOAD+2,'PRG load address/complete packaged length')
     expected_labels={'__HDEXT_START__':RUN,'__HDEXT_SIZE__':SIZE,'__HDEXT_FILEOFFS__':0,
                      '__HDEXT_LAST__':RUN+linked,'__HDBIOS_LOAD__':RUN,'__HDBIOS_RUN__':RUN,'__HDBIOS_SIZE__':linked,
-                     '__NATIVESTATE_LOAD__':state,'__NATIVESTATE_RUN__':state,'__NATIVESTATE_SIZE__':5,
+                     '__NATIVESTATE_LOAD__':state,'__NATIVESTATE_RUN__':state,'__NATIVESTATE_SIZE__':state_size,
                      'hdb_boot_drive':state+3,'hdb_extension_ready':state+4,
                      '__HDCODE_LOAD__':0xc900,'__HDCODE_RUN__':0xc900,'__HDCODE_SIZE__':hd_size}
     require(all(type(labels.get(k)) is int and labels[k]==v for k,v in expected_labels.items()),'linked source/run/guard symbols')
     require(prg[state+4-LOAD+2]==0,'packaged guard must start clear')
+    if state_size==6:
+        require(labels.get('dos64_loader_required')==state+5 and prg[state+5-LOAD+2]==0,'packaged loader flag must be explicit legacy0')
+    else:
+        require('dos64_loader_required' not in labels,'loader flag needs its initialized resident byte')
     require(type(metadata) is dict and set(metadata)=={'package','memory'},'metadata schema')
     package=metadata['package'];memory=metadata['memory']
     require(type(package) is dict and type(package.get('version')) is int and package['version']==1,'package schema version')
@@ -107,7 +112,7 @@ def prepare(prg,labels,segments,metadata):
     require(p.get('sha256')==sha(expected[:linked]),'linked shadow payload hash')
     rows=memory.get('segments',[])
     require(type(rows) is list and all(type(r) is dict for r in rows),'memory segment schema')
-    for name,start,size in [('HDBIOS',RUN,linked),('HDCODE',0xc900,hd_size),('NATIVESTATE',state,5)]:
+    for name,start,size in [('HDBIOS',RUN,linked),('HDCODE',0xc900,hd_size),('NATIVESTATE',state,state_size)]:
         found=[r for r in rows if r.get('name')==name]
         require(len(found)==1 and found[0].get('start')==start and found[0].get('end')==start+size-1 and found[0].get('bytes')==size,'memory/map segment disagreement')
     require(package.get('startup_sources')==[0x6000,0x6800,0x8000,0x8800,0x9000,0x9800]+([0xb000]if saver_size else [])+([0xb800]if disk_size else []) and

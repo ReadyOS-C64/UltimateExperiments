@@ -114,6 +114,17 @@ class Tests(unittest.TestCase):
             with self.subTest(address=hex(address)),self.assertRaises(ValueError):self.make(prg=bytes(prg),metadata=meta)
         for raw in [self.prg[:-1],self.prg+b'\0',b'\x00\x08'+self.prg[2:]]:
             with self.assertRaises(ValueError):self.make(prg=raw)
+    def test_loader_flag_requires_six_byte_state_explicit_legacy_zero(self):
+        at=self.labels['dos64_loader_required'];self.assertEqual(self.labels['__NATIVESTATE_SIZE__'],6)
+        for value in (1,0xa5,0xff):
+            prg=bytearray(self.prg);prg[at-0x801+2]=value;meta=copy.deepcopy(self.metadata)
+            meta['package']['sha256']['packaged_prg']=shadow.sha(prg)
+            with self.assertRaises(ValueError):self.make(prg=bytes(prg),metadata=meta)
+        for bad in (None,at-1,at+1):
+            labels=dict(self.labels)
+            if bad is None:del labels['dos64_loader_required']
+            else:labels['dos64_loader_required']=bad
+            with self.assertRaises(ValueError):self.make(labels=labels)
     def test_metadata_artifacts_must_be_paired_and_pinned(self):
         p=BUILD/'dos64-tests-overlay-package.json';m=BUILD/'dos64-tests.memory.json'
         pins={shadow.sha(p.read_bytes()),shadow.sha(m.read_bytes())}

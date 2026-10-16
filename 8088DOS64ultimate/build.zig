@@ -27,6 +27,8 @@ fn nativeInputs(run: *std.Build.Step.Run, b: *std.Build) void {
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
+    const loader=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/loader_handoff.zig"),.target=target,.optimize=.Debug})});addPeddle(loader.root_module,b);loader.filters=b.option([]const []const u8,"loader-filter","Focused cold handoff cases") orelse &.{};const run_loader=b.addRunArtifact(loader);nativeInputs(run_loader,b);b.step("loader-handoff","Actual cold REU handoff and preloaded floppy adoption").dependOn(&run_loader.step);
+    const loader_dos=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/loader_dos_boot.zig"),.target=target,.optimize=.Debug})});addPeddle(loader_dos.root_module,b);const run_loader_dos=b.addRunArtifact(loader_dos);nativeInputs(run_loader_dos,b);b.step("loader-dos","Genuine DOS VER DIR through required preloaded main handoff").dependOn(&run_loader_dos.step);
     const fl=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/dual_floppy.zig"),.target=target,.optimize=.Debug})});fl.filters=b.option([]const []const u8,"dual-floppy-filter","Focused dual media controls") orelse &.{};addPeddle(fl.root_module,b);const run_fl=b.addRunArtifact(fl);nativeInputs(run_fl,b);b.step("dual-floppy","Actual independent floppy drives and native mount lifecycle").dependOn(&run_fl.step);b.step("dual-floppy-compile","Compile independent media regressions").dependOn(&b.addInstallFile(fl.getEmittedBin(),"bin/dual-floppy-tests").step);
     const cursor=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/cga_cursor.zig"),.target=target,.optimize=.Debug})});cursor.filters=b.option([]const []const u8,"cga-cursor-filter","Focused hardware cursor controls") orelse &.{};addPeddle(cursor.root_module,b);b.step("cga-cursor","Actual hardware cursor presentation").dependOn(&b.addRunArtifact(cursor).step);b.step("cga-cursor-compile","Compile cursor controls").dependOn(&b.addInstallFile(cursor.getEmittedBin(),"bin/cursor-tests").step);
     const status=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/cga_status.zig"),.target=target,.optimize=.Debug})});addPeddle(status.root_module,b);b.step("cga-status","OriginalCGA clock-derived status and leases").dependOn(&b.addRunArtifact(status).step);
@@ -148,7 +150,7 @@ pub fn build(b: *std.Build) void {
         .optimize = .Debug,
     }) });
     addPeddle(native_runtime.root_module, b);
-    b.step("native-runtime", "Verify configured native startup, bounded runtime and development commands").dependOn(&b.addRunArtifact(native_runtime).step);
+    const run_native_runtime=b.addRunArtifact(native_runtime);nativeInputs(run_native_runtime,b);b.step("native-runtime", "Verify configured native startup, bounded runtime and development commands").dependOn(&run_native_runtime.step);
     const native_dos = b.addTest(.{ .root_module=b.createModule(.{
         .root_source_file=b.path("tests/host/native_dos_boot.zig"),.target=target,.optimize=.Debug,
     }) });

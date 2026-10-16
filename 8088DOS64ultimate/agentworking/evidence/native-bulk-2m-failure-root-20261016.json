@@ -1,0 +1,17 @@
+{
+  "status": "FAILED_RECOVERY_PENDING",
+  "physical_acceptance": false,
+  "run": "runs/c64u-bulk2m-20261016-215139",
+  "result_sha256": "6d18065c929b778456a361145a9981fa46cd1d826c8b07d86cec2f8edaaf4222",
+  "native_only": "2MiB nine-job save/reload/compare/complement/EOF/known-close completed",
+  "independent_verification": "FTP failed; complete changed REU snapshot did not start",
+  "original_REU_restored": false,
+  "settings_and_media_restored": true,
+  "reset_resumed": true,
+  "bounded_delta_restores": 2,
+  "failure": "ConnectionResetError54 during retention and both restoration attempts",
+  "original_backup_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+  "source_inputs_exact": 11215,
+  "device_owner": "cia_probe_independent_review",
+  "next": "Review existing388069 whole-file fallback; device remains reserved. No2MiB acceptance."
+}

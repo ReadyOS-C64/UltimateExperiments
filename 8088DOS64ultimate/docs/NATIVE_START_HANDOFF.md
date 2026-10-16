@@ -1,6 +1,11 @@
 # Native START / main handoff ABI 1
 
 Implementation contract, not yet a working launcher or hardware acceptance.
+The main consumer is implemented and model-tested in runtime `cea57480`:
+`make test-loader-handoff` checks validation/adoption and real Peddle NMI
+delivery; `make test-loader-dos` boots genuine DOS through VER and DIR /P.
+Its default required flag is zero for legacy startup. The generated standalone
+START entry, user interface and physical handoff remain pending.
 All integers below are little endian. CRC32 is reflected EDB88320, initial
 FFFFFFFF, final XOR FFFFFFFF, identical to the durable CFG codec.
 

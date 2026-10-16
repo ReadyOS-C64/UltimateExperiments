@@ -26,7 +26,7 @@ class HDMemoryContract(unittest.TestCase):
    for suffix in ["LOAD","RUN","SIZE"]:self.assertFalse(self.check(labels_text=self.changed_symbol("__"+area+"_"+suffix+"__"))["passed"])
  def test_all_resident_guard_bytes_and_positions_are_checked(self):
   at=int(re.search(r"^al ([0-9A-F]+) \.dos64_cold_open$",self.labels,re.M)[1],16)
-  for i in range(5):
+  for i in range(6):
    b=bytearray(self.prg);b[at-0x801+2+i]^=1;self.assertFalse(self.check(prg=b)["passed"])
   for name in ["hdb_boot_drive","hdb_extension_ready"]:self.assertFalse(self.check(labels_text=self.changed_symbol(name))["passed"])
  def test_missing_unpaired_or_corrupt_exact_shadow_cannot_verify(self):
@@ -41,6 +41,13 @@ class HDMemoryContract(unittest.TestCase):
    with self.assertRaises(ValueError):append_shadow(base,self.shadow,self.changed_symbol(name))
  def test_legacy_five_overlay_contract_remains_supported(self):
   mp=re.sub(r"^(HDCODE|HDBIOS|SAVERCODE|DISKCODE)\s.*\n","",self.mp,flags=re.M);mp=re.sub(r"^(NATIVESTATE\s+)([0-9A-F]{6})(\s+)[0-9A-F]{6}(\s+)[0-9A-F]{6}",lambda m:m[1]+m[2]+m[3]+f"{int(m[2],16)+2:06X}"+m[4]+"000003",mp,flags=re.M)
-  labels=re.sub(r"^(al )([0-9A-F]+)( \.__MAIN_LAST__)$",lambda m:m[1]+f"{int(m[2],16)-2:06X}"+m[3],self.labels,flags=re.M)
-  r=verify(mp,labels,self.prg[:0x9800-0x801+2],{k:v for k,v in self.payloads.items()if k not in ("HDCODE","DISKCODE")},self.cold);self.assertTrue(r["passed"],r["errors"]);self.assertEqual(r["load"]["startup_overlay_bytes"],10240);self.assertIsNone(r["load"]["shadow"])
+  labels=re.sub(r"^(al )([0-9A-F]+)( \.__MAIN_LAST__)$",lambda m:m[1]+f"{int(m[2],16)-3:06X}"+m[3],self.labels,flags=re.M)
+  # Synthetic legacy format fixture, not a claim of executing old entry code.
+  mp=re.sub(r"^(LOADERCOLD|LOADERADOPT)\s.*\n","",mp,flags=re.M)
+  labels=re.sub(r"^al [0-9A-F]+ \.(?:dos64_loader_\S*|__LOADER\S*)$","",labels,flags=re.M)
+  labels=re.sub(r"^(al )([0-9A-F]+)( \.__FILE_LAST__)$",lambda m:m[1]+f"{int(m[2],16)-307:06X}"+m[3],labels,flags=re.M)
+  raw=bytearray(self.prg[:0x9800-0x801+2]);raw[0x4000-0x801+2:0x4400-0x801+2]=bytes(1024)
+  at=0x6000-0x801+2;raw[at+6:at+8]=(1464).to_bytes(2,'little');raw[at+16+1464:at+2048]=bytes(2048-16-1464)
+  payloads={k:v for k,v in self.payloads.items()if k not in ("HDCODE","DISKCODE")};payloads['FILECODE']=payloads['FILECODE'][:1464]
+  r=verify(mp,labels,raw,payloads,self.cold);self.assertTrue(r["passed"],r["errors"]);self.assertEqual(r["load"]["startup_overlay_bytes"],10240);self.assertIsNone(r["load"]["shadow"])
 if __name__=="__main__":unittest.main()

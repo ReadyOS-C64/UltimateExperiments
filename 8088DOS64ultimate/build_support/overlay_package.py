@@ -106,6 +106,24 @@ def validate_variant(payload,labels,area,members):
     if cursor-WINDOW!=len(payload) or any(symbols.get(k)!=v for k,v in expected.items()):
         raise ValueError(area+" length differs from linked output")
 
+def validate_files(payload,labels):
+    symbols={name.lstrip("."):int(addr,16) for addr,name in re.findall(r"^al ([0-9A-Fa-f]+) (\S+)",labels,re.M)}
+    helper=symbols.get("__LOADERADOPT_SIZE__",0)
+    if not helper:
+        return validate_variant(payload,labels,"FILE",("FILECODE",))
+    engine=symbols.get("__FILECODE_SIZE__",0)
+    expected={"__FILE_START__":WINDOW,"__FILE_SIZE__":WINDOW_SIZE,"__FILE_FILEOFFS__":0,
+              "__FILE_LAST__":WINDOW+len(payload),"__FILECODE_LOAD__":WINDOW,"__FILECODE_RUN__":WINDOW,
+              "__LOADERADOPT_LOAD__":WINDOW+engine,"__LOADERADOPT_RUN__":0x6000,
+              "dos64_loader_adopt":0x6000,"dos64_loader_adopt_end":0x6000+helper}
+    if not 0x100 < helper <=0x180 or engine+helper!=len(payload) or any(symbols.get(k)!=v for k,v in expected.items()):
+        raise ValueError("FILE engine/trailing cold helper differs from exact linked layout")
+    if not 0<symbols.get('__LOADERCOLD_SIZE__',0)<=0x400 or symbols.get('__LOADERCOLD_RUN__')!=0x4000 or symbols.get('__LOADERCOLD_LOAD__')!=0x4000:
+        raise ValueError('cold loader phase1 must fit4000..43FF before fonts')
+    source=SOURCE+HEADER+engine
+    if 0x6000+helper>source or source+helper>SOURCE+SLOT_SIZE:
+        raise ValueError("cold helper overlaps its untouched packaged source")
+
 def append_variant(prg,payload,labels,identity,area,members,source):
     validate_variant(payload,labels,area,members)
     if prg[:2]!=b"\x01\x08"or len(prg)!=source-0x801+2:
@@ -161,7 +179,7 @@ def main():
     raw = [path.read_bytes() for path in inputs]
     try:
         validate_text(raw[2],raw[4].decode())
-        validate_variant(raw[1],raw[4].decode(),"FILE",("FILECODE",))
+        validate_files(raw[1],raw[4].decode())
         validate_variant(raw[2],raw[4].decode(),"RENDER",("RENDERCODE","DISPLAYCODE"))
         if not a.hd and re.search(r"^al (?!000000)[0-9A-Fa-f]+ \.__HDCODE_SIZE__$",raw[4].decode(),re.M):
             raise ValueError("linked HD requires paired HD and shadow inputs")
