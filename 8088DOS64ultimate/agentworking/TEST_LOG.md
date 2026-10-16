@@ -526,3 +526,6 @@ ActualmediaTerminal1488;PRGs1489;execution1490. Concreteguard6f1a3e2b/238;TOP067
 
 
 2026-10-15 20:39: ROOT make test floppy-export passes428+298; zig build floppy-export files-info files-existing uci-ram-init native-save uci-diagnostic native-save-dos --summary all passes73. make manifest after optional exporter rebuild;387files/copies and13checkpoint identities exact. Logs scratch/split-save-root-default-20261015-202600.log and scratch/split-save-root-focused-20261015-203200.log. Physical wholeSAVE pending.
+
+
+2026-10-15 20:48: Actual splitSAVE attempt Terminal1493/child20462/wrapperexit1 failed firstIDFF preDOS at2.3205s. Recovery attempt1 full4MiB ac43/settingsmediareset passes;2643live/copy pins exact. Separate read-only Terminal1494 postFTP five input/OWNER files passes after expected absentSAVE550. Actual fullSAVE neverattempted; allfirstfailures preserved. Run c64u-native-save-split-20261015-204200; peer17310027.

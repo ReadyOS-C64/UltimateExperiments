@@ -243,3 +243,6 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 
 
 2026-10-15: Actual CPU-filled pairedWRITE proved512 corrupt/2x256 exact, independently before and after recovery. Promote only the reviewed split exporter; full360KiB SAVE comparison remains separate acceptance. Half-progress coordinates apply only during WRITE phase2/3.
+
+
+2026-10-15: Do not convert a pre-import UCI ID failure into a SAVE regression: guestcount0/uploadpos0 distinguish it. Record live native DDR/port at the actual ID boundary; raw REST RAM addresses0/1 do not establish banking. If no SAVE was attempted, missing-output FTP550 remains honest but must not prevent separate complete post-recovery input/OWNER closure.

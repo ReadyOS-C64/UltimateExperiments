@@ -1,3 +1,9 @@
+## Split256 hardware attempt: startup failure, complete recovery — 2026-10-15 20:48 PDT
+
+Current d883c678, configured69cdc2b6 at PAL/Manual64 failed its first native UCI ID read with FF / UCI_ERR_ID after2.32 seconds. Disk import never started, guest instruction count stayed0, and neither COPY nor SAVE was attempted. This run does not test the split-write exporter. Retained source-bound UCF2 trace and both native RAM captures reproduce the failure; contemporaneous live DDR/port at this read remain unknown. Evidence evidence/c64u-split-save-startup-failure-20261015.json.
+
+Complete recovery passes attempt1: every original4MiB byte equals ac43, settings/media/reset and all2643 livepins/copies pass. The expected missing SAVE output causes FTP550; a separate bounded read-only postFTP phase verifies source image, both PRGs and both OWNER records (five exact files). Changed REU is retained and confined to the seven packaged overlay slots; floppy reservation unchanged. Independent audit17310027 agrees. No active hardware application or source freeze. Next add native first-ID DDR/port/operand evidence in a fresh private diagnostic before another fullSAVE. ROOT ecae042 split exporter passes428+298+73; full physical SAVE/video remain pending.
+
 ## Current split256 SAVE integration — 2026-10-15 20:39 PDT
 
 ROOT d883c678 / unit88669999 promotes the independently reviewed ten-file split-write repair. Fresh ROOT428 Peddle,298 tooling and73 focused tests pass;387 manifest files and immutable copies match, all thirteen DOS disk checkpoints equal the independently inspected FAT fixtures. Genuine DOS COPY/SAVE produces368640 exact bytes,1440x256 writes, zero modeled alias hits, fixed guest counter418049 through59355 polls, unchanged4MiB REU and32 restored cache frames. Evidence evidence/split-save-current-root-20261015.json.
