@@ -1,0 +1,15 @@
+{
+  "selected_version": "Turbo Pascal7.01 English real-mode TURBO.EXE/TPC.EXE",
+  "source": "Original installation disk mirror publicly downloaded per user/root instruction; not an official-domain7.01 artifact",
+  "official_museum_downloads": {
+    "5.5": "HTTP200 officialaltd.embarcadero.com tp55.zip",
+    "3.02": "HTTP200 officialaltd.embarcadero.com tp302.zip",
+    "7_candidate_paths": "HTTP404; historicalmuseumlanding403"
+  },
+  "license_file_in_original_disks_or_decompressed_install_payload": false,
+  "English701_publisher_free_redistribution_grant_located": false,
+  "French701_repack_free_release_claim": "Haypo2001 Installation.txt claims free BorlandFrance release; not treated as an English701 license or unpatchedTPL proof",
+  "Embarcadero_current_blog": "2024 vendor blog explains museum unavailable and identifies publicmirror options as unendorsed; source retained",
+  "actual_install_use": "Normal local development payload; no DRM/credentials/copyprotection bypass; no freeware or open-source license claim",
+  "license_text": "No applicable stand-alone EULA text located in these images. Copyright notices remain original."
+}
