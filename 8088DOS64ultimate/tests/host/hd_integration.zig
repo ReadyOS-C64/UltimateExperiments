@@ -1,5 +1,5 @@
 const std=@import("std");const host=@import("machine.zig");const F=host.Fixture;const c=host.c;
-const m=@cImport({@cInclude("hd_file_model.h");@cInclude("uci_model.h");});const a=std.testing.allocator;
+const m=@cImport({@cInclude("hd_file_model.h");@cInclude("hd_trace.h");@cInclude("uci_model.h");});const a=std.testing.allocator;
 fn p(f:*F,n:[]const u8,v:u8)!void{f.poke(try f.symbol(n),v);}fn g(f:*F,n:[]const u8)!u8{return f.peek(try f.symbol(n));}
 fn w(f:*F,n:[]const u8,v:u16)!void{const at=try f.symbol(n);f.poke(at,@truncate(v));f.poke(at+1,@truncate(v>>8));}
 var max_call:u64=0;var max_runtime:u64=0;var max_cpu:u64=0;var max_bootstrap:u64=0;
@@ -115,4 +115,15 @@ test "HD extension loader refuses ROM banking before changing destination or ini
 test "HD suspended gate refuses a changed guest context without rewriting its original INT frame"{
  const image=try patterned(2*1024*1024);defer a.free(image);var f=try setup(image,0,0);defer f.deinit();try interrupt(&f,0x0201,1,0x80,0x2000,0x1000);try tick(&f);try tick(&f);var frame:[6]u8=undefined;try guestGet(&f,0x30ffa,&frame);try reg(&f,6,0x3000);const result=try f.call("dos64_cpu_step",100_000);try std.testing.expectEqual(@as(u8,1),result.p&1);try std.testing.expectEqual(@as(u8,3),try g(&f,"hdb_active"));var now:[6]u8=undefined;try guestGet(&f,0x30ffa,&now);try std.testing.expectEqualSlices(u8,&frame,&now);
  std.debug.print("HD bounded calls max={d}, runtime={d}, CPUstep={d}, bootstrap={d}\n",.{max_call,max_runtime,max_cpu,max_bootstrap});
+}
+
+test "HD BIOS split256 real dirty guest sector writes survive corruption model at both geometry ends" {
+ for([_]u8{0,1})|profile|{
+  const length:usize=if(profile==0)2*1024*1024 else 20*1024*1024;const image=try patterned(length);defer a.free(image);var f=try setup(image,profile,0);defer f.deinit();m.hd_model_dma_alias(f.machine,1);
+  var desired:[512]u8=undefined;for(&desired,0..)|*v,i|v.*=@truncate((i*23)^(i>>8)^0x6c);try guestPut(&f,0x12000,&desired);
+  const last_cx:u16=if(profile==0)0x7f10 else 0x7f90;const last_dx:u16=if(profile==0)0x0180 else 0x0380;
+  try interrupt(&f,0x0301,last_cx,last_dx,0x2000,0x1000);try finish(&f);try std.testing.expectEqual(@as(u16,1),try r(&f,0));try std.testing.expectEqual(@as(u16,0),(try r(&f,26))&1);try std.testing.expectEqual(@as(u8,0),try g(&f,"hd_uncertain"));try std.testing.expectEqual(@as(u32,2),m.hd_trace_writes(f.machine));try std.testing.expectEqual(@as(u32,0),m.hd_model_alias_hits(f.machine));
+  for(0..2)|half|{try std.testing.expectEqual(@as(u32,256),m.hd_trace_write_field(f.machine,@intCast(half),3));try std.testing.expectEqual(@as(u32,@intCast(length-512+half*256)),m.hd_trace_write_field(f.machine,@intCast(half),0));}
+  for(desired,0..)|v,i|try std.testing.expectEqual(v,m.hd_model_byte(f.machine,@intCast(length-512+i)));try std.testing.expectEqual(image[length-513],m.hd_model_byte(f.machine,@intCast(length-513)));
+ }
 }

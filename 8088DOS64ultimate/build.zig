@@ -59,6 +59,12 @@ pub fn build(b: *std.Build) void {
         t.root_module.addOptions("hd_options", hd_options);
         addPeddle(t.root_module, b);
         b.step(entry.name, "Opt-in actual HD assembly integration").dependOn(&b.addRunArtifact(t).step);
+        if(std.mem.eql(u8,entry.name,"hd-backend")) {
+            b.step("hd-backend-compile","Compile exact backend test executable").dependOn(&b.addInstallFile(t.getEmittedBin(),"bin/hd-backend-tests").step);
+            const regression=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path(entry.file),.target=target,.optimize=.Debug}),.filters=&.{"HD split256 avoids"}});
+            regression.root_module.addOptions("hd_options",hd_options);addPeddle(regression.root_module,b);
+            b.step("hd-write-regression-compile","Compile targeted native write regression").dependOn(&b.addInstallFile(regression.getEmittedBin(),"bin/hd-write-regression-tests").step);
+        }
     }
     const workflows=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_builtin_workflows.zig"),.target=target,.optimize=.Debug}),.filters=&.{"internal disposable", "ASCII mapping"}});
     addPeddle(workflows.root_module,b);b.step("native-builtins","Opt-in genuine native DOS disposable workflows").dependOn(&b.addRunArtifact(workflows).step);

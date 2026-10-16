@@ -34,3 +34,5 @@ make test-hd
 The genuine DOS fixture AUTOEXEC deliberately writes three redirected boot logs. The accepted small/large runs issue 21/22 guest sector writes; interactive VER/DIR add none. Independent complete-image inspection attributes each write to the exact guest source bytes and checks other logical file contents. A separate intentional write above 16 MiB tests close/reopen addressing on a disposable image.
 
 Physical six-overlay startup, HD reads/writes/reopen, power-loss durability, IEC runtime integration, external display/input and near-XT performance remain separate gates. See [current evidence](../agentworking/evidence/hd-production-20261015.json), [memory ledger](../agentworking/MEMORY_BUDGET.md) and [disk fixture tools](DISK_TOOLS.md).
+
+2026-10-16: Logical512-byte sector writes use consecutive256-byte FILE transfers, independently loaded from retained350000 and350100; uncertainty clears only after all512 readback. Retry replays both halves for originalLBA. ROOT71972/729111 host/modelaccepted; physicalCdrive persistence remains pending. CompleteDOS/TPfixture uses20MiB because fullvendorpayload+allDOSarchives exceeds2MiB.

@@ -12,6 +12,7 @@ struct HdFileModel {
  std::vector<Write> writes;uint32_t owner=0xffffffff;uint8_t phase=0;
  uint32_t position=0;
  bool opened=false;uint8_t mode=0;
+ bool aligned_dma_alias=false;uint32_t alias_hits=0;
  int fail_command=-1,short_offset=-1,partial_write=-1;
  bool prepare(UciModel &w,uint16_t a,uint8_t v){
   if(a!=w.base || !(v&1))return true;
@@ -39,7 +40,9 @@ struct HdFileModel {
     if(!n||n>512||c.size()!=n+4||position+n>source.size()){w.fault=true;return false;}
     writes.push_back({position,owner,phase,std::vector<uint8_t>(c.begin()+4,c.end())});
     size_t count=partial_write>=0?std::min(n,size_t(partial_write)):n;
-    std::copy_n(c.begin()+4,count,source.begin()+position);position+=count;break;}
+    if(aligned_dma_alias&&position%512==0&&n==512){++alias_hits;for(size_t i=0;i<count;++i)source[position+i]=uint8_t((i*29)^(i>>3)^0x23);}
+    else std::copy_n(c.begin()+4,count,source.begin()+position);
+    position+=count;break;}
    default:w.fault=true;return false;
   }
   w.blocks.clear();w.blocks.push_back({d,s});return true;
@@ -48,6 +51,8 @@ struct HdFileModel {
 extern "C" {
 #endif
 void hd_model_source(void*,const uint8_t*,size_t);
+void hd_model_dma_alias(void*,int);
+uint32_t hd_model_alias_hits(void*);
 void hd_model_floppy(void*,const uint8_t*,size_t);
 void hd_model_path(void*,const uint8_t*,size_t);
 uint32_t hd_model_count_op(void*,uint8_t);

@@ -19,7 +19,11 @@
 ; DONE read publishes exactly512 bytes in uci_data until next request.
 ; WRITE desired sector supplied in uci_command+4 before prepare; recovery
 ; staging350000..3501FF remains authoritative through failure/retry.
-; Writes invalidate matchingextent, seek/write/seek/readback compare all512.
+; Writes invalidate matchingextent, seek/WRITE256/WRITE256/seek/READ512 compare.
+; Both halves use authoritative350000..3501FF, at consecutive file offsets.
+; Uncertainty survives both acknowledgements until the complete512byte match.
+; Retry always seeks the original sector and replays both halves; partial/failed
+; first or second half cannot authorize a new request or publish agreement.
 ; observed agreement is NOT persistence, reopen verification or powerfail safety.
 ; Failed writes forbid init/new requests until retry succeeds; caller may need
 ; FILE close/reopen recovery for unknown handles first. Retry uses retained

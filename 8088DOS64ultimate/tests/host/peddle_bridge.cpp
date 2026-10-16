@@ -376,6 +376,8 @@ extern "C" uint8_t dos64_graphics_color_peek(Dos64Machine *m,uint16_t a){return 
 
 extern "C" {
 void hd_model_source(void *p,const uint8_t *s,size_t n){auto &m=static_cast<Dos64Machine*>(p)->cpu;if(!m.uci||n>20971521){m.unsupported=true;return;}m.image_import.reset();m.hd_file=std::make_unique<HdFileModel>();m.hd_file->source.assign(s,s+n);}
+void hd_model_dma_alias(void *p,int enabled){auto &m=static_cast<Dos64Machine*>(p)->cpu;if(!m.hd_file){m.unsupported=true;return;}m.hd_file->aligned_dma_alias=enabled!=0;}
+uint32_t hd_model_alias_hits(void *p){auto &m=static_cast<Dos64Machine*>(p)->cpu;return m.hd_file?m.hd_file->alias_hits:0;}
 void hd_model_faults(void *p,int command,int short_offset,int partial_write){auto &m=static_cast<Dos64Machine*>(p)->cpu;if(!m.hd_file){m.unsupported=true;return;}m.hd_file->fail_command=command;m.hd_file->short_offset=short_offset;m.hd_file->partial_write=partial_write;}
 uint32_t hd_model_commands(void *p){auto &m=static_cast<Dos64Machine*>(p)->cpu;return m.hd_file?m.hd_file->history.size():0;}
 uint8_t hd_model_byte(void *p,uint32_t a){auto &m=static_cast<Dos64Machine*>(p)->cpu;return m.hd_file&&a<m.hd_file->source.size()?m.hd_file->source[a]:0;}

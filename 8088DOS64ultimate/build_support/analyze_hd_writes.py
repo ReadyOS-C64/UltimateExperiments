@@ -42,24 +42,24 @@ for tag,manifest_path in [('small',args.small_manifest),('large',args.large_mani
  for i,w in enumerate(trace['file_writes']):
   q=trace['requests'][w['owner_request']];r=q['registers'];assert r[0]>>8==3 and q['phase']==0 and w['phase']==0
   cy=(r[1]>>8)|((r[1]&0xc0)<<2);he=r[2]>>8;se=r[1]&63;first=((cy*geom[1])+he)*16+se-1
-  source_bytes=bytes.fromhex(q['source_hex']);offset=w['offset']-first*512;payload=source_bytes[offset:offset+512]
-  assert len(payload)==512 and sha(payload)==w['payload_sha256']
+  source_bytes=bytes.fromhex(q['source_hex']);offset=w['offset']-first*512;n=w.get('bytes',512);assert n in (256,512);payload=source_bytes[offset:offset+n]
+  assert len(payload)==n and sha(payload)==w['payload_sha256']
   category=kind(w['lba']);assert set(category)<=permitted,category
   for name in category:counts[name]+=1
   byphase[str(w['phase'])]+=1
-  summaries.append({'write_ordinal':i+1,'lba':w['lba'],'kind':category,'request_ordinal':w['owner_request'],'AH':r[0]>>8,'AL':r[0]&255,'CHS':[cy,he,se],'ES_BX':f'{r[8]:04X}:{r[3]:04X}','guest_return_CS_IP':f"{q['return_cs']:04X}:{q['return_ip']:04X}",'payload_sha256':w['payload_sha256']})
- assert sum((q['registers'][0]&255)for q in trace['requests']if q['registers'][0]>>8==3)==len(summaries)
+  summaries.append({'write_ordinal':i+1,'lba':w['lba'],'bytes':n,'half':w.get('half',0),'kind':category,'request_ordinal':w['owner_request'],'AH':r[0]>>8,'AL':r[0]&255,'CHS':[cy,he,se],'ES_BX':f'{r[8]:04X}:{r[3]:04X}','guest_return_CS_IP':f"{q['return_cs']:04X}:{q['return_ip']:04X}",'payload_sha256':w['payload_sha256']})
+ assert sum((q['registers'][0]&255)for q in trace['requests']if q['registers'][0]>>8==3)*512==sum(w.get('bytes',512)for w in trace['file_writes'])
  logical_logs=[]
  for name in ['BOOTVER.TXT','BOOTDIR.TXT','BOOTOK.TXT']:
   prior=read_volume_file(original[start*512:],name);current=read_volume_file(vol,name)
   logical_logs.append({'name':name,'before_size':len(prior),'after_size':len(current),'before_sha256':sha(prior),'after_sha256':sha(current),'logical_payload_changed':prior!=current})
  repeated=[];previous={}
  for i,w in enumerate(trace['file_writes']):
-  q=trace['requests'][w['owner_request']];r=q['registers'];cy=(r[1]>>8)|((r[1]&0xc0)<<2);first=((cy*geom[1]+(r[2]>>8))*16+(r[1]&63)-1)*512;payload=bytes.fromhex(q['source_hex'])[w['offset']-first:w['offset']-first+512]
-  if w['lba'] in previous:
-   ordinal,prior=previous[w['lba']];diff=[j for j in range(512)if prior[j]!=payload[j]]
-   repeated.append({'previous_ordinal':ordinal,'ordinal':i+1,'lba':w['lba'],'kind':kind(w['lba']),'changed_byte_offsets':diff,'previous_text':prior.rstrip(b'\0').decode('ascii','replace')if kind(w['lba'])==['BOOTDIR.TXT']else None,'current_text':payload.rstrip(b'\0').decode('ascii','replace')if kind(w['lba'])==['BOOTDIR.TXT']else None})
-  previous[w['lba']]=(i+1,payload)
+  q=trace['requests'][w['owner_request']];r=q['registers'];cy=(r[1]>>8)|((r[1]&0xc0)<<2);first=((cy*geom[1]+(r[2]>>8))*16+(r[1]&63)-1)*512;n=w.get('bytes',512);key=(w['lba'],w.get('half',0),n);payload=bytes.fromhex(q['source_hex'])[w['offset']-first:w['offset']-first+n]
+  if key in previous:
+   ordinal,prior=previous[key];diff=[j for j in range(n)if prior[j]!=payload[j]]
+   repeated.append({'previous_ordinal':ordinal,'ordinal':i+1,'lba':w['lba'],'bytes':n,'half':w.get('half',0),'kind':kind(w['lba']),'changed_byte_offsets':diff,'previous_text':prior.rstrip(b'\0').decode('ascii','replace')if kind(w['lba'])==['BOOTDIR.TXT']else None,'current_text':payload.rstrip(b'\0').decode('ascii','replace')if kind(w['lba'])==['BOOTDIR.TXT']else None})
+  previous[key]=(i+1,payload)
  report={'fixture_manifest_sha256':sha(manifest_path.read_bytes()),'fixture_manifest':str(manifest_path),'logical_log_files':logical_logs,'repeated_sector_writes':repeated,'status':'all writes explained by actual guest AH03 source bytes and allowed FAT/root/log-file sectors','source_sha256_unchanged':sha(source.read_bytes()),'modified_sha256':sha(modified),'autoexec_text':read_volume_file(original[start*512:],'AUTOEXEC.BAT').decode('ascii'),'file_write_count':len(summaries),'counts_by_sector_owner':dict(counts),'counts_by_phase':dict(byphase),'changed_sectors':changed,'root_entry_changes':directory_changes,'writes':summaries,'before':before,'after':after}
  (out/f'{tag}-write-analysis.json').write_text(json.dumps(report,indent=2)+'\n')
  print(tag,json.dumps({'writes':len(summaries),'owners':dict(counts),'changed_sectors':[(c['lba'],c['kind'])for c in changed],'autoexec':report['autoexec_text']}))

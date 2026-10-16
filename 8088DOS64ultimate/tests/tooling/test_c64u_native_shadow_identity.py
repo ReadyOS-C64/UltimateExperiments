@@ -108,7 +108,7 @@ class Tests(unittest.TestCase):
             with self.subTest(metadata=path),self.assertRaises(ValueError):self.make(metadata=meta)
     def test_packaged_source_tail_slot_and_guard_corruption_rejected(self):
         guard=self.labels['hdb_extension_ready']
-        for address in [0xa000,0xa85f,0xa860,0xadff,0x9800,0x9810+1427,guard]:
+        for address in [0xa000,0xa85f,0xa860,0xadff,0x9800,0x9810+self.labels['__HDCODE_SIZE__'],guard]:
             prg=bytearray(self.prg);prg[address-0x801+2]^=1
             meta=copy.deepcopy(self.metadata);meta['package']['sha256']['packaged_prg']=shadow.sha(prg)
             with self.subTest(address=hex(address)),self.assertRaises(ValueError):self.make(prg=bytes(prg),metadata=meta)

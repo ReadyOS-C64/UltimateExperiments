@@ -1,3 +1,7 @@
+# HD split256 promoted/model verified — 2026-10-16
+
+ROOT71972b7e/729111fa reproduces sealed author/independent native pair, focused38pass/3optional skips. Whole512 authority/readback preserved across both256 writes; HDCODE+45=1472/1792. Actual A+C/genuineBASIC/TP7.01 HELLO succeeds privately on pending ESC successor9b7dfbac; not yetROOT/physicalacceptance. Palette successor privately430native+298tools/4focused pass; independent review pending. FullREUac43 recovery running boundedDelta after nativeFILE failure, so no newphysicalapp launch yet.
+
 # Current: A:+C: complete disk preparation and compatibility repairs — 2026-10-16
 
 User requested local commits/no push, regular A plus writable C containing all three DOS floppies, GW-BASIC/Hangman, and latest suitable Turbo Pascal. Private20MiB FAT16 fixture holds360files including complete originalEnglish TP7.01 real-mode tree233files. Primary manual/originalREADME establish DOS3+/8088/512KiB real IDE; TPX protectedmode is separate. GenuineDOS3.3 reference compile/run and CHKDSK pass. Actual native A+C boot/threeDOSdirectories/BASIC output+SYSTEM pass on71972/729111; originalTPC stops at DBE3 absent8087 detection. CPU repair underway, not accepted yet. HD split256 model repair passed428native+298tooling plus focusedHD; independent review in progress. No physicalHD acceptance yet.

@@ -35,7 +35,7 @@ fn setup(profile:u8,slots:u8)!F{
 }
 const Fault=enum{none,short_read,seek_error,write_error,partial_write,corrupt_write};
 const Disk=struct{
- data:[]u8,pos:usize=0,seeks:usize=0,reads:usize=0,writes:usize=0,fault:Fault=.none,fail_after:usize=0,
+ data:[]u8,pos:usize=0,seeks:usize=0,reads:usize=0,writes:usize=0,fault:Fault=.none,fail_after:usize=0,write_fault_n:usize=0,alias512:bool=false,alias_hits:usize=0,write_sizes:[128]u16=@splat(0),write_offsets:[128]usize=@splat(0),
  fn init(length:usize)!Disk{const b=try a.alloc(u8,length);for(b,0..)|*v,i|v.*=@truncate((i*37)^(i>>8)^(i>>17));return .{.data=b};}
  fn deinit(self:*Disk)void{a.free(self.data);}
  fn request(self:*Disk,f:*F)!void{
@@ -51,12 +51,17 @@ const Disk=struct{
    if(count==512 and self.fault==.short_read and self.reads>self.fail_after)n=@min(n,511);
    try command(f,&.{1,4,@truncate(count),@truncate(count>>8)},self.data[self.pos..][0..n],"");self.pos+=n;
   }else if(op==5){
-   try std.testing.expect(self.pos+512<=self.data.len);self.writes+=1;var cmd:[516]u8=undefined;cmd[0..4].*=.{1,5,0,2};const x=try f.symbol("dos64_uci_command");
-   for(cmd[4..],4..)|*v,i|v.*=f.peek(x+@as(u16,@intCast(i)));
-   if(self.fault==.write_error){try command(f,&cmd,"","75,WRITE ERROR");return;}
-   const n:usize=if(self.fault==.partial_write)127 else 512;@memcpy(self.data[self.pos..][0..n],cmd[4..][0..n]);
-   if(self.fault==.corrupt_write)self.data[self.pos+217]^=0x80;
-   self.pos+=n;try command(f,&cmd,"","00,OK");
+   const count=f.word(try f.symbol("dos64_files_count"));try std.testing.expect(count==256 or count==512);try std.testing.expect(self.pos+count<=self.data.len);
+   const wi=self.writes;self.writes+=1;try std.testing.expect(wi<128);self.write_sizes[wi]=count;self.write_offsets[wi]=self.pos;
+   var cmd:[516]u8=undefined;cmd[0..4].*=.{1,5,@truncate(count),@truncate(count>>8)};const x=try f.symbol("dos64_uci_command");
+   for(cmd[4..4+count],4..)|*v,i|v.*=f.peek(x+@as(u16,@intCast(i)));
+   const active=self.write_fault_n==0 or self.write_fault_n==self.writes;
+   if(self.fault==.write_error and active){try command(f,cmd[0..4+count],"","75,WRITE ERROR");return;}
+   const n:usize=if(self.fault==.partial_write and active)127 else count;
+   if(self.alias512 and self.pos%512==0 and count==512){self.alias_hits+=1;for(0..n)|i|self.data[self.pos+i]=@truncate((i*29)^(i>>3)^0x23);}
+   else @memcpy(self.data[self.pos..][0..n],cmd[4..][0..n]);
+   if(self.fault==.corrupt_write and active)self.data[self.pos+217]^=0x80;
+   self.pos+=n;try command(f,cmd[0..4+count],"","00,OK");
   }else return error.UnexpectedFileOperation;
  }
  fn drain(self:*Disk,f:*F)!void{
@@ -183,7 +188,7 @@ test "HD verification timeout retains sector authority until FILE close reopen a
  var f=try setup(0,2);defer f.deinit();var d=try Disk.init(2*1024*1024);defer d.deinit();try read(&d,&f,0);const b=pattern();
  try bytes(&f,"dos64_uci_command",4,&b);try start(&f,1,4095);
  // Write seek, WRITE, verify seek, then stall the verifying READ in UCI.
- for(0..3)|_|{try d.request(&f);try call(&f,"dos64_overlay_hd_advance",0);}
+ for(0..4)|_|{try d.request(&f);try call(&f,"dos64_overlay_hd_advance",0);}
  try std.testing.expectEqual(@as(u8,4),try get(&f,"dos64_files_op"));
  m.dos64_uci_model_enable(f.machine,0xdf1c,10000,0xc9);m.dos64_uci_model_block(f.machine,"".ptr,0,"".ptr,0);
  try word(&f,"dos64_uci_timeout",10);try word(&f,"dos64_files_now",0);try call(&f,"dos64_overlay_files_start",0);
@@ -211,4 +216,46 @@ test "HD resident wrapper and native helper preserve all caller status combinati
  var f=try setup(1,2);defer f.deinit();try put(&f,"hd_count",1);try put(&f,"hd_ch",0);try put(&f,"hd_cl",0x81);try put(&f,"hd_dh",0);
  for(0..256)|status|{f.initial_status=@intCast(status);try call(&f,"dos64_overlay_hd_chs_to_lba",0);try std.testing.expectEqual(@as(u16,32768),f.word(try f.symbol("hd_lba")));}
  std.debug.print("HD all-tests maximum bounded native call CPUcycles={d}\n",.{max_cycles});
+}
+
+test "HD split256 avoids observed aligned512 alias with exact distinct half payloads" {
+ var f=try setup(1,2);defer f.deinit();var d=try Disk.init(20*1024*1024);defer d.deinit();d.alias512=true;
+ var b:[512]u8=undefined;for(&b,0..)|*v,i|v.*=@truncate((i*19)^(i>>3)^(i>>8)^0x5a);
+ try write(&d,&f,32768,&b);
+ std.debug.print("HDALIAS native state{d} error{d} writes{d} aliasHits{d} sizes{d}/{d} offsets{d}/{d} uncertain{d}\n",.{try get(&f,"hd_state"),try get(&f,"hd_error"),d.writes,d.alias_hits,d.write_sizes[0],d.write_sizes[1],d.write_offsets[0],d.write_offsets[1],try get(&f,"hd_uncertain")});
+ try std.testing.expectEqual(@as(u8,2),try get(&f,"hd_state"));try std.testing.expectEqual(@as(usize,2),d.writes);try std.testing.expectEqual(@as(usize,0),d.alias_hits);
+ try std.testing.expectEqual(@as(u16,256),d.write_sizes[0]);try std.testing.expectEqual(@as(u16,256),d.write_sizes[1]);try std.testing.expectEqual(@as(usize,0x1000000),d.write_offsets[0]);try std.testing.expectEqual(@as(usize,0x1000100),d.write_offsets[1]);try std.testing.expectEqualSlices(u8,&b,d.data[0x1000000..][0..512]);
+}
+
+test "HD split256 first and second half failures keep all recovery bytes and retry original identity" {
+ for([_]Fault{.write_error,.partial_write,.corrupt_write})|fault|for([_]usize{1,2})|half|{
+  var f=try setup(0,2);defer f.deinit();var d=try Disk.init(2*1024*1024);defer d.deinit();try read(&d,&f,63);
+  var b:[512]u8=undefined;for(&b,0..)|*v,i|v.*=@truncate((i*37)^(i>>8)^0xa6);
+  d.fault=fault;d.write_fault_n=half;try write(&d,&f,63,&b);try std.testing.expectEqual(@as(u8,3),try get(&f,"hd_state"));try std.testing.expectEqual(@as(u8,1),try get(&f,"hd_uncertain"));try std.testing.expectEqual(@as(u8,0),try get(&f,"hd_agreement"));
+  for(b,0..)|v,i|try std.testing.expectEqual(v,host.c.dos64_reu_peek(f.machine,0x350000+@as(u32,@intCast(i))));
+  try call(&f,"dos64_overlay_hd_init",1);try call(&f,"dos64_overlay_hd_prepare",1);
+  try word(&f,"hd_lba",4095);try put(&f,"hd_op",0);try bytes(&f,"dos64_uci_command",4,&([_]u8{0xcc}**512));d.fault=.none;
+  try call(&f,"dos64_overlay_hd_retry",0);try d.drain(&f);try std.testing.expectEqual(@as(u8,2),try get(&f,"hd_state"));try std.testing.expectEqual(@as(u8,0),try get(&f,"hd_uncertain"));try std.testing.expectEqualSlices(u8,&b,d.data[63*512..][0..512]);
+ };
+}
+test "HD split256 both source DMA halves fail safely and full retry replays without restaging" {
+ for([_]u64{0,1})|half|{
+  var f=try setup(0,2);defer f.deinit();var d=try Disk.init(2*1024*1024);defer d.deinit();try read(&d,&f,0);var b:[512]u8=undefined;for(&b,0..)|*v,i|v.*=@truncate((i*43)^(i>>8));try bytes(&f,"dos64_uci_command",4,&b);try start(&f,1,4095);
+  // FILE seek is still pending. HD overlay header+payload use two DMAs;
+  // then selected half-source DMA (first0 or second1) fails partially.
+  try d.request(&f);if(half==0)host.c.dos64_reu_fail_after(f.machine,2,37);try call(&f,"dos64_overlay_hd_advance",0);
+  if(half==1){try d.request(&f);host.c.dos64_reu_fail_after(f.machine,2,37);try call(&f,"dos64_overlay_hd_advance",0);}
+  try std.testing.expectEqual(@as(u8,3),try get(&f,"hd_state"));try std.testing.expectEqual(@as(u8,4),try get(&f,"hd_error"));try std.testing.expectEqual(@as(u8,1),try get(&f,"hd_uncertain"));try std.testing.expectEqual(@as(usize,@intCast(half)),d.writes);
+  for(b,0..)|v,i|try std.testing.expectEqual(v,host.c.dos64_reu_peek(f.machine,0x350000+@as(u32,@intCast(i))));
+  try call(&f,"dos64_overlay_hd_retry",0);try d.drain(&f);try std.testing.expectEqual(@as(u8,2),try get(&f,"hd_state"));try std.testing.expectEqualSlices(u8,&b,d.data[d.data.len-512..]);
+ }
+}
+test "HD split256 complete profiles seam and final sectors touch only selected logical sector" {
+ for([_]u8{0,1})|profile|{
+  const length:usize=if(profile==0)2*1024*1024 else 20*1024*1024;const last:u16=@intCast(length/512-1);
+  for([_]u16{0,63,64,127,if(profile==0)4094 else 32767,if(profile==0)4095 else 32768,last})|lba|{
+   var f=try setup(profile,2);defer f.deinit();var d=try Disk.init(length);defer d.deinit();const at=@as(usize,lba)*512;var before:[514]u8=undefined;for(&before,0..)|*v,i|v.*=d.data[(at+length-1+i)%length];var b:[512]u8=undefined;for(&b,0..)|*v,i|v.*=@truncate((i*17)^(i>>8)^lba);
+   try write(&d,&f,lba,&b);try std.testing.expectEqual(@as(u8,2),try get(&f,"hd_state"));try std.testing.expectEqual(@as(usize,2),d.writes);try std.testing.expectEqual(@as(u16,256),d.write_sizes[0]);try std.testing.expectEqual(@as(u16,256),d.write_sizes[1]);try std.testing.expectEqual(at,d.write_offsets[0]);try std.testing.expectEqual(at+256,d.write_offsets[1]);try std.testing.expectEqual(before[0],d.data[(at+length-1)%length]);try std.testing.expectEqual(before[513],d.data[(at+512)%length]);try std.testing.expectEqualSlices(u8,&b,d.data[at..][0..512]);
+  }
+ }
 }

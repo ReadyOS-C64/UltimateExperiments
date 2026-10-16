@@ -370,7 +370,7 @@ hd_advance:
  cmp #3
  jeq write_seek_done
  cmp #4
- jeq write_done
+ jeq first_write_done
  cmp #5
  jeq verify_seek_done
  cmp #6
@@ -379,6 +379,8 @@ hd_advance:
  jeq length_seek_done
  cmp #8
  jeq length_read_done
+ cmp #9
+ jeq write_done
  jmp file_error
 @fill_seek_done:
  lda #2
@@ -433,18 +435,37 @@ fill_read_done:
 @more:
  jmp request_read
 write_seek_done:
- ; SEEK overwrites command+4/5: restore desired bytes only AFTER seek.
- jsr recovery_address
- lda #1
- sta dos64_reu_request+R_DIRECTION
- jsr command_host
- jsr dma
- jcs dma_error
  lda #4
  sta h_phase
+write_half:
+ ; Keep the complete original sector in350000..3501FF. Each independent
+ ; FILE WRITE is256bytes; affected C64U firmware corrupts aligned512WRITE.
+ ; SEEK overwrites command+4/5, so reload only AFTER seek/preceding WRITE.
+ jsr recovery_address
+ lda h_phase
+ cmp #9
+ bne :+
+ inc dos64_reu_request+R_REU+1
+: lda #1
+ sta dos64_reu_request+R_DIRECTION
+ jsr command_host
+ lda #0
+ sta dos64_reu_request+R_LENGTH
+ lda #1
+ sta dos64_reu_request+R_LENGTH+1
+ jsr dos64_reu_transfer
+ jcs dma_error
  lda #FILES_WRITE
  sta dos64_files_op
- jmp request_count
+ lda #0
+ sta dos64_files_count
+ lda #1
+ sta dos64_files_count+1
+ jmp publish
+first_write_done:
+ lda #9
+ sta h_phase
+ jmp write_half
 write_done:
  lda #5
  sta h_phase

@@ -562,3 +562,5 @@ IMPORTANT BASELINE CHAIN: old230000 session endedFAILED06:22:37UTC, rawmailboxma
 
 
 2026-10-16: Revalidated terminal human run native-interactive-game-20261015-232500 /SESSION_STATE ended and PID65929 absent. Decoded retained65536 RAM: CPU2/E6, F000:0150, AX0B01 BX0, portF3, matching explicitunsupported AH0B table. Allresident/7overlay retention passes;50c3 fullREU retained,3df restored, originalac43 pending. Wholefile recovery twoFILE failures retained runs/original-baseline-recovery-20261016; boundedDelta recovery now active. Privatefixture receipts1e21ff0b, researchf3c60b10, HDrepair79fd58be pendingROOT review/promotion. No physicalC acceptance.
+
+2026-10-16 ROOT exact11fileHDsplit256 patch applied after independent8378b084 source review; make build source-only and zig build hd-backend hd-bios hd-cold hd-fixtures --summary all exit0/38pass3optional skips. Pair71972b7e/729111fa matchesauthor79fd58be+peer8378b084. Old512 native negative and new256success retained. PhysicalHDpending. ROOTlogs scratch/hd-split256-root-{build,focused}.log.
