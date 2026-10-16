@@ -1,0 +1,16 @@
+{
+  "status": "ACTUAL_ULTIMATE_FILES_STAGED_AND_COMPLETELY_READBACK_VERIFIED",
+  "remote_directory": "/usb1/DOS64_TEST/ac-media-20261016-081300",
+  "HD_bytes": 20971520,
+  "HD_sha256": "ac1cea543ad27f4fad4d3ba9d15e482bac05e9e48c4be6373c889bca4bc6c197",
+  "A_bytes": 368640,
+  "A_sha256": "bb75cdeb527f292c623c5ef4f0ea32388373c12f373b5546d1d371007d7abb13",
+  "OWNER_sha256": "ce63fd11fcf2f5b38d6001c887d94d2821d334f78d555f4cedc07cc11709072e",
+  "successor_record": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/ac-media-20261016-081300-readback/ac-media-staging.json",
+  "successor_record_sha256": "c2bff0a6674b966e9afed3937f27c60ec9f9f3dbb1a8895c8775b676dd483518",
+  "readback_report_sha256": "3401699efd46265b265c0a80009d69a8667e5b09d549d4417bc19d11eebc652d",
+  "prior_phase": "runs/ac-media-20261016-081300/ac-media-staging.json remainsfailed: ROOTadapter finalvalidator lacked A_CRC after bothcompleteuploads/readbacks and localsourcecheck. Freshread-onlysuccessor rechecksall20MiB+A+OWNER and exactknownCRC, retains explicitadoption/no remote rewrite.",
+  "hardware_booted": false,
+  "native_file_HD_write_acceptance": false,
+  "limitations": "FTP stagingonly; no C64CPU/REU takeover/application run/mount or physicalHDnativepersistence claim."
+}
