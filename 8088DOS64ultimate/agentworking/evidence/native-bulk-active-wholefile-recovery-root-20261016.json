@@ -1,0 +1,20 @@
+{
+  "status": "PASS_ORIGINAL_4MiB_RECOVERY_COMPLETE",
+  "physical_manifest_sha256": "0ce2e435b72e8629d61e764893c4929e3325ddfa372bb1ba8ee150085280b551",
+  "ROOT_files_verified": 325,
+  "ROOT_original_after_allbytes_equal": 4194304,
+  "REU_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+  "native_restore_base_sha256": "38806976236c39df7b392b8dbf5312adb92c4ac4f9ac60460f664a3eb61e905b",
+  "attempts": 1,
+  "exhaustive40fe_compare_chunks": 256,
+  "full_FTP_backup_restore_OWNER": true,
+  "source_inputs_and_copies_exact": 187,
+  "configuration_media_reset_restored": true,
+  "transport": "ActivePORT; passive0-bytefailure preserved; underlyingcause unproven",
+  "owned_Terminal": 1598,
+  "owned_PID": 53528,
+  "original2MiB_campaign_status": "FAILED_UNCHANGED",
+  "device_recovery_pending": false,
+  "upper12MiB": "untouched/uncompared",
+  "records": "scratch/native-bulk-active-whole-file-fallback"
+}
