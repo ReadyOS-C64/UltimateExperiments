@@ -69,7 +69,7 @@ Details: [storage](docs/STORAGE.md), [display and keyboard](docs/DISPLAY_INPUT.m
 - Prove the actual assembly through Zig assertions in Peddle, then VICE with REU and D81/IEC, then physical C64U at 1/16/64 MHz. Warp-mode VICE is a development accelerator, not a 64 MHz timing model.
 - Measure near-4.77 MHz XT performance early. It remains an objective, not an established capability.
 
-The current assembly `4cc3035f` / `4b82fe0d` adds CGA cursor/control/status support to verified HD writes, XT palette and absent-8087 ESC/WAIT behavior;459 Peddle tests and298 tooling tests pass. OriginalTurboPascal7.01 editor load/compile/run/exit passes Peddle; physical editor testing remains pending. A complete20MiB C image with allDOSfloppies, GW-BASIC/Hangman and Turbo Pascal7.01 is staged on the Ultimate. Physical Cdrive acceptance passes; the originalTURBO editor is not yet physically accepted. [Installation and evidence](docs/TURBO_PASCAL.md).
+The current assembly `b3d17d02` / `b995c5e1` includes CGA registers/control/status and independently reviewed memory optimization;460 Peddle tests and304 tooling tests pass. Modeled CPU reductions5.90% across12profiles/1.98% genuineDOS are separate from physical timing. Public A+C host/helper passes43host/6Peddle/6layout checks; see [workflow](docs/HARDWARE_AC_WORKFLOW.md). OriginalTurboPascal7.01 editor load/compile/run/exit passes Peddle; physical editor testing remains pending. A complete20MiB C image with allDOSfloppies, GW-BASIC/Hangman and Turbo Pascal7.01 is staged on the Ultimate. Physical Cdrive acceptance passes; the originalTURBO editor is not yet physically accepted. [Installation and evidence](docs/TURBO_PASCAL.md).
 
 ## Continuation
 

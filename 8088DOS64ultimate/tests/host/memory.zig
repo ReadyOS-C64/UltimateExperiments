@@ -89,6 +89,33 @@ test "20-bit assembly translation handles aliases carry wrap and seeded pairs" {
     }
 }
 
+test "20-bit translation preserves all native flags at nibble and offset carries" {
+    var f=try Fixture.init(); defer f.deinit();
+    const pairs=[_][2]u16{
+        .{0,0}, .{0xffff,0xffff}, .{0xffff,0x10}, .{0x0fff,0x10},
+        .{0x7fff,0xffff}, .{0x8000,0x8000}, .{0xfedc,0xba98}, .{0x1234,0x5678},
+        .{0x000f,0xff0f}, .{0x0010,0xff00}, .{0x00ff,0xf00f}, .{0x0100,0xf000},
+        .{0x0ff0,0x00ff}, .{0xf000,0xffff}, .{0xfff0,0x00ff}, .{0xfff1,0x00ef},
+    };
+    for (0..256) |native_p| for (pairs) |pair| {
+        try setWord(&f,"dos64_segment",pair[0]); try setWord(&f,"dos64_offset",pair[1]);
+        f.initial_status=@intCast(native_p);
+        const r=try f.call("dos64_physical",300);
+        const a=try f.symbol("dos64_address");
+        const result=@as(u32,f.word(a))|(@as(u32,f.peek(a+2))<<16);
+        try std.testing.expectEqual((@as(u32,pair[0])*16+pair[1])&0xfffff,result);
+        // The Peddle status ABI always reports bit5 set; all other bits,
+        // including decimal, interrupt, carry and its modeled B bit survive.
+        try std.testing.expectEqual(@as(u8,@intCast(native_p))|0x20,r.p);
+        try std.testing.expectEqual(@as(u8,0x82),r.x);
+        try std.testing.expectEqual(@as(u8,0x93),r.y);
+        try std.testing.expectEqual(pair[0],f.word(try f.symbol("dos64_segment")));
+        try std.testing.expectEqual(pair[1],f.word(try f.symbol("dos64_offset")));
+        try std.testing.expectEqual(@as(u8,0x2f),f.peek(0));
+        try std.testing.expectEqual(@as(u8,0x35),f.peek(1));
+    };
+}
+
 test "cache cold initialization validates capacity and clears full page map" {
     for ([_]u8{0,33,255}) |limit| {
         var f=try Fixture.init(); defer f.deinit();

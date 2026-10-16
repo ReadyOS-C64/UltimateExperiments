@@ -326,7 +326,13 @@ mem_resolve:
     lda dos64_address+1
     ror
     sta mem_want_lo
-    jsr mem_want_map
+    ; Hot lookup builds the map pointer directly. ROR above must consume
+    ; the high-address bit left by LSR before any ADC changes carry.
+    sta mem_map_pointer
+    lda mem_want_hi
+    clc
+    adc #>MEM_MAP_BASE
+    sta mem_map_pointer+1
     ldy #0
     lda (mem_map_pointer),y
     cmp #$FF

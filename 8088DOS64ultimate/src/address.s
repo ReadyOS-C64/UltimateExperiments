@@ -12,19 +12,35 @@ dos64_address: .res 3
 dos64_physical:
     php
     cld
-    lda dos64_segment
-    sta dos64_address
+    ; Decompose segment*16 into its three bytes before adding the offset.
+    ; Accumulator shifts avoid four full three-byte ZP rotations. The low
+    ; nibble of segment+1 forms physical bits 12..15; its high nibble forms
+    ; bits 16..19. No scratch, register, flag or bank lifetime is extended.
     lda dos64_segment+1
-    sta dos64_address+1
-    lda #0
+    lsr
+    lsr
+    lsr
+    lsr
     sta dos64_address+2
-.repeat 4
-    asl dos64_address
-    rol dos64_address+1
-    rol dos64_address+2
-.endrepeat
+    lda dos64_segment+1
+    asl
+    asl
+    asl
+    asl
+    sta dos64_address+1
+    lda dos64_segment
+    lsr
+    lsr
+    lsr
+    lsr
+    ora dos64_address+1
+    sta dos64_address+1
+    lda dos64_segment
+    asl
+    asl
+    asl
+    asl
     clc
-    lda dos64_address
     adc dos64_offset
     sta dos64_address
     lda dos64_address+1

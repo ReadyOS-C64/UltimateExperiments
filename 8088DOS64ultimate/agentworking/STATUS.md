@@ -1,5 +1,19 @@
 # Current status — 2026-10-16
 
+Current ROOT is b3d17d02/b995c5e1:460 actualPeddle and304 tooling tests, both memory verifiers pass. The independently reviewed memory/address optimization reduces modeled CPU work5.90% across12profiles and1.98% in genuine DOS. Full IRQ/REP/clock cadence remains unchanged; no physical timing or XT performance claim. Evidence: memory-fetch-root-20261016.json.
+
+Public A+C development host/helper is committed8d87313:97 files,43host+6actual6502helper+6layout checks,498 source/product inputs exact before/after with copies. Poisoned cached-bootstrap old/new regression verifies rejection before import. Root manifest captures every promoted file; first seven-file inventory omission preserved. Evidence: ac-development-production-root-20261016.json; docs/HARDWARE_AC_WORKFLOW.md.
+
+Last physical A+C acceptance remains4589/a827, original4MiB ac43 restored; no active hardware/session/freeze. Regular A and complete20MiB C include allDOSfloppies, GW-BASIC/Hangman and originalEnglish TP7.01. PrecloseFATfailure retained, postclose78b941 clean; oldstagedHD is changed and cannot serve as originalac1 fixture.
+
+Corrected keyboard dbfe/734pins passes467default/19focused/298tools, awaiting independent memory_perf_review. Old5db rejected560ead for inherited pending-release suppression, firstfailures preserved. Cursor cfec/439pins passes471/302 plus full40/80 bitmap/matrix oracles, awaiting independent cia review. Neither candidate promoted. compiled_blocks_save_composition prepares private IDE host/purpose registration/oracle while waiting final composition.
+
+All commits local, no push including nestedsite9cc6501. Existing published actualHangman video/download remains intact. All physical operations through owned macOS Terminal, fresh matched purpose proof/media/PRGs/helper/guard required. No firmware update. Upper12MiB untouched/uncompared. Preserve unrelatedReadyFS changes, native_text_probe and vendor downloads. Full goal UI/IEC/graphics/enduser/performance50/85 remains active.
+
+Earlier checkpoints below are historical and do not identify the current ROOT binary.
+
+# Current status — 2026-10-16
+
 Physical A:+C: verification **passed**, owned Terminal1571/PID19926 exit0, run `runs/c64u-ac-20261016-084000`. Exact current4589/a827 boots genuine DOS3.3 from regular A and uses the complete20MiB C collection. Real VER, root/three archive DIRs, GW-BASIC file write/close/SYSTEM, originalTPC compilation/run, COPY and copied EXE execution, CHKDSK and finalDIR passed. Complete80column framebuffer/font oracle passed; captured screenshot: `docs/screenshots/dos33-c-drive-80.png` (actual VIC bitmap/matrix reconstruction, illustrative RGB).
 
 Native target2 CLOSE/reopen/INFO, all20 changed sectors plus six boundaries, short-read/EOF and finalCLOSE passed. Complete postclose and post-recovery FTP images match78b94171. All360 original files/entries/allocations remain exact; seven expected new files; HELLO2224B equals independent DOSBox reference0a3e4e74. The preclose FTP copy failed FAT allocation inspection and is preserved as such; nativeCLOSE made the completed directory entry visible. It is not persistence authority.
