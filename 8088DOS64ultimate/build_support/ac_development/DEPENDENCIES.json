@@ -1,0 +1,231 @@
+{
+  "schema": 1,
+  "purpose": "exact-reviewed-A-C-host-support",
+  "origin_manifest_sha256": "e9330152ba1371297b0ed89746416189b4f48499b50ac7d6ab3acd2528a9fa4b",
+  "files": {
+    "batched_delta_recovery.py": {
+      "bytes": 5618,
+      "sha256": "27f5bd8f9caca58d2d42647ac9b885826eedbecacd8146e4bdcaa2627266b86a"
+    },
+    "game_cancellation.py": {
+      "bytes": 1448,
+      "sha256": "a13e0fed8863c24ff6bf10cc0a903bdfc0d926f7b5afb017e9d11e3cfa19cd27"
+    },
+    "game_full_recovery.py": {
+      "bytes": 11318,
+      "sha256": "b017e4b0854a9e9cf073d7176ea5bc5370c0a9cbfb3d418739ba3644bed3877f"
+    },
+    "game_launch_application.py": {
+      "bytes": 986,
+      "sha256": "02e0d3eba6ce78b87e6258044cc8d8ee1012ff0fefbe7130025b09b0ceb6eba7"
+    },
+    "game_recovery.py": {
+      "bytes": 1336,
+      "sha256": "3cca72a2d9d6da38a74bfa31687396b4c8c65007b497502f8ed51d0b06adac13"
+    },
+    "load_then_sys.py": {
+      "bytes": 11403,
+      "sha256": "c96081ce28be5e0c3bea9320d1fd2e9325107f2391cf69a078f498c5f19b66ba"
+    },
+    "support/analyze_hd_writes.py": {
+      "bytes": 6381,
+      "sha256": "bbbf44f66828362f62a56dbeedcc2f8431c05948858b41c699249b789be189f1"
+    },
+    "support/build_bulk_reu_service.py": {
+      "bytes": 3130,
+      "sha256": "e1300a93b4a12738c580a3b43887c69c7c6ecd23cf4169003837d963d5fee14d"
+    },
+    "support/build_floppy_export.py": {
+      "bytes": 2220,
+      "sha256": "cff4597fb44ae997107475584790e49efb042bd2d3a07c5f18f3dbbdb82576c5"
+    },
+    "support/build_iec_standalone.py": {
+      "bytes": 3983,
+      "sha256": "2bb08ef41a9032dc128d9ae70ae9fc09df5dc301f019fecf4d5444465441b67f"
+    },
+    "support/build_native_file_recovery.py": {
+      "bytes": 3077,
+      "sha256": "916ebfaf8803acc19f8e5c8c21023a0811b2124f370b5b6c55d907c5d2e23a10"
+    },
+    "support/build_uci_ram_init_reference.py": {
+      "bytes": 1292,
+      "sha256": "5ff325aa7363e5adb671af0810e645199f228819c3fea74fd599a70d500ef551"
+    },
+    "support/c64u_bulk_reu_recovery.py": {
+      "bytes": 21278,
+      "sha256": "25f1874c615ad165b7c84cdef5718c44381ca291ab59475213099837eb736033"
+    },
+    "support/c64u_clock_probe.py": {
+      "bytes": 10637,
+      "sha256": "a68ea1017d81b7c9b11e2cdc2e264c6975a3b5f24899722ceec6dd99eb64b002"
+    },
+    "support/c64u_delta_reu_recovery.py": {
+      "bytes": 1913,
+      "sha256": "ea25f194f06e1bfc1f04ad640f88e3f2c7a0eeafc4c545abd34b27ac2a5bfcd7"
+    },
+    "support/c64u_ftp_put_transport.py": {
+      "bytes": 13354,
+      "sha256": "c11b16324aba6cc9941de84f9f5d8856c6156aa34cadf227eae02a56e74c6c41"
+    },
+    "support/c64u_hd_evidence.py": {
+      "bytes": 16108,
+      "sha256": "c42aaf5a223bba80b268b3482593db26d382c85f958a94e024335e1b8dce193a"
+    },
+    "support/c64u_media_fixture.py": {
+      "bytes": 5178,
+      "sha256": "1f9ca8408ab3cede7ce3a31a6c9a9106e8d8b3a520e48b47563b4e4c50f8fa49"
+    },
+    "support/c64u_native_application.py": {
+      "bytes": 25961,
+      "sha256": "c0f974bad448d74ecbf38fdd75ba7d7d013fe8324bd379213d982af0b58b713b"
+    },
+    "support/c64u_native_application_support.py": {
+      "bytes": 7590,
+      "sha256": "78fd3ed6645154ea9253d1014f19f85214e7fae454e214349bc889d90df58ed9"
+    },
+    "support/c64u_native_display_application.py": {
+      "bytes": 9830,
+      "sha256": "2f54b88479911bbcff03774ecb82d3f3423c582a48c0a4f57551ca43cdc373d1"
+    },
+    "support/c64u_native_display_runner.py": {
+      "bytes": 8186,
+      "sha256": "1c76dd3e6a224e26f374cb5bf58159ff39f9dcb009c27d99e8d006b33a00c6a6"
+    },
+    "support/c64u_native_file_recovery.py": {
+      "bytes": 21659,
+      "sha256": "6e603ec327dec13a7357cf788fa1689e4ff298fd700dab5106fa87fb8c83ae4b"
+    },
+    "support/c64u_native_file_runner.py": {
+      "bytes": 8338,
+      "sha256": "0e981b14ccb8690772196c55bc1bd4beb0994bc99222778d55ccb21f32539336"
+    },
+    "support/c64u_native_ftp_put_runner.py": {
+      "bytes": 5507,
+      "sha256": "0cac01f35d40fd7ae5bbdd51ae25a7328b71d3b5cafd970dc5d34ad8fa3d2b76"
+    },
+    "support/c64u_native_mode_identity.py": {
+      "bytes": 4974,
+      "sha256": "117b706b8c911b0f4682908aa0500f576aad56bda9b1b7e7aba506a2f730adb4"
+    },
+    "support/c64u_native_shadow_identity.py": {
+      "bytes": 11602,
+      "sha256": "329e9bc35acb9db1e03c4cbc696956badfed7eeea4e8e612ced7b3da1865ad25"
+    },
+    "support/c64u_preflight.py": {
+      "bytes": 2048,
+      "sha256": "04d8e2f39bb04a97e97f4cfc5b965bbaa78a84f48c74fc591f924d230c45c651"
+    },
+    "support/c64u_probe.py": {
+      "bytes": 10805,
+      "sha256": "4067f05248f0a22a5fb254aa7031fda06ae8e011ea69b5b6c660157809e5d614"
+    },
+    "support/c64u_range_probe.py": {
+      "bytes": 13214,
+      "sha256": "c29d1d3a09af5fda01ed55e24b9db4af295eb04846d9482b46bd957f908a78f2"
+    },
+    "support/clock_probe_verify.py": {
+      "bytes": 7503,
+      "sha256": "2b78f5d62596a790d59660c5dc0c33e5d19bd748c1aa982fcdf9f76bc99d8f5b"
+    },
+    "support/dos_boot_oracle.py": {
+      "bytes": 3089,
+      "sha256": "708919f8fe30d3e14ebf23d7da54ae472fc6421e78e87d42b94c000de48f365d"
+    },
+    "support/dos_cga_fixture.py": {
+      "bytes": 4270,
+      "sha256": "b68ec3590cd2f94f1f42b1e5fe830df3482dcf7d682a4530e88ae98fefc68c0a"
+    },
+    "support/dos_cga_oracle.py": {
+      "bytes": 5608,
+      "sha256": "962e95911d51d2c9abfdadc8ac1587aba2588e843c9bdcc8529bf56fef6f3c30"
+    },
+    "support/dos_disk_inspect.py": {
+      "bytes": 11433,
+      "sha256": "2b2a882d17f030ed889b76384c82ab11c0462401c60f62e84dc09d1993f4d836"
+    },
+    "support/dos_gwbasic_fixture.py": {
+      "bytes": 5011,
+      "sha256": "645964c6a4b3d1b4ed9021942a15f51530f7e6478f9a571474d9e7b9d653d5a5"
+    },
+    "support/dos_hd_fixture.py": {
+      "bytes": 14423,
+      "sha256": "fe33779dca608a0e4f13542db34494dad3f896beae2b62c236e8cfe46e13e358"
+    },
+    "support/dos_image.py": {
+      "bytes": 12977,
+      "sha256": "2eb2ed0409dd401c803735a95ca4a1e31c7e67f35a51f6bd8d2ababa9962b905"
+    },
+    "support/fetch_8088_subset.py": {
+      "bytes": 7512,
+      "sha256": "3b937beb344de037fd4c872dc4c32d5d87febd4c35e2adb3f7de39f009d4d97d"
+    },
+    "support/hd_identity_plan.py": {
+      "bytes": 2606,
+      "sha256": "01d5fc77661a15e0378d8cc59cbd7cd7f9b90c240499b7c3574beea9465f7a07"
+    },
+    "support/manifest.py": {
+      "bytes": 2818,
+      "sha256": "c428eacc186c915c4a47f6a08382e1ae82d0cca68ac37482e1e2a1c161de000b"
+    },
+    "support/narrow_font.py": {
+      "bytes": 3772,
+      "sha256": "4cbaa587bb681557259f304537a55392e9b964e0bfd959d0cd9609a8b5c3abfc"
+    },
+    "support/native_text_font.py": {
+      "bytes": 1281,
+      "sha256": "85da72544df339a788e165d58161926e25952a237d43e75fff1005c2139e6ebb"
+    },
+    "support/native_text_probe_verify.py": {
+      "bytes": 3820,
+      "sha256": "f946a81550f6861c637a356cbb04517cd7b6db676c2f6de2f30a98846d7a817f"
+    },
+    "support/overlay_package.py": {
+      "bytes": 13939,
+      "sha256": "dde0cb285beab066f9fdd1a3ea175089dddf4473968baaf11571718b5e4666b1"
+    },
+    "support/raw_payload.py": {
+      "bytes": 277,
+      "sha256": "f10ed30c1096a4789ac77135186a97847f68a6eb515f21fb005bd3c400e2b4f3"
+    },
+    "support/reference_boot.py": {
+      "bytes": 5022,
+      "sha256": "adeb5344f93c721b15e892a0a56fddc93806dcb5dcfda85e3fcca5281f455c8c"
+    },
+    "support/test_reu_observer.py": {
+      "bytes": 2665,
+      "sha256": "7fe6f6634b88109dd94dc34e5ca1acfc58f61c33897a6018c0b8640ce43777a1"
+    },
+    "support/verify_iec_standalone.py": {
+      "bytes": 5029,
+      "sha256": "76ca86a58be61abcc72f13fbccbd26f1765ccbe7c6f6dd36fbd73c5af0c5f55a"
+    },
+    "support/verify_memory.py": {
+      "bytes": 25646,
+      "sha256": "48c2715ccee907a928ce96f1aa12579284152bb4ca4cde16c0a7d75ca50500ed"
+    },
+    "support/verify_native_workflows.py": {
+      "bytes": 5336,
+      "sha256": "5683df8fb2951db1866e0dbe72c743b007ce490c0b7ab1a1fe584f2309317d18"
+    },
+    "support/vice_capture.py": {
+      "bytes": 2926,
+      "sha256": "95a192b79d81a39f9cee1c7b93e1925d2bf527ccb3e6149e683b70241fd8b3e8"
+    },
+    "support/vice_iec_standalone.py": {
+      "bytes": 6668,
+      "sha256": "e5c9101a965bf8f38578836b42dc7598e24648758ef1601901085324d100971c"
+    },
+    "support/vice_monitor.py": {
+      "bytes": 2840,
+      "sha256": "eb55a6225c1d3f6250e2e053ac32eda9985a0abf7c137bc0113cd1969208f39b"
+    },
+    "support/vice_probe.py": {
+      "bytes": 3868,
+      "sha256": "6f4d04665a5dc170038976197f3a97fbbb6f40edf3e563a72e19de8cd2002a7a"
+    },
+    "support/vice_process_owner.py": {
+      "bytes": 4002,
+      "sha256": "03f639c682e1ffe8b25be77c8ba01fc0b78e905d1dd7076c13890060067166ef"
+    }
+  }
+}

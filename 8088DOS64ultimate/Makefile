@@ -295,3 +295,13 @@ complete-dos-fixture:
 test-complete-fixture:
 	@test -n "$(DOS64_COMPLETE_FIXTURE_PACKAGE)" || (echo "Set DOS64_COMPLETE_FIXTURE_PACKAGE to the owned fixture package"; exit 1)
 	DOS64_COMPLETE_FIXTURE_PACKAGE="$(DOS64_COMPLETE_FIXTURE_PACKAGE)" PYTHONPATH=build_support $(DOS64_PYTHON) -B tests/complete_fixture/test_population.py
+
+# Explicit A+C development tooling; no hardware action from these targets.
+.PHONY: ac-close-helper ac-helper-tests ac-host-tests ac-development-tests
+ac-close-helper:
+	$(DOS64_PYTHON) -B tools/hd_close_reopen/build.py
+ac-helper-tests: ac-close-helper
+	$(DOS64_ZIG) build --build-file build_ac_helper_tests.zig helper --summary all
+ac-host-tests: ac-close-helper
+	$(DOS64_PYTHON) -B tests/tooling/ac_development/test_ac_host.py
+ac-development-tests: ac-helper-tests ac-host-tests

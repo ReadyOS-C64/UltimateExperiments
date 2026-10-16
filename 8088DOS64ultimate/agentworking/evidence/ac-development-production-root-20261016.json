@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "scope": "ROOT production packaging of reviewed A+C development host and actual 6502 CLOSE/reopen helper",
+  "author_manifest": "scratch/ac-development-production-layout/MANIFEST.json",
+  "author_sha256": "6bb2f815a1e20bcf8e7d42d3771f35f4e1a27a064cc13c331227062539e86b1f",
+  "independent_review": "scratch/ac-development-production-independent-review/MANIFEST.json",
+  "review_sha256": "c9062f73dcd5caa89be0ec441247f15a7b22f49fc075963bb19499270ad7c690",
+  "root_acceptance": "scratch/ac-development-root-promotion-20261016/ROOT_ACCEPTANCE.json",
+  "root_acceptance_sha256": "aa90d95be84784faece7e1ec3c922b59247ab7758a2b8d07651b2ed8b2071652",
+  "root_prelaunch_sha256": "db3b6302679bcfb5e3b2674a2e6ec93de62a674861e97a43c85141b03c5906d2",
+  "result_detail": {
+    "result": "PASS",
+    "before_after_exact_inputs": 498,
+    "helper_test_binary": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/.zig-cache/o/9c87ea5898e77a6cf66505cbfc24c68e/test",
+      "sha256": "6285f0c1f9c78d4c3c33cc445f836bb95c5f8ee7de4d2662c086ec8dcf71c36c",
+      "copy_sha256": "6285f0c1f9c78d4c3c33cc445f836bb95c5f8ee7de4d2662c086ec8dcf71c36c"
+    },
+    "gates": {
+      "host": 43,
+      "actual_6502_helper": 6,
+      "layout": 6
+    },
+    "logs": {
+      "attested-helper6.log": "afcbfe80342f49f596ba017740c5f4f4c18750adb64425e35014a83973464737",
+      "attested-host43.log": "6ae584d11cd1452a1576d91d5c3e4d427e0e3413269c24285543e5a0b557aedf",
+      "attested-layout6.log": "258d56370654b6983ec998881cc66979c316b94c62f52d5c158f4367bdba352c"
+    },
+    "public_support_manifest_sha256": "cf5241ac19607dc51c0b48985bccf5ce04669c0a0bf070c32f75b6fad9f99841",
+    "helper_prg_sha256": "13fc7c2fe9a9e73336e7cf89b6b605f0ce8f868e51c6592b7280f297ab9ff654",
+    "limitations": [
+      "No hardware activation or new target physical acceptance",
+      "Old offline registration is test-only; fresh matched purpose proof and owned staging required",
+      "Original direct-test cache-bootstrap failure retained; corrected entry tested against an actual poisoned cache"
+    ]
+  },
+  "manifest_closure": "All97 promoted files included in ROOT build identity; first7-file inventory omission preserved and corrected",
+  "regression": "Sixth ROOT layout test constructs matching-mtime/size poisoned bootstrap cache, observes old-entry execution and corrected-entry rejection before import",
+  "hardware_executed": false,
+  "prior_physical_evidence": "c64u-ac-development-20261016.json"
+}
