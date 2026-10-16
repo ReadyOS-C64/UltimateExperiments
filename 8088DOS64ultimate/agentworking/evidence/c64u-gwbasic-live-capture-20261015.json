@@ -1,0 +1,22 @@
+{
+  "status": "PASS_HARDWARE_CAPTURE_NATIVE_GAME_AND_COMPLETE_RECOVERY_SOURCE_FTP",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-gwbasic-load-sys-20261015-223000",
+  "owned_terminal": 1501,
+  "owned_child_pid": 55482,
+  "source_guard_pins_and_copies": 11457,
+  "all_live_and_copy_pins_exact_after_complete_run": true,
+  "all_4MiB_original_restored_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+  "configuration_media_reset_restored": true,
+  "post_FTP_passed": true,
+  "all7_REU_overlay_slots_exact": true,
+  "game_WIN_all10_guesses": true,
+  "all37_source_lines_four_LIST_pages": true,
+  "SYSTEM_DIR_finalDOS": true,
+  "actual_VIC_frames": 25291,
+  "video_sha256": "72839a8d7c531ae5cfbb790f0220f70683962472b5e4adf87b048b38e426cc4a",
+  "video_seconds": 504.5632125109617,
+  "complete_fraction": 1.0,
+  "held_gap_frames": 0,
+  "independent_media_audit": "pending",
+  "utc": "2026-10-16T05:50:46.744541+00:00"
+}
