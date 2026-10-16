@@ -255,3 +255,5 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 
 
 2026-10-15: Guest-step success with transientHC_SAMPLE4 is not proof that deferred time is reconciled. Retain debt/lastaccepted epoch until a valid source sample; require a settled fence before ownership restoration/SAVE. A successful later catch-up cannot retrospectively authorize an earlier observable fence. Private model cost gains stay measurements when new correctness controls fail.
+
+2026-10-15: A shell cwd must be asserted in the SAME tool invocation as every private build. A previous cd in a separate invocation does not persist. During a physical freeze even generated metadata is immutable. Preserve mismatches and complete hardware recovery before restoring reports; repeat with a fresh owned fixture rather than retroactively accepting altered input closure.
