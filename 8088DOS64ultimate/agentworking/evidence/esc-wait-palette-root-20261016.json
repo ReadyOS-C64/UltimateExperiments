@@ -22,7 +22,13 @@
     "DEVICESTATE_bytes": 1009,
     "ZP_runtime_bytes": 36
   },
-  "combined_TPC_native_proof": "pendingfresh4589/a827proof; earlier9b7actualTPC/BASICproof is target-specific",
+  "combined_TPC_native_proof": {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/hd-ac-development-host/successors/root4589/proof/NATIVE_AC_PROOF.json",
+    "sha256": "eeee8ecc6f9376058427eff67c266f9be2f85a83f601d95bc87dc9eda0f8ee21",
+    "status": "passed and all364pins independentlychecked",
+    "functional": "Exact4589/a827 source-only rebuild; genuineDOS A+Cboot/VER/3archiveDIR/BASICclosedoutputSYSTEM/TPCHELLOcompileandrun,2224BEXEexactreference0a3e4e74; all360originalpayloadsunchanged/fullFAT16clean",
+    "limitations": "NoIDE orphysicalCdriveacceptance; physicalCOPY/CHKDSK/newhelperflow separate"
+  },
   "physical_HD_accepted": false,
   "TURBO_IDE_accepted": false,
   "limitations": "No FPU numerical support; fixedabsentTEST; CGA3D4/3D5probe supportunderprivateimplementation; no speedpromotion."
