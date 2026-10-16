@@ -1,3 +1,9 @@
+## Recovery complete, 2026-10-15 18:07 PDT
+
+No physical application is active; source freeze is released. The user's older-build keyboard acceptance stands. Original session cleanup and both bounded delta attempts remain failed. Separate original 40fe/3880 whole-file restoration passed on its first attempt: every original 4 MiB byte equals ac43 backup, post-reboot settings and unmounted media baseline/reset are verified, all859 source pins and843 historical copies/live sources match, and five complete owned FTP files read back. See `evidence/c64u-interactive-reboot-recovery-20261015.json`.
+
+Next integrate independently reviewed FILEINFO/SAVE union ab2d/06a4 (43 files), preserving current registrations and strict exporter identity change; root gates before fresh physical SAVE. The standalone historical b29 fixed-work hardware adapter is ready; it has separate exact source/REU/timing authority and cannot transfer current-build acceptance. Private absolute CIA2 deferred-PIT work is in progress. GW-BASIC video remains pending.
+
 ## Immediate continuation: reboot recovery first
 
 1. Finish `scratch/interactive-reboot-recovery-20261015-174325`; retain any timeouts. If it fails, launch the locally validated `scratch/interactive-reboot-native-file-recovery-20261015-175350` only after its predecessor exits. It uses original 40fe/3880 helpers and immutable ac43 backup; no application.

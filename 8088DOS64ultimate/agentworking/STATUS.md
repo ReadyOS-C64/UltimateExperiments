@@ -1,3 +1,9 @@
+## Recovery complete, 2026-10-15 18:07 PDT
+
+No physical application is active; source freeze is released. The user's older-build keyboard acceptance stands. Original session cleanup and both bounded delta attempts remain failed. Separate original 40fe/3880 whole-file restoration passed on its first attempt: every original 4 MiB byte equals ac43 backup, post-reboot settings and unmounted media baseline/reset are verified, all859 source pins and843 historical copies/live sources match, and five complete owned FTP files read back. See `evidence/c64u-interactive-reboot-recovery-20261015.json`.
+
+Next integrate independently reviewed FILEINFO/SAVE union ab2d/06a4 (43 files), preserving current registrations and strict exporter identity change; root gates before fresh physical SAVE. The standalone historical b29 fixed-work hardware adapter is ready; it has separate exact source/REU/timing authority and cannot transfer current-build acceptance. Private absolute CIA2 deferred-PIT work is in progress. GW-BASIC video remains pending.
+
 ## Current update: user acceptance and reboot recovery, 2026-10-15 17:53 PDT
 
 The user confirmed that interactive use of the older 22f82091/8a84329c build worked on the Ultimate. Exact commands and display modes remain unspecified. They have finished and manually rebooted the C64U, releasing it for newer-build tests. The old child ended before any STOP was issued. Its original cleanup remains failed: REU timeouts and a changed mounted-media baseline; this does not erase the user's functional acceptance.

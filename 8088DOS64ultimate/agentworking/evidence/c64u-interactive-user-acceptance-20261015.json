@@ -25,9 +25,10 @@
     "failure_retained": true
   },
   "separate_recovery": {
-    "status": "in_progress",
+    "status": "passed",
     "original_backup_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
     "scope": "Restore original first 4 MiB; preserve current post-reboot machine and unmounted-media baseline",
-    "output": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-interactive-reboot-recovery-20261015-174325"
+    "output": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-interactive-reboot-native-file-recovery-20261015-175350",
+    "evidence": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/c64u-interactive-reboot-recovery-20261015.json"
   }
 }
