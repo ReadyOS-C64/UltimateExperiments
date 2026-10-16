@@ -1,3 +1,9 @@
+## Recovery and current game host independently reviewed — 2026-10-15 21:21 PDT
+
+Repaired game host6dc2b5ba passes ROOT independent75host groups; all2608author pins and2607copiedinputs unchanged. One declared generated proof JSON varies only by random temporary path; first overstrict closure failure retained, full successor75 replay andsemantic equality pass. Receipt44c04d1f/evidence/gwbasic-current-video-host-review-20261015.json. Source-only child imports, truthful pre/post-helper RAM provenance and first-error-preserving bounded cleanup are repaired. Original40fe/Delta data algorithms remain exact; control-flow orchestration is an explicit derivative b017e4b0.
+
+Fresh load-only→BASIC SYS adapter is being built/reviewed for ORIGINAL d883/8866 first, preserving current native purposeproof. Do not substitute UID1 hashes into oldSAVE allowlists. No active hardware or sourcefreeze; full physical SAVE/gamevideo still pending. Private compiler cost/IF0 timing analyses retain concrete failure-chronology counterexamples; no production speed policy change.
+
 ## Native first-ID diagnostic reviewed — 2026-10-15 21:15 PDT
 
 Private UID1 first-ID candidate4e2241d0/44306a09 passes ROOT independent9native+6decoder replay, all996 original/copy inputs unchanged (receipte6c80917). It records rawID/nativeDDR/port/P/base/stage around the original single LDA, without retries or accepting badIDs. No production/hardware activation. Public firmware resume-before-restoring-UCI/REU ordering suggests a possible launch race; installed cause remains unproved. Fresh load-only→acknowledgedBASIC SYS development adapter is being tested; see docs/NATIVE_LAUNCH_DIAGNOSIS.md.

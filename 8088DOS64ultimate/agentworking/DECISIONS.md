@@ -188,3 +188,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-15: Promote independently reviewed split256 floppy SAVE after paired physical discriminator and fresh ROOT428/298/73. Preserve full INFO/compare/EOF/CLOSE,32-frame restoration, guest pause and original-media authority. Generic HD writes remain unchanged/unaccepted; no timer/JIT promotion.
+
+
+2026-10-15: Use explicit reviewed recovery control-flow derivative for newhardwarehosts after actual second-interrupt bug in oldsharedorchestration. Keep40fe/Delta/transport data algorithms unchanged; perphaseBaseException handling must retain firsterror, continueboundedindependentcleanup, and neverturn exhausted/unknown restore into success. Host-only loading handoff must awaitload-onlycompletion andobservedBASICready beforeSYS, withoutwrong-IDretry/fixedpacing/nativepatch.

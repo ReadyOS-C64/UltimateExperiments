@@ -249,3 +249,6 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 
 
 2026-10-15: A wide BEFORE/AFTER arm bracket can hide STOP visibility delay. For START-relative K support, compare STOPupper+guard with BEFORE+count+K; for violations use AFTER. Finite inconclusive observations cannot certify an installed universal bound. Native terminal DDR/port publication must precede completion; rawREST RAM0/1 remains diagnostic.
+
+
+2026-10-15: A timestamp-valid .pyc can run before bootstrap disablescache in a fresh child. Configure source-only import before FIRST project import in every production child. Distinguish generated proof outputs from executed inputs beforeattestation; a random temporary pathname does not change semantics, but firstclosurefailure mustremain and a fresh declared-output replay closes the corrected scope.
