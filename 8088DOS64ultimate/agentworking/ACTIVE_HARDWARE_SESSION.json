@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "status": "HUMAN_INTERACTIVE_HANGMAN_DISK_DOS_RUNNING_READY",
-  "active_application": true,
-  "source_freeze_active": true,
+  "status": "HUMAN_SESSION_ENDED_FAILED_ORIGINAL_BASELINE_RECOVERY_RUNNING",
+  "active_application": false,
+  "source_freeze_active": false,
   "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/native-interactive-game-20261015-232500",
   "review": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/hangman-reload-reviewed-20261015-232500",
   "guard_sha256": "0ba927772051f3c53c94ad44d7aa40edf6abf778da23e8e0e02f803c55af240e",
@@ -29,5 +29,12 @@
   "independent_review_manifest_sha256": "c2bad6fc8147c73e398f8bd3c96eeab3d1c2dbe48dccf9e5770711f5c79705b7",
   "ready_utc": "2026-10-16T06:36:36.666783+00:00",
   "all_7804_live_and_copy_pins_exact_at_ready": true,
-  "human_keyboard_acceptance": "awaitinguser"
+  "human_keyboard_acceptance": "awaitinguser",
+  "human_session_terminal": true,
+  "human_failure_evidence": "evidence/c64u-human-palette-failure-20261016.json",
+  "current_preimage_restored": true,
+  "original_ac43_restored": false,
+  "owned_recovery_pid": 78653,
+  "owned_recovery_terminal": 1566,
+  "recovery_run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/original-baseline-delta-recovery-20261016"
 }
