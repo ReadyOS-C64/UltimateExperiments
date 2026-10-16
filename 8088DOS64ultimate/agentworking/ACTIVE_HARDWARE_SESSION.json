@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "status": "ENDED_RECOVERED_NO_ACTIVE_APPLICATION",
+  "status": "FIXEDWORK_VERIFIED_ENDED_NO_ACTIVE_APPLICATION",
   "runtime_sha256": "22f8209108fca953f783116c0a6cf5bd0c788e08b586421e30406f6129be0369",
   "unit_sha256": "8a84329ce41850fa42d89c0ee5f42d4e6f77a000a2c0a9abce8cae9c0092d94f",
   "configured_sha256": "ea93ac8a25f051dacc5c86b29c08a1fb0b255f2902d3e05d3e32a7ccbf84de6f",
   "historical_build": true,
-  "current_ROOT_build": "bc195f39/84e51c94 remains separate",
-  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-interactive-stable-20261015-171915",
-  "review": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-interactive-stable-reviewed-20261015-171915",
-  "owned_terminal": 1469,
-  "owned_child_pid": 65656,
+  "current_ROOT_build": "ab2d0d5f/06a4eead separate from frozen b29 benchmark",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-fixedwork-20261015-181930",
+  "review": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/fixedwork-reviewed-20261015-181930",
+  "owned_terminal": 1482,
+  "owned_child_pid": 85687,
   "session_id": "e0c472006214455f811edae0319b714d",
   "session_seconds": 14400,
   "source_guard_pins": 856,
@@ -29,13 +29,13 @@
   "whole_backup_bytes": 4194304,
   "original_disk_sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
   "disk_changes_persisted_to_file": false,
-  "recovery_status": "Separate original-backup native-file restoration passed; all4MiB/settings/post-reboot media/reset/source859/history843/5FTP files verified.",
+  "recovery_status": "Full original4MiB/settings/media/reset/source349+copies/3FTP verified",
   "stop_file": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-interactive-stable-20261015-171915/STOP-INTERACTIVE",
   "stop_contents": {
     "session_id": "e0c472006214455f811edae0319b714d",
     "action": "stop"
   },
-  "game_video_status": "pending; no stream active",
+  "game_video_status": "pending; no recording stream",
   "human_acceptance_scope": "Interactive use confirmed; exact commands, keyboard device and tested display modes unspecified",
   "hardware_release_question_pending": false,
   "user_finished": true,
@@ -44,5 +44,8 @@
   "owned_child_ended": true,
   "separate_recovery_output": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-interactive-reboot-recovery-20261015-174325",
   "recovery_evidence": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/c64u-interactive-reboot-recovery-20261015.json",
-  "active_application": false
+  "active_application": false,
+  "benchmark_native_sha256": "0cef817a0cf8e0d737c9f5b9d47a71cff391d3a7e9d746a567f50171b7145836",
+  "benchmark_guard_pins": 349,
+  "performance_evidence": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/c64u-fixedwork-performance-20261015.json"
 }

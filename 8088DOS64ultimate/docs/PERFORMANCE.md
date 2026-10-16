@@ -1,3 +1,14 @@
+## Physical fixed-work baseline, 2026-10-15
+
+The frozen b29 interpreter ran on the C64 Ultimate at verified PAL/Manual64, firmware3.14/FPGA121/core1.47. Source, quiet timing, full REU authority and restoration passed. [Physical evidence](../agentworking/evidence/c64u-fixedwork-performance-20261015.json).
+
+| Exact work | Ultimate measured | Modeled8088 at4MHz | Speed versus model |
+|---|---:|---:|---:|
+|4096NOP/JMP retirements|171.321ms|4.542–4.545ms|2.65%|
+|5120ADD/XOR/INC/DEC/LOOP retirements|271.146ms|10.748–10.751ms|3.96%|
+
+The reference uses the pinned original8088 core in [MartyPC](https://github.com/dbalsom/martypc/tree/05c0d088e84ad6bbfac9b3f0d051e7eadefd9f44), with zero wait/refresh, actual initial queues0..4 and exact final-state/count assertions. Its final RNI/next-opcode preload and the C64 native driver overhead are included. There is one physical sample per workload. These figures describe these two warmed historical kernels; they do not establish wholeDOS/currentSAVE speed, a certified silicon upper, or an exhaustive BIU phase range. The50% target remains unmet. Compiled-block and timing prototypes require further integration and physical proof.
+
 # Performance hypothesis and experiments
 
 **Near-XT speed is unproven.** Target a 4.77 MHz 8088 workload baseline (the user's approximate “4 MHz” PC), not a ratio of CPU MHz or DOSBox cycle settings. The 64 MHz host has about 13.4 nominal host cycles per XT cycle before display/bus/DMA effects. This is a budget, not an instruction-throughput prediction.
