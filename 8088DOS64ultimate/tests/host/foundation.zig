@@ -5,6 +5,7 @@ test { _ = @import("reu.zig"); }
 test { _ = @import("memory.zig"); }
 test { _ = @import("cpu.zig"); }
 test { _ = @import("escape.zig"); }
+test { _ = @import("cga_crtc.zig"); }
 test { _ = @import("alu.zig"); }
 test { _ = @import("stack.zig"); }
 
@@ -164,3 +165,5 @@ comptime { _ = @import("video_xt_compat.zig"); }
 test { _ = @import("video_spans.zig"); }
 
 test { _ = @import("owned_clock_internal.zig"); }
+
+test { _ = @import("cga_status.zig"); }

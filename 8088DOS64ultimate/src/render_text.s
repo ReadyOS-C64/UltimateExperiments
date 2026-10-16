@@ -1,6 +1,7 @@
 .include "render_text.inc"
 .macpack longbranch
 .import dos64_mem_read
+.import dos64_cga_control, dos64_cga_control_valid
 .importzp dos64_address
 .export dos64_render_text_row, dos64_render_text_request
 
@@ -19,6 +20,8 @@ rt_mask_left: .res 1
 rt_mask_right: .res 1
 rt_bits: .res 1
 rt_count: .res 1
+rt_bg_mask: .res 1
+rt_blank: .res 1
 
 .segment "RENDERCODE"
 ; Actual 6510 bitmap presenter foundation; synchronous, nonreentrant. Requires
@@ -168,6 +171,24 @@ dos64_render_text_row:
     dex
     bne @row
 @rowready:
+    lda #0
+    sta rt_blank
+    lda #7
+    sta rt_bg_mask
+    lda dos64_cga_control_valid
+    cmp #$A5
+    bne @control_done
+    lda dos64_cga_control
+    and #8
+    bne @enabled
+    inc rt_blank
+@enabled:
+    lda dos64_cga_control
+    and #$20
+    bne @control_done
+    lda #15
+    sta rt_bg_mask
+@control_done:
     lda #40
     sta rt_count
 rt_cell:
@@ -211,10 +232,14 @@ rt_cell:
     lsr
     lsr
     lsr
-    and #7
+    and rt_bg_mask
     tax
     lda rt_palette,x
     ora rt_bits
+    ldx rt_blank
+    beq :+
+    lda #0                 ; both bitmap colors black; guest glyphs unchanged
+:
 rt_matrix:
     sta $4000
     ldy #0
@@ -342,7 +367,10 @@ rt_read:
 :
     rts
 rt_blink_mask:
-    ; A=attribute. PC blink mode, never bright-background mode.
+    ; A=attribute. Physical mode latch selects blink or background intensity.
+    ldx rt_bg_mask
+    cpx #15
+    beq @visible
     and #$80
     beq @visible
     lda dos64_render_text_request+RT_BLINK

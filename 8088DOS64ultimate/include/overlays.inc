@@ -33,7 +33,7 @@ OV_ERR_COLD = 8
 ; acquire uses dos64_overlay_requested and HOLDS busy until release. Only call
 ; acquire/release from resident code. All overlaid entry calls MUST occur while
 ; busy is held. Resident wrappers enforce this for files, INPUT and TEXT.
-; TEXT is canonical718-byte renderer +245-byte VIC setup/restore, total963.
+; TEXT is canonical772-byte renderer +245-byte VIC setup/restore, total1017.
 ; TEXT row/setup/restore reject cold_open!=0 after busy/reentry checks; only
 ; dos64_cold_release grants bitmap/VIC ownership after real BIOS/import cleanup.
 ; Fonts4400–47FF and4800–4FFF are loaded non-executable data, never overlays.

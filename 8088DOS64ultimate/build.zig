@@ -18,6 +18,8 @@ fn addPeddle(module: *std.Build.Module, b: *std.Build) void {
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
+    const status=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/cga_status.zig"),.target=target,.optimize=.Debug})});addPeddle(status.root_module,b);b.step("cga-status","OriginalCGA clock-derived status and leases").dependOn(&b.addRunArtifact(status).step);
+    const crtc=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/cga_crtc.zig"),.target=target,.optimize=.Debug})});addPeddle(crtc.root_module,b);b.step("cga-crtc","OriginalCGA MC6845 actualregisterporttests").dependOn(&b.addRunArtifact(crtc).step);b.step("cga-crtc-compile","Compile CRTCrepro").dependOn(&b.addInstallFile(crtc.getEmittedBin(),"bin/crtc-tests").step);
     const escape=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/escape.zig"),.target=target,.optimize=.Debug})});addPeddle(escape.root_module,b);
     b.step("escape","Original8088 absent8087 ESC and WAIT actual assembly").dependOn(&b.addRunArtifact(escape).step);
     b.step("escape-compile","Compile absent8087 tests without execution").dependOn(&b.addInstallFile(escape.getEmittedBin(),"bin/escape-tests").step);

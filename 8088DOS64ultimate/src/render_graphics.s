@@ -1,6 +1,7 @@
 .include "render_graphics.inc"
 .macpack longbranch
 .import dos64_mem_read
+.import dos64_cga_control, dos64_cga_control_valid
 .importzp dos64_address
 .export dos64_present_graphics_line
 .import dos64_native_text_state
@@ -156,6 +157,17 @@ dos64_render_graphics_line:
     lda rg_rgb,x
     sta rg_color_ram
 @pointers:
+    lda dos64_cga_control_valid
+    cmp #$A5
+    bne @display_enabled
+    lda dos64_cga_control
+    and #8
+    bne @display_enabled
+    lda #0
+    sta rg_background
+    sta rg_matrix_color
+    sta rg_color_ram
+@display_enabled:
     lda #0
     sta rg_ptr
     lda dos64_render_graphics_request+RG_LINE

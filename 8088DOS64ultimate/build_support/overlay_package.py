@@ -115,9 +115,9 @@ def append_variant(prg,payload,labels,identity,area,members,source):
 
 def validate_text(payload,labels):
     symbols={name.lstrip("."):int(addr,16) for addr,name in re.findall(r"^al ([0-9A-Fa-f]+) (\S+)",labels,re.M)}
-    expected={"__RENDERCODE_RUN__":WINDOW,"__RENDERCODE_SIZE__":718,"__DISPLAYCODE_RUN__":WINDOW+718,"__DISPLAYCODE_SIZE__":245,"__RENDER_LAST__":WINDOW+963}
-    if len(payload)!=963 or any(symbols.get(k)!=value for k,value in expected.items()):
-        raise ValueError("TEXT payload must include canonical contiguous718-byte renderer+245-byte VIC setup")
+    expected={"__RENDERCODE_RUN__":WINDOW,"__RENDERCODE_SIZE__":772,"__DISPLAYCODE_RUN__":WINDOW+772,"__DISPLAYCODE_SIZE__":245,"__RENDER_LAST__":WINDOW+1017}
+    if len(payload)!=1017 or any(symbols.get(k)!=value for k,value in expected.items()):
+        raise ValueError("TEXT payload must include canonical contiguous772-byte renderer+245-byte VIC setup")
 
 
 def append_shadow(prg,payload,labels):
@@ -201,7 +201,7 @@ def main():
                   "saver":({"source":0xb000,"run":0xb010,"reu":0x343000,"slot_bytes":2048,"linked_bytes":len(raw[10]),"sha256":hashlib.sha256(raw[10]).hexdigest(),"modal_cache_frames":[24,32],"compare_stage":0xb800}if a.saver else None),
                   "startup_sources": [0x6000,0x6800,0x8000,0x8800,0x9000]+([0x9800]if a.hd else [])+([0xb000]if a.saver else []),
                   "shadow": ({"source":0xa000,"run":0xf000,"window_bytes":3584,"linked_bytes":len(raw[9]),"tail_zero_bytes":3584-len(raw[9]),"sha256":hashlib.sha256(raw[9]).hexdigest(),"ownership":"verified copy before cache; permanent RAM+IO, no KERNAL, excludes FE00-FFFF"}if a.hd else None),
-                  "text_members": {"RENDERCODE":718,"DISPLAYCODE":245},
+                  "text_members": {"RENDERCODE":772,"DISPLAYCODE":245},
                   "fonts": {"narrow":{"start":0x4400,"bytes":1024,"executable":False,"sha256":hashlib.sha256(raw[0][0x4400-0x801+2:0x4800-0x801+2]).hexdigest()},"full":{"start":0x4800,"bytes":2048,"executable":False,"sha256":hashlib.sha256(raw[0][0x4800-0x801+2:0x5000-0x801+2]).hexdigest()}},
                   "input_source_ownership": "INPUT copied before any guest cache use; then first four frames",
                   "startup_cache_phase": {"start":0x8000,"end_exclusive":0xb800 if a.saver else (0xae00 if a.hd else 0x9800),"cache_frames":27 if a.saver else (23 if a.hd else 12),"span_cache_frames":28 if a.saver else (23 if a.hd else 12),"saver_frames":4 if a.saver else 0,"gap_cache_frames":[23]if a.saver else [],"overlay_frames":16 if a.hd else 12,"shadow_frames":7 if a.hd else 0,"ownership":"all assets and complete shadow verified before any of these frames can be reused"},

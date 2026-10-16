@@ -21,7 +21,7 @@ class OverlayMemoryContract(unittest.TestCase):
         r = self.check()
         self.assertTrue(r['passed'], r['errors'])
         self.assertEqual(r['load']['exclusive_overlay_window_bytes'], 1792)
-        self.assertEqual(r['load']['overlay_source_bytes'],1170+963+882+1764+1278+1472)
+        self.assertEqual(r['load']['overlay_source_bytes'],1461+1017+882+1764+1303+1472)
         self.assertEqual(r['load']['startup_overlay_bytes'],14336)
         self.assertEqual(r['load']['prg_bytes'],45057)
 
@@ -50,17 +50,17 @@ class OverlayMemoryContract(unittest.TestCase):
         self.assertFalse(self.check(map=re.sub('^FILECODE\\s.*\\n', '', self.map, flags=re.M))['passed'])
 
     def test_overlay_run_start_must_be_exact(self):
-        changed = re.sub('^(FILECODE\\s+)00C900(\\s+)00CD91', '\\g<1>00C901\\g<2>00CD92', self.map, flags=re.M)
+        changed = re.sub('^(FILECODE\\s+)00C900(\\s+)00CEB4', '\\g<1>00C901\\g<2>00CEB5', self.map, flags=re.M)
         self.assertNotEqual(changed, self.map)
         self.assertFalse(self.check(map=changed)['passed'])
 
     def test_arbitrary_overlap_is_still_rejected(self):
-        changed = self.map.replace('FILECODE              00C900  00CD91  000492', 'FILECODE              00C100  00C591  000492')
+        changed = self.map.replace('FILECODE              00C900  00CEB4  0005B5', 'FILECODE              00C100  00C6B4  0005B5')
         self.assertNotEqual(changed, self.map)
         self.assertFalse(self.check(map=changed)['passed'])
 
     def test_oversized_corrupt_segment_fails_without_crashing(self):
-        changed = re.sub('^(FILECODE\\s+)00C900(\\s+)00CD91(\\s+)000492', '\\g<1>00C900\\g<2>FFFFFF\\g<3>FF3700', self.map, flags=re.M)
+        changed = re.sub('^(FILECODE\\s+)00C900(\\s+)00CEB4(\\s+)0005B5', '\\g<1>00C900\\g<2>FFFFFF\\g<3>FF3700', self.map, flags=re.M)
         self.assertNotEqual(changed, self.map)
         self.assertFalse(self.check(map=changed)['passed'])
 

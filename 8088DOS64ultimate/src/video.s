@@ -7,6 +7,8 @@
 .importzp dos64_mem_pointer
 .importzp dos64_address, dos64_mem_value, dos64_segment
 .export dos64_video_service, dos64_video_host_error
+.export v_crtc_defaults
+.import dos64_cga_index, dos64_cga_registers, dos64_cga_control, dos64_cga_control_valid
 
 ; All persistent/scratch bytes are outside the scarce E000 BSS allocation.
 .segment "DEVICESTATE"
@@ -187,6 +189,9 @@ v_state:
     sta v_stride
 @done:
     rts
+.segment "HDBIOS"
+; These private video helpers already execute within the installed extension
+; contract. Moving them frees resident DEVICE space without MAIN growth.
 v_text:
     jsr v_state
     lda v_mode
@@ -213,6 +218,15 @@ v_bh_page:
     lda dos64_guest+G_BX+1
     jmp v_select
 v_cursor:
+    jsr v_cursor_raw
+    lda v_row
+    cmp #VIDEO_ROWS
+    jcs v_unsupported
+    lda v_col
+    cmp v_cols
+    jcs v_unsupported
+    rts
+v_cursor_raw:
     lda v_page
     asl
     clc
@@ -222,11 +236,6 @@ v_cursor:
     jsr v_next
     jsr v_read
     sta v_row
-    cmp #VIDEO_ROWS
-    jcs v_unsupported
-    lda v_col
-    cmp v_cols
-    jcs v_unsupported
     rts
 v_store_cursor:
     lda v_page
@@ -238,13 +247,15 @@ v_store_cursor:
     jsr v_bda_write
     jsr v_next
     lda v_row
-    jmp v_write
+    jsr v_write
+    jmp v_crtc_cursor
 v_cell:                    ; A=row, v_col=column; out v_ptr
     tax
     lda v_col
     asl
     sta v_ptr
     lda v_base
+    adc #0                 ; include bit7 of raw saved cursor column for AH05
     sta v_ptr+1
 @row:
     cpx #0
@@ -261,6 +272,7 @@ v_cell:                    ; A=row, v_col=column; out v_ptr
 @done:
     rts
 
+.segment "DEVICECODE"
 v_get_mode:
     lda #$49
     jsr v_bda_read
@@ -366,6 +378,7 @@ v_set_mode:
     lda #$3F
 @palette:
     jsr v_write          ; BDA466 color register shadow, original XT defaults
+    jsr v_crtc_mode
     jmp v_done
 v_shape:
     ldx #$60
@@ -374,6 +387,7 @@ v_shape:
     jsr v_next
     lda dos64_guest+G_CX+1
     jsr v_write
+    jsr v_crtc_shape
     jmp v_done
 v_set_cursor:
     jsr v_state
@@ -416,6 +430,7 @@ v_active:
     jsr v_next
     lda v_base
     jsr v_write
+    jsr v_crtc_page
     jmp v_done
 v_read_char:
     jsr v_text
@@ -985,3 +1000,75 @@ v_mode_cols: .byte 40,40,80,80,40,40,80
 v_mode_stride: .byte 8,8,$10,$10,$40,$40,$40
 v_mode_control: .byte $2C,$28,$2D,$29,$2A,$2E,$1E
 v_blank: .byte $20,7
+
+.segment "HDBIOS"
+; IBM XT BIOS programs these physical latches; hardware port writes do not
+; rewrite the BIOS software cursor/page shadows in the reverse direction.
+v_crtc_mode:
+    ldx v_mode
+    lda v_mode_control,x
+    and #$3F
+    sta dos64_cga_control
+    lda #$A5
+    sta dos64_cga_control_valid
+    ldy #0
+    lda v_mode
+    cmp #2
+    bcc @copy
+    ldy #16
+    cmp #4
+    bcc @copy
+    ldy #32
+@copy:
+    ldx #0
+@next:
+    lda v_crtc_defaults,y
+    sta dos64_cga_registers,x
+    iny
+    inx
+    cpx #16
+    bne @next
+    lda #15
+    sta dos64_cga_index
+    rts
+v_crtc_shape:
+    lda dos64_guest+G_CX+1
+    and #$7F
+    sta dos64_cga_registers+10
+    lda dos64_guest+G_CX
+    and #$1F
+    sta dos64_cga_registers+11
+    lda #11
+    sta dos64_cga_index
+    rts
+v_crtc_page:
+    lda v_base
+    lsr
+    and #$3F
+    sta dos64_cga_registers+12
+    lda #0
+    sta dos64_cga_registers+13
+    jsr v_cursor_raw       ; AH05 accepts saved cursor bytes as original BIOS
+v_crtc_cursor:
+    lda #$62
+    jsr v_bda_read
+    cmp v_page
+    bne @done
+    lda v_row
+    jsr v_cell
+    lda v_ptr+1
+    lsr
+    and #$3F
+    sta dos64_cga_registers+14
+    lda v_ptr
+    ror
+    sta dos64_cga_registers+15
+    lda #15
+    sta dos64_cga_index
+@done:
+    rts
+; IBM5160TechnicalReferenceApr83 CGA table1-138: 40/80text and graphics.
+v_crtc_defaults:
+ .byte $38,$28,$2D,$0A,$1F,$06,$19,$1C,$02,$07,$06,$07,0,0,0,0
+ .byte $71,$50,$5A,$0A,$1F,$06,$19,$1C,$02,$07,$06,$07,0,0,0,0
+ .byte $38,$28,$2D,$0A,$7F,$06,$64,$70,$02,$01,$06,$07,0,0,0,0

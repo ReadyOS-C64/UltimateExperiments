@@ -98,8 +98,8 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             errors.append("TEXT requires separate renderer and VIC display segments")
         else:
             part=display[0]
-            if renderer["bytes"]!=718 or part["bytes"]!=245 or part["start"]!=renderer["end"]+1:
-                errors.append("TEXT must be contiguous canonical718+245 bytes")
+            if renderer["bytes"]!=772 or part["bytes"]!=245 or part["start"]!=renderer["end"]+1:
+                errors.append("TEXT must be contiguous canonical772+245 bytes")
             for suffix,value in (("RUN",part["start"]),("LOAD",part["start"]),("SIZE",part["bytes"])):
                 if symbols.get("__DISPLAYCODE_"+suffix+"__")!=value:errors.append("DISPLAYCODE metadata mismatch")
             overlays["RENDERCODE"]={**renderer,"end":part["end"],"bytes":renderer["bytes"]+part["bytes"],"renderer_bytes":renderer["bytes"],"display_bytes":part["bytes"]}

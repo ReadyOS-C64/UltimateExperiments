@@ -22,6 +22,22 @@ PIC_DATA_PORT = $0021
 ; Absent game adapter201h has explicit byte inputFFh. This is an absent-device
 ; profile; no joystick/button support or broader unknown-port fallback exists.
 ; Writes/words and neighboring/high-alias game addresses remain rejected.
+; CGA 3D0..3D7 are four MC6845 index/data mirrors: selector low5bits,
+; significant register masks, R14/15 RW, R16/17 RO, remaining reads rejected.
+; Byte 3D8 is write-only: video enable and blink/background intensity within
+; BIOS-selected geometry; geometry/colorburst changes and word cycles refuse.
+; Explicit no-MDA profile: byte3B4/3B5 readsFF and ignores writes. Neighbors,
+; high aliases, undefined reads and other unimplemented devices fail closed.
+; CGA hardware gates require the installed HDBIOS extension; ordinary PIC/PPI
+; services remain resident and usable before bootstrap. Direct port writes do
+; not alter BIOS BDA software shadows. 3DA byte input is a functional canonical
+; CGA beam derived from the existing virtual PIT publication, independent of
+; read count and C64 VIC raster. Requires normalized ready/error-free PIT and
+; original R0..9 timing. SAMPLE4 keeps last published beam; other errors refuse.
+; Pure arithmetic leases FILE, rejects original C900-CFFF caller provenance,
+; and returns resident before release. No CIA/FILE/UCI/PIT/IRQ state mutation.
+; Nonstandard raster status, lightpen input and direct cursor overlay remain
+; unsupported. Explicit debugger pause/resume follows existing PIT time policy.
 ; PIC word cycles preflight both 16-bit consecutive
 ; ports; therefore only a word at0020 succeeds. Failed cycles have no device
 ; effect and leave value untouched. No mirrored ports are claimed.

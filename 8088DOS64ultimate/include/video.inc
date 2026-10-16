@@ -15,7 +15,8 @@ DOS64_VIDEO_INC = 1
 ; Mode7/EGA preserve-clear bit, AH04, graphics glyph services unsupported.
 ; AH10..FF are original-XT ignored functions: all guest registers/FLAGS and
 ; memory unchanged; this does not implement EGA/VGA services.
-; No font, host renderer, retrace fidelity, sound, or device port emulation.
+; Bounded original CGA CRTC ports are separate from this BIOS API; direct
+; writes leave software BDA shadows unchanged. No raster timing or sound.
 ;
 ; Contract facts consulted, no BIOS implementation code copied:
 ; Microsoft MS-DOS Encyclopedia Appendix O (INT10 service register contracts)

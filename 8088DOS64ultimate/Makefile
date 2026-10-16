@@ -5,7 +5,7 @@ DOS64_PYTHON ?= python3
 
 .DEFAULT_GOAL := all
 
-ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s src/host_input.s src/cold.s src/elapsed.s src/native_text_display.s src/native_text_fonts.s src/native_runtime.s src/native_timer.s src/virtual_irq.s src/virtual_pit.s src/render_graphics.s src/hd_cache.s src/hd_bios.s src/hd_extension_load.s src/hd_cold.s src/uci_diagnostic.s src/native_save.s
+ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/cga_crtc.s src/cga_status.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s src/host_input.s src/cold.s src/elapsed.s src/native_text_display.s src/native_text_fonts.s src/native_runtime.s src/native_timer.s src/virtual_irq.s src/virtual_pit.s src/render_graphics.s src/hd_cache.s src/hd_bios.s src/hd_extension_load.s src/hd_cold.s src/uci_diagnostic.s src/native_save.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
 OBJECTS := $(filter-out build/host_clock.o build/elapsed.o build/uci.o,$(OBJECTS)) build/owned-host_clock.o build/owned-elapsed.o build/native-uci.o
 OBJECTS := $(patsubst build/reu.o,build/native-reu.o,$(OBJECTS))

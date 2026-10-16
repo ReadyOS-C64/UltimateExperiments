@@ -9,6 +9,9 @@
 .export dos64_pic_special_mask, dos64_pic_rotate_auto
 .export dos64_io_state_start, dos64_io_state_end
 .export dos64_ppi_port_b, dos64_pit_write_phase
+.export dos64_cga_index, dos64_cga_registers, dos64_cga_control, dos64_cga_control_valid
+.export io_read_body, io_write_body, io_success, io_unsupported
+.import dos64_cga_read_gate, dos64_cga_write_gate
 
 ; Independent implementation from Intel8259A231468-003 pp9–17 and original
 ; IBM5160 XTBIOS.ASM PIC setup:13h/08h/09h, then BIOS maskFCh. References
@@ -36,9 +39,13 @@ io_candidates: .res 1
 ; XT8255 port B mode0 output latch; no speaker waveform/keyboard wire model.
 dos64_ppi_port_b: .res 1
 dos64_pit_write_phase: .res 1 ; next40h byte:0=LSB,1=MSB; onlyzero divisor supported
+dos64_cga_index: .res 1
+dos64_cga_registers: .res 18
+dos64_cga_control: .res 1
+dos64_cga_control_valid: .res 1
 dos64_io_state_end:
 
-.segment "CODE"
+.segment "DEVICECODE"
 dos64_io_init:
     php
     sei
@@ -66,6 +73,7 @@ dos64_io_init:
     sta dos64_pic_priority
     jmp io_success
 
+.segment "CODE"
 ; Preflight all byte ports before either bus cycle. For the bounded port set,
 ; consecutive16-bit wrap cannot succeed; FFFF is not a supported first port.
 io_validate:
@@ -92,9 +100,8 @@ io_validate:
     rts
 
 dos64_io_read:
-    php
-    sei
-    cld
+    jmp dos64_cga_read_gate
+io_read_body:
     ; No game adapter is installed. Its byte input is the pulled-up XT
     ; expansion bus (FFh), not simulated joystick movement/buttons.
     lda dos64_io_width
@@ -144,9 +151,8 @@ io_unsupported:
     rts
 
 dos64_io_write:
-    php
-    sei
-    cld
+    jmp dos64_cga_write_gate
+io_write_body:
     ; DOS3.30 SYSINIT broadcasts GLOBAL REARM to shared-IRQ2..7 boards
     ; at02F2..02F7; data is arbitrary. Our XT has none: these six byte
     ; broadcasts have no device/PIC effect. Reads/words stay unsupported.
