@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "status": "private_model_passed_production_ineligible",
+  "scope": "Author13-group actual assembled-code model suite reproduced by root direct executable replay with568source pins before/after; no independent added controls or physical timing claim",
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cia1-direct-icr-bracket-profile/MANIFEST.json",
+  "manifest_sha256": "e3bb6f6fef378843f13541bfdd4bc419b11968aa54e2a317c278731adfeb7043",
+  "root_replay_receipt": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cia1-direct-cra-root-replay-20261015/RECEIPT.json",
+  "root_replay_receipt_sha256": "26ffbd5c8b6470c318c98d5efe5a6f2bb0244aba217cf0ccf87a6167a5344557",
+  "profile_pair": [
+    "f290d3794a3fd894f21b1c860c779ac461c9dd063ff73d69bd90b4c755171468",
+    "e71dbf5008b7aeb72837a18ce55aa4563e36eb55ac9b0367b862d0f30a050206"
+  ],
+  "measurements": [
+    {
+      "kernel": "NOP16",
+      "extra_native_cycles_per_CIA_access": 0,
+      "gated_cycles": 17978,
+      "exactoriginal_full_cycles": 35259,
+      "ratio": 1.9612303927021915,
+      "model_only": true
+    },
+    {
+      "kernel": "MOV16",
+      "extra_native_cycles_per_CIA_access": 0,
+      "gated_cycles": 22070,
+      "exactoriginal_full_cycles": 39304,
+      "ratio": 1.7808790212958767,
+      "model_only": true
+    },
+    {
+      "kernel": "NOP16",
+      "extra_native_cycles_per_CIA_access": 60,
+      "gated_cycles": 21741,
+      "exactoriginal_full_cycles": 47796,
+      "ratio": 2.1984269352835657,
+      "model_only": true
+    },
+    {
+      "kernel": "MOV16",
+      "extra_native_cycles_per_CIA_access": 60,
+      "gated_cycles": 26253,
+      "exactoriginal_full_cycles": 51866,
+      "ratio": 1.9756218336951967,
+      "model_only": true
+    }
+  ],
+  "model_contract": {
+    "visibility_K_raw_ticks": 8,
+    "efficiency_margin_raw_ticks": 256,
+    "installedcore_certified": false,
+    "globalSEI": true,
+    "nativeIRQhandler": false,
+    "predicate": "single nondestructiveCIA1CRAread; persistent one-shotSTARTclear",
+    "bracket": "strict AFTER+count+K < exactPITedge",
+    "unseen32wrap_limitation": true
+  },
+  "unresolved": [
+    "installedstartloadSTOPvisibilitycontract",
+    "fullpollwindow/maxgapdiagnosticsemantics afterunannouncedhugegap",
+    "residentdispatchandobservablefences",
+    "combinedcompileractualfitandverifiedexporterrestoration"
+  ],
+  "production_eligible": false,
+  "physical_acceptance": false,
+  "notes": [
+    "New helper616shadow bytes and23state; standalone profile is not compiled-block composition",
+    "Standalone B000 driver overwrites exporter code, so SAVE is not accepted in this profile",
+    "Declared visibilityK8 is not an installed-core calibration or universal bound",
+    "Retained delayed-STOP and unsampled-large-gap counterexamples are required limitations; no root timing policy changed"
+  ]
+}
