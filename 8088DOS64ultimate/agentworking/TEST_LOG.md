@@ -538,3 +538,6 @@ ActualmediaTerminal1488;PRGs1489;execution1490. Concreteguard6f1a3e2b/238;TOP067
 
 
 2026-10-15 21:21: ROOT independent full75 repairedvideo lifecycle groups pass twice. Firstclosure incorrectly treated generated random-temp-path proof JSON as immutableinput; retainedfirstfailure. Fresh successorprelaunch excludesonlythatdeclaredOUTFILE, all2607copyinputs/2608authorpins unchanged andoutputsemantics exact. Receipt44c04d1f. Orchestratorb017e4b0 reviewed; nohardware/video claim.
+
+
+2026-10-15 21:44: Private compiled383f/aeec model warm3.737608/3.893951 cost measurements now explicitly correctness-blocked by sealed actualterminal regressionb004edfe: HC_SAMPLE4 clearsDEBT, returnsCclear, permits32frames/SAVE witholdPITepoch/missingIRR. Positivevalid/unknown/gapcontrols retained; productiond883fullsampler unaffected. Cost/CIA2proposal d448a6fe hasfull32route,48positiveIF0endpoints and4retainedfailurechronologycounterexamples. Freshrepairpending.

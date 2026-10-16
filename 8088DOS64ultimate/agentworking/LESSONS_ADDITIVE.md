@@ -252,3 +252,6 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 
 
 2026-10-15: A timestamp-valid .pyc can run before bootstrap disablescache in a fresh child. Configure source-only import before FIRST project import in every production child. Distinguish generated proof outputs from executed inputs beforeattestation; a random temporary pathname does not change semantics, but firstclosurefailure mustremain and a fresh declared-output replay closes the corrected scope.
+
+
+2026-10-15: Guest-step success with transientHC_SAMPLE4 is not proof that deferred time is reconciled. Retain debt/lastaccepted epoch until a valid source sample; require a settled fence before ownership restoration/SAVE. A successful later catch-up cannot retrospectively authorize an earlier observable fence. Private model cost gains stay measurements when new correctness controls fail.
