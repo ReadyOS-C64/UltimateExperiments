@@ -1,3 +1,9 @@
+## Native first-ID diagnostic reviewed — 2026-10-15 21:15 PDT
+
+Private UID1 first-ID candidate4e2241d0/44306a09 passes ROOT independent9native+6decoder replay, all996 original/copy inputs unchanged (receipte6c80917). It records rawID/nativeDDR/port/P/base/stage around the original single LDA, without retries or accepting badIDs. No production/hardware activation. Public firmware resume-before-restoring-UCI/REU ordering suggests a possible launch race; installed cause remains unproved. Fresh load-only→acknowledgedBASIC SYS development adapter is being tested; see docs/NATIVE_LAUNCH_DIAGNOSIS.md.
+
+Video author ba19c932 passes current genuinegame model and65host groups, but independent f7b41214 review is NOT READY: stale child bytecode can execute, a late capture can be mislabeled pre-helper, and a second interruption can escape shared recovery. Fresh private successor repairs these with explicit source-only child setup, truthful capture provenance and bounded first-error-preserving recovery orchestration. No active hardware or sourcefreeze. ROOT remains ecae042 d883/8866; full physical SAVE/gamevideo remain pending.
+
 ## Split256 hardware attempt: startup failure, complete recovery — 2026-10-15 20:48 PDT
 
 Current d883c678, configured69cdc2b6 at PAL/Manual64 failed its first native UCI ID read with FF / UCI_ERR_ID after2.32 seconds. Disk import never started, guest instruction count stayed0, and neither COPY nor SAVE was attempted. This run does not test the split-write exporter. Retained source-bound UCF2 trace and both native RAM captures reproduce the failure; contemporaneous live DDR/port at this read remain unknown. Evidence evidence/c64u-split-save-startup-failure-20261015.json.

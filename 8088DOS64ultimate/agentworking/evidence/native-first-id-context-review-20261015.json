@@ -1,0 +1,15 @@
+{
+  "status": "private_native_diagnostic_review_passed",
+  "author_manifest_sha256": "95f3a371fc880b117fabe964bb7e9e42ea663c64b86056b0c0855387f296c112",
+  "budget_clarification_sha256": "584b0c4437746baf3348bf67a2d2558ead8fa524147e3acf1cfae179b78e81f5",
+  "root_review_manifest_sha256": "e6c80917c26af4f9b2c4b7b85c2ab2f7428b94dd87dee8b04ebb05b538b5acce",
+  "root_review": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-first-id-context-root-review",
+  "actual_native_groups": 9,
+  "decoder_groups": 6,
+  "original_and_copied_pins_unchanged": 996,
+  "runtime_sha256": "4e2241d099d823c6326b2cfe4167930269f8d8f62f146b09bcc2596bca68de4d",
+  "unit_sha256": "44306a09d59abc3aad97f2129b5f40b2614997eaa9b4f15aeba817c1ad163815",
+  "hardware_executed": false,
+  "production_promoted": false,
+  "next": "Independent LoadThenSYS/recovery host review and actual native observation"
+}
