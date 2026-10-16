@@ -36,3 +36,10 @@ start:
 	$(DOS64_PYTHON) -B build_support/start_launcher.py
 start-tests: build
 	$(DOS64_PYTHON) -B build_support/start_launcher.py --test
+
+# D64S binds the disabled launcher template; DOS64.REL separately binds main.
+.PHONY: start-template start-template-tests
+start-template: start
+	$(DOS64_PYTHON) -B build_support/start_template_descriptor.py --prg build/start/START.PRG --labels build/start/START.labels --map build/start/START.map --out build/start/START.REL
+start-template-tests: start-template
+	$(DOS64_PYTHON) -B tests/tooling/test_start_template_descriptor.py -v

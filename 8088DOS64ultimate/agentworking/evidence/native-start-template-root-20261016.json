@@ -1,0 +1,14 @@
+{
+  "status": "PASSED_ROOT_NATIVE_TEMPLATE_BUILD_AND_ALL_BEHAVIOR_CHECKS",
+  "native_groups": 8,
+  "host_groups": 1,
+  "actual_START_entry_groups": 2,
+  "source_inputs_unchanged": 67,
+  "native_products_unchanged": 6,
+  "original_author_seal": "7b191f538037311b2e70b4690532b8aa2f8d80192515bdd884aea2a28fc6a474",
+  "reviewed_author_files": 98,
+  "receipt_packaging_failure": "After all behavior/source/product checks, final metadata copy failed because portable/PARENT.json was omitted. Firstfailure retained; no SUT change or test waiver.",
+  "source_before_after": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-start-template-root-review/portable/sealed",
+  "START_resident_bytes_added": 0,
+  "physical": false
+}
