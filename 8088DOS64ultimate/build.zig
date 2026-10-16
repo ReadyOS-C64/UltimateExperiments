@@ -18,6 +18,7 @@ fn addPeddle(module: *std.Build.Module, b: *std.Build) void {
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
+    const cursor=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/cga_cursor.zig"),.target=target,.optimize=.Debug})});cursor.filters=b.option([]const []const u8,"cga-cursor-filter","Focused hardware cursor controls") orelse &.{};addPeddle(cursor.root_module,b);b.step("cga-cursor","Actual hardware cursor presentation").dependOn(&b.addRunArtifact(cursor).step);b.step("cga-cursor-compile","Compile cursor controls").dependOn(&b.addInstallFile(cursor.getEmittedBin(),"bin/cursor-tests").step);
     const status=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/cga_status.zig"),.target=target,.optimize=.Debug})});addPeddle(status.root_module,b);b.step("cga-status","OriginalCGA clock-derived status and leases").dependOn(&b.addRunArtifact(status).step);
     const crtc=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/cga_crtc.zig"),.target=target,.optimize=.Debug})});addPeddle(crtc.root_module,b);b.step("cga-crtc","OriginalCGA MC6845 actualregisterporttests").dependOn(&b.addRunArtifact(crtc).step);b.step("cga-crtc-compile","Compile CRTCrepro").dependOn(&b.addInstallFile(crtc.getEmittedBin(),"bin/crtc-tests").step);
     const escape=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/escape.zig"),.target=target,.optimize=.Debug})});addPeddle(escape.root_module,b);
@@ -75,6 +76,7 @@ pub fn build(b: *std.Build) void {
     }
     const workflows=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_builtin_workflows.zig"),.target=target,.optimize=.Debug}),.filters=&.{"internal disposable", "ASCII mapping"}});
     addPeddle(workflows.root_module,b);b.step("native-builtins","Opt-in genuine native DOS disposable workflows").dependOn(&b.addRunArtifact(workflows).step);
+    const oracle_compile=b.step("native-cursor-oracle-compile","Compile cursor-aware native workflow oracles without running vendor programs");oracle_compile.dependOn(&workflows.step);oracle_compile.dependOn(&gw.step);oracle_compile.dependOn(&cgaw.step);
     const modes=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_builtin_workflows.zig"),.target=target,.optimize=.Debug}),.filters=&.{"MODE COM"}});
     addPeddle(modes.root_module,b);b.step("native-mode","Opt-in genuine MODE CO40/CO80").dependOn(&b.addRunArtifact(modes).step);
     const compat=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/video_xt_integration.zig"),.target=target,.optimize=.Debug})});

@@ -52,7 +52,7 @@ class Tests(unittest.TestCase):
     def test_real_normal_artifacts_constructor_and_complete_source_to_run_proof(self):
         a=self.make();r=self.ram(a);proof=self.check(a,r)[-1]
         self.assertEqual(proof['name'],'HDBIOS');self.assertTrue(proof['matches'])
-        self.assertEqual(proof['length'],3584);self.assertEqual(proof['zero_tail_bytes'],43)
+        self.assertEqual(proof['length'],3584);self.assertEqual(proof['zero_tail_bytes'],7)
         self.assertEqual(proof['normalizations'],[]);self.assertFalse(proof['bank']['live_cpu_port_verified'])
     def test_every_code_and_zero_tail_byte_rejected(self):
         a=self.make();r=self.ram(a);c=a.shadow_identity

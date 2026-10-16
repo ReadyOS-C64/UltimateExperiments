@@ -4,8 +4,10 @@
 .import dos64_cga_index, dos64_cga_registers, hdb_extension_ready
 .import dos64_cga_control, dos64_cga_control_valid
 .import dos64_overlay_requested, dos64_overlay_acquire, dos64_overlay_release
-.import dos64_cga_status_math
+.import dos64_cga_status_math, cga_time
+.import dos64_cursor_phase_valid, dos64_cursor_field_phase
 .import io_read_body, io_write_body, io_success, io_unsupported
+.export dos64_cga_cursor_sample
 .export dos64_cga_read_gate, dos64_cga_write_gate
 .segment "DEVICESTATE"
 cga_port: .res 1
@@ -34,7 +36,46 @@ dos64_cga_write_gate:
  cmp #$A5
  jne io_unsupported
  jmp cga_write
+dos64_cga_cursor_sample:
+ php
+ sei
+ cld
+ lda #$FF
+ sta dos64_cursor_phase_valid
+ lda hdb_extension_ready
+ cmp #$A5
+ bne cursor_failed
+ tsx
+ lda $0103,x
+ cmp #$C9
+ bcc :+
+ cmp #$D0
+ bcc cursor_failed
+: lda #1
+ sta dos64_overlay_requested
+ jmp cursor_sample_body
+cursor_failed:
+ plp
+ sec
+ rts
 .segment "HDBIOS"
+cursor_sample_body:
+ jsr dos64_overlay_acquire
+ jcs cursor_failed
+ jsr dos64_cga_status_math
+ bcs @failed
+ lda cga_time
+ sta dos64_cursor_field_phase
+ lda #$A5
+ sta dos64_cursor_phase_valid
+ jsr dos64_overlay_release
+ plp
+ clc
+ rts
+@failed:
+ jsr dos64_overlay_release
+ jmp cursor_failed
+
 ; Original IBM CGA decodes3D0..3D7 as four mirrored index/data pairs.
 ; All port/width validation precedes any register or output descriptor change.
 cga_validate:

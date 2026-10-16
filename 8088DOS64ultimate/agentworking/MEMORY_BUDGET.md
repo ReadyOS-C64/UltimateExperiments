@@ -163,3 +163,6 @@ Runtime9ed3bc7b198d90ab3ef24c50ea0ce25f664457fed70a08e3382e9efb2ee11dda/unit8aa2
 
 
 2026-10-16 ROOT memory/address b3d17d02/b995c5e1: both45057B, MAIN49runtime/48unitfree (+1byte versus4cc), DEVICE4042/54free, HDBIOS3541/43free, FILE1461/331free, HDCODE1472/320free, DEVICESTATE1041, ZP36runtime/48unit. Both actual linker verifiers pass. SevenREU slots/reservation unchanged;498source/product closure and copies in scratch/ac-development-root-promotion-20261016. Private cursor/keyboard budgets do not describe ROOT.
+
+
+2026-10-16 ROOTcursor+memory da95caf7/bc6ab7fd both45057B: MAIN34runtime/33unitfree; DEVICE4080/16free; HDB3577/7free; FILE1464/328free; TEXT1003+245=1248/544free; INPUT882unchanged; HDCODE1472/320free; DEVICESTATE1049/1280; ZP36runtime/48unit. Both actualverifierspass,503source/products/copies exact. No newREU source slot/reservation. Keyboard1182/private state+3 notyetincluded.

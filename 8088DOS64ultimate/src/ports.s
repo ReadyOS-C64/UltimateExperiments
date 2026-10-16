@@ -10,6 +10,7 @@
 .export dos64_io_state_start, dos64_io_state_end
 .export dos64_ppi_port_b, dos64_pit_write_phase
 .export dos64_cga_index, dos64_cga_registers, dos64_cga_control, dos64_cga_control_valid
+.export dos64_cursor_phase_valid, dos64_cursor_field_phase
 .export io_read_body, io_write_body, io_success, io_unsupported
 .import dos64_cga_read_gate, dos64_cga_write_gate
 
@@ -43,6 +44,8 @@ dos64_cga_index: .res 1
 dos64_cga_registers: .res 18
 dos64_cga_control: .res 1
 dos64_cga_control_valid: .res 1
+dos64_cursor_phase_valid: .res 1
+dos64_cursor_field_phase: .res 1
 dos64_io_state_end:
 
 .segment "DEVICECODE"

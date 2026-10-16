@@ -9,6 +9,7 @@
 .import hdb_native_burst,hdb_active,hdc_copy,hdc_begin,hdc_poll,hdc_config
 .import hdc_enabled,hdc_flags,hdc_phase,hdc_error
 .export n_cpu_error,n_tick_return,n_burst,n_timer_cpu_error
+.import dos64_cga_cursor_sample
 .import dos64_mem_read
 .importzp dos64_address
 .import dos64_render_graphics_request, dos64_overlay_present_graphics_line
@@ -328,6 +329,12 @@ n_present:
  cmp #4
  bcs @graphics
  lda n_row
+ bne :+
+ jsr dos64_cga_cursor_sample
+ bcc :+
+ lda #3
+ jmp @error
+: lda n_row
  sta dos64_render_text_request
  jsr dos64_overlay_render_text_row
  bcs @return

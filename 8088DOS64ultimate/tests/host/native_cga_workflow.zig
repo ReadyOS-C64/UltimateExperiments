@@ -201,6 +201,7 @@ const Lane = struct {
         defer alloc.free(full);
         const narrow = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "assets/native-text/cp437-narrow4x8.bin", alloc, .limited(1025));
         defer alloc.free(narrow);
+        const hardware_cursor=try @import("cga_cursor_expected.zig").Cursor.capture(&self.f,&bda);
         var bitmap: [8000]u8 = undefined;
         for (0..25) |row| for (0..40) |cell| {
             const left = (row * expected_columns + cell * (if (expected_columns == 40) @as(usize, 1) else 2)) * 2;
@@ -210,7 +211,7 @@ const Lane = struct {
             const colors = [16]u8{ 0, 6, 5, 3, 2, 4, 9, 15, 12, 14, 13, 3, 10, 4, 7, 1 };
             try std.testing.expectEqual((colors[fg] << 4) | colors[bg], self.f.peek(@intCast(0x4000 + row * 40 + cell)));
             for (0..8) |y| {
-                const expected = if (expected_columns == 40) full[@as(usize, vram[left]) * 8 + y] else nibble(narrow, vram[left], y) * 16 + nibble(narrow, vram[left + 2], y);
+                const expected = (if (expected_columns == 40) full[@as(usize, vram[left]) * 8 + y] else nibble(narrow, vram[left], y) * 16 + nibble(narrow, vram[left + 2], y)) | hardware_cursor.mask(expected_columns,row,cell,y);
                 const at = row * 320 + cell * 8 + y;
                 bitmap[at] = self.f.peek(@intCast(0x6000 + at));
                 try std.testing.expectEqual(expected, bitmap[at]);

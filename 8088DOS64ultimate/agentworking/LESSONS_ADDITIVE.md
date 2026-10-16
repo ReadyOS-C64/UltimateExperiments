@@ -270,3 +270,6 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 
 
 2026-10-16: Nested host dependency capture must include non-Python assets; exact97-file inventory exposed seven omissions. Source-only checking must precede bootstrap imports because -B can load existing poisoned bytecode. Pending keyboard commitment after release must not mark a key held unconditionally; ordinary/Fn old-target controls exposed an inherited suppression bug. Keep rejected seals and author-versus-independent replay labels separate.
+
+
+2026-10-16: Copying reviewed files with preserved mtimes can make incrementalmake reuse older incompatibleobjects. The cursorcompositionfirstlinkfailedmissingnewexports; touchingall25promotedfiles without changinghashes forcedproperrebuild. Preservefirstfailure, verifyfullnewpair, and usefreshmtimesorcleanprivatebuilds whencomposing sealedsource.

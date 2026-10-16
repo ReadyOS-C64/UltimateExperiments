@@ -1,7 +1,8 @@
 .include "render_text.inc"
 .macpack longbranch
 .import dos64_mem_read
-.import dos64_cga_control, dos64_cga_control_valid
+.import dos64_cga_control, dos64_cga_control_valid, dos64_cga_registers
+.import dos64_cursor_phase_valid, dos64_cursor_field_phase
 .importzp dos64_address
 .export dos64_render_text_row, dos64_render_text_request
 
@@ -22,6 +23,11 @@ rt_bits: .res 1
 rt_count: .res 1
 rt_bg_mask: .res 1
 rt_blank: .res 1
+rt_cursor_enabled: .res 1
+rt_cursor_addr: .res 2
+rt_cursor_start: .res 1
+rt_cursor_end: .res 1
+rt_cursor_mask: .res 1
 
 .segment "RENDERCODE"
 ; Actual 6510 bitmap presenter foundation; synchronous, nonreentrant. Requires
@@ -34,7 +40,8 @@ rt_blank: .res 1
 ; Inputs: native fonts 4400-47FF (packed4x8) and 4800-4FFF (8x8), descriptor row/blink, coherent BDA text mode.
 ; Outputs: matrix 4000-43E7, hires bitmap 6000-7F3F, selected row only.
 ; 80 cols: packed four-pixel glyphs at4400; both halves share LEFT cell fg/bg. Blink
-; suppresses each half independently. No cursor overlay, VIC setup or font asset.
+; suppresses each half independently. Sampled hardware cursor ORs foreground
+; scanlines after glyph blink. No VIC setup or font asset.
 dos64_render_text_row:
     php
     sei
@@ -129,6 +136,7 @@ dos64_render_text_row:
     jsr rt_bda
     cmp rt_ptr+1
     jne rt_argument
+    jsr rt_cursor_setup
     ; Native pointers row*40 (matrix) and row*320 (bitmap).
     lda #0
     sta rt_matrix+1
@@ -192,6 +200,9 @@ dos64_render_text_row:
     lda #40
     sta rt_count
 rt_cell:
+    lda #0
+    sta rt_cursor_mask
+    jsr rt_cursor_cell
     jsr rt_read
     sta rt_char
     jsr rt_read
@@ -207,6 +218,7 @@ rt_cell:
     lda rt_cols
     cmp #40
     beq @draw
+    jsr rt_cursor_right
     jsr rt_read
     sta rt_char
     jsr rt_read
@@ -293,6 +305,11 @@ rt_narrow_odd_right:
 rt_narrow_combine:
     ora rt_bits
 rt_store:
+    cpy rt_cursor_start
+    bcc rt_bitmap
+    cpy rt_cursor_end
+    bcs rt_bitmap
+    ora rt_cursor_mask
 rt_bitmap:
     sta $6000,y
     iny
@@ -324,6 +341,9 @@ rt_bitmap:
 rt_argument:
     lda #RT_ERR_ARGUMENT
     bne rt_failed
+rt_cursor_error:
+    lda #RT_ERR_CURSOR
+    bne rt_failed
 rt_cache:
     lda #RT_ERR_CACHE
 rt_failed:
@@ -340,6 +360,100 @@ rt_failed:
     sec
     rts
 
+; Cache0 is deliberately unrequested legacy row-fixture mode. Production
+; always samples at frame row0; staleFF or unsupported placement fails before
+; output stores. Hardware start scrolling beyond BDA pages is not presented.
+rt_cursor_setup:
+    lda #0
+    sta rt_cursor_enabled
+    sta rt_cursor_start
+    sta rt_cursor_end
+    lda dos64_cursor_phase_valid
+    beq @done
+    cmp #$A5
+    jne rt_cursor_error
+    lda dos64_cga_registers+13
+    asl
+    jne rt_cursor_error
+    lda dos64_cga_registers+12
+    rol
+    cmp rt_ptr+1
+    jne rt_cursor_error
+    lda dos64_cga_registers+10
+    and #$60
+    cmp #$20
+    beq @done
+    lda dos64_cga_registers+10
+    and #$1F
+    sta rt_cursor_start
+    lda dos64_cga_registers+11
+    and #$1F
+    cmp rt_cursor_start
+    jcc rt_cursor_error       ; inverted shape intentionally unsupported
+    cmp #8
+    bcc :+
+    lda #7
+:   clc
+    adc #1
+    sta rt_cursor_end
+    lda dos64_cga_registers+10
+    and #$60
+    cmp #$40
+    bne @slow
+    lda dos64_cursor_field_phase
+    and #$10
+    bne @done
+@slow:
+    lda dos64_cga_registers+10
+    and #$60
+    cmp #$60
+    bne @external
+    lda dos64_cursor_field_phase
+    and #$20
+    bne @done
+@external:
+    lda dos64_cursor_field_phase
+    and #8
+    bne @done
+    lda dos64_cga_registers+15
+    asl
+    sta rt_cursor_addr
+    lda dos64_cga_registers+14
+    rol
+    sta rt_cursor_addr+1
+    inc rt_cursor_enabled
+@done:
+    rts
+rt_cursor_cell:
+    ldx rt_cursor_enabled
+    beq @done
+    lda rt_ptr
+    cmp rt_cursor_addr
+    bne @done
+    lda rt_ptr+1
+    cmp rt_cursor_addr+1
+    bne @done
+    lda #$FF
+    ldx rt_cols
+    cpx #40
+    beq :+
+    lda #$F0
+:   sta rt_cursor_mask
+@done:
+    rts
+rt_cursor_right:
+    ldx rt_cursor_enabled
+    beq @done
+    lda rt_ptr
+    cmp rt_cursor_addr
+    bne @done
+    lda rt_ptr+1
+    cmp rt_cursor_addr+1
+    bne @done
+    lda #$0F
+    sta rt_cursor_mask
+@done:
+    rts
 rt_bda:
     sta dos64_address
     lda #4

@@ -17,9 +17,9 @@ PIT_SIZE = __IRQMAIN_SIZE__+__IRQDEVICE_SIZE__+__PITCODE_SIZE__
 .import __FILECODE_SIZE__, __RENDERCODE_SIZE__, __DISPLAYCODE_SIZE__, __DISPLAYCODE_RUN__, __INPUTCODE_SIZE__
 .import dos64_native_text_setup, dos64_native_text_restore, dos64_native_text_state
 TEXT_SIZE = __RENDERCODE_SIZE__ + __DISPLAYCODE_SIZE__
-.assert __RENDERCODE_SIZE__ = 772, lderror, "renderer canonical length changed"
+.assert __RENDERCODE_SIZE__ = 1003, lderror, "renderer canonical length changed"
 .assert __DISPLAYCODE_SIZE__ = 245, lderror, "display canonical length changed"
-.assert TEXT_SIZE = 1017, lderror, "combined TEXT canonical length changed"
+.assert TEXT_SIZE = 1248, lderror, "combined TEXT canonical length changed"
 .assert __DISPLAYCODE_RUN__ = OV_WINDOW+__RENDERCODE_SIZE__, lderror, "TEXT display segment must immediately follow renderer"
 .import dos64_host_input_init, dos64_host_input_poll, dos64_cold_open
 .export dos64_overlay_input_init, dos64_overlay_input_poll

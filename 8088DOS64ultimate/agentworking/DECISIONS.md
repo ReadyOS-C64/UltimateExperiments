@@ -204,3 +204,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-16: Promote public A+C host/helper with frozen dependencies and pre-import cache absence checks; actual poisoned-cache regression preserves old failure. Promote only reviewed address.s/memory.s and additive memory test, preserving all clock/IRQ/REP cadence/public build graphs. ROOT460/304 b3/b995; modeled gain does not transfer physical acceptance or establish XT target. Keyboard/cursor successors remain review candidates.
+
+
+2026-10-16: Promote independently accepted boundedcanonicalCGA cursor cfec/c325 with capturedfield/latch/attribute-phase oracle, foregroundORbars/full14bitaddress and stale-before-output refusal. Correct docs U12LS393divider/U63resetgate. Preserve IRQ/REP/clockpolicy, ROOTperformance/publicgraphs. Fresh exactpairpurpose/physicalhostadapter required; original4ccIDE/4589physicalacceptance cannottransfer. Combinedda95/bc6ab472/308/69/503closurepass.

@@ -590,3 +590,6 @@ IMPORTANT BASELINE CHAIN: old230000 session endedFAILED06:22:37UTC, rawmailboxma
 
 
 2026-10-16 keyboard dbfe independentreview a8bcbd9d/1148pins NOT_READY: fresh actual probe strict323source/product/executable pins before10:52:37.208534UTC/after10:52:37.577846UTC expectsnull but sees2B5C after heldPoundpending acceptance/release. Old27+new19 groups passed but omitted case. No ROOTtarget changes; newauthor successor required, no policy waiver.
+
+
+2026-10-16 ROOTcursorcomposition: verified439author+429reviewpins, basechecked25portablefiles/preservedROOTmemory+publicgraphs. Firstmakebuildfailedunresolvedcursorsymbols becausecopy2oldsource mtimesreusedoldobjects; build.log retained, refreshedmtimesonly, build-refreshedpassed. Strict503pre/postpins: zigbuild cga-cursor cga-status native-runtime native-cga69groups; make test472Peddle/308tooling/bothmemoryPASS,503immutablecopies. scratch/cursor-memory-root-composition-20261016; cga-cursor-root-20261016.json. NoLAN/newpurposeproof/physicalclaim.

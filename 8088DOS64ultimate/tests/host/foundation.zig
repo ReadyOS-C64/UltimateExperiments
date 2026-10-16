@@ -167,3 +167,5 @@ test { _ = @import("video_spans.zig"); }
 test { _ = @import("owned_clock_internal.zig"); }
 
 test { _ = @import("cga_status.zig"); }
+
+test { _ = @import("cga_cursor.zig"); }

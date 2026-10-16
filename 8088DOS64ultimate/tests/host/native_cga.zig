@@ -22,6 +22,8 @@ fn fixture(color:bool)!F{
  _=try call(&f,"dos64_bios_init",40_000_000,0);
  try set(&f,"dos64_host_clock_claim",0xa5);_=try call(&f,"dos64_host_clock_init",10000,0);
  try set(&f,"dos64_host_input_claim",0xa5);_=try call(&f,"dos64_overlay_input_init",50000,0);
+ c.dos64_cia_clock_seed(f.machine,0xf000,0xffff);
+ _=try call(&f,"dos64_elapsed_poll",10000,0);_=try call(&f,"dos64_native_timer_init",100000,0);
  _=try call(&f,"dos64_cold_release",10000,0);_=try call(&f,"dos64_overlay_text_setup",10000,0);
  for(0..19)|i|try diag(&f,@intCast(i),0);try diag(&f,0,4);try set(&f,"n_present_mode",255);
  return f;

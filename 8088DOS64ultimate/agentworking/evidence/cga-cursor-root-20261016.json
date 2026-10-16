@@ -1,0 +1,487 @@
+{
+  "result": "PASS",
+  "scope": "ROOT canonicalCGA cursor plus accepted memory optimization composition",
+  "author_manifest_sha256": "cfec44850f5e2a896e5bf5323bd2924e54c378ceec35cc71dfa6390932ba24d1",
+  "independent_review_sha256": "c3250a03477cc6b7838d4da5e6181e0852fd3bf923efb9f5b465a2f948e89276",
+  "author_pins_exact": 439,
+  "review_pins_exact": 429,
+  "runtime_sha256": "da95caf78951d6ec1cf537f8b97c17480b7fbb420ae6acb6e268cb531cd88e21",
+  "unit_sha256": "bc6ab7fdf31236058818e83862402ab2180ec1ffca5bcea9ffdf552483470d2e",
+  "full_gate": {
+    "peddle": 472,
+    "tooling": 308,
+    "both_memory_verifiers": "PASS",
+    "log": "scratch/cursor-memory-root-composition-20261016/make-test.log",
+    "log_sha256": "482b722dd8316afbf1829f2c22075fbb1c7ecb76483ccae3f4c4e5145e851b43"
+  },
+  "focused_group_executions": 69,
+  "focused_log_sha256": "0c2731a7cf5be4756e9e67b5d1f8967de4b0b67d93fa6a36ad9945f9179c7675",
+  "strict_pre_post_closure": {
+    "inputs": 503,
+    "immutable_copies": 503,
+    "path": "scratch/cursor-memory-root-composition-20261016/DEFAULT_BEFORE.json",
+    "sha256": "ec4dfc958f3fdf89270d18739f96befdd5fcf02a8f96a88f001c60dd3f83b650",
+    "all_exact": true
+  },
+  "packaged_layout": {
+    "dos64": {
+      "layout": "runtime",
+      "start": 2049,
+      "linked_file_bytes": 24520,
+      "padding": [
+        {
+          "name": "unused_main",
+          "start": 16350,
+          "end": 16383,
+          "bytes": 34,
+          "file_offset": 14303,
+          "value": 0
+        },
+        {
+          "name": "display_matrix_and_guard_zero",
+          "start": 16384,
+          "end": 17407,
+          "bytes": 1024,
+          "file_offset": 14337,
+          "value": 0
+        },
+        {
+          "name": "unused_device",
+          "start": 24560,
+          "end": 24575,
+          "bytes": 16,
+          "file_offset": 22513,
+          "value": 0
+        },
+        {
+          "name": "cold_import_tail_zero",
+          "start": 31739,
+          "end": 32767,
+          "bytes": 1029,
+          "file_offset": 29692,
+          "value": 0
+        },
+        {
+          "name": "shadow_source_tail_zero",
+          "start": 44537,
+          "end": 44543,
+          "bytes": 7,
+          "file_offset": 42490,
+          "value": 0
+        },
+        {
+          "name": "saver_source_gap_zero",
+          "start": 44544,
+          "end": 45055,
+          "bytes": 512,
+          "file_offset": 42497,
+          "value": 0
+        }
+      ],
+      "payload_checked": true,
+      "end_exclusive": 47104,
+      "startup_fonts": [
+        {
+          "name": "NARROWFONT",
+          "start": 17408,
+          "bytes": 1024,
+          "sha256": "c15f11a5ae43771657dd24295e37cff5886280b3c32d80c5fe62757eb4e38dfe",
+          "executable": false,
+          "ownership": "matrix/input phase must be released before display; persistent across code overlays"
+        },
+        {
+          "name": "FULLFONT",
+          "start": 18432,
+          "bytes": 2048,
+          "sha256": "94fb2992461e7b79fcb3514d077727f33e5ee4f9d993f40f0aaeabf9c8f1ac30",
+          "executable": false,
+          "ownership": "matrix/input phase must be released before display; persistent across code overlays"
+        }
+      ],
+      "overlays": [
+        {
+          "name": "FILECODE",
+          "startup_source": 24576,
+          "reu_slot": 3407872,
+          "slot_bytes": 2048,
+          "payload_bytes": 1464,
+          "run": 51456,
+          "members": [
+            {
+              "name": "FILECODE",
+              "bytes": 1464
+            }
+          ],
+          "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+        },
+        {
+          "name": "RENDERCODE",
+          "startup_source": 26624,
+          "reu_slot": 3409920,
+          "slot_bytes": 2048,
+          "payload_bytes": 1248,
+          "run": 51456,
+          "members": [
+            {
+              "name": "RENDERCODE",
+              "bytes": 1003
+            },
+            {
+              "name": "DISPLAYCODE",
+              "bytes": 245
+            }
+          ],
+          "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+        },
+        {
+          "name": "INPUTCODE",
+          "startup_source": 32768,
+          "reu_slot": 3411968,
+          "slot_bytes": 2048,
+          "payload_bytes": 882,
+          "run": 51456,
+          "members": [
+            {
+              "name": "INPUTCODE",
+              "bytes": 882
+            }
+          ],
+          "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+        },
+        {
+          "name": "IRQMAIN",
+          "startup_source": 34816,
+          "reu_slot": 3414016,
+          "slot_bytes": 2048,
+          "payload_bytes": 1764,
+          "run": 51456,
+          "members": [
+            {
+              "name": "IRQMAIN",
+              "bytes": 1764
+            }
+          ],
+          "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+        },
+        {
+          "name": "GFXCODE",
+          "startup_source": 36864,
+          "reu_slot": 3416064,
+          "slot_bytes": 2048,
+          "payload_bytes": 1303,
+          "run": 51456,
+          "members": [
+            {
+              "name": "GFXCODE",
+              "bytes": 1303
+            }
+          ],
+          "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+        },
+        {
+          "name": "HDCODE",
+          "startup_source": 38912,
+          "reu_slot": 3418112,
+          "slot_bytes": 2048,
+          "payload_bytes": 1472,
+          "run": 51456,
+          "members": [
+            {
+              "name": "HDCODE",
+              "bytes": 1472
+            }
+          ],
+          "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+        }
+      ],
+      "resident_end_exclusive": 24560,
+      "cold_import": {
+        "start": 28672,
+        "end": 31738,
+        "linked_bytes": 3067,
+        "state_bytes": 26,
+        "window_bytes": 4096,
+        "payload_checked": true,
+        "ownership": "startup-only after overlay bootstrap; code/state discarded before bitmap ownership"
+      },
+      "shadow": {
+        "source": 40960,
+        "run": 61440,
+        "window_bytes": 3584,
+        "linked_bytes": 3577,
+        "payload_checked": true,
+        "excludes": "FE00-FFFF hardware vectors",
+        "ownership": "verified cold copy before guest cache; permanent RAM+IO/no KERNAL"
+      },
+      "saver": {
+        "source": 45056,
+        "run": 45072,
+        "reu": 3420160,
+        "slot_bytes": 2048,
+        "linked_bytes": 1543,
+        "cache_frames": [
+          24,
+          32
+        ],
+        "compare_stage": 47104,
+        "ownership": "modal paused borrow only; normal guest cache32frames"
+      },
+      "startup_cache_phase": {
+        "start": 32768,
+        "end_exclusive": 47104,
+        "cache_frames": 27,
+        "span_cache_frames": 28,
+        "saver_frames": 4,
+        "gap_cache_frames": [
+          23
+        ],
+        "overlay_frames": 16,
+        "shadow_frames": 7
+      },
+      "exclusive_overlay_window_bytes": 1792,
+      "max_linked_overlay_bytes": 1764,
+      "overlay_source_bytes": 8133,
+      "startup_overlay_bytes": 14336,
+      "padding_bytes": 2622,
+      "shadow_source_bytes": 3577,
+      "payload_bytes": 45055,
+      "accounted_payload_bytes": 45055,
+      "prg_bytes": 45057
+    },
+    "dos64-tests": {
+      "layout": "runtime",
+      "start": 2049,
+      "linked_file_bytes": 25496,
+      "padding": [
+        {
+          "name": "unused_main",
+          "start": 16351,
+          "end": 16383,
+          "bytes": 33,
+          "file_offset": 14304,
+          "value": 0
+        },
+        {
+          "name": "display_matrix_and_guard_zero",
+          "start": 16384,
+          "end": 17407,
+          "bytes": 1024,
+          "file_offset": 14337,
+          "value": 0
+        },
+        {
+          "name": "unused_device",
+          "start": 24560,
+          "end": 24575,
+          "bytes": 16,
+          "file_offset": 22513,
+          "value": 0
+        },
+        {
+          "name": "cold_import_tail_zero",
+          "start": 32714,
+          "end": 32767,
+          "bytes": 54,
+          "file_offset": 30667,
+          "value": 0
+        },
+        {
+          "name": "shadow_source_tail_zero",
+          "start": 44537,
+          "end": 44543,
+          "bytes": 7,
+          "file_offset": 42490,
+          "value": 0
+        },
+        {
+          "name": "saver_source_gap_zero",
+          "start": 44544,
+          "end": 45055,
+          "bytes": 512,
+          "file_offset": 42497,
+          "value": 0
+        }
+      ],
+      "payload_checked": true,
+      "end_exclusive": 47104,
+      "startup_fonts": [
+        {
+          "name": "NARROWFONT",
+          "start": 17408,
+          "bytes": 1024,
+          "sha256": "c15f11a5ae43771657dd24295e37cff5886280b3c32d80c5fe62757eb4e38dfe",
+          "executable": false,
+          "ownership": "matrix/input phase must be released before display; persistent across code overlays"
+        },
+        {
+          "name": "FULLFONT",
+          "start": 18432,
+          "bytes": 2048,
+          "sha256": "94fb2992461e7b79fcb3514d077727f33e5ee4f9d993f40f0aaeabf9c8f1ac30",
+          "executable": false,
+          "ownership": "matrix/input phase must be released before display; persistent across code overlays"
+        }
+      ],
+      "overlays": [
+        {
+          "name": "FILECODE",
+          "startup_source": 24576,
+          "reu_slot": 3407872,
+          "slot_bytes": 2048,
+          "payload_bytes": 1464,
+          "run": 51456,
+          "members": [
+            {
+              "name": "FILECODE",
+              "bytes": 1464
+            }
+          ],
+          "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+        },
+        {
+          "name": "RENDERCODE",
+          "startup_source": 26624,
+          "reu_slot": 3409920,
+          "slot_bytes": 2048,
+          "payload_bytes": 1248,
+          "run": 51456,
+          "members": [
+            {
+              "name": "RENDERCODE",
+              "bytes": 1003
+            },
+            {
+              "name": "DISPLAYCODE",
+              "bytes": 245
+            }
+          ],
+          "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+        },
+        {
+          "name": "INPUTCODE",
+          "startup_source": 32768,
+          "reu_slot": 3411968,
+          "slot_bytes": 2048,
+          "payload_bytes": 882,
+          "run": 51456,
+          "members": [
+            {
+              "name": "INPUTCODE",
+              "bytes": 882
+            }
+          ],
+          "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+        },
+        {
+          "name": "IRQMAIN",
+          "startup_source": 34816,
+          "reu_slot": 3414016,
+          "slot_bytes": 2048,
+          "payload_bytes": 1764,
+          "run": 51456,
+          "members": [
+            {
+              "name": "IRQMAIN",
+              "bytes": 1764
+            }
+          ],
+          "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+        },
+        {
+          "name": "GFXCODE",
+          "startup_source": 36864,
+          "reu_slot": 3416064,
+          "slot_bytes": 2048,
+          "payload_bytes": 1303,
+          "run": 51456,
+          "members": [
+            {
+              "name": "GFXCODE",
+              "bytes": 1303
+            }
+          ],
+          "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+        },
+        {
+          "name": "HDCODE",
+          "startup_source": 38912,
+          "reu_slot": 3418112,
+          "slot_bytes": 2048,
+          "payload_bytes": 1472,
+          "run": 51456,
+          "members": [
+            {
+              "name": "HDCODE",
+              "bytes": 1472
+            }
+          ],
+          "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"
+        }
+      ],
+      "resident_end_exclusive": 24560,
+      "cold_import": {
+        "start": 28672,
+        "end": 32713,
+        "linked_bytes": 4042,
+        "state_bytes": 26,
+        "window_bytes": 4096,
+        "payload_checked": true,
+        "ownership": "startup-only after overlay bootstrap; code/state discarded before bitmap ownership"
+      },
+      "shadow": {
+        "source": 40960,
+        "run": 61440,
+        "window_bytes": 3584,
+        "linked_bytes": 3577,
+        "payload_checked": true,
+        "excludes": "FE00-FFFF hardware vectors",
+        "ownership": "verified cold copy before guest cache; permanent RAM+IO/no KERNAL"
+      },
+      "saver": {
+        "source": 45056,
+        "run": 45072,
+        "reu": 3420160,
+        "slot_bytes": 2048,
+        "linked_bytes": 1543,
+        "cache_frames": [
+          24,
+          32
+        ],
+        "compare_stage": 47104,
+        "ownership": "modal paused borrow only; normal guest cache32frames"
+      },
+      "startup_cache_phase": {
+        "start": 32768,
+        "end_exclusive": 47104,
+        "cache_frames": 27,
+        "span_cache_frames": 28,
+        "saver_frames": 4,
+        "gap_cache_frames": [
+          23
+        ],
+        "overlay_frames": 16,
+        "shadow_frames": 7
+      },
+      "exclusive_overlay_window_bytes": 1792,
+      "max_linked_overlay_bytes": 1764,
+      "overlay_source_bytes": 8133,
+      "startup_overlay_bytes": 14336,
+      "padding_bytes": 1646,
+      "shadow_source_bytes": 3577,
+      "payload_bytes": 45055,
+      "accounted_payload_bytes": 45055,
+      "prg_bytes": 45057
+    }
+  },
+  "primary_qualification": "U12LS393 divider, U63LS02 resetgate; codegates unchanged",
+  "first_failure_retained": "build.log/FIRST_BUILD_FAILURE.json: copy2 preserved older source mtimes; refreshing25source mtimes rebuilt stale objects without byte changes",
+  "preserved": "ROOTmemory3files, Makefile publicA+C targets, build_ac_helper_tests.zig, manifest.py and frozenpublicdependencies exact",
+  "hardware_executed": false,
+  "limitations": [
+    "No new originalTURBO/TPC purpose or physicalacceptance",
+    "Public oldgeneric textoracle insufficient; reviewed captureadapter required",
+    "Canonicalhardwarestart/BDApage; visibleinvertedshapes unsupported",
+    "Model sampler5712cold/4471warm cycles and2744DMAbytes roundtrip example excludephysicalstalls",
+    "Keyboardnotyetpromoted; separate successorreview"
+  ]
+}

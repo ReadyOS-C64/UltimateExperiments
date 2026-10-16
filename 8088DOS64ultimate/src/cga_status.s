@@ -6,7 +6,7 @@
 .import dos64_cga_control, dos64_cga_control_valid, dos64_cga_registers
 .import dos64_pit_ready, dos64_pit_error, dos64_pit_poll_error, dos64_pit_phase, dos64_pit_total, dos64_pit_fraction
 .import v_crtc_defaults
-.export dos64_cga_status_math
+.export dos64_cga_status_math, cga_time
 .segment "DEVICESTATE"
 cga_time: .res 6
 cga_rem: .res 2
@@ -97,6 +97,7 @@ dos64_cga_status_math:
  bcc @frame_next
  sty cga_rem
  sta cga_rem+1
+ inc cga_time            ; vacated bit0 retains quotient; no carry before bit49
 @frame_next:
  dex
  bne @frame_bit
