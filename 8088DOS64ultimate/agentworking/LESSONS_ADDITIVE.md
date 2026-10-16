@@ -230,3 +230,5 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 
 
 2026-10-15: PhysicalcapturemayexposeROMafteranativeproberestores37. ArawPeddleRAMpeekmodelcannotestablishthatmappedcapturecontract. KeepterminalRAM+IOowned35untilstrictcapture, recordincomingbank separately, andleavefinalreset/bankrecoverytotheexistingouterharness. Neverwaivetheactualprivatevectorcheckorrelabelfailedcaptureasaccepted.
+
+2026-10-15: A matching DMA destination already present before a run cannot prove that transfer completed. Preserve first/raw status; issue DMA once, require observed completion, never turn data-only evidence or guessed delays into success. Keep generic recovery bytes intact when adding a native-only policy.

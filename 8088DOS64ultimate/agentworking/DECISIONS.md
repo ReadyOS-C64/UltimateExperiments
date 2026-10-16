@@ -181,3 +181,5 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-15 promotePITdirectaccumulatoronlyunderexactnoedgeprecondition; allpartialbinarysums<=delta guaranteephasecannotoverflow, remsum<2D needsatmostonesubtract. Preservefullphysicalclock/IRQ/REPboundarycadence. Continuous64:1perPeddlemicrocycle ispreferredcontrolledCPUmodeloverburst-batchedclock; neitherincludesphysicalDMA/VIC/IOwaits. Separatefixedworkfromwholeworkflowguestcountvariation.
+
+2026-10-15: Native REU issues once then observes completion at most256 times, retaining first/final raw status and failing immediately on verify bit20; success requires EOB40 withoutverify. This is a termination bound, not a physical latency guarantee. Generic40fe andall13standalone binaries remain exact. Compactnativeexpiry2B andresidentNMI1B fundfit; no ZPguard widening.

@@ -1,6 +1,9 @@
 .include "abi.inc"
 .include "reu.inc"
 .export dos64_reu_request, dos64_reu_transfer
+.ifdef DOS64_NATIVE_REU_OBSERVER
+.export dos64_reu_first_status
+.endif
 .exportzp reu_host_end, reu_far_end
 
 .segment "ZEROPAGE"
@@ -8,6 +11,10 @@ reu_host_end: .res 2
 reu_far_end: .res 2
 .segment "BSS"
 dos64_reu_request: .res R_SIZE
+.ifdef DOS64_NATIVE_REU_OBSERVER
+; Meaningful only for a submitted DMA; validation failure leaves R_STATUS=0.
+dos64_reu_first_status: .res 1
+.endif
 
 .segment "CODE"
 ; One immediate DMA chunk, RAM->REU (0) or REU->RAM (1).
@@ -97,12 +104,35 @@ dos64_reu_transfer:
     lda dos64_reu_request+R_DIRECTION
     ora #$90
     sta $DF01
+.ifdef DOS64_NATIVE_REU_OBSERVER
+    ; One submission, <=256 status reads. Finite attempt bound only;
+    ; no hardware latency guarantee. Retain first and final raw status.
+    ldx #0
+    lda $DF00
+    sta dos64_reu_first_status
+@completion:
+    sta dos64_reu_request+R_STATUS
+    asl
+    asl                         ; C=EOB, N=verify-error
+    bmi @device                 ; verify error wins over EOB
+    bcs @complete
+    dex
+    bne @observe
+@device:
+    lda #REU_ERR_DEVICE
+    bne @error                  ; constant nonzero error, nearby error epilogue
+@observe:
+    lda $DF00
+    bcc @completion             ; C remains clear: preceding EOB branch failed
+@complete:
+.else
     lda $DF00
     sta dos64_reu_request+R_STATUS
     lda dos64_reu_request+R_STATUS
     and #$60
     cmp #$40
     bne @device
+.endif
     pla
     sta $01
     pla
@@ -110,6 +140,9 @@ dos64_reu_transfer:
     plp
     clc
     rts
+.ifndef DOS64_NATIVE_REU_OBSERVER
 @device:
     lda #REU_ERR_DEVICE
     jmp @error
+
+.endif

@@ -153,11 +153,18 @@ uci_expired:
  sbc uci_deadline
  lda dos64_uci_now+1
  sbc uci_deadline+1
+.ifdef DOS64_NATIVE_REU_OBSERVER
+ ; Carry = NOT signed-high-bit; callers use carry only.
+ eor #$80
+ asl
+ rts
+.else
  bpl @yes
  clc
  rts
 @yes: sec
  rts
+.endif
 .ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
 .segment "DEVICECODE"
 .endif

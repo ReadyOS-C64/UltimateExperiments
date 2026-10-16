@@ -1,3 +1,5 @@
+Current targetbc195f39/84e51c94 promotes native-only bounded REU completion observation; root428/290 plus durable16+256+512 controls, exact294source nativeDOS proof and13unchangedstandalones pass. MAIN1/0,DEVICE2,BSS206,ZP36/48. Physical interactive retry b4e42b12 is staged/validated and awaiting final concrete guard; no active application yet. User wants interactive DOS; game recording remains deferred.
+
 Latest physical interactive attempt failed before DOS at first FILE overlay header DMA (raw91, error4); all4MiB/settings/media/reset,1205sourcepins+828copies/3FTPfiles restored and verified. Evidence evidence/c64u-interactive-reu-failure-20261015.json. No physical application active; source freeze released. Private native-only bounded completion observer is being developed/reviewed; official delayedDMA regression is a candidate, not established installed-core cause. User still wants interactive DOS handoff; recording remains deferred.
 
 # Next implementation slice

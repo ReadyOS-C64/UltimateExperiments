@@ -115,8 +115,12 @@ dos64_native_cold_poll:
  cmp #6
  bne n_reject
 : jmp n_cold_poll_impl
+; Always-resident DEVICE frees one MAIN byte for the native REU observer.
+.segment "DEVICECODE"
 dos64_native_nmi:
  rti
+.assert dos64_native_nmi >= $5000 .and dos64_native_nmi < $6000, lderror, "native NMI must remain resident DEVICE"
+.segment "CODE"
 ; A=error category, X=detail. Never touches cold state after display ownership.
 n_fail:
  sta n_error

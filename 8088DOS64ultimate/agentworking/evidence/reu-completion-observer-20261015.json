@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "status": "ROOT_PROMOTED_TESTS_PASS_PHYSICAL_PENDING",
+  "runtime_sha256": "bc195f39e17bb4db3c685f42e8dd6095c947af94bfb7d65ff67306099621af58",
+  "unit_sha256": "84e51c9405eb9eb3ad75e19f947e3ce656544d431d6092032fa5ac5048a3ad56",
+  "root_checks": {
+    "Zig_Peddle": 428,
+    "tooling": 290,
+    "durable_delayed_stale": 16,
+    "durable_raw_first_statuses": 256,
+    "durable_native_P_differentials": 512,
+    "manifest_files_exact": 369,
+    "standalone_PRGs_byteexact": 13
+  },
+  "independent_checks": {
+    "linked_status_P_direction_boundary_canary_cases": 268290,
+    "compact_expiry_cases": 262144
+  },
+  "native_DOS_proof_reused_by_exact_pair_and294_sources": true,
+  "fresh_BASIC_game_proof": false,
+  "native_author_manifest_sha256": "aba2bda0a2f16a93d143a56f2d112a946ada22793eac1b5a15e1a45539d87ad6",
+  "native_peer_manifest_sha256": "01ec4372897d579803c52e3576ffa603ad210d465543b18f162251cfadddda61",
+  "contract": "one command, at most256 condition observations; retain first+last raw status; verify error wins; EOB required; timeout remains failure",
+  "generic_recovery_40fe_unchanged": true,
+  "budget": {
+    "MAIN_free_runtime": 1,
+    "MAIN_free_unit": 0,
+    "DEVICE_free": 2,
+    "BSS_bytes": 206,
+    "ZP_runtime": 36,
+    "ZP_unit": 48,
+    "HDBIOS_bytes": 2442,
+    "PIT_bytes": 1764
+  },
+  "installed_core_failure_cause": "unproved",
+  "physical_interactive_retry": "prepared; not executed yet",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/reu-completion-root-promotion-20261015"
+}
