@@ -191,3 +191,5 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-15: Use explicit reviewed recovery control-flow derivative for newhardwarehosts after actual second-interrupt bug in oldsharedorchestration. Keep40fe/Delta/transport data algorithms unchanged; perphaseBaseException handling must retain firsterror, continueboundedindependentcleanup, and neverturn exhausted/unknown restore into success. Host-only loading handoff must awaitload-onlycompletion andobservedBASICready beforeSYS, withoutwrong-IDretry/fixedpacing/nativepatch.
+
+2026-10-15: Accept originald883 whole-floppy development SAVE only under complete native comparison/EOF/CLOSE, independent full FTP/REU/FAT and frozen source closure; fresh repeat is passed, prior altered ancillary-metadata run stays failed. Use reviewed acknowledged LOAD-only/observed BASIC READY/SYS2061 host handoff; two physical boots now succeed, installed firmware race cause remains conditional. Do not substitute private compiler/timer behavior or infer power-loss/nativeUI acceptance.
