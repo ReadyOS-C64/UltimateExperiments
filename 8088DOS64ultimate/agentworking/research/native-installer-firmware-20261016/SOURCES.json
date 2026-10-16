@@ -1,0 +1,1214 @@
+[
+  {
+    "path": "local-v3.14/software/filemanager/dos.cc",
+    "source_path": "software/filemanager/dos.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/filemanager/dos.cc",
+    "sha256": "b1bc0c5ba9398e7a77ed94ffac4e53eafd4743799b783cda81ca66ebd9072f7f",
+    "bytes": 30783
+  },
+  {
+    "path": "local-v3.14/software/filemanager/dos.h",
+    "source_path": "software/filemanager/dos.h",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/filemanager/dos.h",
+    "sha256": "db2668bf813717098418fbcd2f57f71fb42607f7bc2ed522bc98e56a13aa6377",
+    "bytes": 2176
+  },
+  {
+    "path": "local-v3.14/software/filesystem/filesystem_fat.cc",
+    "source_path": "software/filesystem/filesystem_fat.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/filesystem/filesystem_fat.cc",
+    "sha256": "dacb52bf4986385d237a1a011703e8445514179823248cbef6cdc59172fc6b1a",
+    "bytes": 6134
+  },
+  {
+    "path": "local-v3.14/software/filesystem/filesystem_fat.h",
+    "source_path": "software/filesystem/filesystem_fat.h",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/filesystem/filesystem_fat.h",
+    "sha256": "80fa72920c60a150dd33eeac325530a1dfde7880c0c9e9b396b7394a98bbef2f",
+    "bytes": 3119
+  },
+  {
+    "path": "local-v3.14/software/filesystem/file.h",
+    "source_path": "software/filesystem/file.h",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/filesystem/file.h",
+    "sha256": "365a5593015f49e726f0d693921b911e4e3d409bbf777856a219ed37e6434a53",
+    "bytes": 1748
+  },
+  {
+    "path": "local-v3.14/software/filesystem/file.cc",
+    "source_path": "software/filesystem/file.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/filesystem/file.cc",
+    "sha256": "ec7ab667929aad7d2b1eadee21da192b4370f2ecdc60c623ca974ceb02b9da24",
+    "bytes": 49
+  },
+  {
+    "path": "local-v3.14/software/filesystem/fs_errors_flags.h",
+    "source_path": "software/filesystem/fs_errors_flags.h",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/filesystem/fs_errors_flags.h",
+    "sha256": "9a6fc114b166c3aec774b9accd83b2593d5ce4b31a5146ab10406d76bb62718b",
+    "bytes": 2699
+  },
+  {
+    "path": "local-v3.14/software/filemanager/filemanager.cc",
+    "source_path": "software/filemanager/filemanager.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/filemanager/filemanager.cc",
+    "sha256": "1bd9da21180aab9eda4e51d600067f41d1980a981218c98e0b261da620ab442a",
+    "bytes": 26321
+  },
+  {
+    "path": "local-v3.14/software/chan_fat/ff14/source/ff.c",
+    "source_path": "software/chan_fat/ff14/source/ff.c",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/chan_fat/ff14/source/ff.c",
+    "sha256": "ab8e91a66a80389a1bd308655d141bbf63912da78edcbaf9236016eabcca8159",
+    "bytes": 249696
+  },
+  {
+    "path": "local-v3.14/software/chan_fat/ff14/documents/doc/lseek.html",
+    "source_path": "software/chan_fat/ff14/documents/doc/lseek.html",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/chan_fat/ff14/documents/doc/lseek.html",
+    "sha256": "a49336cf5e55d2d2533a07a6588a81b0dc6b23d496c4fc34aef7050417444f76",
+    "bytes": 7283
+  },
+  {
+    "path": "local-v3.14/software/chan_fat/ff14/documents/doc/expand.html",
+    "source_path": "software/chan_fat/ff14/documents/doc/expand.html",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/chan_fat/ff14/documents/doc/expand.html",
+    "sha256": "3060a5412ba6adc755571d1e6a319cf0f2686fe6cea8cb813ff5b2cde96dbc12",
+    "bytes": 5190
+  },
+  {
+    "path": "local-v3.14/software/io/c64/c64.cc",
+    "source_path": "software/io/c64/c64.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/io/c64/c64.cc",
+    "sha256": "70d7fcfc5a1c13be85576e334803c68630a23b5da2314e230f4c81cc59caf565",
+    "bytes": 48313
+  },
+  {
+    "path": "local-v3.14/software/io/c64/c64_subsys.cc",
+    "source_path": "software/io/c64/c64_subsys.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/io/c64/c64_subsys.cc",
+    "sha256": "7c23bb16a28ceff702c0a6a463f0014880b41df67ef45159e9d72863972fbe5f",
+    "bytes": 26282
+  },
+  {
+    "path": "local-v3.14/software/io/command_interface/command_intf.cc",
+    "source_path": "software/io/command_interface/command_intf.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/io/command_interface/command_intf.cc",
+    "sha256": "c67aeea4594e4b90f2ef2f0aa1c3b421d073c169d9077bd7ebd17ac194d79a9f",
+    "bytes": 7626
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filemanager/dos.cc",
+    "source_path": "software/filemanager/dos.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filemanager/dos.cc",
+    "sha256": "b1bc0c5ba9398e7a77ed94ffac4e53eafd4743799b783cda81ca66ebd9072f7f",
+    "bytes": 30783
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filemanager/dos.h",
+    "source_path": "software/filemanager/dos.h",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filemanager/dos.h",
+    "sha256": "db2668bf813717098418fbcd2f57f71fb42607f7bc2ed522bc98e56a13aa6377",
+    "bytes": 2176
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/filesystem_fat.cc",
+    "source_path": "software/filesystem/filesystem_fat.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/filesystem_fat.cc",
+    "sha256": "dacb52bf4986385d237a1a011703e8445514179823248cbef6cdc59172fc6b1a",
+    "bytes": 6134
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/filesystem_fat.h",
+    "source_path": "software/filesystem/filesystem_fat.h",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/filesystem_fat.h",
+    "sha256": "80fa72920c60a150dd33eeac325530a1dfde7880c0c9e9b396b7394a98bbef2f",
+    "bytes": 3119
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/file.h",
+    "source_path": "software/filesystem/file.h",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/file.h",
+    "sha256": "365a5593015f49e726f0d693921b911e4e3d409bbf777856a219ed37e6434a53",
+    "bytes": 1748
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/file.cc",
+    "source_path": "software/filesystem/file.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/file.cc",
+    "sha256": "ec7ab667929aad7d2b1eadee21da192b4370f2ecdc60c623ca974ceb02b9da24",
+    "bytes": 49
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/fs_errors_flags.h",
+    "source_path": "software/filesystem/fs_errors_flags.h",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/fs_errors_flags.h",
+    "sha256": "9a6fc114b166c3aec774b9accd83b2593d5ce4b31a5146ab10406d76bb62718b",
+    "bytes": 2699
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filemanager/filemanager.cc",
+    "source_path": "software/filemanager/filemanager.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filemanager/filemanager.cc",
+    "sha256": "1bd9da21180aab9eda4e51d600067f41d1980a981218c98e0b261da620ab442a",
+    "bytes": 26321
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/chan_fat/ff14/source/ff.c",
+    "source_path": "software/chan_fat/ff14/source/ff.c",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/chan_fat/ff14/source/ff.c",
+    "sha256": "ab8e91a66a80389a1bd308655d141bbf63912da78edcbaf9236016eabcca8159",
+    "bytes": 249696
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/chan_fat/ff14/documents/doc/lseek.html",
+    "source_path": "software/chan_fat/ff14/documents/doc/lseek.html",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/chan_fat/ff14/documents/doc/lseek.html",
+    "sha256": "a49336cf5e55d2d2533a07a6588a81b0dc6b23d496c4fc34aef7050417444f76",
+    "bytes": 7283
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/chan_fat/ff14/documents/doc/expand.html",
+    "source_path": "software/chan_fat/ff14/documents/doc/expand.html",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/chan_fat/ff14/documents/doc/expand.html",
+    "sha256": "3060a5412ba6adc755571d1e6a319cf0f2686fe6cea8cb813ff5b2cde96dbc12",
+    "bytes": 5190
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/c64/c64.cc",
+    "source_path": "software/io/c64/c64.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/c64/c64.cc",
+    "sha256": "37c4d3ab83147628dc4d6f7e3cf8e695068d57775e87b88d252d064d43a09ab8",
+    "bytes": 48046
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/c64/c64_subsys.cc",
+    "source_path": "software/io/c64/c64_subsys.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/c64/c64_subsys.cc",
+    "sha256": "39dbdbf31d6ebeba157fb5e0510ec4254baea1500505caa689502ad73708a177",
+    "bytes": 26280
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/command_interface/command_intf.cc",
+    "source_path": "software/io/command_interface/command_intf.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/command_interface/command_intf.cc",
+    "sha256": "c67aeea4594e4b90f2ef2f0aa1c3b421d073c169d9077bd7ebd17ac194d79a9f",
+    "bytes": 7626
+  },
+  {
+    "path": "local-v3.14d/software/filemanager/dos.cc",
+    "source_path": "software/filemanager/dos.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/filemanager/dos.cc",
+    "sha256": "b1bc0c5ba9398e7a77ed94ffac4e53eafd4743799b783cda81ca66ebd9072f7f",
+    "bytes": 30783
+  },
+  {
+    "path": "local-v3.14d/software/filemanager/dos.h",
+    "source_path": "software/filemanager/dos.h",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/filemanager/dos.h",
+    "sha256": "db2668bf813717098418fbcd2f57f71fb42607f7bc2ed522bc98e56a13aa6377",
+    "bytes": 2176
+  },
+  {
+    "path": "local-v3.14d/software/filesystem/filesystem_fat.cc",
+    "source_path": "software/filesystem/filesystem_fat.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/filesystem/filesystem_fat.cc",
+    "sha256": "dacb52bf4986385d237a1a011703e8445514179823248cbef6cdc59172fc6b1a",
+    "bytes": 6134
+  },
+  {
+    "path": "local-v3.14d/software/filesystem/filesystem_fat.h",
+    "source_path": "software/filesystem/filesystem_fat.h",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/filesystem/filesystem_fat.h",
+    "sha256": "80fa72920c60a150dd33eeac325530a1dfde7880c0c9e9b396b7394a98bbef2f",
+    "bytes": 3119
+  },
+  {
+    "path": "local-v3.14d/software/filesystem/file.h",
+    "source_path": "software/filesystem/file.h",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/filesystem/file.h",
+    "sha256": "365a5593015f49e726f0d693921b911e4e3d409bbf777856a219ed37e6434a53",
+    "bytes": 1748
+  },
+  {
+    "path": "local-v3.14d/software/filesystem/file.cc",
+    "source_path": "software/filesystem/file.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/filesystem/file.cc",
+    "sha256": "ec7ab667929aad7d2b1eadee21da192b4370f2ecdc60c623ca974ceb02b9da24",
+    "bytes": 49
+  },
+  {
+    "path": "local-v3.14d/software/filesystem/fs_errors_flags.h",
+    "source_path": "software/filesystem/fs_errors_flags.h",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/filesystem/fs_errors_flags.h",
+    "sha256": "9a6fc114b166c3aec774b9accd83b2593d5ce4b31a5146ab10406d76bb62718b",
+    "bytes": 2699
+  },
+  {
+    "path": "local-v3.14d/software/filemanager/filemanager.cc",
+    "source_path": "software/filemanager/filemanager.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/filemanager/filemanager.cc",
+    "sha256": "a793a1cc0724b513190cc51ef8f2bffa6e4641a6e4b1da8b27a699693ac52c58",
+    "bytes": 26470
+  },
+  {
+    "path": "local-v3.14d/software/chan_fat/ff14/source/ff.c",
+    "source_path": "software/chan_fat/ff14/source/ff.c",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/chan_fat/ff14/source/ff.c",
+    "sha256": "ab8e91a66a80389a1bd308655d141bbf63912da78edcbaf9236016eabcca8159",
+    "bytes": 249696
+  },
+  {
+    "path": "local-v3.14d/software/chan_fat/ff14/documents/doc/lseek.html",
+    "source_path": "software/chan_fat/ff14/documents/doc/lseek.html",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/chan_fat/ff14/documents/doc/lseek.html",
+    "sha256": "a49336cf5e55d2d2533a07a6588a81b0dc6b23d496c4fc34aef7050417444f76",
+    "bytes": 7283
+  },
+  {
+    "path": "local-v3.14d/software/chan_fat/ff14/documents/doc/expand.html",
+    "source_path": "software/chan_fat/ff14/documents/doc/expand.html",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/chan_fat/ff14/documents/doc/expand.html",
+    "sha256": "3060a5412ba6adc755571d1e6a319cf0f2686fe6cea8cb813ff5b2cde96dbc12",
+    "bytes": 5190
+  },
+  {
+    "path": "local-v3.14d/software/io/c64/c64.cc",
+    "source_path": "software/io/c64/c64.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/io/c64/c64.cc",
+    "sha256": "0ba5d076c4541c739d333571a566f4a29a539cf4fbf1887e3f2e6e10976bc56e",
+    "bytes": 48337
+  },
+  {
+    "path": "local-v3.14d/software/io/c64/c64_subsys.cc",
+    "source_path": "software/io/c64/c64_subsys.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/io/c64/c64_subsys.cc",
+    "sha256": "68490d8cbea4d2467a04aa91ae2d0cd8fc93a0fa242a272890c161282cbae827",
+    "bytes": 26340
+  },
+  {
+    "path": "local-v3.14d/software/io/command_interface/command_intf.cc",
+    "source_path": "software/io/command_interface/command_intf.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/io/command_interface/command_intf.cc",
+    "sha256": "c67aeea4594e4b90f2ef2f0aa1c3b421d073c169d9077bd7ebd17ac194d79a9f",
+    "bytes": 7626
+  },
+  {
+    "path": "local-snapshot-954104c/software/filemanager/dos.cc",
+    "source_path": "software/filemanager/dos.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/filemanager/dos.cc",
+    "sha256": "b1bc0c5ba9398e7a77ed94ffac4e53eafd4743799b783cda81ca66ebd9072f7f",
+    "bytes": 30783
+  },
+  {
+    "path": "local-snapshot-954104c/software/filemanager/dos.h",
+    "source_path": "software/filemanager/dos.h",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/filemanager/dos.h",
+    "sha256": "db2668bf813717098418fbcd2f57f71fb42607f7bc2ed522bc98e56a13aa6377",
+    "bytes": 2176
+  },
+  {
+    "path": "local-snapshot-954104c/software/filesystem/filesystem_fat.cc",
+    "source_path": "software/filesystem/filesystem_fat.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/filesystem/filesystem_fat.cc",
+    "sha256": "dacb52bf4986385d237a1a011703e8445514179823248cbef6cdc59172fc6b1a",
+    "bytes": 6134
+  },
+  {
+    "path": "local-snapshot-954104c/software/filesystem/filesystem_fat.h",
+    "source_path": "software/filesystem/filesystem_fat.h",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/filesystem/filesystem_fat.h",
+    "sha256": "80fa72920c60a150dd33eeac325530a1dfde7880c0c9e9b396b7394a98bbef2f",
+    "bytes": 3119
+  },
+  {
+    "path": "local-snapshot-954104c/software/filesystem/file.h",
+    "source_path": "software/filesystem/file.h",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/filesystem/file.h",
+    "sha256": "365a5593015f49e726f0d693921b911e4e3d409bbf777856a219ed37e6434a53",
+    "bytes": 1748
+  },
+  {
+    "path": "local-snapshot-954104c/software/filesystem/file.cc",
+    "source_path": "software/filesystem/file.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/filesystem/file.cc",
+    "sha256": "ec7ab667929aad7d2b1eadee21da192b4370f2ecdc60c623ca974ceb02b9da24",
+    "bytes": 49
+  },
+  {
+    "path": "local-snapshot-954104c/software/filesystem/fs_errors_flags.h",
+    "source_path": "software/filesystem/fs_errors_flags.h",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/filesystem/fs_errors_flags.h",
+    "sha256": "9a6fc114b166c3aec774b9accd83b2593d5ce4b31a5146ab10406d76bb62718b",
+    "bytes": 2699
+  },
+  {
+    "path": "local-snapshot-954104c/software/filemanager/filemanager.cc",
+    "source_path": "software/filemanager/filemanager.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/filemanager/filemanager.cc",
+    "sha256": "f81c2be106f2900fad765c3b578f6d5fdc004d1ed35676b3ccb7a333d1563bd3",
+    "bytes": 38688
+  },
+  {
+    "path": "local-snapshot-954104c/software/chan_fat/ff14/source/ff.c",
+    "source_path": "software/chan_fat/ff14/source/ff.c",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/chan_fat/ff14/source/ff.c",
+    "sha256": "ab8e91a66a80389a1bd308655d141bbf63912da78edcbaf9236016eabcca8159",
+    "bytes": 249696
+  },
+  {
+    "path": "local-snapshot-954104c/software/chan_fat/ff14/documents/doc/lseek.html",
+    "source_path": "software/chan_fat/ff14/documents/doc/lseek.html",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/chan_fat/ff14/documents/doc/lseek.html",
+    "sha256": "a49336cf5e55d2d2533a07a6588a81b0dc6b23d496c4fc34aef7050417444f76",
+    "bytes": 7283
+  },
+  {
+    "path": "local-snapshot-954104c/software/chan_fat/ff14/documents/doc/expand.html",
+    "source_path": "software/chan_fat/ff14/documents/doc/expand.html",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/chan_fat/ff14/documents/doc/expand.html",
+    "sha256": "3060a5412ba6adc755571d1e6a319cf0f2686fe6cea8cb813ff5b2cde96dbc12",
+    "bytes": 5190
+  },
+  {
+    "path": "local-snapshot-954104c/software/io/c64/c64.cc",
+    "source_path": "software/io/c64/c64.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/io/c64/c64.cc",
+    "sha256": "82f117de63573ac7338fdca96a3f01903c4ff5b3acbfaf5b21dc44a305a3df6c",
+    "bytes": 48394
+  },
+  {
+    "path": "local-snapshot-954104c/software/io/c64/c64_subsys.cc",
+    "source_path": "software/io/c64/c64_subsys.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/io/c64/c64_subsys.cc",
+    "sha256": "48abfa0e873836716a67a2bc3210106062ce6096f6c5ca6d8cb90407aca3969d",
+    "bytes": 27136
+  },
+  {
+    "path": "local-snapshot-954104c/software/io/command_interface/command_intf.cc",
+    "source_path": "software/io/command_interface/command_intf.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/io/command_interface/command_intf.cc",
+    "sha256": "c67aeea4594e4b90f2ef2f0aa1c3b421d073c169d9077bd7ebd17ac194d79a9f",
+    "bytes": 7626
+  },
+  {
+    "path": "readyos/src/apps/uzip/uz_dos.c",
+    "source_path": "/Users/karlprosserpp/dev/c64projects/readyosprecog/src/apps/uzip/uz_dos.c",
+    "sha256": "23d4c0356a16c8191689de5ec19df568ab862e674516a37a8831bfe657fefe09",
+    "bytes": 13895
+  },
+  {
+    "path": "readyos/src/apps/uzip/uz_dos.h",
+    "source_path": "/Users/karlprosserpp/dev/c64projects/readyosprecog/src/apps/uzip/uz_dos.h",
+    "sha256": "33b82575281b3be036ef727329e055ca63b0f7c81c94345eadfb2a66ffc74408",
+    "bytes": 3244
+  },
+  {
+    "path": "readyos/src/apps/launcher/launcher_uci_dma.s",
+    "source_path": "/Users/karlprosserpp/dev/c64projects/readyosprecog/src/apps/launcher/launcher_uci_dma.s",
+    "sha256": "bbeab966a5e87b0213a947b92db12b96be36aeee584eca3d14a097b61b2ed5fb",
+    "bytes": 32104
+  },
+  {
+    "path": "local-v3.14/software/io/command_interface/control_target.cc",
+    "source_path": "software/io/command_interface/control_target.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/io/command_interface/control_target.cc",
+    "sha256": "015a2d89ee37e908e176f47f5b0cb8d6a1ca0daab9b6d09d149c9e52351514b8",
+    "bytes": 19409
+  },
+  {
+    "path": "local-v3.14/software/io/command_interface/control_target.h",
+    "source_path": "software/io/command_interface/control_target.h",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/io/command_interface/control_target.h",
+    "sha256": "0e2738246eafd22432e3171b3dd245fa1cf85b81eb5c6dd97fca386d662ff9f7",
+    "bytes": 1341
+  },
+  {
+    "path": "local-v3.14/software/chan_fat/full/ffconf.h",
+    "source_path": "software/chan_fat/full/ffconf.h",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/chan_fat/full/ffconf.h",
+    "sha256": "536e2972c718d08f505d875158d386ccb87cfe4b2b0b318649615f5f17b01987",
+    "bytes": 12259
+  },
+  {
+    "path": "local-v3.14/software/filesystem/diskio.cc",
+    "source_path": "software/filesystem/diskio.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/filesystem/diskio.cc",
+    "sha256": "b47c149ca8d1a2f175b3cc48adaad95195e2d41dd9f5bced64d7206e09d310c3",
+    "bytes": 2998
+  },
+  {
+    "path": "local-v3.14/software/filesystem/partition.cc",
+    "source_path": "software/filesystem/partition.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/filesystem/partition.cc",
+    "sha256": "70bebda3833773b528b9f217cc7c3a2c1a7ff1fc89cc270378e47e6b09807523",
+    "bytes": 1932
+  },
+  {
+    "path": "local-v3.14/software/io/usb/usb_scsi.cc",
+    "source_path": "software/io/usb/usb_scsi.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/io/usb/usb_scsi.cc",
+    "sha256": "64d895fc484ef7a26c4e06cd6fb873ed26b5eb5fac4439135b4ca6b72472a0e7",
+    "bytes": 30114
+  },
+  {
+    "path": "local-v3.14/software/io/usb/usb_base.cc",
+    "source_path": "software/io/usb/usb_base.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/io/usb/usb_base.cc",
+    "sha256": "8c5e89ea9873173c1190e117b3b4577fdd9e628732af4314873d9a4a4293658e",
+    "bytes": 25187
+  },
+  {
+    "path": "local-v3.14/software/io/c64/reu_preloader.cc",
+    "source_path": "software/io/c64/reu_preloader.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/io/c64/reu_preloader.cc",
+    "sha256": "4025e83accf9d9d3e8a469da62a74fa88c5a297ca933e19d7feab7d385307df9",
+    "bytes": 5447
+  },
+  {
+    "path": "local-v3.14/software/io/c64/reu_preloader.h",
+    "source_path": "software/io/c64/reu_preloader.h",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/io/c64/reu_preloader.h",
+    "sha256": "148fbdcc72ae06be2b9e6b5aac5fd0ae999dac928703b0e9065693d8d2cd667d",
+    "bytes": 588
+  },
+  {
+    "path": "local-v3.14/software/io/c64/c64_subsys.h",
+    "source_path": "software/io/c64/c64_subsys.h",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/io/c64/c64_subsys.h",
+    "sha256": "b1d0763717f825bed881e4f31632f79583c9b915a6de0d9b1f25d54673ff9fc6",
+    "bytes": 1981
+  },
+  {
+    "path": "local-v3.14/software/io/c64/c64.h",
+    "source_path": "software/io/c64/c64.h",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/io/c64/c64.h",
+    "sha256": "d697010b93478d9f6dd98f536eef8429bf58e05e32de1788dd1da6473604a860",
+    "bytes": 16427
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/command_interface/control_target.cc",
+    "source_path": "software/io/command_interface/control_target.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/command_interface/control_target.cc",
+    "sha256": "015a2d89ee37e908e176f47f5b0cb8d6a1ca0daab9b6d09d149c9e52351514b8",
+    "bytes": 19409
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/command_interface/control_target.h",
+    "source_path": "software/io/command_interface/control_target.h",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/command_interface/control_target.h",
+    "sha256": "0e2738246eafd22432e3171b3dd245fa1cf85b81eb5c6dd97fca386d662ff9f7",
+    "bytes": 1341
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/chan_fat/full/ffconf.h",
+    "source_path": "software/chan_fat/full/ffconf.h",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/chan_fat/full/ffconf.h",
+    "sha256": "536e2972c718d08f505d875158d386ccb87cfe4b2b0b318649615f5f17b01987",
+    "bytes": 12259
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/diskio.cc",
+    "source_path": "software/filesystem/diskio.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/diskio.cc",
+    "sha256": "b47c149ca8d1a2f175b3cc48adaad95195e2d41dd9f5bced64d7206e09d310c3",
+    "bytes": 2998
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/partition.cc",
+    "source_path": "software/filesystem/partition.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filesystem/partition.cc",
+    "sha256": "70bebda3833773b528b9f217cc7c3a2c1a7ff1fc89cc270378e47e6b09807523",
+    "bytes": 1932
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/usb/usb_scsi.cc",
+    "source_path": "software/io/usb/usb_scsi.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/usb/usb_scsi.cc",
+    "sha256": "64d895fc484ef7a26c4e06cd6fb873ed26b5eb5fac4439135b4ca6b72472a0e7",
+    "bytes": 30114
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/usb/usb_base.cc",
+    "source_path": "software/io/usb/usb_base.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/usb/usb_base.cc",
+    "sha256": "8c5e89ea9873173c1190e117b3b4577fdd9e628732af4314873d9a4a4293658e",
+    "bytes": 25187
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/c64/reu_preloader.cc",
+    "source_path": "software/io/c64/reu_preloader.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/c64/reu_preloader.cc",
+    "sha256": "4025e83accf9d9d3e8a469da62a74fa88c5a297ca933e19d7feab7d385307df9",
+    "bytes": 5447
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/c64/reu_preloader.h",
+    "source_path": "software/io/c64/reu_preloader.h",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/c64/reu_preloader.h",
+    "sha256": "148fbdcc72ae06be2b9e6b5aac5fd0ae999dac928703b0e9065693d8d2cd667d",
+    "bytes": 588
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/c64/c64_subsys.h",
+    "source_path": "software/io/c64/c64_subsys.h",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/c64/c64_subsys.h",
+    "sha256": "b1d0763717f825bed881e4f31632f79583c9b915a6de0d9b1f25d54673ff9fc6",
+    "bytes": 1981
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/c64/c64.h",
+    "source_path": "software/io/c64/c64.h",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/io/c64/c64.h",
+    "sha256": "d697010b93478d9f6dd98f536eef8429bf58e05e32de1788dd1da6473604a860",
+    "bytes": 16427
+  },
+  {
+    "path": "local-v3.14d/software/io/command_interface/control_target.cc",
+    "source_path": "software/io/command_interface/control_target.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/io/command_interface/control_target.cc",
+    "sha256": "015a2d89ee37e908e176f47f5b0cb8d6a1ca0daab9b6d09d149c9e52351514b8",
+    "bytes": 19409
+  },
+  {
+    "path": "local-v3.14d/software/io/command_interface/control_target.h",
+    "source_path": "software/io/command_interface/control_target.h",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/io/command_interface/control_target.h",
+    "sha256": "0e2738246eafd22432e3171b3dd245fa1cf85b81eb5c6dd97fca386d662ff9f7",
+    "bytes": 1341
+  },
+  {
+    "path": "local-v3.14d/software/chan_fat/full/ffconf.h",
+    "source_path": "software/chan_fat/full/ffconf.h",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/chan_fat/full/ffconf.h",
+    "sha256": "536e2972c718d08f505d875158d386ccb87cfe4b2b0b318649615f5f17b01987",
+    "bytes": 12259
+  },
+  {
+    "path": "local-v3.14d/software/filesystem/diskio.cc",
+    "source_path": "software/filesystem/diskio.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/filesystem/diskio.cc",
+    "sha256": "b47c149ca8d1a2f175b3cc48adaad95195e2d41dd9f5bced64d7206e09d310c3",
+    "bytes": 2998
+  },
+  {
+    "path": "local-v3.14d/software/filesystem/partition.cc",
+    "source_path": "software/filesystem/partition.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/filesystem/partition.cc",
+    "sha256": "70bebda3833773b528b9f217cc7c3a2c1a7ff1fc89cc270378e47e6b09807523",
+    "bytes": 1932
+  },
+  {
+    "path": "local-v3.14d/software/io/usb/usb_scsi.cc",
+    "source_path": "software/io/usb/usb_scsi.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/io/usb/usb_scsi.cc",
+    "sha256": "64d895fc484ef7a26c4e06cd6fb873ed26b5eb5fac4439135b4ca6b72472a0e7",
+    "bytes": 30114
+  },
+  {
+    "path": "local-v3.14d/software/io/usb/usb_base.cc",
+    "source_path": "software/io/usb/usb_base.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/io/usb/usb_base.cc",
+    "sha256": "8c5e89ea9873173c1190e117b3b4577fdd9e628732af4314873d9a4a4293658e",
+    "bytes": 25187
+  },
+  {
+    "path": "local-v3.14d/software/io/c64/reu_preloader.cc",
+    "source_path": "software/io/c64/reu_preloader.cc",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/io/c64/reu_preloader.cc",
+    "sha256": "4025e83accf9d9d3e8a469da62a74fa88c5a297ca933e19d7feab7d385307df9",
+    "bytes": 5447
+  },
+  {
+    "path": "local-v3.14d/software/io/c64/reu_preloader.h",
+    "source_path": "software/io/c64/reu_preloader.h",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/io/c64/reu_preloader.h",
+    "sha256": "148fbdcc72ae06be2b9e6b5aac5fd0ae999dac928703b0e9065693d8d2cd667d",
+    "bytes": 588
+  },
+  {
+    "path": "local-v3.14d/software/io/c64/c64_subsys.h",
+    "source_path": "software/io/c64/c64_subsys.h",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/io/c64/c64_subsys.h",
+    "sha256": "b1d0763717f825bed881e4f31632f79583c9b915a6de0d9b1f25d54673ff9fc6",
+    "bytes": 1981
+  },
+  {
+    "path": "local-v3.14d/software/io/c64/c64.h",
+    "source_path": "software/io/c64/c64.h",
+    "ref": "v3.14d",
+    "commit": "40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/40a41caaf1b4647830c35b87a7cac7ae6b5b0ca1/software/io/c64/c64.h",
+    "sha256": "d697010b93478d9f6dd98f536eef8429bf58e05e32de1788dd1da6473604a860",
+    "bytes": 16427
+  },
+  {
+    "path": "local-snapshot-954104c/software/io/command_interface/control_target.cc",
+    "source_path": "software/io/command_interface/control_target.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/io/command_interface/control_target.cc",
+    "sha256": "d20e339b3c727abd3007e02d5d2ee3ef2ec491c5bfc1117d068252da80f95eda",
+    "bytes": 17949
+  },
+  {
+    "path": "local-snapshot-954104c/software/io/command_interface/control_target.h",
+    "source_path": "software/io/command_interface/control_target.h",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/io/command_interface/control_target.h",
+    "sha256": "0e2738246eafd22432e3171b3dd245fa1cf85b81eb5c6dd97fca386d662ff9f7",
+    "bytes": 1341
+  },
+  {
+    "path": "local-snapshot-954104c/software/chan_fat/full/ffconf.h",
+    "source_path": "software/chan_fat/full/ffconf.h",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/chan_fat/full/ffconf.h",
+    "sha256": "536e2972c718d08f505d875158d386ccb87cfe4b2b0b318649615f5f17b01987",
+    "bytes": 12259
+  },
+  {
+    "path": "local-snapshot-954104c/software/filesystem/diskio.cc",
+    "source_path": "software/filesystem/diskio.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/filesystem/diskio.cc",
+    "sha256": "b47c149ca8d1a2f175b3cc48adaad95195e2d41dd9f5bced64d7206e09d310c3",
+    "bytes": 2998
+  },
+  {
+    "path": "local-snapshot-954104c/software/filesystem/partition.cc",
+    "source_path": "software/filesystem/partition.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/filesystem/partition.cc",
+    "sha256": "70bebda3833773b528b9f217cc7c3a2c1a7ff1fc89cc270378e47e6b09807523",
+    "bytes": 1932
+  },
+  {
+    "path": "local-snapshot-954104c/software/io/usb/usb_scsi.cc",
+    "source_path": "software/io/usb/usb_scsi.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/io/usb/usb_scsi.cc",
+    "sha256": "64d895fc484ef7a26c4e06cd6fb873ed26b5eb5fac4439135b4ca6b72472a0e7",
+    "bytes": 30114
+  },
+  {
+    "path": "local-snapshot-954104c/software/io/usb/usb_base.cc",
+    "source_path": "software/io/usb/usb_base.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/io/usb/usb_base.cc",
+    "sha256": "8c5e89ea9873173c1190e117b3b4577fdd9e628732af4314873d9a4a4293658e",
+    "bytes": 25187
+  },
+  {
+    "path": "local-snapshot-954104c/software/io/c64/reu_preloader.cc",
+    "source_path": "software/io/c64/reu_preloader.cc",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/io/c64/reu_preloader.cc",
+    "sha256": "4025e83accf9d9d3e8a469da62a74fa88c5a297ca933e19d7feab7d385307df9",
+    "bytes": 5447
+  },
+  {
+    "path": "local-snapshot-954104c/software/io/c64/reu_preloader.h",
+    "source_path": "software/io/c64/reu_preloader.h",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/io/c64/reu_preloader.h",
+    "sha256": "148fbdcc72ae06be2b9e6b5aac5fd0ae999dac928703b0e9065693d8d2cd667d",
+    "bytes": 588
+  },
+  {
+    "path": "local-snapshot-954104c/software/io/c64/c64_subsys.h",
+    "source_path": "software/io/c64/c64_subsys.h",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/io/c64/c64_subsys.h",
+    "sha256": "b1d0763717f825bed881e4f31632f79583c9b915a6de0d9b1f25d54673ff9fc6",
+    "bytes": 1981
+  },
+  {
+    "path": "local-snapshot-954104c/software/io/c64/c64.h",
+    "source_path": "software/io/c64/c64.h",
+    "ref": "HEAD",
+    "commit": "954104c0b251153daac6b6d18c0ae62ffad057a0",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/954104c0b251153daac6b6d18c0ae62ffad057a0/software/io/c64/c64.h",
+    "sha256": "d697010b93478d9f6dd98f536eef8429bf58e05e32de1788dd1da6473604a860",
+    "bytes": 16427
+  },
+  {
+    "path": "online-master/software/filemanager/dos.cc",
+    "source_path": "software/filemanager/dos.cc",
+    "ref": "online-master",
+    "commit": "ee83dd48310b6954293d7f10936290f01c30a63e",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/ee83dd48310b6954293d7f10936290f01c30a63e/software/filemanager/dos.cc",
+    "sha256": "b1bc0c5ba9398e7a77ed94ffac4e53eafd4743799b783cda81ca66ebd9072f7f",
+    "bytes": 30783
+  },
+  {
+    "path": "online-master/software/filemanager/dos.h",
+    "source_path": "software/filemanager/dos.h",
+    "ref": "online-master",
+    "commit": "ee83dd48310b6954293d7f10936290f01c30a63e",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/ee83dd48310b6954293d7f10936290f01c30a63e/software/filemanager/dos.h",
+    "sha256": "db2668bf813717098418fbcd2f57f71fb42607f7bc2ed522bc98e56a13aa6377",
+    "bytes": 2176
+  },
+  {
+    "path": "online-master/software/io/command_interface/control_target.cc",
+    "source_path": "software/io/command_interface/control_target.cc",
+    "ref": "online-master",
+    "commit": "ee83dd48310b6954293d7f10936290f01c30a63e",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/ee83dd48310b6954293d7f10936290f01c30a63e/software/io/command_interface/control_target.cc",
+    "sha256": "92eb3f693dfc60abcc559ee406a0c34cc6ac1b95af1aae8e969cb485e6799fe4",
+    "bytes": 22581
+  },
+  {
+    "path": "online-master/software/chan_fat/full/ffconf.h",
+    "source_path": "software/chan_fat/full/ffconf.h",
+    "ref": "online-master",
+    "commit": "ee83dd48310b6954293d7f10936290f01c30a63e",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/ee83dd48310b6954293d7f10936290f01c30a63e/software/chan_fat/full/ffconf.h",
+    "sha256": "5531639eaccf971c17635b49502627910ea9502589813ddd61cd1cd8edacd8fd",
+    "bytes": 12259
+  },
+  {
+    "path": "online-master/software/filesystem/filesystem_fat.cc",
+    "source_path": "software/filesystem/filesystem_fat.cc",
+    "ref": "online-master",
+    "commit": "ee83dd48310b6954293d7f10936290f01c30a63e",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/ee83dd48310b6954293d7f10936290f01c30a63e/software/filesystem/filesystem_fat.cc",
+    "sha256": "9040000cdb79a37266ff89ff6480211e07c73abfe17cc19febf503e38050eaec",
+    "bytes": 6842
+  },
+  {
+    "path": "online-master/software/chan_fat/ff14/source/ff.c",
+    "source_path": "software/chan_fat/ff14/source/ff.c",
+    "ref": "online-master",
+    "commit": "ee83dd48310b6954293d7f10936290f01c30a63e",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/ee83dd48310b6954293d7f10936290f01c30a63e/software/chan_fat/ff14/source/ff.c",
+    "sha256": "ab8e91a66a80389a1bd308655d141bbf63912da78edcbaf9236016eabcca8159",
+    "bytes": 249696
+  },
+  {
+    "path": "docs/dos-target.html",
+    "url": "https://1541u-documentation.readthedocs.io/en/master/uci/ultimate_dos_target.html",
+    "sha256": "90c97daf1c416b522e1e240e1ea6e33c9042a4c865411c246c7877fccad4cc57",
+    "bytes": 40285
+  },
+  {
+    "path": "docs/control-target.html",
+    "url": "https://1541u-documentation.readthedocs.io/en/latest/uci/control_target.html",
+    "sha256": "9d24a1d8ff9e1e32af1bc06e7b2443baff14d4268766ed1f8691303825dd468e",
+    "bytes": 40683
+  },
+  {
+    "path": "docs/release-3.15.html",
+    "url": "https://1541u-documentation.readthedocs.io/en/latest/howto/release_3.15.html",
+    "sha256": "5a47b06abbd1dd518bace576fb5a5184b97e2f07fe168cf8e8939c84e40d7c65",
+    "bytes": 26498
+  },
+  {
+    "path": "docs/fatfs-lseek.html",
+    "url": "https://elm-chan.org/fsw/ff/doc/lseek.html",
+    "sha256": "80d44cb2c3b9e4bd93f1687360e3d31b960ea198b2ff273040c77269e89ee48b",
+    "bytes": 7573
+  },
+  {
+    "path": "docs/fatfs-expand.html",
+    "url": "https://elm-chan.org/fsw/ff/doc/expand.html",
+    "sha256": "905a7905d6b5910c2cf914e1668abb37468163d5d59b4f12fabc379868340656",
+    "bytes": 5043
+  },
+  {
+    "path": "local-v3.14/fpga/io/usb2/vhdl_source/usb_memory_ctrl.vhd",
+    "source_path": "fpga/io/usb2/vhdl_source/usb_memory_ctrl.vhd",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/fpga/io/usb2/vhdl_source/usb_memory_ctrl.vhd",
+    "sha256": "fcdd3421cbf095e8d93f6a9acc425cb7134867ce7f815e43ca8ec95f164d6723",
+    "bytes": 9278
+  },
+  {
+    "path": "local-v3.14/software/filetypes/filetype_prg.cc",
+    "source_path": "software/filetypes/filetype_prg.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/filetypes/filetype_prg.cc",
+    "sha256": "8053e0d19e9cd031a7670662107cf2216754337134ccc720fa4ba13ceb5afe74",
+    "bytes": 7022
+  },
+  {
+    "path": "local-v3.14/software/filetypes/filetype_prg.h",
+    "source_path": "software/filetypes/filetype_prg.h",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/filetypes/filetype_prg.h",
+    "sha256": "89bea64cc608fab4761a2917806b2747f6d60ce633e7211fba5fbfc80e07ea1f",
+    "bytes": 628
+  },
+  {
+    "path": "local-v3.14/software/6502/bootcrt.tas",
+    "source_path": "software/6502/bootcrt.tas",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/6502/bootcrt.tas",
+    "sha256": "bb8e4d7f0ee2b3a049b10af7b07a673919cc54dbebcd7ac6022111327dbd7672",
+    "bytes": 17004
+  },
+  {
+    "path": "local-v3.14/software/api/route_runners.cc",
+    "source_path": "software/api/route_runners.cc",
+    "ref": "v3.14",
+    "commit": "5b1840cca3a0f153e13ae6cc6dd28b797d2677c2",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/5b1840cca3a0f153e13ae6cc6dd28b797d2677c2/software/api/route_runners.cc",
+    "sha256": "ecbea438fb7410fe36b9c7ebb8c0f389b5580a954097bfe61832ea7356125930",
+    "bytes": 4800
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/fpga/io/usb2/vhdl_source/usb_memory_ctrl.vhd",
+    "source_path": "fpga/io/usb2/vhdl_source/usb_memory_ctrl.vhd",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/fpga/io/usb2/vhdl_source/usb_memory_ctrl.vhd",
+    "sha256": "fcdd3421cbf095e8d93f6a9acc425cb7134867ce7f815e43ca8ec95f164d6723",
+    "bytes": 9278
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filetypes/filetype_prg.cc",
+    "source_path": "software/filetypes/filetype_prg.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filetypes/filetype_prg.cc",
+    "sha256": "8053e0d19e9cd031a7670662107cf2216754337134ccc720fa4ba13ceb5afe74",
+    "bytes": 7022
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filetypes/filetype_prg.h",
+    "source_path": "software/filetypes/filetype_prg.h",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/filetypes/filetype_prg.h",
+    "sha256": "89bea64cc608fab4761a2917806b2747f6d60ce633e7211fba5fbfc80e07ea1f",
+    "bytes": 628
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/6502/bootcrt.tas",
+    "source_path": "software/6502/bootcrt.tas",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/6502/bootcrt.tas",
+    "sha256": "bb8e4d7f0ee2b3a049b10af7b07a673919cc54dbebcd7ac6022111327dbd7672",
+    "bytes": 17004
+  },
+  {
+    "path": "local-830665cd9b41bc34b868f5c1a1179c5baa4989af/software/api/route_runners.cc",
+    "source_path": "software/api/route_runners.cc",
+    "ref": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "commit": "830665cd9b41bc34b868f5c1a1179c5baa4989af",
+    "url": "https://github.com/GideonZ/1541ultimate/blob/830665cd9b41bc34b868f5c1a1179c5baa4989af/software/api/route_runners.cc",
+    "sha256": "ecbea438fb7410fe36b9c7ebb8c0f389b5580a954097bfe61832ea7356125930",
+    "bytes": 4800
+  },
+  {
+    "path": "project-reference/c64u-inventory-20261014.json",
+    "source_path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/c64u-inventory-20261014.json",
+    "sha256": "3b3c6bceb3eed2108ffda92441914e91627bffd3799eb562b3a11d66ee69e984",
+    "bytes": 3736
+  },
+  {
+    "path": "project-reference/hd_cache.s",
+    "source_path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/hd_cache.s",
+    "sha256": "2beea72bdec8073622b4dafb180b746c3bd4b38839291933af7744e67412be78",
+    "bytes": 10130
+  },
+  {
+    "path": "online-v3.15/software/filemanager/dos.cc",
+    "source_path": "software/filemanager/dos.cc",
+    "ref": "v3.15",
+    "commit": "68b78f50c0bfb64a5c16fc5e379a4c278da60077",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/68b78f50c0bfb64a5c16fc5e379a4c278da60077/software/filemanager/dos.cc",
+    "sha256": "b1bc0c5ba9398e7a77ed94ffac4e53eafd4743799b783cda81ca66ebd9072f7f",
+    "bytes": 30783
+  },
+  {
+    "path": "online-v3.15/software/filemanager/dos.h",
+    "source_path": "software/filemanager/dos.h",
+    "ref": "v3.15",
+    "commit": "68b78f50c0bfb64a5c16fc5e379a4c278da60077",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/68b78f50c0bfb64a5c16fc5e379a4c278da60077/software/filemanager/dos.h",
+    "sha256": "db2668bf813717098418fbcd2f57f71fb42607f7bc2ed522bc98e56a13aa6377",
+    "bytes": 2176
+  },
+  {
+    "path": "online-v3.15/software/io/command_interface/control_target.cc",
+    "source_path": "software/io/command_interface/control_target.cc",
+    "ref": "v3.15",
+    "commit": "68b78f50c0bfb64a5c16fc5e379a4c278da60077",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/68b78f50c0bfb64a5c16fc5e379a4c278da60077/software/io/command_interface/control_target.cc",
+    "sha256": "92eb3f693dfc60abcc559ee406a0c34cc6ac1b95af1aae8e969cb485e6799fe4",
+    "bytes": 22581
+  },
+  {
+    "path": "online-v3.15/software/io/c64/reu_preloader.cc",
+    "source_path": "software/io/c64/reu_preloader.cc",
+    "ref": "v3.15",
+    "commit": "68b78f50c0bfb64a5c16fc5e379a4c278da60077",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/68b78f50c0bfb64a5c16fc5e379a4c278da60077/software/io/c64/reu_preloader.cc",
+    "sha256": "4025e83accf9d9d3e8a469da62a74fa88c5a297ca933e19d7feab7d385307df9",
+    "bytes": 5447
+  },
+  {
+    "path": "online-v3.15/software/chan_fat/ff14/source/ff.c",
+    "source_path": "software/chan_fat/ff14/source/ff.c",
+    "ref": "v3.15",
+    "commit": "68b78f50c0bfb64a5c16fc5e379a4c278da60077",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/68b78f50c0bfb64a5c16fc5e379a4c278da60077/software/chan_fat/ff14/source/ff.c",
+    "sha256": "ab8e91a66a80389a1bd308655d141bbf63912da78edcbaf9236016eabcca8159",
+    "bytes": 249696
+  },
+  {
+    "path": "online-v3.15/software/chan_fat/full/ffconf.h",
+    "source_path": "software/chan_fat/full/ffconf.h",
+    "ref": "v3.15",
+    "commit": "68b78f50c0bfb64a5c16fc5e379a4c278da60077",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/68b78f50c0bfb64a5c16fc5e379a4c278da60077/software/chan_fat/full/ffconf.h",
+    "sha256": "536e2972c718d08f505d875158d386ccb87cfe4b2b0b318649615f5f17b01987",
+    "bytes": 12259
+  },
+  {
+    "path": "online-v3.15a/software/filemanager/dos.cc",
+    "source_path": "software/filemanager/dos.cc",
+    "ref": "v3.15a",
+    "commit": "dddd29b25d64c79d3a8cab95d8b86e1f8cafb816",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/dddd29b25d64c79d3a8cab95d8b86e1f8cafb816/software/filemanager/dos.cc",
+    "sha256": "b1bc0c5ba9398e7a77ed94ffac4e53eafd4743799b783cda81ca66ebd9072f7f",
+    "bytes": 30783
+  },
+  {
+    "path": "online-v3.15a/software/filemanager/dos.h",
+    "source_path": "software/filemanager/dos.h",
+    "ref": "v3.15a",
+    "commit": "dddd29b25d64c79d3a8cab95d8b86e1f8cafb816",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/dddd29b25d64c79d3a8cab95d8b86e1f8cafb816/software/filemanager/dos.h",
+    "sha256": "db2668bf813717098418fbcd2f57f71fb42607f7bc2ed522bc98e56a13aa6377",
+    "bytes": 2176
+  },
+  {
+    "path": "online-v3.15a/software/io/command_interface/control_target.cc",
+    "source_path": "software/io/command_interface/control_target.cc",
+    "ref": "v3.15a",
+    "commit": "dddd29b25d64c79d3a8cab95d8b86e1f8cafb816",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/dddd29b25d64c79d3a8cab95d8b86e1f8cafb816/software/io/command_interface/control_target.cc",
+    "sha256": "92eb3f693dfc60abcc559ee406a0c34cc6ac1b95af1aae8e969cb485e6799fe4",
+    "bytes": 22581
+  },
+  {
+    "path": "online-v3.15a/software/io/c64/reu_preloader.cc",
+    "source_path": "software/io/c64/reu_preloader.cc",
+    "ref": "v3.15a",
+    "commit": "dddd29b25d64c79d3a8cab95d8b86e1f8cafb816",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/dddd29b25d64c79d3a8cab95d8b86e1f8cafb816/software/io/c64/reu_preloader.cc",
+    "sha256": "4025e83accf9d9d3e8a469da62a74fa88c5a297ca933e19d7feab7d385307df9",
+    "bytes": 5447
+  },
+  {
+    "path": "online-v3.15a/software/chan_fat/ff14/source/ff.c",
+    "source_path": "software/chan_fat/ff14/source/ff.c",
+    "ref": "v3.15a",
+    "commit": "dddd29b25d64c79d3a8cab95d8b86e1f8cafb816",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/dddd29b25d64c79d3a8cab95d8b86e1f8cafb816/software/chan_fat/ff14/source/ff.c",
+    "sha256": "ab8e91a66a80389a1bd308655d141bbf63912da78edcbaf9236016eabcca8159",
+    "bytes": 249696
+  },
+  {
+    "path": "online-v3.15a/software/chan_fat/full/ffconf.h",
+    "source_path": "software/chan_fat/full/ffconf.h",
+    "ref": "v3.15a",
+    "commit": "dddd29b25d64c79d3a8cab95d8b86e1f8cafb816",
+    "url": "https://raw.githubusercontent.com/GideonZ/1541ultimate/dddd29b25d64c79d3a8cab95d8b86e1f8cafb816/software/chan_fat/full/ffconf.h",
+    "sha256": "536e2972c718d08f505d875158d386ccb87cfe4b2b0b318649615f5f17b01987",
+    "bytes": 12259
+  }
+]

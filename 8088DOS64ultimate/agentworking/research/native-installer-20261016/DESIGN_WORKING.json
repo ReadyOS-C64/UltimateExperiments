@@ -1,0 +1,44 @@
+{
+  "constraints_from_user": [
+    "No dummylauncherD81; UltimateDOS/UCIrequired",
+    "CnativeSETUPpermitted; no8088DOSFORMAT/COPY forinstallation",
+    "Usersupply3DOSfloppyIMGfiles; noredistribution",
+    "No largeemptyHDdownload; createdynamically",
+    "Generatedpersistentlaunchercontainsabsolutehome; REUhandoffvolatile",
+    "UseREU/native randomaccess forA/B and2/20MiBC preparation"
+  ],
+  "recommended_phases": [
+    "Ownedphysical32KiBSAVE_REU/LOAD_REU discriminator withindependentfullfilecompareand4MiBguard",
+    "SelfcontainedSETUPbrowser plusgeneratedSTART.PRG/privateconfig",
+    "NativeFAT12workingA/Bderivation andFAT16Cformatter/importer",
+    "StartupconfighandoffABI,realindependentB,saveCRCrefresh/normalclose",
+    "Restart/enduserinstallacceptance onUltimate"
+  ],
+  "fast_creation": {
+    "raw_bytes_20MiB": 20971520,
+    "sequential_zero_chunk_bytes": 32768,
+    "SAVE_REU_commands_for_full_zero_data": 640,
+    "split256_write_commands_for_same_bytes": 81920,
+    "command_count_ratio": 128,
+    "not_a_speedup_measurement": true,
+    "one_pass_builder": "PlanFAT/directoryallocation first,thenemitmetadata/filepayload/zeros sequentially toavoidzero-fillthenrewritingpayload",
+    "alternative_quickformat": "Seekextend metadata+payloadonly if firmware allows; freeclustercontentsundefined,notsparse/zero guarantee; notdefaultblankzero design"
+  },
+  "raw_vs_sparse": "KeepfullyallocatedstandardrawIMGcreatedonUltimate initially; customsparsecontainerrequiresnewbackend/metadatarecovery/export",
+  "bootstrap": {
+    "proposed_handoff_REU": "3FF000..3FFFFF",
+    "proposed_prg_stage_REU": "3E0000..3EB000",
+    "status": "PROPOSALSnotreservedimplementation",
+    "record": "magic/version/length/checksum/pathbounds/minREU/driveidentities",
+    "trampoline": "mustexecuteoutside0801..B7FFwhilefinalREUDMAloads45055payloadbytes",
+    "overlay_bootstrap": "initialSETUPUI/UCIcannotdependonunknownhomeoverlaypaths"
+  },
+  "important_product_changes": [
+    "IndependentBbackend/nativeimport/startup/save",
+    "Nativeconfigvalidationmustacceptuserformattedmedia; keepdeveloperfixtureallowlistsstrict",
+    "A/BCRCconfigmustrefreshafterlegitimateSaveorbeverified/adoptedviaSETUP",
+    "Missing/movedhomefailswithRunSETUPguidance; noglobalscanassumption",
+    "Createfreshpartialsandcommitlauncherlastafterclose/readback"
+  ],
+  "runtime_estimates": "Do notreuse earlier5\u201315min smallWRITEestimate as DMAbenchmark; measure actualbulkpath. Write+fullreadback40MiB/combinedthroughput:256KiBps160s;1MiBps40s;4MiBps10s beforemetadata/import/CRC overhead."
+}

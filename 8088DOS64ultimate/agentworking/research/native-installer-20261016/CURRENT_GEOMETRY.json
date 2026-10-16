@@ -1,0 +1,38 @@
+{
+  "partition": {
+    "active": 128,
+    "type": 4,
+    "start_lba": 16,
+    "sectors": 40944,
+    "start_chs": [
+      0,
+      1,
+      1
+    ],
+    "end_chs": [
+      639,
+      3,
+      16
+    ]
+  },
+  "bpb": {
+    "bytes_per_sector": 512,
+    "sectors_per_cluster": 4,
+    "reserved_sectors": 1,
+    "fats": 2,
+    "root_entries": 512,
+    "total_sectors": 40944,
+    "media": 248,
+    "sectors_per_fat": 40,
+    "sectors_per_track": 16,
+    "heads": 4,
+    "hidden_sectors": 16,
+    "oem": "MSDOS3.3"
+  },
+  "cluster_bytes": 2048,
+  "clusters": 10207,
+  "free_bytes": 13977600,
+  "filesystem_metadata_bytes": 57856,
+  "FAT_bytes_each": 20480,
+  "guest_data_volume_offset_bytes": 66048
+}

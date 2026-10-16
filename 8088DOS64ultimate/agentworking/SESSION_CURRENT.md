@@ -11,3 +11,8 @@ Keyboard dbfe/734pins is independently rejected a8bcbd9d/1148pins: deferred Poun
 All commits local, no push including nestedsite9cc6501. Existing published actualHangman video/download remains intact. All physical operations through owned macOS Terminal, fresh matched purpose proof/media/PRGs/helper/guard required. No firmware update. Upper12MiB untouched/uncompared. Preserve unrelatedReadyFS changes, native_text_probe and vendor downloads. Full goal UI/IEC/graphics/enduser/performance50/85 remains active.
 
 Read STATUS/NEXT_SLICE/DECISIONS and applicable AGENTS before continuing.
+
+
+2026-10-16 installer research steering: user explicitly rejects dummylauncherD81 and largeemptyHDdownload; nativeC SETUP withREU/UltimateDOS must create/populate A/B/C outside8088execution. GeneratedSTART.PRG storespersistentabsolutehome; checkedfixedREUhandoff andfastloadmain proposed. CurrentCraw20MiB isfullallocated, notsparse. NativeDOS32KiBSAVE_REU has640commands/20MiB versus81920split256; source-supported, notphysicalacceptance/speed. Seekgrowthallocatesundefinedgap,notzeros. Proposal docs/NATIVE_INSTALLER_DESIGN.md; firmware4b5db009/bootstrapbd9cd7ca research. Researchonly, noimplementation/hardware thisturn.
+
+Continuity correction: keyboard4c39/733pins independentlyaccepted0525f0a9/760pins, readyforROOTportablecomposition, notpromoted. IDEhost51e preparationreview4777ee42/1037pins passeshostchecks but nativeproofdriverNOT_READY: firsterror/closecleanup and frozen cursor/frame/queue capture need anewsuccessor; originalsealsimmutable.

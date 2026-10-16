@@ -593,3 +593,6 @@ IMPORTANT BASELINE CHAIN: old230000 session endedFAILED06:22:37UTC, rawmailboxma
 
 
 2026-10-16 ROOTcursorcomposition: verified439author+429reviewpins, basechecked25portablefiles/preservedROOTmemory+publicgraphs. Firstmakebuildfailedunresolvedcursorsymbols becausecopy2oldsource mtimesreusedoldobjects; build.log retained, refreshedmtimesonly, build-refreshedpassed. Strict503pre/postpins: zigbuild cga-cursor cga-status native-runtime native-cga69groups; make test472Peddle/308tooling/bothmemoryPASS,503immutablecopies. scratch/cursor-memory-root-composition-20261016; cga-cursor-root-20261016.json. NoLAN/newpurposeproof/physicalclaim.
+
+
+2026-10-16 nativeinstallerresearchonly: stat/read actualac1C andformattedbase both20971520logical+allocatedbytes; CURRENT_IMAGES.json recordsSHA/zeros/compressionsizecomparison (notnewimageformat). Strictinspector derives20MiBmetadata66048B,40sectorFATs/spc4/10207clusters. ReadReadyOSstandaloneSETUP/UZIP/loaderandpinnedv3.14DOS/FatFs; firmware4b5db009/bootstrapbd9cd7caresearchrecords. NoROOTproductioncode/hardware/media/firmwarechanges; nodefaulttests rerun for research/docs. Proposed640x32768directREU writes arearithmetic/sourcecapability, notbenchmark.

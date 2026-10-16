@@ -1,0 +1,13 @@
+{
+  "verdict": "RESEARCH_COMPLETE_SOURCE_SUPPORTED_CANDIDATE_PHYSICAL_QUALIFICATION_PENDING",
+  "recommendation": "Native SETUP.PRG and fixed launcher loaded from USB by menu PRG Run; explicit DOS OPEN plus SAVE_REU/LOAD_REU with caller-owned minimum4MiB capacity and source/ownership bounds; 640x32KiB deterministic raw20MiB initialization, installer-owned PC FAT16 layout, close/reopen complete readback.",
+  "no_hardware_calls": true,
+  "no_LAN_calls": true,
+  "ROOT_edited": false,
+  "old_seals_edited": false,
+  "installed_binary_commit_certified": false,
+  "speed_or_physical_success_claim": false,
+  "source_records": 138,
+  "controls": "Exact extracted uppercase function:3.14/pinned830665/3.14d bounded timeout; tagged3.15/3.15a/master return. Command-count/range/mask arithmetic assertions. No firmware whole-target emulation.",
+  "essential_limitations": ["Seek-grown data undefined, hostFAT allocation not sparse-hole semantics", "DOS REU bound16MiB does not enforce configured4MiB", "No UCI standalone truncate/expand/PC FORMAT", "CLOSE ignores underlying result; verify by reopen and exact full readback", "Current canonical raw image free clusters are not allzero; fresh deterministic image has distinct identity", "CONTROL04/08/09 differs from DOS01or02/21/22; avoid older control path"]
+}

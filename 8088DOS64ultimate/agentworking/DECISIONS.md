@@ -207,3 +207,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-16: Promote independently accepted boundedcanonicalCGA cursor cfec/c325 with capturedfield/latch/attribute-phase oracle, foregroundORbars/full14bitaddress and stale-before-output refusal. Correct docs U12LS393divider/U63resetgate. Preserve IRQ/REP/clockpolicy, ROOTperformance/publicgraphs. Fresh exactpairpurpose/physicalhostadapter required; original4ccIDE/4589physicalacceptance cannottransfer. Combinedda95/bc6ab472/308/69/503closurepass.
+
+
+2026-10-16 user-directed installer constraints: no dummyD81launcher or largeblankHDfiledistribution; requireUltimateDOS/UCI and allow nativeC SETUP withREU/overlays. UserssupplythreeDOSimages; installerbuildsworkingA/B andraw2/20MiBC natively, noemulatedFORMAT/COPY. Generatepersistentpath-awareSTART.PRG; fixedREUrecord isvolatilehandoffonly. ResearchrecommendsbulkDOS21/22 andnativeFAT12/16writer, preservingrawformat; dynamiccreationdoesnotrequiresparsecontainer. Allimplementation/bulk4MiBqualification/actualtimingspending; do nottreatproposalasdelivered.

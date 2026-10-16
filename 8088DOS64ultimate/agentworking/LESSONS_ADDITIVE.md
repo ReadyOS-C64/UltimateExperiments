@@ -273,3 +273,6 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 
 
 2026-10-16: Copying reviewed files with preserved mtimes can make incrementalmake reuse older incompatibleobjects. The cursorcompositionfirstlinkfailedmissingnewexports; touchingall25promotedfiles without changinghashes forcedproperrebuild. Preservefirstfailure, verifyfullnewpair, and usefreshmtimesorcleanprivatebuilds whencomposing sealedsource.
+
+
+2026-10-16 installerresearch: distinguish DOSfreeclusters, hostfileallocation and zeroedcontents. Our20MiBrawC isfullallocated anddeletedCROSS16patterns remaininfreeDOSclusters; seekingtogrowFatFsalso doesnotinitializegap. RemovinglargeemptydownloaddoesnotrequiresparseHDformat: generateonUltimate withdirectREUfiletransfers. AhomepathstoredonlyinvolatileREUdoesnotpersist; generatedSTARTmustcarrydurableanchor, and firstSETUPbrowsermustnotdependonunknownoverlaypaths. Firmwaretwofilecontextsdo notautomaticallymaketheexistingglobalFILESadapterconcurrent.

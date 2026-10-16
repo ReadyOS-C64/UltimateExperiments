@@ -1,0 +1,20 @@
+[
+  {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/hd-complete-dos-tp-fixture/outputs/full-tp/HD.IMG",
+    "logical_bytes": 20971520,
+    "MiB": 20.0,
+    "allocated_bytes_reported": 20971520,
+    "sha256": "ac1cea543ad27f4fad4d3ba9d15e482bac05e9e48c4be6373c889bca4bc6c197",
+    "zero_bytes": 5279120,
+    "zlib9_bytes_for_size_comparison_only": 5076028
+  },
+  {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/hd-complete-dos-tp-fixture/inputs/large/disk.raw.img",
+    "logical_bytes": 20971520,
+    "MiB": 20.0,
+    "allocated_bytes_reported": 20971520,
+    "sha256": "0637b75c7687e746bc89b17139c42aff4aca36c0881a3847d7614ee3134aea41",
+    "zero_bytes": 4124748,
+    "zlib9_bytes_for_size_comparison_only": 3907790
+  }
+]

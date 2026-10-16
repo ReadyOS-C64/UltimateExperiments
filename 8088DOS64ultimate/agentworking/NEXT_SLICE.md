@@ -7,3 +7,6 @@
 5. Continue measuredperformance toward50%minimum/85%stretch of4MHz8088. Current modelgain5.90%micro/1.98%DOS is notphysicalXT. Historical2.65%/3.96% are two-kernel-specific. Keep privatecompiledblocks/timingprofilesOFF and everyIRQ/REP/clockboundary until separateproof.
 
 Current da95/bc6ab passes472Peddle/308tools, both memoryverifiers. Publichost8d87313 passes43/6/6;498pins/copies exact. Last physical4589 accepted and recovered; no activefreeze/session. Avoid repeating unchangedlonggates. All commits local/no push; upthree coordinatedsubagents, ROOT owns hardware.
+
+
+Installer research branch (user2026-10-16): review docs/NATIVE_INSTALLER_DESIGN.md; userprefersnativeCSETUP/generatedSTART andnoD81template. Firstimplementationgate shouldbesmallowned32KiB/128KiB/2MiBDOS21/22 proof includingconfigured4MiBREU andfullindependentreadback, thennativeFATbuilder/bootstrap/enduserinstall. Preserveoriginalfunctional/performanceplan andexplicitlyseparate researchfromimplementation. Keyboardaccepted0525 awaitsROOTcomposition; IDEdriver4777needsfreshcorrectedsuccessorbeforelongreplay.

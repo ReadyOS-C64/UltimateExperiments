@@ -1,0 +1,62 @@
+# Native SETUP and START bootstrap research — 2026-10-16
+
+Research only. The proposed design is a native folder installation, with no D81 launcher. SETUP is a standalone C64 PRG with its own browser and UCI transport; it writes a smaller self-contained START.PRG containing the absolute installation home. START uses Ultimate DOS to load the main emulator into REU, then a small assembly trampoline installs it in C64 RAM. REU is volatile; START recreates its configuration handoff on every launch.
+
+## References that can actually be reused
+
+ReadyOS `src/setup/setup.c`, `setup_backend.c`, `setup_uci.c` and `setup_uci_asm.s` form a genuinely standalone cc65 program. Its Makefile links focused TUI modules, not the ReadyOS shim. The observed map has code/data through $4BF7 and BSS through $7AA2; this is a useful feasibility reference, not our measured SETUP size. Its D81 filtering, mount step and apps.cfg replacement policy are specific to ReadyOS and must not be copied into the new folder installer.
+
+Use UZIP's `uz_browser.c` as the stronger folder-browser reference: absolute paths, parent navigation, folders-only listings, a scoped empty-directory response, raw host filename bytes, a separate display conversion, and long names explicitly marked unusable. Older SETUP truncates names into its 96-byte buffer; truncation must never authorize selecting or opening a different filename. The browser must fully drain directory responses even after a displayed page fills. Before a home is selected, everything required for navigation, display, keyboard and UCI must already be in SETUP; no dependency on a ReadyOS shim, unknown overlay pathname, DOS emulator, or external browser module is permissible.
+
+For fast loading, UZIP `uz_dos_reu_transfer` is a better reference than the older launcher: it checks bank bounds and parses the returned actual byte count. The launcher demonstrates header validation, exact payload length and seek past the PRG header, but includes D81 assumptions and a hardware-sensitive diagnostic screen write. Do not copy its incidental timing shape or broad fallback into a new transport.
+
+The [official Ultimate DOS target specification](https://1541u-documentation.readthedocs.io/en/master/uci/ultimate_dos_target.html) describes independent target1/target2 state, directory operations and LOAD_REU ($21), using little-endian address/length parameters and a returned transferred-count string. It explicitly assumes a 16 MiB configuration. Below-4-MiB addresses fit our design, but this does not prove behavior with the Ultimate configured to exactly 4 MiB; that requires a real test. The [official UCI architecture](https://github.com/GideonZ/1541u-documentation/blob/master/uci/core_uci_architecture.rst) and existing source gateways require asynchronous PUSH/ACK transitions, complete queue draining and final quiet idle. No fixed-delay pacing is acceptable.
+
+## Concrete memory layout
+
+All ranges in this table use an exclusive end.
+
+| Area | Proposed range | Reason |
+| --- | --- | --- |
+| Main PRG payload staging | REU $3E0000–$3EAFFF | Current payload is $AFFF bytes; entirely inside bank $3E |
+| Stage reservation | REU $3E0000–$3F0000 | Reserve one 64 KiB bank, not merely today's payload length |
+| Versioned launch/configuration anchor | REU $3FF000–$400000 | 4 KiB, below the binding 4 MiB end |
+| Final assembly trampoline | host $0200–$0300 | Outside the main destination, ZP, hardware stack and I/O |
+| Main installed payload | host $0801–$B800 | Current 45,055-byte payload; final byte $B7FF |
+
+The observed packaged PRG is 45,057 bytes, including its two-byte $0801 header. SOURCE_FACTS.json pins its exact observed hash. Payload-only staging is preferred: read/validate the header, seek to byte2, then LOAD_REU exactly45,055bytes at $3E0000. If staging the whole file instead, it occupies $3E0000–$3EB001 and final DMA must start at $3E0002; mixing these conventions is a two-byte corruption bug.
+
+Current guest backing ends at $100000, floppy slots at $200000, HD extent cache at $300000, immutable overlay slots at $343800, and HD authority/handoff sectors use $350000/$352000. Trace scratch is budgeted below $3C0000. The $3C0000–$400000 tail is currently unallocated, not implicitly owned. Neither proposed range is reserved today. Add explicit reservations and overlap assertions to the authoritative arena description, packager/verifier and tests before use; optional trace or future allocators must exclude them. No address above $3FFFFF is needed. The 20 MiB C drive remains file-backed, not wholly staged here.
+
+## Suggested launch sequence
+
+1. SETUP browses from root and lets the user select an existing native folder. Validate the expected release files and all resulting absolute media paths. Preserve exact Ultimate ASCII bytes. Today's D64N and D64H envelopes hold 128-byte paths; reject a home whose joined filenames exceed that limit instead of silently truncating it. A browser's larger path buffer does not enlarge the runtime contract.
+2. Generate START from a linked, self-contained loader template plus a versioned configuration record. Small means much smaller than the main emulator; budget a few KiB and measure it, rather than promise a sub-kilobyte asynchronous filesystem loader. START must contain its own UCI/DOS transport, capacity checks, header/size/count checks, CRC routine and trampoline template. It cannot depend on main overlays to load the main program.
+3. On every START invocation invalidate the old anchor ready marker first. Establish the absolute home afresh, open the release descriptor and main PRG read-only, validate descriptor version/layout, exact file size/load address and compatible boot contract. Use target1 for bootstrap and finish with a known successful CLOSE and quiet UCI state before transferring execution. Do not inherit any previous target2 HD handle.
+4. LOAD_REU the exact payload into bank$3E. Require successful transport/target status and the exact reported count; reject short or truncated success. Read staged bytes through a bounded host buffer to check the release's CRC32. A length/header/status alone is not full-image integrity. The official 16 MiB assumption requires a separate configured-4-MiB gate; a functional READ-to-buffer/REC-stash path can be an explicit checked fallback if needed.
+5. Publish the complete anchor body with version, length, generation, home/media selections, UCI base/targets, REU minimum, release/layout identity and CRC32. Clear the CRC field when calculating it; specify byte order and exact coverage. Write the ready marker last. REU is not configuration persistence: the authoritative durable selection is in START (or an explicitly versioned config file it reads).
+6. Copy the final trampoline into its declared $0200 page while C is still running, then tail-jump to it. No C, KERNAL, UI or UCI function may be called after this transition. The trampoline fetches the payload to $0801, checks REC completion/error, optionally uses REC compare against the already CRC-validated staging bytes, then tail-jumps to the generated main entry. Never DMA over the currently executing loader and expect it to return.
+
+The release descriptor can provide the exact D64N(142byte) and D64H(140byte) payload offsets and their expected original bytes. This supports the already proven pattern of patching only those configuration envelopes in staged bytes, with original-image CRC checked first and a new configured-image CRC checked afterward. Validate descriptor identity, bounds and exact original envelope contents before any patch; arbitrary descriptor offsets must not become arbitrary RAM writes.
+
+To satisfy an explicit runtime-read versioned anchor contract, prefer a small **cold** handoff reader before existing D64N/H validation. It can stream the 4 KiB anchor through the existing $C000–$C0FF bounce buffer, validate it, and adopt or compare the two native envelopes before overlay bootstrap and cold release. This does not require a new large resident ABI. Existing development/static-config entry remains distinct; an installer launch must not silently accept a missing, stale, wrong-version or bad-CRC anchor. Keep the home/media body reserved for subsequent native configuration UI, with an explicit consumed/ready field rather than treating a stale ready marker as authority.
+
+## CPU, stack and banking contract
+
+The trampoline must explicitly SEI/CLD, own REU, clear REC interrupt/fixed-address modes, and expose I/O with low three port bits5 while fetching/comparing. Its code and constants remain entirely outside $0801–$B7FF. Use only local trampoline operands or a declared private ZP scratch set; do not stomp cc65's $02–$1B software-stack/runtime pointers while C is active. The project uses ZP starting$20. A one-way JMP allows the final handoff to discard both C's software stack and the old hardware call chain; initialize SP=$FF and never RTS into overwritten C code.
+
+Current native ENTRY already resets SP and explicitly selects $37 before validating config; it later masks CIA IRQ/NMI sources and changes to $35. Therefore a bare $35 trampoline is **not** evidence that the whole launch stays mapped that way. Preserve the normal launch assumptions or add the minimal cold handoff change and tests needed to own this interval. During DMA a stable RAM NMI stub can live in the trampoline page with the RAM hardware vector directed there, but $37 re-exposes KERNAL vectors. Do not claim RESTORE/NMI safety merely from SEI, or assume a raw RTI is valid as a KERNAL software-vector handler. Final tests must inject NMI/RESTORE around DMA, mapping changes and the first native instructions, establishing either a controlled launch-abort contract or a consistently owned handler. CIA flags must be masked/drained before ownership changes. No stack-page relocation or app-resume promise is part of this one-way launch.
+
+## Updating, moving and reconfiguration
+
+Moving the installation does not change an embedded absolute home. Run standalone SETUP again, browse to the new folder and generate a replacement START. Missing/stale paths should show an actionable SETUP message; do not guess the Ultimate menu's current path (the legacy copy-UI-path command is deprecated).
+
+Compatible main updates can use a new checked release descriptor at the same home; START validates the boot/layout version rather than hardcoding an old binary's offsets. Incompatible loader/config versions require rerunning SETUP. Never overwrite original DOS floppies or the user's modified C image when updating program files.
+
+Write START to a new owned temporary filename using create-new and <=256-byte WRITE chunks, CLOSE, reopen and compare all bytes before publication. This retains the project's physically proven split-write discipline. Replace only an identified existing launcher, using backup/rename plus complete final readback; preserve the first failure and recoverable old file if any step fails. Do not treat filesystem rename as proven power-loss atomicity. An unrelated existing START must not be overwritten as though it were ours. UZIP's safe component/relative-member checks are useful if native archive extraction is later requested, but the ReadyOS UZIP app itself depends on its shim/REU allocator and is not a drop-in standalone bootstrap.
+
+## Acceptance slices
+
+Peddle must execute actual SETUP/START and the actual final trampoline: malformed/truncated directory streams; long/unusable names; path byte case; stale/error/oversized UCI queues; exact/short LOAD_REU counts; wrong header/length/version/CRC; torn anchor publication; all stage/end boundaries; missing REU and1/2/4/16MiB configurations; final payload byte identity; port/ZP/hardware-stack ownership; restart/reconfigure and failed replacement recovery. Confirm no damage to guest/media/overlay authority outside the explicitly owned bootstrap ranges.
+
+Then use owned physical folders at1/16/64MHz, including a genuinely configured4MiB REU, to run SETUP, reset, launch START, boot regular A plus C, repeat after moving/reconfiguring the folder, and verify complete cleanup/persistence. VICE may test the CPU/REC trampoline with a modeled file transport, but does not prove Ultimate DOS. No such new implementation or hardware test was performed in this research task. Archive.org matching is intentionally omitted; filenames alone do not establish source identity.

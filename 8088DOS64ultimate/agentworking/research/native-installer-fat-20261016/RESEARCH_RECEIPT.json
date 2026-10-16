@@ -1,0 +1,135 @@
+{
+  "status": "research_complete_implementation_pending",
+  "native_code_implemented": false,
+  "guest_or_hardware_executed": false,
+  "LAN_used": false,
+  "ROOT_code_changed": false,
+  "input_pins_unchanged_during_analysis": 25,
+  "retained_source_copies": 18,
+  "files": {
+    "DOS_ONLY_BUDGET.json": {
+      "bytes": 1878,
+      "sha256": "c9605e7a790f1b0ce8c331ce7590a08d57f539598c74b410a18b6e7c89fbca5c"
+    },
+    "HANDOFF.md": {
+      "bytes": 2153,
+      "sha256": "c65c1aa0340150c44e6f7fd7b46e7b6c4746188299409f24fcc2d52c1f19d83e"
+    },
+    "OBSERVED_LAYOUTS.json": {
+      "bytes": 17368,
+      "sha256": "8fb4c51964b1fdbe5a613ea6f5ee1500bc84ae0287ca7f30c26f3a7648432c6a"
+    },
+    "PLAN.md": {
+      "bytes": 8634,
+      "sha256": "d38d6bcf90e99bec3097b62126b04a4ff89b35ede485d8a2a00c61822aadddf2"
+    },
+    "README.md": {
+      "bytes": 4933,
+      "sha256": "ac16faf0535186695b9e74044e3f7abe3a49c864f4f2eb8a6ed79a4b0f5ed41c"
+    },
+    "SOURCES.json": {
+      "bytes": 2969,
+      "sha256": "6ad133bcf94549187ec3b7933df4e5eef97b5bd53cd90aebf52a5d6957cd4e30"
+    },
+    "SOURCE_RECEIPT.json": {
+      "bytes": 8089,
+      "sha256": "d79b1d1fb206c0d136c09a3c988981f2f946969a12f00a7856c245f15058dc51"
+    },
+    "SPARSE_ALTERNATIVE.md": {
+      "bytes": 2178,
+      "sha256": "ff4125d8924d0295498c823e3810e898737b845997a3aa34db53a0c56fd3f399"
+    },
+    "STATUS.md": {
+      "bytes": 963,
+      "sha256": "39e8ce5a9ee6f7e1c28fd9def2cdcf8914bbea4b248260e5e654972d111885fb"
+    },
+    "TEST_PLAN.md": {
+      "bytes": 3327,
+      "sha256": "56c875456fd4d55e89c5fa2240f820f4fe19d4f9368ee4d692d9073ea046b91a"
+    },
+    "analysis.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "analysis.stdout": {
+      "bytes": 2434,
+      "sha256": "b8744731957d7adce942e9ac99a0dffa17d56ff57107eb17f316bfaddead9ad1"
+    },
+    "analyze.py": {
+      "bytes": 7724,
+      "sha256": "f1821b6dc27cdb595de3a4a05e6cd2e8af0c9f91be3d5a013833a3814252de39"
+    },
+    "source-snapshot/00-analyze.py": {
+      "bytes": 7724,
+      "sha256": "f1821b6dc27cdb595de3a4a05e6cd2e8af0c9f91be3d5a013833a3814252de39"
+    },
+    "source-snapshot/01-dos_complete_fixture.py": {
+      "bytes": 5962,
+      "sha256": "43482e4a15a89e3ebfeedbe3729f7825d93c2cce78bed2c925eecee66af243c1"
+    },
+    "source-snapshot/02-dos_disk_inspect.py": {
+      "bytes": 11433,
+      "sha256": "2b2a882d17f030ed889b76384c82ab11c0462401c60f62e84dc09d1993f4d836"
+    },
+    "source-snapshot/03-dos_fat_populate.py": {
+      "bytes": 6008,
+      "sha256": "e8f4c9b69b0149066f0caaf0ae88b4b0f204cc5c07d0ff253702472062e8e5e7"
+    },
+    "source-snapshot/04-dos_hd_fixture.py": {
+      "bytes": 14423,
+      "sha256": "fe33779dca608a0e4f13542db34494dad3f896beae2b62c236e8cfe46e13e358"
+    },
+    "source-snapshot/05-files.inc": {
+      "bytes": 2591,
+      "sha256": "dc87a9afa6bd56314a0a9c7f13598e362287b1e6bb8a8ef329575c563dc990a4"
+    },
+    "source-snapshot/06-hd_cache.inc": {
+      "bytes": 2615,
+      "sha256": "f979b5dbef23f0a4a85ce8438284c6d37ef26d1f760fe758174263cf80d15466"
+    },
+    "source-snapshot/07-image_import.inc": {
+      "bytes": 1847,
+      "sha256": "980f4851b446c728fe9b60a5cd61301f6d3561cb125e8fd718bd2fa02bdf85bf"
+    },
+    "source-snapshot/08-memory.inc": {
+      "bytes": 361,
+      "sha256": "26c5be0321b5678fa17e7881792760c90771f398ab1ca7c4b23d071dca4ce428"
+    },
+    "source-snapshot/09-overlays.inc": {
+      "bytes": 2513,
+      "sha256": "ee7f1c8f729bc0c28fea2eb540b5118361f465d47255ca4554e6ea25764f3300"
+    },
+    "source-snapshot/10-bios.s": {
+      "bytes": 14979,
+      "sha256": "35495d0a2745d0d817ea5c836122bd8cbbc8d554a2025db41a10bc1d473ca319"
+    },
+    "source-snapshot/11-disk.s": {
+      "bytes": 10202,
+      "sha256": "2783fc60f7c59b904e04d72e5ce9326eda67b4d60fa83d02ebc90b59fb56b3dd"
+    },
+    "source-snapshot/12-files.s": {
+      "bytes": 9545,
+      "sha256": "7d9cd1058d908c4d4de69cdc9fcb90bb47c227479f7211d529cf6b554d47f596"
+    },
+    "source-snapshot/13-hd_bios.s": {
+      "bytes": 10330,
+      "sha256": "de457ddfbb4f6eac66356554d6e22675cc97d2b392cee02e3614fca89d6e9bc2"
+    },
+    "source-snapshot/14-hd_cache.s": {
+      "bytes": 10130,
+      "sha256": "2beea72bdec8073622b4dafb180b746c3bd4b38839291933af7744e67412be78"
+    },
+    "source-snapshot/15-hd_cold.s": {
+      "bytes": 4675,
+      "sha256": "a6f3f24f9557cf77ef3eedca60a381482acb768f50d81fcc16f5e8a0c898f37d"
+    },
+    "source-snapshot/16-native_runtime.s": {
+      "bytes": 14463,
+      "sha256": "2c36f1a133814cb85c19f4d6edb38a07acd0fa80e77993818f5af377f5180afc"
+    },
+    "source-snapshot/17-reu.s": {
+      "bytes": 3474,
+      "sha256": "3bea123734d1e75417d1151531048d6731895ab80519bd6027f0e74de61db4ef"
+    }
+  }
+}
