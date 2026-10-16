@@ -1,3 +1,9 @@
+## Physical ECHO discriminator passed, 2026-10-15 19:50 PDT
+
+Actual standalone current-source native UCI ECHO passes all18/257/258/516-byte commands at Manual64/PAL: every independently patterned command snapshot/reply, actual uploader count/operand, complete resident source and native DDR47/port53 proof pass. The first4MiB is byte-exactly unchanged before restoration and fully verified afterward; settings/media/reset, all248 livepins/copies and2PRGs+OWNER FTP pass. Child6297/Terminal1487 exits0; no active application or freeze. Evidence evidence/c64u-uci-echo-20261015.json.
+
+This proves CPU-filled long upload in the standalone fixture, not native REU staging or disk SAVE. Current SAVE remains failed/unpromoted. Primary-source direct command-BRAM→USB DMA truncation hypothesis is documented in docs/NATIVE_WRITE_DIAGNOSIS.md; next fresh-file512vs256+256 physical discriminator is being built. Private split-write exporter is being tested in parallel; no production change or workaround acceptance yet. Private CRA/compiler redesign continues separately with honest complete warm/cold/DMA costs. GW-BASIC video remains pending.
+
 ## Current physical SAVE failure and complete recovery, 2026-10-15 19:10 PDT
 
 Current ab2d/06a4, configured cd878f13, boots genuine DOS at Manual64 and completes COPY CONFIG.SYS SV182930.TXT on the Ultimate. Independent FAT inspection preserves all38 original entries and both mirrors; copied50 bytes exactly match CONFIG.SYS. Native SAVE writes720 sectors and passes reopened FILEINFO length, then correctly fails first comparison at sector0/phase8 (error4). Independent FTP confirms the368640-byte output is wrong: every sector is the same unexpected512-byte pattern. No SAVE acceptance or durability claim. The first failure, changed floppy and complete changed4MiB remain retained for diagnosis. Evidence evidence/c64u-native-save-failure-20261015.json.
