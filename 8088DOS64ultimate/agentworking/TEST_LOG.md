@@ -596,3 +596,6 @@ IMPORTANT BASELINE CHAIN: old230000 session endedFAILED06:22:37UTC, rawmailboxma
 
 
 2026-10-16 nativeinstallerresearchonly: stat/read actualac1C andformattedbase both20971520logical+allocatedbytes; CURRENT_IMAGES.json recordsSHA/zeros/compressionsizecomparison (notnewimageformat). Strictinspector derives20MiBmetadata66048B,40sectorFATs/spc4/10207clusters. ReadReadyOSstandaloneSETUP/UZIP/loaderandpinnedv3.14DOS/FatFs; firmware4b5db009/bootstrapbd9cd7caresearchrecords. NoROOTproductioncode/hardware/media/firmwarechanges; nodefaulttests rerun for research/docs. Proposed640x32768directREU writes arearithmetic/sourcecapability, notbenchmark.
+
+
+2026-10-16 read-onlyfloppyreview: src/disk.s DL0-only, writesREU; src/native_save.s rejects hdb_online/hd_uncertain/fileowner. Earlierphysicald883 whole720sectorSAVE/CLOSE/reopen/allbyte/EOF/CLOSE evidence remainsacceptedperbuild. Newdocs/FLOPPY_MEDIA_DESIGN.md recordscurrentgaps andproposed userworkflow; no codechanged/defaulttestsrerun/hardwareaccess.

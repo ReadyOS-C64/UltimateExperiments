@@ -210,3 +210,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-16 user-directed installer constraints: no dummyD81launcher or largeblankHDfiledistribution; requireUltimateDOS/UCI and allow nativeC SETUP withREU/overlays. UserssupplythreeDOSimages; installerbuildsworkingA/B andraw2/20MiBC natively, noemulatedFORMAT/COPY. Generatepersistentpath-awareSTART.PRG; fixedREUrecord isvolatilehandoffonly. ResearchrecommendsbulkDOS21/22 andnativeFAT12/16writer, preservingrawformat; dynamiccreationdoesnotrequiresparsecontainer. Allimplementation/bulk4MiBqualification/actualtimingspending; do nottreatproposalasdelivered.
+
+
+2026-10-16 floppyproposal: retainstandardrawIMGsloadedwholeinREU, noD81wrapper. Userexplicitlyrequiresimage-swapping andpersistence. RecommendwholeverifiedSave with modifieddrive/generationbinding andSave/Discard/Cancel on swap/eject/exit; readonlyoriginals/workingcopies, trueindependentB, no silentautosaveclaim. CurrentC-onlineSAVErestriction requiresreviewedintegration. NativeREUflushdoesnotflushguestDOS/applicationbuffers; DOS3.3mediarevalidationrequiresactualtests. Proposalnotimplemented.

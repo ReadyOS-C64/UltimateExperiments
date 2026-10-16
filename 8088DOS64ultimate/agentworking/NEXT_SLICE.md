@@ -10,3 +10,6 @@ Current da95/bc6ab passes472Peddle/308tools, both memoryverifiers. Publichost8d8
 
 
 Installer research branch (user2026-10-16): review docs/NATIVE_INSTALLER_DESIGN.md; userprefersnativeCSETUP/generatedSTART andnoD81template. Firstimplementationgate shouldbesmallowned32KiB/128KiB/2MiBDOS21/22 proof includingconfigured4MiBREU andfullindependentreadback, thennativeFATbuilder/bootstrap/enduserinstall. Preserveoriginalfunctional/performanceplan andexplicitlyseparate researchfromimplementation. Keyboardaccepted0525 awaitsROOTcomposition; IDEdriver4777needsfreshcorrectedsuccessorbeforelongreplay.
+
+
+2026-10-16 userfloppyswap/saveclarification: rawIMGneedsnoD81wrapper; currentwritesareREUonlyunlessdevelopmentSAVEexecuted. EarlierphysicalwholeSAVEaccepted d883, but currentnativeSAVErejects C online andno userdirty/swap/SaveUI. Proposed docs/FLOPPY_MEDIA_DESIGN.md: independentA/B descriptors, originalreadonly/workingcopies, coherentfullverifiedSave, Save/Discard/Cancel on swap/eject/exit, safeincomingstaging, sourcegeneration+CRCrefresh, DOSbuffer/revalidation tests andHDcontextintegration. Research/designonly; no newcode/hardware.
