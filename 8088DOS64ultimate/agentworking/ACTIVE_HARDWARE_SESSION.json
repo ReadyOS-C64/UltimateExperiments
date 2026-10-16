@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "HUMAN_SESSION_ENDED_FAILED_ORIGINAL_BASELINE_RECOVERY_RUNNING",
+  "status": "NO_ACTIVE_APPLICATION_ORIGINAL_REU_BASELINE_FULLY_RESTORED",
   "active_application": false,
   "source_freeze_active": false,
   "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/native-interactive-game-20261015-232500",
@@ -13,11 +13,11 @@
   "runtime_sha256": "d883c6789ea63345939008fe12e1c32782a51932603ac5e78f9d7453dbb20e98",
   "fixture_sha256": "2c19f74f4487967b8e8fc2faf5fe9b44045773ba0ed512641235a7886a8777b5",
   "manual_CPU_MHz_setting": 64,
-  "recovery_required": true,
+  "recovery_required": false,
   "session_seconds": 14400,
   "handoff_ready": true,
   "baseline_chain": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/hangman-reload-reviewed-20261015-232500/BASELINE_CHAIN.json",
-  "ultimate_ac43_recovery_still_required_after_session": true,
+  "ultimate_ac43_recovery_still_required_after_session": false,
   "new_harness_restore_scope": "New current-preimage only; ac43 ultimatebaseline remains separatelyretained",
   "independent_review": "29targetedPASS; concreteguardreviewcompleting",
   "utc": "2026-10-16T06:33:37.710740+00:00",
@@ -33,8 +33,11 @@
   "human_session_terminal": true,
   "human_failure_evidence": "evidence/c64u-human-palette-failure-20261016.json",
   "current_preimage_restored": true,
-  "original_ac43_restored": false,
-  "owned_recovery_pid": 78653,
-  "owned_recovery_terminal": 1566,
-  "recovery_run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/original-baseline-delta-recovery-20261016"
+  "original_ac43_restored": true,
+  "owned_recovery_pid": 93386,
+  "owned_recovery_terminal": 1567,
+  "recovery_run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/original-baseline-delta-final-recovery-20261016",
+  "owned_recovery_exit_code": 0,
+  "recovery_finished_utc": "2026-10-16T08:11:26.679943+00:00",
+  "baseline_chain_closure": "evidence/c64u-original-baseline-chain-closed-20261016.json"
 }

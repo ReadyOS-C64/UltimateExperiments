@@ -1,0 +1,27 @@
+{
+  "status": "ORIGINAL_AC43_BASELINE_CHAIN_CLOSED",
+  "ultimate_original_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+  "verified_after_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+  "bytes_compared": 4194304,
+  "result_path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/original-baseline-delta-final-recovery-20261016/result.json",
+  "result_sha256": "dc83cc87591fbe126cfd74891ff0fdfb5bf95204dd98d29f0210ee922d982b75",
+  "post_FTP_sha256": "5bc57a2b246f807803f070415c0fd7d5378a6ddd901c975fd06d0be061b4d6ff",
+  "settings_media_reset_verified": true,
+  "post_FTP_five_original_inputs_exact": true,
+  "old_human_session_failures_preserved": true,
+  "new_human_changed_REU_retained": "50c3aba8acadf76c5ba4f087c900864b3c9fff54dbf4eab000cbb16f4c16b034",
+  "intermediate_3df_preimage_restore_was_not_ultimate_completion": true,
+  "native_file_attempt_result": "runs/original-baseline-recovery-20261016/result.json failed two nativeFILE transport attempts; capturedfailureRAM retained",
+  "delta_first_result": "runs/original-baseline-delta-recovery-20261016/result.json failed two separatelybounded600s passes, retaining progressivewrites; neitherreclassifiedpassed",
+  "delta_final_result": "passed freshone600s attempt afterpreviousprocess exited; completesremaining44changedchunks and independentall256chunkreadback",
+  "cleanup_orchestrator": "unchanged reviewedb017e4b0 perphaseBaseException derivative with original40fe/Delta dataalgorithms",
+  "terminal_window": 1567,
+  "child_pid": 93386,
+  "child_exit_code": 0,
+  "finished_utc": "2026-10-16T08:11:26.679943+00:00",
+  "limitations": [
+    "First4MiB only; upper12MiB neveraddressed/uncompared",
+    "C64reset/resume verified; priorCPUexecution notrestored",
+    "NewCdrive physicalapplication notyetlaunched"
+  ]
+}
