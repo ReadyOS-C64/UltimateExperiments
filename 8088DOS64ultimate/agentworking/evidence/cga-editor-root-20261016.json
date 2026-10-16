@@ -39,5 +39,25 @@
     "evidence_path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cga-status-ide-continuation/IDE_WORKFLOW_PROOF.json",
     "proof_sha256": "c6f927ee204890e1633b50db41915911d3cd6c2da12728b980f340900775470a",
     "physical": false
+  },
+  "promotion_graph_additive_correction": {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cga-status-promotion-correction/MANIFEST.json",
+    "sha256": "ead535688513b60e6ed52ef6595d09c085c88b840149274c9e4cee85ff71282c",
+    "old_graph_claims_retracted": true,
+    "root_merged_graph_actual_tests": 31
+  },
+  "fresh_combined_native_A_C_purpose": {
+    "proof_path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/tpc-purpose-followup-4cc-reviewed/proof/NATIVE_AC_PROOF.json",
+    "proof_sha256": "e9825ae683a0133906c28b49d6ba98c05be9e1c913e8b6bdcd76bd94219713d2",
+    "proof_files": 385,
+    "executed_input_immutable_copies": 368,
+    "actual_exit_code": 0,
+    "all_prelaunch_inputs_exact_after": true,
+    "unchanged_purpose_registrar_accepted_pins": 754,
+    "genuine_DOS_VER_three_archive_DIR_BASIC_close_SYSTEM_TPC_compile_run": true,
+    "all360_original_payloads_unchanged": true,
+    "strict_FAT16_clean": true,
+    "HELLO_EXE_matches_DOSBox_reference": true,
+    "physical": false
   }
 }
