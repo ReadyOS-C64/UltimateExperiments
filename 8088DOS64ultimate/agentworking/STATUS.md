@@ -1,3 +1,9 @@
+## Physical split-write discriminator passed, 2026-10-15 20:25 PDT
+
+Actual pairedCPU-filled WRITE atManual64/PAL proves512_corrupt_256_exact: the512request has509wrong bytes, while2x256 reproduces every512-byte pattern byte. Complete native command/INFO/read/finalCLOSE/source/ports and independentFTP both before and after recovery agree. Source REU staging is not necessary to reproduce the512failure. All original4MiB is unchanged before recovery and byte-exact afterward; settings/media/reset,267 livepins/copies,2PRGs+2OWNERs and2outputfiles pass. Terminal1490/child16229 exits0; no active application/freeze. Evidence evidence/c64u-write-chunk-20261015.json. Installed-source address-truncation mechanism remains conditional; the smaller-write mitigation is now directly supported.
+
+SplitwholeSAVE candidate d883/8866 (author513df63a, peer329cc1ac) passes independent428/298/77 and38added controls, complete353prelaunch inputs/copies/9directreplays, all12legacyhelpers and13DOS checkpoints. Next promote its10files and run freshROOT gates, then actualfullDOS COPY/SAVE/360KiBFTP/recovery. This paired512-byte diagnostic is NOTwholeSAVE acceptance. New source-only fullSAVE host successor passes50 lifecycle groups and is sealing. Private compiler/CRA work and requestedGW-BASIC video remain separate/pending.
+
 ## Physical ECHO discriminator passed, 2026-10-15 19:50 PDT
 
 Actual standalone current-source native UCI ECHO passes all18/257/258/516-byte commands at Manual64/PAL: every independently patterned command snapshot/reply, actual uploader count/operand, complete resident source and native DDR47/port53 proof pass. The first4MiB is byte-exactly unchanged before restoration and fully verified afterward; settings/media/reset, all248 livepins/copies and2PRGs+OWNER FTP pass. Child6297/Terminal1487 exits0; no active application or freeze. Evidence evidence/c64u-uci-echo-20261015.json.

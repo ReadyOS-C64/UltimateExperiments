@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "scope": "Physical CPU-filled pairedWRITE diagnosis atManual64/PAL; fullDOS SAVE remains unaccepted",
+  "classification": "512_corrupt_256_exact",
+  "native_sha256": "5a783a50057d78dd91621f07a8c970d39b3345cffe9cede88719d314cc7afeee",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-write-chunk-20261015-195800",
+  "review": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/write-chunk-reviewed-20261015-195800",
+  "cases": [
+    {
+      "leaf": "W512.BIN",
+      "path": "/usb1/DOS64_TEST/write-media-20261015-195800/W512.BIN",
+      "bytes": 512,
+      "expected_sha256": "1f3d980a795db0db906f1bdcb2fc500226577a91467f5f5a688409f388bc9271",
+      "observed_sha256": "92fe3a6c4312b38762a3e404eda07fd2dce28629d10f7ddee371869a8314370c",
+      "matches_expected": false,
+      "mismatched_bytes": 509,
+      "first_difference": 0,
+      "retained_RAM_address": 28928,
+      "known_final_close": true
+    },
+    {
+      "leaf": "W256.BIN",
+      "path": "/usb1/DOS64_TEST/write-media-20261015-195800/W256.BIN",
+      "bytes": 512,
+      "expected_sha256": "1f3d980a795db0db906f1bdcb2fc500226577a91467f5f5a688409f388bc9271",
+      "observed_sha256": "1f3d980a795db0db906f1bdcb2fc500226577a91467f5f5a688409f388bc9271",
+      "matches_expected": true,
+      "mismatched_bytes": 0,
+      "first_difference": null,
+      "retained_RAM_address": 29952,
+      "known_final_close": true
+    }
+  ],
+  "all_native_commands_INFO_READ_CLOSURE_source_ports_verified": true,
+  "independent_FTP_before_and_after_recovery_equals_native_READ": true,
+  "outputs_unchanged_across_recovery": true,
+  "full_original_REU_unchanged_before_restoration": true,
+  "full_original_REU_restored_bytes": 4194304,
+  "restored_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+  "settings_media_reset_passed": true,
+  "source_pins_and_immutable_copies_verified": 267,
+  "post_FTP_inputs_and_owner_files": 4,
+  "post_FTP_output_files": 2,
+  "terminal": 1490,
+  "owned_child_pid": 16229,
+  "exit_code": 0,
+  "interpretation": "One aligned512-byte WRITE is corrupt while two256-byte WRITEs of the same512-byte CPU-filled pattern are exact on this device. Native REU staging is not necessary to reproduce failure. Source-level USB command-BRAM address truncation is a conditional explanation, not certified installed implementation.",
+  "whole_floppy_SAVE_acceptance": false,
+  "power_loss_durability": false,
+  "pinned_records": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-write-chunk-20261015-195800/result.json": {
+      "bytes": 10919,
+      "sha256": "190273a8c8ebe41d44c7766fd8b368744df84a67c0b7747c73342a8820545dad"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-write-chunk-20261015-195800/write-application.json": {
+      "bytes": 2633,
+      "sha256": "053abccb05dd4881c426b9b897fa6f3f3a573e0ec8c8b0b577c02fe8d9242b5c"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-write-chunk-20261015-195800/write-reu-authority.json": {
+      "bytes": 881,
+      "sha256": "0b5f1ba6510d409e1f28593aa564cb65646084fd6a68e0e978755aeb453fc170"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-write-chunk-20261015-195800/write-original-64k.bin": {
+      "bytes": 65536,
+      "sha256": "1ce0127970d1c99f0d81c98bd03e2794f5afaf8b8022abca0e33db01f91db4f4"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-write-chunk-20261015-195800/pre-restoration-outputs.json": {
+      "bytes": 598,
+      "sha256": "b155fb66bf3a9fd46160bb4307db023d961ff765c1785bffd9cde1a2318f7b23"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-write-chunk-20261015-195800/post-recovery-outputs.json": {
+      "bytes": 596,
+      "sha256": "5b6bff8c42089a2c61a47eed4f5d0dd88e152eb5b339d2947e7e3122ecabd922"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-write-chunk-20261015-195800/post-recovery-FTP.json": {
+      "bytes": 549,
+      "sha256": "7fcad419f11ded0273b9f09e7cb62bb01253715c612eb8584be363b63123adce"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-write-chunk-20261015-195800/pre-restoration-W512.BIN": {
+      "bytes": 512,
+      "sha256": "92fe3a6c4312b38762a3e404eda07fd2dce28629d10f7ddee371869a8314370c"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-write-chunk-20261015-195800/pre-restoration-W256.BIN": {
+      "bytes": 512,
+      "sha256": "1f3d980a795db0db906f1bdcb2fc500226577a91467f5f5a688409f388bc9271"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-write-chunk-20261015-195800/post-recovery-W512.BIN": {
+      "bytes": 512,
+      "sha256": "92fe3a6c4312b38762a3e404eda07fd2dce28629d10f7ddee371869a8314370c"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-write-chunk-20261015-195800/post-recovery-W256.BIN": {
+      "bytes": 512,
+      "sha256": "1f3d980a795db0db906f1bdcb2fc500226577a91467f5f5a688409f388bc9271"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/write-chunk-reviewed-20261015-195800/top.json": {
+      "bytes": 126290,
+      "sha256": "067a8d9bdf070370faa11ea84397e6abc40e9f9899b080a4b2c0c70c143916b3"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/write-chunk-reviewed-20261015-195800/guard.json": {
+      "bytes": 64140,
+      "sha256": "6f1a3e2ba98a6027e0a13c3a85e254402e88aef620d56fe429d9ac950298b571"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/write-chunk-reviewed-20261015-195800/owned-child-exit.json": {
+      "bytes": 37,
+      "sha256": "1c4bb6e81bb4ae26e7ec553416cdb85740d1a97970ad3f53a8f9c828cce48e91"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/write-chunk-reviewed-20261015-195800/launch.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  }
+}
