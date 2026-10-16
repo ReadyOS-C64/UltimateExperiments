@@ -587,3 +587,6 @@ IMPORTANT BASELINE CHAIN: old230000 session endedFAILED06:22:37UTC, rawmailboxma
 
 
 2026-10-16 ROOT: source-only exactcwd host43/helper6/layout6 passed,498 before-after pins/copies; helper actual executable6285f0c1 seed0x995e40fe. Logs scratch/ac-development-root-promotion-20261016/attested-*.log. Full make test460Peddle/304tooling/bothmemory passed; scratch/memory-fetch-root-promotion-20261016/make-test.log; b3/b995 exact. Publiccommit8d87313. git diff --cached --check reported two trailing blank lines in frozen support copies; retained sealed bytes. Initial performance-report metadata assertion used resident fragments instead of completePRGs, corrected without code/product changes. No physical action/push.
+
+
+2026-10-16 keyboard dbfe independentreview a8bcbd9d/1148pins NOT_READY: fresh actual probe strict323source/product/executable pins before10:52:37.208534UTC/after10:52:37.577846UTC expectsnull but sees2B5C after heldPoundpending acceptance/release. Old27+new19 groups passed but omitted case. No ROOTtarget changes; newauthor successor required, no policy waiver.

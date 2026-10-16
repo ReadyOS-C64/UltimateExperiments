@@ -128,3 +128,10 @@ The 12-sample profile source identity is 56266a5d8f3237dac8af2e0dba675b9bedc86da
 
 
 The [2026-10-15 actual DOS cost profile and translation feasibility](PERFORMANCE_RESEARCH_20261015.md) measures the current six-overlay target. It prioritizes interrupt-boundary and coherent-memory costs; a runtime translator remains an unimplemented experiment.
+
+
+## Address and warm-memory optimization — 2026-10-16
+
+ROOT b3d17d02/b995c5e1 computes the20-bit segmented address directly from nibbles and inlines the hot cache pointer construction. It preserves native registers/flags/banking/wrap, cache/DMA/dirty metadata and every IRQ/REP/clock observation boundary. Translation falls122→98 modeled6510cycles; warmread221→205 includes a one-cycle branch-layout difference. Twelve weighted profiles fall60,385,339→56,821,841cycles (5.90%); a genuine DOS run with598,702 identical guestinstructions and matching16KiB CGA falls2,399,222,761→2,351,731,345cycles (1.98%).
+
+Independent review covers2,097,152addresspairs, all256nativeP values, page/bank/cache seams and1280additional error-state cases with mutation controls. ROOT460Peddle/304tooling and bothmemoryverifiers pass. [Source-bound evidence](../agentworking/evidence/memory-fetch-root-20261016.json) identifies exact source/products and limitations. These are CPU-model measurements excluding physical REU/DMA/VIC stalls; they do not establish a current physical XT ratio or meet the50%minimum/85%stretch objective.
