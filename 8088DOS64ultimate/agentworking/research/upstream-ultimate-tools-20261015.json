@@ -1,0 +1,27 @@
+{
+  "purpose": "User-directed reuse/reference for established Ultimate memory, BASIC keyboard and live-video protocols; read-only inspection",
+  "upstream_modified": false,
+  "hardware_executed": false,
+  "files": {
+    "/Users/karlprosserpp/dev/c64projects/agenticdevharness/tools/vice_tasks_dotnet/AGENTS.md": {
+      "bytes": 2330,
+      "sha256": "8b64e1cb515b91c607d13744c91d4342d2aaace63672ef99e337f904039bef31"
+    },
+    "/Users/karlprosserpp/dev/c64projects/agenticdevharness/tools/vice_tasks_dotnet/src/ViceTasks.Ultimate/UltimateClient.cs": {
+      "bytes": 22325,
+      "sha256": "0683a6b367eaf91b4d7a9ffd99b8e9ba518f1971b940a5d74b7dc11e2c846c34"
+    },
+    "/Users/karlprosserpp/dev/c64projects/agenticdevharness/tools/vice_tasks_dotnet/src/ViceTasks.Binary/Program.cs": {
+      "bytes": 205410,
+      "sha256": "03415b3ac383c27ce33614abaf2219bb3bb3ce76abc05b23b13c5663fcb355f3"
+    },
+    "/Users/karlprosserpp/dev/c64projects/agenticdevharness/tools/vice_tasks_dotnet/docs/c64-ultimate-remote-control.md": {
+      "bytes": 4954,
+      "sha256": "e9fd8b6bfe7d57a0cc6ca18ae22c14d37d9459f00319ec337b37e691b9124319"
+    },
+    "/Users/karlprosserpp/dev/c64projects/gdos64-bridge/tools/ultimate/VideoCapture/Program.cs": {
+      "bytes": 2247,
+      "sha256": "7f4dedde1d279f64d688e0fccba99d2d605a784823389eeb1fa904ebb448bf3e"
+    }
+  }
+}
