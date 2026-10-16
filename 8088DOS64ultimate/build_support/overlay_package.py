@@ -27,11 +27,11 @@ IMPORT_SIZE = 0x1000
 
 
 def slot(payload, identity):
-    if identity not in (1, 2, 3, 4, 5, 6):
+    if identity not in (1, 2, 3, 4, 5, 6, 7):
         raise ValueError("unknown overlay identity")
     if not 1 <= len(payload) <= WINDOW_SIZE:
         raise ValueError("overlay payload must fit C900–CFFF and be nonempty")
-    tag = {1:b"FILE",2:b"TEXT",3:b"KEYS",4:b"TIME",5:b"CGA ",6:b"HD  "}[identity]
+    tag = {1:b"FILE",2:b"TEXT",3:b"KEYS",4:b"TIME",5:b"CGA ",6:b"HD  ",7:b"DSK "}[identity]
     header = b"D64O" + bytes((1, identity)) + struct.pack("<HHH", len(payload), WINDOW, 0) + tag
     return header + payload + bytes(SLOT_SIZE - HEADER - len(payload))
 
@@ -140,6 +140,7 @@ def main():
     p.add_argument("--hd",type=pathlib.Path)
     p.add_argument("--shadow",type=pathlib.Path)
     p.add_argument("--saver",type=pathlib.Path)
+    p.add_argument("--disk",type=pathlib.Path)
     p.add_argument("--import-code", type=pathlib.Path,required=True)
     p.add_argument("--labels", type=pathlib.Path)
     p.add_argument("--output-prg", type=pathlib.Path, required=True)
@@ -151,7 +152,8 @@ def main():
     if bool(a.hd)!=bool(a.shadow):
         p.error("HD and shadow linked outputs must be supplied together")
     if a.saver and not a.hd:p.error("SAVER requires paired six-overlay/shadow baseline")
-    inputs = (a.resident_prg,a.files,a.render,a.import_code,a.labels,a.input,a.pit,a.gfx)+((a.hd,a.shadow)if a.hd else ())+((a.saver,)if a.saver else ())
+    if a.disk and not a.saver:p.error("DISK requires paired SAVER baseline")
+    inputs = (a.resident_prg,a.files,a.render,a.import_code,a.labels,a.input,a.pit,a.gfx)+((a.hd,a.shadow)if a.hd else ())+((a.saver,)if a.saver else ())+((a.disk,)if a.disk else ())
     outputs = (a.output_prg, a.output_assets) + ((a.manifest,) if a.manifest else ())
     resolved = [path.resolve() for path in inputs + outputs]
     if len(set(resolved)) != len(resolved):
@@ -185,6 +187,11 @@ def main():
             block=b"D64O"+bytes((1,7))+struct.pack("<HHH",len(payload),0xb010,0)+b"SAVE"+payload+bytes(0x7f0-len(payload))
             prg+=bytes(0x200)+block
             assets+=block
+        if a.disk:
+            prg,disk_slot=append_variant(prg,raw[11],raw[4].decode(),7,"DISK",("DISKCODE",),0xb800)
+            assets+=disk_slot
+        elif re.search(r"^al (?!000000)[0-9A-Fa-f]+ \.__DISKCODE_SIZE__$",raw[4].decode(),re.M):
+            raise ValueError("linked DISK requires its exact source payload")
     except ValueError as e:
         p.error(str(e))
     # Compute and validate all results before opening outputs. Build outputs are
@@ -197,14 +204,15 @@ def main():
                              for path, data in zip(inputs, raw)},
                   "window": WINDOW, "window_size": WINDOW_SIZE,
                   "startup_source": SOURCE, "reu_assets": ASSETS,
-                  "slot_size": SLOT_SIZE, "payload_lengths": [len(raw[1]),len(raw[2]),len(raw[5]),len(raw[6]),len(raw[7])]+([len(raw[8])]if a.hd else [])+([len(raw[10])]if a.saver else []),
+                  "slot_size": SLOT_SIZE, "payload_lengths": [len(raw[1]),len(raw[2]),len(raw[5]),len(raw[6]),len(raw[7])]+([len(raw[8])]if a.hd else [])+([len(raw[10])]if a.saver else [])+([len(raw[11])]if a.disk else []),
+                  "disk":({"source":0xb800,"run":0xc900,"reu":0x343800,"slot_bytes":2048,"linked_bytes":len(raw[11]),"sha256":hashlib.sha256(raw[11]).hexdigest(),"overlay_identity":7,"physical_slot":8}if a.disk else None),
                   "saver":({"source":0xb000,"run":0xb010,"reu":0x343000,"slot_bytes":2048,"linked_bytes":len(raw[10]),"sha256":hashlib.sha256(raw[10]).hexdigest(),"modal_cache_frames":[24,32],"compare_stage":0xb800}if a.saver else None),
-                  "startup_sources": [0x6000,0x6800,0x8000,0x8800,0x9000]+([0x9800]if a.hd else [])+([0xb000]if a.saver else []),
+                  "startup_sources": [0x6000,0x6800,0x8000,0x8800,0x9000]+([0x9800]if a.hd else [])+([0xb000]if a.saver else [])+([0xb800]if a.disk else []),
                   "shadow": ({"source":0xa000,"run":0xf000,"window_bytes":3584,"linked_bytes":len(raw[9]),"tail_zero_bytes":3584-len(raw[9]),"sha256":hashlib.sha256(raw[9]).hexdigest(),"ownership":"verified copy before cache; permanent RAM+IO, no KERNAL, excludes FE00-FFFF"}if a.hd else None),
                   "text_members": {"RENDERCODE":1003,"DISPLAYCODE":245},
                   "fonts": {"narrow":{"start":0x4400,"bytes":1024,"executable":False,"sha256":hashlib.sha256(raw[0][0x4400-0x801+2:0x4800-0x801+2]).hexdigest()},"full":{"start":0x4800,"bytes":2048,"executable":False,"sha256":hashlib.sha256(raw[0][0x4800-0x801+2:0x5000-0x801+2]).hexdigest()}},
                   "input_source_ownership": "INPUT copied before any guest cache use; then first four frames",
-                  "startup_cache_phase": {"start":0x8000,"end_exclusive":0xb800 if a.saver else (0xae00 if a.hd else 0x9800),"cache_frames":27 if a.saver else (23 if a.hd else 12),"span_cache_frames":28 if a.saver else (23 if a.hd else 12),"saver_frames":4 if a.saver else 0,"gap_cache_frames":[23]if a.saver else [],"overlay_frames":16 if a.hd else 12,"shadow_frames":7 if a.hd else 0,"ownership":"all assets and complete shadow verified before any of these frames can be reused"},
+                  "startup_cache_phase": {"start":0x8000,"end_exclusive":0xc000 if a.disk else (0xb800 if a.saver else (0xae00 if a.hd else 0x9800)),"cache_frames":31 if a.disk else (27 if a.saver else (23 if a.hd else 12)),"span_cache_frames":32 if a.disk else (28 if a.saver else (23 if a.hd else 12)),"disk_frames":4 if a.disk else 0,"saver_frames":4 if a.saver else 0,"gap_cache_frames":[23]if a.saver else [],"overlay_frames":16 if a.hd else 12,"shadow_frames":7 if a.hd else 0,"ownership":"all assets and complete shadow verified before any of these frames can be reused"},
                   "input_sha256": hashlib.sha256(raw[5]).hexdigest(),
                   "cold_import": ({"start": IMPORT_START, "window_bytes": IMPORT_SIZE,
                                    "linked_bytes": len(raw[3]), "tail_zero_bytes": IMPORT_SIZE-len(raw[3]),

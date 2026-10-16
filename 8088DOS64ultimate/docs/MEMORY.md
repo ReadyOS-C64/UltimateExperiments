@@ -31,33 +31,36 @@ Compute an effective offset with 16-bit arithmetic; then `physical = ((segment <
 | `8000–BFFF` | 16,384 | Guest cache frames; includes RAM under BASIC |
 | `C000–C0FF` | 256 | Coherent range staging buffer; linker-enforced reservation |
 | `C100–C8FF` | 2,048 | Linked UCIBUFFER: command/data/status transport storage |
-| `C900–CFFF` | 1,792 | Exclusive FILE/TEXT/INPUT/PIT/GFX/HD overlay window |
+| `C900–CFFF` | 1,792 | Exclusive FILE/TEXT/INPUT/PIT/GFX/HD/DISK overlay window |
 | `D000–DFFF` | 4,096 | I/O visible: VIC, SID, color RAM, CIA, REU/UCI |
 | `E000–EFFF` | 4,096 | State, page map, descriptors, dirty maps, bounce buffers |
 | `F000–FDFF` | 3,584 | Copied HD/scroll code: 2,144 bytes plus 1,440-byte zero tail |
 | `FE00–FFFF` | 512 | Excluded vector/gateway reserve |
-| **Total** | **65,536** | Executable windows total 23,808 bytes; C900 is shared, not six simultaneous allocations |
+| **Total** | **65,536** | Executable windows total 23,808 bytes; C900 is shared, not seven simultaneous allocations |
 
 The VIC bank is `4000–7FFF`: the matrix at 4000 and bitmap at 6000 are in the **same** 16 KiB bank. This must be asserted, not inferred from total free bytes. Font alignment and VIC character-ROM visibility must also be checked. Color RAM is at D800 and is already inside the I/O reservation, not another 1 KiB of ordinary RAM.
 
 Host normal mapping exposes RAM under BASIC/KERNAL while leaving I/O visible. KERNAL calls use a resident gateway outside hidden memory; save/restore `$00/$01`, needed ZP, IRQ state, stack, return registers, and channel state. Guest frames under BASIC and metadata under KERNAL remain protected from accidental CPU access during that mapping. REU staging buffers stay in known visible RAM. Initially avoid DMA into I/O and avoid using RAM under I/O altogether. IRQ/NMI vectors and handlers must remain valid across all maps; test RESTORE/NMI and error exits.
 
-The six current overlay variants have resident wrappers, exclusive ownership and explicit load/release failure paths. Resident CPU/pager and guest interrupt routing remain callable; FILE/HD cannot nest leases. Startup sources and copied code must be committed before the cache reuses 23 overlapped frames. Record separate CODE/RODATA/BSS boundaries; do not execute embedded constants or overwrite persistent state with an overlay. See [HD and copied-code contract](HD_IMPLEMENTATION.md).
+The seven current managed overlay variants have resident wrappers, exclusive ownership and explicit load/release failure paths. Resident CPU/pager and guest interrupt routing remain callable; FILE/HD cannot nest leases. Startup sources and copied code must be committed before the cache reuses31 populated startup frames across the32-frame cache span (frame23 is the explicit zero gap). Record separate CODE/RODATA/BSS boundaries; do not execute embedded constants or overwrite persistent state with an overlay. See [HD and copied-code contract](HD_IMPLEMENTATION.md).
 
 ## REU arena: 4 MiB minimum profile
 
 | REU range | Capacity | Use |
 |---|---:|---|
 | `000000–0FFFFF` | 1 MiB | Guest physical backing arena |
-| `100000–17FFFF` | 512 KiB | Complete floppy A image; exact actual length in descriptor |
-| `180000–1FFFFF` | 512 KiB | Complete floppy B image |
+| `100000–17FFFF` | 512 KiB | Full360KiB rotating floppy arena0; descriptor chooses A/B/spare ownership |
+| `180000–1FFFFF` | 512 KiB | Full360KiB rotating floppy arena1 |
 | `200000–2FFFFF` | 1 MiB | Hard-disk extent cache, independent of guest RAM cache |
 | `300000–33FFFF` | 256 KiB | Cold assembly payloads / fonts / immutable assets |
-| `340000–37FFFF` | 256 KiB | Six immutable slots340000–342FFF; authoritative sector350000; handoff352000; remaining transfer reserve |
-| `380000–3BFFFF` | 256 KiB | Optional bounded trace/checkpoint scratch |
-| `3C0000–3FFFFF` | 256 KiB | Unallocated reserve; no implicit ownership |
+| `340000–37FFFF` | 256 KiB | Eight physical immutable slots340000–343FFF (seven managed variants plus special SAVER); authoritative sector350000; handoff352000; remaining transfer reserve |
+| `380000–3D9FFF` | 360 KiB | Full rotating floppy arena2, initially free incoming-media staging; replaces optional trace scratch |
+| `3DA000–3DFFFF` | 24 KiB | Unallocated gap |
+| `3E0000–3EFFFF` | 64 KiB | Reserved installer main-PRG staging bank |
+| `3F0000–3FEFFF` | 60 KiB | Unallocated reserve |
+| `3FF000–3FFFFF` | 4 KiB | Reserved versioned installer/handoff anchor |
 
-User clarification 2026-10-14: assume **4 MiB or larger**, including room for overlays. This supersedes the initial 16 MiB minimum proposal. The supplied 360 KiB disks fit both 512 KiB slots. Larger REUs can expand the HD cache and floppy slots through a capacity-aware allocator; 720 KiB and larger floppy support requires that expanded profile, never truncation. No runtime feature may require memory above the 4 MiB baseline. REU is volatile: arena allocation is not persistence. A 20 MiB hard disk remains file-backed.
+User clarification 2026-10-14: assume **4 MiB or larger**, including room for overlays. This supersedes the initial 16 MiB minimum proposal. The supplied360KiB disks fit all three arenas. User direction2026-10-16 favors more REU for speed; do not reduce buffering to conserve capacity when it slows execution. Above4MiB allocations must remain explicit and bounded. Larger REUs can expand the HD cache and floppy slots through a capacity-aware allocator; 720 KiB and larger floppy support requires that expanded profile, never truncation. No runtime feature may require memory above the 4 MiB baseline. REU is volatile: arena allocation is not persistence. A 20 MiB hard disk remains file-backed.
 
 Expanded REC DMA counters may wrap within 512 KiB without carrying into the upper bank latch. The implemented low-level routine accepts only a nonzero, single-64-KiB-bank chunk and rejects crossing ranges; implemented range operations split and explicitly reload the bank. This is conservative for differing firmware and keeps page transfers safe. See [implemented REU contract](REU_IMPLEMENTATION.md) and [coherent range contract](RANGE_IMPLEMENTATION.md).
 
@@ -86,7 +89,7 @@ Tests include alias writes, eviction during instruction fetch, dirty code replac
 
 The BIOS initializer owns guest IVT/BDA 00000–004FF and ROM F0000–FFFFF. It uses the coherent bus under a temporary all-RAM initialization mode and restores the prior mode; normal guest writes cannot change ROM. Conventional RAM outside IVT/BDA and configured media remain caller-owned. INT 11h/12h ordinary ROM code reads mutable BDA through the CPU bus, including dirty resident bytes.
 
-Whole floppy A begins at REU 100000 and must be explicitly loaded before setting its loaded flag. Disk reads/writes use [range copying](RANGE_IMPLEMENTATION.md), so partial cached-page neighbors and dirty export bytes retain their authority. C000–C0FF is a separate 256-byte host bounce buffer, unavailable to resident code. It is not embedded in the PRG. The linked UCI transport buffer occupies C100–C8FF, leaving C900–CFFF (1,792 bytes) for additional resident code; the full inclusive host map above still totals 65,536. These 2,048 bytes are measured reservations, not reclaimable code space while the transport is linked.
+Legacy cold floppy A begins at REU100000 and remains explicitly unloaded until its import completes. Native paused mount/swap uses PREPARE/COMMIT and rotates three complete360KiB arenas100000/180000/380000, so later A/B bases come from their independent descriptors. The incoming loader can write only the returned free arena and must provide whole-file/CRC/known-close proof before publication. Dirty, readonly, mount/content/clean generation pairs and binding cookies are per drive; CLEAN acknowledges an independently verified complete save and cannot clear newer dirty data. Cold initialization resets this session state. Disk reads/writes use [range copying](RANGE_IMPLEMENTATION.md), so partial cached-page neighbors and dirty export bytes retain their authority. C000–C0FF is a separate 256-byte host bounce buffer, unavailable to resident code. It is not embedded in the PRG. The linked UCI transport buffer occupies C100–C8FF, leaving C900–CFFF (1,792 bytes) for additional resident code; the full inclusive host map above still totals 65,536. These 2,048 bytes are measured reservations, not reclaimable code space while the transport is linked.
 
 A range is linear physical guest memory with 20-bit wrap, unlike CPU segmented word helpers that wrap a 16-bit offset. The disk BIOS checks the translated physical 64 KiB DMA boundary independently from ES:BX wrapping. REU ranges must be outside guest backing and within the minimum 4 MiB arena; range length zero means no bytes, whereas the low-level DMA primitive rejects zero.
 

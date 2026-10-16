@@ -16,6 +16,9 @@ pub fn build(b: *std.Build) void {
     }, .flags = &.{ "-std=c++20", "-O2", "-Wno-unused-parameter", "-Wno-unused-variable" } });
     t.root_module.link_libcpp = true;
     const run = b.addRunArtifact(t);
+    run.has_side_effects = true;
+    run.addFileInput(b.path("build/setup-config.prg"));
+    run.addFileInput(b.path("build/setup-config.labels"));
     run.setCwd(b.path("."));
     b.step("test", "Actual linked native C SETUP configuration codec").dependOn(&run.step);
     b.step("compile", "Compile native SETUP codec assertions for pinned execution")

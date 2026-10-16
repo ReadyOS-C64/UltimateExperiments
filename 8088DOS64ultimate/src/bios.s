@@ -319,7 +319,25 @@ bios_disk_dispatch:
     inc bios_disk_is_hd
     jmp hdb_service
 @floppy:
-    jmp dos64_disk_transfer
+    jsr dos64_disk_transfer
+    lda dos64_disk_host_error
+    bne @return
+    ; XT BDA441 is the last system diskette status, shared by both drives.
+    ; Publish through the coherent guest bus; failures remain host failures.
+    lda dos64_guest+G_AX+1
+    sta dos64_mem_value
+    lda #$41
+    sta dos64_address
+    lda #4
+    sta dos64_address+1
+    lda #0
+    sta dos64_address+2
+    jsr dos64_mem_write
+    bcc @return
+    lda #1
+    sta dos64_disk_host_error
+@return:
+    rts
 
 bios_other_gate:
     cmp #$A2
@@ -510,7 +528,7 @@ bios_patches:
     patch $00067, $F0
     patch $00079, $03
     patch $0007B, $F0
-    patch $00410, $21       ; one diskette, 80-column color display
+    patch $00410, $61       ; two installed floppy drives, 80-column color display
     patch $00413, $80       ; 640 KiB conventional memory
     patch $00414, $02
     patch $0041A, $1E       ; empty keyboard queue

@@ -10,7 +10,11 @@
 .export dos64_disk_init, dos64_disk_transfer
 .export dos64_disk_reu_base, dos64_disk_sectors, dos64_disk_cylinders
 .export dos64_disk_heads, dos64_disk_spt, dos64_disk_loaded, dos64_disk_last_status
-.export dos64_disk_host_error
+.export dos64_disk_host_error, dos64_disk_cf, dos64_disk_b_descriptor
+.export dos64_disk_readonly, dos64_disk_dirty, dos64_disk_mount_generation
+.export dos64_disk_content_generation, dos64_disk_clean_mount, dos64_disk_clean_content
+.export dos64_disk_binding, dos64_disk_exhausted
+.export dos64_disk_native_transfer
 
 .segment "BSS"
 dos64_disk_reu_base: .res 3
@@ -22,6 +26,20 @@ dos64_disk_loaded: .res 1
 dos64_disk_last_status: .res 1
 dos64_disk_host_error: .res 1 ; only fatal coherent guest-cache access failure
 disk_function: .res 1
+disk_selected: .res 1
+.segment "DEVICESTATE"
+dos64_disk_b_descriptor: .res 10
+dos64_disk_readonly: .res 2
+dos64_disk_dirty: .res 2
+dos64_disk_exhausted: .res 2
+dos64_disk_mount_generation: .res 8
+dos64_disk_content_generation: .res 8
+dos64_disk_clean_mount: .res 8
+dos64_disk_clean_content: .res 8
+dos64_disk_binding: .res 8
+dos64_disk_cf: .res 1
+dos64_disk_meta_end:
+.segment "BSS"
 disk_count: .res 1
 disk_lba: .res 2
 disk_product: .res 2
@@ -54,10 +72,53 @@ dos64_disk_init:
     sta dos64_disk_heads
     lda #9
     sta dos64_disk_spt
+    lda #0
+    ldx #dos64_disk_meta_end-dos64_disk_readonly-1
+@meta:
+    sta dos64_disk_readonly,x
+    dex
+    bpl @meta
+    ldx #9
+@b:
+    lda dos64_disk_reu_base,x
+    sta dos64_disk_b_descriptor,x
+    dex
+    bpl @b
+    lda #$18
+    sta dos64_disk_b_descriptor+2
+    jsr dos64_floppy_control_init
     plp
     clc
     rts
 
+; Resident wrapper owns the ordinary C900 overlay lease.
+.import dos64_overlay_disk_transfer,dos64_overlay_error,dos64_floppy_control_init
+dos64_disk_transfer:
+    php
+    jsr dos64_overlay_disk_transfer
+    lda dos64_overlay_error
+    beq @result
+    lda #$20
+    sta dos64_guest+G_AX+1
+    sta dos64_disk_last_status
+    lda #0
+    sta dos64_guest+G_AX
+    lda #1
+    sta dos64_disk_cf
+    sta dos64_disk_host_error
+@result:
+    lda dos64_disk_cf
+    beq @ok
+    lda dos64_guest+G_AX+1
+    plp
+    sec
+    rts
+@ok:
+    lda dos64_guest+G_AX+1
+    plp
+    clc
+    rts
+.segment "DISKCODE"
 ; Native INT13 sector primitive, not the interrupt-frame wrapper. Only guest
 ; AX is changed; A/AH=status, AL=completed sectors, host C reports failure.
 ; Guest FLAGS are untouched. PHP/SEI/CLD preserves host P except returned C.
@@ -67,7 +128,7 @@ dos64_disk_init:
 ; Policy: linear CHS requests may cross tracks/heads within the loaded image.
 ; Raw images have no stored physical CRC; verify proves readable REU data,
 ; without comparing a guest buffer or claiming magnetic-media CRC validation.
-dos64_disk_transfer:
+dos64_disk_native_transfer:
     php
     sei
     cld
@@ -76,21 +137,33 @@ dos64_disk_transfer:
     lda dos64_guest+G_AX+1
     sta disk_function
     lda #0
+    sta disk_selected
     sta dos64_disk_host_error
     sta dos64_range_request+GR_ERROR
     sta dos64_range_request+GR_STATUS
     sta dos64_guest+G_AX
     lda disk_function
-    beq @drive
+    cmp #1
+    bne :+
+    lda dos64_disk_last_status
+    sta dos64_guest+G_AX
+    jmp disk_return
+:   cmp #0
+    jeq disk_success
+    lda dos64_guest+G_DX
+    cmp #2
+    jcs disk_not_ready
+    sta disk_selected
+    cmp #0
+    beq :+
+    jsr disk_swap
+:   lda disk_function
+    cmp #8
+    jeq disk_parameters
     cmp #2
     jcc disk_bad_command
     cmp #5
     jcs disk_bad_command
-@drive:
-    lda dos64_guest+G_DX
-    jne disk_not_ready
-    lda disk_function
-    jeq disk_success
     lda dos64_disk_loaded
     jeq disk_not_ready
     lda disk_count
@@ -248,6 +321,13 @@ dos64_disk_transfer:
     jne disk_dma_error        ; exact end at 10000 is permitted
 @dispatch:
     lda disk_function
+    cmp #3
+    bne :+
+    ldx disk_selected
+    lda dos64_disk_readonly,x
+    jne disk_write_protect
+    jsr disk_mark_write
+:   lda disk_function
     cmp #4
     jeq disk_verify
     cmp #3
@@ -387,6 +467,77 @@ disk_verify:
     jne disk_verify
     lda disk_count
     sta dos64_guest+G_AX
+    jmp disk_success
+; Only the internal active geometry swaps. Public A/B descriptors are restored
+; on every return; status, readonly and generations remain indexed by DL.
+disk_swap:
+    ldx #9
+:   lda dos64_disk_reu_base,x
+    pha
+    lda dos64_disk_b_descriptor,x
+    sta dos64_disk_reu_base,x
+    pla
+    sta dos64_disk_b_descriptor,x
+    dex
+    bpl :-
+    rts
+
+; Conservatively dirty before a potentially partial write; a failed export may
+; have changed bytes even if zero complete sectors were reported. Saturation
+; prevents ancient clean acknowledgements from matching after generation wrap.
+disk_mark_write:
+    ldx disk_selected
+    lda #1
+    sta dos64_disk_dirty,x
+    txa
+    asl
+    asl
+    tax
+    ldy #4
+:   inc dos64_disk_content_generation,x
+    bne @done
+    inx
+    dey
+    bne :-
+    ldx disk_selected
+    lda #1
+    sta dos64_disk_exhausted,x
+    txa
+    asl
+    asl
+    tax
+    lda #$ff
+    ldy #4
+:   sta dos64_disk_content_generation,x
+    inx
+    dey
+    bne :-
+@done:
+    rts
+
+; Late XT 1986 parameter query, not an AT media-change-line profile.
+disk_parameters:
+    lda #$09
+    sta dos64_guest+G_CX
+    lda #39
+    sta dos64_guest+G_CX+1
+    lda #2
+    sta dos64_guest+G_DX
+    lda #1
+    sta dos64_guest+G_DX+1
+    sta dos64_guest+G_BX
+    lda #0
+    sta dos64_guest+G_BX+1
+    sta dos64_guest+G_DI
+    sta dos64_guest+G_ES
+    lda #3
+    sta dos64_guest+G_DI+1
+    lda #$f0
+    sta dos64_guest+G_ES+1
+    jmp disk_success
+disk_write_protect:
+    lda #3
+    bne disk_return
 disk_success:
     lda #DISK_OK
     beq disk_return
@@ -415,14 +566,23 @@ disk_partial_error:
 disk_controller_error:
     lda #DISK_ERR_CONTROLLER
 disk_return:
+    pha
+    lda disk_selected
+    beq :+
+    jsr disk_swap
+:   pla
     sta dos64_disk_last_status
     sta dos64_guest+G_AX+1
     cmp #0
     bne @failed
+    sta dos64_disk_cf
     plp
     clc
     rts
 @failed:
+    lda #1
+    sta dos64_disk_cf
+    lda dos64_guest+G_AX+1
     plp
     sec
     rts

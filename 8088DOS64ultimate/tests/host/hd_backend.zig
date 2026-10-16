@@ -134,7 +134,7 @@ test "HD all32extents cover exactly1MiB preserving every other4MiB REU byte"{
  var f=try setup(1,32);defer f.deinit();var d=try Disk.init(20*1024*1024);defer d.deinit();
  const expected=try a.alloc(u8,4*1024*1024);defer a.free(expected);
  for(expected,0..)|*v,i|{v.*=@truncate((i*29)^(i>>12));host.c.dos64_reu_poke(f.machine,@intCast(i),v.*);}
- const assets=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,"build/dos64-tests-overlay-startup.bin",a,.limited(14337));defer a.free(assets);@memcpy(expected[0x340000..][0..assets.len],assets);for(assets,0..)|v,i|host.c.dos64_reu_poke(f.machine,0x340000+@as(u32,@intCast(i)),v);
+ const assets=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,"build/dos64-tests-overlay-startup.bin",a,.limited(16385));defer a.free(assets);@memcpy(expected[0x340000..][0..assets.len],assets);for(assets,0..)|v,i|host.c.dos64_reu_poke(f.machine,0x340000+@as(u32,@intCast(i)),v);
  // Invalidate loaded window so no stale code survives our independently seeded assets.
  try put(&f,"dos64_overlay_current",0);
  for(0..32)|i|{try read(&d,&f,@intCast((512+i)*64+63));@memcpy(expected[0x200000+i*32768..][0..32768],d.data[(512+i)*32768..][0..32768]);}

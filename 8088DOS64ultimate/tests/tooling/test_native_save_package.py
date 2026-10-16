@@ -9,8 +9,8 @@ class NativeSavePackage(unittest.TestCase):
   segments=shadow.shadow_from_map((ROOT/'build'/f'{stem}.map').read_text());meta={'package':json.loads((ROOT/'build'/f'{stem}-overlay-package.json').read_text()),'memory':json.loads((ROOT/'build'/f'{stem}.memory.json').read_text())};return prg,labels,segments,meta
  def test_both_roles_exact_loaded_extent_and_modal_budget(self):
   for stem in ['dos64','dos64-tests']:
-   prg,labels,segments,meta=self.inputs(stem);shadow.prepare(prg,labels,segments,meta);self.assertEqual(45057,len(prg));self.assertEqual(1543,labels['__SAVERCODE_SIZE__']);self.assertEqual(3577,labels['__HDBIOS_SIZE__'])
-   self.assertEqual(27,meta['memory']['load']['startup_cache_phase']['cache_frames']);self.assertEqual(28,meta['memory']['load']['startup_cache_phase']['span_cache_frames']);self.assertEqual([23],meta['memory']['load']['startup_cache_phase']['gap_cache_frames'])
+   prg,labels,segments,meta=self.inputs(stem);shadow.prepare(prg,labels,segments,meta);self.assertEqual(47105,len(prg));self.assertEqual(1543,labels['__SAVERCODE_SIZE__']);self.assertEqual(3577,labels['__HDBIOS_SIZE__'])
+   self.assertEqual(31,meta['memory']['load']['startup_cache_phase']['cache_frames']);self.assertEqual(32,meta['memory']['load']['startup_cache_phase']['span_cache_frames']);self.assertEqual([23],meta['memory']['load']['startup_cache_phase']['gap_cache_frames'])
  def reject(self,change):
   prg,labels,segments,meta=self.inputs();prg=bytearray(prg);change(prg,labels,segments,meta);meta['package']['sha256']['packaged_prg']=hashlib.sha256(prg).hexdigest()
   with self.assertRaises(ValueError):shadow.prepare(bytes(prg),labels,segments,meta)

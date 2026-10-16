@@ -6,13 +6,13 @@ from overlay_package import append_shadow
 class HDMemoryContract(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
-  p=Path("build");cls.mp=(p/"dos64-tests.map").read_text();cls.labels=(p/"dos64-tests.labels").read_text();cls.prg=(p/"dos64-tests.prg").read_bytes();cls.shadow=(p/"dos64-tests-resident.prg.hdb.bin").read_bytes();cls.cold=(p/"dos64-tests-resident.prg.import.bin").read_bytes();cls.payloads={name:(p/("dos64-tests-resident.prg."+leaf+".bin")).read_bytes()for name,leaf in [("FILECODE","files"),("RENDERCODE","render"),("INPUTCODE","input"),("IRQMAIN","pit"),("GFXCODE","gfx"),("HDCODE","hd")]}
+  p=Path("build");cls.mp=(p/"dos64-tests.map").read_text();cls.labels=(p/"dos64-tests.labels").read_text();cls.prg=(p/"dos64-tests.prg").read_bytes();cls.shadow=(p/"dos64-tests-resident.prg.hdb.bin").read_bytes();cls.cold=(p/"dos64-tests-resident.prg.import.bin").read_bytes();cls.payloads={name:(p/("dos64-tests-resident.prg."+leaf+".bin")).read_bytes()for name,leaf in [("FILECODE","files"),("RENDERCODE","render"),("INPUTCODE","input"),("IRQMAIN","pit"),("GFXCODE","gfx"),("HDCODE","hd"),("DISKCODE","disk")]}
  def check(self,**kw):
   args=dict(map_text=self.mp,labels_text=self.labels,prg=self.prg,overlay_payloads=self.payloads,import_payload=self.cold,shadow_payload=self.shadow,saver_payload=Path("build/dos64-tests-resident.prg.saver.bin").read_bytes());args.update(kw);return verify(**args)
  def changed_symbol(self,name):
   changed=re.sub(r"^(al )([0-9A-F]+)( \."+name+r")$",lambda m:m[1]+f"{int(m[2],16)+1:06X}"+m[3],self.labels,flags=re.M);self.assertNotEqual(changed,self.labels);return changed
  def test_real_six_payloads_shadow_and_excluded_vector_extent(self):
-  r=self.check();self.assertTrue(r["passed"],r["errors"]);self.assertEqual(r["load"]["prg_bytes"],45057);self.assertEqual(r["load"]["startup_overlay_bytes"],14336);self.assertEqual(r["load"]["shadow"]["run"],0xf000);self.assertEqual(r["load"]["shadow"]["window_bytes"],3584)
+  r=self.check();self.assertTrue(r["passed"],r["errors"]);self.assertEqual(r["load"]["prg_bytes"],47105);self.assertEqual(r["load"]["startup_overlay_bytes"],16384);self.assertEqual(r["load"]["shadow"]["run"],0xf000);self.assertEqual(r["load"]["shadow"]["window_bytes"],3584)
  def test_every_shadow_source_byte_and_tail_byte_is_checked(self):
   for i in range(3584):
    b=bytearray(self.prg);b[0xa000-0x801+2+i]^=1;self.assertFalse(self.check(prg=b)["passed"],i)
@@ -40,7 +40,7 @@ class HDMemoryContract(unittest.TestCase):
   for name in ["__HDEXT_START__","__HDEXT_SIZE__","__HDEXT_FILEOFFS__","__HDEXT_LAST__","__HDBIOS_LOAD__","__HDBIOS_RUN__","__HDBIOS_SIZE__"]:
    with self.assertRaises(ValueError):append_shadow(base,self.shadow,self.changed_symbol(name))
  def test_legacy_five_overlay_contract_remains_supported(self):
-  mp=re.sub(r"^(HDCODE|HDBIOS|SAVERCODE)\s.*\n","",self.mp,flags=re.M);mp=re.sub(r"^(NATIVESTATE\s+)([0-9A-F]{6})(\s+)[0-9A-F]{6}(\s+)[0-9A-F]{6}",lambda m:m[1]+m[2]+m[3]+f"{int(m[2],16)+2:06X}"+m[4]+"000003",mp,flags=re.M)
+  mp=re.sub(r"^(HDCODE|HDBIOS|SAVERCODE|DISKCODE)\s.*\n","",self.mp,flags=re.M);mp=re.sub(r"^(NATIVESTATE\s+)([0-9A-F]{6})(\s+)[0-9A-F]{6}(\s+)[0-9A-F]{6}",lambda m:m[1]+m[2]+m[3]+f"{int(m[2],16)+2:06X}"+m[4]+"000003",mp,flags=re.M)
   labels=re.sub(r"^(al )([0-9A-F]+)( \.__MAIN_LAST__)$",lambda m:m[1]+f"{int(m[2],16)-2:06X}"+m[3],self.labels,flags=re.M)
-  r=verify(mp,labels,self.prg[:0x9800-0x801+2],{k:v for k,v in self.payloads.items()if k!="HDCODE"},self.cold);self.assertTrue(r["passed"],r["errors"]);self.assertEqual(r["load"]["startup_overlay_bytes"],10240);self.assertIsNone(r["load"]["shadow"])
+  r=verify(mp,labels,self.prg[:0x9800-0x801+2],{k:v for k,v in self.payloads.items()if k not in ("HDCODE","DISKCODE")},self.cold);self.assertTrue(r["passed"],r["errors"]);self.assertEqual(r["load"]["startup_overlay_bytes"],10240);self.assertIsNone(r["load"]["shadow"])
 if __name__=="__main__":unittest.main()

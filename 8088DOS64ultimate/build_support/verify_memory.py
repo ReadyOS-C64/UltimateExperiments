@@ -27,7 +27,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
               "NATIVESTATE": (0x080D,0x3FFF), "INPUTCODE": (0xC900,0xCFFF),
               "UCIBUFFER": (0xC100, 0xC8FF),
               "IRQMAIN":(0xC900,0xCFFF),"IRQDEVICE":(0xC900,0xCFFF),"PITCODE":(0xC900,0xCFFF),"GFXCODE":(0xC900,0xCFFF),
-              "HDCODE": (0xC900,0xCFFF),"HDBIOS":(0xF000,0xFDFF),"SAVERCODE":(0xB010,0xB7FF),
+              "DISKCODE":(0xC900,0xCFFF),"HDCODE": (0xC900,0xCFFF),"HDBIOS":(0xF000,0xFDFF),"SAVERCODE":(0xB010,0xB7FF),
               "FILECODE": (0xC900, 0xCFFF), "RENDERCODE": (0xC900, 0xCFFF), "DISPLAYCODE": (0xC900,0xCFFF),
               "NARROWFONT": (0x4400,0x47FF), "FULLFONT": (0x4800,0x4FFF),
               "RANGEBUFFER": (0xC000, 0xC0FF), "BSS": (0xE000, 0xE0FF), "PAGEMAP": (0xE100, 0xE8FF),
@@ -46,7 +46,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     for index, seg in enumerate(segments):
         for other in segments[index+1:]:
             # Only these two separately emitted images may share a run window.
-            variant={"FILECODE":"FILE","RENDERCODE":"TEXT","DISPLAYCODE":"TEXT","INPUTCODE":"INPUT","IRQMAIN":"PIT","IRQDEVICE":"PIT","PITCODE":"PIT","GFXCODE":"GFX","HDCODE":"HD"}
+            variant={"FILECODE":"FILE","RENDERCODE":"TEXT","DISPLAYCODE":"TEXT","INPUTCODE":"INPUT","IRQMAIN":"PIT","IRQDEVICE":"PIT","PITCODE":"PIT","GFXCODE":"GFX","HDCODE":"HD","DISKCODE":"DISK"}
             exclusive_overlays = seg["name"] in variant and other["name"] in variant and variant[seg["name"]]!=variant[other["name"]]
             if not exclusive_overlays and max(seg['start'], other['start']) <= min(seg['end'], other['end']):
                 errors.append(f"Overlapping segments {seg['name']} and {other['name']}")
@@ -90,7 +90,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
         if any(s["name"] in ("DEVICECODE", "UCIBUFFER") for s in segments):
             errors.append("Runtime-only segments require the contiguous runtime layout")
     overlays = {seg["name"]: seg for seg in segments
-                if seg["name"] in ("FILECODE", "RENDERCODE", "INPUTCODE","IRQMAIN","GFXCODE","HDCODE")}
+                if seg["name"] in ("FILECODE", "RENDERCODE", "INPUTCODE","IRQMAIN","GFXCODE","HDCODE","DISKCODE")}
     display=[x for x in segments if x["name"]=="DISPLAYCODE"]
     if overlays:
         renderer=overlays.get("RENDERCODE")
@@ -129,7 +129,8 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
         if not runtime:
             errors.append("Overlays require the runtime layout")
         hd_layout="HDCODE"in overlays
-        expected_overlay_count=6 if hd_layout else 5
+        disk_layout="DISKCODE" in overlays
+        expected_overlay_count=7 if disk_layout else (6 if hd_layout else 5)
         if len(overlays) != expected_overlay_count:
             errors.append("Complete FILE/TEXT/INPUT/PIT/GFX and optional paired HD/shadow overlay set required")
         device_end = load["end_exclusive"]
@@ -141,7 +142,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
                                     "file_offset": device_end-0x0801+2, "value": 0})
         load["resident_end_exclusive"] = device_end
         load["end_exclusive"] = 0x7000
-        variants = (("FILECODE", "FILE", b"FILE"), ("RENDERCODE", "RENDER", b"TEXT"), ("INPUTCODE", "INPUT", b"KEYS"),("IRQMAIN","PIT",b"TIME"),("GFXCODE","GFX",b"CGA "))+((("HDCODE","HD",b"HD  "),)if hd_layout else ())
+        variants = (("FILECODE", "FILE", b"FILE"), ("RENDERCODE", "RENDER", b"TEXT"), ("INPUTCODE", "INPUT", b"KEYS"),("IRQMAIN","PIT",b"TIME"),("GFXCODE","GFX",b"CGA "))+((("HDCODE","HD",b"HD  "),)if hd_layout else ())+((("DISKCODE","DISK",b"DSK "),)if disk_layout else ())
         for index, (segment_name, area_name, tag) in enumerate(variants):
             if segment_name not in overlays:
                 continue
@@ -158,9 +159,9 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             if not 1 <= seg["bytes"] <= 0x700:
                 errors.append(f"{segment_name} payload size must fit the exclusive window")
                 continue
-            source = (0x6000,0x6800,0x8000,0x8800,0x9000,0x9800)[index]
+            source = (0x6000,0x6800,0x8000,0x8800,0x9000,0x9800,0xb800)[index]
             item = {"name": segment_name, "startup_source": source,
-                    "reu_slot": 0x340000+index*0x800, "slot_bytes": 0x800,
+                    "reu_slot": 0x343800 if segment_name=="DISKCODE" else 0x340000+index*0x800, "slot_bytes": 0x800,
                     "payload_bytes": seg["bytes"], "run": 0xC900,
                     "members": ([{"name":"RENDERCODE","bytes":seg["renderer_bytes"]},{"name":"DISPLAYCODE","bytes":seg["display_bytes"]}] if "renderer_bytes" in seg else [{"name":segment_name,"bytes":seg["bytes"]}]),
                     "ownership": "startup sources released only after native bootstrap; FILE/TEXT execution exclusive"}
@@ -202,7 +203,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             for suffix,value in (("LOAD",item["start"]),("RUN",item["start"]),("SIZE",item["bytes"])):
                 if symbols.get("__"+item["name"]+"_"+suffix+"__")!=value:
                     errors.append("Cold segment metadata mismatch")
-        if not runtime or len(overlays) not in (5,6):
+        if not runtime or len(overlays) not in (5,6,7):
             errors.append("Cold importer requires runtime and both committed overlay source phases")
         fields = {"__IMPORT_START__": 0x7000, "__IMPORT_SIZE__": 0x1000,
                   "__IMPORT_FILEOFFS__": 0, "__IMPORT_LAST__": cold_end,
@@ -280,7 +281,13 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
         load["end_exclusive"]=0xb800
         load["saver"]={"source":0xb000,"run":0xb010,"reu":0x343000,"slot_bytes":2048,"linked_bytes":count,"cache_frames":[24,32],"compare_stage":0xb800,"ownership":"modal paused borrow only; normal guest cache32frames"}
     elif saver_payload is not None:errors.append("SAVER payload requires linked SAVERCODE")
-    load["startup_cache_phase"]={"start":0x8000,"end_exclusive":0xb800 if saver else (0xae00 if "HDCODE"in overlays else 0x9800),"cache_frames":27 if saver else (23 if "HDCODE"in overlays else 12),"span_cache_frames":28 if saver else (23 if "HDCODE"in overlays else 12),"saver_frames":4 if saver else 0,"gap_cache_frames":[23]if saver else [],"overlay_frames":16 if "HDCODE"in overlays else 12,"shadow_frames":7 if "HDCODE"in overlays else 0}if overlays else None
+    load["disk"]=None
+    if "DISKCODE" in overlays:
+        load["disk"]={"source":0xb800,"run":0xc900,"reu":0x343800,"slot_bytes":2048,"linked_bytes":overlays["DISKCODE"]["bytes"],"overlay_identity":7,"physical_slot":8}
+        if not saver:errors.append("DISK startup requires SAVER paired layout")
+        load["end_exclusive"]=0xc000
+    load["reserved_reu"]={"floppy_spare":{"start":0x380000,"end_exclusive":0x3da000},"installer_stage":{"start":0x3e0000,"end_exclusive":0x3f0000},"installer_anchor":{"start":0x3ff000,"end_exclusive":0x400000}} if "DISKCODE" in overlays else None
+    load["startup_cache_phase"]={"start":0x8000,"end_exclusive":0xc000 if "DISKCODE" in overlays else (0xb800 if saver else (0xae00 if "HDCODE"in overlays else 0x9800)),"cache_frames":31 if "DISKCODE" in overlays else (27 if saver else (23 if "HDCODE"in overlays else 12)),"span_cache_frames":32 if "DISKCODE" in overlays else (28 if saver else (23 if "HDCODE"in overlays else 12)),"disk_frames":4 if "DISKCODE" in overlays else 0,"saver_frames":4 if saver else 0,"gap_cache_frames":[23]if saver else [],"overlay_frames":16 if "HDCODE"in overlays else 12,"shadow_frames":7 if "HDCODE"in overlays else 0}if overlays else None
     load["exclusive_overlay_window_bytes"] = 0x700 if overlays else 0
     load["max_linked_overlay_bytes"] = max((s["bytes"] for s in overlays.values()), default=0)
     load["overlay_source_bytes"] = sum(s["bytes"] for s in overlays.values())
@@ -316,6 +323,7 @@ if __name__ == "__main__":
     parser.add_argument("--overlay-pit",type=Path)
     parser.add_argument("--overlay-gfx",type=Path)
     parser.add_argument("--overlay-hd",type=Path)
+    parser.add_argument("--overlay-disk",type=Path)
     parser.add_argument("--shadow",type=Path)
     parser.add_argument("--saver",type=Path)
     parser.add_argument("--import-code", type=Path)
@@ -332,6 +340,9 @@ if __name__ == "__main__":
     if args.overlay_hd:
         if payloads is None:parser.error("HD requires all five baseline payload files")
         payloads["HDCODE"]=args.overlay_hd.read_bytes()
+    if args.overlay_disk:
+        if payloads is None:parser.error("DISK requires baseline payloads")
+        payloads["DISKCODE"]=args.overlay_disk.read_bytes()
     report = verify(map_path.read_text(), args.labels.read_text(), prg_path.read_bytes(), payloads, args.import_code.read_bytes() if args.import_code else None,args.shadow.read_bytes()if args.shadow else None,args.saver.read_bytes()if args.saver else None)
     map_path.with_suffix(".memory.json").write_text(json.dumps(report, indent=2)+"\n")
     if report["errors"]:

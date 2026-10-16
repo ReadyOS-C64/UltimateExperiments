@@ -85,7 +85,7 @@ test "owned synthetic BIOS initializes exact ROM IVT BDA and preserves conventio
     const low = try allocator.alloc(u8, 0x500);
     defer allocator.free(low);
     @memset(low, 0);
-    for ([_][2]u16{ .{ 0x44, 0x20 }, .{ 0x45, 1 }, .{ 0x47, 0xf0 }, .{ 0x48, 0x30 }, .{ 0x49, 1 }, .{ 0x4b, 0xf0 }, .{ 0x4d, 1 }, .{ 0x4f, 0xf0 }, .{ 0x64, 0x10 }, .{ 0x65, 1 }, .{ 0x67, 0xf0 }, .{ 0x79, 3 }, .{ 0x7b, 0xf0 }, .{ 0x410, 0x21 }, .{ 0x413, 0x80 }, .{ 0x414, 2 }, .{ 0x41a, 0x1e }, .{ 0x41c, 0x1e }, .{ 0x449, 3 }, .{ 0x44a, 80 }, .{ 0x44d, 0x10 }, .{ 0x460, 7 }, .{ 0x461, 6 }, .{ 0x463, 0xd4 }, .{ 0x464, 3 }, .{ 0x465, 0x29 } }) |p| low[p[0]] = @intCast(p[1]);
+    for ([_][2]u16{ .{ 0x44, 0x20 }, .{ 0x45, 1 }, .{ 0x47, 0xf0 }, .{ 0x48, 0x30 }, .{ 0x49, 1 }, .{ 0x4b, 0xf0 }, .{ 0x4d, 1 }, .{ 0x4f, 0xf0 }, .{ 0x64, 0x10 }, .{ 0x65, 1 }, .{ 0x67, 0xf0 }, .{ 0x79, 3 }, .{ 0x7b, 0xf0 }, .{ 0x410, 0x61 }, .{ 0x413, 0x80 }, .{ 0x414, 2 }, .{ 0x41a, 0x1e }, .{ 0x41c, 0x1e }, .{ 0x449, 3 }, .{ 0x44a, 80 }, .{ 0x44d, 0x10 }, .{ 0x460, 7 }, .{ 0x461, 6 }, .{ 0x463, 0xd4 }, .{ 0x464, 3 }, .{ 0x465, 0x29 } }) |p| low[p[0]] = @intCast(p[1]);
     low[0x20]=0xa0;low[0x21]=1;low[0x23]=0xf0;
     low[0x70]=0xc0;low[0x71]=1;low[0x73]=0xf0;
     low[0x54] = 0x40;
@@ -463,7 +463,7 @@ test "ordinary INT11 and INT12 ROM handlers query mutable dirty BDA and preserve
     try reg(&f, 11, 0x3456);
     try reg(&f, 13, 0xfbd7);
     for ([_]u16{ 1, 2, 3, 5, 6, 7, 8 }) |i| try reg(&f, i, 0x8765 + i);
-    for ([_]u16{ 0x21, 0x280, 0x41, 0x260 }, 0..) |expected, query| {
+    for ([_]u16{ 0x61, 0x280, 0x41, 0x260 }, 0..) |expected, query| {
         if (query == 2) {
             // Coherent CPU writes remain dirty: the native BIOS initializer's
             // defaults must not replace these guest-visible BDA authorities.
@@ -541,4 +541,17 @@ fn bootstrap(f: *Fixture) !void {
     f.poke(try f.symbol("dos64_overlay_reu_mib"), 4);
     const boot = try f.call("dos64_overlay_bootstrap", 300_000);
     try std.testing.expectEqual(@as(u8, 0), boot.p & 1);
+}
+
+
+test "INT13 B drive normal IRET and last diskette BDA status are coherent" {
+    var f=try init(true);defer f.deinit();const b=try f.symbol("dos64_disk_b_descriptor");f.poke(b+9,1);c.dos64_reu_poke(f.machine,0x180000,0x97);
+    const g=try f.symbol("dos64_guest");try coherentCode(&f,0x200,&.{0xcd,0x13,0xf4});
+    for([_]u16{0x0201,0x0301})|ax|{
+        try reg(&f,9,0);try reg(&f,12,0x200);try reg(&f,4,0x1000);try reg(&f,10,0);try reg(&f,13,0xf603);try reg(&f,0,ax);try reg(&f,1,1);try reg(&f,2,1);try reg(&f,3,0x2000);try reg(&f,8,0);
+        if(ax==0x0301)f.poke(try f.symbol("dos64_disk_readonly")+1,1);
+        for(0..3)|_|try step(&f);
+        const status:u8=if(ax==0x0201)0 else 3;try std.testing.expectEqual(@as(u16,status)<<8|@as(u16,if(status==0)1 else 0),f.word(g));try std.testing.expectEqual(@as(u16,0xf602)|@as(u16,if(status==0)0 else 1),f.word(g+26));
+        try flush(&f);try std.testing.expectEqual(status,c.dos64_reu_peek(f.machine,0x441));
+    }
 }

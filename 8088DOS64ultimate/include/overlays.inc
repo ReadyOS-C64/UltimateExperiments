@@ -6,6 +6,9 @@ OV_INPUT = 3
 OV_PIT = 4
 OV_GFX = 5
 OV_HD = 6
+OV_DISK = 7
+OV_DISK_SOURCE = $B800
+OV_DISK_ASSET = $343800
 OV_HD_SOURCE = $9800
 OV_PIT_SOURCE = $8800
 OV_GFX_SOURCE = $9000
@@ -27,12 +30,12 @@ OV_ERR_ORIGIN = 7
 OV_ERR_COLD = 8
 ; Resident synchronous, nonreentrant manager; same RAM+I/O map contract as cache.
 ; All APIs preserve native P except C, clobber A/X/Y. init is startup-only.
-; bootstrap validates all five source headers before any immutable-slot copy.
-; Only a successful bootstrap releases 6000–6FFF and8000–97FF to the bitmap owner. It is
+; bootstrap validates all eight physical source headers before any immutable-slot copy.
+; Only a successful bootstrap releases 6000–6FFF and8000–BFFF to the bitmap owner. It is
 ; idempotent thereafter: the startup bytes are never consulted again.
 ; acquire uses dos64_overlay_requested and HOLDS busy until release. Only call
 ; acquire/release from resident code. All overlaid entry calls MUST occur while
-; busy is held. Resident wrappers enforce this for files, INPUT and TEXT.
+; busy is held. Resident wrappers enforce this for files, INPUT, TEXT and DISK.
 ; TEXT is canonical1003-byte renderer +245-byte VIC setup/restore, total1248.
 ; TEXT row/setup/restore reject cold_open!=0 after busy/reentry checks; only
 ; dos64_cold_release grants bitmap/VIC ownership after real BIOS/import cleanup.

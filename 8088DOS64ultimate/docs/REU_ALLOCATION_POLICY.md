@@ -12,4 +12,4 @@ Keep the 4 MiB guest-address mappings and live-media semantics stable across cap
 
 Prefer measured reductions in physical elapsed time and transfer counts over guessed gains. Larger caches cannot by themselves fix instruction dispatch, guest-memory translation, or overlay churn. Keep the existing IRQ, REP and clock sampling policy until a separately verified optimization permits a change. Peddle CPU clocks remain model evidence, not C64 Ultimate elapsed-time or 4 MHz 8088 equivalence.
 
-The current production layout is recorded in `agentworking/MEMORY_BUDGET.md`. The independent A/B overlay, incoming-floppy arena and START handoff reservations remain private implementation candidates until their combined linker maps and runtime ownership tests pass.
+The current production layout is recorded in `agentworking/MEMORY_BUDGET.md`. The independent A/B core now has combined linker and modeled ownership proof for its extra overlay, rotating incoming-floppy arena and reserved START ranges. User-facing startup, swap/save integration and physical A/B acceptance remain pending; larger runtime caches are separate implementation work.

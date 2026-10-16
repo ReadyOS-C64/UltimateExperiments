@@ -16,8 +16,18 @@ fn addPeddle(module: *std.Build.Module, b: *std.Build) void {
     module.link_libcpp = true;
 }
 
+// These executables read linked target bytes at runtime. Always execute them,
+// and include the native inputs in the build graph rather than treating a
+// cached host test executable as evidence for a newly assembled PRG.
+fn nativeInputs(run: *std.Build.Step.Run, b: *std.Build) void {
+    run.has_side_effects = true;
+    run.addFileInput(b.path("build/dos64-tests.prg"));
+    run.addFileInput(b.path("build/dos64-tests.labels"));
+}
+
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
+    const fl=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/dual_floppy.zig"),.target=target,.optimize=.Debug})});fl.filters=b.option([]const []const u8,"dual-floppy-filter","Focused dual media controls") orelse &.{};addPeddle(fl.root_module,b);const run_fl=b.addRunArtifact(fl);nativeInputs(run_fl,b);b.step("dual-floppy","Actual independent floppy drives and native mount lifecycle").dependOn(&run_fl.step);b.step("dual-floppy-compile","Compile independent media regressions").dependOn(&b.addInstallFile(fl.getEmittedBin(),"bin/dual-floppy-tests").step);
     const cursor=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/cga_cursor.zig"),.target=target,.optimize=.Debug})});cursor.filters=b.option([]const []const u8,"cga-cursor-filter","Focused hardware cursor controls") orelse &.{};addPeddle(cursor.root_module,b);b.step("cga-cursor","Actual hardware cursor presentation").dependOn(&b.addRunArtifact(cursor).step);b.step("cga-cursor-compile","Compile cursor controls").dependOn(&b.addInstallFile(cursor.getEmittedBin(),"bin/cursor-tests").step);
     const status=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/cga_status.zig"),.target=target,.optimize=.Debug})});addPeddle(status.root_module,b);b.step("cga-status","OriginalCGA clock-derived status and leases").dependOn(&b.addRunArtifact(status).step);
     const crtc=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/cga_crtc.zig"),.target=target,.optimize=.Debug})});addPeddle(crtc.root_module,b);b.step("cga-crtc","OriginalCGA MC6845 actualregisterporttests").dependOn(&b.addRunArtifact(crtc).step);b.step("cga-crtc-compile","Compile CRTCrepro").dependOn(&b.addInstallFile(crtc.getEmittedBin(),"bin/crtc-tests").step);
@@ -112,6 +122,7 @@ pub fn build(b: *std.Build) void {
     tests.root_module.addOptions("test_options", options);
     addPeddle(tests.root_module, b);
     const run = b.addRunArtifact(tests);
+    nativeInputs(run, b);
     b.step("test", "Assert actual 6510 assembly behavior in Peddle").dependOn(&run.step);
     // Isolated standalone native clock PRG; explicit VIC script activation
     // tests control flow only. This lane does not use runtime/unit PRG files.
@@ -170,6 +181,7 @@ pub fn build(b: *std.Build) void {
     boot.root_module.addOptions("test_options", boot_options);
     addPeddle(boot.root_module, b);
     const run_boot = b.addRunArtifact(boot);
+    nativeInputs(run_boot, b);
     b.step("dos-boot", "Continue genuine DOS beyond the verified kernel handoff").dependOn(&run_boot.step);
     // Profiling is opt-in and retains Debug Zig assertions. It executes the
     // same bridge/Peddle sources as the behavior tests, with the same C++ flags.

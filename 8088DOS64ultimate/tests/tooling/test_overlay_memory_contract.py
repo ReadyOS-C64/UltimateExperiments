@@ -12,7 +12,7 @@ class OverlayMemoryContract(unittest.TestCase):
         cls.map = (BASE / 'dos64-tests.map').read_text()
         cls.labels = (BASE / 'dos64-tests.labels').read_text()
         cls.prg = (BASE / 'dos64-tests.prg').read_bytes()
-        cls.payloads = {'FILECODE': (BASE / 'dos64-tests-resident.prg.files.bin').read_bytes(), 'RENDERCODE': (BASE / 'dos64-tests-resident.prg.render.bin').read_bytes(), 'INPUTCODE': (BASE / 'dos64-tests-resident.prg.input.bin').read_bytes(), 'IRQMAIN': (BASE / 'dos64-tests-resident.prg.pit.bin').read_bytes(), 'GFXCODE': (BASE / 'dos64-tests-resident.prg.gfx.bin').read_bytes(), 'HDCODE': (BASE/'dos64-tests-resident.prg.hd.bin').read_bytes()}
+        cls.payloads = {'FILECODE': (BASE / 'dos64-tests-resident.prg.files.bin').read_bytes(), 'RENDERCODE': (BASE / 'dos64-tests-resident.prg.render.bin').read_bytes(), 'INPUTCODE': (BASE / 'dos64-tests-resident.prg.input.bin').read_bytes(), 'IRQMAIN': (BASE / 'dos64-tests-resident.prg.pit.bin').read_bytes(), 'GFXCODE': (BASE / 'dos64-tests-resident.prg.gfx.bin').read_bytes(), 'HDCODE': (BASE/'dos64-tests-resident.prg.hd.bin').read_bytes(),'DISKCODE':(BASE/'dos64-tests-resident.prg.disk.bin').read_bytes()}
 
     def check(self, map=None, labels=None, prg=None, payloads=None):
         return verify(self.map if map is None else map, self.labels if labels is None else labels, self.prg if prg is None else prg, self.payloads if payloads is None else payloads,(BASE/"dos64-tests-resident.prg.import.bin").read_bytes(),(BASE/"dos64-tests-resident.prg.hdb.bin").read_bytes(),(BASE/"dos64-tests-resident.prg.saver.bin").read_bytes())
@@ -21,12 +21,12 @@ class OverlayMemoryContract(unittest.TestCase):
         r = self.check()
         self.assertTrue(r['passed'], r['errors'])
         self.assertEqual(r['load']['exclusive_overlay_window_bytes'], 1792)
-        self.assertEqual(r['load']['overlay_source_bytes'],1464+1248+1182+1764+1303+1472)
-        self.assertEqual(r['load']['startup_overlay_bytes'],14336)
-        self.assertEqual(r['load']['prg_bytes'],45057)
+        self.assertEqual(r['load']['overlay_source_bytes'],1464+1248+1182+1764+1303+1472+1475)
+        self.assertEqual(r['load']['startup_overlay_bytes'],16384)
+        self.assertEqual(r['load']['prg_bytes'],47105)
 
     def test_header_every_byte_fault_is_rejected(self):
-        for start in (24576, 26624, 32768,34816,36864,38912,45056):
+        for start in (24576, 26624, 32768,34816,36864,38912,45056,47104):
             for i in range(16):
                 data = bytearray(self.prg)
                 data[start - 2049 + 2 + i] ^= 255
@@ -41,7 +41,7 @@ class OverlayMemoryContract(unittest.TestCase):
             self.assertFalse(self.check(payloads=data)['passed'])
 
     def test_slot_tail_and_device_gap_must_be_zero(self):
-        for address in (24575,26623,28671,32767,34815,36863,38911,40959,44543,45055,47103):
+        for address in (24575,26623,28671,32767,34815,36863,38911,40959,44543,45055,47103,49151):
             data = bytearray(self.prg)
             data[address - 2049 + 2] ^= 255
             self.assertFalse(self.check(prg=data)['passed'])

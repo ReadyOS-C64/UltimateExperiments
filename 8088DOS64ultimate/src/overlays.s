@@ -1,6 +1,8 @@
 .include "overlays.inc"
 .import sav_boot,sav_header
 .include "reu.inc"
+.import dos64_disk_native_transfer,dos64_floppy_native_control,dos64_floppy_validate,__DISKCODE_SIZE__
+.assert __DISKCODE_SIZE__ <= OV_WINDOW_SIZE, lderror, "DISK overlay exceeds window"
 .import hdb_load_extension,hd_init,hd_prepare,hd_advance,hd_retry,hd_chs_to_lba,__HDCODE_SIZE__
 .import dos64_pit_init, dos64_pit_rebase, dos64_pit_advance, dos64_pit_poll
 .import dos64_irq_pulse, dos64_irq_select, dos64_irq_try, dos64_irq_repeat
@@ -32,7 +34,8 @@ TEXT_SIZE = __RENDERCODE_SIZE__ + __DISPLAYCODE_SIZE__
 .export dos64_overlay_boot_code_start, dos64_overlay_boot_code_end
 .export dos64_overlay_headers
 .assert OV_ASSETS >= $340000, error, "overlay assets below owned staging slice"
-.assert OV_ASSETS+6*OV_SLOT_SIZE <= $380000, error, "overlay assets exceed owned staging slice"
+.assert OV_ASSETS+8*OV_SLOT_SIZE <= $350000, error, "eight overlay assets overlap HD authoritative staging"
+.assert OV_DISK_ASSET+OV_SLOT_SIZE = OV_ASSETS+8*OV_SLOT_SIZE, error, "DISK must end the eight physical slots"
 .assert (OV_ASSETS & (OV_SLOT_SIZE-1)) = 0, error, "overlay slots require 2 KiB alignment"
 .assert OV_HEADER+OV_WINDOW_SIZE <= OV_SLOT_SIZE, error, "overlay header/payload exceeds slot"
 .assert __FILECODE_SIZE__ > 0, lderror, "empty file overlay"
@@ -69,7 +72,7 @@ dos64_overlay_acquire:
     lda dos64_overlay_requested
     cmp #OV_FILE
     bcc ov_bad_id
-    cmp #7
+    cmp #8
     bcs ov_bad_id
     inc dos64_overlay_busy
     cmp dos64_overlay_current
@@ -81,7 +84,7 @@ dos64_overlay_acquire:
     asl
     asl
     clc
-    adc #40                      ; variant header descriptor base
+    adc #48                      ; variant header descriptor base
     tax
     jsr ov_dma
     bcs ov_dma_failed
@@ -107,7 +110,7 @@ dos64_overlay_acquire:
     asl
     asl
     clc
-    adc #88                      ; variant payload descriptor base
+    adc #104                     ; variant payload descriptor base
     tax
     jsr ov_dma
     bcs ov_dma_failed
@@ -182,6 +185,10 @@ name:
     jmp dos64_overlay_release
 :   rts
 .endmacro
+.export dos64_overlay_disk_transfer,dos64_overlay_floppy_validate,dos64_overlay_floppy_control
+WRAP dos64_overlay_disk_transfer, OV_DISK, dos64_disk_native_transfer
+WRAP dos64_overlay_floppy_validate, OV_DISK, dos64_floppy_validate
+WRAP dos64_overlay_floppy_control, OV_DISK, dos64_floppy_native_control
 WRAP dos64_overlay_files_init, OV_FILE, dos64_files_init
 WRAP dos64_overlay_files_start, OV_FILE, dos64_files_start
 WRAP dos64_overlay_files_poll, OV_FILE, dos64_files_poll
@@ -246,18 +253,21 @@ ov_requests:
     REQUEST OV_PIT_SOURCE, OV_ASSETS+3*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
     REQUEST OV_GFX_SOURCE, OV_ASSETS+4*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
     REQUEST OV_HD_SOURCE, OV_ASSETS+5*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
+    REQUEST OV_DISK_SOURCE, OV_DISK_ASSET, OV_SLOT_SIZE, 0
     REQUEST $C000, OV_ASSETS, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+2*OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+3*OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+4*OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+5*OV_SLOT_SIZE, OV_HEADER, 1
+    REQUEST $C000, OV_DISK_ASSET, OV_HEADER, 1
     REQUEST OV_WINDOW, OV_ASSETS+OV_HEADER, __FILECODE_SIZE__, 1
     REQUEST OV_WINDOW, OV_ASSETS+OV_SLOT_SIZE+OV_HEADER, TEXT_SIZE, 1
     REQUEST OV_WINDOW, OV_ASSETS+2*OV_SLOT_SIZE+OV_HEADER, __INPUTCODE_SIZE__, 1
     REQUEST OV_WINDOW, OV_ASSETS+3*OV_SLOT_SIZE+OV_HEADER, PIT_SIZE, 1
     REQUEST OV_WINDOW, OV_ASSETS+4*OV_SLOT_SIZE+OV_HEADER, __GFXCODE_SIZE__, 1
     REQUEST OV_WINDOW, OV_ASSETS+5*OV_SLOT_SIZE+OV_HEADER, __HDCODE_SIZE__, 1
+    REQUEST OV_WINDOW, OV_DISK_ASSET+OV_HEADER, __DISKCODE_SIZE__, 1
 dos64_overlay_headers:
     .byte "D64O",1,OV_FILE
     .word __FILECODE_SIZE__,OV_WINDOW
@@ -283,6 +293,10 @@ dos64_overlay_headers:
     .word __HDCODE_SIZE__,OV_WINDOW
     .word 0
     .byte "HD  "
+    .byte "D64O",1,OV_DISK
+    .word __DISKCODE_SIZE__,OV_WINDOW
+    .word 0
+    .byte "DSK "
 dos64_overlay_code_end:
 
 ; Bootstrap is cold resident CODE to keep DEVICECODE budget below 400 bytes.
@@ -361,6 +375,9 @@ dos64_overlay_cold_bootstrap:
     lda OV_HD_SOURCE,x
     cmp dos64_overlay_headers+5*OV_HEADER,x
     jne ov_header_failed
+    lda OV_DISK_SOURCE,x
+    cmp dos64_overlay_headers+6*OV_HEADER,x
+    jne ov_header_failed
     dex
     bpl @headers
     ldx #0
@@ -379,6 +396,9 @@ dos64_overlay_cold_bootstrap:
     jsr ov_dma
     jcs ov_dma_failed
     ldx #40
+    jsr ov_dma
+    jcs ov_dma_failed
+    ldx #48
     jsr ov_dma
     jcs ov_dma_failed
     jsr hdb_load_extension

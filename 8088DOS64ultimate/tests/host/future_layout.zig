@@ -29,22 +29,22 @@ fn acquire(f: *F, id: u8) !void {
 fn release(f: *F) !void {
     try call(f, "dos64_overlay_release", 0);
 }
-test "seven assets commit before cache frames are reclaimed and every payload switches exactly" {
+test "eight assets commit before cache frames are reclaimed and every payload switches exactly" {
     var f = try init();
     defer f.deinit();
-    const assets = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", std.testing.allocator, .limited(14337));
+    const assets = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", std.testing.allocator, .limited(16385));
     defer std.testing.allocator.free(assets);
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x340000, assets.ptr, assets.len));
-    try std.testing.expectEqual(@as(u64, 7), c.dos64_dma_transfers(f.machine));
+    try std.testing.expectEqual(@as(u64, 8), c.dos64_dma_transfers(f.machine));
     var shadow:[3584]u8=undefined;for(&shadow,0..)|*v,i|{v.*=f.peek(@intCast(0xa000+i));try std.testing.expectEqual(v.*,f.peek(@intCast(0xf000+i)));}
     for(0xfe00..0x10000)|at|try std.testing.expectEqual(@as(u8,@truncate(at^0xa5)),f.peek(@intCast(at)));
     try std.testing.expectEqual(@as(u8,0xa5),try get(&f,"hdb_extension_ready"));
     // Four asset slots use16 cacheframes; separate3584-byte source uses7.
-    for (0x8000..0xae00) |a| f.poke(@intCast(a), 0xee);
-    for ([_]u8{ 4, 5, 6, 1, 2, 3, 6, 5, 4 }) |id| {
+    for (0x8000..0xc000) |a| f.poke(@intCast(a), 0xee);
+    for ([_]u8{ 7, 4, 5, 6, 1, 2, 3, 6, 5, 4, 7 }) |id| {
         try acquire(&f, id);
         try std.testing.expectEqual(@as(u8, 1), try get(&f, "dos64_overlay_busy"));
-        const slot = assets[(@as(usize, id) - 1) * 2048 ..][0..2048];
+        const slot = assets[(if(id==7) @as(usize,7) else @as(usize,id)-1) * 2048 ..][0..2048];
         const len = std.mem.readInt(u16, slot[6..8], .little);
         for (slot[16..][0..len], 0..) |v, i| try std.testing.expectEqual(v, f.peek(0xc900 + @as(u16, @intCast(i))));
         try release(&f);

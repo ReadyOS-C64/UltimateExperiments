@@ -22,6 +22,8 @@ The target uses **6502/6510 assembly** via ca65/ld65. **Host Zig tests execute t
 
 Native C SETUP and a folder-aware START launcher are in progress. `make setup-config-tests` verifies the actual 6510 configuration/path codec, including explicit larger REU capacities; it does not yet build a user-facing installer. See [configuration contract](docs/NATIVE_SETUP_CONFIG.md) and [REU allocation policy](docs/REU_ALLOCATION_POLICY.md). Extra REU may be used where it improves speed, while retaining the 4 MiB minimum.
 
+The [independent A/B core](docs/FLOPPY_CORE.md) now passes combined model tests and genuine DOS boot/VER/DIR. It provides distinct disks, readonly/dirty tracking and safe rotating swap buffers. Startup configuration, the user disk menu, save integration and physical A/B testing remain pending.
+
 ```sh
 make test             # fast assembly, memory checks, tooling and Zig/Peddle tests
 make test-image-import # opt-in whole 360 KiB cold import/CRC/error tests

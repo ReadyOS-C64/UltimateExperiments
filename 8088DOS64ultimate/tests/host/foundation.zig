@@ -2,6 +2,7 @@ const std = @import("std");
 const host = @import("machine.zig");
 const Fixture = host.Fixture;
 test { _ = @import("reu.zig"); }
+test { _ = @import("dual_floppy.zig"); }
 test { _ = @import("memory.zig"); }
 test { _ = @import("cpu.zig"); }
 test { _ = @import("escape.zig"); }

@@ -1,0 +1,43 @@
+{
+  "result": "PASS",
+  "scope": "Independent A/B core composed with current keyboard/cursor/memory/nativeCFG",
+  "author_manifest_sha256": "957276efb8e06f5276ec2d668f57db75660a065e8d3e91536344b74ac5fd9313",
+  "author_sealed_files_verified": 566,
+  "independent_review": {
+    "review_record_sha256": "b3d09463bef5477dd275232c6a7b2429e180fe35ac79ad183f2921759eaae998",
+    "inputs_and_copies_exact": 474,
+    "focused_actual_groups": 14,
+    "genuine_DOS_VER_DIR": "PASS",
+    "compile_assertion_fix": "Eightphysicalslots end below HD authoritative staging; original native PRGs reproduced exactly"
+  },
+  "runtime_sha256": "f17558cb1a7894b292f12f8f607fb24ca1edd78a3dc42cb5dd422f0263bc6a73",
+  "unit_sha256": "aa4bb0837a2aad93c99e5e2a50a835f312ac6491190332e524853688e94c9600",
+  "prg_bytes": 47105,
+  "root_gate": {
+    "peddle": 500,
+    "tooling": 308,
+    "focused_dual_floppy": 14,
+    "genuine_dos": 1,
+    "native_config": 6,
+    "both_memory_verifiers": "PASS",
+    "inputs_and_copies_exact": 539,
+    "prelaunch_sha256": "720850b55cf9d99aeecdc4a313dd5ddc2db41813bf8883fea09f4ba9f91e2666",
+    "after_sha256": "dbc4db6dda1c3a5d68c2068ed33e4361b25c17c133ad806b0f2a5719b59aa283"
+  },
+  "logs": {
+    "build.log": "e53c40faa986fe1530a261ce274caa9725895c24232683219cf964a319b2fbb0",
+    "full-test.log": "ebc255dc34f34ecf5d6930caf624bf1ecf0c147e7d52c2a66f89d76736e39631",
+    "focused-dos.log": "e7bd2cddcb8d51ecbcabc6eca62229a7427bee7b2300e9a4332f93be67382b87",
+    "setup-config-test.log": "7aa4f264ea2d514f8872fb2ffd69f210286b15f09e83c128580903c2a82a0537"
+  },
+  "composition": "27portablefiles surgical3waymerge; oneoverlaycount conflict resolved INPUT1182+DISK1475; preserve machine.initPaths/setup.mk/nativeCFG/keyboard",
+  "test_runner": "Defaultnative,dualfloppy,DOSboot andnativeCFG steps force actualexecution and declarePRG/labels inputs",
+  "hardware_executed": false,
+  "limits": [
+    "No userdiskmenu or configuredBstartup yet",
+    "LegacyA-onlySAVE remains bankguarded, C-online integrationpending",
+    "CLEAN is callerproofacknowledgement, not independentfileverification",
+    "No AT media-change-line/format support",
+    "No physicalA/B or performance claim"
+  ]
+}

@@ -16,7 +16,13 @@ fn getFar(f: *Fixture, address: u16) u32 {
 fn init(frames: u8) !Fixture {
     var f = try Fixture.init();
     errdefer f.deinit();
-    c.dos64_enable_reu(f.machine);
+    c.dos64_enable_reu(f.machine); f.poke(0,0x2f); f.poke(1,0x35);
+    _ = try f.call("dos64_overlay_init", 100_000);
+    f.poke(try f.symbol("dos64_overlay_reu_mib"),4);
+    _ = try f.call("dos64_overlay_bootstrap",1_000_000);
+    f.poke(try f.symbol("dos64_overlay_requested"),7);
+    _ = try f.call("dos64_overlay_acquire",100_000);
+    _ = try f.call("dos64_overlay_release",100_000);
     f.poke(try f.symbol("dos64_cache_limit"), frames);
     _ = try f.call("dos64_cache_init", 50_000);
     f.poke(try f.symbol("dos64_memory_mode"), 1);
@@ -61,6 +67,7 @@ fn pattern(address: usize) u8 { return @truncate((address * 13) ^ (address >> 8)
 test "disk init explicitly configures unloaded 360 KiB media and reset requires no image" {
     var f = try init(1);
     defer f.deinit();
+    const initial_dma = c.dos64_dma_transfers(f.machine);
     _ = try f.call("dos64_disk_init", 10_000);
     try std.testing.expectEqual(@as(u32, 0x100000), getFar(&f, try f.symbol("dos64_disk_reu_base")));
     try std.testing.expectEqual(@as(u16, 720), f.word(try f.symbol("dos64_disk_sectors")));
@@ -72,7 +79,7 @@ test "disk init explicitly configures unloaded 360 KiB media and reset requires 
     try transfer(&f, 0, 0);
     try request(&f, 2, 1, 0, 0, 1, 0, 0);
     try transfer(&f, 0x80, 0);
-    try std.testing.expectEqual(@as(u64, 0), c.dos64_dma_transfers(f.machine));
+    try std.testing.expectEqual(initial_dma, c.dos64_dma_transfers(f.machine));
 }
 
 test "all 720 CHS sectors match independent linear addressing and verify reads data without guest writes" {
@@ -154,15 +161,16 @@ test "physical 64 KiB DMA limits allow exact end and reject crossing even inside
     for (cases) |case| {
         var f = try init(1);
         defer f.deinit();
+        const initial_dma = c.dos64_dma_transfers(f.machine);
         try request(&f, 4, case.count, 0, 0, 1, case.es, case.bx);
         try transfer(&f, case.status, if (case.status == 0) case.count else 0);
-        if (case.status != 0) try std.testing.expectEqual(@as(u64, 0), c.dos64_dma_transfers(f.machine));
+        if (case.status != 0) try std.testing.expectEqual(initial_dma, c.dos64_dma_transfers(f.machine));
     }
 }
 
 test "CHS geometry count drive and slot errors fail before DMA or guest writes" {
     const cases = [_]struct { command: u8 = 2, count: u8 = 1, cylinder: u16 = 0, head: u8 = 0, sector: u8 = 1, drive: u8 = 0, loaded: u8 = 1, status: u8 = 4 }{
-        .{ .command = 1, .status = 1 }, .{ .command = 5, .status = 1 },
+        .{ .command = 1, .status = 0 }, .{ .command = 5, .status = 1 },
         .{ .count = 0 }, .{ .count = 128 }, .{ .cylinder = 40 },
         .{ .cylinder = 256 }, .{ .head = 2 }, .{ .sector = 0 }, .{ .sector = 10 },
         .{ .cylinder = 39, .head = 1, .sector = 9, .count = 2 },
@@ -171,12 +179,13 @@ test "CHS geometry count drive and slot errors fail before DMA or guest writes" 
     for (cases) |case| {
         var f = try init(1);
         defer f.deinit();
+        const initial_dma = c.dos64_dma_transfers(f.machine);
         const g = try f.symbol("dos64_guest");
         try request(&f, case.command, case.count, case.cylinder, case.head, case.sector, 0, 0x2000);
         f.poke(g + 4, case.drive);
         f.poke(try f.symbol("dos64_disk_loaded"), case.loaded);
         try transfer(&f, case.status, 0);
-        try std.testing.expectEqual(@as(u64, 0), c.dos64_dma_transfers(f.machine));
+        try std.testing.expectEqual(initial_dma, c.dos64_dma_transfers(f.machine));
         try std.testing.expectEqual(@as(u8, 0), c.dos64_reu_peek(f.machine, 0x2000));
     }
     const configs = [_]struct { cylinders: u16 = 40, heads: u8 = 2, spt: u8 = 9, sectors: u16 = 720, base: u32 = 0x100000, status: u8 = 4 }{
@@ -189,6 +198,7 @@ test "CHS geometry count drive and slot errors fail before DMA or guest writes" 
     for (configs) |config| {
         var f = try init(1);
         defer f.deinit();
+        const initial_dma = c.dos64_dma_transfers(f.machine);
         word(&f, try f.symbol("dos64_disk_cylinders"), config.cylinders);
         word(&f, try f.symbol("dos64_disk_sectors"), config.sectors);
         f.poke(try f.symbol("dos64_disk_heads"), config.heads);
@@ -196,7 +206,7 @@ test "CHS geometry count drive and slot errors fail before DMA or guest writes" 
         far(&f, try f.symbol("dos64_disk_reu_base"), config.base);
         try request(&f, 2, 1, 0, 0, 1, 0, 0x2000);
         try transfer(&f, config.status, 0);
-        try std.testing.expectEqual(@as(u64, 0), c.dos64_dma_transfers(f.machine));
+        try std.testing.expectEqual(initial_dma, c.dos64_dma_transfers(f.machine));
     }
 }
 
