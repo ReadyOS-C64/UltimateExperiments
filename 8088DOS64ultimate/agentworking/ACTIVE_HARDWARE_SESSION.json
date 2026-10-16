@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "status": "OWNED_AC_AUTOMATED_VERIFICATION_STARTING",
-  "active_application": true,
-  "source_freeze_active": true,
+  "status": "NO_ACTIVE_APPLICATION_AC_VERIFICATION_PASSED_ORIGINAL_REU_RESTORED",
+  "active_application": false,
+  "source_freeze_active": false,
   "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-ac-20261016-084000",
   "review": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/ac-root-launch-20261016-090800",
   "guard_sha256": "edf1a56c91e9e10f76811cc5f15ccb22e07f527a1cd475b28161ac461e7cf7b5",
@@ -11,10 +11,14 @@
   "owned_child_pid": 19926,
   "runtime_sha256": "45896d100ddf7891e76ba18ac4be0b7a53db1d435de628cb0060514ec61b1af0",
   "configured_sha256": "f2e581e11f2e5053c9527e21046e52c6e0ceb877376b08f1b4edc79bbe6e428c",
-  "recovery_required": true,
+  "recovery_required": false,
   "human_session": false,
   "manual_CPU_MHz_setting": 64,
   "utc": "2026-10-16T09:06:23.040513+00:00",
   "source_guard_pins_and_copies": 780,
-  "original_ac43_baseline_chain_closed_before_launch": true
+  "original_ac43_baseline_chain_closed_before_launch": true,
+  "owned_child_exit_code": 0,
+  "original_ac43_restored": true,
+  "finished_utc": "2026-10-16T09:34:24.204242+00:00",
+  "physical_evidence": "evidence/c64u-ac-development-20261016.json"
 }

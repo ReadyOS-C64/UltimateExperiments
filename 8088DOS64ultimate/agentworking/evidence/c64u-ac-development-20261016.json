@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "status": "PHYSICAL_A_PLUS_C_ACCEPTED_WITH_FULL_RECOVERY",
+  "runtime_sha256": "45896d100ddf7891e76ba18ac4be0b7a53db1d435de628cb0060514ec61b1af0",
+  "unit_sha256": "a8274e7c3ce8ed011045b93dc45fb5b732d2f97b665cbfac8c99b1cfb52a5010",
+  "configured_sha256": "f2e581e11f2e5053c9527e21046e52c6e0ceb877376b08f1b4edc79bbe6e428c",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-ac-20261016-084000",
+  "owned_terminal": 1571,
+  "owned_pid": 19926,
+  "exit_code": 0,
+  "PAL_Manual64": true,
+  "application": {
+    "actual_DOS33_A_boot_C_prompt": true,
+    "commands_and_clear_receipts": 34,
+    "VER_three_archived_DOS_DIR": true,
+    "GWBASIC_file_write_close_SYSTEM": true,
+    "original_TP701_compile_run": true,
+    "COPY_and_copied_EXE_execution": true,
+    "CHKDSK_without_lost_or_crosslinked_clusters": true,
+    "final_C_DIR": true
+  },
+  "disk": {
+    "source_HD_sha256": "ac1cea543ad27f4fad4d3ba9d15e482bac05e9e48c4be6373c889bca4bc6c197",
+    "postclose_HD_sha256": "78b941711081e5ee8b1e2855b1ca4d4876160f97a5dfdb1e475fa65a699d102c",
+    "original_files_exact": 360,
+    "generated_files": [
+      "BASIC.TXT",
+      "CHECK.BAS",
+      "HELLO.EXE",
+      "TP/BUILD.LOG",
+      "TP/DONE.TXT",
+      "TP/HELLO.EXE",
+      "TP/HELLO.TXT"
+    ],
+    "owned_changed_sectors": 20,
+    "strict_FAT16_entry_allocation_preservation": true,
+    "HELLO_EXE_sha256": "0a3e4e74192374885e80a5d7709c020fdde26e69eb9a1259cc8c0c56bf55eaca",
+    "HELLO_EXE_matches_separate_DOSBox_reference": true,
+    "native_readonly_close_reopen_INFO_extent": true,
+    "native_changed_and_boundary_sectors": 26,
+    "short_read_and_EOF": true,
+    "native_final_CLOSE": true,
+    "complete_FTP_after_final_CLOSE_and_after_outer_recovery_exact": true,
+    "preclose_FAT_failure_preserved": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/ac-root-launch-20261016-090800/preclose-inspection-failure.json",
+    "preclose_copy_is_not_persistence_authority": true
+  },
+  "retention": {
+    "original_RAM_complete": true,
+    "changed_REU_bytes": 4194304,
+    "changed_REU_sha256": "9f16bcd793b538e4551b6d92ea62e82f17ee18892f4fcc91bf62f1c13f869e9f",
+    "seven_complete_immutable_source_slots_exact": true,
+    "regular_A_exact": true
+  },
+  "recovery": {
+    "whole4MiB_original_ac43_restored": true,
+    "sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+    "attempts": 1,
+    "configuration_media_reset_resume": true,
+    "upper12MiB": "untouched/uncompared",
+    "batched_original40fe_backend": true
+  },
+  "source_closure": {
+    "guard_inputs": 775,
+    "ROOT_inputs_and_immutable_copies": 780,
+    "all_exact_after_execution": true
+  },
+  "framebuffer": {
+    "status": "passed",
+    "source": "actual physical Ultimate paused VIC bitmap and matrix; reconstructed RGB, not HDMI capture",
+    "native_runtime_sha256": "45896d100ddf7891e76ba18ac4be0b7a53db1d435de628cb0060514ec61b1af0",
+    "columns": 80,
+    "RGB_palette": "illustrative Pepto-style",
+    "captured_RAM_sha256": "9a1ab9bb4e05b680aa6b8dbf0d8a4c9e0bf063587eca3e950b330083b48685cb",
+    "bitmap_bytes_checked": 8000,
+    "matrix_bytes_checked": 1000,
+    "bitmap_sha256": "abfe0d24f676ba1eb69f1282fe1eb9c5a9cda7083df0a79f9a7ca388710867aa",
+    "matrix_sha256": "3e022e1be47239953f01b5dbf53d46c859023f59283376cd9770bb7fad596d16",
+    "png_sha256": "71b7dba4f43f659056843ef2f68d9626f0f169a6f8af73c07c790e912fa126c5",
+    "png_path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/docs/screenshots/dos33-c-drive-80.png",
+    "complete_retention_recovery_acceptance": "separate run result required"
+  },
+  "limitations": [
+    "OriginalTURBO editor remains separate private compatibility work",
+    "No full20MiB native byte comparison: all changed sectors plus boundaries native, complete image independently viaFTP",
+    "No power-loss durability claim",
+    "NativeSave/Discard UI, broaderDOS/enduser/IEC/graphics/performance acceptance remain unfinished"
+  ],
+  "verified_utc": "2026-10-16T09:35:33.998542+00:00"
+}
