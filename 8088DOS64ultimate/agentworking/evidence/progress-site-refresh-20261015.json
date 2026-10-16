@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "published",
+  "audience": "owner-private preserved",
+  "project_id": "appgprj_6ad135ebbb8481919ddec553e219ff16",
+  "url": "https://dos64-ultimate-lab.klumsy.chatgpt.site",
+  "source_commit": "4c5ebb0fe1b4a58f745a8fffb5089ff3a2f1daf4",
+  "saved_version_id": "appgprj_6ad135ebbb8481919ddec553e219ff16~appgver_1ca5b8d0916c819196c85b9b8cb407a3",
+  "deployment_id": "appgdep_6ad17e82d5b48191b8c3e5b8343596fb",
+  "deployment_status": "succeeded",
+  "updated_at_UTC": "2026-10-16T01:31:53.891093+00:00",
+  "local_date": "2026-10-15",
+  "checks": {
+    "html_ids": 78,
+    "interaction_groups": 16,
+    "paired_captures_unchanged": 4,
+    "BASIC_source_lines_unchanged": 37,
+    "source_sha256": "ae363cf70f76fdfc52e790cfc2f33f6c69c6c14d5cdea3d4431c2f48b2c59a10",
+    "fresh_visual_browser_audit": false
+  },
+  "content": [
+    "Current ab2d/06a4 SAVE model proof 428/298 and 58 focused gates",
+    "Human historical keyboard use confirmed; ended and rebooted session with separate full 4 MiB recovery",
+    "Historical b29 physical timings A171.321ms/B271.146ms compared with pinned modeled original8088@4MHz, 2.65%/3.96%; one observation each",
+    "No wholeDOS/currentSAVE ratio, no certified silicon upper; driver/referenceRNI overhead and transient PIT diagnostics retained",
+    "Existing interactive diagrams, slider, 40/80 paired captures and highlighted BASIC/download preserved"
+  ],
+  "video_status": "pending; no accepted actual game video supplied",
+  "input_evidence": {
+    "native-save-current-root-20261015.json": {
+      "bytes": 2602,
+      "sha256": "28af649ac21a9764e29a95c2f9fa56cbdc4c3785af1c8a304eec23215944cbcb"
+    },
+    "c64u-interactive-user-acceptance-20261015.json": {
+      "bytes": 2034,
+      "sha256": "f1c2cd169f838771154b54cdd463931b68bc027f6a08f25bb7b529ce1d62b6af"
+    },
+    "c64u-interactive-reboot-recovery-20261015.json": {
+      "bytes": 4414,
+      "sha256": "c71ff97483716f985f8c0a00708afbb739d5fd74fb94d3a30b90757d5ebe28bd"
+    },
+    "c64u-fixedwork-performance-20261015.json": {
+      "bytes": 6139,
+      "sha256": "8ee39f7e48d19313744f1a8f649e6fb52837fb491ac14f7704fa3203603b12af"
+    }
+  },
+  "limitations": [
+    "No fresh visual, mobile or cross-browser QA; static and controlled DOM checks pass",
+    "No private prototype performance figures published",
+    "Physical SAVE/new-build BASIC/game video still pending",
+    "No schedules, audience changes, emulator/hardware operations, or parent Git commit/push performed"
+  ]
+}
