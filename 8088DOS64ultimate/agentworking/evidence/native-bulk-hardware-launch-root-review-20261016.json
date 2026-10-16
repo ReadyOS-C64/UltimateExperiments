@@ -1,0 +1,17 @@
+{
+  "launch_manifest": "scratch/native-bulk-physical-qualification/LAUNCH_MANIFEST.json",
+  "sha256": "8d7fa8cd6ee819fdf513d2462e9b7f95115d99bfe5780b9905d4455fb0049a9f",
+  "pins_verified": 506,
+  "offline_constructor": "PASS_NO_DEVICE_CALLS",
+  "ROOT_review": [
+    "Application",
+    "Retention",
+    "runner",
+    "launch",
+    "exact c5/40fe/bootstrap scope"
+  ],
+  "sole_hardware_owner": "cia_probe_independent_review",
+  "launch_authorized": true,
+  "physical_result": "PENDING",
+  "scope": "32K first; full original4MiB recovery required; upper12MiB untouched/uncompared"
+}

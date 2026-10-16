@@ -1,0 +1,13 @@
+{
+  "status": "AUTHORIZED_PHYSICAL_RUN_PENDING_RESULT",
+  "launch_manifest": "scratch/native-bulk-2m-staging-successor/LAUNCH_MANIFEST.json",
+  "sha256": "76bd6b265d3c84c56c77f1abb7f2efa8c6071d496dcc12aa6bab3a929ca65a26",
+  "pins_ROOT_verified": 11215,
+  "offline_constructor": "PASS_NO_DEVICE_CALLS",
+  "delta": "lowercase ownedrun+actualFTPvalid_id precheck; native/application/retention/recovery unchanged",
+  "prior_failed_run": "90561b18 remainsFAILED beforeFTP/CPUtakeover",
+  "sole_hardware_owner": "cia_probe_independent_review",
+  "owned_terminal": 1594,
+  "owned_pid": 45580,
+  "physical_acceptance": false
+}

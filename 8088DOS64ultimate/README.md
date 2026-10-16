@@ -22,6 +22,8 @@ The target uses **6502/6510 assembly** via ca65/ld65. **Host Zig tests execute t
 
 Native C SETUP and a folder-aware START launcher are in progress. `make setup-config-tests` verifies the actual 6510 configuration/path codec, including explicit larger REU capacities; it does not yet build a user-facing installer. See [configuration contract](docs/NATIVE_SETUP_CONFIG.md) and [REU allocation policy](docs/REU_ALLOCATION_POLICY.md). Extra REU may be used where it improves speed, while retaining the 4 MiB minimum.
 
+`make setup-release-tests` verifies the native release descriptor and host generator. The main-loader integration remains in progress; see [handoff contract](docs/NATIVE_START_HANDOFF.md). Native32KiB bulk file save/reload now passes on the physical Ultimate with complete recovery; this does not yet qualify the installer.
+
 The [independent A/B core](docs/FLOPPY_CORE.md) now passes combined model tests and genuine DOS boot/VER/DIR. It provides distinct disks, readonly/dirty tracking and safe rotating swap buffers. Startup configuration, the user disk menu, save integration and physical A/B testing remain pending.
 
 ```sh

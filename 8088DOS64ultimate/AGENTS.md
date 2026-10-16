@@ -30,6 +30,7 @@ Scope is this directory. Read README.md, agentworking/STATUS.md, agentworking/NE
 - Enforce instruction/time budgets, first-divergence diagnostics, defined-flag masks, memory guard checks, and an explicit unsupported-feature list.
 - Validate modeled REU/UCI behavior against VICE or hardware. Peddle CPU clocks alone are not physical C64U elapsed time.
 - Physical C64U testing is required by this project's user; ReuSQL64's project-specific hardware prohibition does not apply here.
+- User direction2026-10-16: use Peddle for quick iteration, then promptly qualify promising builds on the Ultimate. Hardware may run in a background subagent while implementation continues; exactly one worker owns device control and ACTIVE_HARDWARE_SESSION transitions at a time.
 - Hardware runs use newly created owned fixture directories such as `/usb1/DOS64_TEST/<run-id>`, preserve prior machine/media settings, and retain evidence. Never overwrite unrelated or original media.
 - Reuse the established Ultimate harness/Terminal wrappers where applicable; use REST only for development control/evidence, not as a runtime dependency or guest networking feature.
 - No fixed-delay UCI pacing. Use the complete asynchronous state/queue protocol and elapsed-time failure bounds at all CPU speeds.

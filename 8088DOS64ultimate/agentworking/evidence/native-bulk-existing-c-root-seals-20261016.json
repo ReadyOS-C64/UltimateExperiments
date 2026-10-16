@@ -1,0 +1,27 @@
+{
+  "status": "SEALED_SOURCE_AND_PRODUCT_REVIEW_PHYSICAL_PENDING",
+  "checked": [
+    {
+      "manifest": "agentworking/scratch/native-bulk-reu-transfer/MANIFEST.json",
+      "sha256": "f4666d84029b957d942fac582ed3e9b472013ac1b5d0e68f7402d67512cd55c2",
+      "files_verified": 392
+    },
+    {
+      "manifest": "agentworking/scratch/native-bulk-reu-independent-review/REVIEW_MANIFEST.json",
+      "sha256": "7be561e5561a2a04a6df9bbf7b9401e6b2c36b3df8ca49905cc2127369d8a13c",
+      "files_verified": 186
+    },
+    {
+      "manifest": "agentworking/scratch/native-installer-existing-c/MANIFEST.json",
+      "sha256": "bd4945e510712569b54680ef50600cdc5b00230ca3a18b920d480af998cf5b6f",
+      "files_verified": 137
+    },
+    {
+      "manifest": "agentworking/scratch/native-installer-existing-c-independent-review/REVIEW_MANIFEST.json",
+      "sha256": "94e1e8c7cc010247a31c9e1b0eed90052deae245a8c41692cadca3604686bd3d",
+      "files_verified": 125
+    }
+  ],
+  "physical": false,
+  "production_promotion": false
+}

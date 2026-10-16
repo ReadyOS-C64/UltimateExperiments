@@ -1,0 +1,21 @@
+{
+  "source_seals_verified": [
+    {
+      "path": "agentworking/scratch/native-bulk-reu-two-context-independent-review/REVIEW_MANIFEST.json",
+      "sha256": "24ecf9fbfb5a45a4a07bedad2b6f7528ccaac84629003c9eebd36683748cd4c5",
+      "verified": 77
+    },
+    {
+      "path": "agentworking/scratch/native-bulk-reu-two-context-private-authority-successor/MANIFEST.json",
+      "sha256": "f3d19944ccd0d465af02fb3726c22d9e55b364ac55636d931b9345221628ab21",
+      "verified": 146
+    },
+    {
+      "path": "agentworking/scratch/native-browser-private-authority-successor/MANIFEST.json",
+      "sha256": "ce5c1df68b859150200aa2314fb83f4711f98f5426b3a0c395fd987c35c06949",
+      "verified": 232
+    }
+  ],
+  "physical": false,
+  "production_promoted": false
+}
