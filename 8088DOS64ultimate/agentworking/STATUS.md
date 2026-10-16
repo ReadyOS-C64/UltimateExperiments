@@ -1,5 +1,9 @@
 # Current status — 2026-10-16
 
+Physical A:+C: verification is running in owned Terminal 1571 / PID 19926, run `runs/c64u-ac-20261016-084000`. The fresh REU backup exactly matches the original ac43 baseline. Actual DOS 3.30 has reached C>, and VER and the initial DIR have passed. Compilation, persistence, retention and final recovery are still pending; this is not full physical acceptance. Current assembly and all 780 ROOT launch inputs/copies are frozen until cleanup finishes.
+
+ROOT independently replayed the final A+C host: 42 host checks and six actual 6502 helper groups pass; all 1,775 author pins remain exact. Final guard edf1a56c has 775 pins, ROOT launch top 08b37604 has 780 inputs plus copies. Both application and retention preserve the first exception through bounded local budget restoration and independent report writing. Evidence: `evidence/ac-development-host-root-review-20261016.json`.
+
 Implementation is active. Commit locally; do not push. Work only in this project. The previous turn made verified progress: accepted CPU/HD/palette code, complete C image tooling, actual Ultimate file staging, and full original REU recovery.
 
 Current production assembly is **45896d10 / a8274e7c**, commit **ea84a59**:440actualPeddle tests,298tooling tests,597quick8088 cases and both memory verifiers pass. This combines HD256+256 writes/full512 readback, originalXT palette calls, and absent8087 ESC/interruptibleWAIT. Source/product closure390files plus immutablecopies: runs/esc-palette-root-promotion-20261016. EarlierESC a591 is NOT READY (STI;WAIT shadow defect); accepted successor781695c9/peer5e775687 fixes it and preserves syntheticBIOSwait.
