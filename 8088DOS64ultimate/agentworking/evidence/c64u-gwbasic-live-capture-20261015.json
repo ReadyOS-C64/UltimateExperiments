@@ -1,5 +1,5 @@
 {
-  "status": "PASS_HARDWARE_CAPTURE_NATIVE_GAME_AND_COMPLETE_RECOVERY_SOURCE_FTP",
+  "status": "PASS_PHYSICAL_GWBASIC_LIVE_VIDEO_AND_FULL_RECOVERY",
   "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-gwbasic-load-sys-20261015-223000",
   "owned_terminal": 1501,
   "owned_child_pid": 55482,
@@ -17,6 +17,49 @@
   "video_seconds": 504.5632125109617,
   "complete_fraction": 1.0,
   "held_gap_frames": 0,
-  "independent_media_audit": "pending",
-  "utc": "2026-10-16T05:50:46.744541+00:00"
+  "independent_media_audit": "PASS",
+  "utc": "2026-10-16T05:50:46.744541+00:00",
+  "independent_media_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/gwbasic-load-sys-physical-independent-review/MANIFEST.json",
+  "independent_media_manifest_sha256": "93ee764e4813bdefeee3cb50dcd003d137d4487049d3ab1355c4f204ac9b51e9",
+  "independent_media_files_verified": 50,
+  "video": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/docs/videos/gwbasic-hangman-c64u-20261015.mp4",
+  "poster": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/docs/videos/gwbasic-hangman-c64u-20261015-win.png",
+  "chapters": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/docs/videos/gwbasic-hangman-c64u-20261015-chapters.json",
+  "columns": 40,
+  "RGB_provenance": "Actual streamed VIC color indices mapped through illustrative Pepto VPL; no calibrated HDMI RGB claim",
+  "physical_XT_speed_claim": false,
+  "artifacts": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-gwbasic-load-sys-20261015-223000/result.json": {
+      "bytes": 448092,
+      "sha256": "8c855c24bb8b867ccf31c05ea047b895317190dd05c38e3731c6f9973d9a9930"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-gwbasic-load-sys-20261015-223000/video/capture-report.json": {
+      "bytes": 1038,
+      "sha256": "13c1101f1ec27072469fc17bf62331e9eda691aa78e26f5101b70a17b00c4017"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-gwbasic-load-sys-20261015-223000/video/video-report.json": {
+      "bytes": 886,
+      "sha256": "d7cb4a9a1bb2e53879937add5008bfa762269daac3bcc0a47acf6b44f2a47044"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-gwbasic-load-sys-20261015-223000/video/checkpoints/checkpoints.json": {
+      "bytes": 6996,
+      "sha256": "d4c0800599b24da79d67f812094f543567b7eda774e430d87c8bbaf5beefb2fd"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-gwbasic-load-sys-20261015-223000/game-postENTRY-overlay-sources.json": {
+      "bytes": 1628,
+      "sha256": "bfc6c4cd310335495907bacb57e9389d88bf89bf9e9ea12752e344269cf57fa4"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-gwbasic-load-sys-20261015-223000/post-recovery-FTP.json": {
+      "bytes": 294,
+      "sha256": "e06142175375d1cc29a777cf975a1b67cc91e193dd2aff611118d809c21a85c8"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-gwbasic-load-sys-20261015-223000/video/frames.c64uvic": {
+      "bytes": 55734879,
+      "sha256": "ea750038cc879f4b969963ef2eb90a56757557d04f80cbf9226d144940a1491f"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-gwbasic-load-sys-20261015-223000/video/frame-index.jsonl": {
+      "bytes": 4050867,
+      "sha256": "bb55f832d77e45adad1c6bd85daeae2ab345b6f29a8ac671bd48d00ad052fb55"
+    }
+  }
 }
