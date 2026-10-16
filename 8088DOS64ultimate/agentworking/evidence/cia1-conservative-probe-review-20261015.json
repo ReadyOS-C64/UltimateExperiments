@@ -1,0 +1,30 @@
+{
+  "status": "model_review_passed_no_physical_activation",
+  "original_review": "279a78e835540dc6c5dc3ddb1152244c39c2b378a6a898e8b245227ecf51d664",
+  "repaired_successor": "dc45da6a982eab8c827da1678588850a82cd5f8501a2a5b4d0498d20fb855897",
+  "root_replay": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/standalone-cra-conservative-root-replay",
+  "tests": {
+    "actual_Peddle_groups": 14,
+    "host_groups": 20,
+    "pins_unchanged": 282
+  },
+  "repairs": [
+    "Support uses STOP upper bracket plus guard <= BEFORE plus count plus K; violation retains AFTER lower-bound comparison",
+    "Source-bound native terminal DDR/port/P published before completion; REST raw0/1 diagnostic only"
+  ],
+  "model_findings": {
+    "normal_K8": {
+      "supported": 0,
+      "inconclusive": 27
+    },
+    "slow_K8": {
+      "supported": 0,
+      "inconclusive": 27
+    },
+    "delayed_STOP1024_violations": 27,
+    "former_false_support": "inconclusive"
+  },
+  "physical_executed": false,
+  "universal_K_proven": false,
+  "production_activation": false
+}

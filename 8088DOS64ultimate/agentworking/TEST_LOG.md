@@ -529,3 +529,6 @@ ActualmediaTerminal1488;PRGs1489;execution1490. Concreteguard6f1a3e2b/238;TOP067
 
 
 2026-10-15 20:48: Actual splitSAVE attempt Terminal1493/child20462/wrapperexit1 failed firstIDFF preDOS at2.3205s. Recovery attempt1 full4MiB ac43/settingsmediareset passes;2643live/copy pins exact. Separate read-only Terminal1494 postFTP five input/OWNER files passes after expected absentSAVE550. Actual fullSAVE neverattempted; allfirstfailures preserved. Run c64u-native-save-split-20261015-204200; peer17310027.
+
+
+2026-10-15 20:51: ROOT copied all282 sealed conservativeCIA probe inputs into fresh private replay, executed exact attested actualbinary621af674 with seedca651004:14actualgroupspass; host20pass. Original282pins unchanged. Rootreview confirms BEFORE-based support and source-bound terminal nativebanking; normal/slowK8 allinconclusive. No hardware or productionactivation. Receipt evidence/cia1-conservative-probe-review-20261015.json.

@@ -246,3 +246,6 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 
 
 2026-10-15: Do not convert a pre-import UCI ID failure into a SAVE regression: guestcount0/uploadpos0 distinguish it. Record live native DDR/port at the actual ID boundary; raw REST RAM addresses0/1 do not establish banking. If no SAVE was attempted, missing-output FTP550 remains honest but must not prevent separate complete post-recovery input/OWNER closure.
+
+
+2026-10-15: A wide BEFORE/AFTER arm bracket can hide STOP visibility delay. For START-relative K support, compare STOPupper+guard with BEFORE+count+K; for violations use AFTER. Finite inconclusive observations cannot certify an installed universal bound. Native terminal DDR/port publication must precede completion; rawREST RAM0/1 remains diagnostic.
