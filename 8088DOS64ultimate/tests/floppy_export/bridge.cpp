@@ -407,6 +407,7 @@ uint8_t hd_model_copy_source(void *p,uint8_t *out,size_t n){auto &m=static_cast<
 
 void export_model_enable(void *p,int existing) {
  auto &m=static_cast<Dos64Machine*>(p)->cpu;
+ m.image_import.reset();m.hd_file.reset();
  m.floppy_export=std::make_unique<FloppyExportModel>();
  m.floppy_export->exists=existing;
  if(existing)m.floppy_export->output.assign(97,0x6b);
@@ -419,3 +420,8 @@ uint32_t export_model_size(void *p){return static_cast<Dos64Machine*>(p)->cpu.fl
 uint8_t export_model_byte(void *p,uint32_t i){return static_cast<Dos64Machine*>(p)->cpu.floppy_export->output.at(i);}
 uint32_t export_model_count(void *p,uint8_t op){uint32_t n=0;for(auto &c:static_cast<Dos64Machine*>(p)->cpu.floppy_export->history)if(!op||c[1]==op)++n;return n;}
 uint8_t export_model_open(void *p){return static_cast<Dos64Machine*>(p)->cpu.floppy_export->opened;}
+
+void export_model_info(void *p,int64_t size,int fault) {
+ auto &m=*static_cast<Dos64Machine*>(p)->cpu.floppy_export;
+ m.info_size=size;m.info_fault=fault;
+}

@@ -1,4 +1,5 @@
 .include "overlays.inc"
+.import sav_boot,sav_header
 .include "reu.inc"
 .import hdb_load_extension,hd_init,hd_prepare,hd_advance,hd_retry,hd_chs_to_lba,__HDCODE_SIZE__
 .import dos64_pit_init, dos64_pit_rebase, dos64_pit_advance, dos64_pit_poll
@@ -354,6 +355,9 @@ dos64_overlay_cold_bootstrap:
     lda OV_GFX_SOURCE,x
     cmp dos64_overlay_headers+4*OV_HEADER,x
     jne ov_header_failed
+    lda $B000,x
+    cmp sav_header-$5000,x
+    jne ov_header_failed
     lda OV_HD_SOURCE,x
     cmp dos64_overlay_headers+5*OV_HEADER,x
     jne ov_header_failed
@@ -378,6 +382,8 @@ dos64_overlay_cold_bootstrap:
     jsr ov_dma
     jcs ov_dma_failed
     jsr hdb_load_extension
+    jcs ov_dma_failed
+    jsr sav_boot
     jcs ov_dma_failed
     lda #OV_READY
     sta dos64_overlay_ready

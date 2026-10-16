@@ -21,7 +21,7 @@ class ImageImportContract(unittest.TestCase):
 
     def check(self, **changes):
         args = dict(map_text=self.map, labels_text=self.labels, prg=self.prg,
-                    overlay_payloads=self.payloads, import_payload=self.cold, shadow_payload=Path("build/dos64-tests-resident.prg.hdb.bin").read_bytes())
+                    overlay_payloads=self.payloads, import_payload=self.cold, shadow_payload=Path("build/dos64-tests-resident.prg.hdb.bin").read_bytes(),saver_payload=Path("build/dos64-tests-resident.prg.saver.bin").read_bytes())
         args.update(changes)
         return verify(**args)
 
@@ -41,10 +41,10 @@ class ImageImportContract(unittest.TestCase):
         self.assertTrue(r["passed"], r["errors"])
         cold = r["load"]["cold_import"]
         self.assertEqual(cold["start"], 0x7000)
-        self.assertEqual(cold["linked_bytes"], 3981)
+        self.assertEqual(cold["linked_bytes"], 4042)
         self.assertEqual(cold["state_bytes"], 26)
         self.assertTrue(cold["payload_checked"])
-        self.assertEqual(r["load"]["prg_bytes"], 42497)
+        self.assertEqual(r["load"]["prg_bytes"], 45057)
         self.assertEqual(self.prg[0x7000-0x801+2:0x7000-0x801+2+len(self.cold)], self.cold)
         self.assertEqual(self.prg[0x7000-0x801+2+len(self.cold):0x8000-0x801+2], bytes(4096-len(self.cold)))
         partial=append_import(self.prg[:0x7000-0x801+2],self.cold,self.labels)

@@ -15,18 +15,18 @@ class OverlayMemoryContract(unittest.TestCase):
         cls.payloads = {'FILECODE': (BASE / 'dos64-tests-resident.prg.files.bin').read_bytes(), 'RENDERCODE': (BASE / 'dos64-tests-resident.prg.render.bin').read_bytes(), 'INPUTCODE': (BASE / 'dos64-tests-resident.prg.input.bin').read_bytes(), 'IRQMAIN': (BASE / 'dos64-tests-resident.prg.pit.bin').read_bytes(), 'GFXCODE': (BASE / 'dos64-tests-resident.prg.gfx.bin').read_bytes(), 'HDCODE': (BASE/'dos64-tests-resident.prg.hd.bin').read_bytes()}
 
     def check(self, map=None, labels=None, prg=None, payloads=None):
-        return verify(self.map if map is None else map, self.labels if labels is None else labels, self.prg if prg is None else prg, self.payloads if payloads is None else payloads,(BASE/"dos64-tests-resident.prg.import.bin").read_bytes(),(BASE/"dos64-tests-resident.prg.hdb.bin").read_bytes())
+        return verify(self.map if map is None else map, self.labels if labels is None else labels, self.prg if prg is None else prg, self.payloads if payloads is None else payloads,(BASE/"dos64-tests-resident.prg.import.bin").read_bytes(),(BASE/"dos64-tests-resident.prg.hdb.bin").read_bytes(),(BASE/"dos64-tests-resident.prg.saver.bin").read_bytes())
 
     def test_real_exclusive_layout_and_packaged_outputs(self):
         r = self.check()
         self.assertTrue(r['passed'], r['errors'])
         self.assertEqual(r['load']['exclusive_overlay_window_bytes'], 1792)
-        self.assertEqual(r['load']['overlay_source_bytes'],1088+963+882+1764+1278+1427)
-        self.assertEqual(r['load']['startup_overlay_bytes'],12288)
-        self.assertEqual(r['load']['prg_bytes'],42497)
+        self.assertEqual(r['load']['overlay_source_bytes'],1170+963+882+1764+1278+1427)
+        self.assertEqual(r['load']['startup_overlay_bytes'],14336)
+        self.assertEqual(r['load']['prg_bytes'],45057)
 
     def test_header_every_byte_fault_is_rejected(self):
-        for start in (24576, 26624, 32768,34816,36864,38912):
+        for start in (24576, 26624, 32768,34816,36864,38912,45056):
             for i in range(16):
                 data = bytearray(self.prg)
                 data[start - 2049 + 2 + i] ^= 255
@@ -41,7 +41,7 @@ class OverlayMemoryContract(unittest.TestCase):
             self.assertFalse(self.check(payloads=data)['passed'])
 
     def test_slot_tail_and_device_gap_must_be_zero(self):
-        for address in (24575,26623,28671,32767,34815,36863,38911,40959,44543):
+        for address in (24575,26623,28671,32767,34815,36863,38911,40959,44543,45055,47103):
             data = bytearray(self.prg)
             data[address - 2049 + 2] ^= 255
             self.assertFalse(self.check(prg=data)['passed'])
@@ -50,17 +50,17 @@ class OverlayMemoryContract(unittest.TestCase):
         self.assertFalse(self.check(map=re.sub('^FILECODE\\s.*\\n', '', self.map, flags=re.M))['passed'])
 
     def test_overlay_run_start_must_be_exact(self):
-        changed = re.sub('^(FILECODE\\s+)00C900(\\s+)00CD3F', '\\g<1>00C901\\g<2>00CD40', self.map, flags=re.M)
+        changed = re.sub('^(FILECODE\\s+)00C900(\\s+)00CD91', '\\g<1>00C901\\g<2>00CD92', self.map, flags=re.M)
         self.assertNotEqual(changed, self.map)
         self.assertFalse(self.check(map=changed)['passed'])
 
     def test_arbitrary_overlap_is_still_rejected(self):
-        changed = self.map.replace('FILECODE              00C900  00CD3F  000440', 'FILECODE              00C100  00C53F  000440')
+        changed = self.map.replace('FILECODE              00C900  00CD91  000492', 'FILECODE              00C100  00C591  000492')
         self.assertNotEqual(changed, self.map)
         self.assertFalse(self.check(map=changed)['passed'])
 
     def test_oversized_corrupt_segment_fails_without_crashing(self):
-        changed = re.sub('^(FILECODE\\s+)00C900(\\s+)00CD3F(\\s+)000440', '\\g<1>00C900\\g<2>FFFFFF\\g<3>FF3700', self.map, flags=re.M)
+        changed = re.sub('^(FILECODE\\s+)00C900(\\s+)00CD91(\\s+)000492', '\\g<1>00C900\\g<2>FFFFFF\\g<3>FF3700', self.map, flags=re.M)
         self.assertNotEqual(changed, self.map)
         self.assertFalse(self.check(map=changed)['passed'])
 
@@ -98,7 +98,7 @@ class ColdPhaseMemoryContract(unittest.TestCase):
             self.assertFalse(self.check(prg=data)["passed"])
     def test_combined_cold_output_is_exact(self):
         cold=bytearray((BASE/"dos64-tests-resident.prg.import.bin").read_bytes());cold[1000]^=255
-        self.assertFalse(verify(self.map,self.labels,self.prg,self.payloads,cold,(BASE/"dos64-tests-resident.prg.hdb.bin").read_bytes())["passed"])
+        self.assertFalse(verify(self.map,self.labels,self.prg,self.payloads,cold,(BASE/"dos64-tests-resident.prg.hdb.bin").read_bytes(),(BASE/"dos64-tests-resident.prg.saver.bin").read_bytes())["passed"])
     def test_cold_segment_order_must_be_contiguous(self):
         changed=re.sub(r"^(COLDINIT\s+)([0-9A-F]+)(\s+)([0-9A-F]+)",lambda m:m[1]+f"{int(m[2],16)+1:06X}"+m[3]+f"{int(m[4],16)+1:06X}",self.map,flags=re.M)
         self.assertNotEqual(changed,self.map);self.assertFalse(self.check(map=changed)["passed"])

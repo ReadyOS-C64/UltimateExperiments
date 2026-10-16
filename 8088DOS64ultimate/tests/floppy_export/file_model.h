@@ -12,6 +12,7 @@ struct FloppyExportModel {
  size_t position=0;
  int fail_command=-1,partial_command=-1,corrupt_offset=-1,short_offset=-1;
  bool extra=false,bad_cleanup=false;
+ int64_t info_size=-1;int info_fault=0;
  bool prepare(UciModel &w,uint16_t address,uint8_t value) {
   if(address!=w.base || !(value&1))return true;
   const auto &c=w.command;history.push_back(c);
@@ -40,6 +41,27 @@ struct FloppyExportModel {
     size_t n=int(history.size())==partial_command?17:512;
     output.insert(output.end(),c.begin()+4,c.begin()+4+n);position+=n;break;
    }
+   case 7:{
+    if(!opened || c[0]!=target || c.size()!=2){w.fault=true;return false;}
+    uint32_t size=info_size<0?uint32_t(output.size()):uint32_t(info_size);
+    d={uint8_t(size),uint8_t(size>>8),uint8_t(size>>16),uint8_t(size>>24),0,0,0,0,'I','M','G',0x20,'W','O','R','K','.','I','M','G'};
+    switch(info_fault){
+     case 1:d.clear();break;
+     case 2:d.resize(12);break;
+     case 3:d.resize(76,'Q');break;
+     case 4:d[11]=0x10;break;
+     case 5:d[11]=8;break;
+     case 6:d[14]=0;break;
+     case 7:s.clear();break;
+     case 8:s={'8','5',',','E','R','R'};break;
+     case 9:break;
+     case 10:d.resize(75,'Q');break;
+     case 11:d.resize(13,'Q');break;
+     case 12:d.clear();s={'8','5',',','E','R','R'};break;
+     case 13:d.clear();s.clear();break;
+    }
+    break;
+   }
    case 4:{
     if(!opened || mode!=1 || c[0]!=target || c.size()!=4){w.fault=true;return false;}
     size_t n=c[2]+256*c[3];if(n!=512 && n!=1){w.fault=true;return false;}
@@ -51,12 +73,13 @@ struct FloppyExportModel {
    }
    default:w.fault=true;return false;
   }
-  w.blocks.clear();w.blocks.push_back({d,s});return true;
+  w.blocks.clear();w.blocks.push_back({d,s});if(c[1]==7 && info_fault==9)w.blocks.push_back({{}, {}});return true;
  }
 };
 extern "C" {
 #endif
 void export_model_enable(void*,int);
+void export_model_info(void*,int64_t,int);
 void export_model_faults(void*,int,int,int,int,int,int);
 uint32_t export_model_size(void*);
 uint8_t export_model_byte(void*,uint32_t);

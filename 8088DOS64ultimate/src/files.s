@@ -3,6 +3,11 @@
 ; software/filemanager/dos.{cc,h}, software/filesystem/fs_errors_flags.h and
 ; software/io/command_interface/command_intf.cc. No firmware code copied.
 .setcpu "6502"
+; Preserve exact reviewed standalone recovery adapter unless explicitly enabled.
+.ifndef DOS64_FILES_INFO
+DOS64_FILES_INFO=0
+.endif
+.assert DOS64_FILES_INFO=0 || DOS64_FILES_INFO=1,error,"FILES_INFO flag must be0or1"
 .macpack longbranch
 .include "files.inc"
 .include "uci.inc"
@@ -141,6 +146,10 @@ dos64_files_start:
  lda #2
  sta dos64_uci_command_len
  lda dos64_files_op
+.if DOS64_FILES_INFO
+ cmp #FILES_INFO
+ jeq @need_open
+.endif
  cmp #FILES_CLOSE
  jeq @need_open
  cmp #FILES_READ
@@ -321,8 +330,16 @@ dos64_files_poll:
  lda dos64_uci_flags
  jne @protocol
  lda dos64_files_op
+.if DOS64_FILES_INFO
+ cmp #FILES_INFO
+ jeq @info
+.endif
  cmp #FILES_READ
+.if DOS64_FILES_INFO
+ jeq @read
+.else
  beq @read
+.endif
  cmp #FILES_IDENTIFY
  beq @identify
  lda dos64_uci_data_len
@@ -342,6 +359,31 @@ dos64_files_poll:
  dex
  bpl @compare
  jmp @accept
+.if DOS64_FILES_INFO
+@info:
+ lda dos64_uci_data_len+1
+ jne @protocol
+ lda dos64_uci_data_len
+ cmp #13
+ jcc @protocol
+ cmp #76
+ jcs @protocol
+ lda dos64_uci_data+11
+ and #$18                       ; volume/directory is not an export file
+ jne @protocol
+ ldx #12
+@name:
+ lda dos64_uci_data,x
+ jeq @protocol                  ; firmware omits terminating filename NUL
+ inx
+ cpx dos64_uci_data_len
+ bne @name
+ lda dos64_uci_data_len
+ sta dos64_files_actual
+ lda #1
+ sta dos64_files_count_known
+ jmp @status
+.endif
 @identify:
  lda dos64_uci_data_len+1
  jne @protocol

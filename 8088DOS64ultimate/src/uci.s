@@ -209,7 +209,17 @@ uci_quiet:
  rts
 
 dos64_uci_init:
+.ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
+ ; Initializer touches RAM only. Preserve all caller registers and flags
+ ; (except the carry-clear result), without exposing I/O or changing banking.
+ php
+ sei
+ pha
+ txa
+ pha
+.else
  ENTER
+.endif
  lda #0
  ldx #dos64_uci_state_end-dos64_uci_state_start-1
 @zero: sta dos64_uci_state_start,x
@@ -231,7 +241,16 @@ dos64_uci_init:
  sta dos64_uci_timeout+1
  lda #60
  sta dos64_uci_recovery_timeout
+.ifdef DOS64_NATIVE_UCI_DIAGNOSTIC
+ pla
+ tax
+ pla
+ plp
+ clc
+ rts
+.else
  LEAVE 0
+.endif
 
 dos64_uci_start:
  ENTER

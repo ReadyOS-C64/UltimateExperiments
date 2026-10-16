@@ -1,9 +1,11 @@
 .include "abi.inc"
+.include "native_save.inc"
 .include "image_import.inc"
 .include "host_clock.inc"
 .include "host_input.inc"
 .include "render_graphics.inc"
 .macpack longbranch
+.import sav_borrowed,sav_dispatch,sav_begin
 .import hdb_native_burst,hdb_active,hdc_copy,hdc_begin,hdc_poll,hdc_config
 .import hdc_enabled,hdc_flags,hdc_phase,hdc_error
 .export n_cpu_error,n_tick_return,n_burst,n_timer_cpu_error
@@ -135,11 +137,16 @@ n_fail:
 .segment "DEVICECODE"
 ; Between CPU calls, no pending native callback or overlay owner.
 dos64_native_tick:
- lda n_command
+ lda sav_borrowed
+ beq :+
+ jmp sav_dispatch
+: lda n_command
  jeq n_run
  lda #0
  sta n_ack
  lda n_command
+ cmp #NATIVE_SAVE_COMMAND
+ jeq sav_begin
  cmp #4
  jeq n_read_request
  cmp #1

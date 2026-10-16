@@ -1,3 +1,9 @@
+## Current ROOT SAVE integration, 2026-10-15 18:18 PDT
+
+Current runtime ab2d0d5f/unit06a4eead integrates the independently reviewed43-file FILEINFO/whole-floppy SAVE union. Fresh ROOT gates pass428default,298tooling,58focused,6144initializer and16+256+512REUobserver controls. Fresh genuine DOS runs11commands and COPY/SAVE/reopen: all368640bytes match, guest counter stays418049 through55745polls, all4MiB REU unchanged,32frames restored. All13root disk checkpoints match the independent FAT oracle byte-for-byte;387manifest files/copies exact. Twelve standalone PRGs unchanged; strict exporter intentionally96c3491b. First closure failure retained: optional exporter needed explicit rebuild. Evidence native-save-current-root-20261015.json.
+
+Physical SAVE, Save/Discard UI, generation binding, HD/IEC persistence and game video remain pending. Production retains full timer sampling. Historical b29 fixed-work adapter is ready. Exact modeled8088 reference A/B is4.542..4.54525ms/10.7475..10.75075ms at4MHz; physical ratio pending. Old CIA1 model2.2939x was found to subtract a reset native counter; predecessor retained, corrected successor1.5856x. New CIA2 preliminary1.63x/1.50x likewise withdrawn before sealing; private fatal-state/large-gap controls still being repaired. Neither prototype is promoted.
+
 ## Recovery complete, 2026-10-15 18:07 PDT
 
 No physical application is active; source freeze is released. The user's older-build keyboard acceptance stands. Original session cleanup and both bounded delta attempts remain failed. Separate original 40fe/3880 whole-file restoration passed on its first attempt: every original 4 MiB byte equals ac43 backup, post-reboot settings and unmounted media baseline/reset are verified, all859 source pins and843 historical copies/live sources match, and five complete owned FTP files read back. See `evidence/c64u-interactive-reboot-recovery-20261015.json`.

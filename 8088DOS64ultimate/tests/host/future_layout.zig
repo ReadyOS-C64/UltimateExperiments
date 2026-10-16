@@ -29,13 +29,13 @@ fn acquire(f: *F, id: u8) !void {
 fn release(f: *F) !void {
     try call(f, "dos64_overlay_release", 0);
 }
-test "six assets commit before cache frames are reclaimed and every payload switches exactly" {
+test "seven assets commit before cache frames are reclaimed and every payload switches exactly" {
     var f = try init();
     defer f.deinit();
-    const assets = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", std.testing.allocator, .limited(12289));
+    const assets = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", std.testing.allocator, .limited(14337));
     defer std.testing.allocator.free(assets);
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x340000, assets.ptr, assets.len));
-    try std.testing.expectEqual(@as(u64, 6), c.dos64_dma_transfers(f.machine));
+    try std.testing.expectEqual(@as(u64, 7), c.dos64_dma_transfers(f.machine));
     var shadow:[3584]u8=undefined;for(&shadow,0..)|*v,i|{v.*=f.peek(@intCast(0xa000+i));try std.testing.expectEqual(v.*,f.peek(@intCast(0xf000+i)));}
     for(0xfe00..0x10000)|at|try std.testing.expectEqual(@as(u8,@truncate(at^0xa5)),f.peek(@intCast(at)));
     try std.testing.expectEqual(@as(u8,0xa5),try get(&f,"hdb_extension_ready"));

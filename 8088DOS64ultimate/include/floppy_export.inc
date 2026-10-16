@@ -7,8 +7,11 @@ DOS64_FLOPPY_EXPORT_INC=1
 ; 32-bit total tick budget, default144323 (~600 PAL seconds at4096PHI2/tick).
 ; Calls preserve native P except C and $00/$01; A/X/Y clobbered. start C=1
 ; rejects without wire/DMA/state mutation. state1 busy,2 verified,3 failed.
-; verified implies all720 sectors +EOF after CLOSE/reopen and known final
-; CLOSE. It does not imply power-fail durability. uncertain stays1 on failure;
+; verified requires fresh successful FILE_INFO after CLOSE/reopen with a
+; declared LE32size exactly368640, then720matching sectors, zero-data EOF and
+; known final CLOSE. It proves the observed metadata/content/closure contract,
+; not filesystem flush, protection from external mutation or power-fail
+; durability. The caller must also bind media generation before clean UI. uncertain stays1 on failure;
 ; REU source is NEVER written, and no delete/rename/overwrite is implemented.
 EXPORT_IDLE=0
 EXPORT_BUSY=1
@@ -21,4 +24,5 @@ EXPORT_ERR_COMPARE=4
 EXPORT_ERR_EXTRA=5
 EXPORT_ERR_TIME=6
 EXPORT_ERR_CANCEL=7
+EXPORT_ERR_LENGTH=8
 .endif

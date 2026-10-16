@@ -79,7 +79,7 @@ test "whole360KiB create-new write close reopen exact compare EOF close preserve
  try std.testing.expectEqual(@as(u8,0),try f.get("dos64_export_uncertain"));try std.testing.expectEqual(@as(u8,0),try f.get("dos64_files_uncertain"));
  try std.testing.expectEqual(@as(u32,SIZE),c.export_model_size(f.m));for(0..SIZE) |i|try std.testing.expectEqual(pattern(i),c.export_model_byte(f.m,@intCast(i)));
  try std.testing.expectEqual(@as(u32,2),c.export_model_count(f.m,2));try std.testing.expectEqual(@as(u32,720),c.export_model_count(f.m,5));
- try std.testing.expectEqual(@as(u32,721),c.export_model_count(f.m,4));try std.testing.expectEqual(@as(u32,2),c.export_model_count(f.m,3));
+ try std.testing.expectEqual(@as(u32,721),c.export_model_count(f.m,4));try std.testing.expectEqual(@as(u32,1),c.export_model_count(f.m,7));try std.testing.expectEqual(@as(u32,2),c.export_model_count(f.m,3));
  try std.testing.expectEqual(@as(u8,0),c.export_model_open(f.m));try std.testing.expectEqual(@as(u8,0),try f.get("dos64_files_handle"));
  try std.testing.expectEqual(@as(u64,1440),c.dos64_dma_transfers(f.m));try f.authority();
  std.debug.print("floppy_export_full_bytes={d} maximum_poll_cycles={d}\n",.{SIZE,maximum_poll});
@@ -93,8 +93,8 @@ test "existing destination never overwritten and unknown open cleanup is explici
  try std.testing.expectEqual(@as(u8,0),try f.get("dos64_files_handle"));
 }
 
-test "short WRITE with success status is detected by reopened full comparison" {
- var f=try F.init(false);defer f.deinit();c.export_model_faults(f.m,-1,5,-1,-1,0,0);try f.start();try f.run();try f.failed(4);
+test "short WRITE with success status is detected by fresh declared size" {
+ var f=try F.init(false);defer f.deinit();c.export_model_faults(f.m,-1,5,-1,-1,0,0);try f.start();try f.run();try f.failed(8);
  try std.testing.expectEqual(@as(u32,SIZE-495),c.export_model_size(f.m));try std.testing.expectEqual(@as(u8,0),c.export_model_open(f.m));
 }
 
@@ -102,7 +102,7 @@ test "corrupted read short read and extra EOF byte cannot publish success" {
  for([_]u8{0,1,2}) |which| {
   var f=try F.init(false);defer f.deinit();
   c.export_model_faults(f.m,-1,-1,if(which==0)123456 else -1,if(which==1)1024 else -1,if(which==2)1 else 0,0);
-  try f.start();try f.run();try f.failed(if(which==0)4 else if(which==1)3 else 5);
+  try f.start();try f.run();try f.failed(if(which==0)4 else if(which==1)3 else 8);
   try std.testing.expectEqual(@as(u8,0),c.export_model_open(f.m));
  }
 }
@@ -115,7 +115,7 @@ test "DMA partial failure never writes REU or advances verified sectors" {
 }
 
 test "every file phase failure preserves uncertain source and closure failure stays explicit" {
- for([_]c_int{1,2,722,723,724,1445}) |command| {
+ for([_]c_int{1,2,722,723,724,725,1446}) |command| {
   var f=try F.init(false);defer f.deinit();c.export_model_faults(f.m,command,-1,-1,-1,0,0);try f.start();try f.run();try f.failed(1);
   try std.testing.expectEqual(@as(u8,0),try f.get("dos64_files_handle"));
  }

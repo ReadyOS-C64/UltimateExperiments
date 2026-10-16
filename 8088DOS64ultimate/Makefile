@@ -5,7 +5,7 @@ DOS64_PYTHON ?= python3
 
 .DEFAULT_GOAL := all
 
-ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s src/host_input.s src/cold.s src/elapsed.s src/native_text_display.s src/native_text_fonts.s src/native_runtime.s src/native_timer.s src/virtual_irq.s src/virtual_pit.s src/render_graphics.s src/hd_cache.s src/hd_bios.s src/hd_extension_load.s src/hd_cold.s src/uci_diagnostic.s
+ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/bios.s src/ports.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s src/host_input.s src/cold.s src/elapsed.s src/native_text_display.s src/native_text_fonts.s src/native_runtime.s src/native_timer.s src/virtual_irq.s src/virtual_pit.s src/render_graphics.s src/hd_cache.s src/hd_bios.s src/hd_extension_load.s src/hd_cold.s src/uci_diagnostic.s src/native_save.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
 OBJECTS := $(filter-out build/host_clock.o build/elapsed.o build/uci.o,$(OBJECTS)) build/owned-host_clock.o build/owned-elapsed.o build/native-uci.o
 OBJECTS := $(patsubst build/reu.o,build/native-reu.o,$(OBJECTS))
@@ -15,6 +15,11 @@ build/native-reu.o: src/reu.s include/reu.inc Makefile
 build/native-uci.o: src/uci.s include/uci.inc Makefile
 	@mkdir -p build
 	$(DOS64_CA65) -g -D DOS64_NATIVE_UCI_DIAGNOSTIC=1 -D DOS64_NATIVE_REU_OBSERVER=1 -I include -o $@ $<
+OBJECTS += build/integrated-floppy_export.o
+build/integrated-floppy_export.o: src/floppy_export.s include/floppy_export.inc Makefile
+	@mkdir -p build
+	$(DOS64_CA65) -g -D DOS64_EXPORT_INTEGRATED=1 -I include -o $@ $<
+build/native_save.o: include/native_save.inc include/floppy_export.inc include/reu.inc include/memory.inc include/host_clock.inc Makefile
 build/owned-host_clock.o: src/host_clock.s include/host_clock.inc Makefile
 	@mkdir -p build
 	$(DOS64_CA65) -g -D DOS64_OWNED_CLOCK=1 -I include -o $@ $<
@@ -31,12 +36,14 @@ build/clock.o: include/clock.inc Makefile
 build/keyboard.o: include/keyboard.inc Makefile
 build/uci.o: include/uci.inc Makefile
 build/host_clock.o: include/host_clock.inc Makefile
-build/files.o: include/files.inc include/uci.inc Makefile
+build/files.o: src/files.s include/files.inc include/uci.inc Makefile
+	@mkdir -p build
+	$(DOS64_CA65) -g -D DOS64_FILES_INFO=1 -I include -o $@ $<
 build/render_text.o: include/render_text.inc Makefile
 build/overlays.o: include/overlays.inc include/reu.inc Makefile
 build/image_import.o: include/image_import.inc include/files.inc include/uci.inc include/overlays.inc include/reu.inc Makefile
 build/boot.o: include/overlays.inc Makefile
-build/native_runtime.o: include/image_import.inc include/host_clock.inc include/host_input.inc include/render_graphics.inc Makefile
+build/native_runtime.o: include/native_save.inc include/image_import.inc include/host_clock.inc include/host_input.inc include/render_graphics.inc Makefile
 build/native_timer.o: include/host_clock.inc Makefile
 build/virtual_pit.o: include/host_clock.inc Makefile
 build/render_graphics.o: include/render_graphics.inc Makefile
@@ -180,18 +187,18 @@ test-cache-vice: cache-probe
 
 build/dos64.prg: $(OBJECTS) cfg/dos64-runtime.cfg build_support/overlay_package.py Makefile
 	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o build/dos64-resident.prg -m build/dos64.map -Ln build/dos64.labels $(OBJECTS)
-	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-resident.prg --files build/dos64-resident.prg.files.bin --render build/dos64-resident.prg.render.bin --input build/dos64-resident.prg.input.bin --pit build/dos64-resident.prg.pit.bin --gfx build/dos64-resident.prg.gfx.bin --hd build/dos64-resident.prg.hd.bin --shadow build/dos64-resident.prg.hdb.bin --import-code build/dos64-resident.prg.import.bin --labels build/dos64.labels --output-prg $@ --output-assets build/dos64-overlay-startup.bin --manifest build/dos64-overlay-package.json
+	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-resident.prg --files build/dos64-resident.prg.files.bin --render build/dos64-resident.prg.render.bin --input build/dos64-resident.prg.input.bin --pit build/dos64-resident.prg.pit.bin --gfx build/dos64-resident.prg.gfx.bin --hd build/dos64-resident.prg.hd.bin --shadow build/dos64-resident.prg.hdb.bin --saver build/dos64-resident.prg.saver.bin --import-code build/dos64-resident.prg.import.bin --labels build/dos64.labels --output-prg $@ --output-assets build/dos64-overlay-startup.bin --manifest build/dos64-overlay-package.json
 
 build/dos64-tests.prg: $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o cfg/dos64-runtime.cfg build_support/overlay_package.py Makefile
 	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o build/dos64-tests-resident.prg -m build/dos64-tests.map -Ln build/dos64-tests.labels $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
-	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-tests-resident.prg --files build/dos64-tests-resident.prg.files.bin --render build/dos64-tests-resident.prg.render.bin --input build/dos64-tests-resident.prg.input.bin --pit build/dos64-tests-resident.prg.pit.bin --gfx build/dos64-tests-resident.prg.gfx.bin --hd build/dos64-tests-resident.prg.hd.bin --shadow build/dos64-tests-resident.prg.hdb.bin --import-code build/dos64-tests-resident.prg.import.bin --labels build/dos64-tests.labels --output-prg $@ --output-assets build/dos64-tests-overlay-startup.bin --manifest build/dos64-tests-overlay-package.json
+	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-tests-resident.prg --files build/dos64-tests-resident.prg.files.bin --render build/dos64-tests-resident.prg.render.bin --input build/dos64-tests-resident.prg.input.bin --pit build/dos64-tests-resident.prg.pit.bin --gfx build/dos64-tests-resident.prg.gfx.bin --hd build/dos64-tests-resident.prg.hd.bin --shadow build/dos64-tests-resident.prg.hdb.bin --saver build/dos64-tests-resident.prg.saver.bin --import-code build/dos64-tests-resident.prg.import.bin --labels build/dos64-tests.labels --output-prg $@ --output-assets build/dos64-tests-overlay-startup.bin --manifest build/dos64-tests-overlay-package.json
 
 build/dos64-tests.bin: build/dos64-tests.prg
 	$(DOS64_PYTHON) build_support/raw_payload.py $< $@
 
 verify-memory: build/dos64.prg build/dos64-tests.prg
-	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64.map build/dos64.labels --overlay-files build/dos64-resident.prg.files.bin --overlay-render build/dos64-resident.prg.render.bin --overlay-input build/dos64-resident.prg.input.bin --overlay-pit build/dos64-resident.prg.pit.bin --overlay-gfx build/dos64-resident.prg.gfx.bin --overlay-hd build/dos64-resident.prg.hd.bin --shadow build/dos64-resident.prg.hdb.bin --import-code build/dos64-resident.prg.import.bin
-	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64-tests.map build/dos64-tests.labels --overlay-files build/dos64-tests-resident.prg.files.bin --overlay-render build/dos64-tests-resident.prg.render.bin --overlay-input build/dos64-tests-resident.prg.input.bin --overlay-pit build/dos64-tests-resident.prg.pit.bin --overlay-gfx build/dos64-tests-resident.prg.gfx.bin --overlay-hd build/dos64-tests-resident.prg.hd.bin --shadow build/dos64-tests-resident.prg.hdb.bin --import-code build/dos64-tests-resident.prg.import.bin
+	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64.map build/dos64.labels --overlay-files build/dos64-resident.prg.files.bin --overlay-render build/dos64-resident.prg.render.bin --overlay-input build/dos64-resident.prg.input.bin --overlay-pit build/dos64-resident.prg.pit.bin --overlay-gfx build/dos64-resident.prg.gfx.bin --overlay-hd build/dos64-resident.prg.hd.bin --shadow build/dos64-resident.prg.hdb.bin --saver build/dos64-resident.prg.saver.bin --import-code build/dos64-resident.prg.import.bin
+	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64-tests.map build/dos64-tests.labels --overlay-files build/dos64-tests-resident.prg.files.bin --overlay-render build/dos64-tests-resident.prg.render.bin --overlay-input build/dos64-tests-resident.prg.input.bin --overlay-pit build/dos64-tests-resident.prg.pit.bin --overlay-gfx build/dos64-tests-resident.prg.gfx.bin --overlay-hd build/dos64-tests-resident.prg.hd.bin --shadow build/dos64-tests-resident.prg.hdb.bin --saver build/dos64-tests-resident.prg.saver.bin --import-code build/dos64-tests-resident.prg.import.bin
 
 manifest: build/dos64.prg build/dos64-tests.prg verify-memory
 	$(DOS64_PYTHON) build_support/hd_identity_plan.py
@@ -233,7 +240,7 @@ build/virtual_pit_reference.o: tests/fixtures/virtual_pit_reference.s Makefile
 
 build/dos64-reference.prg: $(OBJECTS) build/virtual_pit_reference.o build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o cfg/dos64-runtime.cfg Makefile
 	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o build/dos64-reference-resident.prg -m build/dos64-reference.map -Ln build/dos64-reference.labels $(filter-out build/virtual_pit.o,$(OBJECTS)) build/virtual_pit_reference.o build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
-	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-reference-resident.prg --files build/dos64-reference-resident.prg.files.bin --render build/dos64-reference-resident.prg.render.bin --input build/dos64-reference-resident.prg.input.bin --pit build/dos64-reference-resident.prg.pit.bin --gfx build/dos64-reference-resident.prg.gfx.bin --hd build/dos64-reference-resident.prg.hd.bin --shadow build/dos64-reference-resident.prg.hdb.bin --import-code build/dos64-reference-resident.prg.import.bin --labels build/dos64-reference.labels --output-prg $@ --output-assets build/dos64-reference-overlay-startup.bin --manifest build/dos64-reference-overlay-package.json
+	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-reference-resident.prg --files build/dos64-reference-resident.prg.files.bin --render build/dos64-reference-resident.prg.render.bin --input build/dos64-reference-resident.prg.input.bin --pit build/dos64-reference-resident.prg.pit.bin --gfx build/dos64-reference-resident.prg.gfx.bin --hd build/dos64-reference-resident.prg.hd.bin --shadow build/dos64-reference-resident.prg.hdb.bin --saver build/dos64-reference-resident.prg.saver.bin --import-code build/dos64-reference-resident.prg.import.bin --labels build/dos64-reference.labels --output-prg $@ --output-assets build/dos64-reference-overlay-startup.bin --manifest build/dos64-reference-overlay-package.json
 
 .PHONY: test-timer-threshold
 test-timer-threshold: build build/dos64-reference.prg
@@ -276,3 +283,6 @@ include build_support/floppy_export.mk
 .PHONY: test-reu-observer
 test-reu-observer:
 	$(DOS64_PYTHON) build_support/test_reu_observer.py --output build/reu-observer-regression
+.PHONY: test-native-save
+test-native-save: build
+	$(DOS64_ZIG) build native-save native-save-dos --summary all

@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "scope": "Current ROOT actual assembly/genuine DOS/model SAVE; physical SAVE pending",
+  "runtime_sha256": "ab2d0d5f4fa3eb1590ad9f2496630d0ae21ba7dab04cfece3ed9245f90edf0e9",
+  "unit_sha256": "06a4eead2af9ccab30f4cacddfa8b9508a79435474897c0787178868e530e675",
+  "promotion_files": 43,
+  "default_tests": 428,
+  "tooling_tests": 298,
+  "focused_tests": 58,
+  "initializer_equivalence_cases": 6144,
+  "REU_observer_controls": [
+    16,
+    256,
+    512
+  ],
+  "genuine_DOS_commands": 11,
+  "native_save": {
+    "passed": true,
+    "saved_bytes": 368640,
+    "saved_sha256": "2a9bd1c4b3b917f4cd7b1b491181093b4c7150596b58817193cb0ba43b05bde2",
+    "guest_instructions_before": 418049,
+    "guest_instructions_after": 418049,
+    "native_save_polls": 55745,
+    "reu_unchanged_bytes": 4194304,
+    "cache_frames_after": 32,
+    "no_guest_shortcut": true,
+    "physical_persistence": false
+  },
+  "FAT_checkpoint_byte_identities": 13,
+  "manifest_files_and_copies": 387,
+  "unchanged_standalone_PRGs": 12,
+  "strict_exporter_sha256": "96c3491b10b80d212b222d4910c57b40418f11db5c6cb3a6498b8ec9dc7cea6d",
+  "strict_exporter_bytes": 3968,
+  "candidate_manifest_sha256": "dce1747815be10d483931a2e782582fc08b89c674a06111c0c681484324ecbd8",
+  "independent_review_sha256": "27a588a3d3f5ccbe5a508091f1dd3719bf066220b9f6b76a665f384d4ee52905",
+  "independent_prelaunch_executable_sha256": "8717c0ffc02bdaeb31007145124aa1ac572262e59214ebf82f912b5b06bfb231",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/native-save-root-promotion-20261015-181800",
+  "memory": {
+    "MAIN_free_runtime_unit": [
+      1,
+      0
+    ],
+    "DEVICE_free": 14,
+    "HDBIOS_used_free": [
+      2810,
+      774
+    ],
+    "SAVER_used_budget": [
+      1510,
+      2032
+    ],
+    "DEVICESTATE": 1007,
+    "BSS": 206,
+    "ZP_runtime_unit": [
+      36,
+      48
+    ],
+    "ZP_arena": 192,
+    "cold_used_runtime_unit": [
+      3067,
+      4042
+    ],
+    "cold_budget": 4096
+  },
+  "first_root_closure_failure": "Optional exporter was not rebuilt by default make test; retained partial181500 archive, explicitly rebuilt optional target before this fresh closure",
+  "limitations": [
+    "Physical installed-firmware SAVE/retrieval pending",
+    "End-user Save/Discard and generation binding pending",
+    "Online HD rejected; HD/IEC SAVE pending",
+    "No physical speed, flush or power-loss durability claim",
+    "Root fresh genuine execution not separately launch-attested; separate independent frozen execution is prelaunch-attested"
+  ]
+}

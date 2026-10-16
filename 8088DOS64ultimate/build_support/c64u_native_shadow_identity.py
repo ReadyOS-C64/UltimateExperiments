@@ -72,7 +72,10 @@ def prepare(prg,labels,segments,metadata):
     require((segment['start'],segment['length'],segment['source_start'])==(RUN,SIZE,SOURCE),'source/run/window ranges')
     require(1<=linked<=SIZE and segment['state_length']==5 and LOAD<=state<state+5<=0x4000,'linked image/state size')
     require(1<=hd_size<=0x700,'HD payload size')
-    require(prg[:2]==LOAD.to_bytes(2,'little') and len(prg)==END-LOAD+2,'PRG load address/complete packaged length')
+    saver_size=labels.get("__SAVERCODE_SIZE__",0)
+    require(type(saver_size)is int and 0<=saver_size<=0x7f0,"SAVER linked size")
+    packaged_end=0xb800 if saver_size else END
+    require(prg[:2]==LOAD.to_bytes(2,'little') and len(prg)==packaged_end-LOAD+2,'PRG load address/complete packaged length')
     expected_labels={'__HDEXT_START__':RUN,'__HDEXT_SIZE__':SIZE,'__HDEXT_FILEOFFS__':0,
                      '__HDEXT_LAST__':RUN+linked,'__HDBIOS_LOAD__':RUN,'__HDBIOS_RUN__':RUN,'__HDBIOS_SIZE__':linked,
                      '__NATIVESTATE_LOAD__':state,'__NATIVESTATE_RUN__':state,'__NATIVESTATE_SIZE__':5,
@@ -87,7 +90,7 @@ def prepare(prg,labels,segments,metadata):
     load=memory.get('load',{})
     require(type(load) is dict,'memory load schema')
     require(load.get('payload_checked') is True and load.get('layout') in ('runtime','unit') and
-            load.get('start')==LOAD and load.get('end_exclusive')==END and load.get('prg_bytes')==len(prg),'verified load extent')
+            load.get('start')==LOAD and load.get('end_exclusive')==packaged_end and load.get('prg_bytes')==len(prg),'verified load extent')
     require(package.get('sha256',{}).get('packaged_prg')==sha(prg),'package/base PRG hash')
     p=package.get('shadow',{});m=load.get('shadow',{})
     for item in (p,m):
@@ -105,18 +108,32 @@ def prepare(prg,labels,segments,metadata):
     for name,start,size in [('HDBIOS',RUN,linked),('HDCODE',0xc900,hd_size),('NATIVESTATE',state,5)]:
         found=[r for r in rows if r.get('name')==name]
         require(len(found)==1 and found[0].get('start')==start and found[0].get('end')==start+size-1 and found[0].get('bytes')==size,'memory/map segment disagreement')
-    require(package.get('startup_sources')==[0x6000,0x6800,0x8000,0x8800,0x9000,0x9800] and
+    require(package.get('startup_sources')==[0x6000,0x6800,0x8000,0x8800,0x9000,0x9800]+([0xb000]if saver_size else []) and
             package.get('slot_size')==2048 and package.get('window')==0xc900 and package.get('window_size')==0x700,'six overlay package contract')
     lengths=package.get('payload_lengths',[])
-    require(type(lengths) is list and len(lengths)==6 and all(type(v) is int and 1<=v<=0x700 for v in lengths) and lengths[-1]==hd_size,'six overlay lengths')
+    require(type(lengths) is list and len(lengths)==(7 if saver_size else 6) and all(type(v) is int and 1<=v<=0x700 for v in lengths[:6]) and lengths[5]==hd_size and (not saver_size or lengths[6]==saver_size),'six overlay lengths')
     for identity,(source,size) in enumerate(zip(package['startup_sources'],lengths),1):
         slot=prg[source-LOAD+2:source-LOAD+2+2048]
-        tag={1:b'FILE',2:b'TEXT',3:b'KEYS',4:b'TIME',5:b'CGA ',6:b'HD  '}[identity]
-        header=b'D64O'+bytes([1,identity])+size.to_bytes(2,'little')+b'\x00\xc9\0\0'+tag
+        tag={1:b'FILE',2:b'TEXT',3:b'KEYS',4:b'TIME',5:b'CGA ',6:b'HD  ',7:b'SAVE'}[identity]
+        header=b'D64O'+bytes([1,identity])+size.to_bytes(2,'little')+(0xb010 if identity==7 else 0xc900).to_bytes(2,'little')+b'\0\0'+tag
         require(slot[:16]==header and not any(slot[16+size:]),'complete overlay slot/header/tail')
     for phase in (package.get('startup_cache_phase',{}),load.get('startup_cache_phase',{})):
         require(type(phase) is dict and all(type(phase.get(k)) is int and phase[k]==v for k,v in
-                {'start':0x8000,'end_exclusive':END,'cache_frames':23,'overlay_frames':16,'shadow_frames':7}.items()),'startup cache ownership metadata')
+                {'start':0x8000,'end_exclusive':packaged_end,'cache_frames':27 if saver_size else 23,'overlay_frames':16,'shadow_frames':7}.items()),'startup cache ownership metadata')
+    if saver_size:
+        for item in (package.get('saver'),load.get('saver')):
+            require(type(item)is dict and all(type(item.get(k))is int and item[k]==v for k,v in {'source':0xb000,'run':0xb010,'reu':0x343000,'slot_bytes':2048,'linked_bytes':saver_size,'compare_stage':0xb800}.items()),'SAVER exact package/memory modal ranges')
+        require(package['saver'].get('modal_cache_frames')==[24,32] and load['saver'].get('cache_frames')==[24,32],'SAVER eight-frame modal borrow')
+        payload=prg[0xb010-LOAD+2:0xb010-LOAD+2+saver_size]
+        require(package['saver'].get('sha256')==sha(payload),'SAVER payload immutable source hash')
+        require(not any(prg[END-LOAD+2:0xb000-LOAD+2]),'SAVER source gap must remain zero')
+        require(labels.get('__SAVERCODE_LOAD__')==0xb010 and labels.get('__SAVERCODE_RUN__')==0xb010,'SAVER source/run metadata')
+        row=[r for r in rows if r.get('name')=='SAVERCODE']
+        require(len(row)==1 and row[0].get('start')==0xb010 and row[0].get('bytes')==saver_size and row[0].get('end')==0xb010+saver_size-1,'SAVER map segment')
+        for phase in (package['startup_cache_phase'],load['startup_cache_phase']):
+            require(phase.get('span_cache_frames')==28 and phase.get('saver_frames')==4 and phase.get('gap_cache_frames')==[23],'SAVER actual27frames versus28span with frame23gap')
+    else:
+        require(package.get('saver')is None and load.get('saver')is None,'SAVER metadata without linked payload')
     return {'expected':expected,'source_start':SOURCE,'start':RUN,'length':SIZE,'linked_length':linked,
             'zero_tail_bytes':SIZE-linked,'loaded_guard_address':state+4,'loaded_guard_required':0xa5,
             'expected_window_sha256':sha(expected),'base_prg_sha256':sha(prg)}

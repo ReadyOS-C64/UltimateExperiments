@@ -7,7 +7,7 @@ import struct
 import hashlib
 
 
-def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payload=None, shadow_payload=None):
+def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payload=None, shadow_payload=None,saver_payload=None):
     errors = []
     symbols = {name.lstrip("."): int(addr, 16) for addr, name in
                re.findall(r"^al ([0-9A-Fa-f]+) (\S+)", labels_text, re.M)}
@@ -27,7 +27,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
               "NATIVESTATE": (0x080D,0x3FFF), "INPUTCODE": (0xC900,0xCFFF),
               "UCIBUFFER": (0xC100, 0xC8FF),
               "IRQMAIN":(0xC900,0xCFFF),"IRQDEVICE":(0xC900,0xCFFF),"PITCODE":(0xC900,0xCFFF),"GFXCODE":(0xC900,0xCFFF),
-              "HDCODE": (0xC900,0xCFFF),"HDBIOS":(0xF000,0xFDFF),
+              "HDCODE": (0xC900,0xCFFF),"HDBIOS":(0xF000,0xFDFF),"SAVERCODE":(0xB010,0xB7FF),
               "FILECODE": (0xC900, 0xCFFF), "RENDERCODE": (0xC900, 0xCFFF), "DISPLAYCODE": (0xC900,0xCFFF),
               "NARROWFONT": (0x4400,0x47FF), "FULLFONT": (0x4800,0x4FFF),
               "RANGEBUFFER": (0xC000, 0xC0FF), "BSS": (0xE000, 0xE0FF), "PAGEMAP": (0xE100, 0xE8FF),
@@ -265,11 +265,26 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             load["padding"].append({"name":"shadow_source_tail_zero","start":0xa000+count,"end":0xadff,"bytes":3584-count,"file_offset":0xa000+count-0x801+2,"value":0})
             load["shadow"]={"source":0xa000,"run":0xf000,"window_bytes":3584,"linked_bytes":count,"payload_checked":shadow_payload is not None,"excludes":"FE00-FFFF hardware vectors","ownership":"verified cold copy before guest cache; permanent RAM+IO/no KERNAL"}
             load["end_exclusive"]=0xae00
-    load["startup_cache_phase"]={"start":0x8000,"end_exclusive":0xae00 if "HDCODE"in overlays else 0x9800,"cache_frames":23 if "HDCODE"in overlays else 12,"overlay_frames":16 if "HDCODE"in overlays else 12,"shadow_frames":7 if "HDCODE"in overlays else 0}if overlays else None
+    saver=next((seg for seg in segments if seg["name"]=="SAVERCODE"),None)
+    load["saver"]=None
+    if saver:
+        count=saver["bytes"]
+        expected={"__SAVER_START__":0xb010,"__SAVER_SIZE__":0x7f0,"__SAVER_FILEOFFS__":0,"__SAVER_LAST__":0xb010+count,"__SAVERCODE_LOAD__":0xb010,"__SAVERCODE_RUN__":0xb010,"__SAVERCODE_SIZE__":count}
+        if not load["shadow"] or saver["start"]!=0xb010 or not 1<=count<=0x7f0 or any(symbols.get(k)!=v for k,v in expected.items()):errors.append("SAVER requires exact B010-B7FF linked modal payload after HD/shadow")
+        if prg is not None:
+            block=prg[0xb000-0x801+2:0xb800-0x801+2]
+            header=b"D64O"+bytes((1,7))+struct.pack("<HHH",count,0xb010,0)+b"SAVE"
+            if len(block)!=0x800 or block[:16]!=header or any(block[16+count:]):errors.append("SAVER startup header/slot/tail mismatch")
+            if saver_payload is None or len(saver_payload)!=count or block[16:16+count]!=saver_payload:errors.append("SAVER exact linked source payload required")
+        load["padding"].append({"name":"saver_source_gap_zero","start":0xae00,"end":0xafff,"bytes":512,"file_offset":0xae00-0x801+2,"value":0})
+        load["end_exclusive"]=0xb800
+        load["saver"]={"source":0xb000,"run":0xb010,"reu":0x343000,"slot_bytes":2048,"linked_bytes":count,"cache_frames":[24,32],"compare_stage":0xb800,"ownership":"modal paused borrow only; normal guest cache32frames"}
+    elif saver_payload is not None:errors.append("SAVER payload requires linked SAVERCODE")
+    load["startup_cache_phase"]={"start":0x8000,"end_exclusive":0xb800 if saver else (0xae00 if "HDCODE"in overlays else 0x9800),"cache_frames":27 if saver else (23 if "HDCODE"in overlays else 12),"span_cache_frames":28 if saver else (23 if "HDCODE"in overlays else 12),"saver_frames":4 if saver else 0,"gap_cache_frames":[23]if saver else [],"overlay_frames":16 if "HDCODE"in overlays else 12,"shadow_frames":7 if "HDCODE"in overlays else 0}if overlays else None
     load["exclusive_overlay_window_bytes"] = 0x700 if overlays else 0
     load["max_linked_overlay_bytes"] = max((s["bytes"] for s in overlays.values()), default=0)
     load["overlay_source_bytes"] = sum(s["bytes"] for s in overlays.values())
-    load["startup_overlay_bytes"] = len(load["overlays"])*0x800
+    load["startup_overlay_bytes"] = (len(load["overlays"])+(1 if saver else 0))*0x800
     load["padding_bytes"] = sum(p["bytes"] for p in load["padding"])
     load["shadow_source_bytes"]=load["shadow"]["linked_bytes"]if load["shadow"]else 0
     load["payload_bytes"] = load["end_exclusive"] - load["start"]
@@ -302,6 +317,7 @@ if __name__ == "__main__":
     parser.add_argument("--overlay-gfx",type=Path)
     parser.add_argument("--overlay-hd",type=Path)
     parser.add_argument("--shadow",type=Path)
+    parser.add_argument("--saver",type=Path)
     parser.add_argument("--import-code", type=Path)
     args = parser.parse_args()
     map_path = args.map
@@ -316,7 +332,7 @@ if __name__ == "__main__":
     if args.overlay_hd:
         if payloads is None:parser.error("HD requires all five baseline payload files")
         payloads["HDCODE"]=args.overlay_hd.read_bytes()
-    report = verify(map_path.read_text(), args.labels.read_text(), prg_path.read_bytes(), payloads, args.import_code.read_bytes() if args.import_code else None,args.shadow.read_bytes()if args.shadow else None)
+    report = verify(map_path.read_text(), args.labels.read_text(), prg_path.read_bytes(), payloads, args.import_code.read_bytes() if args.import_code else None,args.shadow.read_bytes()if args.shadow else None,args.saver.read_bytes()if args.saver else None)
     map_path.with_suffix(".memory.json").write_text(json.dumps(report, indent=2)+"\n")
     if report["errors"]:
         raise SystemExit("\n".join(report["errors"]))

@@ -48,3 +48,8 @@ OV_ERR_COLD = 8
 ; >=4 MiB is supplied by caller in reu_mib (4..16) AFTER init, based on
 ; separately verified hardware configuration, never inferred from REC bits.
 .endif
+
+; Native SAVE additionally installs immutable SAVER asset7 from startup B000-B7FF
+; into REU343000-3437FF. Only paused SAVE may borrow cache frames24..31
+; as B000-BFFF: code B010-B7FF, compare staging B800-B9FF. FILE remains
+; exclusive C900-CFFF; permanent HDBIOS continuations restore all32frames.

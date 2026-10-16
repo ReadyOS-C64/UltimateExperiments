@@ -1,3 +1,7 @@
+## Measured SAVE union, 2026-10-15
+
+ab2d0d5f/06a4eead,45057-byte PRGs: MAIN free1/0, DEVICE4082/free14, HDBIOS2810/free774, FILE1170/1792, PIT1764/1792, SAVER1510/2032, DEVICESTATE1007, BSS206, ZP36/48 within192, cold3067/4042 within4096. Seventh2KiB startup asset REU343000..3437FF; B000..BFFF borrowed only during paused SAVE. Native RAM-only UCI init saves27DEVICE bytes. Both actual linker JSONs and387-file closure in runs/native-save-root-promotion-20261015-181800.
+
 # Memory budget checkpoint
 
 Status: current accepted layout passes326 Zig/129 tooling/597 quick cases, dedicated import8, genuine DOS equality and12 profile samples. Runtime/unit CODE12290/13206, RODATA880/904, initialized NATIVESTATE2; unit TESTCODE36. DEVICE3756, fonts3072, FILE1088/TEXT957/INPUT882, cold1821, BSS222, ZP18/30, DEVICESTATE244. All-linked totals29790/30778 include mutually exclusive variants and cold data. Resident excluding variants/cold25042/26030 includes fonts/static reservations; maximum concurrently loaded resident totals26130/27118. These are not executable/file-length totals. [Exact maps](evidence/native-text-input-20261015.json).

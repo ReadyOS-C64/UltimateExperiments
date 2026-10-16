@@ -4,7 +4,16 @@
 .include "files.inc"
 .include "uci.inc"
 .include "reu.inc"
-.import dos64_files_start,dos64_files_poll,dos64_uci_abort
+.ifdef DOS64_EXPORT_INTEGRATED
+.import dos64_overlay_files_start,dos64_overlay_files_poll
+ dos64_files_start = dos64_overlay_files_start
+ dos64_files_poll = dos64_overlay_files_poll
+ EXPORT_STAGE = $B800
+.else
+.import dos64_files_start,dos64_files_poll
+ EXPORT_STAGE = $8000
+.endif
+.import dos64_uci_abort
 .import dos64_files_state,dos64_files_handle,dos64_files_op,dos64_files_mode
 .import dos64_files_count,dos64_files_actual,dos64_files_now,dos64_files_path_len
 .import dos64_files_error,dos64_files_transport_error
@@ -48,7 +57,11 @@ export_delta: .res 2
 export_far: .res 3
 export_page: .res 1
 dos64_export_state_end:
+.ifdef DOS64_EXPORT_INTEGRATED
+.segment "SAVERCODE"
+.else
 .segment "CODE"
+.endif
 dos64_export_code_start:
 .macro ENTER
  php
@@ -78,7 +91,7 @@ dos64_export_code_start:
  rts
 .endmacro
 ; Phases:1OPENcreate,2DMAwrite,3WRITEwait,4CLOSEwrite,5OPENread,
-; 6READwait,7DMAcompare,8comparepage,9EOFwait,10CLOSEverify,11cleanupCLOSE.
+; 6READwait,7DMAcompare,8comparepage,9EOFwait,10CLOSEverify,11cleanupCLOSE,12INFO.
 dos64_export_init:
  ENTER
  lda #0
@@ -407,6 +420,8 @@ dos64_export_poll:
  jeq @eof
  cmp #10
  jeq @closed_verify
+ cmp #12
+ jeq @info
  lda #EXPORT_ERR_FILES
  jmp export_fail
 @cleanup:
@@ -455,6 +470,25 @@ dos64_export_poll:
  jcs export_file_error
  jmp export_return
 @opened_read:
+ lda #12
+ sta dos64_export_phase
+ lda #FILES_INFO
+ sta dos64_files_op
+ jsr export_launch
+ jcs export_file_error
+ jmp export_return
+@info:
+ ; Consume the freshly validated metadata before a READ overwrites UCI data.
+ lda dos64_uci_data
+ jne export_length_error
+ lda dos64_uci_data+1
+ cmp #$a0
+ jne export_length_error
+ lda dos64_uci_data+2
+ cmp #5
+ jne export_length_error
+ lda dos64_uci_data+3
+ jne export_length_error
  jsr export_reset_position
  lda #6
  sta dos64_export_phase
@@ -472,7 +506,7 @@ dos64_export_poll:
  jmp export_return
 @dma_compare:
  lda #0
- ldx #$80
+ ldx #>EXPORT_STAGE
  jsr export_dma
  jcs export_dma_error
  lda #0
@@ -485,7 +519,7 @@ dos64_export_poll:
  lda export_page
  bne @second
 @first:
- lda $8000,y
+ lda EXPORT_STAGE,y
  cmp dos64_uci_data,y
  jne export_compare_error
  iny
@@ -493,7 +527,7 @@ dos64_export_poll:
  inc export_page
  jmp export_return
 @second:
- lda $8100,y
+ lda EXPORT_STAGE+$100,y
  cmp dos64_uci_data+$100,y
  jne export_compare_error
  iny
@@ -543,6 +577,9 @@ export_short:
  jmp export_fail
 export_compare_error:
  lda #EXPORT_ERR_COMPARE
+ jmp export_fail
+export_length_error:
+ lda #EXPORT_ERR_LENGTH
  jmp export_fail
 export_extra:
  lda #EXPORT_ERR_EXTRA

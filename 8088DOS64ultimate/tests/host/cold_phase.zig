@@ -84,7 +84,7 @@ test "released first four cache frames cannot alter committed INPUT code asset" 
     var f = try init();
     defer f.deinit();
     const allocator = std.testing.allocator;
-    const blob = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", allocator, .limited(12289));
+    const blob = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests-overlay-startup.bin", allocator, .limited(14337));
     defer allocator.free(blob);
     for (0x8000..0x8800) |a| f.poke(@intCast(a), 0xee);
     try put(&f, "dos64_overlay_requested", 3);

@@ -18,8 +18,21 @@ fn addPeddle(module: *std.Build.Module, b: *std.Build) void {
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
+    const ui=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/uci_ram_init.zig"),.target=target,.optimize=.Debug})});addPeddle(ui.root_module,b);const ui_ref=b.addSystemCommand(&.{"python3","build_support/build_uci_ram_init_reference.py"});const ui_run=b.addRunArtifact(ui);ui_run.step.dependOn(&ui_ref.step);b.step("uci-ram-init","Actual native initializer original equivalence").dependOn(&ui_run.step);
+    const fi=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/files_info.zig"),.target=target,.optimize=.Debug})});addPeddle(fi.root_module,b);b.step("files-info","Strict actual native FILE_INFO record/status/owner").dependOn(&b.addRunArtifact(fi).step);
+
+    const fx=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/files.zig"),.target=target,.optimize=.Debug})});addPeddle(fx.root_module,b);b.step("files-existing","Existing actual native FILE operations").dependOn(&b.addRunArtifact(fx).step);
+
+    @import("tests/floppy_export/build.zig").add(b,target);
+    const sav=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_save.zig"),.target=target,.optimize=.Debug})});
+    sav.filters=b.option([]const []const u8,"native-save-filter","Focused SAVE tests") orelse &.{};
+    sav.root_module.addIncludePath(b.path("tests/floppy_export"));sav.root_module.addIncludePath(b.path("tests/host"));sav.root_module.addIncludePath(b.path("third_party/peddle/Peddle"));
+    sav.root_module.addCSourceFiles(.{.files=&.{"tests/floppy_export/bridge.cpp","third_party/peddle/Peddle/Peddle.cpp","third_party/peddle/Peddle/PeddleDebugger.cpp","third_party/peddle/Peddle/PeddleDisassembler.cpp","third_party/peddle/Peddle/StrWriter.cpp"},.flags=&.{"-std=c++20","-O2","-Wno-unused-parameter","-Wno-unused-variable"}});sav.root_module.link_libcpp=true;
+    b.step("native-save","Modal native paused whole floppy export").dependOn(&b.addRunArtifact(sav).step);
+    const save_dos=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_save_workflow.zig"),.target=target,.optimize=.Debug})});save_dos.root_module.addIncludePath(b.path("tests/floppy_export"));save_dos.root_module.addIncludePath(b.path("tests/host"));save_dos.root_module.addIncludePath(b.path("third_party/peddle/Peddle"));save_dos.root_module.addCSourceFiles(.{.files=&.{"tests/floppy_export/bridge.cpp","third_party/peddle/Peddle/Peddle.cpp","third_party/peddle/Peddle/PeddleDebugger.cpp","third_party/peddle/Peddle/PeddleDisassembler.cpp","third_party/peddle/Peddle/StrWriter.cpp"},.flags=&.{"-std=c++20","-O2","-Wno-unused-parameter","-Wno-unused-variable"}});save_dos.root_module.link_libcpp=true;b.step("native-save-dos","Genuine DOS COPY whole native save and continued guest workflow").dependOn(&b.addRunArtifact(save_dos).step);
+
+
     @import("build_support/iec_standalone_tests.zig").add(b, target);
-    @import("tests/floppy_export/build.zig").add(b, target);
     const cgaw=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/native_cga_workflow.zig"),.target=target,.optimize=.Debug})});
     addPeddle(cgaw.root_module,b);
     b.step("native-cga-workflow","Genuine DOS loads guest CGA COM").dependOn(&b.addRunArtifact(cgaw).step);
