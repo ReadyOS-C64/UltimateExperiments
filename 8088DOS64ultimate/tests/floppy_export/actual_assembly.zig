@@ -8,13 +8,15 @@ var scenarios:usize=0;
 const F=struct {
  m:*c.Dos64Machine,
  labels:[]u8,
+ prg_path:[]const u8,
  now:u16=0,
- fn init(existing:bool) !F {
-  const prg=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,"build/dos64-floppy-export.prg",a,.limited(65538));defer a.free(prg);
+ fn init(existing:bool) !F {return initPaths(existing,"build/dos64-floppy-export.prg","build/dos64-floppy-export.labels");}
+ fn initPaths(existing:bool,prg_path:[]const u8,labels_path:[]const u8) !F {
+  const prg=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,prg_path,a,.limited(65538));defer a.free(prg);
   const m=c.dos64_create() orelse return error.Machine;errdefer c.dos64_destroy(m);
   c.dos64_load(m,0x801,prg[2..].ptr,prg.len-2);_=c.dos64_enable_reu_sized(m,4096);
   c.dos64_uci_model_enable(m,0xdf1c,3,0xc9);c.export_model_enable(m,@intFromBool(existing));
-  var f:F=.{.m=m,.labels=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,"build/dos64-floppy-export.labels",a,.limited(200000))};
+  var f:F=.{.m=m,.prg_path=prg_path,.labels=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,labels_path,a,.limited(200000))};
   _=try f.call("dos64_uci_init");_=try f.call("dos64_files_init");_=try f.call("dos64_export_init");
   try f.word("dos64_uci_timeout",1000);try f.word("dos64_uci_recovery_timeout",100);
   try f.byte("dos64_export_owned",0xa5);try f.byte("dos64_export_paused",0xa5);try f.byte("dos64_export_bank",0x10);
@@ -59,7 +61,7 @@ const F=struct {
   try std.testing.expectEqual(@as(u32,0xffffffff),c.dos64_reu_compare(f.m,0,expected.ptr,expected.len));
   try std.testing.expectEqual(@as(u8,0x67),c.dos64_reu_peek(f.m,BASE-1));try std.testing.expectEqual(@as(u8,0x79),c.dos64_reu_peek(f.m,BASE+SIZE));
   try std.testing.expectEqual(@as(u8,0xa7),c.dos64_peek(f.m,0x7fff));try std.testing.expectEqual(@as(u8,0xb8),c.dos64_peek(f.m,0x8200));
-  const prg=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,"build/dos64-floppy-export.prg",a,.limited(65538));defer a.free(prg);
+  const prg=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,f.prg_path,a,.limited(65538));defer a.free(prg);
   const upload=try f.sym("dos64_uci_upload_operand");const drain=try f.sym("dos64_uci_drain_operand");
   for(prg[2..],0..) |v,i| {const ad=@as(u16,@intCast(0x801+i));if(ad==upload or ad==upload+1 or ad==drain or ad==drain+1)continue;try std.testing.expectEqual(v,c.dos64_peek(f.m,ad));}
   const state_start=try f.sym("dos64_export_state_start");const state_end=try f.sym("dos64_files_state_end");
@@ -78,10 +80,10 @@ test "whole360KiB create-new write close reopen exact compare EOF close preserve
  try std.testing.expectEqual(@as(u8,2),try f.get("dos64_export_state"));try std.testing.expectEqual(@as(u8,1),try f.get("dos64_export_verified"));
  try std.testing.expectEqual(@as(u8,0),try f.get("dos64_export_uncertain"));try std.testing.expectEqual(@as(u8,0),try f.get("dos64_files_uncertain"));
  try std.testing.expectEqual(@as(u32,SIZE),c.export_model_size(f.m));for(0..SIZE) |i|try std.testing.expectEqual(pattern(i),c.export_model_byte(f.m,@intCast(i)));
- try std.testing.expectEqual(@as(u32,2),c.export_model_count(f.m,2));try std.testing.expectEqual(@as(u32,720),c.export_model_count(f.m,5));
+ try std.testing.expectEqual(@as(u32,2),c.export_model_count(f.m,2));try std.testing.expectEqual(@as(u32,1440),c.export_model_count(f.m,5));
  try std.testing.expectEqual(@as(u32,721),c.export_model_count(f.m,4));try std.testing.expectEqual(@as(u32,1),c.export_model_count(f.m,7));try std.testing.expectEqual(@as(u32,2),c.export_model_count(f.m,3));
  try std.testing.expectEqual(@as(u8,0),c.export_model_open(f.m));try std.testing.expectEqual(@as(u8,0),try f.get("dos64_files_handle"));
- try std.testing.expectEqual(@as(u64,1440),c.dos64_dma_transfers(f.m));try f.authority();
+ try std.testing.expectEqual(@as(u64,2160),c.dos64_dma_transfers(f.m));try f.authority();
  std.debug.print("floppy_export_full_bytes={d} maximum_poll_cycles={d}\n",.{SIZE,maximum_poll});
 }
 
@@ -95,7 +97,7 @@ test "existing destination never overwritten and unknown open cleanup is explici
 
 test "short WRITE with success status is detected by fresh declared size" {
  var f=try F.init(false);defer f.deinit();c.export_model_faults(f.m,-1,5,-1,-1,0,0);try f.start();try f.run();try f.failed(8);
- try std.testing.expectEqual(@as(u32,SIZE-495),c.export_model_size(f.m));try std.testing.expectEqual(@as(u8,0),c.export_model_open(f.m));
+ try std.testing.expectEqual(@as(u32,SIZE-239),c.export_model_size(f.m));try std.testing.expectEqual(@as(u8,0),c.export_model_open(f.m));
 }
 
 test "corrupted read short read and extra EOF byte cannot publish success" {
@@ -108,14 +110,15 @@ test "corrupted read short read and extra EOF byte cannot publish success" {
 }
 
 test "DMA partial failure never writes REU or advances verified sectors" {
- for([_]u64{0,720}) |skip| {
+ for([_]u64{0,1,1440}) |skip| {
   var f=try F.init(false);defer f.deinit();c.dos64_reu_fail_after(f.m,skip,17);try f.start();try f.run();try f.failed(2);
+  if(skip<2){try std.testing.expectEqual(@as(u8,@intCast(skip)),try f.get("dos64_export_failure_half"));try std.testing.expectEqual(@as(u8,0),try f.get("dos64_export_failure_sector"));}
   try std.testing.expectEqual(@as(u8,0),c.export_model_open(f.m));
  }
 }
 
 test "every file phase failure preserves uncertain source and closure failure stays explicit" {
- for([_]c_int{1,2,722,723,724,725,1446}) |command| {
+ for([_]c_int{1,2,3,1442,1443,1444,1445,2166}) |command| {
   var f=try F.init(false);defer f.deinit();c.export_model_faults(f.m,command,-1,-1,-1,0,0);try f.start();try f.run();try f.failed(1);
   try std.testing.expectEqual(@as(u8,0),try f.get("dos64_files_handle"));
  }
@@ -178,4 +181,49 @@ test "32bit total elapsed deadline and overflow retain first failure diagnostics
  var h=try F.init(false);defer h.deinit();c.export_model_faults(h.m,2,-1,-1,-1,0,0);try h.start();try h.run();try h.failed(1);
  try std.testing.expectEqual(@as(u8,3),try h.get("dos64_export_failure_phase"));try std.testing.expectEqual(@as(u8,3),try h.get("dos64_export_failure_files_error"));
  std.debug.print("floppy_export_complete_scenarios={d} maximum_poll_cycles={d}\n",.{scenarios,maximum_poll});
+}
+
+
+test "aligned full-sector DMA alias hypothesis is bypassed by every256-byte WRITE" {
+ var f=try F.init(false);defer f.deinit();c.export_model_dma_alias(f.m,1);try f.start();try f.run();
+ try std.testing.expectEqual(@as(u8,2),try f.get("dos64_export_state"));
+ try std.testing.expectEqual(@as(u32,0),c.export_model_alias_hits(f.m));
+ try std.testing.expectEqual(@as(u32,1440),c.export_model_count(f.m,5));
+ for(0..1440) |i|try std.testing.expectEqual(@as(u32,256),c.export_model_write_size(f.m,@intCast(i)));
+ for(0..SIZE) |i|try std.testing.expectEqual(pattern(i),c.export_model_byte(f.m,@intCast(i)));
+ try std.testing.expectEqual(@as(u8,0xd0),try f.get("dos64_export_sectors"));
+ try std.testing.expectEqual(@as(u8,2),c.dos64_peek(f.m,(try f.sym("dos64_export_sectors"))+1));
+ try f.authority();
+}
+
+test "first and second half WRITE failure report logical sector and half without advancement" {
+ for([_]c_int{2,3,4,5,1440,1441}) |command| {
+  var f=try F.init(false);defer f.deinit();c.export_model_faults(f.m,command,-1,-1,-1,0,0);try f.start();try f.run();try f.failed(1);
+  const write_index:usize=@intCast(command-2);
+  try std.testing.expectEqual(@as(u8,@intCast(write_index%2)),try f.get("dos64_export_failure_half"));
+  const sector=write_index/2;const address=try f.sym("dos64_export_failure_sector");
+  try std.testing.expectEqual(@as(u16,@intCast(sector)),@as(u16,c.dos64_peek(f.m,address))|(@as(u16,c.dos64_peek(f.m,address+1))<<8));
+  try std.testing.expectEqual(@as(u8,3),try f.get("dos64_export_failure_phase"));
+  try std.testing.expectEqual(@as(u32,@intCast(write_index*256)),c.export_model_size(f.m));
+  try std.testing.expectEqual(@as(u8,0),try f.get("dos64_files_handle"));
+ }
+}
+
+
+
+test "second-half cancellation preserves first-half file bytes logical count and source" {
+ var f=try F.init(false);defer f.deinit();try f.start();
+ for(0..200000) |_| {
+  if(try f.get("dos64_export_write_half")==1 and try f.get("dos64_export_phase")==2)break;
+  try std.testing.expectEqual(@as(u8,1),try f.get("dos64_export_state"));try f.tick();
+ }
+ try std.testing.expectEqual(@as(u8,1),try f.get("dos64_export_write_half"));
+ try f.byte("dos64_export_cancel",1);try f.run();try f.failed(7);
+ try std.testing.expectEqual(@as(u8,1),try f.get("dos64_export_failure_half"));
+ try std.testing.expectEqual(@as(u8,2),try f.get("dos64_export_failure_phase"));
+ try std.testing.expectEqual(@as(u8,0),try f.get("dos64_export_failure_sector"));
+ try std.testing.expectEqual(@as(u32,256),c.export_model_size(f.m));
+ try std.testing.expectEqual(@as(u32,1),c.export_model_count(f.m,5));
+ try std.testing.expectEqual(@as(u8,0),try f.get("dos64_files_handle"));
+ for(0..256) |i|try std.testing.expectEqual(pattern(i),c.export_model_byte(f.m,@intCast(i)));
 }

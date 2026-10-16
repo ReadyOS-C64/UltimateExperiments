@@ -240,3 +240,6 @@ A successful firmware WRITE can hide a short transfer, and CLOSE can discard und
 2026-10-15: Whole-image write count and reopened exact length are insufficient SAVE acceptance. Actual hardware produced720 repetitions of an unrelated512-byte pattern despite the modeled SAVE pass. Full comparison rejected it, and independent FTP corroborated the failure. Preserve authoritative changed media before restoration and keep native verification failure distinct from successful recovery.
 
 2026-10-15: Installed hardware separates aligned512 WRITE corruption from successful2x256 buffering even withCPU-filled command bytes and exact upload/ECHO. Generic transport success and count/status acknowledgements do not prove file-write correctness. Reopened native reads and independent retrieval are both required. Retain conditional firmware-address explanation separately from empirically verified mitigation; physicalwhole-imageSAVE remains its own gate.
+
+
+2026-10-15: Actual CPU-filled pairedWRITE proved512 corrupt/2x256 exact, independently before and after recovery. Promote only the reviewed split exporter; full360KiB SAVE comparison remains separate acceptance. Half-progress coordinates apply only during WRITE phase2/3.

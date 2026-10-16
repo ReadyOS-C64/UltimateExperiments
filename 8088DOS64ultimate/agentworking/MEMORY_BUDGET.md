@@ -1,3 +1,7 @@
+## Measured split256 SAVE union — 2026-10-15 20:39 PDT
+
+Current d883c678/88669999 PRGs45057 bytes. SAVER1543/2032 (+33), DEVICESTATE1009 (+2); MAIN free1runtime/0unit, DEVICE4082/free14, HDBIOS2810/free774, FILE1170/1792, PIT1764/1792, BSS206, ZP36/48, cold3067/4042 unchanged. No REU region or cache budget changes. Actual runtime/unit linker JSONs and387-file closure retained in runs/split-save-root-promotion-20261015-202600.
+
 ## Measured SAVE union, 2026-10-15
 
 ab2d0d5f/06a4eead,45057-byte PRGs: MAIN free1/0, DEVICE4082/free14, HDBIOS2810/free774, FILE1170/1792, PIT1764/1792, SAVER1510/2032, DEVICESTATE1007, BSS206, ZP36/48 within192, cold3067/4042 within4096. Seventh2KiB startup asset REU343000..3437FF; B000..BFFF borrowed only during paused SAVE. Native RAM-only UCI init saves27DEVICE bytes. Both actual linker JSONs and387-file closure in runs/native-save-root-promotion-20261015-181800.

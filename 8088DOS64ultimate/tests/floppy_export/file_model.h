@@ -12,6 +12,9 @@ struct FloppyExportModel {
  size_t position=0;
  int fail_command=-1,partial_command=-1,corrupt_offset=-1,short_offset=-1;
  bool extra=false,bad_cleanup=false;
+ // Opt-in platform hypothesis: full aligned WRITE wrongly DMA-aliases IO BRAM.
+ // This model reproduces the observed corruption class, not installed RTL proof.
+ bool aligned_dma_alias=false;uint32_t alias_hits=0;
  int64_t info_size=-1;int info_fault=0;
  bool prepare(UciModel &w,uint16_t address,uint8_t value) {
   if(address!=w.base || !(value&1))return true;
@@ -37,9 +40,15 @@ struct FloppyExportModel {
     if(mode==6 && extra)output.push_back(0x57);
     opened=false;break;
    case 5:{
-    if(!opened || mode!=6 || c[0]!=target || c.size()!=516 || c[2]!=0 || c[3]!=2){w.fault=true;return false;}
-    size_t n=int(history.size())==partial_command?17:512;
-    output.insert(output.end(),c.begin()+4,c.begin()+4+n);position+=n;break;
+    if(!opened || mode!=6 || c[0]!=target || c.size()<4){w.fault=true;return false;}
+    size_t requested=c[2]+256*c[3];
+    if((requested!=256 && requested!=512) || c.size()!=requested+4){w.fault=true;return false;}
+    size_t n=int(history.size())==partial_command?17:requested;
+    if(aligned_dma_alias && position%512==0 && requested==512) {
+     ++alias_hits;
+     for(size_t i=0;i<n;++i)output.push_back(uint8_t((i*29)^(i>>3)^0x23));
+    } else output.insert(output.end(),c.begin()+4,c.begin()+4+n);
+    position+=n;break;
    }
    case 7:{
     if(!opened || c[0]!=target || c.size()!=2){w.fault=true;return false;}
@@ -79,6 +88,9 @@ struct FloppyExportModel {
 extern "C" {
 #endif
 void export_model_enable(void*,int);
+void export_model_dma_alias(void*,int);
+uint32_t export_model_alias_hits(void*);
+uint32_t export_model_write_size(void*,uint32_t);
 void export_model_info(void*,int64_t,int);
 void export_model_faults(void*,int,int,int,int,int,int);
 uint32_t export_model_size(void*);

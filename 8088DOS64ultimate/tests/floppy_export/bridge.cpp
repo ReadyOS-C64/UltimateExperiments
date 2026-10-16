@@ -425,3 +425,7 @@ void export_model_info(void *p,int64_t size,int fault) {
  auto &m=*static_cast<Dos64Machine*>(p)->cpu.floppy_export;
  m.info_size=size;m.info_fault=fault;
 }
+
+void export_model_dma_alias(void *p,int enabled){static_cast<Dos64Machine*>(p)->cpu.floppy_export->aligned_dma_alias=enabled;}
+uint32_t export_model_alias_hits(void *p){return static_cast<Dos64Machine*>(p)->cpu.floppy_export->alias_hits;}
+uint32_t export_model_write_size(void *p,uint32_t index){for(auto &c:static_cast<Dos64Machine*>(p)->cpu.floppy_export->history)if(c[1]==5){if(!index--)return c[2]+256*c[3];}return 0;}

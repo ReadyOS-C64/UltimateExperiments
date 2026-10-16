@@ -12,6 +12,10 @@ DOS64_FLOPPY_EXPORT_INC=1
 ; known final CLOSE. It proves the observed metadata/content/closure contract,
 ; not filesystem flush, protection from external mutation or power-fail
 ; durability. The caller must also bind media generation before clean UI. uncertain stays1 on failure;
+; Each logical512-byte sector is written as two256-byte requests. The public
+; write_half and first failure_half (0/1) locate a failed write within the sector
+; when failure_phase is2 (DMA) or3 (WRITE); other phases have no write-half meaning.
+; sectors counts only completed logical sectors, never successful first halves.
 ; REU source is NEVER written, and no delete/rename/overwrite is implemented.
 EXPORT_IDLE=0
 EXPORT_BUSY=1

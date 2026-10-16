@@ -179,7 +179,7 @@ const Lane = struct {
         }
     }
     fn saveCopy(self:*Lane,disk:[]const u8) !void {
-        model.export_model_enable(self.f.machine,0);
+        model.export_model_enable(self.f.machine,0);model.export_model_dma_alias(self.f.machine,1);
         const path="/usb1/DOS64_TEST/native-copy-save/WORK.IMG\x00";
         self.f.poke(try self.f.symbol("dos64_export_owned"),0xa5);self.f.poke(try self.f.symbol("dos64_export_paused"),0xa5);self.f.poke(try self.f.symbol("dos64_export_bank"),0x10);self.f.poke(try self.f.symbol("dos64_export_path_len"),path.len);
         for(path,0..) |v,i|self.f.poke((try self.f.symbol("dos64_export_path"))+@as(u16,@intCast(i)),v);
@@ -189,9 +189,10 @@ const Lane = struct {
         var polls:u32=0;while(self.f.peek(try self.f.symbol("sav_borrowed"))!=0):(polls+=1){if(polls>250000)return error.NativeSaveBudget;try self.call("dos64_native_tick",100000);}
         try std.testing.expectEqual(@as(u8,5),self.state());try std.testing.expectEqual(@as(u8,0xa5),self.f.peek(self.diag+4));try std.testing.expectEqual(@as(u8,32),self.f.peek(try self.f.symbol("dos64_cache_limit")));try std.testing.expectEqual(@as(u8,1),self.f.peek(try self.f.symbol("dos64_export_verified")));try std.testing.expectEqual(before,self.count());
         for(guest_regs,0..) |v,i|try std.testing.expectEqual(v,self.f.peek(self.guest+@as(u16,@intCast(i))));try std.testing.expectEqual(@as(u32,0xffffffff),c.dos64_reu_compare(self.f.machine,0,whole.ptr,whole.len));
+        try std.testing.expectEqual(@as(u32,1440),model.export_model_count(self.f.machine,5));try std.testing.expectEqual(@as(u32,0),model.export_model_alias_hits(self.f.machine));for(0..1440) |i|try std.testing.expectEqual(@as(u32,256),model.export_model_write_size(self.f.machine,@intCast(i)));
         const saved=try alloc.alloc(u8,368640);defer alloc.free(saved);try std.testing.expectEqual(@as(u32,368640),model.export_model_size(self.f.machine));for(saved,0..) |*v,i|v.*=model.export_model_byte(self.f.machine,@intCast(i));try std.testing.expectEqualSlices(u8,disk,saved);
         try std.Io.Dir.cwd().writeFile(std.Options.debug_io,.{.sub_path="build/native-saved-copy.img",.data=saved});
-        const proof=try std.json.Stringify.valueAlloc(alloc,.{.passed=true,.saved_bytes=saved.len,.saved_sha256=sha(saved),.guest_instructions_before=before,.guest_instructions_after=self.count(),.native_save_polls=polls,.reu_unchanged_bytes=whole.len,.cache_frames_after=self.f.peek(try self.f.symbol("dos64_cache_limit")),.no_guest_shortcut=true,.physical_persistence=false},.{.whitespace=.indent_2});defer alloc.free(proof);try std.Io.Dir.cwd().writeFile(std.Options.debug_io,.{.sub_path="build/native-saved-copy.json",.data=proof});
+        const proof=try std.json.Stringify.valueAlloc(alloc,.{.passed=true,.saved_bytes=saved.len,.write_requests=model.export_model_count(self.f.machine,5),.write_request_bytes=256,.logical_sectors=720,.aligned_dma_alias_model=true,.alias_hits=model.export_model_alias_hits(self.f.machine),.saved_sha256=sha(saved),.guest_instructions_before=before,.guest_instructions_after=self.count(),.native_save_polls=polls,.reu_unchanged_bytes=whole.len,.cache_frames_after=self.f.peek(try self.f.symbol("dos64_cache_limit")),.no_guest_shortcut=true,.physical_persistence=false},.{.whitespace=.indent_2});defer alloc.free(proof);try std.Io.Dir.cwd().writeFile(std.Options.debug_io,.{.sub_path="build/native-saved-copy.json",.data=proof});
     }
     fn captureDisk(self: *Lane, name: []const u8) !void {
         if (self.state() != 5) return error.CaptureRequiresCoherentPause;

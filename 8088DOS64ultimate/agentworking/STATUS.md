@@ -1,3 +1,9 @@
+## Current split256 SAVE integration — 2026-10-15 20:39 PDT
+
+ROOT d883c678 / unit88669999 promotes the independently reviewed ten-file split-write repair. Fresh ROOT428 Peddle,298 tooling and73 focused tests pass;387 manifest files and immutable copies match, all thirteen DOS disk checkpoints equal the independently inspected FAT fixtures. Genuine DOS COPY/SAVE produces368640 exact bytes,1440x256 writes, zero modeled alias hits, fixed guest counter418049 through59355 polls, unchanged4MiB REU and32 restored cache frames. Evidence evidence/split-save-current-root-20261015.json.
+
+Physical paired512-vs-2x256 diagnostic already passed; complete current-build DOS COPY/SAVE/independentFTP/recovery remains the next hardware gate. Use source-only fullSAVE successor a4b4589f, independently reviewed ca865586, with fresh owned media and output. No JIT/CRA activation: production retains the original full timer sampler. Private timer characterization review found K8 classification and raw RAM-port authority defects; no hardware acceptance. Historical physical performance remains2.65%/3.96% of the modeled4MHz8088 reference on two narrow kernels. Game video remains pending.
+
 ## Physical split-write discriminator passed, 2026-10-15 20:25 PDT
 
 Actual pairedCPU-filled WRITE atManual64/PAL proves512_corrupt_256_exact: the512request has509wrong bytes, while2x256 reproduces every512-byte pattern byte. Complete native command/INFO/read/finalCLOSE/source/ports and independentFTP both before and after recovery agree. Source REU staging is not necessary to reproduce the512failure. All original4MiB is unchanged before recovery and byte-exact afterward; settings/media/reset,267 livepins/copies,2PRGs+2OWNERs and2outputfiles pass. Terminal1490/child16229 exits0; no active application/freeze. Evidence evidence/c64u-write-chunk-20261015.json. Installed-source address-truncation mechanism remains conditional; the smaller-write mitigation is now directly supported.

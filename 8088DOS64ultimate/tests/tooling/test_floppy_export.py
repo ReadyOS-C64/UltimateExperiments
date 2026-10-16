@@ -10,7 +10,7 @@ import unittest
 
 PROJECT=Path(__file__).resolve().parents[2]
 SOURCES=['floppy_export_fixture','floppy_export','reu','uci','files']
-EXPECTED='96c3491b10b80d212b222d4910c57b40418f11db5c6cb3a6498b8ec9dc7cea6d'
+EXPECTED='f4c7cadb56b18d88292b356b56d8bc333b07cbe0f2e34f994ec7bc9c7964083a'
 
 class StandaloneExportPackage(unittest.TestCase):
     @classmethod
@@ -26,7 +26,7 @@ class StandaloneExportPackage(unittest.TestCase):
     def manifest(self):return json.loads((self.root/'build/dos64-floppy-export.json').read_text())
     def test_clean_checkout_reproduces_disabled_prg(self):
         prg=(self.root/'build/dos64-floppy-export.prg').read_bytes()
-        self.assertEqual(EXPECTED,hashlib.sha256(prg).hexdigest());self.assertEqual(3968,len(prg))
+        self.assertEqual(EXPECTED,hashlib.sha256(prg).hexdigest());self.assertEqual(4001,len(prg))
         self.assertEqual(b'\x01\x08',prg[:2]);self.assertEqual(b'\x4c\x0d\x08',prg[14:17])
     def test_all_manifest_inputs_and_outputs_exact(self):
         for field in ('sources','outputs'):
@@ -34,8 +34,8 @@ class StandaloneExportPackage(unittest.TestCase):
                 data=(self.root/name).read_bytes();self.assertEqual(record['bytes'],len(data));self.assertEqual(record['sha256'],hashlib.sha256(data).hexdigest())
     def test_actual_linker_budget_is_standalone(self):
         text=(self.root/'build/dos64-floppy-export.map').read_text()
-        self.assertIn('Size=000536',text);self.assertIn('Size=0000A4',text)
-        self.assertIn('00EA00  00EAE6  0000E7',text);self.assertIn('000020  000023  000004',text)
+        self.assertIn('Size=000557',text);self.assertIn('Size=0000A6',text)
+        self.assertIn('00EA00  00EAE8  0000E9',text);self.assertIn('000020  000023  000004',text)
     def test_deleted_product_is_rebuilt(self):
         product=self.root/'build/dos64-floppy-export.prg';product.unlink()
         subprocess.run(['python3',str(self.root/'build_support/build_floppy_export.py')],check=True,capture_output=True,text=True)

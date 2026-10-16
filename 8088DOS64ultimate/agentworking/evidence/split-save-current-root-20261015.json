@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "scope": "ROOT split256 SAVE promotion and model verification; full physical SAVE pending",
+  "runtime_sha256": "d883c6789ea63345939008fe12e1c32782a51932603ac5e78f9d7453dbb20e98",
+  "unit_sha256": "88669999b77ed7b36049912972062710f0a18ce0726f388646abd388de9f5a37",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/split-save-root-promotion-20261015-202600",
+  "tests": {
+    "Peddle": 428,
+    "tooling": 298,
+    "focused": 73
+  },
+  "source_pins_and_copies": 387,
+  "FAT_checkpoint_images_equal": 13,
+  "saved_copy": {
+    "passed": true,
+    "saved_bytes": 368640,
+    "write_requests": 1440,
+    "write_request_bytes": 256,
+    "logical_sectors": 720,
+    "aligned_dma_alias_model": true,
+    "alias_hits": 0,
+    "saved_sha256": "2a9bd1c4b3b917f4cd7b1b491181093b4c7150596b58817193cb0ba43b05bde2",
+    "guest_instructions_before": 418049,
+    "guest_instructions_after": 418049,
+    "native_save_polls": 59355,
+    "reu_unchanged_bytes": 4194304,
+    "cache_frames_after": 32,
+    "no_guest_shortcut": true,
+    "physical_persistence": false
+  },
+  "physical_discriminator": "c64u-write-chunk-20261015.json",
+  "physical_whole_SAVE": "pending"
+}

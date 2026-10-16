@@ -185,3 +185,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 2026-10-15: Native REU issues once then observes completion at most256 times, retaining first/final raw status and failing immediately on verify bit20; success requires EOB40 withoutverify. This is a termination bound, not a physical latency guarantee. Generic40fe andall13standalone binaries remain exact. Compactnativeexpiry2B andresidentNMI1B fundfit; no ZPguard widening.
 
 2026-10-15 proposed native-write workaround, not implemented acceptance: investigate public v3.14 direct command-BRAM→USB DMA address truncation as cause of repeated wrong512-byte SAVE sectors. First source-bound ECHO516, then fresh-file512vs256+256 with independent full retrieval. Prepare private split-write exporter but do not waive INFO/complete comparison/EOF/final closure, source authority or paused cache/guest guards. Installed cause and workaround remain unproven. Generic HD512writes require separate physical acceptance. See docs/NATIVE_WRITE_DIAGNOSIS.md.
+
+
+2026-10-15: Promote independently reviewed split256 floppy SAVE after paired physical discriminator and fresh ROOT428/298/73. Preserve full INFO/compare/EOF/CLOSE,32-frame restoration, guest pause and original-media authority. Generic HD writes remain unchanged/unaccepted; no timer/JIT promotion.

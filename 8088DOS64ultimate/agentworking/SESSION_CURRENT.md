@@ -1,3 +1,9 @@
+## Current split256 SAVE integration — 2026-10-15 20:39 PDT
+
+ROOT d883c678 / unit88669999 promotes the independently reviewed ten-file split-write repair. Fresh ROOT428 Peddle,298 tooling and73 focused tests pass;387 manifest files and immutable copies match, all thirteen DOS disk checkpoints equal the independently inspected FAT fixtures. Genuine DOS COPY/SAVE produces368640 exact bytes,1440x256 writes, zero modeled alias hits, fixed guest counter418049 through59355 polls, unchanged4MiB REU and32 restored cache frames. Evidence evidence/split-save-current-root-20261015.json.
+
+Physical paired512-vs-2x256 diagnostic already passed; complete current-build DOS COPY/SAVE/independentFTP/recovery remains the next hardware gate. Use source-only fullSAVE successor a4b4589f, independently reviewed ca865586, with fresh owned media and output. No JIT/CRA activation: production retains the original full timer sampler. Private timer characterization review found K8 classification and raw RAM-port authority defects; no hardware acceptance. Historical physical performance remains2.65%/3.96% of the modeled4MHz8088 reference on two narrow kernels. Game video remains pending.
+
 ## Physical SAVE staging and independent audit, 2026-10-15 18:40 PDT
 
 Physical fixed-work audit independently passes:349livepins/copies,2378reference dependency pins,226original sources,10reference reruns,15actual-capture negative controls and full4MiB/settings/media/restoration. No retirement off-by-one found. Receipt3bf50064; evidence c64u-fixedwork-independent-review-20261015.json. Historical2.65%/3.96% modeled-reference figures stand.

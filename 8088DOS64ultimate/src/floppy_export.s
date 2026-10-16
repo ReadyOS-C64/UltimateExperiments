@@ -29,6 +29,7 @@
 .export dos64_export_failure_phase,dos64_export_failure_sector
 .export dos64_export_failure_files_error,dos64_export_failure_transport_error
 .export dos64_export_phase,dos64_export_state_start,dos64_export_state_end
+.export dos64_export_write_half,dos64_export_failure_half
 .export dos64_export_code_start,dos64_export_code_end
 .segment "DEVICESTATE"
 dos64_export_state_start:
@@ -52,6 +53,9 @@ dos64_export_failure_phase: .res 1
 dos64_export_failure_sector: .res 2
 dos64_export_failure_files_error: .res 1
 dos64_export_failure_transport_error: .res 1
+; Half0/1 of current logical512-byte write. Latched on first failure.
+dos64_export_write_half: .res 1
+dos64_export_failure_half: .res 1
 export_last: .res 2
 export_delta: .res 2
 export_far: .res 3
@@ -133,6 +137,7 @@ export_reset_position:
  lda #0
  sta dos64_export_sectors
  sta dos64_export_sectors+1
+ sta dos64_export_write_half
  sta export_far
  sta export_far+1
  lda dos64_export_bank
@@ -203,6 +208,7 @@ dos64_export_start:
  sta dos64_export_failure_sector+1
  sta dos64_export_failure_files_error
  sta dos64_export_failure_transport_error
+ sta dos64_export_failure_half
  ldx #3
 @elapsed: sta dos64_export_elapsed,x
  dex
@@ -223,8 +229,10 @@ dos64_export_start:
  LEAVE 0
 export_reject:
  LEAVE 1
-; Fixed512-byte REU->RAM only. No path can write the authoritative REU image.
+; REU->RAM only:512 bytes for compare,256 per WRITE. No REU writes.
 export_dma:
+ ldy #2
+export_dma_length:
  sta dos64_reu_request+R_HOST
  stx dos64_reu_request+R_HOST+1
  ldx #2
@@ -234,23 +242,18 @@ export_dma:
  bpl @far
  lda #0
  sta dos64_reu_request+R_LENGTH
- lda #2
- sta dos64_reu_request+R_LENGTH+1
+ sty dos64_reu_request+R_LENGTH+1
  lda #1
  sta dos64_reu_request+R_DIRECTION
  jmp dos64_reu_transfer
 export_advance:
+ lda #2
+ jsr export_bump_far
+export_sector:
  inc dos64_export_sectors
- bne @far
+ bne @check
  inc dos64_export_sectors+1
-@far:
- clc
- lda export_far+1
- adc #2
- sta export_far+1
- bcc @done
- inc export_far+2
-@done:
+@check:
  lda dos64_export_sectors+1
  cmp #2
  bne @more
@@ -261,6 +264,14 @@ export_advance:
  rts
 @more: clc
  rts
+; A is pages (1 for each write half,2 for readback sector).
+export_bump_far:
+ clc
+ adc export_far+1
+ sta export_far+1
+ bcc @done
+ inc export_far+2
+@done: rts
 export_read:
  lda #0
  sta dos64_files_count
@@ -282,6 +293,8 @@ export_record:
  sta dos64_export_failure_files_error
  lda dos64_files_transport_error
  sta dos64_export_failure_transport_error
+ lda dos64_export_write_half
+ sta dos64_export_failure_half
  rts
 export_file_error:
  lda #EXPORT_ERR_FILES
@@ -438,13 +451,14 @@ dos64_export_poll:
 @dma_write:
  lda #<(dos64_uci_command+4)
  ldx #>(dos64_uci_command+4)
- jsr export_dma
+ ldy #1
+ jsr export_dma_length
  jcs export_dma_error
  lda #FILES_WRITE
  sta dos64_files_op
  lda #0
  sta dos64_files_count
- lda #2
+ lda #1
  sta dos64_files_count+1
  jsr export_launch
  jcs export_file_error
@@ -452,8 +466,17 @@ dos64_export_poll:
  sta dos64_export_phase
  jmp export_return
 @wrote:
- jsr export_advance
+ ; Firmware may DMA a full aligned sector directly from its command BRAM.
+ ; Two sub-sector requests use its buffered file path. Still720 logical sectors.
+ lda #1
+ jsr export_bump_far
+ lda dos64_export_write_half
+ eor #1
+ sta dos64_export_write_half
+ bne @next_half
+ jsr export_sector
  bcs @close_write
+@next_half:
  lda #2
  sta dos64_export_phase
  jmp export_return
