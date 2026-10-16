@@ -20,6 +20,8 @@ Compatibility targets the **original 8088 and IBM PC/XT**, with the shared 8086 
 
 The target uses **6502/6510 assembly** via ca65/ld65. **Host Zig tests execute the assembled code in Peddle and assert its behavior**, following the existing ZeroPage project. This incorporates the user's two planning clarifications on 2026-10-14.
 
+Native C SETUP and a folder-aware START launcher are in progress. `make setup-config-tests` verifies the actual 6510 configuration/path codec, including explicit larger REU capacities; it does not yet build a user-facing installer. See [configuration contract](docs/NATIVE_SETUP_CONFIG.md) and [REU allocation policy](docs/REU_ALLOCATION_POLICY.md). Extra REU may be used where it improves speed, while retaining the 4 MiB minimum.
+
 ```sh
 make test             # fast assembly, memory checks, tooling and Zig/Peddle tests
 make test-image-import # opt-in whole 360 KiB cold import/CRC/error tests

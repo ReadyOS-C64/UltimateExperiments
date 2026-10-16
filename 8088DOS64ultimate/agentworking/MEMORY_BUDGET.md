@@ -169,3 +169,5 @@ Runtime9ed3bc7b198d90ab3ef24c50ea0ce25f664457fed70a08e3382e9efb2ee11dda/unit8aa2
 
 
 2026-10-16: ROOTkeyboard+cursor+memory417c/3838:45057B;MAIN34runtime/33unitfree,DEVICE4080/16free,HDB3577/7free,INPUT1182/610free,FILE1464,TEXT1248,HDCODE1472,DEVICESTATE1052/1280,ZP36/48. Bothmapsverified;503pins/copiesexact. NoREUreservationchange.
+
+2026-10-16 native C SETUP codec is a separate optional test fixture, not linked into the emulator: `build/setup-config.prg` c874e8f0, 3,305 bytes; actual map CODE $0801–$14E7 (3,303), BSS $14E8–$1DA8 (2,241), ZP $0002–$001B (26). Software stack starts at $C000 and tests constrain all software-stack writes to $BF00–$BFFF; hardware-stack restoration/bounds and all writes are checked. No REU allocation/DMA is performed by this codec. Its 576-byte durable configuration includes explicit configured capacity at offset 538. Runtime417c/unit3838 and all emulator allocations remain unchanged. User-authorized additional REU use is recorded in docs/REU_ALLOCATION_POLICY.md; larger runtime caches remain separate implementation work.

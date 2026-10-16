@@ -216,3 +216,5 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-16: Userexplicitlyauthorizesalllast-hournativeinstaller/floppydiskmanagementimplementation. Promoteindependentlyacceptedkeyboard4c39/0525 afterROOT484/308/503closure, preservingclock/IRQ/REPpolicy; no typematic claim. NativeCsetup/START, nativebulkREUIO/FATbuilder andtrueA/Bcore proceedasparallelprivateverticalslices; originalfullscope/performance remainsbinding.
+
+2026-10-16 user-directed REU budget: use more REU when restricting allocation would slow the emulator. Retain the 4 MiB supported minimum and explicit configured-capacity bounds; larger profiles may use disjoint extra arenas for measured cache/overlay improvements. Firmware 16 MiB addressing is not capacity detection. Extend physical backup/recovery coverage before testing above 4 MiB. No allocation or speed claim is implied by this policy alone. See docs/REU_ALLOCATION_POLICY.md.

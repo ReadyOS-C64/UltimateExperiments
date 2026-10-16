@@ -11,7 +11,10 @@ pub const Fixture = struct {
     initial_status: u8 = 0x24,
 
     pub fn init() !Fixture {
-        const bytes = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests.prg", allocator, .limited(65538));
+        return initPaths("build/dos64-tests.prg", "build/dos64-tests.labels");
+    }
+    pub fn initPaths(prg_path: []const u8, labels_path: []const u8) !Fixture {
+        const bytes = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, prg_path, allocator, .limited(65538));
         defer allocator.free(bytes);
         if (bytes.len < 3) return error.InvalidPrg;
         const address = std.mem.readInt(u16, bytes[0..2], .little);
@@ -19,7 +22,7 @@ pub const Fixture = struct {
         const machine = c.dos64_create() orelse return error.CreateMachine;
         errdefer c.dos64_destroy(machine);
         c.dos64_load(machine, address, bytes[2..].ptr, bytes.len-2);
-        const labels = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, "build/dos64-tests.labels", allocator, .limited(1024*1024));
+        const labels = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, labels_path, allocator, .limited(1024*1024));
         errdefer allocator.free(labels);
         var symbols: std.StringHashMapUnmanaged(u16) = .empty;
         errdefer symbols.deinit(allocator);

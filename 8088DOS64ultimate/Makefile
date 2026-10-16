@@ -305,3 +305,5 @@ ac-helper-tests: ac-close-helper
 ac-host-tests: ac-close-helper
 	$(DOS64_PYTHON) -B tests/tooling/ac_development/test_ac_host.py
 ac-development-tests: ac-helper-tests ac-host-tests
+
+include build_support/setup.mk

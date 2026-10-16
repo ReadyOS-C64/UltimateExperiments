@@ -11,6 +11,10 @@ for tool in ("zig", "ca65", "ld65"):
     parser.add_argument("--"+tool, required=True)
 args = parser.parse_args()
 report = {"schema": 1, "tools": {}, "files": {}}
+for pattern in ("build_setup_tests.zig", "tools/setup/*"):
+    for path in sorted(Path().glob(pattern)):
+        if path.is_file():
+            report["files"][str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
 for name, command in vars(args).items():
     path = Path(shutil.which(command) or command).resolve()
     version = subprocess.run([str(path), "version" if name == "zig" else "--version"],
