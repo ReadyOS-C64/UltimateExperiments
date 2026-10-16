@@ -89,7 +89,10 @@ test "released first four cache frames cannot alter committed INPUT code asset" 
     for (0x8000..0x8800) |a| f.poke(@intCast(a), 0xee);
     try put(&f, "dos64_overlay_requested", 3);
     try call(&f, "dos64_overlay_acquire", 0, 50_000);
-    for (blob[4096 + 16 .. 4096 + 16 + 882], 0..) |v, i| try std.testing.expectEqual(v, f.peek(0xc900 + @as(u16, @intCast(i))));
+    const input_length = try f.symbol("__INPUTCODE_SIZE__");
+    try std.testing.expect(input_length > 0 and input_length <= 1792);
+    try std.testing.expectEqual(input_length, std.mem.readInt(u16, blob[4102..4104], .little));
+    for (blob[4096 + 16 .. 4096 + 16 + input_length], 0..) |v, i| try std.testing.expectEqual(v, f.peek(0xc900 + @as(u16, @intCast(i))));
     try call(&f, "dos64_overlay_release", 0, 1000);
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x340000, blob.ptr, blob.len));
 }

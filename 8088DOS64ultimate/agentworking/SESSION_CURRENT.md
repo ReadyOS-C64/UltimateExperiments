@@ -1,6 +1,6 @@
 # Current continuation — 2026-10-16
 
-Current ROOT is da95caf7/bc6ab7fd:472 actualPeddle and308 tooling tests,69focused cursor/status/runtime/CGA groups, both memory verifiers pass. Independently accepted cursor cfec/c325 is composed with memory performance;503 inputs exact before/after with immutablecopies. Evidence cga-cursor-root-20261016.json; docs/CGA_CURSOR.md. The independently reviewed memory/address optimization reduces modeled CPU work5.90% across12profiles and1.98% in genuine DOS. Full IRQ/REP/clock cadence remains unchanged; no physical timing or XT performance claim. Evidence: memory-fetch-root-20261016.json.
+Current ROOT is417c1b73/38385330:484actualPeddle and308tooling tests,bothmemoryverifierspass. Reviewedkeyboard4c39/0525 is composed withcursor/memory;503source/product/toolpins exactbefore/after pluscopies. Evidence keyboard-root-20261016.json. Earlier da95/bc6ab cursorcomposition passed69focused groups. Independently accepted cursor cfec/c325 is composed with memory performance;503 inputs exact before/after with immutablecopies. Evidence cga-cursor-root-20261016.json; docs/CGA_CURSOR.md. The independently reviewed memory/address optimization reduces modeled CPU work5.90% across12profiles and1.98% in genuine DOS. Full IRQ/REP/clock cadence remains unchanged; no physical timing or XT performance claim. Evidence: memory-fetch-root-20261016.json.
 
 Public A+C development host/helper is committed8d87313:97 files,43host+6actual6502helper+6layout checks,498 source/product inputs exact before/after with copies. Poisoned cached-bootstrap old/new regression verifies rejection before import. Root manifest captures every promoted file; first seven-file inventory omission preserved. Evidence: ac-development-production-root-20261016.json; docs/HARDWARE_AC_WORKFLOW.md.
 
@@ -19,3 +19,6 @@ Continuity correction: keyboard4c39/733pins independentlyaccepted0525f0a9/760pin
 
 
 2026-10-16 userfloppyswap/saveclarification: rawIMGneedsnoD81wrapper; currentwritesareREUonlyunlessdevelopmentSAVEexecuted. EarlierphysicalwholeSAVEaccepted d883, but currentnativeSAVErejects C online andno userdirty/swap/SaveUI. Proposed docs/FLOPPY_MEDIA_DESIGN.md: independentA/B descriptors, originalreadonly/workingcopies, coherentfullverifiedSave, Save/Discard/Cancel on swap/eject/exit, safeincomingstaging, sourcegeneration+CRCrefresh, DOSbuffer/revalidation tests andHDcontextintegration. Research/designonly; no newcode/hardware.
+
+
+Implementation resumed2026-10-16; userexplicitlyauthorizesalllast-hourinstaller/floppydiscussions. ROOTownsSETUP/START/nativeUI+integration; CIAownsprivatebulkREUIOprobe/API; compiledownsprivateC FATbuilder/importer; memoryownsprivateindependentA/Bcore/FLOPPYoverlay. Allprivate/noLANagents; ROOTownshardware. Keyboardpromoted417c/3838 with484/308/503closure. OriginalIDEdriver4777 andfullplan/performance stillpending.

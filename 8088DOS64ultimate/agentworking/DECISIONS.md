@@ -213,3 +213,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-16 floppyproposal: retainstandardrawIMGsloadedwholeinREU, noD81wrapper. Userexplicitlyrequiresimage-swapping andpersistence. RecommendwholeverifiedSave with modifieddrive/generationbinding andSave/Discard/Cancel on swap/eject/exit; readonlyoriginals/workingcopies, trueindependentB, no silentautosaveclaim. CurrentC-onlineSAVErestriction requiresreviewedintegration. NativeREUflushdoesnotflushguestDOS/applicationbuffers; DOS3.3mediarevalidationrequiresactualtests. Proposalnotimplemented.
+
+
+2026-10-16: Userexplicitlyauthorizesalllast-hournativeinstaller/floppydiskmanagementimplementation. Promoteindependentlyacceptedkeyboard4c39/0525 afterROOT484/308/503closure, preservingclock/IRQ/REPpolicy; no typematic claim. NativeCsetup/START, nativebulkREUIO/FATbuilder andtrueA/Bcore proceedasparallelprivateverticalslices; originalfullscope/performance remainsbinding.

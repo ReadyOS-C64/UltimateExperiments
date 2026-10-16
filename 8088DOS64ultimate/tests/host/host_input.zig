@@ -132,7 +132,9 @@ test "native input scans all64 physical keys with held edges release and exact X
     for (plain, 0..) |word, i| {
         keys(&f, &.{@intCast(i)});
         try poll(&f, 0);
-        const actual = try pop(&f);
+        const actual = if (i == 48) blk: {
+            try empty(&f); keys(&f, &.{}); try poll(&f, 0); break :blk try pop(&f);
+        } else try pop(&f);
         try std.testing.expectEqual(if (word == 0) @as(?u16, null) else word, actual);
         try poll(&f, 0);
         try empty(&f);
@@ -148,6 +150,7 @@ test "native input SHIFT legends cursors delete home and function pairs cover ev
         if (i == 15 or i == 52 or i == 58 or i == 61) continue;
         keys(&f, &.{ 15, @intCast(i) });
         try poll(&f, 0);
+        if (i == 48) { try empty(&f); keys(&f, &.{}); try poll(&f, 0); }
         try std.testing.expectEqual(@as(?u16, word), try pop(&f));
         try poll(&f, 0);
         try empty(&f);
@@ -312,13 +315,17 @@ test "native input bounded writes leave overlay code and memory guards unchanged
     }
 }
 
-test "native input maximal disjoint matrix stars enqueue all14 edges once in matrix order" {
+test "native input maximal disjoint matrix stars consume layer prefix and enqueue13 edges once" {
     var f = try init();
     defer f.deinit();
     const indices = [_]u8{ 1, 2, 3, 4, 5, 6, 7, 8, 16, 24, 32, 40, 48, 56 };
     keys(&f, &indices);
     try poll(&f, 0);
-    for (indices) |i| try std.testing.expectEqual(@as(?u16, plain[i]), try pop(&f));
+    for (indices) |i| {
+        if (i == 48) continue;
+        const expected: u16 = if (i == 6) 0x4300 else if (i == 3) 0x4400 else plain[i];
+        try std.testing.expectEqual(@as(?u16, expected), try pop(&f));
+    }
     try empty(&f);
     try poll(&f, 0);
     try empty(&f);
@@ -333,4 +340,321 @@ fn bootstrap(f: *Fixture) !void {
     f.poke(try f.symbol("dos64_overlay_reu_mib"), 4);
     const boot = try f.call("dos64_overlay_bootstrap", 300_000);
     try std.testing.expectEqual(@as(u8, 0), boot.p & 1);
+}
+
+// Genuine matrix polls, not direct BIOS-ring injection. Constants below are
+// independent original XT BIOS K9/K12/K13 table values.
+test "XT IDE physical Fn F9 F10 and all F1 F8 modifier words have no leaked prefix" {
+    var f = try init(); defer f.deinit();
+    const physical = [_]u8{4,5,6,3};
+    for (0..8) |flags| for (0..8) |number| {
+        var indices: [5]u8 = undefined; var n: usize = 1;
+        indices[0] = physical[number / 2];
+        if (number % 2 != 0) { indices[n]=15; n+=1; }
+        if (flags & 1 != 0) { indices[n]=58; n+=1; }
+        if (flags & 2 != 0) { indices[n]=61; n+=1; }
+        // Additional shift never advances an already selected function pair.
+        if (flags & 4 != 0 and number % 2 == 0) { indices[n]=15; n+=1; }
+        keys(&f, indices[0..n]);
+        if (flags & 3 == 3 and number / 2 == 1) {
+            try poll(&f,1); try std.testing.expectEqual(@as(u8,3),try byte(&f,"dos64_host_input_status"));try empty(&f);
+            keys(&f,&.{});try poll(&f,0);continue;
+        }
+        try poll(&f,0);
+        const actual_number = number | @as(usize, if (flags & 4 != 0) 1 else 0);
+        const base: u16 = if (flags & 2 != 0) 0x68 else if (flags & 1 != 0) 0x5e else 0x3b;
+        try std.testing.expectEqual(@as(?u16, (base + @as(u16,@intCast(actual_number))) << 8),try pop(&f));
+        try empty(&f); try poll(&f,0); try empty(&f);
+        keys(&f,&.{}); try poll(&f,0); try empty(&f);
+    };
+    for (0..16) |flags| for ([_]u8{6,3},0..) |function,number| {
+        var indices=[_]u8{48,function,0,0,0,0}; var n:usize=2;
+        if(flags&1!=0){indices[n]=15;n+=1;}
+        if(flags&2!=0){indices[n]=58;n+=1;}
+        if(flags&4!=0){indices[n]=61;n+=1;}
+        if(flags&8!=0){indices[n]=52;n+=1;}
+        keys(&f,indices[0..n]);try poll(&f,0);
+        const scan:u16=if(flags&4!=0) 0x70 else if(flags&2!=0) 0x66 else if(flags&9!=0) 0x5c else 0x43;
+        try std.testing.expectEqual(@as(?u16,(scan+@as(u16,@intCast(number)))<<8),try pop(&f));
+        try empty(&f);try poll(&f,0);try empty(&f);
+        keys(&f,&.{});try poll(&f,0);try empty(&f);
+    };
+}
+
+test "XT IDE Fn first function first release ordering and ordinary rollover are explicit" {
+    var f=try init();defer f.deinit();
+    keys(&f,&.{48});try poll(&f,0);try empty(&f);
+    keys(&f,&.{48,6});try poll(&f,0);try std.testing.expectEqual(@as(?u16,0x4300),try pop(&f));try empty(&f);
+    // Releasing only the layer cannot create the consumed printable prefix.
+    keys(&f,&.{6});try poll(&f,0);try empty(&f);
+    keys(&f,&.{});try poll(&f,0);
+    // A previously accepted F5 is never retroactively changed into F9.
+    keys(&f,&.{6});try poll(&f,0);try std.testing.expectEqual(@as(?u16,0x3f00),try pop(&f));
+    keys(&f,&.{6,48});try poll(&f,0);try empty(&f);
+    keys(&f,&.{48});try poll(&f,0);try empty(&f);
+    keys(&f,&.{48,6});try poll(&f,0);try std.testing.expectEqual(@as(?u16,0x4300),try pop(&f));
+    keys(&f,&.{});try poll(&f,0);try empty(&f);
+    for([_]u8{0,15}) |shift| {
+        var indices=[_]u8{48,shift,10};const start:usize=if(shift==0) 1 else 2;
+        keys(&f,indices[0..start]);try poll(&f,0);try empty(&f);
+        indices[start]=10;keys(&f,indices[0..start+1]);try poll(&f,0);
+        try std.testing.expectEqual(@as(?u16,if(shift==0) 0x2b5c else 0x2b7c),try pop(&f));
+        try std.testing.expectEqual(@as(?u16,if(shift==0) 0x1e61 else 0x1e41),try pop(&f));try empty(&f);
+        // Once ordinary rollover commits the prefix, a later F key is ordinary.
+        indices[start]=4;keys(&f,indices[0..start+1]);try poll(&f,0);
+        try std.testing.expectEqual(@as(?u16,if(shift==0) 0x3b00 else 0x3c00),try pop(&f));
+        keys(&f,&.{});try poll(&f,0);try empty(&f);
+    }
+}
+
+test "XT IDE deferred printable and chord full queue preserve original word without repeats" {
+    for([_]bool{false,true}) |chord| {
+        var f=try init();defer f.deinit();
+        const k=try f.symbol("dos64_keyboard_key");
+        for(0..15) |i| { f.poke(k,@intCast(i));f.poke(k+1,0xaa);_=try f.call("dos64_keyboard_enqueue",100_000); }
+        keys(&f,&.{48,58});try poll(&f,0);
+        if(chord) {keys(&f,&.{48,58,6});try poll(&f,1);} else {keys(&f,&.{});try poll(&f,1);}
+        keys(&f,&.{});try poll(&f,1);
+        try std.testing.expectEqual(@as(?u16,0xaa00),try pop(&f));try poll(&f,0);
+        for(1..15) |i| try std.testing.expectEqual(@as(?u16,@intCast(0xaa00+i)),try pop(&f));
+        try std.testing.expectEqual(@as(?u16,if(chord) 0x6600 else 0x2b1c),try pop(&f));
+        try empty(&f);try poll(&f,0);try empty(&f);
+    }
+}
+
+test "XT IDE Fn ghost ambiguity rejects before modifier queue or layer state changes" {
+    var f=try init();defer f.deinit();
+    // £ and right Shift share a matrix column with physical F1: phantom
+    // rectangle. The mapped F5 key has no modifier-column collision.
+    keys(&f,&.{48,52,4});try poll(&f,1);
+    try std.testing.expectEqual(@as(u8,3),try byte(&f,"dos64_host_input_status"));try empty(&f);
+    keys(&f,&.{});try poll(&f,0);try empty(&f);
+    keys(&f,&.{48,52,6});try poll(&f,0);try std.testing.expectEqual(@as(?u16,0x5c00),try pop(&f));
+    keys(&f,&.{});try poll(&f,0);try empty(&f);
+}
+
+test "XT IDE ordinary rollover under full queue commits printable before held ordinary edge" {
+    var f=try init();defer f.deinit();
+    const k=try f.symbol("dos64_keyboard_key");
+    for(0..15) |i| { f.poke(k,@intCast(i));f.poke(k+1,0xaa);_=try f.call("dos64_keyboard_enqueue",100_000); }
+    keys(&f,&.{48,52});try poll(&f,0);
+    keys(&f,&.{48,52,10});try poll(&f,1);
+    try std.testing.expectEqual(@as(?u16,0xaa00),try pop(&f));
+    // Pending pipe fills the only slot; A becomes the next pending word.
+    try poll(&f,1);
+    try std.testing.expectEqual(@as(?u16,0xaa01),try pop(&f));
+    keys(&f,&.{});try poll(&f,0);
+    for(2..15) |i| try std.testing.expectEqual(@as(?u16,@intCast(0xaa00+i)),try pop(&f));
+    try std.testing.expectEqual(@as(?u16,0x2b7c),try pop(&f));
+    try std.testing.expectEqual(@as(?u16,0x1e41),try pop(&f));
+    try empty(&f);try poll(&f,0);try empty(&f);
+}
+
+fn fillLifecycleQueue(f: *Fixture) !void {
+    const key = try f.symbol("dos64_keyboard_key");
+    for (0..15) |i| {
+        f.poke(key, @intCast(i));
+        f.poke(key + 1, 0xaa);
+        const r = try f.call("dos64_keyboard_enqueue", 100_000);
+        try std.testing.expectEqual(@as(u8, 0), r.p & 1);
+    }
+}
+fn drainLifecycleQueue(f: *Fixture, pending: u16) !void {
+    for (1..15) |i| try std.testing.expectEqual(@as(?u16, @intCast(0xaa00 + i)), try pop(f));
+    try std.testing.expectEqual(@as(?u16, pending), try pop(f));
+    try empty(f);
+}
+fn releasedLifecycle(chord: bool) !void {
+    var f = try init();
+    defer f.deinit();
+    try fillLifecycleQueue(&f);
+    if (chord) keys(&f, &.{ 48, 58, 6 }) else keys(&f, &.{10});
+    try poll(&f, 1);
+    const pending: u16 = if (chord) 0x6600 else 0x1e61;
+    try std.testing.expectEqual(pending, f.word(try f.symbol("pending_word")));
+    const flags = try read(&f, 0x417);
+    // A rejected ghost must not change the pending identity or modifiers.
+    keys(&f, &.{ 48, 52, 4 });
+    try poll(&f, 1);
+    try std.testing.expectEqual(@as(u8, 3), try byte(&f, "dos64_host_input_status"));
+    try std.testing.expectEqual(flags, try read(&f, 0x417));
+    try std.testing.expectEqual(pending, f.word(try f.symbol("pending_word")));
+    keys(&f, &.{});
+    try poll(&f, 1);
+    try std.testing.expectEqual(@as(?u16, 0xaa00), try pop(&f));
+    // The pending key commits while physically released. There is no extra
+    // empty poll between that commit and the next observed fresh press.
+    try poll(&f, 0);
+    try drainLifecycleQueue(&f, pending);
+    if (chord) keys(&f, &.{ 48, 6 }) else keys(&f, &.{10});
+    try poll(&f, 0);
+    try std.testing.expectEqual(@as(?u16, if (chord) 0x4300 else 0x1e61), try pop(&f));
+    try empty(&f);
+    try poll(&f, 0);
+    try empty(&f);
+}
+test "pending lifecycle released commit immediately admits fresh ordinary press" {
+    try releasedLifecycle(false);
+}
+test "pending lifecycle released commit immediately admits fresh Fn press after ghost" {
+    try releasedLifecycle(true);
+}
+test "pending lifecycle held acceptance and precommit repress coalesce without duplicates" {
+    for ([_]bool{ false, true }) |chord| for ([_]bool{ false, true }) |repress| {
+        var f = try init();
+        defer f.deinit();
+        try fillLifecycleQueue(&f);
+        if (chord) keys(&f, &.{ 48, 58, 6 }) else keys(&f, &.{ 15, 10 });
+        try poll(&f, 1);
+        const pending: u16 = if (chord) 0x6600 else 0x1e41;
+        if (repress) {
+            keys(&f, &.{});
+            try poll(&f, 1);
+            if (chord) keys(&f, &.{ 48, 6 }) else keys(&f, &.{10});
+            try poll(&f, 1);
+        }
+        try std.testing.expectEqual(@as(?u16, 0xaa00), try pop(&f));
+        try poll(&f, 0);
+        try drainLifecycleQueue(&f, pending);
+        // A key held at commitment is consumed by that exact pending word;
+        // modifiers cannot change it or manufacture another accepted edge.
+        try poll(&f, 0);
+        try empty(&f);
+        keys(&f, &.{});
+        try poll(&f, 0);
+        if (chord) keys(&f, &.{ 48, 6 }) else keys(&f, &.{10});
+        try poll(&f, 0);
+        try std.testing.expectEqual(@as(?u16, if (chord) 0x4300 else 0x1e61), try pop(&f));
+        try empty(&f);
+    };
+}
+
+fn poundWithModifiers(f: *Fixture, flags: u8) void {
+    var indices: [5]u8 = undefined;
+    indices[0] = 48;
+    var count: usize = 1;
+    for ([_]u8{ 15, 52, 58, 61 }, 0..) |key, bit| {
+        if (flags & (@as(u8, 1) << @as(u3, @intCast(bit))) != 0) {
+            indices[count] = key;
+            count += 1;
+        }
+    }
+    keys(f, indices[0..count]);
+}
+fn poundWord(flags: u8) u16 {
+    return 0x2b00 | @as(u16, if (flags & 8 != 0) 0 else if (flags & 4 != 0) 0x1c else if (flags & 3 != 0) 0x7c else 0x5c);
+}
+test "pending pound held commitment coalesces release under every captured modifier" {
+    for (0..16) |flags| for ([_]bool{ false, true }) |ghost| {
+        var f = try init();
+        defer f.deinit();
+        try fillLifecycleQueue(&f);
+        poundWithModifiers(&f, @intCast(flags));
+        try poll(&f, 0);
+        keys(&f, &.{});
+        try poll(&f, 1);
+        const pending = poundWord(@intCast(flags));
+        try std.testing.expectEqual(pending, f.word(try f.symbol("pending_word")));
+        poundWithModifiers(&f, @intCast(flags ^ 15));
+        try poll(&f, 1);
+        if (ghost) {
+            keys(&f, &.{ 48, 52, 4 });
+            try poll(&f, 1);
+            try std.testing.expectEqual(@as(u8, 3), try byte(&f, "dos64_host_input_status"));
+            try std.testing.expectEqual(pending, f.word(try f.symbol("pending_word")));
+        }
+        try std.testing.expectEqual(@as(?u16, 0xaa00), try pop(&f));
+        keys(&f, &.{48});
+        try poll(&f, 0);
+        try drainLifecycleQueue(&f, pending);
+        try poll(&f, 0);
+        try empty(&f);
+        keys(&f, &.{});
+        try poll(&f, 0);
+        // The re-press was coalesced at commitment. Its release cannot
+        // publish another word, including one with changed modifiers.
+        try empty(&f);
+        keys(&f, &.{48});
+        try poll(&f, 0);
+        try empty(&f);
+        keys(&f, &.{});
+        try poll(&f, 0);
+        try std.testing.expectEqual(@as(?u16, 0x2b5c), try pop(&f));
+        try empty(&f);
+    };
+}
+test "pending pound released commitment allows fresh printable and Fn immediately" {
+    for ([_]bool{ false, true }) |layer| {
+        var f = try init();
+        defer f.deinit();
+        try fillLifecycleQueue(&f);
+        keys(&f, &.{48});
+        try poll(&f, 0);
+        keys(&f, &.{});
+        try poll(&f, 1);
+        try std.testing.expectEqual(@as(?u16, 0xaa00), try pop(&f));
+        try poll(&f, 0);
+        try drainLifecycleQueue(&f, 0x2b5c);
+        // No extra released poll separates commitment from the fresh press.
+        if (layer) keys(&f, &.{ 48, 6 }) else keys(&f, &.{48});
+        try poll(&f, 0);
+        if (layer) try std.testing.expectEqual(@as(?u16, 0x4300), try pop(&f)) else try empty(&f);
+        keys(&f, &.{});
+        try poll(&f, 0);
+        if (!layer) try std.testing.expectEqual(@as(?u16, 0x2b5c), try pop(&f));
+        try empty(&f);
+    }
+}
+test "pending pound consumed at held commitment cannot become a layer before release" {
+    for ([_]u8{ 6, 3, 10 }) |following| {
+        var f = try init();
+        defer f.deinit();
+        try fillLifecycleQueue(&f);
+        keys(&f, &.{48});
+        try poll(&f, 0);
+        keys(&f, &.{});
+        try poll(&f, 1);
+        keys(&f, &.{48});
+        try poll(&f, 1);
+        try std.testing.expectEqual(@as(?u16, 0xaa00), try pop(&f));
+        try poll(&f, 0);
+        try drainLifecycleQueue(&f, 0x2b5c);
+        keys(&f, &.{ 48, following });
+        try poll(&f, 0);
+        try std.testing.expectEqual(@as(?u16, plain[following]), try pop(&f));
+        try empty(&f);
+        keys(&f, &.{});
+        try poll(&f, 0);
+        try empty(&f);
+        keys(&f, &.{ 48, 6 });
+        try poll(&f, 0);
+        try std.testing.expectEqual(@as(?u16, 0x4300), try pop(&f));
+        keys(&f, &.{});
+        try poll(&f, 0);
+        try empty(&f);
+    }
+}
+test "pending ordinary acceptance does not consume a newly pressed pound layer" {
+    var f = try init();
+    defer f.deinit();
+    try fillLifecycleQueue(&f);
+    keys(&f, &.{10});
+    try poll(&f, 1);
+    keys(&f, &.{});
+    try poll(&f, 1);
+    try std.testing.expectEqual(@as(?u16, 0xaa00), try pop(&f));
+    keys(&f, &.{ 48, 6 });
+    // A commits into the one free slot, then the genuine new Fn-F9 word
+    // becomes pending. It must survive its own full-queue boundary.
+    try poll(&f, 1);
+    try std.testing.expectEqual(@as(u16, 0x4300), f.word(try f.symbol("pending_word")));
+    try std.testing.expectEqual(@as(?u16, 0xaa01), try pop(&f));
+    keys(&f, &.{});
+    try poll(&f, 0);
+    for (2..15) |i| try std.testing.expectEqual(@as(?u16, @intCast(0xaa00 + i)), try pop(&f));
+    try std.testing.expectEqual(@as(?u16, 0x1e61), try pop(&f));
+    try std.testing.expectEqual(@as(?u16, 0x4300), try pop(&f));
+    try empty(&f);
+    try poll(&f, 0);
+    try empty(&f);
 }

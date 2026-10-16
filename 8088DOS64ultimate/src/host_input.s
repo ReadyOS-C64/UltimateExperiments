@@ -26,6 +26,10 @@ index: .res 1
 modifiers: .res 1
 char: .res 1
 scan: .res 1
+; Pound is a deferred printable key and the F9/F10 layer switch. States:
+; 0 released, 1 printable deferred, 2 layer consumed, 3 printable committed.
+fn_state: .res 1
+fn_word: .res 2
 dos64_host_input_state_end:
 
 .macro enter
@@ -79,6 +83,7 @@ dos64_host_input_init:
     jne owner_error
     lda #0
     sta dos64_host_input_pending
+    sta fn_state
     ldx #7
 @clear:
     sta seen,x
@@ -210,6 +215,8 @@ dos64_host_input_poll:
     jsr enqueue_pending
     jcs queue_error
 @new_keys:
+    jsr prepare_fn
+    jcs queue_error
     lda #0
     sta row
     sta index
@@ -225,11 +232,28 @@ dos64_host_input_poll:
     and key_bit
     jne @advance
     ldx index
+    cpx #48
+    jeq @mark
     lda scans,x
     jeq @mark
     sta scan
     lda normal,x
     sta char
+    lda fn_state
+    cmp #2
+    bne @shift
+    cpx #6
+    beq @f9
+    cpx #3
+    bne @shift
+    lda #$44
+    bne @fn_scan
+@f9:
+    lda #$43
+@fn_scan:
+    sta scan
+    jmp @control
+@shift:
     lda modifiers
     and #3
     beq @control
@@ -265,6 +289,47 @@ dos64_host_input_poll:
 @changed_scan:
     sta scan
 @control:
+    ; XT BIOS function words use distinct Ctrl/Alt scan codes. Physical
+    ; Shift selects F2/F4/F6/F8; on the pound layer it means Shift-F9/F10.
+    lda scan
+    cmp #$3B
+    bcc @ordinary_control
+    cmp #$45
+    bcs @ordinary_control
+@function_control:
+    lda modifiers
+    and #8
+    beq @function_ctrl
+    lda scan
+    clc
+    adc #$2D
+    bne @function_scan
+@function_ctrl:
+    lda modifiers
+    and #4
+    beq @function_shift
+    lda scan
+    clc
+    adc #$23
+    bne @function_scan
+@function_shift:
+    lda fn_state
+    cmp #2
+    bne @ordinary_control
+    cpx #6
+    beq @layer_shift
+    cpx #3
+    bne @ordinary_control
+@layer_shift:
+    lda modifiers
+    and #3
+    beq @ordinary_control
+    lda scan
+    clc
+    adc #$19
+@function_scan:
+    sta scan
+@ordinary_control:
     lda modifiers
     and #8
     beq @ctrl_char
@@ -343,13 +408,104 @@ enqueue_pending:
     jsr dos64_keyboard_enqueue
     bcs @return
     ldx pending_row
-    lda seen,x
-    ora pending_bit
+    ; A released pending key must not suppress its next fresh press. If
+    ; held at commitment, consume it to avoid retrying the accepted word.
+    lda pending_bit
+    and dos64_host_input_matrix,x
+    ora seen,x
     sta seen,x
     lda #0
     sta dos64_host_input_pending
 @return:
     rts
+
+prepare_fn:
+    lda dos64_host_input_matrix+6
+    and #1
+    bne @held
+    lda fn_state
+    pha
+    lda #0
+    sta fn_state
+    pla
+    cmp #1
+    beq publish_fn
+@ok:
+    clc
+    rts
+@held:
+    lda fn_state
+    bne @new_chord
+    ; A pending printable pound accepted while held consumed this press.
+    ; It cannot re-arm either deferred text or the layer until release.
+    lda seen+6
+    and #1
+    bne @ok
+    lda #1
+    sta fn_state
+    lda #$2B
+    sta fn_word+1
+    lda #$5C
+    sta fn_word
+    lda modifiers
+    and #3
+    beq @print_ctrl
+    lda #$7C
+    sta fn_word
+@print_ctrl:
+    lda modifiers
+    and #4
+    beq @print_alt
+    lda #$1C
+    sta fn_word
+@print_alt:
+    lda modifiers
+    and #8
+    beq @new_chord
+    lda #0
+    sta fn_word
+@new_chord:
+    lda fn_state
+    cmp #3
+    beq @ok
+    lda seen
+    eor #$FF
+    and dos64_host_input_matrix
+    and #$48
+    beq @ordinary
+    lda #2
+    sta fn_state
+    bne @ok
+@ordinary:
+    lda fn_state
+    cmp #1
+    bne @ok
+    ldx #7
+@edge:
+    lda seen,x
+    eor #$FF
+    and dos64_host_input_matrix,x
+    and fn_printable_mask,x
+    bne @flush
+    dex
+    bpl @edge
+    bmi @ok
+@flush:
+    lda #3
+    sta fn_state
+publish_fn:
+    lda fn_word
+    sta pending_word
+    lda fn_word+1
+    sta pending_word+1
+    lda #6
+    sta pending_row
+    lda #1
+    sta pending_bit
+    sta dos64_host_input_pending
+    jmp enqueue_pending
+fn_printable_mask:
+.byte $FF,$7F,$FF,$FF,$FF,$FF,$EE,$DB
 
 ; Matrix indices are PRA-selected column*8 + PRB row, matching Commodore's
 ; original KERNAL keyboard tables. ASCII legends plus selected printable

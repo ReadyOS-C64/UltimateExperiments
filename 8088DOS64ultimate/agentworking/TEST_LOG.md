@@ -599,3 +599,6 @@ IMPORTANT BASELINE CHAIN: old230000 session endedFAILED06:22:37UTC, rawmailboxma
 
 
 2026-10-16 read-onlyfloppyreview: src/disk.s DL0-only, writesREU; src/native_save.s rejects hdb_online/hd_uncertain/fileowner. Earlierphysicald883 whole720sectorSAVE/CLOSE/reopen/allbyte/EOF/CLOSE evidence remainsacceptedperbuild. Newdocs/FLOPPY_MEDIA_DESIGN.md recordscurrentgaps andproposed userworkflow; no codechanged/defaulttestsrerun/hardwareaccess.
+
+
+2026-10-16: ROOTkeyboardcomposition: all733author+760reviewpinschecked; portablehost_input.s/inc/host_input.zig/cold_phase.zig andmergedINPUT1182 tooling. makebuild thenstrict503prelaunch/make test484Peddle+308tooling+bothmemory/503aftercopies PASS. scratch/keyboard-root-composition-20261016, evidencekeyboard-root-20261016.json. NoLAN/newphysicalclaim.
