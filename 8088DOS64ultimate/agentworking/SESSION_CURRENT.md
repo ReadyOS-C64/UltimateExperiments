@@ -1,3 +1,11 @@
+## Physical SAVE staging and independent audit, 2026-10-15 18:40 PDT
+
+Physical fixed-work audit independently passes:349livepins/copies,2378reference dependency pins,226original sources,10reference reruns,15actual-capture negative controls and full4MiB/settings/media/restoration. No retirement off-by-one found. Receipt3bf50064; evidence c64u-fixedwork-independent-review-20261015.json. Historical2.65%/3.96% modeled-reference figures stand.
+
+Current SAVE ab2d/06a4 is freshly staged only (Terminal1484), configuredcd878f13, disposable original DOS media and both PRGs completely read back; local2689pin validation passes. No application or source freeze active. Peerreview is repairing host ambiguous-GO bookkeeping and primary cancellation preservation through secondary evidence-write failures in a fresh successor. Do not launch oldcb19 until successor/review/concreteguard accepted. Staging metadata scratch/native-save-reviewed-20261015-182930/STAGING_ONLY.json. Main emulator source remainsce12; no native change required for host repair.
+
+Private direct-CIA1 ICR polling / CIA2post-arm-bracket design is being assessed as a possible larger performance path with compiled blocks. It avoids softwareIRQ/RAMhint latency, but ICR read-clear race, visibility/clock-phase contract and actual layout require proof. No physical activation or production skip policy change. Site has published currentSAVE model proof, keyboard/recovery acceptance and qualified historical physical baseline; game video remains pending.
+
 ## Verified physical baseline and timing-audit supersession, 2026-10-15 18:27 PDT
 
 Physical historical b29 fixed-work benchmark passes at PAL/Manual64 on firmware3.14/FPGA121/core1.47. A4096NOP/JMP:171.321ms; B5120arithmetic:271.146ms. Against separately pinned modeled4MHz8088 reference (A4.542..4.54525ms;B10.7475..10.75075ms), these are about2.65% and3.96% of modeled reference speed. This is two warmed kernels with native driver overhead, not wholeDOS or currentSAVE speed. It is far below50% target. Source/quiet capture/all4MiB pre-restoration authority and original4MiB restoration/settings/media/reset/source349+copies/3FTP pass. No active application; freeze released. Evidence c64u-fixedwork-performance-20261015.json.
