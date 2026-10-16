@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "USER_CONFIRMED_INTERACTIVE_USE",
+  "runtime_sha256": "22f8209108fca953f783116c0a6cf5bd0c788e08b586421e30406f6129be0369",
+  "configured_sha256": "ea93ac8a25f051dacc5c86b29c08a1fb0b255f2902d3e05d3e32a7ccbf84de6f",
+  "historical_build": true,
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-interactive-stable-20261015-171915",
+  "user_statement": "ok so the interactive use of the older one worked on the ultimate.. keep working on the new stuff until you got things proven and working well..",
+  "native_physical_input_user_confirmed": true,
+  "keyboard_device_unspecified": true,
+  "exact_commands_and_modes_unspecified": true,
+  "current_bc19_acceptance_not_transferred": true,
+  "current_session_recovery_not_yet_completed": true,
+  "user_finished": true,
+  "user_reported_manual_reboot": true,
+  "release_reply": "yes, i'm done for now and i juad just rebooted the c64u so it is fresh",
+  "session_ended": true,
+  "original_cleanup": {
+    "report": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-interactive-stable-20261015-171915/result.json",
+    "sha256": "0d13fa92ed1da85cb6802f8970983f585c11aa9695f6ce37cdf2e29394426cc1",
+    "status": "failed",
+    "reu_restored": false,
+    "configuration_restored": false,
+    "reset_resumed": true,
+    "failure_retained": true
+  },
+  "separate_recovery": {
+    "status": "in_progress",
+    "original_backup_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+    "scope": "Restore original first 4 MiB; preserve current post-reboot machine and unmounted-media baseline",
+    "output": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-interactive-reboot-recovery-20261015-174325"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "ACTIVE_INTERACTIVE_DOS_HANDOFF",
+  "status": "USER_SESSION_ENDED_SEPARATE_REU_RECOVERY_ACTIVE",
   "runtime_sha256": "22f8209108fca953f783116c0a6cf5bd0c788e08b586421e30406f6129be0369",
   "unit_sha256": "8a84329ce41850fa42d89c0ee5f42d4e6f77a000a2c0a9abce8cae9c0092d94f",
   "configured_sha256": "ea93ac8a25f051dacc5c86b29c08a1fb0b255f2902d3e05d3e32a7ccbf84de6f",
@@ -24,16 +24,23 @@
   "native_RUN_resumed_before_READY": true,
   "manual_CPU_MHz": 64,
   "keyboard_scanner_owned_ready": true,
-  "physical_keyboard_human_acceptance": "pending",
+  "physical_keyboard_human_acceptance": "user confirmed older build interactive use worked on Ultimate",
   "backup_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
   "whole_backup_bytes": 4194304,
   "original_disk_sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
   "disk_changes_persisted_to_file": false,
-  "recovery_status": "Intentionally deferred while user plays; original full4MiB/config/media/reset recovery runs on ownedSTOP, error, interruption or4hbound",
+  "recovery_status": "User reboot ended callback before STOP; original cleanup failed. Separate original-backup restoration active; post-reboot unmounted media baseline preserved.",
   "stop_file": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-interactive-stable-20261015-171915/STOP-INTERACTIVE",
   "stop_contents": {
     "session_id": "e0c472006214455f811edae0319b714d",
     "action": "stop"
   },
-  "game_video_status": "pending; no stream active"
+  "game_video_status": "pending; no stream active",
+  "human_acceptance_scope": "Interactive use confirmed; exact commands, keyboard device and tested display modes unspecified",
+  "hardware_release_question_pending": false,
+  "user_finished": true,
+  "user_reported_reboot": true,
+  "owned_stop_issued": false,
+  "owned_child_ended": true,
+  "separate_recovery_output": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-interactive-reboot-recovery-20261015-174325"
 }
