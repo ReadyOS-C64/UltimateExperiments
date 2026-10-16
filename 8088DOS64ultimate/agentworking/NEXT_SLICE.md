@@ -1,3 +1,9 @@
+## Current physical SAVE failure and complete recovery, 2026-10-15 19:10 PDT
+
+Current ab2d/06a4, configured cd878f13, boots genuine DOS at Manual64 and completes COPY CONFIG.SYS SV182930.TXT on the Ultimate. Independent FAT inspection preserves all38 original entries and both mirrors; copied50 bytes exactly match CONFIG.SYS. Native SAVE writes720 sectors and passes reopened FILEINFO length, then correctly fails first comparison at sector0/phase8 (error4). Independent FTP confirms the368640-byte output is wrong: every sector is the same unexpected512-byte pattern. No SAVE acceptance or durability claim. The first failure, changed floppy and complete changed4MiB remain retained for diagnosis. Evidence evidence/c64u-native-save-failure-20261015.json.
+
+Recovery PASSES on attempt1: every original4MiB byte equals ac43 backup; prior settings/media/reset, all2737 live source pins and immutable copies, and three complete owned FTP inputs pass. Child exited1 for the application failure; no active application, source freeze released. Never overwrite the failed output during a retry. Independent review is diagnosing the actual write payload before another fresh-owned hardware test. Current performance profiles remain private/defaultOFF; compiled composition currently measures slower under full guards, so no production gain is claimed. GW-BASIC video remains pending.
+
 ## Physical SAVE staging and independent audit, 2026-10-15 18:40 PDT
 
 Physical fixed-work audit independently passes:349livepins/copies,2378reference dependency pins,226original sources,10reference reruns,15actual-capture negative controls and full4MiB/settings/media/restoration. No retirement off-by-one found. Receipt3bf50064; evidence c64u-fixedwork-independent-review-20261015.json. Historical2.65%/3.96% modeled-reference figures stand.

@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "status": "failed",
+  "scope": "Physical current ab2d SAVE test: DOS boot/COPY accepted, native whole-image SAVE correctly rejected wrong output; complete recovery independently verified",
+  "runtime_sha256": "ab2d0d5f4fa3eb1590ad9f2496630d0ae21ba7dab04cfece3ed9245f90edf0e9",
+  "unit_sha256": "06a4eead2af9ccab30f4cacddfa8b9508a79435474897c0787178868e530e675",
+  "configured_sha256": "cd878f1337914a9c82af9c8b82f82117fa038de74f15086dba8c7bec4a72766a",
+  "manual_CPU_MHz_setting": 64,
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-save-20261015-182930",
+  "review": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-save-reviewed-20261015-182930",
+  "DOS_boot_and_COPY_passed": true,
+  "FAT_oracle": {
+    "passed": true,
+    "changed_image_bytes": 368640,
+    "changed_image_sha256": "cfba0ab5e4a1d7711fe35431fdb42bf86e0dd8553e54353bb0abe6a0e9e60d7b",
+    "original_entries_exact": 38,
+    "copied_name": "SV182930.TXT",
+    "copied_bytes": 50,
+    "copied_content": "exact original CONFIG.SYS",
+    "copied_clusters": [
+      283
+    ],
+    "both_FAT_mirrors_validated": true,
+    "physical_durability": false
+  },
+  "native_save_accepted": false,
+  "first_failure": {
+    "dos64_native_diag": "05000000e10d1c2b6700023900000004000001",
+    "dos64_cpu_instructions": "3d4d0600",
+    "dos64_guest": "200d010000003a03ce09000041005e032f0200f02f022f02aa0116f2",
+    "dos64_cache_limit": "20",
+    "sav_borrowed": "00",
+    "sav_ready": "a5",
+    "sav_error": "00",
+    "dos64_export_state": "03",
+    "dos64_export_error": "04",
+    "dos64_export_cleanup_error": "00",
+    "dos64_export_verified": "00",
+    "dos64_export_uncertain": "01",
+    "dos64_export_sectors": "0000",
+    "dos64_export_phase": "0b",
+    "dos64_export_failure_phase": "08",
+    "dos64_export_failure_sector": "0000",
+    "dos64_export_failure_files_error": "00",
+    "dos64_export_failure_transport_error": "00",
+    "dos64_files_handle": "00",
+    "dos64_files_state": "02",
+    "dos64_files_error": "00",
+    "dos64_files_transport_error": "00",
+    "dos64_files_uncertain": "01",
+    "dos64_uci_recovery_failed": "00",
+    "dos64_disk_loaded": "01",
+    "dos64_disk_reu_base": "000010",
+    "dos64_disk_sectors": "d002",
+    "hdb_online": "00",
+    "hdb_active": "00",
+    "hd_uncertain": "00",
+    "hdc_enabled": "00",
+    "accepted": false,
+    "authority": "observed native wire contract only; no clean-media generation or durability claim"
+  },
+  "output_bytes": 368640,
+  "output_sha256": "6e892cce85edd0577e00a0dc64e0a9e4acf774c48f047a65c31f9e72cf6cefe0",
+  "changed_floppy_sha256": "cfba0ab5e4a1d7711fe35431fdb42bf86e0dd8553e54353bb0abe6a0e9e60d7b",
+  "first_differing_offset": 0,
+  "different_sectors": 720,
+  "unique_output_sectors": 1,
+  "cause": "unresolved; retained output has one repeated wrong512-byte pattern, unlike all authoritative sectors",
+  "full_original_REU_bytes_restored": 4194304,
+  "restored_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+  "settings_media_reset_passed": true,
+  "source_live_and_immutable_copies_verified": 2737,
+  "post_FTP_passed": true,
+  "owned_child_exit_code": 1,
+  "active_application": false,
+  "source_freeze_active": false,
+  "limitations": [
+    "Only REU[0,4MiB) is addressed; larger capacity remainder is untouched by this helper",
+    "C64 RAM and configuration are captured; prior CPU/timer/NMI execution cannot be resumed",
+    "Application callback must enforce its own deadline and preserve media/configuration",
+    "Native UCI creates only a new owned output; logical reopen plus independent FTP retrieval does not prove filesystem flush/power-loss durability",
+    "No media-generation binding or native Save/Discard UI acceptance",
+    "Only first4MiB restored and compared; installed upper REU remainder not independently compared"
+  ],
+  "pinned_records": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-save-20261015-182930/result.json": {
+      "bytes": 4823,
+      "sha256": "6c3ced444e9eed612c91cdf07074264e07408a3d0b3950a5b42d9fe89e143784"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-save-20261015-182930/save-application-result.json": {
+      "bytes": 68096,
+      "sha256": "c2d44e7e7b0d38d31925cf4a2751ac36a0b762bf02c24732538260a23a9441a8"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-save-20261015-182930/save-retention-result.json": {
+      "bytes": 2416,
+      "sha256": "01d81c0ba7ffc8a266c545250d81de58ebdaf79610a85e23aa80b615a96e5789"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-save-20261015-182930/changed-floppy-before-restoration.img": {
+      "bytes": 368640,
+      "sha256": "cfba0ab5e4a1d7711fe35431fdb42bf86e0dd8553e54353bb0abe6a0e9e60d7b"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-save-20261015-182930/saved-file-independent-retrieval.img": {
+      "bytes": 368640,
+      "sha256": "6e892cce85edd0577e00a0dc64e0a9e4acf774c48f047a65c31f9e72cf6cefe0"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-save-20261015-182930/reu-changed-before-restoration.bin": {
+      "bytes": 4194304,
+      "sha256": "277e84250b9738da1d86ce89e426813df0da5d7d3c8807416c0fad3214c7a5c9"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-save-20261015-182930/SAVE-inputs-after.json": {
+      "bytes": 645401,
+      "sha256": "ca895ab646fd16c29133cbf5ce281b1f3acc7927071bbd430c7b32d7aab1c6e3"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-native-save-20261015-182930/post-recovery-FTP.json": {
+      "bytes": 423,
+      "sha256": "65eee3fca36f6aa68c79da60841853b07d2cefdd5faef537174f7775bb3efb03"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-save-reviewed-20261015-182930/top.json": {
+      "bytes": 1285753,
+      "sha256": "982aea69df038eab4e931c2f41e48016ffe9ff17c78a7970e4fa488d43665daf"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-save-reviewed-20261015-182930/guard.json": {
+      "bytes": 776634,
+      "sha256": "d7498d40e77725e3e563080ffa74517a0614e16d2d94ce85d7922587d8f61c69"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-save-reviewed-20261015-182930/owned-child-exit.json": {
+      "bytes": 37,
+      "sha256": "6bd6d80d429d75ebde5a245ba1759dcbd0e528c21e2a302af71427278720b50c"
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-save-reviewed-20261015-182930/launch.exit": {
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    }
+  }
+}
