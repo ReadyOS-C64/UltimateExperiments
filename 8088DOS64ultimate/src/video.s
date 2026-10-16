@@ -942,11 +942,44 @@ v_pixel:
     jsr v_vram_write
     jmp v_done
 
+; Permanent copied RAM under KERNAL; avoids growing the full DEVICE window.
+.segment "HDBIOS"
+; XT INT10/AH0B: BH=0 replaces low5 color/intensity bits; any nonzero
+; BH selects palette with BL bit0. Other CGA shadow bits and VRAM survive.
+; Facts from IBM5160 11/08/82 SET_COLOR; independently implemented here.
+v_palette:
+    lda #$66
+    jsr v_bda_read
+    sta v_byte
+    lda dos64_guest+G_BX+1
+    bne @select
+    lda dos64_guest+G_BX
+    and #$1F
+    sta v_bits
+    lda v_byte
+    and #$E0
+    jmp @merge
+@select:
+    lda dos64_guest+G_BX
+    and #1
+    asl
+    asl
+    asl
+    asl
+    asl
+    sta v_bits
+    lda v_byte
+    and #$DF
+@merge:
+    ora v_bits
+    jsr v_write
+    jmp v_done
+
 .segment "RODATA"
 v_dispatch:
     .word v_set_mode, v_shape, v_set_cursor, v_get_cursor
     .word v_unsupported, v_active, v_scroll_up, v_scroll_down
-    .word v_read_char, v_write_char, v_write_char, v_unsupported
+    .word v_read_char, v_write_char, v_write_char, v_palette
     .word v_pixel, v_pixel, v_tty, v_get_mode
 v_mode_cols: .byte 40,40,80,80,40,40,80
 v_mode_stride: .byte 8,8,$10,$10,$40,$40,$40

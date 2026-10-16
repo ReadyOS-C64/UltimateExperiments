@@ -451,7 +451,7 @@ test "video rejects unknown modes services graphics glyphs and malformed windows
     try mode(&f, 3);
     var s = Screen.init(80);
     try seedScreen(&f, &s);
-    for ([_]u16{ 7, 0x80, 0x83, 0xff, 0x0400, 0x0b00, 0x0c01, 0x0d00 }) |ax| try invoke(&f, ax, 0, 0, 0, &.{}, false);
+    for ([_]u16{ 7, 0x80, 0x83, 0xff, 0x0400, 0x0c01, 0x0d00 }) |ax| try invoke(&f, ax, 0, 0, 0, &.{}, false);
     for ([_][2]u16{ .{ 0x1900, 0x1800 }, .{ 0x000a, 0x1809 }, .{ 0, 0x1900 }, .{ 0, 0x1850 }, .{ 0xffff, 0xffff } }) |window| {
         try invoke(&f, 0x0601, 0x7700, window[0], window[1], &.{}, false);
         try invoke(&f, 0x0700, 0x7700, window[0], window[1], &.{}, false);
@@ -536,4 +536,40 @@ test "video operations leave native executable staging unused control and guest 
     try std.testing.expectEqual(@as(u8, 0xa7), c.dos64_reu_peek(f.machine, 0xb7fff));
     try std.testing.expectEqual(@as(u8, 0x5c), c.dos64_reu_peek(f.machine, 0xbc000));
     try std.testing.expect(f.stack_high_water <= 32);
+}
+
+
+test "XT palette background and selection preserve other bits guest registers and adjacent memory" {
+    var f = try init(1); defer f.deinit();
+    try mode(&f, 3);
+    try busWrite(&f, 0x465, 0x5a); try busWrite(&f, 0x467, 0xa5);
+    for ([_]u8{0, 1, 0x1f, 0x20, 0x3f, 0x80, 0xff}) |prior| {
+        for ([_]u8{0, 1, 2, 0xff}) |id| {
+            for ([_]u8{0, 1, 2, 0x10, 0x1f, 0x20, 0x80, 0xff}) |value| {
+                try busWrite(&f,0x466,prior);
+                try invoke(&f,0x0b01,(@as(u16,id)<<8)|value,0x1234,0x5678,&.{},true);
+                const expected: u8 = if(id==0) (prior&0xe0)|(value&0x1f) else (prior&0xdf)|((value&1)<<5);
+                try std.testing.expectEqual(expected,try busRead(&f,0x466));
+                try std.testing.expectEqual(@as(u8,0x5a),try busRead(&f,0x465));
+                try std.testing.expectEqual(@as(u8,0xa5),try busRead(&f,0x467));
+            }
+        }
+    }
+    try flush(&f);
+    try std.testing.expectEqual(@as(u8,0x20),try busRead(&f,0xb8000));
+    try std.testing.expectEqual(@as(u8,7),try busRead(&f,0xb8001));
+}
+
+
+test "XT palette cold BDA cache failure unwinds host stack without changing guest" {
+    var f=try init(1); defer f.deinit();
+    try reg(&f,0,0x0b01); try reg(&f,3,0x0000);
+    const before=try guest(&f);
+    c.dos64_reu_fail_after(f.machine,0,16);
+    const r=try f.call("dos64_video_service",100_000);
+    try std.testing.expectEqual(@as(u8,1),r.p&1);
+    try std.testing.expectEqual(@as(u8,0xec),r.p&0xec);
+    try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_video_host_error")));
+    try std.testing.expectEqualSlices(u8,&before,&try guest(&f));
+    try std.testing.expect(f.stack_high_water<=32);
 }

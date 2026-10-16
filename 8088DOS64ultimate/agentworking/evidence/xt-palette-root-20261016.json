@@ -1,0 +1,22 @@
+{
+  "status": "ACCEPTED_ROOT_XT_INT10_AH0B_PALETTE_MODEL_SOURCE",
+  "runtime_sha256": "44d54c350c31ea06d49e28240f9968410d259181236e86f274ba297df79dab77",
+  "unit_sha256": "2635a47e3a18a2f756a7da7c8b438a267268148a1499199aeaf59c18e557ab32",
+  "human_failure": "evidence/c64u-human-palette-failure-20261016.json",
+  "contract": "BH0 replacesBDA466low5bits withBLlow5; anynonzeroBH selectsbit5 fromBLbit0; remainingbits/registerflags/VRAM unchanged",
+  "primary_IBM_source_sha256": "297b81ee2a0ba93e197a22055b7eb3ab21cba8e21f40c9a43224ef9e9d42450a",
+  "primary_location": "scratch/pc-io-20261015/XTBIOS.ASM SET_COLOR3690..3731; factsconsulted/independentimplementation",
+  "author_manifest_sha256": "b4ea910626e2330767bccbe7281304bf95eca888e640b9bb28df2a4c1c73a692",
+  "peer_manifest_sha256": "5d43ae6f939e3df3ed6401e0b08fcbccee8fa62f83722aa45385886901155fe1",
+  "root_checks": "freshsourcebuild exact44d54/2635 +30actual video/BIOS tests; memoryverifierspass",
+  "author_default": "430Peddle/298tooling",
+  "peer_checks": "31video/BIOS+4focused+35tooling; independent256BH/nativeP plusfullBDA/16KiBVRAM; old71972fails3includingactualINTgate",
+  "layout": {
+    "HDBIOS_bytes": 2866,
+    "HDBIOS_free": 718,
+    "growth": 56,
+    "resident_DEVICE_STATE_growth": 0
+  },
+  "physical_repair_accepted": false,
+  "limitations": "RendererconsumesBDAshadow asbefore; raw3D9ports/directCRTCnotimplementedhere. NoFPU/IDE/physicalCdriveclaim."
+}

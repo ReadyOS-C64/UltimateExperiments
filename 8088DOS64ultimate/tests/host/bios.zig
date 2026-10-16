@@ -147,6 +147,7 @@ test "INT10 query and absent INT14 INT17 use owned gates and normal IRET frames"
     const g = try f.symbol("dos64_guest");
     const rows = [_]struct { vector: u8, ax: u16, gate: u16, expected: u16, expected_bx:u16=0xbeef }{
         .{ .vector = 0x10, .ax = 0x0f00, .gate = 0x150, .expected = 0x5003, .expected_bx=0x00ef },
+        .{ .vector=0x10,.ax=0x0b01,.gate=0x150,.expected=0x0b01 },
         .{ .vector=0x10,.ax=0x1b00,.gate=0x150,.expected=0x1b00 },
         .{ .vector=0x10,.ax=0x10a7,.gate=0x150,.expected=0x10a7 },
         .{ .vector=0x10,.ax=0xff5a,.gate=0x150,.expected=0xff5a },

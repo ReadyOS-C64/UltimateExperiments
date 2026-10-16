@@ -1,3 +1,7 @@
+# XT palette repair promoted/model verified — 2026-10-16
+
+ROOT44d54c35/2635a47e adds missingINT10/AH0B that endedhumanGW-BASICsession;30ROOTvideo/BIOSpass, author430native/298tooling and independent256BH/nativeP/fullmemoryguards pass. HDBIOS+56=2866/3584, noresident/state growth. Physicalsuccessoracceptancepending. ESCcandidate9b7 independentlyunderreview; realTPC+BASICcompleteCproofpassed, originalTURBOIDEreachedsplashthenunsupportedOUT portprobe underdiagnosis. Originalac43 recoveryfirstboundedDelta2passesfixedmostbytesbuttimedout; freshfinalboundedrecovery Terminal1567 currentbeforeanynewapp. No activehumanuse.
+
 # HD split256 promoted/model verified — 2026-10-16
 
 ROOT71972b7e/729111fa reproduces sealed author/independent native pair, focused38pass/3optional skips. Whole512 authority/readback preserved across both256 writes; HDCODE+45=1472/1792. Actual A+C/genuineBASIC/TP7.01 HELLO succeeds privately on pending ESC successor9b7dfbac; not yetROOT/physicalacceptance. Palette successor privately430native+298tools/4focused pass; independent review pending. FullREUac43 recovery running boundedDelta after nativeFILE failure, so no newphysicalapp launch yet.

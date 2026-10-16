@@ -18,6 +18,8 @@ fn addPeddle(module: *std.Build.Module, b: *std.Build) void {
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
+    const palette=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/video_xt_integration.zig"),.target=target,.optimize=.Debug}),.filters=&.{"XT palette", "INT10 query"}});addPeddle(palette.root_module,b);b.step("video-palette","XT color register semantics").dependOn(&b.addRunArtifact(palette).step);
+
     const ui=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/uci_ram_init.zig"),.target=target,.optimize=.Debug})});addPeddle(ui.root_module,b);const ui_ref=b.addSystemCommand(&.{"python3","build_support/build_uci_ram_init_reference.py"});const ui_run=b.addRunArtifact(ui);ui_run.step.dependOn(&ui_ref.step);b.step("uci-ram-init","Actual native initializer original equivalence").dependOn(&ui_run.step);
     const fi=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/files_info.zig"),.target=target,.optimize=.Debug})});addPeddle(fi.root_module,b);b.step("files-info","Strict actual native FILE_INFO record/status/owner").dependOn(&b.addRunArtifact(fi).step);
 

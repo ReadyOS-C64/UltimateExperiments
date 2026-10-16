@@ -8,11 +8,11 @@ DOS64_VIDEO_INC = 1
 ;
 ; Supported: AH00 modes0..6 (16KiB deterministic clear); AH01/02/03 cursor;
 ; AH05 page; AH06/07 bounded text scroll; AH08/09/0A text cell operations;
-; AH0C/0D CGA pixel with bit7 XOR; AH0E text tty on mutable BDA active page;
+; AH0B CGA background/intensity/palette; AH0C/0D CGA pixel with bit7 XOR; AH0E text tty on mutable BDA active page;
 ; AH0F raw mutable BDA query. AH09/0A preserve cursor and wrap B800:DI as a
 ; 16-bit guest offset; stores outside B8000..BBFFF follow the PC bus policy.
 ; Cursor/page/window/pixel arguments outside supported geometry are rejected.
-; Mode7/EGA preserve-clear bit, AH04/0B, graphics glyph services unsupported.
+; Mode7/EGA preserve-clear bit, AH04, graphics glyph services unsupported.
 ; AH10..FF are original-XT ignored functions: all guest registers/FLAGS and
 ; memory unchanged; this does not implement EGA/VGA services.
 ; No font, host renderer, retrace fidelity, sound, or device port emulation.
