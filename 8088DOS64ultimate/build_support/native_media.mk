@@ -8,3 +8,7 @@ test-native-media:
 .PHONY: test-floppy-format
 test-floppy-format:
 	DOS64_ZIG="$(DOS64_ZIG)" $(DOS64_PYTHON) -B build_support/floppy_format_tests.py $(DOS64_FORMAT_TEST_ARGS)
+
+.PHONY: test-floppy-format-host
+test-floppy-format-host:
+	$(DOS64_PYTHON) -B -m unittest discover -s tests/floppy_format_host -p 'test_*.py' -v

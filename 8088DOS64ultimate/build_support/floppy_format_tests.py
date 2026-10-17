@@ -31,7 +31,8 @@ def build(out):
     record = {}; products = {}
     try:
         fd = os.open(out / 'LOCK', os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
-        os.close(fd); locked = True
+        locked = True
+        os.close(fd)
         run = Path(tempfile.mkdtemp(prefix='run-', dir=out))
         evidence = run / 'evidence'; evidence.mkdir()
         for name in ['floppy_format_tests.py', 'native_media_tests.py', 'runtime_media.py']:

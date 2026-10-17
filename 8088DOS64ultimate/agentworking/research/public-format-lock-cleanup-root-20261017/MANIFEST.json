@@ -1,0 +1,54 @@
+{
+  "INPUTS_AFTER.json": {
+    "sha256": "3129480786a4dda9cf526f6fc1cd7146c6ee66780ae86dc68933c82ab76968bd",
+    "bytes": 1114
+  },
+  "CLOSED.stdout": {
+    "sha256": "e05aa6d063f58ea50df91bc6ab9e2e58c38d8c39f33931acc4e3b2c423b90be1",
+    "bytes": 78
+  },
+  "RESULT.json": {
+    "sha256": "a13af385ee8c00c3f398e8008810120264e7812db8c43a8893aa51d41ab82615",
+    "bytes": 1876
+  },
+  "INPUTS_BEFORE.json": {
+    "sha256": "3129480786a4dda9cf526f6fc1cd7146c6ee66780ae86dc68933c82ab76968bd",
+    "bytes": 1114
+  },
+  "PARENT_HOST_RESULT.json": {
+    "sha256": "26b58de0bbde53c77784b0acb612300a6a493bc7f1520584a51558b0570f6c84",
+    "bytes": 712
+  },
+  "CLOSED.stderr": {
+    "sha256": "6af0ebdcb87713e1e1f0322be54427555d3dcd0e56ce6c38419783c5f4f871cd",
+    "bytes": 435
+  },
+  "FIRST.stderr": {
+    "sha256": "e9dd07912df33850830eb3e9364e6a3088b1a662eea5b8b49a3716771a2d59e7",
+    "bytes": 435
+  },
+  "FIRST.stdout": {
+    "sha256": "e05aa6d063f58ea50df91bc6ab9e2e58c38d8c39f33931acc4e3b2c423b90be1",
+    "bytes": 78
+  },
+  "source/tests/floppy_format_host/test_wrapper.py": {
+    "sha256": "304bfa160d4ec5b7630d46ba5535eb6cd43da966ca3689fd736ae3ac23aa6f24",
+    "bytes": 3199
+  },
+  "source/build_support/native_media_tests.py": {
+    "sha256": "b1d8276afa58b5b3282dc201c6ff1d81e44ce94df686aeecd0a3982db457ff5f",
+    "bytes": 11216
+  },
+  "source/build_support/native_media.mk": {
+    "sha256": "e23fcde523cf23f474d13f52b1fac4258079c4e43f5c6e75eb39eb9502432537",
+    "bytes": 656
+  },
+  "source/build_support/runtime_media.py": {
+    "sha256": "4ddb36f05899305e35f0c35670ed254ea522a2461a74422198591c8082066e2b",
+    "bytes": 10079
+  },
+  "source/build_support/floppy_format_tests.py": {
+    "sha256": "9cf77d49ea0913a7049f9b616fd5d1cc89ef91c6dc49654c5a421117ee77bb90",
+    "bytes": 8699
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/floppy_format_tests.py": {
+    "sha256": "9cf77d49ea0913a7049f9b616fd5d1cc89ef91c6dc49654c5a421117ee77bb90",
+    "bytes": 8699
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/native_media_tests.py": {
+    "sha256": "b1d8276afa58b5b3282dc201c6ff1d81e44ce94df686aeecd0a3982db457ff5f",
+    "bytes": 11216
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/runtime_media.py": {
+    "sha256": "4ddb36f05899305e35f0c35670ed254ea522a2461a74422198591c8082066e2b",
+    "bytes": 10079
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/native_media.mk": {
+    "sha256": "e23fcde523cf23f474d13f52b1fac4258079c4e43f5c6e75eb39eb9502432537",
+    "bytes": 656
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/floppy_format_host/test_wrapper.py": {
+    "sha256": "304bfa160d4ec5b7630d46ba5535eb6cd43da966ca3689fd736ae3ac23aa6f24",
+    "bytes": 3199
+  }
+}

@@ -11,3 +11,5 @@ Tests cover full tracks, all three floppy arenas, first/last tracks and heads, r
 `build/floppy-format-tests/RESULT.json` points to the immutable run, source/tool/SDK identities, compiled test products, exact runtime hashes and results. The builder uses fresh local Zig caches, retains compiler dependency lists and SDK copies for the C++ model, pins the installed Zig distribution, and verifies recorded inputs/products after execution. Failures retain the prior passed result and separate diagnostics. SDK paths identify the local test environment; they are not runtime dependencies.
 
 The fixtures use synthetic disks. Genuine DOS FORMAT/SYS/boot, native floppy saving, HD persistence and actual Ultimate operation remain separate integration and release gates.
+
+`make test-floppy-format-host` runs four fast host failure controls: existing foreign lock, failed run creation, interrupted runtime build with failed error reporting, and failure while closing a newly owned lock descriptor. The previous passed result and original failure remain intact; only this build's lock may be removed. These controls do not repeat CPU/model tests.

@@ -394,3 +394,6 @@ The first public cold-builder promotion exposed the runtime's intentional missin
 ## 2026-10-17 — separate actual runtime tests from complete UNIT layout limits
 
 The optionalFORMAT1 runtime can be tested directly with both PythonABI andZig assertions even though the fullUNIT1 linkoverflows. A clean test command must compile the publicdevice model, bind everyusedctypes pointer API, load theactualruntimePRG/labels, andcheck thoseproducts/sourceinputs afterexecution. Pin Zig's actualcompiler/distribution andclang'sactualSDKdependency list; do not let a privateprebuiltmodel or a cleanclone'sunrelatedoptionalfixture become an implicit prerequisite.
+
+
+2026-10-17: After exclusive lock creation, record ownership before closing its descriptor. An error from close must preserve its exact first cause while cleanup removes the newly owned lock. Never remove a preexisting foreign lock. The small host regression suite tests these boundaries without rerunning native CPU suites.
