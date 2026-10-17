@@ -1,0 +1,55 @@
+{
+  "status": "PASSED_LOCAL_HOST_COMPOSITION_ONLY",
+  "source_pins": 440,
+  "rows": [
+    {
+      "name": "host15",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "test_copy.py"
+      ],
+      "exit": 0,
+      "seconds": 9.396080041
+    },
+    {
+      "name": "purpose7",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "test_purpose.py"
+      ],
+      "exit": 0,
+      "seconds": 1.029046459
+    },
+    {
+      "name": "detached4",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "test_detached.py"
+      ],
+      "exit": 0,
+      "seconds": 0.9023349580000009
+    },
+    {
+      "name": "offline",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "launch.py",
+        "--manifest",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-physical-purpose-20261017/work/LAUNCH_MANIFEST.json",
+        "--sha",
+        "2766d8fa728884627b3d952e425315977f0beeb47339f44144b28d6331c868bc",
+        "--offline"
+      ],
+      "exit": 0,
+      "seconds": 0.20186441699999946
+    }
+  ],
+  "native_target_replays": 0,
+  "native_algorithm_unchanged": true,
+  "device_calls": 0,
+  "physical_approval": false
+}

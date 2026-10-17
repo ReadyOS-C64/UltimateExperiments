@@ -145,5 +145,72 @@ class DiskTests(unittest.TestCase):
         b=bytearray(raw);b[data]=0xe5
         with self.assertRaises(ValueError):Volume(b)
 
+    def test_volume_label_and_live_file_have_separate_namespaces(self):
+        # Microsoft FAT specification: ATTR_VOLUME_ID is a single root-only
+        # unallocated entry. Actual DOS3.3 LABEL also sets ARCHIVE (0x28).
+        for width in (12, 16):
+            for attr in (0x08, 0x28):
+                for label_first in (False, True):
+                    raw, _, root, _ = synthetic(width)
+                    label = bytearray(32)
+                    label[:11] = b'HELLO   TXT'
+                    label[11] = attr
+                    file_entry = raw[root:root+32]
+                    raw[root:root+64] = label + file_entry if label_first else file_entry + label
+                    volume = Volume(raw)
+                    self.assertEqual(volume.payloads, {'HELLO.TXT': b'hello'})
+                    self.assertEqual(volume.labels, ['HELLO   TXT'])
+
+    def test_volume_label_and_same_named_directory(self):
+        for width in (12, 16):
+            raw, _, root, data = synthetic(width)
+            raw[root:root+11] = b'V1UTIL     '
+            raw[root+11] = 0x10
+            struct.pack_into('<I', raw, root+28, 0)
+            raw[data:data+64] = bytes(64)
+            for offset, name, cluster in ((data, b'.          ', 2), (data+32, b'..         ', 0)):
+                raw[offset:offset+11] = name
+                raw[offset+11] = 0x10
+                struct.pack_into('<H', raw, offset+26, cluster)
+            label = bytearray(32)
+            label[:11] = b'V1UTIL     '
+            label[11] = 0x28
+            raw[root+32:root+64] = label
+            self.assertEqual(Volume(raw).labels, ['V1UTIL'])
+            self.assertEqual(Volume(raw).directories[0]['name'], 'V1UTIL')
+            duplicate = bytearray(raw)
+            duplicate[root+32:root+64] = raw[root:root+32]
+            with self.assertRaisesRegex(ValueError, 'duplicate'):
+                Volume(duplicate)
+            sublabel = bytearray(raw)
+            sublabel[root+32:root+64] = bytes(32)
+            sublabel[data+64:data+96] = label
+            with self.assertRaisesRegex(ValueError, 'volume label'):
+                Volume(sublabel)
+
+    def test_volume_labels_remain_single_root_unallocated_entries(self):
+        for width in (12, 16):
+            raw, _, root, _ = synthetic(width)
+            label = bytearray(32)
+            label[:11] = b'HELLO   TXT'
+            label[11] = 0x28
+            raw[root+32:root+64] = label
+            for offset, value in ((11, 0x18), (26, 2), (28, 1)):
+                bad = bytearray(raw)
+                bad[root+32+offset] = value
+                with self.subTest(width=width, offset=offset), self.assertRaises(ValueError):
+                    Volume(bad)
+            for name in (b'.          ', b'..         '):
+                bad = bytearray(raw)
+                bad[root+32:root+43] = name
+                with self.assertRaises(ValueError):
+                    Volume(bad)
+            for second_name in (b'HELLO   TXT', b'OTHER      '):
+                bad = bytearray(raw)
+                bad[root+64:root+96] = label
+                bad[root+64:root+75] = second_name
+                with self.assertRaisesRegex(ValueError, 'volume label'):
+                    Volume(bad)
+
 
 if __name__=='__main__':unittest.main(verbosity=2)

@@ -1,0 +1,81 @@
+{
+  "status": "ACCEPTED_SCOPED_MODEL_UTILITIES_EDLIN_AND_PUBLIC_HOST_PARSER_FIX",
+  "files": {
+    "FINAL_RESULT.json": {
+      "sha256": "1c2b43948e4ab07a03a0e5907cb198bd2704cfc79c5500326f734194dda0f784",
+      "bytes": 755
+    },
+    "HANDOFF.md": {
+      "sha256": "1ce46e9dd85d7b546098ac12d1a483d83634472fbafa1d3f63b6bd88ffcfd02c",
+      "bytes": 2968
+    },
+    "LABEL_NAMESPACE_CONTROLS.json": {
+      "sha256": "be68d445c7b9cfaea6618b59c2d22f7b91ee9d017faebe32a577fcbaa3ab2176",
+      "bytes": 1552
+    },
+    "ROOT_RESULT.json": {
+      "sha256": "27f8e0beb4f7c0671bce1f5776bd15ee8659579f69ae1d06fa7b9ffba8516f4f",
+      "bytes": 1943
+    },
+    "execution-INPUTS_AFTER.json": {
+      "sha256": "723e1f8c5f3edf0b395a49efe30b5869a907072cc64514b1447ffd63dc6573c9",
+      "bytes": 979567
+    },
+    "execution-INPUTS_BEFORE.json": {
+      "sha256": "723e1f8c5f3edf0b395a49efe30b5869a907072cc64514b1447ffd63dc6573c9",
+      "bytes": 979567
+    },
+    "execution-RESULT.json": {
+      "sha256": "f8742d1f31688779baee6fb5bc20f0c09f84ae3cf5911d21588d678516acf288",
+      "bytes": 1790
+    },
+    "finish_helpers.py": {
+      "sha256": "c0da5d181dd925104996f36b110e0ac4beedb5e067e61ea9edf707edc93a458a",
+      "bytes": 9671
+    },
+    "fresh40-CIA_FINISH.json": {
+      "sha256": "fa1c19f947b179f2931c076e953dc8efd8ad2f3961053587080e8d5f6e6ec188",
+      "bytes": 1204
+    },
+    "label-parser-reference-root.json": {
+      "sha256": "bb82df0d7efd757202b1531be8415535b874d7608e1774c3f06b8dc68f2d511e",
+      "bytes": 675
+    },
+    "label-parser-root.stderr": {
+      "sha256": "99691f05d6b230df9e4966b559745b617f9f98f650442a1172ec93846a876252",
+      "bytes": 880
+    },
+    "label-parser-root.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "producer80-CIA_FINISH.json": {
+      "sha256": "fa1c19f947b179f2931c076e953dc8efd8ad2f3961053587080e8d5f6e6ec188",
+      "bytes": 1204
+    },
+    "public-dos_disk_inspect.py": {
+      "sha256": "499ccb40f9a6477a11b2434acf8350e1177fb47767a72bc4f4bd1822419d2ead",
+      "bytes": 11629
+    },
+    "public-test_dos_disk_inspect.py": {
+      "sha256": "018255d9b77a4eda442dcaef2cdfaa01502dec48d0481ef38c56b8971cc87550",
+      "bytes": 10536
+    },
+    "run_utilities.py": {
+      "sha256": "cc17aa264fbf43e2b1e5e0857b33ca3d1b3fd026a0d7d78cca65a778c9d3a8f6",
+      "bytes": 7943
+    },
+    "v1-dos-utilities-edlin-label-successor-20261017-MANIFEST.json": {
+      "sha256": "b9509902c304f4ea72b8c6177cc22f5c32f120bc39c4f1275980629ab7bba8e0",
+      "bytes": 559936
+    },
+    "v1-dos-utilities-edlin-successor-20261017-MANIFEST.json": {
+      "sha256": "4aa516371c41928741f6500c42ec407d1acb44575ecd093498df3a3691f6bdd8",
+      "bytes": 539081
+    },
+    "v1-fat-volume-label-parser-20261017-MANIFEST.json": {
+      "sha256": "be2d87c99e15a68853b1a4dfa397da6af541cf4b4e246a94578015800a0063d8",
+      "bytes": 2349
+    }
+  }
+}

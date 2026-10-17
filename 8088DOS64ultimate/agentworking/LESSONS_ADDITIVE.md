@@ -410,3 +410,8 @@ A source-built cold bundle publishes named START/DOS labels/maps with paths+hash
 ## 2026-10-17 — composition needs its own positive workflow
 
 Named-path diagnostics can reuse request scratch even on successful operations. Complete failure-pane tests and old positive installation evidence do not establish the merged positive path; execute the new actual SETUP producer and generated START/DOS consumer before release claims. Manifest readers must distinguish flatmaps from schema/files wrappers. Keep release requirements short and current; preserve historical evidence separately rather than making users reconstruct scope from an append-only endpoint.
+
+
+## 2026-10-17 — preserve a failed oracle and reuse only known-closed output
+
+DOS LABEL may create an archive-marked volume label beside a same-named directory. Treating labels as live filenames makes a valid disk fail inspection. Retain the first failed host cohort, separately establish an actual native known CLOSE under safe guards, and continue only from that closed image. Test label namespace and malformed metadata independently; repair the host parser without changing emulated DOS or rerunning unchanged long workloads.

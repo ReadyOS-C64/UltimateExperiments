@@ -1,0 +1,16 @@
+test_chs_roundtrip_all_supported_fixture_sectors (__main__.DiskTests) ... ok
+test_fat12_and_fat16_payloads (__main__.DiskTests) ... ok
+test_fat_mismatch_cycle_lost_bad_and_reserved (__main__.DiskTests) ... ok
+test_invalid_chs_geometry_lba (__main__.DiskTests) ... ok
+test_mbr_bpb_size_and_geometry_corruptions (__main__.DiskTests) ... ok
+test_real_supplied_image_readonly (__main__.DiskTests) ... ok
+test_subdirectory_dot_parent_and_crosslink (__main__.DiskTests) ... ok
+test_volume_label_and_live_file_have_separate_namespaces (__main__.DiskTests) ... ok
+test_volume_label_and_same_named_directory (__main__.DiskTests) ... ok
+test_volume_labels_remain_single_root_unallocated_entries (__main__.DiskTests) ... ok
+test_zero_length_overlong_and_duplicate (__main__.DiskTests) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.138s
+
+OK

@@ -1,0 +1,31 @@
+{
+  "status": "SEALED_OFFLINE_PURPOSE_READY_FOR_ROOT_REVIEW_NO_DISPATCH",
+  "scope": "OWNED_COPY20M_READONLY_VERIFICATION",
+  "launch": {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-physical-purpose-20261017/work/LAUNCH_MANIFEST.json",
+    "sha256": "2766d8fa728884627b3d952e425315977f0beeb47339f44144b28d6331c868bc",
+    "pins": 440
+  },
+  "native_reader_sha256": "9ab9324f412194a66478a12ef6cba86f1247396eeed3aec7004ea21e9760a1c9",
+  "native_directory_sha256": "9901c211d0104ed8a233068e2c5e07d9b93e1285a92431b30a49d2123501e497",
+  "host_controls": 15,
+  "purpose_controls": 7,
+  "real_detached_process_controls": 4,
+  "offline_constructor_pass": true,
+  "input_closure_before_after": true,
+  "source_native_peer_parent_records": 387,
+  "new_target_execution": false,
+  "physical_approval": false,
+  "device_calls": 0,
+  "ACTIVE_unchanged": true,
+  "queued_UI_256_and_2050_pins_exact": true,
+  "old88ac_NOT_READY_preserved": true,
+  "old_full20MiB_target_proof_not_transferred": true,
+  "current_product_guest_installer_Turbo_Finish_claim": false,
+  "run_id": "c64u-ownedcopy20m-20261017-a00183ba",
+  "home": "/usb1/DOS64_TEST/copy20m-20261017-a00183ba",
+  "source_readonly_historical_current_bytes_unverified_before_COPY": true,
+  "future_acceptance_requires_full20MiB_and_final_ac43_and_known_close": true,
+  "first_fixture_failures": "first-host.stderr/first-host_fixture.py/first-test_copy.py",
+  "first_guarded_import_cache_incident": "first-exploratory-import-cache retained from prior exploratory import; final absent-cache guard controls pass"
+}

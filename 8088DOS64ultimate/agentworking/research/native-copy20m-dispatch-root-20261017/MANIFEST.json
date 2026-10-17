@@ -1,0 +1,21 @@
+{
+  "status": "EXACT_ONE_DISPATCH_AUTHORIZED_PHYSICAL_PENDING",
+  "files": {
+    "peer-HANDOFF.md": {
+      "sha256": "4d78fc43bf4b5bfd8cc8f85af81ab3e9a989268ccd3fcf2997a1e6c826628349",
+      "bytes": 2147
+    },
+    "peer-MANIFEST.json": {
+      "sha256": "cd225d8852dd419293460a3c4928644d536217960f7dd1d77c14f43bbad95a89",
+      "bytes": 6212
+    },
+    "peer-RESULT.json": {
+      "sha256": "e4602aae9470310f7c65d412a752a745bd7225e62ca13a6ace4412686916711e",
+      "bytes": 3779
+    },
+    "ROOT_AUTHORIZATION.json": {
+      "sha256": "33390293a6970698760b1dac80a3f6cb6920839b76dc5c6251b066287498de02",
+      "bytes": 1981
+    }
+  }
+}

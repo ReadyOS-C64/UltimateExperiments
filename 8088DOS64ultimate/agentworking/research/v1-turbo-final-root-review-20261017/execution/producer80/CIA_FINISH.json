@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "events": [
+    {
+      "matrix": "0000000000000000",
+      "passes": [
+        {
+          "pass": 1,
+          "reads": 10,
+          "clock": 0,
+          "ps_key": 0
+        }
+      ],
+      "terminal_safe": false
+    },
+    {
+      "matrix": "0000200000000000",
+      "passes": [
+        {
+          "pass": 1,
+          "reads": 10,
+          "clock": 0,
+          "ps_key": 102
+        }
+      ],
+      "terminal_safe": false
+    },
+    {
+      "matrix": "0000000000000000",
+      "passes": [
+        {
+          "pass": 1,
+          "reads": 10,
+          "clock": 0,
+          "ps_key": 0
+        }
+      ],
+      "terminal_safe": false
+    },
+    {
+      "matrix": "0200000000000000",
+      "passes": [
+        {
+          "pass": 1,
+          "reads": 34,
+          "clock": 0,
+          "ps_key": 13
+        }
+      ],
+      "terminal_safe": true
+    }
+  ],
+  "actual_one_C_CLOSE": true,
+  "target": 2,
+  "both_firmware_handles_closed": true,
+  "private_safe": true,
+  "no_resume": true,
+  "full4M_exact": true,
+  "scope": "all issued native HD work completed; application already exited and DOS redirection closed; no claim of forcing unclosed guest logical buffers"
+}

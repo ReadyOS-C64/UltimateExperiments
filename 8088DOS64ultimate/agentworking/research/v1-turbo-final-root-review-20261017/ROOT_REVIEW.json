@@ -1,0 +1,69 @@
+{
+  "status": "ACCEPTED_FINAL_RUNTIME_ORIGINAL_TURBO_IDE_PERSISTENCE_MODEL",
+  "parent_manifest": {
+    "sha256": "90729d387062979b95c3e4cbdfe37ee7eeb9c354769ed8f3cb6a70c9232fc847",
+    "bytes": 775708
+  },
+  "parent_pins_verified": 2887,
+  "execution_source_inputs_and_copies_exact": 2306,
+  "separate_source_rebuild_inputs": 2342,
+  "executed_rebuilt_model": "450ca17b54b216330ec62f9d8604ade4930b31d35f3743fb639f2e0b8d1ff6d4",
+  "root_new_VM_replay": false,
+  "runtime_native": {
+    "sha256": "0bfaf15df9a3382bc168f6b231d663cdb81efd12c59dd34f870faae6df665d88",
+    "bytes": 47105
+  },
+  "all_final_public_cold8_match": true,
+  "actual_machines": 3,
+  "workflow": [
+    "originalTP7.01/banner7.0 actualtypedsource +backspacecorrection +SaveAs +Diskdestinationcompile +IDErun +AltX +DOSrun/redirection",
+    "actualCIAFinish/privateSafe/oneknownCLOSE/full20MFAT",
+    "fresh40TYPEsavedsource/output +CLS EXEexecution +actualCIAFinish/noWRITE/completeCbyteexact",
+    "fresh80actualIDEopensall5savedlines/AltX +diagnosticnativeCLOSE/readonlyreopen/INFO/full20971520READ04/EOF/finalknownCLOSE"
+  ],
+  "original_payloads_preserved": 360,
+  "final_live_payloads_preserved_after_reopen": 363,
+  "new_artifacts": {
+    "V1EDIT.PAS": {
+      "sha256": "afbb15d2ee3c19a32a23d311ebca9f04ffbb763e4055b594028babc550bed4e9",
+      "bytes": 66
+    },
+    "V1EDIT.EXE": {
+      "sha256": "41e615b12972def3c581690c8935a05614c4766e2485324e946382ca1f4bbc26",
+      "bytes": 2208
+    },
+    "V1OUT.TXT": {
+      "sha256": "55a10db1e86f52e463fcae38bc521eed521d928f144f0e3f464bff1937e41d8f",
+      "bytes": 17
+    }
+  },
+  "fresh80_raw_changed_bytes": [
+    {
+      "offset": 6966854,
+      "before": 68,
+      "after": 69,
+      "directory_entry_offset": 6966848,
+      "before_entry_hex": "e55030303031443524242420000000000000000000000d002100000000000000",
+      "after_entry_hex": "e55030303031453224242420000000000000000000000d002100000000000000",
+      "classification": "deleted zero-length temporary directory entry; no live payload change"
+    },
+    {
+      "offset": 6966855,
+      "before": 53,
+      "after": 50,
+      "directory_entry_offset": 6966848,
+      "before_entry_hex": "e55030303031443524242420000000000000000000000d002100000000000000",
+      "after_entry_hex": "e55030303031453224242420000000000000000000000d002100000000000000",
+      "classification": "deleted zero-length temporary directory entry; no live payload change"
+    }
+  ],
+  "model_20M_content_readback": true,
+  "new_native_SETUP_output_claim": false,
+  "initial_fixture": "explicitcanonicalhostprepared20M originalvendor C, not newnativeSETUPoutput",
+  "guest_keyboard": "nativeXTqueue, physicalhuman bypassed",
+  "native_finish": "modeledCIAheldscans, twoUIFinish endpoints; thirdusesdiagnosticclose",
+  "performance_claim": false,
+  "physical": false,
+  "V1_complete": false,
+  "next": "ActualUltimate finalcohort fullIDE/edit/save/diskcompile/run/Finish/reset/reopen plusfloppymedia andhumanreadability; currentnewinstaller20M composition separate"
+}

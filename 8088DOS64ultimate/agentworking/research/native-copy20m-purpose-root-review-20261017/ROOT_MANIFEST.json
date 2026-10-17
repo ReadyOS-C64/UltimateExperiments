@@ -1,0 +1,78 @@
+{
+  "HANDOFF.md": {
+    "sha256": "8a22267edbf0de10d886f80ec1ea213b8c135c13eeab7b803a2c19e2330b813e",
+    "bytes": 7496
+  },
+  "MANIFEST.json": {
+    "sha256": "b6ad80a553f5b5fcc9ebc289c6f5065932b73a4b0ddb084aa3ef69c711142a77",
+    "bytes": 127291
+  },
+  "REPLAY.md": {
+    "sha256": "d7605667efe2dd30c158f66843429d1064732591d6e38c97b27d41995618279a",
+    "bytes": 1154
+  },
+  "RESULT.json": {
+    "sha256": "93942cfd32c0238de06423ca5268d2892df581b24bbba19118eff24b9f717ae0",
+    "bytes": 1634
+  },
+  "ROOT_REVIEW.json": {
+    "sha256": "8baf5650b670d197d62fe9fd7bfbb45955c812535be632ebd653a17dfc996d93",
+    "bytes": 2329
+  },
+  "closed-local/RESULT.json": {
+    "sha256": "2a5729afae0bfc68e4fb82ee394c00f29cd9a2d560a78ae5fb2a0f943902bdec",
+    "bytes": 1237
+  },
+  "root-constructor.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "root-constructor.stdout": {
+    "sha256": "5fe80afc8f5da6200c623a26a718971252d9d762cda1c41f8d9a85eeb7effb0f",
+    "bytes": 960
+  },
+  "work/LAUNCH_MANIFEST.json": {
+    "sha256": "2766d8fa728884627b3d952e425315977f0beeb47339f44144b28d6331c868bc",
+    "bytes": 113244
+  },
+  "work/LAUNCH_SHA.txt": {
+    "sha256": "8dbae00675376d09a427893ab1006e304e3d54c470744c985d4086365bd23592",
+    "bytes": 65
+  },
+  "work/cold_entry.py": {
+    "sha256": "850dc78aacc4163b7ad30ca8122aef67c57ce121263cf6835606a956b0a62915",
+    "bytes": 2121
+  },
+  "work/copy_reader_host.py": {
+    "sha256": "80f562b2ca5832499cf152e4b030022a3bdec54886c56e1eba5e36c3edb975b3",
+    "bytes": 8255
+  },
+  "work/copy_session.py": {
+    "sha256": "b68c19a948cc47a88b2d6bbda210394c10dcabf432481df2d9063a72645e6046",
+    "bytes": 14626
+  },
+  "work/copy_transport.py": {
+    "sha256": "3991cb47ea58629d21c878d0c72c738431fe8d052db9e6f29672153948183c99",
+    "bytes": 10510
+  },
+  "work/directory_host.py": {
+    "sha256": "dc40b8ec5ed3ee4882af43eec3fd198d861536d755b1c7b3e922a6b22f0ed27d",
+    "bytes": 4294
+  },
+  "work/dispatch-owned.sh": {
+    "sha256": "e9093df9495b3915547de7bacf18616933341666f38f1eab69241c058c3c4b67",
+    "bytes": 769
+  },
+  "work/launch.py": {
+    "sha256": "47a20963c7d92b21a6b24a7d1d22be1792851cdb7e4ad8b2112d051f3905bc95",
+    "bytes": 1874
+  },
+  "work/purpose.py": {
+    "sha256": "309b39021d61c393a9cf7f89a9e1c1c02e63abc7be1625cf71d89a5e34ee2b56",
+    "bytes": 11907
+  },
+  "work/supervisor.py": {
+    "sha256": "98840bbac8fbaf4ad8d46ecec178f2b483e71edb7261a2c793e883c39ac88cf0",
+    "bytes": 3631
+  }
+}

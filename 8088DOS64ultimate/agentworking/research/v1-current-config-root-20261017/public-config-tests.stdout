@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/config-v1-current-test/run-4rnytzhj",
+  "products": {
+    "CONFIG.PRG": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/config-v1-current-test/run-4rnytzhj/products/CONFIG.PRG",
+      "sha256": "de0a062f1eb5c528d9813da4426a18aa06100f834d83f6e7a34eae643c7c40b1",
+      "bytes": 44382
+    },
+    "CONFIG.labels": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/config-v1-current-test/run-4rnytzhj/products/CONFIG.labels",
+      "sha256": "104a35fdd4a71704d09c7a18164ac5973c96b2d55da48efff839e75559073978",
+      "bytes": 21997
+    },
+    "CONFIG.map": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/config-v1-current-test/run-4rnytzhj/products/CONFIG.map",
+      "sha256": "e0eeab5c83e6f2c46e4eb820723654821e5a3cf647d8c696fdad7e37b4b4ec5d",
+      "bytes": 257391
+    }
+  },
+  "groups": {
+    "actual_native": 9,
+    "actual_SYS": 4,
+    "direct_Zig": 2,
+    "synthetic_media": false,
+    "genuine_DOS_execution": false
+  }
+}

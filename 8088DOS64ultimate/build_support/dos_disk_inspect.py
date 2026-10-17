@@ -136,6 +136,13 @@ class Volume:
             ext = raw_name[8:].decode("cp437").rstrip()
             name = base + (("." + ext) if ext else "")
             first, length = struct.unpack_from("<HI", ent, 26)
+            if attr & 8:
+                # A volume label is not part of the live file/directory namespace.
+                if (prefix or first or length or self.labels or not base
+                        or name in (".", "..") or any(c in name for c in "/\\\x00")):
+                    raise ValueError("invalid volume label")
+                self.labels.append(raw_name.decode("cp437").rstrip())
+                continue
             if name in names or not base or any(c in name for c in "/\\\x00"):
                 raise ValueError("invalid/duplicate DOS short name")
             names.add(name)
@@ -144,11 +151,6 @@ class Volume:
                 if not prefix or attr != 0x10 or first != expected or length:
                     raise ValueError("invalid dot directory")
                 dots.add(name)
-                continue
-            if attr & 8:
-                if prefix or first or length:
-                    raise ValueError("invalid volume label")
-                self.labels.append(raw_name.decode("cp437").rstrip())
                 continue
             if not length and not attr & 0x10 and first:
                 raise ValueError("zero-length allocation")

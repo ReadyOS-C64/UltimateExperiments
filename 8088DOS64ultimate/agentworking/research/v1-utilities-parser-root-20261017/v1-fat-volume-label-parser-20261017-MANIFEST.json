@@ -1,0 +1,65 @@
+{
+  "status": "PASS_NARROW_PUBLIC_HOST_FIX_UNCOMMITTED",
+  "files": {
+    "00-dos_disk_inspect.py": {
+      "sha256": "499ccb40f9a6477a11b2434acf8350e1177fb47767a72bc4f4bd1822419d2ead",
+      "bytes": 11629
+    },
+    "01-test_dos_disk_inspect.py": {
+      "sha256": "018255d9b77a4eda442dcaef2cdfaa01502dec48d0481ef38c56b8971cc87550",
+      "bytes": 10536
+    },
+    "02-python3.9": {
+      "sha256": "ec201019b3d883e095e753405a6fc5c1ae8f3b4905231dfd3dc6b4a1f348056f",
+      "bytes": 102352
+    },
+    "03-MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img": {
+      "sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+      "bytes": 368640
+    },
+    "04-MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 2 of 3.img": {
+      "sha256": "91a624fc448c1c423d159ae21f51cc416393d8e19a73d3858afc3af92af041c2",
+      "bytes": 368640
+    },
+    "05-MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 3 of 3.img": {
+      "sha256": "c69238c738bab18db840b5ae72b2470c0d594832d91103573a6d8273dce300e9",
+      "bytes": 368640
+    },
+    "ACTUAL_COUNTEREXAMPLE.json": {
+      "sha256": "0689d0539c184addcf997fb2a2e6863a85b95b2dab0cbe2e9994840fd5a8cbc1",
+      "bytes": 533
+    },
+    "BASELINE-dos_disk_inspect.py": {
+      "sha256": "2b2a882d17f030ed889b76384c82ab11c0462401c60f62e84dc09d1993f4d836",
+      "bytes": 11433
+    },
+    "BASELINE-test_dos_disk_inspect.py": {
+      "sha256": "7929520674e004095694f9203ea9a6175e28242a784b5dd1eadf742a9bbd7e8e",
+      "bytes": 7305
+    },
+    "FIRST_METADATA_FAILURE.md": {
+      "sha256": "ca0000ed8dfd9511eff510f5c742b022b622447bb7ee1c79eb6b02bceaf1aa97",
+      "bytes": 274
+    },
+    "HANDOFF.md": {
+      "sha256": "7d20af45784bd21f33c1b9aab2e79f74c0d070efab9d3b49e8678da4a0a09205",
+      "bytes": 1025
+    },
+    "INPUTS_AFTER.json": {
+      "sha256": "c5cc98dfcbbbfbcbb0c75af8e0a5939a16878c399111b148afb73a67c9dd9ff3",
+      "bytes": 1477
+    },
+    "INPUTS_BEFORE.json": {
+      "sha256": "c5cc98dfcbbbfbcbb0c75af8e0a5939a16878c399111b148afb73a67c9dd9ff3",
+      "bytes": 1477
+    },
+    "TEST.stderr": {
+      "sha256": "7d1a240343a928cb9f343eaf6265c6629b135d8b9a629855b123c7ab97a7a02a",
+      "bytes": 1023
+    },
+    "TEST.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  }
+}
