@@ -1,0 +1,38 @@
+{
+  "ROOT_REVIEW.json": {
+    "bytes": 2495,
+    "sha256": "963e1afc396e28e56be9dd0c2e259a011d8600a071933109c0cd670f8ab3fe27"
+  },
+  "build/RESULT.json": {
+    "bytes": 290406,
+    "sha256": "8ad9a8ce74ae3852ac07ac3e96b43c2941ba669ee3216e06c05ca5575e3deb0b"
+  },
+  "build/ROLE_VALIDATION.json": {
+    "bytes": 706,
+    "sha256": "e8eaca2efd896cdcb9c642e3bcea13d3f82b3d4ed1ba281b4d43095d9d65b05e"
+  },
+  "cold/RESULT.json": {
+    "bytes": 365481,
+    "sha256": "99743e9ea64020ea2dc3b65365e28ffa91a9c4f5e72ea1c5cebd1195be5a4cdf"
+  },
+  "peer-review/MANIFEST.json": {
+    "bytes": 5752,
+    "sha256": "d48a44cb4ee41e02e353657de6c601e7f725c50751d3c78a09541f22893d7e8b"
+  },
+  "peer-review/RESULT.json": {
+    "bytes": 19479,
+    "sha256": "fa257d653cb89e99e14be3e7a030722579413c73931cb5bded3137e942e104b1"
+  },
+  "portable/build_support/runtime_media.py": {
+    "bytes": 10422,
+    "sha256": "3c4a762a6de0d71ad5c579aa512f126c5b7d0a472415ece04a0bf7c17ccb7588"
+  },
+  "portable/build_support/runtime_media_sources.json": {
+    "bytes": 6771,
+    "sha256": "f6d2f87e98ed702aff5b011efdec31396009e655bd2ececc8c7a0027376f304b"
+  },
+  "portable/tools/native_media/build_ui_bridge.py": {
+    "bytes": 13157,
+    "sha256": "e866670e32475572a25d924db4cc376ca9154ef761a22497b5e8f217c7975515"
+  }
+}

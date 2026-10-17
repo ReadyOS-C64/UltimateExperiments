@@ -1,0 +1,18 @@
+{
+  "role": "runtime",
+  "alias_checks": {
+    "phase/runtime.inc": 552,
+    "binding/runtime.inc": 552,
+    "broker/symbols.inc": 42,
+    "controller/native.inc": 582,
+    "bridge/symbols.inc": 69,
+    "worker/imports.inc": 561
+  },
+  "explicit_SAVER": "dos64-resident.prg.saver.bin",
+  "SAVER_bytes": 2028,
+  "native_sha256": "0bfaf15df9a3382bc168f6b231d663cdb81efd12c59dd34f870faae6df665d88",
+  "native_bytes": 47105,
+  "cold_open": 16321,
+  "tag": "718ac3bec618892eedb0271cdfe921b0",
+  "native_labels": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/runtime-media-next/build/run-yx8ozfuo/native_media/work/build/dos64.labels"
+}

@@ -1,0 +1,82 @@
+{
+  "status": "PRIVATE_RUNTIME_FORMAT_TRAP_AND_COLD_SOURCE_BUILD_PASS",
+  "source_native_inputs_verified": {
+    "build": {
+      "source_inputs": 523,
+      "native_products": 480
+    },
+    "cold": {
+      "source_inputs": 1148,
+      "native_products": 99
+    }
+  },
+  "runtime_flags": {
+    "DOS64_MODAL_MENU": 1,
+    "DOS64_SAVE_HD_CONTEXT": 1,
+    "DOS64_EXPORT_CRC": 1,
+    "DOS64_SAVE_MODAL": 1,
+    "DOS64_MEDIA_BINDING": 1,
+    "DOS64_FLOPPY_FORMAT": 1,
+    "DOS64_TRAP1": 1
+  },
+  "runtime_assets": {
+    "DOS64.PRG": {
+      "sha256": "0bfaf15df9a3382bc168f6b231d663cdb81efd12c59dd34f870faae6df665d88",
+      "bytes": 47105
+    },
+    "DOS64.MNU": {
+      "sha256": "ca3628fa110f4e9c8fe1cd24b49262d0dbd14b180d0ca90ee822eeddb1c70096",
+      "bytes": 57344
+    },
+    "DOS64.REL": {
+      "sha256": "bb8f5797c205f9c003ef05618bf2412d51c3b40f50dccea074b8d11c11765469",
+      "bytes": 64
+    }
+  },
+  "cold_assets": {
+    "DOS64.PRG": {
+      "sha256": "0bfaf15df9a3382bc168f6b231d663cdb81efd12c59dd34f870faae6df665d88",
+      "bytes": 47105
+    },
+    "DOS64.REL": {
+      "sha256": "bb8f5797c205f9c003ef05618bf2412d51c3b40f50dccea074b8d11c11765469",
+      "bytes": 64
+    },
+    "DOS64.MNU": {
+      "sha256": "ca3628fa110f4e9c8fe1cd24b49262d0dbd14b180d0ca90ee822eeddb1c70096",
+      "bytes": 57344
+    },
+    "START.TPL": {
+      "sha256": "18a18cf8f2d9897d2beb5ea29dcd6b677f0954f2119f5fd809d957751698fed5",
+      "bytes": 20480
+    },
+    "START.REL": {
+      "sha256": "05d7e185898938e68f9308242c70f34fb349bcf1c7cf74acd4638503b7d62334",
+      "bytes": 64
+    },
+    "START.INO": {
+      "sha256": "44dd94617a3e76c4451a0e235626108ded3e30c911ce665d7e16e6499f717621",
+      "bytes": 7692
+    },
+    "START.RCV": {
+      "sha256": "08715a793b6fe0abf6dc95e09bad6b13356936b49ba0901793261568faec444e",
+      "bytes": 7902
+    },
+    "START.RFW": {
+      "sha256": "f11b0c1d66a9116b005651529de53bec19939ae03fd9c60ef0599a78b6c84824",
+      "bytes": 5578
+    }
+  },
+  "peer_manifest": {
+    "sha256": "d48a44cb4ee41e02e353657de6c601e7f725c50751d3c78a09541f22893d7e8b",
+    "bytes": 5752
+  },
+  "peer_pins_verified": 36,
+  "source_delta": 3,
+  "requires_prior_private_core_component": "e0e3317/8088-trap-root-20261017 portable21",
+  "public_native_changed": false,
+  "genuine_DOS_DEBUG": false,
+  "physical": false,
+  "performance_claim": false,
+  "next": "Actual genuineDOS DEBUG T/INT3 and Finish/persistence consumer uses exact new8; installer currentC7 consumers remain their own cohort"
+}

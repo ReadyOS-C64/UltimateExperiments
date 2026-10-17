@@ -405,3 +405,8 @@ A source-built cold bundle publishes named START/DOS labels/maps with paths+hash
 
 
 2026-10-17 TF correctness: check original Intel2-28 before copying modern/reference suppression behavior; original8088 nests type1 before an interrupt routine's first opcode. CurrentTF and a sampled/pendingtrace are different, including POPFclear and newly-enabledTF→INTR. Keep fullTF fuzz fixtures and run a real guestISR/IRET; flush/invalidate coherent setup before subsequentrawREU seed writes. OldMake can reuse same-second objects even after a changedcontentstamp: explicitly force the graph from parse-time profile comparison, and test0→1→0 with no sleeps. Full5701corpus excludesIF/TF/0F and cannot establish complete8088compatibility.
+
+
+## 2026-10-17 — composition needs its own positive workflow
+
+Named-path diagnostics can reuse request scratch even on successful operations. Complete failure-pane tests and old positive installation evidence do not establish the merged positive path; execute the new actual SETUP producer and generated START/DOS consumer before release claims. Manifest readers must distinguish flatmaps from schema/files wrappers. Keep release requirements short and current; preserve historical evidence separately rather than making users reconstruct scope from an append-only endpoint.

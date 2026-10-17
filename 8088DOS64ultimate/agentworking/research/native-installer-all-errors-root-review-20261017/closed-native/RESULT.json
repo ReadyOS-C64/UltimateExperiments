@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "records": [
+    {
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/test_engine.py"
+      ],
+      "exit": 0,
+      "seconds": 0.41068879098747857
+    },
+    {
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/test_config_errors.py"
+      ],
+      "exit": 0,
+      "seconds": 1.5846909169922583
+    },
+    {
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/test_config_fallback_repair.py"
+      ],
+      "exit": 0,
+      "seconds": 0.2443380419863388
+    },
+    {
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/test_source_path.py"
+      ],
+      "exit": 0,
+      "seconds": 0.709825500001898
+    },
+    {
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/test_release_paths.py"
+      ],
+      "exit": 0,
+      "seconds": 6.527640540996799
+    },
+    {
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/test_producer_errors.py"
+      ],
+      "exit": 0,
+      "seconds": 0.46014504198683426
+    },
+    {
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/test_pub_metadata_error.py"
+      ],
+      "exit": 0,
+      "seconds": 0.20433999999659136
+    },
+    {
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/test_terminal_guards.py"
+      ],
+      "exit": 0,
+      "seconds": 0.1655730000056792
+    },
+    {
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/test_config_publication_errors.py"
+      ],
+      "exit": 0,
+      "seconds": 66.33618791701156
+    }
+  ],
+  "input_product_pins": 3860,
+  "all_before_after_exact": true,
+  "native_groups": 17,
+  "release_path_subcases": 10,
+  "model": "fresh own source-built Peddle/firmware CAPI, not an independent physical device",
+  "scope": "diagnostic failure paths; true SYS/CIA plus explicitly marked admitted phase components; no complete installer success or physical claim"
+}

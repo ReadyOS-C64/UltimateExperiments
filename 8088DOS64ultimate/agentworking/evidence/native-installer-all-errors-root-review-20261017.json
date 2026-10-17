@@ -1,0 +1,61 @@
+{
+  "status": "ACCEPTED_PRIVATE_NAMED_DIAGNOSTIC_COMPONENT",
+  "parent_manifest": {
+    "sha256": "150415a8555ac66ea64cb212d5801c871fcd4da7348013b08a12356ce9b1a7e9",
+    "bytes": 1784483
+  },
+  "parent_files_verified": 9121,
+  "author_native_groups": 17,
+  "author_source_tool_model_products_before_after": 3860,
+  "root_new_native_replays": 0,
+  "setup_native": {
+    "setup.prg": {
+      "sha256": "c6adeaee9ebdfc0b164ad66e12be5acda729d40812c3347d6fcaf54c4cd2355a",
+      "bytes": 44329
+    },
+    "SETUP.FAT": {
+      "sha256": "12c77438a52dfb1c9d39354fb7fb2506e416bdbb71954cc576f758bf8428adb8",
+      "bytes": 20541
+    },
+    "SETUP.PUB": {
+      "sha256": "ae37560bb8f0cccb1e48675d8d5334318eca66e79d0d25818e9b5e3a5887726a",
+      "bytes": 20544
+    },
+    "setup.labels": {
+      "sha256": "198ca795497a31d8582d7a9674c546f5458d3736e6c413ef2f84e3245d5474d1",
+      "bytes": 30166
+    },
+    "setup.map": {
+      "sha256": "9f4b785f6734b0cbce679911a84edd45bd005865349a67a70a7ce140f31859ea",
+      "bytes": 701386
+    }
+  },
+  "portable_paths": 26,
+  "all_intake_base_pins_match_public": true,
+  "source_review": [
+    "first cause/path/attempted operation latch before cleanup",
+    "full127-byte percent encoding uses at most381screen cells",
+    "presentation-only home scratch never grants FILES/job/Resume authority",
+    "terminal called after all phase C/overlay frames return",
+    "FD source cached0A0000..0A0FFF and verified before6000 execution",
+    "permanent CONFIG fallback distinct from retiredB000; rawCRC avoids uninitialized tables",
+    "SETUP helperBF9F..BFFF separate from BSS and CD00..CFFF C stack",
+    "planner/metadata/full DOS3/cold caches explicitly disjoint in4MiB",
+    "defaultundefined/numeric0 products exact; optionalui_fixture omission only unused ABI shim"
+  ],
+  "qualifications": [
+    "17 author native groups inherited; no unnecessary long Root replay",
+    "CONFIG ancestor must be composed through reviewed066062 successor, not overwrite relocation",
+    "root initial manifest reader treated wrapper schema as a path; administrative failure corrected with explicit files member, no target executed or waiver",
+    "synthetic component admissions/media are explicit, not full fresh installer success",
+    "new whole SETUP\u2192generatedDOS positive workflow, public builder and physical/human remain separate"
+  ],
+  "physical": false,
+  "public_native_changed": false,
+  "archive": "agentworking/research/native-installer-all-errors-root-review-20261017",
+  "archive_manifest": {
+    "sha256": "99ecf290ec413f0436c49a1912834e2c9556a3e7f5670c59002b3835bd53c57c",
+    "bytes": 5278
+  },
+  "archive_pins": 36
+}

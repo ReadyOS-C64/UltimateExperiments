@@ -1,0 +1,31 @@
+{
+  "status": "ACCEPTED_PRIVATE_PUBLIC_LAYOUT_SOURCE_GRAPH_PENDING_NEW_FULL_POSITIVE_INSTALLER",
+  "parent_manifest": {
+    "sha256": "185a3ac1a15e0423e68bb05a9e08382560fc97732806e96fbb7150d58556ae28",
+    "bytes": 687964
+  },
+  "parent_pins_verified": 4490,
+  "portable_paths": 42,
+  "all_baselines_and_copies_exact": true,
+  "root_new_native_replays": 0,
+  "review": [
+    "merged CONFIG component066062 retained with relocation and terminal diagnostics",
+    "SETUP component150415 retained without overwriting combined CONFIG",
+    "optional builders check fallback lifetime and memory bounds; default native PRG/labels exact, maps qualified",
+    "candidate12 requires explicit diagnostic and relocation receipts; default9 unchanged",
+    "test discovery334 excludes optional groups, no failed imports or subprocesses",
+    "no main/Makefile/runtime/cold source writes in42-map"
+  ],
+  "author_groups": {
+    "combined_native": 9,
+    "combined_Zig": 2,
+    "relocation_native": 5,
+    "relocation_Zig": 2,
+    "host_profile": 8,
+    "candidate_host": 23
+  },
+  "author_inputs_products": 2231,
+  "public_promoted": false,
+  "physical": false,
+  "required_next": "Fresh whole positive actual diagnostic SETUP then its generated START/DOS and Finish; freshly regenerate final public runtime/cold/package after eventual promotion"
+}

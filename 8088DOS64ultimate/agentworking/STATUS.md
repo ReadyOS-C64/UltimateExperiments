@@ -1,3 +1,15 @@
+# Current V1 checkpoint — reviewed installer integration and new trap/runtime assets, 2026-10-17
+
+The V1 endpoint is now a concise stable release contract in docs/V1_ENDPOINT.md; earlier additive progress is preserved verbatim in research/v1-endpoint-history-20261017.md. Installation/configuration, reliable A/B/C and original Turbo Pascal IDE persistence on the final physical build take priority. Performance and compiled activation stay post-V1.
+
+Root accepted private SETUP all-file diagnostics after all9,121 parent pins/source lifetime review:17 author native fault groups/3860 input records; c6ad/FAT12c7/PUBae37. Root archived36pins99ec, no redundant failure replay. Root also accepted the42-path public-layout source graph after all4,490 pins and42 current baselines/copies: combinedCONFIG5c91, native9+Zig2, relocation5+Zig2, profile8/candidate23; archive7ff7/49pins. Neither is promoted. A fresh whole positive actual c6ad SETUP→generatedSTART→genuineDOS→Finish is now assigned; older e710 success does not transfer. [SETUP review](evidence/native-installer-all-errors-root-review-20261017.json), [builder review](evidence/native-config-public-builder-root-review-20261017.json).
+
+Root's private original8088 trap profile now source-builds with runtime disk-menu/FORMAT and matching cold8:0bfa main/ca36 MNU/bb8f REL/18a1 TPL. Runtime523inputs/480products and cold1148/99 remain exact; peer36pins checked. Archivecf75/9pins includes3portable CLI/inventory paths. GenuineDOS DEBUG T/T/INT3 passes in the memory worker's new model producer; complete fresh40 persistence consumer/sourceclosure not yet accepted by Root. [Build receipt](evidence/8088-trap-runtime-build-root-20261017.json).
+
+CIA remains sole hardware owner; no new device dispatch by Root. Original88ac COPY reader peer review found published READ firstcause could be replaced by laterCancel/clock. Narrow private repair and new-directory/OWNER prelude continue before a concrete offline physical purpose. No whole20M replay or physical success inferred from shortrepair. ACTIVE/current4MiB/BASIC closure stays exactreserved predecessor. AllfinalV1gatesremainopen; localcommits/no push.
+
+Earlier snapshots below are historical.
+
 # Current V1 checkpoint — private DEBUG trap correctness component, 2026-10-17
 
 Root actualsource-bound TF/type1 assembly profile passes18focused plus507base Zig/Peddle groups (the latter includes5701hardwarecorpuscases). Fresh native/host builds preserve25,102 source/copy/tool/SDK records and138products before/after; resourcecount includes installedSDKs. Nativea25e171c/UNITa1d37012 are47,105B. Ninepackage controls and6same-tree profile/default controls pass on identical nativebytes; default666/b9 remainexact. Root132parentpins/61archivepins exact, archivee50a048e. [Evidence](evidence/8088-trap-root-20261017.json), [component handoff](research/8088-trap-root-20261017/HANDOFF.md).
