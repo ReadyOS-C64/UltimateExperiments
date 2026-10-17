@@ -1,0 +1,61 @@
+{
+  "status": "passed",
+  "scope": "PUBLIC_SOURCE_BUILT_OPTIONAL_SETUP_PREFLIGHT_AND_CANDIDATE_HOST_NOT_FULL_INSTALLER_DOS_OR_HARDWARE",
+  "public_sources_unchanged": 321,
+  "preflight": {
+    "native_groups": 8,
+    "host_groups": 11,
+    "sources_tools_copies": 473,
+    "products": 147,
+    "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-preflight-tests/run-fl_j5x73",
+    "result_identity": {
+      "sha256": "7331af84ac903f029f6227fdbb729473f0d721d11ccc64e187f1236a1d368f4f",
+      "bytes": 164702
+    },
+    "native": {
+      "sha256": "7901183a628406fe555e6940a0c568bcea38c05ed1da56e3b5e9c5d1c26d2da8",
+      "bytes": 42627
+    }
+  },
+  "candidate": {
+    "host_groups": 13,
+    "source_product_records": 1178,
+    "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/v1-candidate/run-4j4b1sok",
+    "archive": {
+      "sha256": "7b4657871ec6649649949e2181a35ce398955ca6c0e678d7757cdd8b7fb6273a",
+      "bytes": 102053
+    }
+  },
+  "default_discovery": {
+    "clean_build_absent": true,
+    "collected": 334,
+    "optional_modules": [],
+    "failed_imports": [],
+    "subprocess_calls": [],
+    "test_bodies_executed": false
+  },
+  "native_default": {
+    "sha256": "0df4c4cfd24afb940e05054270963bc62a08a2f40daccc3eeb389a1781b91838",
+    "bytes": 41363
+  },
+  "native_bound": {
+    "sha256": "7901183a628406fe555e6940a0c568bcea38c05ed1da56e3b5e9c5d1c26d2da8",
+    "bytes": 42627
+  },
+  "first_failure": {
+    "kind": "ADDITIVE_DISCOVERY_FIXTURE_ONLY",
+    "retained": [
+      "first-DISCOVERY.json",
+      "first-discovery.stderr"
+    ],
+    "cause": "Missing source fonts plus overbroad method-name classification; corrected fixture only, no public changes"
+  },
+  "public_edits": false,
+  "hardware": false,
+  "commands": [
+    "make setup-installer-preflight-tests",
+    "make v1-package-tests",
+    "clean source-only unittest discovery, no test bodies"
+  ],
+  "docs_changed": false
+}

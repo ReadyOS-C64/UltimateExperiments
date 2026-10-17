@@ -1,0 +1,1286 @@
+{
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/Makefile": {
+    "sha256": "5aefa6e1f9c3cefc20ad97a17e967309920114cc421eb47ee5ea30bfcc60f263",
+    "bytes": 21763
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/start-ini-bundle/RESULT.json": {
+    "sha256": "c5af660448c150700cf0e3f29319870a9f3fd2411ba7b73faac3e19695366b75",
+    "bytes": 180340
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/DEPENDENCIES.json": {
+    "sha256": "cf5241ac19607dc51c0b48985bccf5ce04669c0a0bf070c32f75b6fad9f99841",
+    "bytes": 8566
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/ac_application.py": {
+    "sha256": "6094b83d26396feefc5f4bf12fb3d34ee88fccbc6b45e9e4c1d26690bca351c4",
+    "bytes": 7343
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/ac_contract.py": {
+    "sha256": "677cd321962af027204befbf2ddc7610b6de71602e0e40f8af4afb1852eb3e09",
+    "bytes": 6613
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/ac_filesystem.py": {
+    "sha256": "c9ee86023474a2304a37d257b09b6472946d2ccd3e94e9caddb2fee1a9f83301",
+    "bytes": 6031
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/ac_freeze.py": {
+    "sha256": "009d79812a6fe3a25f470a9945a602d6b4d4da2a582fa9aad719254644a9f90b",
+    "bytes": 4105
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/ac_helper.py": {
+    "sha256": "ba4c0aabe99dfee7f2065f8f19f3fc7f2da9779bfaacf7845947a4a276c03683",
+    "bytes": 8807
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/ac_helper_staging.py": {
+    "sha256": "eb998f978e7aeff682685d30cb6800280a245357eede3bb1fd49f37f31f18ee3",
+    "bytes": 3326
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/ac_load_then_sys.py": {
+    "sha256": "1901bf0e539a883cc2ad8643a4540acd9ef0b4ca21a6a4698687e9d1c94a9ab3",
+    "bytes": 1905
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/ac_retention.py": {
+    "sha256": "242cbfd9a611b657d7b9951c6b549e542c27424385fb4c060a718befe60c7d8e",
+    "bytes": 10481
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/ac_runner.py": {
+    "sha256": "9eef0ffef9563ddee2af65b875e547d655f2e6f1047cbf7ee87954a67283c602",
+    "bytes": 11619
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/ac_script.py": {
+    "sha256": "3908580e1c37123a357769cc2e30784fc92dd36ddd52d2b6b5acf518cf5cbbe2",
+    "bytes": 3705
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/ac_staging.py": {
+    "sha256": "dbf67f6ffab7e206534a11df41802c0b5429732b9a2a2b6d5a9f157f06571e45",
+    "bytes": 2898
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/batched_delta_recovery.py": {
+    "sha256": "27f5bd8f9caca58d2d42647ac9b885826eedbecacd8146e4bdcaa2627266b86a",
+    "bytes": 5618
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/bootstrap.py": {
+    "sha256": "9ebda447eeeaa66193a80d6d7df438aaf20b447b882d58e5ee0de611eb2e4768",
+    "bytes": 1259
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/game_cancellation.py": {
+    "sha256": "a13e0fed8863c24ff6bf10cc0a903bdfc0d926f7b5afb017e9d11e3cfa19cd27",
+    "bytes": 1448
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/game_full_recovery.py": {
+    "sha256": "b017e4b0854a9e9cf073d7176ea5bc5370c0a9cbfb3d418739ba3644bed3877f",
+    "bytes": 11318
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/game_launch_application.py": {
+    "sha256": "02e0d3eba6ce78b87e6258044cc8d8ee1012ff0fefbe7130025b09b0ceb6eba7",
+    "bytes": 986
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/game_recovery.py": {
+    "sha256": "3cca72a2d9d6da38a74bfa31687396b4c8c65007b497502f8ed51d0b06adac13",
+    "bytes": 1336
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/load_then_sys.py": {
+    "sha256": "c96081ce28be5e0c3bea9320d1fd2e9325107f2391cf69a078f498c5f19b66ba",
+    "bytes": 11403
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/stage_ac.py": {
+    "sha256": "ddc881e6c328dd0f899ed493e606ed73c8351baed8b24c6f83cbe4504ba2c8c0",
+    "bytes": 1493
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/analyze_hd_writes.py": {
+    "sha256": "bbbf44f66828362f62a56dbeedcc2f8431c05948858b41c699249b789be189f1",
+    "bytes": 6381
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/build_bulk_reu_service.py": {
+    "sha256": "e1300a93b4a12738c580a3b43887c69c7c6ecd23cf4169003837d963d5fee14d",
+    "bytes": 3130
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/build_floppy_export.py": {
+    "sha256": "cff4597fb44ae997107475584790e49efb042bd2d3a07c5f18f3dbbdb82576c5",
+    "bytes": 2220
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/build_iec_standalone.py": {
+    "sha256": "2bb08ef41a9032dc128d9ae70ae9fc09df5dc301f019fecf4d5444465441b67f",
+    "bytes": 3983
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/build_native_file_recovery.py": {
+    "sha256": "916ebfaf8803acc19f8e5c8c21023a0811b2124f370b5b6c55d907c5d2e23a10",
+    "bytes": 3077
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/build_uci_ram_init_reference.py": {
+    "sha256": "5ff325aa7363e5adb671af0810e645199f228819c3fea74fd599a70d500ef551",
+    "bytes": 1292
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_bulk_reu_recovery.py": {
+    "sha256": "25f1874c615ad165b7c84cdef5718c44381ca291ab59475213099837eb736033",
+    "bytes": 21278
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_clock_probe.py": {
+    "sha256": "a68ea1017d81b7c9b11e2cdc2e264c6975a3b5f24899722ceec6dd99eb64b002",
+    "bytes": 10637
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_delta_reu_recovery.py": {
+    "sha256": "ea25f194f06e1bfc1f04ad640f88e3f2c7a0eeafc4c545abd34b27ac2a5bfcd7",
+    "bytes": 1913
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_ftp_put_transport.py": {
+    "sha256": "c11b16324aba6cc9941de84f9f5d8856c6156aa34cadf227eae02a56e74c6c41",
+    "bytes": 13354
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_hd_evidence.py": {
+    "sha256": "c42aaf5a223bba80b268b3482593db26d382c85f958a94e024335e1b8dce193a",
+    "bytes": 16108
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_media_fixture.py": {
+    "sha256": "1f9ca8408ab3cede7ce3a31a6c9a9106e8d8b3a520e48b47563b4e4c50f8fa49",
+    "bytes": 5178
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_native_application.py": {
+    "sha256": "c0f974bad448d74ecbf38fdd75ba7d7d013fe8324bd379213d982af0b58b713b",
+    "bytes": 25961
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_native_application_support.py": {
+    "sha256": "78fd3ed6645154ea9253d1014f19f85214e7fae454e214349bc889d90df58ed9",
+    "bytes": 7590
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_native_display_application.py": {
+    "sha256": "2f54b88479911bbcff03774ecb82d3f3423c582a48c0a4f57551ca43cdc373d1",
+    "bytes": 9830
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_native_display_runner.py": {
+    "sha256": "1c76dd3e6a224e26f374cb5bf58159ff39f9dcb009c27d99e8d006b33a00c6a6",
+    "bytes": 8186
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_native_file_recovery.py": {
+    "sha256": "6e603ec327dec13a7357cf788fa1689e4ff298fd700dab5106fa87fb8c83ae4b",
+    "bytes": 21659
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_native_file_runner.py": {
+    "sha256": "0e981b14ccb8690772196c55bc1bd4beb0994bc99222778d55ccb21f32539336",
+    "bytes": 8338
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_native_ftp_put_runner.py": {
+    "sha256": "0cac01f35d40fd7ae5bbdd51ae25a7328b71d3b5cafd970dc5d34ad8fa3d2b76",
+    "bytes": 5507
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_native_mode_identity.py": {
+    "sha256": "117b706b8c911b0f4682908aa0500f576aad56bda9b1b7e7aba506a2f730adb4",
+    "bytes": 4974
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_native_shadow_identity.py": {
+    "sha256": "329e9bc35acb9db1e03c4cbc696956badfed7eeea4e8e612ced7b3da1865ad25",
+    "bytes": 11602
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_preflight.py": {
+    "sha256": "04d8e2f39bb04a97e97f4cfc5b965bbaa78a84f48c74fc591f924d230c45c651",
+    "bytes": 2048
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_probe.py": {
+    "sha256": "4067f05248f0a22a5fb254aa7031fda06ae8e011ea69b5b6c660157809e5d614",
+    "bytes": 10805
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/c64u_range_probe.py": {
+    "sha256": "c29d1d3a09af5fda01ed55e24b9db4af295eb04846d9482b46bd957f908a78f2",
+    "bytes": 13214
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/clock_probe_verify.py": {
+    "sha256": "2b78f5d62596a790d59660c5dc0c33e5d19bd748c1aa982fcdf9f76bc99d8f5b",
+    "bytes": 7503
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/dos_boot_oracle.py": {
+    "sha256": "708919f8fe30d3e14ebf23d7da54ae472fc6421e78e87d42b94c000de48f365d",
+    "bytes": 3089
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/dos_cga_fixture.py": {
+    "sha256": "b68ec3590cd2f94f1f42b1e5fe830df3482dcf7d682a4530e88ae98fefc68c0a",
+    "bytes": 4270
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/dos_cga_oracle.py": {
+    "sha256": "962e95911d51d2c9abfdadc8ac1587aba2588e843c9bdcc8529bf56fef6f3c30",
+    "bytes": 5608
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/dos_disk_inspect.py": {
+    "sha256": "2b2a882d17f030ed889b76384c82ab11c0462401c60f62e84dc09d1993f4d836",
+    "bytes": 11433
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/dos_fixture_assets/cgaprobe.asm": {
+    "sha256": "a7a91a00f1a493fce5de59d71fb10858ac7229d5a0ad1b71c890d92376d3995b",
+    "bytes": 777
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/dos_fixture_assets/cross16.asm": {
+    "sha256": "1abc7e8023b675a572848fa03b765e22b42a5de90eccf8eff72a3c44b46a38d1",
+    "bytes": 1470
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/dos_fixture_assets/hangman.bas": {
+    "sha256": "4aa09bffb41725eb481a064083a4709e0ab0bfa4f105f02e02290eb5823ebe08",
+    "bytes": 1292
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/dos_fixture_assets/keyfeed.asm": {
+    "sha256": "172e1f422e9409c1618b8b94a251c02a92fefa329c90c4c924c70d4fbbd958c5",
+    "bytes": 907
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/dos_gwbasic_fixture.py": {
+    "sha256": "645964c6a4b3d1b4ed9021942a15f51530f7e6478f9a571474d9e7b9d653d5a5",
+    "bytes": 5011
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/dos_hd_fixture.py": {
+    "sha256": "fe33779dca608a0e4f13542db34494dad3f896beae2b62c236e8cfe46e13e358",
+    "bytes": 14423
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/dos_image.py": {
+    "sha256": "2eb2ed0409dd401c803735a95ca4a1e31c7e67f35a51f6bd8d2ababa9962b905",
+    "bytes": 12977
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/fetch_8088_subset.py": {
+    "sha256": "3b937beb344de037fd4c872dc4c32d5d87febd4c35e2adb3f7de39f009d4d97d",
+    "bytes": 7512
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/floppy_export.mk": {
+    "sha256": "9c59fbd18b8ecc268381ccf7b3149569c450b9c99811aecd36af75d45c2f5f76",
+    "bytes": 313
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/hd_identity_plan.py": {
+    "sha256": "01d5fc77661a15e0378d8cc59cbd7cd7f9b90c240499b7c3574beea9465f7a07",
+    "bytes": 2606
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/iec_standalone.mk": {
+    "sha256": "d81b67717425192564569777d3c6999bd42cf0e1fb2069451db7a5f3cdc8adc9",
+    "bytes": 843
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/iec_standalone_tests.zig": {
+    "sha256": "c94b030b74023db07a58d595141535834a0b39794d3f44233807d5ac8d134feb",
+    "bytes": 956
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/manifest.py": {
+    "sha256": "c428eacc186c915c4a47f6a08382e1ae82d0cca68ac37482e1e2a1c161de000b",
+    "bytes": 2818
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/narrow_font.py": {
+    "sha256": "4cbaa587bb681557259f304537a55392e9b964e0bfd959d0cd9609a8b5c3abfc",
+    "bytes": 3772
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/native_text_font.py": {
+    "sha256": "85da72544df339a788e165d58161926e25952a237d43e75fff1005c2139e6ebb",
+    "bytes": 1281
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/native_text_probe_verify.py": {
+    "sha256": "f946a81550f6861c637a356cbb04517cd7b6db676c2f6de2f30a98846d7a817f",
+    "bytes": 3820
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/overlay_package.py": {
+    "sha256": "dde0cb285beab066f9fdd1a3ea175089dddf4473968baaf11571718b5e4666b1",
+    "bytes": 13939
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/raw_payload.py": {
+    "sha256": "f10ed30c1096a4789ac77135186a97847f68a6eb515f21fb005bd3c400e2b4f3",
+    "bytes": 277
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/reference_boot.py": {
+    "sha256": "adeb5344f93c721b15e892a0a56fddc93806dcb5dcfda85e3fcca5281f455c8c",
+    "bytes": 5022
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/test_reu_observer.py": {
+    "sha256": "7fe6f6634b88109dd94dc34e5ca1acfc58f61c33897a6018c0b8640ce43777a1",
+    "bytes": 2665
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/verify_iec_standalone.py": {
+    "sha256": "76ca86a58be61abcc72f13fbccbd26f1765ccbe7c6f6dd36fbd73c5af0c5f55a",
+    "bytes": 5029
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/verify_memory.py": {
+    "sha256": "48c2715ccee907a928ce96f1aa12579284152bb4ca4cde16c0a7d75ca50500ed",
+    "bytes": 25646
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/verify_native_workflows.py": {
+    "sha256": "5683df8fb2951db1866e0dbe72c743b007ce490c0b7ab1a1fe584f2309317d18",
+    "bytes": 5336
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/vice_capture.py": {
+    "sha256": "95a192b79d81a39f9cee1c7b93e1925d2bf527ccb3e6149e683b70241fd8b3e8",
+    "bytes": 2926
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/vice_iec_standalone.py": {
+    "sha256": "e5c9101a965bf8f38578836b42dc7598e24648758ef1601901085324d100971c",
+    "bytes": 6668
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/vice_monitor.py": {
+    "sha256": "eb55a6225c1d3f6250e2e053ac32eda9985a0abf7c137bc0113cd1969208f39b",
+    "bytes": 2840
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/vice_probe.py": {
+    "sha256": "6f4d04665a5dc170038976197f3a97fbbb6f40edf3e563a72e19de8cd2002a7a",
+    "bytes": 3868
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/ac_development/support/vice_process_owner.py": {
+    "sha256": "03f639c682e1ffe8b25be77c8ba01fc0b78e905d1dd7076c13890060067166ef",
+    "bytes": 4002
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/analyze_hd_writes.py": {
+    "sha256": "7b669360b212f67f38f8d9e933d88e321afed048c51db8ed490744aaabc3fc9c",
+    "bytes": 6563
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/build_bulk_reu_service.py": {
+    "sha256": "e1300a93b4a12738c580a3b43887c69c7c6ecd23cf4169003837d963d5fee14d",
+    "bytes": 3130
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/build_floppy_export.py": {
+    "sha256": "cff4597fb44ae997107475584790e49efb042bd2d3a07c5f18f3dbbdb82576c5",
+    "bytes": 2220
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/build_iec_standalone.py": {
+    "sha256": "2bb08ef41a9032dc128d9ae70ae9fc09df5dc301f019fecf4d5444465441b67f",
+    "bytes": 3983
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/build_native_file_recovery.py": {
+    "sha256": "916ebfaf8803acc19f8e5c8c21023a0811b2124f370b5b6c55d907c5d2e23a10",
+    "bytes": 3077
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/build_uci_ram_init_reference.py": {
+    "sha256": "5ff325aa7363e5adb671af0810e645199f228819c3fea74fd599a70d500ef551",
+    "bytes": 1292
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_bulk_reu_recovery.py": {
+    "sha256": "25f1874c615ad165b7c84cdef5718c44381ca291ab59475213099837eb736033",
+    "bytes": 21278
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_clock_probe.py": {
+    "sha256": "a68ea1017d81b7c9b11e2cdc2e264c6975a3b5f24899722ceec6dd99eb64b002",
+    "bytes": 10637
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_delta_reu_recovery.py": {
+    "sha256": "ea25f194f06e1bfc1f04ad640f88e3f2c7a0eeafc4c545abd34b27ac2a5bfcd7",
+    "bytes": 1913
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_ftp_put_transport.py": {
+    "sha256": "c11b16324aba6cc9941de84f9f5d8856c6156aa34cadf227eae02a56e74c6c41",
+    "bytes": 13354
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_full_recovery.py": {
+    "sha256": "401759e16a39851948ef7432e4319a1ae86f6c941ed5c677ecd533a5d558c874",
+    "bytes": 11887
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_hd_evidence.py": {
+    "sha256": "c42aaf5a223bba80b268b3482593db26d382c85f958a94e024335e1b8dce193a",
+    "bytes": 16108
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_media_fixture.py": {
+    "sha256": "1f9ca8408ab3cede7ce3a31a6c9a9106e8d8b3a520e48b47563b4e4c50f8fa49",
+    "bytes": 5178
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_native_application.py": {
+    "sha256": "c0f974bad448d74ecbf38fdd75ba7d7d013fe8324bd379213d982af0b58b713b",
+    "bytes": 25961
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_native_application_support.py": {
+    "sha256": "78fd3ed6645154ea9253d1014f19f85214e7fae454e214349bc889d90df58ed9",
+    "bytes": 7590
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_native_display_application.py": {
+    "sha256": "2f54b88479911bbcff03774ecb82d3f3423c582a48c0a4f57551ca43cdc373d1",
+    "bytes": 9830
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_native_display_runner.py": {
+    "sha256": "1c76dd3e6a224e26f374cb5bf58159ff39f9dcb009c27d99e8d006b33a00c6a6",
+    "bytes": 8186
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_native_file_recovery.py": {
+    "sha256": "6e603ec327dec13a7357cf788fa1689e4ff298fd700dab5106fa87fb8c83ae4b",
+    "bytes": 21659
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_native_file_runner.py": {
+    "sha256": "0e981b14ccb8690772196c55bc1bd4beb0994bc99222778d55ccb21f32539336",
+    "bytes": 8338
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_native_ftp_put_runner.py": {
+    "sha256": "0cac01f35d40fd7ae5bbdd51ae25a7328b71d3b5cafd970dc5d34ad8fa3d2b76",
+    "bytes": 5507
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_native_mode_identity.py": {
+    "sha256": "117b706b8c911b0f4682908aa0500f576aad56bda9b1b7e7aba506a2f730adb4",
+    "bytes": 4974
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_native_shadow_identity.py": {
+    "sha256": "1da4e53bf594995c10f9af8b0a62d417d484f84ddbb68d7b66f193c6be46b3b1",
+    "bytes": 14748
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_preflight.py": {
+    "sha256": "04d8e2f39bb04a97e97f4cfc5b965bbaa78a84f48c74fc591f924d230c45c651",
+    "bytes": 2048
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_probe.py": {
+    "sha256": "4067f05248f0a22a5fb254aa7031fda06ae8e011ea69b5b6c660157809e5d614",
+    "bytes": 10805
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/c64u_range_probe.py": {
+    "sha256": "c29d1d3a09af5fda01ed55e24b9db4af295eb04846d9482b46bd957f908a78f2",
+    "bytes": 13214
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/cga_cursor_oracle.py": {
+    "sha256": "fe66806b952235f24fa046b4de8ccb6df43451bf6abb656d21c33039a2962d43",
+    "bytes": 3763
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/clock_probe_verify.py": {
+    "sha256": "2b78f5d62596a790d59660c5dc0c33e5d19bd748c1aa982fcdf9f76bc99d8f5b",
+    "bytes": 7503
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/config.mk": {
+    "sha256": "acd49089e3ce813e224872cba1571c25455836aa41147a821d5d4439ed5a6cb9",
+    "bytes": 314
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/config_generation.py": {
+    "sha256": "f5ec702b7b0858dc6b0606e8579d1785a83e65eebb61c9a3823aae367f7f0ffa",
+    "bytes": 15216
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/config_sources.json": {
+    "sha256": "27311ca6b41602dc0eac1d2fd708f8d44bd956a064cf5720829f7bba2479d774",
+    "bytes": 1908
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_boot_oracle.py": {
+    "sha256": "708919f8fe30d3e14ebf23d7da54ae472fc6421e78e87d42b94c000de48f365d",
+    "bytes": 3089
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_cga_fixture.py": {
+    "sha256": "b68ec3590cd2f94f1f42b1e5fe830df3482dcf7d682a4530e88ae98fefc68c0a",
+    "bytes": 4270
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_cga_oracle.py": {
+    "sha256": "962e95911d51d2c9abfdadc8ac1587aba2588e843c9bdcc8529bf56fef6f3c30",
+    "bytes": 5608
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_complete_fixture.py": {
+    "sha256": "43482e4a15a89e3ebfeedbe3729f7825d93c2cce78bed2c925eecee66af243c1",
+    "bytes": 5962
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_disk_inspect.py": {
+    "sha256": "2b2a882d17f030ed889b76384c82ab11c0462401c60f62e84dc09d1993f4d836",
+    "bytes": 11433
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_fat_populate.py": {
+    "sha256": "e8f4c9b69b0149066f0caaf0ae88b4b0f204cc5c07d0ff253702472062e8e5e7",
+    "bytes": 6008
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_fixture_assets/cgaprobe.asm": {
+    "sha256": "a7a91a00f1a493fce5de59d71fb10858ac7229d5a0ad1b71c890d92376d3995b",
+    "bytes": 777
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_fixture_assets/cross16.asm": {
+    "sha256": "1abc7e8023b675a572848fa03b765e22b42a5de90eccf8eff72a3c44b46a38d1",
+    "bytes": 1470
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_fixture_assets/hangman.bas": {
+    "sha256": "4aa09bffb41725eb481a064083a4709e0ab0bfa4f105f02e02290eb5823ebe08",
+    "bytes": 1292
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_fixture_assets/keyfeed.asm": {
+    "sha256": "172e1f422e9409c1618b8b94a251c02a92fefa329c90c4c924c70d4fbbd958c5",
+    "bytes": 907
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_gwbasic_fixture.py": {
+    "sha256": "645964c6a4b3d1b4ed9021942a15f51530f7e6478f9a571474d9e7b9d653d5a5",
+    "bytes": 5011
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_hd_fixture.py": {
+    "sha256": "fe33779dca608a0e4f13542db34494dad3f896beae2b62c236e8cfe46e13e358",
+    "bytes": 14423
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/dos_image.py": {
+    "sha256": "2eb2ed0409dd401c803735a95ca4a1e31c7e67f35a51f6bd8d2ababa9962b905",
+    "bytes": 12977
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/fetch_8088_subset.py": {
+    "sha256": "3b937beb344de037fd4c872dc4c32d5d87febd4c35e2adb3f7de39f009d4d97d",
+    "bytes": 7512
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/floppy_export.mk": {
+    "sha256": "9c59fbd18b8ecc268381ccf7b3149569c450b9c99811aecd36af75d45c2f5f76",
+    "bytes": 313
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/hd_identity_plan.py": {
+    "sha256": "01d5fc77661a15e0378d8cc59cbd7cd7f9b90c240499b7c3574beea9465f7a07",
+    "bytes": 2606
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/iec_standalone.mk": {
+    "sha256": "d81b67717425192564569777d3c6999bd42cf0e1fb2069451db7a5f3cdc8adc9",
+    "bytes": 843
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/iec_standalone_tests.zig": {
+    "sha256": "c94b030b74023db07a58d595141535834a0b39794d3f44233807d5ac8d134feb",
+    "bytes": 956
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/manifest.py": {
+    "sha256": "c91432192298ede053d2e4480efe94cf16b63118a0cdad21110eae78e1faafdc",
+    "bytes": 3515
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/narrow_font.py": {
+    "sha256": "4cbaa587bb681557259f304537a55392e9b964e0bfd959d0cd9609a8b5c3abfc",
+    "bytes": 3772
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/native_media.mk": {
+    "sha256": "2a7b334e318978c38c843f89967909ee20e97d0bff81fb10edd931661c6a0a7e",
+    "bytes": 355
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/native_media_sources.json": {
+    "sha256": "8dad4d3013cffc952251db79355ea4fde507cd8d695646612ceae0c1980cfb7e",
+    "bytes": 10544
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/native_media_tests.py": {
+    "sha256": "b1d8276afa58b5b3282dc201c6ff1d81e44ce94df686aeecd0a3982db457ff5f",
+    "bytes": 11216
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/native_text_font.py": {
+    "sha256": "85da72544df339a788e165d58161926e25952a237d43e75fff1005c2139e6ebb",
+    "bytes": 1281
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/native_text_probe_verify.py": {
+    "sha256": "f946a81550f6861c637a356cbb04517cd7b6db676c2f6de2f30a98846d7a817f",
+    "bytes": 3820
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/overlay_package.py": {
+    "sha256": "8e640c0f8fb83f977bf9d8996cd11c4169ed12f3b3dbc9f78d0f62c14773cf25",
+    "bytes": 16099
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/raw_payload.py": {
+    "sha256": "f10ed30c1096a4789ac77135186a97847f68a6eb515f21fb005bd3c400e2b4f3",
+    "bytes": 277
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/reference_boot.py": {
+    "sha256": "adeb5344f93c721b15e892a0a56fddc93806dcb5dcfda85e3fcca5281f455c8c",
+    "bytes": 5022
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/setup.mk": {
+    "sha256": "e2ae113a478f092ff01b7f4820f0013a639d9e0ee1d3a35722d549d394a2c926",
+    "bytes": 3460
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/setup_installer.py": {
+    "sha256": "1ee27cc9de1e94a385388327cc85832a02f5a0b9a80bafb796a09eed026e6b5f",
+    "bytes": 19914
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/setup_installer_tests.py": {
+    "sha256": "56bcb5888fc4997c0d3e69bf48fae7f150bde7cad9fd2dcf61c7fe75f531d499",
+    "bytes": 12395
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/setup_preflight_tests.py": {
+    "sha256": "dc2a05044d65fac62689a0535fd202023853f435a07ee8fd663708478f92443f",
+    "bytes": 7232
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/setup_release_descriptor.py": {
+    "sha256": "ac13e5816cd660d35f70e3342b5747a39bd547e68eaf9f085a9dc46a3f953b11",
+    "bytes": 3819
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/start_ini.mk": {
+    "sha256": "a8c2ad9781382c22c53545a6767e88af75da79d425c8a3434651b26bd295cb7f",
+    "bytes": 895
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/start_ini_bundle.py": {
+    "sha256": "c7cddf7094ec930bf0c83bbc36aa530a9562d52597cecd53f9046b30ef11a8a5",
+    "bytes": 8054
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/start_ini_tests.py": {
+    "sha256": "f9699de53bf9474e9fe150ee4750902c069212904d0a8728b9fb962908671ba8",
+    "bytes": 3417
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/start_launcher.py": {
+    "sha256": "06272e23e0fed85b170c630a6bec5c44e53619e9582dba527d61a52ac93bf94d",
+    "bytes": 9014
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/start_template_descriptor.py": {
+    "sha256": "0736dab6f69e646c0c42b12aa7e743e278e97850df7227bf2843360f246dc93c",
+    "bytes": 3700
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/test_reu_observer.py": {
+    "sha256": "7fe6f6634b88109dd94dc34e5ca1acfc58f61c33897a6018c0b8640ce43777a1",
+    "bytes": 2665
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/v1_candidate.mk": {
+    "sha256": "c869246e9bb6dfd159e02c02a29794d7a796dbf85891d3b1b95374134f13a496",
+    "bytes": 301
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/v1_candidate.py": {
+    "sha256": "06fb0ad924b2f9f28d060bb2bd901f35b99a3819b3a3dc6b9c38aae03310659e",
+    "bytes": 11582
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/verify_cga_cursor_captures.py": {
+    "sha256": "e9e15ac3f72cb5e33cd0ed228d6c335b0cde2bc46d7b25ff258f7b32e069c34b",
+    "bytes": 1801
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/verify_iec_standalone.py": {
+    "sha256": "76ca86a58be61abcc72f13fbccbd26f1765ccbe7c6f6dd36fbd73c5af0c5f55a",
+    "bytes": 5029
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/verify_memory.py": {
+    "sha256": "82ffa53b7a801dad3002c85ddf9537eae52b7c449f0ebe768c8b1c5815254530",
+    "bytes": 30244
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/verify_native_workflows.py": {
+    "sha256": "5683df8fb2951db1866e0dbe72c743b007ce490c0b7ab1a1fe584f2309317d18",
+    "bytes": 5336
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/vice_capture.py": {
+    "sha256": "95a192b79d81a39f9cee1c7b93e1925d2bf527ccb3e6149e683b70241fd8b3e8",
+    "bytes": 2926
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/vice_iec_standalone.py": {
+    "sha256": "e5c9101a965bf8f38578836b42dc7598e24648758ef1601901085324d100971c",
+    "bytes": 6668
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/vice_monitor.py": {
+    "sha256": "eb55a6225c1d3f6250e2e053ac32eda9985a0abf7c137bc0113cd1969208f39b",
+    "bytes": 2840
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/vice_probe.py": {
+    "sha256": "6f4d04665a5dc170038976197f3a97fbbb6f40edf3e563a72e19de8cd2002a7a",
+    "bytes": 3868
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/vice_process_owner.py": {
+    "sha256": "03f639c682e1ffe8b25be77c8ba01fc0b78e905d1dd7076c13890060067166ef",
+    "bytes": 4002
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/README.md": {
+    "sha256": "e1a95dd42160f5e57c3f3decb20e88d4a586dac29d195d67668eab56ac5d8f2b",
+    "bytes": 3575
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/build-coordinator.zig": {
+    "sha256": "390b749fb438d3dfbadd96ba314d4432eed8c6bb742e58e945e3ddcc3abfde1c",
+    "bytes": 1185
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/coordinator_actual.zig": {
+    "sha256": "6d040563ed4d4250d66f825634b0b341aace40c566137d3db9e07782347d4228",
+    "bytes": 20911
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/dos_disk_inspect.py": {
+    "sha256": "2b2a882d17f030ed889b76384c82ab11c0462401c60f62e84dc09d1993f4d836",
+    "bytes": 11433
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/floppy_export/bridge.cpp": {
+    "sha256": "250b9a989741277fb21546854061d6cb391f6d6e56d47f201efb2cfcad6bf05d",
+    "bytes": 29488
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/floppy_export/bulk_model.h": {
+    "sha256": "493e9133b58301d8e1a90b6682c4fb2b2399e2531d7ccfc15a91eb4f727017cb",
+    "bytes": 4502
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/floppy_export/bulk_model_api.h": {
+    "sha256": "503df6579882ca526a9856e709198677fb0460e6bd35b35d6e8d0f4f8c215f14",
+    "bytes": 544
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/floppy_export/directory_bridge.h": {
+    "sha256": "587768258486b4a3ef4f3da673ff2167a6f9d1c686920e1024e57d613db934fc",
+    "bytes": 519
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/floppy_export/directory_model.h": {
+    "sha256": "83962149033820d69e09f495e5ffb403d6c3d717effb2a97bb3f7190459b0043",
+    "bytes": 2835
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/floppy_export/file_model.h": {
+    "sha256": "98a58009e2a3299b3e34a5f28b7edc29c4b0dbb022b6dc66ad88f935e02b0923",
+    "bytes": 4539
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/host/cia_clock_model.h": {
+    "sha256": "400b50fd4f993c067c9e2e161f8cf0a06e35d44470896d20e18f1826918da0ff",
+    "bytes": 3634
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/host/clock_probe_model.h": {
+    "sha256": "bf38128e8ea12aac97d3c67cfa92f40e4a21f31911004a8f47fe8cfc50202643",
+    "bytes": 1507
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/host/graphics_color_model.h": {
+    "sha256": "5ebe677951c661f01781943a88de1f3fc6248e1e4754c89a38fa33d36611e78d",
+    "bytes": 245
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/host/hd_file_model.h": {
+    "sha256": "e3d577558e2b5d63c5c4bff941c40ab6e03093d4dead65d8cb37f4249843a231",
+    "bytes": 3559
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/host/hd_trace.h": {
+    "sha256": "2743ab1fcaab255e892c9776918d0a27ccbdb6591329759dd5ff4faf6af3b10b",
+    "bytes": 579
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/host/host_input_model.h": {
+    "sha256": "6df183ace33369d8ac8111a3de5ca4aa60d21d3373e119865889db77be48a1af",
+    "bytes": 1780
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/host/image_import_model.h": {
+    "sha256": "2b22af0c945cfe55dcc27ab4a08a52327c4970dd63462afe4684b6f63b17d083",
+    "bytes": 2302
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/host/native_display_model.h": {
+    "sha256": "e8f71474924edd3f24a54b57f8e62f95f8709510d673b53dd47c6df0a4d06c27",
+    "bytes": 1343
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/host/peddle_bridge.h": {
+    "sha256": "42c1d730ba289526706aa4048b1f9a52fddcbdc5c1c59ab27312def9316b06b7",
+    "bytes": 5638
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/host/reu_model.h": {
+    "sha256": "f43b161b3838621aa02902d0629f23c212d527ab363f387eebfb4f9d3c957168",
+    "bytes": 3105
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/tests/host/uci_model.h": {
+    "sha256": "2f0c2654d7a7562fae9c58a6f8c83d7fcd5d1b7fcdf6741a78d3fb6e4e0bd7d0",
+    "bytes": 4138
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/Peddle.cpp": {
+    "sha256": "ffedff83b4bcce1a698e2a98ef4fd04b6d6a8f3858aaae243b376cbefa8d269f",
+    "bytes": 4057
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/Peddle.h": {
+    "sha256": "be9269b633be208631e4520d284a7bf2e61c85544b3dda819a52cee7587bfb3e",
+    "bytes": 11873
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/PeddleConfig.h": {
+    "sha256": "44791d9261eb117c8bb5f5ad436f3bcd36c6445fc56693be19f0b54d18445995",
+    "bytes": 2155
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/PeddleDebugger.cpp": {
+    "sha256": "3e1df70e137946707a42c2ece3ae95bfd29f15d6af71d60c429b6301ba631d12",
+    "bytes": 7956
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/PeddleDebugger.h": {
+    "sha256": "518a718a882458dcd7edd601a3b0555a4bdcc82fbf06c0281294b9e7e8d3e5cb",
+    "bytes": 6319
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/PeddleDebuggerTypes.h": {
+    "sha256": "51aefa0f421ecdc9eec1b0833f117b2923be46ae52731d617313eca00dcd4b95",
+    "bytes": 795
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/PeddleDisassembler.cpp": {
+    "sha256": "c3d9bc13bff7af84f7822a5d1e3eccfe3b7a5116a654c751eb713d647bf090f5",
+    "bytes": 10529
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/PeddleDisassembler.h": {
+    "sha256": "ddad84acee3f02b634573678834384d402ca996d1c81268513a6c3e95e8b54d2",
+    "bytes": 2764
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/PeddleExec_cpp.h": {
+    "sha256": "a934618eef43a234578e9d8f32632af7357296277b78c2d561031c7266c43581",
+    "bytes": 79925
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/PeddleInit_cpp.h": {
+    "sha256": "fc0e330a52702e67664d4af929d4a35d672a0c416c9937c664d47116048cf61b",
+    "bytes": 15962
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/PeddleMacros.h": {
+    "sha256": "0ce5228ad2cf6aef71c058787a23e59a124c1906c431ce6bd02adb6c37965121",
+    "bytes": 2136
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/PeddleMemory_cpp.h": {
+    "sha256": "dd5a15b19d598e75821a9aa52f55e9c9a82fedf44722fc5032e83354fd07c205",
+    "bytes": 3025
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/PeddleTypes.h": {
+    "sha256": "b103a58af6dd7b80a79a3335840a8db794a3f8d868f896cc256fa4007cea9f08",
+    "bytes": 16791
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/PeddleUtils.h": {
+    "sha256": "e0f46eebf074a2e616f06aa594026d93f7c9873a0f10bcf3d42d02f8e8f80a28",
+    "bytes": 2880
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/StrWriter.cpp": {
+    "sha256": "6762cedf870935db3c05c8ddd8d64f800caf6f760a9951a6bac9766200e14f1f",
+    "bytes": 4483
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/support/third_party/peddle/Peddle/StrWriter.h": {
+    "sha256": "18ffa60902a7f32b05f48b18075caa39ce64a39358c52f2867bd411561d12f31",
+    "bytes": 2389
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/test_browser.py": {
+    "sha256": "1be8d29cfa48c641923673994ed3391ea58f7cbff9a5ff52ccd8606e7dd6fa1b",
+    "bytes": 17729
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/test_capsule.py": {
+    "sha256": "dbc22337ef5e65999def3c87abfa455060969e1b8f6d64f6e6625d973c31e268",
+    "bytes": 16385
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/test_coordinator.py": {
+    "sha256": "8f48b43f319dda2933f6ff935e3a13cda33c03ddf2635df1f629015f4b471861",
+    "bytes": 6588
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/test_full_installer.py": {
+    "sha256": "01e56d83202116327ae0e829a6dd09ee659be906280e54e96eb2df5b845bb083",
+    "bytes": 8146
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/test_home_preflight.py": {
+    "sha256": "faaca58092a5fe93d245b8a5ab3cc34481fc88088828da41d3d0862f71bb73fa",
+    "bytes": 5451
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/test_real_pub_flow.py": {
+    "sha256": "d229093d4c4f9d909ce93fb489222cce572ca4fc063bed8c0a9b12f086b6a6da",
+    "bytes": 4596
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/test_select.py": {
+    "sha256": "c182ebbc6f8cbeb2707ea73cccda5af38c6c4694dc9962c7268a49de8adaa8bb",
+    "bytes": 9629
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/test_source_load.py": {
+    "sha256": "f1421939081f9e53bad5fca066ffca1b94a073133372f0b41fcb839c26d40456",
+    "bytes": 6143
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_installer/test_ui_session.py": {
+    "sha256": "730c42994eeecb283ecf3c7eb0134368d868eff091a0017fcb7cb221b8696577",
+    "bytes": 6493
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_preflight/README.md": {
+    "sha256": "5f0797ef6cde4efbbae95aabcab135c068d14735d6ec9ce7a6e83fb23e02f5e0",
+    "bytes": 2326
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_preflight/test_preflight.py": {
+    "sha256": "f457d0a86c564771ef880aa0c501abbf978d1d63a41058b5ca2ee702839f8855",
+    "bytes": 3704
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_preflight/test_preflight_final.py": {
+    "sha256": "d43c6f672aab7b8db186142200e41a27870e36763b33a82d439e40b52a2b6b2e",
+    "bytes": 1771
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_preflight/test_runtime_negative.py": {
+    "sha256": "136c0d74baf23e7e972b7ca1b19850d358ab220fdc6b46a3da03d2f22ad29d32",
+    "bytes": 4573
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/setup_preflight_host/test_binding.py": {
+    "sha256": "93bf4c2a4e7876cbf946c691f459766a21fba4dd531945b721a8a32119177de3",
+    "bytes": 7638
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/ac_development/test_ac_host.py": {
+    "sha256": "4e964d4b7f41b60da9f4701a94214597d785906d19a46908e4bc074419c679d3",
+    "bytes": 29444
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_ac_development_layout.py": {
+    "sha256": "ae284922054dd22cdcd63576d1e74b1398e6ee04f20761840af6e7bb498e90da",
+    "bytes": 6135
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_bulk_reu_recovery.py": {
+    "sha256": "e1f6249e0950d6f786b85cfb0e28a79aeedf84bae86aed9d0b1b3a0f5452c6c7",
+    "bytes": 13077
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_delta_reu_recovery.py": {
+    "sha256": "a2938defaf745330857bf2c09730f8fbad219d7c112fcf4f103881c7cf28c6a3",
+    "bytes": 4368
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_ftp_put_transport.py": {
+    "sha256": "9beb09f6fc5925858adcb9c75703704c638f69ac11e70f82440a5f41e3a12183",
+    "bytes": 14982
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_full_recovery.py": {
+    "sha256": "c5b8018f3cc1349c193b79581dd3ff053ca669d091b5c9fdd53fd559c3818627",
+    "bytes": 5264
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_hd_evidence.py": {
+    "sha256": "350f143cff392e5668d537b425008fa27fd1ff8a2a64b257cb3ee6f030bb586d",
+    "bytes": 14119
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_hd_evidence_repair.py": {
+    "sha256": "dd839614451125735e26026bfd1c53803a54d9cd71b9bbfa787cf42b10dcc865",
+    "bytes": 11831
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_media_fixture.py": {
+    "sha256": "d2c614fcc517bf42e207d6eec37634aa29490fc4e3947714e342faa0ec715a4e",
+    "bytes": 4587
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_native_application.py": {
+    "sha256": "cf06da59eb84f3c9b2eccd9148b7f5ad625d16423379e193e0b7c8234e26d8d7",
+    "bytes": 12545
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_native_application_support.py": {
+    "sha256": "13012eb556e93dba6037a7b20b7b60cbac140038e757bda4dfb1527bb046da7a",
+    "bytes": 4524
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_native_display_application.py": {
+    "sha256": "b5010dd5c6a7cf6c390df04fb8ea401590ac184638855cb4bb0df4d3ae65db6d",
+    "bytes": 10957
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_native_display_runner.py": {
+    "sha256": "b01bcd6f88d3ed82e3351f18fef2c87a86fcf346b2e29dd275a7c346936a6799",
+    "bytes": 4087
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_native_mode_identity.py": {
+    "sha256": "98a55d29fb0215df942534a6955e4cba196b97200593536e8a16245e66e7b4bc",
+    "bytes": 5727
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_native_observer.py": {
+    "sha256": "79780bb0ee7515cab2f12b0043ffdd18e13b92e87b5367f92fe5c6642fa588cb",
+    "bytes": 11367
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_native_shadow_identity.py": {
+    "sha256": "130f7ff8cb148cfc7910d0fd7927196000da2f601cddac9e4bec262053eb8315",
+    "bytes": 15566
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_probe.py": {
+    "sha256": "ded4b08cd067ee9ca8e3bdd5514aca78aa690e169775c697ceafdf8c9a92a1c9",
+    "bytes": 4591
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_c64u_range_probe.py": {
+    "sha256": "9c212c9c60a66303b8bfde4858ea62281c48488ffd833b98ba6754dbab1fb452",
+    "bytes": 11166
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_cga_cursor_oracle.py": {
+    "sha256": "dbe367537c6dfd601cb5fbc192c6ea4a119058ed48b1c5d36656c181819407a0",
+    "bytes": 2307
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_clock_probe_verify.py": {
+    "sha256": "78864a628905559d55adc84e5df773c26b288e905c1649173d777f1361236e17",
+    "bytes": 12949
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_dos_cga_fixture.py": {
+    "sha256": "8f107cdcae73be7b47ff97ea0f3ed6aa7062a9ea5ed5ba654fc641f50f7d9973",
+    "bytes": 4347
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_dos_disk_inspect.py": {
+    "sha256": "7929520674e004095694f9203ea9a6175e28242a784b5dd1eadf742a9bbd7e8e",
+    "bytes": 7305
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_dos_gwbasic_fixture.py": {
+    "sha256": "0985965ac39b80db622976e2fc94bf2b7f25f016d522b4e068b083a148e69277",
+    "bytes": 2155
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_dos_hd_fixture.py": {
+    "sha256": "4e221caea303f0fa1210c12d8ed54cfb204013d891c2f1c33abf493d5997d4e2",
+    "bytes": 3108
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_dos_image.py": {
+    "sha256": "ede41ba71b0f1a82c1109d4299ce32472588cb1423b646d1f3eff718fa150249",
+    "bytes": 13632
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_five_overlay_contract.py": {
+    "sha256": "51c38981164482f338d906157653a257ab999275ece5528307b577e72a108de1",
+    "bytes": 1907
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_floppy_export.py": {
+    "sha256": "817c1fc11190493c2c3b4620b3bc8a43ba60bd25fa2a6059a8e6feb051f7a432",
+    "bytes": 3229
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_hd_identity_plan.py": {
+    "sha256": "ed3d12ee2f422433fc52c7f804333fcf3ceb11b0e8d6ba486b0dbedb86f84c93",
+    "bytes": 1472
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_hd_memory_contract.py": {
+    "sha256": "2ac32f3b43b9ebf35c3be2c2a7259ea094b48d0f233d236c9c40a5fc7cb5a9e1",
+    "bytes": 6099
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_image_import_contract.py": {
+    "sha256": "422c1026df51d2f0431c6c672b5773f77f3166890ec02c97b15dc4983c7d0cc6",
+    "bytes": 6326
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_ini_state_memory.py": {
+    "sha256": "88d6697793f3aa7b7f981e0dcbe08fa135a779a9352dbe238131cc162253ca7c",
+    "bytes": 4594
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_memory_contract.py": {
+    "sha256": "a1577b09d2cf0df0fed041a68d82783118f0dd76a797cd2b7bfca59151f5adeb",
+    "bytes": 8014
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_native_save_package.py": {
+    "sha256": "f0e77f4424624671e92bda93bc0fb045b4bbbf93f7c41c1e5d7d38ee0952efe3",
+    "bytes": 2669
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_native_text_assets.py": {
+    "sha256": "ec64206c4afddf5988ad8f8ddb4407952eaa35fe2a171639ffbc1f0e839fbf7b",
+    "bytes": 3640
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_overlay_memory_contract.py": {
+    "sha256": "450d424abc9c635d7a24dedb460279e066e8355911f0149e9e847802dff284d4",
+    "bytes": 7783
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_overlay_package.py": {
+    "sha256": "7271382413a590eb8afca33cc19424248bccafe7ab48437a13928aa00d199a57",
+    "bytes": 2735
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_setup_release_descriptor.py": {
+    "sha256": "5d0ac6f91dbde4cefc10891339d09fe8afdf13a38fd74db93fd4dd5807c2234b",
+    "bytes": 3602
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_start_template_descriptor.py": {
+    "sha256": "3ca41461be46e9598318a9299dec4576426cf03d789bd9353af048b3c5ba4071",
+    "bytes": 2990
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/tooling/test_vice_capture.py": {
+    "sha256": "0f8bc77a36d326374d6c5849e1fdb30ea6cf30ac1b1230e177a45d0bd443fb71",
+    "bytes": 5283
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/v1_candidate_host/test_package.py": {
+    "sha256": "c0e58702b6b22474605bb997b80e7fed31848456b107cce1cf0e56bc01f4a293",
+    "bytes": 8555
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/bindings.s": {
+    "sha256": "725bcc392522a20a16fdfd848e503a714f4f2fd40f5886c56b227fae6eb64d05",
+    "bytes": 2744
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/bulk_context.c": {
+    "sha256": "20bf20d6fdab983fe5e83c130c77575b91a591aa6b8c2595c2c67c61b13ac542",
+    "bytes": 6434
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/bulk_context.h": {
+    "sha256": "89583293600dddb5405d9ce6fbfef3d7ba834bb343107488de5f7ea81527404e",
+    "bytes": 2852
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/bulk_reu.c": {
+    "sha256": "457a3864419a4a80fd399cceb97891bc7a4da727bb4cfb81260e49ca669cebfb",
+    "bytes": 8589
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/bulk_reu.h": {
+    "sha256": "0f15640839327a053e93cbe0c58f563ea67ec9667712c6f99ebce9ae502aaf99",
+    "bytes": 2793
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/compact.cfg": {
+    "sha256": "0261b94b3db041913cebec17d6778a728f93f160271d7e1216a19ecd7393e4f2",
+    "bytes": 1841
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/context_bindings.s": {
+    "sha256": "2e5994f1fd70ae2f3a126cb3536a68067596d3d17a0a023e27b7c81826b80856",
+    "bytes": 328
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/coordinator.s": {
+    "sha256": "161a3fc7d4f3a7f208f30bd1fb7d082371abf375495cffebfec9bc4981654aab",
+    "bytes": 8324
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/coordinator_capture.c": {
+    "sha256": "6bb4bcb7c5f0d7e97ced1de03844eb9b0f90d5c67a405a2d9f1bb3778bbc42d9",
+    "bytes": 2107
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/coordinator_capture.h": {
+    "sha256": "f119a62347fab43a031adbdca16f6e01c838bd831386d09fca4a56a7fdc87bcc",
+    "bytes": 553
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/coordinator_internal.h": {
+    "sha256": "4fca7b59530e89a868a26aec289eb130faba6c210ba3ca09c94be1bc16423098",
+    "bytes": 1296
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/coordinator_internal.inc": {
+    "sha256": "f26ddfdf840af366eb456095aacac0095e2c0b2def3cbbc90823bd0779e2592e",
+    "bytes": 339
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/directory_browser.c": {
+    "sha256": "9485ebac248bb945fef9b0bc9e1d8e234786c5420cfae9d60696913f7cfa60ae",
+    "bytes": 7741
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/directory_browser.h": {
+    "sha256": "3abe23bc236b0fc85fa52bddee23693dd516180dd169ffa6ce8b760175caded5",
+    "bytes": 2981
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/existing_c.inc": {
+    "sha256": "f09bedec1310f8d18e4b4d29ce5ee46f90f860497b1285e8dcd5fa0e043bef7f",
+    "bytes": 9490
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/fat_prepare.c": {
+    "sha256": "d231d630ba11b4691be2f13b36d679abf7b2938a44c5417bb56e918715acc7f6",
+    "bytes": 1203
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/fat_prepare.h": {
+    "sha256": "6bf929b06427666ba3b05e735736ec2c08c11bb44c4089277a35eb9a7dcfc263",
+    "bytes": 1445
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/fat_worker.s": {
+    "sha256": "37d5e50ddccc2d5aec9f1e1b29fc1b1c09d87a7b52cbd19482ea0940e0f698d3",
+    "bytes": 8745
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/files.s": {
+    "sha256": "5d375e5be23e77364e7bc10077d549916857e3ba8864f90623a79885181d90a9",
+    "bytes": 10058
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/install_config.c": {
+    "sha256": "5f85f9e61d35d22ea40b1e0c4fd48e55da0c0ff5b9c49777da84187d3ddfc786",
+    "bytes": 7987
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/install_config.h": {
+    "sha256": "e3f41648267526f6dfb2df08db41896445ec4da4eab6198ef7d53cc8d7d40c7b",
+    "bytes": 1380
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/install_writer.c": {
+    "sha256": "4cdbe94ee027a71e7d4295bc903acedf964f8ae157a3b52b59f1bec532319f50",
+    "bytes": 6597
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/install_writer.h": {
+    "sha256": "c2bce8d14c2f1c085c26e490163fb28e8a3fa517c321a2d2b4f612006123b3a2",
+    "bytes": 2558
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/lease_context.c": {
+    "sha256": "e0b8d25c3353e9d27052f64fd9fbbb92f6b4e7dd853b1e0746cd9d6e1b8c59d5",
+    "bytes": 165
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/native_fat.c": {
+    "sha256": "6de4235377d61c3721b0d3457555389f866e783547f4800240264e6ff2958570",
+    "bytes": 21016
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/native_fat.h": {
+    "sha256": "84056822e90025f75810f69c7222aeeb6db633b6e2d876e1d59684a6346c6e5e",
+    "bytes": 3691
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/overlay_bindings.s": {
+    "sha256": "5e0ece9a225043f4f01b6d73e43938077156344031ba5475d64e6cd38bba0643",
+    "bytes": 57
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/overlay_manifest.s": {
+    "sha256": "93ff3bb5add0d1f2bbcf94c5076c9fb6ab5a671fa018fc12670e1c17b93c55c9",
+    "bytes": 342
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/pub_codec.c": {
+    "sha256": "30e478e9ec6f39219d5ea65f929fb943353125750e0b8201c37927e3d828d5f3",
+    "bytes": 88
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/pub_config.c": {
+    "sha256": "8eaf17651abe420a9c27f5e79c89306dc6df6aee788b4adb292fd048106c8820",
+    "bytes": 7563
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/pub_config_original.h": {
+    "sha256": "4be20cc4c6fd3e145bf5de3f0c76205c5b286caadcb584fdb4fdac887b26376f",
+    "bytes": 1092
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/pub_config_prefix.h": {
+    "sha256": "95642cc4603918c813ca1eee161c6172f38c6777a50efd7bf103b4e0fce641cc",
+    "bytes": 584
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/pub_crc_adapter.c": {
+    "sha256": "a042b1dfcf504184fa67aabee73fb9ddf4858e53bbb0b97de21c17b229529891",
+    "bytes": 58
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_assets.c": {
+    "sha256": "3bdb74b962270b0bb60ac9760eedfbd1ecf238ac3008a0a4dd854be84c3140cf",
+    "bytes": 7285
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_assets.h": {
+    "sha256": "4fe5b72918c94becaa1b6ae2e8b4566d8d3bfdb5535b735457e2bf094ef92f6b",
+    "bytes": 2336
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_scratch.c": {
+    "sha256": "99bb0a3a670a7d03203350a37c7697d9358a3f5e3b329dd28cb4cfd4fe36122a",
+    "bytes": 62
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_scratch.h": {
+    "sha256": "984c5e0e176cd61998e76304c0efff6c32f97d8470aa93f4e14a0cacdd09fd9c",
+    "bytes": 364
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_worker.c": {
+    "sha256": "ce45f859d50c4a38b269746d75abcd71a840a8302e43c6912221c224a89734e5",
+    "bytes": 1772
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_worker.h": {
+    "sha256": "b94eecd79627bb2bf518262f9677a81e7eb371af48edea857635626c3f17d89f",
+    "bytes": 544
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_worker_asm.s": {
+    "sha256": "f829e9c5dff9e7ca0ffe6889186dd35fb5898699a0bcbe0e4d9ee93812f5627f",
+    "bytes": 9247
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/raw_output.c": {
+    "sha256": "3503b667305f2d72ae72de8c0a950054ad05f63f401015f7c50c79791bfc2895",
+    "bytes": 11779
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/raw_output.h": {
+    "sha256": "b1018a16a86532f1cba3c0fb4c836c4bd73f1fdc8a5097e7a2ba7e48d32ca9f3",
+    "bytes": 2043
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/selection_abi.c": {
+    "sha256": "8dc0fdfc9ecb9f5bf7082ce69a205ce91a13b96adfd5f99039da45426c5867d1",
+    "bytes": 166
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/selection_capsule.c": {
+    "sha256": "36f322d2fabc7da6c91dd44296e02e563f392d656d664727601237175d8cbf32",
+    "bytes": 5133
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/selection_capsule.h": {
+    "sha256": "37bb16b45cd278324017b006213fdb4624351cc51043911448e567fdc8d247c5",
+    "bytes": 1965
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_cooperate.c": {
+    "sha256": "c1eaba29fd5c9cd10e68751a673a941f4953d7e30e03e2b0d620bac72b726da3",
+    "bytes": 3134
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_cooperate.h": {
+    "sha256": "8fb282e3f7720034f02eb84ac94ea59bc145b62a550a4ef7dc2e04a63b2e20a1",
+    "bytes": 1327
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_copy.s": {
+    "sha256": "533e75576e969823f47eeb0bba462b3baceaf04cef23f0e17e2cbc082c5061ed",
+    "bytes": 1637
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_dma.s": {
+    "sha256": "ad8dea074aa7f1ae2267560247d63741914ee22179a0d425b354e08b668cc42a",
+    "bytes": 620
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_io.c": {
+    "sha256": "43213e4266bb55414ef6a5b17af24edb81a4734b5232b8be8564f2f7b1a06334",
+    "bytes": 5287
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_io.h": {
+    "sha256": "e6eca1ae72246a9c58efbd22a9dfed75da9daa4f0e09dda01ff1392cc28fb5ff",
+    "bytes": 1104
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_overlay.c": {
+    "sha256": "678c2f2ec076c7e1e2d1c87a96ca4d13868aa08705dbeee96c054245bd8eb49a",
+    "bytes": 9641
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_overlay.h": {
+    "sha256": "4253b5bb85b1e04236f5c45b9d4ca1e2febce893f21e630a7b2e316dcb0e00bf",
+    "bytes": 3012
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_select.c": {
+    "sha256": "c82dd17dad63cc162615710dbd9aef995b4ae4ad231820ee88400f33e0e8f9c7",
+    "bytes": 6815
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_select.h": {
+    "sha256": "74677ee9fb5fcf67cd49f7d27123e2190bf03e308fc176193f0a44d3e5eb97cd",
+    "bytes": 1311
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_ui_run.c": {
+    "sha256": "5987c3e7cadebc4ea6e78ac1cc17dcffa8e43510ce80fe684deca3928f964ebf",
+    "bytes": 2771
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_ui_run.h": {
+    "sha256": "12638f37c6c6206eed01d34a0986716095270f0f7c9a56e28d810a6ccca0f7d7",
+    "bytes": 1093
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/shared/reu.s": {
+    "sha256": "3bea123734d1e75417d1151531048d6731895ab80519bd6027f0e74de61db4ef",
+    "bytes": 3474
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/source_load.c": {
+    "sha256": "2505596e1a9deba12eb9b1b26b6fad1570f7e7392482479bf77531ae332d5aab",
+    "bytes": 11155
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/source_load.h": {
+    "sha256": "210c1348578b7264b482d7a4171afdb785859f8fa6fe50e8570354f2561188c6",
+    "bytes": 1671
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/startup.s": {
+    "sha256": "c077f9c54f72ae5ce49af8552fe560e0d296559e4a671cc2ef189db7c1a37358",
+    "bytes": 658
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/startup_glue.s": {
+    "sha256": "80bd9392676845d1ba89e1b1ccb067af4963fe7f956b1d58994a275db86e030b",
+    "bytes": 158
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/uci.s": {
+    "sha256": "5d6ec2689642be175035cde618e85b9768dfdaa5e857f09b7a8786cbc234fd8f",
+    "bytes": 12707
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/codec_test.cfg": {
+    "sha256": "ca75f579ee3818a16682ff54496a00084ba4ad575bbef7acf79baed960727b2a",
+    "bytes": 358
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/codec_test_entry.s": {
+    "sha256": "b1e9cabb774214b7036b760a766922567e90e537045dbec910f40cdcb3235c91",
+    "bytes": 230
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/install_config.c": {
+    "sha256": "14a19e5d6c8125b5c8517d28a1a025286a3da3c70d7e481288f70e08c3a24559",
+    "bytes": 7797
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/install_config.h": {
+    "sha256": "4be20cc4c6fd3e145bf5de3f0c76205c5b286caadcb584fdb4fdac887b26376f",
+    "bytes": 1092
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/release.c": {
+    "sha256": "a4138325bdb93b0d7a1a09e7f2fbaf47a4023d932c3634766983772e4abcc1b4",
+    "bytes": 3542
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/release.h": {
+    "sha256": "d3b388ffdec149d2dc1ba7fddb08d618d2165cf679307a6e4f14b70cd2976a93",
+    "bytes": 488
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/start_template.c": {
+    "sha256": "b2041fd7c9c63cfdb7fbc2cf7171b127e91f816987a6705acefd23e41f65fe48",
+    "bytes": 3496
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/start_template.h": {
+    "sha256": "e4bd5ed1e13616a59fb9c2803b3611b0d68537147f3dd239facee7bc1dd0aa2b",
+    "bytes": 1544
+  }
+}

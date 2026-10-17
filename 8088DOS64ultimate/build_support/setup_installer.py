@@ -2,6 +2,7 @@
 """Build native SETUP and its FAT/PUB overlays without running the hardware."""
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -14,6 +15,9 @@ import tempfile
 import zlib
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.dont_write_bytecode=True
+sys.pycache_prefix=str(ROOT/'build'/('.absent-setup-builder-'+str(os.getpid())))
+if Path(sys.pycache_prefix).exists():raise RuntimeError('Source-only cache prefix must be absent')
 
 def digest(path):
     data=path.read_bytes()
@@ -34,9 +38,33 @@ def verify(record):
     for name,want in record.items():
         if digest(Path(name))!=want:raise RuntimeError('Build input changed: '+name)
 
+def command_environment():
+    env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1')
+    for name in ['PYTHONPATH','PYTHONPYCACHEPREFIX','CC65_HOME','CC65_INC','CA65_INC','LD65_LIB','LD65_CFG']:env.pop(name,None)
+    return env
+
+def check_preflight_layout(work):
+    # Native TPL validation currently compares its disabled131-byte capsule
+    # inside one512-byte source block. Refuse a future unsupported layout at
+    # build time rather than creating an installer that rejects its own release.
+    descriptor=(work/'release-assets/START.REL').read_bytes()
+    control=int.from_bytes(descriptor[24:28],'little')
+    if control%512+131>512:
+        raise RuntimeError('SETUP preflight requires the disabled START control capsule within one512-byte source block')
+
+def bind_release(result_path,work,record):
+    # One existing validated five-asset binding engine serves SETUP and CONFIG.
+    path=ROOT/'build_support/config_generation.py';record[str(path)]=digest(path)
+    spec=importlib.util.spec_from_file_location('setup_release_binding',path)
+    helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
+    result=helper.bind_release(result_path.resolve(),work,record)
+    check_preflight_layout(work)
+    verify(record)
+    return result
+
 def run(command,work,commands):
     commands.append([str(x)for x in command])
-    subprocess.run(commands[-1],cwd=work,check=True,stdin=subprocess.DEVNULL,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
+    subprocess.run(commands[-1],cwd=work,check=True,stdin=subprocess.DEVNULL,env=command_environment())
 
 def stage(work,record):
     for name,relative in SOURCES.items():
@@ -101,7 +129,7 @@ def metadata(B,ui,fat,pub,pub_length,core_length=None):
  for name,value,size in [('publish_bytes',pub_length,2),('publish_asset_bytes',len(pub)+64,2),('publish_crc',zlib.crc32(pub[:pub_length]),4),('publish_full_crc',zlib.crc32(pub),4)]:text+='_so_'+name+':\n.'+('word'if size==2 else'dword')+' '+str(value)+'\n'
  (B/'overlay_metadata.inc').write_text(text);return bytes(h),bytes(pub_header)
 
-def build_native(work,t):
+def build_native(work,t,release_bound=False):
     commands=[];B=work/'build';B.mkdir()
     # Fixed-size placeholders do not affect placement. Actual phase bytes are
     # measured below and replace these fields before the second link.
@@ -111,6 +139,7 @@ def build_native(work,t):
         phase='PUB'if n in PUB_NAMES else'FAT'if n in FAT_NAMES else'UI'if n in UI_NAMES else None
         opts=['--code-name',phase+'_CODE','--rodata-name',phase+'_RO']if phase else[]
         opts += [item for flag in DEFINES.get(n,[])for item in ['-D',flag]]
+        if release_bound and n in ['source_load','setup_ui_run']:opts += ['-D','DOS64_SETUP_RELEASE_PREFLIGHT=1']
         bss='PUBBSS'if n in PUB_NAMES else'HIGHBSS'if n in HIGH_BSS_NAMES else'UIBSS'if n in UI_BSS_NAMES else None
         run([t['cc65'],'-O','-t','none','--cpu','6502',*opts,*(['--bss-name',bss]if bss else[]),'-I',work,'-o',B/(output+'.s'),work/(n+'.c')],work,commands)
         run([t['ca65'],'-g','-D','DOS64_FILES_INFO=1','-I',work,'-I',work/'shared','-o',B/(output+'.o'),B/(output+'.s')],work,commands)
@@ -135,19 +164,27 @@ def build_native(work,t):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--out',type=Path,default=ROOT/'build/setup-installer',help='Output folder; each build uses a fresh work directory')
+    p.add_argument('--bundle-result',type=Path,help='Explicit matched coupled release RESULT; enables native early runtime preflight (default disabled)')
     p.add_argument('--verify-against',type=Path,help='Development-only comparison with a qualified native build folder')
     args=p.parse_args();out=args.out.resolve();out.mkdir(parents=True,exist_ok=True)
     t=toolchain();record={str(Path(x).resolve()):digest(Path(x).resolve())for x in [*t.values(),sys.executable,__file__]}
+    includes=Path(t['cc65']).parent.parent/'share/cc65/include'
+    if not includes.is_dir():raise RuntimeError('Missing cc65 toolchain include directory')
+    for header in sorted(includes.rglob('*.h')):record[str(header.resolve())]=digest(header.resolve())
     work=Path(tempfile.mkdtemp(prefix='source-',dir=out));phase='source';published=[]
     try:
         (out/'RESULT.json').write_text(json.dumps({'status':'building','work':str(work)},indent=2)+'\n')
         stage(work,record)
+        release=None
+        if args.bundle_result:
+            phase='bind coupled runtime release'
+            release=bind_release(args.bundle_result,work,record)
         if args.verify_against:
             reference=args.verify_against.resolve()
             for name in ['setup.prg','SETUP.FAT','SETUP.PUB','fat-overlay.bin','publish-overlay.bin','overlay_metadata.inc','setup.labels']:
                 record[str(reference/name)]=digest(reference/name)
         (work/'SOURCE_BEFORE.json').write_text(json.dumps(record,indent=2)+'\n')
-        phase='compile';commands,layout=build_native(work,t);verify(record)
+        phase='compile';commands,layout=build_native(work,t,release_bound=release is not None);verify(record)
         built=work/'build';comparisons={}
         if args.verify_against:
             phase='reference comparison'
@@ -156,7 +193,7 @@ def main():
             comparisons['label_addresses']=label_rows(built/'setup.labels')==label_rows(reference/'setup.labels')
             if not all(comparisons.values()):raise RuntimeError('Qualified build comparison failed: '+json.dumps(comparisons))
         products={str(f.relative_to(built)):digest(f)for f in sorted(built.rglob('*'))if f.is_file()}
-        result={'status':'passed','physical':False,'DOS_cold_boot_qualified':False,'complete_install_UI_scope_qualified':False,'work':str(work),'source_inputs':record,'commands':commands,'products':products,'memory':layout,'reference_comparison':comparisons}
+        result={'status':'passed','physical':False,'DOS_cold_boot_qualified':False,'complete_install_UI_scope_qualified':False,'work':str(work),'source_inputs':record,'commands':commands,'products':products,'memory':layout,'reference_comparison':comparisons,'runtime_preflight':release is not None,'release':release}
         phase='prepare bundle';bundle=work/'bundle';bundle.mkdir()
         names=[('SETUP.PRG','setup.prg'),('SETUP.FAT','SETUP.FAT'),('SETUP.PUB','SETUP.PUB'),('SETUP.labels','setup.labels'),('SETUP.map','setup.map')]
         for name,source in names:

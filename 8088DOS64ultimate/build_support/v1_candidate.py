@@ -13,6 +13,10 @@ import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.dont_write_bytecode = True
+sys.pycache_prefix = str(ROOT / 'build' / ('.absent-v1-candidate-' + str(os.getpid())))
+if Path(sys.pycache_prefix).exists():
+    raise RuntimeError('Source-only cache prefix must be absent')
 COUPLED = ('START.TPL', 'START.REL', 'START.INO', 'DOS64.PRG', 'DOS64.REL')
 NATIVE = ('SETUP.PRG', 'SETUP.FAT', 'SETUP.PUB', 'CONFIG.PRG', *COUPLED)
 README = """DOS64 Ultimate development candidate
@@ -103,6 +107,10 @@ def component_inputs(coupled_path, setup_path, config_path):
     # CONFIG embeds the exact five asset identities, not merely the ABI version.
     if config['release']['assets'] != coupled['assets'] or config['release']['result_identity'] != digest(paths[0]):
         raise RuntimeError('CONFIG was built for a different coupled release')
+    if not setup.get('runtime_preflight') or not setup.get('release'):
+        raise RuntimeError('Candidate requires release-bound SETUP runtime preflight')
+    if setup['release']['assets'] != coupled['assets'] or setup['release']['result_identity'] != digest(paths[0]):
+        raise RuntimeError('SETUP was built for a different coupled release')
     selected = {name: bundle / name for name in COUPLED}
     setup_build = Path(setup['work']) / 'build'
     for name, original in [('SETUP.PRG', 'setup.prg'), ('SETUP.FAT', 'SETUP.FAT'), ('SETUP.PUB', 'SETUP.PUB')]:
@@ -177,7 +185,7 @@ def build(out):
     try:
         for name, script, extra in [
             ('coupled', 'start_ini_bundle.py', []),
-            ('setup', 'setup_installer.py', []),
+            ('setup', 'setup_installer.py', ['--bundle-result', str(run / 'coupled/RESULT.json')]),
             ('config', 'config_generation.py', ['--bundle-result', str(run / 'coupled/RESULT.json')]),
         ]:
             phase = 'build ' + name

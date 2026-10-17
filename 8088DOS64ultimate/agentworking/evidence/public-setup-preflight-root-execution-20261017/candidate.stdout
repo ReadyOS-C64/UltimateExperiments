@@ -1,0 +1,3 @@
+python3 -B build_support/v1_candidate.py 
+/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/v1-candidate/run-4j4b1sok/DOS64-candidate.zip
+python3 -B tests/v1_candidate_host/test_package.py

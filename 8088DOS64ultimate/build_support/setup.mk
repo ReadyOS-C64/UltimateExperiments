@@ -55,3 +55,11 @@ setup-installer-memory: setup-installer
 .PHONY: setup-installer-tests
 setup-installer-tests:
 	$(DOS64_PYTHON) -B build_support/setup_installer_tests.py $(DOS64_SETUP_TEST_ARGS)
+
+# Explicit matched-release native preflight; standalone setup-installer stays unchanged.
+DOS64_SETUP_BUNDLE_RESULT ?= build/start-ini-bundle/RESULT.json
+.PHONY: setup-installer-preflight setup-installer-preflight-tests
+setup-installer-preflight:
+	$(DOS64_PYTHON) -B build_support/setup_installer.py --bundle-result "$(DOS64_SETUP_BUNDLE_RESULT)" --out build/setup-installer-bound
+setup-installer-preflight-tests:
+	$(DOS64_PYTHON) -B build_support/setup_preflight_tests.py --bundle-result "$(DOS64_SETUP_BUNDLE_RESULT)" $(DOS64_SETUP_PREFLIGHT_ARGS)

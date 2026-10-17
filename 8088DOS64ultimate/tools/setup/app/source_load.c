@@ -8,6 +8,16 @@
 #include "platform.h"
 #include "crc32.h"
 #include <string.h>
+#ifndef DOS64_SETUP_RELEASE_PREFLIGHT
+#define DOS64_SETUP_RELEASE_PREFLIGHT 0
+#endif
+#if DOS64_SETUP_RELEASE_PREFLIGHT
+#include "release_assets.h"
+#define SL_KIND_COUNT 8u
+static const br_u8 kind_asset[8]={0,0,0,3,4,0,1,2};
+#else
+#define SL_KIND_COUNT 5u
+#endif
 #define READBACK 0x260000UL
 #define OPEN1 1u
 #define INFO1 2u
@@ -46,8 +56,31 @@ extern br_u8 _HIGH_CODE_LOAD__,_HIGH_CODE_RUN__,_HIGH_CODE_SIZE__;
 extern br_u8 _AUX_CODE_LOAD__,_AUX_CODE_RUN__,_AUX_CODE_SIZE__;
 extern br_u8 _AUX_RO_SIZE__;
 #endif
-static br_u32 address(br_u8 k){if(k==0)return 0x100000UL;if(k==1)return 0x180000UL;if(k==2)return 0x380000UL;if(k==3)return 0x2e0000UL;return 0x3fec00UL;}
-static br_u32 size(br_u8 k){return k<3?368640UL:k==3?18432UL:64UL;}
+static br_u32 address(br_u8 k){if(k==0)return 0x100000UL;if(k==1)return 0x180000UL;if(k==2)return 0x380000UL;if(k==3)return 0x2e0000UL;
+#if DOS64_SETUP_RELEASE_PREFLIGHT
+ if(k==5)return 0x2f0000UL;if(k==6)return 0x3fed00UL;if(k==7)return 0x3f8000UL;
+#endif
+ return 0x3fec00UL;}
+static br_u32 size(br_u8 k){
+#if DOS64_SETUP_RELEASE_PREFLIGHT
+ if(k>=3)return asset_size[kind_asset[k]];
+#endif
+ return k<3?368640UL:k==3?18432UL:64UL;}
+#if DOS64_SETUP_RELEASE_PREFLIGHT
+static br_u8 bound(void){br_u32 a=address(q.kind),n=size(q.kind);
+ return asset_size[0]<=0xb801UL&&asset_size[1]==64UL&&asset_size[2]<=8192UL&&asset_size[3]==18432UL&&asset_size[4]==64UL&&a<q.capacity&&n<=q.capacity-a;
+}
+static br_u8 match(br_u16 n){br_u16 i,off;
+ static const br_u8 basic[14]={1,8,11,8,10,0,0x9e,'2','0','6','1',0,0,0};
+ if(q.kind==4u||q.kind==6u)return !q.at&&!q.relative&&n==64u&&!memcmp(nf_sector,q.kind==4u?expected_d64s:expected_d64l,64u);
+ if(q.kind==3u){
+  if(!q.relative&&memcmp(nf_sector,basic,14u))return 0;
+  if(q.relative<=RP_CONTROL&&RP_CONTROL-q.relative<n){off=RP_CONTROL-q.relative;if(n-off<131u)return 0;
+   for(i=0;i<131u;++i)if(nf_sector[off+i]!=(i==0u||i==3u?255u:i==1u?28u:i==2u?223u:0u))return 0;
+  }
+ }return 1;
+}
+#endif
 static void publish(void){sl_result.state=q.state;sl_result.error=q.error;sl_result.phase=q.phase;sl_result.leaf=q.leaf;sl_result.transport=q.transport;sl_result.cleanup=q.waiting||!bc_files_closed();}
 static void first(br_u8 e){if(!q.error)q.error=e;}
 static void failed(void){q.state=SL_FAILED;q.valid=0;}
@@ -79,11 +112,17 @@ br_u8 sl_install(void){br_u16 n=(br_u16)&_HIGH_CODE_SIZE__;br_u8*to=&_HIGH_CODE_
 }
 #endif
 br_u8 sl_begin(void){br_u16 offset,n,generation; br_u32 identity; br_u8 kind=sl_kind;
- if(q.installed!=0xa5||kind>=5||!sl_timeout||sl_timeout>=0x8000u||(q.state!=SL_IDLE&&q.state!=SL_DONE)||!bc_files_closed()||!so_ui_ticket()||ns_io_owner!=0xa5||ns_capacity!=so_capacity()||ns_io_error||ns_cancel)return 0;
+ if(q.installed!=0xa5||kind>=SL_KIND_COUNT||!sl_timeout||sl_timeout>=0x8000u||(q.state!=SL_IDLE&&q.state!=SL_DONE)||!bc_files_closed()||!so_ui_ticket()||ns_io_owner!=0xa5||ns_capacity!=so_capacity()||ns_io_error||ns_cancel)return 0;
  sq_page=0;if(sq_read()!=512u)return 0;memcpy(&generation,sq_bytes+8,2);
  if(q.valid&&generation!=q.generation)return 0;
  if(kind<3){offset=160u+(br_u16)kind*128u;n=512u-offset;if(n>128u)n=128u;memcpy(path,sq_bytes+offset,n);}
- else {memcpy(d64_path_source,sq_bytes+32,128);memset(d64_path_relative,0,128);memcpy(d64_path_relative,kind==3?"START.TPL":"START.REL",9);if(!d64_path_join())return 0;memcpy(path,d64_path_output,128);}
+ else {memcpy(d64_path_source,sq_bytes+32,128);memset(d64_path_relative,0,128);memcpy(d64_path_relative,
+#if DOS64_SETUP_RELEASE_PREFLIGHT
+ asset_name[kind_asset[kind]],
+#else
+ kind==3?"START.TPL":"START.REL",
+#endif
+ 9);if(!d64_path_join())return 0;memcpy(path,d64_path_output,128);}
  sq_page=1;if(sq_read()!=192u)return 0;memcpy(&identity,sq_bytes+188,4);if(kind==2)memcpy(path+96,sq_bytes,32);
  if(q.valid&&(identity!=q.identity||(q.valid&(1u<<kind))))return 0;
  memcpy(d64_path_source,path,128);if(!d64_path_parent())return 0;
@@ -91,6 +130,10 @@ br_u8 sl_begin(void){br_u16 offset,n,generation; br_u32 identity; br_u8 kind=sl_
  bc_slot=0;if(!bc_clear_error()||!c32_init())return 0;
  q.ticket=so_ui_ticket();if(!q.ticket)return 0;
  q.capacity=so_capacity();q.timeout=sl_timeout;q.generation=generation;q.identity=identity;q.kind=kind;q.state=SL_BUSY;q.error=q.leaf=q.transport=q.waiting=q.cancelled=q.clock_bad=q.clock_failed=q.second=0;q.steps=q.bad_steps=0;q.at=0;q.raw=0xffffffffUL;
+ 
+#if DOS64_SETUP_RELEASE_PREFLIGHT
+ if(!bound()){first(SL_INPUT);failed();publish();return 0;}
+#endif
  sample();q.began=q.now;service();if(q.error){failed();publish();return 0;}op(OPEN1,BR_OPEN,0,0);publish();return q.state==SL_BUSY;
 }
 void sl_poll(void){br_u16 n;
@@ -118,7 +161,11 @@ void sl_poll(void){br_u16 n;
   n=q.wanted-q.relative>512u?512u:q.wanted-q.relative;
   if(!read(address(q.kind)+q.at+q.relative,nf_sector,n))break;
   if(q.second){if(!read(READBACK+q.relative,so_scratch,n))break;if(memcmp(nf_sector,so_scratch,n)){first(SL_COMPARE);failed();break;}}
-  else {c32_crc=q.raw;c32_address=(br_u16)nf_sector;c32_length=n;if(!c32_update()){first(SL_COMPARE);failed();break;}q.raw=c32_crc;}
+  else {
+#if DOS64_SETUP_RELEASE_PREFLIGHT
+   if(q.kind>=3u&&!match(n)){first(SL_RELEASE);failed();break;}
+#endif
+   c32_crc=q.raw;c32_address=(br_u16)nf_sector;c32_length=n;if(!c32_update()){first(SL_COMPARE);failed();break;}q.raw=c32_crc;}
   q.relative+=n;q.began=q.now;q.steps=0;break;
  case COMPARE:
   if(!br_result.known||br_result.actual!=q.wanted){first(SL_FILE);failed();break;}if(!read(address(q.kind)+q.at,nf_sector,q.wanted))break;if(memcmp(nf_sector,uci_data,q.wanted)){first(SL_COMPARE);failed();break;}q.at+=q.wanted;q.phase=LOAD2;q.began=q.now;q.steps=0;break;
@@ -127,7 +174,12 @@ void sl_poll(void){br_u16 n;
  case CLOSE1:
   if(!bc_files_closed()){first(SL_FILE);failed();break;}bc_slot=0;if(!bc_clear_error()){first(SL_FILE);failed();break;}q.second=1;op(OPEN2,BR_OPEN,0,0);break;
  case CLOSE2:
-  if(!bc_files_closed()||so_ui_ticket()!=q.ticket){first(SL_INPUT);failed();break;}service();if(q.error){failed();break;}q.crc[q.kind]=q.raw^0xffffffffUL;q.valid|=1u<<q.kind;q.state=SL_DONE;break;
+  if(!bc_files_closed()||so_ui_ticket()!=q.ticket){first(SL_INPUT);failed();break;}service();if(q.error){failed();break;}
+#if DOS64_SETUP_RELEASE_PREFLIGHT
+  if(q.kind>=3u&&(q.raw^0xffffffffUL)!=asset_crc[kind_asset[q.kind]]){first(SL_RELEASE);failed();break;}
+  if(q.kind<5u)
+#endif
+  q.crc[q.kind]=q.raw^0xffffffffUL;q.valid|=1u<<q.kind;q.state=SL_DONE;break;
  default:first(SL_INPUT);failed();break;
  }publish();
 }

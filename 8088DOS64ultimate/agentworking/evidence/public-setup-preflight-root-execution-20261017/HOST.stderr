@@ -1,0 +1,16 @@
+test_01_native_fixture_is_source_produced_and_release_bound (__main__.Binding) ... ok
+test_02_missing_each_of_five_assets_refuses_binding (__main__.Binding) ... ok
+test_03_corrupt_each_source_asset_refuses_binding (__main__.Binding) ... ok
+test_04_resigned_descriptor_same_codewordCRC_and_rebound_hash_refuses (__main__.Binding) ... ok
+test_05_failed_result_and_extra_asset_are_not_accepted (__main__.Binding) ... ok
+test_06_outside_run_or_missing_metadata_refuses (__main__.Binding) ... ok
+test_07_cli_missing_binding_does_not_publish_native_or_pass (__main__.Binding) ... ok
+test_08_native_default_scrubs_ambient_compiler_include_injection (__main__.Binding) ... ok
+test_09_source_only_binding_ignores_valid_stale_helper_bytecode (__main__.Binding) ... ok
+test_10_missing_explicit_compiler_does_not_fallback (__main__.Binding) ... ok
+test_11_future_control_capsule_block_boundary_is_explicitly_refused (__main__.Binding) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.992s
+
+OK

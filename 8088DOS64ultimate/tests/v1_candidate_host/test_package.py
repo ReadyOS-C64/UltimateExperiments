@@ -3,6 +3,7 @@ from pathlib import Path
 import importlib.util
 import json
 import os
+import sys
 import shutil
 import tempfile
 import unittest
@@ -10,6 +11,9 @@ from unittest.mock import patch
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.dont_write_bytecode = True
+sys.pycache_prefix = str(ROOT / 'build' / ('.absent-candidate-tests-' + str(os.getpid())))
+assert not Path(sys.pycache_prefix).exists()
 spec = importlib.util.spec_from_file_location('candidate_sut', ROOT / 'build_support/v1_candidate.py')
 b = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(b)
@@ -45,6 +49,7 @@ class Candidate(unittest.TestCase):
             (build / name).parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(Path(setup['work']) / 'build' / name, build / name)
         setup['work'] = str(build.parent)
+        setup['release']['result_identity'] = b.digest(self.c)
         self.s = self.p / 'setup.json'
         b.atomic_json(self.s, setup)
         config = json.loads((self.component_run / 'config/RESULT.json').read_text())
@@ -100,6 +105,21 @@ class Candidate(unittest.TestCase):
     def test_config_from_another_release_is_rejected(self):
         self.edit(self.g, lambda r: r['release']['assets']['DOS64.PRG'].update(sha256='0' * 64))
         with self.assertRaisesRegex(RuntimeError, 'different coupled release'):
+            self.assemble()
+
+    def test_unbound_setup_is_rejected(self):
+        self.edit(self.s, lambda r: r.update(runtime_preflight=False, release=None))
+        with self.assertRaisesRegex(RuntimeError, 'release-bound SETUP'):
+            self.assemble()
+
+    def test_setup_from_another_release_is_rejected(self):
+        self.edit(self.s, lambda r: r['release']['assets']['DOS64.PRG'].update(sha256='0' * 64))
+        with self.assertRaisesRegex(RuntimeError, 'SETUP was built for a different'):
+            self.assemble()
+
+    def test_stale_setup_receipt_pointer_is_rejected(self):
+        self.edit(self.s, lambda r: r['release']['result_identity'].update(sha256='0' * 64))
+        with self.assertRaisesRegex(RuntimeError, 'SETUP was built for a different'):
             self.assemble()
 
     def test_stale_config_receipt_pointer_is_rejected(self):

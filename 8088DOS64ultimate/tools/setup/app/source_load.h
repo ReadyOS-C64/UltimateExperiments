@@ -12,6 +12,7 @@
 #define SL_CANCEL 5u
 #define SL_CLOCK 6u
 #define SL_TIMEOUT 7u
+#define SL_RELEASE 8u
 /* UI-only begin/poll/cancel, caller holds current UI ticket for entire job.
  * kinds0..2 are private selected DOS paths,3 START.TPL,4 START.REL in home.
  * Exactly360K,360K,360K,18432,64 bytes; sources readonly. No NF producer runs.

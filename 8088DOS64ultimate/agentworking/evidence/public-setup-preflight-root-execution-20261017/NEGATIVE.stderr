@@ -1,0 +1,11 @@
+test_01_real_missing_OPEN_not_zero_length_and_forgery_never_DONE (__main__.Tests) ... ok
+test_02_exact_descriptor_bytes_refuse_resigned_same_CRC (__main__.Tests) ... ok
+test_03_template_BASIC_and_default131_are_early_refused (__main__.Tests) ... ok
+test_04_new_runtime_final_CLOSE_Stop_prevents_private_DONE (__main__.Tests) ... ok
+test_05_new_runtime_partial_poison_DMA_refuses_LOAD (__main__.Tests) ... ok
+test_06_captured_kind_timeout_and_capacity_guard (__main__.Tests) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.303s
+
+OK
