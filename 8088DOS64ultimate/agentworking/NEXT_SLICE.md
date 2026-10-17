@@ -1,3 +1,11 @@
+# Next V1 work — public candidate12 ready for physicalqualification
+
+Rootpubliccandidate12build+21hostcontrols pass; exactZIP93e2f509/137247B andall12intakebytes. Evidence/v1-runtime-candidate-public-root-20261017.json; publicsourcepaths build_support/v1_candidate.py, tests/v1_candidate_host/test_package.py, docs/V1_CANDIDATE.md. No Make/nativephasechanges. Do not rerun unchangeddefaultsuite; parentall9defaultbytes/18controls andRootdefaultsfrom6c89 remain exactscopes.
+
+Memory finishes finalnativeSETUP/CONFIG-derivedDOS/media/Finish sourceclosure; must consume actualSETUPCFG, with oldhostCFGpreflightsqualified. Compiled implements complete namederrors from remaining-installer-errors audit usingmeasuredtrustedterminalphase lifetime. CIA prepares concretefinal16 staging/registeredLOAD/SYS/e710postentry/humanCIA/knownquiet/recoverypurpose; Rootreviewthen promptphysicalqualification, allLANtrulydetached/soleowner. Trustedloader/bootstrapassumptionexplicit; hiddenpreSYSRAMnotclaimed. Rootstillneedsdurableexactscopeacceptance of806eTurbo121761/FORMAte93/c7cold1554. AllfinalV1/human/performancepostV1policies unchanged. Localcommits/no push.
+
+Earlier snapshots below are historical.
+
 # Next V1 work — matched installer compiled and focused faults pass
 
 Current Rootsource cohort scratch/native-installer-public-integration-root-20261017, seal a88f6139/1891pins, durable evidence/native-installer-public-integration-root-20261017.json.38layered paths+Root config metadata resolver; actuale710/FAT35a3/PUBafae/CONFIG3deb against unchangedc7/407f/2f8. Sixnative methods/ninefault cases and6host provenance groups pass. Default0df4/508d/coupled5 exact. Don't rerun old broad CPU suites merely for metadata.

@@ -345,3 +345,6 @@ Expose `make test-floppy-format` using public runtime/model sources and actual12
 ## 2026-10-17 — public cold56 installer and checked metadata intake
 
 Promote the38path layered27/1b20/78e graph, with actual BASIC37 bankguard before B000 diagnostic reads. Preserve numericdefault0 and earlierfiveasset/default nativebytes. Newcold sourcebuilder publishes named metadata products; SETUP/CONFIG intake verifies exact hash/ownedrun and all declared provider inputs/products, with recordedlegacy metadata fallback. No unrecordedmap/labels authority or unuseddeclaredproduct corruption accepted. Current trusted FAT/PUB/INO panes cover their measuredscope only; remaining path/operation errorUX stays V1work. Trustedregisteredfileload/bootstrap is an explicitassumption, not a promise against arbitrary corrupt bootstrapcode.
+
+
+2026-10-17: Promote only3candidatebuilder/test/doc paths afterRoot7971parentpin+8dependencyreview, actualpublicsourcebuild and21hostcontrols. Explicit--runtime-media builds current12 assets with actualFORMAT, cold8 anddiagnosticSETUP/CONFIG; default9retains exactoldnativebytes. Enforce runtime receipt/role/FORMAT/span/coldbinding, allproduct/metadataidentities, sourcegeneration/diagnosticinventory andfreshpackage/no usermedia. ZIP/BUILD flags do notgrantphysical/V1acceptance.

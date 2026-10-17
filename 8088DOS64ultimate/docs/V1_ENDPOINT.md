@@ -108,3 +108,6 @@ The clean public `make test-floppy-format` command now passes12actual-runtime Py
 
 
 The current public cold56 SETUP/CONFIG source profile now builds against the matched eight assets; actual BASIC37 startup/error components and checkedmetadata intake pass. Defaults remain byteexact. FullnewSETUP/CONFIG-generatedDOS/media, remainingfilename/CONFIGpublication clarity and finalUltimate/human gates remainopen. [Installer integration evidence](../agentworking/evidence/native-installer-public-integration-root-20261017.json).
+
+
+A coherent public twelve-file candidate now builds through runtime/cold/SETUP/CONFIG, with21Root host packaging checks and exact intake bytes. Its smallZIP includes installation/media/Finish instructions but no vendor media or configured disks. This is a development delivery checkpoint; finalUltimate/human and remainingerrorUX gates stayopen. [Candidate evidence](../agentworking/evidence/v1-runtime-candidate-public-root-20261017.json), [instructions](V1_CANDIDATE.md).

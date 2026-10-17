@@ -1,3 +1,11 @@
+# Current V1 checkpoint — coherent public twelve-file candidate, 2026-10-17
+
+`make v1-candidate DOS64_V1_CANDIDATE_ARGS="--runtime-media"` now source-builds actualFORMAT runtime→cold8→matcheddiagnosticSETUP/CONFIG and oneverifiedZIP withoutDOS/Zig/Peddle/privatefixtures. Rootall7971privateparentpins and8shareddependencies exact; only3builder/test/doc paths promoted. Freshpublicchain passes, all12nativeassets exactRootintake e710/35a3/afae/3deb+c7/407f/2f8. ZIP93e2f509137247B matchesprivatecandidatebyteexact.21Root host packaging controls pass, all1539source/productrecords remainexact. Privateoldbuilder/newdefault9allbytes and18defaultcontrols+3skips retain their scope; no broadCPUrepeat. NoDOS/vendorimage orconfiguredhome/START/CFG distributed. [Evidence](evidence/v1-runtime-candidate-public-root-20261017.json), [build/installguide](../docs/V1_CANDIDATE.md).
+
+AllfinalV1gatesremainopen. Actuale710SETUP→generatedDOS/media/Finish passes in worker, nativeCONFIGis being repeated with actualoriginalSETUPCFG rather than hostconstructedpreflightCFG. Compiledworker implements remainingnamederrors; CIA prepares reviewedphysicalpurpose with finalc7knownC ande710postentryobservations. No physicaldispatchthisRootslice. PerformancepostV1, localcommits/no push.
+
+Earlier snapshots below are historical.
+
 # Current V1 checkpoint — public matched native installer, 2026-10-17
 
 38layered source paths (accepted cold56+startup diagnostics+bankguard file diagnostics) are public; config metadata intake now consumes checked named products or recorded legacy layout and verifies complete provider inputs/products. Actual source builds produce SETUPe7107a5a43197B/FAT35a30235/PUBafaed4d6 and CONFIG3deb783d43233B against c7/407f/START2f8 cold8. Allruntime/cold/native build closures rechecked; six metadata host groups pass. Root currente710 actual BASIC37 error replay passes6native methods/9cases with3482source/model/product records exact, including shortINFO+failedCLOSE firstcause, partialcode refusal, immutable helper/stack/source lifetime. Reused qualified source-built observer; no new modelcompile claim. First host model-ledger list/schema and scalar-parentmanifest comparison mistakes are retained/qualified; no nativefix for those. [Evidence](evidence/native-installer-public-integration-root-20261017.json).

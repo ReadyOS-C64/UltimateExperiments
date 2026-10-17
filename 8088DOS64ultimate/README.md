@@ -6,6 +6,8 @@
 
 `make v1-candidate` now builds one coherent development zip containing SETUP, CONFIG and their matching launcher/emulator assets, with an installation guide and checksums. DOS images are supplied separately. This package is not a V1 release: the native media workflow and final hardware acceptance remain open. See [candidate packaging and installer scope](docs/NATIVE_SETUP_INSTALLER.md).
 
+Use `make v1-candidate DOS64_V1_CANDIDATE_ARGS="--runtime-media"` for the current twelve-file candidate with the disk menu, floppy FORMAT, cold recovery and matched installer diagnostics. All twelve files and the ZIP are checked together; no DOS images or private build tools are needed. See [current candidate instructions](docs/V1_CANDIDATE.md). Final Ultimate acceptance and remaining installer error-message work stay open.
+
 `make runtime-media` now source-builds the optional runtime disk menu and its 56 KiB asset file without DOS images or model/test tools. Actual model checks cover Save/Save As, Insert, Eject, Write Protect and Finish; final matching SETUP/CONFIG packaging and Ultimate qualification remain in progress. See [runtime media build](tools/native_media/README.md) and [V1 gates](docs/V1_ENDPOINT.md). Add `DOS64_RUNTIME_MEDIA_ARGS="--floppy-format"` for XT 360 KiB FORMAT support; final release and hardware qualification remain open.
 
 Planning and implementation of a C64 Ultimate program that boots the supplied **real MS-DOS 3.3**, emulates the 8086/8088 instruction set, and provides 640 KiB of conventional PC memory through the REU. Target hardware is the user's 64 MHz C64U with **4 MiB or larger REU**.

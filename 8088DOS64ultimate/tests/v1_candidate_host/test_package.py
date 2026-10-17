@@ -25,6 +25,7 @@ class Candidate(unittest.TestCase):
         path = Path(os.environ.get('DOS64_CANDIDATE_RESULT', ROOT / 'build/v1-candidate/RESULT.json'))
         cls.result = json.loads(path.read_text())
         cls.component_run = Path(cls.result['run'])
+        cls.runtime_media = cls.result.get('runtime_media', False)
         if cls.result['status'] != 'passed':
             raise RuntimeError('Run make v1-candidate first')
 
@@ -35,11 +36,26 @@ class Candidate(unittest.TestCase):
         coupled = json.loads((self.component_run / 'coupled/RESULT.json').read_text())
         local = self.p / 'coupled'
         shutil.copytree(Path(coupled['bundle']), local / 'bundle')
-        for name in ['start/controller.labels', 'start/controller.map', 'main/build/dos64.labels']:
-            target = local / name
+        for copied in (local / 'bundle').iterdir():
+            copied.chmod(0o600)  # Only private test copies are made writable.
+        # Copy metadata via its declared identities, independent of run layout.
+        source_records = dict(coupled['source_inputs'])
+        source_records.update(coupled.get('native_products', {}))
+        for name, row in coupled.get('products', {}).items():
+            source_records[str(Path(row['path'] if 'path' in row else name).resolve())] = {
+                k: row[k] for k in ('sha256', 'bytes')}
+        metadata = b.metadata_paths(coupled, source_records)
+        for name, source in zip(['START.labels', 'START.map', 'DOS64.labels'], metadata):
+            target = local / 'metadata' / name
             target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(Path(coupled['run']) / name, target)
+            shutil.copyfile(source, target)
+            coupled['products'][name] = {'path': str(target), **b.digest(target)}
         coupled.update(run=str(local), bundle=str(local / 'bundle'))
+        if self.runtime_media:
+            self.runtime = self.p / 'runtime.json'
+            shutil.copyfile(coupled['runtime_result'], self.runtime)
+            coupled['runtime_result'] = str(self.runtime)
+            coupled['runtime_result_identity'] = b.digest(self.runtime)
         self.c = self.p / 'coupled.json'
         b.atomic_json(self.c, coupled)
         setup = json.loads((self.component_run / 'setup/RESULT.json').read_text())
@@ -64,7 +80,7 @@ class Candidate(unittest.TestCase):
         self.temp.cleanup()
 
     def assemble(self, name='package'):
-        return b.assemble(self.c, self.s, self.g, self.p / name)
+        return b.assemble(self.c, self.s, self.g, self.p / name, runtime_media=self.runtime_media)
 
     def edit(self, path, callback):
         value = json.loads(path.read_text())
@@ -73,7 +89,7 @@ class Candidate(unittest.TestCase):
 
     def test_complete_archive_contains_only_matched_native_assets_and_user_files(self):
         records, files = self.assemble()
-        self.assertEqual(set(files), set(b.NATIVE) | {'BUILD.json', 'README.txt', 'DOS64.INI.example', 'SHA256SUMS'})
+        self.assertEqual(set(files), set(b.RUNTIME_NATIVE if self.runtime_media else b.NATIVE) | {'BUILD.json', 'README.txt', 'DOS64.INI.example', 'SHA256SUMS'})
         self.assertFalse(any(n.endswith(('.IMG', '.CFG')) or n == 'START.PRG' for n in files))
         self.assertFalse(json.loads((self.p / 'package/BUILD.json').read_text())['V1_release_gates_closed'])
         self.assertNotIn(str(ROOT), (self.p / 'package/BUILD.json').read_text())
@@ -84,8 +100,8 @@ class Candidate(unittest.TestCase):
             self.assertEqual(set(z.namelist()), set(files))
             self.assertTrue(all('/' not in n for n in z.namelist()))
 
-    def test_each_of_nine_corrupted_native_products_is_rejected_before_packaging(self):
-        paths, _ = b.component_inputs(self.c, self.s, self.g)
+    def test_each_corrupted_native_product_is_rejected_before_packaging(self):
+        paths, _ = b.component_inputs(self.c, self.s, self.g, runtime_media=self.runtime_media)
         for name, path in paths.items():
             with self.subTest(name=name):
                 original = path.read_bytes()
@@ -175,6 +191,121 @@ class Candidate(unittest.TestCase):
         self.assertEqual(len(runs), 1)
         self.assertTrue((runs[0] / 'FAILURE.json').is_file())
         self.assertFalse((runs[0] / 'RESULT.json').exists())
+
+    def test_declared_metadata_corruption_and_escape_rejected(self):
+        coupled = json.loads(self.c.read_text())
+        row = coupled['products']['START.labels']
+        path = Path(row['path'])
+        original = path.read_bytes()
+        path.write_bytes(original + b'corrupt')
+        with self.assertRaises(RuntimeError):
+            self.assemble()
+        path.write_bytes(original)
+        self.edit(self.c, lambda r: r['products']['START.labels'].update(path=str(self.p / 'unowned.labels')))
+        (self.p / 'unowned.labels').write_bytes(original)
+        with self.assertRaisesRegex(RuntimeError, 'metadata'):
+            self.assemble()
+
+    def test_exact_bundle_inventory_rejects_extra_file(self):
+        (self.p / 'coupled/bundle/UNEXPECTED.PRG').write_bytes(b'foreign')
+        with self.assertRaisesRegex(RuntimeError, 'inventory'):
+            self.assemble()
+
+    def test_runtime_receipt_identity_and_enabled_format(self):
+        if not self.runtime_media:
+            self.skipTest('runtime-media profile only')
+        self.edit(self.runtime, lambda r: r['flags'].update(DOS64_FLOPPY_FORMAT=0))
+        with self.assertRaisesRegex(RuntimeError, 'stale runtime receipt'):
+            self.assemble()
+        self.edit(self.c, lambda r: r.update(runtime_result_identity=b.digest(self.runtime)))
+        with self.assertRaisesRegex(RuntimeError, 'FORMAT'):
+            self.assemble()
+
+    def test_runtime_wrong_role_and_assets_rejected(self):
+        if not self.runtime_media:
+            self.skipTest('runtime-media profile only')
+        original = self.runtime.read_bytes()
+        for change, message in [
+            (lambda r: r.update(role='unit'), 'actual runtime'),
+            (lambda r: r['assets']['DOS64.MNU'].update(sha256='0'*64), 'different runtime'),
+            (lambda r: r.update(MNU_REU_spans=[[0x3da000, 57344]]), 'layout'),
+        ]:
+            self.runtime.write_bytes(original)
+            self.edit(self.runtime, change)
+            self.edit(self.c, lambda r: r.update(runtime_result_identity=b.digest(self.runtime)))
+            with self.assertRaisesRegex(RuntimeError, message):
+                self.assemble()
+
+    def test_runtime_diagnostic_profiles_required(self):
+        if not self.runtime_media:
+            self.skipTest('runtime-media profile only')
+        original = self.s.read_bytes()
+        self.edit(self.s, lambda r: r['memory']['checks'].update(file_helper_run=False))
+        with self.assertRaisesRegex(RuntimeError, 'SETUP startup/file diagnostics'):
+            self.assemble()
+        self.s.write_bytes(original)
+        self.edit(self.g, lambda r: r['memory'].update(trusted_boot_diagnostics=False))
+        with self.assertRaisesRegex(RuntimeError, 'CONFIG startup diagnostics'):
+            self.assemble()
+
+    def test_archive_failure_and_report_failure_preserve_first_cause(self):
+        out = self.p / 'failed-archive'
+        out.mkdir()
+        previous = b'{"status":"passed","old_candidate":true}\n'
+        (out / 'RESULT.json').write_bytes(previous)
+        first = KeyboardInterrupt('archive interrupted')
+        def assembled(c, s, g, dest, **kwargs):
+            dest.mkdir()
+            (dest / 'x').write_bytes(b'asset')
+            return {}, {'x': b.digest(dest / 'x')}
+        with patch.object(b.subprocess, 'run'), patch.object(b, 'assemble', side_effect=assembled), patch.object(b, 'archive', side_effect=first), patch.object(b, 'atomic_json', side_effect=OSError('report failed')):
+            with self.assertRaises(KeyboardInterrupt) as raised:
+                b.build(out, runtime_media=self.runtime_media)
+        self.assertIs(raised.exception, first)
+        self.assertEqual((out / 'RESULT.json').read_bytes(), previous)
+
+    def test_interrupt_during_result_publication_preserves_previous_pointer(self):
+        out = self.p / 'publication'
+        out.mkdir()
+        previous = b'{"status":"passed","old_candidate":true}\n'
+        (out / 'RESULT.json').write_bytes(previous)
+        primary = KeyboardInterrupt('publication interrupted')
+        real_atomic = b.atomic_json
+        def controlled(path, value):
+            if path == out / 'RESULT.json':
+                raise primary
+            real_atomic(path, value)
+        def assembled(c, s, g, dest, **kwargs):
+            dest.mkdir()
+            (dest / 'x').write_bytes(b'asset')
+            return {}, {'x': b.digest(dest / 'x')}
+        with patch.object(b.subprocess, 'run'), patch.object(b, 'assemble', side_effect=assembled), patch.object(b, 'atomic_json', side_effect=controlled):
+            with self.assertRaises(KeyboardInterrupt) as raised:
+                b.build(out, runtime_media=self.runtime_media)
+        self.assertIs(raised.exception, primary)
+        self.assertEqual((out / 'RESULT.json').read_bytes(), previous)
+        self.assertTrue(next(out.glob('run-*/FAILURE.json')).is_file())
+
+    def test_runtime_build_plan_is_native_only_and_scrubs_environment(self):
+        commands = []
+        primary = RuntimeError('stop before assembly')
+        def command(argv, **kwargs):
+            commands.append((argv, kwargs['env']))
+        with patch.dict(os.environ, {'PYTHONPATH':'untrusted', 'MAKEFLAGS':'--eval=bad', 'DOS64_CC65':'chosen-cc65'}), patch.object(b.subprocess, 'run', side_effect=command), patch.object(b, 'assemble', side_effect=primary):
+            with self.assertRaises(RuntimeError) as raised:
+                b.build(self.p / 'plan', runtime_media=True)
+        self.assertIs(raised.exception, primary)
+        self.assertEqual([Path(a[0][2]).name for a in commands], ['runtime_media.py', 'cold_start.py', 'setup_installer.py', 'config_generation.py'])
+        self.assertIn('--floppy-format', commands[0][0])
+        self.assertIn('--runtime-result', commands[1][0])
+        for argv, env in commands:
+            self.assertNotIn('PYTHONPATH', env)
+            self.assertNotIn('MAKEFLAGS', env)
+            self.assertEqual(env['DOS64_CC65'], 'chosen-cc65')
+            self.assertNotIn('--test', argv)
+        for flag in ['--cold-inventory','--start20k','--mnu56k','--startup-diagnostics','--file-diagnostics']:
+            self.assertIn(flag, commands[2][0])
+        self.assertNotIn('--file-diagnostics', commands[3][0])
 
 
 if __name__ == '__main__':

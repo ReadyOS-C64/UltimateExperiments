@@ -1,0 +1,25 @@
+READY: opt-in source-only twelve-file development candidate; no V1/physical qualification.
+
+Promote only the three paths in PUBLIC_COPY_MAP.json: build_support/v1_candidate.py, tests/v1_candidate_host/test_package.py, docs/V1_CANDIDATE.md. All other project sources are an immutable intake/reference, not promotion deltas. config_generation.py was refreshed to the final ROOT conflict-checking metadata helper before the closed builds. No Make or native assembly changes.
+
+Clean public command:
+  make v1-candidate DOS64_V1_CANDIDATE_ARGS='--runtime-media'
+Host checks of the generated default output:
+  python3 -B tests/v1_candidate_host/test_package.py
+For this private executed cohort:
+  DOS64_CANDIDATE_RESULT=build/closed-runtime-candidate/RESULT.json python3 -B tests/v1_candidate_host/test_package.py
+
+The native-only runtime-media flag builds actual runtime FORMAT1, source-bound cold8, SETUP cold56/start20k/startup/file diagnostics and CONFIG cold56/start20k/startup diagnostics. It does not call Zig, Peddle, a C++ compiler, DOS, private fixtures or a device. Component receipts and products are all checked before creating the fresh package directory. Cold named START.labels/map and DOS64.labels are digest checked within their immutable run. The recorded runtime receipt, actual runtime role, enabled FORMAT, three assets, menu spans and cold identities must agree. No unvalidated absolute metadata fallback is accepted. Old recorded five-asset layout remains supported for the default9 profile.
+
+Closed native chain passed and all twelve bytes match ROOT intake: SETUP e710 / FAT35a3 / PUBafae / CONFIG3deb / mainc7a1 / MNU407f / START2f8e / REL95d0 / INO44dd / RCV0871 / RFWf11b. New ZIP contains only twelve native assets plus BUILD.json, README.txt, ASCII DOS64.INI.example and SHA256SUMS. No DOS images, installed CFG, generated configured START.PRG or user home is included.
+
+21 host controls pass for runtime12; 18 pass plus3 runtime-only skips for default9. They cover all12 product corruptions, exact inventory, metadata corruption/escape, mixed source generations, stale release/runtime identity, UNIT role, disabled FORMAT, unsupported menu spans, required diagnostics, archive change/failure, BaseException/report/publication first-cause preservation, environment scrub, and old-result preservation. An actual missing-cc65 subprocess also preserves old pointer/package. Native source-built default9 is all-byte identical to the old public builder's fresh nine outputs. Supplementary default runtime/unit products are exact666089b5/b9e9cc9e with both map checks passing.
+
+Retained first failures are explicitly described in RESULT.json. The supplementary full make build is NOT claimed passing: first missing test fixture staging and later optional manifest/missing Zig failures are retained. The final narrowly selected native products and memory checks passed. Native candidate builds themselves passed with only native tools. No new CPU/DOS/physical replay is claimed for this packaging work.
+
+The new README describes Ctrl+Commodore+Run/Stop, A/B, Save/new managed versions, Save as, Insert, session Eject/protect, conditional Resume and Finish. Remaining filename/error UX from the separate source audit is not claimed complete. All V1/hardware gates remain false in BUILD.json and RESULT.
+
+CLOSURE_BEFORE/AFTER bind3537 referenced source/tool/product paths; IMMUTABLE_COPIES keeps1236 deduplicated exact copies. Final manifests also retain all intermediate and first-failure logs. Do not mutate this cohort; clone for review.
+
+Runtime package: /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-runtime-candidate-20261017/project/build/closed-runtime-candidate/run-cv9sne0a/package
+Archive: /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-runtime-candidate-20261017/project/build/closed-runtime-candidate/run-cv9sne0a/DOS64-candidate.zip
