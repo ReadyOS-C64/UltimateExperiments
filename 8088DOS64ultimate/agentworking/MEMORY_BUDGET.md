@@ -344,3 +344,10 @@ Bound SETUPd2f9 has resident1B/FAT3B/PUB5B/HIGHcode0B/HIGHstate8B/AUX4B free. Te
 ## 2026-10-17 — private silent-speaker compatibility candidate
 
 Measured new runtimeaa18/MNU6c0e: ports CODE grows18B; MAIN ends3FD9 (38B free), CODE080D..3C72, RO3C73..3FD1, NATIVESTATE3FD2..3FD9. DEVICECODE5000..5FFF4096B/full and HDBIOSF000..FDEA3563B/21B spare are unchanged. No new state, overlay, REU allocation or cache-frame loss. UNIT TRAP1/FORMAT0 DEVICECODE5000..5FEF has16B spare; that unit profile difference is not runtime headroom. Runtime47105B andMNU57344B sizes unchanged. Source-built twelve-file composition/memory checks pass; private component only until genuineFDISK and separateANSI BIOS composition are accepted. Evidence/v1-silent-speaker-private-root-20261017.json.
+
+
+## 2026-10-17 — combined ANSI and pending reset correction
+
+Root accepted combined5af7 exact matched12 model cohort: resident video row25 guard adds20B CODE after speaker18B. MAIN CODE080D..3C86/13434B, RO3C87..3FE5/863B, NATIVESTATE3FE6..3FED/8B,18B free. DEVICE5000..5FFF4096B/full; HDBIOSF000..FDEA3563B/21B spare unchanged. UNIT FORMAT0/TRAP1 MAIN67B free, DEVICE16B, HDB7B. No new state/REU/cache-frame allocation. Archive evidence/v1-ansi-combined-root-20261017/MEMORY_LAYOUT.json.
+
+Root new reset production02e24339 has exactly the same MAIN/DEVICE/HDBIOS allocations. IMPORTCODE7000..73A2/931B; COLDINIT73A3..7AF0/1870B; COLDRODATA7AF1..7EEA/1018B,277B before8000. Existing bios_count2 reused, guest ROM F0400..F0419 gets26B reset instructions, F0800..F0BFF1024B holds initialized vectors within existing guestROM. No new physical REU allocation; ordinary coherent guestROM/cache pages. Cold-only final snapshot follows optionalHD mount. Actual runtime5focusedBIOS groups and strict memory pass. FullUNIT first fails199B cold overflow; explicit unit-only207B FF00 sidecar is under review, not yet accepted. Do not transfer productionfit toUNIT or use the failedUNIT product. See scratch/v1-bios-reset-20261017/RESET_MEMORY.json; no physical or finalFDISK acceptance yet.

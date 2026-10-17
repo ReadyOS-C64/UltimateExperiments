@@ -1,0 +1,18 @@
+{
+  "status": "ROOT_ACCEPTED_FIRST_FAILURE_NOT_COPY_ACCEPTANCE",
+  "manifest_sha256": "422f197681b7bcd034ba0ba21bebe426a9d5ccdfb1b2a8568ab5750d521a04c1",
+  "pins_verified": 1332,
+  "initial_whole4MiB_exact": true,
+  "first_failure": "directory_0_RAM: full65536 GET ConnectionReset54 before headers/body",
+  "directory_or_COPY_started": false,
+  "native_FILES_or_REU_write": false,
+  "original_profile_inventory_restored": true,
+  "owned_PIDs_absent": [
+    14852,
+    14859
+  ],
+  "current_BASIC_or_whole4MiB": false,
+  "transport_or_firmware_cause": "UNPROVEN; earlierfull64 GETs in samecampaignsucceeded",
+  "reservation": "soleCIAowner retained",
+  "next": "Frozen narrow no-reset2048 BASIC observations/resume; concrete Rootreview required before dispatch."
+}

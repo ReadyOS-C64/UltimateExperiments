@@ -1,0 +1,34 @@
+{
+  "terminal": "1638",
+  "supervisor": {
+    "pid": 28233,
+    "parent_pid": 1,
+    "stdin_is_tty": false,
+    "stdin": "/dev/null",
+    "terminal": "1638",
+    "entry": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-basic-prefix-noreset-purpose-20261017/work/launch.py",
+    "manifest_sha256": "b058458c1c5ca9504bc51556cd8045ac852a8adf79244539ea322a02d3704379",
+    "watchdog_seconds": 240,
+    "interrupt_grace_seconds": 30,
+    "started_monotonic": 0.053873541
+  },
+  "child": {
+    "pid": 28240,
+    "supervisor_pid": 28233,
+    "terminal": "1638",
+    "new_session": true,
+    "stdin": "/dev/null",
+    "stdout_stderr": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-basic-prefix-noreset-purpose-20261017/work/detached/child.log"
+  },
+  "exit": {
+    "pid": 28240,
+    "child_exit_code": 0,
+    "exit_code": 0,
+    "supervisor_intended_exit_code": 0,
+    "wall_watchdog_triggered": false,
+    "signals": [],
+    "finished_monotonic": 1.090455916
+  },
+  "both_owned_PIDs_absent": true,
+  "ps_stdout": ""
+}

@@ -1,0 +1,14 @@
+{
+  "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-ansi-console-final-20261017/post-analysis/XTBIOS.ASM",
+  "sha256": "297b81ee2a0ba93e197a22055b7eb3ab21cba8e21f40c9a43224ef9e9d42450a",
+  "bytes": 184626,
+  "POST_vector_setup_lines": [
+    574,
+    600
+  ],
+  "INT19_bootstrap_lines": [
+    1409,
+    1460
+  ],
+  "interpretation": "POST rebuilds vectors; INT19 only bootstraps. This bounded synthetic reset restores initial vectors but does not claim full IBM POST/PIC/BDA hardware reinitialization."
+}

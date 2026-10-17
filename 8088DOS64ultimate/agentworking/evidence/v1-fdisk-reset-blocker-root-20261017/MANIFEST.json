@@ -1,0 +1,32 @@
+{
+  "files": {
+    "ROOT_REVIEW.json": {
+      "sha256": "6f6689ba829d8daf52161862163aa0a877b0af79af6e194f978823b78a16c678",
+      "bytes": 625
+    },
+    "RESULT.json": {
+      "sha256": "034fa9ac2bcdc0efb1ac258f400b02985f500e91caf5eb28b75ac7c23e7cd3c1",
+      "bytes": 1356
+    },
+    "PAUSED_CHECKPOINT.json": {
+      "sha256": "52b2cf38d7c580c3bc24586fea01ed5fa64fd5323902b022d5419abe846b27be",
+      "bytes": 3184
+    },
+    "BIOS_PEER_RESULT.json": {
+      "sha256": "52c1189ffd74abd57bf133abdd3d776d9703a7a646dab01ee7c957adc73add5a",
+      "bytes": 869
+    },
+    "COMMAND.json": {
+      "sha256": "3a187d545501eab89c60af848b7f539f04c9ae7fc0e2ec081e5cc0918b2b94e6",
+      "bytes": 83
+    },
+    "BIOS_PEER_LINKED_GUEST_DISASSEMBLY.txt": {
+      "sha256": "44194cbeda0f46686f722448681aa5561fc2463653e1a642c7b4dd7c0489c5f0",
+      "bytes": 433
+    },
+    "HANDOFF.md": {
+      "sha256": "568309571cf4c362cac3ea98aac5ea7b89af4eef43447bb2fdcb450049d57ddd",
+      "bytes": 2999
+    }
+  }
+}

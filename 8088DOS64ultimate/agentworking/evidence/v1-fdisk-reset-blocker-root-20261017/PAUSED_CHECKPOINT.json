@@ -1,0 +1,38 @@
+{
+  "status": "NOT_READY",
+  "native": "aa18c51f",
+  "condition_met": false,
+  "actual_invalid_zero_beep": true,
+  "actual_full_partition_display": true,
+  "actual_delete_create_active": true,
+  "actual_restart_instruction": "CLI; CLD; JMP FFFF:0000 (FDISK.COM file offset 6088; JMP at 608A)",
+  "warmboot_pending": {
+    "phase": "normal-warmboot-empty-followup",
+    "native_blocking_wait_before_pause": 0,
+    "screen": "                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \nSystem will now restart                                                         \n                                                                                \nInsert DOS diskette in drive A:                                                 \nPress any key when ready . . .                                                  \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                ",
+    "cursor": [
+      16,
+      30
+    ],
+    "guest_instructions": 2436056,
+    "cycles": 12549632963,
+    "BIOS_requests": 0,
+    "guest_words": "0902010100000013e87b6033eb7d2b0500000033000000004fcf96f0",
+    "bios_waiting": 0,
+    "ring": "36003600",
+    "IVT19": "20197000",
+    "BDA_tick": "ae030000"
+  },
+  "partition": {
+    "active": 128,
+    "type": 1,
+    "start_lba": 16,
+    "sector_count": 4080,
+    "signature": "55aa"
+  },
+  "C_sha256": "253a61a9eef92ad0060a1eaa43972eafdc1b0fd89ab065eb9d36b85c8b2e3dbf",
+  "C_changed_bytes": 73513,
+  "sourcepins": 1333,
+  "source_drift": [],
+  "scope": "paused live actual VM, no FORMAT/SYS/Finish/fresh success yet; no forced guest reset or native changes"
+}

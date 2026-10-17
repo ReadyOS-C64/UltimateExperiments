@@ -1,0 +1,20 @@
+[
+  {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-bios-reset-20261017/portable/src/bios.s",
+    "destination": "src/bios.s",
+    "sha256": "6a2f6f98fc984320106338b4ffb092253add9010c3d0bfb086265227a53f7782",
+    "bytes": 17455
+  },
+  {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-bios-reset-20261017/portable/src/native_runtime.s",
+    "destination": "src/native_runtime.s",
+    "sha256": "2515fe82d5055b5c086ac4871d36dd7de60e21f6b60c5e3bea9f46b7e59e13c7",
+    "bytes": 15772
+  },
+  {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-bios-reset-20261017/portable/tests/host/bios.zig",
+    "destination": "tests/host/bios.zig",
+    "sha256": "9e99788a254caa2beeef70571be938a53a783022b6a1348c6ed2ec876a9d8a20",
+    "bytes": 31762
+  }
+]

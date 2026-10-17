@@ -1,0 +1,40 @@
+{
+  "status": "ROOT_REVIEWED_EXACT_NORESET_PREFIX_DISPATCH_AUTHORIZED_ONCE",
+  "manifests": [
+    {
+      "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-basic-prefix-noreset-purpose-20261017/MANIFEST.json",
+      "sha256": "9fdcfecbf906b56b89ad8b00471e099d572ebec1c708df01b32bf708430725f7",
+      "pins_verified": 74
+    },
+    {
+      "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-basic-prefix-noreset-purpose-20261017/work/LAUNCH_MANIFEST.json",
+      "sha256": "b058458c1c5ca9504bc51556cd8045ac852a8adf79244539ea322a02d3704379",
+      "pins_verified": 28
+    }
+  ],
+  "offline_constructor": {
+    "pins": 28,
+    "history_admission": {
+      "scope": "PAUSE_PREFIX2048_AND_RESUME_ONLY",
+      "basis": "EXACT_READONLY_STREAM_PRIOR_DIRECTORY_RESET_ACK_NO_SUBSEQUENT_FILE_CODE",
+      "native_FILES_owner": false,
+      "new_reset": false,
+      "new_source_or_helper": false,
+      "CPU_port_measurement": false,
+      "current_whole4MiB_equality": false,
+      "original_CPU_RAM_application_restored": false
+    },
+    "no_device_calls": true,
+    "fresh_identity_profile_media_before_pause": true,
+    "only2048_RAM_reads": true
+  },
+  "reviewed_source": [
+    "HANDOFF.md",
+    "history.py",
+    "prefix_wire.py",
+    "prefix_session.py",
+    "purpose.py"
+  ],
+  "authorization": "Sole CIA owner exact9fdc/b058 once against unchangedACTIVEea9a; only2048B coherent BASIC observations/pause/resume. No reset/config/RAMwrite/helper/FILES/REU capability. Retain reservation/result pending Root review.",
+  "source_scope": "Prior acknowledged C64 reset after readonly snapshot; no subsequent FILES-capable source/load/SYS; actual failed422f history bound. No currentREU/originalCPU-RAM-app claim."
+}

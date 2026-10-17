@@ -1,0 +1,25 @@
+{
+  "status": "PHYSICAL_FAILED_RESERVED_PENDING_ROOT_REVIEW",
+  "first_error": "ConnectionResetError(54, 'Connection reset by peer')",
+  "first_failure_phase": "directory_0_RAM",
+  "raw_failure_counts": [
+    0,
+    0
+  ],
+  "initial_lower4M_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+  "initial_lower4M_equal_ac43": true,
+  "directory_uploaded_or_started": false,
+  "COPY_reader_started": false,
+  "filesystem_or_REU_write_this_campaign": false,
+  "terminal_RAM_capture": false,
+  "BASIC_cleanup": false,
+  "exact_original_profile_and_inventory_restored": true,
+  "reaped_child_exit": 1,
+  "both_owned_PIDs_absent": true,
+  "watchdog": false,
+  "author135_launch53_sourcecopies53_exact": true,
+  "ACTIVE_sha256": "ea9ac4f57a10cbd800d36ba2bb107dfd8b9321cdd38efccdfa24509bf6c5e49b",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-ownedcopy20m-observed-20261017-fb9adab9",
+  "no_more_device_calls": true,
+  "known_native_FILES_quiet_by_no_owner_source_path": true
+}

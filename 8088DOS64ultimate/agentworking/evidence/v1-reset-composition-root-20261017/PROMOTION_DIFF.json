@@ -1,0 +1,172 @@
+[
+  {
+    "path": "Makefile",
+    "public_sha256": "7094a9105652034bdbc14b4aabb345b170ff674cc0d02e1a52d790a1685e1c46",
+    "candidate_sha256": "cafd6aa736ff2c67e48b85abcd59713ef91945ba5f3a05c546137390af2e2b55"
+  },
+  {
+    "path": "build.zig",
+    "public_sha256": "97b211caa5fa5798f8b1af2d173b1b0590e1e3e48f19809cb4e61b820b83638a",
+    "candidate_sha256": "ba96aad7d72f84be5037615aedee40320a3dc12fe3d5825f67c90654011a5671"
+  },
+  {
+    "path": "build_support/native_media_tests.py",
+    "public_sha256": "b1d8276afa58b5b3282dc201c6ff1d81e44ce94df686aeecd0a3982db457ff5f",
+    "candidate_sha256": "38cce4b1e58b4511d9c5f5e645743226c88ab9c3f050b60165c33e1a409a102b"
+  },
+  {
+    "path": "build_support/verify_memory.py",
+    "public_sha256": "7c8369253a1a2bc06ef3aae9b1294f098840225cc4d5272d57a7e1e1c87a546c",
+    "candidate_sha256": "5691f2733617b2048e065fb07ff2c463f2ff9eb641bdfbb875800ae9692a2543"
+  },
+  {
+    "path": "cfg/dos64-unit-runtime-trap.cfg",
+    "public_sha256": "f74d02abe478eb776d51e16de9640f527b8e26c895bb89e5ba5259727cd2cb56",
+    "candidate_sha256": "a2f353c6e1865520b2729e4e1053cf322c9d24d470ea89a8b7897bdf885839fa"
+  },
+  {
+    "path": "cfg/dos64-unit-runtime.cfg",
+    "public_sha256": "30b738aff4e32f11cf333e044e15f1be4e55cb7b26d2091b0308e1f006e98951",
+    "candidate_sha256": "8b3fea99f1e1b7b414f489f074cc7ac3a99f5ae0c7a03522f0858374960a3e38"
+  },
+  {
+    "path": "include/ports.inc",
+    "public_sha256": "789dff5c1d9402447ec7e1412e8c0bc1ce1ff9ced45379b58de2896ed5c51f83",
+    "candidate_sha256": "16524d906a66e770fd2f21e629ad9cd33700581c550e91ab86759b68cc46f057"
+  },
+  {
+    "path": "src/bios.s",
+    "public_sha256": "814ba24efd5a2b04588d80955301236a0f977e16f92c08c3515033321466e1e2",
+    "candidate_sha256": "6a2f6f98fc984320106338b4ffb092253add9010c3d0bfb086265227a53f7782"
+  },
+  {
+    "path": "src/cache_probe.s",
+    "public_sha256": "6223aa9fe591b66d1d75e1bb1dca5db3dd468b27d9a480fc72a26935f54b8f78",
+    "candidate_sha256": "c51d144d3928de04a6f6b533d515e8e99b0ddc4e348523af09f66ee596057ad6"
+  },
+  {
+    "path": "src/disk.s",
+    "public_sha256": "75ed25f9fe3856af8f5a5f50b2381c55f730d6f897cc7ef2468636416abbb4ee",
+    "candidate_sha256": "b5de0c7332f230be36a71581e7df8cbe68f25c11a6f992421152a62c71d72e3b"
+  },
+  {
+    "path": "src/native_runtime.s",
+    "public_sha256": "e3342f0865ebddffd3620f844589165b7361e934f04d155a02113d33bfa25242",
+    "candidate_sha256": "2515fe82d5055b5c086ac4871d36dd7de60e21f6b60c5e3bea9f46b7e59e13c7"
+  },
+  {
+    "path": "src/native_save.s",
+    "public_sha256": "5c5654f92ede5dd60cbd118895478d831ddc58bac631168f026a99de89d4f138",
+    "candidate_sha256": "c00ffc175a14e912b9c323c5e9d3352d906707ecad540c6691d166d9f924ad02"
+  },
+  {
+    "path": "src/ports.s",
+    "public_sha256": "c705842e934753a2f2e515e0be3a31db8c27a1a3441f937003d8152d5092aeea",
+    "candidate_sha256": "9557cacfb9d20a0cda26601520d327896074d56d729ad86691145058434298d9"
+  },
+  {
+    "path": "src/video.s",
+    "public_sha256": "4e4f1523398828ef6781d9ff27c1ade380049d0a285213184361e108fc41af0a",
+    "candidate_sha256": "4ab61bae98bd8c3f67028b26dba697d88e52be4dc478a92435eab3f8a2c767a2"
+  },
+  {
+    "path": "tests/fixtures/foundation.s",
+    "public_sha256": "0cf362ad5ef0c0030326f6b166aeb1cbc79393d03ee6cc8911e1dbc85d8caba1",
+    "candidate_sha256": "14b624a5642ba04b441eb432c795570771225ba6dd5edff34976cea7c77cf224"
+  },
+  {
+    "path": "tests/host/bios.zig",
+    "public_sha256": "4d0fb77405f43969b7f564be2228744b108d73ee73dcdfdc2b25d95c7e4998d5",
+    "candidate_sha256": "9e99788a254caa2beeef70571be938a53a783022b6a1348c6ed2ec876a9d8a20"
+  },
+  {
+    "path": "tests/host/disk.zig",
+    "public_sha256": "cc7567eafc668aaa63bc19c5bca1cf38044c5936c86f2849f54d3b811e76e739",
+    "candidate_sha256": "1525d9f962cd6a03d3139bd82625f9cfc2f1d9c941b13786b98b613a9629c06f"
+  },
+  {
+    "path": "tests/host/dos_boot.zig",
+    "public_sha256": "36a8887eb99e41a59899b51c28206a3e10ea0b903d8e4b2f71084ec505a51a28",
+    "candidate_sha256": "a697c0268418413d759cef181c9a326f314765ebd9eb7b644c6ff4b904ee0be6"
+  },
+  {
+    "path": "tests/host/ini_sidecar.zig",
+    "public_sha256": "b9e57a5ab09b95925325f65c602245a81e51183cf8299a6ca50c0facd092815e",
+    "candidate_sha256": "c7d855b8839f4dc921a9aeb388977aa75d002987352dae25f504d388b3012681"
+  },
+  {
+    "path": "tests/host/io_instructions.zig",
+    "public_sha256": "ad59446bc0755a07dcda3d661425b80a5b94ca13c238eb22fb443da92ed6c853",
+    "candidate_sha256": "1079b159b2182b5505df4e57352d9529d24896420523ec8f53b34271885db39e"
+  },
+  {
+    "path": "tests/host/irq_pit.zig",
+    "public_sha256": "312be676b60def2e79478196015533f56cf99849b0777c55c8874961fefec322",
+    "candidate_sha256": "772cf9a8530d47dfeadb109a08c328821225d9d2d46e09448b0dddb960dbfe1a"
+  },
+  {
+    "path": "tests/host/machine.zig",
+    "public_sha256": "d89277168166bfac2b3572f4aa2fde271996d4ec77d4b0f1ae6f139c3ab59767",
+    "candidate_sha256": "b971db3174a63b52963662bd880fb4bd0ed2dcba1a2c00880d4e4113ec7f8894"
+  },
+  {
+    "path": "tests/host/machine_future.zig",
+    "public_sha256": "dda97e35ddbf01f5aaa38c3d65b2fc7a86c26c8ecac864acc0a5e3f31d833787",
+    "candidate_sha256": "dcf53db0bbf2bb3dd9f74092a4e169d67a81fc0404a6efc61a2ccc0f6245f565"
+  },
+  {
+    "path": "tests/host/machine_irq_pit.zig",
+    "public_sha256": "60a2d35b03073bb5f72dabe6c18d83add5e1cec73da6931a0863e9a3e51e9899",
+    "candidate_sha256": "35e1e3339cb02e3a71ffe20ac02384de959921712209ee1bf5faa8608c7088e7"
+  },
+  {
+    "path": "tests/host/native_timer_startup.zig",
+    "public_sha256": "791634592a6465ab9468be295ad672e532455baf1461463e9d8b91eaaa62e60e",
+    "candidate_sha256": "5c4a611c422a8f13e30ad573478b5a0b0a07a697689ca8db572f9a747cdc5f64"
+  },
+  {
+    "path": "tests/host/ports.zig",
+    "public_sha256": "51ed9ffbff102f835c9e3b7e0846ac451319218ff842c81c5b909ee892f75c9d",
+    "candidate_sha256": "ab87c8ff9380efa4e59b55c4d55cb6cfdca8fe353e72cf7be72c10e3d3df2f36"
+  },
+  {
+    "path": "tests/host/unit_cold_lifetime.zig",
+    "public_sha256": "e702fbb282bd1efe0bd089d5060469987cd49fdf670775f880ecf5c402fa00c8",
+    "candidate_sha256": "a4d9ae31719db2e328b538ece521575cc420c34dd008fd8aeffff013de2b23a1"
+  },
+  {
+    "path": "tests/host/unit_layout.zig",
+    "public_sha256": "011ea741fb5ccd68e6fb24a10b3ad4b2ec680f3a1f0d287d2ffd34dc85554c28",
+    "candidate_sha256": "8c4283a58c7f13daff1dd093b5de9158aca2c47a0ef9849a095d532994ebada4"
+  },
+  {
+    "path": "tests/host/video.zig",
+    "public_sha256": "71a8a6daadd618412f6a60a3457649a2febfdf6afbad4ee779d81d2a33b83c7b",
+    "candidate_sha256": "c48b22e88c8b10b6c2b03ea0cfffb2a28d185d585bf1cba91e671a37549f581a"
+  },
+  {
+    "path": "tests/native_media/actual_save.zig",
+    "public_sha256": "8036aa6223287f675b9e5bd04fd4f8045cd6cc3d494701ba3bfe305563e0cb00",
+    "candidate_sha256": "194243c00016446518e094a491480705a1981b5c2cd68f8f736bc4b7ca125164"
+  },
+  {
+    "path": "tests/native_media/build.zig",
+    "public_sha256": "ce559c8a596ad560c4b8d506be7b33cd9b63bb23087f546d088da6d10f5f2411",
+    "candidate_sha256": "7d556feb4bc1abd6e39604eec8ed3627884f93ee8436edbe1a2bda9039893115"
+  },
+  {
+    "path": "tests/native_media/test_builder.py",
+    "public_sha256": "d9266cea81ad0620398f4cae05f95e7a8baca7a809c5e43f6b894715091f704b",
+    "candidate_sha256": "185900d26bdfbc867ce7f7c21f42067557609e96263c80ac886e80df54b534c2"
+  },
+  {
+    "path": "tests/native_media/test_online_save.py",
+    "public_sha256": "3702f421b564676c6d50f452ec5a66df80e04e411d3ae026f6a9ff8e6b22d21c",
+    "candidate_sha256": "4543b8561f13e06f1d6dc6e0dc63d541ed19e02c32c0561f25bca6620e85c09e"
+  },
+  {
+    "path": "tests/tooling/test_image_import_contract.py",
+    "public_sha256": "422c1026df51d2f0431c6c672b5773f77f3166890ec02c97b15dc4983c7d0cc6",
+    "candidate_sha256": "5ac8542c25e8c1424447d3a888da4d1c9cb64c7138952562229315fc6c2f0773"
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "status": "ROOT_ACCEPTED_MAPPING_RECEIPT_COMPONENT_ONLY",
+  "reviewed": [
+    {
+      "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-owned-copy-mapping-receipt-20261017/MANIFEST.json",
+      "sha256": "9f5602ba471299e7ddc39903cfae82ad294135d975541a33ce2871e83f7cfbab",
+      "pins_verified": 1401
+    },
+    {
+      "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-owned-copy-mapping-receipt-errata-20261017/MANIFEST.json",
+      "sha256": "3a977b24a766513dde883d10dced6609a667eb2baf7b7a303c2e1e4f7ec4f185",
+      "pins_verified": 4
+    },
+    {
+      "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-owned-copy-mapping-independent-review-20261017/MANIFEST.json",
+      "sha256": "efd2d538c7123fe497836da1be0e2c8007dddd22a5d14fdf6ddde76caa81749a",
+      "pins_verified": 158
+    }
+  ],
+  "directory_PRG": "3dc721adc677efdf5bf072184faa09db4033eace699a7ff4fc60fb6c254401cd",
+  "reader_PRG": "280a8bf74530ccf8a30cd95aac1478e7bb167c7c4a678d4c9e6a6ac32e2de27c",
+  "source_original_and_copy_closure": 1165,
+  "default_bytes_preserved": true,
+  "actual_author_native_controls": 21,
+  "actual_linked_epoch_controls": 2,
+  "peer_actual_controls": 4,
+  "physical_COPY20M": false,
+  "scope": "New guarded mapping receipts only; old failed observer unchanged. A separate frozen physical purpose is required."
+}

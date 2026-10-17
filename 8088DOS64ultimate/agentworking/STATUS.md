@@ -1,3 +1,15 @@
+# V1 continuation — FDISK warm restart fixed; final consumer qualification running, 2026-10-17
+
+The new matched test package1506210a source-builds successfully. Genuine FDISK now survives its own far-jump restart, boots DOS3.30 again, and FORMAT C: completes on a disposable2MiB image. SYS/COPY/Finish/fresh persisted verification is still running; no completed preparation or final physical V1 acceptance is claimed. In parallel the new Turbo Pascal producer80 and fresh40 execution pass actual CIA Finish; fresh80 source reopening/native20MiB readback is pending. Public native production remains0bfa until complete workflow review.
+
+The BIOS correction snapshots the finalized interrupt vectors, including mounted-HD vectors, and restores them through ordinary guest ROM instructions when DOS jumps toFFFF:0000. INT19 stays bootstrap-only. Unit helpers gain an explicit207B FF00..FFCE sidecar without dropping tests. Separate initialization changes recover38B MAIN and5B cold space; the selected runtime has1B MAIN spare and selected UNIT has0B, so future growth must be measured. [Composition evidence](evidence/v1-reset-composition-root-20261017.json).
+
+Verification: the complete518-entry base run executed515PASS/3FAIL, all three due to host fixture assumptions about the longer reset path. Their first failures and original source are retained. Corrected three cases plus import hook pass with908 inputs unchanged;909 of911 original execution inputs remain unchanged and the two replaced host sources are retained byteexact. Native-media host15 and candidate host25 pass. This is not an all518-green rerun or physical acceptance.
+
+Hardware: the observed-mapping COPY attempt failed on a full64KiB API read before directory helper load or COPY. Its original settings/media were restored. A subsequent no-reset2048-byte observation proves BASIC READY advancing15→32 jiffies, six acknowledged pause/resume operations, final resume, unchanged original inventory and exited processes. Root checked all83 physical pins. No current whole4MiB/fullRAM/original application restoration is claimed. Sole CIA owner prepares a two32KiB same-pause read adapter offline; no new dispatch yet. [Failed copy](evidence/native-copy20m-observed-failure-root-20261017.json), [BASIC recovery](evidence/native-basic-noreset-root-20261017.json).
+
+Local commits only; performance remains deferred. Earlier checkpoints below are historical.
+
 # V1 progress — ANSI model proof, clean-source builds and Ultimate BASIC recovery, 2026-10-17
 
 The matched test candidate5af75426 passes511 base assertions plus genuine ANSI in80/40/80 columns, backspace editing, three actual CIA Finish operations and fresh40 persistence. Root checked all6501 sealed records. Native fixes remain unpromoted while FDISK's normal reset workflow is completed; final physical/human V1 gates remain open. [ANSI review](evidence/v1-ansi-combined-root-20261017.json).

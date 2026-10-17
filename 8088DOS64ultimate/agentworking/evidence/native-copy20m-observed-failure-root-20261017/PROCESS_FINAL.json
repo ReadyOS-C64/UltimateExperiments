@@ -1,0 +1,34 @@
+{
+  "terminal": "1637",
+  "supervisor": {
+    "pid": 14852,
+    "parent_pid": 1,
+    "stdin_is_tty": false,
+    "stdin": "/dev/null",
+    "terminal": "1637",
+    "entry": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-observed-physical-purpose-20261017/work/launch.py",
+    "manifest_sha256": "e846288a429ec29ef1458b358192f75e9abf87fb7b9595a5c0c0bf243b6dca2f",
+    "watchdog_seconds": 900,
+    "interrupt_grace_seconds": 120,
+    "started_monotonic": 0.067981458
+  },
+  "child": {
+    "pid": 14859,
+    "supervisor_pid": 14852,
+    "terminal": "1637",
+    "new_session": true,
+    "stdin": "/dev/null",
+    "stdout_stderr": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-observed-physical-purpose-20261017/work/detached/child.log"
+  },
+  "exit": {
+    "pid": 14859,
+    "child_exit_code": 1,
+    "exit_code": 1,
+    "supervisor_intended_exit_code": 1,
+    "wall_watchdog_triggered": false,
+    "signals": [],
+    "finished_monotonic": 34.424455333
+  },
+  "both_PIDs_absent": true,
+  "ps_stdout": ""
+}

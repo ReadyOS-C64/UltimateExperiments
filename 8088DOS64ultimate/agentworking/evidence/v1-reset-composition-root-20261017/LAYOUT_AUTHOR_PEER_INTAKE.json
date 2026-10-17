@@ -1,0 +1,21 @@
+{
+  "reviewed": [
+    {
+      "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/disk-init-layout-corrected-20261017/MANIFEST.json",
+      "sha256": "8e3aa4fb972cf5a92fc6e165c18715c032b779d53e8b8d267a006ca343bfb1d9",
+      "pins_verified": 1442
+    },
+    {
+      "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/disk-init-layout-source-peer-20261017/MANIFEST.json",
+      "sha256": "eaca308888e492103b347117eb4ab131d50c18ef85ba3026c76b05235b041319",
+      "pins_verified": 49
+    }
+  ],
+  "golden_changes": {
+    "46fa2e54275818c1d946400c06c3e23bfd1c066c33fa967c399d39270d7f554f": "d608699b194dd2a783c1f471108194a11be99842dd2aac284d48d3832f743561",
+    "666089b57e5611a67b5d87ae84880256ef5dafb121b152e1de81b9ec1cc29064": "99ddeddccd149a8dfc4e1151826adcd2d5cfe786172d02964da935f77398d20f",
+    "b9e9cc9e7d87176848ccf8bae49dfe4f4ff0125b3aad5a1cb874341436b78df6": "4f5f3c09fa59ad0b442522c1805dd2b0db8416f5f546076337ea314280d30c37"
+  },
+  "only_new_host_test_goldens": true,
+  "native_source_unchanged_after_candidate": true
+}

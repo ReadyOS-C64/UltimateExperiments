@@ -1,0 +1,20 @@
+test_01_real_native_only_ignores_optional_tools_and_default_exact (__main__.Tests) ... ok
+test_02_partial_publish_copy_failure_preserves_previous (__main__.Tests) ... ok
+test_03_interrupt_during_publication_preserves_previous (__main__.Tests) ... ok
+test_04_primary_survives_both_reporting_interrupts (__main__.Tests) ... ok
+test_05_run_creation_failure_cleans_owned_lock (__main__.Tests) ... ok
+test_06_unlock_failure_is_honest_and_does_not_publish (__main__.Tests) ... ok
+test_07_first_interrupt_survives_atomic_temp_cleanup_failure (__main__.Tests) ... ok
+test_08_staged_source_change_before_closure_rejects (__main__.Tests) ... ok
+test_09_bad_owner_lease_and_inventory_path_reject (__main__.Tests) ... ok
+test_10_environment_scrub_and_explicit_tool_resolution (__main__.Tests) ... ok
+test_11_native_inventory_has_no_vendor_media_or_private_paths (__main__.Tests) ... ok
+test_12_existing_selected_cache_prefix_rejects_before_output (__main__.Tests) ... ok
+test_13_product_source_mutation_after_copy_rejects_before_pointer (__main__.Tests) ... ok
+test_14_staged_native_graph_contains_every_make_include (__main__.Tests) ... ok
+test_15_native_inventory_covers_linked_asm_without_private_text_probes (__main__.Tests) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 10.204s
+
+OK

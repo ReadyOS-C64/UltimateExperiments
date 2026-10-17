@@ -1,0 +1,25 @@
+{
+  "status": "PASSED_SOURCE_CLOSED_NATIVE_MAPPING_PROFILE",
+  "inputs": 1165,
+  "products": 8,
+  "rows": [
+    {
+      "role": "directory",
+      "exit": 0,
+      "native": "3dc721adc677efdf5bf072184faa09db4033eace699a7ff4fc60fb6c254401cd",
+      "bytes": 11874
+    },
+    {
+      "role": "reader",
+      "exit": 0,
+      "native": "280a8bf74530ccf8a30cd95aac1478e7bb167c7c4a678d4c9e6a6ac32e2de27c",
+      "bytes": 13382
+    }
+  ],
+  "directory_actual_distinct_controls": 9,
+  "reader_actual_distinct_controls": 12,
+  "default_undefined_zero_exact": true,
+  "whole20MiB_successor_target_claim": false,
+  "hardware": false,
+  "device_calls": 0
+}

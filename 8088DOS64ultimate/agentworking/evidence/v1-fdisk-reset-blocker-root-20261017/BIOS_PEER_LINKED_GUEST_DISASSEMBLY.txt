@@ -1,0 +1,11 @@
+00000400  FA                cli
+00000401  FC                cld
+00000402  B800F0            mov ax,0xf000
+00000405  8ED8              mov ds,ax
+00000407  31C0              xor ax,ax
+00000409  8EC0              mov es,ax
+0000040B  31FF              xor di,di
+0000040D  BE0008            mov si,0x800
+00000410  B90002            mov cx,0x200
+00000413  F3A5              rep movsw
+00000415  EA100100F0        jmp word 0xf000:word 0x110

@@ -1,0 +1,22 @@
+{
+  "status": "ROOT_ACCEPTED_BASIC_READY_RESUME_NO_RESET_ONLY",
+  "physical_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-basic-prefix-noreset-purpose-20261017/physical/MANIFEST.json",
+  "physical_manifest_sha256": "0b1df18e50200041a21fcfe04709f55cf9331ffb780bb1b5e9d4e0d5041084c7",
+  "pins_verified": 83,
+  "source_originals_and_copies_verified": 28,
+  "BASIC_jiffies": [
+    15,
+    32
+  ],
+  "raw_pause_resume_ACKs": 6,
+  "inventory_original_before_after_equal": true,
+  "owned_PIDs_absent": [
+    28233,
+    28240
+  ],
+  "active_sha256": "230c88094f48b9a3d61f91f1f808639d038f8e1f93ded381a2d2efd767b5c102",
+  "no_reset_REU_FILES_config_RAM_write": true,
+  "prior_COPY20M_stays_failed": true,
+  "current_fullRAM_REU_original_application_restoration_proven": false,
+  "next": "Sole CIA owner prepares offline two32768 coherent paused read adapter and concrete successor COPY purpose; no device dispatch yet."
+}

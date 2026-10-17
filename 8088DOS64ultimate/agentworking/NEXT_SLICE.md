@@ -1,3 +1,10 @@
+# Immediate next — final1506 consumer closure and physical transport, 2026-10-17
+
+1. Complete current retained FDISK VM: SYS/COPY, actual CIA Finish, fresh persisted C execution and independent FAT/content inspection. Warm restart and FORMAT have passed; no host reset shortcut. Preserve all first failures. Complete current Turbo fresh80/native20MiB readback and source closure without rerunning unchanged earlier stages.
+2. After final workflow review, promote the exact34-path reviewed source/build/test composition, rebuild matching12 assets from public sources and compare with1506 candidate; perform one appropriate successful public base run after the three host fixture corrections. Current public native remains0bfa. Keep private focused harnesses out of promotion.
+3. CIA is sole hardware owner. Root accepted no-reset83-pin BASIC recovery, ACTIVE230c. Prepare and locally test a paired32768-byte fullRAM read under one acknowledged pause plus proven2048-byte readiness; preserve original mapping/CRC/ACK predicates and partial evidence. New concrete COPY purpose requires review before device calls. Do not repeat unchanged full20MiB model for a transport-only change.
+4. Continue V1 native SETUP/CONFIG/A-B-C/Turbo and physical-human gates. No current physical installer/menu/IDE acceptance; all ten final gates remain open. Performance and compiled activation remain post-V1. Commit verified work locally, never push.
+
 # V1 progress — ANSI model proof, clean-source builds and Ultimate BASIC recovery, 2026-10-17
 
 The matched test candidate5af75426 passes511 base assertions plus genuine ANSI in80/40/80 columns, backspace editing, three actual CIA Finish operations and fresh40 persistence. Root checked all6501 sealed records. Native fixes remain unpromoted while FDISK's normal reset workflow is completed; final physical/human V1 gates remain open. [ANSI review](evidence/v1-ansi-combined-root-20261017.json).

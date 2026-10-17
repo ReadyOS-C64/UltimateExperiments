@@ -417,3 +417,9 @@ Named-path diagnostics can reuse request scratch even on successful operations. 
 DOS LABEL may create an archive-marked volume label beside a same-named directory. Treating labels as live filenames makes a valid disk fail inspection. Retain the first failed host cohort, separately establish an actual native known CLOSE under safe guards, and continue only from that closed image. Test label namespace and malformed metadata independently; repair the host parser without changing emulated DOS or rerunning unchanged long workloads.
 
 2026-10-17: A current default-disabled source may still be an unconditional Make link input (trap.s). Test source inventory against actual linked ASM_SOURCES; do not let unused untracked probe files hide clean-checkout failures. FDISK restart uses farJMPFFFF:0, not INT19: DOS-hooked IVT and loaded lowRAM code have different lifetimes. A BIOS reset template captured before HDmount loses later INT41; finalize after allcolddevices. Nativeproductionfit does not prove fullUNITfit when both share tight coldwindow.
+
+### 2026-10-17 Reset fixtures and identical descriptor occurrences
+
+A guest restart can legally jump toFFFF:0000 after CLI/CLD. Direct bootstrapping retains DOS IVT hooks into code overwritten by IO.SYS; finalized vectors must be restored by the reset path, including HD vectors. Tests that assumed two guest steps or tiny cold budgets must exercise the real ROM sequence. Cold-clock negative tests need valid BIOS/cache/REU prerequisites to isolate clock failure.
+
+When sharing LOAD/STORE request descriptors, a repeated local label is not a safe text-edit anchor. The rejected layout successor modified live sav_begin rather than cold sav_boot, inverting both operations; a full2048B cold-SAVER/one-DMA assertion and source peer caught it. Keep that failed attempt and qualify both descriptor users.

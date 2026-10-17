@@ -1,0 +1,76 @@
+{
+  "status": "PASS_UNIT_SIDECAR_AND_RESET_FOCUSED",
+  "scope": "UNIT_ONLY_FULL_COVERAGE_LAYOUT_NO_HARDWARE",
+  "portable_files": 18,
+  "focused_entries": 32,
+  "host_groups": 13,
+  "closed_inputs_products_tools": 981,
+  "unit_trap1": {
+    "cold_bytes": 4088,
+    "spare": 8,
+    "unit_cold": 517,
+    "old_ef_sidecar": 251,
+    "new_ff_tail": 207,
+    "tail_run": 65280,
+    "tail_last": 65486,
+    "hardware_vectors_untouched": true
+  },
+  "default_trap0": {
+    "dos64.prg": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/unit-cold-tail-prototype-20261017/native-default-final/run-2c90w9xe/products/dos64.prg",
+      "sha256": "9652c06af408345e5e37e48d95817808575decd24c28d6f227a01aa3e1ec98e6",
+      "bytes": 47105
+    },
+    "dos64-tests.prg": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/unit-cold-tail-prototype-20261017/native-default-final/run-2c90w9xe/products/dos64-tests.prg",
+      "sha256": "74fc923322ed68fb0e120244f8f6f9147dabf413e12984b643a26cf698b499be",
+      "bytes": 47105
+    },
+    "dos64-tests.prg.unit-extra.bin": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/unit-cold-tail-prototype-20261017/native-default-final/run-2c90w9xe/products/dos64-tests.prg.unit-extra.bin",
+      "sha256": "269fbf30af8fec8c0aa3ba0b08c35796253baf7d271ea79746657a26de3701c7",
+      "bytes": 251
+    },
+    "dos64-tests.prg.unit-tail.bin": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/unit-cold-tail-prototype-20261017/native-default-final/run-2c90w9xe/products/dos64-tests.prg.unit-tail.bin",
+      "sha256": "068db3004ed7171708015fb1be1f48a33d04aa2378651d8bb600567b53571227",
+      "bytes": 207
+    },
+    "dos64.labels": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/unit-cold-tail-prototype-20261017/native-default-final/run-2c90w9xe/products/dos64.labels",
+      "sha256": "605a940d5a73508166b7cb4f7fa40860883d91e884334530b040dd42356d1271",
+      "bytes": 73664
+    },
+    "dos64-tests.labels": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/unit-cold-tail-prototype-20261017/native-default-final/run-2c90w9xe/products/dos64-tests.labels",
+      "sha256": "348255cda2768ab956c1f62bcd04201fb71acda9d0316017c7deb42a823baf19",
+      "bytes": 76261
+    },
+    "dos64.map": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/unit-cold-tail-prototype-20261017/native-default-final/run-2c90w9xe/products/dos64.map",
+      "sha256": "850d7f056db732f82b3b275caada45624e901d5c40e093c0e64afc7a0a87c0e0",
+      "bytes": 90245
+    },
+    "dos64-tests.map": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/unit-cold-tail-prototype-20261017/native-default-final/run-2c90w9xe/products/dos64-tests.map",
+      "sha256": "7d5dad5915f8ae59deea06fd76d017535bf201340c672857bd444cb447c3767f",
+      "bytes": 93360
+    },
+    "dos64.memory.json": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/unit-cold-tail-prototype-20261017/native-default-final/run-2c90w9xe/products/dos64.memory.json",
+      "sha256": "24846eba6f2fb24edb40c687fa2b724c8b3decb2cc323b3ee4065c38b08b5a34",
+      "bytes": 10564
+    },
+    "dos64-tests.memory.json": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/unit-cold-tail-prototype-20261017/native-default-final/run-2c90w9xe/products/dos64-tests.memory.json",
+      "sha256": "953384ead9af003f96046a0c03565e83d694992048513005b2475b9b4259e022",
+      "bytes": 10960
+    }
+  },
+  "selected_profile_boundary": {
+    "status": "NOT_READY_PREEXISTING_MAIN_OVERFLOW",
+    "bytes": 29,
+    "pre_reset_control": "SELECTED_PRE_RESET.json"
+  },
+  "source_window_sha256": "148e1ada28f895a6f5fa8246978b8ab596de6cbfb4d8f68f903d2afa24c49e2f"
+}
