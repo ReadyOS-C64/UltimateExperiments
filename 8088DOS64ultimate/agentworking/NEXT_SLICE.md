@@ -1,3 +1,9 @@
+# Next concrete V1 integration — 2026-10-17
+
+Original turbo settings and BASIC are now physically ROOT-accepted; do not repeat settings repair. CIA sole owner does local fast native-file4M recovery lifecycle planning, no nextLAN purpose dispatched. Prior whole4M backend remains failed and currentfull4M unverified.
+
+Memory: seal private optional early8-source native SETUP preflight with actual SYS/CIA/zeroCREATE/corruption controls and exact default0df4. Compiled: complete durableSave negative checks and matched START journal recovery before CLEAN/binding publication. ROOT: compose final runtime-linked modal assets/loader/hotkey/controller; preserve full paused redraw before RUN, explicitworker lifetimes and4MiB minimum. Public candidate remains development-only. Native installer→START→DOS, media40/80/Turbo persistence and human physical acceptance must use the final matched artifacts. Keep local commits/no push; no speed work.
+
 # Packaging checkpoint complete
 
 Coherent source-built candidate and10 packaging groups are committed dfdf1cb. Candidate is a development build; native early SETUP dependency preflight, modal loader/controller, durable media/START recovery and physical acceptance remain. Memory agent takes private SETUP preflight after terminal-fault successor; ROOT owns matched modal assets/footer.

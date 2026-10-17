@@ -1,3 +1,9 @@
+# Current hardware closure and V1 focus — 2026-10-17
+
+The separate settings repair passed physically and ROOT review: seal5d7b86d4/312pins;16requests with one guarded individual configPUT, original full settings/media/identity exact, original Turbo Control C64U Turbo Registers64 restored. Two saved2048B BASIC READY prefixes/emptyqueue advance54137→54142, five raw200/errors[]ACKs, detached8305/8312 reaped0/no watchdog. Reservation retained for local next-purpose planning. Prior9de whole4M qualification remains failed; no finalcurrent4M comparison/backend/current-product/originalCPU/RAM/app restoration claim. No additional device calls. Evidence c64u-profile-repair-physical-root-20261017.json.
+
+V1 remains installer/config/A-B/2-and20MiB C/durable media/restart and actual Turbo IDE acceptance; performance deferred. Root packaging and fault presentation checkpoints committed; memory agent privately validates early8-source SETUP preflight, compiled agent closes durable media negative/recovery gates, CIA prepares fast native-file recovery locally. Final user-facing modal loader/controller and matched physical release remain unfinished.
+
 # Modal terminal-error component verified — 2026-10-17
 
 ROOT verifies private a64f3372/1450pins, independently source-builds broker41639f30/CUI38488f86 and reexecutes6 focused actual6510/CIA groups2.453s. Native clock ownership failure now permits owned/cache0 error presentation atstageE1 while backend, display-off/release and Resume remain blocked. Private firsterror/intent/ticket survives forged public views/replies and11CIA actions; full4MiB/FILES/Cposition/ZP/clockwrites exact. UI ends9CFC/state7C98, broker744C/state77DC. No loader/controller/physical success is implied. Evidence native-media-terminal-fault-root-20261017.json; four source changes retained as an evidence checkpoint.

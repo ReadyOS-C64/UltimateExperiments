@@ -1,0 +1,25 @@
+{
+  "status": "accepted",
+  "scope": "ROOT read-only physical temporary-profile repair verification only",
+  "author_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-profile-repair-runnable-20261017/physical/MANIFEST.json",
+  "author_manifest_sha256": "5d7b86d4343a4b57c131823336a7e2f056ae49d5b01285a84dc18f70b32b294e",
+  "pins_verified": 312,
+  "one_config_PUT_HTTP200": true,
+  "all_original_settings_identity_media_exact": true,
+  "original_turbo_control": "C64U Turbo Registers",
+  "CPU_speed_setting": "64",
+  "BASIC_READY_empty_queue_jiffies": [
+    54137,
+    54142
+  ],
+  "all_five_raw_PUT_ACKs_verified": true,
+  "owned_processes_reaped_absent": true,
+  "prior_whole4M_campaign_remains_failed": true,
+  "current_whole4M_verified": false,
+  "whole4M_backend_qualified": false,
+  "current_product_qualified": false,
+  "upper12M_accessed": false,
+  "original_CPU_RAM_application_restored": false,
+  "ROOT_device_calls": 0,
+  "reservation_retained": true
+}
