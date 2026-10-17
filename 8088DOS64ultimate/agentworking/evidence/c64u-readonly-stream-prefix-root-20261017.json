@@ -1,0 +1,40 @@
+{
+  "status": "accepted_failed_campaign_evidence_closure",
+  "physical": true,
+  "purpose": "61e8ce90c8fd601336539034ca400fee8f401d36d5e5db282f07a629d75a0acd",
+  "package": "aa1dfc62ade37e387a408eaec9f020cac7a098edad16d60a97c0088b2d44c5fa",
+  "physical_manifest": {
+    "sha256": "bdae758010cb64a54b7c5cd8498bd4540124cf86ba2b42a503cfb65e51a9e25b",
+    "verified_files": 2466
+  },
+  "archived_bytes": 720896,
+  "whole_frame_count": 22,
+  "exact_original_prefix": true,
+  "archive_sha256": "596f899a2c5b4150aa55ecb9bac2543637c34fd39a0446f7b8c5b12561b55546",
+  "first_error": "ConnectionResetError(54, 'Connection reset by peer')",
+  "cleanup": {
+    "attempted": true,
+    "terminal_RAM_retained": true,
+    "cold_reset_ack": true,
+    "BASIC_ready_observed": true,
+    "resume_ack": true,
+    "settings_media_equal": true,
+    "original_RAM_restored": false,
+    "original_CPU_restored": false,
+    "original_application_resumed": false,
+    "errors": []
+  },
+  "source_originals_and_copies": 2033,
+  "original_RAM_CPU_application_restored": false,
+  "owned_child_reaped_exit": 1,
+  "supervisor_intended_exit": 1,
+  "supervisor_OS_exit_independently_observed": false,
+  "owned_PIDs_absent": [
+    694,
+    705
+  ],
+  "full4MiB_proof": false,
+  "REU_writes": 0,
+  "settings_speed_limit": "Saved register-control/64 and no source turboenable do not prove actual64MHz; no performanceclaim",
+  "next": "Temporary verified Manual64 profile with exact captured-setting restoration and a fresh reviewedpurpose; noautomaticretry/fullboardreset"
+}

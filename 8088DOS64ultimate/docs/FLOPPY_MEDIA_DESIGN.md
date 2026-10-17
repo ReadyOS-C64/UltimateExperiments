@@ -1,12 +1,16 @@
-# User floppy media, save and swap — proposal2026-10-16
+# User floppy media, save and swap — implementation boundaries2026-10-17
 
 A conventional raw360KiB IMG is the persistent PC floppy representation. It contains the DOS boot/FAT/root/data sectors and needs no D81, otherCBM container, or sidecar to interpret its sectors. Config/optionalrecovery journals are separate application metadata. Arbitrary compressed/flux formats and largergeometries are outside the initial supported profile. The complete mounted image resides in its assigned REUslot; REU is working storage, not persistence.
 
 ## Current actual behavior
 
-src/disk.s services only BIOS DL0 and writes the mounted image in REU. There is no independentB implementation or user disk browser/dirty-state UI. The reserved512KiB Bslot does not change that. DOS may expose single-drive logical behavior; it is not an independent second mountedimage.
+The public core now implements independent BIOS A/B routing, readonly/dirty tracking, mount/content generations and native PREPARE/COMMIT/CANCEL/EJECT/CLEAN controls. Three complete arenas at REU100000/180000/380000 rotate so staging does not overwrite either mounted image. The matched launcher loads and verifies both present images, and genuine DOS A/B behavior passes the model. This is a core/handoff milestone: a user disk browser and Save/Discard/Swap menu are not implemented. See [core contract](FLOPPY_CORE.md) and [startup handoff](NATIVE_START_HANDOFF.md).
 
 Native development SAVE command7, from coherentpaused state, exports all720sectors to a fresh create-new path, closes/reopens, checks exact368640-byte size, compares everybyte, checks EOF and finalCLOSE. The earlier d883c678 build passed this on physicalUltimate with independent wholefile retrieval; evidence/c64u-complete-split-save-20261015.json. No automaticwriteback or final userSave/Discard/Exit interface is implemented. Current src/native_save.s explicitly rejects hdb_online/hd_uncertain/conflictinghandles; floppy saving with C mounted needs new reviewed context integration and physical acceptance. Do not transfer the old physical result to a new composed binary automatically.
+
+That development path still validates the legacy A descriptor and accepts only export banks10/18; it does not export B or a rotated image at38. Its FILES adapter retains one handle/target context. Removing the hdb_online guard alone would lose C's context or steal its target, and removing the dirty guard alone would not establish persistence. Runtime integration must preserve the mounted C handle/cache, prove ownership/known closure of the other firmware target, bind a particular drive/mount/content generation, and refresh the durable launch configuration after a verified save. The standalone native CONFIG/SETUP dual-context engine is reference code, not an adapter already installed into the emulator.
+
+The generation-home CONFIG work separately establishes fresh A/B CRCs by complete readonly reinspection and checks C's supported size/partition profile without rebuilding it. This will help reopen legitimately saved images, but it does not by itself refresh the currently installed CFG after runtime SAVE. Both pieces remain required; CRC0 must remain a valid value, not a verification bypass.
 
 ## Recommended first user workflow
 

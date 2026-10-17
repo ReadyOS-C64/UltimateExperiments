@@ -1,4 +1,6 @@
-Current hardware steering: da325b03 failed beforeSYS on observed uppercase address; cleanup readiness ConnectionReset54 means BASIC/resume unverified. CIA closes evidence, then implements exact-endpoint ASCII hex-case handling for POST/small writes AND inherited ACK/cancel. No newdevicecalls without a fresh reviewed purpose; no full-board reset. Read ACTIVE for authoritative ownership.
+Current hardware steering: case-qualified61e8 archived22 exact32KiB frames before header ConnectionReset54; cleanup BASIC/resume/settings/media passed, full4MiB capture did not. Read ACTIVE for authoritative ownership. Manual64 proposal0158/1f766 was rejected before dispatch by ROOT's actual cleanup-orchestration counterexample. Independently replay the new structural-finally successor and review one fresh concrete detached purpose before any device call. No full-board reset or FTP retry.
+
+Current CONFIG steering: ROOT browser10fb/420 and exact82f reproduction/13 actual groups/67 unchanged inputs are closed. Do not repeat unchanged browser/RI suites. Memory owns full generation publisher source closure and focused failure controls; compiled owns independent exact-release patcher and full HIGH bootstrap/lifetime review. ROOT independently replays the sealed complete pipeline before any public promotion. Preserve first merged CODE/RO placement failure. NewINI40/80 follows the existing same-home cold-launch contract; oldINI is explicitly unread/unchanged by the selection UI.
 
 # Next after same-home INI integration — 2026-10-17
 

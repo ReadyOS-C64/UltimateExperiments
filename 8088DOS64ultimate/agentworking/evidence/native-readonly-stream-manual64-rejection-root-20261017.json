@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "NOT_READY_REJECTED_BEFORE_DISPATCH",
+  "physical": false,
+  "rejected_package": "0158a0942f65712eccd25488568aa27f1971691a472951300542e4ebf9c678f4",
+  "rejected_launch": "1f766410c0ab431434e34b556503595562738d1eacb2a69c9c49d3e53012ab43",
+  "actual_ROOT_counterexample": {
+    "status": "VERIFIED_OLD_CLEANUP_RESTORATION_GAP",
+    "physical": false,
+    "config_POST_calls": 1,
+    "final_model_turbo_control": "Manual",
+    "restore_attempted": false,
+    "primary_exception_preserved": true,
+    "cleanup_orchestration_error": "KeyboardInterrupt('ROOT cleanup orchestration interrupt before deadline')",
+    "source_inputs_unchanged": true
+  },
+  "source_inputs_unchanged": 13,
+  "files": {
+    "agentworking/scratch/native-readonly-stream-manual64-root-counterexample-20261017/counterexample.py": {
+      "sha256": "b3800d87c68afdc9d0c2b89f60fa558849d3903b6df09d307b3e6bc049f539e7",
+      "bytes": 1683
+    },
+    "agentworking/scratch/native-readonly-stream-manual64-root-counterexample-20261017/INPUTS_BEFORE.json": {
+      "sha256": "1bddd0bffea7b1ab529708b7f1ac8c7009d55d05376c899e616d5170e49b62c5",
+      "bytes": 3239
+    },
+    "agentworking/scratch/native-readonly-stream-manual64-root-counterexample-20261017/RESULT.json": {
+      "sha256": "0da0572c4c47d4b5b8cd9fb0b7dc9edc41d95318f3422973cbb1dac0ca1102e4",
+      "bytes": 357
+    }
+  },
+  "required_successor": "Cold cleanup orchestration and configuration restoration must be independent outer phases. Preserve exact first exception and once-only restore with separate bounded readback/inventory; replay this persistent clock failure before any physical dispatch."
+}

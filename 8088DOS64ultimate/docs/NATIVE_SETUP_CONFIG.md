@@ -37,6 +37,8 @@ Actual target tests compare serialization/CRC against an independent host oracle
 
 The options-enabled launcher reads `DOS64.INI` from its embedded installation home on every cold launch, parses it before DOS boots, and passes validated settings through REU. The emulator copies the initial display setting into resident state. Editing INI takes effect on the next launch without reinstalling or regenerating START. Surviving REU contents never substitute for rereading the file.
 
+For example, a launcher configured for `/usb1/DOS64` reads `/usb1/DOS64/DOS64.INI`, regardless of the Ultimate browser's current folder. The same home locates `DOS64.CFG`, `DOS64.PRG` and `START.INO`; the disk-image paths in CFG can point elsewhere. Future options should follow this prelaunch parsing and validated binary handoff pattern, with frequently used values copied into resident state. Only the initial column setting is implemented today.
+
 Build the complete matched release with `make start-ini-bundle`; use all five files from the bundle named by `build/start-ini-bundle/RESULT.json`. The default `make start-template` remains the legacy launcher, which ignores INI. Do not mix the two launchers or their release assets. See [installation](NATIVE_SETUP_INSTALLER.md) and [the options handoff](NATIVE_START_HANDOFF.md#options-enabled-launcher).
 
 Binary `DOS64.CFG` and its ABI1 reserved-zero rules stay intact. INI currently supports the initial 40/80-column display setting only; it does not enable timing or compiled-code experiments. A native SETUP preferences editor is still pending.
