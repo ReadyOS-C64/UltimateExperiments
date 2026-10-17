@@ -330,3 +330,6 @@ A completed file writer and its readonly source cache each need explicit clean-s
 2026-10-17: Real native leaf calls from a fixture prove composition, not the on-machine app's automatic flow. Test the actual BASIC entry and only keyboard/firmware inputs before advertising that UI. Keep code and RO in separate ld65 segments even when both share one relocated arena; cc65 function-local static data can otherwise precede an entry instruction.
 
 2026-10-17: An assembly caller of a C u8 function must test returned A explicitly; return flags are not part of that ABI. Add CMP#0 before branching, even when an earlier positive run happens to work. Retain the old positive result honestly; source-contract defects need not be described as observed failures. Independent generated-output consumer runs prove more than matching fixture oracles.
+
+
+2026-10-17: A safety operation's own guard must sit inside structural cleanup. ROOT's one-shot real line trace caught an exception between the outer eligibility test and guarded call, bypassing scratch and turbo restoration. Separate local pre-attempt entry from the actual once-only side-effect flag; retain the first cause and original deadline, and put independent profile cleanup in an outer finally. This is evidence for the tested boundary, not a promise that arbitrary process termination is recoverable.

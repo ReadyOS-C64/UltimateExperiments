@@ -1,3 +1,9 @@
+# Physical40fe qualification failed before any REU write — 2026-10-17
+
+Reviewed distinct257ac807 campaign runs once via Terminal1622/supervisor11502/child11509. Five READ blocks/81920B equal originalac43; sixth descriptor-readback GET6000/32 fails Reset54 beforeGO, and cleanup pause also fails Reset54. NoREUWRITE/scratch attempt. Original turbo restoration ACK/exactreadback and settings/media equality pass; terminalRAM/C64reset/BASIC/resume and currentwhole4MiB comparison remain unverified. ROOT checks da3f/all727 pins, ACTIVEc095 and bothPIDsabsent; childreaped1/supervisorintended1/no watchdog. CIA retains reserved/possiblehelper state; no retry/newdevicecall. Receipt evidence/c64u-40fe-recovery-failure-root-20261017.json. Accepted priora58a fullsnapshot remains historical, not currentwholememory proof.
+
+ROOT separately rejected old04242 safety orchestration via actual line-trace counterexample. Fresh75def structuralfinally passes constructor+7purpose+exacttrace; all265package/186launchpins exact. The physical failure is transport, not that modeled cleanup regression. Next local cached firmware/HTTP lifecycle research and a distinct bounded coldstate closure/lower-roundtrip purpose; user-facing newSTART/CONFIG/SETUP physical qualification still pending.
+
 # Native CONFIG → START → genuine DOS40/80 verified — 2026-10-17
 
 Private nativeCONFIG508d/e530 now drives actual BASIC080D plus CIA keys through CG/RI/RM/CP and all six CREATE_NEW/readback outputs, with CFG last. ROOT verifies authorfcd5/all324 and independentpeer40a9/all356 pins. Author4actualSYS+2Zig and peer tracedSYS40+3fault groups pass; independent real40+80 captures remain byte exact. Natural PC trace proves oneBCinit/oneSCbegin, oneRM/CPbegin, no host native leaf calls. New destination root/>117 refuses early. MAINfree222/HIGHfree111/STATEfree67; prior explicit-return-flag version and caption-oracle failures retained.
