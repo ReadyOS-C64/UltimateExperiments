@@ -1,0 +1,8 @@
+- `build-first/`: actual first source build compiled all native phases, then old public descriptor rejected20480B. The accepted27-file descriptor adds explicit start20k; final uses that API and keeps false default.
+- First compiler command was mistakenly issued from component parent, so clang reported no tests/floppy_export/bridge.cpp or Peddle inputs; no code executed. Correct explicit consumer/work rebuild succeeded.
+- A private Makefile staging helper initially derived agentworking/Makefile and failed FileNotFoundError; corrected root depth. Native cold/host commands already used correct explicit project cwd.
+- Initial partial project omitted public literal Make includes, so `make -n` failed parsing them. All eight exact public include dependencies are now staged.
+- First Make dry-run exposed undefined PYTHON variable (`B build_support/...`); fixed to existing DOS64_PYTHON interface before actual Make execution. Actual Make then passed.
+- `first-make-oracle-failure/`:11host group replay failed only because its no-private-path oracle inspected the user-supplied runtime path in the guard line. Corrected to inspect the builder command prefix; no target/builder semantic change. Final11passed; prior result remains failed.
+- `first-closed-builder/` retains the earlier10group successful closure before Make-host coverage was added; not overwritten as final11proof.
+- Public Root added FORMAT support to runtime_media.py after the initial shared snapshot. `SHARED_COMMON_DRIFT/` retains both versions; this child rebased only that shared helper to current public and reran native+11host closure, producing the same eight asset bytes. The old helper is explicitly absent from the18-write promotion map; no Root changes are overwritten.

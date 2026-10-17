@@ -384,3 +384,8 @@ A completed file writer and its readonly source cache each need explicit clean-s
 
 
 2026-10-17: Native UI keyboard tests must hold BOTH matrix press and release until a real successful scan, not one modal_wait return: pendingclock may skip scanning. The olddriver lost7characters and nativeIncoming correctly refused the wrongpath; preserve that counter and prove exacttypedpath beforeworker admission. CIAreadquota is not literal fullscan count during backendSTOP polls; qualify observations. Existing genericunknownselector tests must adopt newly supported named8FORMAT and reject9 rather than obscure legitimatecontract expansion. A runtime-only source inventory omits unrelatedtestdriver/VICEpreparation; stage exact neededfixture and report partial commandfailure honestly.
+
+
+## 2026-10-17 — new optional Make include requires all staged inventories
+
+The first public cold-builder promotion exposed the runtime's intentional missing-include check: adding cold_start.mk to Makefile also requires declaring it in both native-media source inventories, even when the selected target never executes it. Preserve the failure; extend the inventories rather than weaken validation. Rebuild truthful source-cohort tags; exact code equality does not transfer previous whole-hash workflow acceptance.

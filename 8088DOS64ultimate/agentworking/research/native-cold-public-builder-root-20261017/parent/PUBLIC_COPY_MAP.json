@@ -1,0 +1,682 @@
+{
+  "own_writes": [
+    {
+      "relative": "Makefile",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/Makefile",
+      "identity": {
+        "sha256": "8c025dbfadd0e8884808beb27a7f36204df5d2a858cb89199dbee449d8bdf548",
+        "bytes": 23112
+      },
+      "baseline": {
+        "sha256": "7df29893b63a27758a0c9dc023acda61ef618826c7e73817a26715d16d857056",
+        "bytes": 25789
+      }
+    },
+    {
+      "relative": "build_support/cold_start.mk",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/cold_start.mk",
+      "identity": {
+        "sha256": "a40533e9bd9b6e8f8e65d8b122d2a3ce492b1db67f273597ad77e29a4a472ea1",
+        "bytes": 563
+      },
+      "baseline": null
+    },
+    {
+      "relative": "build_support/cold_start.py",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/cold_start.py",
+      "identity": {
+        "sha256": "17ae55cd6354ac01fb8475139407d940895428ccfa4da852b1d9d81a08d16d23",
+        "bytes": 13049
+      },
+      "baseline": null
+    },
+    {
+      "relative": "build_support/cold_start_sources.json",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/cold_start_sources.json",
+      "identity": {
+        "sha256": "e9eb8e73104dca7a4f7527b2164978fd2252479abb5a66a4c7ded68d2e62191c",
+        "bytes": 2221
+      },
+      "baseline": null
+    },
+    {
+      "relative": "build_support/start_launcher.py",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/start_launcher.py",
+      "identity": {
+        "sha256": "08053c15c07cca9ddc59c220372a4ae91ce8ba81ab32323a61fd77c41809349a",
+        "bytes": 9287
+      },
+      "baseline": {
+        "sha256": "06272e23e0fed85b170c630a6bec5c44e53619e9582dba527d61a52ac93bf94d",
+        "bytes": 9014
+      }
+    },
+    {
+      "relative": "tests/cold_start_host/test_builder.py",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tests/cold_start_host/test_builder.py",
+      "identity": {
+        "sha256": "17bdb38c676a74523ef4ff098d47330cd3de0e3b6f3e5160eed50560359df065",
+        "bytes": 4609
+      },
+      "baseline": null
+    },
+    {
+      "relative": "tools/cold/core/controller.c",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/cold/core/controller.c",
+      "identity": {
+        "sha256": "e5df71c11e8dfb5fc7015b09c00b9e853449839c4a82ec2923ff22b117f0aae4",
+        "bytes": 23743
+      },
+      "baseline": null
+    },
+    {
+      "relative": "tools/cold/core/controller.cfg",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/cold/core/controller.cfg",
+      "identity": {
+        "sha256": "2db07616cf618c7f885627415541ad183206e5a75f7434ac5e10b491fcb1e8c3",
+        "bytes": 927
+      },
+      "baseline": null
+    },
+    {
+      "relative": "tools/cold/core/frontend.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/cold/core/frontend.s",
+      "identity": {
+        "sha256": "d824880e26e4e545747273d87af8f34e988d75aeb0720cab3d0c00fba11feda3",
+        "bytes": 5816
+      },
+      "baseline": null
+    },
+    {
+      "relative": "tools/cold/core/journal_capsule.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/cold/core/journal_capsule.s",
+      "identity": {
+        "sha256": "d0ce77ea8d6d53696965f5e82baeafb7399f599367e11cd7801f4c90a3e2d103",
+        "bytes": 530
+      },
+      "baseline": null
+    },
+    {
+      "relative": "tools/cold/gate/entry.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/cold/gate/entry.s",
+      "identity": {
+        "sha256": "7459e7af3950141673eb66caa4aba6f174931f353552b69ba03ed1c92c482983",
+        "bytes": 1589
+      },
+      "baseline": null
+    },
+    {
+      "relative": "tools/cold/gate/gate.cfg",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/cold/gate/gate.cfg",
+      "identity": {
+        "sha256": "715704ad4a16e1c91c478ae27b4722721b6d1b0f3fd156db4c7d282ea8612fbd",
+        "bytes": 489
+      },
+      "baseline": null
+    },
+    {
+      "relative": "tools/cold/gate/journal_gate.c",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/cold/gate/journal_gate.c",
+      "identity": {
+        "sha256": "7683b45a9c3e71aa37a202e21c52b99a8c564e9ff7da466807a822a620de85d8",
+        "bytes": 12830
+      },
+      "baseline": null
+    },
+    {
+      "relative": "tools/cold/gate/journal_gate.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/cold/gate/journal_gate.h",
+      "identity": {
+        "sha256": "a76eeca2f8d67863dc5762da9914d25a05af6bc7da4ec04deb9ada70dae88c06",
+        "bytes": 1177
+      },
+      "baseline": null
+    },
+    {
+      "relative": "tools/cold/worker/entry.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/cold/worker/entry.s",
+      "identity": {
+        "sha256": "e4c79b30d6771148b10fe65ac3bbe4d891c0d7f748b6b52af12772f2dc0b20c6",
+        "bytes": 924
+      },
+      "baseline": null
+    },
+    {
+      "relative": "tools/cold/worker/rollforward.c",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/cold/worker/rollforward.c",
+      "identity": {
+        "sha256": "36cfaa33e64bcc96cff95a74c474abbc9f110df41403b532dae8ae843782108e",
+        "bytes": 11493
+      },
+      "baseline": null
+    },
+    {
+      "relative": "tools/cold/worker/rollforward.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/cold/worker/rollforward.h",
+      "identity": {
+        "sha256": "81e4c9b426c494383a279661da9defaa031c69ffd95d3adc2ba68696a2401032",
+        "bytes": 807
+      },
+      "baseline": null
+    },
+    {
+      "relative": "tools/cold/worker/worker.cfg",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/cold/worker/worker.cfg",
+      "identity": {
+        "sha256": "7a3575c602c4d49c776cc8072c5cb302e92a7413bd81a97b98b6b968fa397a47",
+        "bytes": 364
+      },
+      "baseline": null
+    }
+  ],
+  "required_dependencies": [
+    {
+      "relative": "build_support/config.mk",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/config.mk",
+      "identity": {
+        "sha256": "acd49089e3ce813e224872cba1571c25455836aa41147a821d5d4439ed5a6cb9",
+        "bytes": 314
+      },
+      "baseline": {
+        "sha256": "acd49089e3ce813e224872cba1571c25455836aa41147a821d5d4439ed5a6cb9",
+        "bytes": 314
+      }
+    },
+    {
+      "relative": "build_support/floppy_export.mk",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/floppy_export.mk",
+      "identity": {
+        "sha256": "9c59fbd18b8ecc268381ccf7b3149569c450b9c99811aecd36af75d45c2f5f76",
+        "bytes": 313
+      },
+      "baseline": {
+        "sha256": "9c59fbd18b8ecc268381ccf7b3149569c450b9c99811aecd36af75d45c2f5f76",
+        "bytes": 313
+      }
+    },
+    {
+      "relative": "build_support/iec_standalone.mk",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/iec_standalone.mk",
+      "identity": {
+        "sha256": "d81b67717425192564569777d3c6999bd42cf0e1fb2069451db7a5f3cdc8adc9",
+        "bytes": 843
+      },
+      "baseline": {
+        "sha256": "d81b67717425192564569777d3c6999bd42cf0e1fb2069451db7a5f3cdc8adc9",
+        "bytes": 843
+      }
+    },
+    {
+      "relative": "build_support/native_media.mk",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/native_media.mk",
+      "identity": {
+        "sha256": "2a7b334e318978c38c843f89967909ee20e97d0bff81fb10edd931661c6a0a7e",
+        "bytes": 355
+      },
+      "baseline": {
+        "sha256": "2a7b334e318978c38c843f89967909ee20e97d0bff81fb10edd931661c6a0a7e",
+        "bytes": 355
+      }
+    },
+    {
+      "relative": "build_support/runtime_media.mk",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/runtime_media.mk",
+      "identity": {
+        "sha256": "d1e252dfa403e15af059ac257a120c280aef7a311de847d77d4a78cf0f58ee18",
+        "bytes": 204
+      },
+      "baseline": {
+        "sha256": "d1e252dfa403e15af059ac257a120c280aef7a311de847d77d4a78cf0f58ee18",
+        "bytes": 204
+      }
+    },
+    {
+      "relative": "build_support/runtime_media.py",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/runtime_media.py",
+      "identity": {
+        "sha256": "4ddb36f05899305e35f0c35670ed254ea522a2461a74422198591c8082066e2b",
+        "bytes": 10079
+      },
+      "baseline": {
+        "sha256": "4ddb36f05899305e35f0c35670ed254ea522a2461a74422198591c8082066e2b",
+        "bytes": 10079
+      }
+    },
+    {
+      "relative": "build_support/setup.mk",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/setup.mk",
+      "identity": {
+        "sha256": "e2ae113a478f092ff01b7f4820f0013a639d9e0ee1d3a35722d549d394a2c926",
+        "bytes": 3460
+      },
+      "baseline": {
+        "sha256": "e2ae113a478f092ff01b7f4820f0013a639d9e0ee1d3a35722d549d394a2c926",
+        "bytes": 3460
+      }
+    },
+    {
+      "relative": "build_support/setup_release_descriptor.py",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/setup_release_descriptor.py",
+      "identity": {
+        "sha256": "ac13e5816cd660d35f70e3342b5747a39bd547e68eaf9f085a9dc46a3f953b11",
+        "bytes": 3819
+      },
+      "baseline": {
+        "sha256": "ac13e5816cd660d35f70e3342b5747a39bd547e68eaf9f085a9dc46a3f953b11",
+        "bytes": 3819
+      }
+    },
+    {
+      "relative": "build_support/start_ini.mk",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/start_ini.mk",
+      "identity": {
+        "sha256": "a8c2ad9781382c22c53545a6767e88af75da79d425c8a3434651b26bd295cb7f",
+        "bytes": 895
+      },
+      "baseline": {
+        "sha256": "a8c2ad9781382c22c53545a6767e88af75da79d425c8a3434651b26bd295cb7f",
+        "bytes": 895
+      }
+    },
+    {
+      "relative": "build_support/start_ini_bundle.py",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/start_ini_bundle.py",
+      "identity": {
+        "sha256": "d5e4467c3496dccb49e2c300dd4bd1d9949c37ea96a58cba4c4fbf9ce666a567",
+        "bytes": 9537
+      },
+      "baseline": {
+        "sha256": "c7cddf7094ec930bf0c83bbc36aa530a9562d52597cecd53f9046b30ef11a8a5",
+        "bytes": 8054
+      },
+      "scope": "exact accepted CIA27 prerequisite; coordinate installer promotion"
+    },
+    {
+      "relative": "build_support/start_template_descriptor.py",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/start_template_descriptor.py",
+      "identity": {
+        "sha256": "39fe569c55e4daab95e5464db3e4b371a655c99b697276896fb247059e6e3f89",
+        "bytes": 3813
+      },
+      "baseline": {
+        "sha256": "0736dab6f69e646c0c42b12aa7e743e278e97850df7227bf2843360f246dc93c",
+        "bytes": 3700
+      },
+      "scope": "exact accepted CIA27 prerequisite; coordinate installer promotion"
+    },
+    {
+      "relative": "build_support/v1_candidate.mk",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/build_support/v1_candidate.mk",
+      "identity": {
+        "sha256": "c869246e9bb6dfd159e02c02a29794d7a796dbf85891d3b1b95374134f13a496",
+        "bytes": 301
+      },
+      "baseline": {
+        "sha256": "c869246e9bb6dfd159e02c02a29794d7a796dbf85891d3b1b95374134f13a496",
+        "bytes": 301
+      }
+    },
+    {
+      "relative": "include/files.inc",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/include/files.inc",
+      "identity": {
+        "sha256": "dc87a9afa6bd56314a0a9c7f13598e362287b1e6bb8a8ef329575c563dc990a4",
+        "bytes": 2591
+      },
+      "baseline": {
+        "sha256": "dc87a9afa6bd56314a0a9c7f13598e362287b1e6bb8a8ef329575c563dc990a4",
+        "bytes": 2591
+      }
+    },
+    {
+      "relative": "include/uci.inc",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/include/uci.inc",
+      "identity": {
+        "sha256": "574d140bfa3772a438f45510309018190c41f54ee205cab691523f034cf9640d",
+        "bytes": 2351
+      },
+      "baseline": {
+        "sha256": "574d140bfa3772a438f45510309018190c41f54ee205cab691523f034cf9640d",
+        "bytes": 2351
+      }
+    },
+    {
+      "relative": "src/files.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/src/files.s",
+      "identity": {
+        "sha256": "7d9cd1058d908c4d4de69cdc9fcb90bb47c227479f7211d529cf6b554d47f596",
+        "bytes": 9545
+      },
+      "baseline": {
+        "sha256": "7d9cd1058d908c4d4de69cdc9fcb90bb47c227479f7211d529cf6b554d47f596",
+        "bytes": 9545
+      }
+    },
+    {
+      "relative": "src/uci.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/src/uci.s",
+      "identity": {
+        "sha256": "eaca8f4f9b3089564990a738827fc86f66fe5e477e66e29e1847a6db83367715",
+        "bytes": 12115
+      },
+      "baseline": {
+        "sha256": "eaca8f4f9b3089564990a738827fc86f66fe5e477e66e29e1847a6db83367715",
+        "bytes": 12115
+      }
+    },
+    {
+      "relative": "tools/native/bindings.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/bindings.s",
+      "identity": {
+        "sha256": "19c8598f721b171f663fa2d9548e6e2f1ade3b0a23fc19941b8e252856ea8b1b",
+        "bytes": 2964
+      },
+      "baseline": {
+        "sha256": "19c8598f721b171f663fa2d9548e6e2f1ade3b0a23fc19941b8e252856ea8b1b",
+        "bytes": 2964
+      }
+    },
+    {
+      "relative": "tools/native/bulk_reu.c",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/bulk_reu.c",
+      "identity": {
+        "sha256": "61bee64f137e779fa68901e0ce9079ee8a5d65c23a4ff6bb2ca302c33a6c7b1e",
+        "bytes": 8756
+      },
+      "baseline": {
+        "sha256": "61bee64f137e779fa68901e0ce9079ee8a5d65c23a4ff6bb2ca302c33a6c7b1e",
+        "bytes": 8756
+      }
+    },
+    {
+      "relative": "tools/native/bulk_reu.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/bulk_reu.h",
+      "identity": {
+        "sha256": "154f093370a22129c682d5f177b99068d3a2608e1a3e0ac84cd92c7742f55fea",
+        "bytes": 2815
+      },
+      "baseline": {
+        "sha256": "154f093370a22129c682d5f177b99068d3a2608e1a3e0ac84cd92c7742f55fea",
+        "bytes": 2815
+      }
+    },
+    {
+      "relative": "tools/native/bulk_uci.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/bulk_uci.h",
+      "identity": {
+        "sha256": "61b92fb2ba8413ab547211cd981eaad6c962fdf3145f914e040f136132092475",
+        "bytes": 1217
+      },
+      "baseline": {
+        "sha256": "61b92fb2ba8413ab547211cd981eaad6c962fdf3145f914e040f136132092475",
+        "bytes": 1217
+      }
+    },
+    {
+      "relative": "tools/native/crc32.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/crc32.h",
+      "identity": {
+        "sha256": "310b913a21424f47421ba33ff98b4ac10a9084cf74bf66b35c2358dab1c90ac1",
+        "bytes": 894
+      },
+      "baseline": {
+        "sha256": "310b913a21424f47421ba33ff98b4ac10a9084cf74bf66b35c2358dab1c90ac1",
+        "bytes": 894
+      }
+    },
+    {
+      "relative": "tools/native/crc32.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/crc32.s",
+      "identity": {
+        "sha256": "74bb6aec03f29927668889c2bf24e2b5ec0617e56c6637b0fe4bf0ea3d23f2ec",
+        "bytes": 3064
+      },
+      "baseline": {
+        "sha256": "74bb6aec03f29927668889c2bf24e2b5ec0617e56c6637b0fe4bf0ea3d23f2ec",
+        "bytes": 3064
+      }
+    },
+    {
+      "relative": "tools/native/platform.c",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/platform.c",
+      "identity": {
+        "sha256": "b91ff826c545b4647c561c8aca110b432f670b6986183cb74a24c775aa84d4d9",
+        "bytes": 3414
+      },
+      "baseline": {
+        "sha256": "b91ff826c545b4647c561c8aca110b432f670b6986183cb74a24c775aa84d4d9",
+        "bytes": 3414
+      }
+    },
+    {
+      "relative": "tools/native/platform.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/platform.h",
+      "identity": {
+        "sha256": "cf915040d8d6b669fcfc3ce0bfbca22574a6a12ee850b3c69ee97f8ee48ac11c",
+        "bytes": 1696
+      },
+      "baseline": {
+        "sha256": "cf915040d8d6b669fcfc3ce0bfbca22574a6a12ee850b3c69ee97f8ee48ac11c",
+        "bytes": 1696
+      }
+    },
+    {
+      "relative": "tools/native/platform.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/platform.s",
+      "identity": {
+        "sha256": "dd04006d754139ccca371ad3d021014750f457485f498a41f2a003c1866c694a",
+        "bytes": 586
+      },
+      "baseline": {
+        "sha256": "dd04006d754139ccca371ad3d021014750f457485f498a41f2a003c1866c694a",
+        "bytes": 586
+      }
+    },
+    {
+      "relative": "tools/native/startup_close.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/startup_close.h",
+      "identity": {
+        "sha256": "40752fe1365856e45746ca8d421abecf3ebc8b5facc5dc6b68c333c1f6363135",
+        "bytes": 1387
+      },
+      "baseline": {
+        "sha256": "40752fe1365856e45746ca8d421abecf3ebc8b5facc5dc6b68c333c1f6363135",
+        "bytes": 1387
+      }
+    },
+    {
+      "relative": "tools/native/startup_close.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/startup_close.s",
+      "identity": {
+        "sha256": "741368b7c35ab52b43495c86c83a15740e76d8597b5013618e4de916dc775611",
+        "bytes": 3060
+      },
+      "baseline": {
+        "sha256": "741368b7c35ab52b43495c86c83a15740e76d8597b5013618e4de916dc775611",
+        "bytes": 3060
+      }
+    },
+    {
+      "relative": "tools/native/validator_crc.c",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/validator_crc.c",
+      "identity": {
+        "sha256": "ebe917f9af7cca38135f5a03a8c2489128f398fa727c0e12aa2e3ee2ffc19811",
+        "bytes": 312
+      },
+      "baseline": {
+        "sha256": "ebe917f9af7cca38135f5a03a8c2489128f398fa727c0e12aa2e3ee2ffc19811",
+        "bytes": 312
+      }
+    },
+    {
+      "relative": "tools/native/validator_crc.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/native/validator_crc.h",
+      "identity": {
+        "sha256": "551c0816dfeea0cd3c6a52a5d5ca0016b4c92b68c0f138d47db5647744a0cf83",
+        "bytes": 471
+      },
+      "baseline": {
+        "sha256": "551c0816dfeea0cd3c6a52a5d5ca0016b4c92b68c0f138d47db5647744a0cf83",
+        "bytes": 471
+      }
+    },
+    {
+      "relative": "tools/setup/install_config.c",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/setup/install_config.c",
+      "identity": {
+        "sha256": "14a19e5d6c8125b5c8517d28a1a025286a3da3c70d7e481288f70e08c3a24559",
+        "bytes": 7797
+      },
+      "baseline": {
+        "sha256": "14a19e5d6c8125b5c8517d28a1a025286a3da3c70d7e481288f70e08c3a24559",
+        "bytes": 7797
+      }
+    },
+    {
+      "relative": "tools/setup/install_config.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/setup/install_config.h",
+      "identity": {
+        "sha256": "4be20cc4c6fd3e145bf5de3f0c76205c5b286caadcb584fdb4fdac887b26376f",
+        "bytes": 1092
+      },
+      "baseline": {
+        "sha256": "4be20cc4c6fd3e145bf5de3f0c76205c5b286caadcb584fdb4fdac887b26376f",
+        "bytes": 1092
+      }
+    },
+    {
+      "relative": "tools/setup/release.c",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/setup/release.c",
+      "identity": {
+        "sha256": "a4138325bdb93b0d7a1a09e7f2fbaf47a4023d932c3634766983772e4abcc1b4",
+        "bytes": 3542
+      },
+      "baseline": {
+        "sha256": "a4138325bdb93b0d7a1a09e7f2fbaf47a4023d932c3634766983772e4abcc1b4",
+        "bytes": 3542
+      }
+    },
+    {
+      "relative": "tools/setup/release.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/setup/release.h",
+      "identity": {
+        "sha256": "d3b388ffdec149d2dc1ba7fddb08d618d2165cf679307a6e4f14b70cd2976a93",
+        "bytes": 488
+      },
+      "baseline": {
+        "sha256": "d3b388ffdec149d2dc1ba7fddb08d618d2165cf679307a6e4f14b70cd2976a93",
+        "bytes": 488
+      }
+    },
+    {
+      "relative": "tools/start/controller.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/start/controller.h",
+      "identity": {
+        "sha256": "3e146f658402ae688eed99c40b1a75544d221177b24c00b25582a197f7a37564",
+        "bytes": 1359
+      },
+      "baseline": {
+        "sha256": "3e146f658402ae688eed99c40b1a75544d221177b24c00b25582a197f7a37564",
+        "bytes": 1359
+      }
+    },
+    {
+      "relative": "tools/start/dma.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/start/dma.s",
+      "identity": {
+        "sha256": "296ad31f02156d4305569c981c5d3163eeaa142c4c4894a7cb6445cd26653617",
+        "bytes": 845
+      },
+      "baseline": {
+        "sha256": "296ad31f02156d4305569c981c5d3163eeaa142c4c4894a7cb6445cd26653617",
+        "bytes": 845
+      }
+    },
+    {
+      "relative": "tools/start/entry.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/start/entry.s",
+      "identity": {
+        "sha256": "f574a7508d6cbab61c62bfbde8475ac6d6760d01a9046e25b95ac31a8c570d39",
+        "bytes": 632
+      },
+      "baseline": {
+        "sha256": "f574a7508d6cbab61c62bfbde8475ac6d6760d01a9046e25b95ac31a8c570d39",
+        "bytes": 632
+      }
+    },
+    {
+      "relative": "tools/start/handoff.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/start/handoff.s",
+      "identity": {
+        "sha256": "c2dc150dc0c42559692b5cd63da06a842dd2ebf752f98483766d690b63f76280",
+        "bytes": 1988
+      },
+      "baseline": {
+        "sha256": "c2dc150dc0c42559692b5cd63da06a842dd2ebf752f98483766d690b63f76280",
+        "bytes": 1988
+      }
+    },
+    {
+      "relative": "tools/start/ini_io.c",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/start/ini_io.c",
+      "identity": {
+        "sha256": "ca6528c105f30d96ba5acdf3dcad86a0afa86ed0c48973fb2cb24a8d12eac074",
+        "bytes": 6470
+      },
+      "baseline": {
+        "sha256": "ca6528c105f30d96ba5acdf3dcad86a0afa86ed0c48973fb2cb24a8d12eac074",
+        "bytes": 6470
+      }
+    },
+    {
+      "relative": "tools/start/ini_io.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/start/ini_io.h",
+      "identity": {
+        "sha256": "a1287fae31e6fe9ff9e49261aba64b21f7abc78aaeeeb5323ab5cef7a93242fb",
+        "bytes": 814
+      },
+      "baseline": {
+        "sha256": "a1287fae31e6fe9ff9e49261aba64b21f7abc78aaeeeb5323ab5cef7a93242fb",
+        "bytes": 814
+      }
+    },
+    {
+      "relative": "tools/start/ini_parser.c",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/start/ini_parser.c",
+      "identity": {
+        "sha256": "5f5368ecb908ace8b67d9d6e2adf3f780c554ecf4b4cc9007ea2bf4d89418704",
+        "bytes": 3776
+      },
+      "baseline": {
+        "sha256": "5f5368ecb908ace8b67d9d6e2adf3f780c554ecf4b4cc9007ea2bf4d89418704",
+        "bytes": 3776
+      }
+    },
+    {
+      "relative": "tools/start/ini_parser.h",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/start/ini_parser.h",
+      "identity": {
+        "sha256": "bc71ec56cc6c03c1ca824d63679f404d0c106c9b8a0517cdd6a6f7b78c2e2ba5",
+        "bytes": 1118
+      },
+      "baseline": {
+        "sha256": "bc71ec56cc6c03c1ca824d63679f404d0c106c9b8a0517cdd6a6f7b78c2e2ba5",
+        "bytes": 1118
+      }
+    },
+    {
+      "relative": "tools/start/overlay_capsule.s",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-cold-production-builder-20261017/project/tools/start/overlay_capsule.s",
+      "identity": {
+        "sha256": "aa11ef88af45c5249ccbaff6c6f9784e7733c15ada162edddc99b4dae940d6b1",
+        "bytes": 219
+      },
+      "baseline": {
+        "sha256": "aa11ef88af45c5249ccbaff6c6f9784e7733c15ada162edddc99b4dae940d6b1",
+        "bytes": 219
+      }
+    }
+  ],
+  "Makefile_policy": "only final include build_support/cold_start.mk",
+  "no_binaries_or_DOS_media": true
+}

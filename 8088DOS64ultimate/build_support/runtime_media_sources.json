@@ -4,6 +4,7 @@
     "Makefile",
     "assets/native-text/cp437-narrow4x8.bin",
     "assets/native-text/cp437-unscii8.bin",
+    "build_support/cold_start.mk",
     "build_support/config.mk",
     "build_support/floppy_export.mk",
     "build_support/iec_standalone.mk",

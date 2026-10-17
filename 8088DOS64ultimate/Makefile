@@ -373,3 +373,5 @@ verify-format-runtime: build/dos64.prg
 
 # Every file that consumes the optional contract rebuilds when its header changes.
 build/overlays.o build/floppy_format.o build/floppy_format_check.o: include/floppy_format.inc
+
+include build_support/cold_start.mk

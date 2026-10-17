@@ -330,3 +330,8 @@ DurableSave/SaveAs implementationdirection: nondestructiveCREATE_NEWverifiedimag
 
 
 2026-10-17: Promote FORMAT/media16source/test paths after all3560Rootpins,4221FMT/4278broker/40provider parents and55uniquechecks. FORMAT is opt-in runtime-only CLI; default/legacyselected PRGs exact, no fullUNIT1 claim (actual prior MAIN1/cold228 overflow). Root source-only public806e/1b70 all9products exact515inputs/474outputs. Add clean public actualruntime test target before calling developer workflow complete. Keep Sourcecold/installer/TP20M/physical acceptance separate.
+
+
+## 2026-10-17 — source-only matched cold bundle is an explicit optional build
+
+Promote the reviewed cold builder18owned paths and exact accepted27 Python descriptor/validator prerequisites; add only the Make include and explicit inventory entries. `cold=False`, `start20k=False` and existing five-file/default launcher behavior remain unchanged. `make cold-start` consumes a verified runtime result and emits exactly eight matched assets, with extra maps/labels separate; it does not generate configured end-user media or claim hardware acceptance. Whole source-cohort tags change truthfully after Make changes, even with identical executable phases. Keep old complete-workflow evidence scoped to its own hashes; final release tests consume the new matched cohort. Further performance remains outside V1.

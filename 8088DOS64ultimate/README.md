@@ -2,6 +2,8 @@
 
 **Current release goal: a dependable V1 installer, configuration and A/B/C disk workflow, proven by an interactive Turbo Pascal edit/save/compile/run/restart session on the Ultimate. Further speed work is deferred until after V1.** See [V1 endpoint and acceptance gates](docs/V1_ENDPOINT.md).
 
+`make cold-start RUNTIME_MEDIA_RESULT=/absolute/path/to/RESULT.json` now builds matching START/recovery assets from an actual runtime-media result. It produces one checked eight-file development bundle without DOS images or private build fixtures. See [cold START build](tools/cold/README.md). Final installer composition and Ultimate acceptance remain open.
+
 `make v1-candidate` now builds one coherent development zip containing SETUP, CONFIG and their matching launcher/emulator assets, with an installation guide and checksums. DOS images are supplied separately. This package is not a V1 release: the native media workflow and final hardware acceptance remain open. See [candidate packaging and installer scope](docs/NATIVE_SETUP_INSTALLER.md).
 
 `make runtime-media` now source-builds the optional runtime disk menu and its 56 KiB asset file without DOS images or model/test tools. Actual model checks cover Save/Save As, Insert, Eject, Write Protect and Finish; final matching SETUP/CONFIG packaging and Ultimate qualification remain in progress. See [runtime media build](tools/native_media/README.md) and [V1 gates](docs/V1_ENDPOINT.md). Add `DOS64_RUNTIME_MEDIA_ARGS="--floppy-format"` for XT 360 KiB FORMAT support; final release and hardware qualification remain open.

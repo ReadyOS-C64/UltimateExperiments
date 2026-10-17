@@ -1,0 +1,8 @@
+test_every_template_and_descriptor_byte_is_bound (__main__.TemplateDescriptor) ... ok
+test_patch_changes_only_initialized_control_and_retains_original (__main__.TemplateDescriptor) ... ok
+test_signed_bounds_defaults_and_canonical_home_refuse (__main__.TemplateDescriptor) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.060s
+
+OK

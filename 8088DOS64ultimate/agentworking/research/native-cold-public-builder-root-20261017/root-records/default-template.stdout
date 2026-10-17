@@ -1,0 +1,18 @@
+python3 -B build_support/start_launcher.py
+/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/start
+python3 -B build_support/start_template_descriptor.py --prg build/start/START.PRG --labels build/start/START.labels --map build/start/START.map --out build/start/START.REL
+{
+  "file_bytes": 18432,
+  "crc32": 284410531,
+  "load": 2049,
+  "entry": 2061,
+  "control_offset": 18188,
+  "control_bytes": 131,
+  "DATA_offset": 18053,
+  "DATA_bytes": 267,
+  "owner_field": 0,
+  "base_field": 1,
+  "home_field": 3,
+  "home_bytes": 128
+}
+python3 -B tests/tooling/test_start_template_descriptor.py -v

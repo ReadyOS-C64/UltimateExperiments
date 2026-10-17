@@ -51,9 +51,13 @@ def sources(work, record, options=False):
         record[str(p)] = digest(p)
         shutil.copyfile(p, work/destination)
 
-def build(work, t, options=False):
+def build(work, t, options=False, cold=False):
     extra = ['-D','D64_START_OPTIONS=1'] if options else []
+    if cold:
+        if not options: raise RuntimeError('Cold profile requires options')
+        extra += ['-D','D64_START_MODAL=1','-D','D64_START_JOURNAL=1']
     names = NAMES + ['ini_parser','ini_io','overlay_capsule'] if options else NAMES
+    if cold: names += ['journal_capsule','modal_capsule']
     for name in (['bulk_reu','install_config','release','controller','validator_crc'] + (['ini_parser','ini_io'] if options else [])):
         command([t['cc65'],'-t','none','-O','--add-source','-D','D64_VALIDATOR_FAST_CRC=1','-D','D64_CONFIG_VALIDATE_ONLY=1',*extra,name+'.c','-o',name+'.s'], work)
     command([t['cc65'],'-t','none','-O','--add-source','platform.c','-o','platform_c.s'], work)
@@ -61,7 +65,7 @@ def build(work, t, options=False):
         command([t['ca65'],'-g',*extra,'-D','DOS64_FILES_INFO=1','-I','.',name+'.s','-o',name+'.o'], work)
     command([t['ld65'],'-C','controller.cfg','-o','controller.prg','-Ln','controller.labels','-m','controller.map',*[n+'.o' for n in names],t['library']], work)
     data=(work/'controller.prg').read_bytes()
-    if data[:2] != b'\x01\x08' or len(data) > 0x4801:
+    if data[:2] != b'\x01\x08' or len(data) > (0x5001 if cold else 0x4801):
         raise RuntimeError('START must load at0801 and finish below5000')
     products = ['controller.prg','controller.labels','controller.map']
     if options:
@@ -69,7 +73,7 @@ def build(work, t, options=False):
         asset=(work/'START.INO').read_bytes();at=symbols['_so_overlay_spec']-0x0801+2
         if not 2<=at<=len(data)-16 or data[at:at+6]!=b'D64I\x01\x10' or data[at+8:at+12]!=b'CRC?' or int.from_bytes(data[at+6:at+8],'little')!=len(asset) or data[at+12:at+16]!=b'\0\x60\0\0':
             raise RuntimeError('Unbound prelaunch capsule')
-        if len(data)!=18432 or symbols['__PRELAUNCH_RUN__']!=0x6000 or symbols['__PRELAUNCH_RO_RUN__']+symbols['__PRELAUNCH_RO_SIZE__']!=0x6000+len(asset) or len(asset)>8192:
+        if len(data)!=(20480 if cold else 18432) or symbols['__PRELAUNCH_RUN__']!=0x6000 or symbols['__PRELAUNCH_RO_RUN__']+symbols['__PRELAUNCH_RO_SIZE__']!=0x6000+len(asset) or len(asset)>8192:
             raise RuntimeError('Prelaunch layout changed')
         bound=bytearray(data);bound[at+8:at+12]=zlib.crc32(asset).to_bytes(4,'little')
         (work/'controller.prg').write_bytes(bound)

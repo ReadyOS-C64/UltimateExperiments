@@ -99,3 +99,6 @@ The complete runtime Insert composition now passes21 actual model groups, and th
 
 
 The combined source-built runtime now includes optional XT floppy FORMAT and corrected media clock handling.27 actual CPU and28 host checks pass; default binaries remain exact. The earlier CONFIG80 Save/Insert failure is resolved in the model by bounded admission and scan-held CIA input, with the first failures retained. Current matched cold/installer packaging, complete20MiB Turbo Pascal persistence and physical/human gates remain open. [Combined runtime evidence](../agentworking/evidence/native-format-media-composition-root-20261017.json).
+
+
+The source-only matched cold START builder is now public and passes11host groups plus3default-template checks. It emits the eight-file runtime/recovery bundle from verified public sources; the default launcher remains exact. This closes a development build dependency, not any final V1 gate. Current installer composition, complete Turbo/media persistence and actual Ultimate/human acceptance remain separate. [Builder evidence](../agentworking/evidence/native-cold-public-builder-root-20261017.json), [build instructions](../tools/cold/README.md).

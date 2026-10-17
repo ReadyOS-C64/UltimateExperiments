@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/runtime_media.py", line 135, in <module>
+    if __name__=='__main__':main()
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/runtime_media.py", line 134, in main
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,default=ROOT/'build/runtime-media');p.add_argument('--floppy-format',action='store_true',help='Enable XT360K FORMAT in the runtime-only profile');a=p.parse_args();r=build(a.out,floppy_format=a.floppy_format);print(json.dumps({'status':r['status'],'run':r['run'],'products':r['products']},indent=2))
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/runtime_media.py", line 85, in build
+    phase='stage';work=stage(run,records);env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1')
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/runtime_media.py", line 68, in stage
+    if not(w/'work'/safe(n)).is_file():raise RuntimeError('Missing Make include: '+n)
+RuntimeError: Missing Make include: build_support/cold_start.mk
+make: *** [runtime-media] Error 1

@@ -314,3 +314,8 @@ Private CUI7514B8000..9D59 (source logicalA00..2759 below2800), BSS7800..7C99/ZP
 ## 2026-10-17 — measured Eject/Protect control core
 
 Optional native main CODE080D..3C8D/RO3C8E..3FEC/NATIVESTATE3FED..3FF4 leaves11B; DISK C900..CFA7=1704B/free88.19B constants move from resident to already installed DISK phase only in optional profile; undefined/0 exact public666/b9/labels. UI7592B8000..9DA7/BSS7800..7C99/ZP80..99, source logicalA00..27A7 leaves88B before2800 core. Bridge1239B6000..64D6/BSS152B6E00..6E97, source5700..5BD6. Existing40KiB MNU/full3arenas/4MiB unchanged. UI code now overlaps RETIRED controller high96 buffer9D80; full controller frames/high96 restore return before UI reload, and tested SaveAs/reload passes. Retained UI for Finish/direct controls never installs controller. Correction: earlier Finish HANDOFF/module-onlyBSS7C82 omitted other linked modules; total always7C99, same actual binary/map. No allocation change from this documentation correction.
+
+
+## 2026-10-17 — public source-built matched cold bundle
+
+Public START2f8e86c9 is20480B, loads0801..57FE; INO44dd9461=7692B6000..7E0B (sharedprefix1350B), RCV08715a79=7902B6000..7EDD with1226B private state9000..94C9, RFWf11b0c1d=5578B codeA000..B5C9 with871B state9800..9B66. Actual linker layout and strict bundle checks pass; allthree raw executable assets exact sealedparent. Runtime c7a14a3a/MNU407f91b8 same size/layout as806e/1b70; only cohortDATA retagged. Split56KiB MNU spans3DA000/24576 and3F0000/32768; threecompletefloppy arenas and minimum4MiB unchanged. No new allocations from builder promotion.

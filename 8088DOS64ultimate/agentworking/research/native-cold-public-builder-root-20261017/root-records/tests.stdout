@@ -1,0 +1,1 @@
+DOS64_RUNTIME_RESULT="agentworking/scratch/native-cold-public-promotion-root-20261017/runtime/RESULT.json" python3 -B -m unittest discover -s tests/cold_start_host -p 'test_*.py'

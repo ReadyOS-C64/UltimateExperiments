@@ -24,16 +24,27 @@ def copy(source,destination,record):
  if digest(destination)!=wanted:raise RuntimeError('Copy changed: '+str(source))
  record[str(source)]=wanted;record[str(destination)]=wanted
 
-def validate_bundle(bundle,start_labels,start_map,main_labels,mods=None):
- if {p.name for p in bundle.iterdir()if p.is_file()}!=set(ASSETS):raise RuntimeError('Exactly five coupled release assets are required')
+def validate_bundle(bundle,start_labels,start_map,main_labels,mods=None,*,start20k=False,cold_inventory=False,mnu56k=False):
+ if mnu56k and not(start20k and cold_inventory):raise RuntimeError('56KiB MNU requires explicit cold20KiB profile')
+ selected=ASSETS+('DOS64.MNU','START.RCV','START.RFW')if cold_inventory else ASSETS
+ if {p.name for p in bundle.iterdir()if p.is_file()}!=set(selected):raise RuntimeError('Exact selected coupled release inventory required')
  if mods is None:mods={n:module('ini_check_'+n,q)for n,q in dependencies().items()}
  start=(bundle/'START.TPL').read_bytes();asset=(bundle/'START.INO').read_bytes();main=(bundle/'DOS64.PRG').read_bytes();sr=(bundle/'START.REL').read_bytes();mr=(bundle/'DOS64.REL').read_bytes()
- if mods['template'].make(start,start_labels.read_text(),start_map.read_text())!=sr:raise RuntimeError('START descriptor does not bind template')
+ if mods['template'].make(start,start_labels.read_text(),start_map.read_text(),start20k=start20k)!=sr:raise RuntimeError('START descriptor does not bind template')
  if mods['release'].descriptor(main,main_labels.read_text(),options=True)!=mr:raise RuntimeError('Main options descriptor does not bind main')
- s=mods['template'].labels(start_labels.read_text());at=s['_so_overlay_spec']-0x0801+2;view=mods['template'].validate(sr,start);data=view['DATA_offset'];count=view['DATA_bytes']
+ s=mods['template'].labels(start_labels.read_text());at=s['_so_overlay_spec']-0x0801+2;view=mods['template'].validate(sr,start,start20k=start20k);data=view['DATA_offset'];count=view['DATA_bytes']
  if at<data or at-data>count or 16>count-(at-data):raise RuntimeError('Overlay capsule is not initialized bound DATA')
  if start[at:at+6]!=b'D64I\1\20' or start[at+12:at+16]!=b'\0\x60\0\0' or int.from_bytes(start[at+6:at+8],'little')!=len(asset) or int.from_bytes(start[at+8:at+12],'little')!=zlib.crc32(asset):raise RuntimeError('Overlay count/CRC/run binding mismatch')
- if len(start)!=18432 or not 0<len(asset)<=8192 or s['__PRELAUNCH_RUN__']!=0x6000 or s['__PRELAUNCH_RO_RUN__']+s['__PRELAUNCH_RO_SIZE__']!=0x6000+len(asset):raise RuntimeError('Overlay lifetime/layout bounds')
+ if len(start)!=(20480 if start20k else 18432) or not 0<len(asset)<=8192 or s['__PRELAUNCH_RUN__']!=0x6000 or s['__PRELAUNCH_RO_RUN__']+s['__PRELAUNCH_RO_SIZE__']!=0x6000+len(asset):raise RuntimeError('Overlay lifetime/layout bounds')
+ if cold_inventory:
+  if not start20k:raise RuntimeError('Cold inventory requires20KiB profile')
+  for sym,name,magic,run,limit in [('_sm_modal_spec','DOS64.MNU',b'D64M',0x3da000,(57344 if mnu56k else 40960)),('_sj_gate_spec','START.RCV',b'D64G',0x6000,8192),('_sr_worker_spec','START.RFW',b'D64F',0xa000,8192)]:
+   off=s[sym]-0x801+2;n=16 if magic!=b'D64G'else 24;c=start[off:off+n];body=(bundle/name).read_bytes()
+   if off<data or off-data>count or n>count-(off-data) or c[:6]!=magic+bytes([1,n]) or not 0<len(body)<=limit or int.from_bytes(c[6:8],'little')!=len(body) or int.from_bytes(c[8:12],'little')!=zlib.crc32(body):raise RuntimeError('Cold asset count/CRC/DATA binding '+name)
+   if magic==b'D64M':
+    header=s['_sm_modal_header']-0x801+2
+    if header<data or header-data>count or 64>count-(header-data) or len(body)!=(57344 if mnu56k else 40960) or int.from_bytes(c[12:16],'little')!=run or body[:8]!=b'D64M\1\1\100\0' or body[:64]!=start[header:header+64]:raise RuntimeError('Cold MNU header/run')
+   elif int.from_bytes(c[12:14],'little')!=run or not run<=int.from_bytes(c[14:16],'little')<run+len(body):raise RuntimeError('Cold executable run/entry')
  if mr[4]!=2:raise RuntimeError('Coupled bundle requires D64L2')
  return {'template_bytes':len(start),'overlay_bytes':len(asset),'overlay_run':0x6000,'overlay_end_exclusive':0x6000+len(asset),'capsule_file_offset':at,'main_bytes':len(main),'options_required_file_offset':int.from_bytes(mr[56:60],'little'),'D64S_version':1,'D64L_version':2}
 

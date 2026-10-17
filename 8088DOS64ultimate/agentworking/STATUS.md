@@ -1,3 +1,11 @@
+# Current V1 checkpoint — public matched cold builder, 2026-10-17
+
+Source-only `make cold-start` and `cold-start-tests` are now public.18owned cold paths plus2exact accepted27 prerequisites and2Make inventories promoted; Makefile receives only the new include. Fresh FORMAT runtime c7a14a3a/MNU407f91b8 and START2f8e86c9 are a checked eight-file bundle; executable INO44dd/RCV0871/RFWf11 remain byte-exact. Main/MNU differ from806e/1b70 only in16source-cohort bytes; START differs only in initialized MNU binding data. No previous full hash is relabeled. Root11cold host+3default descriptor checks pass; fresh default START PRG/labels/map exact. Runtime1001/cold1204/default34 closure records rechecked (overlapping counts, not unique test counts). First public Make-include inventory refusal is retained and fixed by explicit inventories. [Evidence](evidence/native-cold-public-builder-root-20261017.json).
+
+This is build/package progress, not final installer or physical acceptance. Memory worker finishes actual806e original Turbo20MiB edit/save/diskcompile/run/knownFinish/reopen after preserving an unbound-ctypes host crash; current genuine FORMAT/SYS/COPY/freshboot passes separately. CIA prepares16leaf staging/knownC locally; no hardware dispatch. Named installer error UX has a real BASIC-ROM banking counterexample under correction. All ten V1 final gates remain open; performance remains post-V1. Local commits only; no push.
+
+Earlier snapshots below are historical.
+
 # Current V1 checkpoint — public FORMAT/media composition, 2026-10-17
 
 Public `make runtime-media DOS64_RUNTIME_MEDIA_ARGS="--floppy-format"` now source-builds actual combined runtime806eaab6/MNU1b7086ec with FORMAT, bounded WIRE/Save admission and repaired broker/bridge pending handling. Root55 unique checks pass:27actualCPU (FORMAT12/clock10/CIA3/freshZig2),28host (FORMAT6/slot5/memory17). All425replay inputs unchanged;515source/tool/resource+474generated products rechecked. Fresh public all9products match tested private8ef12c7e/3560.16exact source/test paths promoted. Default runtime666089b5/UNITb9e9cc9e and legacyselected46fa/63f1 PRGs stay exact; prior27native groups are not needlessly repeated. FullFORMAT1 UNIT actual overflow remains unsupported; actualruntime+intactUNIT0 are supported lanes. [Evidence](evidence/native-format-media-composition-root-20261017.json).
