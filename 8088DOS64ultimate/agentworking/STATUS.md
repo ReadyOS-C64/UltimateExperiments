@@ -1,3 +1,11 @@
+# Public native startup clock repaired — 2026-10-17
+
+Public runtime nowc6e43fce/labelsaf240127/unit01d97461;47105B and all segment ranges unchanged. Narrow native_runtime.s refreshes coherent elapsedtime immediatelybefore nativeimport/HDOPEN afterexpensivecoldwork, factoringtwoexisting256-attempt loops withsamefirstcause/IRQ/defer policy. Originalcea574 realgeneratedSTART failed HDOPEN onstale0/deadline1024→fresh1744; preserved44379 rejectedproof. Newmain reachesrealDOS usingunmodifiedgeneratedSTART/CFG/A/B/C: VER3.30, DIR A:/P36entries/free8192/1page and C:\DOS/P57/free282624/2pages inclGW-BASIC, returnsC>. Actual2NMIs/wholepayload/adoption/REU/files preservation pass. No physical acceptance.
+
+ROOT verifiedauthor5a232/all943pins/31actualgroups and reproducesruntime/unit/D64L5fd53555 byte-exact. Publicsource-bound26startup/loader/genuineDOS gates pass; additive3 Zigclock vectors now livein tests/host/native_runtime.zig andpublicnative-runtime17 passes (29uniqueacrosstwooverlappingruns), each225source/tool+7productpins unchanged. No publicSTART/template/CFGABI/layout/normalguest timingpolicy change.
+
+Root correctedinstaller c45dea7b now closes fullSYS/UI/FW/PUB/fiveoutputs andallC/START/CFGcollisions safely;4actual+5directZig/256inputcopies sealed14341286/537pins. RAW7d0399 author14groups closed; CIAindependentreviewpending. Source-closed publicbuilder01516 is readyforreviewedcleanup import, stillunpromoted. FullinstallererrorUI/reconfiguration/INI/SaveSwap/C-online/physical/50–85%XT scope remainsactive.
+
 # Final-root failure retained — 2026-10-17
 
 Combined f75b6997/40,542B includes qualified FW784 lifecycle repair plus real PW/completioncaption. Closed final256 source/tool/product inputs and immutable copies: freshfull2MiB and Ccollision PASS, directZig5PASS; START/CFGcollision cases correctly preserve originalbytes/privateRCmask7/15/rootfailure5 but fail knownclosure (bc_files_closed0). ModelFILES conservatively retains unknownhandle2 afterfailedCREATE, and RAW/PWreturnswithoutownedCLOSE. This is a real cleanupdefect, not a test waiver. Frozen root53dc2f5a/557pins NOT_READY. Compiledagent implements measured private RAW/PW cleanup successor; public SETUP promotion waits that repair.

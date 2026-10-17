@@ -1,3 +1,7 @@
+## Public startup clock repair — 2026-10-17
+
+Runtimec6e43/unit01d97461,47105B: all linker segment ranges/sizes matchpubliccea5 baseline, COLDINIT0x533 unchanged. Factoredbounded samplehelper fundsfourcalls withzeroallocationgrowth. NMI5882,8physicalslots,fonts/handoff andunitcoldlimits preserved. Actualpublicbuildmemorychecks pass andruntime/unit/release reproduceclosedauthorbyte-exact. No newREUrange. ROOTcleanupc45PUBendsAFFE/free1, otherinstallerbudgetsunchangedfromf75.
+
 ## Final root f75 measured fit — 2026-10-17
 
 SETUP40542B; residentends5FF9/free6,FAT_CODE6000..AF96+ROAF97..AFFC/free3; UI BSS A65D..AFFB/free4; AUX C3A0..C6AF784/free336; HIGHF700..FFDF2272/free26; HIGHBSSendsF6DE/free33; STATEendsBF9B/free100; PUBBSS9FA7..AFE3/free28. +11AUX lifecycleclear and PUB-only93B completioncaption included. No newREU/ZPallocation. Positiveflow fits/executes; publicationcollisioncleanup fails and needs a measured successor, not budget waiver.

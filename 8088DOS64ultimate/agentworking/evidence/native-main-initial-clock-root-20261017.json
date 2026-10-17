@@ -1,0 +1,21 @@
+{
+  "verdict": "PASS_PUBLIC_MAIN_INITIAL_FILE_CLOCK_REFRESH",
+  "native": "c6e43fce3156f75cb62980b26d90a9d89173abdddb872a868005d664904cb2d3",
+  "labels": "af240127f509b09c05f9a95828fa0f623fdd3254d31947e3b12f9ea9493b92e9",
+  "unit": "01d9746134a18fd09e9097d3ff0eca2c6d5c23ba84243c00ebcd83ad3649afd1",
+  "release": "5fd535555acd66e24fca509f63578f8e9252925106e11f2dfc2e37105164de4d",
+  "public_actual_unique": 29,
+  "public_runs": [
+    26,
+    17
+  ],
+  "public_source_tool_inputs_per_run": 225,
+  "products_per_run": 7,
+  "author_manifest": "5a23234e1cefbcbaa1cd9c4c148aa968f3e8b898a3a302da6557683087d31010",
+  "author_pins_verified": 943,
+  "author_actual_groups": 31,
+  "hardware": false,
+  "manifest": "agentworking/scratch/generated-installer-main-clock-root-promotion-20261017/MANIFEST.json",
+  "manifest_sha256": "ebd670c5ea1309105fcb9a456f30e227c12b19722a86880deec8d917456888f6",
+  "manifest_pins": 265
+}

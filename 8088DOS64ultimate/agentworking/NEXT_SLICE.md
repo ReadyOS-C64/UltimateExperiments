@@ -1,3 +1,9 @@
+# Next after public main clock fix — 2026-10-17
+
+Main clock repair is nowpublicc6e43/01d9 andROOTpublic29unique/modelgeneratedSTARTconsumerqualified; do not propose itagain. FinishCIAindependentRAWcleanup7d0399 review, thenimport2frozenfilesinto01516publicbuilderfreshderivative, reproduceROOTc45/metadata/labeladdresses, promoteproductionSETUPsource/buildgraph andactualmodeltests/docs. Rootcleanup14341286/537pins actualall9casespass. Physicalnewmain/SETUP remainsunqualified anddevice reserved.
+
+Memory implementsactualnativeINIparsercore/private; noABI/address/consumerclaims. Compiledagent rebasesreviewedCPU/memory/PIT improvements ontoc6 inprivatepairedperf lane, preservinghotclock/IRQ/REP/coherence. Rootownsfullpublicinstaller/remainingUI/reconfig/media/INIintegration andhardwarequalification. Allcommitslocal/no push.
+
 # Immediate after final-root negative — 2026-10-17
 
 Do notrerun unchangedfullrootf75: it is frozen/rejected53dc2f5a/557pins. Fix private RAW/PW-owned uncertain-handle cleanup (START/CFG CREATE_NEW collision and other postOPEN failures), preserve firstcause/oneCLOSE/old256 and65536 bounds, fitPUB28 or optimizeexistingcaption without removingcompletion. Compiledagentownsnewprivate successor; rootwillclone frozenfullroot and replay relevantnegative+positive controls only afternewsource.

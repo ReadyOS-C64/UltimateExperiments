@@ -292,3 +292,83 @@ test "native scheduler normalizes all 256 elapsed blink phases to renderer boole
         try std.testing.expectEqual(@as(u32, @intCast((phase + 1) * 16)), try guest32(&f));
     }
 }
+
+// Use the real runtime cold helper, with a return sentinel outside its code.
+// The unit image can retire its cold window, so this fixture loads runtime bytes.
+fn initialClockCall(f: *F, name: []const u8, carry: u8) !void {
+    f.poke(0x1ff, 2);
+    f.poke(0x1fe, 0xff);
+    c.dos64_clear_writes(f.machine);
+    c.dos64_set_regs(f.machine, .{ .pc = try f.symbol(name), .sp = 0xfd, .a = 0x71, .x = 0x82, .y = 0x93, .p = 0x24, .cycles = 0, .instructions = 0 });
+    const r = c.dos64_run(f.machine, 0x0300, 2_000_000);
+    try std.testing.expectEqual(@as(c_uint, c.DOS64_RUN_RETURNED), r.status);
+    try std.testing.expectEqual(carry, r.regs.p & 1);
+    try std.testing.expectEqual(@as(u8, 0x82), r.regs.x);
+    try std.testing.expectEqual(@as(u8, 0x93), r.regs.y);
+    try std.testing.expectEqual(@as(u8, 4), r.regs.p & 0x0c);
+    try std.testing.expectEqual(@as(u8, 7), f.peek(0) & 7);
+    try std.testing.expectEqual(@as(u8, 5), f.peek(1) & 7);
+    if (std.mem.eql(u8, name, "n_fresh_initial_clock")) {
+        const low = try f.symbol("dos64_host_clock_claim");
+        const high = (try f.symbol("dos64_elapsed_now")) + 2;
+        const attempts = try f.symbol("n_attempts");
+        for (0..65536) |i| {
+            const address: u16 = @intCast(i);
+            if (c.dos64_was_written(f.machine, address) == 0) continue;
+            try std.testing.expect(address == 0 or address == 1 or address == attempts or
+                (address >= 0x100 and address < 0x200) or (address >= low and address < high));
+        }
+    }
+}
+fn initialClockFixture() !F {
+    var f = try F.initPaths("build/dos64.prg", "build/dos64.labels");
+    errdefer f.deinit();
+    f.poke(0, 0x2f);
+    f.poke(1, 0x35);
+    c.dos64_cia_clock_enable(f.machine);
+    c.native_runtime_control_enable(f.machine);
+    c.dos64_cia_clock_step(f.machine, 0);
+    try p(&f, "dos64_host_clock_claim", 0xa5);
+    try initialClockCall(&f, "dos64_host_clock_init", 0);
+    const now = try f.symbol("dos64_elapsed_now");
+    f.poke(now, 0xef);
+    f.poke(now + 1, 0xbe);
+    const ticks = try f.symbol("dos64_host_clock_ticks");
+    for ([_]u8{ 0x11, 0x22, 0x33, 0x44 }, 0..) |v, i| f.poke(ticks + @as(u16, @intCast(i)), v);
+    return f;
+}
+fn initialClockUnpublished(f: *F) !void {
+    try std.testing.expectEqual(@as(u16, 0xbeef), f.word(try f.symbol("dos64_elapsed_now")));
+    const ticks = try f.symbol("dos64_host_clock_ticks");
+    for ([_]u8{ 0x11, 0x22, 0x33, 0x44 }, 0..) |v, i| try std.testing.expectEqual(v, f.peek(ticks + @as(u16, @intCast(i))));
+}
+test "initial FILE clock refresh replaces the stale published epoch" {
+    var f = try initialClockFixture();
+    defer f.deinit();
+    c.dos64_cia_clock_seed(f.machine, 0xefff, 0xfffd);
+    try initialClockCall(&f, "n_fresh_initial_clock", 0);
+    try std.testing.expectEqual(@as(u16, 33), f.word(try f.symbol("dos64_elapsed_now")));
+    try std.testing.expectEqual(@as(u8, 0), f.peek(try f.symbol("dos64_host_clock_status")));
+}
+test "initial clock sample refusal stops after exactly 256 attempts without publication" {
+    var f = try initialClockFixture();
+    defer f.deinit();
+    c.dos64_cia_clock_seed(f.machine, 0xffff, 0xffff);
+    const before = c.dos64_cia_clock_reads(f.machine, 5);
+    try initialClockCall(&f, "n_fresh_initial_clock", 1);
+    try std.testing.expectEqual(@as(u32, 256 * 8), c.dos64_cia_clock_reads(f.machine, 5) - before);
+    try std.testing.expectEqual(@as(u8, 4), f.peek(try f.symbol("dos64_host_clock_status")));
+    try std.testing.expectEqual(@as(u8, 0), f.peek(try f.symbol("n_attempts")));
+    try initialClockUnpublished(&f);
+}
+test "initial clock owner refusal touches no CIA registers or published time" {
+    var f = try initialClockFixture();
+    defer f.deinit();
+    try p(&f, "dos64_host_clock_claim", 0);
+    var before: [16]u32 = undefined;
+    for (&before, 0..) |*v, i| v.* = c.dos64_cia_clock_reads(f.machine, @intCast(i));
+    try initialClockCall(&f, "n_fresh_initial_clock", 1);
+    for (before, 0..) |v, i| try std.testing.expectEqual(v, c.dos64_cia_clock_reads(f.machine, @intCast(i)));
+    try std.testing.expectEqual(@as(u8, 1), f.peek(try f.symbol("dos64_host_clock_status")));
+    try initialClockUnpublished(&f);
+}
