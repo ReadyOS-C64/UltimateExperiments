@@ -1,0 +1,160 @@
+{
+  "schema": 1,
+  "status": "ROOT_ACCEPTED_PHYSICAL_READONLY_LOWER4MiB_CAPTURE_AND_CLEANUP",
+  "physical": true,
+  "physical_manifest": {
+    "path": "agentworking/scratch/native-readonly-stream-manual64-finally-successor-20261017/physical/MANIFEST.json",
+    "sha256": "e9c94f2ffc4ef9681955282b857ee7b0628c33752ff651765534dc5c913a8fe4",
+    "bytes": 704719,
+    "verified_files": 2453
+  },
+  "launch_manifest_sha256": "a58a46f7667e26044e5b1229777ad81fd2c1ba6d5835f393cf37cff15d266ce5",
+  "package_manifest_sha256": "5fdc6c07e86e02a187e40e8bb40fae82aa57a65dbe316de1c56e0417aaa3d2a2",
+  "ROOT_independent_direct_checks": {
+    "status": "ROOT_DIRECT_PHYSICAL_BYTES_TERMINAL_SETTINGS_AND_EXIT_VERIFIED_PENDING_FINAL_SEAL",
+    "archive_bytes": 4194304,
+    "archive_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+    "all_original_lower4MiB_equal": true,
+    "terminal_native_source_equal": true,
+    "terminal_header_CRC_nonce_state4_frame128_done4MiB": true,
+    "terminal_elapsed_CIA1024_ticks": 28277,
+    "settings_media_equal": true,
+    "temporary_PAL_Manual64_verified": true,
+    "exact_original_turbo_restored_observed": true,
+    "source_inputs_and_copies_exact": 2099,
+    "pids": [
+      {
+        "pid": 5988,
+        "absent": true
+      },
+      {
+        "pid": 5995,
+        "absent": true
+      }
+    ],
+    "exit": {
+      "pid": 5995,
+      "child_exit_code": 0,
+      "exit_code": 0,
+      "supervisor_intended_exit_code": 0,
+      "wall_watchdog_triggered": false,
+      "signals": [],
+      "finished_monotonic": 34.660814125
+    },
+    "physical_CPU_frequency_measured": false,
+    "original_CPU_RAM_application_restored": false
+  },
+  "physical_result": {
+    "verdict": "PHYSICAL_READONLY4M_PASSED_PENDING_ROOT_RECEIPT_REVIEW",
+    "physical": true,
+    "launch_manifest_sha256": "a58a46f7667e26044e5b1229777ad81fd2c1ba6d5835f393cf37cff15d266ce5",
+    "package_manifest_sha256": "5fdc6c07e86e02a187e40e8bb40fae82aa57a65dbe316de1c56e0417aaa3d2a2",
+    "terminal": "1621",
+    "supervisor_pid": 5988,
+    "child_pid": 5995,
+    "child_actual_reaped_exit": 0,
+    "supervisor_source_intended_exit": 0,
+    "supervisor_OS_exit_independently_observed": false,
+    "both_owned_PIDs_absent": true,
+    "watchdog": false,
+    "signals": [],
+    "first_error": null,
+    "native_execution_and_terminal_proven": true,
+    "verified_frames": 128,
+    "exact_onebyte_monotone_ACKs": 128,
+    "raw_successful_write_response_receipts": 135,
+    "configuration_POSTs": 2,
+    "archive": {
+      "sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+      "bytes": 4194304
+    },
+    "independent_all4194304_bytes_equal_original_ac43": true,
+    "terminal_source_prefix_exact": true,
+    "terminal_header": {
+      "header_hex": "525346310100040030da0a316425f1f2ea71816d369bd015800000803f000080629db1c300004000756e0000ffffffffbcb2b411",
+      "header_crc_valid": true,
+      "nonce_exact": true,
+      "native_state": 4,
+      "native_first_error": 0,
+      "frame": 128,
+      "completed_bytes": 4194304,
+      "native_elapsed_units": 28277,
+      "native_elapsed_PHI2_pulses": 28955648,
+      "unit": "1024CIA PHI2 pulses, uncalibrated; not CPUcycles",
+      "driver_header_observations": 511,
+      "start_resume_prepared_seconds": 3.232852333,
+      "terminal_RAM_prepared_seconds": 32.826398791,
+      "capture_to_preservation_interval_seconds": 29.593546458000002,
+      "owned_process_interval_seconds": 34.516354042,
+      "physical_CPU_frequency_measured": false,
+      "interpretation": "Observed read-only snapshot/REST/CRC/poison/FETCH/polling and cleanup intervals, not emulator8088performance or calibrated64MHz. Temporary Manual64 was directly read back; no frequency measurement."
+    },
+    "temporary_turbo_readback": {
+      "System Mode": "PAL",
+      "Turbo Control": "Manual",
+      "CPU Speed": "64"
+    },
+    "restored_turbo_pair": {
+      "Turbo Control": "C64U Turbo Registers",
+      "CPU Speed": "64"
+    },
+    "all_original_inventory_exact": true,
+    "restore_ACK_and_exact_readback": true,
+    "REU_writes": 0,
+    "REU_restoration_attempts": 0,
+    "FTP_connections": 0,
+    "UCI_commands": 0,
+    "upper12MiB_accessed": false,
+    "upper12MiB_preservation_independently_compared": false,
+    "cleanup": {
+      "attempted": true,
+      "terminal_RAM_retained": true,
+      "cold_reset_ack": true,
+      "BASIC_ready_observed": true,
+      "resume_ack": true,
+      "settings_media_equal": true,
+      "original_RAM_restored": false,
+      "original_CPU_restored": false,
+      "original_application_resumed": false,
+      "errors": [],
+      "turbo_restore_attempted": true,
+      "turbo_restore_ack": true,
+      "turbo_restored_observed": true
+    },
+    "original_RAM": {
+      "sha256": "65df271b3047719a7162f9d728a61e9085086cefb6e9d7209dd7b2f0b1b223bd",
+      "bytes": 65536
+    },
+    "terminal_RAM": {
+      "sha256": "bb8a3a1e8415dc855bcd2d9a92596726ebbe69156eaa06528225d6d58239efb3",
+      "bytes": 65536
+    },
+    "hardware_reserved": true,
+    "current_C64_state": "BASIC_READY_observed_then_resume_ACK; originalRAM/CPU/application not restored",
+    "inherited_FTP_remote_control_closed": "UNVERIFIED_no_221",
+    "source_live_and_copies_exact": 2099,
+    "original_package_inputs_exact": 128,
+    "retry": false,
+    "prior_failed_campaigns_remain_failed": true,
+    "next_device_purpose_requires_distinct_ROOT_review": true
+  },
+  "limitations": [
+    "This qualifies native FETCH-only capture, REST cold activation, checked temporary Manual64/restoration and BASIC cleanup. It does not qualify a new emulator/START/SETUP or physical XT performance.",
+    "OriginalRAM/CPU/application restoration remains false; upper12MiB untouched by this campaign and uncompared. No fullboardreset/FTP retry/REUwrite occurred.",
+    "Prior failed campaigns remain failed. Hardware reservation stays with CIA for a separately reviewed next purpose."
+  ],
+  "files": {
+    "agentworking/scratch/native-readonly-stream-manual64-finally-root-20261017/PHYSICAL_DIRECT.json": {
+      "sha256": "e2413b7596081e6bed96e73cb49408021cd806badc6c7a91916bf768262493d0",
+      "bytes": 1000
+    },
+    "agentworking/scratch/native-readonly-stream-manual64-finally-root-20261017/RESULT.json": {
+      "sha256": "e6fa4ebd485d814728a685559b9b80d30dd30b77c221cc90c3a3a877e36bc347",
+      "bytes": 865
+    },
+    "agentworking/scratch/native-readonly-stream-manual64-finally-root-20261017/NEW_RESULT.json": {
+      "sha256": "616b81eaf8ea906604e187fcdea2a9e4180032a9c5d698f3c45760dafd030f6a",
+      "bytes": 561
+    }
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "status": "ROOT_ACCEPTED_PRIVATE_COMPONENT_EVIDENCE_PENDING_NATIVE_SYS_COORDINATOR",
+  "physical": false,
+  "ROOT_reexecuted_expensive_pipeline": false,
+  "author_manifest": {
+    "path": "agentworking/scratch/native-config-generation-publisher-20261017/MANIFEST.json",
+    "sha256": "fd119439ac248ed2e72412e2052cac01d695c77146decd67d2d72fc64bc6f379",
+    "bytes": 76014,
+    "verified_files": 454
+  },
+  "independent_peer_manifest": {
+    "path": "agentworking/scratch/native-config-publisher-peer-review-20261017/MANIFEST.json",
+    "sha256": "e6fb20d7c4cf7b8c3f04028f1cc4deb98eb5c72302ceb7b79c74ed03ce2dcdc3",
+    "bytes": 67369,
+    "verified_files": 393,
+    "actual_native_groups": 11
+  },
+  "native": {
+    "sha256": "454d9bc781e2996f1b0b170f6339ac6cfcea1bbb374aff8786f237a46bb7c1c0",
+    "bytes": 42892
+  },
+  "labels": {
+    "sha256": "78e15d558a801b3de6652e9e451165b28a26dfc2fd691977c94ddeb31636cdc2",
+    "bytes": 18289
+  },
+  "original_closed_inputs_and_copies_verified": 118,
+  "actual_execution": {
+    "closed_native_Python": 9,
+    "direct_Zig": 2,
+    "peer_components": 11,
+    "host_exit": 2
+  },
+  "host_errata": {
+    "status": "PASS_BOUNDED_HOST_ERRATA",
+    "original_closed_execution": "9 actual native Python +2 directly executed Zig;118 declared source/tool/copies and5products before/after exact",
+    "historical_source_drift": {
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-config-generation-publisher-20261017/work/attest_publisher.py": {
+        "old": {
+          "sha256": "d5e43d5908c9f7e3448a704d6756752c2de419a4587a6ff4fd4ca663f9f32062",
+          "bytes": 2795
+        },
+        "new": {
+          "sha256": "5917692e936c4cd4a22e7bf794e8da5ad512ec686a080f14dc73596761bb70dd",
+          "bytes": 3028
+        }
+      },
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-config-generation-publisher-20261017/work/test_publisher.py": {
+        "old": {
+          "sha256": "b7768bcabd795c30a4ce3ef7ec281252e6b9f446f45c7807afdb0487f8a2b64e",
+          "bytes": 8274
+        },
+        "new": {
+          "sha256": "3c6e45c23db87c5ef00303bca92be2a56dbfcdec3799918b24dd5682e1f0d45b",
+          "bytes": 8438
+        }
+      }
+    },
+    "current_source_only_rebuild_functional_four_products_exact": true,
+    "debug_metadata_drift": {
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-config-generation-publisher-20261017/work/config.dbg": {
+        "old": {
+          "sha256": "a4eee924f1db3a2a007a8896bd06b963f3fcf8a20ef2893789c49df7c79515de",
+          "bytes": 761802
+        },
+        "new": {
+          "sha256": "a2f543fb3b549a3c809a230e2a14bd30a245d6f75484dba16f23bf02698b1220",
+          "bytes": 761802
+        }
+      }
+    },
+    "host_controls": "CONTROLS.json",
+    "artifact_provenance": "Historical full-output-{40,80} are host oracle copies after full byte equality with actual firmware outputs. Future helper now reads actual modeled files to archive. These historical copies are not raw model downloads.",
+    "native_or_DOS_repeated_after_host_errata": false
+  },
+  "ROOT_source_review": [
+    "CP consumes fresh private CG+RI+RM from same engine; source completion advances only after exact reads/EOF/knownCLOSE.",
+    "Exact five release assets, full descriptor-byte comparisons and independent LOAD/READ/FETCH comparisons precede STARTpatch and CREATE_NEW.",
+    "Private one-shot patcher changes only131 allowed bytes, verifies original/full output and complement readback; separate first CP cause remains sticky.",
+    "Six outputs verified individually; ordinary ASCII same-homeINI40/80 and CFG-last. Existing absolute media paths/profile/readonly bits preserved, A/B CRC refreshed.",
+    "Separate code/RO segments relocate8075 bytes before overlapping serialized source is cleared; independent peer actualPC/lifetime proof included.",
+    "CurrentBASICloop onlyCG; fixture explicitly drivesRM/CP. This is not a launchable end-userCONFIG or genuineDOS/hardware acceptance."
+  ],
+  "memory": {
+    "MAIN_free": 849,
+    "HIGH_bytes": 8075,
+    "HIGH_free": 111,
+    "PHASE_BSS_bytes": 10424,
+    "PHASE_BSS_free": 72,
+    "STATE_free": 70,
+    "ZP_bytes": 39
+  },
+  "remaining": [
+    "Native SYS+keyboard coordinator and truthful terminal/progressUI",
+    "Early newhome root/117-byte STARTlimit explanation; CP currently refuses safely beforeCREATE",
+    "Actual generated files \u2192 START/main \u2192 genuineDOS40/80",
+    "Public source/build packaging and physical qualification"
+  ]
+}
