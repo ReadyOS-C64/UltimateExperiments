@@ -1,0 +1,37 @@
+{
+  "controller/action_shell.c": {
+    "sha256": "54f7cb892dc25469e98b5fd39afc1938dea6f631c46f17cb10cbf11e76fc98bc",
+    "bytes": 6185,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-sequence-integration-20261017/controller/action_shell.c"
+  },
+  "controller/action_shell.h": {
+    "sha256": "8f9d27913cfad6bd2ea7dd20a326a287f8687c189ce69576080c464fb7238067",
+    "bytes": 585,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-sequence-integration-20261017/controller/action_shell.h"
+  },
+  "bridge/bridge.s": {
+    "sha256": "37ff5af2bf02b249a1ba2dfb4025b1fa135d85f19bc20b837cce88d51fd5f7fe",
+    "bytes": 4278,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-sequence-integration-20261017/bridge/bridge.s"
+  },
+  "phase/transaction_wire.s": {
+    "sha256": "656c64372298696333eea323328ac0480be055e3eea344f4fb42ba701d40e74f",
+    "bytes": 26910,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-sequence-integration-20261017/phase/transaction_wire.s"
+  },
+  "phase/sequence_api.h": {
+    "sha256": "089f23f961fdfd660789ae7b0bdc4b6cdaa98db20bf8d01272bf131cfa266101",
+    "bytes": 1558,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-sequence-integration-20261017/phase/sequence_api.h"
+  },
+  "build_ui_bridge.py": {
+    "sha256": "3c9fb00dd1387a8aefc4f9b3cf790191309ba8a7bcf7efddf8e25e8034ab091d",
+    "bytes": 9543,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-sequence-integration-20261017/build_ui_bridge.py"
+  },
+  "build_controller.py": {
+    "sha256": "5d2dc72cf3d4d39842725e8aaa2d550ac6aa028459b2d3238942e4a10ecfc97e",
+    "bytes": 4888,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-sequence-integration-20261017/build_controller.py"
+  }
+}

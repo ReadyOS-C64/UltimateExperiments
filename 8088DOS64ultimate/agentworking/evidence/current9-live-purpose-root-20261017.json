@@ -1,0 +1,18 @@
+{
+  "status": "LOCAL_ROOT_REVIEW_PASS_ONE_EXACT_PHYSICAL_STAGING_PURPOSE_AUTHORIZED",
+  "author_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-current9-live-backend-20261017/MANIFEST.json",
+  "author_manifest_sha256": "e272d2301aa9105c95b369a6749ddb087f6093bbc7c454cec3a15e2a5b1ff4cd",
+  "author_pins_verified_before_after": 2941,
+  "launch_sha256": "937492f052c4de37139d5230dde6c710b12fa29f98c3f63396f77de363ba4484",
+  "launch_pins_verified_before_after": 1434,
+  "offline_constructor_exit": 0,
+  "ROOT_local_controls": 26,
+  "ROOT_local_seconds": 42.744,
+  "source_clone_delta": "dispatchTASKabsoluteprivatepathonly; alltarget/backendmodulesbyteexact",
+  "scope": "BASIC-only tenowneddevelopmentfiles199303B/reopenbytes/three4MiBsnapshots/one3880restore/BASICsettingsclosure; no liveMAINtakeover/nativeinstallerUI/DOS/Turbo",
+  "historical_backup_adoption_not_fresh_prewrite_file_read": true,
+  "native_backend_authority_reused": "63c37actual11plus9callbackcontrols andacceptedfast-file/sourcehistory; ROOT26areHTTPhostfixturesnotnewnative/physical",
+  "upper12MiB": false,
+  "new_device_calls_by_ROOT": false,
+  "physical_acceptance": false
+}

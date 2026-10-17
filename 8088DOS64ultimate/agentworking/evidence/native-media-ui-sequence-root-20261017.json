@@ -1,0 +1,7 @@
+{
+  "status": "ROOT_HASH_VERIFIED_COMPONENT_UNIT_SEQ_CIA10_NOT_RUNTIME",
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-sequence-integration-20261017/MANIFEST.json",
+  "sha256": "dcce9974397b4f1e04d77f9dceea0b75c84bad322217062a2281f8f04319256b",
+  "pins": 2490,
+  "scope": "authoractual10/source+SDK44exactproducts; ROOTsource-preread/hashreview only, no additionalROOTnativeexecution"
+}
