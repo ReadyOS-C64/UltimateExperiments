@@ -199,5 +199,7 @@
   "first_failure": "Getter A4 with X0 changes Z; branch lost first error as FC; explicit CMP0 fixes; both versions denied Safe/Resume and issued one CLOSE",
   "remaining": "OrdinaryS runtime merge; cold binding fix; Insert/Eject/Protect; coherent SETUP/CONFIG/cold/package; final Ultimate install/Turbo/restart/human gates",
   "physical": "No device calls; soleCIA reserved state unchanged",
-  "public": "No public source/product promotion; no push"
+  "public": "No public source/product promotion; no push",
+  "layout_errata": "UI complete BSS is7800..7C99 (1178B), including panel/platform/lib modules. EarlierHANDOFF/module-only7C82 was incorrect; linked complete segment/map always7C99, below7D00 with102B gap. No binary/layout change.",
+  "closure_qualification": "428 scoped inputs captured project/cc65 but not nonexecuted UNIT fixture source or complete system C++ SDK. Later native-runtime-controls final1415 source/SDK closure includes both and replays stronger actual composed runtime; no retroactive full SDK claim for the earlier window."
 }

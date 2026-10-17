@@ -31,3 +31,8 @@ Recommend explicitSave plus promptedSave on swap/eject/exit for the firstrelease
 ## Acceptance
 
 Actualassembly/Peddle: independentA/B routing/geometry/readonly, partial-write dirtytracking, save-generationbinding, malformed/short/extra/changedsource, swaploadfailure retainingoldmedia, everySave/Discard/Cancel branch, HDonlinecontext/leases, configCRCrefresh and coherentpause/resume. FullFAT/payload/originalpreservation checks use independenthostoracles. OnUltimate: createfileonA andB, Save, reset/relaunch and verifyeach; swapseveralimages with DOSDIR/COPY/applicationprompts; diskfull/failedsave/cancel; Cactive duringallsaves; readonlyoriginal unchanged. UIclock/IRQ behavior and testedkeyboardshortcut need explicitacceptance. No new implementation or hardwaretest was performed for this proposal.
+
+
+## Private V1 progress2026-10-17
+
+The private native menu now has source-closed model proofs for SaveAs, ordinary versioned Save, explicit Finish and session-only Eject/Write Protect. Save-before-Eject waits for verified durable save; failure retains the mounted working disk. Eject preserves saved startup configuration and its cookie, so saving the other drive still works; fresh launch uses saved configuration. The menu states the session-only policy. The actual incoming-file loader/durable Insert transaction, matched public package and physical V1 acceptance remain open. [Control evidence](../agentworking/evidence/native-runtime-controls-root-20261017.json).

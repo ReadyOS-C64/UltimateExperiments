@@ -370,3 +370,6 @@ A completed file writer and its readonly source cache each need explicit clean-s
 
 
 2026-10-17 Root Finish integration: a cc65-compatible assembly getter that returns A and sets X0 does not preserve A-derived Z. Actual unknownCLOSE error4 was replaced by genericFC through BNE after fn_error; explicit CMP0 restored first-error reporting. Both versions withheld Safe/Resume and retried nothing; retain the actual failed assertion. Also restrict new fn_ aliases to the Finish table, because unrelated native internal labels can have the same names. Standalone backend proof does not replace actual menu routing/final Safepark tests.
+
+
+2026-10-17 controls: use the linker complete segment list for memory totals; per-object BSS omitted platform/lib state and understated CUI by23B. Actual CUI always remained below7D00; corrected old docs without changing frozen binaries. Capture compiler -M system/C++ SDK dependencies as well as native cc65 inputs; final1415-input controls closure includes fresh native/model rebuild and actual14 after full BEFORE capture. Older scoped428 Finish window is explicitly qualified. Retain startup binding on session-only Eject; otherwise later other-drive Save would mismatch oldCFG despite unchanged durable media. Current actual emptyB→SaveA test proves composition.

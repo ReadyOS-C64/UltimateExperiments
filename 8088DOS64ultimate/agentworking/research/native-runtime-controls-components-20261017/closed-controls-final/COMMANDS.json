@@ -1,0 +1,34 @@
+[
+  {
+    "name": "fresh-native",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "build_ui_bridge.py",
+      "--role",
+      "runtime"
+    ],
+    "exit": 0,
+    "seconds": 1.839260833
+  },
+  {
+    "name": "fresh-model",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "build_model.py"
+    ],
+    "exit": 0,
+    "seconds": 3.080293542
+  },
+  {
+    "name": "actual-runtime",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "control_role_replay.py"
+    ],
+    "exit": 0,
+    "seconds": 19.744215667000002
+  }
+]

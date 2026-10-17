@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-control-core-root-20261017/check_native_defaults.py", line 8, in <module>
+    r=subprocess.run(a,cwd=w,env=env,capture_output=True);(D/(mode+'.stdout')).write_bytes(r.stdout);(D/(mode+'.stderr')).write_bytes(r.stderr);commands.append({'argv':a,'exit':r.returncode});assert r.returncode==0,r.stderr.decode();products[mode]={}
+AssertionError: make: *** No rule to make target `tests/fixtures/foundation.s', needed by `build/fixtures.o'.  Stop.
+

@@ -1,3 +1,9 @@
+# Private Eject/Write Protect and modal staging verified — 2026-10-17
+
+Root e0dc72b4/3914: final1415 source/tool/SDK inputs+copies/37 products, fresh native/model,14 actual runtime groups19.355s;20 UNIT products absent. Native c0c0a1b4/MNU3b35/CUI6023/bridge5f17. Actual CIA session-only Eject/Protect, dirtyCancel/Discard/Save-first/failure, emptyB→SaveA, C-online contexts, stagingPREPARE/COMMIT/CANCEL and guards pass. No incoming-file loader/Insert or cold/physical claim. Public defaultundefined/0 bytes/labels remain exact666/b9. No extraREU/fullthirdfloppy preserved. Source checkpoint native-runtime-controls-components and receipt native-runtime-controls-root.
+
+Root independently all-pin verifies S+Finish runtime5b54/6107 and cold initialization repair14e7/5380. Cold author actual DOS→SaveAs→Resume→C TYPE passes; sourceCFG cookie now supplied beforePREPARE, +10B cold helper/default0 exact. Compiled combines qualified controls/S/Finish/coldfix; memory builds bounded incomingIMG stage/verify+private receipt, noCOMMIT yet; CIA finishes native extraasset checks/publishing. Final V1 hardware/package/Insert/human gates remain open; performance deferred; local commits/no push.
+
 # Private actual-runtime Finish menu qualified — 2026-10-17
 
 Root f83f0328/946 pins: source-only428 inputs/37 products, fresh native/model, all20 UNIT products absent during9 actual groups (8 CIA Finish +1 SaveAs). Confirmation/cancellation, known CLOSE targets1/2, private one-shot Safe, terminal noResume, whole4MiB/high96 and failure controls pass. First error4→FC getter-flags defect fixed explicitly; retained first failure. Actual runtime 65d768a4; final identities in receipt, no public or hardware acceptance. Finish requires mounted C and exit applications to DOS first; no guest logical-buffer flush claim.

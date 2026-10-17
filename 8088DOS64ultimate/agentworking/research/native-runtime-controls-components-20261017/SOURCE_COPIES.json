@@ -1,0 +1,106 @@
+{
+  "HANDOFF_CONTROLS.md": {
+    "sha256": "c77ca03c75776424486662d0b21230f33d0eb9e35a4f7203a270684fa45ec40a",
+    "bytes": 5362
+  },
+  "CONTROL_PARENT.json": {
+    "sha256": "aff4fc763bd0fe4c6a219fbd14ce0280b550599c299d19db67eec7f4b8b1f754",
+    "bytes": 238
+  },
+  "CONTROL_SOURCE_DELTA.json": {
+    "sha256": "471c72138aedea496a73aac4cdf5af5abb67318f22944671c8c95f5c79cf0f7a",
+    "bytes": 967
+  },
+  "CONTROL.patch": {
+    "sha256": "0b61b4b936d50f3164deb4840632c8a2a497665b0885c02a1798f942e49a0d72",
+    "bytes": 11980
+  },
+  "build_ui_bridge.py": {
+    "sha256": "38aed3a83715a22c611796db32ae0ac49e897178ec8e4352820d5e7a661ddf1e",
+    "bytes": 12483
+  },
+  "control_role_replay.py": {
+    "sha256": "33722fc00fa2fcc7a5bea5787e853f791f11f4f9dbedffa62efbf4910ec796df",
+    "bytes": 1779
+  },
+  "test_controls_ui.py": {
+    "sha256": "5ff9141b1f4d50dded4240f7ded278774456d220ac180a3897e2e3491ff75636",
+    "bytes": 13249
+  },
+  "close_controls.py": {
+    "sha256": "53c666946c390e7b953af0406d171143458ed8f3ed473f1b4b1b16a357fe92b3",
+    "bytes": 3887
+  },
+  "model_sdk_closure.py": {
+    "sha256": "d73f2330143d8fd9497d1db5d093d24bdd5a84582625c26fcd953a19a7f58638",
+    "bytes": 2328
+  },
+  "check_native_defaults.py": {
+    "sha256": "001c37b591d597aa9cda0ac312c4184474b44022fbb31750a4941142d5e12b3f",
+    "bytes": 1618
+  },
+  "UI_BUILD_RESULT.json": {
+    "sha256": "dadb904c5baf50c053dfccf41f4ffa2b6dba63f3f430db3a328f832ae5a8203b",
+    "bytes": 25725
+  },
+  "FINAL_CONTROLS_RESULT.json": {
+    "sha256": "fad6ef537de63fb4ef58fbb451f2147f1d08f5ca0645938c87f46194a6a508ed",
+    "bytes": 4703
+  },
+  "closed-controls-final/INPUTS_BEFORE.json": {
+    "sha256": "829df821b33f803d1279f2d29b8cf17a380dcb31523f50315e2f81f7448f12ee",
+    "bytes": 340783
+  },
+  "closed-controls-final/PRODUCTS.json": {
+    "sha256": "cd675f144553fd01d3b77d7f329eb9e86e8cd9f74cfe07c5d08ffe51baf21379",
+    "bytes": 4935
+  },
+  "closed-controls-final/RESULT.json": {
+    "sha256": "5dbde71f50dee6ffd6ce2ea0cccf12155c38c1f3462641395f8c797077cf4782",
+    "bytes": 791
+  },
+  "closed-controls-final/COMMANDS.json": {
+    "sha256": "2797c6d8cfbdcc43fc744cf25d9b41f2105189e6406905379ab3c09b2ab36d39",
+    "bytes": 539
+  },
+  "closed-controls-final/actual-runtime.stderr": {
+    "sha256": "21b0936c0af8068bef6deaa282c933dcb0557a545b52d1c3738859b07940a319",
+    "bytes": 1267
+  },
+  "native-defaults/RESULT.json": {
+    "sha256": "f287f5fc90513d7ded9ea6f67bd46ef210160d7529e8a638b8cf196471892a1b",
+    "bytes": 1810
+  },
+  "NATIVE_DEFAULTS.stderr": {
+    "sha256": "813ad7d180e038d53e463ecbdb4a6f90be76d5f0d195f305ddf57e4027625f35",
+    "bytes": 593
+  },
+  "CONTROL_SECOND_BUILD.stderr": {
+    "sha256": "b5859b88e45d9f05a8085e8c577e25f415083ac9403857b499856a31daadf94d",
+    "bytes": 1204
+  },
+  "MODEL_SDK.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "model-sdk-closure/RESULT.json": {
+    "sha256": "683c9f344fc86c70d034aa1d369b6d175755b1c1c3ffe26d56d48dade822329c",
+    "bytes": 4274
+  },
+  "work/src/floppy_control.s": {
+    "sha256": "0780fcd406497a23487956db8f01cf98d75a62d5c22891028fb7d577956c59f2",
+    "bytes": 12305
+  },
+  "work/include/disk.inc": {
+    "sha256": "97f5aa01ba2e8992ac47764772ef3d1405ecd426ac9bc479e161d0145ba05b2f",
+    "bytes": 1955
+  },
+  "bridge/bridge.s": {
+    "sha256": "9fa295415a9cbbe56889e6987ba9258631097be68bcc5fc7e99cb58057545507",
+    "bytes": 8582
+  },
+  "ui/panel.c": {
+    "sha256": "b1bc70724d150f87240895139e1ab455c8a33c162ea2b8180cc001c8b1efac7b",
+    "bytes": 9744
+  }
+}
