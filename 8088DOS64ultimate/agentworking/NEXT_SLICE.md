@@ -1,3 +1,5 @@
+Current hardware steering: da325b03 failed beforeSYS on observed uppercase address; cleanup readiness ConnectionReset54 means BASIC/resume unverified. CIA closes evidence, then implements exact-endpoint ASCII hex-case handling for POST/small writes AND inherited ACK/cancel. No newdevicecalls without a fresh reviewed purpose; no full-board reset. Read ACTIVE for authoritative ownership.
+
 # Next after same-home INI integration — 2026-10-17
 
 Public main f7ea/unit9d5 and matched optional START79bb/INOeebb are integrated. ROOT full334/503 plus43 focused native groups and host gates passed; no unchanged repeat is needed. Keep default legacy START8b68 and v1 descriptor behavior intact. Use complete five-file `make start-ini-bundle` assets, not a lone new START. SETUP0df bytes remain unchanged. Evidence native-start-ini-public-root-20261017.json records first failures, one ancillary map rebuild, source closure and historical4da producer qualification.

@@ -1,3 +1,9 @@
+# Hardware acknowledgment case identified — 2026-10-17
+
+The distinct da325b03 read-only campaign stopped before SYS, with the actual raw response durably retained: HTTP200/errors=[] and address `0801-19F0`, versus the observer's expected lowercase `0801-19f0`. This identifies an address-text case mismatch; it does not prove source identity with the public firmware tag. Cleanup retained terminalRAM and acknowledged C64reset/settings/media equality, but a ConnectionReset54 during readiness left BASIC/resume unverified. No helper execution, REU access or full4MiB baseline proof. CIA owns the reserved failure closure; child98839/supervisor98832 exit/source seal are being retained. No retry/full-board reset.
+
+Next private observer change may accept only ASCII hexadecimal case equivalence with the same exact four-digit start/end and separator. It must cover inherited ACK/cancel checks too, retain all raw responses, and preserve one-shot/monotone attempts and readback gates. ROOT review of a distinct concrete purpose is still required before any further device call. CONFIG UI/publisher continue independently; public432ddfc remains model-qualified only.
+
 # Fetch/decode performance promoted — 2026-10-17
 
 Public runtime666089b5/unitb9e9cc9e reproduce the independently reviewed successor. ROOT verified author2575316c/all8172 and peerd2fb8c41/all1587 pins, copied exactly sixASM+two additive testfiles, and updated two exact expected bundle hashes. Public507 actual native +334 tooling pass; focused23 START/6 consumer/4 sidecar native and8 bundle/5 state/8 HD host groups pass. Fresh genuine DOS loader-handoff VER/DIR passes in30s. All635 selected source inputs remain exact during execution. Receipt: evidence/guest-interpreter-public-root-20261017.json.
