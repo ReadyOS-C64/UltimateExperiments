@@ -1,5 +1,5 @@
 {
-  "status": "approved_one_exact_detached_dispatch",
+  "status": "superseded_before_dispatch",
   "purpose": "ONE_HISTORICAL_NATIVE_FILE_RESTORE_AND_TWO_FULL4M_SNAPSHOTS",
   "proposal_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-fast-file-recovery-runnable-20261017/MANIFEST.json",
   "proposal_sha256": "568281c99de59f679387ec3670ec30e0da6655cba972c9f062d2ac98519a32dd",
@@ -26,5 +26,7 @@
   "unknown_native_writer_cleanup": "pause and retain, no reset/source overwrite; independent profile finally",
   "upper12MiB_access": false,
   "physical_acceptance": false,
-  "product_acceptance": false
+  "product_acceptance": false,
+  "reason": "Inherited supervisor admitted previous HYBRID schema; CIA caught predispatch, no device calls",
+  "successor_receipt": "c64u-fast-native-file-supervisor-purpose-root-20261017.json"
 }

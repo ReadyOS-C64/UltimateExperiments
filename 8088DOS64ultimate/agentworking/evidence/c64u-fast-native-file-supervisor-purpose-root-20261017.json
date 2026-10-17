@@ -1,0 +1,21 @@
+{
+  "status": "approved_one_exact_detached_dispatch",
+  "supersedes": "c64u-fast-native-file-purpose-root-20261017.json",
+  "proposal_manifest_sha256": "485d4dfa3285ba7025153352654c43c816a20ae310d21d313c550f3faed38f21",
+  "proposal_pins_verified": 1009,
+  "launch_manifest_sha256": "fba35e0cbff910c77f3acaea9d73b6b5dee81972742ece352167559440adc16e",
+  "launch_pins_verified": 470,
+  "ROOT_semantic_source_equality_verified": true,
+  "runtime_delta": "single supervisor schema comparison HYBRID to FAST_NATIVE_FILE; dispatch TASK rebased",
+  "ROOT_prior_18_semantic_tests_reused": true,
+  "author_detached_process_controls": 3,
+  "ROOT_offline_successor_constructor": true,
+  "author_detached_control_reviewed": true,
+  "author_process_control_is_hardware_evidence": false,
+  "one_attempt_only": true,
+  "old_proposal_dispatched": false,
+  "physical_acceptance": false,
+  "upper12MiB_access": false,
+  "historical_backup_not_fresh_remote_prewrite": true,
+  "source_review": "supervisor complete, wrapper delta, SOURCE_DELTA unchanged inputs, test_detached complete and DETACHED_CONTROL"
+}

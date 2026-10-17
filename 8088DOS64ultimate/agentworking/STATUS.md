@@ -1,3 +1,9 @@
+# Actual native menu entry and return verified — 2026-10-17
+
+Private source-bound mainbbf4e1ec/unit5c023768, broker1612B and CUI7421B pass six actual native/CIA groups3.5s. Header tagfa3e610e derives from consumed staged sources/flags/UI; broker imports match actual native linked symbols. Three fresh source-built default profiles preserve exact selected46fa/63f and public666/b9. Entry begins only after INPUT lease returns; actual CUI Resume restores owned color snapshot and guest full bitmap/matrix/colors before RUN, fences exit keys, and preserves full4MiB outside owned1000B plus exact FILES/Cposition. All64 header changes and partial broker/UI/path DMA faults fail closed. Seal8524f6a0/297pins, evidence/native-media-entry-root-20261017.json. Source checkpoint retained; no public promotion, START loader, disk-worker routing, safe-finish or physical acceptance.
+
+Hardware purpose supervisor schema blocker was caught predispatch and corrected in a separate source-exact successor485d4dfa; ROOT constructor/pin/delta review authorizes only that one purpose. Its actual physical attempt fails early with numeric404 on initial RAM upload, before any REUwrite; CIA retains evidence and cleanup. No repeat or whole4MiB/backend/product acceptance.
+
 # Native entry and installer preflight integration — 2026-10-17
 
 ROOT actual private CIA/INPUT/footer/broker/CUI entry and Resume now pass six focused groups in3.517s: Ctarget1/2, all64 header-byte corruptions, active-C deferral, held-chord coalescing, four partial header/broker DMA points and two UI/path load faults. Full bitmap/matrix/colors redraw precedes RUN; full4MiB equals input except the owned1000B color snapshot at3E2000; FILES/Cposition exact. Exit-key release fencing prevents Resume R entering DOS. Private/defaultOFF, no START container loader, media worker or physical acceptance. Source binding/default controls and coherent integration remain required.
