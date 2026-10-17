@@ -1,0 +1,65 @@
+{
+  "full": {
+    "native": "73924b8e3398a51c08ffc69059c857ddc17668ce73a2d54af78f304a90369d1b",
+    "FW_native_cycles": 3222271855,
+    "PW_native_cycles": 587954324,
+    "wall_seconds": 33.58241875,
+    "root_state": 7,
+    "private_mask": 31,
+    "created": [
+      [
+        2,
+        "/Home/C.IMG"
+      ],
+      [
+        2,
+        "/Home/B.IMG"
+      ],
+      [
+        2,
+        "/Home/A.IMG"
+      ],
+      [
+        2,
+        "/Home/START.PRG"
+      ],
+      [
+        2,
+        "/Home/DOS64.CFG"
+      ]
+    ],
+    "files": {
+      "C.IMG": {
+        "bytes": 2097152,
+        "sha256": "3141fc19bcb040a1c58e78674c59679d7427ac7ba8d3f80556dbf877a67c2648"
+      },
+      "B.IMG": {
+        "bytes": 368640,
+        "sha256": "db7b0eb73f7df6dcbc0fc90c156856b80822517e8e1df66d1b1e98f99abcca88"
+      },
+      "A.IMG": {
+        "bytes": 368640,
+        "sha256": "597ec0f92c993c3d683f4bb93c91cb8ebbbdce6c7d45a9d7bc141f68b1be2678"
+      },
+      "START.PRG": {
+        "bytes": 18432,
+        "sha256": "da27296f16e6fe1e674b2b5e0a336543bef71fd4b20df3ec75a23c190f29cf0a"
+      },
+      "DOS64.CFG": {
+        "bytes": 576,
+        "sha256": "f658944e7f789495e2caa753f716bae4ae1e739549e392613c34350f6a401437"
+      }
+    },
+    "hardware": false
+  },
+  "verdict": "ACTUAL_FRESH2M_FULLROOT_BEHAVIOR_PASS_FINAL_ATTESTATION_PENDING",
+  "executed_output_manifest": "agentworking/scratch/native-installer-root-executed-output-20261017/MANIFEST.json",
+  "executed_output_manifest_sha256": "b37f7b28c211ab3921b9a4bbc8220a9bf78cb0250c91819fe4aeb1a341940943",
+  "root_delta_HIGH_bytes": 67,
+  "root_delta_BSS_bytes": 0,
+  "measured_UI_free": 15,
+  "measured_HIGH_free": 26,
+  "physical": false,
+  "whole_installer_accepted": false,
+  "remaining": "Import existing-C lifecycle repair +11AUX, final source/tools/products closure and negative tests, generatedSTARTtoDOS, publicSETUPpromotion andhardware."
+}

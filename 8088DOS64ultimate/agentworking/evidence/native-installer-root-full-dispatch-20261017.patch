@@ -1,0 +1,154 @@
+--- a/coordinator.s
++++ b/coordinator.s
+@@ -1,5 +1,7 @@
+ .setcpu "6502"
+ .macpack longbranch
++.include "coordinator_internal.inc"
++.import _fw_run,_pw_run,_rc_retained
+ .import runtime_init,_bc_init,_ps_init,_sl_install
+ .import _sc_begin,_sc_poll,_sc_cancel,_sc_ready,_sc_now,_sc_error
+ .import _ps_clock_poll,_ps_key_poll,_ps_key,_ps_ticks
+@@ -124,6 +126,10 @@
+  jeq close_poll
+  cmp #3
+  jeq overlay_poll
++ cmp #4
++ jeq fat_run
++ cmp #6
++ jeq publish_run
+  rts
+ close_poll:
+  jsr sample
+@@ -158,13 +164,13 @@
+  lda #>$2710
+  sta _so_request+6
+  jsr _so_prepare
+- cmp #1
+- jne phase_failed
++ tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
++ jeq phase_failed
+  lda #1
+  sta _so_phase_request
+  jsr _so_enter
+- cmp #1
+- jne phase_failed
++ tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
++ jeq phase_failed
+  jsr _so_ui_ticket
+  sta ticket
+  sta _rc_expected_ticket
+@@ -175,8 +181,8 @@
+  lda #>$2710
+  sta _su_timeout+1
+  jsr _su_begin
+- cmp #1
+- jne phase_failed
++ tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
++ jeq phase_failed
+  lda #2
+  sta state
+  rts
+@@ -205,19 +211,16 @@
+  cmp #2
+  jne ui_failed
+  jsr _rc_capture
+- cmp #1
+- jne phase_failed
+- lda ticket
+- sta _so_ticket
+- lda ticket+1
+- sta _so_ticket+1
+- jsr _so_leave
+- cmp #1
+- jne phase_failed
++ tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
++ jeq phase_failed
++ jsr retire
++ tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
++ jeq phase_failed
+  jsr _so_bind_home
+- cmp #1
+- jne phase_failed
++ tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
++ jeq phase_failed
+  lda #2
++replace:
+  sta _so_phase_request
+  jsr _ps_clock_poll
+  jeq clock_failed
+@@ -228,8 +231,8 @@
+  sta last_tick+1
+  sta _so_now+1
+  jsr _so_begin
+- cmp #1
+- jne phase_failed
++ tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
++ jeq phase_failed
+  lda #3
+  sta state
+  rts
+@@ -258,18 +261,22 @@
+  lda error
+  jne stop
+  jsr _so_enter
+- cmp #1
+- jne phase_failed
++ tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
++ jeq phase_failed
+  lda _so_result+8
+  sta ticket
+  lda _so_result+9
+  sta ticket+1
+- jsr _rc_source_ready
+- cmp #1
+- jne phase_failed
+- ; Integration checkpoint: active authentic FAT ticket; no public installer
+- ; completion. Subsequent coordinator slice consumes retained facts here.
++ ; Root alone replaces phases, after all overlaid frames have returned.
++ ; Each worker admits against its authentic phase and internal retained facts.
++ lda _so_phase_request
++ cmp #3
++ beq @pub
+  lda #4
++ bne @active
++@pub:
++ lda #6
++@active:
+  sta state
+  rts
+ overlay_busy:
+@@ -287,3 +294,34 @@
+  jmp fail
+ done:
+  rts
++
++; Return values are private worker decisions, never observation bytes. A failure
++; leaves the active phase reserved; it cannot authorize replacement or success.
++fat_run:
++ jsr _fw_run
++ tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
++ jeq phase_failed
++ jsr retire
++ tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
++ jeq phase_failed
++ lda #3
++ jmp replace
++publish_run:
++ jsr _pw_run
++ tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
++ jeq phase_failed
++ lda _rc_retained+RC_OUTPUT_MASK
++ cmp #31
++ jne phase_failed
++ jsr retire
++ tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
++ jeq phase_failed
++ lda #7
++ sta state
++ rts
++retire:
++ lda ticket
++ sta _so_ticket
++ lda ticket+1
++ sta _so_ticket+1
++ jmp _so_leave

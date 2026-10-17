@@ -1,3 +1,9 @@
+# Next after whole-root first pass — 2026-10-17
+
+Root full dispatcher is now implemented and actualfresh2M behaviorpasses; do not repeat it as an unexecuted proposal. Current privatework scratch/native-installer-full-dispatcher-20261017/work, native73924; executedoutput snapshotb37f7b28. Import CIAclosedFW lifecycle successor (ea30d6da/+11AUX), import closedPUBstrict-PC/negative controls, freeze final source/tools/products, run complete rootfresh/existing/collision integration and directZig root checks. Predicted final UI4/HIGH26 leaves no unmeasured additions.
+
+Memory agent prepares unmodified generatedSTART→actualmaincea574→genuineDOS atC: using savednativefiles. CIA prepares productiondependency inventory/publicSETUP builder after workerclosure. PUBagent owns strictfullworker/errorcontrols then completionUI withinPUBheadroom. Root owns finalpublicpromotion/acceptance. No hardware calls from these local proofs; device staysreserved.
+
 # Immediate integration update — 2026-10-17
 
 Compact UCI/AUX source is CLOSED cf61e4be/328pins, not a proposed task. CIA integrates real FAT worker773 plus accepted SI leaf-first/cleanup into this profile and executes genuine-input2M/20M/existing-C/error cases. Memory independently reviews frozen compact limits/copying. PUB agent imports qualified real FW core and runs actual publication flow; ROOT extends resident/HIGH dispatcher to consume private FW/PW receipts, load PUB and finish only after START and finalCFG known-close verification. Probe768 must be replaced, never treated as worker proof. Reuse shared183-byte internal ledger with C0/B2/A4 pairs and private finalmask31.

@@ -1,3 +1,11 @@
+# Whole coordinator behavioral checkpoint — 2026-10-17
+
+Actual full root73924b8e/40,531B now runs real SYS/UI/SRC5→FW C2MiB/B/derivedA→PUB A/START/CFG→terminal7/private mask31/knownclosed without host phase changes. All5native saved files pass full independentFAT/tree/source/CFG/count/CRC checks; native wire CREATE_NEW order isC,B,A,START,CFG. ActiveFAT/PUBcode is guarded; CRCtable writes are PC-bound to nativeinitializer and all1024 canonical bytes checked. Model cycles FW3,222,271,855/PW587,954,324, not physical elapsed orXT performance. Snapshotb37f7b28/17pins supplies unmodified generatedSTART/output/main assets to independent coldboot tests. This firstbehavioralpass is NOT final source/tool-before-after attestation; next adopt real existing-C lifecycle+11AUX repair and close tests.
+
+Minimal dispatcher adds67HIGH bytes, no BSS/BOOT growth.12 trusted boolean returns use explicitTAX beforebranch, avoiding C epilogue NZ assumptions. Current UIfree15/HIGH26; repairedFW784 predictsUI4. Firstroot test denied legitimate inactive-phase PUB DMA at6000; preservedfirstfailure, guard corrected only while rootstate3 owns replacement. Compact peer96c423/1883pins ROOTverified (20actual+2negative links).
+
+CIA existing-C oldb48e rejected because prior handledEOF first_error5 survives new readonlyOPEN/INFO and blocks sourceidentity; newlifecycle clear is isolated+11AUX, actualoldtargettwoarmcounterexample retained, final9casesrunning. Fullhardware/installer/INI/SaveSwap/performance scope remains active.
+
 # Compact installer checkpoint — 2026-10-17
 
 ROOT compact SETUP profile cc0934a0/40,459B passes22 actual native Python groups and5 directly executed Zig/Peddle groups;159 source inputs unchanged. Sealed cf61e4be/328pins verified. Undefined and explicit-zero builds remain byte-exact895719 parent, including labels/overlays. Enabled profile has command160/data512/status256 atC000..C39F, leaving verified AUX C3A0..C7FF/1120B. Generic ASM HIGH/AUX copy and immediate readback saves68UI bytes versus two C copy/compare calls; no new ZP/BSS. Probe768 gives UIfree87; actual worker773 predicts82, integration must measure. This is source/bootstrap qualification, not actual FAT worker execution. CIA now integrates full C/B/derivedA worker; memory independently reviews compact source.
