@@ -116,7 +116,10 @@
     "work/assets/native-text/cp437-unscii8.bin": "assets/native-text/cp437-unscii8.bin",
     "work/src/modal_entry.s": "src/modal_entry.s",
     "work/include/modal_assets.inc": "include/modal_assets.inc",
-    "work/build_support/runtime_media.mk": "build_support/runtime_media.mk"
+    "work/build_support/runtime_media.mk": "build_support/runtime_media.mk",
+    "work/include/floppy_format.inc": "include/floppy_format.inc",
+    "work/src/floppy_format.s": "src/floppy_format.s",
+    "work/src/floppy_format_check.s": "src/floppy_format_check.s"
   },
   "test": {
     "test_online_save.py": "tests/native_media/test_online_save.py",

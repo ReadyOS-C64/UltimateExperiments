@@ -1,3 +1,11 @@
+# Next V1 source/test/package work — after FORMAT/media public promotion
+
+Current actual public profile: scratch/native-format-public-promotion-root-20261017/build/RESULT.json806e/1b70.55unique checks, defaults+legacyselected PRGs exact; evidence/native-format-media-composition-root-20261017.json. Root must add clean public optional FORMAT runtime-test target (no DOS/privatefixture dependency), promoting actual Zig2+Python12 using existing public native-media source/model staging; fullUNIT1 stays unsupported. Avoidrerunning unchanged507/27 when exact binaries establish no change.
+
+Review/promote cold production0c7356/3506:18ownedwrites+42deps, accepted27-file start_ini_bundle/descriptor/installer prerequisites, actual eightassetSTARTf17b. Current runtime_media.py FORMATCLI is shared dependency, not stalecoldwrite. Then coherent SETUP/CONFIG/public V1candidate12file/eightasset graph. Compiled owns later trusted filename/operation/error panes; preserve5FFElower/C7FBAUX/BFA0helper and softwarestackCFFF→CD00 proof, rootdispatcher/coldownership/knownclose tests pending.
+
+Memory owns current806e/f17b full originalTP IDE20MiB edit/save/diskcompile/run/exit/actualCIAFinish/wholeimage/fresh40/80IDEreopen and genuineFORMAT/SYS/COPY/freshboot. Sourceclosed351e CIA driver holds both press/release until realscan; raw DC01readquota is not literal scans during backendSTOP polling. CIA owns private release16 stager and actual806e knownC helper rebind/physicalpurpose, noLANuntilconcreteRootreview; current9failure means current4MiB/BASICclosure needsfreshqualification. All physicalcommunications trulydetached. AllV1gates open; performancepostV1; localcommits/no push.
+
 # Next V1 correctness/integration — after bounded WIRE/Save admission
 
 Public source-only RESULT scratch/native-media-admission-clock-public-root-20261017/build/RESULT.json binds0b523722/MNU4424dfd7, exactprivate13-group e7b42887/2048pins;1267records closed. CIA reruns only previouslyfailedCONFIG80 genuineDOS/S/Insert/B-read/C/Finish with fresh bound cold assets; old4e03/5918 remains NOT_READY. Memory agent owns fresh private broker/bridge pending-entry/release/failedjob repair; Root must review/compose its source and tests before final matching runtime rebake.

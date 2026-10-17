@@ -1,3 +1,4 @@
+.include "floppy_format.inc"
 .include "overlays.inc"
 .import sav_boot,sav_header
 .include "reu.inc"
@@ -20,10 +21,21 @@ PIT_SIZE = __IRQMAIN_SIZE__+__IRQDEVICE_SIZE__+__PITCODE_SIZE__
 .import __LOADERADOPT_SIZE__
 FILE_SIZE = __FILECODE_SIZE__+__LOADERADOPT_SIZE__
 .import dos64_native_text_setup, dos64_native_text_restore, dos64_native_text_state
+.if DOS64_FLOPPY_FORMAT
+.import __FORMATCODE_SIZE__,__FORMATCHECKCODE_SIZE__,dos64_format_check_slot,dos64_format_check_cold,dos64_guest
+TEXT_SIZE = __RENDERCODE_SIZE__ + __DISPLAYCODE_SIZE__ + __FORMATCHECKCODE_SIZE__
+OV_FORMAT_SOURCE = OV_GFX_SOURCE+OV_HEADER+__GFXCODE_SIZE__
+OV_FORMAT_ASSET = OV_ASSETS+4*OV_SLOT_SIZE+OV_HEADER+__GFXCODE_SIZE__
+.assert __FORMATCODE_SIZE__ > 0 && __FORMATCODE_SIZE__ <= OV_WINDOW_SIZE, lderror,"FORMAT length"
+.assert 2*OV_HEADER+__GFXCODE_SIZE__+__FORMATCODE_SIZE__ <= OV_SLOT_SIZE,lderror,"FORMAT nested slot overflow"
+.else
 TEXT_SIZE = __RENDERCODE_SIZE__ + __DISPLAYCODE_SIZE__
+.endif
 .assert __RENDERCODE_SIZE__ = 1003, lderror, "renderer canonical length changed"
 .assert __DISPLAYCODE_SIZE__ = 245, lderror, "display canonical length changed"
+.if !DOS64_FLOPPY_FORMAT
 .assert TEXT_SIZE = 1248, lderror, "combined TEXT canonical length changed"
+.endif
 .assert __DISPLAYCODE_RUN__ = OV_WINDOW+__RENDERCODE_SIZE__, lderror, "TEXT display segment must immediately follow renderer"
 .import dos64_host_input_init, dos64_host_input_poll, dos64_cold_open
 .export dos64_overlay_input_init, dos64_overlay_input_poll
@@ -65,17 +77,52 @@ dos64_overlay_acquire:
     cmp #>OV_WINDOW
     bcc :+
     cmp #>(OV_WINDOW+OV_WINDOW_SIZE)
+.if DOS64_FLOPPY_FORMAT
+    jcc ov_origin
+.else
     bcc ov_origin
+.endif
 :   lda dos64_overlay_busy
     jne ov_busy
     lda dos64_overlay_ready
     cmp #OV_READY
+.if DOS64_FLOPPY_FORMAT
+    jne ov_unready
+.else
     bne ov_unready
+.endif
     lda dos64_overlay_requested
     cmp #OV_FILE
+.if DOS64_FLOPPY_FORMAT
+    jcc ov_bad_id
+.else
     bcc ov_bad_id
+.endif
+    .if DOS64_FLOPPY_FORMAT
+    cmp #9
+    jcs ov_bad_id
+    cmp #OV_FORMAT
+    bne @normal
+    pha
+    lda #OV_TEXT
+    sta dos64_overlay_requested
+    jsr dos64_overlay_acquire
+    bcs @checked
+    jsr dos64_format_check_slot
+    jsr dos64_overlay_release
+@checked:
+    pla
+    sta dos64_overlay_requested
+    bcc @normal
+    plp
+    sec
+    rts
+@normal:
+    lda dos64_overlay_requested
+    .else
     cmp #8
     bcs ov_bad_id
+    .endif
     inc dos64_overlay_busy
     cmp dos64_overlay_current
     beq ov_ok
@@ -86,7 +133,7 @@ dos64_overlay_acquire:
     asl
     asl
     clc
-    adc #48                      ; variant header descriptor base
+    adc #.lobyte(ov_header_requests-ov_requests-8) ; selector starts at one
     tax
     jsr ov_dma
     bcs ov_dma_failed
@@ -112,7 +159,7 @@ dos64_overlay_acquire:
     asl
     asl
     clc
-    adc #104                     ; variant payload descriptor base
+    adc #(ov_payload_requests-ov_requests-8)
     tax
     jsr ov_dma
     bcs ov_dma_failed
@@ -188,7 +235,27 @@ name:
 :   rts
 .endmacro
 .export dos64_overlay_disk_transfer,dos64_overlay_floppy_validate,dos64_overlay_floppy_control
+.if DOS64_FLOPPY_FORMAT
+dos64_overlay_disk_transfer:
+    php
+    sei
+    lda dos64_overlay_busy
+    jne ov_busy
+    lda #OV_DISK
+    ldx dos64_guest+1
+    cpx #5
+    bne :+
+    lda #OV_FORMAT
+:   sta dos64_overlay_requested
+    plp
+    jsr dos64_overlay_acquire
+    bcs :+
+    jsr dos64_disk_native_transfer ; both managed entries begin at C900
+    jmp dos64_overlay_release
+:   rts
+.else
 WRAP dos64_overlay_disk_transfer, OV_DISK, dos64_disk_native_transfer
+.endif
 WRAP dos64_overlay_floppy_validate, OV_DISK, dos64_floppy_validate
 WRAP dos64_overlay_floppy_control, OV_DISK, dos64_floppy_native_control
 WRAP dos64_overlay_files_init, OV_FILE, dos64_files_init
@@ -249,6 +316,7 @@ ov_requests:
 .macro REQUEST host, far, length, direction
     .byte direction, .hibyte(length), .lobyte(length), .bankbyte(far), .hibyte(far), .lobyte(far), .hibyte(host), .lobyte(host)
 .endmacro
+.if !DOS64_FLOPPY_FORMAT
     REQUEST OV_SOURCE, OV_ASSETS, OV_SLOT_SIZE, 0
     REQUEST OV_SOURCE+OV_SLOT_SIZE, OV_ASSETS+OV_SLOT_SIZE, OV_SLOT_SIZE, 0
     REQUEST OV_INPUT_SOURCE, OV_ASSETS+2*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
@@ -256,6 +324,8 @@ ov_requests:
     REQUEST OV_GFX_SOURCE, OV_ASSETS+4*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
     REQUEST OV_HD_SOURCE, OV_ASSETS+5*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
     REQUEST OV_DISK_SOURCE, OV_DISK_ASSET, OV_SLOT_SIZE, 0
+.endif
+ov_header_requests:
     REQUEST $C000, OV_ASSETS, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+2*OV_SLOT_SIZE, OV_HEADER, 1
@@ -263,6 +333,10 @@ ov_requests:
     REQUEST $C000, OV_ASSETS+4*OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_ASSETS+5*OV_SLOT_SIZE, OV_HEADER, 1
     REQUEST $C000, OV_DISK_ASSET, OV_HEADER, 1
+.if DOS64_FLOPPY_FORMAT
+    REQUEST $C000, OV_FORMAT_ASSET, OV_HEADER, 1
+.endif
+ov_payload_requests:
     REQUEST OV_WINDOW, OV_ASSETS+OV_HEADER, FILE_SIZE, 1
     REQUEST OV_WINDOW, OV_ASSETS+OV_SLOT_SIZE+OV_HEADER, TEXT_SIZE, 1
     REQUEST OV_WINDOW, OV_ASSETS+2*OV_SLOT_SIZE+OV_HEADER, __INPUTCODE_SIZE__, 1
@@ -270,6 +344,10 @@ ov_requests:
     REQUEST OV_WINDOW, OV_ASSETS+4*OV_SLOT_SIZE+OV_HEADER, __GFXCODE_SIZE__, 1
     REQUEST OV_WINDOW, OV_ASSETS+5*OV_SLOT_SIZE+OV_HEADER, __HDCODE_SIZE__, 1
     REQUEST OV_WINDOW, OV_DISK_ASSET+OV_HEADER, __DISKCODE_SIZE__, 1
+.if DOS64_FLOPPY_FORMAT
+    REQUEST OV_WINDOW, OV_FORMAT_ASSET+OV_HEADER, __FORMATCODE_SIZE__, 1
+.endif
+.assert *-ov_requests <= 256,error,"overlay descriptors exceed byte index"
 dos64_overlay_headers:
     .byte "D64O",1,OV_FILE
     .word FILE_SIZE,OV_WINDOW
@@ -299,6 +377,14 @@ dos64_overlay_headers:
     .word __DISKCODE_SIZE__,OV_WINDOW
     .word 0
     .byte "DSK "
+.if DOS64_FLOPPY_FORMAT
+    .byte "D64O",1,OV_FORMAT
+    .word __FORMATCODE_SIZE__,OV_WINDOW
+    .word 0
+    .byte "FMT "
+.export dos64_format_slot_crc
+dos64_format_slot_crc: .dword 0
+.endif
 dos64_overlay_code_end:
 
 ; Bootstrap is cold resident CODE to keep DEVICECODE budget below 400 bytes.
@@ -309,6 +395,9 @@ dos64_overlay_init:
     lda dos64_cold_open
     cmp #$a5
     jne ov_cold
+.if DOS64_FLOPPY_FORMAT
+    jmp ov_cold_init_clear
+.else
     lda #0
     sta dos64_overlay_ready
     sta dos64_overlay_current
@@ -320,6 +409,7 @@ dos64_overlay_init:
     plp
     clc
     rts
+.endif
 
 dos64_overlay_bootstrap:
     php
@@ -335,6 +425,41 @@ dos64_overlay_bootstrap:
     plp
     jmp dos64_overlay_cold_bootstrap
 .segment "COLDINIT"
+.if DOS64_FLOPPY_FORMAT
+ov_cold_init_clear:
+    lda #0
+    sta dos64_overlay_ready
+    sta dos64_overlay_current
+    sta dos64_overlay_busy
+    sta dos64_overlay_requested
+    sta dos64_overlay_reu_mib
+    sta dos64_overlay_error
+    sta dos64_native_text_state
+    plp
+    clc
+    rts
+
+ov_boot_dma:
+    ldy #7
+:   lda ov_boot_requests,x
+    sta dos64_reu_request,y
+    inx
+    dey
+    bpl :-
+    jmp dos64_reu_transfer
+.segment "COLDRODATA"
+ov_boot_requests:
+    REQUEST OV_SOURCE, OV_ASSETS, OV_SLOT_SIZE, 0
+    REQUEST OV_SOURCE+OV_SLOT_SIZE, OV_ASSETS+OV_SLOT_SIZE, OV_SLOT_SIZE, 0
+    REQUEST OV_INPUT_SOURCE, OV_ASSETS+2*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
+    REQUEST OV_PIT_SOURCE, OV_ASSETS+3*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
+    REQUEST OV_GFX_SOURCE, OV_ASSETS+4*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
+    REQUEST OV_HD_SOURCE, OV_ASSETS+5*OV_SLOT_SIZE, OV_SLOT_SIZE, 0
+    REQUEST OV_DISK_SOURCE, OV_DISK_ASSET, OV_SLOT_SIZE, 0
+.segment "COLDINIT"
+.else
+ov_boot_dma = ov_dma
+.endif
 dos64_overlay_boot_code_start:
 dos64_overlay_cold_bootstrap:
     php
@@ -380,28 +505,44 @@ dos64_overlay_cold_bootstrap:
     lda OV_DISK_SOURCE,x
     cmp dos64_overlay_headers+6*OV_HEADER,x
     jne ov_header_failed
+    .if DOS64_FLOPPY_FORMAT
+    lda OV_FORMAT_SOURCE,x
+    cmp dos64_overlay_headers+7*OV_HEADER,x
+    jne ov_header_failed
+    .endif
     dex
+    .if DOS64_FLOPPY_FORMAT
+    jpl @headers
+    .else
     bpl @headers
+    .endif
+    .if DOS64_FLOPPY_FORMAT
+    jsr dos64_format_check_cold
+    bcc :+
+    lda dos64_overlay_error
+    jmp ov_failed
+:
+    .endif
     ldx #0
-    jsr ov_dma
+    jsr ov_boot_dma
     jcs ov_dma_failed
     ldx #8
-    jsr ov_dma
+    jsr ov_boot_dma
     jcs ov_dma_failed
     ldx #16
-    jsr ov_dma
+    jsr ov_boot_dma
     jcs ov_dma_failed
     ldx #24
-    jsr ov_dma
+    jsr ov_boot_dma
     jcs ov_dma_failed
     ldx #32
-    jsr ov_dma
+    jsr ov_boot_dma
     jcs ov_dma_failed
     ldx #40
-    jsr ov_dma
+    jsr ov_boot_dma
     jcs ov_dma_failed
     ldx #48
-    jsr ov_dma
+    jsr ov_boot_dma
     jcs ov_dma_failed
     jsr hdb_load_extension
     jcs ov_dma_failed

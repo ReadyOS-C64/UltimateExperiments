@@ -5,9 +5,10 @@ import re
 import sys
 import struct
 import hashlib
+import zlib
 
 
-def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payload=None, shadow_payload=None,saver_payload=None):
+def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payload=None, shadow_payload=None,saver_payload=None,format_payload=None):
     errors = []
     symbols = {name.lstrip("."): int(addr, 16) for addr, name in
                re.findall(r"^al ([0-9A-Fa-f]+) (\S+)", labels_text, re.M)}
@@ -30,7 +31,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
               "NATIVESTATE": (0x080D,0x3FFF), "INPUTCODE": (0xC900,0xCFFF),
               "UCIBUFFER": (0xC100, 0xC8FF),
               "IRQMAIN":(0xC900,0xCFFF),"IRQDEVICE":(0xC900,0xCFFF),"PITCODE":(0xC900,0xCFFF),"GFXCODE":(0xC900,0xCFFF),
-              "DISKCODE":(0xC900,0xCFFF),"HDCODE": (0xC900,0xCFFF),"HDBIOS":(0xF000,0xFDFF),"SAVERCODE":(0xB010,0xB7FF),
+              "FORMATCODE":(0xC900,0xCFFF),"FORMATCHECKCODE":(0xC900,0xCFFF),"DISKCODE":(0xC900,0xCFFF),"HDCODE": (0xC900,0xCFFF),"HDBIOS":(0xF000,0xFDFF),"SAVERCODE":(0xB010,0xB7FF),
               "FILECODE": (0xC900, 0xCFFF), "RENDERCODE": (0xC900, 0xCFFF), "DISPLAYCODE": (0xC900,0xCFFF),
               "NARROWFONT": (0x4400,0x47FF), "FULLFONT": (0x4800,0x4FFF),
               "RANGEBUFFER": (0xC000, 0xC0FF), "BSS": (0xE000, 0xE0FF), "PAGEMAP": (0xE100, 0xE8FF),
@@ -53,7 +54,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     for index, seg in enumerate(segments):
         for other in segments[index+1:]:
             # Only these two separately emitted images may share a run window.
-            variant={"FILECODE":"FILE","RENDERCODE":"TEXT","DISPLAYCODE":"TEXT","INPUTCODE":"INPUT","IRQMAIN":"PIT","IRQDEVICE":"PIT","PITCODE":"PIT","GFXCODE":"GFX","HDCODE":"HD","DISKCODE":"DISK"}
+            variant={"FILECODE":"FILE","RENDERCODE":"TEXT","DISPLAYCODE":"TEXT","FORMATCHECKCODE":"TEXT","FORMATCODE":"FORMAT","INPUTCODE":"INPUT","IRQMAIN":"PIT","IRQDEVICE":"PIT","PITCODE":"PIT","GFXCODE":"GFX","HDCODE":"HD","DISKCODE":"DISK"}
             exclusive_overlays = seg["name"] in variant and other["name"] in variant and variant[seg["name"]]!=variant[other["name"]]
             if not exclusive_overlays and max(seg['start'], other['start']) <= min(seg['end'], other['end']):
                 errors.append(f"Overlapping segments {seg['name']} and {other['name']}")
@@ -132,6 +133,34 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
                 if symbols.get("__DISPLAYCODE_"+suffix+"__")!=value:errors.append("DISPLAYCODE metadata mismatch")
             overlays["RENDERCODE"]={**renderer,"end":part["end"],"bytes":renderer["bytes"]+part["bytes"],"renderer_bytes":renderer["bytes"],"display_bytes":part["bytes"]}
     elif display:errors.append("DISPLAYCODE requires exclusive TEXT overlay")
+    format_parts=[x for x in segments if x["name"]=="FORMATCODE"]
+    check_parts=[x for x in segments if x["name"]=="FORMATCHECKCODE"]
+    format_layout=bool(format_parts or check_parts)
+    if format_layout:
+        if len(format_parts)!=1 or len(check_parts)!=1 or "RENDERCODE" not in overlays or "GFXCODE" not in overlays:
+            errors.append("FORMAT requires paired nested payload/TEXT checker and GFX")
+        else:
+            part=format_parts[0];checker=check_parts[0];text=overlays["RENDERCODE"];gfx=overlays["GFXCODE"]
+            if part['start']!=0xc900 or not 0<part['bytes']<=0x700 or checker['start']!=0xcde0 or not 0<checker['bytes']<=544 or checker['end']>=0xd000:
+                errors.append("FORMAT/checker exact managed-window bounds invalid")
+            for name,obj in (("FORMATCODE",part),("FORMATCHECKCODE",checker)):
+                for suffix,value in (("RUN",obj['start']),("LOAD",obj['start']),("SIZE",obj['bytes'])):
+                    if symbols.get('__'+name+'_'+suffix+'__')!=value:errors.append(name+" metadata mismatch")
+            if symbols.get('__FORMAT_START__')!=0xc900 or symbols.get('__FORMAT_SIZE__')!=0x700 or symbols.get('__FORMAT_LAST__')!=part['end']+1 or symbols.get('__FORMAT_FILEOFFS__')!=0:
+                errors.append("FORMAT emitted area differs from linked payload")
+            overlays['RENDERCODE']={**text,'end':checker['end'],'bytes':text['bytes']+checker['bytes'],'format_checker_bytes':checker['bytes']}
+            begin=16+gfx['bytes'];end=begin+16+part['bytes']
+            if end>0x800:errors.append("FORMAT nested source exceeds physical GFX slot")
+            load['format']={'source':0x9000+begin,'reu':0x342000+begin,'run':0xc900,'bytes':part['bytes'],'padding':0x800-end,'checker':checker,'trust':'cold adoption and every direct selector8 check whole2048 GFXslot CRC outside covered slot; normal GFX unchanged'}
+            if prg is not None:
+                block=prg[0x9000-0x801+2:0x9800-0x801+2]
+                header=b'D64O'+bytes((1,8))+struct.pack('<HHH',part['bytes'],0xc900,0)+b'FMT '
+                if len(block)!=0x800 or block[begin:begin+16]!=header or any(block[end:]):errors.append("FORMAT nested header/padding mismatch")
+                if format_payload is None or len(format_payload)!=part['bytes'] or block[begin+16:end]!=format_payload:errors.append("FORMAT source differs from linked output")
+                address=symbols.get('dos64_format_slot_crc',-1);lo=symbols.get('dos64_overlay_code_start',-1);hi=symbols.get('dos64_overlay_code_end',-1)
+                if not 0x080d<=lo<=address or address+4>hi or not hi<=0x4000 or prg[address-0x801+2:address-0x801+6]!=struct.pack('<I',zlib.crc32(block)):
+                    errors.append("FORMAT whole-slot expected CRC must bind separate resident field")
+    elif format_payload is not None:errors.append("FORMAT payload without linked FORMAT/checker")
     if "IRQMAIN" in overlays:
         members=[next((x for x in segments if x["name"]==name),None) for name in ("IRQMAIN","IRQDEVICE","PITCODE")]
         if any(x is None for x in members):errors.append("PIT requires all three contiguous members")
@@ -201,7 +230,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
                                    struct.pack("<HHH", seg["bytes"], 0xC900, 0)+tag)
                 if len(block) != 0x800 or block[:16] != expected_header:
                     errors.append(f"{segment_name} startup slot has wrong header or length")
-                elif any(block[16+seg["bytes"]:]):
+                elif not (format_layout and segment_name=="GFXCODE") and any(block[16+seg["bytes"]:]):
                     errors.append(f"{segment_name} startup slot tail is not zero")
                 if overlay_payloads is not None:
                     payload = overlay_payloads.get(segment_name)
@@ -363,6 +392,7 @@ if __name__ == "__main__":
     parser.add_argument("--overlay-gfx",type=Path)
     parser.add_argument("--overlay-hd",type=Path)
     parser.add_argument("--overlay-disk",type=Path)
+    parser.add_argument("--overlay-format",type=Path)
     parser.add_argument("--shadow",type=Path)
     parser.add_argument("--saver",type=Path)
     parser.add_argument("--import-code", type=Path)
@@ -382,7 +412,7 @@ if __name__ == "__main__":
     if args.overlay_disk:
         if payloads is None:parser.error("DISK requires baseline payloads")
         payloads["DISKCODE"]=args.overlay_disk.read_bytes()
-    report = verify(map_path.read_text(), args.labels.read_text(), prg_path.read_bytes(), payloads, args.import_code.read_bytes() if args.import_code else None,args.shadow.read_bytes()if args.shadow else None,args.saver.read_bytes()if args.saver else None)
+    report = verify(map_path.read_text(), args.labels.read_text(), prg_path.read_bytes(), payloads, args.import_code.read_bytes() if args.import_code else None,args.shadow.read_bytes()if args.shadow else None,args.saver.read_bytes()if args.saver else None,args.overlay_format.read_bytes()if args.overlay_format else None)
     map_path.with_suffix(".memory.json").write_text(json.dumps(report, indent=2)+"\n")
     if report["errors"]:
         raise SystemExit("\n".join(report["errors"]))

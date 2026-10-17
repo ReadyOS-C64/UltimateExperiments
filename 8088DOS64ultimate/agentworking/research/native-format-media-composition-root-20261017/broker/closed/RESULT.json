@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "actual_paired_controls": 8,
+  "actual_groups": 16,
+  "own_inputs": 218,
+  "before_copies_after_exact": true,
+  "production_builder_source_records": 509,
+  "production_builder_generated_records": 467,
+  "source_only_builder_reproduces_exact_executed_candidate": true,
+  "borrowed_model": "sealed10a3 actual Peddle model; existing read_step1 functional CIA versus0 frozen, separate CPU64 provider audit",
+  "native": {
+    "DOS64.PRG": {
+      "sha256": "25754ab43e045509d333b541c940e82f418459b1dbddbcd8d20aa15059804245",
+      "bytes": 47105
+    },
+    "DOS64.MNU": {
+      "sha256": "c6ed541b4533d1fb6aa51626a9871531d45d8e3e91bbaa610f8363152482d979",
+      "bytes": 57344
+    },
+    "DOS64.REL": {
+      "sha256": "1b6313b044fa6076e2ca42f8ac7282f1b3b24f39ed41794f5a4d45c83c6ca4eb",
+      "bytes": 64
+    }
+  },
+  "physical": false
+}

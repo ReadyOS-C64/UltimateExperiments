@@ -381,3 +381,6 @@ A completed file writer and its readonly source cache each need explicit clean-s
 
 
 2026-10-17: elapsed_poll carry/status4 is an expected bounded-sampler seam, not always a broken clock. Admission sites need the same boundedretry distinction as active job polls, before mutating ownership. A host debugpoke does not necessarily model an I/O write: use real CPU STA for the control-fault fixture. Independent leaf pumping has different coordinator overhead and must have its own measured bound; retain the first short host budget failure, and do not change the SUT merely to meet it.
+
+
+2026-10-17: Native UI keyboard tests must hold BOTH matrix press and release until a real successful scan, not one modal_wait return: pendingclock may skip scanning. The olddriver lost7characters and nativeIncoming correctly refused the wrongpath; preserve that counter and prove exacttypedpath beforeworker admission. CIAreadquota is not literal fullscan count during backendSTOP polls; qualify observations. Existing genericunknownselector tests must adopt newly supported named8FORMAT and reject9 rather than obscure legitimatecontract expansion. A runtime-only source inventory omits unrelatedtestdriver/VICEpreparation; stage exact neededfixture and report partial commandfailure honestly.

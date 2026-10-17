@@ -190,7 +190,7 @@ bridge_load_controller:
  sta br_error
 : lda br_last+5
  beq @blocked
- jsr modal_poll
+ jsr control_poll              ; SAMPLE4 alone is not a terminal worker failure
  bcs @blocked
  lda #1
  sta br_resume

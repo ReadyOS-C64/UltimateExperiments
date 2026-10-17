@@ -1,0 +1,47 @@
+{
+  "status": "passed",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/default-build/run-98iwfo4x",
+  "groups": {},
+  "products": {
+    "dos64.prg": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/default-build/run-98iwfo4x/products/dos64.prg",
+      "sha256": "666089b57e5611a67b5d87ae84880256ef5dafb121b152e1de81b9ec1cc29064",
+      "bytes": 47105
+    },
+    "dos64-tests.prg": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/default-build/run-98iwfo4x/products/dos64-tests.prg",
+      "sha256": "b9e9cc9e7d87176848ccf8bae49dfe4f4ff0125b3aad5a1cb874341436b78df6",
+      "bytes": 47105
+    },
+    "dos64.labels": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/default-build/run-98iwfo4x/products/dos64.labels",
+      "sha256": "01f4fec0e67b741768d57cb31f989f8b76fc11e7f3b455f2fe786b3760bfaa3a",
+      "bytes": 73386
+    },
+    "dos64-tests.labels": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/default-build/run-98iwfo4x/products/dos64-tests.labels",
+      "sha256": "7588e4d0bceb302fa17ba8594f9cb0997a00439da3ad047f07b79e15cc6d5ddc",
+      "bytes": 75897
+    },
+    "dos64.map": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/default-build/run-98iwfo4x/products/dos64.map",
+      "sha256": "da24802f1549a01fbed93cc637bb404fc72980767b1677e297a269a43512ed64",
+      "bytes": 89870
+    },
+    "dos64-tests.map": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/default-build/run-98iwfo4x/products/dos64-tests.map",
+      "sha256": "11fb145d4b34a6d47f21fa5c2f08d17e1e0683f6d26080cdcc96bbfbe94ddaa9",
+      "bytes": 92931
+    },
+    "dos64.memory.json": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/default-build/run-98iwfo4x/products/dos64.memory.json",
+      "sha256": "cde71c1c8a54186b48501b9e2ca4781e05cae90619a934fc20f68c35ffbfec36",
+      "bytes": 10564
+    },
+    "dos64-tests.memory.json": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/default-build/run-98iwfo4x/products/dos64-tests.memory.json",
+      "sha256": "eba29605807ce57a0b03c97cff844a17a2c39d47fe1a9418cd73da77dc5b7def",
+      "bytes": 10861
+    }
+  }
+}

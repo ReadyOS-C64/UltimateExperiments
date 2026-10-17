@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "groups_unique": 55,
+  "actual_CPU_groups": {
+    "FORMAT_runtime": 12,
+    "clock_admission": 10,
+    "CIA_menu": 3,
+    "Zig_runtime": 2
+  },
+  "host_groups": {
+    "FORMAT_package": 6,
+    "existing_overlay_package": 5,
+    "existing_memory_contract": 17
+  },
+  "memory_contract_execution": "16 earlier successful cases +1 targeted helper case after required linked fixture supplied; first fullrun17 had1 missingfixture error",
+  "replay_inputs_before_after": 425,
+  "combined_source_tools_resources": 515,
+  "combined_generated_products": 474,
+  "default_runtime": "666089b57e5611a67b5d87ae84880256ef5dafb121b152e1de81b9ec1cc29064",
+  "default_UNIT": "b9e9cc9e7d87176848ccf8bae49dfe4f4ff0125b3aad5a1cb874341436b78df6",
+  "legacy_selected_PRGs_byteexact_prior27": true,
+  "plain_runtime_media_without_FORMAT_builds": true,
+  "models": "two verified source-built peer models reused; Zig actual-runtime model/tests newly compiled and directly executed, both tests repeated only for final binary execution identity",
+  "scope": "new combined runtime FORMAT/broker/bridge/WIRE/Save native composition; no Root genuineDOS/cold/producer/physical claim",
+  "full_FORMAT_UNIT1": "unsupported prior actual overflow retained, tested actualruntime+defaultUNIT0",
+  "physical": false
+}

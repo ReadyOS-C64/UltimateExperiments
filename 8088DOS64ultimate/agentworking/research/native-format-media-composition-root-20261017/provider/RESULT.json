@@ -1,0 +1,55 @@
+{
+  "passed": true,
+  "groups": 5,
+  "scope": "unchanged borrowed actual native elapsed/CIA provider and source-built test-only single/bounded admission adapters; no repaired WIRE/MS integrated claim",
+  "observations": [
+    {
+      "adapter": "bounded",
+      "calls": 26,
+      "carry": 0,
+      "host_clock_status": 0,
+      "elapsed": "b0dc",
+      "cycles": 15744
+    },
+    {
+      "adapter": "bounded",
+      "calls": 256,
+      "carry": 1,
+      "host_clock_status": 4,
+      "elapsed": "efbe",
+      "cycles": 153624
+    },
+    {
+      "adapter": "single",
+      "calls": 1,
+      "carry": 1,
+      "host_clock_status": 4,
+      "elapsed": "efbe",
+      "cycles": 601
+    },
+    {
+      "adapter": "bounded",
+      "calls": 1,
+      "carry": 1,
+      "host_clock_status": 1,
+      "elapsed": "efbe",
+      "cycles": 224
+    },
+    {
+      "adapter": "bounded",
+      "calls": 1,
+      "carry": 1,
+      "host_clock_status": 2,
+      "elapsed": "efbe",
+      "cycles": 233
+    },
+    {
+      "adapter": "bounded",
+      "calls": 1,
+      "carry": 1,
+      "host_clock_status": 3,
+      "elapsed": "efbe",
+      "cycles": 245
+    }
+  ]
+}

@@ -68,7 +68,7 @@ def stage(run,records):
    if not(w/'work'/safe(n)).is_file():raise RuntimeError('Missing Make include: '+n)
  return w
 
-def build(out):
+def build(out,floppy_format=False):
  out=Path(out).resolve();out.mkdir(parents=True,exist_ok=True);owner=out/'OWNER.json'
  if owner.exists():
   if json.loads(owner.read_text())!=OWNER:raise RuntimeError('Different output owner')
@@ -89,7 +89,7 @@ def build(out):
   for n in ['make','cc65','ca65','ld65']:(farm/n).symlink_to(t[n]);env['DOS64_'+n.upper()]=str(t[n])
   env['PATH']=str(farm)+os.pathsep+os.defpath;env['DOS64_CC65_LIB']=str(t['library']);env['DOS64_PYTHON']=str(Path(sys.executable).resolve())
   atomic_json(run/'INPUTS_BEFORE.json',records)
-  phase='native build';command=[str(Path(sys.executable).resolve()),'-B','build_ui_bridge.py','--role','runtime'];commands.append({'argv':command,'cwd':str(work)})
+  phase='native build';command=[str(Path(sys.executable).resolve()),'-B','build_ui_bridge.py','--role','runtime']+(['--floppy-format']if floppy_format else []);commands.append({'argv':command,'cwd':str(work)})
   with(run/'build.stdout').open('wb')as o,(run/'build.stderr').open('wb')as e:subprocess.run(command,cwd=work,env=env,stdin=subprocess.DEVNULL,stdout=o,stderr=e,check=True)
   phase='validate';j=json.loads((work/'UI_BUILD_RESULT.json').read_text());main=work/'work/build/dos64.prg';labels=work/'work/build/dos64.labels';menu=work/'MODAL.MNU';header=(work/'HEADER.bin').read_bytes()
   if j['role']!='runtime'or len(header)!=64 or header[:8]!=b'D64M\1\1\x40\0'or menu.stat().st_size!=57344 or menu.read_bytes()[:64]!=header or main.read_bytes().count(header[8:24])!=1:raise RuntimeError('Actual runtime/menu cohort mismatch')
@@ -109,7 +109,7 @@ def build(out):
    if digest(d)!=digest(q):raise RuntimeError('Published copy mismatch')
    d.chmod(0o444);published[name]={'path':str(d),**digest(d)}
   verify(records);verify(native_products);atomic_json(run/'INPUTS_AFTER.json',records);atomic_json(run/'PRODUCTS_AFTER.json',native_products)
-  result={'schema':1,'status':'passed','scope':'SOURCE_BUILT_OPTIONAL_RUNTIME_MEDIA_NO_COLD_DOS_HARDWARE_ACCEPTANCE','run':str(run),'work':str(work),'role':'runtime','flags':FLAGS,'MNU_bytes':57344,'MNU_REU_spans':[[0x3da000,24576],[0x3f0000,32768]],'header':header.hex(),'products':published,'assets':{n:{k:v[k]for k in ['sha256','bytes']}for n,v in published.items()if n in ['DOS64.PRG','DOS64.REL','DOS64.MNU']},'source_inputs':records,'native_products':native_products,'commands':commands,'physical':False}
+  result={'schema':1,'status':'passed','scope':'SOURCE_BUILT_OPTIONAL_RUNTIME_MEDIA_NO_COLD_DOS_HARDWARE_ACCEPTANCE','run':str(run),'work':str(work),'role':'runtime','flags':dict(FLAGS,DOS64_FLOPPY_FORMAT=int(floppy_format)),'MNU_bytes':57344,'MNU_REU_spans':[[0x3da000,24576],[0x3f0000,32768]],'header':header.hex(),'products':published,'assets':{n:{k:v[k]for k in ['sha256','bytes']}for n,v in published.items()if n in ['DOS64.PRG','DOS64.REL','DOS64.MNU']},'source_inputs':records,'native_products':native_products,'commands':commands,'physical':False}
   phase='run result';atomic_json(run/'RESULT.json',result)
   phase='unlock';unlock_attempted=True;(out/'LOCK').unlink();owned=False
   phase='publication';atomic_json(out/'RESULT.json',result);return result
@@ -131,5 +131,5 @@ def build(out):
   if primary is None and cleanup is not None:raise cleanup
 
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,default=ROOT/'build/runtime-media');a=p.parse_args();r=build(a.out);print(json.dumps({'status':r['status'],'run':r['run'],'products':r['products']},indent=2))
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,default=ROOT/'build/runtime-media');p.add_argument('--floppy-format',action='store_true',help='Enable XT360K FORMAT in the runtime-only profile');a=p.parse_args();r=build(a.out,floppy_format=a.floppy_format);print(json.dumps({'status':r['status'],'run':r['run'],'products':r['products']},indent=2))
 if __name__=='__main__':main()

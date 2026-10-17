@@ -1,0 +1,27 @@
+{
+  "schema": "root-FORMAT-media-composition-v1",
+  "status": "PASS_PUBLIC_SOURCE_COMPOSITION_55_NOT_FINAL_V1",
+  "root_source_manifest": {
+    "sha256": "8ef12c7e252134e23036f9d50618ab8941524de0aeb14abc6ff4822f393dbad1",
+    "pins": 3560
+  },
+  "archive": {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/native-format-media-composition-root-20261017",
+    "sha256": "ce57e6de66c65242a7a6ffc00c296bc7e7953e52fb1c32e5c8374025542d614c",
+    "pins": 86
+  },
+  "promoted_paths": 16,
+  "public_result": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-public-promotion-root-20261017/build/RESULT.json",
+  "native": "806eaab6f76ca49e6d68ba73a78bbc4a491b364eb0d3e71fd802acfe82cf8e73",
+  "MNU": "1b7086eccb23d5e4f25c971ad66b86b3c69478f1f7d2d1075b36cb83f7a87750",
+  "actual_CPU_unique": 27,
+  "host_unique": 28,
+  "default_and_legacy_selected_PRGs_unchanged": true,
+  "all9public_products_match_tested": true,
+  "public_source_inputs": 515,
+  "public_generated_products": 474,
+  "physical": false,
+  "full_FORMAT_UNIT1": "unsupported actual parent overflow; actual-runtime/Zig and intactUNIT0 lanes",
+  "CIA_driver351e_scope": "prior0b52/freshcold fullCONFIG80 success; not806e or publicpackage acceptance",
+  "open": "clean public test target, native cold/installer source promotion and error UX, final20MiB/Turbo/FORMAT persistence, physical/human acceptance"
+}

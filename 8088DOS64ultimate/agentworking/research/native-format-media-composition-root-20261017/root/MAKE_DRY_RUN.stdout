@@ -1,0 +1,18 @@
+Hmm...  Looks like a unified diff to me...
+The text leading up to this was:
+--------------------------
+|--- a/Makefile
+|+++ b/Makefile
+--------------------------
+Patching file Makefile using Plan A...
+Hunk #1 succeeded at 5.
+Hunk #2 succeeded at 51.
+Hunk #3 succeeded at 60.
+Hunk #4 succeeded at 82.
+Hunk #5 succeeded at 113.
+Hunk #6 succeeded at 207.
+Hunk #7 succeeded at 225.
+Hunk #8 succeeded at 270.
+Hunk #9 failed at 353.
+1 out of 9 hunks failed while patching Makefile
+done

@@ -1,0 +1,65 @@
+{
+  "status": "PASS_FOCUSED_CONFIG80_CONSUMER_WITH_SCAN_HELD_CIA_DRIVER",
+  "runtime": "0b5237221610fb6eea93caa2abcb242513a66874c95c5465d6a12d2801dcc7c9",
+  "MNU": "4424dfd7dc04f377993f6f1c71205aa969dfd19c04650d975b372c4d2b6a7b9f",
+  "START": "1699a44ec3f8c0388282ba7451f913ed0c3bd80fb3a3db933b5d5127497b9f66",
+  "closed": {
+    "passed_focused_CONFIG80_CIA_scan_driver": true,
+    "source_records": 1712,
+    "unchanged_originals_and_copies": true,
+    "all_parent_native_source_product_files_exact": true,
+    "full_CONFIG80_consumer_flow_passed": true,
+    "new_CONFIG_publication_executed": false,
+    "physical": false,
+    "per_matrix_modal_pass_bound": 256
+  },
+  "native_groups": 1,
+  "full_flow": [
+    "matched generated START/freshNONE/INI/handoff",
+    "genuine DOS80 VER and paged A directory",
+    "actual CIA ordinaryS",
+    "actual CIA path entry/Insert with exact path beforeReturn",
+    "genuine DOS DIR B and TYPE B CONFIG.SYS",
+    "genuine DOS TYPE original C file",
+    "actual CIA Finish/privateSafe/oneknownC_CLOSE"
+  ],
+  "typed_path_before_Incoming": {
+    "expected": "/New launch/INCOMING.IMG",
+    "actual": "/New launch/INCOMING.IMG",
+    "path_len": 24,
+    "exact": true,
+    "source": "actual native path editor observations, no UI writes"
+  },
+  "matrix_events": 63,
+  "maximum_wait_passes": 15,
+  "per_matrix_bound": 256,
+  "lost_key_cause_evidence": {
+    "release_event": 22,
+    "path_prefix": "/New la",
+    "pending_passes_without_any_portB_read": 14,
+    "successful_release_pass": 15,
+    "next_native_key": "u",
+    "prior_one_pass_driver_would_advance_7_release_press_pairs_during_these_pending_passes": true
+  },
+  "observation_qualification": "The historical log field successful_full_scans is reads//9, a read quota, not a count of full scans across worker polling (workers also read STOP). Path/release evidence uses exact zero-read pending passes, final10-read UI pass, ps_key0 and every private edited-prefix equality; it does not use that arithmetic as native authority.",
+  "no_new_CONFIG_publisher_execution": true,
+  "no_native_source_or_product_changes": true,
+  "new_driver_only": "work/test_published_cold56_insert.py",
+  "verified_preserved_parents": [
+    {
+      "parent": "native-installer-cold56-admission-20261017",
+      "manifest_sha256": "f92a5bf27069f8615bfef8d9a912ed0099819ba54de8a571c7ecc521f3ada11f",
+      "all_files_exact": 3494
+    },
+    {
+      "parent": "native-installer-cold56-incoming-diagnostic-20261017",
+      "manifest_sha256": "873d1955e4d7f349ff426bb8b008cdec02ca6f9fa7f84a065ce27f9f8b8c8469",
+      "all_files_exact": 4200
+    }
+  ],
+  "first_preparation_failure": "add_driver metadata referenced generated OBS variable; preserved unexecuted source/logs, corrected before actual CPU execution",
+  "full_package_ready": false,
+  "physical": false,
+  "FORMAT": false,
+  "Turbo": false
+}

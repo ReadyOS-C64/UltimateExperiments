@@ -15,6 +15,7 @@ import json
 import pathlib
 import struct
 import re
+import zlib
 
 WINDOW = 0xC900
 WINDOW_SIZE = 0x700
@@ -27,11 +28,11 @@ IMPORT_SIZE = 0x1000
 
 
 def slot(payload, identity):
-    if identity not in (1, 2, 3, 4, 5, 6, 7):
+    if identity not in (1, 2, 3, 4, 5, 6, 7, 8):
         raise ValueError("unknown overlay identity")
     if not 1 <= len(payload) <= WINDOW_SIZE:
         raise ValueError("overlay payload must fit C900–CFFF and be nonempty")
-    tag = {1:b"FILE",2:b"TEXT",3:b"KEYS",4:b"TIME",5:b"CGA ",6:b"HD  ",7:b"DSK "}[identity]
+    tag = {1:b"FILE",2:b"TEXT",3:b"KEYS",4:b"TIME",5:b"CGA ",6:b"HD  ",7:b"DSK ",8:b"FMT "}[identity]
     header = b"D64O" + bytes((1, identity)) + struct.pack("<HHH", len(payload), WINDOW, 0) + tag
     return header + payload + bytes(SLOT_SIZE - HEADER - len(payload))
 
@@ -133,8 +134,11 @@ def append_variant(prg,payload,labels,identity,area,members,source):
 
 def validate_text(payload,labels):
     symbols={name.lstrip("."):int(addr,16) for addr,name in re.findall(r"^al ([0-9A-Fa-f]+) (\S+)",labels,re.M)}
-    expected={"__RENDERCODE_RUN__":WINDOW,"__RENDERCODE_SIZE__":1003,"__DISPLAYCODE_RUN__":WINDOW+1003,"__DISPLAYCODE_SIZE__":245,"__RENDER_LAST__":WINDOW+1248}
-    if len(payload)!=1248 or any(symbols.get(k)!=value for k,value in expected.items()):
+    check=symbols.get("__FORMATCHECKCODE_SIZE__",0)
+    expected={"__RENDERCODE_RUN__":WINDOW,"__RENDERCODE_SIZE__":1003,"__DISPLAYCODE_RUN__":WINDOW+1003,"__DISPLAYCODE_SIZE__":245,"__RENDER_LAST__":WINDOW+1248+check}
+    if check:
+        expected.update({"__FORMATCHECKCODE_RUN__":WINDOW+1248,"__FORMATCHECKCODE_LOAD__":WINDOW+1248})
+    if not 0<=check<=544 or len(payload)!=1248+check or any(symbols.get(k)!=value for k,value in expected.items()):
         raise ValueError("TEXT payload must include canonical contiguous1003-byte renderer+245-byte VIC setup")
 
 
@@ -159,6 +163,7 @@ def main():
     p.add_argument("--shadow",type=pathlib.Path)
     p.add_argument("--saver",type=pathlib.Path)
     p.add_argument("--disk",type=pathlib.Path)
+    p.add_argument("--format",type=pathlib.Path)
     p.add_argument("--import-code", type=pathlib.Path,required=True)
     p.add_argument("--labels", type=pathlib.Path)
     p.add_argument("--output-prg", type=pathlib.Path, required=True)
@@ -171,7 +176,8 @@ def main():
         p.error("HD and shadow linked outputs must be supplied together")
     if a.saver and not a.hd:p.error("SAVER requires paired six-overlay/shadow baseline")
     if a.disk and not a.saver:p.error("DISK requires paired SAVER baseline")
-    inputs = (a.resident_prg,a.files,a.render,a.import_code,a.labels,a.input,a.pit,a.gfx)+((a.hd,a.shadow)if a.hd else ())+((a.saver,)if a.saver else ())+((a.disk,)if a.disk else ())
+    if a.format and not a.disk:p.error("FORMAT requires full DISK baseline")
+    inputs = (a.resident_prg,a.files,a.render,a.import_code,a.labels,a.input,a.pit,a.gfx)+((a.hd,a.shadow)if a.hd else ())+((a.saver,)if a.saver else ())+((a.disk,)if a.disk else ())+((a.format,)if a.format else ())
     outputs = (a.output_prg, a.output_assets) + ((a.manifest,) if a.manifest else ())
     resolved = [path.resolve() for path in inputs + outputs]
     if len(set(resolved)) != len(resolved):
@@ -180,7 +186,11 @@ def main():
     try:
         validate_text(raw[2],raw[4].decode())
         validate_files(raw[1],raw[4].decode())
-        validate_variant(raw[2],raw[4].decode(),"RENDER",("RENDERCODE","DISPLAYCODE"))
+        text_members=("RENDERCODE","DISPLAYCODE")+(("FORMATCHECKCODE",)if a.format else ())
+        validate_variant(raw[2],raw[4].decode(),"RENDER",text_members)
+        symbols={n.lstrip("."):int(ad,16) for ad,n in re.findall(r"^al ([0-9A-Fa-f]+) (\S+)",raw[4].decode(),re.M)}
+        if bool(a.format)!=bool(symbols.get("__FORMATCODE_SIZE__",0)) or bool(a.format)!=bool(symbols.get("__FORMATCHECKCODE_SIZE__",0)):
+            raise ValueError("FORMAT payload/checker must be paired explicitly")
         if not a.hd and re.search(r"^al (?!000000)[0-9A-Fa-f]+ \.__HDCODE_SIZE__$",raw[4].decode(),re.M):
             raise ValueError("linked HD requires paired HD and shadow inputs")
         if not a.saver and re.search(r"^al (?!000000)[0-9A-Fa-f]+ \.__SAVERCODE_SIZE__$",raw[4].decode(),re.M):
@@ -192,6 +202,20 @@ def main():
         assets+=input_slot
         prg,pit_slot=append_variant(prg,raw[6],raw[4].decode(),4,"PIT",("IRQMAIN","IRQDEVICE","PITCODE"),0x8800)
         prg,gfx_slot=append_variant(prg,raw[7],raw[4].decode(),5,"GFX",("GFXCODE",),0x9000)
+        if a.format:
+            payload=raw[12]
+            validate_variant(payload,raw[4].decode(),"FORMAT",("FORMATCODE",))
+            nested=slot(payload,8)[:HEADER+len(payload)]
+            start=HEADER+len(raw[7])
+            if start+len(nested)>SLOT_SIZE:raise ValueError("nested FORMAT exceeds GFX padding")
+            gfx_slot=gfx_slot[:start]+nested+bytes(SLOT_SIZE-start-len(nested))
+            prg=prg[:-SLOT_SIZE]+gfx_slot
+            address=symbols.get("dos64_format_slot_crc",-1)
+            lo=symbols.get("dos64_overlay_code_start",-1);hi=symbols.get("dos64_overlay_code_end",-1)
+            offset=address-0x801+2
+            if not 0x080d<=lo<=address or address+4>hi or not hi<=0x4000 or raw[0][offset:offset+4]!=bytes(4):
+                raise ValueError("FORMAT expected CRC must be exact zero initialized resident field")
+            patched=bytearray(prg);patched[offset:offset+4]=struct.pack("<I",zlib.crc32(gfx_slot));prg=bytes(patched)
         assets+=pit_slot+gfx_slot
         if a.hd:
             prg,hd_slot=append_variant(prg,raw[8],raw[4].decode(),6,"HD",("HDCODE",),0x9800)
@@ -227,7 +251,8 @@ def main():
                   "saver":({"source":0xb000,"run":0xb010,"reu":0x343000,"slot_bytes":2048,"linked_bytes":len(raw[10]),"sha256":hashlib.sha256(raw[10]).hexdigest(),"modal_cache_frames":[24,32],"compare_stage":0xb800}if a.saver else None),
                   "startup_sources": [0x6000,0x6800,0x8000,0x8800,0x9000]+([0x9800]if a.hd else [])+([0xb000]if a.saver else [])+([0xb800]if a.disk else []),
                   "shadow": ({"source":0xa000,"run":0xf000,"window_bytes":3584,"linked_bytes":len(raw[9]),"tail_zero_bytes":3584-len(raw[9]),"sha256":hashlib.sha256(raw[9]).hexdigest(),"ownership":"verified copy before cache; permanent RAM+IO, no KERNAL, excludes FE00-FFFF"}if a.hd else None),
-                  "text_members": {"RENDERCODE":1003,"DISPLAYCODE":245},
+                  "text_members": {"RENDERCODE":1003,"DISPLAYCODE":245,**({"FORMATCHECKCODE":symbols["__FORMATCHECKCODE_SIZE__"]}if a.format else {})},
+                  "format":({"identity":8,"run":WINDOW,"bytes":len(raw[12]),"nested_slot_offset":HEADER+len(raw[7]),"padding":SLOT_SIZE-2*HEADER-len(raw[7])-len(raw[12]),"gfx_whole_slot_crc":zlib.crc32(gfx_slot),"resident_crc_address":symbols["dos64_format_slot_crc"],"reu":ASSETS+4*SLOT_SIZE+HEADER+len(raw[7]),"sha256":hashlib.sha256(raw[12]).hexdigest()}if a.format else None),
                   "fonts": {"narrow":{"start":0x4400,"bytes":1024,"executable":False,"sha256":hashlib.sha256(raw[0][0x4400-0x801+2:0x4800-0x801+2]).hexdigest()},"full":{"start":0x4800,"bytes":2048,"executable":False,"sha256":hashlib.sha256(raw[0][0x4800-0x801+2:0x5000-0x801+2]).hexdigest()}},
                   "input_source_ownership": "INPUT copied before any guest cache use; then first four frames",
                   "startup_cache_phase": {"start":0x8000,"end_exclusive":0xc000 if a.disk else (0xb800 if a.saver else (0xae00 if a.hd else 0x9800)),"cache_frames":31 if a.disk else (27 if a.saver else (23 if a.hd else 12)),"span_cache_frames":32 if a.disk else (28 if a.saver else (23 if a.hd else 12)),"disk_frames":4 if a.disk else 0,"saver_frames":4 if a.saver else 0,"gap_cache_frames":[23]if a.saver else [],"overlay_frames":16 if a.hd else 12,"shadow_frames":7 if a.hd else 0,"ownership":"all assets and complete shadow verified before any of these frames can be reused"},
@@ -241,7 +266,7 @@ def main():
                              "render": hashlib.sha256(raw[2]).hexdigest(),
                              "startup_assets": hashlib.sha256(assets).hexdigest(),
                              "packaged_prg": hashlib.sha256(prg).hexdigest()},
-                  "contract": "startup bytes released only after native bootstrap; immutable REU payload trust, no native CRC"}
+                  "contract": "startup bytes released only after native bootstrap; FORMAT uses independent full GFX-slot CRC at cold adoption and every selector8; other selectors preserve header policy"if a.format else "startup bytes released only after native bootstrap; immutable REU payload trust, no native CRC"}
         a.manifest.write_text(json.dumps(record, indent=2) + "\n")
 
 

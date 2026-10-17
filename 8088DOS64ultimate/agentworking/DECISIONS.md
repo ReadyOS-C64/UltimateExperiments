@@ -327,3 +327,6 @@ DurableSave/SaveAs implementationdirection: nondestructiveCREATE_NEWverifiedimag
 
 
 2026-10-17: Media admission must distinguish documented transientHC_ERR_SAMPLE4 from terminal clock failures. WIRE/Save retry only4 up to256 fresh samples with no pre-success FILES/context mutation; never reuse oldelapsed_now or reinitialize timers. Remove redundant pre-admission alloc_readyclear, retain accepted-jobclear. Root13actual/1267records closes two-phase repair and public0b52/4424 build; broker/bridge pending boundaries remain separate defects. No V1 or physical acceptance transfers.
+
+
+2026-10-17: Promote FORMAT/media16source/test paths after all3560Rootpins,4221FMT/4278broker/40provider parents and55uniquechecks. FORMAT is opt-in runtime-only CLI; default/legacyselected PRGs exact, no fullUNIT1 claim (actual prior MAIN1/cold228 overflow). Root source-only public806e/1b70 all9products exact515inputs/474outputs. Add clean public actualruntime test target before calling developer workflow complete. Keep Sourcecold/installer/TP20M/physical acceptance separate.

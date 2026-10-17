@@ -1,0 +1,11 @@
+test_TEXT_canonical_prefix_and_checker_count (__main__.Test) ... ok
+test_exact_actual_runtime_schema_and_package (__main__.Test) ... ok
+test_format_bad_placement_and_wrong_length (__main__.Test) ... ok
+test_missing_linked_payload_or_checker_binds_pair (__main__.Test) ... ok
+test_nested_header_body_padding_and_independent_expected_CRC (__main__.Test) ... ok
+test_ninth_managed_selector_header_and_unknown_ID (__main__.Test) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.028s
+
+OK

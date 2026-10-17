@@ -1,0 +1,52 @@
+python3 -B build_support/runtime_media.py --floppy-format --out ../enabled-build
+{
+  "status": "passed",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/enabled-build/run-v8t89k97",
+  "products": {
+    "DOS64.PRG": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/enabled-build/run-v8t89k97/products/DOS64.PRG",
+      "sha256": "21f605e9f3ec11d2e2d609df1e75ed703adc0d1cb693a7f5ad7d7ce769cccc09",
+      "bytes": 47105
+    },
+    "DOS64.MNU": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/enabled-build/run-v8t89k97/products/DOS64.MNU",
+      "sha256": "8c50d88faf785756b04877b682567ddba72c0879a2bd491fafc9c7678afe4474",
+      "bytes": 57344
+    },
+    "DOS64.REL": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/enabled-build/run-v8t89k97/products/DOS64.REL",
+      "sha256": "242bccaa25ad3867ea2f03dee4dfc6e6b8df4cf8ad0142324679d0b957205fb1",
+      "bytes": 64
+    },
+    "DOS64.labels": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/enabled-build/run-v8t89k97/products/DOS64.labels",
+      "sha256": "33543080df6e4296aed14d4284890309cb4ff51db54ada035f830ff9c8493364",
+      "bytes": 77085
+    },
+    "DOS64.map": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/enabled-build/run-v8t89k97/products/DOS64.map",
+      "sha256": "d957159ec0467c122dacb5b9841ac78f77f05dc76436e13aa638ebec8fd41f9c",
+      "bytes": 96504
+    },
+    "DOS64.memory.json": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/enabled-build/run-v8t89k97/products/DOS64.memory.json",
+      "sha256": "36eba662f4a4404152f251fc1c80f90fced93490f8e9147bc1cefb35b4b68fac",
+      "bytes": 10832
+    },
+    "MODAL_HEADER.bin": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/enabled-build/run-v8t89k97/products/MODAL_HEADER.bin",
+      "sha256": "a51d5d0162e25ac67c97d96cdf2f8c20fa5283fc74ad02074b4968eb32881dbe",
+      "bytes": 64
+    },
+    "MEDIA_BUILD.json": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/enabled-build/run-v8t89k97/products/MEDIA_BUILD.json",
+      "sha256": "a0e6a180ed8669f88289f9637a381a6b777dffc2473355c2ee3d5170ed0e28af",
+      "bytes": 27031
+    },
+    "MEDIA_PHASES.json": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/enabled-build/run-v8t89k97/products/MEDIA_PHASES.json",
+      "sha256": "ae9a8360ff919225410af75d84081cc64607c1d626e26c57cf342494f8d5257e",
+      "bytes": 3808
+    }
+  }
+}

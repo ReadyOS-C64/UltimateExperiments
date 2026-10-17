@@ -1,0 +1,26 @@
+[
+  {
+    "name": "native-floppy-format-extension-20261017",
+    "manifest_sha256": "7a316ca2ee56e6c4bcc9a8d0da0e5815cc30b7757815266c92c2ebd1cc9ac4e5",
+    "pins": 4221,
+    "all_exact": true
+  },
+  {
+    "name": "native-media-broker-clock-successor-20261017",
+    "manifest_sha256": "cf0823254d59db52647d21234d8b59e24455422953f5799f1f9cefe3fa464666",
+    "pins": 4278,
+    "all_exact": true
+  },
+  {
+    "name": "native-media-clock-admission-review-20261017",
+    "manifest_sha256": "1ea0250adce1a95141cbbd6c69a0d139e0ffebd22631894c43b6dc1c686ed99f",
+    "pins": 40,
+    "all_exact": true
+  },
+  {
+    "name": "native-installer-cold56-cia-driver-20261017",
+    "manifest_sha256": "351e9bf1848e66405e2481c8e217fcc9fdbebcbf981d34d696ce39b7e301c421",
+    "pins": 2472,
+    "all_exact": true
+  }
+]

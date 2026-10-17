@@ -96,3 +96,6 @@ Private incoming-image verification now passes24 native groups, and Insert PLAN/
 
 
 The complete runtime Insert composition now passes21 actual model groups, and the normal source-only `make runtime-media` build produces the enabled menu without private dependencies. Root verifies three additional actual CIA smoke groups from the public build. The final matched cold installer/configuration package, genuine DOS workflows, physical Turbo Pascal and human acceptance remain open. A current80-column installer consumer saving refusal is being diagnosed; passing40-column/model component results do not waive it. [Runtime media checkpoint](../agentworking/research/native-runtime-media-checkpoint-20261017).
+
+
+The combined source-built runtime now includes optional XT floppy FORMAT and corrected media clock handling.27 actual CPU and28 host checks pass; default binaries remain exact. The earlier CONFIG80 Save/Insert failure is resolved in the model by bounded admission and scan-held CIA input, with the first failures retained. Current matched cold/installer packaging, complete20MiB Turbo Pascal persistence and physical/human gates remain open. [Combined runtime evidence](../agentworking/evidence/native-format-media-composition-root-20261017.json).

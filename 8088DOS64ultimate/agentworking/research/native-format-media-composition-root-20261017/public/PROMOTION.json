@@ -1,0 +1,143 @@
+{
+  "status": "PASS_EXACT_16_SOURCE_TEST_PROMOTION",
+  "source_manifest_sha256": "8ef12c7e252134e23036f9d50618ab8941524de0aeb14abc6ff4822f393dbad1",
+  "pins_verified": 3560,
+  "paths": {
+    "src/floppy_format.s": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/src/floppy_format.s",
+      "sha256": "65bb3f9c0ecaea8d59d6601873b5962fbecfc9904283045392c6684cdd66ab6f",
+      "bytes": 5196,
+      "before": null
+    },
+    "src/floppy_format_check.s": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/src/floppy_format_check.s",
+      "sha256": "824e0fc6f00663b2e76fdb25cc5d14ba351ae7bd2ba7d40b41e7a71ee39a90a9",
+      "bytes": 1801,
+      "before": null
+    },
+    "include/floppy_format.inc": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/include/floppy_format.inc",
+      "sha256": "e89c1097f40baab5c7a6c2fa2da3e67f998f71bfaa434eee234d0c508542649d",
+      "bytes": 158,
+      "before": null
+    },
+    "src/overlays.s": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/src/overlays.s",
+      "sha256": "7b390313ab4e1364911c0f7bbd8cb6d54042e5081a534e969baf7247349acbf1",
+      "bytes": 16694,
+      "before": {
+        "sha256": "9575a4709b6c76d7712fd2aab9d5405fb8fc1872e780eefce48c861bfe6e4f67",
+        "bytes": 13173
+      }
+    },
+    "cfg/dos64-runtime.cfg": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/cfg/dos64-runtime.cfg",
+      "sha256": "17b2ccdf7861e65015629d37b9214a283a5bdc02bc620a465ad6eca55fe232a5",
+      "bytes": 4406,
+      "before": {
+        "sha256": "3d4abe1d513aa7e9f29c51a42f4c9f2c3775aaf1aeaa797fff199d7435006bad",
+        "bytes": 4167
+      }
+    },
+    "cfg/dos64-unit-runtime.cfg": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/cfg/dos64-unit-runtime.cfg",
+      "sha256": "30b738aff4e32f11cf333e044e15f1be4e55cb7b26d2091b0308e1f006e98951",
+      "bytes": 4544,
+      "before": {
+        "sha256": "678b3067584ab3cc8993748d435b7ca993f74e9053fd282794279d5c528f8a6b",
+        "bytes": 4305
+      }
+    },
+    "build_support/overlay_package.py": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/build_support/overlay_package.py",
+      "sha256": "7b0ffb456ad48344b235331c850b32c95cadafd73cc81145352b0175e5c2d7a0",
+      "bytes": 18515,
+      "before": {
+        "sha256": "8e640c0f8fb83f977bf9d8996cd11c4169ed12f3b3dbc9f78d0f62c14773cf25",
+        "bytes": 16099
+      }
+    },
+    "build_support/verify_memory.py": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/build_support/verify_memory.py",
+      "sha256": "8a968ef59d34cd92e46dc569f2dda08ee368c20294ed9ba2675c8e7380ab925f",
+      "bytes": 33468,
+      "before": {
+        "sha256": "82ffa53b7a801dad3002c85ddf9537eae52b7c449f0ebe768c8b1c5815254530",
+        "bytes": 30244
+      }
+    },
+    "Makefile": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/Makefile",
+      "sha256": "7df29893b63a27758a0c9dc023acda61ef618826c7e73817a26715d16d857056",
+      "bytes": 25789,
+      "before": {
+        "sha256": "3b624dc31cdada8292671c86a145c50396087c65588c86c7db4adce3cf6f5a57",
+        "bytes": 23075
+      }
+    },
+    "build_support/native_media_sources.json": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/build_support/native_media_sources.json",
+      "sha256": "efa5931dc55f29001f6d86f05dbc7abe55d83eea27bba93f846883212783b000",
+      "bytes": 10926,
+      "before": {
+        "sha256": "b2b3c0064468c888204d5b52efac0a0bb274a2767e051d1362fadc55bd118a68",
+        "bytes": 10737
+      }
+    },
+    "build_support/runtime_media_sources.json": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/build_support/runtime_media_sources.json",
+      "sha256": "aada67f796cde774caa25aafc4c216ab72cc1908283a9d40060fc0549bf9a545",
+      "bytes": 6645,
+      "before": {
+        "sha256": "b1245e5c71a2f193e98259b62c41c766b0b0bb80ed7d2f9802e4bcf1dfcae49e",
+        "bytes": 6552
+      }
+    },
+    "build_support/runtime_media.py": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/build_support/runtime_media.py",
+      "sha256": "4ddb36f05899305e35f0c35670ed254ea522a2461a74422198591c8082066e2b",
+      "bytes": 10079,
+      "before": {
+        "sha256": "4e5076c41f3d3453da1d172bb063e90196f79633df872482134a481bc6264a1e",
+        "bytes": 9828
+      }
+    },
+    "tools/native_media/build_ui_bridge.py": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/tools/native_media/build_ui_bridge.py",
+      "sha256": "0490e4032dd9214141c891483c444ae19c4d09459083e6915ae81ae5ad523990",
+      "bytes": 13012,
+      "before": {
+        "sha256": "2d742f68a9e9e111c3125459b108f4ac9b0873d9b30e0b2f4815a3f1a24d2193",
+        "bytes": 12792
+      }
+    },
+    "tools/native_media/broker/broker.s": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/tools/native_media/broker/broker.s",
+      "sha256": "d33717f00cbebad50bc9a277a928affc3cd0d40a9f734e04f994ffcda6316b01",
+      "bytes": 13470,
+      "before": {
+        "sha256": "e921fcfb0a593734d850bc3e6e1d0383f7ffdadc8d6e74d75a2827d345a240ca",
+        "bytes": 13083
+      }
+    },
+    "tools/native_media/bridge/bridge.s": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/tools/native_media/bridge/bridge.s",
+      "sha256": "917204cf3448d5f62adb05a7ce6ea29708d6b1aa2bae1d89882a32f0165fbe56",
+      "bytes": 9081,
+      "before": {
+        "sha256": "667856601b6967723212cb1d43d5bd7544ca513e2c5b947bc7af0f4238243f8b",
+        "bytes": 9017
+      }
+    },
+    "tests/tooling/test_overlay_package.py": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-format-runtime-integration-root-20261017/project/tests/tooling/test_overlay_package.py",
+      "sha256": "9edefc4a95d5ba5246c1023b7315a334c40face4dfb8742d54753560cd2b98e9",
+      "bytes": 2748,
+      "before": {
+        "sha256": "7271382413a590eb8afca33cc19424248bccafe7ab48437a13928aa00d199a57",
+        "bytes": 2735
+      }
+    }
+  },
+  "scope": "Rootcombined55; fresh publicbuild follows; not final V1 package or hardware"
+}

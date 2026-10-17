@@ -1,0 +1,15 @@
+{
+  "files": {
+    "tools/native_media/broker/broker.s": {
+      "sha256": "d33717f00cbebad50bc9a277a928affc3cd0d40a9f734e04f994ffcda6316b01",
+      "bytes": 13470,
+      "baseline_sha256": "e921fcfb0a593734d850bc3e6e1d0383f7ffdadc8d6e74d75a2827d345a240ca"
+    },
+    "tools/native_media/bridge/bridge.s": {
+      "sha256": "917204cf3448d5f62adb05a7ce6ea29708d6b1aa2bae1d89882a32f0165fbe56",
+      "bytes": 9081,
+      "baseline_sha256": "667856601b6967723212cb1d43d5bd7544ca513e2c5b947bc7af0f4238243f8b"
+    }
+  },
+  "production_delta_only_two": true
+}

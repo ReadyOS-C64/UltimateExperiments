@@ -85,7 +85,7 @@ modal_admit:
  lda dos64_files_state
  cmp #1
  jeq rejected
- jsr clock
+ jsr clock_admission
  jcs rejected
  jsr dos64_cache_flush
  bcc @flushed
@@ -192,7 +192,23 @@ clock:
  sec
  rts
 @ok:
+ lda #0
+ sta modal_error                  ; successful retry clears transient SAMPLE4
  clc
+ rts
+; Only synchronous admission/release gates use this bound. Idle modal_poll
+; remains one attempt so its caller's separate256-pass contract is unchanged.
+clock_admission:
+ ldx #0
+@sample:
+ jsr clock
+ bcc @return
+ lda modal_error
+ cmp #4
+ bne @return
+ inx
+ bne @sample
+@return:
  rts
 presentation_owner:
  lda modal_owned
@@ -323,7 +339,7 @@ modal_release:
  jne rejected
  dex
  bpl @empty
- jsr clock
+ jsr clock_admission
  jcs rejected
  jsr dos64_fetch_init
  lda saved_hand

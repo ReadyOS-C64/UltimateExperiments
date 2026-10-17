@@ -1,0 +1,61 @@
+{
+  "production_files": {
+    "src/floppy_format.s": {
+      "source": "runtime/work/src/floppy_format.s",
+      "portable": "portable/src/floppy_format.s",
+      "sha256": "65bb3f9c0ecaea8d59d6601873b5962fbecfc9904283045392c6684cdd66ab6f",
+      "bytes": 5196
+    },
+    "src/floppy_format_check.s": {
+      "source": "runtime/work/src/floppy_format_check.s",
+      "portable": "portable/src/floppy_format_check.s",
+      "sha256": "824e0fc6f00663b2e76fdb25cc5d14ba351ae7bd2ba7d40b41e7a71ee39a90a9",
+      "bytes": 1801
+    },
+    "include/floppy_format.inc": {
+      "source": "runtime/work/include/floppy_format.inc",
+      "portable": "portable/include/floppy_format.inc",
+      "sha256": "e89c1097f40baab5c7a6c2fa2da3e67f998f71bfaa434eee234d0c508542649d",
+      "bytes": 158
+    },
+    "src/overlays.s": {
+      "source": "runtime/work/src/overlays.s",
+      "portable": "portable/src/overlays.s",
+      "sha256": "7b390313ab4e1364911c0f7bbd8cb6d54042e5081a534e969baf7247349acbf1",
+      "bytes": 16694
+    },
+    "cfg/dos64-runtime.cfg": {
+      "source": "runtime/work/cfg/dos64-runtime.cfg",
+      "portable": "portable/cfg/dos64-runtime.cfg",
+      "sha256": "17b2ccdf7861e65015629d37b9214a283a5bdc02bc620a465ad6eca55fe232a5",
+      "bytes": 4406
+    },
+    "cfg/dos64-unit-runtime.cfg": {
+      "source": "runtime/work/cfg/dos64-unit-runtime.cfg",
+      "portable": "portable/cfg/dos64-unit-runtime.cfg",
+      "sha256": "30b738aff4e32f11cf333e044e15f1be4e55cb7b26d2091b0308e1f006e98951",
+      "bytes": 4544
+    },
+    "build_support/overlay_package.py": {
+      "source": "runtime/work/build_support/overlay_package.py",
+      "portable": "portable/build_support/overlay_package.py",
+      "sha256": "7b0ffb456ad48344b235331c850b32c95cadafd73cc81145352b0175e5c2d7a0",
+      "bytes": 18515
+    },
+    "build_support/verify_memory.py": {
+      "source": "runtime/work/build_support/verify_memory.py",
+      "portable": "portable/build_support/verify_memory.py",
+      "sha256": "8a968ef59d34cd92e46dc569f2dda08ee368c20294ed9ba2675c8e7380ab925f",
+      "bytes": 33468
+    },
+    "Makefile": {
+      "source": "runtime/work/Makefile",
+      "portable": "portable/Makefile",
+      "sha256": "493f526e6b4b790522da451080c97dcfa902c673b4411022efd8718fb04140be",
+      "bytes": 25749
+    }
+  },
+  "runtime_optional_flag": "DOS64_FLOPPY_FORMAT=1",
+  "default_numeric0_exact": "666089b5/b9e9cc9e",
+  "requires_current_role_graph_adaptation": true
+}
