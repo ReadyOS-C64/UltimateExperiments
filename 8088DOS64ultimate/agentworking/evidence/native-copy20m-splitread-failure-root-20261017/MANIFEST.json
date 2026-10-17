@@ -1,0 +1,28 @@
+{
+  "files": {
+    "DIRECT_RESULT.json": {
+      "sha256": "45857a05846276d143c313ac16f50ebd8d46d2df50ba9a4cd773564490c8904b",
+      "bytes": 19827
+    },
+    "OBSERVER_ERRATA.json": {
+      "sha256": "5466f5ade9f5407e68bd834c81820f3050408fc0e2ea618919a408519a3786e7",
+      "bytes": 2856
+    },
+    "PROCESS_FINAL.json": {
+      "sha256": "cfbac2466c3a7fd1de44310f4c17bb3d44029ba5e53164cc0bc1d6553bc6907f",
+      "bytes": 1099
+    },
+    "SOURCE_FINAL.json": {
+      "sha256": "9b768c619dd2f51f3d9572e8b63c22e76f0c5f9134b6a7b98a8562f8f4f70da1",
+      "bytes": 25422
+    },
+    "HANDOFF.md": {
+      "sha256": "71ade0be1ff18bdf2e1cfb70a57d4d6fd01e52d6e7c323c7b50f11b25f7ad91c",
+      "bytes": 3106
+    },
+    "ROOT_REVIEW.py": {
+      "sha256": "f279f73f724d3fffc6279720d224bfdd33cd7e922783cf6a369f40fb7d28fc9b",
+      "bytes": 3418
+    }
+  }
+}

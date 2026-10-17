@@ -1,3 +1,9 @@
+# Current hardware failure retained; model installer passes — 2026-10-17
+
+Split-read Ultimate campaign stopped on a different API failure after76 verified32KiB frames/2490368 exactbytes. Root verified5469 physical pins, reconstructed/revalidated all76 native source/mapping/CRC frames and exact prefix, plus initial4MiB ac43. SEQ76 PUT reset beforeheaders; GO76 was never attempted (Root separately normalized the raw /v1/ requestplan routes after additive observer errata). Cleanup pause and original-profile PUT also reset; last observed Turbo Control is Manual, FILESquiet/BASIC/final4MiB/full20MiB unproven. Both owned processes exited1 without watchdog. ACTIVE364c stays reserved under soleCIA owner. No retry or recovery dispatch; offline READONLY WAIT76/cancel/source analysis continues. [Failure review](evidence/native-copy20m-splitread-failure-root-20261017.json).
+
+Model progress: actual final public SETUP positive and its unmodified generatedSTART→1506 DOS/Finish have reportedPASS, followed by actual CONFIG40/80; fresh40/80 generated-launch checks/source closure remain in progress. Same-drive DISKCOPY/native swap test is running separately. Native code5273c00 and documentation5396650 committed locally; no push. Earlier snapshots below are historical.
+
 # Hardware split-read dispatch live — 2026-10-17
 
 Sole ownerCIA dispatched exact reviewed4e40209b/b1221d91 purpose once: Terminal1639, detached supervisor38328/child38335, devnull/noTTY,900s watchdog/120s grace. Root independently verified both command lines live from local process state after dispatch. Initial whole4MiB matchesac43; observed-port native directory receipt epoch1/2F35 proves fresh CREATE/OWNER/readback/EOF/CLOSE/CWDrestore. Reader load/COPY/full20MiB verification remains pending; no copy-content or final physical V1 authority. No retries or expanded capabilities. [Dispatch review](evidence/native-copy20m-splitread-dispatch-root-20261017.json).

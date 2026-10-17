@@ -1,0 +1,36 @@
+{
+  "absent": [
+    38328,
+    38335
+  ],
+  "supervisor": {
+    "pid": 38328,
+    "parent_pid": 1,
+    "stdin_is_tty": false,
+    "stdin": "/dev/null",
+    "terminal": "1639",
+    "entry": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-splitread-purpose-20261017/work/launch.py",
+    "manifest_sha256": "4e40209b42433eb5114149497fad9a42555e82f30abe6ba6006cccb8c31ce8eb",
+    "watchdog_seconds": 900,
+    "interrupt_grace_seconds": 120,
+    "started_monotonic": 0.074190625
+  },
+  "child": {
+    "pid": 38335,
+    "supervisor_pid": 38328,
+    "terminal": "1639",
+    "new_session": true,
+    "stdin": "/dev/null",
+    "stdout_stderr": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-splitread-purpose-20261017/work/detached/child.log"
+  },
+  "exit": {
+    "pid": 38335,
+    "child_exit_code": 1,
+    "exit_code": 1,
+    "supervisor_intended_exit_code": 1,
+    "wall_watchdog_triggered": false,
+    "signals": [],
+    "finished_monotonic": 139.750933125
+  },
+  "ps": ""
+}
