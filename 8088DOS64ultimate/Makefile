@@ -335,3 +335,5 @@ include build_support/config.mk
 
 # Optional source-only A/B SaveAs+C-online model graph.
 include build_support/native_media.mk
+
+include build_support/v1_candidate.mk

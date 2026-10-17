@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "scope": "coherent source-built V1 development candidate, not release acceptance",
+  "result": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/v1-candidate/RESULT.json",
+  "archive": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/v1-candidate/run-d463pedf/DOS64-candidate.zip",
+  "archive_identity": {
+    "sha256": "bcf04dd7624a7bbacbab185c6b40e6a9d5333e2012315bf068bc7250cfbe260e",
+    "bytes": 101311
+  },
+  "component_products_unchanged": true,
+  "main": "666089b5",
+  "CONFIG": "508d1943",
+  "SETUP": "0df4c4cf",
+  "source_product_pins": 1166,
+  "native_assets": 9,
+  "host_groups": 10,
+  "physical": false,
+  "V1_complete": false,
+  "root_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-candidate-root-20261017/MANIFEST.json",
+  "root_manifest_sha256": "4c8c2d75c441462c890aab280fd55975c62812f1c818410b1684db3c54f45c42",
+  "first_test_harness_failures_retained": true,
+  "runtime_early_SETUP_dependency_check_pending": true
+}

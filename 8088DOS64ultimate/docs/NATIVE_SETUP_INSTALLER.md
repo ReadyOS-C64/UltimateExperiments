@@ -1,5 +1,11 @@
 # Native SETUP build and current scope
 
+`make v1-candidate` builds SETUP and its two overlays, CONFIG, and the five coupled INI launcher/emulator assets from fresh public sources. It validates their receipts, shared source identities, descriptors and CONFIG's exact release binding before writing one zip. The archive contains nine native files, a short installation guide, an INI example and checksums; it contains no DOS/vendor images, configured launcher, CFG or blank HD. Its path is recorded in `build/v1-candidate/RESULT.json`.
+
+This is a development candidate, not a completed V1 release. The matched native disk menu, durable floppy/CFG recovery and final physical installer/media/Turbo acceptance remain open. SETUP still expects the program assets already copied into the selected home; candidate packaging supplies them together. SETUP's own early validation of all runtime dependencies remains a separate integration task. Use a fresh folder, preserve existing installations and supply the three DOS images separately.
+
+`make v1-package-tests` builds the candidate and exercises ten host packaging controls around the actual native products: corruption of every native asset, missing INI overlay, mismatched CONFIG/release or receipt, conflicting source generations, failed components, existing destinations, archive copy drift and first-error/prior-result preservation. These checks add packaging evidence without transferring earlier component model success to physical acceptance.
+
 `make setup-installer` builds the native C/6502 installer. This target does not contact the Ultimate or run the long integration tests. It requires Python 3, cc65, ca65, ld65 and cc65's `none.lib`. Tool overrides are `DOS64_PYTHON`, `DOS64_CC65`, `DOS64_CA65`, `DOS64_LD65` and `DOS64_CC65_LIB`.
 
 The outputs are `build/setup-installer/SETUP.PRG`, `SETUP.FAT`, `SETUP.PUB`, labels, map and `RESULT.json`. Each invocation stages and pins the actual compiler inputs in a fresh work directory, builds the phase metadata from measured bytes, checks memory bounds, and verifies the inputs again before publishing the bundle. A passed result is written last. Retain the whole bundle from one successful build.

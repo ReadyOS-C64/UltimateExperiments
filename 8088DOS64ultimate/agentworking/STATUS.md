@@ -1,3 +1,7 @@
+# Coherent V1 development candidate — 2026-10-17
+
+Source-built candidate run-d463pedf packages9 native files with exact main666/config508d/SETUP0df4 and matched START79bb/INOeebb. All1166 source/product pins exact; zip101311B bcf04dd7;10host packaging groups pass including corruption of each native file, conflicting source generations, mismatched release/CONFIG, missing overlay, collisions and first-error/prior-result preservation. Existing runtime bytes/layouts unchanged. This does not close final installer/media/hardware gates; native early SETUP validation of all runtime dependencies remains pending. Evidence v1-candidate-root-20261017.json.
+
 # V1 checkpoint — fresh Pascal reopen verified; device profile repair pending
 
 ROOT independently verifies fresh80 Turbo source reopen seal fdb890eb/166pins, exact five source lines, full20MiB native readback and363 unchanged live FAT payloads. Only three bytes in an already-deleted temporary directory record differ; model keyboard endpoint bypasses the physical matrix. The preceding edit/save/diskcompile/IDE+DOS/fresh40 chain remains independently accepted. Physical final-release Turbo gate stays open.
