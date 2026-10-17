@@ -1,0 +1,330 @@
+test_archive_detects_copy_change (__main__.Candidate) ... ERROR
+test_archive_failure_and_report_failure_preserve_first_cause (__main__.Candidate) ... ERROR
+test_complete_archive_contains_only_matched_native_assets_and_user_files (__main__.Candidate) ... ERROR
+test_components_with_conflicting_source_generations_are_rejected (__main__.Candidate) ... ERROR
+test_config_from_another_release_is_rejected (__main__.Candidate) ... ERROR
+test_declared_metadata_corruption_and_escape_rejected (__main__.Candidate) ... ERROR
+test_each_corrupted_native_product_is_rejected_before_packaging (__main__.Candidate) ... ERROR
+test_exact_bundle_inventory_rejects_extra_file (__main__.Candidate) ... ERROR
+test_existing_home_is_never_overwritten (__main__.Candidate) ... ERROR
+test_failed_build_preserves_previous_result_and_first_exception (__main__.Candidate) ... ERROR
+test_failed_component_cannot_be_packaged (__main__.Candidate) ... ERROR
+test_interrupt_during_result_publication_preserves_previous_pointer (__main__.Candidate) ... ERROR
+test_missing_ini_overlay_is_rejected (__main__.Candidate) ... ERROR
+test_runtime_build_plan_is_native_only_and_scrubs_environment (__main__.Candidate) ... ERROR
+test_runtime_diagnostic_profiles_required (__main__.Candidate) ... ERROR
+test_runtime_dispatch_selects_new_profiles_default_dispatch_does_not (__main__.Candidate) ... ERROR
+test_runtime_receipt_identity_and_enabled_format (__main__.Candidate) ... ERROR
+test_runtime_requires_all_file_diagnostics_and_relocation_profiles (__main__.Candidate) ... ERROR
+test_runtime_requires_bound_checked_trap_memory (__main__.Candidate) ... ERROR
+test_runtime_requires_original8088_type1_profile (__main__.Candidate) ... ERROR
+test_runtime_wrong_role_and_assets_rejected (__main__.Candidate) ... ERROR
+test_setup_from_another_release_is_rejected (__main__.Candidate) ... ERROR
+test_stale_config_receipt_pointer_is_rejected (__main__.Candidate) ... ERROR
+test_stale_setup_receipt_pointer_is_rejected (__main__.Candidate) ... ERROR
+test_unbound_setup_is_rejected (__main__.Candidate) ... ERROR
+
+======================================================================
+ERROR: test_archive_detects_copy_change (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpjjy6cbyk'
+
+======================================================================
+ERROR: test_archive_failure_and_report_failure_preserve_first_cause (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmp4e8mkagc'
+
+======================================================================
+ERROR: test_complete_archive_contains_only_matched_native_assets_and_user_files (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmp3kui1lz0'
+
+======================================================================
+ERROR: test_components_with_conflicting_source_generations_are_rejected (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmp_aw6w6go'
+
+======================================================================
+ERROR: test_config_from_another_release_is_rejected (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmplyhty9_d'
+
+======================================================================
+ERROR: test_declared_metadata_corruption_and_escape_rejected (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpltdm0nky'
+
+======================================================================
+ERROR: test_each_corrupted_native_product_is_rejected_before_packaging (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpceu1r6u_'
+
+======================================================================
+ERROR: test_exact_bundle_inventory_rejects_extra_file (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmp14fx96ok'
+
+======================================================================
+ERROR: test_existing_home_is_never_overwritten (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpq70fxgux'
+
+======================================================================
+ERROR: test_failed_build_preserves_previous_result_and_first_exception (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmprlw4d95u'
+
+======================================================================
+ERROR: test_failed_component_cannot_be_packaged (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpyksndmgi'
+
+======================================================================
+ERROR: test_interrupt_during_result_publication_preserves_previous_pointer (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpnurbfcid'
+
+======================================================================
+ERROR: test_missing_ini_overlay_is_rejected (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpifi_wd1n'
+
+======================================================================
+ERROR: test_runtime_build_plan_is_native_only_and_scrubs_environment (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmp4v1mihds'
+
+======================================================================
+ERROR: test_runtime_diagnostic_profiles_required (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmprdsbrpje'
+
+======================================================================
+ERROR: test_runtime_dispatch_selects_new_profiles_default_dispatch_does_not (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpvyawizmv'
+
+======================================================================
+ERROR: test_runtime_receipt_identity_and_enabled_format (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpn89d2tma'
+
+======================================================================
+ERROR: test_runtime_requires_all_file_diagnostics_and_relocation_profiles (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpe_3nk073'
+
+======================================================================
+ERROR: test_runtime_requires_bound_checked_trap_memory (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmp3r9rrvro'
+
+======================================================================
+ERROR: test_runtime_requires_original8088_type1_profile (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmp_8lz7blh'
+
+======================================================================
+ERROR: test_runtime_wrong_role_and_assets_rejected (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpcruy9v5r'
+
+======================================================================
+ERROR: test_setup_from_another_release_is_rejected (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpklu7ougq'
+
+======================================================================
+ERROR: test_stale_config_receipt_pointer_is_rejected (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmp440y7ohq'
+
+======================================================================
+ERROR: test_stale_setup_receipt_pointer_is_rejected (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpbq1fz7mv'
+
+======================================================================
+ERROR: test_unbound_setup_is_rejected (__main__.Candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py", line 33, in setUp
+    self.temp = tempfile.TemporaryDirectory(dir=ROOT / 'build')
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build/tmpf096om9i'
+
+----------------------------------------------------------------------
+Ran 25 tests in 0.004s
+
+FAILED (errors=25)

@@ -1,0 +1,78 @@
+{
+  "ROOT_REVIEW.json": {
+    "sha256": "bec7e3ce787390e3cf21be100337b578aa9ce513153101414cb9ec91e314b69c",
+    "bytes": 3050
+  },
+  "fresh40/CTYPES_ABI.json": {
+    "sha256": "5b8dbdbf7f2096e9ac9182df6d600a0db94b272a862b604964149b7a5f800f21",
+    "bytes": 2912
+  },
+  "fresh40/HANDOFF.md": {
+    "sha256": "dd01ce96ef0a758381e171a4754b3387a4d32e929e7e4557f1c27e02164411f7",
+    "bytes": 2390
+  },
+  "fresh40/KEYBOARD_PREFLIGHT.json": {
+    "sha256": "346aa3a7e332b99da91a786bc5befe873fd491d6c5d18620bf07397b9bb29f26",
+    "bytes": 715
+  },
+  "fresh40/MANIFEST.json": {
+    "sha256": "a9adae6dd7263b433dd3b63ece0389608ee662ac7557bed00011e4aeca348e17",
+    "bytes": 70908
+  },
+  "fresh40/POST_EXECUTION_ORACLE.json": {
+    "sha256": "2e9a13c0e0aecb29528a3b2203f6ceddbdc8823fdbf01185eecb2c9ffb50e2cc",
+    "bytes": 378
+  },
+  "fresh40/execution/RESULT.json": {
+    "sha256": "7a5cd2c5c66627b1ccd281629cd4d2d9e8b4acaf70bb95db7ab71a9b437065c5",
+    "bytes": 1339
+  },
+  "fresh40/post_execution_oracle.py": {
+    "sha256": "019497834fdaca115bbfdd93adc2e1e787f5b25e8d8be62f9293531dc0686113",
+    "bytes": 1225
+  },
+  "fresh40/run_consumer.py": {
+    "sha256": "a4ef745ff0c7d44fe07b66c328738f326039848d9dc476ae7c3ba7e6dc706901",
+    "bytes": 4559
+  },
+  "producer/CTYPES_ABI.json": {
+    "sha256": "5b8dbdbf7f2096e9ac9182df6d600a0db94b272a862b604964149b7a5f800f21",
+    "bytes": 2912
+  },
+  "producer/HANDOFF.md": {
+    "sha256": "5ee6ec87c7cd6a51e1464d954dce102689fab02fcb4e867718dc5c09f3583800",
+    "bytes": 3099
+  },
+  "producer/MANIFEST.json": {
+    "sha256": "666efb4be4eaffabd06c3d53fe4137fd63d2bcf23648c9993d3bd6dd31e0a022",
+    "bytes": 352302
+  },
+  "producer/execution/RESULT.json": {
+    "sha256": "44706e714a5c4208e54d379831a02448ab5b2cec8d97b5376838e463c6ad3878",
+    "bytes": 2948
+  },
+  "producer/execution/producer80/independent/DEBUG.DON": {
+    "sha256": "7ae1481b4aec5b79c0adf4f1bb1a83208c4374ea449b01a2ce05fe57d9bd2b09",
+    "bytes": 19
+  },
+  "producer/execution/producer80/independent/DEBUG.INP": {
+    "sha256": "7b7f29fc0230816a27881e31bddbc63adf173e9be9e2ef747555230908e1282a",
+    "bytes": 111
+  },
+  "producer/execution/producer80/independent/DEBUG.LOG": {
+    "sha256": "ed7055679b3862b38236337d14159f390491d619546dfe22a649f5262f1d43c3",
+    "bytes": 821
+  },
+  "producer/finish_helpers.py": {
+    "sha256": "c0da5d181dd925104996f36b110e0ac4beedb5e067e61ea9edf707edc93a458a",
+    "bytes": 9671
+  },
+  "producer/run_debug.py": {
+    "sha256": "cd789daefb66e398c11d109895e2ff94f1ecf0a65ed17f1319156260bb2a99e2",
+    "bytes": 8073
+  },
+  "producer/v1_lane.py": {
+    "sha256": "40168bfd7922e3e9c055e39b4ed02cd63d1c29d35c08a84978024cd182652bc8",
+    "bytes": 27596
+  }
+}

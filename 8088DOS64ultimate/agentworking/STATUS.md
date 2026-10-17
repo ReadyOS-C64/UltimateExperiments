@@ -1,3 +1,13 @@
+# Current V1 checkpoint — actual DEBUG persistence and private final12 composition, 2026-10-17
+
+Root accepts genuineDEBUG model vertical slice on finalruntime0bfa/cold8 after all3,066 sealed parentpins and2,315producer/136freshconsumer source+copy closures/sourceoracles. Producer proves T AX1234/IP0103→AX1235/IP0104 and actualINT3 BX5678/IP0107, genuine13BCOM/script/log, independentFAT/all113inputpayloads, actualCIAFinish/knownCLOSE/full4M. Fresh40 exactFIND persistedregisterlines/strict4-lineCOMexecution/Finish/full4M/Cbyteexact/A+Bexact/0WRITE05 pass. Producer overallfailed hostquote receipt remains false; finalconsumeronly successor closes workflow, no producerrepeat. Rootarchiveeace54d0/19pins. GuestXT bypassesphysicalhuman; no physical/perf/newinstaller claim. [Evidence](evidence/v1-debug-trap-root-review-20261017.json).
+
+Root actualprivate full sourcechain trap21+runtime3+reviewed42→runtime/cold/SETUP/CONFIG/ZIP passes; all66proposedbaseline/copy identities recorded. Runtime/cold8 byteexactsameDEBUGcohort. BoundSETUPd2f9791f/FATe3c62e4e/PUBe0cd722a/CONFIGde0a062f; ZIPc3a126c6/139786B. All1567 source/productrecords exact after25hostcontrols (newTRAP1flag/ownedcheckedmemory refusal and dispatchchecks). FirstofftreehostsetUp builddir absence retained, correctedprecondition/noSUTchange. Archive7adc3b0c/16pins; no publicpromotion. Measuredcombined layouts recorded inMEMORY_BUDGET. [Private candidate](evidence/v1-final-composition-root-20261017.json).
+
+Next: compiledworker executes finalboundd2 actualSETUPpositive→generatedSTART/DOS/Finish, afterc6ad reachednativeROOT7 buthostoracleTypeError; retainfailedpartial, avoidredundantc6ad rerun. Memoryworker executes originalTP7.01 full3-machineIDE/save/diskEXE/run/fresh40EXE/fresh80reopen on exactfinal0bfa/cold8 usingexplicitlyhostprepared original20M fixture. CIA narrowreader firstcause repair979b/9ab9 andseparatefreshdirectory/OWNERprelude precedeconcreteofflinephysicalpurpose. No newdevicecallsbyRoot; ACTIVEreservedunchanged. Allfinalrelease/humanUltimategatesopen, performancepostV1, localcommits/no push.
+
+Earlier snapshots below are historical.
+
 # Current V1 checkpoint — reviewed installer integration and new trap/runtime assets, 2026-10-17
 
 The V1 endpoint is now a concise stable release contract in docs/V1_ENDPOINT.md; earlier additive progress is preserved verbatim in research/v1-endpoint-history-20261017.md. Installation/configuration, reliable A/B/C and original Turbo Pascal IDE persistence on the final physical build take priority. Performance and compiled activation stay post-V1.

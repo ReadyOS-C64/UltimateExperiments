@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "scope": "fresh40 only, reusable immutable native-closed DEBUG producer C, no producer replay",
+  "physical": false,
+  "borrowed_source_built_model_unchanged": {
+    "sha256": "450ca17b54b216330ec62f9d8604ade4930b31d35f3743fb639f2e0b8d1ff6d4",
+    "bytes": 207880
+  },
+  "XT_quote_word": "2822",
+  "read_predicate": "exact full persisted IP register line after FIND output header, excludes command echo",
+  "fresh40_guest": 951978,
+  "fresh40_wire": {
+    "wire_histogram_target_opcode": {
+      "1:3": 11,
+      "2:3": 2,
+      "1:2": 10,
+      "1:7": 9,
+      "1:33": 8,
+      "1:4": 2,
+      "2:2": 1,
+      "2:6": 5,
+      "2:4": 257
+    },
+    "WRITE05_commands": 0,
+    "WRITE05_count_each": 256,
+    "native512sector_split_into2x256": true,
+    "native_model_checks_exact_wire_payload_length": true
+  },
+  "full_C_byteexact": true,
+  "all_original_A_B_byteexact": true,
+  "full_C_sha256": "9db0ccaac82104b2952edf71a7774a396d113bd36c22898bd1521254e429d160",
+  "expected_register_lines": {
+    "0103": "DS=0FD6  ES=0FD6  SS=0FD6  CS=0FD6  IP=0103   NV UP EI PL NZ NA PO NC ",
+    "0104": "DS=0FD6  ES=0FD6  SS=0FD6  CS=0FD6  IP=0104   NV UP EI PL NZ NA PE NC ",
+    "0107": "DS=0FD6  ES=0FD6  SS=0FD6  CS=0FD6  IP=0107   NV UP EI PL NZ NA PE NC "
+  },
+  "native_cycles_including_observer_not_perf": 2942803793
+}

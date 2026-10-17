@@ -1,0 +1,746 @@
+[
+  {
+    "path": "Makefile",
+    "baseline": {
+      "sha256": "e7d9f0602b8afb2113b8f81eb3ac0c86b36ee2cdf7878a4489262ff40ddede6c",
+      "bytes": 25826
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/Makefile",
+    "successor": {
+      "sha256": "7094a9105652034bdbc14b4aabb345b170ff674cc0d02e1a52d790a1685e1c46",
+      "bytes": 27975
+    }
+  },
+  {
+    "path": "build.zig",
+    "baseline": {
+      "sha256": "8d55fd88d6ccee3e3591dd3a8e5f120d623be965266be370bac7566fe4994cdd",
+      "bytes": 19364
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build.zig",
+    "successor": {
+      "sha256": "97b211caa5fa5798f8b1af2d173b1b0590e1e3e48f19809cb4e61b820b83638a",
+      "bytes": 19937
+    }
+  },
+  {
+    "path": "build_support/config.mk",
+    "baseline": {
+      "sha256": "acd49089e3ce813e224872cba1571c25455836aa41147a821d5d4439ed5a6cb9",
+      "bytes": 314
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build_support/config.mk",
+    "successor": {
+      "sha256": "8051fd990010a9e4a717cc20c2778cfabe17d5faf73b55476d6b762b2a84a6c8",
+      "bytes": 848
+    }
+  },
+  {
+    "path": "build_support/config_generation.py",
+    "baseline": {
+      "sha256": "ce9b50cd11183900be522b9503623cda50d75b0d07559e4f5b5b6e241fa88199",
+      "bytes": 19549
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build_support/config_generation.py",
+    "successor": {
+      "sha256": "b29cbd859d7e32791d6f8c42256370a70c6747f283b915f4f935173cf6246ac8",
+      "bytes": 22369
+    }
+  },
+  {
+    "path": "build_support/config_sources.json",
+    "baseline": {
+      "sha256": "373f026a8d25be913520e20ab8e02eb2d35e35866b43b3917a7e17cb2ce1ac7c",
+      "bytes": 2036
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build_support/config_sources.json",
+    "successor": {
+      "sha256": "0c71c23c6876bf3733e55c481279bee333c53c96836fd326fa4986c4d8c2d5c0",
+      "bytes": 2388
+    }
+  },
+  {
+    "path": "build_support/overlay_package.py",
+    "baseline": {
+      "sha256": "7b0ffb456ad48344b235331c850b32c95cadafd73cc81145352b0175e5c2d7a0",
+      "bytes": 18515
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build_support/overlay_package.py",
+    "successor": {
+      "sha256": "55aa19536f08ed8c65562e68d795c43faddd6e60d6c7193b8568bf3070abb0a2",
+      "bytes": 19639
+    }
+  },
+  {
+    "path": "build_support/runtime_media.py",
+    "baseline": {
+      "sha256": "4ddb36f05899305e35f0c35670ed254ea522a2461a74422198591c8082066e2b",
+      "bytes": 10079
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build_support/runtime_media.py",
+    "successor": {
+      "sha256": "3c4a762a6de0d71ad5c579aa512f126c5b7d0a472415ece04a0bf7c17ccb7588",
+      "bytes": 10422
+    }
+  },
+  {
+    "path": "build_support/runtime_media_sources.json",
+    "baseline": {
+      "sha256": "745e72372a8ad6292b7d83ab8f4ae2c851aa07c6a3d202bee8ccddd4549dad29",
+      "bytes": 6680
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build_support/runtime_media_sources.json",
+    "successor": {
+      "sha256": "f6d2f87e98ed702aff5b011efdec31396009e655bd2ececc8c7a0027376f304b",
+      "bytes": 6771
+    }
+  },
+  {
+    "path": "build_support/setup_installer.py",
+    "baseline": {
+      "sha256": "63c57a004f5db9da892b4911dc5489e0a9b2525137fbf0a6c65739eea7c016da",
+      "bytes": 23697
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build_support/setup_installer.py",
+    "successor": {
+      "sha256": "ddb775065260dfec73f2eeaf54d49beef2c29ba377daf59de40b2b77b38304c8",
+      "bytes": 26171
+    }
+  },
+  {
+    "path": "build_support/v1_candidate.py",
+    "baseline": {
+      "sha256": "727e2782d9bfab7e01d0689246722c07b9794cf8a50c66d7844a6897af510654",
+      "bytes": 19556
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build_support/v1_candidate.py",
+    "successor": {
+      "sha256": "2a58498f36eb0680ae3523a979a3ab7fbc535aea63638dc6977bbe697cddad52",
+      "bytes": 21013
+    }
+  },
+  {
+    "path": "build_support/verify_memory.py",
+    "baseline": {
+      "sha256": "8a968ef59d34cd92e46dc569f2dda08ee368c20294ed9ba2675c8e7380ab925f",
+      "bytes": 33468
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/build_support/verify_memory.py",
+    "successor": {
+      "sha256": "7c8369253a1a2bc06ef3aae9b1294f098840225cc4d5272d57a7e1e1c87a546c",
+      "bytes": 34718
+    }
+  },
+  {
+    "path": "cfg/dos64-runtime-trap.cfg",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/cfg/dos64-runtime-trap.cfg",
+    "successor": {
+      "sha256": "aa241131616f9d601c710dc0a5ba18ff4f7a8c0aa14dbea4ddd8f38d2854f0f5",
+      "bytes": 4529
+    }
+  },
+  {
+    "path": "cfg/dos64-unit-runtime-trap.cfg",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/cfg/dos64-unit-runtime-trap.cfg",
+    "successor": {
+      "sha256": "f74d02abe478eb776d51e16de9640f527b8e26c895bb89e5ba5259727cd2cb56",
+      "bytes": 4667
+    }
+  },
+  {
+    "path": "docs/NATIVE_SETUP_CONFIG.md",
+    "baseline": {
+      "sha256": "654898206505f325047b0d5c5e5620863e6ab599659a403a74c976a706504f98",
+      "bytes": 11098
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/docs/NATIVE_SETUP_CONFIG.md",
+    "successor": {
+      "sha256": "8642c9ad702f958752154db45ec8ea715c297c92c0f2c39d9b0798282b207871",
+      "bytes": 13334
+    }
+  },
+  {
+    "path": "src/cpu.s",
+    "baseline": {
+      "sha256": "d40d33f5a0ae32f73c6abd3547c92d4aeb05babddf2c4211dc4981dd0ee58774",
+      "bytes": 30522
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/src/cpu.s",
+    "successor": {
+      "sha256": "4ebe70079083cc0edbf2fdd83d0ff1d38b8b0a96f182c460276ef19b05cb3540",
+      "bytes": 31200
+    }
+  },
+  {
+    "path": "src/hd_extension_load.s",
+    "baseline": {
+      "sha256": "09426f038e134ba8ebe5dcbb5562336e22fe3170cb7d9fc2dd4049915b55af2d",
+      "bytes": 913
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/src/hd_extension_load.s",
+    "successor": {
+      "sha256": "1fe5a51177a7dfcd216ce9e9207d5ba62b4f55f7eed76ce6b93717ea6d1e6ce0",
+      "bytes": 1340
+    }
+  },
+  {
+    "path": "src/stack.s",
+    "baseline": {
+      "sha256": "288a833e5f8a39aebb2a95e931577f65470c358087a8f0a8eb8cc376c29b3f0b",
+      "bytes": 6395
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/src/stack.s",
+    "successor": {
+      "sha256": "56847de060a282dde029ab1621e66ebd84a4801b12cb70449aaf5dc6c83563a9",
+      "bytes": 6638
+    }
+  },
+  {
+    "path": "src/strings.s",
+    "baseline": {
+      "sha256": "c6c93ca16682e6f6d79b8035874983cf1099b3f450d16b202625aabd8bac0a91",
+      "bytes": 5911
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/src/strings.s",
+    "successor": {
+      "sha256": "330dec76b648f014fe4213ddc1b641d69bac0e71e4eb7bf60adc78dc2cbee053",
+      "bytes": 6147
+    }
+  },
+  {
+    "path": "src/trap.s",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/src/trap.s",
+    "successor": {
+      "sha256": "4a25b7bb3b9307bb4e64c400338a5d0e868276b94574930135e13c6f6efbee7b",
+      "bytes": 3054
+    }
+  },
+  {
+    "path": "src/virtual_irq.s",
+    "baseline": {
+      "sha256": "6c74da8aa670f8f9d6a6b27a588caf72663c917e11aad4e853b95534534af5fe",
+      "bytes": 6656
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/src/virtual_irq.s",
+    "successor": {
+      "sha256": "03376202d0e3218e534880aaf91ddac11ded1e9260c6b76ade3d3c2652175c37",
+      "bytes": 6791
+    }
+  },
+  {
+    "path": "tests/config/config_fixture.py",
+    "baseline": {
+      "sha256": "da1a71855216bd38b20cb2f8079caab6517c5783583932465682ba88d31c913a",
+      "bytes": 6800
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/config/config_fixture.py",
+    "successor": {
+      "sha256": "6fef1bb9c1aed4e8d19ec91a157f884baabf007d432da0b511526690d3b27c49",
+      "bytes": 7129
+    }
+  },
+  {
+    "path": "tests/config/test_build_profiles.py",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/config/test_build_profiles.py",
+    "successor": {
+      "sha256": "61b43ad4413fce29a7479d03871af83fe6839787bc961fc3e75172de8d890a63",
+      "bytes": 4349
+    }
+  },
+  {
+    "path": "tests/config/test_combined_errors.py",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/config/test_combined_errors.py",
+    "successor": {
+      "sha256": "5096557ae9a5f79c2a779c565da444a8d666311f205dc3c9bda765d7982cc131",
+      "bytes": 4682
+    }
+  },
+  {
+    "path": "tests/config/test_config_profiles.py",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/config/test_config_profiles.py",
+    "successor": {
+      "sha256": "712e7796bb5bde28ea98dc6237771b8516bf456572046ef8fe54ab81c9ee14ab",
+      "bytes": 1087
+    }
+  },
+  {
+    "path": "tests/config/test_relocation.py",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/config/test_relocation.py",
+    "successor": {
+      "sha256": "f067bc6849d67ebdd5c701bfa2e8a58857d811737c45a74e31fab71fe2f12ca3",
+      "bytes": 4443
+    }
+  },
+  {
+    "path": "tests/host/bios.zig",
+    "baseline": {
+      "sha256": "b9276cc4d100a9732b501e23157ace215261166a28b9b4358a90755e1530b153",
+      "bytes": 27432
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/host/bios.zig",
+    "successor": {
+      "sha256": "4d0fb77405f43969b7f564be2228744b108d73ee73dcdfdc2b25d95c7e4998d5",
+      "bytes": 27660
+    }
+  },
+  {
+    "path": "tests/host/cpu.zig",
+    "baseline": {
+      "sha256": "1248691ca1e7d1e7fd5409eee22c7d83b54c68acb9cd4823352ebab4bcdd9aa4",
+      "bytes": 29147
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/host/cpu.zig",
+    "successor": {
+      "sha256": "729c005a24282181a6902c7ffd4fff3d4e5b0f24dee979246a2c388e9749384a",
+      "bytes": 29329
+    }
+  },
+  {
+    "path": "tests/host/future_layout.zig",
+    "baseline": {
+      "sha256": "cc8d8f4a89aad2822bc19e1cb926902679453803b1be6e171e660ad315a5ffb3",
+      "bytes": 9040
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/host/future_layout.zig",
+    "successor": {
+      "sha256": "36b330e8397145f57f3157cc70bb32084667ff506565c36a0b075f03c00fe6b7",
+      "bytes": 9309
+    }
+  },
+  {
+    "path": "tests/host/interrupts.zig",
+    "baseline": {
+      "sha256": "b86c73d97640c10b4537fe4eca0c705dc583bc0adab46b9e9c299b9874a454a5",
+      "bytes": 6249
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/host/interrupts.zig",
+    "successor": {
+      "sha256": "4dfe83aad2e02e60ad6c268813296dcdcb92801e8b762d259fe3409855623997",
+      "bytes": 6481
+    }
+  },
+  {
+    "path": "tests/host/io_instructions.zig",
+    "baseline": {
+      "sha256": "3a944663ab620db8ab00b11031f964b3f9718b28af05090b0697b36d9f278096",
+      "bytes": 7264
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/host/io_instructions.zig",
+    "successor": {
+      "sha256": "ad59446bc0755a07dcda3d661425b80a5b94ca13c238eb22fb443da92ed6c853",
+      "bytes": 7366
+    }
+  },
+  {
+    "path": "tests/host/machine.zig",
+    "baseline": {
+      "sha256": "3f791720371dfbe2b7ed079044db439902702cf936386a1f124441b0daf3e533",
+      "bytes": 7555
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/host/machine.zig",
+    "successor": {
+      "sha256": "d89277168166bfac2b3572f4aa2fde271996d4ec77d4b0f1ae6f139c3ab59767",
+      "bytes": 8245
+    }
+  },
+  {
+    "path": "tests/host/stack.zig",
+    "baseline": {
+      "sha256": "f29b07b4958cb47009b4c646005e94d79b8f467a84c38c3ece99778d2d076bae",
+      "bytes": 11308
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/host/stack.zig",
+    "successor": {
+      "sha256": "d2099ffdcff3427709d6455849d6d2140902708c934aa67f32312de4ae275991",
+      "bytes": 11494
+    }
+  },
+  {
+    "path": "tests/host/trap.zig",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/host/trap.zig",
+    "successor": {
+      "sha256": "ffba7eee5ff49f2135daa0e26e60eca68cc60fd0f76a1d154773acf1228ff67f",
+      "bytes": 13594
+    }
+  },
+  {
+    "path": "tests/host/trap_fixture.zig",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/host/trap_fixture.zig",
+    "successor": {
+      "sha256": "6475a5854cceaf093c44f846cd8bf1be390e3a4ad78de7ee2fa663fd9cb6dcd7",
+      "bytes": 2328
+    }
+  },
+  {
+    "path": "tests/v1_candidate_host/test_package.py",
+    "baseline": {
+      "sha256": "83ceca410da3c50e81bf0eefdbe58d97d7ded54afd98cbff893315d44630353d",
+      "bytes": 15933
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tests/v1_candidate_host/test_package.py",
+    "successor": {
+      "sha256": "1fabd189542fc50d9c4e84c5ac5d562d35fc5ad20c693b0d8602ace0e782085e",
+      "bytes": 19484
+    }
+  },
+  {
+    "path": "tools/config/all-file-diagnostics.cfg",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/all-file-diagnostics.cfg",
+    "successor": {
+      "sha256": "eef3f08f50de0c79120f8a3a8cf83aa93d68b5bc31cb987b431f38939d9bce94",
+      "bytes": 1811
+    }
+  },
+  {
+    "path": "tools/config/all-file-relocation.cfg",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/all-file-relocation.cfg",
+    "successor": {
+      "sha256": "2cd7969b43f1e9c4b25625c08533010b211dfd4e10a1c9973083018983b731e9",
+      "bytes": 1811
+    }
+  },
+  {
+    "path": "tools/config/config_publish.c",
+    "baseline": {
+      "sha256": "751d0dc933f64e23bbf19edd78509036ed0d4c15ec42336194c1bc6031507228",
+      "bytes": 13962
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/config_publish.c",
+    "successor": {
+      "sha256": "b889acd7f6b6cb2928e7e88a5e4ae2114ca19b75c62eee247caf9d1aa7b4cec8",
+      "bytes": 15341
+    }
+  },
+  {
+    "path": "tools/config/config_ui.c",
+    "baseline": {
+      "sha256": "3614c394c5a41e352dd9455ee29e885f55fe2c4cb3199f3749ce2c1d1f0c9562",
+      "bytes": 10420
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/config_ui.c",
+    "successor": {
+      "sha256": "f83a6c09bc8d4793cd21635ff54345e48e0f26e75aab7704591fa1425cd14792",
+      "bytes": 12419
+    }
+  },
+  {
+    "path": "tools/config/config_ui.h",
+    "baseline": {
+      "sha256": "39cbe511cd514ee822d1501ba54d87ac80703e5dbd5f991ffa6a773d2671360b",
+      "bytes": 1880
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/config_ui.h",
+    "successor": {
+      "sha256": "e35dc7b2b8000dcce795934f4f1ca17b28695cc89dd87c4cc71d71926b4acb6d",
+      "bytes": 1903
+    }
+  },
+  {
+    "path": "tools/config/coordinator.s",
+    "baseline": {
+      "sha256": "21f287f1b5cd6da88967dad9519eff88ef937f42c4c30895468fd4e122e83d58",
+      "bytes": 3228
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/coordinator.s",
+    "successor": {
+      "sha256": "2f5f3740b43469d10e3068aa5445e3460c784904428f916d278a7a6e7758874e",
+      "bytes": 3774
+    }
+  },
+  {
+    "path": "tools/config/core_fixture.s",
+    "baseline": {
+      "sha256": "bbcf427d5c89add990e51993e1c55a710f61694aaf48b4295467333a62b14cd0",
+      "bytes": 1676
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/core_fixture.s",
+    "successor": {
+      "sha256": "7707e66e2b1a34325da294a5352086b22e9ce68692d124ef27cda5296a8cea27",
+      "bytes": 1854
+    }
+  },
+  {
+    "path": "tools/config/existing_cfg.c",
+    "baseline": {
+      "sha256": "3a3c2227d552ca00f31505c8f4f76f6b54b4c5b238bf3096b8f8b8cec6822618",
+      "bytes": 6506
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/existing_cfg.c",
+    "successor": {
+      "sha256": "0ba504bfc3437099cb96a12338058674bd06f5d21fd59e7cce3b0256f939d744",
+      "bytes": 8626
+    }
+  },
+  {
+    "path": "tools/config/existing_cfg.h",
+    "baseline": {
+      "sha256": "6cabec43a50c3ff09069217be054284b2488b40cf0638f41853945cf9be0b9d0",
+      "bytes": 1977
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/existing_cfg.h",
+    "successor": {
+      "sha256": "9fb87090f7ba45202e6a5d087f457537a3f5d519ffed0ada2f83215220093850",
+      "bytes": 2370
+    }
+  },
+  {
+    "path": "tools/config/high_bootstrap.s",
+    "baseline": {
+      "sha256": "f725698b75b85c7ac7ba4c0acdf4f33059b3578711d0f6593cf429e38f5a7d95",
+      "bytes": 2864
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/high_bootstrap.s",
+    "successor": {
+      "sha256": "a3815805b548befbf01880b086ad9bd0a3be05304eeb4b492df58f6faeb6ab6c",
+      "bytes": 3346
+    }
+  },
+  {
+    "path": "tools/config/media_reinspect.c",
+    "baseline": {
+      "sha256": "3dea5aaa2b5cff49126608b59a9498cf7142ec51746d57ee29bc3f51b8007b30",
+      "bytes": 10159
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/media_reinspect.c",
+    "successor": {
+      "sha256": "13bb7430663cf6f039e7b959216cffe9b3984703c86010059aef51eca03692e0",
+      "bytes": 10933
+    }
+  },
+  {
+    "path": "tools/config/publisher-relocation.cfg",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/publisher-relocation.cfg",
+    "successor": {
+      "sha256": "90a0f662f29c88ee835b4f96df52d3aff6a2d887c21aeb23e6b041760156d81c",
+      "bytes": 1443
+    }
+  },
+  {
+    "path": "tools/config/relocation.s",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/config/relocation.s",
+    "successor": {
+      "sha256": "70016cba0318819d98f049533ae916096ca8dea262912fd97691e89e4bc48f4f",
+      "bytes": 2283
+    }
+  },
+  {
+    "path": "tools/native/file_error.h",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/native/file_error.h",
+    "successor": {
+      "sha256": "05a89c0465037c8c1b6f051c214112f9be44a930be2cb3d598fd5aa39022c99b",
+      "bytes": 727
+    }
+  },
+  {
+    "path": "tools/native/file_error.s",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/native/file_error.s",
+    "successor": {
+      "sha256": "f05c0162fd5bcbe7b2f3fcd122210da9d34489b0dfc6b259b52526c391c15ce2",
+      "bytes": 8721
+    }
+  },
+  {
+    "path": "tools/native_media/build_ui_bridge.py",
+    "baseline": {
+      "sha256": "0490e4032dd9214141c891483c444ae19c4d09459083e6915ae81ae5ad523990",
+      "bytes": 13012
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/native_media/build_ui_bridge.py",
+    "successor": {
+      "sha256": "e866670e32475572a25d924db4cc376ca9154ef761a22497b5e8f217c7975515",
+      "bytes": 13157
+    }
+  },
+  {
+    "path": "tools/setup/app/all-file-diagnostics.cfg",
+    "baseline": null,
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/all-file-diagnostics.cfg",
+    "successor": {
+      "sha256": "b49b25dc511bd8e52d0fd23675427253309adae95b01fb8d8c501879538e69ad",
+      "bytes": 2426
+    }
+  },
+  {
+    "path": "tools/setup/app/coordinator.s",
+    "baseline": {
+      "sha256": "1b983fc091d0909adb35eb1bbb9fd2512259ee07478944b9c6d40538c5815e1f",
+      "bytes": 10418
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/coordinator.s",
+    "successor": {
+      "sha256": "330ee2ea880251f1e1dd25076852105d8dd45b039960fefb25938974f2e23a72",
+      "bytes": 10917
+    }
+  },
+  {
+    "path": "tools/setup/app/fat_worker.s",
+    "baseline": {
+      "sha256": "37d5e50ddccc2d5aec9f1e1b29fc1b1c09d87a7b52cbd19482ea0940e0f698d3",
+      "bytes": 8745
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/fat_worker.s",
+    "successor": {
+      "sha256": "d87f16e14ffb0af8a0d19fa7221a7c8574d2498b7d383828891162ef8d2f585a",
+      "bytes": 10995
+    }
+  },
+  {
+    "path": "tools/setup/app/install_config.c",
+    "baseline": {
+      "sha256": "5f85f9e61d35d22ea40b1e0c4fd48e55da0c0ff5b9c49777da84187d3ddfc786",
+      "bytes": 7987
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/install_config.c",
+    "successor": {
+      "sha256": "808da143409127d20ba6f7b32b359954c842be7dda5dfb6384f7d511329b5270",
+      "bytes": 9564
+    }
+  },
+  {
+    "path": "tools/setup/app/install_config.h",
+    "baseline": {
+      "sha256": "e3f41648267526f6dfb2df08db41896445ec4da4eab6198ef7d53cc8d7d40c7b",
+      "bytes": 1380
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/install_config.h",
+    "successor": {
+      "sha256": "ad394f7b2a350b432a21be672790307be71aa2bcf083e4ccae0a9713c570cc65",
+      "bytes": 1785
+    }
+  },
+  {
+    "path": "tools/setup/app/install_writer.c",
+    "baseline": {
+      "sha256": "4cdbe94ee027a71e7d4295bc903acedf964f8ae157a3b52b59f1bec532319f50",
+      "bytes": 6597
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/install_writer.c",
+    "successor": {
+      "sha256": "befa2e1c3597ca6abb1c9e686631049da2eb5301b5b01fa1e526192ba6820e66",
+      "bytes": 7383
+    }
+  },
+  {
+    "path": "tools/setup/app/publish_assets.c",
+    "baseline": {
+      "sha256": "f3d4b93eacaee29f64d67c1afdc858f77a6df26bd04c50ba6174f152d92021ae",
+      "bytes": 7324
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/publish_assets.c",
+    "successor": {
+      "sha256": "303ebc1d5b04129e13ed673f29a5e93e071934ecdda13f32d7b490309b77fae4",
+      "bytes": 7944
+    }
+  },
+  {
+    "path": "tools/setup/app/publish_worker.c",
+    "baseline": {
+      "sha256": "5947b35905b2fc23e015d96eaf517846c886456131962588763ff6bd32f2f5ca",
+      "bytes": 1811
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/publish_worker.c",
+    "successor": {
+      "sha256": "0adfdc68a25eec6a7fa05eb3aa7ecd432a8bd78f32b4c903e6953519a79aa5be",
+      "bytes": 2122
+    }
+  },
+  {
+    "path": "tools/setup/app/publish_worker_asm.s",
+    "baseline": {
+      "sha256": "7e8635e9cbb944b471283aa9dde52dff9a4da0e37a3bb44094e42fc718c45d03",
+      "bytes": 11503
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/publish_worker_asm.s",
+    "successor": {
+      "sha256": "6f1b6e8c6f438e8eccc2a587d542b07bf020b2f977011db693c5761e5badfd23",
+      "bytes": 11952
+    }
+  },
+  {
+    "path": "tools/setup/app/raw_output.c",
+    "baseline": {
+      "sha256": "d77fa7ca869c8779faf8d909b57bef3ee9f9baa194cd21eecf84b208e11670ef",
+      "bytes": 13192
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/raw_output.c",
+    "successor": {
+      "sha256": "cb7a76be107f5192777031c98c13fc293fcc504676d926ec92ffeb53287afbc4",
+      "bytes": 13604
+    }
+  },
+  {
+    "path": "tools/setup/app/setup_cooperate.c",
+    "baseline": {
+      "sha256": "c1eaba29fd5c9cd10e68751a673a941f4953d7e30e03e2b0d620bac72b726da3",
+      "bytes": 3134
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/setup_cooperate.c",
+    "successor": {
+      "sha256": "b05641f07dc8a81bd19f4ce76b6eab84ceab999419bf0ade8c370f87062aec19",
+      "bytes": 3281
+    }
+  },
+  {
+    "path": "tools/setup/app/setup_copy.s",
+    "baseline": {
+      "sha256": "31c5f5c0bf065901c1418c3a030ef8d35c7dd5f88332d03b748888ee1fe579b6",
+      "bytes": 2921
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/setup_copy.s",
+    "successor": {
+      "sha256": "d7cf6a11fb425635161982bf174dba1ab51793f21f69818fa525bc11846a1d6f",
+      "bytes": 3188
+    }
+  },
+  {
+    "path": "tools/setup/app/setup_overlay.c",
+    "baseline": {
+      "sha256": "91d5f7e319f33f5b40515fbf2a9eba5a030c721edc1f4d2bae0eb250d9b5f889",
+      "bytes": 10239
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/setup_overlay.c",
+    "successor": {
+      "sha256": "ac415e1c1bc5fc1084749617f1189d59ecba8e0b34a7c4d9358922c154750323",
+      "bytes": 10491
+    }
+  },
+  {
+    "path": "tools/setup/app/source_load.c",
+    "baseline": {
+      "sha256": "7453a52c2b36310d902f7011ea6c21c594a00fb7e95ff3b010401189c0b17d08",
+      "bytes": 12662
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/source_load.c",
+    "successor": {
+      "sha256": "a2161aae3cc7d0f8ab1739822bd9defb5626984c07147755cf0880f2b8dfe1d4",
+      "bytes": 13184
+    }
+  },
+  {
+    "path": "tools/setup/app/startup.s",
+    "baseline": {
+      "sha256": "42abddefde8f9909ca9efbe179e15f051c7fdce314d520ed46fe41aaa63df27d",
+      "bytes": 1466
+    },
+    "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-composition-root-20261017/source/tools/setup/app/startup.s",
+    "successor": {
+      "sha256": "8ddd5774078e030bec1bc5941fee32e30262a7e0b7722af39ec1b544a842a391",
+      "bytes": 1644
+    }
+  }
+]

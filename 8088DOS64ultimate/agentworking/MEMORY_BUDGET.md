@@ -329,3 +329,10 @@ Measured source-built SETUPe71043197B: residentDATA5FFF/no spare; FATCODE6000..A
 ## Private TF/type1 profile — measured2026-10-17, not public
 
 Runtimea25e171c/UNITa1d37012 add CPUTRAP222B FE00..FEDD, serializedAE00..AEDD in the old512B startupgap. Existing HDB cold copy+bytecompare changes14→15pages, F000..FEFF; FF00..FFFF and UNIT EF00..EFFA stay separate. HDBIOS F000..FDF8 (3577B) plus explicittailzero remains its own input; trap222 plus34zero bytes fill the fifteenthpage. All sourcebytes retired before8000..BFFF32-framecache ownership; no newoverlay/REU arena/cacheframe loss. Runtime MAIN ends3F95 (106Bfree), BSS E000..E0CF208B. Both selectedlinkermap/verifier lanes pass. Default0 PRG/UNIT remain666/b9; FORMAT1/runtime-media composition is not yet measured for this profile. See evidence/8088-trap-root-20261017.json and research/8088-trap-root-20261017/LAYOUT.json.
+
+
+## 2026-10-17 — private coherent FORMAT/TRAP/menu and diagnostic installer profile
+
+Actual final12 runtime0bfa uses CPUTRAP222B FE00..FEDD/sourceAE00, verified15coldpages; HDBIOS3563B F000..FDEA, shadow21B zero tail beforeFE00. MAIN080D..3FC7 including8B NATIVESTATE,56B free; BSS208B E000..E0CF; DEVICESTATE1256B EA00..EEE7,24B beforeEF00. DEVICE4096B full. FORMAT687B C900..CBAE plus158B checkerCDE0..CE7D shares existing2048B GFX slot, no new arena/cache-frame loss. MNU remains57344B in3DA000+24576 and3F0000+32768. Allactual memory checks pass; runtime-only FORMAT1 does not claim an oversizedUNIT1 profile.
+
+Bound SETUPd2f9 has resident1B/FAT3B/PUB5B/HIGHcode0B/HIGHstate8B/AUX4B free. Terminal sourceB140, stash29B atB100, payload1000B executes6000 only after leaf/C phaseframesreturn; REU0A0000..0A0FFF reserved by reviewed source proof. Permanent96B helperBF9F..BFFE follows3999B BSSB000..BF9E. CONFIGde0a HIGH8175B E000..FFEE,11B beforeFFFA; phasecodeend8B94 beforestate8BB0..AFF1, permanentstateendsBFC4 before55B fallbackBFC8..BFFE. No newguestmemory/REUcache loss; installation phase ownership separate fromruntime. See evidence/v1-final-composition-root-20261017.json and checked component maps/receipts. This is private source-build layout, not physical acceptance.

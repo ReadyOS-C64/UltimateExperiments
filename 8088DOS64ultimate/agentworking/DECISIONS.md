@@ -364,3 +364,6 @@ V1-02 includes moving the installation, in addition to making another launcher w
 
 
 2026-10-17: Keep V1_ENDPOINT as a stable concise contract, preserve additive oldprogress in research. Source-only42path diagnostics/relocation builder graph is privately reviewed after all4490 pins; require a fresh actual fullpositive c6ad SETUP→generatedSTART/DOS/Finish before integration acceptance. Terminal error tests do not prove normal source-loader bookkeeping. Keep trap runtime0bfa/cold8 separate until genuineDEBUG/Finish/freshconsumer closure, and regenerate final cohort after any publicinventory promotion. No further performance tuning before V1.
+
+
+2026-10-17: Accept genuineDEBUG0bfa producer subproof plusdistinctclosedfresh40 consumer, preservingproduceroverallhostfailure false andsubsequenthostmapper failures. Same8finalcandidateassets permit exactruntime/cold evidence reuse, not finalSETUP/Turbo/physicaltransfer. Newprivate12 orchestrationrequiresTRAP1 flag andowned/hash-checkedpassedmemoryproduct/cpu_trap placement;66sourcegraph remainsprivate pendingfreshfinalboundd2 fullpositive. Avoidrepeatc6ad77s producer solelytofixhostread1oracle whenfinald2mustexecute samepositivepath. FulloriginalTurbo runscurrentruntime inparallel; no507/DEBUGreplay orpostV1speedwork.

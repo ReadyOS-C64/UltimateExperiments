@@ -1,0 +1,94 @@
+{
+  "status": "ACCEPTED_GENUINE_DEBUG_TRACE_INT3_AND_FRESH40_PERSISTENCE_MODEL",
+  "parents": {
+    "producer": {
+      "manifest": {
+        "sha256": "666efb4be4eaffabd06c3d53fe4137fd63d2bcf23648c9993d3bd6dd31e0a022",
+        "bytes": 352302
+      },
+      "pins": 2584,
+      "source_inputs_and_copies": 2315
+    },
+    "fresh40": {
+      "manifest": {
+        "sha256": "a9adae6dd7263b433dd3b63ece0389608ee662ac7557bed00011e4aeca348e17",
+        "bytes": 70908
+      },
+      "pins": 482,
+      "source_inputs_and_copies": 136
+    }
+  },
+  "all3066_parent_pins_exact": true,
+  "root_new_native_replay": false,
+  "producer_failed_overall_receipt_retained": true,
+  "producer_subproof": {
+    "passed": true,
+    "original_plus_input_payloads_exact": 113,
+    "new_files": {
+      "DEBUG.DON": {
+        "sha256": "7ae1481b4aec5b79c0adf4f1bb1a83208c4374ea449b01a2ce05fe57d9bd2b09",
+        "bytes": 19
+      },
+      "DEBUG.INP": {
+        "sha256": "7b7f29fc0230816a27881e31bddbc63adf173e9be9e2ef747555230908e1282a",
+        "bytes": 111
+      },
+      "DEBUG.LOG": {
+        "sha256": "ed7055679b3862b38236337d14159f390491d619546dfe22a649f5262f1d43c3",
+        "bytes": 821
+      },
+      "V1TRAP.COM": {
+        "sha256": "c71b83ce59def872644b184fc006d350c2c52c95923f364b55787f2a92465244",
+        "bytes": 13
+      }
+    },
+    "DEBUG_registers": [
+      {
+        "AX": "1234",
+        "BX": "0000",
+        "IP": "0103"
+      },
+      {
+        "AX": "1235",
+        "BX": "0000",
+        "IP": "0104"
+      },
+      {
+        "AX": "1235",
+        "BX": "5678",
+        "IP": "0107"
+      }
+    ],
+    "DEBUG_INT3_IP_qualification": "G user breakpoint address0107; DEBUG normalizes architectural INT3 next-IP0108",
+    "full_C_sha256": "9db0ccaac82104b2952edf71a7774a396d113bd36c22898bd1521254e429d160"
+  },
+  "fresh40_passed": true,
+  "fresh40_C_byteexact": true,
+  "fresh40_no_WRITE05": true,
+  "actual_CIA_Finish_known_close_each": true,
+  "root_source_review": [
+    "genuine DOS ECHO builds DEBUG script; original DOS DEBUG executes T/T/G breakpoint",
+    "exact AX/BX/IP log blocks and actual CC INT3 disassembly",
+    "DEBUG rewrites NOP/13B COM, actual DOS executes it",
+    "freshFIND exact full persisted register lines after CLS/header excludes stale/echo",
+    "separate exact complete post-COM four-line screen oracle excludes silent error text",
+    "knownCIAFinish/privateSafe/noResume and independent completeFAT/allpayloads",
+    "sourcebuilt producer model explicitly borrowed unchanged by freshconsumer"
+  ],
+  "final_private_candidate_cold8_byteexact_same": true,
+  "new_installer_output_claim": false,
+  "physical": false,
+  "performance_claim": false,
+  "qualifications": [
+    "host quote/equals mapping failures remain failed notnative; freshconsumer only rerun",
+    "guest XT queue bypasses physicalhuman keyboard; CIA Finish modeled actual scan",
+    "candidate SETUPd2/configde0 still need their own complete positive proof",
+    "5701 corpus alone doesnotcoverTF; CPU18/base507 proofs separately retained"
+  ],
+  "archive": "agentworking/research/v1-debug-trap-root-review-20261017",
+  "archive_manifest": {
+    "sha256": "eace54d00af40e0b34439e1bd78edde2c7ab4725ed18f2637bfea9191ad6838f",
+    "bytes": 2689
+  },
+  "archive_pins": 19
+}
