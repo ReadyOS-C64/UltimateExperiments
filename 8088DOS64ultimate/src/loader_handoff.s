@@ -3,6 +3,9 @@
 .include "reu.inc"
 .include "disk.inc"
 .include "overlays.inc"
+.ifndef DOS64_MEDIA_BINDING
+DOS64_MEDIA_BINDING=0
+.endif
 .import dos64_reu_request,dos64_reu_transfer
 .import dos64_native_config,hdc_config
 .import dos64_floppy_request,dos64_floppy_control,dos64_files_handle
@@ -560,6 +563,22 @@ dos64_loader_adopt:
  sta dos64_floppy_request+FQ_FLAGS
  lda dos64_native_config+5
  sta dos64_floppy_request+FQ_CAPACITY
+.if DOS64_MEDIA_BINDING
+ ; PREPARE captures the immutable staged binding. Supply the validated CFG
+ ; cookie here; COMMIT still follows the full mounted-image CRC check below.
+ lda lh_drive
+ asl
+ asl
+ tay
+ ldx #0
+@stage_binding:
+ lda $c330,y
+ sta dos64_floppy_request+FQ_BIND,x
+ iny
+ inx
+ cpx #4
+ bne @stage_binding
+.endif
  jsr dos64_floppy_control
  jcs lh_bad
  lda dos64_floppy_request+FQ_BASE
@@ -621,11 +640,13 @@ dos64_loader_adopt:
  sta dos64_address+1
  jsr lh_crc_check
  jcs lh_bad
+ .if !DOS64_MEDIA_BINDING
  ldy #3
 : lda (dos64_address),y
  sta dos64_floppy_request+FQ_BIND,y
  dey
  bpl :-
+.endif
  lda #FOP_COMMIT
  sta dos64_floppy_request+FQ_OP
  lda #$a5

@@ -3,11 +3,13 @@ DOS64_CA65 ?= ca65
 DOS64_LD65 ?= ld65
 DOS64_PYTHON ?= python3
 DOS64_EXPORT_CRC ?= 0
+DOS64_MEDIA_BINDING ?= 0
+DOS64_MODAL_MENU ?= 0
 
 .DEFAULT_GOAL := all
 
 ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/floppy_control.s src/bios.s src/ports.s src/cga_crtc.s src/cga_status.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s src/host_input.s src/cold.s src/elapsed.s src/native_text_display.s src/native_text_fonts.s src/native_runtime.s src/native_timer.s src/virtual_irq.s src/virtual_pit.s src/render_graphics.s src/hd_cache.s src/hd_bios.s src/hd_extension_load.s src/hd_cold.s src/uci_diagnostic.s src/native_save.s
-ASM_SOURCES += src/loader_handoff.s
+ASM_SOURCES += src/loader_handoff.s src/modal_entry.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
 OBJECTS := $(filter-out build/host_clock.o build/elapsed.o build/uci.o,$(OBJECTS)) build/owned-host_clock.o build/owned-elapsed.o build/native-uci.o
 OBJECTS := $(patsubst build/reu.o,build/native-reu.o,$(OBJECTS))
@@ -23,7 +25,7 @@ build/integrated-floppy_export.o: src/floppy_export.s include/floppy_export.inc 
 	$(DOS64_CA65) -g -D DOS64_EXPORT_INTEGRATED=1 -D DOS64_SAVE_HD_CONTEXT=$(if $(DOS64_SAVE_HD_CONTEXT),$(DOS64_SAVE_HD_CONTEXT),0) -D DOS64_EXPORT_CRC=$(DOS64_EXPORT_CRC) -I include -o $@ $<
 build/native_save.o: src/native_save.s include/native_save.inc include/floppy_export.inc include/reu.inc include/memory.inc include/host_clock.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_SAVE_HD_CONTEXT=$(if $(DOS64_SAVE_HD_CONTEXT),$(DOS64_SAVE_HD_CONTEXT),0) -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_SAVE_HD_CONTEXT=$(if $(DOS64_SAVE_HD_CONTEXT),$(DOS64_SAVE_HD_CONTEXT),0) -D DOS64_SAVE_MODAL=$(if $(DOS64_SAVE_MODAL),$(DOS64_SAVE_MODAL),0) -I include -o $@ $<
 build/owned-host_clock.o: src/host_clock.s include/host_clock.inc Makefile
 	@mkdir -p build
 	$(DOS64_CA65) -g -D DOS64_OWNED_CLOCK=1 -I include -o $@ $<
@@ -33,7 +35,12 @@ build/owned-elapsed.o: src/elapsed.s include/elapsed.inc include/host_clock.inc 
 build/alu.o: include/parity.inc Makefile
 build/range.o: include/range.inc Makefile
 build/disk.o build/unit-disk.o: include/disk.inc include/range.inc Makefile
-build/floppy_control.o build/unit-floppy_control.o: include/disk.inc include/overlays.inc Makefile
+build/floppy_control.o: src/floppy_control.s include/disk.inc include/overlays.inc Makefile
+	@mkdir -p build
+	$(DOS64_CA65) -g -D DOS64_MEDIA_BINDING=$(DOS64_MEDIA_BINDING) -I include -o $@ $<
+build/unit-floppy_control.o: src/floppy_control.s include/disk.inc include/overlays.inc Makefile
+	@mkdir -p build
+	$(DOS64_CA65) -g -D DOS64_UNIT_COLD=1 -D DOS64_MEDIA_BINDING=$(DOS64_MEDIA_BINDING) -I include -o $@ $<
 build/bios.o: include/bios.inc include/video.inc Makefile
 build/ports.o: include/ports.inc Makefile
 build/video.o: include/video.inc Makefile
@@ -46,7 +53,13 @@ build/files.o: src/files.s include/files.inc include/uci.inc Makefile
 	$(DOS64_CA65) -g -D DOS64_FILES_INFO=1 -I include -o $@ $<
 build/render_text.o: include/render_text.inc Makefile
 build/overlays.o: include/overlays.inc include/reu.inc Makefile
-build/loader_handoff.o: include/overlays.inc include/reu.inc include/disk.inc Makefile
+# This profile flag changes the cold adoption bytes; force this tiny owned
+# object to avoid stale opposite-profile objects after a direct make switch.
+.PHONY: FORCE_LOADER_BINDING
+FORCE_LOADER_BINDING:
+build/loader_handoff.o: src/loader_handoff.s include/overlays.inc include/reu.inc include/disk.inc Makefile FORCE_LOADER_BINDING
+	@mkdir -p build
+	$(DOS64_CA65) -g -D DOS64_MEDIA_BINDING=$(DOS64_MEDIA_BINDING) -I include -o $@ $<
 build/image_import.o: include/image_import.inc include/files.inc include/uci.inc include/overlays.inc include/reu.inc Makefile
 build/boot.o: include/overlays.inc Makefile
 build/native_runtime.o: include/native_save.inc include/image_import.inc include/host_clock.inc include/host_input.inc include/render_graphics.inc Makefile
@@ -337,3 +350,12 @@ include build_support/config.mk
 include build_support/native_media.mk
 
 include build_support/v1_candidate.mk
+
+build/modal_entry.o build/unit-modal_entry.o: src/modal_entry.s include/modal_assets.inc Makefile
+	$(DOS64_CA65) -g -D DOS64_MODAL_MENU=$(DOS64_MODAL_MENU) -I include -o $@ $<
+build/host_input.o: src/host_input.s include/host_input.inc Makefile
+	$(DOS64_CA65) -g -D DOS64_MODAL_MENU=$(DOS64_MODAL_MENU) -I include -o $@ $<
+build/native_runtime.o: src/native_runtime.s include/native_save.inc Makefile
+	$(DOS64_CA65) -g -D DOS64_MODAL_MENU=$(DOS64_MODAL_MENU) -I include -o $@ $<
+
+include build_support/runtime_media.mk

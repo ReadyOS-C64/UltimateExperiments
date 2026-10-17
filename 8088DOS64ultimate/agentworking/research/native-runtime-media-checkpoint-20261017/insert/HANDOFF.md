@@ -1,0 +1,37 @@
+# Complete runtime Insert controller and native menu
+
+This is a private actual-runtime component. It closes the controller/incoming/PLAN/WIRE/Insert-BIND/native-COMMIT composition on synthetic files and native CIA menu controls. It does not by itself close cold loading, guest DOS disk revalidation, final SETUP/CONFIG packaging, physical hardware or V1 acceptance. The separate cold56 and portable production graph work uses independently captured source windows; no future Root seal is retroactively treated as an input.
+
+## Transaction and authority
+
+The bridge captures only a delivered private frontend WAIT intent, then completely returns frontend frames before loading the controller. AC_INSERT3 adds one trailing flags byte at request offset138, preserving the older138-byte prefix. Insert defaults to readonly; explicit frontend Discard bit0 maps to native FQ bit1. General Save actions reject flags. Each entry clears the observation result before the backend entry guard; neither old frontend bytes nor a previous result can advertise a new Resume capability.
+
+The controller allocates an archive sequence through WIRE mode2, captures actual old42 and performs native PREPARE. Incoming performs bounded full-file load/geometry/reopen/compare/EOF/known CLOSE and returns its private149-byte one-shot receipt. The controller copies that private result while the incoming phase lives; it checks drive, policy, path, base, token, generations and unchanged old42. It CANCELs the initial token, re-PREPAREs with the verified image CRC, and requires the same free arena, old generations and policy plus a different token. COMPLETE A5 derives only from that consumed verified receipt; CRC0 is valid. PLAN readonly comes from retained FQ bit0, not a mutable display choice.
+
+The actual211-byte ledger drives real PLAN, WIRE Insert mode4 and a distinct Insert BIND/support/wrapper. Allocator results are consumed only for modes2/3. WIRE independently checks staged CRC and reconstructs exact allowed NEW CFG before any CREATE. BIND repeats full CRC/CFG/anchor/private-stage checks, updates verified live headers and RAM CFG, and makes native COMMIT its final fallible operation. Precommit known-context failures CANCEL only the owned stage; unknown CLOSE retains private stage/context and denies Resume. Postcommit failure cannot return guest control. Normal Save retains token1, its original BIND and immutable version/archive allocation.
+
+## Actual tests
+
+Nine controller groups cover mounted/ejected A/B across C targets1/2, first B, and missing/short/invalid-geometry/dirty-without-Discard refusals. Five actual CIA menu groups cover Discard→Insert→Resume, readonly SaveAs-first→Insert→Resume, missing-image error→return→Resume, confirmation Cancel without file commands, and first B with Ctarget2. No host worker-completion facts are injected in these positives.
+
+Five composition groups check legitimate CRC0, three consecutive real controller jobs rotating free arenas180000→380000→100000 with sequences1/2/3, late last-byte corruption before PLAN (no durable publication), corrupted auxiliary asset after durable CFG publication (old live mount/E1/no COMMIT/no Resume), and unknown incoming CLOSE (exactly one CLOSE, no caller retry/CANCEL). SaveAs and Finish each retain one actual CIA regression. Whole4MiB guards, C25/HD129/HDB47/firmware position, high96, original files, derived CFG CRC/path/presence, and consumed native stage are checked at their stated scopes.
+
+Independent peer3bdb1aee preserves an actual old/new bridge counterexample: an early ac_entry guard refusal previously reused stale result.can_resume and advertised UI Resume while hdb_active was unsafe; native release still rejected. The bridge now zeros its9 observation bytes before entry. The same independently executed counter gives E1/no advertised Resume, no file commands and exact C context. Both bridge binaries were independently assembled and linked. No guest escape was observed in the predecessor.
+
+## Measured layout
+
+MNU is57344 bytes: first24KiB maps3DA000..3DFFFF, next32KiB maps3F0000..3F7FFF. Full third floppy380000..3D9FFF and INO cache3F8000 remain. Each asset stays in one contiguous mapped slot. First-slot logical offsets: UI0A00 (budgetthrough28FF), SAVE2900, PLAN3300/wrapper4600, incoming4700, Save wrapper5200, Insert wrapper5300, support5400, bridge5800. Second slot: controller6000, Save BIND8000, Finish9800, WIREA000, Insert BINDB800. All record lengths/CRCs, overlaps, private aliases, role-specific SAVER and nested wrapper/support identities are checked by the builder/oracle.
+
+Controller payload6745B8000..9A58, BSS520B9A59..9C60 leaves287 bytes before saved high96 at9D80; outer C stack9E00..9FFF. Bridge payload1289B6000..6508 stays below Insert support6600..693A. UI payload7685B8000..9E04, private BSS7800..7C99. Its extra caption/path extends into already retired controller code/high96/stack only after the controller and every C frame return. Incoming BSS7D00..7E5A overlaps the old wrapper during a disjoint phase lifetime; every API returns before exchange. PLAN state ends7DCC (3 bytes before wrapper7DD0); WIRE state ends7E6E and must fully return before wrapper/support installation. Worker wrappers use child stackBFFF and save high96 at7E80.
+
+The WAIT screen now identifies Loading image, Saving floppy or Closing files and shows an explicit image path when supplied. No new REU allocation outside the measured56KiB menu range or new permanent native core state is introduced.
+
+## Source closure and retained failures
+
+`close_controller.py` records actual compiler-M C++ SDK dependencies, cc65 includes/library, native/fixture/default source inputs and six tool identities. It rebuilds the native graph byte-exact, builds the actual model fresh, quarantines UNIT products, checks aliases and all21 runtime/CIA groups, then separately rebuilds undefined and numeric0 defaults. Sources, staged copies and every frozen product are compared afterward. The final result and exact counts live in `closed-controller/RESULT.json`; copied source files are evidence, not another implementation of the workers.
+
+Initial host staging used the wrong parent depth before importing the new component; the first build consequently lacked insert.cfg. The second build exposed semantic.inc missing from the separate Insert folder; the builder now copies that real dependency. Both failures preceded runtime execution and remain retained. A source-oracle metadata variable reused `raw` after correctly checking the2028-byte SAVER and incorrectly reported the last Insert-BIND file length5916; the loop now uses `payload`, and the correct getter reports2028. This changed no SUT bytes or native assertions. The independent stale-result counter remains an actual SUT failure, distinct from those host mistakes.
+
+Parents c866/49da/6c6a/adad remain immutable. No public promotion, device/LAN operation or performance work was performed by Root. The public default stays666/b9. Further speed work remains post-V1.
+
+Final closure PASS:1704 source/tool/SDK inputs and staged copies,53 frozen products,20 UNIT products quarantined,21 actual groups. Fresh undefined and explicit0 runtime/UNIT PRGs and labels agree exactly; runtime666089b57e56 and UNITb9e9cc9e7d87. CONTROLLER_BUILD.scope retains inherited generic provisional wording; actualrole/runtime products and closed-controller/RESULT.json are the acceptance authority. Sourcegraph21 first-build5 products are edce76b9/MNUf1f60cbd, bridge767950ce/controllerc8633757/UI6ce7ffc8.

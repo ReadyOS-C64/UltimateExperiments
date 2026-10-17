@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "status": "PASS_PRIVATE_INSERT_WIRE_BIND_NATIVE_COMMIT_COMPONENT",
+  "native_groups": 12,
+  "source_SDK_inputs_copies": 1368,
+  "tools": 6,
+  "parent_c866_exact": true,
+  "default_Save_WIRE_BIND_undefined_and_zero_exact": true,
+  "products": {
+    "phase/transaction-wire.prg": {
+      "sha256": "2089301b0207982d944c21b945b9e5ce8cc33791b21f4da69dca1efd7f178e37",
+      "bytes": 5744
+    },
+    "phase/transaction-wire.labels": {
+      "sha256": "a955cd2ab2808eb000831ccb686a066b57342ce3a6fc2f3cf252c818be443d14",
+      "bytes": 6485
+    },
+    "phase/transaction-wire.map": {
+      "sha256": "d6d531e723b796d4745ab6030270b0b0e31bca167d2aef5f45f08394cfe5f1bf",
+      "bytes": 1266
+    },
+    "binding/binding.prg": {
+      "sha256": "53a2cbf0e38d06e142fe39c27ceb31616d5614b02f5f99f86308d9ff89da8906",
+      "bytes": 5916
+    },
+    "binding/binding.labels": {
+      "sha256": "1235fdbc5150d4d43196b7f3c5152339d9e883487aaf2f32d7fd681773636375",
+      "bytes": 3414
+    },
+    "binding/binding.map": {
+      "sha256": "a3ccd21ba3e16c8d0db1ecdd4ad1202cae30feca383a6866230aba69ce59292c",
+      "bytes": 23751
+    },
+    "binding/insert-support.prg": {
+      "sha256": "a5bac2d131d44895576bf62f348f474fa352813138285662f4209a57d947d171",
+      "bytes": 829
+    },
+    "binding/insert-calls.prg": {
+      "sha256": "41dbae9d7aa3965b8832b2c5e1c5349da0cb06adc6495dcc098f0f4a6d8b0845",
+      "bytes": 90
+    },
+    "binding/insert-calls.labels": {
+      "sha256": "f662e539d0b54729da9c7ff587d7fd7b566f961cf5ef12f6f04123e1081f662d",
+      "bytes": 78
+    },
+    "binding/insert-calls.map": {
+      "sha256": "855d72c63a5ea96f6d0a9a4714f7b62b5fb42e02787fd4f3b8c66651592f09b6",
+      "bytes": 552
+    },
+    "model/save-peddle.dylib": {
+      "sha256": "257d9ef31e7bf3f96bb229fc6b77b73b601980915c193c9197b859efe9ce1031",
+      "bytes": 210544
+    }
+  },
+  "scope": "synthetic incoming and PLAN receipt only; actual native PREPARE/WIRE/Insert BIND/COMMIT, no actual Input/controller/CUI/cold/device",
+  "first_counterexample": "first-policy-gap/COUNTEREXAMPLE.json retained actual prior falsePASS readonly mismatch; prior freeze/closure explicitly not current authority"
+}

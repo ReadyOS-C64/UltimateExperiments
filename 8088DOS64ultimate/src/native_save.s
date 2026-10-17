@@ -5,6 +5,9 @@
 .include "memory.inc"
 .include "reu.inc"
 .include "host_clock.inc"
+.ifndef DOS64_SAVE_MODAL
+DOS64_SAVE_MODAL=0
+.endif
 .ifndef DOS64_SAVE_HD_CONTEXT
 DOS64_SAVE_HD_CONTEXT=0
 .endif
@@ -245,6 +248,13 @@ sav_clock_terminal:
 ; A=final command acknowledgement. Returning code is permanently resident.
 sav_finish:
  sta dos64_native_diag+4
+.if DOS64_SAVE_MODAL
+ ; Broker exclusively owns cache0/stage8; no SAVE frame may release it.
+ lda #0
+ sta sav_borrowed
+ sta dos64_native_diag+3
+ lda #8
+.else
  lda sav_hand
  sta dos64_cache_hand
  lda #32
@@ -253,6 +263,7 @@ sav_finish:
  sta sav_borrowed
  sta dos64_native_diag+3
  lda #5
+.endif
  ldx dos64_files_handle
 .if DOS64_SAVE_HD_CONTEXT
  cpx sav_expected_handle

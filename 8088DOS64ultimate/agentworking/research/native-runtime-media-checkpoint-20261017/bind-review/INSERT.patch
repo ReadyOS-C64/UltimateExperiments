@@ -1,0 +1,963 @@
+--- a/phase/transaction_wire.s
++++ b/phase/transaction_wire.s
+@@ -3,6 +3,15 @@
+ .include "runtime.inc"
+ .include "media_transaction.inc"
+ .include "binding_receipt.inc"
++.ifndef DOS64_MEDIA_INSERT
++DOS64_MEDIA_INSERT=0
++.endif
++.assert DOS64_MEDIA_INSERT=0 || DOS64_MEDIA_INSERT=1,error,"INSERT boolean"
++.if DOS64_MEDIA_INSERT
++.include "insert_contract.inc"
++.include "insert_native.inc"
++.include "insert_broker.inc"
++.endif
+ .export tw_begin,tw_poll,tw_state,tw_error,tw_closed,tw_cancel
+ .ifndef DOS64_MEDIA_SEQUENCE
+ DOS64_MEDIA_SEQUENCE=0
+@@ -84,6 +93,10 @@
+ alloc_last:.res 4
+ alloc_seen:.res 1
+ .endif
++.if DOS64_MEDIA_INSERT
++insert_job:.res 1
++insert_blocks:.res 2
++.endif
+ tw_private_end:
+ .segment "CODE"
+ ; Standalone native/UI call boundary. Indirect pointers are temporary only
+@@ -301,6 +314,19 @@
+  ora hd_uncertain
+  ora dos64_overlay_busy
+  jne reject
++ .if DOS64_MEDIA_INSERT
++ lda #0
++ sta insert_job
++ lda tw_mode
++ cmp #4
++ bne :+
++ lda #1
++ sta insert_job
++ jsr alloc_context
++ jcs reject
++ jmp @insert_mode
++:
++.endif
+  lda tw_mode
+ .if DOS64_MEDIA_SEQUENCE
+  cmp #4
+@@ -333,6 +359,9 @@
+  jeq reject
+ :
+ .endif
++.if DOS64_MEDIA_INSERT
++@insert_mode:
++.endif
+  lda tw_sequence
+  ora tw_sequence+1
+  jeq reject
+@@ -372,11 +401,18 @@
+  dex
+  bpl :-
+  lda tw_mode
++.if DOS64_MEDIA_INSERT
++ cmp #4
++ beq @need_plan
++.endif
+ .if DOS64_MEDIA_SEQUENCE
+  cmp #1
+  bne :+
+ .else
+  beq :+
++.endif
++ .if DOS64_MEDIA_INSERT
++@need_plan:
+ .endif
+  lda ML_VALID
+  cmp #$a5
+@@ -390,6 +426,12 @@
+  jsr media_match
+  jcs reject
+ : lda tw_mode
++.if DOS64_MEDIA_INSERT
++ cmp #4
++ bne :+
++ lda #1
++:
++.endif
+  sta mode
+  lda tw_sequence
+  sta sequence
+@@ -429,7 +471,17 @@
+  lda #0
+ .endif
+ .if DOS64_MEDIA_BINDING
++ .if DOS64_MEDIA_INSERT
++ ldx insert_job
++ beq :+
++ sta MI_READY
++ jmp :++
++:
++.endif
+  sta MB_READY
++.if DOS64_MEDIA_INSERT
++:
++.endif
+ .endif
+  sta store_read
+  sta hdb_online
+@@ -1217,6 +1269,25 @@
+  sta verify_kind
+  sta offset
+  sta offset+1
++.if DOS64_MEDIA_INSERT
++ lda insert_job
++ beq @no_image
++ lda script
++ bne @no_image
++ lda #3
++ sta verify_kind
++ lda #$a0
++ sta insert_blocks
++ lda #5
++ sta insert_blocks+1
++ lda MI_FQ+5
++ sta source
++ lda MI_FQ+6
++ sta source+1
++ lda MI_FQ+7
++ sta source+2
++@no_image:
++.endif
+  lda #$ff
+  ldx #3
+ : sta crc,x
+@@ -1226,8 +1297,19 @@
+  sta phase
+  rts
+ verify_job:
++.if DOS64_MEDIA_INSERT
+  lda verify_kind
++ cmp #3
++ jeq insert_image_poll
++ cmp #4
++ jcs insert_cfg_poll
++.endif
++ lda verify_kind
++.if DOS64_MEDIA_INSERT
++ jne verify_match
++.else
+  bne verify_match
++.endif
+  lda #0
+  sta source
+  lda #6
+@@ -1244,6 +1326,15 @@
+  sta dos64_reu_request+7
+  jsr reu
+  jcs dma_failure
++.if DOS64_MEDIA_INSERT
++ lda insert_job
++ beq :+
++ lda offset+1
++ bne :+
++ jsr insert_journal_check
++ jcs identity_failure
++:
++.endif
+  ldy #0
+ : lda $b800,y
+  jsr crc_byte
+@@ -1354,10 +1445,296 @@
+  lda verify_kind
+  cmp #3
+  bne @return
++.if DOS64_MEDIA_INSERT
++ lda insert_job
++ beq :+
++ lda #4
++ sta verify_kind
++ rts
++:
++.endif
+  lda script
+  sta verified_script
+  jmp next_script
+ @return: rts
++ .if DOS64_MEDIA_INSERT
++insert_journal_check:
++ ldx #7
++: lda $b800,x
++ cmp insert_journal_magic,x
++ jne @bad
++ dex
++ bpl :-
++ lda $b808
++ cmp ML_DRIVE
++ jne @bad
++ lda MI_FQ+2
++ and #1
++ cmp $b809
++ jne @bad
++ ldx #1
++: lda $b80a,x
++ cmp sequence,x
++ jne @bad
++ dex
++ bpl :-
++ ldx #41
++: lda $b80c,x
++ cmp ML_SNAPSHOT,x
++ jne @bad
++ dex
++ bpl :-
++ ldx #3
++: lda $b836,x
++ cmp ML_CRC,x
++ jne @bad
++ dex
++ bpl :-
++ ldx #69
++: lda $b83a,x
++ jne @bad
++ dex
++ bpl :-
++ clc
++ rts
++@bad: sec
++ rts
++; Insert-only prepublication reconstruction proof. OLD must equal accepted
++; startup CFG, NEW may change only selectedpath/RO/presence/CRC/bodyfooter.
++insert_cfg_poll:
++ lda #0
++ sta count
++ lda #1
++ sta count+1
++ lda offset+1
++ cmp #2
++ bne :+
++ lda #64
++ sta count
++ lda #0
++ sta count+1
++: lda #0
++ sta source
++ sta source+1
++ lda #$3e
++ sta source+2
++ lda verify_kind
++ cmp #4
++ bne :+
++ lda #$20
++ sta source
++ lda #$f0
++ sta source+1
++ lda #$3f
++ sta source+2
++: lda #1
++ sta dos64_reu_request+7
++ jsr reu
++ jcs dma_failure
++ ldy #0
++: lda $b800,y
++ sta $b900,y
++ iny
++ cpy count
++ bne :-
++ lda #0
++ sta source
++ sta source+1
++ lda #$3e
++ sta source+2
++ lda verify_kind
++ cmp #5
++ bne :+
++ lda #3
++ sta source+1
++: lda #1
++ sta dos64_reu_request+7
++ jsr reu
++ jcs dma_failure
++ lda #1
++ ldx ML_DRIVE
++ beq :+
++ asl
++: sta work
++ ldy #0
++@bytes:
++ lda verify_kind
++ cmp #4
++ bne @new
++ lda $b800,y
++ cmp $b900,y
++ jne identity_failure
++ jmp @next
++@new:
++ jsr insert_cfg_byte
++ jcs identity_failure
++@next:
++ iny
++ cpy count
++ bne @bytes
++ lda offset
++ clc
++ adc count
++ sta offset
++ lda offset+1
++ adc count+1
++ sta offset+1
++ cmp #2
++ bne @return
++ lda offset
++ cmp #64
++ bne @return
++ lda #0
++ sta offset
++ sta offset+1
++ lda verify_kind
++ cmp #4
++ bne @complete
++ lda #5
++ sta verify_kind
++ jsr binding_crc_reset
++@return: rts
++@complete:
++ lda script
++ sta verified_script
++ jmp next_script
++insert_cfg_byte:
++ lda offset+1
++ beq @page0
++ cmp #1
++ beq @page1
++ ; final64 bytes contain flags, cookies, and stored bodyCRC.
++ cpy #60
++ bcc @flags
++ tya
++ sec
++ sbc #60
++ tax
++ lda crc,x
++ eor #$ff
++ jmp @expected
++@flags:
++ cpy #12
++ beq @readonly
++ cpy #13
++ beq @presence
++ lda ML_DRIVE
++ asl
++ asl
++ clc
++ adc #16
++ sta append_byte
++ tya
++ sec
++ sbc append_byte
++ cmp #4
++ bcs @old
++ tax
++ lda ML_CRC,x
++ jmp @feed
++@readonly:
++ lda MI_FQ+2
++ and #1
++ beq :+
++ lda $b900,y
++ ora work
++ jmp @feed
++: lda $b900,y
++ ora work
++ eor work
++ jmp @feed
++@presence:
++ lda $b900,y
++ ora work
++ jmp @feed
++@page0:
++ lda ML_DRIVE
++ bne @old
++ cpy #136
++ bcc @old
++ tya
++ sec
++ sbc #136
++ jmp @path
++@page1:
++ lda ML_DRIVE
++ bne @bpath
++ cpy #8
++ bcs @old
++ tya
++ clc
++ adc #120
++ jmp @path
++@bpath:
++ cpy #8
++ bcc @old
++ cpy #136
++ bcs @old
++ tya
++ sec
++ sbc #8
++@path:
++ tax
++ lda ML_PATH,x
++ jmp @feed
++@old:
++ lda $b900,y
++@feed:
++ cmp $b800,y
++ bne @bad
++ lda $b800,y
++ jsr crc_byte
++ clc
++ rts
++@expected:
++ cmp $b800,y
++ bne @bad
++ clc
++ rts
++@bad: sec
++ rts
++.segment "RODATA"
++insert_journal_magic:.byte "D64J",1,4,5,0
++.segment "CODE"
++.endif
++ .if DOS64_MEDIA_INSERT
++insert_image_poll:
++ lda #0
++ sta count
++ lda #1
++ sta count+1
++ sta dos64_reu_request+7
++ jsr reu
++ jcs dma_failure
++ ldy #0
++: lda $b800,y
++ jsr crc_byte
++ iny
++ bne :-
++ inc source+1
++ bne :+
++ inc source+2
++: lda insert_blocks
++ bne :+
++ dec insert_blocks+1
++: dec insert_blocks
++ lda insert_blocks
++ ora insert_blocks+1
++ bne @return
++ ldx #3
++: lda crc,x
++ eor #$ff
++ cmp ML_CRC,x
++ jne identity_failure
++ dex
++ bpl :-
++ jsr media_match
++ jcs identity_failure
++ lda #0
++ sta verify_kind
++ jsr binding_crc_reset
++@return: rts
++.endif
+ identity_failure:
+  lda #11
+  jsr fatal_latch
+@@ -1412,10 +1789,19 @@
+  bne @bad
+  dex
+  bpl :-
++.if DOS64_MEDIA_INSERT
++ lda insert_job
++ beq :+
++ jmp insert_stage_check
++:
++.endif
+  clc
+  rts
+ @bad: sec
+  rts
++.if DOS64_MEDIA_INSERT
++.include "insert_stage.inc"
++.endif
+ ; Append canonical home/name to command, with16bit cursor allowing2x128.
+ path_command:
+  sta path_offset
+@@ -1561,6 +1947,10 @@
+ ; Only actual private successful mode1 finish reaches this immutable writer.
+ ; No callback/public observation can mint a retained terminal receipt.
+ binding_mint:
++.if DOS64_MEDIA_INSERT
++ lda insert_job
++ jne binding_mint_insert
++.endif
+  lda #0
+  sta MB_READY
+  lda #1
+@@ -1684,6 +2074,113 @@
+  dex
+  bpl :-
+  rts
++.if DOS64_MEDIA_INSERT
++binding_mint_insert:
++ lda #0
++ sta MI_READY
++ lda #2
++ sta MI_VERSION
++ lda original_online
++ sta MI_ONLINE
++ lda sequence
++ sta MI_SEQUENCE
++ lda sequence+1
++ sta MI_SEQUENCE+1
++ jsr binding_crc_reset
++ ldy #0
++: lda ML_STATE,y
++ jsr crc_byte
++ iny
++ cpy #MI_LEDGER_BYTES
++ bne :-
++ ldx #3
++: lda crc,x
++ eor #$ff
++ sta MI_LEDGER_CRC,x
++ dex
++ bpl :-
++ jsr binding_crc_reset
++ ldy #0
++: lda home,y
++ jsr crc_byte
++ iny
++ bpl :-
++ ldx #3
++: lda crc,x
++ eor #$ff
++ sta MI_HOME_CRC,x
++ dex
++ bpl :-
++ ldx #23
++: lda dos64_disk_clean_mount,x
++ sta MI_TAIL,x
++ dex
++ bpl :-
++ jsr binding_crc_reset
++ lda #0
++ sta source
++ sta offset
++ sta offset+1
++ lda #$f0
++ sta source+1
++ lda #$3f
++ sta source+2
++ lda #32
++ sta count
++ lda #0
++ sta count+1
++ lda #1
++ sta dos64_reu_request+7
++ jsr reu
++ jcs binding_mint_fail
++ ldy #0
++: lda $b800,y
++ jsr crc_byte
++ iny
++ cpy #28
++ bne :-
++ lda #$f5
++ sta source+1
++ lda #1
++ sta dos64_reu_request+7
++ jsr reu
++ jcs binding_mint_fail
++ ldy #0
++: lda $b800,y
++ jsr crc_byte
++ iny
++ cpy #28
++ bne :-
++ ldx #3
++: lda crc,x
++ eor #$ff
++ sta MI_ANCHORS_CRC,x
++ dex
++ bpl :-
++@clock:
++ jsr clock
++ bcc :+
++ lda fatal
++ beq @clock
++ jmp binding_mint_fail
++: jsr binding_crc_reset
++ ldy #1
++: lda MI_READY,y
++ jsr crc_byte
++ iny
++ cpy #41
++ bne :-
++ ldx #3
++: lda crc,x
++ eor #$ff
++ sta MI_CHECKSUM,x
++ dex
++ bpl :-
++ lda #$a5
++ sta MI_READY
++ rts
++.endif
++
+ .endif
+ 
+ .if DOS64_MEDIA_SEQUENCE
+--- a/phase/insert_contract.inc
++++ b/phase/insert_contract.inc
+@@ -0,0 +1,14 @@
++; SETUP-independent modal Insert continuity, exclusive returned phase owner.
++MI_KIND=$7fb7
++MI_FQ=$7fb8
++MI_LEDGER_BYTES=211
++MI_READY=$7fd3
++MI_VERSION=$7fd4
++MI_ONLINE=$7fd5
++MI_SEQUENCE=$7fd6
++MI_LEDGER_CRC=$7fd8
++MI_HOME_CRC=$7fdc
++MI_TAIL=$7fe0
++MI_ANCHORS_CRC=$7ff8
++MI_CHECKSUM=$7ffc
++.assert MI_CHECKSUM+4=$8000,error,"Insert receipt exact jobtail"
+--- a/phase/insert_stage.inc
++++ b/phase/insert_stage.inc
+@@ -0,0 +1,91 @@
++; This routine returns C clear only for current native private PREPARE authority.
++; Does not infer private stage from caller request; does not mutate native state.
++insert_stage_check:
++ jsr insert_broker_owner
++ jcs @bad
++ lda MI_KIND
++ cmp #1
++ jne @bad
++ lda MI_FQ
++ cmp #1
++ jne @bad
++ lda MI_FQ+1
++ cmp #2
++ jcs @bad
++ cmp ML_DRIVE
++ jne @bad
++ cmp insert_stage_drive
++ jne @bad
++ lda MI_FQ+2
++ cmp #4
++ jcs @bad
++ cmp insert_stage_flags
++ jne @bad
++ lda MI_FQ+3
++ cmp #$a5
++ jne @bad
++ lda MI_FQ+4
++ cmp dos64_overlay_reu_mib
++ jne @bad
++ lda MI_FQ+5
++ ora MI_FQ+6
++ ora MI_FQ+8
++ jne @bad
++ lda MI_FQ+9
++ cmp #$a0
++ jne @bad
++ lda MI_FQ+10
++ cmp #5
++ jne @bad
++ lda MI_FQ+7
++ cmp dos64_floppy_stage_bank
++ jne @bad
++ lda dos64_floppy_stage_active
++ cmp #$a5
++ jne @bad
++ ldx ML_DRIVE
++ lda dos64_disk_dirty,x
++ ora dos64_disk_exhausted,x
++ beq :+
++ lda MI_FQ+2
++ and #2
++ jeq @bad
++: lda ML_DRIVE
++ asl
++ asl
++ tay
++ ldx #0
++@proof:
++ lda MI_FQ+11,x
++ cmp dos64_floppy_token,x
++ jne @bad
++ lda MI_FQ+15,x
++ cmp insert_stage_mount,x
++ jne @bad
++ cmp dos64_disk_mount_generation,y
++ jne @bad
++ lda MI_FQ+19,x
++ cmp insert_stage_content,x
++ jne @bad
++ cmp dos64_disk_content_generation,y
++ jne @bad
++ lda MI_FQ+23,x
++ cmp insert_stage_binding,x
++ jne @bad
++ cmp ML_CRC,x
++ jne @bad
++ inx
++ iny
++ cpx #4
++ bne @proof
++ ldx #26
++@request:
++ lda MI_FQ,x
++ cmp dos64_floppy_request,x
++ jne @bad
++ dex
++ bpl @request
++ clc
++ rts
++@bad: sec
++ rts
+--- a/phase/insert_native.inc
++++ b/phase/insert_native.inc
+@@ -0,0 +1,5 @@
++insert_stage_drive=$ea5a
++insert_stage_flags=$ea5b
++insert_stage_mount=$ea5c
++insert_stage_content=$ea60
++insert_stage_binding=$ea64
+--- a/phase/insert_broker.inc
++++ b/phase/insert_broker.inc
+@@ -0,0 +1 @@
++insert_broker_owner=$71ad
+--- a/binding/media_bind.c
++++ b/binding/media_bind.c
+@@ -1,6 +1,24 @@
+ #include "media_bind.h"
+ #include <string.h>
+-extern unsigned char mb_buffer[576],mb_compare[576],mb_ledger[183],mb_token[70];
++#ifndef MB_INSERT
++#define MB_INSERT 0
++#endif
++#if MB_INSERT
++#define MB_VERSION 2u
++#define MB_LEDGER_BYTES 211u
++#define MB_CHECKSUM 41u
++#define MB_HOME_CRC 9u
++#define MB_OLD_AB 29u
++#define MB_ANCHORS_CRC 37u
++#else
++#define MB_VERSION 1u
++#define MB_LEDGER_BYTES 183u
++#define MB_CHECKSUM 66u
++#define MB_HOME_CRC 34u
++#define MB_OLD_AB 54u
++#define MB_ANCHORS_CRC 62u
++#endif
++extern unsigned char mb_buffer[576],mb_compare[576],mb_ledger[MB_LEDGER_BYTES],mb_token[MB_CHECKSUM+4u];
+ extern unsigned char mb_service(void),mb_owner(void),mb_clean(void),mb_dma(void);
+ extern unsigned int mb_dma_c64,mb_dma_count;
+ extern unsigned long mb_dma_address;
+@@ -18,28 +36,44 @@
+ static unsigned char read_at(unsigned long a,unsigned int n){unsigned int off,k;for(off=0;off<n;off+=64u){k=n-off;if(k>64u)k=64u;memset(BUF+off,0xa5u,k);memset(verify,0x5au,k);if(!transfer((unsigned int)(BUF+off),a+off,k,0u)||!transfer((unsigned int)verify,a+off,k,0u))return 0u;if(memcmp(BUF+off,verify,k))return fail(6u);}return 1u;}
+ static unsigned char write_at(unsigned long a,unsigned int n){unsigned int off,k,i;for(off=0;off<n;off+=64u){k=n-off;if(k>64u)k=64u;if(!transfer((unsigned int)(BUF+off),a+off,k,1u))return 0u;for(i=0;i<k;++i)verify[i]=~BUF[off+i];if(!transfer((unsigned int)verify,a+off,k,0u))return 0u;if(memcmp(BUF+off,verify,k))return fail(6u);}return 1u;}
+ #include "semantic.inc"
+-unsigned char mb_ledger_check(void){return state==1u&&mb_token[1]==1u&&(crc(mb_token+1u,65u,0xffffffffUL)^0xffffffffUL)==get32(mb_token+66u)&&(crc(mb_ledger,183u,0xffffffffUL)^0xffffffffUL)==get32(mb_token+5u);}
++unsigned char mb_ledger_check(void){return state==1u&&mb_token[1]==MB_VERSION&&(crc(mb_token+1u,MB_CHECKSUM-1u,0xffffffffUL)^0xffffffffUL)==get32(mb_token+MB_CHECKSUM)&&(crc(mb_ledger,MB_LEDGER_BYTES,0xffffffffUL)^0xffffffffUL)==get32(mb_token+5u);}
++#if MB_INSERT
++static unsigned char image_valid(void){unsigned long off,c=0xffffffffUL,base=get32(mb_ledger+189u);for(off=0;off<368640UL;off+=64u){if(!read_at(base+off,64u))return 0u;c=crc(BUF,64u,c);}return (c^0xffffffffUL)==get32(mb_ledger+174u);}
++#endif
+ static unsigned char header_valid(unsigned char options){unsigned int i;unsigned long c;if(memcmp(BUF,options==1u?"D64O":"D64R",4u)||BUF[4]!=1u||BUF[5]||BUF[6]!=32u||BUF[7]||memcmp(BUF+8u,oldbody,4u))return 0u;
+ BUF[5]=0xa5u;c=crc(BUF,28u,0xffffffffUL)^0xffffffffUL;BUF[5]=0u;if(c!=get32(BUF+28u))return 0u;
+ if(options==1u){if(memcmp(BUF+12u,maincrc,4u)||(BUF[16]!=40u&&BUF[16]!=80u))return 0u;if(columns&&columns!=BUF[16])return 0u;columns=BUF[16];for(i=17u;i<28u;++i)if(BUF[i])return 0u;}
+-else{if((!options&&memcmp(BUF+16u,mb_token+54u,8u))||(options&&memcmp(BUF+16u,CMP+528u,8u))||BUF[26]!=1u||BUF[27]!=2u||memcmp(BUF+24u,mb_uci_base,2u))return 0u;if(!((BUF[24]==0x1cu&&(BUF[25]==0xdeu||BUF[25]==0xdfu))||(BUF[24]==0xfcu&&BUF[25]==0xdfu)))return 0u;if(options){if(memcmp(maincrc,BUF+12u,4u))return 0u;}else memcpy(maincrc,BUF+12u,4u);}
++else{if((!options&&memcmp(BUF+16u,mb_token+MB_OLD_AB,8u))||(options&&memcmp(BUF+16u,CMP+528u,8u))||BUF[26]!=1u||BUF[27]!=2u||memcmp(BUF+24u,mb_uci_base,2u))return 0u;if(!((BUF[24]==0x1cu&&(BUF[25]==0xdeu||BUF[25]==0xdfu))||(BUF[24]==0xfcu&&BUF[25]==0xdfu)))return 0u;if(options){if(memcmp(maincrc,BUF+12u,4u))return 0u;}else memcpy(maincrc,BUF+12u,4u);}
+ return 1u;}
+ static unsigned char patch_options(void){if(!read_at(0x3ff500UL,32u)||!header_valid(1u))return fail(9u);memcpy(BUF+8u,newbody,4u);BUF[5]=0xa5u;put32(BUF+28u,crc(BUF,28u,0xffffffffUL)^0xffffffffUL);BUF[5]=0u;memcpy(header,BUF,32u);if(!write_at(0x3ff500UL,32u)||!read_at(0x3ff500UL,32u)||memcmp(BUF,header,32u))return fail(6u);return 1u;}
+ unsigned char mb_bind(void){unsigned int off;unsigned long c;unsigned char mask;if(state)return 0u;state=1u;error=0u;mb_cancel_seen=0u;
+ if(mb_token[0]!=0xa5u)return fail(1u);mb_token[0]=0u;
+-if(mb_token[1]!=1u||!(mb_token[3]|mb_token[4])||mb_ledger[0]!=2u||mb_ledger[2]>1u||mb_ledger[3]!=0xa5u||mb_ledger[178]||
++if(mb_token[1]!=MB_VERSION||!(mb_token[3]|mb_token[4])||mb_ledger[0]!=2u||mb_ledger[2]>1u||mb_ledger[3]!=0xa5u||mb_ledger[178]||
+  !mb_owner()||!service())return fail(1u);
++#if MB_INSERT
++if(mb_ledger[183]!=1u)return fail(1u);
++#endif
+ /* The immutable receipt binds the journal used by the completed file job. */
+ c=0xffffffffUL;for(off=0;off<1280u;off+=64u){if(!read_at(0x3e0600UL+off,64u))return 0u;c=crc(BUF,64u,c);}c^=0xffffffffUL;if(c!=get32(mb_ledger+179u)||!read_at(0x3e0b00UL,4u)||get32(BUF)!=get32(mb_ledger+179u))return fail(7u);
+ if(!read_at(0x3e0600UL,64u)||memcmp(BUF,"D64J\1\4\5",7u)||BUF[7]||BUF[8]!=mb_ledger[2]||BUF[9]>1u||memcmp(BUF+10u,mb_token+3u,2u)||memcmp(BUF+12u,mb_ledger+132u,42u)||get32(BUF+54u)!=get32(mb_ledger+174u))return fail(7u);readonly=BUF[9];
+-if(!read_at(0x3ff020UL,576u)||!valid())return fail(8u);memcpy(CMP,BUF,576u);memcpy(oldbody,BUF+572u,4u);if((crc(BUF+8u,128u,0xffffffffUL)^0xffffffffUL)!=get32(mb_token+34u)||memcmp(mb_token+54u,BUF+528u,8u))return fail(8u);
++#if MB_INSERT
++if(readonly!=(mb_ledger[186]&1u))return fail(7u);
++#endif
++if(!read_at(0x3ff020UL,576u)||!valid())return fail(8u);memcpy(CMP,BUF,576u);memcpy(oldbody,BUF+572u,4u);if((crc(BUF+8u,128u,0xffffffffUL)^0xffffffffUL)!=get32(mb_token+MB_HOME_CRC)||memcmp(mb_token+MB_OLD_AB,BUF+528u,8u))return fail(8u);
+ if(!read_at(0x3e0000UL,576u)||memcmp(BUF,CMP,576u)||!read_at(0x3e0680UL,576u)||memcmp(BUF,CMP,576u))return fail(8u);
+-if(!read_at(0x3e0300UL,576u)||!valid())return fail(8u);off=mb_ledger[2]?264u:136u;mask=mb_ledger[2]?2u:1u;if(memcmp(BUF+off,mb_ledger+4u,128u)||get32(BUF+(mb_ledger[2]?532u:528u))!=get32(mb_ledger+174u)||!!(BUF[524]&mask)!=readonly)return fail(8u);memcpy(CMP+off,BUF+off,128u);CMP[524]=(CMP[524]&~mask)|(BUF[524]&mask);off=mb_ledger[2]?532u:528u;memcpy(CMP+off,BUF+off,4u);memcpy(CMP+572u,BUF+572u,4u);if(memcmp(BUF,CMP,576u))return fail(8u);
++if(!read_at(0x3e0300UL,576u)||!valid())return fail(8u);off=mb_ledger[2]?264u:136u;mask=mb_ledger[2]?2u:1u;if(memcmp(BUF+off,mb_ledger+4u,128u)||get32(BUF+(mb_ledger[2]?532u:528u))!=get32(mb_ledger+174u)||!!(BUF[524]&mask)!=readonly)return fail(8u);memcpy(CMP+off,BUF+off,128u);
++#if MB_INSERT
++if(mb_ledger[2]){if(!(BUF[525]&2u))return fail(8u);CMP[525]|=2u;}
++#endif
++CMP[524]=(CMP[524]&~mask)|(BUF[524]&mask);off=mb_ledger[2]?532u:528u;memcpy(CMP+off,BUF+off,4u);memcpy(CMP+572u,BUF+572u,4u);if(memcmp(BUF,CMP,576u))return fail(8u);
+ memcpy(newbody,BUF+572u,4u);memcpy(CMP,BUF,576u);if(!read_at(0x3e08c0UL,576u)||memcmp(BUF,CMP,576u))return fail(8u);
++#if MB_INSERT
++if(!image_valid())return fail(12u);
++#endif
+ /* Validate both consumed headers BEFORE changing even one accepted byte. */
+ /* R's old A/B cookies live in the retained receipt, not new CMP. */
+ if(!read_at(0x3ff000UL,32u)||!header_valid(0u))return fail(9u);c=crc(BUF,28u,0xffffffffUL);
+-if(!read_at(0x3ff500UL,32u)||!header_valid(1u)||(crc(BUF,28u,c)^0xffffffffUL)!=get32(mb_token+62u)||!mb_owner()||!service())return fail(9u);
++if(!read_at(0x3ff500UL,32u)||!header_valid(1u)||(crc(BUF,28u,c)^0xffffffffUL)!=get32(mb_token+MB_ANCHORS_CRC)||!mb_owner()||!service())return fail(9u);
+ /* Header update needs the original cookie comparison; rebuild without hidden state. */
+ if(!read_at(0x3ff000UL,32u))return 0u;memcpy(BUF+8u,newbody,4u);memcpy(BUF+16u,CMP+528u,8u);BUF[5]=0xa5u;put32(BUF+28u,crc(BUF,28u,0xffffffffUL)^0xffffffffUL);BUF[5]=0u;memcpy(header,BUF,32u);
+ if(!write_at(0x3ff000UL,32u)||!read_at(0x3ff000UL,32u)||memcmp(BUF,header,32u))return fail(6u);
+--- a/binding/glue.s
++++ b/binding/glue.s
+@@ -2,7 +2,25 @@
+ .macpack longbranch
+ .include "../phase/runtime.inc"
+ .include "../phase/media_transaction.inc"
++ .ifndef MB_INSERT
++MB_INSERT=0
++.endif
++.if MB_INSERT
++.include "../phase/insert_contract.inc"
++.include "../phase/insert_native.inc"
++.include "../phase/insert_broker.inc"
++MB_READY=MI_READY
++MB_VERSION=MI_VERSION
++MB_ONLINE=MI_ONLINE
++MB_SEQUENCE=MI_SEQUENCE
++MB_LEDGER_CRC=MI_LEDGER_CRC
++MB_HOME_CRC=MI_HOME_CRC
++MB_TAIL=MI_TAIL
++MB_ANCHORS_CRC=MI_ANCHORS_CRC
++MB_CHECKSUM=MI_CHECKSUM
++.else
+ .include "../phase/binding_receipt.inc"
++.endif
+ .include "broker.inc"
+ .importzp sp,ptr1,sreg
+ .export _mb_get32
+@@ -21,7 +39,13 @@
+ _mb_dma_write:.res 1
+ ports:.res 4
+ samples:.res 1
++ .if MB_INSERT
++.segment "INSHEADER"
++.word $6600
++.segment "INSERTSUPPORT"
++.else
+ .segment "CODE"
++.endif
+ _mb_fixture_init:
+  lda #$ff
+  sta sp
+@@ -128,8 +152,10 @@
+ : lda dos64_files_state_start,x
+  cmp broker_files,x
+  jne bad
++ .if !MB_INSERT
+  cmp MB_FILES,x
+  jne bad
++.endif
+  dex
+  bpl :-
+  ldx #hd_state_end-hd_state_start-1
+@@ -171,9 +197,14 @@
+  lda ML_DRIVE
+  cmp #2
+  jcs bad
++.if MB_INSERT
++ jsr insert_stage_check
++ jcs bad
++.else
+  tax
+  lda dos64_disk_exhausted,x
+  jne bad
++.endif
+  lda #1
+  ldx #0
+  rts
+@@ -184,6 +215,16 @@
+  jsr _mb_owner
+  cmp #0
+  jeq bad
++ .if MB_INSERT
++ ldx #26
++: lda MI_FQ,x
++ sta dos64_floppy_request,x
++ dex
++ bpl :-
++ lda #2
++ sta dos64_floppy_request
++ jmp @commit
++.endif
+  lda #0
+  ldx #26
+ : sta dos64_floppy_request,x
+@@ -217,6 +258,9 @@
+  iny
+  cpy #4
+  bne :-
++ .if MB_INSERT
++@commit:
++.endif
+  jsr dos64_overlay_floppy_control
+  jcs bad
+  lda dos64_overlay_error
+@@ -268,3 +312,7 @@
+ : lda #1
+  ldx #0
+  rts
++
++.if MB_INSERT
++.include "../phase/insert_stage.inc"
++.endif
+--- a/binding/insert.cfg
++++ b/binding/insert.cfg
+@@ -0,0 +1,2 @@
++MEMORY { HDR:start=$0000,size=2,file=%O; CODEMEM:start=$A000,size=$1800,file=%O,define=yes; SH:start=$0000,size=2,file="insert-support.prg"; SUPPORT:start=$6600,size=$0700,file="insert-support.prg",define=yes; STATE:start=$7D00,size=$0300,file="",define=yes; ZP:start=$80,size=$20,file=""; }
++SEGMENTS { LOADADDR:load=HDR,type=ro; CODE:load=CODEMEM,type=ro,define=yes; RODATA:load=CODEMEM,type=ro,define=yes; DATA:load=CODEMEM,type=rw; BSS:load=STATE,type=bss,define=yes; ZEROPAGE:load=ZP,type=zp; INSHEADER:load=SH,type=ro; INSERTSUPPORT:load=SUPPORT,type=ro,define=yes; }
+--- a/binding/insert_calls.s
++++ b/binding/insert_calls.s
+@@ -0,0 +1,37 @@
++.setcpu "6502"
++.include "insert-entry.inc"
++.export mw_init,mw_build
++.segment "LOADADDR"
++.word $7dd0
++.segment "CODE"
++.macro call_c target
++ php
++ sei
++ cld
++ ldx #95
++: lda $80,x
++ sta $7e80,x
++ lda #0
++ sta $80,x
++ dex
++ bpl :-
++ lda #$ff
++ sta $80
++ lda #$bf
++ sta $81
++ jsr target
++ pha
++ ldx #95
++: lda $7e80,x
++ sta $80,x
++ dex
++ bpl :-
++ pla
++ ldx #0
++ plp
++ rts
++.endmacro
++mw_init: call_c plan_init
++mw_build: call_c plan_build
++
++.assert * <= $7e80,error,"PLAN wrapper must not overwrite saved C/native high96"

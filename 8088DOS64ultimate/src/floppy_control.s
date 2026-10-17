@@ -1,3 +1,7 @@
+.ifndef DOS64_MEDIA_BINDING
+DOS64_MEDIA_BINDING=0
+.endif
+.assert DOS64_MEDIA_BINDING=0 || DOS64_MEDIA_BINDING=1,error,"MEDIA_BINDING must be0or1"
 .include "abi.inc"
 .include "disk.inc"
 .include "reu.inc"
@@ -11,6 +15,10 @@
 .export dos64_floppy_control,dos64_floppy_control_init,dos64_floppy_request,dos64_floppy_status
 .export dos64_floppy_stage_active,dos64_floppy_stage_bank,dos64_floppy_token
 .export dos64_floppy_validate,dos64_floppy_native_control
+.if DOS64_MEDIA_BINDING
+.import dos64_cache_limit,sav_context_pending,sav_borrowed,hdb_active,hd_uncertain,hdb_online,hdc_target
+.import dos64_uci_state,dos64_uci_recovery_failed,dos64_files_handle,dos64_files_target,dos64_files_owned_target
+.endif
 .importzp dos64_segment
 ; Exclusive native control uses public address scratch, never nested CPU math.
 ctl_ptr = dos64_segment
@@ -78,9 +86,16 @@ dos64_floppy_native_control:
  cmp #$a5
  beq @guarded
  lda dos64_native_diag
+.if DOS64_MEDIA_BINDING
+ jmp ctl_modal_admit
+.else
  cmp #5
  jne ctl_guard
+.endif
 @guarded:
+.if DOS64_MEDIA_BINDING
+ctl_guarded = *
+.endif
  ldx dos64_floppy_request+FQ_DRIVE
  cpx #2
  jcs ctl_input
@@ -104,6 +119,10 @@ dos64_floppy_native_control:
  jeq ctl_eject
  cmp #FOP_CLEAN
  jeq ctl_clean
+.if DOS64_MEDIA_BINDING
+ cmp #FOP_PROTECT
+ jeq ctl_protect
+.endif
  jmp ctl_input
 ctl_descriptor:
  lda #<dos64_disk_reu_base
@@ -331,6 +350,9 @@ ctl_commit:
 ctl_dirty_check:
  ldx ctl_drive
  lda dos64_disk_dirty,x
+.if DOS64_MEDIA_BINDING
+ ora dos64_disk_exhausted,x
+.endif
  beq @clean
  lda dos64_floppy_request+FQ_FLAGS
  and #2
@@ -373,6 +395,11 @@ ctl_mount_available:
  rts
 .segment "DISKCODE"
 ctl_eject:
+.if DOS64_MEDIA_BINDING
+ lda dos64_floppy_request+FQ_FLAGS
+ and #$fd
+ jne ctl_input
+.endif
  jsr ctl_match_snapshot
  jcs ctl_context
  jsr ctl_dirty_check
@@ -404,7 +431,11 @@ ctl_new_mount:
  lda #0
  sta dos64_disk_content_generation,x
  sta dos64_disk_clean_content,x
+ ; Live session Eject retains the durable startup cookie: it does not
+ ; rewrite CFG. A later COMMIT replaces this cookie from its staged binding.
+ .if !DOS64_MEDIA_BINDING
  sta dos64_disk_binding,x
+ .endif
  lda dos64_disk_mount_generation,x
  sta dos64_disk_clean_mount,x
  inx
@@ -412,7 +443,59 @@ ctl_new_mount:
  bne @meta
  rts
 .segment "DISKCODE"
+.if DOS64_MEDIA_BINDING
+ctl_modal_admit:
+ cmp #5
+ jeq ctl_guarded
+ cmp #8
+ jne ctl_guard
+ lda dos64_floppy_request+FQ_OP
+ cmp #FOP_PREPARE
+ jcc ctl_guard
+ cmp #FOP_PROTECT+1
+ jcs ctl_guard
+ lda dos64_cache_limit
+ ora dos64_cold_open
+ ora sav_context_pending
+ ora sav_borrowed
+ ora hdb_active
+ ora hd_uncertain
+ ora dos64_uci_recovery_failed
+ jne ctl_guard
+ lda dos64_uci_state
+ beq @quiet
+ cmp #9
+ jne ctl_guard
+@quiet:
+ lda hdb_online
+ beq @closed
+ cmp #1
+ jne ctl_guard
+ lda dos64_files_handle
+ cmp #1
+ jne ctl_guard
+ lda hdc_target
+ cmp #1
+ beq @target
+ cmp #2
+ jne ctl_guard
+@target:
+ cmp dos64_files_target
+ jne ctl_guard
+ cmp dos64_files_owned_target
+ jne ctl_guard
+ jmp ctl_guarded
+@closed:
+ lda dos64_files_handle
+ jne ctl_guard
+ jmp ctl_guarded
+.endif
 ctl_clean:
+.if DOS64_MEDIA_BINDING
+ lda dos64_floppy_request+FQ_FLAGS
+ and #$fe
+ jne ctl_input
+.endif
  lda dos64_floppy_request+FQ_COMPLETE
  cmp #$a5
  jne ctl_input
@@ -424,6 +507,17 @@ ctl_clean:
  ldx ctl_drive
  lda dos64_disk_exhausted,x
  jne ctl_generation
+.if DOS64_MEDIA_BINDING
+ lda dos64_cold_open
+ bne :+
+ lda dos64_native_diag
+ cmp #8
+ bne :+
+ lda dos64_floppy_request+FQ_FLAGS
+ and #1
+ sta dos64_disk_readonly,x
+:
+.endif
  lda #0
  sta dos64_disk_dirty,x
  ldx ctl_offset
@@ -468,6 +562,10 @@ ctl_return_error:
  plp
  sec
  rts
+.if DOS64_MEDIA_BINDING
+.segment "DISKCODE"
+; Both constants are used only while this same DISK overlay is installed.
+.endif
 ctl_banks: .byte $10,$18,$38
 ctl_image: .byte 0,0,0,$d0,2,40,0,2,9,1
 
@@ -511,3 +609,23 @@ dos64_floppy_validate:
  rts
 ctl_bpb_offsets: .byte $0b,$0c,$13,$14,$15,$18,$19,$1a,$1b,$0e,$0f,$10
 ctl_bpb_values: .byte 0,2,$d0,2,$fd,9,0,2,0,1,0,2
+
+.if DOS64_MEDIA_BINDING
+.segment "DISKCODE"
+; Session-only readonly policy; no file/config bytes or content identity change.
+; Exclusive modal/cold guard and exact selected generations are still required.
+ctl_protect:
+ lda dos64_floppy_request+FQ_FLAGS
+ and #$fe
+ jne ctl_input
+ ldy #9
+ lda (ctl_ptr),y
+ jeq ctl_input
+ jsr ctl_match_snapshot
+ jcs ctl_context
+ ldx ctl_drive
+ lda dos64_floppy_request+FQ_FLAGS
+ and #1
+ sta dos64_disk_readonly,x
+ jmp ctl_ok
+.endif

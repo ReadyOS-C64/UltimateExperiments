@@ -1,0 +1,1 @@
+Root host orchestration: requested public-smoke/runtime as command cwd before that directory existed; tool refused process creation. No script, source copy, native build or model test executed. Corrected setup runs from existing project cwd before dependent smoke launch.

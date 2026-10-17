@@ -1,0 +1,2628 @@
+--- c866/build_ui_bridge.py
++++ insert/build_ui_bridge.py
+@@ -1,6 +1,6 @@
+ from pathlib import Path
+ import json,hashlib,subprocess,shutil,os,sys,zlib,argparse
+-ap=argparse.ArgumentParser();ap.add_argument('--role',choices=['unit','runtime'],default='unit');role=ap.parse_args().role
++ap=argparse.ArgumentParser();ap.add_argument('--role',choices=['runtime'],default='runtime');role=ap.parse_args().role
+ P=Path(__file__).resolve().parent;W=P/'work';tools={n:str(Path(shutil.which(n)).resolve())for n in ['cc65','ca65','ld65','make']};env=dict(os.environ)
+ for n in ['PYTHONPATH','PYTHONPYCACHEPREFIX','CC65_HOME','CC65_INC','CA65_INC','LD65_LIB','LD65_CFG']:env.pop(n,None)
+ env['PYTHONDONTWRITEBYTECODE']='1';env['PYTHONPYCACHEPREFIX']=str(P/'.absent-ui-build-cache');assert not Path(env['PYTHONPYCACHEPREFIX']).exists()
+@@ -51,13 +51,15 @@
+ (P/'phase/sequence_broker.inc').write_text(''.join('alloc_broker_'+n+'=$%04x\n'%B[n]for n in ['native_owner','saved_files','saved_hd','saved_hdb']))
+ run([tools['ca65'],'-g','-D','DOS64_MEDIA_BINDING=1','-D','DOS64_MEDIA_SEQUENCE=1','transaction_wire.s','-o','transaction_wire.o'],P/'phase')
+ run([tools['ld65'],'-C','plan.cfg','-o','transaction-wire.prg','-m','transaction-wire.map','-Ln','transaction-wire.labels','transaction_wire.o'],P/'phase')
++run([sys.executable,'-B','build_incoming.py'])
++run([sys.executable,'-B','build_insert_component.py'])
+ run([sys.executable,'-B','build_controller.py','--role',role])
+ run([sys.executable,'-B','build_finish.py','--role',role])
+ F=labels(P/'finish/finish.labels');finish=(P/'finish/finish.prg').read_bytes()[2:]
+ A=labels(P/'controller/controller.labels');controller=(P/'controller/controller.prg').read_bytes()[2:]
+ (P/'bridge/symbols.inc').write_text(''.join(n+'=$%04x\n'%v for table in [N,B,U,A,F]for n,v in table.items()if (table is F and n.startswith('fn_'))or n in ['modal_owned','modal_context','modal_error','modal_verify','verify_expected','ui_ready','modal_poll','modal_ui_on','modal_ui_off','modal_view_refresh','dos64_native_diag','dos64_cache_limit','dos64_reu_request','dos64_reu_transfer','_mu_event','_mu_capture','_mu_view','_mu_refresh','_mu_block_error','_mu_block','_mu_reply_ticket','_mu_reply_error','_mu_reply_safe','_mu_reply','ac_entry','_ac_request','_ac_result','dos64_floppy_request','dos64_floppy_status','dos64_overlay_floppy_control','dos64_overlay_error','dos64_overlay_busy','dos64_overlay_reu_mib','dos64_disk_mount_generation','dos64_disk_content_generation','dos64_disk_readonly','dos64_files_state_start','dos64_files_handle','hdb_online','hdc_target','hd_state_start','hd_state_end','hdb_state_start','hdb_state_end','dos64_cache_flags','dos64_cache_pins','sav_context_pending','sav_borrowed','hdb_active','hd_uncertain','dos64_uci_recovery_failed','dos64_uci_state','saved_files','saved_hd','saved_hdb','saved_online','saved_target']))
+ (P/'bridge/products.inc').write_text('CONTROLLER_BYTES=%d\nCONTROLLER_CRC=$%08x\nUI_BYTES=%d\nUI_CRC=$%08x\n'%(len(controller),zlib.crc32(controller),len(ui),zlib.crc32(ui))+('FINISH_BYTES=%d\nFINISH_CRC=$%08x\n'%(len(finish),zlib.crc32(finish))))
+-run([tools['ca65'],'-g','bridge.s','-o','bridge.o'],P/'bridge');run([tools['ld65'],'-C','bridge.cfg','-o','bridge.prg','-m','bridge.map','-Ln','bridge.labels','bridge.o'],P/'bridge');bridge=(P/'bridge/bridge.prg').read_bytes()[2:];assert len(bridge)<=0xd00
++run([tools['ca65'],'-g','bridge.s','-o','bridge.o'],P/'bridge');run([tools['ld65'],'-C','bridge.cfg','-o','bridge.prg','-m','bridge.map','-Ln','bridge.labels','bridge.o'],P/'bridge');bridge=(P/'bridge/bridge.prg').read_bytes()[2:];assert len(bridge)<=0x600
+ bridge_offset=json.loads((P/'CONTROLLER_BUILD.json').read_text())['core_end'];assert bridge_offset+len(bridge)<=0x6000
+ for folder in ['broker','broker-runtime']:
+  (P/folder/'bridge_products.inc').write_text('BRIDGE_BYTES=%d\nBRIDGE_CRC=$%08x\nBRIDGE_REU=$%06x\nUI_BYTES=%d\nUI_CRC=$%08x\n'%(len(bridge),zlib.crc32(bridge),0x3da000+bridge_offset,len(ui),zlib.crc32(ui)))
+@@ -67,8 +69,9 @@
+   for n in ['modal_owned','modal_context','modal_error','modal_verify','verify_expected','ui_ready','modal_poll','modal_ui_on','modal_ui_off','modal_view_refresh','saved_files','saved_hd','saved_hdb','saved_online','saved_target']:assert prior[n]==final[n],n
+ broker=(P/'broker/broker.prg').read_bytes()[2:];assert len(broker)<=2048
+ # Native common cohort includes every actual new source/product identity.
+-sources={str(f.relative_to(P)):info(f)for root in ['work/src','work/include','work/cfg','broker','broker-runtime','bridge','controller','ui','phase','binding','finish']for f in(P/root).rglob('*')if f.is_file()and f.suffix in ['.c','.h','.s','.inc','.cfg']and f.name!='modal_assets.inc'}
++sources={str(f.relative_to(P)):info(f)for root in ['work/src','work/include','work/cfg','broker','broker-runtime','bridge','controller','ui','phase','binding','finish','worker','insert-binding']for f in(P/root).rglob('*')if f.is_file()and f.suffix in ['.c','.h','.s','.inc','.cfg']and f.name!='modal_assets.inc'}
+ sources['build_ui_bridge.py']=info(P/'build_ui_bridge.py');sources['build_controller.py']=info(P/'build_controller.py');sources['build_finish.py']=info(P/'build_finish.py');sources['work/Makefile']=info(W/'Makefile')
++sources['build_incoming.py']=info(P/'build_incoming.py');sources['build_insert_component.py']=info(P/'build_insert_component.py')
+ tag=hashlib.sha256(json.dumps({'source':sources,'flags':flags,'role':role},sort_keys=True,separators=(',',':')).encode()).digest()[:16]
+ header=bytearray(64);header[:8]=b'D64M\1\1\x40\0';header[8:24]=tag;header[24:26]=len(broker).to_bytes(2,'little');header[26:28]=b'\0p';header[28:31]=(0x3da200).to_bytes(3,'little');header[31:33]=len(ui).to_bytes(2,'little');header[33:36]=(0x3daa00).to_bytes(3,'little');(P/'HEADER.bin').write_bytes(header)
+ (W/'include/modal_assets.inc').write_text('MM_BROKER_BYTES='+str(len(broker))+'\nMM_HEADER_REU=$3da000\nMM_BROKER_REU=$3da200\n.macro MM_EXPECTED_HEADER\n.byte '+','.join(map(str,header))+'\n.endmacro\n')
+@@ -77,5 +80,5 @@
+ run([tools['make'],'build/dos64.prg','build/dos64-tests.prg','build/dos64-tests.prg.unit-extra.bin','build/dos64-tests.bin','verify-memory',*flags],W)
+ assert (W/'build'/('dos64.prg'if role=='runtime'else'dos64-tests.prg')).read_bytes().count(header[8:24])==1
+ finalN=labels(W/'build'/('dos64.labels'if role=='runtime'else'dos64-tests.labels'));assert all(N[n]==finalN[n]for n in N if n.startswith(('dos64_','hdb_','hd_','hdc_','sav_')))
+-body=bytearray((P/'WORKERS.MNU').read_bytes());body[:64]=header;body[0x200:0x200+len(broker)]=broker;body[0xa00:0xa00+len(ui)]=ui;assert 0xa00+len(ui)<=0x2800;body[bridge_offset:bridge_offset+len(bridge)]=bridge;assert 0x9800+len(finish)<=len(body);body[0x9800:0x9800+len(finish)]=finish;(P/'MODAL.MNU').write_bytes(body)
+-result={'scope':'selected-role fullCUI sequence SaveAs; coldSTART/public/physical unqualified','role':role,'native':info(W/'build'/('dos64.prg'if role=='runtime'else'dos64-tests.prg')),'broker':info(P/'broker/broker.prg'),'ui':info(P/'ui/panel.prg'),'bridge':info(P/'bridge/bridge.prg'),'controller':info(P/'controller/controller.prg'),'finish':info(P/'finish/finish.prg'),'MNU':info(P/'MODAL.MNU'),'tag':tag.hex(),'inputs':sources};(P/'UI_BUILD_RESULT.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({k:v for k,v in result.items()if k!='inputs'}))
++body=bytearray((P/'WORKERS.MNU').read_bytes());body[:64]=header;body[0x200:0x200+len(broker)]=broker;body[0xa00:0xa00+len(ui)]=ui;assert 0xa00+len(ui)<=0x2900;body[bridge_offset:bridge_offset+len(bridge)]=bridge;assert 0x9800+len(finish)<=len(body);body[0x9800:0x9800+len(finish)]=finish;(P/'MODAL.MNU').write_bytes(body)
++result={'scope':'source-built runtime Save/Insert/Finish CUI graph; execution and coldSTART/public/physical acceptance separate','role':role,'native':info(W/'build'/('dos64.prg'if role=='runtime'else'dos64-tests.prg')),'broker':info(P/'broker/broker.prg'),'ui':info(P/'ui/panel.prg'),'bridge':info(P/'bridge/bridge.prg'),'controller':info(P/'controller/controller.prg'),'finish':info(P/'finish/finish.prg'),'MNU':info(P/'MODAL.MNU'),'tag':tag.hex(),'inputs':sources};(P/'UI_BUILD_RESULT.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({k:v for k,v in result.items()if k!='inputs'}))
+--- c866/build_controller.py
++++ insert/build_controller.py
+@@ -5,6 +5,7 @@
+ ap=argparse.ArgumentParser();ap.add_argument('--role',choices=['unit','runtime'],default='unit');role=ap.parse_args().role
+ S=lambda p:{l.split()[2].lstrip('.'):int(l.split()[1],16)for l in p.read_text().splitlines()if l.startswith('al ')}
+ N=S(P/('work/build/dos64.labels'if role=='runtime'else'work/build/dos64-tests.labels'));B=S(P/'broker/broker.labels');T=S(P/'phase/transaction-wire.labels');M=S(P/'phase/modal-save.labels');Q=S(P/'phase/runtime-plan.labels')
++I=S(P/'worker/incoming.labels')
+ (C/'native.inc').write_text(''.join(n+'=$%04x\n'%v for n,v in N.items()if n.startswith(('dos64_','hdb_','hd_','hdc_','sav_')))+''.join(n+'=$%04x\n'%v for n,v in B.items()if n.startswith(('modal_','saved_'))))
+ worker={n:n for n in ['tw_drive','tw_take_sequence','tw_begin','tw_poll','tw_state','tw_error','tw_closed','tw_committing','tw_home','tw_sequence','tw_limit','tw_mode','tw_cancel']}
+ worker.update({n:n for n in ['ms_begin','ms_poll','ms_state','ms_error','ms_drive','ms_path','ms_cancel']})
+@@ -14,25 +15,32 @@
+ lines+=['.export _mw_init,_mw_build','mw_init=$7dd0','mw_build=$7dfc','_mw_init=mw_init','_mw_build=mw_build']
+ for n in ['mp_drive','mp_readonly','mp_sequence','mp_capacity','mp_image_path','mp_snapshot','mp_image_crc']:
+  lines+=['.export _'+n,n+'=$%04x'%Q['_'+n],'_'+n+'='+n]
++for n in ['iw_begin','iw_poll','iw_state','iw_error','iw_closed','iw_take','iw_path','iw_limit','iw_enable','iw_cancel']:
++ lines+=['.export _'+n,'_'+n+'=$%04x'%I[n]]
++for name,native in [('ac_fq','dos64_floppy_request'),('ac_stage_active','dos64_floppy_stage_active'),('ac_disk_a','dos64_disk_reu_base'),('ac_disk_b','dos64_disk_b_descriptor')]:lines+=['.export _'+name,'_'+name+'=$%04x'%N[native]]
+ (C/'worker.inc').write_text('\n'.join(lines)+'\n')
+-body=bytearray(40960);records=[];cursor=0x2800
+-parts=[('phase/transaction-wire.prg',0),('phase/modal-save.prg',0),('phase/runtime-plan.prg',1),('binding/binding.prg',2)]
++body=bytearray(57344);records=[];cursor=0x5800
++parts=[('phase/transaction-wire.prg',0,0xa000,0),('phase/modal-save.prg',0,0x2900,0),('phase/runtime-plan.prg',1,0x3300,0x4600),('binding/binding.prg',2,0x8000,0x5200),('worker/incoming.prg',0,0x4700,0),('insert-binding/binding.prg',3,0xb800,0x5300)]
+ def source(off):return 0x3da000+off if off<0x6000 else 0x3f0000+(off-0x6000)
+ def place(name,offset):
+- b=(P/name).read_bytes();payload=b[2:];body[offset:offset+len(payload)]=payload
++ b=(P/name).read_bytes();payload=b[2:];end=offset+len(payload);assert payload and end<=len(body)and(offset>=0x6000 or end<=0x6000),(name,offset,end);body[offset:end]=payload
+  return {'file':name,'host':int.from_bytes(b[:2],'little'),'reu':source(offset),'bytes':len(payload),'crc':zlib.crc32(payload),'logical_offset':offset}
+-for i,(name,wrapper)in enumerate(parts):
+- offset=0x8000 if i==3 else cursor;v=place(name,offset);labels=S((P/name).with_suffix('.labels'))
++occupied=[]
++for i,(name,wrapper,offset,wrapper_offset)in enumerate(parts):
++ v=place(name,offset);labels=S((P/name).with_suffix('.labels'));occupied.append((offset,offset+v['bytes'],name))
+  line=next(l.split()for l in(P/name).with_suffix('.map').read_text().split('Segment list:')[1].split('Exports list')[0].splitlines()if l.split()and l.split()[0]=='BSS')
+- v.update(bss=int(line[1],16),bss_bytes=int(line[3],16),wrapper_reu=0,wrapper_bytes=0,wrapper_crc=0)
+- if i<3:cursor=(offset+v['bytes']+255)&~255
++ v.update(bss=int(line[1],16),bss_bytes=int(line[3],16),wrapper_reu=0,wrapper_bytes=0,wrapper_crc=0,aux_reu=0,aux_bytes=0,aux_crc=0)
+  if wrapper:
+-  wname='phase/worker-calls.prg'if wrapper==1 else'binding/binding-calls.prg';w=place(wname,cursor);assert w['host']==0x7dd0
+-  v.update(wrapper_reu=w['reu'],wrapper_bytes=w['bytes'],wrapper_crc=w['crc']);cursor=(cursor+w['bytes']+255)&~255
++  wname={1:'phase/worker-calls.prg',2:'binding/binding-calls.prg',3:'insert-binding/insert-calls.prg'}[wrapper];w=place(wname,wrapper_offset);assert w['host']==0x7dd0
++  v.update(wrapper_reu=w['reu'],wrapper_bytes=w['bytes'],wrapper_crc=w['crc']);occupied.append((wrapper_offset,wrapper_offset+w['bytes'],wname))
++ if i==5:
++  a=place('insert-binding/insert-support.prg',0x5400);assert a['host']==0x6600 and a['bytes']<=0x700
++  v.update(aux_reu=a['reu'],aux_bytes=a['bytes'],aux_crc=a['crc']);occupied.append((0x5400,0x5400+a['bytes'],'insert-support'))
+  records.append(v)
+ assert cursor<=0x6000
+-header='''struct ac_asset {ac_u16 host;ac_u32 reu;ac_u16 bytes;ac_u32 crc;ac_u16 bss,bss_bytes;ac_u32 wrapper_reu;ac_u16 wrapper_bytes;ac_u32 wrapper_crc;};\nstatic const struct ac_asset ac_assets[4]={\n'''
+-for r in records:header+='{'+','.join(str(r[k])+('UL'if k in ['reu','crc','wrapper_reu','wrapper_crc']else'u')for k in ['host','reu','bytes','crc','bss','bss_bytes','wrapper_reu','wrapper_bytes','wrapper_crc'])+'},\n'
++for (a,b,n),(c,d,m)in zip(sorted(occupied),sorted(occupied)[1:]):assert b<=c,(n,m,hex(b),hex(c))
++header='''struct ac_asset {ac_u16 host;ac_u32 reu;ac_u16 bytes;ac_u32 crc;ac_u16 bss,bss_bytes;ac_u32 wrapper_reu;ac_u16 wrapper_bytes;ac_u32 wrapper_crc;ac_u32 aux_reu;ac_u16 aux_bytes;ac_u32 aux_crc;};\nstatic const struct ac_asset ac_assets[6]={\n'''
++for r in records:header+='{'+','.join(str(r[k])+('UL'if k in ['reu','crc','wrapper_reu','wrapper_crc','aux_reu','aux_crc']else'u')for k in ['host','reu','bytes','crc','bss','bss_bytes','wrapper_reu','wrapper_bytes','wrapper_crc','aux_reu','aux_bytes','aux_crc'])+'},\n'
+ (C/'action_assets.h').write_text(header+'};\n')
+ (C/'aliases.s').write_text('.setcpu "6502"\n.include "worker.inc"\n')
+ for obsolete in [C/'controller.prg',C/'controller.labels',C/'controller.map',P/'WORKERS.MNU',P/'CONTROLLER_BUILD.json']:
+--- c866/build_insert_component.py
++++ insert/build_insert_component.py
+@@ -0,0 +1,27 @@
++from pathlib import Path
++import sys,os,subprocess,json,hashlib,shutil
++P=Path(__file__).resolve().parent;sys.dont_write_bytecode=True
++def labels(p):return{l.split()[2].lstrip('.'):int(l.split()[1],16)for l in p.read_text().splitlines()if l.startswith('al ')}
++N=labels(P/'work/build/dos64.labels');B=labels(P/'broker/broker.labels')
++assert 'fixture_return'not in N,'Insert component requires actual runtime aliases'
++(P/'phase/insert_native.inc').write_text(''.join('insert_'+n+'=$%04x\n'%N[n]for n in ['stage_drive','stage_flags','stage_mount','stage_content','stage_binding']))
++(P/'phase/insert_broker.inc').write_text('insert_broker_owner=$%04x\n'%B['native_owner'])
++D=P/'insert-binding';D.mkdir(exist_ok=True)
++for n in ['media_bind.c','media_bind.h','semantic.inc','glue.s','insert.cfg','insert_calls.s','broker.inc']:shutil.copyfile(P/'binding'/n,D/n)
++env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1')
++for k in ['CC65_HOME','CC65_INC','CA65_INC','LD65_LIB','LD65_CFG','PYTHONPATH','PYTHONPYCACHEPREFIX']:env.pop(k,None)
++commands=[]
++def run(root,a):
++ a=list(map(str,a));r=subprocess.run(a,cwd=P/root,env=env,capture_output=True);i=len(commands);(P/f'INSERT_BUILD{i:02}.stdout').write_bytes(r.stdout);(P/f'INSERT_BUILD{i:02}.stderr').write_bytes(r.stderr);commands.append({'cwd':root,'argv':a,'exit':r.returncode});(P/'INSERT_BUILD_COMMANDS.json').write_text(json.dumps(commands,indent=2)+'\n');assert not r.returncode,(a,r.stderr.decode())
++run('phase',['ca65','-g','-D','DOS64_MEDIA_BINDING=1','-D','DOS64_MEDIA_SEQUENCE=1','-D','DOS64_MEDIA_INSERT=1','transaction_wire.s','-o','transaction_wire.o'])
++run('phase',['ld65','-C','plan.cfg','-o','transaction-wire.prg','-m','transaction-wire.map','-Ln','transaction-wire.labels','transaction_wire.o'])
++run('insert-binding',['cc65','-t','none','-O','-D','MB_INSERT=1','media_bind.c','-o','media_bind.s'])
++for n in ['media_bind','glue']:run('insert-binding',['ca65','-g','-D','MB_INSERT=1',n+'.s','-o',n+'.o'])
++run('insert-binding',['ca65','-g','../phase/crc.s','-o','crc.o'])
++run('insert-binding',['ld65','-C','insert.cfg','-o','binding.prg','-m','binding.map','-Ln','binding.labels','media_bind.o','glue.o','crc.o','/opt/homebrew/share/cc65/lib/none.lib'])
++Q=labels(D/'binding.labels');(D/'insert-entry.inc').write_text('plan_init=$%04x\nplan_build=$%04x\n'%(Q['_mb_fixture_init'],Q['_mb_bind']))
++run('insert-binding',['ca65','-g','insert_calls.s','-o','insert_calls.o'])
++run('insert-binding',['ld65','-C','../phase/worker-calls.cfg','-o','insert-calls.prg','-m','insert-calls.map','-Ln','insert-calls.labels','insert_calls.o'])
++result={n:{'sha256':hashlib.sha256((P/n).read_bytes()).hexdigest(),'bytes':(P/n).stat().st_size}for n in ['phase/transaction-wire.prg','binding/binding.prg','insert-binding/binding.prg','insert-binding/insert-support.prg','insert-binding/insert-calls.prg']}
++(P/'INSERT_BUILD_RESULT.json').write_text(json.dumps({'products':result,'scope':'runtime Insert-enabled WIRE plus distinct Save and Insert BIND/support/wrappers'},indent=2)+'\n')
++print(json.dumps(result,indent=2))
+--- c866/build_incoming.py
++++ insert/build_incoming.py
+@@ -0,0 +1,19 @@
++from pathlib import Path
++import os,sys
++P=Path(__file__).resolve().parent;sys.dont_write_bytecode=True;sys.pycache_prefix=str(P/'.absent-iw-build');assert not Path(sys.pycache_prefix).exists()
++import json,hashlib,shutil,subprocess,re
++L=lambda f:{l.split()[2].lstrip('.'):int(l.split()[1],16)for l in f.read_text().splitlines()if l.startswith('al ')}
++N=L(P/'work/build/dos64.labels');B=L(P/'broker/broker.labels');w=P/'worker';names=[n for n in N if n.startswith(('dos64_','hdb_','hd_','hdc_','sav_'))]+['stage_drive','stage_flags','stage_mount','stage_content']
++(w/'imports.inc').write_text(''.join(n+'=$%04x\n'%N[n]for n in names)+''.join('broker_'+n+'=$%04x\n'%B[n]for n in ['native_owner','presentation_owner','saved_files','saved_hd','saved_hdb']))
++# Generate geometry directly from this exact native COMMIT validator source.
++core=(P/'work/src/floppy_control.s').read_text();tables={}
++for label in ['ctl_bpb_offsets','ctl_bpb_values']:
++ values=[int(t.strip()[1:],16)if t.strip().startswith('$')else int(t.strip())for t in re.search(r'^'+label+r':\s*\.byte([^\n]+)',core,re.M).group(1).split(',')];assert len(values)==12;tables[label]=values
++(w/'geometry.inc').write_text('iw_bpb_offsets:.byte '+','.join(map(str,tables['ctl_bpb_offsets']))+'\niw_bpb_values:.byte '+','.join(map(str,tables['ctl_bpb_values']))+'\n')
++(P/'GEOMETRY_SOURCE.json').write_text(json.dumps({'core_sha256':hashlib.sha256((P/'work/src/floppy_control.s').read_bytes()).hexdigest(),'tables':tables},indent=2)+'\n')
++env=dict(os.environ)
++for n in ['CC65_HOME','CC65_INC','CA65_INC','LD65_LIB','LD65_CFG']:env.pop(n,None)
++cmds=[]
++for a in [[shutil.which('ca65'),'-g','incoming.s','-o','incoming.o'],[shutil.which('ld65'),'-C','incoming.cfg','-o','incoming.prg','-m','incoming.map','-Ln','incoming.labels','incoming.o']]:
++ r=subprocess.run(a,cwd=w,env=env,capture_output=True);i=len(cmds);(P/f'IW_BUILD{i}.stdout').write_bytes(r.stdout);(P/f'IW_BUILD{i}.stderr').write_bytes(r.stderr);cmds.append({'argv':a,'exit':r.returncode});assert not r.returncode,r.stderr.decode()
++(P/'IW_BUILD.json').write_text(json.dumps({'commands':cmds,'native':hashlib.sha256((P/'work/build/dos64.prg').read_bytes()).hexdigest(),'worker':hashlib.sha256((w/'incoming.prg').read_bytes()).hexdigest(),'bytes':(w/'incoming.prg').stat().st_size},indent=2)+'\n');print((w/'incoming.map').read_text().split('Segment list:')[1].split('Exports list')[0])
+--- c866/role_oracle.py
++++ insert/role_oracle.py
+@@ -1,5 +1,5 @@
+ from pathlib import Path
+-import hashlib,json,re
++import hashlib,json,re,zlib
+ P=Path(__file__).resolve().parent
+ def labels(f):return{x.split()[2].lstrip('.'):int(x.split()[1],16)for x in f.read_text().splitlines()if x.startswith('al ')}
+ def constants(f):return{m.group(1):int(m.group(2),16)for m in re.finditer(r'^([A-Za-z0-9_]+)\s*=\s*\$([0-9a-fA-F]+)\s*$',f.read_text(),re.M)}
+@@ -21,4 +21,24 @@
+   c=constants(P/f);assert c['plan_init']==table[init]and c['plan_build']==table[build],f
+  saver='dos64-resident.prg.saver.bin'if role=='runtime'else'dos64-tests-resident.prg.saver.bin';assert(P/'phase/selected_saver.inc').read_text()=='.incbin "../work/build/'+saver+'"\n';raw=(P/'work/build'/saver).read_bytes();assert(P/'phase/modal-save.prg').read_bytes()[2+0x210:2+0x210+len(raw)]==raw
+  image=P/'work/build'/('dos64.prg'if role=='runtime'else'dos64-tests.prg');header=(P/'HEADER.bin').read_bytes();assert header[8:24]in image.read_bytes();assert(P/'MODAL.MNU').read_bytes()[:64]==header
++ # Insert has its own native/private aliases and a distinct support+wrapper.
++ assert role=='runtime'and'fixture_return'not in n
++ i=labels(P/'worker/incoming.labels');c=constants(P/'worker/imports.inc');table=dict(n)
++ for name in ['native_owner','presentation_owner','saved_files','saved_hd','saved_hdb']:table['broker_'+name]=b[name]
++ assert c and all(k in table and table[k]==v for k,v in c.items());checks['worker/imports.inc']=len(c)
++ c=constants(P/'controller/worker.inc')
++ for name in ['iw_begin','iw_poll','iw_state','iw_error','iw_closed','iw_take','iw_path','iw_limit','iw_enable','iw_cancel']:assert c['_'+name]==i[name]
++ for name,native in [('ac_fq','dos64_floppy_request'),('ac_stage_active','dos64_floppy_stage_active'),('ac_disk_a','dos64_disk_reu_base'),('ac_disk_b','dos64_disk_b_descriptor')]:assert c['_'+name]==n[native]
++ c=constants(P/'phase/insert_native.inc')
++ for name in ['stage_drive','stage_flags','stage_mount','stage_content','stage_binding']:assert c['insert_'+name]==n[name]
++ assert constants(P/'phase/insert_broker.inc')['insert_broker_owner']==b['native_owner']
++ q=labels(P/'insert-binding/binding.labels');c=constants(P/'insert-binding/insert-entry.inc');assert c['plan_init']==q['_mb_fixture_init']==0x6600 and c['plan_build']==q['_mb_bind']==0xa000
++ menu=(P/'MODAL.MNU').read_bytes();assert len(menu)==57344
++ spans=[]
++ for r in json.loads((P/'CONTROLLER_BUILD.json').read_text())['records']:
++  payload=(P/r['file']).read_bytes();off=r['logical_offset'];assert int.from_bytes(payload[:2],'little')==r['host']and len(payload)-2==r['bytes']and zlib.crc32(payload[2:])==r['crc'];assert menu[off:off+r['bytes']]==payload[2:];assert r['reu']==(0x3da000+off if off<0x6000 else 0x3f0000+off-0x6000);assert off>=0x6000 or off+r['bytes']<=0x6000;spans.append((off,off+r['bytes']))
++  for prefix,file in [('wrapper',('phase/worker-calls.prg'if r['file'].startswith('phase/')else'insert-binding/insert-calls.prg'if r['file'].startswith('insert-')else'binding/binding-calls.prg')),('aux','insert-binding/insert-support.prg')]:
++   if not r[prefix+'_bytes']:continue
++   v=(P/file).read_bytes();addr=r[prefix+'_reu'];off=addr-0x3da000 if addr<0x3e0000 else addr-0x3f0000+0x6000;assert len(v)-2==r[prefix+'_bytes']and zlib.crc32(v[2:])==r[prefix+'_crc']and menu[off:off+len(v)-2]==v[2:];spans.append((off,off+len(v)-2))
++ for x,y in zip(sorted(spans),sorted(spans)[1:]):assert x[1]<=y[0]
+  return{'role':role,'alias_checks':checks,'explicit_SAVER':saver,'SAVER_bytes':len(raw),'native_sha256':hashlib.sha256(image.read_bytes()).hexdigest(),'native_bytes':image.stat().st_size,'cold_open':n['dos64_cold_open'],'tag':header[8:24].hex(),'native_labels':str(image.with_suffix('.labels'))}
+--- c866/controller/action_shell.c
++++ insert/controller/action_shell.c
+@@ -1,5 +1,6 @@
+ #include "action_shell.h"
+ #include "media_plan.h"
++#include "../worker/incoming.h"
+ #include <string.h>
+ /* Actual native worker entrypoints, supplied by exact per-role linker aliases.
+  * All worker calls return before their A000 phase bytes are replaced. */
+@@ -9,6 +10,9 @@
+ extern unsigned int ac_dma_host,ac_dma_count;
+ extern unsigned long ac_dma_reu;
+ extern unsigned char ac_ledger[256];
++extern unsigned char ac_fq[27],ac_stage_active;
++extern const unsigned char ac_disk_a[10],ac_disk_b[32];
++extern unsigned char ac_stage(void);
+ extern unsigned char tw_begin(void),tw_poll(void),tw_state(void),tw_error(void),tw_closed(void),tw_committing(void);
+ extern unsigned int tw_take_sequence(void);
+ extern char tw_home[128];extern unsigned int tw_sequence,tw_limit;extern unsigned char tw_mode,tw_cancel,tw_drive;
+@@ -21,12 +25,23 @@
+ #define SAVE 2u
+ #define PLAN 3u
+ #define BIND 4u
+-struct ac_request_t ac_request={0xffu,0u,0u,0UL,0u,0u,{0}};
++#define INCOMING 5u
++#define INSERT_BIND 6u
++struct ac_request_t ac_request={0xffu,0u,0u,0UL,0u,0u,{0},0u};
+ struct ac_result_t ac_result;
+ static struct ac_request_t job;
+ static unsigned char home[128],commit_seen,stopped,service_cause;
+ static unsigned long polls;
++static struct iw_receipt incoming;
++static unsigned char old_snapshot[42],prepared[27],stage_owned;
++static unsigned char drop_stage(void){
++ if(!stage_owned)return 1u;
++ memcpy(ac_fq,prepared,27u);ac_fq[0]=3u;
++ if(!ac_stage())return 0u;
++ stage_owned=0u;return !ac_stage_active;
++}
+ static unsigned char failure(unsigned char e,unsigned char worker,unsigned char closed){
++ if(stage_owned&&!commit_seen&&(!closed||!ac_context_closed()||!drop_stage()))closed=0u;
+  if(!ac_result.error){ac_result.error=e;ac_result.worker_error=worker;}
+  ac_result.known_closed=closed;ac_result.state=3u;
+  /* Publication may have begun; only a full successful binding permits Resume
+@@ -83,7 +98,7 @@
+  if(tw_state()==1u){tw_cancel=1u;polls=0;while(tw_state()==1u&&polls<4096UL){wire_poll();++polls;}}
+  if(tw_state()!=2u||!tw_closed())return failure(service_cause?service_cause:3u,tw_error(),tw_closed());
+  if(service_cause)return failure(service_cause,0u,tw_closed());
+- if(mode>=2u){
++ if(mode==2u||mode==3u){
+   /* Only private WIRE DONE/known-C+freshbroker authority selects a sequence.
+    * The request value is an advisory nonzero search hint, never CUI identity. */
+   job.sequence=tw_take_sequence();
+@@ -108,9 +123,43 @@
+  if(!admission())return 0u;
+  if(!ac_load(PLAN))return failure(2u,0u,0u);
+  if(!admission())return 0u;
+- mw_init();mp_drive=job.drive;mp_readonly=job.readonly;mp_sequence=job.sequence;mp_capacity=job.capacity;
++ mw_init();mp_drive=job.drive;mp_readonly=job.action==AC_INSERT?(prepared[2]&1u):job.readonly;mp_sequence=job.sequence;mp_capacity=job.capacity;
+  memcpy(mp_image_path,ac_ledger+4u,128u);memcpy(mp_snapshot,ac_ledger+132u,42u);memcpy(&mp_image_crc,ac_ledger+174u,4u);
+  if(!mw_build())return failure(5u,0u,ac_native_safe());
++ return 1u;
++}
++static unsigned char snapshot_same(void){return !memcmp(old_snapshot,ac_disk_a,10u)&&!memcmp(old_snapshot+10u,ac_disk_b,32u);}
++static unsigned char prepare(const unsigned char*crc){
++ memset(ac_fq,0,27u);ac_fq[0]=1u;ac_fq[1]=job.drive;ac_fq[2]=(job.readonly&1u)|((job.flags&AC_DISCARD)<<1);ac_fq[4]=(unsigned char)(job.capacity>>20);
++ if(crc)memcpy(ac_fq+23u,crc,4u);
++ if(!ac_stage())return 0u;
++ memcpy(prepared,ac_fq,27u);stage_owned=1u;return 1u;
++}
++static unsigned char insert(void){
++ const struct iw_receipt*r;
++ if(!admission())return 0u;
++ memcpy(old_snapshot,ac_disk_a,10u);memcpy(old_snapshot+10u,ac_disk_b,32u);
++ if(!prepare(0))return failure(10u,0u,ac_context_closed());
++ if(!ac_load(INCOMING))return failure(2u,0u,ac_context_closed());
++ if(!admission())return 0u;
++ memcpy(iw_path,job.path,128u);iw_limit=30000u;iw_enable=0xa5u;
++ if(!iw_begin())return failure(11u,iw_error(),ac_context_closed());
++ polls=0;
++ while(iw_state()==1u&&polls<60000UL){iw_poll();++polls;}
++ if(iw_state()==1u){iw_cancel=1u;polls=0;while(iw_state()==1u&&polls<256UL){iw_poll();++polls;}}
++ if(iw_state()!=2u||!iw_closed())return failure(11u,iw_error(),iw_closed());
++ r=iw_take();if(!r)return failure(11u,iw_error(),iw_closed());
++ /* The private pointer is consumed exactly once while its phase still lives. */
++ memcpy(&incoming,r,sizeof incoming);
++ if(incoming.drive!=job.drive||incoming.flags!=prepared[2]||memcmp(incoming.base,prepared+5u,3u)||memcmp(incoming.token,prepared+11u,4u)||memcmp(incoming.mount,prepared+15u,4u)||memcmp(incoming.content,prepared+19u,4u)||memcmp(incoming.path,job.path,128u)||!snapshot_same())return failure(12u,0u,1u);
++ if(!admission())return 0u;
++ if(!drop_stage())return failure(10u,0u,0u);
++ if(!prepare(incoming.crc))return failure(10u,0u,ac_context_closed());
++ if(prepared[1]!=incoming.drive||prepared[2]!=incoming.flags||memcmp(prepared+5u,incoming.base,3u)||memcmp(prepared+8u,"\0\xa0\5",3u)||!memcmp(prepared+11u,incoming.token,4u)||memcmp(prepared+15u,incoming.mount,4u)||memcmp(prepared+19u,incoming.content,4u)||memcmp(prepared+23u,incoming.crc,4u)||!snapshot_same())return failure(12u,0u,1u);
++ /* COMPLETE derives solely from the consumed receipt, after re-PREPARE. */
++ prepared[3]=ac_fq[3]=0xa5u;ac_ledger[0]=2u;ac_ledger[2]=incoming.drive;ac_ledger[3]=0xa5u;
++ memcpy(ac_ledger+4u,incoming.path,128u);memcpy(ac_ledger+132u,old_snapshot,42u);memcpy(ac_ledger+174u,incoming.crc,4u);
++ ac_ledger[183]=1u;memcpy(ac_ledger+184u,prepared,27u);
+  return 1u;
+ }
+ static unsigned char version_path(void){
+@@ -125,8 +174,8 @@
+ unsigned char ac_body(void){
+  unsigned char i,n;
+  memcpy(&job,&ac_request,sizeof job);ac_result.state=1u;ac_result.sequence=job.sequence;
+- if(job.owner!=0xa5u||(job.action!=AC_SAVE_AS&&job.action!=AC_SAVE)||job.drive>1u||job.readonly>1u||!job.sequence||job.capacity<0x400000UL||job.capacity>0x1000000UL)return failure(1u,0u,0u);
+- if(job.action==AC_SAVE_AS){
++ if(job.owner!=0xa5u||(job.action!=AC_SAVE_AS&&job.action!=AC_SAVE&&job.action!=AC_INSERT)||job.drive>1u||job.readonly>1u||!job.sequence||job.capacity<0x400000UL||job.capacity>0x1000000UL||(job.capacity&65535UL)||(job.flags&~AC_DISCARD)||(job.action!=AC_INSERT&&job.flags))return failure(1u,0u,0u);
++ if(job.action==AC_SAVE_AS||job.action==AC_INSERT){
+   for(n=0;n<128u&&job.path[n];++n){}if(n<2u||n==128u||job.path[0]!='/')return failure(1u,0u,0u);
+   for(i=n+1u;i<128u;++i)if(job.path[i])return failure(1u,0u,0u);
+  }
+@@ -134,12 +183,14 @@
+  memset(ac_ledger,0,256u);
+  ac_result.phase=WIRE;if(!wire(job.action==AC_SAVE?3u:2u))return 0u;
+  if(job.action==AC_SAVE&&!version_path())return failure(1u,0u,1u);
+- ac_result.phase=SAVE;if(!save())return 0u;
++ ac_result.phase=job.action==AC_INSERT?INCOMING:SAVE;
++ if(job.action==AC_INSERT){if(!insert())return 0u;}else if(!save())return 0u;
+  ac_result.phase=PLAN;if(!plan())return 0u;
+- ac_result.phase=WIRE;if(!wire(1u))return 0u;
+- ac_result.phase=BIND;if(!admission())return 0u;if(!ac_load(BIND))return failure(2u,0u,0u);
++ ac_result.phase=WIRE;if(!wire(job.action==AC_INSERT?4u:1u))return 0u;
++ ac_result.phase=job.action==AC_INSERT?INSERT_BIND:BIND;if(!admission())return 0u;if(!ac_load(ac_result.phase))return failure(2u,0u,0u);
+  if(!admission())return 0u;
+  mw_init();if(!mw_build())return failure(6u,0u,0u);
++ if(job.action==AC_INSERT){if(ac_stage_active)return failure(6u,0u,0u);stage_owned=0u;}
+  if(!ac_native_safe())return failure(7u,0u,0u);
+  ac_result.state=2u;ac_result.known_closed=1u;ac_result.can_resume=1u;
+  return 1u;
+--- c866/controller/action_shell.h
++++ insert/controller/action_shell.h
+@@ -5,8 +5,10 @@
+ typedef unsigned long ac_u32;
+ #define AC_SAVE 1u
+ #define AC_SAVE_AS 2u
++#define AC_INSERT 3u
++#define AC_DISCARD 1u
+ /* sequence is advisory allocation search hint; result.sequence is selected. */
+-struct ac_request_t {ac_u8 owner,readonly;ac_u16 sequence;ac_u32 capacity;ac_u8 drive,action;char path[128];};
++struct ac_request_t {ac_u8 owner,readonly;ac_u16 sequence;ac_u32 capacity;ac_u8 drive,action;char path[128];ac_u8 flags;};
+ struct ac_result_t {ac_u8 state,error,phase,worker_error,known_closed,can_resume,committing;ac_u16 sequence;};
+ extern struct ac_request_t ac_request;
+ extern struct ac_result_t ac_result;
+--- c866/controller/action_io.c
++++ insert/controller/action_io.c
+@@ -17,14 +17,18 @@
+ }
+ ac_u8 ac_load(ac_u8 phase){
+  const struct ac_asset *a;ac_u16 limit;
+- if(phase<1u||phase>4u)return 0u;
+- a=&ac_assets[phase-1u];limit=phase==1u?0x7e80u:0x7dd0u;
++ if(phase<1u||phase>6u)return 0u;
++ a=&ac_assets[phase-1u];limit=(phase==1u||phase==5u)?0x7e80u:0x7dd0u;
+  if(a->host<0xa000u||!a->bytes||a->host+a->bytes>0xb800u||a->host+a->bytes<a->host||a->bss<0x7d00u||a->bss>=limit||a->bss_bytes>0x180u||a->bss+a->bss_bytes>limit)return 0u;
+- if((phase>=3u)!=!!a->wrapper_bytes)return 0u;
++ if((phase==3u||phase==4u||phase==6u)!=!!a->wrapper_bytes)return 0u;
++ if((phase==6u)!=!!a->aux_bytes)return 0u;
+  if(!copy(a->host,a->reu,a->bytes,a->crc))return 0u;
+  if(a->wrapper_bytes){
+   if(a->wrapper_bytes>0xb0u||!copy(0x7dd0u,a->wrapper_reu,a->wrapper_bytes,a->wrapper_crc))return 0u;
+  }
++ if(a->aux_bytes){
++  if(a->aux_bytes>0x700u||!copy(0x6600u,a->aux_reu,a->aux_bytes,a->aux_crc))return 0u;
++ }
+  memset((void*)a->bss,0,a->bss_bytes);
+  return 1u;
+ }
+--- c866/controller/native_calls.s
++++ insert/controller/native_calls.s
+@@ -3,7 +3,20 @@
+ .include "native.inc"
+ .import _ac_dma_host,_ac_dma_count,_ac_dma_reu
+ .export _ac_transfer,_ac_native_safe,_ac_context_closed,_ac_block
++.export _ac_stage
+ .segment "CODE"
++_ac_stage:
++ jsr dos64_overlay_floppy_control
++ bcs @bad
++ lda dos64_floppy_status
++ bne @bad
++ lda #1
++ ldx #0
++ rts
++@bad:
++ lda #0
++ tax
++ rts
+ _ac_transfer:
+  ldx #1
+ : lda _ac_dma_host,x
+--- c866/bridge/bridge.s
++++ insert/bridge/bridge.s
+@@ -79,6 +79,13 @@
+  lda br_intent+2
+  cmp #4
+  jeq control_intent
++ cmp #3
++ bne :+
++ lda br_intent+4
++ and #$fe
++ jne unavailable
++ jmp @save_intent
++:
+  lda br_intent+4
+  jne unavailable
+  lda br_intent+2
+@@ -112,6 +119,7 @@
+  sta _ac_request
+  lda #0
+  sta _ac_request+1
++ sta _ac_request+138
+  sta _ac_request+4
+  sta _ac_request+5
+  sta _ac_request+7
+@@ -127,9 +135,23 @@
+  sta _ac_request+8
+  lda br_intent+2
+  sta _ac_request+9
++ cmp #3
++ bne :+
++ lda #1
++ sta _ac_request+1
++ lda br_intent+4
++ sta _ac_request+138
++:
+  ldx #127
+ : lda br_intent+5,x
+  sta _ac_request+10,x
++ dex
++ bpl :-
++ ; An entry guard can refuse before the controller's zerobss. Its observation
++ ; buffer must then contain no result from retired UI bytes or a prior job.
++ lda #0
++ ldx #8
++: sta _ac_result,x
+  dex
+  bpl :-
+  jsr ac_entry
+--- c866/ui/panel.c
++++ insert/ui/panel.c
+@@ -28,7 +28,7 @@
+  if(mode==MU_MENU){text(11,0,"A/B Select drive    S Save");text(12,0,"N Save as           I Insert/change");text(13,0,"E Eject             W Write protect");text(15,0,"R Resume DOS        F Finish session");text(18,0,"Save copies the complete floppy image.");text(19,0,"Exit applications before Finish.");text(20,0,"Eject/protect: this session only.");}
+  else if(mode==MU_CONFIRM){text(11,0,"This floppy has unsaved changes.");text(13,0,"S Save first        D Discard changes");text(15,0,"C Cancel");}
+  else if(mode==MU_PATH){text(10,0,path_action==MU_INSERT?"Image path to insert:":"New image path to save:");safe_text(12,path,path_scroll);text(15,0,"Return Accept       Run/Stop Cancel");text(16,0,"Left/right Move     Delete Backspace");text(18,0,"Absolute path, maximum127 characters.");cell(13,encoded(path,path_cursor)-path_scroll,'^');}
+- else if(mode==MU_WAIT){text(11,0,"Working...");text(12,0,view.operation);text(15,0,"Run/Stop Request cancel");text(18,0,"Keep power on until completion.");}
++ else if(mode==MU_WAIT){text(11,0,"Working...");text(12,0,action==MU_INSERT?"Loading image":(action==MU_FINISH?"Closing files":"Saving floppy"));if(intent.path[0])safe_text(13,intent.path,0);text(15,0,"Run/Stop Request cancel");text(18,0,"Keep power on until completion.");}
+  else if(mode==MU_ERROR){text(11,0,blocked?"Session blocked; cannot resume.":"Operation did not complete.");text(12,0,view.operation);text(14,0,"Error code:");cell(14,12,hex(error>>4));cell(14,13,hex(error&15));text(16,0,"Working floppy remains in memory.");text(18,0,view.can_resume?"Return Back to disk controls":"Resume unavailable; keep this screen.");}
+  else if(mode==MU_END_CONFIRM){text(11,0,"Exit applications to DOS first.");text(13,0,"Return Close disks and finish");text(15,0,"C Cancel");}
+  else if(mode==MU_SAFE){text(11,0,"Files are closed.");text(13,0,"It is safe to restart the C64.");}
+--- c866/phase/media_plan.c
++++ insert/phase/media_plan.c
+@@ -40,7 +40,11 @@
+ static unsigned long get32(const unsigned char*p){return (unsigned long)p[0]|((unsigned long)p[1]<<8)|((unsigned long)p[2]<<16)|((unsigned long)p[3]<<24);}
+ static void put32(unsigned char*p,unsigned long n){unsigned char i;for(i=0;i<4u;++i){p[i]=(unsigned char)n;n>>=8;}}
+ static unsigned char valid(void){unsigned char p=BUF[525],r=BUF[524];unsigned int i;if(memcmp(BUF,"D64C",4u)||BUF[4]!=1u||BUF[5]!=64u||BUF[6]!=2u||BUF[7]||BUF[526]||BUF[527])return 0u;for(i=542u;i<572u;++i)if(BUF[i])return 0u;if(!(p&1u)||(p&248u)||(r&248u)||(r&~p))return 0u;if(!path(BUF+8u,1u)||!path(BUF+136u,1u)||!path(BUF+264u,p&2u)||!path(BUF+392u,p&4u))return 0u;if(plen(BUF+136u)<2u||((p&2u)&&plen(BUF+264u)<2u)||((p&4u)&&plen(BUF+392u)<2u))return 0u;if(BUF[520]||BUF[521]||BUF[522]>1u||BUF[523]||(!(p&4u)&&BUF[522]))return 0u;if(!(p&2u)&&get32(BUF+532u))return 0u;if(BUF[536]!=1u||BUF[537]||BUF[538]||BUF[539]||BUF[541]>1u||(BUF[541]&&BUF[540])||(!BUF[541]&&BUF[540]<64u))return 0u;return (crc(BUF,572u,0xffffffffUL)^0xffffffffUL)==get32(BUF+572u);}
+-static unsigned char shape(void){unsigned char off=mp_drive?10u:0u;const unsigned char*p=mp_snapshot+off;if(mp_drive>1u||mp_readonly>1u||!mp_sequence||mp_capacity<0x400000UL||mp_capacity>0x1000000UL||(mp_capacity&65535UL))return 0u;if(p[0]||p[1]||(p[2]!=0x10u&&p[2]!=0x18u&&p[2]!=0x38u)||memcmp(p+3u,"\xd0\x02\x28\x00\x02\x09\x01",7u))return 0u;return path(mp_image_path,1u)&&plen(mp_image_path)>1u;}
++/* Snapshot describes the OLD mounted state. An incoming verified image may
++ * replace an ejected disk or create the first B binding. All-zero descriptor
++ * is canonical only for never-configured B; CFG presence is checked below. */
++static unsigned char snapshot_valid(const unsigned char*p,unsigned char d){unsigned char i;if(p[9]>1u)return 0u;for(i=0;i<10u&&!p[i];++i){}if(i==10u)return d==1u;if(p[0]||p[1]||(p[2]!=0x10u&&p[2]!=0x18u&&p[2]!=0x38u))return 0u;return !memcmp(p+3u,"\xd0\x02\x28\x00\x02\x09",6u);}
++static unsigned char shape(void){const unsigned char*p=mp_snapshot+(mp_drive?10u:0u);if(mp_drive>1u||mp_readonly>1u||!mp_sequence||mp_capacity<0x400000UL||mp_capacity>0x1000000UL||(mp_capacity&65535UL))return 0u;if(!snapshot_valid(p,mp_drive))return 0u;return path(mp_image_path,1u)&&plen(mp_image_path)>1u;}
+ unsigned char mp_state(void){mp_error=first;return state;}
+ unsigned char mp_first_error(void){mp_error=first;return first;}
+ unsigned char mp_build(void){unsigned int i,off;unsigned long c;unsigned char mask;if(state)return fail(1u);state=1u;first=mp_error=0u;if(!shape())return fail(2u);
+@@ -48,13 +52,13 @@
+ if(mp_ledger[0]!=2u||mp_ledger[3]!=0xa5u||mp_drive!=mp_ledger[2]||memcmp(mp_image_path,mp_ledger+4u,128u)||memcmp(mp_snapshot,mp_ledger+132u,42u)||mp_image_crc!=get32(mp_ledger+174u))return fail(14u);
+ mp_ledger[178]=0u;
+ #endif
+-if(!stopped()||!fetch(0x3ff020UL,576u))return 0u;if(!valid())return fail(3u);/* caller's independently read exact original lives in OLD */memcpy(CMP,BUF,576u);if(!fetch(MP_OLD,576u))return 0u;if(memcmp(BUF,CMP,576u))return fail(4u);if(!(BUF[525]&(mp_drive?2u:1u)))return fail(2u);off=mp_drive?264u:136u;memcpy(BUF+off,mp_image_path,128u);mask=mp_drive?2u:1u;BUF[524]=(BUF[524]&~mask)|(mp_readonly?mask:0u);put32(BUF+(mp_drive?532u:528u),mp_image_crc);put32(BUF+572u,crc(BUF,572u,0xffffffffUL)^0xffffffffUL);if(!valid())return fail(3u);if(!store(MP_NEW,576u))return 0u;memset(BUF,0,128u);memcpy(BUF,"D64J",4u);BUF[4]=1u;BUF[5]=4u;BUF[6]=5u;BUF[8]=mp_drive;BUF[9]=mp_readonly;BUF[10]=(unsigned char)mp_sequence;BUF[11]=(unsigned char)(mp_sequence>>8);memcpy(BUF+12u,mp_snapshot,42u);put32(BUF+54u,mp_image_crc);if(!store(MP_JOURNAL,128u))return 0u;for(off=0;off<576u;off+=256u){i=576u-off;if(i>256u)i=256u;if(!fetch(MP_OLD+off,i)||!store(MP_JOURNAL+OLD_OFF+off,i))return 0u;if(!fetch(MP_NEW+off,i)||!store(MP_JOURNAL+NEW_OFF+off,i))return 0u;}c=0xffffffffUL;for(off=0;off<1280u;off+=256u){if(!fetch(MP_JOURNAL+off,256u))return 0u;c=crc(BUF,256u,c);}put32(BUF,c^0xffffffffUL);if(!store(MP_JOURNAL+1280u,4u))return 0u;
++if(!stopped()||!fetch(0x3ff020UL,576u))return 0u;if(!valid())return fail(3u);/* caller's independently read exact original lives in OLD */memcpy(CMP,BUF,576u);if(!fetch(MP_OLD,576u))return 0u;if(memcmp(BUF,CMP,576u))return fail(4u);mask=mp_drive?2u:1u;off=mp_drive?10u:0u;if(!mp_snapshot[off+2u]&&(BUF[525]&mask))return fail(2u);off=mp_drive?264u:136u;memcpy(BUF+off,mp_image_path,128u);BUF[525]|=mask;BUF[524]=(BUF[524]&~mask)|(mp_readonly?mask:0u);put32(BUF+(mp_drive?532u:528u),mp_image_crc);put32(BUF+572u,crc(BUF,572u,0xffffffffUL)^0xffffffffUL);if(!valid())return fail(3u);if(!store(MP_NEW,576u))return 0u;memset(BUF,0,128u);memcpy(BUF,"D64J",4u);BUF[4]=1u;BUF[5]=4u;BUF[6]=5u;BUF[8]=mp_drive;BUF[9]=mp_readonly;BUF[10]=(unsigned char)mp_sequence;BUF[11]=(unsigned char)(mp_sequence>>8);memcpy(BUF+12u,mp_snapshot,42u);put32(BUF+54u,mp_image_crc);if(!store(MP_JOURNAL,128u))return 0u;for(off=0;off<576u;off+=256u){i=576u-off;if(i>256u)i=256u;if(!fetch(MP_OLD+off,i)||!store(MP_JOURNAL+OLD_OFF+off,i))return 0u;if(!fetch(MP_NEW+off,i)||!store(MP_JOURNAL+NEW_OFF+off,i))return 0u;}c=0xffffffffUL;for(off=0;off<1280u;off+=256u){if(!fetch(MP_JOURNAL+off,256u))return 0u;c=crc(BUF,256u,c);}put32(BUF,c^0xffffffffUL);if(!store(MP_JOURNAL+1280u,4u))return 0u;
+ #if MP_RUNTIME_RECEIPT
+ memcpy(mp_ledger+179u,BUF,4u);mp_ledger[178]=0xa5u;
+ #endif
+ state=2u;return 1u;}
+ #ifndef MP_BUILD_ONLY
+-unsigned char mp_journal_check(void){unsigned int off,i;unsigned long c=0xffffffffUL;unsigned char drive,ro;unsigned long image;if(first)return 0u;if(!stopped()||!fetch(MP_JOURNAL,128u))return 0u;if(memcmp(BUF,"D64J",4u)||BUF[4]!=1u||BUF[5]!=4u||BUF[6]!=5u||BUF[7]||BUF[8]>1u||BUF[9]>1u||!(BUF[10]|BUF[11]))return fail(11u);for(i=58u;i<128u;++i)if(BUF[i])return fail(11u);drive=BUF[8];ro=BUF[9];image=get32(BUF+54u);for(off=0;off<1280u;off+=256u){if(!fetch(MP_JOURNAL+off,256u))return 0u;c=crc(BUF,256u,c);}if(!fetch(MP_JOURNAL+1280u,4u))return 0u;if((c^0xffffffffUL)!=get32(BUF))return fail(11u);if(!fetch(MP_JOURNAL+OLD_OFF,576u)||!valid())return fail(11u);if(!(BUF[525]&(drive?2u:1u)))return fail(11u);if(!store(MP_OLD,576u))return 0u;if(!fetch(MP_JOURNAL+NEW_OFF,576u)||!valid())return fail(11u);if(get32(BUF+(drive?532u:528u))!=image||!!(BUF[524]&(drive?2u:1u))!=ro)return fail(11u);/* Compare preserved fields after normalizing only permitted changes. */memcpy(CMP,BUF,576u);if(!fetch(MP_OLD,576u))return 0u;off=drive?264u:136u;memcpy(CMP+off,BUF+off,128u);if((CMP[524]^BUF[524])&~(drive?2u:1u))return fail(11u);CMP[524]=BUF[524];memcpy(CMP+(drive?532u:528u),BUF+(drive?532u:528u),4u);memcpy(CMP+572u,BUF+572u,4u);if(memcmp(BUF,CMP,576u))return fail(11u);return 1u;}
++unsigned char mp_journal_check(void){unsigned int off,i;unsigned long c=0xffffffffUL;unsigned char drive,ro,base;unsigned long image;if(first)return 0u;if(!stopped()||!fetch(MP_JOURNAL,128u))return 0u;if(memcmp(BUF,"D64J",4u)||BUF[4]!=1u||BUF[5]!=4u||BUF[6]!=5u||BUF[7]||BUF[8]>1u||BUF[9]>1u||!(BUF[10]|BUF[11]))return fail(11u);for(i=58u;i<128u;++i)if(BUF[i])return fail(11u);drive=BUF[8];ro=BUF[9];image=get32(BUF+54u);if(!snapshot_valid(BUF+12u+(drive?10u:0u),drive))return fail(11u);base=BUF[12u+(drive?10u:0u)+2u];for(off=0;off<1280u;off+=256u){if(!fetch(MP_JOURNAL+off,256u))return 0u;c=crc(BUF,256u,c);}if(!fetch(MP_JOURNAL+1280u,4u))return 0u;if((c^0xffffffffUL)!=get32(BUF))return fail(11u);if(!fetch(MP_JOURNAL+OLD_OFF,576u)||!valid())return fail(11u);if(!base&&(BUF[525]&(drive?2u:1u)))return fail(11u);if(!store(MP_OLD,576u))return 0u;if(!fetch(MP_JOURNAL+NEW_OFF,576u)||!valid())return fail(11u);if(!(BUF[525]&(drive?2u:1u))||get32(BUF+(drive?532u:528u))!=image||!!(BUF[524]&(drive?2u:1u))!=ro)return fail(11u);/* Compare preserved fields after normalizing only permitted changes. */memcpy(CMP,BUF,576u);if(!fetch(MP_OLD,576u))return 0u;off=drive?264u:136u;memcpy(CMP+off,BUF+off,128u);if((CMP[524]^BUF[524])&~(drive?2u:1u))return fail(11u);CMP[524]=BUF[524];if((CMP[525]^BUF[525])&~(drive?2u:1u))return fail(11u);CMP[525]=BUF[525];memcpy(CMP+(drive?532u:528u),BUF+(drive?532u:528u),4u);memcpy(CMP+572u,BUF+572u,4u);if(memcmp(BUF,CMP,576u))return fail(11u);return 1u;}
+ unsigned char mp_recovery_classify(void){if(!mp_journal_check())return 0u;if(mp_current_missing)return 3u;/* current exact file bytes supplied at3E1000 after exact READ/EOF/CLOSE */if(!fetch(0x3e1000UL,576u))return 0u;memcpy(CMP,BUF,576u);if(!fetch(MP_JOURNAL+OLD_OFF,576u))return 0u;if(!memcmp(BUF,CMP,576u))return 1u;if(!fetch(MP_JOURNAL+NEW_OFF,576u))return 0u;if(!memcmp(BUF,CMP,576u))return 2u;return fail(12u);}
+ 
+ #endif
+--- c866/phase/transaction_wire.s
++++ insert/phase/transaction_wire.s
+@@ -3,6 +3,15 @@
+ .include "runtime.inc"
+ .include "media_transaction.inc"
+ .include "binding_receipt.inc"
++.ifndef DOS64_MEDIA_INSERT
++DOS64_MEDIA_INSERT=0
++.endif
++.assert DOS64_MEDIA_INSERT=0 || DOS64_MEDIA_INSERT=1,error,"INSERT boolean"
++.if DOS64_MEDIA_INSERT
++.include "insert_contract.inc"
++.include "insert_native.inc"
++.include "insert_broker.inc"
++.endif
+ .export tw_begin,tw_poll,tw_state,tw_error,tw_closed,tw_cancel
+ .ifndef DOS64_MEDIA_SEQUENCE
+ DOS64_MEDIA_SEQUENCE=0
+@@ -84,6 +93,10 @@
+ alloc_last:.res 4
+ alloc_seen:.res 1
+ .endif
++.if DOS64_MEDIA_INSERT
++insert_job:.res 1
++insert_blocks:.res 2
++.endif
+ tw_private_end:
+ .segment "CODE"
+ ; Standalone native/UI call boundary. Indirect pointers are temporary only
+@@ -301,6 +314,19 @@
+  ora hd_uncertain
+  ora dos64_overlay_busy
+  jne reject
++ .if DOS64_MEDIA_INSERT
++ lda #0
++ sta insert_job
++ lda tw_mode
++ cmp #4
++ bne :+
++ lda #1
++ sta insert_job
++ jsr alloc_context
++ jcs reject
++ jmp @insert_mode
++:
++.endif
+  lda tw_mode
+ .if DOS64_MEDIA_SEQUENCE
+  cmp #4
+@@ -333,6 +359,9 @@
+  jeq reject
+ :
+ .endif
++.if DOS64_MEDIA_INSERT
++@insert_mode:
++.endif
+  lda tw_sequence
+  ora tw_sequence+1
+  jeq reject
+@@ -372,11 +401,18 @@
+  dex
+  bpl :-
+  lda tw_mode
++.if DOS64_MEDIA_INSERT
++ cmp #4
++ beq @need_plan
++.endif
+ .if DOS64_MEDIA_SEQUENCE
+  cmp #1
+  bne :+
+ .else
+  beq :+
++.endif
++ .if DOS64_MEDIA_INSERT
++@need_plan:
+ .endif
+  lda ML_VALID
+  cmp #$a5
+@@ -390,6 +426,12 @@
+  jsr media_match
+  jcs reject
+ : lda tw_mode
++.if DOS64_MEDIA_INSERT
++ cmp #4
++ bne :+
++ lda #1
++:
++.endif
+  sta mode
+  lda tw_sequence
+  sta sequence
+@@ -429,7 +471,17 @@
+  lda #0
+ .endif
+ .if DOS64_MEDIA_BINDING
++ .if DOS64_MEDIA_INSERT
++ ldx insert_job
++ beq :+
++ sta MI_READY
++ jmp :++
++:
++.endif
+  sta MB_READY
++.if DOS64_MEDIA_INSERT
++:
++.endif
+ .endif
+  sta store_read
+  sta hdb_online
+@@ -1217,6 +1269,25 @@
+  sta verify_kind
+  sta offset
+  sta offset+1
++.if DOS64_MEDIA_INSERT
++ lda insert_job
++ beq @no_image
++ lda script
++ bne @no_image
++ lda #3
++ sta verify_kind
++ lda #$a0
++ sta insert_blocks
++ lda #5
++ sta insert_blocks+1
++ lda MI_FQ+5
++ sta source
++ lda MI_FQ+6
++ sta source+1
++ lda MI_FQ+7
++ sta source+2
++@no_image:
++.endif
+  lda #$ff
+  ldx #3
+ : sta crc,x
+@@ -1226,8 +1297,19 @@
+  sta phase
+  rts
+ verify_job:
++.if DOS64_MEDIA_INSERT
+  lda verify_kind
++ cmp #3
++ jeq insert_image_poll
++ cmp #4
++ jcs insert_cfg_poll
++.endif
++ lda verify_kind
++.if DOS64_MEDIA_INSERT
++ jne verify_match
++.else
+  bne verify_match
++.endif
+  lda #0
+  sta source
+  lda #6
+@@ -1244,6 +1326,15 @@
+  sta dos64_reu_request+7
+  jsr reu
+  jcs dma_failure
++.if DOS64_MEDIA_INSERT
++ lda insert_job
++ beq :+
++ lda offset+1
++ bne :+
++ jsr insert_journal_check
++ jcs identity_failure
++:
++.endif
+  ldy #0
+ : lda $b800,y
+  jsr crc_byte
+@@ -1354,10 +1445,296 @@
+  lda verify_kind
+  cmp #3
+  bne @return
++.if DOS64_MEDIA_INSERT
++ lda insert_job
++ beq :+
++ lda #4
++ sta verify_kind
++ rts
++:
++.endif
+  lda script
+  sta verified_script
+  jmp next_script
+ @return: rts
++ .if DOS64_MEDIA_INSERT
++insert_journal_check:
++ ldx #7
++: lda $b800,x
++ cmp insert_journal_magic,x
++ jne @bad
++ dex
++ bpl :-
++ lda $b808
++ cmp ML_DRIVE
++ jne @bad
++ lda MI_FQ+2
++ and #1
++ cmp $b809
++ jne @bad
++ ldx #1
++: lda $b80a,x
++ cmp sequence,x
++ jne @bad
++ dex
++ bpl :-
++ ldx #41
++: lda $b80c,x
++ cmp ML_SNAPSHOT,x
++ jne @bad
++ dex
++ bpl :-
++ ldx #3
++: lda $b836,x
++ cmp ML_CRC,x
++ jne @bad
++ dex
++ bpl :-
++ ldx #69
++: lda $b83a,x
++ jne @bad
++ dex
++ bpl :-
++ clc
++ rts
++@bad: sec
++ rts
++; Insert-only prepublication reconstruction proof. OLD must equal accepted
++; startup CFG, NEW may change only selectedpath/RO/presence/CRC/bodyfooter.
++insert_cfg_poll:
++ lda #0
++ sta count
++ lda #1
++ sta count+1
++ lda offset+1
++ cmp #2
++ bne :+
++ lda #64
++ sta count
++ lda #0
++ sta count+1
++: lda #0
++ sta source
++ sta source+1
++ lda #$3e
++ sta source+2
++ lda verify_kind
++ cmp #4
++ bne :+
++ lda #$20
++ sta source
++ lda #$f0
++ sta source+1
++ lda #$3f
++ sta source+2
++: lda #1
++ sta dos64_reu_request+7
++ jsr reu
++ jcs dma_failure
++ ldy #0
++: lda $b800,y
++ sta $b900,y
++ iny
++ cpy count
++ bne :-
++ lda #0
++ sta source
++ sta source+1
++ lda #$3e
++ sta source+2
++ lda verify_kind
++ cmp #5
++ bne :+
++ lda #3
++ sta source+1
++: lda #1
++ sta dos64_reu_request+7
++ jsr reu
++ jcs dma_failure
++ lda #1
++ ldx ML_DRIVE
++ beq :+
++ asl
++: sta work
++ ldy #0
++@bytes:
++ lda verify_kind
++ cmp #4
++ bne @new
++ lda $b800,y
++ cmp $b900,y
++ jne identity_failure
++ jmp @next
++@new:
++ jsr insert_cfg_byte
++ jcs identity_failure
++@next:
++ iny
++ cpy count
++ bne @bytes
++ lda offset
++ clc
++ adc count
++ sta offset
++ lda offset+1
++ adc count+1
++ sta offset+1
++ cmp #2
++ bne @return
++ lda offset
++ cmp #64
++ bne @return
++ lda #0
++ sta offset
++ sta offset+1
++ lda verify_kind
++ cmp #4
++ bne @complete
++ lda #5
++ sta verify_kind
++ jsr binding_crc_reset
++@return: rts
++@complete:
++ lda script
++ sta verified_script
++ jmp next_script
++insert_cfg_byte:
++ lda offset+1
++ beq @page0
++ cmp #1
++ beq @page1
++ ; final64 bytes contain flags, cookies, and stored bodyCRC.
++ cpy #60
++ bcc @flags
++ tya
++ sec
++ sbc #60
++ tax
++ lda crc,x
++ eor #$ff
++ jmp @expected
++@flags:
++ cpy #12
++ beq @readonly
++ cpy #13
++ beq @presence
++ lda ML_DRIVE
++ asl
++ asl
++ clc
++ adc #16
++ sta append_byte
++ tya
++ sec
++ sbc append_byte
++ cmp #4
++ bcs @old
++ tax
++ lda ML_CRC,x
++ jmp @feed
++@readonly:
++ lda MI_FQ+2
++ and #1
++ beq :+
++ lda $b900,y
++ ora work
++ jmp @feed
++: lda $b900,y
++ ora work
++ eor work
++ jmp @feed
++@presence:
++ lda $b900,y
++ ora work
++ jmp @feed
++@page0:
++ lda ML_DRIVE
++ bne @old
++ cpy #136
++ bcc @old
++ tya
++ sec
++ sbc #136
++ jmp @path
++@page1:
++ lda ML_DRIVE
++ bne @bpath
++ cpy #8
++ bcs @old
++ tya
++ clc
++ adc #120
++ jmp @path
++@bpath:
++ cpy #8
++ bcc @old
++ cpy #136
++ bcs @old
++ tya
++ sec
++ sbc #8
++@path:
++ tax
++ lda ML_PATH,x
++ jmp @feed
++@old:
++ lda $b900,y
++@feed:
++ cmp $b800,y
++ bne @bad
++ lda $b800,y
++ jsr crc_byte
++ clc
++ rts
++@expected:
++ cmp $b800,y
++ bne @bad
++ clc
++ rts
++@bad: sec
++ rts
++.segment "RODATA"
++insert_journal_magic:.byte "D64J",1,4,5,0
++.segment "CODE"
++.endif
++ .if DOS64_MEDIA_INSERT
++insert_image_poll:
++ lda #0
++ sta count
++ lda #1
++ sta count+1
++ sta dos64_reu_request+7
++ jsr reu
++ jcs dma_failure
++ ldy #0
++: lda $b800,y
++ jsr crc_byte
++ iny
++ bne :-
++ inc source+1
++ bne :+
++ inc source+2
++: lda insert_blocks
++ bne :+
++ dec insert_blocks+1
++: dec insert_blocks
++ lda insert_blocks
++ ora insert_blocks+1
++ bne @return
++ ldx #3
++: lda crc,x
++ eor #$ff
++ cmp ML_CRC,x
++ jne identity_failure
++ dex
++ bpl :-
++ jsr media_match
++ jcs identity_failure
++ lda #0
++ sta verify_kind
++ jsr binding_crc_reset
++@return: rts
++.endif
+ identity_failure:
+  lda #11
+  jsr fatal_latch
+@@ -1412,10 +1789,19 @@
+  bne @bad
+  dex
+  bpl :-
++.if DOS64_MEDIA_INSERT
++ lda insert_job
++ beq :+
++ jmp insert_stage_check
++:
++.endif
+  clc
+  rts
+ @bad: sec
+  rts
++.if DOS64_MEDIA_INSERT
++.include "insert_stage.inc"
++.endif
+ ; Append canonical home/name to command, with16bit cursor allowing2x128.
+ path_command:
+  sta path_offset
+@@ -1561,6 +1947,10 @@
+ ; Only actual private successful mode1 finish reaches this immutable writer.
+ ; No callback/public observation can mint a retained terminal receipt.
+ binding_mint:
++.if DOS64_MEDIA_INSERT
++ lda insert_job
++ jne binding_mint_insert
++.endif
+  lda #0
+  sta MB_READY
+  lda #1
+@@ -1684,6 +2074,113 @@
+  dex
+  bpl :-
+  rts
++.if DOS64_MEDIA_INSERT
++binding_mint_insert:
++ lda #0
++ sta MI_READY
++ lda #2
++ sta MI_VERSION
++ lda original_online
++ sta MI_ONLINE
++ lda sequence
++ sta MI_SEQUENCE
++ lda sequence+1
++ sta MI_SEQUENCE+1
++ jsr binding_crc_reset
++ ldy #0
++: lda ML_STATE,y
++ jsr crc_byte
++ iny
++ cpy #MI_LEDGER_BYTES
++ bne :-
++ ldx #3
++: lda crc,x
++ eor #$ff
++ sta MI_LEDGER_CRC,x
++ dex
++ bpl :-
++ jsr binding_crc_reset
++ ldy #0
++: lda home,y
++ jsr crc_byte
++ iny
++ bpl :-
++ ldx #3
++: lda crc,x
++ eor #$ff
++ sta MI_HOME_CRC,x
++ dex
++ bpl :-
++ ldx #23
++: lda dos64_disk_clean_mount,x
++ sta MI_TAIL,x
++ dex
++ bpl :-
++ jsr binding_crc_reset
++ lda #0
++ sta source
++ sta offset
++ sta offset+1
++ lda #$f0
++ sta source+1
++ lda #$3f
++ sta source+2
++ lda #32
++ sta count
++ lda #0
++ sta count+1
++ lda #1
++ sta dos64_reu_request+7
++ jsr reu
++ jcs binding_mint_fail
++ ldy #0
++: lda $b800,y
++ jsr crc_byte
++ iny
++ cpy #28
++ bne :-
++ lda #$f5
++ sta source+1
++ lda #1
++ sta dos64_reu_request+7
++ jsr reu
++ jcs binding_mint_fail
++ ldy #0
++: lda $b800,y
++ jsr crc_byte
++ iny
++ cpy #28
++ bne :-
++ ldx #3
++: lda crc,x
++ eor #$ff
++ sta MI_ANCHORS_CRC,x
++ dex
++ bpl :-
++@clock:
++ jsr clock
++ bcc :+
++ lda fatal
++ beq @clock
++ jmp binding_mint_fail
++: jsr binding_crc_reset
++ ldy #1
++: lda MI_READY,y
++ jsr crc_byte
++ iny
++ cpy #41
++ bne :-
++ ldx #3
++: lda crc,x
++ eor #$ff
++ sta MI_CHECKSUM,x
++ dex
++ bpl :-
++ lda #$a5
++ sta MI_READY
++ rts
++.endif
++
+ .endif
+ 
+ .if DOS64_MEDIA_SEQUENCE
+--- c866/phase/insert_contract.inc
++++ insert/phase/insert_contract.inc
+@@ -0,0 +1,14 @@
++; SETUP-independent modal Insert continuity, exclusive returned phase owner.
++MI_KIND=$7fb7
++MI_FQ=$7fb8
++MI_LEDGER_BYTES=211
++MI_READY=$7fd3
++MI_VERSION=$7fd4
++MI_ONLINE=$7fd5
++MI_SEQUENCE=$7fd6
++MI_LEDGER_CRC=$7fd8
++MI_HOME_CRC=$7fdc
++MI_TAIL=$7fe0
++MI_ANCHORS_CRC=$7ff8
++MI_CHECKSUM=$7ffc
++.assert MI_CHECKSUM+4=$8000,error,"Insert receipt exact jobtail"
+--- c866/phase/insert_stage.inc
++++ insert/phase/insert_stage.inc
+@@ -0,0 +1,91 @@
++; This routine returns C clear only for current native private PREPARE authority.
++; Does not infer private stage from caller request; does not mutate native state.
++insert_stage_check:
++ jsr insert_broker_owner
++ jcs @bad
++ lda MI_KIND
++ cmp #1
++ jne @bad
++ lda MI_FQ
++ cmp #1
++ jne @bad
++ lda MI_FQ+1
++ cmp #2
++ jcs @bad
++ cmp ML_DRIVE
++ jne @bad
++ cmp insert_stage_drive
++ jne @bad
++ lda MI_FQ+2
++ cmp #4
++ jcs @bad
++ cmp insert_stage_flags
++ jne @bad
++ lda MI_FQ+3
++ cmp #$a5
++ jne @bad
++ lda MI_FQ+4
++ cmp dos64_overlay_reu_mib
++ jne @bad
++ lda MI_FQ+5
++ ora MI_FQ+6
++ ora MI_FQ+8
++ jne @bad
++ lda MI_FQ+9
++ cmp #$a0
++ jne @bad
++ lda MI_FQ+10
++ cmp #5
++ jne @bad
++ lda MI_FQ+7
++ cmp dos64_floppy_stage_bank
++ jne @bad
++ lda dos64_floppy_stage_active
++ cmp #$a5
++ jne @bad
++ ldx ML_DRIVE
++ lda dos64_disk_dirty,x
++ ora dos64_disk_exhausted,x
++ beq :+
++ lda MI_FQ+2
++ and #2
++ jeq @bad
++: lda ML_DRIVE
++ asl
++ asl
++ tay
++ ldx #0
++@proof:
++ lda MI_FQ+11,x
++ cmp dos64_floppy_token,x
++ jne @bad
++ lda MI_FQ+15,x
++ cmp insert_stage_mount,x
++ jne @bad
++ cmp dos64_disk_mount_generation,y
++ jne @bad
++ lda MI_FQ+19,x
++ cmp insert_stage_content,x
++ jne @bad
++ cmp dos64_disk_content_generation,y
++ jne @bad
++ lda MI_FQ+23,x
++ cmp insert_stage_binding,x
++ jne @bad
++ cmp ML_CRC,x
++ jne @bad
++ inx
++ iny
++ cpx #4
++ bne @proof
++ ldx #26
++@request:
++ lda MI_FQ,x
++ cmp dos64_floppy_request,x
++ jne @bad
++ dex
++ bpl @request
++ clc
++ rts
++@bad: sec
++ rts
+--- c866/binding/media_bind.c
++++ insert/binding/media_bind.c
+@@ -1,6 +1,24 @@
+ #include "media_bind.h"
+ #include <string.h>
+-extern unsigned char mb_buffer[576],mb_compare[576],mb_ledger[183],mb_token[70];
++#ifndef MB_INSERT
++#define MB_INSERT 0
++#endif
++#if MB_INSERT
++#define MB_VERSION 2u
++#define MB_LEDGER_BYTES 211u
++#define MB_CHECKSUM 41u
++#define MB_HOME_CRC 9u
++#define MB_OLD_AB 29u
++#define MB_ANCHORS_CRC 37u
++#else
++#define MB_VERSION 1u
++#define MB_LEDGER_BYTES 183u
++#define MB_CHECKSUM 66u
++#define MB_HOME_CRC 34u
++#define MB_OLD_AB 54u
++#define MB_ANCHORS_CRC 62u
++#endif
++extern unsigned char mb_buffer[576],mb_compare[576],mb_ledger[MB_LEDGER_BYTES],mb_token[MB_CHECKSUM+4u];
+ extern unsigned char mb_service(void),mb_owner(void),mb_clean(void),mb_dma(void);
+ extern unsigned int mb_dma_c64,mb_dma_count;
+ extern unsigned long mb_dma_address;
+@@ -18,28 +36,44 @@
+ static unsigned char read_at(unsigned long a,unsigned int n){unsigned int off,k;for(off=0;off<n;off+=64u){k=n-off;if(k>64u)k=64u;memset(BUF+off,0xa5u,k);memset(verify,0x5au,k);if(!transfer((unsigned int)(BUF+off),a+off,k,0u)||!transfer((unsigned int)verify,a+off,k,0u))return 0u;if(memcmp(BUF+off,verify,k))return fail(6u);}return 1u;}
+ static unsigned char write_at(unsigned long a,unsigned int n){unsigned int off,k,i;for(off=0;off<n;off+=64u){k=n-off;if(k>64u)k=64u;if(!transfer((unsigned int)(BUF+off),a+off,k,1u))return 0u;for(i=0;i<k;++i)verify[i]=~BUF[off+i];if(!transfer((unsigned int)verify,a+off,k,0u))return 0u;if(memcmp(BUF+off,verify,k))return fail(6u);}return 1u;}
+ #include "semantic.inc"
+-unsigned char mb_ledger_check(void){return state==1u&&mb_token[1]==1u&&(crc(mb_token+1u,65u,0xffffffffUL)^0xffffffffUL)==get32(mb_token+66u)&&(crc(mb_ledger,183u,0xffffffffUL)^0xffffffffUL)==get32(mb_token+5u);}
++unsigned char mb_ledger_check(void){return state==1u&&mb_token[1]==MB_VERSION&&(crc(mb_token+1u,MB_CHECKSUM-1u,0xffffffffUL)^0xffffffffUL)==get32(mb_token+MB_CHECKSUM)&&(crc(mb_ledger,MB_LEDGER_BYTES,0xffffffffUL)^0xffffffffUL)==get32(mb_token+5u);}
++#if MB_INSERT
++static unsigned char image_valid(void){unsigned long off,c=0xffffffffUL,base=get32(mb_ledger+189u);for(off=0;off<368640UL;off+=64u){if(!read_at(base+off,64u))return 0u;c=crc(BUF,64u,c);}return (c^0xffffffffUL)==get32(mb_ledger+174u);}
++#endif
+ static unsigned char header_valid(unsigned char options){unsigned int i;unsigned long c;if(memcmp(BUF,options==1u?"D64O":"D64R",4u)||BUF[4]!=1u||BUF[5]||BUF[6]!=32u||BUF[7]||memcmp(BUF+8u,oldbody,4u))return 0u;
+ BUF[5]=0xa5u;c=crc(BUF,28u,0xffffffffUL)^0xffffffffUL;BUF[5]=0u;if(c!=get32(BUF+28u))return 0u;
+ if(options==1u){if(memcmp(BUF+12u,maincrc,4u)||(BUF[16]!=40u&&BUF[16]!=80u))return 0u;if(columns&&columns!=BUF[16])return 0u;columns=BUF[16];for(i=17u;i<28u;++i)if(BUF[i])return 0u;}
+-else{if((!options&&memcmp(BUF+16u,mb_token+54u,8u))||(options&&memcmp(BUF+16u,CMP+528u,8u))||BUF[26]!=1u||BUF[27]!=2u||memcmp(BUF+24u,mb_uci_base,2u))return 0u;if(!((BUF[24]==0x1cu&&(BUF[25]==0xdeu||BUF[25]==0xdfu))||(BUF[24]==0xfcu&&BUF[25]==0xdfu)))return 0u;if(options){if(memcmp(maincrc,BUF+12u,4u))return 0u;}else memcpy(maincrc,BUF+12u,4u);}
++else{if((!options&&memcmp(BUF+16u,mb_token+MB_OLD_AB,8u))||(options&&memcmp(BUF+16u,CMP+528u,8u))||BUF[26]!=1u||BUF[27]!=2u||memcmp(BUF+24u,mb_uci_base,2u))return 0u;if(!((BUF[24]==0x1cu&&(BUF[25]==0xdeu||BUF[25]==0xdfu))||(BUF[24]==0xfcu&&BUF[25]==0xdfu)))return 0u;if(options){if(memcmp(maincrc,BUF+12u,4u))return 0u;}else memcpy(maincrc,BUF+12u,4u);}
+ return 1u;}
+ static unsigned char patch_options(void){if(!read_at(0x3ff500UL,32u)||!header_valid(1u))return fail(9u);memcpy(BUF+8u,newbody,4u);BUF[5]=0xa5u;put32(BUF+28u,crc(BUF,28u,0xffffffffUL)^0xffffffffUL);BUF[5]=0u;memcpy(header,BUF,32u);if(!write_at(0x3ff500UL,32u)||!read_at(0x3ff500UL,32u)||memcmp(BUF,header,32u))return fail(6u);return 1u;}
+ unsigned char mb_bind(void){unsigned int off;unsigned long c;unsigned char mask;if(state)return 0u;state=1u;error=0u;mb_cancel_seen=0u;
+ if(mb_token[0]!=0xa5u)return fail(1u);mb_token[0]=0u;
+-if(mb_token[1]!=1u||!(mb_token[3]|mb_token[4])||mb_ledger[0]!=2u||mb_ledger[2]>1u||mb_ledger[3]!=0xa5u||mb_ledger[178]||
++if(mb_token[1]!=MB_VERSION||!(mb_token[3]|mb_token[4])||mb_ledger[0]!=2u||mb_ledger[2]>1u||mb_ledger[3]!=0xa5u||mb_ledger[178]||
+  !mb_owner()||!service())return fail(1u);
++#if MB_INSERT
++if(mb_ledger[183]!=1u)return fail(1u);
++#endif
+ /* The immutable receipt binds the journal used by the completed file job. */
+ c=0xffffffffUL;for(off=0;off<1280u;off+=64u){if(!read_at(0x3e0600UL+off,64u))return 0u;c=crc(BUF,64u,c);}c^=0xffffffffUL;if(c!=get32(mb_ledger+179u)||!read_at(0x3e0b00UL,4u)||get32(BUF)!=get32(mb_ledger+179u))return fail(7u);
+ if(!read_at(0x3e0600UL,64u)||memcmp(BUF,"D64J\1\4\5",7u)||BUF[7]||BUF[8]!=mb_ledger[2]||BUF[9]>1u||memcmp(BUF+10u,mb_token+3u,2u)||memcmp(BUF+12u,mb_ledger+132u,42u)||get32(BUF+54u)!=get32(mb_ledger+174u))return fail(7u);readonly=BUF[9];
+-if(!read_at(0x3ff020UL,576u)||!valid())return fail(8u);memcpy(CMP,BUF,576u);memcpy(oldbody,BUF+572u,4u);if((crc(BUF+8u,128u,0xffffffffUL)^0xffffffffUL)!=get32(mb_token+34u)||memcmp(mb_token+54u,BUF+528u,8u))return fail(8u);
++#if MB_INSERT
++if(readonly!=(mb_ledger[186]&1u))return fail(7u);
++#endif
++if(!read_at(0x3ff020UL,576u)||!valid())return fail(8u);memcpy(CMP,BUF,576u);memcpy(oldbody,BUF+572u,4u);if((crc(BUF+8u,128u,0xffffffffUL)^0xffffffffUL)!=get32(mb_token+MB_HOME_CRC)||memcmp(mb_token+MB_OLD_AB,BUF+528u,8u))return fail(8u);
+ if(!read_at(0x3e0000UL,576u)||memcmp(BUF,CMP,576u)||!read_at(0x3e0680UL,576u)||memcmp(BUF,CMP,576u))return fail(8u);
+-if(!read_at(0x3e0300UL,576u)||!valid())return fail(8u);off=mb_ledger[2]?264u:136u;mask=mb_ledger[2]?2u:1u;if(memcmp(BUF+off,mb_ledger+4u,128u)||get32(BUF+(mb_ledger[2]?532u:528u))!=get32(mb_ledger+174u)||!!(BUF[524]&mask)!=readonly)return fail(8u);memcpy(CMP+off,BUF+off,128u);CMP[524]=(CMP[524]&~mask)|(BUF[524]&mask);off=mb_ledger[2]?532u:528u;memcpy(CMP+off,BUF+off,4u);memcpy(CMP+572u,BUF+572u,4u);if(memcmp(BUF,CMP,576u))return fail(8u);
++if(!read_at(0x3e0300UL,576u)||!valid())return fail(8u);off=mb_ledger[2]?264u:136u;mask=mb_ledger[2]?2u:1u;if(memcmp(BUF+off,mb_ledger+4u,128u)||get32(BUF+(mb_ledger[2]?532u:528u))!=get32(mb_ledger+174u)||!!(BUF[524]&mask)!=readonly)return fail(8u);memcpy(CMP+off,BUF+off,128u);
++#if MB_INSERT
++if(mb_ledger[2]){if(!(BUF[525]&2u))return fail(8u);CMP[525]|=2u;}
++#endif
++CMP[524]=(CMP[524]&~mask)|(BUF[524]&mask);off=mb_ledger[2]?532u:528u;memcpy(CMP+off,BUF+off,4u);memcpy(CMP+572u,BUF+572u,4u);if(memcmp(BUF,CMP,576u))return fail(8u);
+ memcpy(newbody,BUF+572u,4u);memcpy(CMP,BUF,576u);if(!read_at(0x3e08c0UL,576u)||memcmp(BUF,CMP,576u))return fail(8u);
++#if MB_INSERT
++if(!image_valid())return fail(12u);
++#endif
+ /* Validate both consumed headers BEFORE changing even one accepted byte. */
+ /* R's old A/B cookies live in the retained receipt, not new CMP. */
+ if(!read_at(0x3ff000UL,32u)||!header_valid(0u))return fail(9u);c=crc(BUF,28u,0xffffffffUL);
+-if(!read_at(0x3ff500UL,32u)||!header_valid(1u)||(crc(BUF,28u,c)^0xffffffffUL)!=get32(mb_token+62u)||!mb_owner()||!service())return fail(9u);
++if(!read_at(0x3ff500UL,32u)||!header_valid(1u)||(crc(BUF,28u,c)^0xffffffffUL)!=get32(mb_token+MB_ANCHORS_CRC)||!mb_owner()||!service())return fail(9u);
+ /* Header update needs the original cookie comparison; rebuild without hidden state. */
+ if(!read_at(0x3ff000UL,32u))return 0u;memcpy(BUF+8u,newbody,4u);memcpy(BUF+16u,CMP+528u,8u);BUF[5]=0xa5u;put32(BUF+28u,crc(BUF,28u,0xffffffffUL)^0xffffffffUL);BUF[5]=0u;memcpy(header,BUF,32u);
+ if(!write_at(0x3ff000UL,32u)||!read_at(0x3ff000UL,32u)||memcmp(BUF,header,32u))return fail(6u);
+--- c866/binding/glue.s
++++ insert/binding/glue.s
+@@ -2,7 +2,25 @@
+ .macpack longbranch
+ .include "../phase/runtime.inc"
+ .include "../phase/media_transaction.inc"
++ .ifndef MB_INSERT
++MB_INSERT=0
++.endif
++.if MB_INSERT
++.include "../phase/insert_contract.inc"
++.include "../phase/insert_native.inc"
++.include "../phase/insert_broker.inc"
++MB_READY=MI_READY
++MB_VERSION=MI_VERSION
++MB_ONLINE=MI_ONLINE
++MB_SEQUENCE=MI_SEQUENCE
++MB_LEDGER_CRC=MI_LEDGER_CRC
++MB_HOME_CRC=MI_HOME_CRC
++MB_TAIL=MI_TAIL
++MB_ANCHORS_CRC=MI_ANCHORS_CRC
++MB_CHECKSUM=MI_CHECKSUM
++.else
+ .include "../phase/binding_receipt.inc"
++.endif
+ .include "broker.inc"
+ .importzp sp,ptr1,sreg
+ .export _mb_get32
+@@ -21,7 +39,13 @@
+ _mb_dma_write:.res 1
+ ports:.res 4
+ samples:.res 1
++ .if MB_INSERT
++.segment "INSHEADER"
++.word $6600
++.segment "INSERTSUPPORT"
++.else
+ .segment "CODE"
++.endif
+ _mb_fixture_init:
+  lda #$ff
+  sta sp
+@@ -128,8 +152,10 @@
+ : lda dos64_files_state_start,x
+  cmp broker_files,x
+  jne bad
++ .if !MB_INSERT
+  cmp MB_FILES,x
+  jne bad
++.endif
+  dex
+  bpl :-
+  ldx #hd_state_end-hd_state_start-1
+@@ -171,9 +197,14 @@
+  lda ML_DRIVE
+  cmp #2
+  jcs bad
++.if MB_INSERT
++ jsr insert_stage_check
++ jcs bad
++.else
+  tax
+  lda dos64_disk_exhausted,x
+  jne bad
++.endif
+  lda #1
+  ldx #0
+  rts
+@@ -184,6 +215,16 @@
+  jsr _mb_owner
+  cmp #0
+  jeq bad
++ .if MB_INSERT
++ ldx #26
++: lda MI_FQ,x
++ sta dos64_floppy_request,x
++ dex
++ bpl :-
++ lda #2
++ sta dos64_floppy_request
++ jmp @commit
++.endif
+  lda #0
+  ldx #26
+ : sta dos64_floppy_request,x
+@@ -217,6 +258,9 @@
+  iny
+  cpy #4
+  bne :-
++ .if MB_INSERT
++@commit:
++.endif
+  jsr dos64_overlay_floppy_control
+  jcs bad
+  lda dos64_overlay_error
+@@ -268,3 +312,7 @@
+ : lda #1
+  ldx #0
+  rts
++
++.if MB_INSERT
++.include "../phase/insert_stage.inc"
++.endif
+--- c866/binding/insert.cfg
++++ insert/binding/insert.cfg
+@@ -0,0 +1,2 @@
++MEMORY { HDR:start=$0000,size=2,file=%O; CODEMEM:start=$A000,size=$1800,file=%O,define=yes; SH:start=$0000,size=2,file="insert-support.prg"; SUPPORT:start=$6600,size=$0700,file="insert-support.prg",define=yes; STATE:start=$7D00,size=$0300,file="",define=yes; ZP:start=$80,size=$20,file=""; }
++SEGMENTS { LOADADDR:load=HDR,type=ro; CODE:load=CODEMEM,type=ro,define=yes; RODATA:load=CODEMEM,type=ro,define=yes; DATA:load=CODEMEM,type=rw; BSS:load=STATE,type=bss,define=yes; ZEROPAGE:load=ZP,type=zp; INSHEADER:load=SH,type=ro; INSERTSUPPORT:load=SUPPORT,type=ro,define=yes; }
+--- c866/binding/insert_calls.s
++++ insert/binding/insert_calls.s
+@@ -0,0 +1,37 @@
++.setcpu "6502"
++.include "insert-entry.inc"
++.export mw_init,mw_build
++.segment "LOADADDR"
++.word $7dd0
++.segment "CODE"
++.macro call_c target
++ php
++ sei
++ cld
++ ldx #95
++: lda $80,x
++ sta $7e80,x
++ lda #0
++ sta $80,x
++ dex
++ bpl :-
++ lda #$ff
++ sta $80
++ lda #$bf
++ sta $81
++ jsr target
++ pha
++ ldx #95
++: lda $7e80,x
++ sta $80,x
++ dex
++ bpl :-
++ pla
++ ldx #0
++ plp
++ rts
++.endmacro
++mw_init: call_c plan_init
++mw_build: call_c plan_build
++
++.assert * <= $7e80,error,"PLAN wrapper must not overwrite saved C/native high96"
+--- c866/worker/incoming.s
++++ insert/worker/incoming.s
+@@ -0,0 +1,1175 @@
++.setcpu "6502"
++.macpack longbranch
++.include "imports.inc"
++.export iw_begin,iw_poll,iw_take,iw_state,iw_error,iw_closed
++.export iw_path,iw_enable,iw_cancel,iw_limit,iw_private_start,iw_private_end
++.export _iw_begin:=iw_begin,_iw_poll:=iw_poll,_iw_take:=iw_take
++.export _iw_state:=iw_state,_iw_error:=iw_error,_iw_closed:=iw_closed
++.export _iw_path:=iw_path,_iw_enable:=iw_enable,_iw_cancel:=iw_cancel,_iw_limit:=iw_limit
++.segment "LOADADDR"
++.word $a000
++.segment "BSS"
++iw_path:.res 128
++iw_enable:.res 1
++iw_cancel:.res 1
++iw_limit:.res 2
++iw_private_start:
++receipt:
++r_drive:.res 1
++r_flags:.res 1
++r_base:.res 3
++r_token:.res 4
++r_mount:.res 4
++r_content:.res 4
++r_crc:.res 4
++r_path:.res 128
++snapshot:.res 25
++original_online:.res 1
++target:.res 1
++limit:.res 2
++now:.res 2
++started:.res 2
++raw_last:.res 4
++raw_seen:.res 1
++sample_count:.res 1
++ports:.res 4
++offset:.res 3
++state:.res 1
++error:.res 1
++closed:.res 1
++ready:.res 1
++entered:.res 1
++phase:.res 1
++waiting:.res 1
++raw:.res 1
++seen:.res 1
++context:.res 1
++fatal:.res 1
++aborted:.res 1
++cleanup_close:.res 1
++drain:.res 1
++steps:.res 2
++work:.res 1
++pathlen:.res 1
++retA:.res 1
++retX:.res 1
++iw_private_end:
++.assert r_path-receipt=21,error,"receipt field layout"
++.assert snapshot-receipt=149,error,"receipt size"
++.segment "CODE"
++; Preserve caller flags and current native20..43 scratch; no phase ZP/staticC
++; software stack, no high96 writes. Native FILES/UCI use their existing state.
++.macro API body
++ php
++ sei
++ cld
++ ldx #0
++: lda $20,x
++ pha
++ inx
++ cpx #36
++ bne :-
++ jsr body
++ sta retA
++ stx retX
++ ldx #35
++: pla
++ sta $20,x
++ dex
++ bpl :-
++ lda retA
++ ldx retX
++ plp
++ rts
++.endmacro
++iw_begin: API begin
++iw_poll: API poll
++iw_take: API take
++iw_state: lda state
++ ldx #0
++ rts
++iw_error: lda error
++ ldx #0
++ rts
++iw_closed: lda closed
++ ldx #0
++ rts
++latch:
++ ldx error
++ bne :+
++ sta error
++: rts
++fatal_latch:
++ pha
++ lda #1
++ sta fatal
++ lda #$e1
++ sta dos64_native_diag
++ pla
++ jmp latch
++quiet:
++ lda dos64_uci_recovery_failed
++ bne @bad
++ lda dos64_uci_state
++ beq @ok
++ cmp #9
++ beq @ok
++ cmp #10
++ bne @bad
++@ok: clc
++ rts
++@bad: sec
++ rts
++clock:
++ lda #0
++ sta sample_count
++@sample:
++ jsr dos64_elapsed_poll
++ bcc @fresh
++ lda dos64_host_clock_status
++ cmp #4
++ bne @bad
++ inc sample_count
++ bne @sample
++@bad: sec
++ rts
++@fresh:
++ lda raw_seen
++ beq @capture
++ sec
++ lda dos64_host_clock_ticks
++ sbc raw_last
++ lda dos64_host_clock_ticks+1
++ sbc raw_last+1
++ lda dos64_host_clock_ticks+2
++ sbc raw_last+2
++ lda dos64_host_clock_ticks+3
++ sbc raw_last+3
++ cmp #8
++ bcs @bad
++@capture:
++ ldx #3
++: lda dos64_host_clock_ticks,x
++ sta raw_last,x
++ dex
++ bpl :-
++ lda dos64_elapsed_now
++ sta now
++ lda dos64_elapsed_now+1
++ sta now+1
++ lda #1
++ sta raw_seen
++ clc
++ rts
++stop:
++ ldx #3
++: lda $dc00,x
++ sta ports,x
++ dex
++ bpl :-
++ lda #$ff
++ sta $dc02
++ lda #0
++ sta $dc03
++ lda #$7f
++ sta $dc00
++ nop
++ nop
++ lda $dc01
++ and #$80
++ pha
++ ldx #3
++: lda ports,x
++ sta $dc00,x
++ dex
++ bpl :-
++ pla
++ beq @yes
++ lda iw_cancel
++ bne @yes
++ clc
++ rts
++@yes: sec
++ rts
++copy_now:
++ lda now
++ sta dos64_files_now
++ sta dos64_uci_now
++ lda now+1
++ sta dos64_files_now+1
++ sta dos64_uci_now+1
++ rts
++ownership:
++ jsr broker_presentation_owner
++ jcs @bad
++ lda dos64_cold_open
++ ora dos64_cache_limit
++ ora sav_borrowed
++ ora sav_context_pending
++ ora dos64_overlay_busy
++ ora hdb_active
++ ora hd_uncertain
++ jne @bad
++ ldx #hd_state_end-hd_state_start-1
++: lda hd_state_start,x
++ cmp broker_saved_hd,x
++ bne @bad
++ dex
++ bpl :-
++ ldx #hdb_state_end-hdb_state_start-1
++@hdb:
++ cpx #hdb_online-hdb_state_start
++ beq @online
++ lda hdb_state_start,x
++ cmp broker_saved_hdb,x
++ bne @bad
++ jmp @next
++@online:
++ lda context
++ beq :+
++ lda hdb_online
++ bne @bad
++ beq @next
++: lda hdb_online
++ cmp broker_saved_hdb,x
++ bne @bad
++@next:
++ dex
++ bpl @hdb
++ lda context
++ bne @borrowed
++ ldx #24
++: lda dos64_files_state_start,x
++ cmp broker_saved_files,x
++ bne @bad
++ dex
++ bpl :-
++ clc
++ rts
++@borrowed:
++ lda dos64_files_target
++ cmp target
++ bne @bad
++ lda dos64_files_owned_target
++ cmp target
++ bne @bad
++ clc
++ rts
++@bad: sec
++ rts
++lease:
++ lda dos64_floppy_stage_active
++ cmp #$a5
++ jne @bad
++ lda stage_drive
++ cmp r_drive
++ jne @bad
++ lda stage_flags
++ cmp r_flags
++ jne @bad
++ lda dos64_floppy_stage_bank
++ cmp r_base+2
++ jne @bad
++ ldx #3
++: lda dos64_floppy_token,x
++ cmp r_token,x
++ bne @bad
++ lda stage_mount,x
++ cmp r_mount,x
++ bne @bad
++ lda stage_content,x
++ cmp r_content,x
++ bne @bad
++ dex
++ bpl :-
++ lda r_drive
++ asl
++ asl
++ tax
++ ldy #0
++: lda dos64_disk_mount_generation,x
++ cmp r_mount,y
++ bne @bad
++ lda dos64_disk_content_generation,x
++ cmp r_content,y
++ bne @bad
++ inx
++ iny
++ cpy #4
++ bne :-
++ lda dos64_disk_loaded
++ beq :+
++ lda dos64_disk_reu_base+2
++ cmp r_base+2
++ beq @bad
++: lda dos64_disk_b_descriptor+9
++ beq @ok
++ lda dos64_disk_b_descriptor+2
++ cmp r_base+2
++ beq @bad
++@ok: clc
++ rts
++@bad: sec
++ rts
++path:
++ ldx #127
++: lda iw_path,x
++ sta r_path,x
++ dex
++ bpl :-
++ lda r_path
++ cmp #'/'
++ bne @bad
++ ldx #1
++ lda #1
++ sta work
++@char:
++ lda r_path,x
++ beq @end
++ cmp #32
++ bcc @bad
++ cmp #127
++ bcs @bad
++ cmp #92
++ beq @bad
++ cmp #':'
++ beq @bad
++ cmp #'"'
++ beq @bad
++ cmp #'*'
++ beq @bad
++ cmp #'<'
++ beq @bad
++ cmp #'>'
++ beq @bad
++ cmp #'?'
++ beq @bad
++ cmp #'|'
++ beq @bad
++ cmp #'/'
++ bne @next
++ cpx work
++ beq @bad
++ lda r_path-1,x
++ cmp #'.'
++ beq @bad
++ cmp #' '
++ beq @bad
++ txa
++ clc
++ adc #1
++ sta work
++@next:
++ inx
++ bpl @char
++@bad: sec
++ rts
++@end:
++ cpx work
++ beq @bad
++ lda r_path-1,x
++ cmp #'.'
++ beq @bad
++ cmp #' '
++ beq @bad
++ inx
++ stx pathlen
++@pad:
++ cpx #128
++ beq @ok
++ lda r_path,x
++ bne @bad
++ inx
++ bne @pad
++@ok: clc
++ rts
++begin:
++ lda #0
++ sta ready
++ lda state
++ cmp #1
++ jeq reject
++ lda iw_enable
++ cmp #$a5
++ jne reject
++ lda entered
++ jne reject
++ lda iw_limit
++ ora iw_limit+1
++ jeq reject
++ lda iw_limit+1
++ jmi reject
++ lda #0
++ sta context
++ sta raw_seen
++ jsr broker_native_owner
++ jcs reject
++ jsr ownership
++ jcs reject
++ jsr quiet
++ jcs reject
++ lda dos64_overlay_reu_mib
++ cmp #4
++ jcc reject
++ lda dos64_floppy_request
++ cmp #1
++ jne reject
++ lda dos64_floppy_request+1
++ cmp #2
++ jcs reject
++ sta r_drive
++ lda dos64_floppy_request+2
++ sta r_flags
++ and #$fc
++ jne reject
++ lda dos64_floppy_request+4
++ cmp #4
++ jcc reject
++ cmp #17
++ jcs reject
++ lda dos64_floppy_request+5
++ ora dos64_floppy_request+6
++ jne reject
++ sta r_base
++ sta r_base+1
++ lda dos64_floppy_request+7
++ cmp #$10
++ beq :+
++ cmp #$18
++ beq :+
++ cmp #$38
++ jne reject
++: sta r_base+2
++ ldx #3
++: lda dos64_floppy_request+11,x
++ sta r_token,x
++ lda dos64_floppy_request+15,x
++ sta r_mount,x
++ lda dos64_floppy_request+19,x
++ sta r_content,x
++ dex
++ bpl :-
++ jsr lease
++ jcs reject
++ jsr path
++ jcs reject
++ jsr clock
++ jcs reject
++ jsr stop
++ jcs reject
++ lda iw_limit
++ sta limit
++ lda iw_limit+1
++ sta limit+1
++ lda now
++ sta started
++ lda now+1
++ sta started+1
++ ldx #24
++: lda dos64_files_state_start,x
++ sta snapshot,x
++ dex
++ bpl :-
++ lda hdb_online
++ sta original_online
++ lda #1
++ sta target
++ lda original_online
++ beq @capture
++ lda hdc_target
++ eor #3
++ sta target
++@capture:
++ lda #0
++ sta error
++ sta closed
++ sta fatal
++ sta aborted
++ sta cleanup_close
++ sta drain
++ sta steps
++ sta steps+1
++ sta waiting
++ sta raw
++ sta iw_cancel
++ sta hdb_online
++ ldx #24
++: sta dos64_files_state_start,x
++ dex
++ bpl :-
++ lda target
++ sta dos64_files_target
++ sta dos64_files_owned_target
++ lda #2
++ sta dos64_files_handle
++ lda #1
++ sta context
++ sta entered
++ sta state
++ sta phase
++ lda #3
++ jsr start_file
++ bcc @accepted
++ lda #4
++ jsr fatal_latch
++ jsr blocked
++@accepted:
++ lda #1
++ ldx #0
++ rts
++reject:
++ lda #0
++ ldx #0
++ rts
++start_file:
++ sta dos64_files_op
++ jsr copy_now
++ jsr dos64_overlay_files_start
++ bcs :+
++ lda #1
++ sta waiting
++ clc
++: rts
++observe:
++ lda waiting
++ beq @done
++ lda raw
++ beq @file
++ lda dos64_uci_error
++ beq @done
++ lda #4
++ jmp latch
++@file:
++ lda dos64_files_error
++ beq @done
++ cmp #3
++ bne @error
++ lda dos64_files_op
++ cmp #3
++ bne @error
++ ; FILES posts close status before ACK/finalization. Exact84 only becomes
++ ; known CLOSED at terminal; do not abort its native close handshake early.
++ lda dos64_uci_state
++ cmp #6
++ beq @done
++ cmp #7
++ beq @done
++ cmp #9
++ beq @done
++@error:
++ lda #4
++ jmp latch
++@done: rts
++poll:
++ lda state
++ cmp #1
++ jne done
++ inc steps
++ bne :+
++ inc steps+1
++ bne :+
++ lda #8
++ jsr fatal_latch
++:
++ jsr observe
++ jsr clock
++ bcc :+
++ lda #2
++ jsr fatal_latch
++:
++ jsr ownership
++ bcs @lost
++ jsr lease
++ bcc @progress
++@lost:
++ lda #7
++ jsr fatal_latch
++@progress:
++ lda waiting
++ beq @serviced
++ jsr copy_now
++ lda raw
++ beq @file
++ jsr dos64_uci_poll
++ jmp @observed
++@file:
++ jsr dos64_overlay_files_poll
++@observed:
++ jsr observe
++@serviced:
++ lda error
++ jne cleanup
++ jsr stop
++ bcc :+
++ lda #3
++ jsr latch
++ jmp cleanup
++:
++ sec
++ lda now
++ sbc started
++ sta work
++ lda now+1
++ sbc started+1
++ cmp limit+1
++ bcc @dispatch
++ bne @deadline
++ lda work
++ cmp limit
++ bcc @dispatch
++@deadline:
++ lda #2
++ jsr fatal_latch
++ jmp cleanup
++@dispatch:
++ lda raw
++ jne raw_poll
++ lda waiting
++ beq @idle
++ lda dos64_files_state
++ cmp #1
++ jeq done
++ cmp #2
++ beq @terminal
++ lda dos64_files_op
++ cmp #3
++ jne file_failure
++ lda dos64_files_handle
++ jne file_failure
++@terminal:
++ lda #0
++ sta waiting
++@idle:
++ lda phase
++ cmp #1
++ jeq first_closed
++ cmp #2
++ jeq open_done
++ cmp #3
++ jeq info_done
++ cmp #5
++ jeq hash_page
++ cmp #6
++ jeq eof_done
++ cmp #7
++ jeq second_open
++ cmp #8
++ jeq open_done
++ cmp #9
++ jeq info_done
++ cmp #10
++ jeq compare_page
++ cmp #11
++ jeq eof_done
++ cmp #12
++ jeq finish
++ lda #4
++ jsr latch
++ jmp cleanup
++done:
++ lda #0
++ ldx #0
++ rts
++first_closed:
++ lda dos64_files_handle
++ jne file_failure
++ lda #2
++ sta phase
++ jmp open_file
++second_open:
++ lda dos64_files_handle
++ jne file_failure
++ lda #8
++ sta phase
++open_file:
++ lda #1
++ sta dos64_files_mode
++ ldx #0
++: lda r_path,x
++ sta dos64_uci_command+3,x
++ inx
++ cpx pathlen
++ bne :-
++ lda pathlen
++ sta dos64_files_path_len
++ lda #2
++ jsr start_file
++ jcs file_failure
++ rts
++open_done:
++ inc phase
++ lda #7
++ jsr start_file
++ jcs file_failure
++ rts
++info_done:
++ lda dos64_files_count_known
++ cmp #1
++ jne file_failure
++ lda dos64_uci_data
++ ora dos64_uci_data+3
++ jne size_failure
++ lda dos64_uci_data+1
++ cmp #$a0
++ jne size_failure
++ lda dos64_uci_data+2
++ cmp #5
++ jne size_failure
++ lda #0
++ sta offset
++ sta offset+1
++ sta offset+2
++ lda phase
++ cmp #3
++ jne read_next
++ lda #$ff
++ ldx #3
++: sta r_crc,x
++ dex
++ bpl :-
++ jmp start_load
++read_next:
++ lda #10
++ sta phase
++ lda #0
++ sta dos64_files_count
++ lda #1
++ sta dos64_files_count+1
++ lda #4
++ jsr start_file
++ jcs file_failure
++ rts
++start_load:
++ lda target
++ sta dos64_uci_command
++ lda #$21
++ sta dos64_uci_command+1
++ lda #0
++ sta dos64_uci_command+2
++ sta dos64_uci_command+3
++ sta dos64_uci_command+5
++ sta dos64_uci_command+6
++ sta dos64_uci_command+9
++ sta seen
++ lda r_base+2
++ sta dos64_uci_command+4
++ lda #$a0
++ sta dos64_uci_command+7
++ lda #5
++ sta dos64_uci_command+8
++ lda #10
++ sta dos64_uci_command_len
++ lda #0
++ sta dos64_uci_command_len+1
++ sta dos64_uci_data_capacity+1
++ sta dos64_uci_status_capacity+1
++ lda #64
++ sta dos64_uci_data_capacity
++ lda #80
++ sta dos64_uci_status_capacity
++ lda #1
++ sta raw
++ sta waiting
++ lda #4
++ sta phase
++ jsr copy_now
++ jsr dos64_uci_start
++ jcs file_failure
++ rts
++raw_poll:
++ lda dos64_uci_state
++ cmp #5
++ beq @reply
++ cmp #9
++ jeq @complete
++ cmp #10
++ jeq file_failure
++ rts
++@reply:
++ lda seen
++ jne file_failure
++ inc seen
++ lda dos64_uci_flags
++ ora dos64_uci_data_len+1
++ ora dos64_uci_status_len+1
++ jne file_failure
++ lda dos64_uci_last_status
++ and #$10
++ jne file_failure
++ lda dos64_uci_status_len
++ cmp #5
++ jne file_failure
++ ldx #4
++: lda dos64_uci_status,x
++ cmp ok,x
++ jne file_failure
++ dex
++ bpl :-
++ lda dos64_uci_data_len
++ cmp #35
++ jne file_failure
++ ldx #28
++: lda dos64_uci_data,x
++ cmp load_prefix,x
++ jne file_failure
++ dex
++ bpl :-
++ lda r_base+2
++ lsr
++ lsr
++ lsr
++ lsr
++ tax
++ lda digits,x
++ cmp dos64_uci_data+29
++ jne file_failure
++ lda r_base+2
++ and #15
++ tax
++ lda digits,x
++ cmp dos64_uci_data+30
++ jne file_failure
++ ldx #3
++: lda dos64_uci_data+31,x
++ cmp #'0'
++ jne file_failure
++ dex
++ bpl :-
++ jsr dos64_uci_accept
++ jcs file_failure
++ rts
++@complete:
++ lda seen
++ cmp #1
++ jne file_failure
++ lda #0
++ sta raw
++ sta waiting
++ lda #5
++ sta phase
++ rts
++; Two different initialized FETCH buffers prevent suppressed/partial DMA from
++; self-verifying. Both buffers remain outside this phase's complete code/BSS.
++fetch:
++ ldx #0
++: lda #$a5
++ sta $b800,x
++ lda #$5a
++ sta $b900,x
++ inx
++ bne :-
++ lda #0
++ sta dos64_reu_request
++ lda #$b8
++ sta dos64_reu_request+1
++ lda offset
++ sta dos64_reu_request+2
++ lda offset+1
++ sta dos64_reu_request+3
++ clc
++ lda offset+2
++ adc r_base+2
++ sta dos64_reu_request+4
++ lda #0
++ sta dos64_reu_request+5
++ lda #1
++ sta dos64_reu_request+6
++ sta dos64_reu_request+7
++ jsr dos64_reu_transfer
++ bcs @bad
++ lda #$b9
++ sta dos64_reu_request+1
++ jsr dos64_reu_transfer
++ bcs @bad
++ ldx #0
++: lda $b800,x
++ cmp $b900,x
++ bne @bad
++ inx
++ bne :-
++ clc
++ rts
++@bad: sec
++ rts
++hash_page:
++ jsr fetch
++ jcs dma_failure
++ lda offset+1
++ ora offset+2
++ bne @crc_page
++ ldx #11
++@geometry:
++ ldy iw_bpb_offsets,x
++ lda $b800,y
++ cmp iw_bpb_values,x
++ jne geometry_failure
++ dex
++ bpl @geometry
++@crc_page:
++ ldy #0
++@byte:
++ lda $b800,y
++ eor r_crc
++ sta r_crc
++ ldx #8
++@bit:
++ lsr r_crc+3
++ ror r_crc+2
++ ror r_crc+1
++ ror r_crc
++ bcc @skip
++ lda r_crc
++ eor #$20
++ sta r_crc
++ lda r_crc+1
++ eor #$83
++ sta r_crc+1
++ lda r_crc+2
++ eor #$b8
++ sta r_crc+2
++ lda r_crc+3
++ eor #$ed
++ sta r_crc+3
++@skip:
++ dex
++ bne @bit
++ iny
++ bne @byte
++ jsr advance
++ bcc @return
++ ldx #3
++: lda r_crc,x
++ eor #$ff
++ sta r_crc,x
++ dex
++ bpl :-
++ lda #6
++ sta phase
++ jmp eof_read
++@return: rts
++compare_page:
++ lda dos64_files_count_known
++ cmp #1
++ jne file_failure
++ lda dos64_files_actual
++ jne size_failure
++ lda dos64_files_actual+1
++ cmp #1
++ jne size_failure
++ jsr fetch
++ jcs dma_failure
++ ldx #0
++: lda dos64_uci_data,x
++ cmp $b800,x
++ jne size_failure
++ inx
++ bne :-
++ jsr advance
++ jcc read_next
++ lda #11
++ sta phase
++eof_read:
++ lda #1
++ sta dos64_files_count
++ lda #0
++ sta dos64_files_count+1
++ lda #4
++ jsr start_file
++ jcs file_failure
++ rts
++advance:
++ inc offset+1
++ bne :+
++ inc offset+2
++: lda offset+2
++ cmp #5
++ bcc @more
++ lda offset+1
++ cmp #$a0
++ bcc @more
++ sec
++ rts
++@more: clc
++ rts
++eof_done:
++ lda dos64_files_count_known
++ cmp #1
++ jne file_failure
++ lda dos64_files_actual
++ ora dos64_files_actual+1
++ jne size_failure
++ lda dos64_files_short
++ cmp #1
++ jne file_failure
++ inc phase
++ lda #3
++ jsr start_file
++ jcs file_failure
++ rts
++geometry_failure:
++ lda #9
++ jsr latch
++ jmp cleanup
++size_failure:
++ lda #5
++ jsr latch
++ jmp cleanup
++dma_failure:
++ lda #6
++ jsr fatal_latch
++ jmp cleanup
++file_failure:
++ lda #4
++ jsr latch
++ jmp cleanup
++cleanup:
++ lda waiting
++ beq @quiet
++ inc drain
++ jeq blocked
++ lda dos64_uci_state
++ cmp #9
++ beq @terminal
++ cmp #10
++ beq @terminal
++ ; A safety CLOSE is already the one cleanup attempt. Let its actual
++ ; handshake finish; an earlier latched cause must not abort that CLOSE.
++ lda dos64_files_op
++ cmp #3
++ jeq done
++ lda aborted
++ jne done
++ inc aborted
++ jsr copy_now
++ jsr dos64_uci_abort
++ jmp done
++@terminal:
++ lda dos64_files_state
++ cmp #1
++ beq @check_raw
++ jmp @clear
++@check_raw:
++ lda raw
++ jeq done
++@clear:
++ lda #0
++ sta waiting
++ sta raw
++@quiet:
++ jsr quiet
++ jcs blocked
++ lda dos64_files_handle
++ jeq finish
++ lda dos64_files_op
++ cmp #3
++ jeq blocked
++ lda cleanup_close
++ jne blocked
++ inc cleanup_close
++ lda #31
++ sta phase
++ lda #3
++ jsr start_file
++ jcs blocked
++ rts
++finish:
++ lda dos64_files_handle
++ jne blocked
++ jsr quiet
++ jcs blocked
++ jsr ownership
++ jcs blocked
++ ldx #24
++: lda snapshot,x
++ sta dos64_files_state_start,x
++ dex
++ bpl :-
++ lda original_online
++ sta hdb_online
++ lda #0
++ sta context
++ lda #1
++ sta closed
++ jsr ownership
++ jcs blocked
++ lda fatal
++ beq :+
++ lda #$e1
++ sta dos64_native_diag
++: lda #3
++ ldx error
++ bne @state
++ jsr lease
++ bcs @lost
++ lda #$a5
++ sta ready
++ lda #2
++@state:
++ sta state
++ jmp done
++@lost:
++ lda #7
++ jsr fatal_latch
++blocked:
++ lda #0
++ sta ready
++ lda #$e1
++ sta dos64_native_diag
++ lda #3
++ sta state
++ jmp done
++take:
++ lda ready
++ cmp #$a5
++ bne @bad
++ lda state
++ cmp #2
++ bne @bad
++ lda error
++ ora context
++ bne @bad
++ lda closed
++ cmp #1
++ bne @bad
++ jsr broker_native_owner
++ bcs @lost
++ jsr ownership
++ bcs @lost
++ jsr lease
++ bcs @lost
++ jsr clock
++ bcs @clock
++ jsr stop
++ bcs @cancel
++ lda #0
++ sta ready
++ lda #<receipt
++ ldx #>receipt
++ rts
++@lost: lda #7
++ bne @fatal
++@clock: lda #2
++ bne @fatal
++@cancel:
++ lda #3
++ jsr latch
++ lda #0
++ sta ready
++ lda #3
++ sta state
++ jmp @bad
++@fatal:
++ jsr fatal_latch
++ jsr blocked
++@bad: lda #0
++ tax
++ rts
++.segment "RODATA"
++ok:.byte "00,OK"
++load_prefix:.byte "$ 5a000 BYTES LOADED TO REU $"
++.assert *-load_prefix=29,error,"LOADprefix length"
++digits:.byte "0123456789abcdef"
++.include "geometry.inc"
++.import __BSS_RUN__,__BSS_SIZE__
++.assert __BSS_RUN__=$7d00,lderror,"incoming state placement"
++.assert __BSS_RUN__+__BSS_SIZE__<=$7e80,lderror,"incoming state overlaps savedhigh96"
+--- c866/worker/incoming.h
++++ insert/worker/incoming.h
+@@ -0,0 +1,27 @@
++#ifndef DOS64_INCOMING_STAGE_H
++#define DOS64_INCOMING_STAGE_H
++typedef unsigned char iw_u8;
++typedef unsigned short iw_u16;
++/* Native caller owns modal broker8/cache0 and an actual outstanding PREPARE.
++ * Begin captures canonical zero-padded path and the actual native FQ27 facts,
++ * validates them against private core lease, then borrows only alternate FILES.
++ * This worker never initializes transport, COMMITs or CANCELs the core token.
++ */
++extern char iw_path[128];
++extern iw_u16 iw_limit; /* nonzero elapsed16 bound<32768, captured */
++extern iw_u8 iw_enable,iw_cancel; /* enableA5; cancel cooperative afterbegin */
++iw_u8 iw_begin(void);
++void iw_poll(void);
++iw_u8 iw_state(void); /*0idle1busy2done3failed*/
++iw_u8 iw_error(void); /* first cause, immutable throughout a job */
++iw_u8 iw_closed(void); /* original native C context safely restored */
++struct iw_receipt {iw_u8 drive,flags,base[3],token[4],mount[4],content[4],crc[4];char path[128];};
++/* Returns native pointer to private149B receipt at most once, or NULL.
++ * Copy while worker is loaded, afterallframesreturnbeforeoverlayretirement.
++ * A legitimate CRC0 is represented by successful private admission, never by
++ * testing CRC!=0. Neither public getters nor a request copy grants authority.
++ * Futurecontroller must CANCEL oldtoken and PREPARE samefreebase/unchanged
++ * generations withderivedCRC before durablecommit; not performed here.
++ */
++const struct iw_receipt* iw_take(void);
++#endif
+--- c866/worker/incoming.cfg
++++ insert/worker/incoming.cfg
+@@ -0,0 +1,2 @@
++MEMORY { HDR:start=0,size=2,file=%O; CODEMEM:start=$A000,size=$1800,file=%O,define=yes; STATE:start=$7D00,size=$180,file="",define=yes; }
++SEGMENTS { LOADADDR:load=HDR,type=ro; CODE:load=CODEMEM,type=ro,define=yes; RODATA:load=CODEMEM,type=ro; BSS:load=STATE,type=bss,define=yes; }

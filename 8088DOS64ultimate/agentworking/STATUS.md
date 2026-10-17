@@ -1,3 +1,15 @@
+# Current V1 checkpoint — runtime Insert and public media graph, 2026-10-17
+
+User priority remains docs/V1_ENDPOINT.md: polished install/configuration, reliable A/B/C and complete original Turbo Pascal IDE edit/save/diskcompile/run/Finish/reset/reopen on the Ultimate. Further performance improvements are deferred; all final matched-release gates remain open.
+
+Complete runtime Insert controller now passes21 actual groups (9 controller,5 CIA menu,5 faults, SaveAs/Finish regressions), with1704 source/tool/SDK inputs and53 products unchanged;20 UNIT products excluded. Genuine private receipt→CANCEL/re-PREPARE→PLAN/WIRE/Insert-BIND/native-COMMIT executes, including CRC0, three arenas, first B, corruption and unknown CLOSE. Independent old/new stale bridge result review fixes an unsafe Resume advertisement; the predecessor native release guard already blocked release. Frozen d6db/2889 and clean filename coupling45de/622; no retroactive future-seal input claim.
+
+67 exact public source paths are promoted after all11083 peer graph pins and107 unchanged dependencies are checked. Fresh ordinary `make runtime-media` passes: runtime58fa95e2/47105B, MNUaa135d2b/57344B, REL531c74c3/64B;509 inputs/467 generated products rechecked. Root independently runs3 actual CIA smoke groups from those products using the verified source-built peer model;289 inputs stay exact. Existing `make test-native-media` passes27 actual groups including3 direct Zig;391 inputs/109 products exact. Fresh default runtime666089b5/UNITb9e9cc9e and memory checks remain exact. No new performance/hardware result. [Evidence](evidence/native-runtime-media-root-20261017.json), [records](research/native-runtime-media-checkpoint-20261017/HANDOFF.md).
+
+Parallel integration remains private: cold56 actual SETUP/DOS/Insert/B-read/C/Finish and CONFIG40 pass, but CONFIG80 ordinary Save refuses and is being diagnosed without source changes; do not transfer passes to final package. Required FORMAT successor passes focused/model format work but is not yet in public runtime. Early trusted installer error screens are being implemented within measured load-only lifetime. Next: resolve/configure final eight-asset cold package, qualify2/20MiB/Turbo workflow and then current physical/human tests. Sole CIA owns hardware; current9 staging failure/current fullREU+BASIC uncertainty remains separate from old recovery. Local commits only, no push.
+
+Earlier snapshots below are historical.
+
 # V1 functional checkpoint — 2026-10-17
 
 The user reaffirmed solid installer/config/floppy/HD and Turbo Pascal acceptance; speed work stays post-V1. The independently sealed10-gate usability checklist is ROOT-verified628bf787/39pins: `research/v1-release-gap-ux-audit-20261017/AUDIT.md`. Final matched release/physical/human gates remain open. Required native FORMAT is an explicit newly audited gap (AH05 rejected), not waived by native SETUP; memory agent begins genuine disposable-media probe/correctness successor.

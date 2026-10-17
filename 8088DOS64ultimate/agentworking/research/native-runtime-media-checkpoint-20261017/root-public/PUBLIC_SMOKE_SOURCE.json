@@ -1,0 +1,9 @@
+{
+  "native_result": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/runtime-media-root-promotion-20261017/public-build/RESULT.json",
+  "test_model_parent": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-runtime-media-public-20261017/model-smoke-final/runtime",
+  "test_model_parent_manifest": "10a3d29b11eff95248d3bd8a4011e0596241e3b91634b8ab80fea22a0a7664a5",
+  "inputs": 289,
+  "model_source_built_by_peer": true,
+  "new_root_model_rebuild": false,
+  "scope": "independent Root actual CPU execution of fresh public native products using verified source-built peer model"
+}

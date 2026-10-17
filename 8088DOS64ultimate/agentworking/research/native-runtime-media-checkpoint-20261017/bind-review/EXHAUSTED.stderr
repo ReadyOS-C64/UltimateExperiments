@@ -1,0 +1,7 @@
+test_exhausted_explicit_discard_Insert (__main__.Tests.test_exhausted_explicit_discard_Insert) ... ok
+test_exhausted_no_discard_nativePREPARE_refuses (__main__.Tests.test_exhausted_no_discard_nativePREPARE_refuses) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 4.152s
+
+OK

@@ -1,0 +1,12 @@
+test01_live_B_C1 (__main__.Tests.test01_live_B_C1) ... ok
+test02_ejected_A_C2 (__main__.Tests.test02_ejected_A_C2) ... ok
+test03_ejected_B_C1 (__main__.Tests.test03_ejected_B_C1) ... ok
+test04_neverconfigured_B_C2 (__main__.Tests.test04_neverconfigured_B_C2) ... ok
+test05_pre_admission_stage_kind_snapshot_policy_refusals (__main__.Tests.test05_pre_admission_stage_kind_snapshot_policy_refusals) ... ok
+test06_incoming_lastbyte_CRC_refuses_before_CREATE (__main__.Tests.test06_incoming_lastbyte_CRC_refuses_before_CREATE) ... ok
+test07_postWIRE_token_kind_FQ_stage_and_late_image_refusals (__main__.Tests.test07_postWIRE_token_kind_FQ_stage_and_late_image_refusals) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 31.809s
+
+OK

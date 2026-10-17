@@ -1,0 +1,10 @@
+test01_dirty_discard_Insert_and_Resume (__main__.Tests) ... ok
+test02_save_first_Insert_and_Resume (__main__.Tests) ... ok
+test03_missing_keeps_old_then_Resume (__main__.Tests) ... ok
+test04_confirm_cancel_no_job (__main__.Tests) ... ok
+test05_first_B_Ctarget2 (__main__.Tests) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 33.715s
+
+OK

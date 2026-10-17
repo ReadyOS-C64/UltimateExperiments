@@ -1,0 +1,100 @@
+{
+  "status": "PASS_PUBLIC_REGRESSION",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn",
+  "groups": {
+    "selected": 5,
+    "sequential": 4,
+    "online": 10,
+    "crc": 5,
+    "direct_Zig": 3
+  },
+  "source_inputs": 391,
+  "native_products": 109,
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/make",
+        "-B",
+        "DOS64_SAVE_HD_CONTEXT=1",
+        "DOS64_EXPORT_CRC=1",
+        "DOS64_CA65=/opt/homebrew/Cellar/cc65/2.19/bin/ca65",
+        "DOS64_LD65=/opt/homebrew/Cellar/cc65/2.19/bin/ld65",
+        "DOS64_PYTHON=/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+        "build/dos64.prg",
+        "build/dos64-tests.prg",
+        "build/dos64-tests.prg.unit-extra.bin",
+        "build/dos64-tests.bin",
+        "verify-memory"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn/work"
+    },
+    {
+      "argv": [
+        "/usr/bin/clang++",
+        "-std=c++20",
+        "-O2",
+        "-dynamiclib",
+        "-Iwork/third_party/peddle/Peddle",
+        "-Imodel/tests/host",
+        "-Imodel/tests/floppy_export",
+        "model/tests/floppy_export/bridge.cpp",
+        "work/third_party/peddle/Peddle/Peddle.cpp",
+        "work/third_party/peddle/Peddle/PeddleDebugger.cpp",
+        "work/third_party/peddle/Peddle/PeddleDisassembler.cpp",
+        "work/third_party/peddle/Peddle/StrWriter.cpp",
+        "-o",
+        "model/save-peddle.dylib"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn"
+    },
+    {
+      "argv": [
+        "/Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig",
+        "build",
+        "--build-file",
+        "build_save_tests.zig",
+        "compile"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn"
+    },
+    {
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "-B",
+        "test_selected_save.py"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn"
+    },
+    {
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "-B",
+        "test_sequential_cancel.py"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn"
+    },
+    {
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "-B",
+        "test_online_save.py"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn"
+    },
+    {
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "-B",
+        "test_crc.py"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn"
+    },
+    {
+      "argv": [
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn/zig-out/bin/save-tests"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn"
+    }
+  ],
+  "scope": "NATIVE_MEDIA_SYNTHETIC_MODEL_NO_HARDWARE_CLEAN_CFG_OR_UI_ACCEPTANCE"
+}

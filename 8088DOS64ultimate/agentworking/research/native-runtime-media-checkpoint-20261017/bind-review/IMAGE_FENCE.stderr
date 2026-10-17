@@ -1,0 +1,21 @@
+test01_live_B_C1 (__main__.Tests.test01_live_B_C1) ... FAIL
+
+======================================================================
+FAIL: test01_live_B_C1 (__main__.Tests.test01_live_B_C1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-insert-commit-20261017/project/test_insert_commit.py", line 50, in test01_live_B_C1
+    wire(m,self);self.assertEqual(m.g(0x7fd3),0xa5);self.assertEqual(m.get('dos64_files_state_start',25),f['C']);r=bind(m,self);diag={'a':r.regs.a,'state':m.call('_mb_state').regs.a,'error':m.call('_mb_error').regs.a,'stage':m.g('dos64_native_diag'),'fstatus':m.g('dos64_floppy_status')};(P/'LAST_INSERT_BIND.json').write_text(json.dumps(diag,indent=2)+'\n');self.assertEqual((diag['a'],diag['state'],diag['error']),(1,2,0),diag);self.assertEqual(reu(m,0x3ff020,576),new);self.assertEqual(m.bytes(b'/usb1/Owned/DOS64.CFG',576),new);self.assertEqual(m.get('dos64_files_state_start',25),f['C']);self.assertEqual(m.g('dos64_floppy_stage_active'),0);self.assertEqual(m.get(symbols['dos64_disk_b_descriptor'],3),f['base'].to_bytes(3,'little'));self.assertEqual(m.get(symbols['dos64_disk_binding']+4,4),zlib.crc32(NEW_B).to_bytes(4,'little'));records.append(f|{'fq':f['fq'].hex(),'snapshot':f['snapshot'].hex(),'C':f['C'].hex(),'hd':f['hd'].hex(),'ledger':f['ledger'].hex()})
+                                                                                                                   ~~~~^^^^^^^^
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-insert-commit-20261017/project/test_insert_commit.py", line 45, in bind
+    load(m,'binding/binding.prg');load(m,'binding/insert-support.prg');m.call('_mb_fixture_init');return m.call('_mb_bind',80000000)
+                                                                                                         ~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-insert-commit-20261017/project/test_insert_commit.py", line 11, in call
+    ret=0x02ff;self.p(0x1ff,ret>>8);self.p(0x1fe,ret&255);L.dos64_set_regs(self.m,Regs(symbols[n],0xfd,0x71,0x82,0x93,0x24,0,0));r=L.dos64_run(self.m,0x0300,budget);assert r.status==0,(n,r.status,hex(r.regs.pc));L.dos64_cia_clock_advance(self.m,1);return r
+                                                                                                                                                                            ^^^^^^^^^^^
+AssertionError: ('_mb_bind', 3, '0xb34a')
+
+----------------------------------------------------------------------
+Ran 1 test in 2.493s
+
+FAILED (failures=1)

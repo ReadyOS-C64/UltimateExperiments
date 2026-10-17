@@ -1,0 +1,82 @@
+[
+  {
+    "name": "dos64-tests-resident.prg.unit-extra.bin",
+    "sha256": "269fbf30af8fec8c0aa3ba0b08c35796253baf7d271ea79746657a26de3701c7"
+  },
+  {
+    "name": "dos64-tests.labels",
+    "sha256": "86a4cf7ef8caa9d290f0be2220aba0bdcc3374e7ddd13a24a729bb137833bb01"
+  },
+  {
+    "name": "dos64-tests-resident.prg.render.bin",
+    "sha256": "8535b4a8e54fc3aff3b9ad9c3743eca11ffab473df9b82f1a28df11cb9dbf7c6"
+  },
+  {
+    "name": "dos64-tests.prg.unit-extra.bin",
+    "sha256": "269fbf30af8fec8c0aa3ba0b08c35796253baf7d271ea79746657a26de3701c7"
+  },
+  {
+    "name": "dos64-tests.memory.json",
+    "sha256": "029940a9eb2fa00100ebaa59e9ab681205350254aec24ed962e99f2703cabcce"
+  },
+  {
+    "name": "dos64-tests-resident.prg.files.bin",
+    "sha256": "53a43b0f66a444d538a92d110fbef5f2c5b1c2d1648ca04acbd0847c8f1be480"
+  },
+  {
+    "name": "dos64-tests.prg",
+    "sha256": "3e8e16d281484858d879ea677ffaeef3a1d7f110f83db8e4ba7ecdb63add4472"
+  },
+  {
+    "name": "dos64-tests-resident.prg.gfx.bin",
+    "sha256": "f270bb4b29176f88780d6428af18e845ff0549798c408db07240e926b479088e"
+  },
+  {
+    "name": "dos64-tests.bin",
+    "sha256": "41b79170e3337e50e45487291df1697f03237816c5ad06db38294fce1e97213c"
+  },
+  {
+    "name": "dos64-tests-resident.prg.saver.bin",
+    "sha256": "2f7cdb2e8983f5c16d7d061f29bf8503754b8541841384467f8ed68836e20a29"
+  },
+  {
+    "name": "dos64-tests-resident.prg.disk.bin",
+    "sha256": "ca2de028791ebede52076c6f1d67f658dba24122bf94e982d922ba00a95c683c"
+  },
+  {
+    "name": "dos64-tests-resident.prg",
+    "sha256": "d7fd9fd05996361c0dec2175441f8b39b5449f7ca6de991ed11307d5fc3ad732"
+  },
+  {
+    "name": "dos64-tests-resident.prg.pit.bin",
+    "sha256": "10cc18f4ab50d6496c169b7f37738cb66052d72ee8f3a0160c45d6b0001a8739"
+  },
+  {
+    "name": "dos64-tests-resident.prg.input.bin",
+    "sha256": "eb90552ed44cb9c495d429deb1c66f86f0075c9d162696325981091ab90173a3"
+  },
+  {
+    "name": "dos64-tests-resident.prg.hdb.bin",
+    "sha256": "79a0efe197e8837047e24a4a180b318b8213cc130b7e05e9afec2be415a9a283"
+  },
+  {
+    "name": "dos64-tests-resident.prg.hd.bin",
+    "sha256": "db7c879ceffa8b303f3672c194d8c392cfebf9644a93f46eb323e1c382b3d658"
+  },
+  {
+    "name": "dos64-tests-resident.prg.import.bin",
+    "sha256": "8d64f8212e6a0d1f699b7f69eff784a410403c2b7d6d4852b96c7fa1e4924169"
+  },
+  {
+    "name": "dos64-tests-overlay-startup.bin",
+    "sha256": "821fd11b21f6ba916cfa71e7da6bfc2d4b84ba8ac8d8eefecebef53bd43bc249"
+  },
+  {
+    "name": "dos64-tests-overlay-package.json",
+    "sha256": "3286d9db456b5251d11810d587e4331ecf9df8166b7c59f947f6c36e13b3a230"
+  },
+  {
+    "name": "dos64-tests.map",
+    "sha256": "67f0818b4da0b7826a0158a93d01787c2855a1fbaaba0bbac7fb0accc1f2ec8f"
+  }
+]

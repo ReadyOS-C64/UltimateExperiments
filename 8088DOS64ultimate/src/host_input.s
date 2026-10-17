@@ -1,4 +1,10 @@
 .include "host_input.inc"
+.ifndef DOS64_MODAL_MENU
+DOS64_MODAL_MENU=0
+.endif
+.if DOS64_MODAL_MENU
+.import dos64_modal_input,dos64_modal_pending,dos64_modal_edge
+.endif
 .macpack longbranch
 .import dos64_keyboard_enqueue, dos64_keyboard_key, dos64_keyboard_status
 .import dos64_mem_read, dos64_mem_write
@@ -84,6 +90,10 @@ dos64_host_input_init:
     lda #0
     sta dos64_host_input_pending
     sta fn_state
+.if DOS64_MODAL_MENU
+    sta dos64_modal_pending
+    sta dos64_modal_edge
+.endif
     ldx #7
 @clear:
     sta seen,x
@@ -163,6 +173,14 @@ dos64_host_input_poll:
     inx
     cpx #7
     bne @ghost_row
+.if DOS64_MODAL_MENU
+    jsr dos64_modal_input
+    bcc @modal_normal
+    cmp #0
+    jeq done
+    jmp queue_error
+@modal_normal:
+.endif
     lda #0
     sta modifiers
     lda dos64_host_input_matrix+1

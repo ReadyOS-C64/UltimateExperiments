@@ -1,0 +1,12 @@
+{
+  "native-media-insert-commit-20261017": {
+    "manifest_sha256": "adad0bb445956a88b9560b593ae1a0f5dc4b9720b19c011db0bd8b59fafbae34",
+    "pins": 3613,
+    "mismatches": []
+  },
+  "native-installer-cold-matched-20261017": {
+    "manifest_sha256": "e22ada909926b55360aacc43b30486b0180cac49f4f8ded2bcc6d725a994347a",
+    "pins": 5261,
+    "mismatches": []
+  }
+}

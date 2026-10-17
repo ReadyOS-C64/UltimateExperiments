@@ -1,0 +1,22 @@
+test01_safe_inventory_paths (__main__.Host.test01_safe_inventory_paths) ... ok
+test02_actual_missing_make_include_rejects (__main__.Host.test02_actual_missing_make_include_rejects) ... ok
+test03_mkdir_failure_preserves_prior_and_unlocks (__main__.Host.test03_mkdir_failure_preserves_prior_and_unlocks) ... ok
+test04_product_copy_interrupt_preserves_prior (__main__.Host.test04_product_copy_interrupt_preserves_prior) ... ok
+test05_atomic_pointer_interrupt_preserves_prior (__main__.Host.test05_atomic_pointer_interrupt_preserves_prior) ... ok
+test06_two_cleanup_errors_cannot_replace_first (__main__.Host.test06_two_cleanup_errors_cannot_replace_first) ... ok
+test07_distinct_owner_and_lock_refuse (__main__.Host.test07_distinct_owner_and_lock_refuse) ... ok
+test08_source_package_has_no_private_or_vendor_dependencies (__main__.Host.test08_source_package_has_no_private_or_vendor_dependencies) ... FAIL
+
+======================================================================
+FAIL: test08_source_package_has_no_private_or_vendor_dependencies (__main__.Host.test08_source_package_has_no_private_or_vendor_dependencies)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-runtime-media-public-20261017/test_host.py", line 74, in test08_source_package_has_no_private_or_vendor_dependencies
+    m.safe(s);self.assertNotIn('agentworking',s);self.assertNotIn('third_party',s);self.assertNotIn('tests/',s);self.assertNotIn('model',s);self.assertFalse(s.upper().endswith(('.IMG','.EXE','.COM','.PRG','.MNU','.REL','.DLL','.DYLIB','.O')))
+                                                                                   ~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: 'tests/' unexpectedly found in 'tests/fixtures/foundation.s'
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.639s
+
+FAILED (failures=1)

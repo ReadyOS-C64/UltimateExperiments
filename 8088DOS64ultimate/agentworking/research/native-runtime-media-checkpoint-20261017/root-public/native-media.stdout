@@ -1,0 +1,54 @@
+DOS64_ZIG="../../zeropage-tooling/bin/zig" python3 -B build_support/native_media_tests.py 
+{
+  "status": "passed",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn",
+  "groups": {
+    "selected": 5,
+    "sequential": 4,
+    "online": 10,
+    "crc": 5,
+    "direct_Zig": 3
+  },
+  "products": {
+    "dos64.prg": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn/products/dos64.prg",
+      "sha256": "46fa2e54275818c1d946400c06c3e23bfd1c066c33fa967c399d39270d7f554f",
+      "bytes": 47105
+    },
+    "dos64-tests.prg": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn/products/dos64-tests.prg",
+      "sha256": "63f131a7a3ec8deb4b6d9d77c76e14aadb529c36a7a6626b403d023ce3734439",
+      "bytes": 47105
+    },
+    "dos64.labels": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn/products/dos64.labels",
+      "sha256": "18a41608aaba48f27c10a21673570f8595c756f9ca79c2a883a50ab8ad10707b",
+      "bytes": 74571
+    },
+    "dos64-tests.labels": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn/products/dos64-tests.labels",
+      "sha256": "ca5eb4a6912d7e254e3ff0f150e3e03a9009b085678905e8a12460ac88afbad7",
+      "bytes": 77082
+    },
+    "dos64.map": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn/products/dos64.map",
+      "sha256": "86947c4247f493a51cd0753cdff33a68df18f7cc55f475981fca175941e92ff3",
+      "bytes": 91309
+    },
+    "dos64-tests.map": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn/products/dos64-tests.map",
+      "sha256": "d202f53add6524ff0e46bfdded587c3c86ea7ae4a97a29fbb35e736f687c99a1",
+      "bytes": 94370
+    },
+    "dos64.memory.json": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn/products/dos64.memory.json",
+      "sha256": "3cd5b996a20c5790efa180b7cfa1cd9d0026900c7fa5228ae42ae3b33cf24861",
+      "bytes": 10564
+    },
+    "dos64-tests.memory.json": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/native-media/run-qlwfolpn/products/dos64-tests.memory.json",
+      "sha256": "4a3a96d21138d78018ff4f7486c267889fc527385812dce844bc54bd523f208a",
+      "bytes": 10697
+    }
+  }
+}

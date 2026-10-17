@@ -1,0 +1,214 @@
+{
+  "MODAL.MNU": {
+    "sha256": "f1f60cbd1e0150f9d412c84d8fe2f7240b083cb6943ee5d632ae53ce238563d6",
+    "bytes": 57344
+  },
+  "HEADER.bin": {
+    "sha256": "080c615cc58e316b5bfb37e0bd4c8512fdd2faf5d2c75d0ad0f2b82eeceee498",
+    "bytes": 64
+  },
+  "WORKERS.MNU": {
+    "sha256": "99dd843a1e76b1a7ce3d4c933f447fdbd33810148a2200a6691f0b8e14017cc7",
+    "bytes": 57344
+  },
+  "work/build/dos64.prg": {
+    "sha256": "edce76b9c63304f17750901cd68ac8d18f07eacf0978761b7540df9fac574986",
+    "bytes": 47105
+  },
+  "work/build/dos64.labels": {
+    "sha256": "785f57240b1214542defbc896aa209b05547e457a706cd128525a5008f26ea01",
+    "bytes": 75258
+  },
+  "work/build/dos64.map": {
+    "sha256": "9356c08c83094e3dc42ca55fa83532fb4a5009c2907eaa89c25ab1c91ccef9a9",
+    "bytes": 93588
+  },
+  "broker/broker.prg": {
+    "sha256": "abbe234b6421d60f30f657fdbdc3373c957e60adc8c9cfaa3b9b028ad8aff607",
+    "bytes": 1969
+  },
+  "broker/broker.labels": {
+    "sha256": "11335884536f537de11c9354d1a6e866a81bd0421e13a98dc8b7aa28fa538c0a",
+    "bytes": 2941
+  },
+  "broker/broker.map": {
+    "sha256": "1fc876c8b5ceda731aa648242ea4c24e29d6a56db261993c96c62c4cc38a843d",
+    "bytes": 669
+  },
+  "broker-runtime/broker.prg": {
+    "sha256": "abbe234b6421d60f30f657fdbdc3373c957e60adc8c9cfaa3b9b028ad8aff607",
+    "bytes": 1969
+  },
+  "broker-runtime/broker.labels": {
+    "sha256": "11335884536f537de11c9354d1a6e866a81bd0421e13a98dc8b7aa28fa538c0a",
+    "bytes": 2941
+  },
+  "broker-runtime/broker.map": {
+    "sha256": "1fc876c8b5ceda731aa648242ea4c24e29d6a56db261993c96c62c4cc38a843d",
+    "bytes": 669
+  },
+  "ui/panel.prg": {
+    "sha256": "6ce7ffc811c5ee41b9aab83f932c1b3cbdf8bdbd384badcb89eb3968b8cdf75b",
+    "bytes": 7687
+  },
+  "ui/panel.labels": {
+    "sha256": "ec7550335833378b3b57f07ea74c3c03d581ed2397dc5958fffadc0fd33a44ab",
+    "bytes": 2945
+  },
+  "ui/panel.map": {
+    "sha256": "f31d8062a3418fb0e6ba2ae2d34fb7b12db704749adb69366a43f21da09e5b24",
+    "bytes": 20112
+  },
+  "bridge/bridge.prg": {
+    "sha256": "767950ce5ebf6f548924dc0c4f27430bc8cd9d0d2c2be4e7898bc4c69bae58fb",
+    "bytes": 1291
+  },
+  "bridge/bridge.labels": {
+    "sha256": "121332e822efaaa9602722f17e84c7ca61866cfb92cd6ed3a3b41ef00c2faa61",
+    "bytes": 1719
+  },
+  "bridge/bridge.map": {
+    "sha256": "dff6c253736cdd98bb223c372ac95ebe53bd4f59d78fdc413ea3e44d91c79e0d",
+    "bytes": 1107
+  },
+  "controller/controller.prg": {
+    "sha256": "c8633757cb890d09a7195a391e451c55296d6691ce07ff467bb6cf742b6ecec4",
+    "bytes": 6747
+  },
+  "controller/controller.labels": {
+    "sha256": "4075654612f7fc148259caef57f2b918e21c617cdd92c315f742db09f17bf1cf",
+    "bytes": 4041
+  },
+  "controller/controller.map": {
+    "sha256": "657bc2397b1612e8216905d25409c202690645d579c9053e915e61dfb60455c5",
+    "bytes": 29285
+  },
+  "phase/transaction-wire.prg": {
+    "sha256": "2089301b0207982d944c21b945b9e5ce8cc33791b21f4da69dca1efd7f178e37",
+    "bytes": 5744
+  },
+  "phase/transaction-wire.labels": {
+    "sha256": "a955cd2ab2808eb000831ccb686a066b57342ce3a6fc2f3cf252c818be443d14",
+    "bytes": 6485
+  },
+  "phase/transaction-wire.map": {
+    "sha256": "d6d531e723b796d4745ab6030270b0b0e31bca167d2aef5f45f08394cfe5f1bf",
+    "bytes": 1266
+  },
+  "phase/modal-save.prg": {
+    "sha256": "063fc2e3cca7c61a5ff035a11f848449acf4f1dcc6087351fff603ea4a66628e",
+    "bytes": 2562
+  },
+  "phase/modal-save.labels": {
+    "sha256": "1d81fc35152f78eb7366c9ab7d8c16a3587c256c30204245f2ddbd28bf466cec",
+    "bytes": 434
+  },
+  "phase/modal-save.map": {
+    "sha256": "b223deac81bcf3d320151f81eb6df3638440c58c42d520b9e66f9a6d3038ecef",
+    "bytes": 796
+  },
+  "phase/runtime-plan.prg": {
+    "sha256": "336970188dd1e370e61197d99e521fe8ef7e859b6578908da291a65762947725",
+    "bytes": 4681
+  },
+  "phase/runtime-plan.labels": {
+    "sha256": "9ed45128148fea2beb1fb717ca486f3ca24dd768927d75c03eb08fc04d321c83",
+    "bytes": 3029
+  },
+  "phase/runtime-plan.map": {
+    "sha256": "96177e2693ef357b6ac9ce286dde50b5502fd14d8b3d02616d25fc40fa326249",
+    "bytes": 21800
+  },
+  "phase/worker-calls.prg": {
+    "sha256": "7a75ca16b675e04995fed71720203a2ab35dc0d5ed7349bd7c478f0f2238a4d4",
+    "bytes": 90
+  },
+  "phase/worker-calls.labels": {
+    "sha256": "f662e539d0b54729da9c7ff587d7fd7b566f961cf5ef12f6f04123e1081f662d",
+    "bytes": 78
+  },
+  "phase/worker-calls.map": {
+    "sha256": "16d5ae9a4ba40101749724930c1d73461d43160802495a1112a64693ff63e0db",
+    "bytes": 552
+  },
+  "binding/binding.prg": {
+    "sha256": "c555c808cf068e9930c4f5fe336a66b7f74c55fe31d404e7afa577aa69398183",
+    "bytes": 6139
+  },
+  "binding/binding.labels": {
+    "sha256": "c2765509bcab26c04f80df7d1ddb4eb5b9b6274cb91385f1c821a847e480569b",
+    "bytes": 3012
+  },
+  "binding/binding.map": {
+    "sha256": "f3853c979f3673cf1d0bd748f601abe7edee90238b4f57f2f1008d0037136016",
+    "bytes": 22923
+  },
+  "binding/binding-calls.prg": {
+    "sha256": "7cef0d542f9130fdf1c4d7a6ed7790d193e5e571ff249a5d839e11aea35d61c5",
+    "bytes": 90
+  },
+  "binding/binding-calls.labels": {
+    "sha256": "f662e539d0b54729da9c7ff587d7fd7b566f961cf5ef12f6f04123e1081f662d",
+    "bytes": 78
+  },
+  "binding/binding-calls.map": {
+    "sha256": "16d5ae9a4ba40101749724930c1d73461d43160802495a1112a64693ff63e0db",
+    "bytes": 552
+  },
+  "worker/incoming.prg": {
+    "sha256": "43efb759166bcf3788c6b9a9557055601f40b9832907f26185fc91724583b47d",
+    "bytes": 2796
+  },
+  "worker/incoming.labels": {
+    "sha256": "8929d28c754f935647a24f1881a6ae217cec8e32ce9b622acedd003286f53ae9",
+    "bytes": 3854
+  },
+  "worker/incoming.map": {
+    "sha256": "d649910fb6e7af4631b02050b775ca6449dfe7d2e0439955429f1aaaa7753abe",
+    "bytes": 1119
+  },
+  "insert-binding/binding.prg": {
+    "sha256": "53a2cbf0e38d06e142fe39c27ceb31616d5614b02f5f99f86308d9ff89da8906",
+    "bytes": 5916
+  },
+  "insert-binding/binding.labels": {
+    "sha256": "1235fdbc5150d4d43196b7f3c5152339d9e883487aaf2f32d7fd681773636375",
+    "bytes": 3414
+  },
+  "insert-binding/binding.map": {
+    "sha256": "a3ccd21ba3e16c8d0db1ecdd4ad1202cae30feca383a6866230aba69ce59292c",
+    "bytes": 23751
+  },
+  "insert-binding/insert-calls.prg": {
+    "sha256": "41dbae9d7aa3965b8832b2c5e1c5349da0cb06adc6495dcc098f0f4a6d8b0845",
+    "bytes": 90
+  },
+  "insert-binding/insert-calls.labels": {
+    "sha256": "f662e539d0b54729da9c7ff587d7fd7b566f961cf5ef12f6f04123e1081f662d",
+    "bytes": 78
+  },
+  "insert-binding/insert-calls.map": {
+    "sha256": "855d72c63a5ea96f6d0a9a4714f7b62b5fb42e02787fd4f3b8c66651592f09b6",
+    "bytes": 552
+  },
+  "finish/finish.prg": {
+    "sha256": "d626aa2b24e228c2243a5ee1681ade6b27275ddd1404dedd11ed07a54de0ed69",
+    "bytes": 1258
+  },
+  "finish/finish.labels": {
+    "sha256": "d0ea45d6a76cf1b1b84438e232ab9e48944d0a31a17b395a69f7e98628298174",
+    "bytes": 2646
+  },
+  "finish/finish.map": {
+    "sha256": "be94a939db231db60c123c1fb09d90a47b65bc2d6f3ee220f2bd34b4c4b7d9e5",
+    "bytes": 1111
+  },
+  "insert-binding/insert-support.prg": {
+    "sha256": "a5bac2d131d44895576bf62f348f474fa352813138285662f4209a57d947d171",
+    "bytes": 829
+  },
+  "model/save-peddle.dylib": {
+    "sha256": "e69464afe7a5de2b253817aaa76aedf0a33d037058b6eb232fd31b697c1f5dff",
+    "bytes": 210544
+  }
+}

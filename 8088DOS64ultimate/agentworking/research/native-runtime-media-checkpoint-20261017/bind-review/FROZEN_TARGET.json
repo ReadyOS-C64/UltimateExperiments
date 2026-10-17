@@ -1,0 +1,75 @@
+{
+  "files": {
+    "phase/transaction_wire.s": {
+      "path": "project/phase/transaction_wire.s",
+      "sha256": "e913d763d70fb55fab0d6d6b895861117f0beed90966f9c40a717e37ae40fa67"
+    },
+    "phase/insert_contract.inc": {
+      "path": "project/phase/insert_contract.inc",
+      "sha256": "1d20a0e5c46302ccfe31e58d4d5515a0df45762faedff1a0a04281ed79f1f4de"
+    },
+    "phase/insert_stage.inc": {
+      "path": "project/phase/insert_stage.inc",
+      "sha256": "27a4f6b5a40a49abc4b9b80589efc82dd43800bb50ec19603c471f73c999e082"
+    },
+    "phase/insert_native.inc": {
+      "path": "project/phase/insert_native.inc",
+      "sha256": "093b064492f85a30ec84962b816deb647d74b7c0bb8fc3bcc53b831309593bfd"
+    },
+    "phase/insert_broker.inc": {
+      "path": "project/phase/insert_broker.inc",
+      "sha256": "4e5d16cae8d5d79461154f84abe3c120eba7f4b68edb078088f8d604e32de362"
+    },
+    "binding/media_bind.c": {
+      "path": "project/binding/media_bind.c",
+      "sha256": "d3120106bd5691442f621e877694a9e82bdeb703c6a8dcabc53766aaf28b44e5"
+    },
+    "binding/glue.s": {
+      "path": "project/binding/glue.s",
+      "sha256": "9791e188f51a031ffd5697e97632f9af9dccc14d658a52f5f34938f04fd4250a"
+    },
+    "binding/insert.cfg": {
+      "path": "project/binding/insert.cfg",
+      "sha256": "f3107085db55f2aa6ee97c37d496756f587d73cf48ec9ebe731aaae33b690f6f"
+    },
+    "binding/insert_calls.s": {
+      "path": "project/binding/insert_calls.s",
+      "sha256": "46226b15a109d8a186aadf00dd318261dbe5077e10a84861cea9ed88948565a1"
+    },
+    "binding/media_bind.h": {
+      "path": "project/binding/media_bind.h",
+      "sha256": "6407bdf6e53023355a64894c30cff0cdf4557c83ca625b6b33e38ccd2e2f2cbd"
+    },
+    "phase/sequence_api.h": {
+      "path": "project/phase/sequence_api.h",
+      "sha256": "0824a0f5339752185c957ff8db11db8be7467e8911a45072071318f3c7cea61c"
+    }
+  },
+  "flags": [
+    "DOS64_MEDIA_INSERT=1",
+    "DOS64_MEDIA_BINDING=1",
+    "DOS64_MEDIA_SEQUENCE=1",
+    "MB_INSERT=1"
+  ],
+  "default_flags_undefined_0_exact": true,
+  "runtime_main_parent": "c866d8f6/no native source changes",
+  "repair": "Independent WIRE beforeCREATE and BIND policy agreement; Insert prepublication OLD acceptedCFG equality + NEW exact selected-field reconstruction/bodyCRC; no Save default changes",
+  "products": {
+    "phase/transaction-wire.prg": {
+      "sha256": "2089301b0207982d944c21b945b9e5ce8cc33791b21f4da69dca1efd7f178e37",
+      "bytes": 5744
+    },
+    "binding/binding.prg": {
+      "sha256": "53a2cbf0e38d06e142fe39c27ceb31616d5614b02f5f99f86308d9ff89da8906",
+      "bytes": 5916
+    },
+    "binding/insert-support.prg": {
+      "sha256": "a5bac2d131d44895576bf62f348f474fa352813138285662f4209a57d947d171",
+      "bytes": 829
+    },
+    "binding/insert-calls.prg": {
+      "sha256": "41dbae9d7aa3965b8832b2c5e1c5349da0cb06adc6495dcc098f0f4a6d8b0845",
+      "bytes": 90
+    }
+  }
+}

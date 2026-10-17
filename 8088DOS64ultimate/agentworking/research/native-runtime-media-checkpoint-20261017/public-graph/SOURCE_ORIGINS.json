@@ -1,0 +1,650 @@
+{
+  "Makefile": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/Makefile",
+    "sha256": "5aefa6e1f9c3cefc20ad97a17e967309920114cc421eb47ee5ea30bfcc60f263"
+  },
+  "src/virtual_irq.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/virtual_irq.s",
+    "sha256": "6c74da8aa670f8f9d6a6b27a588caf72663c917e11aad4e853b95534534af5fe"
+  },
+  "src/native_save.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/work/src/native_save.s",
+    "sha256": "5c5654f92ede5dd60cbd118895478d831ddc58bac631168f026a99de89d4f138"
+  },
+  "src/cache_probe.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/cache_probe.s",
+    "sha256": "6223aa9fe591b66d1d75e1bb1dca5db3dd468b27d9a480fc72a26935f54b8f78"
+  },
+  "src/operands.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/operands.s",
+    "sha256": "4009a3aeee6b5c6ed671866a1f473f84a779dfdad877e4269d563055ae1307a5"
+  },
+  "src/host_input.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/work/src/host_input.s",
+    "sha256": "ca4e69071b71f87adf8d874c97c2a733891b1a02b4858bebe24d438c4b92e2ca"
+  },
+  "src/bios.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/bios.s",
+    "sha256": "814ba24efd5a2b04588d80955301236a0f977e16f92c08c3515033321466e1e2"
+  },
+  "src/control.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/control.s",
+    "sha256": "2f0dfee11bf3ae8bc96f6c3da0b9b9c29bf8e212e50418f753469c67efbe2af5"
+  },
+  "src/range.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/range.s",
+    "sha256": "668e5b1bf583089e5a5abaf99b279a86a750d94e5bbb4dc0ab68f7743ed54574"
+  },
+  "src/hd_bios.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/hd_bios.s",
+    "sha256": "de457ddfbb4f6eac66356554d6e22675cc97d2b392cee02e3614fca89d6e9bc2"
+  },
+  "src/adjust.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/adjust.s",
+    "sha256": "8373cca0aaf311f0cbd859780e2d8e05e503a643ec516eba5fdeb19e1b549490"
+  },
+  "src/hd_cold.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/hd_cold.s",
+    "sha256": "a6f3f24f9557cf77ef3eedca60a381482acb768f50d81fcc16f5e8a0c898f37d"
+  },
+  "src/cold.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/cold.s",
+    "sha256": "274bb6ea81c9e0d314f6ed2c9d96e6d0ad4d1f62bb5bd433dc8f43f847059e14"
+  },
+  "src/native_text_probe_boot.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/native_text_probe_boot.s",
+    "sha256": "199fd661ab59469b259504421061d6a98fa057e592c0a1bf4d0345c409850868"
+  },
+  "src/host_clock_probe.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/host_clock_probe.s",
+    "sha256": "b5a2f4c28a7a1fa60cfaa361ad64b52377ad6359b3c0dda96f28ee2cadcca810"
+  },
+  "src/native_text_probe.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/native_text_probe.s",
+    "sha256": "484d17c8813904a2e90e3f0a557289c1dc0bea26add805487253b4412be12d79"
+  },
+  "src/cga_status.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/cga_status.s",
+    "sha256": "f5d60b5f5e5e3d803ee3f1a76c2a6d8afeb400ef5e0aa24841554559316fde38"
+  },
+  "src/reu.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/reu.s",
+    "sha256": "3bea123734d1e75417d1151531048d6731895ab80519bd6027f0e74de61db4ef"
+  },
+  "src/range_probe.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/range_probe.s",
+    "sha256": "9d03f3ee7e351219f1ac5ba8034758201c9348c9bec4fb186080fa98ee4bf2be"
+  },
+  "src/ports.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/ports.s",
+    "sha256": "c705842e934753a2f2e515e0be3a31db8c27a1a3441f937003d8152d5092aeea"
+  },
+  "src/image_import.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/image_import.s",
+    "sha256": "af436509b87088a03aa87223d4ace555851c5f5de1e21c386a70afa2a86bf94b"
+  },
+  "src/overlays.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/overlays.s",
+    "sha256": "9575a4709b6c76d7712fd2aab9d5405fb8fc1872e780eefce48c861bfe6e4f67"
+  },
+  "src/address.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/address.s",
+    "sha256": "f11f6b2e3a4fe795ae871f4b85b7815b39736b08e50d54a4a1b6de6efe0fd536"
+  },
+  "src/boot.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/boot.s",
+    "sha256": "7cc98779a867b4e33cf8f030f1fbb494d96502cee2469a3f592f5cf3c870838b"
+  },
+  "src/render_text.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/render_text.s",
+    "sha256": "ae6100a95ccdaea478d70eed88a5b955dafd3d5ef971b3dceacda68ea00dc681"
+  },
+  "src/disk.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/disk.s",
+    "sha256": "75ed25f9fe3856af8f5a5f50b2381c55f730d6f897cc7ef2468636416abbb4ee"
+  },
+  "src/native_text_fonts.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/native_text_fonts.s",
+    "sha256": "a61ab03b9bdd7ca24f8830262ff6042fa931af74a535d0778c453e6f0ecd31c6"
+  },
+  "src/uci_diagnostic.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/uci_diagnostic.s",
+    "sha256": "04d40ca319f413b271bf6e34189904dad9f5ef3e2bc20b67b986d3c8cd1d9d7f"
+  },
+  "src/hd_cache.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/hd_cache.s",
+    "sha256": "2beea72bdec8073622b4dafb180b746c3bd4b38839291933af7744e67412be78"
+  },
+  "src/floppy_control.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/work/src/floppy_control.s",
+    "sha256": "0780fcd406497a23487956db8f01cf98d75a62d5c22891028fb7d577956c59f2"
+  },
+  "src/fetch.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/fetch.s",
+    "sha256": "ac3bd5594b8a51976b6ed0eb40b8bee5d861346c42164a2434d132612da1b41c"
+  },
+  "src/bulk_reu_service.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/bulk_reu_service.s",
+    "sha256": "868e00fdd9426e57ce18709d418aa2946faacc59985b5151a58562ebed1df821"
+  },
+  "src/floppy_export.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/floppy_export.s",
+    "sha256": "b07bf740c70c6b07c2e055c14c4fdd0777ecd4e2b2b132910a019e69b07b6aa2"
+  },
+  "src/reu_snapshot.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/reu_snapshot.s",
+    "sha256": "bfcfbe070e4e34ce39c6964f49fcf33ab35d2bd9b022853e56aaef28695396a5"
+  },
+  "src/range_snapshot.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/range_snapshot.s",
+    "sha256": "c3e546b3bcace9759bfc41636833f16dc8b1b315824dfa67ec4713033b5846df"
+  },
+  "src/strings.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/strings.s",
+    "sha256": "c6c93ca16682e6f6d79b8035874983cf1099b3f450d16b202625aabd8bac0a91"
+  },
+  "src/cpu.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/cpu.s",
+    "sha256": "d40d33f5a0ae32f73c6abd3547c92d4aeb05babddf2c4211dc4981dd0ee58774"
+  },
+  "src/native_file_restore_boot.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/native_file_restore_boot.s",
+    "sha256": "d2d8815159e9843ea80bbe718442075a4aaccbdbad91c11350f575187f8e5037"
+  },
+  "src/alu.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/alu.s",
+    "sha256": "9c5c4aeadddb9c65c4b441c7fb30530cc7433a7846c82a7df1bc6168f1fb4500"
+  },
+  "src/video.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/video.s",
+    "sha256": "4e4f1523398828ef6781d9ff27c1ade380049d0a285213184361e108fc41af0a"
+  },
+  "src/stack.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/stack.s",
+    "sha256": "288a833e5f8a39aebb2a95e931577f65470c358087a8f0a8eb8cc376c29b3f0b"
+  },
+  "src/keyboard.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/keyboard.s",
+    "sha256": "cb22e7f3f22ffe48bee84d24d3fe07c86764160304bddda9d66cea33883c9d56"
+  },
+  "src/indirect.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/indirect.s",
+    "sha256": "aa350733eed2e5a6a95d8583a4090428c15a6f597945b99cb8187d3b074f0945"
+  },
+  "src/native_runtime.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/work/src/native_runtime.s",
+    "sha256": "e3342f0865ebddffd3620f844589165b7361e934f04d155a02113d33bfa25242"
+  },
+  "src/hd_extension_load.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/hd_extension_load.s",
+    "sha256": "09426f038e134ba8ebe5dcbb5562336e22fe3170cb7d9fc2dd4049915b55af2d"
+  },
+  "src/math.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/math.s",
+    "sha256": "c2a171158b550e2128e00ec164d3cae4840672e620bffb073650535170f0ebba"
+  },
+  "src/memory.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/memory.s",
+    "sha256": "8129441289354bc1bbcdfdd1f7af3d89649b5875c7a34175d8fcf1bec3f4bfaa"
+  },
+  "src/host_clock_probe_boot.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/host_clock_probe_boot.s",
+    "sha256": "7510fa10c7afc5b244f009a9713cc8fbb4c6bede0be7fe50251c345aa9b5bbf8"
+  },
+  "src/loader_handoff.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/work/src/loader_handoff.s",
+    "sha256": "b6b3a1ef46ef8e6760de954f45c80f5f4b5f9217fb4ecddc886252249a670ea7"
+  },
+  "src/reu_probe.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/reu_probe.s",
+    "sha256": "426ef7a123a538ceb9b7f6be0c7e9278c095c2065c7259712b65e3b4422cc601"
+  },
+  "src/native_timer.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/native_timer.s",
+    "sha256": "34b5a5b8f6aef19ead3d05a6dce212d4d1d7e0603386e2adfdedea9fffbab50e"
+  },
+  "src/iec_standalone.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/iec_standalone.s",
+    "sha256": "f9d7d8e2ef86fdf08211b8dfd2126766b44fba68f25dc0d176eff2cb1344ba2e"
+  },
+  "src/shifts.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/shifts.s",
+    "sha256": "9715b8880f639d6d7199949f0141b54b157fa4e176b26c5bf87efc8711035166"
+  },
+  "src/files.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/files.s",
+    "sha256": "7d9cd1058d908c4d4de69cdc9fcb90bb47c227479f7211d529cf6b554d47f596"
+  },
+  "src/virtual_pit.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/virtual_pit.s",
+    "sha256": "b4004df85bebbb913d6a7a29ededb3d68b38c8f3774b7832538ed02410181dc8"
+  },
+  "src/aux_bios.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/aux_bios.s",
+    "sha256": "4be68451703004b131498afa80a3e8ca52af092931c21f9540bd486765c9c606"
+  },
+  "src/native_text_display.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/native_text_display.s",
+    "sha256": "4c1940a333f1337efd3b2b4c570f1bc29a74271c648c37213a03c56a57a812f3"
+  },
+  "src/cpu_state.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/cpu_state.s",
+    "sha256": "77c0e8db8217b15bc5d9a031fc4554eeaec14c38b8212b0faabee4d7ac65563f"
+  },
+  "src/cga_crtc.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/cga_crtc.s",
+    "sha256": "fcbca969bea826ed5e12fd8fb864e9c548b5b272ecaeed73cd2e4b4ddbc455be"
+  },
+  "src/uci.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/uci.s",
+    "sha256": "eaca8f4f9b3089564990a738827fc86f66fe5e477e66e29e1847a6db83367715"
+  },
+  "src/clock.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/clock.s",
+    "sha256": "e949ebf02887e83773acfcb61cfe91415db761baf77147b4178f83044af8297c"
+  },
+  "src/host_clock.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/host_clock.s",
+    "sha256": "d5daa4a386da266419ea5195eb35a66d4109fbd1fca74743ff961d121804f5c0"
+  },
+  "src/floppy_export_fixture.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/floppy_export_fixture.s",
+    "sha256": "d7901d3a327e77c3b4b923fe424bd9f04552b939b28f55f77aba90c41843c16d"
+  },
+  "src/native_file_restore.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/native_file_restore.s",
+    "sha256": "6b535d2a5487232420250de04872d7c91005a7fd97d8434010b0684e496be2eb"
+  },
+  "src/elapsed.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/elapsed.s",
+    "sha256": "8440d0c34d100c3848ec5088f6e4ae8f8242f5580c332c4d0e3c350f7559699b"
+  },
+  "src/render_graphics.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/src/render_graphics.s",
+    "sha256": "377440e68d49f8a20558f4bdf101217ef5660e2da7bd60cdcc2cffacc5bf982b"
+  },
+  "include/render_graphics.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/render_graphics.inc",
+    "sha256": "6c4908943a1764e06e14301b9ae57a85fbfd776253fc01c0e4e99604bcd3142b"
+  },
+  "include/hd_cache.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/hd_cache.inc",
+    "sha256": "f979b5dbef23f0a4a85ce8438284c6d37ef26d1f760fe758174263cf80d15466"
+  },
+  "include/files.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/files.inc",
+    "sha256": "dc87a9afa6bd56314a0a9c7f13598e362287b1e6bb8a8ef329575c563dc990a4"
+  },
+  "include/uci.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/uci.inc",
+    "sha256": "574d140bfa3772a438f45510309018190c41f54ee205cab691523f034cf9640d"
+  },
+  "include/overlays.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/overlays.inc",
+    "sha256": "a6accad7944bb3bb6ccbb07b9860bd66ac1f031c79a71ff92c6e06bafc4fe579"
+  },
+  "include/floppy_export.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/floppy_export.inc",
+    "sha256": "c5f47b931c410ec1088a96c6f8e397cdb9eefbfe147bd1864b5cf5dde338868a"
+  },
+  "include/parity.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/parity.inc",
+    "sha256": "52b5bbf6f9cd159297e3b8abd5b9e78ec4f4a3e3d1f07a931a869b1a7f46668e"
+  },
+  "include/keyboard.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/keyboard.inc",
+    "sha256": "1ed373d4541bada5b4023357c213d56d13ad190ccba64fb85ae3b7fa7221f9ec"
+  },
+  "include/native_text_display.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/native_text_display.inc",
+    "sha256": "890ac4f01c8cdc1e1142ba85d5ee74d261338a637d345d61dde3f8d4567331e7"
+  },
+  "include/host_input.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/host_input.inc",
+    "sha256": "b14bd490812b142761633cbe73491b6289ddb74184b7fdace342b81375476e59"
+  },
+  "include/range.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/range.inc",
+    "sha256": "cd22a54aa28af068c612ef1606c303107891c0c2accf4f35e8ab7f0a18e42987"
+  },
+  "include/native_file_restore.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/native_file_restore.inc",
+    "sha256": "7686146537e78f23aa4d16271dba2b8412b936b77a70e7d15af893265c2328a9"
+  },
+  "include/native_save.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/native_save.inc",
+    "sha256": "410d5fdca2a3130cd752cdf43b64b59068382e9046d0efcce76ba00ae0128f27"
+  },
+  "include/memory.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/memory.inc",
+    "sha256": "26c5be0321b5678fa17e7881792760c90771f398ab1ca7c4b23d071dca4ce428"
+  },
+  "include/render_text.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/render_text.inc",
+    "sha256": "945430f8391f5c30ccb53e9fb2892cfbe92eee0d23ba8163c0c7b92d736c0d35"
+  },
+  "include/bios.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/bios.inc",
+    "sha256": "ff22fa832fa24b8f1d35c934e30a4ada0412dfc97777fffba8bd17621ea14749"
+  },
+  "include/reu.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/reu.inc",
+    "sha256": "47a4eac6be6d727dc506c2d8e808e1028aefb2f8321b89aff3d333bff94c5e05"
+  },
+  "include/elapsed.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/elapsed.inc",
+    "sha256": "69475baba5b20c6e03a11e3b40286f7e26b1b6ff3502d65561f3c5d938708dba"
+  },
+  "include/disk.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/work/include/disk.inc",
+    "sha256": "97f5aa01ba2e8992ac47764772ef3d1405ecd426ac9bc479e161d0145ba05b2f"
+  },
+  "include/video.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/video.inc",
+    "sha256": "4a2759a8412eee4257311ffb3a3a118f5bd916b308eda89b98f3006a747f1814"
+  },
+  "include/abi.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/abi.inc",
+    "sha256": "74a874c245aed278ba884d33923279bde901bed97427452096dd414ba67e08d6"
+  },
+  "include/aux_bios.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/aux_bios.inc",
+    "sha256": "1fd24eaf7ef4b38a375037d2599492c46edfd9bcc46162d0a7ddb9774fdd1688"
+  },
+  "include/ports.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/ports.inc",
+    "sha256": "789dff5c1d9402447ec7e1412e8c0bc1ce1ff9ced45379b58de2896ed5c51f83"
+  },
+  "include/clock.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/clock.inc",
+    "sha256": "7e6c70f8860846486edb4c8858bc832ad2bfc7a2353fc7450b437e74f1884cb7"
+  },
+  "include/host_clock.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/host_clock.inc",
+    "sha256": "17a391747f896c8b635f31be371aae8f2da72fdbe775174b37ba186944fef6fd"
+  },
+  "include/image_import.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/image_import.inc",
+    "sha256": "980f4851b446c728fe9b60a5cd61301f6d3561cb125e8fd718bd2fa02bdf85bf"
+  },
+  "cfg/dos64-clock-probe.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/cfg/dos64-clock-probe.cfg",
+    "sha256": "ce5e35b7039756297a1ebf0d683a7c2db1de7b09f12ad7d832ad46b38a9a0eec"
+  },
+  "cfg/dos64-bulk-reu.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/cfg/dos64-bulk-reu.cfg",
+    "sha256": "bc9d105f7758904773bc0929b1959855ba656e6bb59cc75819f6d945d2d7e6bc"
+  },
+  "cfg/dos64-floppy-export.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/cfg/dos64-floppy-export.cfg",
+    "sha256": "3ece1fb66a93d5ed6d4cfca0e9adfb8aec3b6b09adbf43df1c6fd50dd33ec269"
+  },
+  "cfg/dos64-runtime.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/cfg/dos64-runtime.cfg",
+    "sha256": "3d4abe1d513aa7e9f29c51a42f4c9f2c3775aaf1aeaa797fff199d7435006bad"
+  },
+  "cfg/dos64-iec-standalone.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/cfg/dos64-iec-standalone.cfg",
+    "sha256": "a539ea626332c42bc03fd1108c3f6b7b59b3070c6bfce44f481b243c62bbb1bb"
+  },
+  "cfg/dos64.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/cfg/dos64.cfg",
+    "sha256": "eb7dd51bca42e9af2ba481d583b02731f6ad465e2cd06ee8e7b4bf4a576f81f1"
+  },
+  "cfg/dos64-unit-runtime.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/cfg/dos64-unit-runtime.cfg",
+    "sha256": "678b3067584ab3cc8993748d435b7ca993f74e9053fd282794279d5c528f8a6b"
+  },
+  "cfg/dos64-native-file-restore.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/cfg/dos64-native-file-restore.cfg",
+    "sha256": "3ece1fb66a93d5ed6d4cfca0e9adfb8aec3b6b09adbf43df1c6fd50dd33ec269"
+  },
+  "build_support/start_ini.mk": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/start_ini.mk",
+    "sha256": "a8c2ad9781382c22c53545a6767e88af75da79d425c8a3434651b26bd295cb7f"
+  },
+  "build_support/setup.mk": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/setup.mk",
+    "sha256": "e2ae113a478f092ff01b7f4820f0013a639d9e0ee1d3a35722d549d394a2c926"
+  },
+  "build_support/floppy_export.mk": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/floppy_export.mk",
+    "sha256": "9c59fbd18b8ecc268381ccf7b3149569c450b9c99811aecd36af75d45c2f5f76"
+  },
+  "build_support/iec_standalone.mk": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/iec_standalone.mk",
+    "sha256": "d81b67717425192564569777d3c6999bd42cf0e1fb2069451db7a5f3cdc8adc9"
+  },
+  "build_support/native_media.mk": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/native_media.mk",
+    "sha256": "2a7b334e318978c38c843f89967909ee20e97d0bff81fb10edd931661c6a0a7e"
+  },
+  "build_support/config.mk": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/config.mk",
+    "sha256": "acd49089e3ce813e224872cba1571c25455836aa41147a821d5d4439ed5a6cb9"
+  },
+  "build_support/v1_candidate.mk": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/v1_candidate.mk",
+    "sha256": "c869246e9bb6dfd159e02c02a29794d7a796dbf85891d3b1b95374134f13a496"
+  },
+  "build_support/overlay_package.py": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/overlay_package.py",
+    "sha256": "8e640c0f8fb83f977bf9d8996cd11c4169ed12f3b3dbc9f78d0f62c14773cf25"
+  },
+  "build_support/verify_memory.py": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/verify_memory.py",
+    "sha256": "82ffa53b7a801dad3002c85ddf9537eae52b7c449f0ebe768c8b1c5815254530"
+  },
+  "build_support/raw_payload.py": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/raw_payload.py",
+    "sha256": "f10ed30c1096a4789ac77135186a97847f68a6eb515f21fb005bd3c400e2b4f3"
+  },
+  "tests/fixtures/foundation.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tests/fixtures/foundation.s",
+    "sha256": "0cf362ad5ef0c0030326f6b166aeb1cbc79393d03ee6cc8911e1dbc85d8caba1"
+  },
+  "assets/native-text/cp437-narrow4x8.bin": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/assets/native-text/cp437-narrow4x8.bin",
+    "sha256": "c15f11a5ae43771657dd24295e37cff5886280b3c32d80c5fe62757eb4e38dfe"
+  },
+  "assets/native-text/cp437-unscii8.bin": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/assets/native-text/cp437-unscii8.bin",
+    "sha256": "94fb2992461e7b79fcb3514d077727f33e5ee4f9d993f40f0aaeabf9c8f1ac30"
+  },
+  "src/modal_entry.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/work/src/modal_entry.s",
+    "sha256": "8e58377f819e9941d71df358f89901116284de008fddde5787c5b928e1ec995f"
+  },
+  "include/modal_assets.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/work/include/modal_assets.inc",
+    "sha256": "cba2662e387cb0520ba7ed13a0b68db909ef0431838a6792d31423b73b4155c5"
+  },
+  "tools/native_media/ui/panel.c": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/ui/panel.c",
+    "sha256": "61b25345ac752b61d9e384b375d09fbc75f148e1a584a56274bf1ceb9a433461"
+  },
+  "tools/native_media/ui/panel.h": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/ui/panel.h",
+    "sha256": "365862ac7d64d50359da913d4e1f496c040420095a9f9dac8a40a4036509690c"
+  },
+  "tools/native_media/ui/platform.c": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/ui/platform.c",
+    "sha256": "7296dca1a0231f0708d79d49ea9181771d2c653b065f541830d9039e9d0d3b0c"
+  },
+  "tools/native_media/ui/platform.h": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/ui/platform.h",
+    "sha256": "d0c2cb213cf70eb5ec85049800a751c338377a31f067472fe2b11ba1360f95d0"
+  },
+  "tools/native_media/ui/header.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/ui/header.s",
+    "sha256": "a269aa99162fd245e593132ef0b88e13a2fd8e71ac4a6bacc0fe084877c13a53"
+  },
+  "tools/native_media/ui/scan.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/ui/scan.s",
+    "sha256": "a2188ac4e2e650439547929a5cb437d1d55ad31cce7c33312a068d35da154f5a"
+  },
+  "tools/native_media/ui/panel.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/ui/panel.cfg",
+    "sha256": "b3c1f84f13ff4af947f15b700a52c480f4b0b9d99b44b115f2018b73b01ffa9f"
+  },
+  "tools/native_media/broker/broker.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/broker/broker.s",
+    "sha256": "e921fcfb0a593734d850bc3e6e1d0383f7ffdadc8d6e74d75a2827d345a240ca"
+  },
+  "tools/native_media/broker/broker.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/broker/broker.cfg",
+    "sha256": "87d0b413add40d103a3e136a54d28e29b04e6fda09e3fea6396d99eddc53c7d8"
+  },
+  "tools/native_media/broker/symbols.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/broker/symbols.inc",
+    "sha256": "db128d5366920ad189aa8d1015d2771679d51a63cc241b544d2989237413f662"
+  },
+  "tools/native_media/bridge/bridge.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/bridge/bridge.s",
+    "sha256": "667856601b6967723212cb1d43d5bd7544ca513e2c5b947bc7af0f4238243f8b"
+  },
+  "tools/native_media/bridge/bridge.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/bridge/bridge.cfg",
+    "sha256": "9cef64dbc8be4ae072fdbc773525e76b0fd4371ec09eb41a783543faa90f2d8d"
+  },
+  "tools/native_media/controller/action_shell.c": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/controller/action_shell.c",
+    "sha256": "921fd7f576a20c3a2219f97110102cfd19294ea6ee06f52df00745d5ac3a366f"
+  },
+  "tools/native_media/controller/action_shell.h": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/controller/action_shell.h",
+    "sha256": "0ad253dc3367c2a3dbcefb8b18985fbe6103c32ef50b34c9b2eec8c7ffcd3924"
+  },
+  "tools/native_media/controller/action_io.c": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/controller/action_io.c",
+    "sha256": "2f7fca6f13640ab47a521fcca3264106300f712e4fe9f2768745f7c115910e17"
+  },
+  "tools/native_media/controller/entry.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/controller/entry.s",
+    "sha256": "f4de9193b3102ae1888bb6a792be043fb320c183a309a703ad10b9e5b6a6e9e1"
+  },
+  "tools/native_media/controller/native_calls.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/controller/native_calls.s",
+    "sha256": "077e8a532e171cb5b3e20be458bc0a0df91904692b351530c05840c252cc4aa7"
+  },
+  "tools/native_media/controller/controller.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/controller/controller.cfg",
+    "sha256": "b95f301cea252e9680cc153baa11c2ef3c654477d93d226ac52d4e53a8d0dd57"
+  },
+  "tools/native_media/controller/media_plan.h": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/controller/media_plan.h",
+    "sha256": "3da8650d35534df2550f87f8d4476e469ef7cd390270009fad92d04de96cf47f"
+  },
+  "tools/native_media/phase/media_plan.c": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/media_plan.c",
+    "sha256": "8a0231e1a84283fa7d8babe5f19458e3f082cbe5b7ddcb5309a0dcab7f27e728"
+  },
+  "tools/native_media/phase/media_plan.h": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/media_plan.h",
+    "sha256": "3da8650d35534df2550f87f8d4476e469ef7cd390270009fad92d04de96cf47f"
+  },
+  "tools/native_media/phase/glue.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/glue.s",
+    "sha256": "a332381d8e5276f2526bfcc3e650efafbb40279d284320c36367b38973a051ea"
+  },
+  "tools/native_media/phase/crc.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/crc.s",
+    "sha256": "08577cda57881bc6ef231f06ddaca652535cfb235865f8cb0f251d41bc531c7f"
+  },
+  "tools/native_media/phase/worker_calls.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/worker_calls.s",
+    "sha256": "44bc662ccfd5869c7f7e88f60502380952e869fbe6cdf8a68623407649a9b51e"
+  },
+  "tools/native_media/phase/modal_save.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/modal_save.s",
+    "sha256": "ed72aefaa453ec23b5f13b7dcd2914ac0fe3920a874dc02a3737cf70ce487fe3"
+  },
+  "tools/native_media/phase/modal-save.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/modal-save.cfg",
+    "sha256": "4d7ba8f79cda2e2988d75c7dbc11f84b6b5beaf4bf9e80d9d38d1185ef019c3e"
+  },
+  "tools/native_media/phase/plan.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/plan.cfg",
+    "sha256": "ffca419eecede0210c3bf5cdae07133ebdf1f9be416da94834675fee17b186b0"
+  },
+  "tools/native_media/phase/worker-calls.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/worker-calls.cfg",
+    "sha256": "4101350ec3d94fc64576b18f6a029121f65e9be912222dccfd7fd2c35ee3efa1"
+  },
+  "tools/native_media/phase/transaction_wire.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/transaction_wire.s",
+    "sha256": "e913d763d70fb55fab0d6d6b895861117f0beed90966f9c40a717e37ae40fa67"
+  },
+  "tools/native_media/phase/media_transaction.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/media_transaction.inc",
+    "sha256": "be36d39f8533efa9cb2947116345eeb648a371329c51d2b8e5ad847bacebf7c8"
+  },
+  "tools/native_media/phase/binding_receipt.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/binding_receipt.inc",
+    "sha256": "0ebd4d17c55f1cc50ded43e632be98c78e498d4254adbfe6fab412cece919b47"
+  },
+  "tools/native_media/phase/sequence_api.h": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/sequence_api.h",
+    "sha256": "0824a0f5339752185c957ff8db11db8be7467e8911a45072071318f3c7cea61c"
+  },
+  "tools/native_media/phase/insert_stage.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/insert_stage.inc",
+    "sha256": "27a4f6b5a40a49abc4b9b80589efc82dd43800bb50ec19603c471f73c999e082"
+  },
+  "tools/native_media/phase/insert_contract.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/phase/insert_contract.inc",
+    "sha256": "1d20a0e5c46302ccfe31e58d4d5515a0df45762faedff1a0a04281ed79f1f4de"
+  },
+  "tools/native_media/binding/media_bind.c": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/binding/media_bind.c",
+    "sha256": "d3120106bd5691442f621e877694a9e82bdeb703c6a8dcabc53766aaf28b44e5"
+  },
+  "tools/native_media/binding/media_bind.h": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/binding/media_bind.h",
+    "sha256": "6407bdf6e53023355a64894c30cff0cdf4557c83ca625b6b33e38ccd2e2f2cbd"
+  },
+  "tools/native_media/binding/glue.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/binding/glue.s",
+    "sha256": "9791e188f51a031ffd5697e97632f9af9dccc14d658a52f5f34938f04fd4250a"
+  },
+  "tools/native_media/binding/semantic.inc": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/binding/semantic.inc",
+    "sha256": "3f706007ce5ad0eceb322eba4a572ff803c2e7145f3393a57e8a8a8b543e01ed"
+  },
+  "tools/native_media/binding/insert.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/binding/insert.cfg",
+    "sha256": "f3107085db55f2aa6ee97c37d496756f587d73cf48ec9ebe731aaae33b690f6f"
+  },
+  "tools/native_media/binding/insert_calls.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/binding/insert_calls.s",
+    "sha256": "46226b15a109d8a186aadf00dd318261dbe5077e10a84861cea9ed88948565a1"
+  },
+  "tools/native_media/binding/worker_calls.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/binding/worker_calls.s",
+    "sha256": "44bc662ccfd5869c7f7e88f60502380952e869fbe6cdf8a68623407649a9b51e"
+  },
+  "tools/native_media/finish/finish.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/finish/finish.s",
+    "sha256": "4599b8a0421da14ae0f407e9073c3a588315bb07691040eb8d31b2886cabd1a7"
+  },
+  "tools/native_media/finish/finish.h": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/finish/finish.h",
+    "sha256": "2b7238df3a6bceff87fb9273a374e8ac2a8ed58cc59daf8380a140e11d68e0a1"
+  },
+  "tools/native_media/finish/finish.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/finish/finish.cfg",
+    "sha256": "7b1ae93f097160c77b7889a41685c6c7df35d1930edf6a81bfe2549b047a75f6"
+  },
+  "tools/native_media/worker/incoming.s": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/worker/incoming.s",
+    "sha256": "a112de0a0f03c6dde3a63264408de54edf2e2040baf7b63ca0d93a00f4bd0f94"
+  },
+  "tools/native_media/worker/incoming.h": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/worker/incoming.h",
+    "sha256": "82cad48940650271b9b6f350509dfe70ba97030cde76863ab3f00178454e0a3b"
+  },
+  "tools/native_media/worker/incoming.cfg": {
+    "origin": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-controller-repair-review-20261017/runtime/worker/incoming.cfg",
+    "sha256": "7b1ae93f097160c77b7889a41685c6c7df35d1930edf6a81bfe2549b047a75f6"
+  }
+}

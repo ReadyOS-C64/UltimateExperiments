@@ -1,0 +1,5 @@
+{
+  "passed": false,
+  "groups": 8,
+  "scope": "actual wrapper code host fault controls; publication controls use explicitly mocked native subprocess copied from separately real closed native build"
+}

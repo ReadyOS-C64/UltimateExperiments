@@ -1,0 +1,4 @@
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-insert-commit-20261017/project/test_insert_commit.py", line 28
+    new=bytearray(old);off=264 if drive else136;new[off:off+128]=path.ljust(128,b'\0');new[524]|=1<<drive;new[525]|=1<<drive;new[528+4*drive:532+4*drive]=crc.to_bytes(4,'little');new=resign(new)
+                           ^^^^^^^^^^^^
+SyntaxError: expected 'else' after 'if' expression

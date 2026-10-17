@@ -3,6 +3,12 @@
 .include "image_import.inc"
 .include "host_clock.inc"
 .include "host_input.inc"
+.ifndef DOS64_MODAL_MENU
+DOS64_MODAL_MENU=0
+.endif
+.if DOS64_MODAL_MENU
+.import dos64_modal_pending
+.endif
 .include "render_graphics.inc"
 .macpack longbranch
 .import sav_borrowed,sav_dispatch,sav_begin
@@ -135,6 +141,9 @@ n_fail:
  sta n_stage
  lda #0
  sta n_command
+.if DOS64_MODAL_MENU
+ sta dos64_modal_pending
+.endif
  sec
  rts
 .segment "DEVICECODE"
@@ -260,8 +269,23 @@ n_schedule:
  jsr n_present_slice
  jcs n_render_error
 n_cpu:
+.if DOS64_MODAL_MENU
+ jmp hdb_native_burst
+.else
  jmp n_cpu_burst
+.endif
 n_tick_return:
+.if DOS64_MODAL_MENU
+ lda dos64_modal_pending
+ beq :+
+ jsr dos64_overlay_input_poll
+ bcs @modal_defer
+ jmp $7000
+@modal_defer:
+ tax
+ bne n_display_error
+:
+.endif
  clc
  rts
 n_cpu_error:
@@ -375,8 +399,14 @@ n_present:
  sec
  rts
 .segment "CODE"
+; The modal error fence needs3 MAIN bytes. Elide this redundant JMP only
+; in the new profile; ordinary interpreter/timer boundaries are unchanged.
+.if DOS64_MODAL_MENU
+n_cpu_burst = hdb_native_burst
+.else
 n_cpu_burst:
  jmp hdb_native_burst
+.endif
 n_timer_cpu_error:
  lda dos64_irq_result
  cmp #2
