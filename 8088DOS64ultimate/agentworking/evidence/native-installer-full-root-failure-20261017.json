@@ -1,0 +1,27 @@
+{
+  "verdict": "NOT_READY_PUBLICATION_COLLISION_CLEANUP",
+  "native": "f75b69973ff3a622469737aea143442be3b36722a720a17b3ad7ccd9873381a5",
+  "actual_fresh_full_install_PASS": true,
+  "source_tool_product_pins_unchanged": 256,
+  "python_groups_passed": 2,
+  "python_groups_failed": 2,
+  "direct_zig_passed": 5,
+  "hardware": false,
+  "complete_installer": false,
+  "verified_components": [
+    {
+      "path": "agentworking/scratch/native-installer-fat-worker-existing-lifecycle-successor/MANIFEST.json",
+      "sha256": "5367dffa41b22d64e301cae42aef922b24a2bad9f39fcefe1460e7098eae9dea",
+      "verified_pins": 453
+    },
+    {
+      "path": "agentworking/scratch/native-installer-pub-worker-full-phase/MANIFEST.json",
+      "sha256": "69cf220c7bab38574a1d4020333c3ac7bc2a817420fdebc0e333e36fc212458f",
+      "verified_pins": 703
+    }
+  ],
+  "manifest": "agentworking/scratch/native-installer-full-dispatcher-20261017/MANIFEST.json",
+  "manifest_sha256": "53dc2f5acbe902ab8bd0fe40873aa59da3997fabf092cb1f3c564442250778f3",
+  "manifest_pins": 557,
+  "first_failure": "START/CFG CREATE_NEW errors leave unknown FILES handle2 without RAW-owned CLOSE; bc_files_closed0. Source/fulloutput successes retained."
+}

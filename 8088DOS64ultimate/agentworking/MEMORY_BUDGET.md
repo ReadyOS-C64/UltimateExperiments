@@ -1,3 +1,7 @@
+## Final root f75 measured fit — 2026-10-17
+
+SETUP40542B; residentends5FF9/free6,FAT_CODE6000..AF96+ROAF97..AFFC/free3; UI BSS A65D..AFFB/free4; AUX C3A0..C6AF784/free336; HIGHF700..FFDF2272/free26; HIGHBSSendsF6DE/free33; STATEendsBF9B/free100; PUBBSS9FA7..AFE3/free28. +11AUX lifecycleclear and PUB-only93B completioncaption included. No newREU/ZPallocation. Positiveflow fits/executes; publicationcollisioncleanup fails and needs a measured successor, not budget waiver.
+
 ## Compact SETUP UCI/AUX measured layout — 2026-10-17
 
 Private cc0934a0/40,459B: UCI C000..C39F928B (command160/data512/status256), AUX C3A0..C7FF1120B. Actual test AUX_CODE760+RO8=768; HIGH2205/free93 unchanged. UI_CODE13837/UI_RO1120; UIBSS A60A..AFA8/free87. STATE BF8D/free114; HIGHBSS F6DA/free37; resident5F5E/free161 (UCI-4/FILES+7 = +3), FATfree590/PUB1934 before worker/cleanup changes. Generic descriptor copier reuses existing contiguous ptr1/2/3 with linker assertions; per-byte readback/no SMC. Both serialized HIGH and AUX count toward UI metadata/cacheCRC. Actual FW773 predicts82UIfree; not measured here. Undefined/zero exact parent map. No new REU range or public layout changes.

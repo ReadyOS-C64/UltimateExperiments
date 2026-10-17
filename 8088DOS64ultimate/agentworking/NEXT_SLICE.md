@@ -1,3 +1,9 @@
+# Immediate after final-root negative — 2026-10-17
+
+Do notrerun unchangedfullrootf75: it is frozen/rejected53dc2f5a/557pins. Fix private RAW/PW-owned uncertain-handle cleanup (START/CFG CREATE_NEW collision and other postOPEN failures), preserve firstcause/oneCLOSE/old256 and65536 bounds, fitPUB28 or optimizeexistingcaption without removingcompletion. Compiledagentownsnewprivate successor; rootwillclone frozenfullroot and replay relevantnegative+positive controls only afternewsource.
+
+Memoryagent owns narrowed mainstartup elapsedrefresh/dedupc6e43 private candidate, actualgeneratedSTART→DOS with C mounted, VER/DIR andbusyHD coherent observation. CIA owns private publicbuilder f75 exactprototype andhostchecks; no publicpromotionuntilcorrectedRAW/fullroot/mainconsumer proof. Root verifies/reviews/integrates/promotes thenphysicalqualifiedpackage. Current fullworker positives andexisting20M are proven; collisioncleanup is current implementation defect, not externalblock. FullobjectiveACTIVE/no push.
+
 # Next after whole-root first pass — 2026-10-17
 
 Root full dispatcher is now implemented and actualfresh2M behaviorpasses; do not repeat it as an unexecuted proposal. Current privatework scratch/native-installer-full-dispatcher-20261017/work, native73924; executedoutput snapshotb37f7b28. Import CIAclosedFW lifecycle successor (ea30d6da/+11AUX), import closedPUBstrict-PC/negative controls, freeze final source/tools/products, run complete rootfresh/existing/collision integration and directZig root checks. Predicted final UI4/HIGH26 leaves no unmeasured additions.
