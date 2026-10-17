@@ -86,3 +86,5 @@ K01/K02 remain HIGH. Actual nativeDOS profile has1169895754CPUstepclocks/601936c
 
 
 2026-10-15 combined boundary optimization: shadow headroom decreases1440→1223, PIT tail130→128; MAIN/DEVICE/state unchanged. K03 remainsHIGH. ModeledDOS CPU cost falls8.8%, but C64U elapsed and XT ratio remainunproved. Full5701whole-PRG/longHD/physical proofs remainold98fc; newtarget has421default/597quick/nativeDOS/MODE/focusedHD evidence. Every existing sampling boundary is retained.
+
+2026-10-17 V1-02: current CONFIG safely rejects a moved installation's old savedhome (actual3deb SYS/CIA, unmodifiedSETUPCFG); alternate launchgeneration/sharedoldmedia is not relocation. evidence/v1-config-relocation-gap-root-20261017.json. Native confirmed rebase/reinspection/newgeneration is required. Tight CONFIG permanent/phase/HIGH layout and concurrent errorUX require measured composition; removing RI_HOME alone would open stale old absolute images and is not an acceptable fix.

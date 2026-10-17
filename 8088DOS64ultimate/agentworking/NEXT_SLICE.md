@@ -1,3 +1,13 @@
+# Next V1 work — relocation, clear errors and actual DOS utilities
+
+Root accepted four exact functional cohorts in evidence/v1-current-functional-acceptance-root-20261017.json (9,839pins checked, no Root broadreplay); the finalpublic SETUP/actualCFG/CONFIG40-80/generatedDOS/media/Finish chain is sealed92bb5658/3159. Keep806e completeTurbo/FORMAT evidence scoped to806e; currentc7 narrowboot/generatedchain is separate. Candidate12 remains e710/3deb/c7; no nativepublicchange in this checkpoint.
+
+Memory: finish/seal actualSETUP-derived disposableC DOS shell/file/dir/batch/CHKDSK/fullFAT/Finish/freshlaunch batch, then prioritize CONFIG relocation. Root real3deb SYS/CIA firstfailure scratch/v1-config-relocation-gap-root-20261017: /Home control reachesCG4; /Moved installation exactoldCFG failsRI_HOME5, noRM/CP/mutation,42inputs/copies exact. Explicitly confirm oldhome→selectedmovedhome; component-boundary/case-insensitive rebase only media under oldhome, preserve external shared paths, refuse overlong/alias/invalid targets and do not fall back to oldmedia. Revalidate full A/B and C geometry; publish CREATE_NEW CFGlast in a new folder. Preserve originals, selectedcolumns, private receipt/knownCLOSE/freshclock authority. Coordinate with compiled's overlapping CONFIG errorUX; measured layout6residentbytes/93phasecodebytes/72phasestatebytes/70HIGHbytes cannot absorb unmeasured additions.
+
+Compiled: finish source/output fullcanonicalpath+operation+firstcause+closed/unknown+nextaction with verified retired-phase terminal, including CONFIG. CIA: finish concrete source-closed constructor/detachedpurpose for final15sourcefiles/SETUP admission/CIAhuman/terminal/recovery; Root review beforeLAN. No120shumanwindow until availability reply; independent preparation continues. Final Ultimate install/media/Turbo/restart/readability/CGA gates remain, performance postV1, localcommits/no push.
+
+Earlier snapshots below are historical.
+
 # Next V1 work — public candidate12 ready for physicalqualification
 
 Rootpubliccandidate12build+21hostcontrols pass; exactZIP93e2f509/137247B andall12intakebytes. Evidence/v1-runtime-candidate-public-root-20261017.json; publicsourcepaths build_support/v1_candidate.py, tests/v1_candidate_host/test_package.py, docs/V1_CANDIDATE.md. No Make/nativephasechanges. Do not rerun unchangeddefaultsuite; parentall9defaultbytes/18controls andRootdefaultsfrom6c89 remain exactscopes.

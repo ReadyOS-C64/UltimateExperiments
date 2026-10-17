@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "groups": 3,
+  "source_tool_model_media_products_records": 1089,
+  "before_copies_after_exact": true,
+  "runs": [
+    {
+      "script": "probe_format.py",
+      "exit": 0,
+      "seconds": 51.639665541999996
+    },
+    {
+      "script": "probe_sys.py",
+      "exit": 0,
+      "seconds": 39.718095500000004
+    },
+    {
+      "script": "probe_boot_formatted.py",
+      "exit": 0,
+      "seconds": 17.406198666999998
+    }
+  ],
+  "scope": "real FORMAT/SYS/COPY/fresh formatted DOS boot against806e current runtime and f17b cold8, disposable REU working B only; no mediaSave or hardware claim"
+}

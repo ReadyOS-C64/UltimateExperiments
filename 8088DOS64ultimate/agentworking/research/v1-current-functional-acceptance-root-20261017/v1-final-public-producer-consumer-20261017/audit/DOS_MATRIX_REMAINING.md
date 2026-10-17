@@ -1,0 +1,18 @@
+# Applicable V1 DOS matrix: bounded follow-up inventory
+
+This is an evidence-gap inventory, not newly executed command coverage. The authoritative requirement remains the copied TESTING.md DOS-first matrix and V1-06; no required gate is waived. The current producer/consumer lane is still executing. Historical passes retain their exact builds and input methods; physical/human final-release acceptance remains open.
+
+| Required area | Retained evidence useful to V1 | Missing matched-release end-user proof / proposed next bounded batch |
+| --- | --- | --- |
+| Boot/shell | Genuine VER, paged DIR, TYPE and CLS in current cold chains. Historical native-builtins/date/time boot prompts. | DATE/TIME set/query semantics and VOL on the final installation, stable clock behavior. |
+| Files/directories | Historical native_builtin_workflows.zig contains MD/CD/COPY/TYPE/REN/IF/DEL/RD. Turbo proof creates PAS/EXE/text, real COPY COMMAND.COM is in genuine FORMAT/SYS chain. | One disposable C working-directory batch covering empty/binary/text, nested paths, wildcard copy/delete, readonly errors and persistence; include disk-full error on disposable B. |
+| Batch/control | AUTOEXEC/PATH and ordinary shell redirection execute in new installer/Turbo lanes. Historical IF EXIST workflow. | Actual deterministic batch covering ECHO/SET/PROMPT/IF/FOR/GOTO/CALL/SHIFT/REM, command /C/EXIT and ERRORLEVEL. Then separately PAUSE/BREAK/VERIFY/CTTY CON and keyboard/cancel. Do not use DOS5/6 syntax. |
+| Text/filter | Historical DIR pipe MORE/display evidence exists but is not blanket final-release coverage. | FIND, SORT, MORE pipe/redirection output and paging; EDLIN insert/correct/write/reopen; independent file bytes. |
+| Filesystem utilities | Independent FAT inspection covers current generated disks. Historical physical CHKDSK exists on old4589 release. | Final C CHKDSK; ATTRIB/TREE/COMP/FC/LABEL/XCOPY/REPLACE with known disposable input/output and readonly/full errors. CHKDSK repair is separate disposable-corruption experiment. |
+| Media | Genuine806e FORMAT B covers all80 track/head pairs; SYS+COPY produces bootable B; fresh boot verifies its actual bytes. c7 has source-built actual-runtime FORMAT12/Zig2 component gate. | Final matched release genuine FORMAT/SYS/freshboot remains scope-specific, not inferred from component tests. DISKCOPY and DISKCOMP A↔B with real independent disks/media-change prompts remain required/open. FDISK read-only display first; destructive partition exercise only disposable raw C, independently inspect MBR/reboot. |
+| DEBUG | CPU/BIOS/unit debug/TF behavior is separate component evidence. | Genuine DEBUG assemble/run/trace/INT3/TF, register/memory and scratch read/write commands on final DOS. |
+| Console | Real40/80 cold launch, historical MODE CO40/CO80 model/physical on earlier builds, original Turbo80 editor. | Final MODE CO40/CO80 and ANSI.SYS supported cursor/clear/color/edit subset, actual human modifiers/function/navigation/readability and CGA test cards. No printer/serial expansion. |
+
+Staged helpers (ASSIGN/SUBST/APPEND/JOIN/SHARE/FASTOPEN, BACKUP/RESTORE, EXE2BIN/LINK, RECOVER), conditional locale/drivers, and excluded OEM/peripheral operations retain their existing statuses. GWBASIC/GRAFTABL keep the matrix's M10 scope; do not quietly label them all required V1 or all excluded.
+
+Recommended next bounded runs: (1) real C shell/batch/files + CHKDSK with fresh launch/full-FAT oracle; (2) disposable A/B DISKCOPY/DISKCOMP/FORMAT/SYS and native saved-image restart; (3) filter/EDLIN/comparison/attributes; (4) genuine DEBUG and supported MODE/ANSI. Retain first unsupported BIOS/opcode/error and fix correctness only. No performance target is added to V1.

@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "command": [
+    "clang++",
+    "-std=c++20",
+    "-O2",
+    "-dynamiclib",
+    "-Itests/floppy_export",
+    "-Itests/host",
+    "-Ithird_party/peddle/Peddle",
+    "tests/floppy_export/bridge.cpp",
+    "third_party/peddle/Peddle/Peddle.cpp",
+    "third_party/peddle/Peddle/PeddleDebugger.cpp",
+    "third_party/peddle/Peddle/PeddleDisassembler.cpp",
+    "third_party/peddle/Peddle/StrWriter.cpp",
+    "-o",
+    "journal-peddle.dylib"
+  ],
+  "exit": 0,
+  "model": {
+    "sha256": "d7f7e47ef4f72fc903c95190368a4a3319d270c68924a687132e38513881ca60",
+    "bytes": 208200
+  },
+  "source_product_records": 1088,
+  "exact_executed_model_reproduced": true,
+  "excluded_non_input_stdout": [
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-format-current-cold-20261017/SECOND.stdout"
+  ]
+}

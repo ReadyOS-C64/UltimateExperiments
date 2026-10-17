@@ -1,0 +1,26 @@
+{
+  "raw_changed_bytes": 2,
+  "all_in_one_deleted_zero_length_entry": true,
+  "changes": [
+    {
+      "offset": 6966854,
+      "sector": 13607,
+      "sector_byte": 70,
+      "before": 67,
+      "after": 68,
+      "before_deleted_entry": "e55030303031434324242420000000000000000000000c002100000000000000",
+      "after_deleted_entry": "e55030303031443424242420000000000000000000000c002100000000000000"
+    },
+    {
+      "offset": 6966855,
+      "sector": 13607,
+      "sector_byte": 71,
+      "before": 67,
+      "after": 52,
+      "before_deleted_entry": "e55030303031434324242420000000000000000000000c002100000000000000",
+      "after_deleted_entry": "e55030303031443424242420000000000000000000000c002100000000000000"
+    }
+  ],
+  "all363_live_payloads_equal": true,
+  "not_reconstructed_or_patched": true
+}

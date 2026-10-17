@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "checks": {
+    "inputs/build/dos64.prg": {
+      "sha256": "806eaab6f76ca49e6d68ba73a78bbc4a491b364eb0d3e71fd802acfe82cf8e73",
+      "bytes": 47105
+    },
+    "inputs/build/dos64.labels": {
+      "sha256": "33543080df6e4296aed14d4284890309cb4ff51db54ada035f830ff9c8493364",
+      "bytes": 77085
+    },
+    "inputs/build/dos64.map": {
+      "sha256": "d957159ec0467c122dacb5b9841ac78f77f05dc76436e13aa638ebec8fd41f9c",
+      "bytes": 96504
+    },
+    "start/controller.prg": {
+      "sha256": "f17bdce77f04cfea7bdb28184c3109955b098f8b0b4f50a68843212327bd1c25",
+      "bytes": 20480
+    },
+    "start/controller.labels": {
+      "sha256": "466b6c36b8a0087d1f2d46ef911e8036d7e6f23363540cef6ba4a47306f0ca9f",
+      "bytes": 18368
+    },
+    "start/controller.map": {
+      "sha256": "7a94950eec36fde87d74bd13effad74f3fe3f5827f574dd141207b74318e415f",
+      "bytes": 84289
+    },
+    "start/START.INO": {
+      "sha256": "44dd94617a3e76c4451a0e235626108ded3e30c911ce665d7e16e6499f717621",
+      "bytes": 7692
+    },
+    "start/START.RCV": {
+      "sha256": "08715a793b6fe0abf6dc95e09bad6b13356936b49ba0901793261568faec444e",
+      "bytes": 7902
+    },
+    "start/START.RFW": {
+      "sha256": "f11b0c1d66a9116b005651529de53bec19939ae03fd9c60ef0599a78b6c84824",
+      "bytes": 5578
+    }
+  },
+  "scope": "additive identity receipt; native assets were already copied and pinned before current execution, no claims of an earlier hash for this receipt"
+}

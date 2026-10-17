@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "columns": 40,
+      "exit": 0,
+      "seconds": 24.218643166
+    },
+    {
+      "columns": 80,
+      "exit": 0,
+      "seconds": 26.508710875000002
+    }
+  ],
+  "source_model_assets_media_metadata_python_records": 133,
+  "before_copies_after_exact": true,
+  "borrowed_qualified_model": {
+    "sha256": "215568e70333a224615a5c9722ff591873c3de4fee5855e81d8af5faa1014b2a",
+    "bytes": 207752
+  },
+  "new_model_or_native_build_claim": false,
+  "scope": "actual public c7/407f/2f8 cold START same-homeINI/RCV/main genuineDOS VER and independent pagedDIR40/80 only; preserved806e Turbo proof not relabeled; no SETUP/CONFIG/hardware claim"
+}

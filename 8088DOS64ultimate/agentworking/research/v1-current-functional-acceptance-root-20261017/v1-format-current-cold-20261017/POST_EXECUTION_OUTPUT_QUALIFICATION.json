@@ -1,0 +1,8 @@
+{
+  "original_ledger_preserved": true,
+  "excluded_non_input_output": [
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-format-current-cold-20261017/SECOND.stdout"
+  ],
+  "reason": "close script recorded its own initially empty stdout before printing final result after AFTER capture; stdout is not a compiler/model/test input. All other1088 records and their retained copies remain exact.",
+  "no_rewritten_historical_before_hash": true
+}

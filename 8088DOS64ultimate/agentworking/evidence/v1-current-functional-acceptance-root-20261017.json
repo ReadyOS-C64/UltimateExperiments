@@ -1,0 +1,84 @@
+{
+  "schema": "root-current-v1-functional-evidence-v1",
+  "status": "ACCEPT_BOUNDED_MODEL_APPLICATION_AND_GENERATED_INSTALLATION_SCOPES",
+  "cohorts": {
+    "v1-turbo-current-cold-20261017": {
+      "manifest": {
+        "sha256": "121761f31c6f1426bf0317f464f112a24db1e7a1a98decd1cb6b9a3cbe3f6725",
+        "bytes": 1590361
+      },
+      "pins": 5178,
+      "integrity": "allpinsSHA/declaredsize exact",
+      "scope": "806e full originalTurbo IDE/save/diskEXE/IDE+DOSrun/twoCIAFinish/fresh40EXE/fresh80IDE/fullnative20Mreadback; hostpreparedCFG/media and XTinput, physicalopen",
+      "retained_records": [
+        "HANDOFF.md",
+        "SUMMARY.json",
+        "RAW_METADATA_DIFFERENCES.json",
+        "FIRST_FAILURES.md",
+        "EXACT_EXECUTED_ASSET_BINDING.json",
+        "KEY_BINDING_CONTROL.json",
+        "execution/RESULT.json.gz",
+        "model-rebuild/RESULT.json"
+      ]
+    },
+    "v1-format-current-cold-20261017": {
+      "manifest": {
+        "sha256": "e93bdd69ef4bfea9c96a7083d01a9282af2398ea524b2e34813a049740c149f9",
+        "bytes": 317224
+      },
+      "pins": 1225,
+      "integrity": "allpinsSHA/declaredsize exact",
+      "scope": "806e genuineDOS FORMAT80tracks/SYS/COPY/freshsystemdiskboot; Cdisabled, REUoutputnotnativeSave;1088actualinputscopequalified",
+      "retained_records": [
+        "HANDOFF.md",
+        "EXACT_ASSET_BINDING.json",
+        "POST_EXECUTION_OUTPUT_QUALIFICATION.json",
+        "FORMATTED_FRESH_BOOT.json.gz",
+        "closed/RESULT.json",
+        "model-rebuild-qualified/RESULT.json"
+      ]
+    },
+    "v1-public-c7-cold-consumers-20261017": {
+      "manifest": {
+        "sha256": "1554e031810e502845ce90e635b724e8673aa91781f87d717ba9b4febc3f244f",
+        "bytes": 60745
+      },
+      "pins": 277,
+      "integrity": "allpinsSHA/declaredsize exact",
+      "scope": "publishedc7 actualcold40/80DOS/VER/fullDIR; exactcopiedproducts/inheritedsource authority; no relabeledTurbo/media/FORMAT",
+      "retained_records": [
+        "HANDOFF.md",
+        "SOURCE_PROVENANCE.json",
+        "PUBLIC_RESULT_SNAPSHOT.json.gz",
+        "IMMUTABLE_PROVIDER_RESULT.json.gz",
+        "closed/RESULT.json"
+      ]
+    },
+    "v1-final-public-producer-consumer-20261017": {
+      "manifest": {
+        "sha256": "92bb5658e2aeebeb7ff1b5516401aaf46e75e0c81038b0b500a262be67aebfda",
+        "bytes": 863584
+      },
+      "pins": 3159,
+      "integrity": "allpinsSHA/declaredsize exact",
+      "scope": "finale710 SETUP/3debCONFIG40/80 withactualSETUPCFG/media\u2192threegeneratedc7DOS/CIA Save/Insert/B+C/Finish; sixnativegroups,target2 only; physicalopen",
+      "retained_records": [
+        "HANDOFF.md",
+        "RESULT.json",
+        "audit/DOS_MATRIX_REMAINING.md"
+      ]
+    }
+  },
+  "archive": {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/v1-current-functional-acceptance-root-20261017",
+    "manifest": {
+      "sha256": "37af03b0f74ee5601b801e54ba92295256937bf49ddbffefc9e97e66e7f6cbd3",
+      "bytes": 4518
+    },
+    "pins": 27
+  },
+  "Root_new_native_execution": false,
+  "physical": false,
+  "V1_complete": false,
+  "open": "required DOSutilitymatrix, completeerrorUX, hardware/human finalinstall/media/Turbo/reset/40-80/readability/CGA tests"
+}

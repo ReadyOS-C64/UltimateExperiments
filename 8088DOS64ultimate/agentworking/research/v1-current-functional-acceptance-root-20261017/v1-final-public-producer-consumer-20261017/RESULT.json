@@ -1,0 +1,107 @@
+{
+  "passed": true,
+  "scope": "actual final public e710 SETUP\u2192generatedCFG/START/A/B/C\u21923deb CONFIG40/80\u2192unmodified current c7 cold START/native genuineDOS\u2192CIA ordinarySave+Insert\u2192B/C reads\u2192Finish",
+  "final_actual_native_groups": 6,
+  "additional_host_oldCFG_preflight_groups": 4,
+  "receipts": [
+    {
+      "receipt": "execution/setup/RESULT.json",
+      "actual_native_groups": 1,
+      "inputs_with_exact_copies": 177,
+      "wall_seconds": 77.204731916,
+      "authority": "final direct producer chain"
+    },
+    {
+      "receipt": "execution-real/config/RESULT.json",
+      "actual_native_groups": 2,
+      "inputs_with_exact_copies": 94,
+      "wall_seconds": 76.323168208,
+      "authority": "final direct producer chain"
+    },
+    {
+      "receipt": "execution/SETUP80/RESULT.json",
+      "actual_native_groups": 1,
+      "inputs_with_exact_copies": 98,
+      "wall_seconds": 61.061113916000004,
+      "authority": "final direct producer chain"
+    },
+    {
+      "receipt": "execution-real/CONFIG40/RESULT.json",
+      "actual_native_groups": 1,
+      "inputs_with_exact_copies": 107,
+      "wall_seconds": 53.369931625,
+      "authority": "final direct producer chain"
+    },
+    {
+      "receipt": "execution-real/CONFIG80/RESULT.json",
+      "actual_native_groups": 1,
+      "inputs_with_exact_copies": 107,
+      "wall_seconds": 61.204337542,
+      "authority": "final direct producer chain"
+    },
+    {
+      "receipt": "execution/config/RESULT.json",
+      "actual_native_groups": 2,
+      "inputs_with_exact_copies": 94,
+      "wall_seconds": 76.847315334,
+      "authority": "additional host-oldCFG component preflight"
+    },
+    {
+      "receipt": "execution/CONFIG40/RESULT.json",
+      "actual_native_groups": 1,
+      "inputs_with_exact_copies": 107,
+      "wall_seconds": 52.958782666000005,
+      "authority": "additional host-oldCFG component preflight"
+    },
+    {
+      "receipt": "execution/CONFIG80/RESULT.json",
+      "actual_native_groups": 1,
+      "inputs_with_exact_copies": 107,
+      "wall_seconds": 60.894699667,
+      "authority": "additional host-oldCFG component preflight"
+    }
+  ],
+  "consumers": [
+    {
+      "case": "SETUP80",
+      "proof": "execution/SETUP80/proof",
+      "columns": 80,
+      "initial_genuine_DOS_guest_instructions": 594002,
+      "guest_instructions_after_B_C_reads": 834366,
+      "actual_C_target": 2,
+      "native_Save_Insert_Resume_Finish": true,
+      "CLOSE_known_and_no_Resume": true
+    },
+    {
+      "case": "CONFIG40",
+      "proof": "execution-real/CONFIG40/proof",
+      "columns": 40,
+      "initial_genuine_DOS_guest_instructions": 593993,
+      "guest_instructions_after_B_C_reads": 835251,
+      "actual_C_target": 2,
+      "native_Save_Insert_Resume_Finish": true,
+      "CLOSE_known_and_no_Resume": true
+    },
+    {
+      "case": "CONFIG80",
+      "proof": "execution-real/CONFIG80/proof",
+      "columns": 80,
+      "initial_genuine_DOS_guest_instructions": 594002,
+      "guest_instructions_after_B_C_reads": 835533,
+      "actual_C_target": 2,
+      "native_Save_Insert_Resume_Finish": true,
+      "CLOSE_known_and_no_Resume": true
+    }
+  ],
+  "provider_source_native_product_records_captured_and_copied": 1536,
+  "current_provider_original_drift_count": 0,
+  "native_source_or_product_changes": false,
+  "new_native_or_model_compile_claim": false,
+  "qualified_borrowed_models": "MODEL_PROVENANCE.json",
+  "physical_or_human_acceptance": false,
+  "fresh_restart_from_post_Save_Insert_CFG": false,
+  "Turbo_or_FORMAT_new_execution": false,
+  "remaining_DOS_requirements": "audit/DOS_MATRIX_REMAINING.md",
+  "first_failures_retained": "FIRST_FAILURES.json",
+  "all_final_staged_inputs_and_copies_exact": true
+}

@@ -1,0 +1,17 @@
+{
+  "actual_isolated_controls": [
+    {
+      "bound": false,
+      "exit": -11,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "bound": true,
+      "exit": 0,
+      "stdout": "bound keys accepted safely\n",
+      "stderr": ""
+    }
+  ],
+  "no_native_SUT_execution": true
+}
