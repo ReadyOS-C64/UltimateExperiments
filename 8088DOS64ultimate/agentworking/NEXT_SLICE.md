@@ -107,3 +107,10 @@ Installer research branch (user2026-10-16): review docs/NATIVE_INSTALLER_DESIGN.
 
 
 2026-10-16 userfloppyswap/saveclarification: rawIMGneedsnoD81wrapper; currentwritesareREUonlyunlessdevelopmentSAVEexecuted. EarlierphysicalwholeSAVEaccepted d883, but currentnativeSAVErejects C online andno userdirty/swap/SaveUI. Proposed docs/FLOPPY_MEDIA_DESIGN.md: independentA/B descriptors, originalreadonly/workingcopies, coherentfullverifiedSave, Save/Discard/Cancel on swap/eject/exit, safeincomingstaging, sourcegeneration+CRCrefresh, DOSbuffer/revalidation tests andHDcontextintegration. Research/designonly; no newcode/hardware.
+# Current continuation — 2026-10-17
+
+* Join CONFIG's same-engine startup CLOSE/browser/readonly CFG entry with accepted private RM56f9 media inspection. Keep private receipts and code lifetimes valid through publication; do not attach/reset a live engine.
+* Publish a fresh launch generation with the complete matched INI runtime assets, selected existing absolute media paths, fresh A/B CRCs, native40/80 preference selection and CFG last. Actual native UI-to-output-to-START/DOS integration remains required.
+* CIA owns physical failure closure for bb1ffb56 (child94159 exit1 before SYS, clean cold BASIC/settings/media), then a source-tested response-retention successor and a distinct reviewed purpose. The missing raw acknowledgment cannot be reconstructed from RAM/source. No automatic retry or full-board reset.
+* Complete independent review of sealed performance2575316c, then promote only its eight portable files with current cold/INI/default regression gates. Modeled3.56% cycle reduction is not an XT percentage or physical acceptance.
+
