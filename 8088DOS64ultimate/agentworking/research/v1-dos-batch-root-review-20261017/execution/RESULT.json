@@ -1,0 +1,158 @@
+{
+  "passed": true,
+  "scope": "actual c7 DOS shell/batch/CHKDSK +Finish+fresh launch on owned copy of actual SETUP C",
+  "physical": false,
+  "producer": {
+    "passed": true,
+    "original_and_input_payloads_exact": 115,
+    "original_DOS_payloads": 112,
+    "new_files": {
+      "V1.LOG": {
+        "bytes": 134,
+        "sha256": "4eb60785ce8664aa81596d0d189962e7b6c5bbe28473655e2c1ac361cbc4593c"
+      },
+      "V1WORK/ORIG.TXT": {
+        "bytes": 13,
+        "sha256": "7915208c28556d3d3a685542821f5491c168a4b81b1f2fdb3644945e59535b1c"
+      },
+      "V1WORK/COPYBIN.LOG": {
+        "bytes": 26,
+        "sha256": "9c1680982affe360da8e343f7c200aad353919e01513e0cc8f58c66a6225a0fa"
+      },
+      "V1WORK/BIN.DAT": {
+        "bytes": 25308,
+        "sha256": "1619d4e38e14ca649818a7be9c15d181964ff8d59693cb5a7d98ffde9a1811a7"
+      },
+      "V1WORK/EMPTY.DAT": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "V1WORK/COPY1.LOG": {
+        "bytes": 26,
+        "sha256": "9c1680982affe360da8e343f7c200aad353919e01513e0cc8f58c66a6225a0fa"
+      },
+      "V1WORK/KEEP.TXT": {
+        "bytes": 13,
+        "sha256": "7915208c28556d3d3a685542821f5491c168a4b81b1f2fdb3644945e59535b1c"
+      },
+      "V1WORK/COPY2.LOG": {
+        "bytes": 26,
+        "sha256": "9c1680982affe360da8e343f7c200aad353919e01513e0cc8f58c66a6225a0fa"
+      },
+      "V1WORK/ATRO.LOG": {
+        "bytes": 30,
+        "sha256": "f4d7bcb5940df6575bb23fe8fcf0e2ec907b7b22cc54d6c567c9a421abdfbe2a"
+      },
+      "V1WORK/COPYWILD.LOG": {
+        "bytes": 34,
+        "sha256": "1abd85202b7986d0a9c0d77b943a0ac43964d8e1bf9b2454fbbd9e2ffaf35ab0"
+      },
+      "V1WORK/WCOPY.TXT": {
+        "bytes": 13,
+        "sha256": "7915208c28556d3d3a685542821f5491c168a4b81b1f2fdb3644945e59535b1c"
+      },
+      "V1WORK/RO.LOG": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "V1WORK/ATWR.LOG": {
+        "bytes": 30,
+        "sha256": "54e9715e52adf2c54c0c5e148248c5a1ceb8feb6f132fa5422e65ae970b51f08"
+      },
+      "V1WORK/ENV.TXT": {
+        "bytes": 12,
+        "sha256": "964e3024c72ea22c74a2d2a5ac31fcfb63591b4f8895290f858551b5d3262a03"
+      },
+      "V1WORK/PROMPT.TXT": {
+        "bytes": 8,
+        "sha256": "989d048c7eebe0afd076144f14bede89af008c822dec0666071c8a7068a3892e"
+      },
+      "V1WORK/FOR.TXT": {
+        "bytes": 17,
+        "sha256": "402c33c2e0ffad6643bb60e9da45fa3ac6275bd3781479e877f525b8516a2c4c"
+      },
+      "V1WORK/ARGS.TXT": {
+        "bytes": 15,
+        "sha256": "b5afc56abb54ba7344b0399adaaaeb21929adb11452615f5918f2fcad6041e82"
+      },
+      "V1WORK/CMD.TXT": {
+        "bytes": 10,
+        "sha256": "05657e9d909f755a312155faad2ce2734faf620dbe660362aeac15dad0621a24"
+      },
+      "V1WORK/EXIT.TXT": {
+        "bytes": 9,
+        "sha256": "5fe720f94d01d45b2ca9d576ca1dc42117ce43da3d01d19b66f6d92483672cd6"
+      },
+      "V1WORK/FIND.LOG": {
+        "bytes": 30,
+        "sha256": "ac3dd6a39e32586f46c54a6b8228b8a13e0909399d57fee5a40b83816e0fd378"
+      },
+      "V1WORK/NOMATCH.LOG": {
+        "bytes": 23,
+        "sha256": "6ca3721374b0427a33f81ad6e3a6e4bf76e39974289ae77496f8574098118503"
+      },
+      "V1WORK/DEBUG.INP": {
+        "bytes": 48,
+        "sha256": "f88d046f3c6df19d23e68b41e2daf6d8eac69d77ccb56e040241cd9c2fe08841"
+      },
+      "V1WORK/DEBUG.LOG": {
+        "bytes": 89,
+        "sha256": "e1cc87f0326046d223b51e34a355a3684623015eb34df4273e08d5ea97e214fe"
+      },
+      "V1WORK/RET1.COM": {
+        "bytes": 5,
+        "sha256": "e1ca94cd1d440d29f22136de30144a6305cad5c1555f16644a38dcbc55ad9dcb"
+      },
+      "V1WORK/SUB/DEEP.TXT": {
+        "bytes": 8,
+        "sha256": "d7b4c4837da0104d59e0da2cf7783c7e566317c59e8e3e418c720c706fed4f2e"
+      },
+      "V1DONE.TXT": {
+        "bytes": 10,
+        "sha256": "252b40c71f8334eba99c53f095b86fc205a87d2c542815b9f5da763241cef0d9"
+      }
+    },
+    "log": "BEGIN\r\n\r\n Volume in drive C has no label\r\nREN_OK\r\nWILD_OK\r\nWILD2_OK\r\nRO_OK\r\nSUB_OK\r\nCALL_BACK\r\nERRORLEVEL0_OK\r\nERRORLEVEL1_OK\r\nRD_OK\r\n",
+    "full_image_sha256": "2f782cf70b4a269dd3502f4cf04bc50491bae4bec1f795f476be11da3de80703",
+    "free_bytes": 139264
+  },
+  "producer_wire": {
+    "wire_histogram_target_opcode": {
+      "1:3": 11,
+      "2:3": 2,
+      "1:2": 10,
+      "1:7": 8,
+      "1:33": 8,
+      "2:2": 1,
+      "2:6": 738,
+      "2:4": 3862,
+      "2:5": 682
+    },
+    "WRITE05_commands": 682,
+    "WRITE05_count_each": 256,
+    "native512sector_split_into2x256": true,
+    "native_model_checks_exact_wire_payload_length": true
+  },
+  "producer_guest": 3832165,
+  "CHKDSK_free_matches_full_FAT": true,
+  "fresh40_guest": 408761,
+  "fresh40_wire": {
+    "wire_histogram_target_opcode": {
+      "1:3": 11,
+      "2:3": 2,
+      "1:2": 10,
+      "1:7": 9,
+      "1:33": 8,
+      "1:4": 2,
+      "2:2": 1,
+      "2:6": 6,
+      "2:4": 321
+    },
+    "WRITE05_commands": 0,
+    "WRITE05_count_each": 256,
+    "native512sector_split_into2x256": true,
+    "native_model_checks_exact_wire_payload_length": true
+  },
+  "fresh_image_byteexact": true,
+  "native_cycles_including_observer_not_perf": 20301018440
+}

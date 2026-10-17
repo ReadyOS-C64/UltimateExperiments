@@ -1,0 +1,39 @@
+{
+  "status": "ACCEPT_BOUNDED_ACTUAL_DOS_BATCH_CHKDSK_AND_C_PERSISTENCE",
+  "parent_manifest": {
+    "sha256": "734a0d17e1d6b6480995b8ab1c7762438912606d9c7da507d33a208f062b1c12",
+    "bytes": 107940
+  },
+  "parent_pins": 542,
+  "Root_all_pins_verified": true,
+  "Root_new_execution": false,
+  "native_cohort": "c7/407f/2f8",
+  "actual_cold_machines": 2,
+  "producer": "80columns, actualSETUP-generated2MiB C plus3explicitinputBATs; actualDOScreatedall26outputs/DEBUG_RET1",
+  "consumer": "fresh actualCONFIG40 START, genuineDOSreads/knownFinish, completeCbyteexact/zeroWRITE",
+  "inputs_and_copies_exact": 146,
+  "preserved_payloads": 115,
+  "original_DOS_payloads": 112,
+  "free_bytes_DOS_and_independent_FAT": 139264,
+  "C_WRITE05_commands": 682,
+  "C_WRITE05_count_each": 256,
+  "scope": "shell,files,dirs,batch,readonly/wildcard/binary/empty,env/prompt/control/ERRORLEVEL,DATE/TIME/VOL,read-onlyCHKDSK,DEBUGenter/write/exit,actualCIAFinish/fresh40persistence",
+  "not_closed": [
+    "FullDOSutilitymatrix",
+    "DEBUG INT3/TF/trace",
+    "FORMAT/SYS/nativeSave/freshboot/DISKCOPY-DISKCOMP nextlane",
+    "Physical/human/finalV1",
+    "20MiB C stress in this2MiB lane"
+  ],
+  "physical": false,
+  "performance_claim": false,
+  "first_failure": "Prior1e94cc6a/363 hostoracle capitalisation/DATE-TIME redirect/FINDstatus assumptions retained; no knownclosed persistence authority. Corrected successor recorded separately.",
+  "archive": {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/v1-dos-batch-root-review-20261017",
+    "manifest": {
+      "sha256": "c2ebc6c0f4d89d3bad7d88af3555c28fd1f06716aa4332560601bd3287516f84",
+      "bytes": 2493
+    },
+    "pins": 19
+  }
+}

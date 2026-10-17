@@ -1,0 +1,5 @@
+{
+  "cause": "Root resolved HANDOFF shorthand independent/FAT.json relative to cohort root. Actual immutable file is execution/producer80/independent/FAT.json. All542parentpins had already passed before this archive-only selection assertion.",
+  "native_failure": false,
+  "parent_changed": false
+}
