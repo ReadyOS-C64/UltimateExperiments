@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "actual_groups": 2,
+  "columns": [
+    40,
+    80
+  ],
+  "input_pins": 1445,
+  "products": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/config/work/config-peddle.dylib": {
+      "sha256": "e1126bb7553b7ad6d9a7685a02ba4c92e72a41ebbeaf4a30d765ca96be690def",
+      "bytes": 209368
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/config/work/config.prg": {
+      "sha256": "fc2b34411203a92a65f8cf59b7296019398de7252401308562324b5f5d23bcab",
+      "bytes": 44382
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/config/work/config.labels": {
+      "sha256": "a5d8fb41056c1240d9aba6e919d8d1bcf48e7fb3b99954fa4835a8d951831df0",
+      "bytes": 21997
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/config/work/config.map": {
+      "sha256": "47315ab04092f6820224a92246b8db523be04324e8cbc3719a7ae922d46f178d",
+      "bytes": 311345
+    }
+  },
+  "old_actual_SETUP_CFG_START_and_media_preserved": true,
+  "actual_SYS_CIA_privateRM_CP_outputs": true,
+  "scope": "actual new public CONFIG native application; no error matrix or physical acceptance"
+}

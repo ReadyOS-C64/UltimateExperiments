@@ -1,0 +1,158 @@
+{
+  "passed": true,
+  "files": {
+    "START.RFW": {
+      "sha256": "f11b0c1d66a9116b005651529de53bec19939ae03fd9c60ef0599a78b6c84824",
+      "bytes": 5578
+    },
+    "START.INO": {
+      "sha256": "44dd94617a3e76c4451a0e235626108ded3e30c911ce665d7e16e6499f717621",
+      "bytes": 7692
+    },
+    "DOS64.REL": {
+      "sha256": "e45f4b1bda34ac551eacb90bcc880c3d37df6f4729e5c4f1d2b6d8b6e4c1c5d9",
+      "bytes": 64
+    },
+    "DOS64.MNU": {
+      "sha256": "a2cd29cb1156c0d38a5491db6ac11a74bf52496d256e2ac7a91c280212ad847c",
+      "bytes": 57344
+    },
+    "A.IMG": {
+      "sha256": "597ec0f92c993c3d683f4bb93c91cb8ebbbdce6c7d45a9d7bc141f68b1be2678",
+      "bytes": 368640
+    },
+    "C.IMG": {
+      "sha256": "3141fc19bcb040a1c58e78674c59679d7427ac7ba8d3f80556dbf877a67c2648",
+      "bytes": 2097152
+    },
+    "B.IMG": {
+      "sha256": "db7b0eb73f7df6dcbc0fc90c156856b80822517e8e1df66d1b1e98f99abcca88",
+      "bytes": 368640
+    },
+    "START.RCV": {
+      "sha256": "08715a793b6fe0abf6dc95e09bad6b13356936b49ba0901793261568faec444e",
+      "bytes": 7902
+    },
+    "DOS64.PRG": {
+      "sha256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+      "bytes": 47105
+    },
+    "START.PRG": {
+      "sha256": "ae43afdee1409b4e7938d8dfe7bfed38c4adda2c9cf4a67ef534afcd0d0c156b",
+      "bytes": 20480
+    },
+    "DOS64.CFG": {
+      "sha256": "f658944e7f789495e2caa753f716bae4ae1e739549e392613c34350f6a401437",
+      "bytes": 576
+    }
+  },
+  "source_3DOS": {
+    "disk1.img": {
+      "sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+      "bytes": 368640
+    },
+    "disk2.img": {
+      "sha256": "91a624fc448c1c423d159ae21f51cc416393d8e19a73d3858afc3af92af041c2",
+      "bytes": 368640
+    },
+    "disk3.img": {
+      "sha256": "c69238c738bab18db840b5ae72b2470c0d594832d91103573a6d8273dce300e9",
+      "bytes": 368640
+    }
+  },
+  "all_original_C_DOS_payloads_exact": 58,
+  "A_B_independent": true,
+  "B_empty_full_FAT_valid": true,
+  "C_2MiB_partition_valid": true,
+  "configured_START_only_131_allowed_bytes_changed": true,
+  "whole_runtime_assets_exact": true,
+  "A_payload_count": 38,
+  "B_payload_count": 0,
+  "C_payload_count": 112,
+  "CONFIG40": {
+    "native_outputs": {
+      "START.RFW": {
+        "sha256": "f11b0c1d66a9116b005651529de53bec19939ae03fd9c60ef0599a78b6c84824",
+        "bytes": 5578
+      },
+      "START.INO": {
+        "sha256": "44dd94617a3e76c4451a0e235626108ded3e30c911ce665d7e16e6499f717621",
+        "bytes": 7692
+      },
+      "DOS64.REL": {
+        "sha256": "e45f4b1bda34ac551eacb90bcc880c3d37df6f4729e5c4f1d2b6d8b6e4c1c5d9",
+        "bytes": 64
+      },
+      "DOS64.INI": {
+        "sha256": "20f76f8f379a81b93796e47d4447b6ff286da544f17d0f666b23fbebeee1cab5",
+        "bytes": 32
+      },
+      "DOS64.MNU": {
+        "sha256": "a2cd29cb1156c0d38a5491db6ac11a74bf52496d256e2ac7a91c280212ad847c",
+        "bytes": 57344
+      },
+      "START.RCV": {
+        "sha256": "08715a793b6fe0abf6dc95e09bad6b13356936b49ba0901793261568faec444e",
+        "bytes": 7902
+      },
+      "DOS64.PRG": {
+        "sha256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+        "bytes": 47105
+      },
+      "START.PRG": {
+        "sha256": "782c86d1b66c5cfafdf5ae94ee8bec66a2e23b6257c932651c38cf7f9e62514a",
+        "bytes": 20480
+      },
+      "DOS64.CFG": {
+        "sha256": "03074e2304402c898324391413f53e3cce3c7f14c8ecbe789d2737efb4ed0bd0",
+        "bytes": 576
+      }
+    },
+    "same_media_paths_flags_capacity_identity": true,
+    "only_home_CFG_bodyCRC_changed": true,
+    "whole_matched_runtime_bytes_unchanged": true
+  },
+  "CONFIG80": {
+    "native_outputs": {
+      "START.RFW": {
+        "sha256": "f11b0c1d66a9116b005651529de53bec19939ae03fd9c60ef0599a78b6c84824",
+        "bytes": 5578
+      },
+      "START.INO": {
+        "sha256": "44dd94617a3e76c4451a0e235626108ded3e30c911ce665d7e16e6499f717621",
+        "bytes": 7692
+      },
+      "DOS64.REL": {
+        "sha256": "e45f4b1bda34ac551eacb90bcc880c3d37df6f4729e5c4f1d2b6d8b6e4c1c5d9",
+        "bytes": 64
+      },
+      "DOS64.INI": {
+        "sha256": "7d25a380b139e0bafeabc3fc867df328653377cab606180bb83e0e463eadf2c3",
+        "bytes": 32
+      },
+      "DOS64.MNU": {
+        "sha256": "a2cd29cb1156c0d38a5491db6ac11a74bf52496d256e2ac7a91c280212ad847c",
+        "bytes": 57344
+      },
+      "START.RCV": {
+        "sha256": "08715a793b6fe0abf6dc95e09bad6b13356936b49ba0901793261568faec444e",
+        "bytes": 7902
+      },
+      "DOS64.PRG": {
+        "sha256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+        "bytes": 47105
+      },
+      "START.PRG": {
+        "sha256": "782c86d1b66c5cfafdf5ae94ee8bec66a2e23b6257c932651c38cf7f9e62514a",
+        "bytes": 20480
+      },
+      "DOS64.CFG": {
+        "sha256": "03074e2304402c898324391413f53e3cce3c7f14c8ecbe789d2737efb4ed0bd0",
+        "bytes": 576
+      }
+    },
+    "same_media_paths_flags_capacity_identity": true,
+    "only_home_CFG_bodyCRC_changed": true,
+    "whole_matched_runtime_bytes_unchanged": true
+  }
+}

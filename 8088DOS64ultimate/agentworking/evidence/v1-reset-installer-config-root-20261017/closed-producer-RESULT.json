@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "groups": 1,
+  "input_pins": 2875,
+  "whole_SYS_sources_FW_PW": true,
+  "output": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/root-output",
+  "scope": "one complete actual public native installer positive, genuine3DOS; no hardware"
+}

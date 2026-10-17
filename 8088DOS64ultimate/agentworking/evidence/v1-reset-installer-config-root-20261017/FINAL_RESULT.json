@@ -1,0 +1,187 @@
+{
+  "passed": true,
+  "scope": "actual matching public source-produced SETUP + CONFIG40/80 native pipelines and three unchanged generated START\u2192genuineDOS VER/full A DIR/P\u2192actualCIA Finish sessions",
+  "actual_native_machines": 6,
+  "actual_installer_positives": 1,
+  "actual_CONFIG_positives": 2,
+  "genuine_DOS_consumers": 3,
+  "results": {
+    "SETUP": {
+      "result": "closed-producer/RESULT.json",
+      "input_pins": 2875,
+      "products": 6,
+      "passed": true,
+      "groups": 1,
+      "whole_SYS_sources_FW_PW": true,
+      "output": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/root-output",
+      "scope": "one complete actual public native installer positive, genuine3DOS; no hardware"
+    },
+    "CONFIG40_80": {
+      "result": "execution/CONFIG/RESULT.json",
+      "input_pins": 1445,
+      "products": {
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/config/work/config-peddle.dylib": {
+          "sha256": "e1126bb7553b7ad6d9a7685a02ba4c92e72a41ebbeaf4a30d765ca96be690def",
+          "bytes": 209368
+        },
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/config/work/config.prg": {
+          "sha256": "fc2b34411203a92a65f8cf59b7296019398de7252401308562324b5f5d23bcab",
+          "bytes": 44382
+        },
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/config/work/config.labels": {
+          "sha256": "a5d8fb41056c1240d9aba6e919d8d1bcf48e7fb3b99954fa4835a8d951831df0",
+          "bytes": 21997
+        },
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/config/work/config.map": {
+          "sha256": "47315ab04092f6820224a92246b8db523be04324e8cbc3719a7ae922d46f178d",
+          "bytes": 311345
+        }
+      },
+      "passed": true,
+      "actual_groups": 2,
+      "columns": [
+        40,
+        80
+      ],
+      "old_actual_SETUP_CFG_START_and_media_preserved": true,
+      "actual_SYS_CIA_privateRM_CP_outputs": true,
+      "scope": "actual new public CONFIG native application; no error matrix or physical acceptance"
+    },
+    "SETUP80_DOS_FINISH": {
+      "result": "execution/SETUP80/RESULT.json",
+      "input_pins": 1312,
+      "products": {
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/consumer/work/journal-peddle.dylib": {
+          "sha256": "57e9a1b504465fb0e0d29fc0462db0ed1aaae32bce1003311ff70e4615cad7e2",
+          "bytes": 207752
+        },
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/consumer/inputs/build/dos64.prg": {
+          "sha256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+          "bytes": 47105
+        },
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/consumer/inputs/build/dos64.labels": {
+          "sha256": "749297f591898ee7b5df708a193d40ea324482d86621be3b4075623d906511e4",
+          "bytes": 78080
+        },
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/consumer/inputs/build/dos64.map": {
+          "sha256": "bf2e8c760b8fe4f2341c95169eeaa85f0107a7a21a372d0f73aa1b87f2f17d40",
+          "bytes": 99727
+        }
+      },
+      "passed": true,
+      "actual_groups": 1,
+      "columns": 80,
+      "generated_START_CFG_unmodified": true,
+      "genuine_DOS_VER_all_A_DIR_pages": true,
+      "actual_CIA_Finish_privateSafe_one_known_C_CLOSE": true,
+      "scope": "model; guest XT endpoint for DOS keys; actual native CIA held-scan Finish; no physical acceptance"
+    },
+    "CONFIG40_DOS_FINISH": {
+      "result": "execution/CONFIG40/RESULT.json",
+      "input_pins": 1321,
+      "products": {
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/consumer/work/journal-peddle.dylib": {
+          "sha256": "57e9a1b504465fb0e0d29fc0462db0ed1aaae32bce1003311ff70e4615cad7e2",
+          "bytes": 207752
+        },
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/consumer/inputs/build/dos64.prg": {
+          "sha256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+          "bytes": 47105
+        },
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/consumer/inputs/build/dos64.labels": {
+          "sha256": "749297f591898ee7b5df708a193d40ea324482d86621be3b4075623d906511e4",
+          "bytes": 78080
+        },
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/consumer/inputs/build/dos64.map": {
+          "sha256": "bf2e8c760b8fe4f2341c95169eeaa85f0107a7a21a372d0f73aa1b87f2f17d40",
+          "bytes": 99727
+        }
+      },
+      "passed": true,
+      "actual_groups": 1,
+      "columns": 40,
+      "generated_START_CFG_unmodified": true,
+      "genuine_DOS_VER_all_A_DIR_pages": true,
+      "actual_CIA_Finish_privateSafe_one_known_C_CLOSE": true,
+      "scope": "model; guest XT endpoint for DOS keys; actual native CIA held-scan Finish; no physical acceptance"
+    },
+    "CONFIG80_DOS_FINISH": {
+      "result": "execution/CONFIG80/RESULT.json",
+      "input_pins": 1321,
+      "products": {
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/consumer/work/journal-peddle.dylib": {
+          "sha256": "57e9a1b504465fb0e0d29fc0462db0ed1aaae32bce1003311ff70e4615cad7e2",
+          "bytes": 207752
+        },
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/consumer/inputs/build/dos64.prg": {
+          "sha256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+          "bytes": 47105
+        },
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/consumer/inputs/build/dos64.labels": {
+          "sha256": "749297f591898ee7b5df708a193d40ea324482d86621be3b4075623d906511e4",
+          "bytes": 78080
+        },
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-final-public-installer-chain-20261017/consumer/inputs/build/dos64.map": {
+          "sha256": "bf2e8c760b8fe4f2341c95169eeaa85f0107a7a21a372d0f73aa1b87f2f17d40",
+          "bytes": 99727
+        }
+      },
+      "passed": true,
+      "actual_groups": 1,
+      "columns": 80,
+      "generated_START_CFG_unmodified": true,
+      "genuine_DOS_VER_all_A_DIR_pages": true,
+      "actual_CIA_Finish_privateSafe_one_known_C_CLOSE": true,
+      "scope": "model; guest XT endpoint for DOS keys; actual native CIA held-scan Finish; no physical acceptance"
+    }
+  },
+  "consumers": {
+    "SETUP80": {
+      "guest_instructions": 598118,
+      "ticks": 39906,
+      "pages": 1,
+      "A_entries": 36,
+      "free_bytes": 8192,
+      "Finish_privateSafe": true,
+      "one_known_C_CLOSE": true,
+      "whole4M_C_exact": true,
+      "CIA_events": 5
+    },
+    "CONFIG40": {
+      "guest_instructions": 594013,
+      "ticks": 39249,
+      "pages": 1,
+      "A_entries": 36,
+      "free_bytes": 8192,
+      "Finish_privateSafe": true,
+      "one_known_C_CLOSE": true,
+      "whole4M_C_exact": true,
+      "CIA_events": 5
+    },
+    "CONFIG80": {
+      "guest_instructions": 598118,
+      "ticks": 39897,
+      "pages": 1,
+      "A_entries": 36,
+      "free_bytes": 8192,
+      "Finish_privateSafe": true,
+      "one_known_C_CLOSE": true,
+      "whole4M_C_exact": true,
+      "CIA_events": 5
+    }
+  },
+  "intake_pins_current_exact": 1566,
+  "unchanged_parent_seals": true,
+  "models": "borrowed exact qualified source-built c9f7 SETUP/cold and earlier sealed CONFIG; no unchanged compile repeated",
+  "no_reconstructed_CFG_START_in_consumers": true,
+  "initial_2MiB_C": "created by actual native SETUP from genuine3DOS; not hostcreated",
+  "physical": false,
+  "not_claimed": [
+    "Turbo repeated here",
+    "Insert/Save repeated here",
+    "fresh hardware acceptance",
+    "human physical keyboard",
+    "unimplemented V1 behavior"
+  ],
+  "production_edits": false
+}

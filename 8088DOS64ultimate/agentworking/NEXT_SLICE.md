@@ -1,3 +1,9 @@
+# Immediate next — native Insert diagnosis and Ultimate recovery, 2026-10-17
+
+1. Compiled worker isolates first same-drive Insert error11/phase5/leaf4: validate exact native input/path/fixture/model/rawUCI cause and repair host activeGUI failure lifecycle before any long replay. Preserve knownclosed/canResume/oldmount precommit evidence; do not yet infer nativeproductbug. No source change until focused repro.
+2. CIA sole owner: physical COPY frame76 SEQPUT/pause/configPUT reset, ACTIVE364c reserved/Manual observed/quiet unknown. Source-backed narrow readonlyWAIT76 cancellation/knownclose recovery under preparation; memory worker independently examines downloadedfirmware commonPUT/control routes offline. No recoverydispatch yet. User reset authorization persists; no human permission request needed.
+3. Final public SETUP/CONFIG40/80/threeSTART DOS/Finish six-machine chain is now Rootaccepted6795pins. Public518base/25package/15builder and fullFDISK/Turbo model proofs likewiseaccepted; do not repeat unchanged longgates. Continue physicalfinal nativeSETUP/media/20MiB/Turbo and humanchecklist after recovery. Alltenfinalrelease gatesopen, performancepostV1. Commit locally/no push.
+
 # Immediate next — public1506 consumer and hardware qualification, 2026-10-17
 
 Public34-path promotion and source-built matching12/ZIP are now verified, including all518 base tests and25+15 host controls. Do not repeat these unchanged broad checks. Finish Root intake of sealed full FDISK/Turbo workflows; memory worker next checks actual final SETUP→generatedSTART→DOS/Finish and focusedCONFIG40/80, reusing qualified model where exact. CIA prepares reviewed paired32KiB transport/purpose offline; sole hardware ownership and no-dispatch-until-concrete-review remain. Then execute physical final install/media/Turbo and human matrix. All ten release gates still open. Performance remains post-V1; commit locally, never push.
