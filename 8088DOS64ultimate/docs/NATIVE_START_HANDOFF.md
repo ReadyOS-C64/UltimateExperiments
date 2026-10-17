@@ -104,7 +104,7 @@ one-byte START headroom requires a measured overlay/startup design; do not reuse
 ABI1 reserved bytes or assume unallocated REU is spare. See the
 [same-folder options design](NATIVE_SETUP_CONFIG.md#same-folder-emulator-options).
 
-Current components: public `make setup-release-tests` runs four actual Zig/Peddle descriptor groups and four host-tool groups. Private staging controller faa30 and main cold consumer ce482 have separate native proofs; their composition, runnable START, setup UI and physical acceptance remain pending. Physical bulk32K c5 is accepted with complete recovery; it does not accept this launcher.
+Current public `make setup-release-tests` runs four actual Zig/Peddle descriptor groups and four host-tool groups. Public START has its 46-group native model proof. The complete SETUP source build now reproduces c45dea7b, whose model coordinator creates and verifies all five outputs. The unmodified generated launcher and A/B/C/config boot genuine DOS with public main c6e43fce after its startup-clock fix: VER, paged A listing and paged C:\DOS listing return to C>. Physical SETUP/START/new-main acceptance, whole-session error UI and reconfiguration remain pending. Earlier physical bulk transfer acceptance does not qualify this launcher.
 
 ## Standalone launcher build
 

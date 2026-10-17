@@ -47,4 +47,14 @@ Publish a compact binary options record in explicitly allocated REU space, with 
 
 The qualified private parser accepts `[emulator]`, optional `schema=1`, and `initial_columns=40|80` with default 80. It bounds files to 1,024 bytes, lines to 128 bytes and input chunks to 64 bytes; it checks complete values and rejects unknown or duplicate keys. This parser does not apply settings or prove successful file EOF/closure. Its production integration is still pending.
 
+Example for the planned startup integration:
+
+```ini
+[emulator]
+schema=1
+initial_columns=40
+```
+
+After integration, editing this file will take effect on the next launch without regenerating START. Missing INI will use defaults; an unreadable or malformed present file must report an error rather than silently using defaults. REU holds the validated binary handoff only, so its surviving contents cannot substitute for reading the current file.
+
 Acceptance requires actual parser/consumer integration tests for defaults, supported values, malformed/oversize input, unsupported versions, stale/corrupt records, cancellation, arena guards and file closure; then cold START-to-DOS tests and physical Ultimate qualification. The existing public launcher does not yet read INI or consume a settings record.
