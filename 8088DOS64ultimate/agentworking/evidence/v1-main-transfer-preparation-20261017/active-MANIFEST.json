@@ -1,0 +1,25 @@
+{
+  "scope": "NEW_FOLDER_DEVELOPMENT_PACKAGE_STAGE_ONLY",
+  "owner": "root",
+  "predecessor_sha256": "cdd8a0e5e9525aa07ac9c444a23a4a1a893a6e0ffea4c8286f88e2f326a241ef",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-v1-package-main-active-stage-20261017",
+  "original_inventory": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy-wait76-recovery-purpose-20261017/work/original-inventory.json",
+  "inputs": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/main-v1-ultimate-active-stage-20261017/worker.py": "5a96be09858fb0cfc08fa7e34b07dfee7146956dc3d86406b42acbdf994fd9e2",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/main-v1-ultimate-active-stage-20261017/PAYLOAD.json": "85616a435be83d0beddb20710cc8ccaf138acf36e36ec5ce185a9bd192b36c20",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/main-v1-ultimate-active-stage-20261017/supervisor.py": "eab464a9978931a15b6663a688180159caa5476dfcaba56992cf3d831cb97191",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/main-v1-ultimate-active-stage-20261017/dispatch-owned.sh": "3e7c2a17a29f8e7b923bad7d653d498d873a3c7d6ca8f87c4b7cd971cd7db4b5",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy-wait76-recovery-purpose-20261017/work/original-inventory.json": "5e1111713e028e78f887aabfea4da8c6e4127a0ba3b7b55d562d040c0c717641",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/development/5273c00/DOS64-development-5273c00.zip": "daf98d2ebf17cb4a0d456410d0fcb19b144bcaaadf4661185772e8164e376ab2",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-v1-package-main-stage-20261017/RESULT.json": "c159b3abf47d7fef4f835374fe2da656141ff93fb9243de835f75751d8df89fa"
+  },
+  "FTP_create_directory_only": "/usb1/DOS64_TEST/v1-active-main-20261017",
+  "files": 20,
+  "full_STOR_RETR_byte_equality_required": true,
+  "C64_control": false,
+  "REU_UCI_or_native_execution": false,
+  "overwrite_existing_directory": false,
+  "retry": false,
+  "end_seconds": 120,
+  "FTP_mode": "activePORT;20s boundeddatawait"
+}

@@ -1,0 +1,6 @@
+{
+  "status": "ROOT_REVIEWED_FRESH_FOLDER_STAGE_ONLY",
+  "manifest_sha256": "ded702ff7e111919382da17f8d25e311905a63e76a0ef43f9f356d34eb516a50",
+  "developmentZIP_verified": "daf98d2ebf17cb4a0d456410d0fcb19b144bcaaadf4661185772e8164e376ab2",
+  "scope": "FreshMKD refuses existing path;20 matched source files incl3 user originals,fullbyteSTOR/RETR,221QUIT;noCPU/REU/UCI/native/baselinechange. SoleRoot detached worker. No installer acceptance claimed."
+}
