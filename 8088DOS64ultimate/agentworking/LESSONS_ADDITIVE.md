@@ -427,3 +427,11 @@ When sharing LOAD/STORE request descriptors, a repeated local label is not a saf
 ### 2026-10-17 Root consumer review expectations
 
 Read the frozen producer's literal program/output before asserting a guessed string. Compare clock progression only within the same VM/session; fresh START seeds a new epoch and its absolute BDA ticks need not exceed a previous VM's. Two Root read-only review draft failures are retained in the final Turbo/FDISK archives; neither required native changes or replay.
+
+### 2026-10-17 Do not equate a GUI wait label with delivered input
+
+The sameone-poll helper sometimes made20 CIA reads, but originalDISKCOPY timing made10 reads forB, zero forL/A/N/K/./I/M, then10 forG; intended /Home/SWAPBLANK.IMG became /Home/SWAPG. Pre/postDOS and a shiftedtiming targetprompt allpassed, so those positives alone could not isolate the firstfailure. Reproduce precise chronology, logscan deltas and validate the exact private editor path beforeReturn. Hold both keypress/release until observed scanner progress within a budget; no fixeddelay pacing. GUI errors require GUI-aware closure, never an unrelated DOSpause command.
+
+### 2026-10-17 — distinguish native completion from host validation errors
+
+The narrow readonly recovery completed CLOSE successfully, then its host passed bytearray to a bytes-only source verifier. Preserve the failed controller result and repair readonly validation against captured fullRAM; never replay a successful close merely to fix a host type. C64U CPU speed enums below10 are padded (" 1"), so REST must encode the leading space. Match actual configuration literals rather than guessing display labels. The first rejected400 occurred before native mutation and original settings were restored. A single high operand change from JMP082E to JMP402E avoids mixed-address risk while redirecting an owned stopped loop. This is development cleanup, not a release feature or general uncertain-writer recovery authority.

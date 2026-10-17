@@ -1,0 +1,15 @@
+{
+  "status": "failed",
+  "physical": true,
+  "scope": "OWNED_READONLY_CLOSE2",
+  "prior_COPY20M_stays_failed": true,
+  "REU_access": false,
+  "known_closed": false,
+  "BASIC_ready_verified": false,
+  "fresh_source_admission": true,
+  "first_error": "AssertionError()",
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/main-readonly-close-20261017/worker.py\", line 58, in <module>\n    profile_changed=True;tx('PUT','configs/U64%20Specific%20Settings/CPU%20Speed?value=1');tx('PUT','configs/U64%20Specific%20Settings/Turbo%20Control?value=Manual');p=tx('GET','configs/U64%20Specific%20Settings')['U64 Specific Settings'];assert p['CPU Speed']=='1'and p['Turbo Control']=='Manual'\n  File \"/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/main-readonly-close-20261017/worker.py\", line 28, in tx\n    raw=b''.join(parts);save('response-%03d.bin'%seq,raw);save('response-%03d.json'%seq,dict(plan,status=resp.status,headers=headers,bytes=len(raw)));assert resp.status==200\nAssertionError\n",
+  "original_settings_media_equal": true,
+  "inputs_after_exact": true,
+  "requests": 14
+}

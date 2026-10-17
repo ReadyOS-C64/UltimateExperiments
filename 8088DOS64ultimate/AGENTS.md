@@ -4,6 +4,7 @@ Scope is this directory. Read README.md, agentworking/STATUS.md, agentworking/NE
 
 ## Phase and implementation
 
+- User direction (2026-10-17, latest): let existing subagents finish their assigned work, then do not spawn or reuse any further agents. Complete remaining fixes and qualification in the main thread. Transfer sole hardware ownership from the finishing CIA worker to Root through the exact recorded predecessor; no concurrent device controllers.
 - User direction (2026-10-17): the V1 endpoint is docs/V1_ENDPOINT.md. Prioritize native installer/configuration, reliable floppy/HD workflows and a complete Turbo Pascal IDE edit/save/compile-to-disk/run/restart test on the Ultimate. Defer further performance improvements and compiled-code activation until after V1; retain correctness and honest existing measurements.
 - Implementation is authorized (2026-10-14): progressively verify and make local commits; do not push to GitHub.
 - User decisions: target 6502/6510 assembly; Zig host assertions around the actual assembly in Peddle; ZeroPage is a testing reference, not the target compiler.

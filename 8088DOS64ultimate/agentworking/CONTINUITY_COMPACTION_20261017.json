@@ -1,0 +1,17 @@
+{
+  "status": "CURRENT_RECORDS_SHORTENED_FULL_HISTORY_PRESERVED_BYTEEXACT",
+  "archives": {
+    "STATUS": {
+      "archive": "agentworking/STATUS_HISTORY_20261017.md",
+      "bytes": 141967,
+      "sha256": "f6162625c204eb536f11fb2e937eede3db296cc8367f6020f7c21f8868244182"
+    },
+    "NEXT_SLICE": {
+      "archive": "agentworking/NEXT_SLICE_HISTORY_20261017.md",
+      "bytes": 80827,
+      "sha256": "2ad327348c6510d5ab65df3b227768939a75a1149a5887628dd34c22b3c68c68"
+    }
+  },
+  "no_source_or_native_binary_change": true,
+  "user_main_thread_only_direction_recorded": true
+}

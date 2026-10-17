@@ -1,0 +1,12 @@
+{
+  "status": "ROOT_REVIEWED_ENUM_FIX_BEFORE_ANY_NATIVE_DISPATCH",
+  "native_helper_unchanged": true,
+  "prior_native_checks_reused": 4,
+  "prior_source_admission_checks_reused": 14,
+  "original_preflight_failure_retained": {
+    "run": "agentworking/runs/c64u-readonly-close2-main-20261017",
+    "HTTP": 400,
+    "reason": "CPU Speed is a padded enum; value=1 rejected. Firmware source literal \" 1\" requires value=%201. No source/helper/redirect/resume/reset or native CLOSE dispatched. Original inventory restored."
+  },
+  "manifest_sha256": "09a75cac95ea02d18820783d297220eeeff23bea193923d379238b081a370108"
+}

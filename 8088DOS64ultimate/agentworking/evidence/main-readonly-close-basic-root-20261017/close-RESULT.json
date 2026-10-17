@@ -1,0 +1,17 @@
+{
+  "status": "failed",
+  "physical": true,
+  "scope": "OWNED_READONLY_CLOSE2",
+  "prior_COPY20M_stays_failed": true,
+  "REU_access": false,
+  "known_closed": false,
+  "BASIC_ready_verified": false,
+  "fresh_source_admission": true,
+  "one_byte_redirection_ACK_readback": true,
+  "native_resume_ACK": true,
+  "first_error": "ValueError('Coherently paused raw fullRAM count')",
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/main-readonly-close-choice-fixed-20261017/worker.py\", line 69, in <module>\n    tx('PUT','machine:pause');closed=ram('RAM-close-paused');copy=bytearray(closed);copy[0x830]=8;ad.source.verify(copy);assert closed[0x402e:0x402e+len(payload)]==payload;assert closed[0x82e:0x831]==bytes.fromhex('4c2e40');assert closed[0x4500:0x4504]==b'CL2\\xa5',closed[0x4500:0x4510].hex()\n  File \"/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy-wait76-recovery-purpose-20261017/work/copy_reader_host.py\", line 31, in verify\n    if not isinstance(ram,bytes)or len(ram)!=65536:raise ValueError('Coherently paused raw fullRAM count')\nValueError: Coherently paused raw fullRAM count\n",
+  "original_settings_media_equal": true,
+  "inputs_after_exact": true,
+  "requests": 27
+}

@@ -1,0 +1,34 @@
+{
+  "status": "PASS_FUNCTIONAL_WORKFLOW_WITH_RETAINED_HOST_ORACLE_QUALIFICATIONS",
+  "native_sha256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+  "model_sha256": "4c29d386c01b724d4a4ee10a2f4abbb97bd124ef316d04fe413b8185803fd69f",
+  "actual_genuine_same_drive_DISKCOPY_A_A": true,
+  "actual_CIA_Insert_blank_and_session_write_enable": true,
+  "actual_native_SaveAs": "/Home/SINGLE.IMG",
+  "all720sectors_and37payloads_exact": true,
+  "actual_Finish_fresh_START_genuine_DOS_C_read_second_Finish": true,
+  "all16_remote_files_preserved_after_fresh_reads": true,
+  "original_A_B_blank_and_2MiB_C_exact": true,
+  "native_changes": false,
+  "hardware": false,
+  "host_qualifications": [
+    "Original one-poll CIA helper dropped path keys; exact chronology counter reproduced /Home/SWAPG. This failed predecessor had no Finish and is not accepted.",
+    "Corrected full run retained and explicitly acknowledged two post-Resume equality assertions at commands4/9: helper ran guest ticks before comparing with paused pre-menu bytes/count. They do not establish a native fault or a successful exact-preservation instant. Final complete image/C/Finish/fresh checks independently passed.",
+    "One pre-VM syntax failure; one mistakenly inventoried generated stderr output drift; content copy chflags failure. All retained and qualified; no native replay for closure metadata."
+  ],
+  "duration_seconds": 235.180542834,
+  "provider_source_records": 1583,
+  "immutable_content_copies": 748,
+  "direct_media_oracle": "FINAL_MEDIA_ASSESSMENT.json",
+  "actual_exit": "run/RESULT.json",
+  "exit_code": 0,
+  "source_closure": "CLOSURE_CHECK.json",
+  "focused_counter": "diagnostic/run-target-exact",
+  "corrected_TARGET_control": "diagnostic/run-target-exact-fixed",
+  "GUI_error_Return_Finish": "diagnostic/run-target-exact/ERROR_LIFECYCLE.json",
+  "limitations": [
+    "No physical acceptance, no same-drive DISKCOMP claim, no new emulator feature/code.",
+    "Borrowed source-qualified Peddle model, not rebuilt in this slice.",
+    "No new whole-4MiB equality claim across guest execution; inactive A10/B18, exact runtime MNU windows, complete C/original remote media and all720 destination sectors were checked."
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "cases": [
+    "retained_readonly_terminal",
+    "refuses_code",
+    "refuses_handle",
+    "refuses_mode",
+    "refuses_target",
+    "refuses_COPY_uncertain",
+    "refuses_CWD_changed",
+    "refuses_active_raw",
+    "refuses_transport_recovery_failed",
+    "refuses_wrong_terminal",
+    "refuses_cc65_stack",
+    "refuses_mapping_epoch",
+    "refuses_previous_CWD",
+    "refuses_old_jump"
+  ],
+  "device_calls": 0
+}

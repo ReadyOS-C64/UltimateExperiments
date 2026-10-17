@@ -1,0 +1,47 @@
+{
+  "status": "ROOT_ACCEPTED_OWN_READONLY_CLOSE_AND_COLD_BASIC",
+  "scope": "Fresh original stopped readonly target2/unknownCLOSE. New narrow helper at402E reuses exact prior native FILES/UCI, one atomic JMP high-byte redirects own terminal; one CLOSE2. No new OPEN/COPY/READ/file writes/REU. Conditional fresh-knownclosed reset then advancing BASIC READY pair and finalResume.",
+  "native_source": "280a8bf74530ccf8a30cd95aac1478e7bb167c7c4a678d4c9e6a6ac32e2de27c",
+  "helper_sha256": "d528c73b40e4916de0d6e85932bc265297b0c5214bbad82464fd8b4609f9dc79",
+  "model_controls": 4,
+  "old_terminal_admission_controls": 14,
+  "closed_terminal_admission_controls": 11,
+  "native_close_result": "434c32a5020000000900000000000000",
+  "native_fresh_knownclosure": true,
+  "original_settings_and_mounted_media_exact": true,
+  "BASIC_jiffies": [
+    16,
+    34
+  ],
+  "all_owned_PIDs_absent": true,
+  "all_phase_inputs_still_exact": true,
+  "prior_COPY20M_stays_failed": true,
+  "current_full4MiB_not_proven": true,
+  "original_CPU_RAM_application_not_restored": true,
+  "retained_first_failures": [
+    "First CPU enum literal1 rejected400 before helper/native action; exact padded \" 1\"%201 sourcefix, original profile restored.",
+    "Second native CLOSE succeeded, but readonly bytes verifier rejected a host bytearray. Root corrected readonly evaluation with bytes against retained fullRAM; no repeat CLOSE. Separate fresh-knownclosed purpose then reset safely."
+  ],
+  "archive": {
+    "main-readonly-close-basic-root-20261017/old.inc": "8b5cc62747c8443b1461cbece96d3188d60f51457680fe481df24d82a5661b24",
+    "main-readonly-close-basic-root-20261017/initial-RESULT.json": "2251e368d2dfd8d4a59467bfb151322c7f970bb9ecaaf33e708e50f67aec537c",
+    "main-readonly-close-basic-root-20261017/basic-MANIFEST.json": "e132d7bbe57cce1287609b55442a3e1f048894956339b4bbae05f194bf5a4c32",
+    "main-readonly-close-basic-root-20261017/initial-MANIFEST.json": "b303175b953f685a91dd299daa383d8140bc9b7362a81ad9dbf0e2604680a6b8",
+    "main-readonly-close-basic-root-20261017/close-ROOT_REVIEW.json": "4c8700bc34e4bf4632cf7e02e7263a00df60564a0a8edf826604c27f937cdbd6",
+    "main-readonly-close-basic-root-20261017/NATIVE_TESTS.json": "240bbbd1930d710fec8b0fdd26236e98e95fe432d12fb2a279420bc506ab4864",
+    "main-readonly-close-basic-root-20261017/close.s": "938f2387d3126733edb9fcb7f07ddede208f8a0892859a44d56f8ff692f6f66d",
+    "main-readonly-close-basic-root-20261017/close-RESULT.json": "5a7fae6125505dce8c7a78ec174b55e0f0c1239d84626c30124f2995db29bd17",
+    "main-readonly-close-basic-root-20261017/initial-ROOT_REVIEW.json": "db9031a5678050a1137c4b4ee24ecefde7878b7acb16032f59b108f9b94d0ee4",
+    "main-readonly-close-basic-root-20261017/basic-ROOT_REVIEW.json": "4219a5557040e4034ca0bf72132f975a06550f12021962086aed2a06ca13b597",
+    "main-readonly-close-basic-root-20261017/basic-worker.py": "d1ae505427e5a3f7677325833a4b39938ed5ee1a883328b21f63df6f75bd79ce",
+    "main-readonly-close-basic-root-20261017/basic-exit.json": "714e79b17ecbf6b2010a39fb0e09edd78dae42a44cbd4b64145b550bed95ef10",
+    "main-readonly-close-basic-root-20261017/basic-RESULT.json": "de60fcd98bc1196db2e88f79dd7cdc4bdbb0d5bd1da67e21e7907840f811de58",
+    "main-readonly-close-basic-root-20261017/initial-exit.json": "b2a6d7d55119a2205c3a52c8a26512fd53d8947ace0e8d714d10a0e1a4ea2c39",
+    "main-readonly-close-basic-root-20261017/initial-worker.py": "10c3a6e5a33e0e58dbbb7181f1b17704896be41260fec068380f976dc3a0e9dd",
+    "main-readonly-close-basic-root-20261017/close.bin": "d528c73b40e4916de0d6e85932bc265297b0c5214bbad82464fd8b4609f9dc79",
+    "main-readonly-close-basic-root-20261017/close-exit.json": "fd257aa98ab2c170dd84481f0ee9c110f92abfe20669ecf2585db64d777ef656",
+    "main-readonly-close-basic-root-20261017/close-worker.py": "9e1ddb4d7f59c2f1504eaf1d1dccdf0682031673ac2e841ed272f236a95347e1",
+    "main-readonly-close-basic-root-20261017/ADMISSION_TESTS.json": "f548b597c14a94b7186b21c68d7765711787339f8a920d282d153456962dc04a",
+    "main-readonly-close-basic-root-20261017/close-MANIFEST.json": "09a75cac95ea02d18820783d297220eeeff23bea193923d379238b081a370108"
+  }
+}

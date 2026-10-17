@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "source_and_saved_image_sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+  "bytes": 368640,
+  "sectors": 720,
+  "sector_size": 512,
+  "full_image_equal": true,
+  "all_file_payloads_equal": true,
+  "payload_count": 37,
+  "source_A_original_exact": true,
+  "source_B_and_blank_exact": true,
+  "source_C_2MiB_sha256": "3141fc19bcb040a1c58e78674c59679d7427ac7ba8d3f80556dbf877a67c2648",
+  "source_C_exact": true,
+  "CFG_A_path": "/Home/SINGLE.IMG",
+  "CFG_body_crc": "5B2130E7",
+  "CFG_home_B_C_fields_unchanged": true,
+  "no_active_journal_NEW_OLD": true,
+  "remote_files": 16,
+  "actual_fresh_START_media_load": true,
+  "actual_fresh_C_TYPE": true,
+  "actual_second_Finish_allfiles_exact": true
+}

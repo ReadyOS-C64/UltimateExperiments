@@ -1,0 +1,48 @@
+{
+  "status": "OFFLINE_CONCRETE_RECOVERY_CONTRACT_NATIVE_COMPONENT_PROVED",
+  "ACTIVE_predecessor_sha256": "364cdf7f114f4334ca94bc6c52f5c5d8187685ce13d129d6d3805d2d05a43d70",
+  "old_campaign_failed": true,
+  "new_source_or_SYS": false,
+  "new_COPY_or_READ": false,
+  "REU_access_or_write": false,
+  "FTP": false,
+  "fullboard_reset": false,
+  "fresh_pause_and_fullRAM_required": true,
+  "fullRAM_parts": [
+    {
+      "address": 0,
+      "count": 32768
+    },
+    {
+      "address": 32768,
+      "count": 32768
+    }
+  ],
+  "same_acknowledged_pause_epoch": true,
+  "durable_each_part_before_next": true,
+  "original_shared_pair_endpoint": 15,
+  "native_cancellation_max": 1,
+  "cancellation_exact_address": 610,
+  "cancellation_exact_bytes": "01",
+  "readback_exact_required_before_resume": true,
+  "resume_after_cancel_max": 1,
+  "SEQ_GO_writes": 0,
+  "source_replacement": false,
+  "native_close_requirement": "Fresh exact source/NP0/privateP_STOP/first7or8/cleanup0/handle0/noRAW/noCOPYuncertain/CWDrestored/UCIquiet/CstackCFFF/frame76_offset2490368; otherwise noreset",
+  "BASIC_after_knownclosed_only": true,
+  "documented_C64_reset_max": 1,
+  "BASIC_prefix_bytes": 2048,
+  "BASIC_observation_max": 64,
+  "BASIC_advancing_pair_required": true,
+  "configuration_repair": "Separately whitelisted once exact captured-original Registers64 PUT after freshidentity+exactManual64/fullinventory guard; structurally independent finally/readback/inventory, never guessedstate repair",
+  "native_and_cold_whole_endpoint_seconds": 180,
+  "independent_config_endpoint_seconds": 45,
+  "proposed_supervisor_seconds": 300,
+  "proposed_grace_seconds": 60,
+  "request_max_proposed": 500,
+  "no_retry_or_automatic_fallback": true,
+  "original_CPU_RAM_application_restore": false,
+  "current_whole4MiB_or20MiB_claim": false,
+  "controller_constructor_detached_proof": "NOT_IMPLEMENTED_IN_THIS_ADMISSION_COMPONENT; must be built/reviewed before anydispatch",
+  "dispatch_authorization": false
+}

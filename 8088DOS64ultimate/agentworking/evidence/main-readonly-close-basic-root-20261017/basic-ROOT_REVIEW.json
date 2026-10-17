@@ -1,0 +1,19 @@
+{
+  "status": "ROOT_VERIFIED_NATIVE_CLOSE_THEN_FRESH_RESET_ONLY",
+  "manifest_sha256": "e132d7bbe57cce1287609b55442a3e1f048894956339b4bbae05f194bf5a4c32",
+  "actual_admission_controls": [
+    "positive_retained_native_CLOSED",
+    "refuses_code",
+    "refuses_patched_jump",
+    "refuses_helper_code",
+    "refuses_helper_result",
+    "refuses_FILES_handle",
+    "refuses_FILES_error",
+    "refuses_UCI_state",
+    "refuses_COPY_uncertain",
+    "refuses_CWD_changed",
+    "refuses_cc65_stack"
+  ],
+  "native_close_repeated": false,
+  "previous_host_failure_preserved": true
+}

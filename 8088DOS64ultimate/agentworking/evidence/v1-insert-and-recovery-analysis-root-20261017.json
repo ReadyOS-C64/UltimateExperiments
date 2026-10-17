@@ -1,0 +1,30 @@
+{
+  "status": "ROOT_ACCEPTED_OFFLINE_COMPONENTS_ONLY_NO_RECOVERY_DISPATCH",
+  "reviewed": [
+    {
+      "component": "recovery",
+      "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy-wait76-recovery-admission-20261017/MANIFEST.json",
+      "sha256": "993d2a45ea462fcddfca3d20973c7540f685a046e13e597653fe2c861e00a4dd",
+      "pins_verified": 42
+    },
+    {
+      "component": "REST",
+      "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/rest-control-reset-offline-20261017/MANIFEST.json",
+      "sha256": "1c90f630ebaaf5f830bf05c15ae22ca08eebb3c3184b4815b13c26d21e3c0eb7",
+      "pins_verified": 36
+    },
+    {
+      "component": "Insert",
+      "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/same-drive-insert-second-view-20261017/MANIFEST.json",
+      "sha256": "a1dace68f88cd6922df75095b31f45c01f20d12d7eee09df97ca8df25f3909c1",
+      "pins_verified": 16
+    }
+  ],
+  "native_cancel_controls": 3,
+  "host_admission_groups": 6,
+  "new_native_code": false,
+  "API_Reset54_cause": "unestablished; inventoryGET success does not establish C64 control/FILESquiet",
+  "same_drive_Insert": "exactoriginaltiming reproduced path /Home/SWAPG instead of /Home/SWAPBLANK.IMG due hostCIA delivery; correctedheldscan/pathconfirmation underwork; no native defect established",
+  "recovery_owner_after_handoff": "Root; currentCIA job builds executablepurpose only, no devicecalls",
+  "user_steering": "Existingagents finishassignedwork; no further spawning/reuse/delegation; allremainingwork mainthread"
+}

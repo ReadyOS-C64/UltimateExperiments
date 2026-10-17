@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "status": "published",
+  "audience": "owner-private unchanged",
+  "url": "https://dos64-ultimate-lab.klumsy.chatgpt.site",
+  "project_id": "appgprj_6ad135ebbb8481919ddec553e219ff16",
+  "source_commit": "20360acc9360d09bccb133a560e98bd1f2f2a11b",
+  "version_id": "appgprj_6ad135ebbb8481919ddec553e219ff16~appgver_f534938812e88191a8f4c558d7396809",
+  "deployment_id": "appgdep_6ad3d0b0ef9081919d439850abd53820",
+  "deployment_status": "succeeded",
+  "deployed_at_UTC": "2026-10-17T19:47:03.767224+00:00",
+  "local_date": "2026-10-17",
+  "checks": {
+    "html_ids": 92,
+    "DOM_interaction_groups": 19,
+    "javascript_syntax": true,
+    "links_hashes_hosting_identity": true,
+    "video_poster_ZIP_local_HTTP200_and_exact_hash": true,
+    "archive_video_ZIP_hashes_exact": true,
+    "development_ZIP_16_allowlisted_files_12_native_hashes_no_vendor_media": true,
+    "new_browser_visual_playback_audit": false,
+    "browser_limit": "Browser is not available: iab",
+    "owned_local_preview_stopped": true
+  },
+  "scope": [
+    "Source5273c00/runtime1506210a, 518base/25package/15builder pass",
+    "SETUP/CONFIG40/80/generatedSTART/DOS/Finish six-machine final model chain accepted",
+    "Genuine FDISK reset/FORMAT/SYS/COPY/fresh persistence and TP7.01 IDE/edit/save/diskEXE/run/Finish/fresh40/80/full20MiB model proofs accepted",
+    "Physical latestbuild/V1 not accepted; frame76/2490368B APIreset and recoverypending explicitly retained",
+    "Same-drive Insert host keyboard character loss does not establish native defect or successor completion",
+    "All10 final V1 gates open; optimization/compiled activation deferred until postV1; historical2.65/3.96 ratios unchanged",
+    "Historical video/playback/download/chapters/source/screenshots preserved byteexact and dated",
+    "Optional development ZIP exact acceptedSHA, clearlynotV1"
+  ],
+  "snapshot_sha256": "3b4210ca5a69e42fd04d1ae82c52f2eca38eb3f4d32ce10c84fa4fc120208551",
+  "archive_sha256": "4ced64bdd61ee8b66734d6dcd7ec2a2645c082ac8c0294fb1a4ec6a13971b4b0",
+  "input_evidence": {
+    "v1-reset-public-promotion-root-20261017.json": {
+      "bytes": 937,
+      "sha256": "de24e7da8a7f600fd8c0343baa5d742c88846c5d3430a5d9690be202c4b5fe75"
+    },
+    "v1-reset-fdisk-root-20261017.json": {
+      "bytes": 986,
+      "sha256": "a9a63d435f1137ed5a9e2b78c6c893e1113becf9c50a0547a55c6bf0ee225241"
+    },
+    "v1-reset-turbo-root-20261017.json": {
+      "bytes": 1225,
+      "sha256": "195ee99cf577369218a1ffe8859639aafad9954733405d3de9237f7f323d9bd3"
+    },
+    "v1-reset-installer-config-root-20261017.json": {
+      "bytes": 1107,
+      "sha256": "6d2ecaf8b7c7e4c112e206fe6d008d344af46fe180d8313fc709c84df8845444"
+    },
+    "native-copy20m-splitread-failure-root-20261017.json": {
+      "bytes": 1435,
+      "sha256": "763abcb74acaedad6659ae0b13406828a4eb4d4b3b08732fea4ae0b5a71789c5"
+    }
+  },
+  "no_emulator_hardware_or_parent_git_changes": true
+}
