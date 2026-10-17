@@ -1,3 +1,7 @@
+# Next loader generation — 2026-10-17
+
+Use40KiB loader09e12ff0/9f9e164f and unchangedrawRCVa0ba9fb0 when packing actualcontroller/BIND. Map3F0000..1FFF controller and3F2000..3FFF BIND; datafixture proof doesnotexecuteeither. Realruntime/unit broker/core/phase aliases must match forthcoming BIND nativeprofile. Preserve stage8/cache0, returneveryphaseframe beforeexchange, and no CLEAN untildurablebinding. IndependentRootstartupreview remains on frozen32KiB b5f36c82; that parent staysimmutable.
+
 # Next after actual START recovery integration — 2026-10-17
 
 Memory reviews Rootb5f36c82/491, emphasizing fixed unknown-CLOSE/no rearm, phase lifetimes, private nojournal boot and precise source qualification. Root composes action-shell6eeb43a3/651 into actualCUI intent and asynchronousworker reloads. Compiled finishes WIREreceipt→CFG/D64R/D64O→CLEAN-last. ExtraBIND phase needs explicit asset packing; preserve fullthirdfloppy. Explicit recovery/archive/rollforward and user-visible presentation remain needed; current gate safelyblocks only.

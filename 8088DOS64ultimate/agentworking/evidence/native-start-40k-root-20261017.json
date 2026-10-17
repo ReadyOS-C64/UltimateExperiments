@@ -1,0 +1,37 @@
+{
+  "status": "private_40KiB_loader_verified",
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-journal-40k-root-20261017/MANIFEST.json",
+  "manifest_sha256": "9c25db129355c5140ddb40f320e081583b74561183ef44e2bd18af4b530092a5",
+  "pins": 344,
+  "actual_native_groups": 5,
+  "test_seconds": 6.486,
+  "before_after_source_products": 182,
+  "START": {
+    "sha256": "09e12ff01864ebb31b39e130bead3b60dd9e91bcf358d2c3c4512417db30cbab",
+    "bytes": 18432
+  },
+  "INO": {
+    "sha256": "9f9e164f34ffd9a77c93c8ed396cf35264586662dd3e2f8ca7dd1d537b955820",
+    "bytes": 7692
+  },
+  "RCV_raw_payload": {
+    "sha256": "a0ba9fb08f42d36df962e8141b7bbf37cf25eccb561a40456dd8986a47e5f413",
+    "bytes": 7297
+  },
+  "MNU": {
+    "sha256": "277b18891db800b4945bb02501211ef8a74d42b8ce568942c169d589e1f396a6",
+    "bytes": 40960
+  },
+  "default_profiles_exact": 2,
+  "mapping": [
+    "0000..5FFF ->3DA000..3DFFFF",
+    "6000..9FFF ->3F0000..3F3FFF"
+  ],
+  "third_floppy_guard_bytes": 368640,
+  "remaining_reserve_guard": "3F4000..3F7FFF",
+  "retired_RCVcache_overwritten_only_after_INO_restored": true,
+  "phase_aware_breakpoints": true,
+  "new_data_slots_executed": false,
+  "public_promotion": false,
+  "physical": false
+}

@@ -288,3 +288,7 @@ Private START3bc1656e remains18432B; INO7b81902f grows58B to7692B, mapped6000..7
 ## 2026-10-17 actual startup journal invocation
 
 START6d5ba2a7 fixed18432B: DATAends4F74/serializedtrampoline4FE4,26B MAINfree through4FFE; residentstateends8FAC,83B below9000. INOf7e421cc7692B6000..7E0B/free500. RCVrawa0ba9fb07297B6000..7C80/free895 (builderPRG7299B includes loadword); sharedprefix1350B/selector6546; BSS9000..94BD. Rawcache3E8000..3E9C80 retires before later mainstaging. Newprivategateflag1B;15BASMcallglue uses existingvolatileptr1, no newZP/SMC allocation. CPU/full4MiB guards pass; no publiclayoutchange.
+
+## 2026-10-17 40KiB modal source slots
+
+LogicalMNU40960B maps3DA000..3DFFFF24KiB plus3F0000..3F3FFF16KiB (controller and BIND8KiB budgets; datafixture-only execution proof).3F4000..3F7FFF16KiB remains guarded, separate from INOcache3F8000. Stage3E0000..3E9FFF overlaps retired RCVcache3E8000..3E9C80 only after actualRCVreturn/normalINOrestoration; testprovesno liveRCV use. NativeSTART initializedlayout unchangedMAINfree26/PREfree500/STATEends8FAC; source onlyuppercountconstant changed. Allthirdfloppy bytes guarded.
