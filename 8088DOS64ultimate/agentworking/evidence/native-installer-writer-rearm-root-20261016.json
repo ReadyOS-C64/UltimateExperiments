@@ -1,0 +1,78 @@
+{
+  "status": "PRIVATE_COMPONENT_TESTS_PASS_INDEPENDENT_REVIEW_PENDING",
+  "manifest": "agentworking/scratch/native-installer-writer-rearm/MANIFEST.json",
+  "manifest_sha256": "a9ed0ab943cd3db198ef94dd33cd9487b739f0f3103fd18ee160cdfef569a338",
+  "manifest_files": 211,
+  "native_sha256": "ce0fca70a7a77a1e0e805a355403d168062007a27fe9d2bf22bb5e2a626d3b57",
+  "tests": {
+    "python_writer_groups": 14,
+    "python_sourcecache_groups": 15,
+    "python_overlay_groups": 27,
+    "zig_groups": 12
+  },
+  "closure": {
+    "sources": 103,
+    "products": 45,
+    "before_after_equal": true
+  },
+  "growth": {
+    "native_resident_growth_bytes": 54,
+    "native_fat_growth_bytes": 212,
+    "new_permanent_BSS_bytes": 0,
+    "map_end": {
+      "resident": "5AF9",
+      "fat": "A96E",
+      "state": "BF70",
+      "high": "FED7"
+    },
+    "source_delta": {
+      "actual.zig": {
+        "parent": "1f002c1534bcfa5482c81e844ae8541d3be07a8d63985665c239cc7b36ecc59b",
+        "current": "fd72d20c04944fd9f409beacbb973327116a5508a7f3136bf45fc9fc127deba8"
+      },
+      "build.py": {
+        "parent": "dfce1892e42b83c2905c27a1fdde3c219d4bd3028638e1a340ddae00942082f7",
+        "current": "336fa829570750072ccbbe5663b1ef164e0cbb526bd8b6c545b16dd052beed04"
+      },
+      "build_bridge.py": {
+        "parent": "2a818cdfb45809a73138df15f49e7c92f44b772d6008c5835477ddc126bb42d3",
+        "current": "dfcbd963559f7aec7958873981edc5f05cc71dc707b07f8cbf18d1ace87631dc"
+      },
+      "install_writer.c": {
+        "parent": "adae704c44598a4512e8000a9122ddc7a7666fc8bbe9840536fa7baf0c99e321",
+        "current": "24cc7685b918aae80231285035f164eea6683f67a7ff6bd488fb6d2c7772dc29"
+      },
+      "install_writer.h": {
+        "parent": "f707b2c3fb625816b9e18b54096bf97b0e1986107ec9dcd9cda24f71e755b7a6",
+        "current": "58fa3136ed30dd80714ead7fded3546b70102889e81702f29c0af3924245d33a"
+      },
+      "setup_io.c": {
+        "parent": "71f22abb235101980617f9874380cffe07576f906f70bcc9a6e1fb70f23edab8",
+        "current": "9b3fdb99d28f8ab3a121d7af71f856aa671440b1266d7895b5551e2ecc025570"
+      },
+      "setup_io.h": {
+        "parent": "763e3705d9313e8d722a45ec173e9e7cf8e34f3501a2e600f99f1ee0b6d05491",
+        "current": "e6eca1ae72246a9c58efbd22a9dfed75da9daa4f0e09dda01ff1392cc28fb5ff"
+      },
+      "test_overlay.py": {
+        "parent": "77ddc55eb92863254e5421d1cacd8d8f09e28e345d4c31030f6d0271127b00e9",
+        "current": "aa3a7bed84ab02fd462ccc9ad260a2b8c32983d13f461a53cce7f07db6ed8284"
+      }
+    },
+    "first_failures": [
+      "first-cache-closure-fixture-failure preserved open source0 while helper wrongly expected allclosed",
+      "first-attestation-overlay-size retained exact original18587 baseline oracle; current18799 is actual+212B FAT growth"
+    ],
+    "component_only": true,
+    "independent_review": "PENDING",
+    "full_installer": "UNFINISHED"
+  },
+  "limits": [
+    "Private component only; not full SETUP or physical acceptance.",
+    "Group counts contain inherited controls and are not summed as unique tests.",
+    "Test fixture installs FAT by native DMA; complete dispatcher composition remains pending."
+  ],
+  "main_emulator_unchanged": true,
+  "physical_acceptance": false,
+  "no_push": true
+}

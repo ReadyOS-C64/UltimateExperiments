@@ -1,7 +1,7 @@
 # Next work — 2026-10-16
 
-1. Commit the independently reviewed public START build and tests; qualify it on the real Ultimate using a fresh owned A/B installation. CIA remains the only hardware worker. REST-only staging must establish complete source and saved-file bytes without relying on unhealthy FTP.
-2. Integrate the repaired native selection UI, private browser authority and agreed D64Q capsule into a resident SETUP dispatcher. Preserve selected paths before retiring UI; implement explicit repeated A/B/C writer lifecycle and cooperative keyboard cancellation. Finish fully verified native outputs, checked D64S launcher patch and configuration-last publication.
+1. Qualify the committed native START and D64S template on the real Ultimate using a fresh owned A/B installation. CIA remains the only hardware worker. REST-only staging must establish complete source and saved-file bytes without relying on unhealthy FTP; the local stager is not yet physically qualified.
+2. Independently review the frozen repeated-writer componenta9ed0ab9, then compose it with the repaired selection UI, private browser authority and D64Q capsule in a measured resident SETUP dispatcher. Preserve selected paths before retiring UI. Add derived-A/raw-asset persistence and cooperative keyboard cancellation, then finish fully verified outputs, checked D64S launcher patch and configuration-last publication. Repeated NF outputs now pass component tests; the complete installer still does not.
 3. Continue independent interpreter/compiled-block performance work against genuine DOS, preserving every timing, interrupt and memory-coherence boundary. Installer speedups do not satisfy the XT target.
 4. Complete user-facing Save/Discard/Swap, C-online contexts, physical graphics/human tests, VICE/IEC and the rest of the original plan.
 
