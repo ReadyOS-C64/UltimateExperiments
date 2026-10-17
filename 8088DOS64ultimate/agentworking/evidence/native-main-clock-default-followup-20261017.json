@@ -1,0 +1,26 @@
+{
+  "verdict": "PASS_ACTUAL_PUBLIC_DEFAULT_500",
+  "runtime_sha256": "c6e43fce3156f75cb62980b26d90a9d89173abdddb872a868005d664904cb2d3",
+  "command": "zig build test --summary all",
+  "actual_tests": 500,
+  "change": "Two test entry names now use stable n_finish_cold after helper refactor; same full cold continuation and assertions. No assembly change.",
+  "files": {
+    "tests/host/native_timer_startup.zig": {
+      "sha256": "791634592a6465ab9468be295ad672e532455baf1461463e9d8b91eaaa62e60e",
+      "bytes": 3615
+    },
+    "agentworking/scratch/native-main-clock-public-default-followup-20261017/native_timer_startup.zig": {
+      "sha256": "791634592a6465ab9468be295ad672e532455baf1461463e9d8b91eaaa62e60e",
+      "bytes": 3615
+    },
+    "agentworking/scratch/native-main-clock-public-default-followup-20261017/FULL_DEFAULT.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "agentworking/scratch/native-main-clock-public-default-followup-20261017/FULL_DEFAULT.stderr": {
+      "sha256": "0f9788556ccd05f6c78edab2c0e7c59a2ceffad541531e489745cef8e4b6c9c4",
+      "bytes": 2864
+    }
+  },
+  "physical": false
+}

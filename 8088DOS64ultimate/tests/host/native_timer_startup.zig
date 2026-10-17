@@ -44,7 +44,7 @@ test "bounded native cold timer seam seeds fresh raw epoch before enabling and T
  // This is the real bounded post-BIOS/input continuation, entered before its
  // first fresh sample. Import completion and source image are preconditions;
  // no DOS image is loaded or executed by this focused test.
- try call(&f,"@timer_sample",100000,0);
+ try call(&f,"n_finish_cold",100000,0);
  try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_irq_callback_enabled")));
  try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_pit_poll_enabled")));
  try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_pit_ready")));
@@ -59,7 +59,7 @@ test "cold timer sampling retry remains bounded and never enables PIT on stopped
  c.dos64_cia_clock_enable(f.machine);
  try p(&f,"dos64_host_clock_claim",0xa5);
  try call(&f,"dos64_host_clock_init",10000,0);
- try call(&f,"@timer_sample",1000000,1);
+ try call(&f,"n_finish_cold",1000000,1);
  const d=try f.symbol("dos64_native_diag");
  try std.testing.expectEqual(@as(u8,0xe1),f.peek(d));
  try std.testing.expectEqual(@as(u8,3),f.peek(d+1));
