@@ -1,0 +1,12 @@
+# Preserved failures and qualifications
+
+- Root original real SYS/CIA relocation gap534f7598 is unchanged: moved unmodified CFG rejected RI_HOME with no writes.
+- Initial build.py `else0` syntax error retained in FIRST_BUILD_SYNTAX.stderr. No target executed.
+- First optional native compile rejected a `#endif}` formatting error; first-fit-compile-failure retains source/tool copies and compiler output. Corrected preprocessor spelling only.
+- first-complete-overflow retains actual initial C design overflow: MAIN initialized ends60A8; RI/RM ends8B9F while state began8900. No loosened verifier. Pointer-first/second-overlap retain later exact overlap failures; actual state/code bounds continued to reject them.
+- Two inherited13-test fixture assertions were stale: 5M SYS budget ended within bootstrap before checkpoint, and old1100B publisher reserve expected while current production reserve is1088. Eleven applicable inherited controls are replayed unchanged; true full SYS relocation is tested separately with source-bound initial HIGH write guard. No full13 PASS claim.
+- First relocation call budget3M exhausted during native validation/render before returned checkpoint. Raised explicit observer budget10M; native timer/timeout was unchanged. Native c32 reuse subsequently funds layout and validates CRC/error separately.
+- Actual pending STOP exposed RI private error6 with pending state4 until another poll. It granted no receipt or writes, but CG terminal UI would no longer poll RI. Successor immediately marks RI_FAILED for pending/no-I/O cancellation; regression passes.
+- First legitimate-zero expected vector used external B/C defaults while the actual fixture supplied Home/B/C. Preserved FIRST_ZERO_VECTOR_FIXTURE.py and failing logs; corrected only independent host vector, native unchanged. Final native derived bodyidentity0 succeeds with explicit c32_error0.
+- A few shell fixture invocations used an extra work/ prefix while already in work; corresponding no-file/guard errors are retained. They ran no target. One unclosed codec smoke test overlapped a later default rebuild; final source-closed codec run supersedes it, without relying on smoke evidence.
+- First full SYS functional producer used a244 target; final closed54632 producer regenerates all9 byte-identical output files. Closed genuineDOS consumer uses those exact unmodified bytes, so its input scope is preserved rather than relabeling its earlier producer source.

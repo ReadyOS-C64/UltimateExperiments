@@ -1,0 +1,16 @@
+{
+ "default_off":true,
+ "files": {
+  "install_config.c":"tools/setup/install_config.c",
+  "install_config.h":"tools/setup/install_config.h",
+  "existing_cfg.c":"tools/config/existing_cfg.c",
+  "existing_cfg.h":"tools/config/existing_cfg.h",
+  "config_ui.c":"tools/config/config_ui.c",
+  "config_ui.h":"tools/config/config_ui.h",
+  "config_publish.c":"tools/config/config_publish.c",
+  "relocation.s":"tools/config/relocation.s",
+  "publisher-relocation.cfg":"tools/config/publisher-relocation.cfg"
+ },
+ "builder_integration":"Optional profile only: compile C with DOS64_CONFIG_RELOCATION=1/D64_CONFIG_INPLACE=1; install_config keeps D64_CONFIG_VALIDATE_ONLY=1. Assemble+link relocation.s and use publisher-relocation.cfg. Default undefined/numeric0 omit new ASM/layout and reproduce exact baseline products. No public builder changes in this component.",
+ "pending_integration":"Merge final separate all-file diagnostics guarded hunks and measure combined link before publication; do not replace whole parallel files. Current producer/DOS model proof is native component+UI profile only, not diagnostics composition."
+}

@@ -8,6 +8,8 @@ Current checkpoint, 2026-10-17: the public twelve-file candidate builds as one m
 
 CONFIG currently creates another launcher sharing the existing media, but rejects an unchanged configuration after the whole installation folder moves. This is a reproduced V1-02 defect, not completed relocation support. The fix must ask before rebasing media below the saved old home to the selected moved folder, preserve external shared paths, recheck the resulting media and publish a new generation without overwriting the original. [Actual native relocation failure and unmoved control](../agentworking/evidence/v1-config-relocation-gap-root-20261017.json).
 
+Private relocation successor now passes actual CIA-confirmed moved-folder CONFIG and generated START/DOS80 model checks, with originals preserved. Root verified its full source/evidence closure; combined diagnostics and public integration remain open. The public rejection above remains reproducible until that integration. [Reviewed relocation component](../agentworking/evidence/v1-config-relocation-root-review-20261017.json).
+
 ## What using V1 should feel like
 
 Copy the release and separately obtained DOS images into a folder. Run SETUP, browse to the images and choose a C-drive size; SETUP prepares the disks and launcher directly through Ultimate DOS. Launch START to reach DOS. Use CONFIG to make a new configuration while preserving existing media; after moving the installation, regenerate its folder-aware launcher. Edit the documented same-folder INI for supported startup options.

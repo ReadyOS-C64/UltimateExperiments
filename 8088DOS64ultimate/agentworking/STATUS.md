@@ -1,3 +1,11 @@
+# Current V1 checkpoint — reviewed native folder relocation, 2026-10-17
+
+Root verified all3,360 sealed relocation records and reviewed private pending/confirmation, descendant rebasing, strict CRC and publication authority. The private54632dea component passes28 author actual groups:16focused,11applicable inherited and1full SYS/CIA flow using unmodified actualSETUP files with oldHome absent. Its9 generated files equal the closed genuineDOS80 consumer inputs. All originals remain exact; defaultunset/numeric0 builds remain3deb. Root performed integrity/source review, no additional native replay. [Evidence](evidence/v1-config-relocation-root-review-20261017.json), archive454c8211/22pins.
+
+This fixes the reproduced relocation gap only in the private component. Combined all-file diagnostics link, caption refinement and public builder integration remain open; final physical/human V1 acceptance remains open. Root now addresses the required DEBUG TF/type1 correctness gap in a private optional assembly profile, with default products retained. This is DOS utility compatibility, not speed tuning. CIA remains sole hardware owner with no new dispatch; local commits/no push.
+
+Earlier snapshots below are historical.
+
 # Current V1 checkpoint — generated installation chain and confirmed relocation gap, 2026-10-17
 
 Currentc7 actualDOS shell/files/dirs/batch/CHKDSK persistence slice is accepted:80producer→actualCIAFinish/knownCLOSE→freshactualCONFIG40 START→savedfile reads→Finish, completeCexact/no freshwrites. All115original+inputpayloads preserved,26newoutputs exact, free139264B agreesDOS/independentFAT. Root all542parentpins734a0d17 exact,146executedinputs/copies exact perclosedreceipt; no RootCPUrepeat. ActualSETUP2MiB C had3explicitinputBATs appended byhost; DOScreatedalltestedoutputs. Earlier1e94 hostoracle/testsyntax failures retained/notknownclosed. DEBUGenter/write/RET1 only; INT3/TF remainsopen. [Evidence](evidence/v1-dos-batch-root-review-20261017.json), archive c2ebc6c0/19. Memory now owns nativeconfirmed CONFIGrelocation, with in-placevalidator/layout fit measured privately beforeintegration.

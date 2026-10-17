@@ -1,0 +1,90 @@
+{
+  "CODEC_EDGE_REPORT.json": {
+    "bytes": 35,
+    "sha256": "4f4cb4745db1ad26276bc49a29f92a7c1c056551ebdbc54db5b49da883b54816"
+  },
+  "FIRST_FAILURES.md": {
+    "bytes": 2457,
+    "sha256": "88fb4dacf2387866915a3eff01609538e3bbacce57c4eb46c8612b3b2b220885"
+  },
+  "FROZEN_NATIVE_SOURCE.json": {
+    "bytes": 1156,
+    "sha256": "d9ef92da7c71d1c87d01a877c41d7739a8957461f7bf22f6eb33548e8c1045d4"
+  },
+  "HANDOFF.md": {
+    "bytes": 5055,
+    "sha256": "1a72a20cc0276b5a088d7ba1bc24ff8afb1ca20cf42078143997eba91d7735ae"
+  },
+  "MANIFEST.json": {
+    "bytes": 690409,
+    "sha256": "68fde2dac6b72b821add6313f5186cbcb1f3cd4ee8d8cf3cc0250c6eacfc6ea8"
+  },
+  "MOVED_SYS_RESULT.json": {
+    "bytes": 1680,
+    "sha256": "6f8a6a102587a5da112eba08cb06ba80b64ef45c4a68d873b31ff43be83dcd37"
+  },
+  "PORTABLE_MAP.json": {
+    "bytes": 1120,
+    "sha256": "458d2aac5c7d4ca48720e85432cfccf753ea4f9115c25fedf9b30101fd415cf4"
+  },
+  "RELOCATION_EDGE_REPORT.json": {
+    "bytes": 35,
+    "sha256": "ed2ae6d37983c68be8b8ec53eae5c3665063ca855160932ce0c4e7da451875a9"
+  },
+  "RELOCATION_MEDIA_REPORT.json": {
+    "bytes": 35,
+    "sha256": "c1d584c89972ddee3ba3586027bdbf7a2b4b21a661d81d3ea043f2c2bf129559"
+  },
+  "RELOCATION_TEST_REPORT.json": {
+    "bytes": 330,
+    "sha256": "ff560025a947bf53dbec17108310b062083f8192b4397b098b27f510baf3a55c"
+  },
+  "ROOT_REVIEW.json": {
+    "bytes": 1502,
+    "sha256": "971564fb8ce72ed8c647ca2c425245b3532b67b199cd7882fb8ee55fc3184eda"
+  },
+  "closed/RESULT.json": {
+    "bytes": 2823,
+    "sha256": "21564724c56d679074226f823f31a5d9dfdbde043704bc74ce626c84343260dd"
+  },
+  "consumer/closed/RESULT.json": {
+    "bytes": 318,
+    "sha256": "b8b17d282b2a3e91fe82ed54f9e0052fb7c8b4f29c470125db1677c7b8028bc4"
+  },
+  "portable/config_publish.c": {
+    "bytes": 14021,
+    "sha256": "15d8906d382cedd7baa4858b63d7793b3ad87dbb6c9a03a3dfc4a861a3590e71"
+  },
+  "portable/config_ui.c": {
+    "bytes": 11911,
+    "sha256": "84f67c6468d5c49fd563bcc10b0d7a330067064eb911bbc413260c3271e5d6c8"
+  },
+  "portable/config_ui.h": {
+    "bytes": 1903,
+    "sha256": "e35dc7b2b8000dcce795934f4f1ca17b28695cc89dd87c4cc71d71926b4acb6d"
+  },
+  "portable/existing_cfg.c": {
+    "bytes": 7887,
+    "sha256": "0643f90751fcd8f23f78a39d34a062f86bca0bf23eb696adeabc8487abf7206c"
+  },
+  "portable/existing_cfg.h": {
+    "bytes": 2370,
+    "sha256": "9fb87090f7ba45202e6a5d087f457537a3f5d519ffed0ada2f83215220093850"
+  },
+  "portable/install_config.c": {
+    "bytes": 9564,
+    "sha256": "808da143409127d20ba6f7b32b359954c842be7dda5dfb6384f7d511329b5270"
+  },
+  "portable/install_config.h": {
+    "bytes": 1785,
+    "sha256": "ad394f7b2a350b432a21be672790307be71aa2bcf083e4ccae0a9713c570cc65"
+  },
+  "portable/publisher-relocation.cfg": {
+    "bytes": 1443,
+    "sha256": "90a0f662f29c88ee835b4f96df52d3aff6a2d887c21aeb23e6b041760156d81c"
+  },
+  "portable/relocation.s": {
+    "bytes": 2283,
+    "sha256": "70016cba0318819d98f049533ae916096ca8dea262912fd97691e89e4bc48f4f"
+  }
+}

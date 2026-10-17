@@ -1,3 +1,11 @@
+# Current V1 checkpoint — reviewed native folder relocation, 2026-10-17
+
+Root verified all3,360 sealed relocation records and reviewed private pending/confirmation, descendant rebasing, strict CRC and publication authority. The private54632dea component passes28 author actual groups:16focused,11applicable inherited and1full SYS/CIA flow using unmodified actualSETUP files with oldHome absent. Its9 generated files equal the closed genuineDOS80 consumer inputs. All originals remain exact; defaultunset/numeric0 builds remain3deb. Root performed integrity/source review, no additional native replay. [Evidence](evidence/v1-config-relocation-root-review-20261017.json), archive454c8211/22pins.
+
+This fixes the reproduced relocation gap only in the private component. Combined all-file diagnostics link, caption refinement and public builder integration remain open; final physical/human V1 acceptance remains open. Root now addresses the required DEBUG TF/type1 correctness gap in a private optional assembly profile, with default products retained. This is DOS utility compatibility, not speed tuning. CIA remains sole hardware owner with no new dispatch; local commits/no push.
+
+Earlier snapshots below are historical.
+
 # Next V1 work — relocation, clear errors and actual DOS utilities
 
 The corrected currentc7 DOSbatch/CHKDSK/Finish/fresh40 persistence lane is sealed734a0d17/542 and Rootaccepted in evidence/v1-dos-batch-root-review-20261017.json. No nativechange; no needrepeat this2MiB slice merelyforbookkeeping. DEBUGtrace and remainingmedia/filter/utilities notclosed. Memory now implements CONFIGrelocation in freshprivatechild, coordinating compiledfullpathdiagnostics. Reclaiming CONFIG-only unusedvalidated-copy buffer576B frees RIBSS/PHASESTATE (not permanentBSS); opt-in in-placevalidation must preserve allvalidation/default ABI. Candidate shifting8700→8900 phase state mayfund512codebytes, but actualmaps/state/lifetimes anddiagnosticcomposition required. No publicpromotion until actualmovedCFG/media→generatedSTART→DOS plus old/failurecontrols.

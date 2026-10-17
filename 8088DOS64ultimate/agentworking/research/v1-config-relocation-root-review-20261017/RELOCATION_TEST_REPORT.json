@@ -1,0 +1,16 @@
+{
+  "tests": 5,
+  "passed": true,
+  "native": {
+    "instances": 5,
+    "max_hardware_stack": 32,
+    "max_native_call_cycles": 8596361,
+    "native_calls": 1184,
+    "derived": {
+      "old": "/Home",
+      "selected": "/Moved installation",
+      "original_identity": 290258406,
+      "derived_identity": 1693262740
+    }
+  }
+}
