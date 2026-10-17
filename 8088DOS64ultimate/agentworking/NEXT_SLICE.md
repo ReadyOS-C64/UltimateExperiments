@@ -1,5 +1,9 @@
 # Next work — 2026-10-16
 
+Immediate: ROOT implements the real resident/HIGH coordinator and private A/B/C/source/output ledger, then promotes a runnable public SETUP build with actual native integration tests. Current UI43c9 alreadyselects/captures/loads5sources; path-only codec successor frees3280UIbytes forserializedHIGH coordinator, while cooperativeNF/sourcecache service provides realkeyboard/clock failurehandling. Use repairedPUB source3eed/2f2e, not original72e4/27e0; bodyCFGCRC and fullfiletransportCRC aredifferentfacts. Scope remainscompleteA/B/C→verifiedgeneratedSTART/CFG→realDOS, conflicts/reconfiguration andSaveSwap/C-online, notmerelythecomponents.
+
+Hardware: ef7bd oneattemptterminalFAILED duringinitialreadonlysnapshot. Do not restart/retry orrelease reserveddevice fromstaleACTIVE intent. CIAowns localsource research forfewerREST roundtrips (40fe cap16KiB isreal; no generalUSBfileGET established). Newphysicalpurpose requiresconcreteclosedreview; upper12MiB remainunbacked, no fullboardreset. ROOTverifiedphysical2272pins.
+
 New user direction: same-home emulator options, parsed natively before guest startup and handed through REU. Integrate this after the complete installer flow: shared SETUP/prelaunch parser, optional editable DOS64.INI, explicit schema/defaults/closure, measured overlay placement and allocated launch-bound record/consumer. Preserve current ABI1 until a compatible producer/consumer extension is implemented. See docs/NATIVE_SETUP_CONFIG.md. Design recorded only; not delivered.
 
 1. Qualify the committed native START and D64S template on the real Ultimate using a fresh owned A/B installation. CIA remains the only hardware worker. REST-only staging must establish complete source and saved-file bytes without relying on unhealthy FTP; the local stager is not yet physically qualified.

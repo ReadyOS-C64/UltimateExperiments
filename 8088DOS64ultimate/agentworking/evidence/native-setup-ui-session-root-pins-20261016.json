@@ -1,0 +1,15 @@
+{
+  "status": "ROOT_PIN_VERIFIED_UI_COMPONENT_AUTHOR_MODEL_PASS",
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-setup-ui-session/MANIFEST.json",
+  "sha256": "5fa6563823eb108f64f134915b90aba4520ca035bc242694226a8a99535dca05",
+  "pins_ROOT_verified": 699,
+  "native": "43c9c891a0879f4656ffe7d405dabce4ea3ba0358b65739aabe9db11993adc52",
+  "labels": "7db193e072e9ef3b4994a35b49c8d70f656a050e3c2d89759668a28e37034ccc",
+  "actual_python_groups": 10,
+  "actual_Zig_groups": 2,
+  "source_tool_inputs": 145,
+  "parent_sources_and_copies": 133,
+  "UI_free": 32,
+  "scope": "Actual CIA selection/private capsule/five readonly source files and bounded cleanup, no output writes/whole installer/physical claim",
+  "next": "DefaultOFF path-only UI codec profile frees unused1728B records plus code forserializedcoordinator; firstmeasuredlink notyetaccepted"
+}

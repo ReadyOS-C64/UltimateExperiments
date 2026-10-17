@@ -1,0 +1,20 @@
+{
+  "status": "ROOT_REVIEW_APPROVED_ONE_EXACT_DETACHED_PUBLICATION_CAMPAIGN",
+  "package_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-rest-stager-campaign-drf-zero-successor/MANIFEST.json",
+  "package_sha256": "27e85460fef2a3540fa80bbac3003e6a7e6f8f4e56ccf304b8ce363ceb1d0fb0",
+  "package_files_verified": 458,
+  "launch_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-rest-stager-campaign-drf-zero-successor/work/LAUNCH_MANIFEST.json",
+  "launch_sha256": "ef7bd52d11f799e13d5e73453c0d40efc7354c6786938e34d2b8bd04015f6d7e",
+  "all_launch_pins_verified": 1895,
+  "root_offline_constructor_exit": 0,
+  "root_offline_stdout_sha256": "c474c4f29817a44ebeab2827de5536fe5555dd06caadfa7abbb1f7dc78aa6cf6",
+  "review": [
+    "controller firstcause/retention/strictacceptance and registered recovery LOAD/SYS backend inspected",
+    "Originalb97c/c519 rejected reset-zero assumption; original320pins unchanged",
+    "Only recovery runtime delta explicitly initializes/readbacks owned32B DRF afterREADY then checks fullcoldsource beforeSYS",
+    "Exact seven fresh assets only, no START/DOS execution; unchanged3880/40fe native/data algorithms",
+    "FirstterminalRAM/quiet then readonly40fe fullchanged4M gates exactlyone3880 recovery attempt",
+    "Knownfilehandlecleanup stays independent from restoredREU; PASS reserved for ROOT finalreview"
+  ],
+  "authorization_scope": "One exact owned publication campaign, sole hardware owner cia_probe_independent_review, truly detached supervisor/child and saved logs; no ambiguous command retry/fullboard reset/extra hardware campaign"
+}
