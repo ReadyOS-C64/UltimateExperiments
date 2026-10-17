@@ -1,3 +1,7 @@
+# Public installer relocation lifetime — 2026-10-17
+
+Public SETUP 4da35ecc7b2b110de63fdbcca48b4b78cf8470875acdd655acd45da99e4166a5, 40868 bytes, `scratch/native-installer-terminal-screen-20261017/project/build/terminal-gated/RESULT.json`. Live UI code13837 +RO1120 =14957 bytes6000..9A6C. UI BSS2463 begins9A6D..A40B, reusing serialized HIGH/AUX source only after verified retirement. Initial image still includes HIGH2296 and AUX1086; permanent RUN rangesF700..FFF7 andC3A0..C7DD remain intact. Full20KiB REU UI cache holds core plus zero padding. BSS3999; HIGHBSS5855. Measured free: resident0/FAT3/UI-stage3060/PUB1/HIGH-code2/HIGH-state33/AUX34. No new REU/ZP range. ROOT full4+8, independent8+3 and public8 controls pass; all phase bytes/metadata/symbol addresses reproduce exactly. Public build result is build/setup-installer/RESULT.json; receipt native-installer-terminal-public-root-20261017.json.
+
 ## Public startup clock repair — 2026-10-17
 
 Runtimec6e43/unit01d97461,47105B: all linker segment ranges/sizes matchpubliccea5 baseline, COLDINIT0x533 unchanged. Factoredbounded samplehelper fundsfourcalls withzeroallocationgrowth. NMI5882,8physicalslots,fonts/handoff andunitcoldlimits preserved. Actualpublicbuildmemorychecks pass andruntime/unit/release reproduceclosedauthorbyte-exact. No newREUrange. ROOTcleanupc45PUBendsAFFE/free1, otherinstallerbudgetsunchangedfromf75.

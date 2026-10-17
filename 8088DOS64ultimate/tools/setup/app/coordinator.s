@@ -1,7 +1,9 @@
 .setcpu "6502"
 .macpack longbranch
 .include "coordinator_internal.inc"
+.importzp ptr1
 .import _fw_run,_pw_run,_rc_retained
+.import _bc_files_closed
 .import runtime_init,_bc_init,_ps_init,_sl_install
 .import _sc_begin,_sc_poll,_sc_cancel,_sc_ready,_sc_now,_sc_error
 .import _ps_clock_poll,_ps_key_poll,_ps_key,_ps_ticks
@@ -18,6 +20,9 @@ drain: .res 1
 clock_ok: .res 1
 ticket: .res 2
 last_tick: .res 2
+failure_shown: .res 1
+failure_closed: .res 1
+phase_verified: .res 1
 .segment "BOOT"
 setup_boot:
  sei
@@ -53,6 +58,15 @@ fail:
  bne :+
  sta error
 :
+ ; Capture truthful closure while still in the failing operation. Terminal
+ ; presentation never polls or switches FILES/UCI. Software-zero handles before
+ ; successful startup CLOSE1/2 cannot certify firmware ownership.
+ jsr _sc_ready
+ tax
+ beq :+
+ jsr _bc_files_closed
+:
+ sta failure_closed
  lda #5
  sta state
  rts
@@ -130,6 +144,11 @@ _rc_poll:
  jeq fat_run
  cmp #6
  jeq publish_run
+ cmp #5
+ bne @idle
+ lda phase_verified
+ jne rc_failure_screen
+@idle:
  rts
 close_poll:
  jsr sample
@@ -166,6 +185,7 @@ close_poll:
  jsr _so_prepare
  tax ; trusted boolean API returns A=0/1; C epilogues need not set NZ.
  jeq phase_failed
+ inc phase_verified
  lda #1
  sta _so_phase_request
  jsr _so_enter
@@ -201,8 +221,7 @@ close_failed:
 phase_failed:
  lda #$e4
  jmp fail
-stop:
- jmp fail
+stop=fail
 ui:
  jsr _su_poll
  jsr _su_state
@@ -325,3 +344,101 @@ retire:
  lda ticket+1
  sta _so_ticket+1
  jmp _so_leave
+
+.segment "AUX_CODE"
+; Permanent copied code, independent of UI/FAT/PUB residency. All text is
+; bounded at assembly time. The display is informational, never job authority.
+rc_failure_screen:
+ lda failure_shown
+ bne @done
+ inc failure_shown
+ ldx #159
+@clear:
+ lda #32
+ sta $0748,x
+ lda #1
+ sta $db48,x
+ dex
+ cpx #$ff
+ bne @clear
+ lda #<rc_failed_common
+ sta ptr1
+ lda #>rc_failed_common
+ sta ptr1+1
+ ldy #0
+ ldx #0
+ jsr rc_draw_line
+ ldx #40
+ iny
+ jsr rc_draw_line
+ lda error
+ pha
+ lsr
+ lsr
+ lsr
+ lsr
+ jsr rc_hex_glyph
+ sta $0748+(rc_error_digits-rc_failed_common)
+ pla
+ and #15
+ jsr rc_hex_glyph
+ sta $0749+(rc_error_digits-rc_failed_common)
+ lda failure_closed
+ beq @unknown
+ lda #<rc_failed_closed
+ ldx #>rc_failed_closed
+ bne @message
+@unknown:
+ lda #<rc_failed_unknown
+ ldx #>rc_failed_unknown
+@message:
+ sta ptr1
+ stx ptr1+1
+ ldy #0
+ ldx #80
+ jsr rc_draw_line
+ ldx #120
+ iny
+ jmp rc_draw_line
+@done:
+ rts
+rc_draw_line:
+ lda (ptr1),y
+ beq @done
+ and #$3f ; fixed uppercase ASCII/punctuation -> platform text glyphs
+ sta $0748,x
+ inx
+ iny
+ bne rc_draw_line
+@done:
+ rts
+rc_hex_glyph:
+ cmp #10
+ bcc :+
+ adc #6 ; carry from CMP makes A..F after the following ASCII addition
+:
+ adc #48
+ and #$3f
+ rts
+.segment "AUX_RO"
+rc_failed_common:
+ .byte "SETUP STOPPED - ERROR "
+rc_error_digits:
+ .byte "00",0
+rc_common_second:
+ .byte "NEW FILES MAY REMAIN IN THE HOME FOLDER.",0
+rc_failed_closed:
+ .byte "FILES CLOSED.",0
+rc_closed_second:
+ .byte "RELOAD SETUP; CHOOSE A NEW FOLDER.",0
+rc_failed_unknown:
+ .byte "FILE CLEANUP NOT CONFIRMED.",0
+rc_unknown_second:
+ .byte "KEEP THIS SCREEN. DO NOT RETRY.",0
+rc_failed_text_end:
+.assert rc_common_second-rc_failed_common<=41,error,"failure row21 bounds"
+.assert rc_failed_closed-rc_common_second<=41,error,"failure row22 bounds"
+.assert rc_closed_second-rc_failed_closed<=41,error,"failure row23 closed bounds"
+.assert rc_failed_unknown-rc_closed_second<=41,error,"failure row24 closed bounds"
+.assert rc_unknown_second-rc_failed_unknown<=41,error,"failure row23 unknown bounds"
+.assert rc_failed_text_end-rc_unknown_second<=41,error,"failure row24 unknown bounds"

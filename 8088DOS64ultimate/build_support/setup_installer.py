@@ -61,7 +61,8 @@ def memory_check(build):
         'HIGH_serialized_after_UI':l['__HIGH_CODE_LOAD__']==end('UI_RO'),
         'AUX_serialized_after_HIGH':l['__AUX_CODE_LOAD__']==l['__HIGH_CODE_LOAD__']+l['__HIGH_CODE_SIZE__'],
         'AUX_RO_serialized':l['__AUX_RO_LOAD__']==l['__AUX_CODE_LOAD__']+l['__AUX_CODE_SIZE__'],
-        'UI_BSS_after_serialized_code':l['__UIBSS_RUN__']>=l['__AUX_RO_LOAD__']+l['__AUX_RO_SIZE__'],
+        'UI_BSS_after_live_core':l['__UIBSS_RUN__']==end('UI_RO'),
+        'initial_serialized_image_fits':l['__AUX_RO_LOAD__']+l['__AUX_RO_SIZE__']<=0xb000,
         'UI_fits':end('UIBSS')<=0xb000,
         'FAT_fits':end('FAT_RO')<=0xb000,
         'PUB_fits':end('PUBBSS')<=0xb000,
@@ -89,10 +90,12 @@ HIGH_BSS_NAMES=['directory_browser','platform','setup_io','install_writer','sele
 UI_BSS_NAMES=['install_config','setup_select','ui_fixture','selection_capsule','raw_output','setup_ui_run']
 DEFINES={'source_load':['DOS64_SETUP_SMALL_UCI=1'],'bulk_context':['DOS64_SETUP_WRITER_CLEANUP=1'],'install_writer':['DOS64_SETUP_WRITER_CLEANUP=1'],'raw_output':['DOS64_SETUP_PUBLICATION=1'],'publish_assets':['DOS64_SETUP_PUBLICATION=1'],'setup_io':['DOS64_SETUP_COOPERATIVE=1'],'install_config':['D64_CONFIG_PATH_ONLY=1']}
 
-def metadata(B,ui,fat,pub,pub_length):
- h=bytearray(64);h[:4]=b'D64F';h[4:8]=bytes([1,2,64,0]);struct.pack_into('<IHHIII',h,8,len(fat),0x6000,0x5000,zlib.crc32(fat),zlib.crc32(ui),zlib.crc32(ui.ljust(0x5000,b'\0')));h[28:60]=hashlib.sha256(fat).digest();struct.pack_into('<I',h,60,zlib.crc32(h[:60]))
+def metadata(B,ui,fat,pub,pub_length,core_length=None):
+ core_length=len(ui)if core_length is None else core_length
+ core=ui[:core_length]
+ h=bytearray(64);h[:4]=b'D64F';h[4:8]=bytes([2,2,64,0]);struct.pack_into('<IHHIII',h,8,len(fat),0x6000,0x5000,zlib.crc32(fat),zlib.crc32(ui),zlib.crc32(core.ljust(0x5000,b'\0')));h[28:60]=hashlib.sha256(fat).digest();struct.pack_into('<I',h,60,zlib.crc32(h[:60]))
  text='_so_asset_header:\n.byte '+','.join(str(x)for x in h)+'\n'
- for name,value,size in [('ui_bytes',len(ui),2),('fat_bytes',len(fat),2),('asset_bytes',len(fat)+64,2),('ui_crc',zlib.crc32(ui),4),('ui_full_crc',zlib.crc32(ui.ljust(0x5000,b'\0')),4),('fat_crc',zlib.crc32(fat),4)]:text+='_so_'+name+':\n.'+('word'if size==2 else'dword')+' '+str(value)+'\n'
+ for name,value,size in [('ui_bytes',len(ui),2),('fat_bytes',len(fat),2),('asset_bytes',len(fat)+64,2),('ui_crc',zlib.crc32(ui),4),('ui_full_crc',zlib.crc32(core.ljust(0x5000,b'\0')),4),('fat_crc',zlib.crc32(fat),4),('ui_core_bytes',core_length,2),('ui_core_crc',zlib.crc32(core),4)]:text+='_so_'+name+':\n.'+('word'if size==2 else'dword')+' '+str(value)+'\n'
  pub_header=bytearray(h);pub_header[5]=3;struct.pack_into('<I',pub_header,8,len(pub));struct.pack_into('<I',pub_header,16,zlib.crc32(pub));pub_header[28:60]=hashlib.sha256(pub).digest();struct.pack_into('<I',pub_header,60,zlib.crc32(pub_header[:60]))
  text+='_so_publish_header:\n.byte '+','.join(str(x)for x in pub_header)+'\n'
  for name,value,size in [('publish_bytes',pub_length,2),('publish_asset_bytes',len(pub)+64,2),('publish_crc',zlib.crc32(pub[:pub_length]),4),('publish_full_crc',zlib.crc32(pub),4)]:text+='_so_'+name+':\n.'+('word'if size==2 else'dword')+' '+str(value)+'\n'
@@ -121,7 +124,7 @@ def build_native(work,t):
     ui=(B/'setup.prg').read_bytes()[0x6000-0x801+2:0x6000-0x801+2+ui_length]
     fat=(B/'fat-overlay.bin').read_bytes();pub_length=l['__PUB_CODE_SIZE__']+l.get('__PUB_RO_SIZE__',0);pub=(B/'publish-overlay.bin').read_bytes().ljust(0x5000,b'\0')
     if len(ui)!=ui_length or ui_length>0x5000 or len(fat)>0x5000 or len(pub)!=0x5000 or any(pub[pub_length:]):raise RuntimeError('Invalid measured phase payload')
-    header,pub_header=metadata(B,ui,fat,pub,pub_length)
+    header,pub_header=metadata(B,ui,fat,pub,pub_length,l['__UI_CODE_SIZE__']+l['__UI_RO_SIZE__'])
     run([t['ca65'],'-g','-I',work,'-o',B/'overlay_manifest.o',work/'overlay_manifest.s'],work,commands);run(link,work,commands)
     if (B/'setup.prg').read_bytes()[0x6000-0x801+2:0x6000-0x801+2+ui_length]!=ui or(B/'fat-overlay.bin').read_bytes()!=fat or(B/'publish-overlay.bin').read_bytes()!=pub[:pub_length]:raise RuntimeError('Metadata relink changed phase bytes')
     data=(B/'setup.prg').read_bytes()

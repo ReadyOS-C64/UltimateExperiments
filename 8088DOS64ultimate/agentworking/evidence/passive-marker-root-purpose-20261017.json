@@ -1,0 +1,66 @@
+{
+  "status": "reviewed_for_one_passive_tiny_marker_attempt",
+  "reviewer": "root",
+  "manifests": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-readonly-snapshot-relative-20s-successor/PHYSICAL_FAILURE_MANIFEST.json": {
+      "sha256": "e61d77362bd562b679f9f41a46e19b77a542b30bb827cf28d6fedfff6f52fb23",
+      "files": 20
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-passive-tiny-marker-purpose/MANIFEST.json": {
+      "sha256": "cd69799ce2dca9062917669a607f5abcf13eadf807d86df04bbb458615918722",
+      "files": 88
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-passive-tiny-marker-purpose/work/LAUNCH_MANIFEST.json": {
+      "sha256": "46a813b4816043dc5d165e0b7250aa3345fbcb2d3f0e0d64a1a3a0666eada783",
+      "files": 38
+    }
+  },
+  "reviewed_source": [
+    "purpose.py",
+    "transport.py",
+    "launch.py",
+    "dispatch-owned.sh"
+  ],
+  "root_offline_constructor": "passed",
+  "root_offline_logs": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-passive-tiny-marker-purpose/ROOT_OFFLINE",
+  "preceding_physical_attempt": {
+    "status": "failed_before_native_execution",
+    "active_FTP_accept_timeout_seconds": 20,
+    "FTP_QUIT_replies": [
+      "226",
+      "221"
+    ],
+    "helper_executed": false,
+    "REU_writes": 0,
+    "config_change_attempted_before_failure": false,
+    "cleanup_REST_reset_verified": false,
+    "CPU_running_state": "unknown"
+  },
+  "authorized_scope": "One fresh owned folder and exactly174-byte passive FTP marker STOR/RETR, complete byte equality, final226 each and explicit221; readonly REST inventory only",
+  "forbidden_scope": [
+    "C64 pause/reset/config mutation",
+    "PRG load/SYS",
+    "RAM/REU access",
+    "full-snapshot transport acceptance",
+    "automatic retry"
+  ],
+  "hardware_remains_reserved": true,
+  "upper_12MiB_REU_unbacked": true,
+  "observed_result": {
+    "status": "failed_before_STOR",
+    "physical_failure_manifest_sha256": "076df5a1a554a5f9f4f596823c1512ade3495c5e9f7b0d86e04ba72652014cd4",
+    "root_verified_files": 17,
+    "first_error": "PASV227 timeout20.002s",
+    "STOR_wire_commands": 0,
+    "RETR_wire_commands": 0,
+    "C64_RAM_REU_operations": 0,
+    "FTP_remote_close_verified": false,
+    "QUIT221_observed": false,
+    "owned_child_exit": 1,
+    "owned_child_pid": 56414,
+    "supervisor_pid": 56407,
+    "owned_PIDs_observed_absent": true,
+    "supervisor_OS_exit_status_retained": false,
+    "device_reserved": true
+  }
+}

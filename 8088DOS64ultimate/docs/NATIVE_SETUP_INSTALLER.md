@@ -4,7 +4,7 @@
 
 The outputs are `build/setup-installer/SETUP.PRG`, `SETUP.FAT`, `SETUP.PUB`, labels, map and `RESULT.json`. Each invocation stages and pins the actual compiler inputs in a fresh work directory, builds the phase metadata from measured bytes, checks memory bounds, and verifies the inputs again before publishing the bundle. A passed result is written last. Retain the whole bundle from one successful build.
 
-The current linked PRG is 40,542 bytes, SHA256 `c45dea7b8ed81832167d4071618b7eafb404495e9f4ccb222d68446326f63fcf`. It reproduces the source-closed full-coordinator model target, including phase bytes, metadata and all symbol addresses. This is a development build: fresh-install model acceptance is established; physical installer acceptance, complete error presentation and reconfiguration are still pending.
+The current linked PRG is 40,868 bytes, SHA256 `4da35ecc7b2b110de63fdbcca48b4b78cf8470875acdd655acd45da99e4166a5`. It reproduces the source-closed full-coordinator model target, including phase bytes, metadata and all symbol addresses. This is a development build: fresh-install model acceptance is established; physical installer acceptance, early bootstrap error presentation and reconfiguration are still pending.
 
 ## Installation flow implemented in the model
 
@@ -22,10 +22,12 @@ The installer loads and independently reads back all five source files, retires 
 
 No dummy D81, emulated FORMAT/COPY step or distributed large empty HD image is needed. Sources remain unchanged. Current output creation refuses existing names; it does not overwrite an existing installation. A failed install can leave earlier verified outputs or a partial new file, so the completion caption is required before considering the model installation complete. Reconfiguration and a user recovery workflow remain unfinished.
 
-The complete SYS-to-publication model tests exercise a fresh 2 MiB installation plus C, START and CFG collisions. They check every saved byte, FAT trees, CRCs, output order, source preservation, private completion state and known file closure. Five direct Zig/Peddle groups exercise the coordinator. Independent cleanup tests also cover damaged readback, partial DMA, cancellation, failed CLOSE, stopped clocks, bounded cleanup and foreign-source isolation. Separate FAT-worker tests cover new and imported 20 MiB C images. These results do not establish physical throughput or hardware acceptance.
+The complete SYS-to-publication model tests exercise a fresh 2 MiB installation plus C, START and CFG collisions. They check every saved byte, FAT trees, CRCs, output order, source preservation, private completion state and known file closure. Eight direct Zig/Peddle groups exercise the coordinator, relocation lifetime, initial image checks and terminal file-ownership reporting. Independent cleanup tests also cover damaged readback, partial DMA, cancellation, failed CLOSE, stopped clocks, bounded cleanup and foreign-source isolation. Separate FAT-worker tests cover new and imported 20 MiB C images. These results do not establish physical throughput or hardware acceptance.
 
 ## Emulator preferences
 
 The selected home is also the intended location of optional `DOS64.INI`. Its native parser foundation is tested, but the file reader, startup overlay, REU settings record and emulator consumer are not connected yet. The current launcher ignores INI. Keep the binary configuration's ABI1 reserved bytes zero. See [configuration and options contract](NATIVE_SETUP_CONFIG.md).
 
-The remaining installation work includes useful whole-session error screens, safe reconfiguration, editable emulator preferences, floppy Save/Discard/Swap with C online, and fresh physical SETUP → START → DOS testing. Model success does not transfer physical acceptance from an older emulator build.
+After verified phase preparation, a terminal failure displays its first error code, warns that new files may remain, and reports either known file closure or unconfirmed cleanup. It renders once and performs no file operations or retries. Known closure advises reloading SETUP and choosing a new folder; unknown cleanup advises keeping the screen and avoiding retry. Failures before verified phase preparation cannot use this renderer and still have limited presentation. The initial CRC is checked after bootstrap relocation; it does not authenticate a malformed bootstrap or relocation descriptor before use.
+
+The remaining installation work includes early bootstrap error screens, safe reconfiguration, editable emulator preferences, floppy Save/Discard/Swap with C online, and fresh physical SETUP → START → DOS testing. Model success does not transfer physical acceptance from an older emulator build.

@@ -6,6 +6,8 @@
 extern const br_u8 so_asset_header[64];
 extern const br_u16 so_ui_bytes,so_fat_bytes,so_asset_bytes;
 extern const br_u32 so_ui_crc,so_ui_full_crc,so_fat_crc;
+extern const br_u16 so_ui_core_bytes;
+extern const br_u32 so_ui_core_crc;
 extern const br_u8 so_publish_header[64];
 extern const br_u16 so_publish_bytes,so_publish_asset_bytes;
 extern const br_u32 so_publish_crc,so_publish_full_crc;
@@ -28,8 +30,8 @@ static br_u8 started,bound,loaded,waiting,stage,destination,leased,handle,cancel
 static br_u16 began,at,count,next_ticket;
 static br_u32 slot,expected,crc;
 static br_u16 asset_bytes(void){return destination==SO_FAT?so_asset_bytes:so_publish_asset_bytes;}
-static br_u16 phase_bytes(br_u8 p){return p==SO_UI?so_ui_bytes:p==SO_FAT?so_fat_bytes:so_publish_bytes;}
-static br_u32 phase_crc(br_u8 p){return p==SO_UI?so_ui_crc:p==SO_FAT?so_fat_crc:so_publish_crc;}
+static br_u16 phase_bytes(br_u8 p){return p==SO_UI?so_ui_core_bytes:p==SO_FAT?so_fat_bytes:so_publish_bytes;}
+static br_u32 phase_crc(br_u8 p){return p==SO_UI?so_ui_core_crc:p==SO_FAT?so_fat_crc:so_publish_crc;}
 static void publish(void){so_result=ledger;}
 static void first(br_u8 e){if(!ledger.error)ledger.error=e;}
 static br_u8 dma(br_u32 reu_address,br_u16 host,br_u16 n,br_u8 direction){
@@ -65,14 +67,18 @@ br_u8 so_prepare(void){br_u16 n;
  owned=so_request;memset(owned.home,0,128);started=1;ledger.rejected=0;
  memset(so_scratch,0,512);
  for(n=0;n<0x5000;n+=512)if(!dma(SO_UI_SLOT+n,(br_u16)so_scratch,512,0)){first(SO_DMA);failed();return 0;}
- for(n=0;n<so_ui_bytes;n+=count){count=so_ui_bytes-n;if(count>512)count=512;if(!dma(SO_UI_SLOT+n,0x6000+n,count,0)){first(SO_DMA);failed();return 0;}}
+ /* The full initial span above includes serialized HIGH/AUX and remains
+  * checked before it is retired. Both RUN copies already passed sl_install.
+  * Cache only live immutable UI; the following full-window FETCH zeroes its
+  * state, including bytes that previously held relocation source payloads. */
+ for(n=0;n<so_ui_core_bytes;n+=count){count=so_ui_core_bytes-n;if(count>512)count=512;if(!dma(SO_UI_SLOT+n,0x6000+n,count,0)){first(SO_DMA);failed();return 0;}}
  if(!dma(SO_UI_SLOT,0x6000,0x5000,1)||!ram_crc(0x6000,0x5000,so_ui_full_crc)){first(SO_CRC);failed();return 0;}
  if(!bc_ui_release()){first(SO_LEASE);failed();return 0;}leased=0;
  ledger.state=SO_READY;ledger.phase=SO_UI;publish();return 1;
 }
 br_u8 so_bind_home(void){
  if(!started||bound||ledger.state!=SO_READY||ledger.phase!=SO_UI||ledger.active||!so_startup_ready()||!bc_files_closed()){ledger.rejected=SO_INPUT;publish();return 0;}
- if(!ram_crc(0x6000,so_ui_bytes,so_ui_crc)){first(SO_CRC);failed();return 0;}
+ if(!ram_crc(0x6000,so_ui_core_bytes,so_ui_core_crc)){first(SO_CRC);failed();return 0;}
  /* UI codec runs only while its current full window is verified. */
  memcpy(d64_path_source,so_request.home,128);memset(d64_path_relative,0,128);strcpy((char*)d64_path_relative,"SETUP.FAT");
  if(so_request.home[1]==0||!d64_path_join()){ledger.rejected=SO_INPUT;publish();return 0;}

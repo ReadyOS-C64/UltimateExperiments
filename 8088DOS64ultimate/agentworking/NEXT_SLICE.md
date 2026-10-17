@@ -1,3 +1,11 @@
+# Current work — 2026-10-17
+
+Public terminal-screen4da promotion is qualified: ROOT4+8, peer8+3/512 formatter cases, exact public source rebuild+8 execution; do not rerun unchanged gates. Free UI staging3060 bytes; resident0/HIGH2/AUX34 remain constrained. Preserve failed fixture controls and the early-bootstrap renderer limitation. Main stays8711/56b1.
+
+Memory agent owns same-home native INI producer/consumer: per-launch reread, exact missing-file defaults only, bounded close/recovery, one-shot release/config-bound REU record, fresh runtime/unit sidecar guards and genuine generated START→DOS40/80. No public ABI or options-record claim until complete matched proof.
+
+CIA passive marker failure is sealed076df5a1/17 and ROOT-verified; no automatic retry/new hardware purpose. CIA now independently reviews private INI producer/consumer source and prepares controls only after author freeze. Device reserved, upper12MiB unbacked, no full-board reset. Compiled agent seals independent terminal review, then plans the smallest safe reconfiguration slice. Performance successor5129/all3213pins is ROOT-verified privately, not promoted; its strict builtins equal-retirement failure remains explicit.
+
 # Next after public interpreter and portable tests — 2026-10-17
 
 Main8711/56b1 publicgatespassed; do notrepeatunchangedpairedDOS/builtins ordefault503. Commits22ec1b5 (8ASM+2tests) andce0a5c9 (optionalinstaller46files/Makeappend) are complete; do not repeat promotion. Root ownsremaininginstaller/media integration andphysicalpurpose review. Source/receipts are guest-interpreter-public-root-20261017.json and native-installer-public-tests-root-20261017.json.
