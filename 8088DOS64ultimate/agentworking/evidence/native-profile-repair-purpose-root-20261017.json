@@ -1,0 +1,22 @@
+{
+  "status": "approved_one_dispatch",
+  "purpose": "ONE_CAPTURED_TURBO_CONTROL_REPAIR_NO_RESET_REU_NATIVE_FILES",
+  "author_manifest_sha256": "67136371dbeabebf7222dc09c80628a3ab2a0d2f700633c097775fc753e15bc8",
+  "author_pins_verified": 118,
+  "launch_sha256": "6a421de6301b31fdf697b75a570dc6325ea24778420b6da41dd7ec5fb03b23b4",
+  "launch_pins_verified": 27,
+  "ROOT_local_groups": 20,
+  "offline_constructor": true,
+  "config_PUT_max": 1,
+  "required_fresh_identity_settings_media_inspection": true,
+  "HTTP_request_cap": 22,
+  "original_controller_seconds": 90,
+  "watchdog_seconds": 150,
+  "first_campaign_remains_failed": true,
+  "no_POST_reset_REU_native_files": true,
+  "numeric_status_headers_bounded_body_retained": true,
+  "firmware_primary_source_qualification": "Pinned v3.14 route_configs.cc supports this PUT; installed binary equality to source tag is not claimed. Live profile readback required; no flash-save route.",
+  "root_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-profile-repair-root-20261017/MANIFEST.json",
+  "root_manifest_sha256": "9e395f13fe6529f1f3b9bc3c3fa3c59edd502b0929f473788b317a68875e30be",
+  "physical_acceptance": false
+}

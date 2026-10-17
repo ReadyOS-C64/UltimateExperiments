@@ -1,3 +1,7 @@
+# Packaging checkpoint complete
+
+Coherent source-built candidate and10 packaging groups are committed dfdf1cb. Candidate is a development build; native early SETUP dependency preflight, modal loader/controller, durable media/START recovery and physical acceptance remain. Memory agent takes private SETUP preflight after terminal-fault successor; ROOT owns matched modal assets/footer.
+
 # Immediate V1 work — 2026-10-17
 
 Review the sole CIA owner's distinct settings-repair purpose, then dispatch once if its exact scope is sound; retain the failed whole4M campaign and no finalREU claim. Current Manual64 must be restored to captured original C64U Turbo Registers64; no full-board reset or upper12MiB access. Continue functional work independently.

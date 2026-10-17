@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "author_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-terminal-fault-20261017/MANIFEST.json",
+  "author_sha256": "a64f337280e22081def93db9040e454604f48f6ecd6d2d25d837ed0d535671e5",
+  "author_pins_verified": 1450,
+  "ROOT_actual_native_groups": 6,
+  "ROOT_seconds": 2.453,
+  "broker_PRG_sha256": "41639f30dfe9f4398e49037718ad20406c804ce573b8b19a3522fcd2dd5ab496",
+  "CUI_PRG_sha256": "38488f8683a907d1db50ddcda81a26692a4a0c60c10da128dfe2171a7abf9086",
+  "layout": {
+    "broker_code_end": 29772,
+    "broker_state_end": 30684,
+    "ui_code_data_end": 40188,
+    "ui_bss_end": 31896,
+    "ui_zp_end": 153,
+    "worker_start": 40960
+  },
+  "native_products_reproduced": true,
+  "terminal_presentation_only": true,
+  "clock_failure_does_not_enable_backend_release_or_resume": true,
+  "physical": false,
+  "controller_integration_complete": false,
+  "root_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-terminal-fault-root-20261017/MANIFEST.json",
+  "root_manifest_sha256": "cdccbbe314570b75405a912891c25847e1f94a03aa09cbc3968b1be9aa5fe843",
+  "parent_metadata_qualification": "Initial820 identities verified by author; later unrelated Root Makefile packaging include excluded from current819 unchanged inherited verification. Child does not invoke make/read that file."
+}

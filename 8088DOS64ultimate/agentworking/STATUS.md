@@ -1,3 +1,7 @@
+# Modal terminal-error component verified — 2026-10-17
+
+ROOT verifies private a64f3372/1450pins, independently source-builds broker41639f30/CUI38488f86 and reexecutes6 focused actual6510/CIA groups2.453s. Native clock ownership failure now permits owned/cache0 error presentation atstageE1 while backend, display-off/release and Resume remain blocked. Private firsterror/intent/ticket survives forged public views/replies and11CIA actions; full4MiB/FILES/Cposition/ZP/clockwrites exact. UI ends9CFC/state7C98, broker744C/state77DC. No loader/controller/physical success is implied. Evidence native-media-terminal-fault-root-20261017.json; four source changes retained as an evidence checkpoint.
+
 # Coherent V1 development candidate — 2026-10-17
 
 Source-built candidate run-d463pedf packages9 native files with exact main666/config508d/SETUP0df4 and matched START79bb/INOeebb. All1166 source/product pins exact; zip101311B bcf04dd7;10host packaging groups pass including corruption of each native file, conflicting source generations, mismatched release/CONFIG, missing overlay, collisions and first-error/prior-result preservation. Existing runtime bytes/layouts unchanged. This does not close final installer/media/hardware gates; native early SETUP validation of all runtime dependencies remains pending. Evidence v1-candidate-root-20261017.json.

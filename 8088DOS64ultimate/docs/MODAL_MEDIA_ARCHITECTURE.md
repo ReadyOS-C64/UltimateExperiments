@@ -40,10 +40,10 @@ component tests, not a successful end-user save or physical screen acceptance.
 
 | Range | Current private component | Measured use |
 | --- | --- | --- |
-| `7000..76FF` | Broker instructions and private snapshots | 1,072 bytes through `742F` in the composition |
+| `7000..76FF` | Broker instructions and private snapshots | 1,101 bytes through `744C` in the terminal-error successor |
 | `7700..77FF` | Broker state | 221 bytes through `77DC` |
-| `7800..7C96` | Frontend state | 1,175 bytes |
-| `8000..9C76` | Frontend code, constants and initialized data | 7,287 bytes; PRG is 7,289 bytes |
+| `7800..7C98` | Frontend state | 1,177 bytes |
+| `8000..9CFC` | Frontend code, constants and initialized data | 7,421 bytes; PRG is 7,423 bytes |
 | `80..99` | Frontend zero page | 26 bytes |
 | `B800..BFFF` | Declared frontend software-stack region | Observed lowest write `BFE6`; compare-buffer overlap is guarded |
 
@@ -106,3 +106,5 @@ Evidence: [public Save As graph](../agentworking/evidence/native-media-public-ro
 The composition and frontend source/product identities are retained in the
 project-local `agentworking/scratch/live-media-composition-root-20261017` and
 `live-media-panel-display-successor-20261017` cohorts.
+
+The private terminal-error successor adds six ROOT-replayed actual native controls. Owned/cache0 presentation can show a terminal stage E1 error; backend polling, release and Resume remain stage8-only. The controller must call `mu_block` with the first failure and never reinitialize a failed session. Public observations cannot clear the private block or pending ticket. [Terminal-error evidence](../agentworking/evidence/native-media-terminal-fault-root-20261017.json).
