@@ -1,0 +1,75 @@
+{
+  "status": "PRIVATE_COMPONENT_MODEL_PASS_INDEPENDENT_REVIEW_PENDING",
+  "manifest": "agentworking/scratch/native-setup-publication-overlay/MANIFEST.json",
+  "manifest_sha256": "701e5ac4d4ee348f74c771abacb574117525859adf1d8ef60fea207e4b505a49",
+  "manifest_files": 241,
+  "native_sha256": "b9dca1c7165451b20de3a89e404f855ca2d3c73b7cf424baac3bad0d05c84e44",
+  "tests": {
+    "status": "PASS_PRIVATE_THREE_PHASE_COMPONENT_FULL_INSTALLER_PENDING",
+    "python_groups": {
+      "publish_phase": 13,
+      "capsule": 22,
+      "manager_compatible": 26,
+      "browser": 19,
+      "select": 12,
+      "peer_selection": 3,
+      "peer_authority": 6,
+      "rearm": 14,
+      "source_cache": 15
+    },
+    "zig_core_groups": 14,
+    "zig_selection_capsule_groups": 5,
+    "source_input_files": 120,
+    "products": 55,
+    "native_sha256": "b9dca1c7165451b20de3a89e404f855ca2d3c73b7cf424baac3bad0d05c84e44",
+    "limits": [
+      "Publisher currently executes a lifetime probe, not file publication.",
+      "Overlapping inherited groups are not summed as unique tests.",
+      "Not hardware acceptance or a complete installer."
+    ]
+  },
+  "layout": {
+    "status": "PRIVATE_COMPONENT_MODEL_PASS_INDEPENDENT_REVIEW_PENDING",
+    "parent_capsule_sha256": "892018f18a08ce98f8bdc0635d746a360cc5c3294f3d86048b2a02ba2a8cd3ff",
+    "writer_rearm_sha256": "a9ed0ab943cd3db198ef94dd33cd9487b739f0f3103fd18ee160cdfef569a338",
+    "writer_peer_sha256": "19cb665b917e57a1bc5e7007505847d005f6f8339dd09254c3ff705bede03e69",
+    "actual_map": {
+      "resident_end": "5F6F",
+      "resident_free": 144,
+      "FAT_bytes": 19058,
+      "FAT_free": 1422,
+      "UI_code_RO_end": "90AB",
+      "UIBSS_end": "97BE",
+      "PUB_code_bytes": 9,
+      "PUBBSS_bytes": 32,
+      "STATE_end": "BF70",
+      "STATE_free": 143,
+      "HIGH_end": "FEFD",
+      "HIGH_free": 252
+    },
+    "resident_delta_vs_capsule": 96,
+    "unit_fixture_relocation": {
+      "CODE": 249,
+      "RO": 10,
+      "from": "resident",
+      "to": "FAT",
+      "production_omit_later": true
+    },
+    "publication_cache_owned_range": "2D0000..2D7FFF",
+    "asset_used_end": "2D503F",
+    "reservation_correction": "Initial proposal2D4FFF omitted64-byte header; corrected owned arena to32KiB before physical use, retained here.",
+    "first_failures": [
+      "Empty PUB_RO fixture produced no linker-size symbol; optional zero-sized segment handled.",
+      "Missing ctypes bulk_model_open/command prototypes and wrong captured source root in first test harness; exit139 and artifacts retained."
+    ],
+    "limits": [
+      "Publisher currently executes a lifetime probe, not file publication.",
+      "Overlapping inherited groups are not summed as unique tests.",
+      "Not hardware acceptance or a complete installer."
+    ]
+  },
+  "main_emulator_unchanged": true,
+  "hardware_calls": false,
+  "no_push": true,
+  "supersession": "Original701e phase-ticket getter is NOT_READY: immutable CRC failure could revive after bytes restored. Repaired one-line sticky failure is included in raw0129594a successor. Original seal preserved; see independent review d8762b7f."
+}
