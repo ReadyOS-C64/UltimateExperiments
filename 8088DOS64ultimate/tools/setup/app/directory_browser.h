@@ -18,6 +18,7 @@
 #define DB_CANCEL 7
 #define DB_TIMEOUT 8
 #define DB_RANGE 9
+#define DB_CONFLICT_UNKNOWN 0x80u
 struct db_request_t {br_u8 owner,target,folders_only; br_u16 first,timeout; char path[128];};
 struct db_row_t {br_u8 raw[128],display[40];br_u16 raw_length;br_u8 attr,usable,display_cut;};
 struct db_page_t {char path[128];struct db_row_t rows[12];br_u16 first,total,scanned,generation;br_u8 count,previous,next,valid;};
@@ -43,6 +44,10 @@ void db_poll(void),db_cancel(void);
 /* Private state/cause authority, including while cleanup remains BUSY.
  * Both refresh the public observation; neither polls/parses new transport. */
 br_u8 db_state(void),db_error(void);
+/* Exact output-name mask A1/B2/C4/START8/CFG16 from the last complete quiet
+ * scan, including files filtered from the visible page. UNKNOWN on a busy,
+ * failed or differently bound path. Advisory only; final CREATE_NEW remains. */
+br_u8 __fastcall__ db_output_conflicts(const char *path);
 /* Committed page is readonly. Replaced only after entire bounded directory,
  * final status and quiet/released lease. Failed/cancelled jobs leave it intact.
  * Rawname retained EXACT only when raw_length<=127; longer names have rawzero

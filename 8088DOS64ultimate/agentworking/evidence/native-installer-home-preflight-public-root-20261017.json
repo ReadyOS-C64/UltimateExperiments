@@ -1,0 +1,1139 @@
+{
+  "status": "passed_public_home_preflight",
+  "native": {
+    "sha256": "0df4c4cfd24afb940e05054270963bc62a08a2f40daccc3eeb389a1781b91838",
+    "bytes": 41363
+  },
+  "author_manifest_sha256": "1fc36ff642b22b2f26f5e1839ae77af1fef1400b9f51edf504d6cb25a465b3f9",
+  "author_verified_files": 466,
+  "author_actual_groups": {
+    "full_installer": 4,
+    "home": 5,
+    "Zig": 11
+  },
+  "peer_manifest_sha256": "a264870256d1fb217d961d4f041a8e5b6bd7963acc5b033f4c3491a929834fad",
+  "peer_verified_files": 591,
+  "peer_actual_groups": {
+    "author_home": 5,
+    "independent": 3,
+    "Zig": 11
+  },
+  "peer_seeded_original_bytes_preserved": [
+    368640,
+    18432
+  ],
+  "root_public_actual_groups": {
+    "home": 5,
+    "Zig": 11
+  },
+  "source_copy_count": 7,
+  "all_phase_metadata_and_symbol_addresses_identical": true,
+  "inputs_products_unchanged": true,
+  "memory": {
+    "checks": {
+      "real_SYS_bootstrap": true,
+      "UI_at6000": true,
+      "UI_RO_contiguous": true,
+      "HIGH_serialized_after_UI": true,
+      "AUX_serialized_after_HIGH": true,
+      "AUX_RO_serialized": true,
+      "UI_BSS_after_live_core": true,
+      "initial_serialized_image_fits": true,
+      "UI_fits": true,
+      "FAT_fits": true,
+      "PUB_fits": true,
+      "STATE_fits": true,
+      "HIGH_state_fits": true,
+      "HIGH_code_vectors_disjoint": true,
+      "AUX_run_bounds": true
+    },
+    "segments": {
+      "LOADADDR": {
+        "start": 0,
+        "end": 1,
+        "bytes": 2
+      },
+      "ZEROPAGE": {
+        "start": 32,
+        "end": 63,
+        "bytes": 32
+      },
+      "BASIC": {
+        "start": 2049,
+        "end": 2060,
+        "bytes": 12
+      },
+      "BOOT": {
+        "start": 2061,
+        "end": 2099,
+        "bytes": 39
+      },
+      "DEVICECODE": {
+        "start": 2100,
+        "end": 3360,
+        "bytes": 1261
+      },
+      "FILECODE": {
+        "start": 3361,
+        "end": 4537,
+        "bytes": 1177
+      },
+      "CODE": {
+        "start": 4538,
+        "end": 24022,
+        "bytes": 19485
+      },
+      "RODATA": {
+        "start": 24023,
+        "end": 24440,
+        "bytes": 418
+      },
+      "DATA": {
+        "start": 24441,
+        "end": 24575,
+        "bytes": 135
+      },
+      "FAT_CODE": {
+        "start": 24576,
+        "end": 44950,
+        "bytes": 20375
+      },
+      "PUB_CODE": {
+        "start": 24576,
+        "end": 40706,
+        "bytes": 16131
+      },
+      "UI_CODE": {
+        "start": 24576,
+        "end": 38777,
+        "bytes": 14202
+      },
+      "UI_RO": {
+        "start": 38778,
+        "end": 40027,
+        "bytes": 1250
+      },
+      "UIBSS": {
+        "start": 40028,
+        "end": 42490,
+        "bytes": 2463
+      },
+      "PUB_RO": {
+        "start": 40707,
+        "end": 40897,
+        "bytes": 191
+      },
+      "PUBBSS": {
+        "start": 40898,
+        "end": 45054,
+        "bytes": 4157
+      },
+      "FAT_RO": {
+        "start": 44951,
+        "end": 45052,
+        "bytes": 102
+      },
+      "BSS": {
+        "start": 45056,
+        "end": 49054,
+        "bytes": 3999
+      },
+      "UCIBUFFER": {
+        "start": 49152,
+        "end": 50079,
+        "bytes": 928
+      },
+      "AUX_CODE": {
+        "start": 50080,
+        "end": 50990,
+        "bytes": 911
+      },
+      "AUX_RO": {
+        "start": 50991,
+        "end": 51165,
+        "bytes": 175
+      },
+      "DEVICESTATE": {
+        "start": 51200,
+        "end": 51266,
+        "bytes": 67
+      },
+      "CRC_TABLES": {
+        "start": 51456,
+        "end": 52479,
+        "bytes": 1024
+      },
+      "HIGHBSS": {
+        "start": 57344,
+        "end": 63200,
+        "bytes": 5857
+      },
+      "HIGH_CODE": {
+        "start": 63232,
+        "end": 65527,
+        "bytes": 2296
+      }
+    },
+    "free": {
+      "resident": 0,
+      "FAT": 3,
+      "UI_stage": 2565,
+      "PUB": 1,
+      "HIGH_code": 2,
+      "HIGH_state": 31,
+      "AUX": 34
+    }
+  },
+  "source_inputs": {
+    "/opt/homebrew/Cellar/cc65/2.19/bin/cc65": {
+      "sha256": "6fb3f60762a9daa9558e4ceace3150d4b19c68d8a5f464bd8d6ddc7618855b34",
+      "bytes": 350120
+    },
+    "/opt/homebrew/Cellar/cc65/2.19/bin/ca65": {
+      "sha256": "1a57997819fd98814e4601b5160df589e7a1a24e1888a80fee51ae450d8fd0ea",
+      "bytes": 201880
+    },
+    "/opt/homebrew/Cellar/cc65/2.19/bin/ld65": {
+      "sha256": "36bb196207a6b2c90a4aa991b419d6113885303951b14b60b455f51c777b3339",
+      "bytes": 157752
+    },
+    "/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib": {
+      "sha256": "7311640fa7f9820ca5e9ad4ef3b2f223da231d7cd1c6b8af2a214751b6c0e8dc",
+      "bytes": 730786
+    },
+    "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9": {
+      "sha256": "ec201019b3d883e095e753405a6fc5c1ae8f3b4905231dfd3dc6b4a1f348056f",
+      "bytes": 102352
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/setup_installer.py": {
+      "sha256": "918cacc24f583212b0eee66e2eb4000bc36f40bb61d7525103553c04776f0256",
+      "bytes": 17640
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/bindings.s": {
+      "sha256": "725bcc392522a20a16fdfd848e503a714f4f2fd40f5886c56b227fae6eb64d05",
+      "bytes": 2744
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/bindings.s": {
+      "sha256": "725bcc392522a20a16fdfd848e503a714f4f2fd40f5886c56b227fae6eb64d05",
+      "bytes": 2744
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/bulk_context.c": {
+      "sha256": "20bf20d6fdab983fe5e83c130c77575b91a591aa6b8c2595c2c67c61b13ac542",
+      "bytes": 6434
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/bulk_context.c": {
+      "sha256": "20bf20d6fdab983fe5e83c130c77575b91a591aa6b8c2595c2c67c61b13ac542",
+      "bytes": 6434
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/bulk_context.h": {
+      "sha256": "89583293600dddb5405d9ce6fbfef3d7ba834bb343107488de5f7ea81527404e",
+      "bytes": 2852
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/bulk_context.h": {
+      "sha256": "89583293600dddb5405d9ce6fbfef3d7ba834bb343107488de5f7ea81527404e",
+      "bytes": 2852
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/bulk_reu.c": {
+      "sha256": "457a3864419a4a80fd399cceb97891bc7a4da727bb4cfb81260e49ca669cebfb",
+      "bytes": 8589
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/bulk_reu.c": {
+      "sha256": "457a3864419a4a80fd399cceb97891bc7a4da727bb4cfb81260e49ca669cebfb",
+      "bytes": 8589
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/bulk_reu.h": {
+      "sha256": "0f15640839327a053e93cbe0c58f563ea67ec9667712c6f99ebce9ae502aaf99",
+      "bytes": 2793
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/bulk_reu.h": {
+      "sha256": "0f15640839327a053e93cbe0c58f563ea67ec9667712c6f99ebce9ae502aaf99",
+      "bytes": 2793
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/native/bulk_uci.h": {
+      "sha256": "61b92fb2ba8413ab547211cd981eaad6c962fdf3145f914e040f136132092475",
+      "bytes": 1217
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/bulk_uci.h": {
+      "sha256": "61b92fb2ba8413ab547211cd981eaad6c962fdf3145f914e040f136132092475",
+      "bytes": 1217
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/compact.cfg": {
+      "sha256": "0261b94b3db041913cebec17d6778a728f93f160271d7e1216a19ecd7393e4f2",
+      "bytes": 1841
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/compact.cfg": {
+      "sha256": "0261b94b3db041913cebec17d6778a728f93f160271d7e1216a19ecd7393e4f2",
+      "bytes": 1841
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/context_bindings.s": {
+      "sha256": "2e5994f1fd70ae2f3a126cb3536a68067596d3d17a0a023e27b7c81826b80856",
+      "bytes": 328
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/context_bindings.s": {
+      "sha256": "2e5994f1fd70ae2f3a126cb3536a68067596d3d17a0a023e27b7c81826b80856",
+      "bytes": 328
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/coordinator.s": {
+      "sha256": "161a3fc7d4f3a7f208f30bd1fb7d082371abf375495cffebfec9bc4981654aab",
+      "bytes": 8324
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/coordinator.s": {
+      "sha256": "161a3fc7d4f3a7f208f30bd1fb7d082371abf375495cffebfec9bc4981654aab",
+      "bytes": 8324
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/coordinator_capture.c": {
+      "sha256": "6bb4bcb7c5f0d7e97ced1de03844eb9b0f90d5c67a405a2d9f1bb3778bbc42d9",
+      "bytes": 2107
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/coordinator_capture.c": {
+      "sha256": "6bb4bcb7c5f0d7e97ced1de03844eb9b0f90d5c67a405a2d9f1bb3778bbc42d9",
+      "bytes": 2107
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/coordinator_capture.h": {
+      "sha256": "f119a62347fab43a031adbdca16f6e01c838bd831386d09fca4a56a7fdc87bcc",
+      "bytes": 553
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/coordinator_capture.h": {
+      "sha256": "f119a62347fab43a031adbdca16f6e01c838bd831386d09fca4a56a7fdc87bcc",
+      "bytes": 553
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/coordinator_internal.h": {
+      "sha256": "4fca7b59530e89a868a26aec289eb130faba6c210ba3ca09c94be1bc16423098",
+      "bytes": 1296
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/coordinator_internal.h": {
+      "sha256": "4fca7b59530e89a868a26aec289eb130faba6c210ba3ca09c94be1bc16423098",
+      "bytes": 1296
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/coordinator_internal.inc": {
+      "sha256": "f26ddfdf840af366eb456095aacac0095e2c0b2def3cbbc90823bd0779e2592e",
+      "bytes": 339
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/coordinator_internal.inc": {
+      "sha256": "f26ddfdf840af366eb456095aacac0095e2c0b2def3cbbc90823bd0779e2592e",
+      "bytes": 339
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/native/crc32.h": {
+      "sha256": "310b913a21424f47421ba33ff98b4ac10a9084cf74bf66b35c2358dab1c90ac1",
+      "bytes": 894
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/crc32.h": {
+      "sha256": "310b913a21424f47421ba33ff98b4ac10a9084cf74bf66b35c2358dab1c90ac1",
+      "bytes": 894
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/native/crc32.s": {
+      "sha256": "74bb6aec03f29927668889c2bf24e2b5ec0617e56c6637b0fe4bf0ea3d23f2ec",
+      "bytes": 3064
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/crc32.s": {
+      "sha256": "74bb6aec03f29927668889c2bf24e2b5ec0617e56c6637b0fe4bf0ea3d23f2ec",
+      "bytes": 3064
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/directory_browser.c": {
+      "sha256": "9485ebac248bb945fef9b0bc9e1d8e234786c5420cfae9d60696913f7cfa60ae",
+      "bytes": 7741
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/directory_browser.c": {
+      "sha256": "9485ebac248bb945fef9b0bc9e1d8e234786c5420cfae9d60696913f7cfa60ae",
+      "bytes": 7741
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/directory_browser.h": {
+      "sha256": "3abe23bc236b0fc85fa52bddee23693dd516180dd169ffa6ce8b760175caded5",
+      "bytes": 2981
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/directory_browser.h": {
+      "sha256": "3abe23bc236b0fc85fa52bddee23693dd516180dd169ffa6ce8b760175caded5",
+      "bytes": 2981
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/existing_c.inc": {
+      "sha256": "f09bedec1310f8d18e4b4d29ce5ee46f90f860497b1285e8dcd5fa0e043bef7f",
+      "bytes": 9490
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/existing_c.inc": {
+      "sha256": "f09bedec1310f8d18e4b4d29ce5ee46f90f860497b1285e8dcd5fa0e043bef7f",
+      "bytes": 9490
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/fat_prepare.c": {
+      "sha256": "d231d630ba11b4691be2f13b36d679abf7b2938a44c5417bb56e918715acc7f6",
+      "bytes": 1203
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/fat_prepare.c": {
+      "sha256": "d231d630ba11b4691be2f13b36d679abf7b2938a44c5417bb56e918715acc7f6",
+      "bytes": 1203
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/fat_prepare.h": {
+      "sha256": "6bf929b06427666ba3b05e735736ec2c08c11bb44c4089277a35eb9a7dcfc263",
+      "bytes": 1445
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/fat_prepare.h": {
+      "sha256": "6bf929b06427666ba3b05e735736ec2c08c11bb44c4089277a35eb9a7dcfc263",
+      "bytes": 1445
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/fat_worker.s": {
+      "sha256": "37d5e50ddccc2d5aec9f1e1b29fc1b1c09d87a7b52cbd19482ea0940e0f698d3",
+      "bytes": 8745
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/fat_worker.s": {
+      "sha256": "37d5e50ddccc2d5aec9f1e1b29fc1b1c09d87a7b52cbd19482ea0940e0f698d3",
+      "bytes": 8745
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/files.inc": {
+      "sha256": "dc87a9afa6bd56314a0a9c7f13598e362287b1e6bb8a8ef329575c563dc990a4",
+      "bytes": 2591
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/files.inc": {
+      "sha256": "dc87a9afa6bd56314a0a9c7f13598e362287b1e6bb8a8ef329575c563dc990a4",
+      "bytes": 2591
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/files.s": {
+      "sha256": "5d375e5be23e77364e7bc10077d549916857e3ba8864f90623a79885181d90a9",
+      "bytes": 10058
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/files.s": {
+      "sha256": "5d375e5be23e77364e7bc10077d549916857e3ba8864f90623a79885181d90a9",
+      "bytes": 10058
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/install_config.c": {
+      "sha256": "5f85f9e61d35d22ea40b1e0c4fd48e55da0c0ff5b9c49777da84187d3ddfc786",
+      "bytes": 7987
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/install_config.c": {
+      "sha256": "5f85f9e61d35d22ea40b1e0c4fd48e55da0c0ff5b9c49777da84187d3ddfc786",
+      "bytes": 7987
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/install_config.h": {
+      "sha256": "e3f41648267526f6dfb2df08db41896445ec4da4eab6198ef7d53cc8d7d40c7b",
+      "bytes": 1380
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/install_config.h": {
+      "sha256": "e3f41648267526f6dfb2df08db41896445ec4da4eab6198ef7d53cc8d7d40c7b",
+      "bytes": 1380
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/install_writer.c": {
+      "sha256": "4cdbe94ee027a71e7d4295bc903acedf964f8ae157a3b52b59f1bec532319f50",
+      "bytes": 6597
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/install_writer.c": {
+      "sha256": "4cdbe94ee027a71e7d4295bc903acedf964f8ae157a3b52b59f1bec532319f50",
+      "bytes": 6597
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/install_writer.h": {
+      "sha256": "c2bce8d14c2f1c085c26e490163fb28e8a3fa517c321a2d2b4f612006123b3a2",
+      "bytes": 2558
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/install_writer.h": {
+      "sha256": "c2bce8d14c2f1c085c26e490163fb28e8a3fa517c321a2d2b4f612006123b3a2",
+      "bytes": 2558
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/lease_context.c": {
+      "sha256": "e0b8d25c3353e9d27052f64fd9fbbb92f6b4e7dd853b1e0746cd9d6e1b8c59d5",
+      "bytes": 165
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/lease_context.c": {
+      "sha256": "e0b8d25c3353e9d27052f64fd9fbbb92f6b4e7dd853b1e0746cd9d6e1b8c59d5",
+      "bytes": 165
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/native_fat.c": {
+      "sha256": "6de4235377d61c3721b0d3457555389f866e783547f4800240264e6ff2958570",
+      "bytes": 21016
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/native_fat.c": {
+      "sha256": "6de4235377d61c3721b0d3457555389f866e783547f4800240264e6ff2958570",
+      "bytes": 21016
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/native_fat.h": {
+      "sha256": "84056822e90025f75810f69c7222aeeb6db633b6e2d876e1d59684a6346c6e5e",
+      "bytes": 3691
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/native_fat.h": {
+      "sha256": "84056822e90025f75810f69c7222aeeb6db633b6e2d876e1d59684a6346c6e5e",
+      "bytes": 3691
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/overlay_bindings.s": {
+      "sha256": "5e0ece9a225043f4f01b6d73e43938077156344031ba5475d64e6cd38bba0643",
+      "bytes": 57
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/overlay_bindings.s": {
+      "sha256": "5e0ece9a225043f4f01b6d73e43938077156344031ba5475d64e6cd38bba0643",
+      "bytes": 57
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/overlay_manifest.s": {
+      "sha256": "93ff3bb5add0d1f2bbcf94c5076c9fb6ab5a671fa018fc12670e1c17b93c55c9",
+      "bytes": 342
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/overlay_manifest.s": {
+      "sha256": "93ff3bb5add0d1f2bbcf94c5076c9fb6ab5a671fa018fc12670e1c17b93c55c9",
+      "bytes": 342
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/native/platform.c": {
+      "sha256": "b91ff826c545b4647c561c8aca110b432f670b6986183cb74a24c775aa84d4d9",
+      "bytes": 3414
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/platform.c": {
+      "sha256": "b91ff826c545b4647c561c8aca110b432f670b6986183cb74a24c775aa84d4d9",
+      "bytes": 3414
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/native/platform.h": {
+      "sha256": "cf915040d8d6b669fcfc3ce0bfbca22574a6a12ee850b3c69ee97f8ee48ac11c",
+      "bytes": 1696
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/platform.h": {
+      "sha256": "cf915040d8d6b669fcfc3ce0bfbca22574a6a12ee850b3c69ee97f8ee48ac11c",
+      "bytes": 1696
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/native/platform.s": {
+      "sha256": "dd04006d754139ccca371ad3d021014750f457485f498a41f2a003c1866c694a",
+      "bytes": 586
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/platform.s": {
+      "sha256": "dd04006d754139ccca371ad3d021014750f457485f498a41f2a003c1866c694a",
+      "bytes": 586
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/pub_codec.c": {
+      "sha256": "30e478e9ec6f39219d5ea65f929fb943353125750e0b8201c37927e3d828d5f3",
+      "bytes": 88
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/pub_codec.c": {
+      "sha256": "30e478e9ec6f39219d5ea65f929fb943353125750e0b8201c37927e3d828d5f3",
+      "bytes": 88
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/pub_config.c": {
+      "sha256": "8eaf17651abe420a9c27f5e79c89306dc6df6aee788b4adb292fd048106c8820",
+      "bytes": 7563
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/pub_config.c": {
+      "sha256": "8eaf17651abe420a9c27f5e79c89306dc6df6aee788b4adb292fd048106c8820",
+      "bytes": 7563
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/pub_config_original.h": {
+      "sha256": "4be20cc4c6fd3e145bf5de3f0c76205c5b286caadcb584fdb4fdac887b26376f",
+      "bytes": 1092
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/pub_config_original.h": {
+      "sha256": "4be20cc4c6fd3e145bf5de3f0c76205c5b286caadcb584fdb4fdac887b26376f",
+      "bytes": 1092
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/pub_config_prefix.h": {
+      "sha256": "95642cc4603918c813ca1eee161c6172f38c6777a50efd7bf103b4e0fce641cc",
+      "bytes": 584
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/pub_config_prefix.h": {
+      "sha256": "95642cc4603918c813ca1eee161c6172f38c6777a50efd7bf103b4e0fce641cc",
+      "bytes": 584
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/pub_crc_adapter.c": {
+      "sha256": "a042b1dfcf504184fa67aabee73fb9ddf4858e53bbb0b97de21c17b229529891",
+      "bytes": 58
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/pub_crc_adapter.c": {
+      "sha256": "a042b1dfcf504184fa67aabee73fb9ddf4858e53bbb0b97de21c17b229529891",
+      "bytes": 58
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_assets.c": {
+      "sha256": "3bdb74b962270b0bb60ac9760eedfbd1ecf238ac3008a0a4dd854be84c3140cf",
+      "bytes": 7285
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/publish_assets.c": {
+      "sha256": "3bdb74b962270b0bb60ac9760eedfbd1ecf238ac3008a0a4dd854be84c3140cf",
+      "bytes": 7285
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_assets.h": {
+      "sha256": "4fe5b72918c94becaa1b6ae2e8b4566d8d3bfdb5535b735457e2bf094ef92f6b",
+      "bytes": 2336
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/publish_assets.h": {
+      "sha256": "4fe5b72918c94becaa1b6ae2e8b4566d8d3bfdb5535b735457e2bf094ef92f6b",
+      "bytes": 2336
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_scratch.c": {
+      "sha256": "99bb0a3a670a7d03203350a37c7697d9358a3f5e3b329dd28cb4cfd4fe36122a",
+      "bytes": 62
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/publish_scratch.c": {
+      "sha256": "99bb0a3a670a7d03203350a37c7697d9358a3f5e3b329dd28cb4cfd4fe36122a",
+      "bytes": 62
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_scratch.h": {
+      "sha256": "984c5e0e176cd61998e76304c0efff6c32f97d8470aa93f4e14a0cacdd09fd9c",
+      "bytes": 364
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/publish_scratch.h": {
+      "sha256": "984c5e0e176cd61998e76304c0efff6c32f97d8470aa93f4e14a0cacdd09fd9c",
+      "bytes": 364
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_worker.c": {
+      "sha256": "ce45f859d50c4a38b269746d75abcd71a840a8302e43c6912221c224a89734e5",
+      "bytes": 1772
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/publish_worker.c": {
+      "sha256": "ce45f859d50c4a38b269746d75abcd71a840a8302e43c6912221c224a89734e5",
+      "bytes": 1772
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_worker.h": {
+      "sha256": "b94eecd79627bb2bf518262f9677a81e7eb371af48edea857635626c3f17d89f",
+      "bytes": 544
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/publish_worker.h": {
+      "sha256": "b94eecd79627bb2bf518262f9677a81e7eb371af48edea857635626c3f17d89f",
+      "bytes": 544
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/publish_worker_asm.s": {
+      "sha256": "f829e9c5dff9e7ca0ffe6889186dd35fb5898699a0bcbe0e4d9ee93812f5627f",
+      "bytes": 9247
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/publish_worker_asm.s": {
+      "sha256": "f829e9c5dff9e7ca0ffe6889186dd35fb5898699a0bcbe0e4d9ee93812f5627f",
+      "bytes": 9247
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/raw_output.c": {
+      "sha256": "3503b667305f2d72ae72de8c0a950054ad05f63f401015f7c50c79791bfc2895",
+      "bytes": 11779
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/raw_output.c": {
+      "sha256": "3503b667305f2d72ae72de8c0a950054ad05f63f401015f7c50c79791bfc2895",
+      "bytes": 11779
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/raw_output.h": {
+      "sha256": "b1018a16a86532f1cba3c0fb4c836c4bd73f1fdc8a5097e7a2ba7e48d32ca9f3",
+      "bytes": 2043
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/raw_output.h": {
+      "sha256": "b1018a16a86532f1cba3c0fb4c836c4bd73f1fdc8a5097e7a2ba7e48d32ca9f3",
+      "bytes": 2043
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/selection_capsule.c": {
+      "sha256": "36f322d2fabc7da6c91dd44296e02e563f392d656d664727601237175d8cbf32",
+      "bytes": 5133
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/selection_capsule.c": {
+      "sha256": "36f322d2fabc7da6c91dd44296e02e563f392d656d664727601237175d8cbf32",
+      "bytes": 5133
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/selection_capsule.h": {
+      "sha256": "37bb16b45cd278324017b006213fdb4624351cc51043911448e567fdc8d247c5",
+      "bytes": 1965
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/selection_capsule.h": {
+      "sha256": "37bb16b45cd278324017b006213fdb4624351cc51043911448e567fdc8d247c5",
+      "bytes": 1965
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_cooperate.c": {
+      "sha256": "c1eaba29fd5c9cd10e68751a673a941f4953d7e30e03e2b0d620bac72b726da3",
+      "bytes": 3134
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/setup_cooperate.c": {
+      "sha256": "c1eaba29fd5c9cd10e68751a673a941f4953d7e30e03e2b0d620bac72b726da3",
+      "bytes": 3134
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_cooperate.h": {
+      "sha256": "8fb282e3f7720034f02eb84ac94ea59bc145b62a550a4ef7dc2e04a63b2e20a1",
+      "bytes": 1327
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/setup_cooperate.h": {
+      "sha256": "8fb282e3f7720034f02eb84ac94ea59bc145b62a550a4ef7dc2e04a63b2e20a1",
+      "bytes": 1327
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_copy.s": {
+      "sha256": "533e75576e969823f47eeb0bba462b3baceaf04cef23f0e17e2cbc082c5061ed",
+      "bytes": 1637
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/setup_copy.s": {
+      "sha256": "533e75576e969823f47eeb0bba462b3baceaf04cef23f0e17e2cbc082c5061ed",
+      "bytes": 1637
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_dma.s": {
+      "sha256": "ad8dea074aa7f1ae2267560247d63741914ee22179a0d425b354e08b668cc42a",
+      "bytes": 620
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/setup_dma.s": {
+      "sha256": "ad8dea074aa7f1ae2267560247d63741914ee22179a0d425b354e08b668cc42a",
+      "bytes": 620
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_io.c": {
+      "sha256": "43213e4266bb55414ef6a5b17af24edb81a4734b5232b8be8564f2f7b1a06334",
+      "bytes": 5287
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/setup_io.c": {
+      "sha256": "43213e4266bb55414ef6a5b17af24edb81a4734b5232b8be8564f2f7b1a06334",
+      "bytes": 5287
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_io.h": {
+      "sha256": "e6eca1ae72246a9c58efbd22a9dfed75da9daa4f0e09dda01ff1392cc28fb5ff",
+      "bytes": 1104
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/setup_io.h": {
+      "sha256": "e6eca1ae72246a9c58efbd22a9dfed75da9daa4f0e09dda01ff1392cc28fb5ff",
+      "bytes": 1104
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_overlay.c": {
+      "sha256": "678c2f2ec076c7e1e2d1c87a96ca4d13868aa08705dbeee96c054245bd8eb49a",
+      "bytes": 9641
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/setup_overlay.c": {
+      "sha256": "678c2f2ec076c7e1e2d1c87a96ca4d13868aa08705dbeee96c054245bd8eb49a",
+      "bytes": 9641
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_overlay.h": {
+      "sha256": "4253b5bb85b1e04236f5c45b9d4ca1e2febce893f21e630a7b2e316dcb0e00bf",
+      "bytes": 3012
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/setup_overlay.h": {
+      "sha256": "4253b5bb85b1e04236f5c45b9d4ca1e2febce893f21e630a7b2e316dcb0e00bf",
+      "bytes": 3012
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_select.c": {
+      "sha256": "c82dd17dad63cc162615710dbd9aef995b4ae4ad231820ee88400f33e0e8f9c7",
+      "bytes": 6815
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/setup_select.c": {
+      "sha256": "c82dd17dad63cc162615710dbd9aef995b4ae4ad231820ee88400f33e0e8f9c7",
+      "bytes": 6815
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_select.h": {
+      "sha256": "74677ee9fb5fcf67cd49f7d27123e2190bf03e308fc176193f0a44d3e5eb97cd",
+      "bytes": 1311
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/setup_select.h": {
+      "sha256": "74677ee9fb5fcf67cd49f7d27123e2190bf03e308fc176193f0a44d3e5eb97cd",
+      "bytes": 1311
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_ui_run.c": {
+      "sha256": "9e66ed8bd352d069c9078f6775bb5296dac2fc19749305ca7536997471dd01de",
+      "bytes": 2180
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/setup_ui_run.c": {
+      "sha256": "9e66ed8bd352d069c9078f6775bb5296dac2fc19749305ca7536997471dd01de",
+      "bytes": 2180
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/setup_ui_run.h": {
+      "sha256": "12638f37c6c6206eed01d34a0986716095270f0f7c9a56e28d810a6ccca0f7d7",
+      "bytes": 1093
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/setup_ui_run.h": {
+      "sha256": "12638f37c6c6206eed01d34a0986716095270f0f7c9a56e28d810a6ccca0f7d7",
+      "bytes": 1093
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/abi.inc": {
+      "sha256": "74a874c245aed278ba884d33923279bde901bed97427452096dd414ba67e08d6",
+      "bytes": 357
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/shared/abi.inc": {
+      "sha256": "74a874c245aed278ba884d33923279bde901bed97427452096dd414ba67e08d6",
+      "bytes": 357
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/reu.inc": {
+      "sha256": "47a4eac6be6d727dc506c2d8e808e1028aefb2f8321b89aff3d333bff94c5e05",
+      "bytes": 222
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/shared/reu.inc": {
+      "sha256": "47a4eac6be6d727dc506c2d8e808e1028aefb2f8321b89aff3d333bff94c5e05",
+      "bytes": 222
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/shared/reu.s": {
+      "sha256": "3bea123734d1e75417d1151531048d6731895ab80519bd6027f0e74de61db4ef",
+      "bytes": 3474
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/shared/reu.s": {
+      "sha256": "3bea123734d1e75417d1151531048d6731895ab80519bd6027f0e74de61db4ef",
+      "bytes": 3474
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/source_load.c": {
+      "sha256": "0cefc82536b81675eda49a4835cfa2b2b465397f0f6d7bae429bcd4a0359a929",
+      "bytes": 9417
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/source_load.c": {
+      "sha256": "0cefc82536b81675eda49a4835cfa2b2b465397f0f6d7bae429bcd4a0359a929",
+      "bytes": 9417
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/source_load.h": {
+      "sha256": "01ff6591c8dba67623a2dfe65d6baf13ce4190cc9b31c7019395cf71f8eaaa23",
+      "bytes": 1649
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/source_load.h": {
+      "sha256": "01ff6591c8dba67623a2dfe65d6baf13ce4190cc9b31c7019395cf71f8eaaa23",
+      "bytes": 1649
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/start_template.c": {
+      "sha256": "b2041fd7c9c63cfdb7fbc2cf7171b127e91f816987a6705acefd23e41f65fe48",
+      "bytes": 3496
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/start_template.c": {
+      "sha256": "b2041fd7c9c63cfdb7fbc2cf7171b127e91f816987a6705acefd23e41f65fe48",
+      "bytes": 3496
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/start_template.h": {
+      "sha256": "e4bd5ed1e13616a59fb9c2803b3611b0d68537147f3dd239facee7bc1dd0aa2b",
+      "bytes": 1544
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/start_template.h": {
+      "sha256": "e4bd5ed1e13616a59fb9c2803b3611b0d68537147f3dd239facee7bc1dd0aa2b",
+      "bytes": 1544
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/startup.s": {
+      "sha256": "c077f9c54f72ae5ce49af8552fe560e0d296559e4a671cc2ef189db7c1a37358",
+      "bytes": 658
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/startup.s": {
+      "sha256": "c077f9c54f72ae5ce49af8552fe560e0d296559e4a671cc2ef189db7c1a37358",
+      "bytes": 658
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/native/startup_close.s": {
+      "sha256": "741368b7c35ab52b43495c86c83a15740e76d8597b5013618e4de916dc775611",
+      "bytes": 3060
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/startup_close.s": {
+      "sha256": "741368b7c35ab52b43495c86c83a15740e76d8597b5013618e4de916dc775611",
+      "bytes": 3060
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/startup_glue.s": {
+      "sha256": "80bd9392676845d1ba89e1b1ccb067af4963fe7f956b1d58994a275db86e030b",
+      "bytes": 158
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/startup_glue.s": {
+      "sha256": "80bd9392676845d1ba89e1b1ccb067af4963fe7f956b1d58994a275db86e030b",
+      "bytes": 158
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/include/uci.inc": {
+      "sha256": "574d140bfa3772a438f45510309018190c41f54ee205cab691523f034cf9640d",
+      "bytes": 2351
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/uci.inc": {
+      "sha256": "574d140bfa3772a438f45510309018190c41f54ee205cab691523f034cf9640d",
+      "bytes": 2351
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/uci.s": {
+      "sha256": "5d6ec2689642be175035cde618e85b9768dfdaa5e857f09b7a8786cbc234fd8f",
+      "bytes": 12707
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/uci.s": {
+      "sha256": "5d6ec2689642be175035cde618e85b9768dfdaa5e857f09b7a8786cbc234fd8f",
+      "bytes": 12707
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/setup/app/selection_abi.c": {
+      "sha256": "8dc0fdfc9ecb9f5bf7082ce69a205ce91a13b96adfd5f99039da45426c5867d1",
+      "bytes": 166
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/ui_fixture.c": {
+      "sha256": "8dc0fdfc9ecb9f5bf7082ce69a205ce91a13b96adfd5f99039da45426c5867d1",
+      "bytes": 166
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/native/validator_crc.c": {
+      "sha256": "ebe917f9af7cca38135f5a03a8c2489128f398fa727c0e12aa2e3ee2ffc19811",
+      "bytes": 312
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/validator_crc.c": {
+      "sha256": "ebe917f9af7cca38135f5a03a8c2489128f398fa727c0e12aa2e3ee2ffc19811",
+      "bytes": 312
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/tools/native/validator_crc.h": {
+      "sha256": "551c0816dfeea0cd3c6a52a5d5ca0016b4c92b68c0f138d47db5647744a0cf83",
+      "bytes": 471
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/validator_crc.h": {
+      "sha256": "551c0816dfeea0cd3c6a52a5d5ca0016b4c92b68c0f138d47db5647744a0cf83",
+      "bytes": 471
+    }
+  },
+  "products": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/pub_crc_adapter.s": {
+      "sha256": "1c60a0dff72b14e2a36f775c28bea65813c4d7fc1fab1fdb448381a1e55c9508",
+      "bytes": 1383
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/SETUP.PUB": {
+      "sha256": "07a1c0bfe2cf9fd8a5e7b4bb6b0ddc910c357b06c514bd83359869b0dfb8080f",
+      "bytes": 20544
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/install_config.o": {
+      "sha256": "dee7bb9b3e6bdecaf53fa4adba4427a65233d6cb17d2593d594985d93f13036e",
+      "bytes": 13720
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/pub_crc_adapter.o": {
+      "sha256": "5e9981360d34b3ef0f942f663ed39ffb039bf768ee16ffcc41941031c206d415",
+      "bytes": 1471
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/install_config.s": {
+      "sha256": "337dca58040f0c27bf6b61599c1d9aba17fdb4967ab3a310a67c22e6e946a2d6",
+      "bytes": 10194
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup_cooperate.s": {
+      "sha256": "260822c607dffaa8bb33ff5376db3562e8ce2662dc59d8763c9590f3d9976a47",
+      "bytes": 13143
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/startup_close.o": {
+      "sha256": "5be5300353439261842733849ccb89b972a193a54e946ec7d812cbab0680b095",
+      "bytes": 6539
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/start_template.s": {
+      "sha256": "0de73f333ab19b58a6a8f9c7fb40552f72eca7f71994426e7ae6ea09cfed10e8",
+      "bytes": 20800
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/selection_capsule.o": {
+      "sha256": "5c06bb1e50c2f573a457ef52c04a7bd901a86d6ab556c6e1d89ad44faaf37dd4",
+      "bytes": 30604
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup_cooperate.o": {
+      "sha256": "8142df3a31a01936732e6da4c6de69938e1b9d59296271f32f73159c5f7b2b1c",
+      "bytes": 12044
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/SETUP.FAT": {
+      "sha256": "00b88bb654531dfe32b6e360d8e666b90a3b4e16056dc4a1928723255d7d069a",
+      "bytes": 20541
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/selection_capsule.s": {
+      "sha256": "7d9901e3068540afbfc4573594dfcb84605eb93920a59674ffa20a487f822456",
+      "bytes": 22236
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/start_template.o": {
+      "sha256": "7d5101da3a315e9cb145e0ddd1a08c1ca5c3e0a9c8a0dfcf90197b4f8e7d25c2",
+      "bytes": 28477
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/pub_codec.s": {
+      "sha256": "f06d9139eea8394055eabbcd7bd57d512cd0008185b0f0009a2dabcef370fd82",
+      "bytes": 22181
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/pub_codec.o": {
+      "sha256": "71ec98a2497ef17d24b2e1809aa03047a2dd23e325b2095004575eff6aae25b7",
+      "bytes": 37512
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/reu.o": {
+      "sha256": "b3302168bdfdddb1da8ad3a043c3a5baa97c928e8b44598a77c0761d2bb124d5",
+      "bytes": 4003
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/publish_worker_asm.o": {
+      "sha256": "f459558f1ab08c21c33d13baec8abc4bbd94d8696872a51625b70bac0bccfb45",
+      "bytes": 21706
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/publish-overlay.bin": {
+      "sha256": "4e41fc8f424b03fcf03c8a7d112bb53494d7187a8102d915f1f02c0b42ebdcb6",
+      "bytes": 16322
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup_ui_run.s": {
+      "sha256": "b9a5ad3181ccc0c25e05279114594873064d50cddcf73db2d3ff0703f7b7e52f",
+      "bytes": 8588
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup_ui_run.o": {
+      "sha256": "4203e597bbbe4307f42f1bf8c99a31e405faaf28d1bc41f71a5ab14688dd058d",
+      "bytes": 8295
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup.map": {
+      "sha256": "ddab22b262b899ec6f428db874f2207cf702ed11802438f3d0f61fbddb216766",
+      "bytes": 510445
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/overlay_metadata.inc": {
+      "sha256": "4ba41c498a2f45ac9aa261a69ac9c1619b895ed06bca2c6916790ac82d7a11a9",
+      "bytes": 857
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/context_bindings.o": {
+      "sha256": "c63aaea63448511f6749a53e3bca7ed234b889c9552e67a471c0ae4591a59c48",
+      "bytes": 674
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/platform_c.s": {
+      "sha256": "26db8b6468a66ca7c13db5193470442d2f2ea8d82f96883a3e0592954d8dfc8c",
+      "bytes": 12852
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/publish_assets.s": {
+      "sha256": "af4fc6315bbbf820e54fc2a12f0df75a3fc80cfcea847c2cb415ddd2ae5c7078",
+      "bytes": 32643
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup_io.o": {
+      "sha256": "360e5f86dfdfc93b89683ba0a5a377c170bc43a038001057a13cc837cdb8364d",
+      "bytes": 19979
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/publish_assets.o": {
+      "sha256": "816ebadbece62c327310ca4b9ca532cca1d02090328812eeace23e89b11ccf40",
+      "bytes": 35095
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/overlay_bindings.o": {
+      "sha256": "b99a12bcbebfecb82f7699a427ad3e1858b1141e5baf62d9fb77b127b39e3da4",
+      "bytes": 484
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/platform_c.o": {
+      "sha256": "274336e560e4c3bcd7d9ac498a6c254827be384e9be233f3c4aed128a514dbd5",
+      "bytes": 13274
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup_io.s": {
+      "sha256": "c36108ed59614bdc57453e5541ac3c6b6cfd470aa9dca6aaa23912f68bb21f7b",
+      "bytes": 17960
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/startup.o": {
+      "sha256": "87ed435cecd207c4bc9881a113df00d1e0b94f986c5377f2c9f0adca952957e4",
+      "bytes": 1565
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/lease_context.s": {
+      "sha256": "5b51959dbd227f415a9ccd951d93076657faf0b283ebaf9160217b33b44943d9",
+      "bytes": 951
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/publish_scratch.o": {
+      "sha256": "7af7507a715e7e60336285e11bc304a4b696b48f11601f5a65106dae0f36d63d",
+      "bytes": 3190
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/publish_scratch.s": {
+      "sha256": "fa27f315f271570481d0c9a09f82cde34e10d595309816c4f795e4c60d13d723",
+      "bytes": 358
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/lease_context.o": {
+      "sha256": "0a546e43541453e643de6515f6fc9d45bbfc067843b7720ef49688eb052b2efc",
+      "bytes": 764
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/raw_output.o": {
+      "sha256": "1202c6eddf31df22dca32f1d926beda7711f73578907cdcc54264ba6bc0280c3",
+      "bytes": 57273
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/install_writer.s": {
+      "sha256": "87e12c0397326954565e91c742eb5aa10d9f5f3eaa1ef0f1089c9ed2dae005c6",
+      "bytes": 25538
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/install_writer.o": {
+      "sha256": "b4d3c6f7f25ae3adc7ca2e777b3f7563413e221f155515cdea2b8337ae169a80",
+      "bytes": 30569
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/raw_output.s": {
+      "sha256": "3a2214c3a385afec2900c7da0d709088fd8132f12abb45bfe1365994b32fdb46",
+      "bytes": 44486
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/bindings.o": {
+      "sha256": "e3fef2938fbe17ca8678f4e353e8a1bbe7b37deb279af8d0112002af123efed9",
+      "bytes": 3635
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/publish_worker.s": {
+      "sha256": "e44056b38c656a5a0094af74aedb5bde152aef9472aa1ab7259a78f47b40db00",
+      "bytes": 5645
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/source_load.s": {
+      "sha256": "45d2f1aabc29a7d64eadc5815076867da463aed070271a17ea9e1d788cf038dd",
+      "bytes": 32972
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/directory_browser.o": {
+      "sha256": "e5a885b86cd664e66cc121f157319c700aa4744aa92a0d5e89f7b160411b0b6a",
+      "bytes": 60754
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/publish_worker.o": {
+      "sha256": "40d171cf224a16536acc32cdc08047ff51075c7f4ffc35a3f87dd6d80e265ab3",
+      "bytes": 5857
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup.labels": {
+      "sha256": "3e5fa78b3d6bec4e96f1144722b250a2df06f57d873360e08f8c21463367792d",
+      "bytes": 27282
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/directory_browser.s": {
+      "sha256": "84fb0e71e4aebdbd3228e74e11c977939b3e2191ddb1b1f78cf92f964fdcb700",
+      "bytes": 30006
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/source_load.o": {
+      "sha256": "9d09a76228b312a58bf0b88d277b7874e4e92dfe1ba2b6101a7d99f5e28c3c80",
+      "bytes": 41559
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/ui_fixture.o": {
+      "sha256": "06f97d513b9b841770eee4035d4457cbd7fbbb373893ccc986d88283dbad616c",
+      "bytes": 960
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/fat_worker.o": {
+      "sha256": "88a0c20ea3c70e875ac3228106cb7e17feb6374653c99ef5939d4363ce241287",
+      "bytes": 17076
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup_overlay.o": {
+      "sha256": "f1cb9107e0a5c7f58061d004e5039001a8e7602d55587e0267b3ac8c0093d126",
+      "bytes": 38601
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup_select.o": {
+      "sha256": "166441aa366b989551e35b42f013167f83032eb0c384aef1d15ff6a16a1d0259",
+      "bytes": 40795
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/ui_fixture.s": {
+      "sha256": "2b02bffd206acd90fa3e6bb4d2a2e80cb9a895e9927e94742b60c33f630e906c",
+      "bytes": 903
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup_select.s": {
+      "sha256": "d8557224ae821bee71eb4a9f957b41019190ed213576ea37cdd06efa28044657",
+      "bytes": 31415
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup_overlay.s": {
+      "sha256": "19e8ed7277227c1d7704627fcf2aa984b5f41b6292f26cc61f05dcc2c2477ae8",
+      "bytes": 32510
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/coordinator_capture.o": {
+      "sha256": "ea995f0c764a1370762a99e8332f1f8d9a4520105c1bc6b89f450357066f564c",
+      "bytes": 8375
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/coordinator_capture.s": {
+      "sha256": "2a95a2732768dfe77c001e27536e570130bb33a246d620047aa78b1203e7854c",
+      "bytes": 7266
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/coordinator.o": {
+      "sha256": "5087c286e2b763e37768609fb22ec396c8b07ce1b371b6998a3da4385991e6bb",
+      "bytes": 15050
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/overlay_manifest.o": {
+      "sha256": "ba37bf7d54db234d0ad11e967527b631f70e51510db3c39b9cbf26756b68d0eb",
+      "bytes": 2238
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/platform_asm.o": {
+      "sha256": "aa212814280f512b3b41203e2fc0265c81801804790d073e7dbc35317df2d623",
+      "bytes": 1332
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/native_fat.o": {
+      "sha256": "2325f9ac6c60bfb1aa723f0d598150b3116593aeb2751d856c832136033e38f0",
+      "bytes": 185094
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/fat_prepare.o": {
+      "sha256": "834a7f4352c729df6215c00ae88e4b3158d62ee5a820b6beac61236bd3bc0c16",
+      "bytes": 4823
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/fat_prepare.s": {
+      "sha256": "429b6f64b858d9575998873d8298b604382d7550ee6ae81976451573926d9f93",
+      "bytes": 5492
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/fat-overlay.bin": {
+      "sha256": "a4380bc3505e09702ba715a4eeb0aebfe0c0b1aab67395d31b144c330fb2fceb",
+      "bytes": 20477
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/native_fat.s": {
+      "sha256": "162a17bb9a520da25afb3d72b8be2579aea081c77d4d72feb7771c33501b88f1",
+      "bytes": 150374
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/files.o": {
+      "sha256": "413dff4549b0793402105905b8826c8ea3d8180babc0f88598f1f1e7232b691e",
+      "bytes": 19590
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/crc32.o": {
+      "sha256": "f7883f2dbae5f20568ee2b0feabe498704d65316360ab8a153cf7b1afaf3cefc",
+      "bytes": 6644
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/startup_glue.o": {
+      "sha256": "175d89512a7fdc8db6f9d085e87915b8595d1ead9838e0d4ced33bab8033ceb0",
+      "bytes": 577
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/uci.o": {
+      "sha256": "35f3b9f54ad1bdc07f4019837bc652fedc0620354a4315f9bb53ad43495eeab9",
+      "bytes": 21589
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup_dma.o": {
+      "sha256": "68319394efe2dd98c38ef5e6f647f3c809347e5ed03b1221fd40e70b55197064",
+      "bytes": 1185
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/bulk_context.o": {
+      "sha256": "2269777083b3a5e1ef9895ced76784cfabdc02aae6d2d26626d7279fc88e2f15",
+      "bytes": 70896
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup_copy.o": {
+      "sha256": "8c69f81e88c91868fe68a8fda686fa30bed61cb59062434c12488693a47e3252",
+      "bytes": 2132
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/setup.prg": {
+      "sha256": "0df4c4cfd24afb940e05054270963bc62a08a2f40daccc3eeb389a1781b91838",
+      "bytes": 41363
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-installer/source-q4dqsz0h/build/bulk_context.s": {
+      "sha256": "024a6da820a0b82d1e1dc73ad1a93bf2969f2f615a0e466e81a584371b01d9ed",
+      "bytes": 54694
+    }
+  },
+  "physical": false,
+  "full_reconfiguration": false,
+  "limits": [
+    "Exact raw output names only; FatFs aliases and concurrent changes still rely on final CREATE_NEW",
+    "Current directory job must finish cleanly and release lease; failed/busy/wrong-path query is unknown",
+    "No in-place replacement, media transformation or power-cut rollback claimed",
+    "First quick screen-code fixture failed and was not source-closed; final acceptance uses fresh closed runs"
+  ]
+}

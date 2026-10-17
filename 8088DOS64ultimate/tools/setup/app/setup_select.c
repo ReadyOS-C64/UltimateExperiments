@@ -105,7 +105,7 @@ void ss_cancel(void){
  if(loading)db_cancel();else fail(error);publish();
 }
 br_u8 ss_poll(void){
- br_u8 key;
+ br_u8 key,conflicts;
  if(state!=SS_BUSY){if(dirty){render();dirty=0;}publish();return state;}
  if(loading&&db_error()&&!error)error=SS_DIRECTORY;
  if(!ps_clock_poll()){if(!error)error=SS_CLOCK;ss_cancel();}
@@ -120,7 +120,10 @@ br_u8 ss_poll(void){
    else if(stage<5){
     if(key==8&&db_parent()){memcpy(current,db_selected_path,128);refresh(0);}
     else if(key==PS_F1&&stage==0){
-     if(current[1]&&strlen(current)<=SS_HOME_MAX){memcpy(choices.home,current,128);next_stage();}
+     conflicts=db_output_conflicts(current);
+     if(conflicts==DB_CONFLICT_UNKNOWN)text(23,0,"Folder check failed; reopen this folder.");
+     else if(conflicts)text(23,0,"Files exist; choose another home folder.");
+     else if(current[1]&&strlen(current)<=SS_HOME_MAX){memcpy(choices.home,current,128);next_stage();}
      else text(23,0,"Choose a folder with room for filenames.");
     }else if(key==PS_F1&&stage==4)next_stage();
     else if(key==PS_F1+2&&db_page->previous)refresh(db_page->first-DB_ROWS);

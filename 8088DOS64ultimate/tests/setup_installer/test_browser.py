@@ -37,8 +37,8 @@ class F:
  def read(self,n,length):return self.readat(self.labels[n],length)
  def write(self,n,b):L.dos64_load(self.m,self.labels[n],b,len(b))
  def byte(self,n):return self.read(n,1)[0]
- def call(self,n,arg=0x71,budget=2000000):
-  coststart=L.dos64_get_regs(self.m).cycles;bank=L.browser_bank(self.m);L.dos64_clear_writes(self.m);ret=self.labels['fixture_return']-1;L.dos64_poke(self.m,0x1ff,ret>>8);L.dos64_poke(self.m,0x1fe,ret&255);L.dos64_set_regs(self.m,Regs(self.labels[n],0xfd,arg,0x82,0x93,0x24,0,0));r=L.dos64_run(self.m,self.labels['fixture_return'],budget)
+ def call(self,n,arg=0x71,budget=2000000,x=0x82):
+  coststart=L.dos64_get_regs(self.m).cycles;bank=L.browser_bank(self.m);L.dos64_clear_writes(self.m);ret=self.labels['fixture_return']-1;L.dos64_poke(self.m,0x1ff,ret>>8);L.dos64_poke(self.m,0x1fe,ret&255);L.dos64_set_regs(self.m,Regs(self.labels[n],0xfd,arg,x,0x93,0x24,0,0));r=L.dos64_run(self.m,self.labels['fixture_return'],budget)
   self.last_regs=r.regs;self.lastcost=r.regs.cycles-coststart;self.soft_min=min(getattr(self,"soft_min",0xd000),L.setup_soft_stack_min(self.m));bad=L.browser_bad_write(self.m,self.guard)
   if n!='_ps_init' and L.browser_bank(self.m)!=bank:raise AssertionError(('nativebank restore',n))
   if n not in ['_si_begin','_rw_begin','_sl_begin','_c32_init','_so_prepare','_su_poll','_rc_poll','_fw_run'] and L.setup_crc_table_write(self.m)!=0xcd00:raise AssertionError(('CRCtablewrite/softstackoverflow',n,hex(L.setup_crc_table_write(self.m))))

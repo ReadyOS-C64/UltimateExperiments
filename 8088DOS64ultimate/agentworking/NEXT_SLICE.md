@@ -1,3 +1,9 @@
+# Next after home preflight — 2026-10-17
+
+Public SETUP0df promotion is verified; do not repeat unchanged full4/home5/Zig11. ROOT owns matched INI review/public integration when author freezes, then generation-home CONFIG/SETUP reconfiguration and media controls. Memory agent closes matched native INI producer/consumer/genuine40+80 and rejection/source-only proof; CIA prioritizes independent replay of that frozen cohort, otherwise implements a fresh local bounded readonly-stream transport proposal. No hardware calls without closed concrete purpose review. Compiled agent implements separate native readonly CFG inspection and receipt as first real generation-home reconfiguration component.
+
+Public main8711/START8b68 unchanged; performance5129 stays private until functional integration baseline is settled. User goal remains full emulator/installer/reconfiguration/SaveSwap/C-online/physical/performance, not merely early conflict handling. All commits local/no push.
+
 # Current work — 2026-10-17
 
 Public terminal-screen4da promotion is qualified: ROOT4+8, peer8+3/512 formatter cases, exact public source rebuild+8 execution; do not rerun unchanged gates. Free UI staging3060 bytes; resident0/HIGH2/AUX34 remain constrained. Preserve failed fixture controls and the early-bootstrap renderer limitation. Main stays8711/56b1.

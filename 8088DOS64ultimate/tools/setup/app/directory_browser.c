@@ -13,6 +13,7 @@ const struct db_page_t * const db_page=&committed;
 static struct db_request_t q;
 static br_u16 began,last_now,matched;
 static br_u8 phase,seen,final_seen,aborted,empty_directory,path_length;
+static br_u8 output_seen,output_committed;
 
 static void first(br_u8 error){if(!result.error)result.error=error;}
 static br_u8 status(const char *text,br_u8 n){
@@ -35,7 +36,7 @@ static void terminal(br_u8 success){
    prepared.total=matched;prepared.scanned=result.scanned;
    prepared.previous=q.first!=0;prepared.next=matched>q.first+prepared.count;
    prepared.generation=committed.generation+1U;prepared.valid=0xa5;
-   committed=prepared;
+   committed=prepared;output_committed=output_seen;
   }
  }
  result.state=result.error?DB_FAILED:DB_DONE;
@@ -64,7 +65,7 @@ static br_u8 begin_job(void){
  q=db_request;memset(&prepared,0,sizeof(prepared));memcpy(prepared.path,q.path,128);prepared.first=q.first;
  result.state=DB_BUSY;result.error=result.transport=result.rejected=result.recovery_failed=0;
  result.lease=1;result.blocks=result.scanned=matched=0;
- began=last_now=db_now;phase=1;aborted=empty_directory=0;command(0x11);return 1;
+ began=last_now=db_now;phase=1;aborted=empty_directory=output_seen=0;command(0x11);return 1;
 }
 static br_u8 name_usable(const br_u8 *name,br_u16 length,br_u8 attr,const char *path){
  br_u16 i,n;
@@ -77,6 +78,21 @@ static br_u8 name_usable(const br_u8 *name,br_u16 length,br_u8 attr,const char *
  n=(br_u16)strlen(path);if(n!=1)n++;
  return n+length<128U;
 }
+/* Check every raw entry, before page selection or folders-only filtering.
+ * This advisory scan cannot resolve FatFs aliases or prevent later changes;
+ * CREATE_NEW is still mandatory at publication. Directories also conflict. */
+static void output_name(const br_u8 *name,br_u16 length){
+ static const char * const names[]={"A.IMG","B.IMG","C.IMG","START.PRG","DOS64.CFG"};
+ br_u8 i,j,c;
+ for(i=0;i<5;i++){
+  if(length!=strlen(names[i]))continue;
+  for(j=0;j<length;j++){
+   c=name[j];if(c>='a'&&c<='z')c-=32;
+   if(c!=(br_u8)names[i][j])break;
+  }
+  if(j==length)output_seen|=(br_u8)(1u<<i);
+ }
+}
 static void row_record(void){
  struct db_row_t *row;br_u16 length,i; br_u8 attr,more;
  more=(uci_last_status&0x10)!=0;
@@ -84,7 +100,7 @@ static void row_record(void){
  if((more&&uci_status_len)||(!more&&!status("00,OK",5))){abort_job(DB_STATUS);return;}
  if(result.scanned>=DB_MAX_ENTRIES){abort_job(DB_LIMIT);return;}
  ++result.scanned;if(more&&result.scanned==DB_MAX_ENTRIES){abort_job(DB_LIMIT);return;}
- attr=uci_data[0];length=uci_data_len-1;
+ attr=uci_data[0];length=uci_data_len-1;output_name(uci_data+1,length);
  if(!q.folders_only||(attr&0x10)){
   if(matched>=q.first&&prepared.count<DB_ROWS){
    row=&prepared.rows[prepared.count++];row->raw_length=length;row->attr=attr;
@@ -153,3 +169,10 @@ void db_poll(void){db_result=result;poll_job();db_result=result;}
 void db_cancel(void){db_result=result;cancel_job();db_result=result;}
 br_u8 db_state(void){db_result=result;return result.state;}
 br_u8 db_error(void){db_result=result;return result.error;}
+
+/* The public page/result/request are observations, not scan authority. The
+ * caller supplies a complete canonical128-byte path. No transport is polled. */
+br_u8 __fastcall__ db_output_conflicts(const char *path){
+ if(result.state!=DB_DONE||result.error||result.lease||memcmp(path,q.path,128))return DB_CONFLICT_UNKNOWN;
+ return output_committed;
+}

@@ -139,14 +139,17 @@ def main():
             code=proc.wait();o.close();e.close();results.append({'name':name,'exit':code});print(name,code,flush=True)
             log=(run/('CASE'+str(i)+'.stderr')).read_text()
             if code==0 and ('Ran 1 test in 'not in log or not log.rstrip().endswith('OK')):results[-1]['exit']=1
+        phase='actual home preflight execution'
+        command([t['python'],'-B','test_home_preflight.py'],work,env,run/'HOME_ACTUAL',commands)
+        if 'Ran 5 tests in 'not in(run/'HOME_ACTUAL.stderr').read_text() or not(run/'HOME_ACTUAL.stderr').read_text().rstrip().endswith('OK'):raise RuntimeError('Five actual home preflight tests were not confirmed')
         phase='actual Zig execution'
         command([work/'zig-out/bin/coordinator-tests'],work,env,run/'ZIG_ACTUAL',commands)
-        if 'All 8 tests passed.'not in(run/'ZIG_ACTUAL.stderr').read_text():raise RuntimeError('Eight actual Zig tests were not confirmed')
+        if 'All 11 tests passed.'not in(run/'ZIG_ACTUAL.stderr').read_text():raise RuntimeError('Eleven actual Zig tests were not confirmed')
         phase='final source/product closure';verify(record);verify(products)
         (run/'INPUTS_AFTER.json').write_text(json.dumps(record,indent=2)+'\n');(run/'PRODUCTS_AFTER.json').write_text(json.dumps(products,indent=2)+'\n')
         if any(r['exit']for r in results):raise RuntimeError('Actual native integration failed; inspect CASE logs')
-        report={'status':'passed','run':str(run),'work':str(work),'actual_python_groups':4,'actual_Zig_groups':8,'source_inputs':record,'products':products,'native':digest(work/'build/setup.prg'),'memory':built['memory'],'cases':results,'commands':commands,'source_and_products_unchanged':True,'media_not_distributed':True,'hardware':False,'DOS_cold_consumer_test':False,'full_UI_reconfiguration_or_INI':False}
-        result_path.write_text(json.dumps(report,indent=2)+'\n');(out/'RESULT.json').write_text(json.dumps(report,indent=2)+'\n');print('PASS native installer4+Zig8: '+str(run),flush=True)
+        report={'status':'passed','run':str(run),'work':str(work),'actual_python_groups':4,'actual_Zig_groups':11,'actual_home_preflight_groups':5,'source_inputs':record,'products':products,'native':digest(work/'build/setup.prg'),'memory':built['memory'],'cases':results,'commands':commands,'source_and_products_unchanged':True,'media_not_distributed':True,'hardware':False,'DOS_cold_consumer_test':False,'full_UI_reconfiguration_or_INI':False}
+        result_path.write_text(json.dumps(report,indent=2)+'\n');(out/'RESULT.json').write_text(json.dumps(report,indent=2)+'\n');print('PASS native installer4+home5+Zig11: '+str(run),flush=True)
     except BaseException as first:
         cleanup=stop_owned(jobs)
         closure_error=None

@@ -1,3 +1,7 @@
+# Public home preflight layout — 2026-10-17
+
+SETUP0df4c4cf/41363 adds365 UI_CODE +130 UI_RO bytes and2 HIGHBSS bytes to4da. UI code14202 at6000..9779; UI RO1250 at977A..9C5B; core15452 bytes. UIBSS2463 begins9C5C..A5FA under the same verified retirement contract. Free: resident0/FAT3/UI2565/PUB1/HIGH-code2/HIGH-state31/AUX34. Permanent HIGH/AUX sizes unchanged; no REU/ZP or emulator runtime allocation. ROOT/peer and exact public linker receipts are native-installer-home-preflight-public-root-20261017.json.
+
 # Public installer relocation lifetime — 2026-10-17
 
 Public SETUP 4da35ecc7b2b110de63fdbcca48b4b78cf8470875acdd655acd45da99e4166a5, 40868 bytes, `scratch/native-installer-terminal-screen-20261017/project/build/terminal-gated/RESULT.json`. Live UI code13837 +RO1120 =14957 bytes6000..9A6C. UI BSS2463 begins9A6D..A40B, reusing serialized HIGH/AUX source only after verified retirement. Initial image still includes HIGH2296 and AUX1086; permanent RUN rangesF700..FFF7 andC3A0..C7DD remain intact. Full20KiB REU UI cache holds core plus zero padding. BSS3999; HIGHBSS5855. Measured free: resident0/FAT3/UI-stage3060/PUB1/HIGH-code2/HIGH-state33/AUX34. No new REU/ZP range. ROOT full4+8, independent8+3 and public8 controls pass; all phase bytes/metadata/symbol addresses reproduce exactly. Public build result is build/setup-installer/RESULT.json; receipt native-installer-terminal-public-root-20261017.json.

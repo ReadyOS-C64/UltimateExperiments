@@ -73,10 +73,16 @@ const F = struct {
         try f.put(n, &bytes);
     }
     fn call(f: *F, n: []const u8, arg: u8) !u8 {
+        return f.registerCall(n, arg, 0x82);
+    }
+    fn pointerCall(f: *F, n: []const u8, pointer: u16) !u8 {
+        return f.registerCall(n, @truncate(pointer), @truncate(pointer >> 8));
+    }
+    fn registerCall(f: *F, n: []const u8, arg: u8, x: u8) !u8 {
         const ret = (try f.sym("fixture_return")) -% 1;
         c.dos64_poke(f.m, 0x1ff, @truncate(ret >> 8));
         c.dos64_poke(f.m, 0x1fe, @truncate(ret));
-        c.dos64_set_regs(f.m, .{ .pc = try f.sym(n), .sp = 0xfd, .a = arg, .x = 0x82, .y = 0x93, .p = 0x24, .cycles = 0, .instructions = 0 });
+        c.dos64_set_regs(f.m, .{ .pc = try f.sym(n), .sp = 0xfd, .a = arg, .x = x, .y = 0x93, .p = 0x24, .cycles = 0, .instructions = 0 });
         const r = c.dos64_run(f.m, try f.sym("fixture_return"), if (std.mem.eql(u8, n, "_si_poll")) 250000000 else if (std.mem.eql(u8, n, "_so_prepare")) 5000000 else 12000000);
         try std.testing.expectEqual(@as(c_uint, c.DOS64_RUN_RETURNED), r.status);
         try std.testing.expect(r.stack_high_water < 120);
@@ -342,4 +348,93 @@ test "terminal presenter reports open native FILES truth and never closes retrie
     try std.testing.expectEqual(commands, c.bulk_model_commands(f.m));
     for (counters, 0..) |v, i| try std.testing.expectEqual(v, c.dos64_uci_model_count(f.m, @intCast(i)));
     try std.testing.expectEqual(@as(u8, 1), c.bulk_model_open(f.m, 1));
+}
+
+fn initialDirectory(f: *F) !void {
+    try prepareUi(f);
+    for (0..3000) |_| {
+        if (try f.call("_db_state", 0) != 1) return;
+        c.dos64_cia_clock_advance(f.m, 1024);
+        _ = try f.call("_rc_poll", 0);
+    }
+    return error.DirectoryBudget;
+}
+fn directoryDone(f: *F) !u8 {
+    const now = @as(u16, try f.byte("_db_now", 0)) | (@as(u16, try f.byte("_db_now", 1)) << 8);
+    for (0..100000) |i| {
+        const state = try f.call("_db_state", 0);
+        if (state != 1) return state;
+        try f.word("_db_now", now +% @as(u16, @truncate(i / 32)));
+        _ = try f.call("_db_poll", 0);
+    }
+    return error.DirectoryBudget;
+}
+fn outputMask(f: *F) !u8 {
+    return f.pointerCall("_db_output_conflicts", (try f.sym("_db_request")) + 7);
+}
+test "home conflict mask sees every raw entry before page and folder filtering" {
+    var f = try F.init();
+    defer f.deinit();
+    try initialDirectory(&f);
+    c.dir_model_path(f.m, "/");
+    for (0..15) |_| c.dir_model_row(f.m, "/", 16, "Folder".ptr, 6);
+    const names = [_][]const u8{ "a.img", "B.ImG", "c.IMG", "sTaRt.PrG", "DoS64.CfG" };
+    for (names) |n| c.dir_model_row(f.m, "/", 32, n.ptr, @intCast(n.len));
+    const before = c.bulk_model_commands(f.m);
+    try f.request(12, 1);
+    try std.testing.expectEqual(@as(u8, 1), try f.call("_db_begin", 0));
+    try std.testing.expectEqual(@as(u8, 128), try outputMask(&f));
+    try std.testing.expectEqual(@as(u8, 2), try directoryDone(&f));
+    try std.testing.expectEqual(@as(u8, 31), try outputMask(&f));
+    const page = try f.page();
+    try std.testing.expectEqual(@as(u16, 20), std.mem.readInt(u16, page[2208..2210], .little));
+    try std.testing.expectEqual(@as(u8, 3), page[2212]);
+    try std.testing.expectEqual(before, c.bulk_model_commands(f.m));
+    try f.put("_db_result", &([_]u8{0} ** 10));
+    try std.testing.expectEqual(@as(u8, 31), try outputMask(&f));
+    try f.put("_db_request", &([_]u8{0} ** 135));
+    try std.testing.expectEqual(@as(u8, 128), try outputMask(&f));
+}
+test "home conflict comparison is exact and empty completed scan clears old mask" {
+    var f = try F.init();
+    defer f.deinit();
+    try initialDirectory(&f);
+    const names = [_][]const u8{ "A.IMG ", " A.IMG", "A.IMG.old", "AA.IMG", "DOS64.CFG.old", "XSTART.PRG" };
+    c.dir_model_path(f.m, "/");
+    for (names) |n| c.dir_model_row(f.m, "/", 32, n.ptr, @intCast(n.len));
+    try f.request(0, 1);
+    try std.testing.expectEqual(@as(u8, 1), try f.call("_db_begin", 0));
+    try std.testing.expectEqual(@as(u8, 2), try directoryDone(&f));
+    try std.testing.expectEqual(@as(u8, 0), try outputMask(&f));
+    c.dir_model_path(f.m, "/");
+    c.dir_model_row(f.m, "/", 16, "C.IMG".ptr, 5);
+    try f.request(0, 1);
+    try std.testing.expectEqual(@as(u8, 1), try f.call("_db_begin", 0));
+    try std.testing.expectEqual(@as(u8, 2), try directoryDone(&f));
+    try std.testing.expectEqual(@as(u8, 4), try outputMask(&f));
+    c.dir_model_path(f.m, "/");
+    try f.request(0, 1);
+    try std.testing.expectEqual(@as(u8, 1), try f.call("_db_begin", 0));
+    try std.testing.expectEqual(@as(u8, 2), try directoryDone(&f));
+    try std.testing.expectEqual(@as(u8, 0), try outputMask(&f));
+}
+test "failed cancelled or forged incomplete directory cannot authorize a home" {
+    var f = try F.init();
+    defer f.deinit();
+    try initialDirectory(&f);
+    c.dir_model_path(f.m, "/");
+    for (0..20) |_| c.dir_model_row(f.m, "/", 32, "other".ptr, 5);
+    c.dir_model_fault(f.m, 0x14, 19, 1);
+    try f.request(0, 1);
+    try std.testing.expectEqual(@as(u8, 1), try f.call("_db_begin", 0));
+    try f.put("_db_result", &.{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+    try std.testing.expectEqual(@as(u8, 128), try outputMask(&f));
+    try std.testing.expectEqual(@as(u8, 3), try directoryDone(&f));
+    try std.testing.expectEqual(@as(u8, 128), try outputMask(&f));
+    c.dir_model_fault(f.m, 0, 0, 0);
+    try f.request(0, 1);
+    try std.testing.expectEqual(@as(u8, 1), try f.call("_db_begin", 0));
+    _ = try f.call("_db_cancel", 0);
+    try std.testing.expectEqual(@as(u8, 3), try directoryDone(&f));
+    try std.testing.expectEqual(@as(u8, 128), try outputMask(&f));
 }
