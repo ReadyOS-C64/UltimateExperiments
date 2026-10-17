@@ -1,3 +1,9 @@
+# Latest continuation — selected floppy SaveAs components, 2026-10-17
+
+Public still666/b9 +CONFIG508d/START79bb/INOeebb/SETUP0df. Private selected46fa/63f with CRC accepted by ROOT1650pins/exactsourcebuild/2actualtests7.588s/794unchangedinputs; author27actualgroups. ROOT CRC167f/all1658pins has5Python+2freshZig, validfullCRC0, cancel→resave, corruptedreadback and fullCcontext/REU preservation. Source+portabletestpromotion pending: compiledowns private new native-media/test-native-media buildgraph. Selectedsource/codefrozen; do not mutateoldseals. MajorV1durableCFG/nativeUI/safeexit remain undone; measuredMAIN1/HDB10/SAVER4/DEV41free means modalplacement mustbefitted.
+
+Memory originalTurbo saved realeditedV1EDIT.PAS; thirdprovisional modelC contains66Bsource+2208BMZ EXE andnochangedoriginals. Actualcompile-to-disk succeeded; observerone-spaceDestination predicate missedactualtwospaces. Old20B anddiagnosticstopfailures retained; fresh80B/perstage20B boundedfixture now runs through correctedmenus. Knownclose/freshlaunch notprovedyet. CIAimplements local hybridreadstream+4scratchcommand recoveryqualification; no newhardwarepurposeaccepted/devicecall. ACTIVEsoleCIA reserved, BASICcoldclosureaccepted, fullcurrent4Mstillunproved. Root noLANcalls. Furtherperformance deferred. Allcommitslocal/nopush. See STATUS/NEXT/TEST_LOG and docs/V1_ENDPOINT.md.
+
 # Current continuation — V1 steering, 2026-10-17
 
 Authoritative endpoint: docs/V1_ENDPOINT.md. User asks for a solid V1 installer/configuration and floppy/HD experience, with Turbo Pascal as acceptance. Defer further performance optimization/compiled-code activation until after V1. Historical50%minimum/85%stretch remain unachieved post-V1 objectives. Earlier broader-plan records below remain history, not current assignments.

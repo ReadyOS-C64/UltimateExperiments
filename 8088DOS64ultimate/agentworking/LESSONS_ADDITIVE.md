@@ -339,3 +339,6 @@ A completed file writer and its readonly source cache each need explicit clean-s
 
 
 2026-10-17: Release acceptance should follow an actual user's complete workflow. Opening unchanged Pascal source and compiling to memory proves less than editing, saving source, compiling an EXE to disk and recovering both after a fresh launch. Label historical evidence precisely and freeze a finite V1 endpoint when the user defers optimization; preserve deferred prototypes and first failures without promoting or continuing them.
+
+
+2026-10-17: Test multiple user operations in one machine. Fresh-machine cancellation tests missed an exporter cancel bit that prevented everylater C-online save. Clear stalejob state onlyafteradmission ofthenewoperation, preservingnewcancelinputs and rejectedownership state. A valid checksum ofzero and an invalidbindingwith fullyverifiedoutput are separatecases: contentidentity mustnot silently grantgeneration/persistence authority.

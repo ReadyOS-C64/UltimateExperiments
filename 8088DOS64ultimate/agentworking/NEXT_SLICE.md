@@ -1,3 +1,11 @@
+# Next after selected SaveAs component — 2026-10-17
+
+Compiled owns private portable optional native-media/test-native-media graph on frozen46fa/63f (actual27groups), exact source/tool/environment/cache closure and immutableproducts; no DOS images/dylib/privatepaths required in public distribution. ROOT independently accepts selectedcomponent (1650authorpins +freshsource-only exactbuild +2actualROOT7.588s/794unchangedinputs) and CRCcomponent (1658pins,5Python+2Zig); publicsource+tests promotion is next after wrapper review. Preserve default666/b9 until deliberate enabled integration; report currentPRIVATE scope. Do not rerun unchanged fullDOS/installer suites.
+
+Then complete durable backing-path/CFG CRC publication and native Save/Discard/Cancel/Swap/Finish UI. ExporterCRC/verifiedoutput does not authorize CLEAN if selected-jobACK/generations/ownership fail. Measured combinedMAIN1/HDB10/SAVER4/DEV41 free leaves no unbudgeted UI/CFG pool: measure a paused modal memory lifetime/overlay rather than overwrite liveguest/C context or run standaloneCONFIG over it. Keep 4MiB baseline/3rotatingfloppyarenas.
+
+Memory continues genuineeditedTurbo to diskcompile/run/knownclose/relaunch; CIA locally implements accepted-stream+four40fe-command recovery qualification and exact detached purpose before devicecalls. Hardware remains soleCIA/reserved/BASICclosure accepted, currentwhole4MiB stillunproved. No furtherperfwork/compiledactivation. All localcommits/no push.
+
 # Next: complete the V1 user workflow — 2026-10-17
 
 Read docs/V1_ENDPOINT.md first. User explicitly defers further performance improvement until after V1: supersede older optimization assignments below, preserve their evidence and unachieved speed targets. Keep current666 interpreter unless a V1 correctness fix is needed.
