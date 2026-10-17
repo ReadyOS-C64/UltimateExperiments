@@ -1,3 +1,9 @@
+# Next after split modal loader — 2026-10-17
+
+Root: integrate matched RCV before ordinary CFG acquisition, using generic builder against split INO7b81902f; couple fixed-size capsule then exact asset CRC. Keep all pending journals boot-blocked until explicit recovery completion exists. Memory: controller8000..9D7F with stack9E00..9FFF and nested PLAN worker stackBFFF; derive both runtime/unit brokers from the combined profile. Compiled: guarded live CFG/D64R/D64O publication and stage8 FOP_CLEAN last. Root then connects actual CUI actions, reloads UI only after every controller frame returns and proves whole save/swap/finish user flow.
+
+CIA sole hardware owner: execute one approved exact PUT fast-file recovery qualification3a05c985/67e9ad2c. Preserve original endpoints/first cause, no retry, unknown-writer retain policy and independent settings cleanup. Root must review physical initial/final4MiB equality and closure before product tests. Performance remains post-V1; local commits only.
+
 # Current V1 next integration — 2026-10-17
 
 1. ROOT review/commit separately linked runtime assets and coldMNU/DOS/menu chain (9actual groups, seal5e5f; independent7c03). No public promotion before media workers and matchedRCV.

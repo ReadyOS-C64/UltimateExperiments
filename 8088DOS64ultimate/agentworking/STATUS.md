@@ -1,3 +1,9 @@
+# Split modal loader verified — 2026-10-17
+
+Private START3bc1656e / INO7b81902f loads and verifies a32KiB logical MNU across REU3DA000..3DFFFF and3F0000..3F1FFF. The latter retires SETUP-only source cache; all368640 bytes of the third floppy and3F2000..3F7FFF guards remain exact. Actual11 native groups pass, including first split STORE failure and final target-byte corruption; two fresh default profiles reproduce public79bb/eebb. Source closure223 inputs, sealb640a07b/417pins. The trailing8KiB remains a data fixture; controller execution and Save/Swap/Finish are not yet proven. No public promotion.
+
+ROOT independently accepts physical PUT-only load/readback77d48f6b/584pins and accepted-state bookkeeping3pins. A separate exact fast-file PUT purpose3a05c985/launch67e9ad2c now passes ROOT16focused groups plus socket-forbidden constructor and source checks972+476pins. Sole CIA owner may run it once, detached; full4MiB recovery/product acceptance remains separate. No Root LAN calls.
+
 # Coupled START/DOS/native-menu chain verified — 2026-10-17
 
 Private runtime86299223/unit8518c23c use separately linked broker addresses (cold_open runtime3FF8/unit3FF9). Actual runtime6+unit6 and three fresh default-build profiles pass. Source seal02e48f97/291pins. STARTa685c04a/INOb989b436 loads exact10KiBMNUc6bf3daa with source-bound wholefileCRC, copies into3DA000 with readyzero, verifies targetCRC and publishesready1last/readback. Source-closed9groups/216nativecode-toolinputs include genuineDOS A/B+valid2MiBC→VER/DIR /P→nativeCIA/CUIResume→redraw/RUN, preserving C FILES25. Media before/after hashes separately retained. Seal5e5fcf54/349pins. Independent7c03e2e2 review adds wrong-role brokerCRC and late-mainfailure-readyclear controls; no newdefect. No public promotion, Save/Swap/controller/journal-recovery/Finish/Turbo/physical acceptance.

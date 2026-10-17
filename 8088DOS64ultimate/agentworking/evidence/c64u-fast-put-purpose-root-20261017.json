@@ -1,0 +1,22 @@
+{
+  "status": "one_exact_detached_qualification_approved",
+  "proposal_manifest_sha256": "3a05c9855aec329f732e20abbf43be9adabbfff2c17f0dcc61185c3e2bacc079",
+  "proposal_pins_verified": 972,
+  "launch_manifest_sha256": "67e9ad2c906d23845d63e69c5cb27d08282fa80baa53a9c4b96e961f36cb09bc",
+  "launch_pins_verified": 476,
+  "root_focused_model_groups": 16,
+  "root_offline_constructor_socket_forbidden": true,
+  "author_actual_detached_groups_reused": 3,
+  "unchanged_native_driver_ownership_sources_verified": 17,
+  "accepted_predecessor_sha256": "1dc5fe47d26799f0a5e4b93e4c20013098a6b6810f8d5979a0420ef61b44cf2f",
+  "review": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/fast-put-root-review-20261017/RESULT.json",
+  "source_upload": "109 typed PUT128 chunks across three roles; 11 typed cold fields; no POST",
+  "source_load_deadlines": "15s each inside original endpoints",
+  "qualification_scope": "one historical native-file original-only lower4MiB restore; independent initial/final ac43 equality; exact profile/BASIC cleanup",
+  "native_restore_attempts_max": 1,
+  "unknown_writer_policy": "pause retain source and terminal; no reset or helper overwrite; independent configuration cleanup",
+  "fresh_remote_backup_before_write_read": false,
+  "upper12MiB_access": false,
+  "current_product_accepted": false,
+  "physical_device_calls_by_root": 0
+}
