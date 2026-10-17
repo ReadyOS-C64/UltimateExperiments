@@ -1,3 +1,9 @@
+# Current V1 persistence checkpoint — 2026-10-17
+
+The original supplied Turbo Pascal7.01 distribution now passes a genuine DOS3.3 model workflow on the unchanged interpreter: edit and correct source, Save As to C, compile a2208-byte EXE to disk, run/view output in the IDE, exit to DOS, run and redirect output, then known CLOSE/reopen/read/verify the complete20MiB image. A new START session in40columns recovers source/output and runs the saved EXE. Independent FAT inspection preserves all360original files. [ROOT evidence](../agentworking/evidence/v1-turbo-persistence-root-20261017.json).
+
+This uses the native XT-key development endpoint and host-prepared configuration, not physical matrix/human input or installer output. Captures are verified model RAM reconstructions. Actual IDE reopening of saved source after restart is a separate next check; final Ultimate/human V1 acceptance remains open. The metadata qualification and rejected host-driver attempts are retained in the receipt. Further speed work is deferred.
+
 # Turbo Pascal and complete C: drive
 
 Selected Turbo Pascal7.01, the final DOS-family maintenance release, using original English installation disks. The real-mode TURBO.EXE IDE and TPC.EXE compiler support the 8088/DOS3.3/640KiB target. The286 requirement belongs to TPX.EXE, a separate protected-mode IDE. Original Borland7 UserGuide printedp13 and7.01README section2 establish these requirements. [Primary user guide](https://turbopascal.nl/docs/Turbo_Pascal_Version_7.0_Users_Guide_1992.pdf).

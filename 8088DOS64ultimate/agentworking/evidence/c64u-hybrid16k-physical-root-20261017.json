@@ -1,0 +1,69 @@
+{
+  "status": "ROOT_ACCEPTED_PHYSICAL_HYBRID16K_ONLY",
+  "scope": "ROOT actual physical hybrid16K review",
+  "physical_manifest_sha256": "8c721abacf672778afae65eb452bd83ab9dd259c32ccad3d55a2100277d8aa90",
+  "pins_verified": 1156,
+  "preflight_originals_copies_verified": 330,
+  "launch_originals_verified": 56,
+  "phases": {
+    "initial": {
+      "all4MiB_bytes_equal": true,
+      "native_terminal_source_nonce_headerCRC_exact": true,
+      "last32KiB_equal": true,
+      "nonce": "e2ca68bc5d95ee3fe7b417dfb1f82b02",
+      "RAM_sha256": "45e45ece62f198b10d9c68e32c87f52052e40a2b722740b5a9ce314860a1936e"
+    },
+    "final": {
+      "all4MiB_bytes_equal": true,
+      "native_terminal_source_nonce_headerCRC_exact": true,
+      "last32KiB_equal": true,
+      "nonce": "8f393ee127eadae306a48d778c491b56",
+      "RAM_sha256": "794b72e9d4f72c7dbd057595d99b58bfbe225477e57263dd338f2a5f7bd4278b"
+    }
+  },
+  "scratch_terminal_source_DRS4_ACK4_original16K_exact": true,
+  "raw_write_ACKs_verified": 288,
+  "settings_media_identity_equal": true,
+  "last_BASIC_snapshots_independently_verified": {
+    "scratch-READY-paused.bin": {
+      "jiffy": 10,
+      "row": 6
+    },
+    "final-READY-paused.bin": {
+      "jiffy": 11,
+      "row": 2
+    },
+    "cold-READY-paused.bin": {
+      "jiffy": 10,
+      "row": 6
+    },
+    "cleanup-READY-paused.bin": {
+      "jiffy": 10,
+      "row": 6
+    }
+  },
+  "two_jiffy_advances": "Executed frozen success path; only last READY snapshot separately retained",
+  "pattern_poisoned_READ": "Executed frozen Command success path; separate rawpattern payload not archived",
+  "process_exit_0_absent_no_watchdog": true,
+  "ACTIVE_sha256": "38d1f3b8af136ac90a26b57131a8914d641b6a58ac8a2ec3eaae4cddd5e81fd2",
+  "whole4MiB_restore_backend_qualified": false,
+  "later_installer_ranges_qualified": false,
+  "upper12MiB_access_or_comparison": false,
+  "current_product_physical_acceptance": false,
+  "original_CPU_RAM_application_restore": false,
+  "ROOT_device_calls": 0,
+  "ROOT_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-hybrid-physical-root-20261017/MANIFEST.json",
+  "ROOT_manifest_sha256": "233beae17618cb1e1d607eb3771d9439a137c90afce079db8cc1d3135948a6d4",
+  "ROOT_pins": 6,
+  "source_bound_pattern_and_original_payload_hashes_verified": true,
+  "whole4MiB_before_after_equal": true,
+  "healthy_commands": 4,
+  "WRITE_commands": 2,
+  "qualified_span": [
+    2097152,
+    2113536
+  ],
+  "hardware_owner": "cia_probe_independent_review",
+  "reservation_continues": true,
+  "next_device_purpose_required": true
+}

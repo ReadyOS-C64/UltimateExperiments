@@ -1,0 +1,54 @@
+{
+  "successful": true,
+  "tests": 2,
+  "receipts": [
+    {
+      "case": "actualCUI_resume",
+      "C_target": 1,
+      "CIA_calls": 7,
+      "cache0_stage8_during_UI": true,
+      "whole4MiB_files_Cposition_and_clock_controls_unchanged": true,
+      "VIC_text_charset16_and_restore": true
+    },
+    {
+      "case": "actualCUI_resume",
+      "C_target": 2,
+      "CIA_calls": 7,
+      "cache0_stage8_during_UI": true,
+      "whole4MiB_files_Cposition_and_clock_controls_unchanged": true,
+      "VIC_text_charset16_and_restore": true
+    },
+    {
+      "case": "SaveAs_intent_only",
+      "raw_path": "/usb1/copy.img",
+      "native_CUI_cancel_error_and_resume": true,
+      "no_actual_save_claim": true,
+      "CIA_calls": 34
+    }
+  ],
+  "scope": "Actual broker/CUI/CIA composition, no resident loader/hotkey/backend/physical acceptance",
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-composition-root-20261017/MANIFEST.json",
+  "manifest_sha256": "588de3e53ec7b30e42afcbd07e90d6a2b05f5c49cf59ce2a929ce7d6d8403550",
+  "pins_verified": 820,
+  "fresh_source_frontend_exact": true,
+  "frontend_parent_sha256": "cd878ccb509491f24f1c9d4484d584819f4d484d283b4583b5ae2d395521c6a9",
+  "frontend_author_pins_verified": 1287,
+  "frontend_author_groups": 15,
+  "new_layout_broker_groups": 8,
+  "broker_sha256": "1f0e2392895c0f852d0cb9b3add1b31ef5462bb4cc3e34e370b8a80ad53cce65",
+  "frontend_sha256": "df364fe23ea8f806540ad9c3e82791a00976e183a65fc4c273e0148e68f2acfe",
+  "layout": {
+    "broker_code_data_bytes": 1072,
+    "broker_end": "742F",
+    "broker_state_bytes": 221,
+    "broker_state_end": "77DC",
+    "frontend_payload_bytes": 7287,
+    "frontend_end": "9C76",
+    "frontend_BSS_bytes": 1175,
+    "frontend_BSS_end": "7C96"
+  },
+  "source_closed_model_reused_from_public_native_media": true,
+  "unit_label_linkage_only": true,
+  "public_promotion": false,
+  "full_native_guest_redraw_before_RUN_required": true
+}

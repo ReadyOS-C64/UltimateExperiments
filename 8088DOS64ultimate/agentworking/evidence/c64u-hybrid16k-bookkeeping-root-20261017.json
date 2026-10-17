@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "scope": "ROOT read-only review of soleowner local acceptance bookkeeping",
+  "bookkeeping": {
+    "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/hybrid16k-root-accepted-bookkeeping-20261017/MANIFEST.json",
+    "sha256": "8ec832df90f1e35c8a0441b3f0a82895a75ac0837fbfb7125ec986167366b528",
+    "pins_verified": 3,
+    "ACTIVE_sha256": "05d3a78fc0da6317c26a5902392199621f0018161918588cc5e4aa623034c341",
+    "no_device_calls": true
+  },
+  "ROOT_physical_receipt_preserved_sha256": "f9d690b3f7a1cfa20daf34ac7ea842d11f40b27e4773bdb3dab373accc758778",
+  "immutable_physical_cohort_unchanged": true
+}

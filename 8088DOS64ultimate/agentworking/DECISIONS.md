@@ -288,3 +288,9 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-17: Derive runtime SaveAs CRC from each equal freshREU/file byte in existingbounded256byte verification, avoiding a duplicatewholeimageDMApass or newoverlay gate. Complement rawCRC only afterfull exporter verification/knownclose; CRC0isvalid. Distinguish verifiedoutputcontent from a selected-job binding receipt: finalACK/generation/ownership checks still govern futureCFGpublication/CLEAN. A delayedgenerationchange actually produces verifiedoutput andCRCbutE1bindingdenial. Preserve thatnegativecase. Newselected+CRCcomponent is private/defaultOFF until reviewedpublicsource/testintegration and physicalqualification.
+
+### D-V1-MODAL-20261017 — native disk control ownership
+
+Keep interpreterASM and use nativeC forhostdisk-menu presentation, alongside existingnativeCSETUP/CONFIG. Actualprivatebroker+UItests establishpausedcache0 ownership; finalhotkey/loader notimplemented. Putbulkmenu/CFGcode inmeasuredmodalRAM ratherthanpresumeresidentcapacity. Returnallworker/Cframesbeforephaseoverwrite; retainUI/privateintentoutsideworkerwindow. Preserveexistingclock/IRQ/NMIownership; HC4defers, actualclockfaultblocksResume. BeforeguestRUN, returnresident andredrawfullguestpixels/matrix/colors afterVICrestore. Currentprivateunit-linkedassetsarenotreleasefiles.
+
+DurableSave/SaveAs implementationdirection: nondestructiveCREATE_NEWverifiedimage +candidateCFG +exactold/newjournal, no-replace renamepublication/reopenverification andmatchedSTARTpending-journalrecovery. CLEAN/backingpathonlyafterselected42snapshot, strictknownCcontext andverifiedCFG. Collisions/mixedstates/unknownclosure retainartifacts; noatomic-swap/powerlossguarantee orsilentjournalignore. Thisworkisprivateinprogress; nopublicorphysicalcompletioninferred.

@@ -342,3 +342,5 @@ A completed file writer and its readonly source cache each need explicit clean-s
 
 
 2026-10-17: Test multiple user operations in one machine. Fresh-machine cancellation tests missed an exporter cancel bit that prevented everylater C-online save. Clear stalejob state onlyafteradmission ofthenewoperation, preservingnewcancelinputs and rejectedownership state. A valid checksum ofzero and an invalidbindingwith fullyverifiedoutput are separatecases: contentidentity mustnot silently grantgeneration/persistence authority.
+
+- 2026-10-17: NativeCUIROMglyph mapping requires lower/uppercharset D018=16; defaultuppercase/graphics charsetmisrendersASCIIuppercase. RestoreobservableregisterswithoutCIAclockinitialization, thenfullyredrawguestcolor/pixelstatebeforeRUN. CbyteAPIreturnsareAvalues, notcarrycontracts. IsolatedSaveAsfixturesremaincoldA5: borrowtestsneedactualBIOS+coldrelease, andBIOSusesexisting40Minstructionbound. Sourceclosedfrontendtestsandbrokercompositionprovehandoff, notfilesystem/backendcompletion.
