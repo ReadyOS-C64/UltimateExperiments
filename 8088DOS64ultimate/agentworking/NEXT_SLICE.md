@@ -1,6 +1,6 @@
 # Next after public interpreter and portable tests — 2026-10-17
 
-Main8711/56b1 publicgatespassed; do notrepeatunchangedpairedDOS/builtins ordefault503. Finishlocalcommits ofthe alreadyverified8ASM+2tests andoptionalinstaller46files/Makeappend. Root ownsremaininginstaller/media integration andphysicalpurpose review. Source/receipts are guest-interpreter-public-root-20261017.json and native-installer-public-tests-root-20261017.json.
+Main8711/56b1 publicgatespassed; do notrepeatunchangedpairedDOS/builtins ordefault503. Commits22ec1b5 (8ASM+2tests) andce0a5c9 (optionalinstaller46files/Makeappend) are complete; do not repeat promotion. Root ownsremaininginstaller/media integration andphysicalpurpose review. Source/receipts are guest-interpreter-public-root-20261017.json and native-installer-public-tests-root-20261017.json.
 
 Memoryagent: freshmatchedINI nativefileloader/release-boundvalidators+parseroverlay, D64Lv2/requiredflag/D64Oone-shotconsumer, BIOS40/80, actualsourceclosedmodeltests. Layoutfitsbutfunctionalityunproven. Exactmissingstatus18bytes FILE DOESN'T EXIST only; othererrorsneverdefaults. Compiledagent: parser21reviewclosed/a799937c/200pins, thenprivate8711performanceprofiling/prototypes; noauthorsealmutation. CIA: readonly95f96 FAILED pre-native; source-researchFTPcwd/absoluteMKD/dataaccept, no devicecalls untilnewconcretepurpose reviewed. Upper12Munbacked/no fullboardreset; originalac43deviceequalitystillunverified. Preserveallfirstfailures; no push.
 
