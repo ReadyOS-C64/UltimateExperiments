@@ -50,3 +50,8 @@ setup-installer:
 	$(DOS64_PYTHON) -B build_support/setup_installer.py
 setup-installer-memory: setup-installer
 	@echo "Memory checks and source/product closure: build/setup-installer/RESULT.json"
+
+# Opt-in actual native model integrations; uses local DOS media, no hardware.
+.PHONY: setup-installer-tests
+setup-installer-tests:
+	$(DOS64_PYTHON) -B build_support/setup_installer_tests.py $(DOS64_SETUP_TEST_ARGS)
