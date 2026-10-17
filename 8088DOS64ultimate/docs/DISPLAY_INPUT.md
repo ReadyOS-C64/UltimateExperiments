@@ -36,7 +36,7 @@ Test key press/release, modifier combinations, typematic, buffer full, extended 
 
 # C64 physical keys for the XT and Turbo Pascal
 
-This private successor implements £ as a deferred printable key and the F9/F10 layer switch. Commodore continues to supply PC Alt; CTRL supplies PC Ctrl. Either Shift selects F2/F4/F6/F8 on the four physical F1/F3/F5/F7 keys.
+The current development build implements £ as a deferred printable key and the F9/F10 layer switch. Commodore continues to supply PC Alt; CTRL supplies PC Ctrl. Either Shift selects F2/F4/F6/F8 on the four physical F1/F3/F5/F7 keys.
 
 | PC action | Physical C64 keys | BIOS word |
 |---|---|---|
@@ -47,6 +47,7 @@ This private successor implements £ as a deferred printable key and the F9/F10 
 | Shift-F9 / Shift-F10 | Either Shift + £ + F5/F7 | 5C00h / 5D00h |
 | Alt-X / Turbo Pascal exit | Commodore + X | 2D00h |
 | Alt-F5 / Turbo Pascal output | Commodore + F5 | 6C00h |
+| Native disk controls | CTRL + Commodore + RUN/STOP | No guest key |
 | Esc | RUN/STOP | 011Bh |
 | Tab | Left-arrow legend key | 0F09h |
 | Backspace / Delete | DEL / Shift + DEL | 0E08h / 5300h |
@@ -61,7 +62,7 @@ Function combinations use the original XT BIOS modifier scan tables: Ctrl-F1–F
 
 C64 keys have no isolation diodes. Three corners of a matrix rectangle are ambiguous and are rejected before changing the BIOS queue or modifier flags. For example, ordinary Ctrl + Commodore + physical F3/F4 is ambiguous. £+F5/F7 avoids the modifier-column collisions of the first attempted £+F1/F3 layout: both Shift keys and combined Ctrl/Alt remain distinguishable for the new F9/F10 chords. The first failed test receipt is preserved. Joysticks must be released or disconnected; USB forwarding is unverified.
 
-Each observed key press produces one word; holding does not repeat. Typematic, Insert, PgUp/PgDn, Ctrl-Break, the host pause/save/eject chord and complete modified navigation semantics remain unfinished. Actual linked 6510 code and the independent C64 switch-network model verify this mapping. Physical keyboard and original Turbo Pascal human acceptance remain separate requirements.
+Each observed key press produces one word; holding does not repeat. Typematic, Insert, PgUp/PgDn, Ctrl-Break and complete modified navigation semantics remain unfinished. The native disk-control chord is implemented and tested through the CIA matrix in the model; its menu supports saving, changing/ejecting disks and Finish. Its physical usability still needs acceptance on the final package. Actual linked 6510 code and the independent C64 switch-network model verify this mapping. Physical keyboard and original Turbo Pascal human acceptance remain separate requirements.
 
 
 ROOT2026-10-16 accepted lifecycle: fullBIOSqueue retainsonecapturedword/modifiers. Ifheldwhenaccepted itcoalesceswiththatpress untilobservedrelease; ifreleasedwhenaccepted itdoesnotpoisonthenextfreshpress. ConsumedPoundcannotrearmprintableorFn untilrelease. Thisboundedpolicydoesnotretainunlimitedsecondaryedgehistory. Independentold/new regressions and96modifier/keycombinationspass; ROOT484/308 and503pre/postpins/copies. Physicalkeyboardacceptanceremainsseparate.
