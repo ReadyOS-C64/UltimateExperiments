@@ -1,0 +1,34 @@
+{
+  "verdict": "PASS_PRIVATE_COORDINATOR_BOOT_SOURCE_CAPTURE_FAT_ENTRY_CHECKPOINT",
+  "main_scope_incomplete": true,
+  "native_sha256": "895719a52a1f13e6f0e0ad726c0968f142ed8450ec6400f222454b3aab2e4a45",
+  "native_bytes": 39678,
+  "labels_sha256": "ee0a2e07f51b26a983568c9311d18cb70f11707700acd09b6faee7d73f3208cd",
+  "portable_coordinator_asm_sha256": "19a14684b78e22ad9ab077801f485be880ffc5a0ceb11890cb0006ea562bd0fd",
+  "change": "Only RunStop operand3\u219227, zero code/data/map growth",
+  "successor_manifest": {
+    "path": "8088DOS64ultimate/agentworking/scratch/native-installer-coordinator-RunStop-successor-20261017/MANIFEST.json",
+    "sha256": "483232a48f4638aa0f1779e9c163262701ffb9fdad520b4c9fb5f0b759006a71",
+    "ROOT_verified_files": 277,
+    "actual_peer_groups": 17,
+    "closed_main_inputs": 160,
+    "closed_main_products": 70
+  },
+  "root_fresh_review": {
+    "path": "8088DOS64ultimate/agentworking/scratch/native-installer-coordinator-root-successor-review-20261017/MANIFEST.json",
+    "sha256": "c7fa31266eb6fdeb3a341b873b17edbd541d81276656c0c839ab42168cacc059",
+    "actual_groups": 2,
+    "before_after_verified_files": 277,
+    "tests": [
+      "actual startup physical RunStop",
+      "actual dirty cold SYS from port37/decimal set with3982B STATE and5851B HIGHBSS poisoned"
+    ]
+  },
+  "retained_rejection": "c4224ad03930d23a2ee2b798417ab422ca1b034cd9b29b1824a9cc2f6812cc0f",
+  "state4": "Authentic FAT entry; zero durable output receipts; not completed installation",
+  "full_FAT_worker_current_link": "Overflows412B, fullworker919CODE+83RO/13STATE; not executable or qualified",
+  "next": "SETUP-only defaultOFF compactUCI profile/runsegment with actual capacity/overflow/drain/default-byte guards, SI-owned failed cleanup, fullFAT/PUBpublication and publicSETUP",
+  "physical_calls": false,
+  "goal": "ACTIVE; original full scope intact",
+  "public_main_and_START_unchanged": true
+}
