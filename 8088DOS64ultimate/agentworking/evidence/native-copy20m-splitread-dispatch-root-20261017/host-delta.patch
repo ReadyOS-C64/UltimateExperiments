@@ -1,0 +1,197 @@
+--- /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-observed-physical-purpose-20261017/work/close_local.py
++++ /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-splitread-purpose-20261017/work/close_local.py
+@@ -1,18 +1,26 @@
+ from pathlib import Path
+-import json,hashlib,subprocess,time,sys
++import json,hashlib,subprocess,time,sys,shutil
+ W=Path(__file__).resolve().parent
++sys.dont_write_bytecode=True;sys.pycache_prefix=str(W/'.absent-close-local-cache')
++if Path(sys.pycache_prefix).exists():raise RuntimeError('Absent cache required')
+ if Path.cwd()!=W:raise RuntimeError('Exact private work directory')
+ sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
+-E=W.parent/'closed-local';E.mkdir(exist_ok=False)
+-m=json.loads((W/'LAUNCH_MANIFEST.json').read_text());before={p:{'sha256':sha(p),'bytes':Path(p).stat().st_size}for p in m['files']}
+-(E/'INPUTS_BEFORE.json').write_text(json.dumps(before,indent=2)+'\n');rows=[]
+-for name,args in [('host15',['test_copy.py']),('purpose7',['test_purpose.py']),('detached4',['test_detached.py']),('offline',['launch.py','--manifest',str(W/'LAUNCH_MANIFEST.json'),'--sha',sha(W/'LAUNCH_MANIFEST.json'),'--offline'])]:
++E=W.parent/'closed-local';E.mkdir(exist_ok=False);C=E/'source-copies';C.mkdir()
++m=json.loads((W/'LAUNCH_MANIFEST.json').read_text());before={p:{'sha256':sha(p),'bytes':Path(p).stat().st_size}for p in m['files']};mh=sha(W/'LAUNCH_MANIFEST.json');copies={}
++for i,(p,row)in enumerate(before.items()):
++ q=C/(str(i)+'-'+Path(p).name);shutil.copyfile(p,q);copies[p]={'copy':str(q),**row}
++ if sha(q)!=row['sha256']:raise RuntimeError('Source copy mismatch')
++(E/'INPUTS_BEFORE.json').write_text(json.dumps(before,indent=2)+'\n');(E/'SOURCE_COPIES.json').write_text(json.dumps(copies,indent=2)+'\n');rows=[]
++for name,args in [('split14',['-m','unittest','-v','test_split.py']),('purpose7',['-m','unittest','-v','test_purpose.py']),('detached4',['-m','unittest','-v','test_detached.py']),('offline',['launch.py','--manifest',str(W/'LAUNCH_MANIFEST.json'),'--sha',mh,'--offline'])]:
+  start=time.monotonic()
+  with(E/(name+'.stdout')).open('xb')as out,(E/(name+'.stderr')).open('xb')as err:r=subprocess.run(['/usr/bin/python3','-B',*args],cwd=W,stdout=out,stderr=err,timeout=60)
+  rows.append({'name':name,'argv':['/usr/bin/python3','-B',*args],'exit':r.returncode,'seconds':time.monotonic()-start})
+  if r.returncode:raise RuntimeError('Retained local failure '+name)
+  for p,h in m['files'].items():
+   if sha(p)!=h:raise RuntimeError('Input changed '+p)
++ if sha(W/'LAUNCH_MANIFEST.json')!=mh:raise RuntimeError('Launch changed')
+ after={p:{'sha256':sha(p),'bytes':Path(p).stat().st_size}for p in m['files']}
+ if after!=before:raise RuntimeError('Closure mismatch')
+-(E/'INPUTS_AFTER.json').write_text(json.dumps(after,indent=2)+'\n');(E/'RESULT.json').write_text(json.dumps({'status':'PASSED_LOCAL_HOST_COMPOSITION_ONLY','source_pins':len(before),'rows':rows,'native_target_replays':0,'native_algorithm_unchanged':True,'device_calls':0,'physical_approval':False},indent=2)+'\n');print(json.dumps(rows))
++for row in copies.values():
++ if sha(row['copy'])!=row['sha256']:raise RuntimeError('Retained source changed')
++(E/'INPUTS_AFTER.json').write_text(json.dumps(after,indent=2)+'\n');(E/'RESULT.json').write_text(json.dumps({'status':'PASSED_LOCAL_SPLIT_HOST_TRANSPORT_ONLY','source_pins':len(before),'source_copies':len(copies),'launch_sha256':mh,'rows':rows,'native_target_replays':0,'native_algorithm_unchanged':True,'device_calls':0,'physical_approval':False},indent=2)+'\n');print(json.dumps(rows))
+--- /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-observed-physical-purpose-20261017/work/cold_entry.py
++++ /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-splitread-purpose-20261017/work/cold_entry.py
+@@ -4,18 +4,18 @@
+ import json,hashlib
+ from basic_ready import basic_ready
+ sha=lambda b:hashlib.sha256(b).hexdigest()
+-ACTIVE_SHA='a738e4a40311eeb61ce7b42d4a2642b0ba6fb10bfec8866ed40129d125780188'
+-RECEIPT_SHA='0946b44d7338028c44067d7f8deace29d7177bc04be7c465dfe33b3e10d8f65e'
++ACTIVE_SHA='230c88094f48b9a3d61f91f1f808639d038f8e1f93ded381a2d2efd767b5c102'
++RECEIPT_SHA='873b475ca26631729445d27a8bb00716591f446b1f33e3848497acf41b34cb82'
+ class ColdEntry:
+  def __init__(self,active,prefix,receipt):
+   if sha(active)!=ACTIVE_SHA or sha(receipt)!=RECEIPT_SHA or len(prefix)!=2048:raise ValueError('Exact accepted current BASIC predecessor/receipt')
+   a=json.loads(active);r=json.loads(receipt)
+-  for k,v in {'status':'OLD_DIRECTORY_RESET_COMPLETE_PENDING_ROOT_REVIEW','hardware_owner':'cia_probe_independent_review','hardware_reserved':True,'current_host_job_live':False,'known_FILES_quiet':True,'cold_BASIC_cleanup_acknowledged':True,'owned_processes_absent_verified':True,'old_COPY20M_campaign_stays_failed':True,'REU_WRITE_commands_confirmed':0,'upper12MiB_accessed':False}.items():
++  for k,v in {'status':'BASIC_PREFIX_COMPLETE_PENDING_ROOT_REVIEW','hardware_owner':'cia_probe_independent_review','hardware_reserved':True,'current_host_job_live':False,'known_FILES_quiet':True,'cold_BASIC_cleanup_acknowledged':True,'owned_processes_absent_verified':True,'prior_COPY20M_stays_failed':True,'REU_WRITE_commands_confirmed':0,'upper12MiB_accessed':False}.items():
+    if type(a.get(k))is not type(v)or a[k]!=v:raise ValueError('Exact accepted predecessor scope '+k)
+   # Prefix was admitted by the reset-only2048 observer and Root independently.
+   row=prefix[0xd6];ptr=int.from_bytes(prefix[0xd1:0xd3],'little')
+   if not(1<=row<=24 and prefix[0xd3]==0 and ptr==0x400+40*row and prefix[0xc6]==0 and prefix[0x288:0x28a]==b'\4\12'and bytes(x&127 for x in prefix[ptr-40:ptr])==bytes([18,5,1,4,25,46])+b' '*34 and bytes(x&127 for x in prefix[ptr:ptr+40])==b' '*40):raise ValueError('Retained accepted conservative BASIC prefix')
+-  if r.get('status')!='ROOT_ACCEPTED_C64_RESET_BASIC_CLOSURE_ONLY'or r.get('active_sha256')!=ACTIVE_SHA or r.get('BASIC_jiffies')!=[19,37]or int.from_bytes(prefix[0xa0:0xa3],'big')!=37:raise ValueError('Exact prior BASIC acceptance bound')
++  if r.get('status')!='ROOT_ACCEPTED_BASIC_READY_RESUME_NO_RESET_ONLY'or r.get('active_sha256')!=ACTIVE_SHA or r.get('BASIC_jiffies')!=[15,32]or int.from_bytes(prefix[0xa0:0xa3],'big')!=32:raise ValueError('Exact prior BASIC acceptance bound')
+  def admit(self,ram):
+   if type(ram)is not bytes or len(ram)!=65536 or basic_ready(ram)is None:raise ValueError('Fresh coherently paused conservative BASIC required; no helper fallback/reset authority')
+   return {'cold_entry':'ROOT_ACCEPTED_COLD_CLOSURE_PLUS_FRESH_BASIC_ONLY','original_CPU_RAM_application_restore':False,'whole_current_REU_verified':False}
+--- /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-observed-physical-purpose-20261017/work/copy_session.py
++++ /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-splitread-purpose-20261017/work/copy_session.py
+@@ -4,6 +4,7 @@
+ from pathlib import Path
+ import json,time,hashlib
+ from cold_session import ColdSession,basic_ready
++from ready_prefix import basic_ready as prefix_ready
+ from hybrid import Hybrid
+ from driver import Driver as StreamDriver
+ from copy_reader_host import Driver as FileDriver
+@@ -58,12 +59,28 @@
+   n=self.w.reader_next;self.last=self.w.reader_polled;v=self.s.tx('file_frame_resume_'+str(n),lambda:self.w.control('resume','file_frame_resume_'+str(n),self._bound()));self.paused=False;self.w.reader_next+=1;return v
+ class CopySession(Hybrid):
+  def __init__(self,*args,entry,**kw):
+-  self.entry=entry;self.entry_fact=None;self.core_end=None;self.file_result=None;self.directory_result=None;super().__init__(*args,**kw);self.wire._baseline=self.baseline;self.wire.archive_request=lambda v:self.save(f'HTTP-request-plan-{v["index"]:05d}.json',(json.dumps(v,indent=2)+'\n').encode())
++  self.entry=entry;self.entry_fact=None;self.core_end=None;self.file_result=None;self.directory_result=None;super().__init__(*args,**kw);self.wire._baseline=self.baseline;self.half_count=0
++  def request_record(v):
++   row=dict(v)
++   if self.wire._half_permit is not None:row['split_RAM_half']=dict(self.wire._half_permit)
++   self.save(f'HTTP-request-plan-{v["index"]:05d}.json',(json.dumps(row,indent=2)+'\n').encode())
++  self.wire.archive_request=request_record;self.wire.archive_half=self.archive_half
+  def save(self,name,data):
+   super().save(name,data)
+   if name=='RAM-original-paused.bin':
+    self.entry_fact=self.entry.admit(data);super().save('cold-entry-admission.json',(json.dumps(self.entry_fact,indent=2)+'\n').encode())
+- def ready(self,role,end):return ColdSession.ready(self,role,end)
++ def archive_half(self,item,body):
++  self.half_count+=1;name=f'RAM-half-{self.half_count:04d}-{item["key"]}-{item["part"]}'
++  self.save(name+'.bin',body);self.save(name+'.json',(json.dumps(dict(item,durable=True),indent=2)+'\n').encode())
++ def ready(self,role,parent):
++  parent=min(parent,self.clock()+90);previous=None
++  for i in range(64):
++   d=self.bound(parent);p=f'{role}_{i}'
++   self.tx(p+'_pause',lambda:self.wire.control('pause',p+'_pause',d));raw=self.tx(p+'_prefix',lambda:self.wire.prefix(p+'_prefix',d));self.save(p+'-BASIC-prefix.bin',raw);current=prefix_ready(raw)
++   if current is not None and previous is not None and current['jiffy']>previous['jiffy']:
++    self.save(role+'-READY-prefix-paused.bin',raw);return raw
++   previous=current;self.tx(p+'_resume',lambda:self.wire.control('resume',p+'_resume',d));self.sleep(min(.25,max(0,parent-self.clock())))
++  raise TimeoutError('Finite64 paused2048 BASIC observations')
+  def source_gate(self,ram,mailbox=False,queued=False):
+   if self.wire.role in self.streams:return Hybrid.source_gate(self,ram,mailbox,queued)
+   if len(ram)!=65536 or ram[0x801:0x801+len(self.source)-2]!=self.source[2:]:raise ValueError('Exact cold configured native source')
+--- /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-observed-physical-purpose-20261017/work/host_fixture.py
++++ /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-splitread-purpose-20261017/work/host_fixture.py
+@@ -2,7 +2,7 @@
+ from pathlib import Path
+ import sys,json,zlib,struct,copy
+ sys.dont_write_bytecode=True
+-from copy_transport import CopyREST
++from split_transport import SplitCopyREST as CopyREST
+ from copy_session import CopySession
+ from purpose import sources
+ from cold_session import FrozenSources,native_contract
+@@ -15,7 +15,7 @@
+  def sleep(self,n):self.t+=n
+ class Model:
+  def __init__(self,m,fault=None):
+-  self.m=m;self.clock=Clock();self.ram=bytearray(65536);self.wire=None;self.calls=[];self.fault=fault;self.fired=False;self.frame=1;self.streamframe=1;self.starts=[];self.profile='C64U Turbo Registers';self.error=ConnectionResetError(54,'injected host-only failure');self.ready()
++  self.m=m;self.clock=Clock();self.ram=bytearray(65536);self.wire=None;self.calls=[];self.fault=fault;self.fired=False;self.frame=1;self.streamframe=1;self.starts=[];self.profile='C64U Turbo Registers';self.paused=False;self.error=ConnectionResetError(54,'injected host-only failure');self.ready()
+  def ready(self):
+   r=self.ram;r[:]=bytes(65536);r[0:2]=b'\x2f\x37';r[0x288:0x28a]=bytes([4,10]);r[0xd6]=2;r[0xd3]=0;r[0xd1:0xd3]=(0x450).to_bytes(2,'little');r[0x428:0x450]=bytes([18,5,1,4,25,46])+b' '*34;r[0x450:0x478]=b' '*40
+  def init_source(self,s):
+@@ -61,16 +61,18 @@
+    return json.dumps(value).encode()
+   if route.startswith('configs/')and '?value='in route:self.profile='Manual'if route.endswith('Manual')else'C64U Turbo Registers';return b'{"errors":[]}'
+   if route.startswith('machine:readmem?'):
+-   q=dict(x.split('=')for x in route.split('?')[1].split('&'));a=int(q['address'],16);n=int(q['length']);self.ram[0xa0:0xa3]=(int(self.clock.t*10000)%0xffffff).to_bytes(3,'big')
++   q=dict(x.split('=')for x in route.split('?')[1].split('&'));a=int(q['address'],16);n=int(q['length']);
++   if not self.paused:self.ram[0xa0:0xa3]=(int(self.clock.t*10000)%0xffffff).to_bytes(3,'big')
+    if self.fault=='sourcebad'and self.wire.mode=='reader_cold'and n==65536 and self.wire.source_loads.get('reader',{}).get('ACKs')==105 and not self.fired:self.fired=True;self.ram[0x810]^=1
+    if self.fault in ['frame_reset','frame_short']and self.wire.mode=='reader_native'and n==65536 and self.frame==1 and not self.fired:
+     self.fired=True
+     if self.fault=='frame_reset':raise self.error
+     return bytes(self.ram[a:a+n-1])
+    return bytes(self.ram[a:a+n])
+-  if route=='machine:reset':self.ready();return b'{"errors":[]}'
+-  if route=='machine:pause':return b'{"errors":[]}'
++  if route=='machine:reset':self.ready();self.paused=False;return b'{"errors":[]}'
++  if route=='machine:pause':self.paused=True;return b'{"errors":[]}'
+   if route=='machine:resume':
++   self.paused=False;self.ram[0xa0:0xa3]=(int(self.clock.t*10000)%0xffffff).to_bytes(3,'big')
+    if self.ram[0xc6]==8:self.ram[0xc6]=0;self.start()
+    elif self.wire.role=='reader'and not self.wire.files_quiet:
+     if self.ram[0x262]:self.reader(failed=True)
+--- /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-observed-physical-purpose-20261017/work/launch.py
++++ /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-splitread-purpose-20261017/work/launch.py
+@@ -10,7 +10,7 @@
+ for n,h in m['files'].items():
+  if hashlib.sha256(Path(n).read_bytes()).hexdigest()!=h:raise ValueError('Changed preimport source '+n)
+ if a.offline:socket.socket.connect=lambda *a,**k:(_ for _ in ()).throw(AssertionError('Offline network forbidden'))
+-for name in ['purpose','copy_session','copy_transport','copy_reader_host','directory_host','process_context','cold_session','cold_transport','cold_entry','basic_ready','driver','host_stream','transport','put_transport','fast_transport','numeric_transport','native_file','hybrid','hybrid_transport','bulk_program']:
++for name in ['purpose','copy_session','split_transport','ready_prefix','copy_transport','copy_reader_host','directory_host','process_context','cold_session','cold_transport','cold_entry','basic_ready','driver','host_stream','transport','put_transport','fast_transport','numeric_transport','native_file','hybrid','hybrid_transport','bulk_program']:
+  if name in sys.modules:raise RuntimeError('Preloaded project source refused '+name)
+ from purpose import preflight,physical_context,live
+ for module in tuple(sys.modules.values()):
+--- /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-observed-physical-purpose-20261017/work/prepare.py
++++ /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-splitread-purpose-20261017/work/prepare.py
+@@ -1,15 +1,15 @@
+-"""Offline exact observed-mapping COPY20M purpose generator; no connection."""
++"""Offline same-pause splitRAM observed-mapping COPY20M purpose generator; no connection."""
+ from pathlib import Path
+ import json,hashlib,shutil
+ W=Path(__file__).resolve().parent;B=W.parent;A=W.parents[2];D=json.loads((B/'PURPOSE_ID.json').read_text());assert Path.cwd()==W
+ sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
+ old=json.loads((A/'scratch/native-copy20m-physical-purpose-20261017/work/LAUNCH_MANIFEST.json').read_text());m={k:v for k,v in old.items()if k not in ['files','predecessor_terminal','predecessor_stream']}
+-m.update(session_id=D['run_id'],run_id=D['run_id'],home=D['home'],purpose_nonce=D['nonce'],run=str(A/'runs'/D['run_id']),runs_root=str(A/'runs'),active=str(A/'ACTIVE_HARDWARE_SESSION.json'),entry=str(W/'launch.py'),detached=str(W/'detached'),dispatch_claim=str(W/'dispatch-claim'),supervisor_pidfile=str(W/'supervisor.pid'),cold_entry='ROOT_ACCEPTED_RESET_CLOSURE_AND_FRESH_BASIC_ONLY',native_observed_mapping_required=True,directory_mapping_epoch=1,reader_frame_epoch_range=[1,640],reader_terminal_epoch=641)
++m.update(session_id=D['run_id'],run_id=D['run_id'],home=D['home'],purpose_nonce=D['nonce'],run=str(A/'runs'/D['run_id']),runs_root=str(A/'runs'),active=str(A/'ACTIVE_HARDWARE_SESSION.json'),entry=str(W/'launch.py'),detached=str(W/'detached'),dispatch_claim=str(W/'dispatch-claim'),supervisor_pidfile=str(W/'supervisor.pid'),cold_entry='ROOT_ACCEPTED_NORESET_BASIC_AND_FRESH_BASIC_ONLY',full_RAM_GET_bytes=32768,full_RAM_GET_parts=2,BASIC_prefix_bytes=2048,retain_each_half_before_next=True,native_observed_mapping_required=True,directory_mapping_epoch=1,reader_frame_epoch_range=[1,640],reader_terminal_epoch=641)
+ for k,n in dict(baseline='BASELINE.reu',reader='copy-reader.prg',reader_labels='copy-reader.labels',directory='owner-prelude.prg',directory_labels='owner-prelude.labels',template='stream-template.prg',stream_labels='stream.labels',predecessor='ACTIVE-predecessor.json',predecessor_prefix='predecessor-BASIC-prefix.bin').items():m[k]=str(W/n)
+ m['predecessor_receipt']=str(B/'ROOT-BASIC-ACCEPTANCE.json')
+ m['streams']={r:{'source':str(W/(r+'-stream.prg')),'nonce':str(W/(r+'-NONCE.hex'))}for r in ['initial','final']}
+ proofs={'reader_parent_manifest':A/'scratch/native-owned-copy-reader-firstcause-20261017/MANIFEST.json','reader_peer_manifest':A/'scratch/native-owned-copy-reader-firstcause-peer-20261017/MANIFEST.json','directory_parent_manifest':A/'scratch/native-owned-directory-prelude-20261017/MANIFEST.json','root_component_receipt':A/'evidence/native-owned-copy-components-root-review-20261017.json','mapping_manifest':A/'scratch/native-owned-copy-mapping-receipt-20261017/MANIFEST.json','mapping_errata':A/'scratch/native-owned-copy-mapping-receipt-errata-20261017/MANIFEST.json','mapping_peer_manifest':A/'scratch/native-owned-copy-mapping-independent-review-20261017/MANIFEST.json'}
+ for k,p in proofs.items():m[k]=str(p)
+-paths=list(W.glob('*.py'))+list(W.glob('*.prg'))+list(W.glob('*.labels'))+list(W.glob('*.hex'))+[W/'BASELINE.reu',W/'ACTIVE-predecessor.json',W/'predecessor-BASIC-prefix.bin',W/'dispatch-owned.sh',B/'PURPOSE_ID.json',B/'ROOT-BASIC-ACCEPTANCE.json',A/'evidence/native-old-terminal-recovery-root-20261017.json',Path(m['expected_file'])]+list(proofs.values())
++paths=list(W.glob('*.py'))+list(W.glob('*.prg'))+list(W.glob('*.labels'))+list(W.glob('*.hex'))+[W/'BASELINE.reu',W/'ACTIVE-predecessor.json',W/'predecessor-BASIC-prefix.bin',W/'dispatch-owned.sh',B/'PURPOSE_ID.json',B/'ROOT-BASIC-ACCEPTANCE.json',A/'evidence/native-basic-noreset-root-20261017.json',Path(m['expected_file'])]+list(proofs.values())
+ m['files']={str(p.resolve()):sha(p)for p in sorted(set(paths))}
+ blob=(json.dumps(m,indent=2)+'\n').encode();(W/'LAUNCH_MANIFEST.json').write_bytes(blob);(W/'LAUNCH_SHA.txt').write_text(hashlib.sha256(blob).hexdigest()+'\n');print(hashlib.sha256(blob).hexdigest(),len(m['files']))
+--- /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-observed-physical-purpose-20261017/work/purpose.py
++++ /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-splitread-purpose-20261017/work/purpose.py
+@@ -4,7 +4,7 @@
+ from cold_entry import ColdEntry,ACTIVE_SHA
+ from copy_reader_host import Source as ReaderSource
+ from directory_host import DirectorySource
+-from copy_transport import CopyREST
++from split_transport import SplitCopyREST as CopyREST
+ from copy_session import CopySession
+ from process_context import ProcessContext,physical_context,local_context,Ledger,EvidenceWriter
+ from transport import FIELDS
+@@ -26,8 +26,9 @@
+   if type(m.get(k))is not type(v)or m[k]!=v:raise ValueError('Exact finite bound '+k)
+  for k in ['FTP','POST','REU_write','native3880_restore','fullboard_reset','upper12MiB_access','upper12MiB_byte_equality','API_config_repair','original_CPU_restore','original_RAM_restore','original_application_resume','automatic_retry','guest_execution','SETUP_CONFIG_execution','Turbo_execution','physical_Finish','full_V1_acceptance','fresh_remote_file_bytes_before_COPY_verified']:
+   if m.get(k)is not False:raise ValueError('Forbidden capability/claim '+k)
++ if m.get('full_RAM_GET_bytes')!=32768 or m.get('full_RAM_GET_parts')!=2 or m.get('BASIC_prefix_bytes')!=2048 or m.get('retain_each_half_before_next')is not True:raise ValueError('Exact coherent splitRAM/prefix policy')
+  if m.get('native_observed_mapping_required')is not True or type(m.get('directory_mapping_epoch'))is not int or m.get('directory_mapping_epoch')!=1 or m.get('reader_frame_epoch_range')!=[1,640]or any(type(v)is not int for v in m.get('reader_frame_epoch_range',[]))or type(m.get('reader_terminal_epoch'))is not int or m.get('reader_terminal_epoch')!=641:raise ValueError('Mandatory source-bound observed mapping epochs')
+- if m.get('ROOT_review_required_before_dispatch')is not True or m.get('historical_source_path')!='/usb1/DOS64_TEST/ac-media-20261016-081300/DOSHD.IMG'or m.get('destination_leaf')!='DOSHD.IMG'or m.get('cold_entry')!='ROOT_ACCEPTED_RESET_CLOSURE_AND_FRESH_BASIC_ONLY':raise ValueError('Fixed readonly historical path and cold entry')
++ if m.get('ROOT_review_required_before_dispatch')is not True or m.get('historical_source_path')!='/usb1/DOS64_TEST/ac-media-20261016-081300/DOSHD.IMG'or m.get('destination_leaf')!='DOSHD.IMG'or m.get('cold_entry')!='ROOT_ACCEPTED_NORESET_BASIC_AND_FRESH_BASIC_ONLY':raise ValueError('Fixed readonly historical path and cold entry')
+  audit(m)
+  needed=['baseline','expected_file','reader','reader_labels','directory','directory_labels','template','stream_labels','predecessor','predecessor_prefix','predecessor_receipt','reader_parent_manifest','reader_peer_manifest','directory_parent_manifest','root_component_receipt','mapping_manifest','mapping_errata','mapping_peer_manifest']
+  for k in needed:

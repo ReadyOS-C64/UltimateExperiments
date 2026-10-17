@@ -1,0 +1,27 @@
+{
+  "status": "ROOT_REVIEWED_EXACT_SPLITREAD_COPY20M_DISPATCH_ONCE",
+  "purpose_manifest_sha256": "b1221d91e0b3cfdf744514be8f2d12654112143961777c29af9b164af5fef285",
+  "purpose_pins_verified": 138,
+  "launch_manifest_sha256": "4e40209b42433eb5114149497fad9a42555e82f30abe6ba6006cccb8c31ce8eb",
+  "launch_originals_and_copies_verified": 55,
+  "root_focused_controls_pass": 21,
+  "root_constructor_socket_forbidden": true,
+  "native_directory_reader_and_mapping_CRC_ACK_unchanged": true,
+  "read_policy": "2048 BASIC prefixes, ordered32768 halves retained before next under sameacknowledgedpause/originalendpoint; all private native source/frame/mapping/CRC fences unchanged",
+  "hardware_owner": "cia_probe_independent_review",
+  "current_ACTIVE_sha256": "230c88094f48b9a3d61f91f1f808639d038f8e1f93ded381a2d2efd767b5c102",
+  "old_PIDs_absent": [
+    28233,
+    28240
+  ],
+  "authorized_run": "c64u-ownedcopy20m-split-20261017-b4749b60",
+  "authorized_home": "/usb1/DOS64_TEST/copy20m-split-b4749b60",
+  "authorized_entry": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-splitread-purpose-20261017/work/dispatch-owned.sh",
+  "one_attempt_only": true,
+  "core_seconds": 600,
+  "supervisor_seconds": 900,
+  "grace_seconds": 120,
+  "no_automatic_retry": true,
+  "no_FILES_delete_REU_write_upper12MiB_fullboardreset_or_guest": true,
+  "scope": "Freshowned nativeCOPY+full20MiB readback and initial/final lower4MiB equality, knownclose and settings/media/BASIC cleanup; no installedfirmwarelimit/guest/SETUP/CONFIG/Turbo/physicalFinish/V1release claim. Priorfailures remainfailed; hardware staysreserved pendingRoot review."
+}

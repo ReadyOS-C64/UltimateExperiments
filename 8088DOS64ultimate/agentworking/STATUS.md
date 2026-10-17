@@ -1,3 +1,9 @@
+# Hardware split-read dispatch live — 2026-10-17
+
+Sole ownerCIA dispatched exact reviewed4e40209b/b1221d91 purpose once: Terminal1639, detached supervisor38328/child38335, devnull/noTTY,900s watchdog/120s grace. Root independently verified both command lines live from local process state after dispatch. Initial whole4MiB matchesac43; observed-port native directory receipt epoch1/2F35 proves fresh CREATE/OWNER/readback/EOF/CLOSE/CWDrestore. Reader load/COPY/full20MiB verification remains pending; no copy-content or final physical V1 authority. No retries or expanded capabilities. [Dispatch review](evidence/native-copy20m-splitread-dispatch-root-20261017.json).
+
+Local code checkpoint5273c00 is committed, never pushed; exact development ZIP at build/development/5273c00/DOS64-development-5273c00.zip. All518 base/25package/15builder and final FDISK/Turbo model proofs are accepted. Earlier snapshots below are historical.
+
 # Current consumer proofs accepted — public1506, 2026-10-17
 
 Root accepted both final model workflows after checking all1150 FDISK pins/1587 inputs/759 copies and all2902 Turbo pins/2310 inputs pluscopies. Genuine FDISK→warm reset→FORMAT/SYS/COPY→two native Finish/freshC execution passes; all four saved system files equal originalA, C remains exactly2MiB, HD vectors/PIC healthy and sameVM clock advances579→679. Turbo edit/save/diskcompile/run/Finish/fresh40/fresh80IDE reopen/fullnative20MiB readback passes, preserving360 original and363 final livepayloads. Hostprepared starting media and injected XT guest keys remain explicit model scope. [FDISK](evidence/v1-reset-fdisk-root-20261017.json), [Turbo](evidence/v1-reset-turbo-root-20261017.json).
