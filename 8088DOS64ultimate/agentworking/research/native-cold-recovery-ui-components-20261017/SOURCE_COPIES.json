@@ -1,0 +1,127 @@
+{
+  "build.py": {
+    "sha256": "d083ac901679248a386ceaa82f6bf77d2d8c22174ba7ffce0be8e90c5b3b378a",
+    "bytes": 2294,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/build.py"
+  },
+  "build_gate.py": {
+    "sha256": "fab2969d52563208010db1773813af590272a8f20f22b44b6b5286de07ef9ce0",
+    "bytes": 4447,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/build_gate.py"
+  },
+  "build_worker.py": {
+    "sha256": "13976af949807c9bbfa97f705f637158fc9d470f5f20289e63b4eec0517feb75",
+    "bytes": 2243,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/build_worker.py"
+  },
+  "couple.py": {
+    "sha256": "91ea551a57534831c2c5a897ba45d8578f2538ab8428c81492b6c4332c60a9e5",
+    "bytes": 3060,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/couple.py"
+  },
+  "replay_corrected_observer.py": {
+    "sha256": "897f134af012bf1a0af810d23a901432d2176c581426844b91597bfca4722d8f",
+    "bytes": 952,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/replay_corrected_observer.py"
+  },
+  "work/controller.c": {
+    "sha256": "4661cee7e10396dc199b77117fe70af746d92d0450d3ced0a1b87f48b3023818",
+    "bytes": 23743,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/work/controller.c"
+  },
+  "work/controller.h": {
+    "sha256": "3e146f658402ae688eed99c40b1a75544d221177b24c00b25582a197f7a37564",
+    "bytes": 1359,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/work/controller.h"
+  },
+  "work/controller.cfg": {
+    "sha256": "2db07616cf618c7f885627415541ad183206e5a75f7434ac5e10b491fcb1e8c3",
+    "bytes": 927,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/work/controller.cfg"
+  },
+  "work/frontend.s": {
+    "sha256": "d824880e26e4e545747273d87af8f34e988d75aeb0720cab3d0c00fba11feda3",
+    "bytes": 5816,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/work/frontend.s"
+  },
+  "work/journal_capsule.s": {
+    "sha256": "d0ce77ea8d6d53696965f5e82baeafb7399f599367e11cd7801f4c90a3e2d103",
+    "bytes": 530,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/work/journal_capsule.s"
+  },
+  "work/platform.s": {
+    "sha256": "dd04006d754139ccca371ad3d021014750f457485f498a41f2a003c1866c694a",
+    "bytes": 586,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/work/platform.s"
+  },
+  "work/platform.c": {
+    "sha256": "b91ff826c545b4647c561c8aca110b432f670b6986183cb74a24c775aa84d4d9",
+    "bytes": 3414,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/work/platform.c"
+  },
+  "work/test_recovery_ui.py": {
+    "sha256": "53d93c751532c3be605e33f97f0139fd1a03737662e05fe8dd872461e39cf57e",
+    "bytes": 11084,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/work/test_recovery_ui.py"
+  },
+  "work/test_recovery_ui_observer.py": {
+    "sha256": "742739173ae80fccfb7d9f1207b75731541bd169cf76901e32496fd552c9583f",
+    "bytes": 11250,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/work/test_recovery_ui_observer.py"
+  },
+  "work/start_template_metadata.py": {
+    "sha256": "664682fd4b19448705225453f9c234cd8223f6db73fc97a3533bbb29bfe0fa06",
+    "bytes": 3700,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/work/start_template_metadata.py"
+  },
+  "worker/entry.s": {
+    "sha256": "e4c79b30d6771148b10fe65ac3bbe4d891c0d7f748b6b52af12772f2dc0b20c6",
+    "bytes": 924,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/worker/entry.s"
+  },
+  "worker/rollforward.c": {
+    "sha256": "36cfaa33e64bcc96cff95a74c474abbc9f110df41403b532dae8ae843782108e",
+    "bytes": 11493,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/worker/rollforward.c"
+  },
+  "worker/rollforward.h": {
+    "sha256": "81e4c9b426c494383a279661da9defaa031c69ffd95d3adc2ba68696a2401032",
+    "bytes": 807,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/worker/rollforward.h"
+  },
+  "worker/worker.cfg": {
+    "sha256": "7a3575c602c4d49c776cc8072c5cb302e92a7413bd81a97b98b6b968fa397a47",
+    "bytes": 364,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/worker/worker.cfg"
+  },
+  "gate/entry.s": {
+    "sha256": "7459e7af3950141673eb66caa4aba6f174931f353552b69ba03ed1c92c482983",
+    "bytes": 1589,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/gate/entry.s"
+  },
+  "gate/journal_gate.c": {
+    "sha256": "43877a5ecf0632182421a66476651a3610e0bc3cf2a9da1cf04d925bd705bca5",
+    "bytes": 12360,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/gate/journal_gate.c"
+  },
+  "gate/journal_gate.h": {
+    "sha256": "a76eeca2f8d67863dc5762da9914d25a05af6bc7da4ec04deb9ada70dae88c06",
+    "bytes": 1177,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/gate/journal_gate.h"
+  },
+  "gate/gate.cfg": {
+    "sha256": "715704ad4a16e1c91c478ae27b4722721b6d1b0f3fd156db4c7d282ea8612fbd",
+    "bytes": 489,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/gate/gate.cfg"
+  },
+  "dependencies/build_support/start_launcher.py": {
+    "sha256": "0cde6fb337ccd6c20a0cf48666944a5aaa7b36e8a096e35d37fd11122eebd51b",
+    "bytes": 9014,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/dependencies/build_support/start_launcher.py"
+  },
+  "dependencies/build_support/start_template_descriptor.py": {
+    "sha256": "664682fd4b19448705225453f9c234cd8223f6db73fc97a3533bbb29bfe0fa06",
+    "bytes": 3700,
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/dependencies/build_support/start_template_descriptor.py"
+  }
+}

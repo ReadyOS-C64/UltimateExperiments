@@ -1,0 +1,159 @@
+{
+  "status": "PRIVATE_NATIVE_COLD_RECOVERY_UI_VERIFIED_INDEPENDENTLY_REVIEWED",
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-root-20261017/MANIFEST.json",
+  "sha256": "466d2f3ed01b4ac926d2e9cdbac9512a0381cf6196fe57641492ba9ac1460a3c",
+  "pins": 408,
+  "result": {
+    "status": "PASS_PRIVATE_COLD_RECOVERY_UI_INDEPENDENTLY_REVIEWED",
+    "source_window_sha256": "94034e344ca6920f4c79b52f8778cb66f8ac3806d5832d3f1519dbb373e3f520",
+    "source_product_files_unchanged": 160,
+    "original10": {
+      "tests": 10,
+      "passed": 6,
+      "observer_failures": 4,
+      "seconds": 134.339,
+      "log": "UI_FIXED10.stderr"
+    },
+    "additive4": {
+      "pass": true,
+      "tests": 4,
+      "records": [
+        {
+          "ports_before_after": [
+            47,
+            245
+          ],
+          "private_prompt": true,
+          "CIA_C_then_Return": true,
+          "RFW_whole_RAM_crc": true,
+          "fresh_RCV_init_before_NONE": true,
+          "normal_INO_then_handoff": true,
+          "third_floppy_full": true,
+          "synthetic_media_not_DOS_boot": true
+        },
+        {
+          "ports_before_after": [
+            47,
+            245
+          ],
+          "private_prompt": true,
+          "CIA_C_then_Return": true,
+          "RFW_whole_RAM_crc": true,
+          "fresh_RCV_init_before_NONE": true,
+          "normal_INO_then_handoff": true,
+          "third_floppy_full": true,
+          "synthetic_media_not_DOS_boot": true
+        },
+        {
+          "ports_before_after": [
+            47,
+            245
+          ],
+          "private_prompt": true,
+          "CIA_C_then_Return": true,
+          "RFW_whole_RAM_crc": true,
+          "fresh_RCV_init_before_NONE": true,
+          "normal_INO_then_handoff": true,
+          "third_floppy_full": true,
+          "synthetic_media_not_DOS_boot": true
+        },
+        {
+          "ports_before_after": [
+            47,
+            245
+          ],
+          "private_prompt": true,
+          "CIA_C_then_Return": true,
+          "RFW_whole_RAM_crc": true,
+          "fresh_RCV_init_before_NONE": true,
+          "normal_INO_then_handoff": true,
+          "third_floppy_full": true,
+          "synthetic_media_not_DOS_boot": true,
+          "human_idle_timer_ticks": 6000
+        }
+      ],
+      "scope": "Additive corrected port oracle; same frozen160 native/source/products; only4priorbadliteral-observer cases repeated, other6 passed UI_FIXED10"
+    },
+    "unique_behaviors_passed": 10,
+    "single_fresh_10of10_run": false,
+    "source_build_scope": "native/model fresh before window; SDK/tool hermetic closure not implied; independent peer freshsource reproduction separately",
+    "actual_old_idle_timeout_fixed": true,
+    "actual_old_two_CLOSE_fixed_to_one": true,
+    "DATA_patch_closure": {
+      "status": "FINAL_DATA_BINDING_VERIFIED_BOTH_CAPSULES",
+      "unpatched_START": "1d353975381b73c163cba1fae70eb9bc21cd1bfc963e492446ae027d6c910119",
+      "intermediate_START_used_by_final_gate_link": "1a9f9763c27a68a9c564dfd8f7eb158354ed9360372b56faa26c56caac90038c",
+      "final_START": "1307b13a01cffac3fa04eebf261a7fdd200169774d3872053417761d770a6157",
+      "patched_DATA_only_intervals": [
+        [
+          19703,
+          19727
+        ],
+        [
+          19727,
+          19743
+        ]
+      ],
+      "gate_code_and_import_addresses_unchanged_by_final16B_DATA_patch": true,
+      "qualification": "COUPLED_RESULT predecessor only listsJG24span; this additiveclosure recordsJG24+RFW16 and intermediate/finalhashes withoutchangingfrozenbuilder/source",
+      "START_filebytes": 20480,
+      "last_loaded_byte": "0x57fe",
+      "reserved_NMI_5882_untouched_by_template": true
+    },
+    "ports_prompt_handoff": [
+      47,
+      245
+    ],
+    "CPU_guards": "owned install targets beforeRFWentry; no RFWcode writes after; CstackCFFF",
+    "REU_guards": "fullthirdfloppy+reserve; not a new all4M comparison",
+    "public": false,
+    "physical": false,
+    "DOS_boot": false,
+    "MNU": "40KiB bound datafixture; finalruntime UI container pending",
+    "remaining": [
+      "publisher CONFIG D64S20KiBSTART adaptation",
+      "combined runtimeMNU START coupling",
+      "media actions Finish",
+      "SETUP preflight package",
+      "Ultimate Turbo restart human"
+    ],
+    "independent_review": {
+      "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-independent-review-20261017/MANIFEST.json",
+      "sha256": "6dab78050a30c21a44915134f26c361c933f874b9dfa6473593fa56b2f1ad179",
+      "pins_ROOT_verified": 352,
+      "independent_groups": 11,
+      "exact_rebuilt_products": 6,
+      "scope": "privatecoldUI/scopedwhole4M, noDOS/public/physical;SDKpostbuildledgerqualified",
+      "last_template_loaded_byte": "57FE"
+    }
+  },
+  "products": {
+    "controller.prg": {
+      "sha256": "1307b13a01cffac3fa04eebf261a7fdd200169774d3872053417761d770a6157",
+      "bytes": 20480
+    },
+    "START.INO": {
+      "sha256": "cb4b0909b884714a3e38b60864cd7fd3027e716e47ac9abdc5b53ee957020053",
+      "bytes": 7692
+    },
+    "START.RCV": {
+      "sha256": "87e0d39342ae83ba22139439651a32651f1fefaa9f64a2b2f2e42b067be194bc",
+      "bytes": 7681
+    },
+    "START.RFW": {
+      "sha256": "f11b0c1d66a9116b005651529de53bec19939ae03fd9c60ef0599a78b6c84824",
+      "bytes": 5578
+    },
+    "START.REL": {
+      "sha256": "af51d95af6e1e90545a08eef79f8c94e78c8c5475a4f359d5d8b0fbe5af60008",
+      "bytes": 64
+    },
+    "DOS64.REL": {
+      "sha256": "a585fd6f3835d64a0701bf3c6e53570028593066e4b69167e3cd6a642c2393fe",
+      "bytes": 64
+    }
+  },
+  "source_checkpoint": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/native-cold-recovery-ui-components-20261017",
+  "public_main_unchanged": true,
+  "physical": false
+}

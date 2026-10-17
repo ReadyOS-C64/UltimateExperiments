@@ -1,3 +1,7 @@
+# Native cold recovery confirmation independently verified — 2026-10-17
+
+Private START1307/INOcb4b/RCV87e0/RFWf11b executes SYS→pending screen→CIA C+Return→verified recovery→fresh original RCV NONE→INO/handoff. Root10 unique outcomes pass across final6+correctedobserver4; independent11/freshsixproducts/scopedwhole4MiB pass, peer6dab/352 ROOTverified. Root466d/408; parents843+344 unchanged. Actual stale-admission-clock and duplicate-CLOSE defects reproduced/fixed. Evidence native-cold-recovery-ui-root-20261017. Public main/START unchanged.20KiB native publishing, final runtime coupling, other media/Finish/package and physical Ultimate/Turbo/human remain open.
+
 # Repeat-save archive allocation verified privately — 2026-10-17
 
 Sequence+CUI UNITdcce9974/2490pins is ROOT hashreviewed:10 actual native groups, fresh native/model and44exactproducts, SDK supplement1397inputs. Actual same-session saves use persistentsequences2/4 independently of UI tickets1/2; freshsession, FFFFwrap, pendingfile/cancel/clock/unknownclose/currentCFG faults pass. Native8b19/controller1143/bridge4a76/MNUf1ef fit4MiB with fullthirdfloppy. No runtime/public/physical inference. Compiled's new actualruntime-role3tests passed provisionally and adds explicit timestamp-safe header rebuilding; finalseal/combinedrole integration pending. Memory implements native safeFinish. ROOT cold recovery UI is under independent review; source/private20KiBSTART not yet promoted.

@@ -1,0 +1,9 @@
+{
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-recovery-ui-independent-review-20261017/MANIFEST.json",
+  "sha256": "6dab78050a30c21a44915134f26c361c933f874b9dfa6473593fa56b2f1ad179",
+  "pins_ROOT_verified": 352,
+  "independent_groups": 11,
+  "exact_rebuilt_products": 6,
+  "scope": "privatecoldUI/scopedwhole4M, noDOS/public/physical;SDKpostbuildledgerqualified",
+  "last_template_loaded_byte": "57FE"
+}

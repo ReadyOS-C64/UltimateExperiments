@@ -1,0 +1,21 @@
+{
+  "status": "FINAL_DATA_BINDING_VERIFIED_BOTH_CAPSULES",
+  "unpatched_START": "1d353975381b73c163cba1fae70eb9bc21cd1bfc963e492446ae027d6c910119",
+  "intermediate_START_used_by_final_gate_link": "1a9f9763c27a68a9c564dfd8f7eb158354ed9360372b56faa26c56caac90038c",
+  "final_START": "1307b13a01cffac3fa04eebf261a7fdd200169774d3872053417761d770a6157",
+  "patched_DATA_only_intervals": [
+    [
+      19703,
+      19727
+    ],
+    [
+      19727,
+      19743
+    ]
+  ],
+  "gate_code_and_import_addresses_unchanged_by_final16B_DATA_patch": true,
+  "qualification": "COUPLED_RESULT predecessor only listsJG24span; this additiveclosure recordsJG24+RFW16 and intermediate/finalhashes withoutchangingfrozenbuilder/source",
+  "START_filebytes": 20480,
+  "last_loaded_byte": "0x57fe",
+  "reserved_NMI_5882_untouched_by_template": true
+}

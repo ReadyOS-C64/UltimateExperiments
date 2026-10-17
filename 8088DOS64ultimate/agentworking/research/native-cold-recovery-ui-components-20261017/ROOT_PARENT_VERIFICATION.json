@@ -1,0 +1,12 @@
+{
+  "rollforward": {
+    "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-pending-rollforward-20261017/MANIFEST.json",
+    "sha256": "a626c7dd4b55954ec0e324d3947f801a92aa29112019a757868a010d1ab6b18a",
+    "all_pins_exact": 843
+  },
+  "40KiB_loader": {
+    "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-journal-40k-root-20261017/MANIFEST.json",
+    "sha256": "9c25db129355c5140ddb40f320e081583b74561183ef44e2bd18af4b530092a5",
+    "all_pins_exact": 344
+  }
+}

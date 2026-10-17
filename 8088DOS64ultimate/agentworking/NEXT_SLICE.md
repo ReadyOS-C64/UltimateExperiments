@@ -1,3 +1,9 @@
+# Next after cold recovery UI — 2026-10-17
+
+Cold408/peer352 accepted privately: confirmation, verified RFW, returned frames and fresh original RCV NONE before boot. CIA adapts native SETUP/CONFIG/D64S/publisher20KiB limits, default-OFF; payload ends57FE/control19555 (SJ19703). Add MNU/RCV/RFW to preflight/package later. Compiled combines rolebuilder4f2b with sequence+CUI dcce, proving repeated runtime saves with UNITfiles absent. Memory closes native Finish barrier: issued HD writes complete, known CLOSE/privateone-shot, no application/DOS-bufferflush claim.
+
+Root next couples runtime cold assets and routes remaining disk actions, preserving all3arenas/C. Then final SETUP→START→DOS/40-80/floppy/C/Turbo edited/diskcompile/run/restart/human acceptance on Ultimate. Hardware soleCIA/reserved after readonly staging failure; no automatic retry/transport experiment. Performance post-V1; local commits/no push.
+
 # Next after private actual disk-menu Save As — 2026-10-17
 
 Frozen Root window4fb6/329 plus independent dce5/864 is accepted for UNIT only. Memory combines allocator069e with corrected c508 STOP controller in new live-media-ui-sequence-integration, with repeated/fresh-session archive tests. Compiled builds actual runtime-role worker/broker/controller/bridge against runtime labels and runtime SAVER; transfer portable role builder after proof. ROOT implements native cold pending-save confirmation/verified RFW load/full frame retirement/fresh original RCV NONE gate before INO and boot. Its new20KiB START below5800 is private and needs explicit descriptor/installer adaptation before promotion; do not pretend public D64S18432 accepts it. Then complete all advertised media actions and safe Finish, coherent SETUP/package and final physical install/config/media/Turbo/restart/human checklist.
