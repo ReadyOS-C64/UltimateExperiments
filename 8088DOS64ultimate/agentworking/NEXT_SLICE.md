@@ -1,3 +1,9 @@
+# Immediate integration — 2026-10-17
+
+Finish independent RunStop27 coordinator successor qualification, then connect the actual FAT worker C→sourceCLOSE/rearm→B→derivedA and PUB/raw asset transactions to the root dispatcher. Capture source and durable output facts in the trusted internal183-byte cross-phase ledger; no test injection or mutable observations may authorize publication. Publish and verify START before final DOS64.CFG (configuration-last). The source/state4 checkpoint is implemented; do not repeat that as the next proposed task.
+
+CIA owns LOCAL FATworker/link-fit work and the physical device reservation; no new hardware call is authorized by the local snapshot prototype. Compiled agent owns frozen SI leaf-first repair (+67resident), then narrow same-engine failed-output cleanup with no rearm/reset. Memory agent owns frozen root RunStop regression/successor. Root owns full PUB/coordinator/public build integration. Preserve all first failures and existing-C/collision/reconfiguration scope. The complete installer, Save/Swap/C-online, same-home INI parser, physical acceptance and50/85% XT goal remain unfinished.
+
 # Next work — 2026-10-16
 
 Immediate: ROOT implements the real resident/HIGH coordinator and private A/B/C/source/output ledger, then promotes a runnable public SETUP build with actual native integration tests. Current UI43c9 alreadyselects/captures/loads5sources; path-only codec successor frees3280UIbytes forserializedHIGH coordinator, while cooperativeNF/sourcecache service provides realkeyboard/clock failurehandling. Use repairedPUB source3eed/2f2e, not original72e4/27e0; bodyCFGCRC and fullfiletransportCRC aredifferentfacts. Scope remainscompleteA/B/C→verifiedgeneratedSTART/CFG→realDOS, conflicts/reconfiguration andSaveSwap/C-online, notmerelythecomponents.

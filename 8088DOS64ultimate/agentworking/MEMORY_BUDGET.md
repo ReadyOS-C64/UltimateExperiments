@@ -1,3 +1,7 @@
+## Native installer coordinator measured fit — 2026-10-17
+
+Private root5356cd1d/39,678B (first cohort rejected for RunStop handling, not layout): BOOT080D..0833=39B; resident ends5F5B/free164; UIBSS A2FD..AC9B/free868; HIGH_CODE F700..FF9C=2205/free93 before vector area; HIGHBSS E000..F6DA/free37; STATE B000..BF8D/free114; FAT19890/free590; PUBfree1934. Includes1174B/17B cooperative source service, new bootstrap/control and183B retained internal source/output ledger (outputs remain zero). No stack, CRC-table, IO or vector allocation was reduced. RunStop3→27 successor has zero measured code/data growth. Complete FAT/PUB worker integration is not yet fitted; the upcoming SI leaf-first change adds67 resident bytes and is not included in these figures.
+
 ## Current measured cold handoff promotion — 2026-10-16
 
 ROOTruntimecea57480/unit13a82a45, each47,105B. LOADERCOLD963B4000..43C2,61B beforefont4400; helper307B run6000..6132/trailingFILEloadCEB8..CFEA, packagedsource65C8..66FA. FILEengine1464B unchanged, combined1771/1792 leaves21. NATIVESTATE6B (requiredflag0default), MAINfree31runtime/30unit. Unitcold4095/4096 leaves1. FixedNMI5882 RTIunchanged. Bothactualmemoryverifiers pass;444source/tool/productinputs/copies exact. Helperreadback comparedall307B to untouchedfull-PRG-CRC-boundsourcebeforeexecution; existingFILEheaderhasno payloadCRC. No newREUarena or ZPallocation. CPU/IRQ/REP/timer policy unchanged. Evidence native-main-cold-root-20261016.json; privateauthor ce482 source/maps plusROOTreviewlogs retained. No physicalnewmain orcompleteSTARTclaim.

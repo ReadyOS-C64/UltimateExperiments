@@ -1,0 +1,759 @@
+--- /dev/null
++++ b/coordinator.s
+@@ -0,0 +1,289 @@
++.setcpu "6502"
++.macpack longbranch
++.import runtime_init,_bc_init,_ps_init,_sl_install
++.import _sc_begin,_sc_poll,_sc_cancel,_sc_ready,_sc_now,_sc_error
++.import _ps_clock_poll,_ps_key_poll,_ps_key,_ps_ticks
++.import _so_request,_so_prepare,_so_phase_request,_so_enter,_so_ui_ticket
++.import _so_ticket,_so_leave,_so_bind_home,_so_begin,_so_poll,_so_cancel,_so_state,_so_now,_so_result
++.import _su_timeout,_su_begin,_su_poll,_su_state,_su_error
++.import _rc_capture,_rc_expected_ticket,_rc_source_ready
++.export setup_boot,setup_loop,setup_boot_failed,_rc_begin,_rc_poll,_rc_state,_rc_error
++.segment "BSS"
++state: .res 1
++error: .res 1
++cancelled: .res 1
++drain: .res 1
++clock_ok: .res 1
++ticket: .res 2
++last_tick: .res 2
++.segment "BOOT"
++setup_boot:
++ sei
++ cld
++ ldx #$ff
++ txs
++ jsr runtime_init
++ jsr _bc_init
++ jsr _ps_init
++ jsr _sl_install
++ cmp #1
++ jne setup_boot_failed
++ jsr _rc_begin
++setup_loop:
++ jsr _rc_poll
++ jmp setup_loop
++setup_boot_failed:
++ inc $d020
++ jmp setup_boot_failed
++.assert setup_boot=$080d,lderror,"BASIC SYS must enter real bootstrap"
++.segment "HIGH_CODE"
++_rc_state:
++ lda state
++ ldx #0
++ rts
++_rc_error:
++ lda error
++ ldx #0
++ rts
++; First cause persists; a failed coordinator never grants another phase.
++fail:
++ ldx error
++ bne :+
++ sta error
++:
++ lda #5
++ sta state
++ rts
++_rc_begin:
++ lda state
++ bne @refuse
++ lda #$a5
++ jsr _sc_begin
++ cmp #1
++ bne @refuse
++ lda #1
++ sta state
++ rts
++@refuse:
++ lda #0
++ tax
++ rts
++; Fresh time before advancing a pending leaf. Missing/half-wrap time latches a
++; coordinator error, then the same engine is cancelled/drained for <=256 polls.
++sample:
++ jsr _ps_clock_poll
++ sta clock_ok
++ beq @bad
++ lda _ps_ticks
++ sec
++ sbc last_tick
++ lda _ps_ticks+1
++ sbc last_tick+1
++ bmi @bad
++ lda _ps_ticks
++ sta last_tick
++ sta _sc_now
++ sta _so_now
++ lda _ps_ticks+1
++ sta last_tick+1
++ sta _sc_now+1
++ sta _so_now+1
++ rts
++@bad:
++ lda #0
++ sta clock_ok
++ rts
++clock_after:
++ lda clock_ok
++ bne :+
++ lda #$e1
++ jmp first
++:
++ rts
++first:
++ ldx error
++ bne :+
++ sta error
++:
++ rts
++input:
++ jsr _ps_key_poll
++ beq @done
++ lda _ps_key
++ cmp #3
++ bne @done
++ lda #$e2
++ jsr first
++@done:
++ rts
++_rc_poll:
++ lda state
++ cmp #2
++ jeq ui
++ cmp #1
++ jeq close_poll
++ cmp #3
++ jeq overlay_poll
++ rts
++close_poll:
++ jsr sample
++ jsr _sc_poll
++ pha
++ lda _sc_error
++ beq :+
++ lda #$e3
++ jsr first
++:
++ jsr clock_after
++ pla
++ cmp #1
++ jeq close_busy
++ cmp #2
++ jne close_failed
++ lda error
++ jne stop
++ jsr _sc_ready
++ cmp #1
++ jne close_failed
++ lda #$a5
++ sta _so_request
++ lda #0
++ sta _so_request+1
++ sta _so_request+2
++ sta _so_request+4
++ lda #$40
++ sta _so_request+3
++ lda #<$2710
++ sta _so_request+5
++ lda #>$2710
++ sta _so_request+6
++ jsr _so_prepare
++ cmp #1
++ jne phase_failed
++ lda #1
++ sta _so_phase_request
++ jsr _so_enter
++ cmp #1
++ jne phase_failed
++ jsr _so_ui_ticket
++ sta ticket
++ sta _rc_expected_ticket
++ stx ticket+1
++ stx _rc_expected_ticket+1
++ lda #<$2710
++ sta _su_timeout
++ lda #>$2710
++ sta _su_timeout+1
++ jsr _su_begin
++ cmp #1
++ jne phase_failed
++ lda #2
++ sta state
++ rts
++close_busy:
++ jsr input
++ lda error
++ jeq done
++ lda cancelled
++ jne drain_poll
++ inc cancelled
++ jsr _sc_cancel
++ jmp drain_poll
++close_failed:
++ lda #$e3
++ jmp fail
++phase_failed:
++ lda #$e4
++ jmp fail
++stop:
++ jmp fail
++ui:
++ jsr _su_poll
++ jsr _su_state
++ cmp #1
++ jeq done
++ cmp #2
++ jne ui_failed
++ jsr _rc_capture
++ cmp #1
++ jne phase_failed
++ lda ticket
++ sta _so_ticket
++ lda ticket+1
++ sta _so_ticket+1
++ jsr _so_leave
++ cmp #1
++ jne phase_failed
++ jsr _so_bind_home
++ cmp #1
++ jne phase_failed
++ lda #2
++ sta _so_phase_request
++ jsr _ps_clock_poll
++ jeq clock_failed
++ lda _ps_ticks
++ sta last_tick
++ sta _so_now
++ lda _ps_ticks+1
++ sta last_tick+1
++ sta _so_now+1
++ jsr _so_begin
++ cmp #1
++ jne phase_failed
++ lda #3
++ sta state
++ rts
++ui_failed:
++ jsr _su_error
++ jmp fail
++clock_failed:
++ lda #$e1
++ jmp fail
++overlay_poll:
++ jsr sample
++ jsr _so_poll
++ jsr _so_state
++ pha
++ lda _so_result+2
++ beq :+
++ lda #$e4
++ jsr first
++:
++ jsr clock_after
++ pla
++ cmp #1
++ jeq overlay_busy
++ cmp #2
++ jne phase_failed
++ lda error
++ jne stop
++ jsr _so_enter
++ cmp #1
++ jne phase_failed
++ lda _so_result+8
++ sta ticket
++ lda _so_result+9
++ sta ticket+1
++ jsr _rc_source_ready
++ cmp #1
++ jne phase_failed
++ ; Integration checkpoint: active authentic FAT ticket; no public installer
++ ; completion. Subsequent coordinator slice consumes retained facts here.
++ lda #4
++ sta state
++ rts
++overlay_busy:
++ jsr input
++ lda error
++ jeq done
++ lda cancelled
++ jne drain_poll
++ inc cancelled
++ jsr _so_cancel
++drain_poll:
++ inc drain
++ jne done
++ lda error
++ jmp fail
++done:
++ rts
+--- /dev/null
++++ b/coordinator_capture.c
+@@ -0,0 +1,46 @@
++#include "coordinator_capture.h"
++#include "setup_ui_run.h"
++#include "setup_overlay.h"
++#include "source_load.h"
++#include "selection_capsule.h"
++#include "bulk_context.h"
++#include <string.h>
++#include <stddef.h>
++#pragma bss-name(push,"HIGHBSS")
++struct rc_record_t {
++ char home[128];
++ br_u16 generation;
++ br_u32 identity,source_crc[5],output[6];
++ br_u8 flags,source_mask,output_mask,valid,started;
++};
++static struct rc_record_t retained;
++#pragma bss-name(pop)
++#pragma bss-name(push,"BSS")
++br_u16 rc_expected_ticket,rc_generation;
++br_u32 rc_identity;
++br_u8 rc_flags,rc_source_mask;
++#pragma bss-name(pop)
++#pragma rodata-name(push,"RODATA")
++const char * const rc_home=retained.home;
++const br_u16 rc_record_layout[]={sizeof(struct rc_record_t),offsetof(struct rc_record_t,source_crc),offsetof(struct rc_record_t,output),offsetof(struct rc_record_t,valid)};
++#pragma rodata-name(pop)
++static br_u16 word(const br_u8 *p){return p[0]|((br_u16)p[1]<<8);}
++static br_u32 dword(const br_u8 *p){return (br_u32)word(p)|((br_u32)word(p+2)<<16);}
++br_u8 rc_capture(void){br_u8 k;
++ if(retained.started||su_state()!=SU_DONE||!rc_expected_ticket||so_ui_ticket()!=rc_expected_ticket||!bc_files_closed())return 0;
++ retained.started=1;sq_page=0;if(sq_read()!=512u)return 0;
++ retained.generation=word(sq_bytes+8);memcpy(retained.home,sq_bytes+SQ_HOME,128);
++ sq_page=1;if(sq_read()!=192u)return 0;
++ retained.identity=dword(sq_bytes+188);retained.flags=sq_bytes[160]|(sq_bytes[161]<<1);
++ for(k=0;k<5u;++k){
++  sl_kind=k;sl_generation=retained.generation;sl_identity=retained.identity;
++  if(!sl_fact()||sl_receipt.generation!=retained.generation||sl_receipt.identity!=retained.identity||sl_receipt.bytes!=(k<3u?368640UL:k==3u?18432UL:64UL))return 0;
++  retained.source_crc[k]=sl_receipt.crc;retained.source_mask|=1u<<k;
++ }
++ if(so_ui_ticket()!=rc_expected_ticket||sq_state()!=SQ_READY||!bc_files_closed())return 0;
++ retained.valid=1;rc_generation=retained.generation;rc_identity=retained.identity;
++ rc_flags=retained.flags;rc_source_mask=retained.source_mask;return 1;
++}
++#pragma code-name(push,"HIGH_CODE")
++br_u8 rc_source_ready(void){return retained.valid&&retained.source_mask==31u;}
++#pragma code-name(pop)
+--- /dev/null
++++ b/coordinator_capture.h
+@@ -0,0 +1,14 @@
++#ifndef DOS64_COORDINATOR_CAPTURE_H
++#define DOS64_COORDINATOR_CAPTURE_H
++#include "bulk_reu.h"
++/* UI-only, once, with private SU_DONE and the still-active UI ticket. Copies
++ * facts before UI retirement. No output durability is inferred from a source. */
++extern br_u16 rc_expected_ticket;
++extern const char * const rc_home;
++extern br_u16 rc_generation;
++extern br_u32 rc_identity;
++extern br_u8 rc_flags,rc_source_mask;
++br_u8 rc_capture(void);
++/* HIGH, safe after UI retirement. Observations never authorize a phase. */
++br_u8 rc_source_ready(void);
++#endif
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -13,7 +13,7 @@
+  HIGH:start=$e000,size=$1700,file="",type=rw;
+ }
+ SEGMENTS {
+- LOADADDR:load=HEADER,type=ro;BASIC:load=RESIDENT,type=ro;
++ LOADADDR:load=HEADER,type=ro;BASIC:load=RESIDENT,type=ro;BOOT:load=RESIDENT,type=ro;
+  DEVICECODE:load=RESIDENT,type=rw;FILECODE:load=RESIDENT,type=rw;CODE:load=RESIDENT,type=rw;
+  RODATA:load=RESIDENT,type=ro;DATA:load=RESIDENT,type=rw;
+  UI_CODE:load=UI,type=ro,define=yes;UI_RO:load=UI,type=ro,define=yes;
+--- a/build.py
++++ b/build.py
+@@ -1,9 +1,9 @@
+ from pathlib import Path
+ import subprocess,hashlib,json,struct,zlib
+-W=Path(__file__).resolve().parent;assert Path.cwd()==W and W.parent.name=='native-config-path-only-20261016'
++W=Path(__file__).resolve().parent;assert Path.cwd()==W and W.parent.name=='native-installer-coordinator-20261017'
+ B=W/'build';B.mkdir(exist_ok=True)
+-c_names=['native_fat','bulk_context','install_config','directory_browser','lease_context','platform','setup_io','install_writer','setup_overlay','setup_select','ui_fixture','selection_capsule','raw_output','source_load','fat_prepare','pub_codec','pub_crc_adapter','start_template','publish_assets','publish_assets_fixture','setup_ui_run']
+-as_names=['startup','bindings','context_bindings','uci','files','setup_dma','crc32','overlay_manifest','startup_close','startup_glue','overlay_bindings']
++c_names=['native_fat','bulk_context','install_config','directory_browser','lease_context','platform','setup_io','install_writer','setup_overlay','setup_select','ui_fixture','selection_capsule','raw_output','source_load','fat_prepare','pub_codec','pub_crc_adapter','start_template','publish_assets','publish_assets_fixture','setup_ui_run','coordinator_capture','setup_cooperate']
++as_names=['startup','bindings','context_bindings','uci','files','setup_dma','crc32','overlay_manifest','startup_close','startup_glue','overlay_bindings','coordinator']
+ inputs=[p for p in W.rglob('*') if p.is_file() and not any(n in p.parts for n in ['build','.zig-cache','zig-out','__pycache__']) and p.suffix not in ['.dylib','.stdout','.stderr']]+[Path('/opt/homebrew/share/cc65/lib/none.lib')]
+ sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();pins={str(p):sha(p)for p in inputs};cmds=[]
+ def run(c):cmds.append(c);subprocess.run(c,cwd=W,check=True)
+@@ -18,8 +18,9 @@
+ metadata(bytes(6630),bytes(18587),bytes(0x5000),16)
+ for n in c_names:
+  o=n+'_c' if n=='platform'else n
+- phase='PUB'if n in ['publish_fixture','raw_output','pub_codec','pub_crc_adapter','start_template','publish_assets','publish_assets_fixture']else'FAT'if n in ['native_fat','writer_fixture','fat_prepare']else'UI'if n in ['install_config','directory_browser','lease_context','release','setup_select','ui_fixture','source_load','setup_ui_run']else None
++ phase='PUB'if n in ['publish_fixture','raw_output','pub_codec','pub_crc_adapter','start_template','publish_assets','publish_assets_fixture']else'FAT'if n in ['native_fat','writer_fixture','fat_prepare']else'UI'if n in ['install_config','directory_browser','lease_context','release','setup_select','ui_fixture','source_load','setup_ui_run','coordinator_capture']else None
+  opts=['--code-name',phase+'_CODE','--rodata-name',phase+'_RO']if phase else []
++ if n=='setup_io':opts+=['-D','DOS64_SETUP_COOPERATIVE=1']
+  if n=='install_config':opts+=['-D','D64_CONFIG_PATH_ONLY=1']
+  run(['cc65','-O','-t','none','--cpu','6502',*opts,*(['--bss-name','PUBBSS']if n in ['publish_fixture','raw_output','pub_codec','pub_crc_adapter','start_template','publish_assets','publish_assets_fixture']else ['--bss-name','HIGHBSS']if n in ['directory_browser','platform','setup_io','install_writer','writer_fixture','selection_capsule','source_load']else ['--bss-name','UIBSS']if n in ['install_config','setup_select','ui_fixture','selection_capsule','raw_output','setup_ui_run']else []),'-I',str(W),'-o',str(B/(o+'.s')),str(W/(n+'.c'))])
+  run(['ca65','-g','-D','DOS64_FILES_INFO=1','-I',str(W),'-I',str(W/'shared'),'-o',str(B/(o+'.o')),str(B/(o+'.s'))])
+--- a/build_bridge.py
++++ b/build_bridge.py
+@@ -1,5 +1,5 @@
+ from pathlib import Path
+ import subprocess
+-W=Path(__file__).resolve().parent;assert Path.cwd()==W and W.parent.name=='native-config-path-only-20261016'
++W=Path(__file__).resolve().parent;assert Path.cwd()==W and W.parent.name=='native-installer-coordinator-20261017'
+ cmd=['clang++','-std=c++20','-O2','-dynamiclib','-Itests/floppy_export','-Itests/host','-Ithird_party/peddle/Peddle','tests/floppy_export/bridge.cpp',*[str(p)for p in Path('third_party/peddle/Peddle').glob('*.cpp')],'-o','browser-peddle.dylib']
+ subprocess.run(cmd,cwd=W,check=True)
+--- a/test_browser.py
++++ b/test_browser.py
+@@ -41,7 +41,7 @@
+   coststart=L.dos64_get_regs(self.m).cycles;bank=L.browser_bank(self.m);L.dos64_clear_writes(self.m);ret=self.labels['fixture_return']-1;L.dos64_poke(self.m,0x1ff,ret>>8);L.dos64_poke(self.m,0x1fe,ret&255);L.dos64_set_regs(self.m,Regs(self.labels[n],0xfd,arg,0x82,0x93,0x24,0,0));r=L.dos64_run(self.m,self.labels['fixture_return'],budget)
+   self.last_regs=r.regs;self.lastcost=r.regs.cycles-coststart;self.soft_min=min(getattr(self,"soft_min",0xd000),L.setup_soft_stack_min(self.m));bad=L.browser_bad_write(self.m,self.guard)
+   if n!='_ps_init' and L.browser_bank(self.m)!=bank:raise AssertionError(('nativebank restore',n))
+-  if n not in ['_si_begin','_rw_begin','_sl_begin','_c32_init','_so_prepare','_su_poll'] and L.setup_crc_table_write(self.m)!=0xcd00:raise AssertionError(('CRCtablewrite/softstackoverflow',n,hex(L.setup_crc_table_write(self.m))))
++  if n not in ['_si_begin','_rw_begin','_sl_begin','_c32_init','_so_prepare','_su_poll','_rc_poll'] and L.setup_crc_table_write(self.m)!=0xcd00:raise AssertionError(('CRCtablewrite/softstackoverflow',n,hex(L.setup_crc_table_write(self.m))))
+   if self.soft_min<0xcd00:raise AssertionError(('actualsoftstackoverflow',hex(self.soft_min)))
+   if bad!=65536:raise AssertionError(('forbidden nativewrite',n,hex(bad)))
+   if r.status:raise AssertionError((n,r.status,hex(r.regs.pc),r.regs.cycles))
+--- /dev/null
++++ b/test_coordinator.py
+@@ -0,0 +1,83 @@
++from pathlib import Path
++import sys,os,ctypes as C,struct,unittest,json,zlib
++sys.dont_write_bytecode=True
++from test_ui_session import Session
++from test_browser import F,Regs
++from test_capsule import L,reu
++from test_source_load import PATHS,DATA
++REPORT={}
++class Coordinator(Session):
++ def __init__(self):
++  # Cold binary/model. Unlike UI fixture, bootstrap owns platform, close gates,
++  # HIGH relocation and SO prepare/enter; no injected ticket or private facts.
++  self.f=F();f=self.f;g=bytearray(f.guard)
++  for a,n in [(0,2),(0x400,1000),(0xd800,1000),(0x6000,0x5000),(0xfffa,2),(f.labels['_ps_color'],1),(f.labels['__HIGH_CODE_RUN__'],f.labels['__HIGH_CODE_SIZE__']),(0xdf01,10)]:g[a:a+n]=b'\1'*n
++  for a in [0xd019,0xd01a,0xd011,0xd016,0xd018,0xd015,0xd020,0xd021,0xdc00,0xdc02,0xdc03,0xdc0d,0xdd00,0xdd02,0xdd04,0xdd05,0xdd06,0xdd07,0xdd0d,0xdd0e,0xdd0f]:g[a]=1
++  f.guard=bytes(g);L.dos64_poke(f.m,0,0x2f);L.dos64_poke(f.m,1,0x35)
++  for n in ['native_runtime_control_enable','dos64_graphics_color_enable','dos64_cia_clock_enable','dos64_native_display_enable','dos64_host_input_model_enable']:getattr(L,n)(f.m)
++  self.seed();asset=Path('build/SETUP.FAT').read_bytes();L.bulk_model_seed(f.m,b'/Home/SETUP.FAT',asset,len(asset))
++  self.directory(b'/',[(16,b'Home')]);self.directory(b'/Home',[(32,b'DOS 1.img'),(32,b'DOS 2.img'),(32,b'DOS 3.img')])
++  assert f.labels['setup_boot']==0x80d
++  L.dos64_set_regs(f.m,Regs(0x80d,0xe0,0,0,0,0x24,0,0));L.dos64_clear_writes(f.m)
++  r=L.dos64_run(f.m,f.labels['setup_loop'],12000000)
++  assert r.status==0 and r.regs.pc==f.labels['setup_loop'],('boot',r.status,hex(r.regs.pc))
++  assert L.browser_bad_write(f.m,f.guard)==65536,hex(L.browser_bad_write(f.m,f.guard))
++  assert self.call('_rc_state')==1 and self.call('_sc_ready')==0
++  self.state=1
++ def poll(self):
++  L.dos64_cia_clock_advance(self.f.m,1024);self.call('_rc_poll');self.state=self.call('_rc_state');return self.state
++ def ui(self):
++  for _ in range(3000):
++   self.poll()
++   if self.state==2:return
++   assert self.state==1,('startup',self.state,self.call('_rc_error'))
++  raise AssertionError('bounded close/bootstrap')
++ def ready(self):
++  if self.call('_db_state')!=1:return self.state
++  for _ in range(3000):
++   self.poll()
++   if self.call('_db_state')!=1:return self.state
++  raise AssertionError('directory bound')
++ def select(self):
++  self.ui();self.ready();self.key(0,1);self.key(0,4)
++  self.key(0,1);self.key(0,7);self.key(0,1);self.key(0,7);self.key(0,7);self.key(0,1)
++  self.key(0,4);self.key(0,7);self.key(0,1);self.key(0,1)
++ def finish(self):
++  for _ in range(100000):
++   s=self.call('_rc_state')
++   if s in [4,5]:return s
++   self.poll()
++  raise AssertionError('coordinator bound')
++class Actual(unittest.TestCase):
++ def setUp(self):self.u=Coordinator()
++ def tearDown(self):self.u.close()
++ def test_real_SYS_boot_select_source_capture_retire_UI_load_enter_FAT(self):
++  u=self.u;u.select();self.assertEqual(u.finish(),4);self.assertEqual(u.call('_rc_error'),0)
++  self.assertEqual(u.call('_rc_source_ready'),1);self.assertEqual(u.f.byte('_rc_source_mask'),31)
++  capsule=reu(u);self.assertEqual(u.f.read('_rc_generation',2),capsule[8:10]);self.assertEqual(u.f.read('_rc_identity',4),capsule[700:704]);self.assertEqual(u.f.byte('_rc_flags'),1)
++  home=int.from_bytes(u.f.read('_rc_home',2),'little');self.assertEqual(u.f.readat(home,128).split(b'\0')[0],b'/Home')
++  size,crcs,outputs,valid=struct.unpack('<4H',u.f.read('_rc_record_layout',8));self.assertEqual((size,crcs,outputs,valid),(183,134,154,181));self.assertEqual(struct.unpack('<5I',u.f.readat(home+crcs,20)),tuple(zlib.crc32(d)for d in DATA));self.assertEqual(u.f.readat(home+outputs,24),bytes(24))
++  self.assertEqual(u.call('_so_ui_ticket'),0);self.assertEqual(u.call('_bc_files_closed'),1)
++  fat=Path('build/fat-overlay.bin').read_bytes();self.assertEqual(u.f.readat(0x6000,len(fat)),fat)
++  # Source receipts remain authoritative after UI code/state have been replaced.
++  u.f.write('_rc_identity',bytes(4));u.f.write('_rc_source_mask',b'\0');self.assertEqual(u.call('_rc_source_ready'),1)
++  cmds=[[L.bulk_model_command(u.f.m,i,j)for j in range(2)]for i in range(L.bulk_model_commands(u.f.m))]
++  self.assertTrue(all(c[1]not in [5,0x22]for c in cmds));REPORT['complete']={'commands':len(cmds),'software_stack_min':hex(u.f.soft_min),'source_bytes':sum(map(len,DATA)),'coordinator_state':4}
++ def test_source_fault_never_retires_UI_or_enters_FAT(self):
++  u=self.u;L.bulk_model_faults(u.f.m,-1,-1,-1,0,0);u.select();self.assertEqual(u.finish(),5);self.assertEqual(u.call('_rc_error'),0x34);self.assertEqual(u.call('_rc_source_ready'),0)
++  self.assertNotEqual(u.call('_so_ui_ticket'),0);self.assertEqual(u.call('_bc_files_closed'),1)
++ def test_RunStop_selection_terminal_without_disk_writes(self):
++  u=self.u;u.ui();u.ready();L.dos64_host_input_model_keys(u.f.m,bytes(7)+b'\x80');self.assertEqual(u.finish(),5);self.assertEqual(u.call('_rc_error'),0x13);self.assertEqual(u.call('_rc_source_ready'),0);self.assertEqual(u.call('_bc_files_closed'),1)
++ def test_early_capture_and_public_DONE_forgery_cannot_make_receipts(self):
++  u=self.u;u.ui();u.f.write('_rc_expected_ticket',b'\1\0');u.f.write('_sl_result',b'\2'+bytes(5));u.f.write('_ss_stage',b'\6');u.f.write('_rc_source_mask',b'\x1f');self.assertEqual(u.call('_rc_capture'),0);self.assertEqual(u.call('_rc_source_ready'),0);self.assertEqual(u.call('_rc_state'),2)
++ def test_clock_failure_startup_preserves_cause_and_drains_bounded(self):
++  u=self.u;L.dos64_cia_clock_step.argtypes=[C.c_void_p,C.c_uint32];L.dos64_cia_clock_step.restype=None;L.dos64_cia_clock_step(u.f.m,0x40000)
++  self.assertEqual(u.finish(),5);self.assertEqual(u.call('_rc_error'),0xe1);self.assertEqual(u.call('_rc_source_ready'),0)
++ def test_public_closer_phase_observations_and_second_begin_do_not_advance(self):
++  u=self.u
++  # Native startup CLOSE1/2 with malformed status is owned by the shared closer.
++  # Busy-to-error coincidence is additionally covered by shared closer groups;
++  # this integration asserts no public state can force an alternative entry.
++  u.f.write('_sc_state',b'\2');u.f.write('_so_result',bytes([2,2,0,0,0,0,0,1,1,0]));self.assertEqual(u.call('_rc_state'),1);self.assertEqual(u.call('_rc_begin'),0);self.assertEqual(u.call('_rc_source_ready'),0)
++if __name__=='__main__':
++ r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(Actual));Path('../COORDINATOR_RESULTS.json').write_text(json.dumps(REPORT,indent=2)+'\n');sys.exit(not r.wasSuccessful())
+--- /dev/null
++++ b/test_coordinator_additive.py
+@@ -0,0 +1,26 @@
++from pathlib import Path
++import unittest,sys,ctypes as C
++from test_coordinator import Coordinator,L
++L.dos64_cia_clock_step.argtypes=[C.c_void_p,C.c_uint32];L.dos64_cia_clock_step.restype=None
++class Additional(unittest.TestCase):
++ def test_recovered_frozen_clock_does_not_extend_failed_pending_drain(self):
++  u=Coordinator()
++  try:
++   L.dos64_uci_model_stuck(u.f.m,1);L.dos64_cia_clock_step.argtypes=[C.c_void_p,C.c_uint32];L.dos64_cia_clock_step.restype=None;L.dos64_cia_clock_step(u.f.m,0x40000)
++   u.call('_rc_poll');self.assertEqual(u.call('_rc_error'),0xe1);L.dos64_cia_clock_step(u.f.m,0)
++   n=1
++   while u.call('_rc_state')!=5 and n<300:u.call('_rc_poll');n+=1
++   self.assertEqual(n,256);self.assertEqual(u.call('_rc_state'),5);self.assertEqual(u.call('_rc_error'),0xe1);self.assertEqual(u.call('_bc_files_closed'),0);self.assertEqual(u.call('_rc_source_ready'),0)
++  finally:u.close()
++ def test_observed_file_error_precedes_later_clock_and_RunStop(self):
++  u=Coordinator()
++  try:
++   L.bulk_model_faults(u.f.m,1,-1,-1,0,-1)
++   for _ in range(100):
++    u.poll()
++    if u.f.byte('_sc_error'):break
++   self.assertNotEqual(u.f.byte('_sc_error'),0);self.assertEqual(u.call('_rc_error'),0xe3)
++   L.dos64_host_input_model_keys(u.f.m,bytes(7)+b'\x80');L.dos64_cia_clock_step(u.f.m,0x40000)
++   self.assertEqual(u.finish(),5);self.assertEqual(u.call('_rc_error'),0xe3);self.assertEqual(u.call('_rc_source_ready'),0)
++  finally:u.close()
++if __name__=='__main__':unittest.main(verbosity=2)
+--- /dev/null
++++ b/coordinator_actual.zig
+@@ -0,0 +1,59 @@
++const std=@import("std");const c=@cImport({@cInclude("directory_bridge.h");@cInclude("bulk_model_api.h");@cInclude("host_input_model.h");@cInclude("cia_clock_model.h");@cInclude("graphics_color_model.h");});const a=std.testing.allocator;
++const F=struct{
++ m:*c.Dos64Machine,labels:[]u8,s:std.StringHashMapUnmanaged(u16)=.empty,tick:u16=0,
++ fn init()!F{
++  const code=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,"build/setup.prg",a,.limited(65538));defer a.free(code);
++  var f=F{.m=c.dos64_create() orelse return error.Create,.labels=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,"build/setup.labels",a,.limited(200000))};
++  c.dos64_load(f.m,std.mem.readInt(u16,code[0..2],.little),code[2..].ptr,code.len-2);
++  var lines=std.mem.splitScalar(u8,f.labels,'\n');while(lines.next())|line|{var t=std.mem.tokenizeAny(u8,line," \r\t");if(!std.mem.eql(u8,t.next() orelse continue,"al"))continue;const address=t.next() orelse continue;const name=t.next() orelse continue;try f.s.put(a,name[1..],try std.fmt.parseInt(u16,address,16));}
++  c.dos64_uci_model_enable(f.m,0xdf1c,3,0xc9);c.dos64_enable_reu(f.m);c.bulk_model_enable(f.m);c.dir_model_enable(f.m);_=try f.call("runtime_init",0);_=try f.call("_bc_init",0);
++  var configs=[_]u8{0}**268;for(0..2)|i|{configs[i*134]=0xa5;configs[i*134+1]=@intCast(i+1);configs[i*134+4]=0x40;@memcpy(configs[i*134+6..][0..11],"/usb1/Owned");}try f.put("_bc_config",&configs);return f;
++ }
++ fn loadFat(f:*F)!void{
++  const fat=try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,"build/fat-overlay.bin",a,.limited(0x5000));defer a.free(fat);
++  c.bulk_reu_seed(f.m,0x3e8000,fat.ptr,@intCast(fat.len));try f.put("_nf_io_address",&.{0,0x80,0x3e,0});try f.word("_nf_io_buffer",0x6000);try f.word("_nf_io_length",@intCast(fat.len));try f.put("_nf_io_direction",&.{1});_=try f.call("_nf_dma",0);try std.testing.expectEqual(@as(u8,0),try f.byte("_nf_io_status",0));
++  for(fat,0..)|v,i|try std.testing.expectEqual(v,c.dos64_peek(f.m,0x6000+@as(u16,@intCast(i))));
++ }
++ fn deinit(f:*F)void{c.dos64_destroy(f.m);f.s.deinit(a);a.free(f.labels);}
++ fn sym(f:*F,n:[]const u8)!u16{return f.s.get(n) orelse error.Symbol;}
++ fn byte(f:*F,n:[]const u8,offset:u16)!u8{return c.dos64_peek(f.m,(try f.sym(n))+offset);}
++ fn put(f:*F,n:[]const u8,bytes:[]const u8)!void{c.dos64_load(f.m,try f.sym(n),bytes.ptr,bytes.len);}
++ fn word(f:*F,n:[]const u8,v:u16)!void{var bytes:[2]u8=undefined;std.mem.writeInt(u16,&bytes,v,.little);try f.put(n,&bytes);}
++ fn call(f:*F,n:[]const u8,arg:u8)!u8{
++  const ret=(try f.sym("fixture_return"))-%1;c.dos64_poke(f.m,0x1ff,@truncate(ret>>8));c.dos64_poke(f.m,0x1fe,@truncate(ret));c.dos64_set_regs(f.m,.{.pc=try f.sym(n),.sp=0xfd,.a=arg,.x=0x82,.y=0x93,.p=0x24,.cycles=0,.instructions=0});const r=c.dos64_run(f.m,try f.sym("fixture_return"),if(std.mem.eql(u8,n,"_si_poll"))250000000 else if(std.mem.eql(u8,n,"_so_prepare"))5000000 else 12000000);try std.testing.expectEqual(@as(c_uint,c.DOS64_RUN_RETURNED),r.status);try std.testing.expect(r.stack_high_water<120);try std.testing.expectEqual(@as(u8,0xff),try f.byte("sp",0));try std.testing.expectEqual(@as(u8,0xcf),try f.byte("sp",1));return r.regs.a;
++ }
++ fn request(f:*F,first:u16,folders:u8)!void{var q=[_]u8{0}**135;q[0]=0xa5;q[1]=1;q[2]=folders;std.mem.writeInt(u16,q[3..5],first,.little);std.mem.writeInt(u16,q[5..7],1000,.little);q[7]='/';try f.put("_db_request",&q);}
++ fn finish(f:*F)!void{for(0..100000)|_|{if(try f.byte("_db_result",0)!=1)return;f.tick+%=1;try f.word("_db_now",f.tick/32);_=try f.call("_db_poll",0);}return error.PollBudget;}
++ fn run(f:*F,first:u16,folders:u8)!void{try f.request(first,folders);try std.testing.expectEqual(@as(u8,1),try f.call("_db_begin",0));try f.finish();}
++ fn page(f:*F)![2216]u8{const at=@as(u16,try f.byte("_db_page",0))|(@as(u16,try f.byte("_db_page",1))<<8);var data:[2216]u8=undefined;for(&data,0..)|*v,i|v.*=c.dos64_peek(f.m,at+@as(u16,@intCast(i)));return data;}
++ fn filejob(f:*F,slot:u8,op:u8,mode:u8,path:[]const u8)!void{try f.put("_bc_slot",&.{slot});var q=[_]u8{0}**142;q[0]=op;q[1]=mode;@memcpy(q[14..][0..path.len],path);try f.put("_br_request",&q);try std.testing.expectEqual(@as(u8,1),try f.call("_bc_start",0));for(0..10000)|_|{f.tick+%=1;try f.word("_br_now",f.tick/32);_=try f.call("_bc_poll",0);if(try f.byte("_bc_status",@as(u16,slot)*29)!=1)return;}return error.FileBudget;}
++};
++fn boot(f:*F)!void {
++ c.dos64_poke(f.m,0,0x2f);c.dos64_poke(f.m,1,0x35);
++ c.native_runtime_control_enable(f.m);c.dos64_graphics_color_enable(f.m);c.dos64_cia_clock_enable(f.m);c.dos64_native_display_enable(f.m);c.dos64_host_input_model_enable(f.m);
++ try std.testing.expectEqual(@as(u16,0x080d),try f.sym("setup_boot"));
++ c.dos64_set_regs(f.m,.{.pc=0x080d,.sp=0xe0,.a=0,.x=0,.y=0,.p=0x24,.cycles=0,.instructions=0});
++ const r=c.dos64_run(f.m,try f.sym("setup_loop"),12000000);
++ try std.testing.expectEqual(@as(c_uint,c.DOS64_RUN_RETURNED),r.status);
++ try std.testing.expectEqual(try f.sym("setup_loop"),r.regs.pc);
++ try std.testing.expectEqual(@as(u8,1),try f.call("_rc_state",0));
++}
++test "actual SYS bootstrap relocates HIGH and defaults output publication off" {
++ var f=try F.init();defer f.deinit();try boot(&f);
++ const run=try f.sym("__HIGH_CODE_RUN__");const load=try f.sym("__HIGH_CODE_LOAD__");const n=try f.sym("__HIGH_CODE_SIZE__");
++ for(0..n)|i|try std.testing.expectEqual(c.dos64_peek(f.m,load+@as(u16,@intCast(i))),c.dos64_peek(f.m,run+@as(u16,@intCast(i))));
++ try std.testing.expectEqual(@as(u8,0),try f.call("_rc_source_ready",0));
++ try std.testing.expectEqual(@as(u8,0),try f.call("_rc_begin",0));
++}
++test "actual coordinator startup closure and UI cancellation use one engine" {
++ var f=try F.init();defer f.deinit();try boot(&f);c.dir_model_path(f.m,"/");
++ var ui=false;for(0..3000)|_|{c.dos64_cia_clock_advance(f.m,1024);_=try f.call("_rc_poll",0);if(try f.call("_rc_state",0)==2){ui=true;break;}}
++ try std.testing.expect(ui);var keys=[_]u8{0}**8;keys[7]=128;c.dos64_host_input_model_keys(f.m,&keys);
++ var terminal=false;for(0..3000)|_|{c.dos64_cia_clock_advance(f.m,1024);_=try f.call("_rc_poll",0);if(try f.call("_rc_state",0)==5){terminal=true;break;}}
++ try std.testing.expect(terminal);try std.testing.expectEqual(@as(u8,0x13),try f.call("_rc_error",0));try std.testing.expectEqual(@as(u8,1),try f.call("_bc_files_closed",0));try std.testing.expectEqual(@as(u8,0),try f.call("_rc_source_ready",0));
++}
++test "actual coordinator incoherent clock cannot authorize UI" {
++ var f=try F.init();defer f.deinit();try boot(&f);c.dos64_cia_clock_step(f.m,0x40000);
++ var terminal=false;for(0..300)|_|{_=try f.call("_rc_poll",0);if(try f.call("_rc_state",0)==5){terminal=true;break;}}
++ try std.testing.expect(terminal);try std.testing.expectEqual(@as(u8,0xe1),try f.call("_rc_error",0));try std.testing.expectEqual(@as(u8,0),try f.call("_rc_source_ready",0));
++}
+--- /dev/null
++++ b/build-coordinator.zig
+@@ -0,0 +1,6 @@
++const std=@import("std");pub fn build(b:*std.Build)void{
++ const t=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("coordinator_actual.zig"),.target=b.standardTargetOptions(.{}),.optimize=.ReleaseFast})});
++ t.root_module.addIncludePath(b.path("tests/floppy_export"));t.root_module.addIncludePath(b.path("tests/host"));t.root_module.addIncludePath(b.path("third_party/peddle/Peddle"));
++ t.root_module.addCSourceFiles(.{.files=&.{"tests/floppy_export/bridge.cpp","third_party/peddle/Peddle/Peddle.cpp","third_party/peddle/Peddle/PeddleDebugger.cpp","third_party/peddle/Peddle/PeddleDisassembler.cpp","third_party/peddle/Peddle/StrWriter.cpp"},.flags=&.{"-std=c++20","-O2","-Wno-unused-parameter","-Wno-unused-variable"}});t.root_module.link_libcpp=true;
++ const run=b.addRunArtifact(t);run.setCwd(b.path("."));run.has_side_effects=true;run.addFileInput(b.path("build/setup.prg"));run.addFileInput(b.path("build/setup.labels"));run.addFileInput(b.path("build/SETUP.FAT"));b.step("test","Actual native directorybrowser").dependOn(&run.step);b.step("compile","Compile pinned nativeassertions").dependOn(&b.addInstallFile(t.getEmittedBin(),"bin/coordinator-tests").step);
++}
+--- /dev/null
++++ b/setup_cooperate.c
+@@ -0,0 +1,49 @@
++#include "setup_cooperate.h"
++#include "setup_io.h"
++#include "setup_overlay.h"
++#include "bulk_context.h"
++#include "platform.h"
++#include <string.h>
++#pragma code-name("HIGH_CODE")
++#pragma bss-name("HIGHBSS")
++static br_u8 enabled,error,active,stopping,drain,closing,leaf,transport,sampled;
++static br_u16 now,guard;
++static br_u32 capacity;
++static void first(br_u8 e){if(!error){error=e;if(e==NC_LEAF){leaf=br_result.error?br_result.error:br_result.rejected;transport=br_result.transport;}}if(error==NC_CANCEL)ns_cancel=1;else if(error&&!ns_io_error)ns_io_error=2;}
++static br_u8 external(void){return ns_cancel?NC_CANCEL:ns_io_error?NC_EXTERNAL:(ns_io_owner!=0xa5||ns_capacity!=capacity)?NC_OWNER:0;}
++br_u8 nc_begin(void){if(enabled||error||active||ns_io_owner!=0xa5||ns_io_error||ns_cancel||ns_capacity!=so_capacity())return 0;capacity=ns_capacity;sampled=0;enabled=1;return nc_service();}
++br_u8 nc_end(void){if(!enabled||error||active||!bc_files_closed()||!nf_inactive())return 0;enabled=0;return 1;}
++static br_u8 fresh(void){if(!ps_clock_poll()||(sampled&&(br_u16)(ps_ticks-now)>=0x8000u))return 0;now=ps_ticks;sampled=1;return 1;}
++br_u8 nc_service(void){br_u8 e;if(!enabled)return 1;if(error){first(error);return 0;}e=external();if(e)first(e);if(!fresh())first(NC_CLOCK);if(ps_key_poll()&&ps_key==27)first(NC_CANCEL);return !error;}
++static br_u8 run(void){br_u8 clock,e;guard=0;drain=0;stopping=0;active=1;
++ for(;;){e=external();clock=fresh();br_now=now;bc_slot=0;bc_poll();
++  if(br_result.error)first(NC_LEAF);if(e)first(e);if(!clock)first(NC_CLOCK);if(ps_key_poll()&&ps_key==27)first(NC_CANCEL);
++  if(br_result.state!=BR_BUSY){active=0;return br_result.state==BR_DONE&&!br_result.error&&br_result.handle!=2;}
++  if(++guard==0)first(NC_BOUND);
++  if(error&&!closing&&!stopping){bc_cancel();stopping=1;}
++  if(error&&++drain==0)return 0;
++ }
++}
++static br_u8 execute(br_u8 close){br_u8 ok;closing=close;
++ if(!bc_start()){first(NC_LEAF);return 0;}ok=run();if(ok&&(!error||close))return 1;
++ if(!error)first(NC_LEAF);
++ if(!active&&!closing&&!bc_files_closed()){memset(&br_request,0,sizeof(br_request));br_request.op=BR_CLOSE;bc_slot=0;br_now=now;closing=1;if(bc_start())run();}
++ return 0;
++}
++br_u8 nc_operation(br_u8 op,br_u32 offset,br_u16 count){
++ if((op!=BR_SEEK&&op!=BR_LOAD)||!enabled||error||active||!nc_service())return 0;
++ bc_slot=0;br_now=now;memset(&br_request,0,sizeof(br_request));br_request.op=op;br_request.offset=offset;br_request.address=NS_SOURCE_CACHE;br_request.length=count;
++ return execute(0);
++}
++br_u8 nc_prepared(void){br_u8 close=br_request.op==BR_CLOSE;
++ if(!enabled||active||(!close&&error)||bc_config[0].owner!=0xa5||bc_config[0].target!=1||bc_config[0].capacity!=capacity)return 0;
++ if(br_request.op!=BR_OPEN&&br_request.op!=BR_INFO&&!close)return 0;
++ if(br_request.op==BR_OPEN&&br_request.mode!=1)return 0;
++ if(!nc_service()&&!close)return 0;bc_slot=0;br_now=now;return execute(close);
++}
++br_u8 nc_error(void){return error;}
++br_u8 nc_pending(void){return active;}
++br_u8 nc_closed_quiet(void){return !active&&bc_files_closed();}
++
++br_u8 nc_leaf_error(void){return leaf;}
++br_u8 nc_transport_error(void){return transport;}
+--- /dev/null
++++ b/setup_cooperate.h
+@@ -0,0 +1,26 @@
++#ifndef DOS64_SETUP_COOPERATE_H
++#define DOS64_SETUP_COOPERATE_H
++#include "bulk_reu.h"
++#define NC_CANCEL 1u
++#define NC_CLOCK 2u
++#define NC_LEAF 3u
++#define NC_OWNER 4u
++#define NC_EXTERNAL 5u
++#define NC_BOUND 6u
++/* HIGH-only; caller installed exact HIGH bootstrap, holds authentic FAT ticket,
++ * owns sole keyboard/clock/engine. Explicit bracket; never enable during SU/PUB.
++ * Error terminal for session. No engine reset/retry, no public flag authority.
++ * Exhausted pending cleanup is truthful uncertainty, never navigation authority.
++ * Source0 safetyCLOSE only; output1 remains SI/root ownership.
++ * nc_end also requires private NF inactivity; call it under FAT ticket before
++ * replacement. Disabled nc_service/getters never call overlaid FAT code. */
++br_u8 nc_begin(void),nc_end(void),nc_service(void);
++br_u8 nc_error(void),nc_pending(void),nc_closed_quiet(void);
++br_u8 nc_leaf_error(void),nc_transport_error(void);
++br_u8 nc_operation(br_u8 op,br_u32 offset,br_u16 count);
++/* Source0 only: caller fills canonical bc_config[0]/br_request from checked
++ * capsule before this synchronous call. Only readonlyOPEN/INFO/CLOSE; gateway
++ * privately snapshots config/request before wire. SafetyCLOSE remains allowed
++ * after failure; return1 then proves close, NEVER clears nc_error for workflow. */
++br_u8 nc_prepared(void);
++#endif
+--- a/setup_io.c
++++ b/setup_io.c
+@@ -3,6 +3,9 @@
+ #include "platform.h"
+ #include "install_writer.h"
+ #include <string.h>
++#if defined(DOS64_SETUP_COOPERATIVE) && DOS64_SETUP_COOPERATIVE
++#include "setup_cooperate.h"
++#endif
+ nf_u8 ns_io_owner,ns_io_error,ns_cancel;
+ nf_u32 ns_capacity;
+ nf_u32 nf_io_address;
+@@ -12,16 +15,34 @@
+ static nf_u16 transfer(nf_u32 address,void*buffer,nf_u16 length,nf_u8 direction){
+  nf_u16 chunk,left;nf_u8*p;
+  if(ns_io_owner!=0xa5||ns_io_error||ns_cancel||!length||ns_capacity<0x400000UL||ns_capacity>0x1000000UL||address>=ns_capacity||length>ns_capacity-address)return 0;
++#if defined(DOS64_SETUP_COOPERATIVE) && DOS64_SETUP_COOPERATIVE
++ if(!nc_service())return 0;
++#endif
+  left=length;p=buffer;
+  while(left){chunk=left;if((address&65535UL)+chunk>65536UL)chunk=(nf_u16)(65536UL-(address&65535UL));
+   nf_io_address=address;nf_io_buffer=(nf_u16)p;nf_io_length=chunk;nf_io_direction=direction;nf_dma();
+-  if(nf_io_status){ns_io_error=1;return length-left;}address+=chunk;p+=chunk;left-=chunk;
++  if(nf_io_status){ns_io_error=1;
++#if defined(DOS64_SETUP_COOPERATIVE) && DOS64_SETUP_COOPERATIVE
++   nc_service();
++#endif
++   return length-left;}
++#if defined(DOS64_SETUP_COOPERATIVE) && DOS64_SETUP_COOPERATIVE
++  if(!nc_service())return length-left;
++#endif
++  address+=chunk;p+=chunk;left-=chunk;
+  }return length;
+ }
+ nf_u16 nf_store_read(nf_u32 a,void*b,nf_u16 n){return transfer(a,b,n,1);}
+ nf_u16 nf_store_write(nf_u32 a,const void*b,nf_u16 n){return transfer(a,(void*)b,n,0);}
+-nf_u8 nf_cancelled(void){return ns_cancel||ns_io_error||ns_io_owner!=0xa5;}
++nf_u8 nf_cancelled(void){
++#if defined(DOS64_SETUP_COOPERATIVE) && DOS64_SETUP_COOPERATIVE
++ if(!nc_service())return 1;
++#endif
++ return ns_cancel||ns_io_error||ns_io_owner!=0xa5;}
+ static nf_u8 operation(nf_u8 op,nf_u32 offset,nf_u16 count){
++#if defined(DOS64_SETUP_COOPERATIVE) && DOS64_SETUP_COOPERATIVE
++ return nc_operation(op,offset,count);
++#else
+  nf_u16 guard=0;
+  if(ns_io_owner!=0xa5||ns_io_error||ns_cancel||!ps_clock_poll())return 0;
+  br_now=ps_ticks;bc_slot=0;memset(&br_request,0,sizeof(br_request));br_request.op=op;br_request.offset=offset;br_request.address=NS_SOURCE_CACHE;br_request.length=count;
+@@ -30,6 +51,7 @@
+   if(ns_cancel||!ps_clock_poll()||++guard==0){bc_cancel();if(!ns_io_error)ns_io_error=2;return 0;}
+   br_now=ps_ticks;bc_poll();
+  }return br_result.state==BR_DONE&&!br_result.error&&!br_result.uncertain;
++#endif
+ }
+ /* Dedicated sourcecache survives writer200000 readback reuse. */
+ struct ns_cache_state_t ns_cache_state;
+@@ -40,6 +62,9 @@
+ static void cache_fail(nf_u8 e){cache.bound=cache.valid=0;if(!cache.error)cache.error=e;if(!ns_io_error&&!ns_cancel)ns_io_error=4;cache_publish();}
+ void ns_source_invalidate(void){cache_fail(4);}
+ nf_u8 ns_source_bind(void){nf_u32 token,size;
++#if defined(DOS64_SETUP_COOPERATIVE) && DOS64_SETUP_COOPERATIVE
++ if(!nc_service()){cache_fail(ns_cancel?5:2);return 0;}
++#endif
+  if(cache_started){cache_fail(4);return 0;}
+  if(ns_io_owner!=0xa5||ns_io_error||ns_cancel||ns_capacity<0x400000UL||ns_capacity>0x1000000UL||(ns_capacity&65535UL)){cache_fail(ns_cancel?5:1);return 0;}
+  token=bc_source_identity();size=bc_source_bytes();
+@@ -49,6 +74,9 @@
+ /* Token covers private size: only OPEN/INFO can set it (both advanceepoch),
+  * readonlysource forbids SAVE; CLOSE/re-init/wrap/unknown/error refuse token. */
+ static nf_u8 cache_check(void){
++#if defined(DOS64_SETUP_COOPERATIVE) && DOS64_SETUP_COOPERATIVE
++ if(!nc_service()){cache_fail(ns_cancel?5:2);return 0;}
++#endif
+  if(!cache.bound||ns_io_owner!=0xa5||ns_capacity!=cache_capacity||ns_io_error||ns_cancel||bc_source_identity()!=cache.token){cache_fail(ns_cancel?5:2);return 0;}return 1;
+ }
+ nf_u16 nf_disk_read(nf_u32 offset,void*buffer,nf_u16 length){nf_u16 copied=0,n,relative;nf_u32 start;nf_u8*p=buffer;

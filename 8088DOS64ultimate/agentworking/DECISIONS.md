@@ -1,5 +1,7 @@
 # Decision register
 
+2026-10-17 installer sequencing: retain configuration-last publication for the fresh-file flow. Verify C and B, derive and persist A, build both native assets, persist and fully verify START.PRG, then persist and fully verify DOS64.CFG. CREATE_NEW remains mandatory; no existing installation is overwritten. Before the final CFG is valid, START must refuse launching. This supersedes the private combined-fit sequencing note that proposed CFG then START-last. Partial files are not completion receipts; reconfiguration/conflict handling and CFG body-identity binding still require implementation and end-to-end tests.
+
 2026-10-16 user requirement: START's embedded installation home should locate same-folder emulator options; native startup can perform reading/parsing and pass validated settings through REU. Proposed mechanism: optional editable DOS64.INI, bounded native prelaunch parser overlay, separately versioned launch-bound binary options record, resident copies of frequent options and validated home. Existing D64C/D64R ABI1 remains unchanged until an explicitly versioned implementation. Public START has one byte of headroom, so parser placement and REU ownership require measured integration. Design recorded in docs/NATIVE_SETUP_CONFIG.md; implementation and actual/physical tests remain pending.
 
 Statuses: **user requirement** is binding scope; **proposed** awaits plan review and implementation evidence; **deferred** is not v1 work. Supersede rows with dated entries rather than deleting the history.
