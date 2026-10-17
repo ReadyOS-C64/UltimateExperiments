@@ -1,0 +1,300 @@
+--- /dev/null
++++ b/source_load.c
+@@ -0,0 +1,119 @@
++#include "source_load.h"
++#include "bulk_context.h"
++#include "setup_overlay.h"
++#include "selection_capsule.h"
++#include "install_config.h"
++#include "native_fat.h"
++#include "setup_io.h"
++#include "platform.h"
++#include "crc32.h"
++#include <string.h>
++#define READBACK 0x260000UL
++#define OPEN1 1u
++#define INFO1 2u
++#define POISON 3u
++#define LOAD1 4u
++#define HASH1 5u
++#define EOF1 6u
++#define CLOSE1 7u
++#define OPEN2 8u
++#define INFO2 9u
++#define LOAD2 10u
++#define COMPARE 11u
++#define EOF2 12u
++#define CLOSE2 13u
++#pragma bss-name(push,"HIGHBSS")
++static struct {
++ br_u32 capacity,identity,raw,crc[5],at;
++ br_u16 generation,ticket,now,began,relative,wanted,steps,bad_steps,timeout;
++ br_u8 state,error,phase,leaf,transport,waiting,cancelled,clock_bad,clock_failed,kind,second,valid,installed;
++} q;
++br_u8 sl_kind;
++br_u16 sl_timeout,sl_generation;
++br_u32 sl_identity;
++struct sl_observation_t sl_result;
++struct sl_receipt_t sl_receipt;
++#pragma bss-name(pop)
++#pragma bss-name(push,"UIBSS")
++static char path[128];
++#pragma bss-name(pop)
++extern br_u8 so_scratch[512],uci_data[];
++extern br_u8 _HIGH_CODE_LOAD__,_HIGH_CODE_RUN__,_HIGH_CODE_SIZE__;
++static br_u32 address(br_u8 k){if(k==0)return 0x100000UL;if(k==1)return 0x180000UL;if(k==2)return 0x380000UL;if(k==3)return 0x2e0000UL;return 0x3fec00UL;}
++static br_u32 size(br_u8 k){return k<3?368640UL:k==3?18432UL:64UL;}
++static void publish(void){sl_result.state=q.state;sl_result.error=q.error;sl_result.phase=q.phase;sl_result.leaf=q.leaf;sl_result.transport=q.transport;sl_result.cleanup=q.waiting||!bc_files_closed();}
++static void first(br_u8 e){if(!q.error)q.error=e;}
++static void failed(void){q.state=SL_FAILED;q.valid=0;}
++static br_u8 eof(void){return (q.phase==EOF1||q.phase==EOF2)&&br_result.error==BR_COUNT&&br_result.known&&!br_result.actual&&!br_result.transport&&br_result.handle==1;}
++static void sample(void){if(!ps_clock_poll())q.clock_bad=q.clock_failed=1;else q.now=ps_ticks;}
++static void cancel(br_u8 e){first(e);q.cancelled=1;if(q.waiting&&q.phase!=CLOSE1&&q.phase!=CLOSE2){br_now=q.now;bc_slot=0;bc_cancel();}}
++static void service(void){sample();if(q.clock_bad)cancel(SL_CLOCK);if(ps_key_poll()&&ps_key==27)cancel(SL_CANCEL);if(ns_io_owner!=0xa5||ns_capacity!=q.capacity||ns_io_error)cancel(SL_DMA);if(ns_cancel)cancel(SL_CANCEL);if(!q.cancelled&&(br_u16)(q.now-q.began)>=q.timeout)cancel(SL_TIMEOUT);}
++static void observe(void){br_now=q.now;bc_slot=0;bc_poll();if(br_result.error&&!eof()){if(!q.error){q.leaf=br_result.error;q.transport=br_result.transport;}first(SL_FILE);}if(br_result.state!=BR_BUSY){q.waiting=0;if(q.phase==EOF1||q.phase==EOF2){if(br_result.state!=BR_FAILED||!eof())first(SL_FILE);}else if(br_result.state!=BR_DONE||br_result.error||br_result.handle==2)first(SL_FILE);}}
++static br_u8 op(br_u8 phase,br_u8 command,br_u32 a,br_u16 n){
++ memset(&br_request,0,sizeof(br_request));br_request.op=command;br_request.mode=1;br_request.address=a;br_request.length=n;if(command==BR_OPEN)memcpy(br_request.path,path,128);
++ br_now=q.now;bc_slot=0;if(!bc_start()){if(!q.error){q.leaf=br_result.error?br_result.error:br_result.rejected;q.transport=br_result.transport;}first(SL_FILE);failed();return 0;}
++ q.phase=phase;q.waiting=1;q.began=q.now;q.steps=0;return 1;
++}
++static br_u8 read(br_u32 a,br_u8*b,br_u16 n){if(nf_store_read(a,b,n)!=n){first(SL_DMA);failed();return 0;}return 1;}
++br_u8 sl_install(void){br_u16 n=(br_u16)&_HIGH_CODE_SIZE__;br_u8*to=&_HIGH_CODE_RUN__;const br_u8*from=&_HIGH_CODE_LOAD__;
++ if(q.installed||(*(br_u8*)1&7u)!=5u||so_state()!=SO_IDLE)return 0;memcpy(to,from,n);if(memcmp(to,from,n))return 0;q.installed=0xa5;return 1;
++}
++br_u8 sl_begin(void){br_u16 offset,n,generation; br_u32 identity; br_u8 kind=sl_kind;
++ if(q.installed!=0xa5||kind>=5||!sl_timeout||sl_timeout>=0x8000u||(q.state!=SL_IDLE&&q.state!=SL_DONE)||!bc_files_closed()||!so_ui_ticket()||ns_io_owner!=0xa5||ns_capacity!=so_capacity()||ns_io_error||ns_cancel)return 0;
++ sq_page=0;if(sq_read()!=512u)return 0;memcpy(&generation,sq_bytes+8,2);
++ if(q.valid&&generation!=q.generation)return 0;
++ if(kind<3){offset=160u+(br_u16)kind*128u;n=512u-offset;if(n>128u)n=128u;memcpy(path,sq_bytes+offset,n);}
++ else {memcpy(d64_path_source,sq_bytes+32,128);memset(d64_path_relative,0,128);memcpy(d64_path_relative,kind==3?"START.TPL":"START.REL",9);if(!d64_path_join())return 0;memcpy(path,d64_path_output,128);}
++ sq_page=1;if(sq_read()!=192u)return 0;memcpy(&identity,sq_bytes+188,4);if(kind==2)memcpy(path+96,sq_bytes,32);
++ if(q.valid&&(identity!=q.identity||(q.valid&(1u<<kind))))return 0;
++ memcpy(d64_path_source,path,128);if(!d64_path_parent())return 0;
++ bc_config[0].owner=0xa5;bc_config[0].target=1;bc_config[0].capacity=so_capacity();memcpy(bc_config[0].root,d64_path_output,128);
++ bc_slot=0;if(!bc_clear_error()||!c32_init())return 0;
++ q.ticket=so_ui_ticket();if(!q.ticket)return 0;
++ q.capacity=so_capacity();q.timeout=sl_timeout;q.generation=generation;q.identity=identity;q.kind=kind;q.state=SL_BUSY;q.error=q.leaf=q.transport=q.waiting=q.cancelled=q.clock_bad=q.clock_failed=q.second=0;q.steps=q.bad_steps=0;q.at=0;q.raw=0xffffffffUL;
++ sample();q.began=q.now;service();if(q.error){failed();publish();return 0;}op(OPEN1,BR_OPEN,0,0);publish();return q.state==SL_BUSY;
++}
++void sl_poll(void){br_u16 n;
++ if(q.state!=SL_BUSY){publish();return;}q.clock_bad=0;sample();if(q.waiting)observe();service();
++ if(++q.steps==0){first(SL_TIMEOUT);failed();publish();return;}
++ if(q.waiting){if(q.clock_failed&&++q.bad_steps>=256u){first(SL_CLOCK);failed();}publish();return;}
++ if(q.error){failed();publish();return;}
++ switch(q.phase){
++ case OPEN1:op(INFO1,BR_INFO,0,0);break;
++ case OPEN2:op(INFO2,BR_INFO,0,0);break;
++ case INFO1:case INFO2:
++  if(!br_result.known||br_result.size!=size(q.kind)){first(SL_FILE);failed();break;}q.at=0;q.relative=q.wanted=0;q.phase=q.second?LOAD2:POISON;q.began=q.now;break;
++ case POISON:
++  if(q.at==size(q.kind)){op(q.second?EOF2:EOF1,BR_LOAD,READBACK,1);break;}
++  if(!q.wanted){q.wanted=size(q.kind)-q.at>32768UL?32768u:(br_u16)(size(q.kind)-q.at);q.relative=0;}
++  if(q.relative==q.wanted){q.relative=0;op(q.second?LOAD2:LOAD1,BR_LOAD,q.second?READBACK:address(q.kind)+q.at,q.wanted);break;}
++  n=q.wanted-q.relative>512u?512u:q.wanted-q.relative;memset(nf_sector,q.second?0x5a:0xa5,n);memset(so_scratch,q.second?0xa5:0x5a,n);
++  if(nf_store_write((q.second?READBACK:address(q.kind)+q.at)+q.relative,nf_sector,n)!=n||!read((q.second?READBACK:address(q.kind)+q.at)+q.relative,so_scratch,n)||memcmp(nf_sector,so_scratch,n)){first(SL_DMA);failed();break;}
++  q.relative+=n;q.began=q.now;q.steps=0;break;
++ case LOAD1:if(!br_result.known||br_result.actual!=q.wanted){first(SL_FILE);failed();break;}q.relative=0;q.phase=HASH1;q.began=q.now;break;
++ case LOAD2:
++  if(q.at==size(q.kind)){op(EOF2,BR_READ,0,1);break;}q.wanted=size(q.kind)-q.at>512UL?512u:(br_u16)(size(q.kind)-q.at);op(COMPARE,BR_READ,0,q.wanted);break;
++ case HASH1:
++  if(q.relative==q.wanted){q.at+=q.wanted;q.wanted=q.relative=0;q.phase=POISON;q.began=q.now;break;}
++  n=q.wanted-q.relative>512u?512u:q.wanted-q.relative;
++  if(!read(address(q.kind)+q.at+q.relative,nf_sector,n))break;
++  if(q.second){if(!read(READBACK+q.relative,so_scratch,n))break;if(memcmp(nf_sector,so_scratch,n)){first(SL_COMPARE);failed();break;}}
++  else {c32_crc=q.raw;c32_address=(br_u16)nf_sector;c32_length=n;if(!c32_update()){first(SL_COMPARE);failed();break;}q.raw=c32_crc;}
++  q.relative+=n;q.began=q.now;q.steps=0;break;
++ case COMPARE:
++  if(!br_result.known||br_result.actual!=q.wanted){first(SL_FILE);failed();break;}if(!read(address(q.kind)+q.at,nf_sector,q.wanted))break;if(memcmp(nf_sector,uci_data,q.wanted)){first(SL_COMPARE);failed();break;}q.at+=q.wanted;q.phase=LOAD2;q.began=q.now;q.steps=0;break;
++ case EOF1:op(CLOSE1,BR_CLOSE,0,0);break;
++ case EOF2:op(CLOSE2,BR_CLOSE,0,0);break;
++ case CLOSE1:
++  if(!bc_files_closed()){first(SL_FILE);failed();break;}bc_slot=0;if(!bc_clear_error()){first(SL_FILE);failed();break;}q.second=1;op(OPEN2,BR_OPEN,0,0);break;
++ case CLOSE2:
++  if(!bc_files_closed()||so_ui_ticket()!=q.ticket){first(SL_INPUT);failed();break;}service();if(q.error){failed();break;}q.crc[q.kind]=q.raw^0xffffffffUL;q.valid|=1u<<q.kind;q.state=SL_DONE;break;
++ default:first(SL_INPUT);failed();break;
++ }publish();
++}
++void sl_cancel(void){if(q.state==SL_BUSY){q.clock_bad=0;sample();if(q.waiting)observe();cancel(SL_CANCEL);if(!q.waiting)failed();}publish();}
++#pragma code-name(push,"HIGH_CODE")
++br_u8 sl_state(void){return q.state;}
++br_u8 sl_error(void){return q.error;}
++br_u8 sl_fact(void){br_u8 k=sl_kind;if(q.installed!=0xa5||q.state==SL_BUSY||q.state==SL_FAILED||k>=5||!(q.valid&(1u<<k))||sl_generation!=q.generation||sl_identity!=q.identity)return 0;sl_receipt.generation=q.generation;sl_receipt.identity=q.identity;sl_receipt.bytes=k<3?368640UL:k==3?18432UL:64UL;sl_receipt.crc=q.crc[k];return 1;}
++#pragma code-name(pop)
+--- /dev/null
++++ b/source_load.h
+@@ -0,0 +1,39 @@
++#ifndef DOS64_SETUP_SOURCE_LOAD_H
++#define DOS64_SETUP_SOURCE_LOAD_H
++#include "bulk_reu.h"
++#define SL_IDLE 0u
++#define SL_BUSY 1u
++#define SL_DONE 2u
++#define SL_FAILED 3u
++#define SL_INPUT 1u
++#define SL_FILE 2u
++#define SL_DMA 3u
++#define SL_COMPARE 4u
++#define SL_CANCEL 5u
++#define SL_CLOCK 6u
++#define SL_TIMEOUT 7u
++/* UI-only begin/poll/cancel, caller holds current UI ticket for entire job.
++ * kinds0..2 are private selected DOS paths,3 START.TPL,4 START.REL in home.
++ * Exactly360K,360K,360K,18432,64 bytes; sources readonly. No NF producer runs.
++ * Only complete twice-read, byte-compared, EOF/known-CLOSE grants receipt.
++ * Failed/uncertain jobs cannot rearm. FILES cleanup stays explicit to caller.
++ * Immutable filesystem/source REU until consumer done; receipts not locks. */
++extern br_u8 sl_kind;
++extern br_u16 sl_timeout;
++struct sl_observation_t {br_u8 state,error,phase,leaf,transport,cleanup;};
++extern struct sl_observation_t sl_result;
++/* Bootstrap once with35 banking BEFORE so_prepare captures initial UI. Copies
++ * serialized HIGH_CODE, verifies every byte, then permits resident getters.
++ * No call to HIGH_CODE before success, no loader frame across replacement. */
++br_u8 sl_install(void);
++br_u8 sl_begin(void);
++void sl_poll(void),sl_cancel(void);
++/* HIGH_CODE resident facts remain available after retiring UI. Inputs/output
++ * are observations; private ledger controls admission and retained identities. */
++br_u8 sl_state(void),sl_error(void);
++struct sl_receipt_t {br_u16 generation;br_u32 identity,bytes,crc;};
++extern br_u16 sl_generation;
++extern br_u32 sl_identity;
++extern struct sl_receipt_t sl_receipt;
++br_u8 sl_fact(void);
++#endif
+--- a/bulk_reu.c
++++ b/bulk_reu.c
+@@ -11,7 +11,7 @@
+ extern br_u16 uci_data_capacity,uci_status_capacity;
+ extern br_u8 files_state,files_error,files_transport_error,files_handle;
+ extern br_u8 files_target,files_op,files_mode,files_path_len,files_count_known,files_uncertain;
+-extern br_u16 files_now,files_actual;
++extern br_u16 files_now,files_actual,files_count;
+ extern br_u8 files_offset[];
+ struct br_config_t br_config={0,1,0x400000UL,{0}};
+ struct br_request_t br_request;
+@@ -68,6 +68,10 @@
+ }
+ static void clock_copy(void) { uci_now=br_now;files_now=br_now; }
+ static void put32(br_u8 *at,br_u32 n) { br_u8 j;for(j=0;j<4;++j){at[j]=(br_u8)n;n>>=8;} }
++#pragma code-name(push,"HIGH_CODE")
++static br_u8 cpu_read_admit(void){if(!(access_mode&1)||!q.length||q.length>512UL)return 0;files_count=(br_u16)q.length;return 1;}
++static void cpu_read_reply(void){br_result.actual=files_actual;br_result.known=files_count_known;if(!br_result.known||br_result.actual!=q.length)first(BR_COUNT);}
++#pragma code-name(pop)
+ void br_init(void) {
+  uci_init();files_init();br_result.state=BR_IDLE;br_result.error=0;br_result.transport=0;br_result.handle=0;
+  br_result.known=0;br_result.uncertain=0;br_result.rejected=0;br_result.accepted=0;br_result.actual=0;br_result.size=0;br_result.op=0;
+@@ -79,13 +83,14 @@
+  if(external||br_result.state==BR_BUSY || !quiet() || !validate_root())return 0;
+  if(files_handle&&!same_config())return 0;
+  q=br_request;
+- if(q.op!=BR_OPEN&&q.op!=BR_CLOSE&&q.op!=BR_SEEK&&q.op!=BR_INFO&&q.op!=BR_LOAD&&q.op!=BR_SAVE)return 0;
++ if(q.op!=BR_OPEN&&q.op!=BR_CLOSE&&q.op!=BR_READ&&q.op!=BR_SEEK&&q.op!=BR_INFO&&q.op!=BR_LOAD&&q.op!=BR_SAVE)return 0;
+  if(q.op==BR_OPEN) {
+   if(files_handle||!validate_path())return 0;
+   if(q.mode!=1&&q.mode!=2&&q.mode!=3&&q.mode!=6&&q.mode!=7)return 0;
+  } else {
+   if(!files_handle || (files_handle==2&&q.op!=BR_CLOSE))return 0;
+  }
++ if(q.op==BR_READ&&!cpu_read_admit())return 0;
+  bulk=q.op==BR_LOAD||q.op==BR_SAVE;
+  if(bulk) {
+   if((q.op==BR_LOAD&&!(access_mode&1))||(q.op==BR_SAVE&&!(access_mode&2)))return 0;
+@@ -143,6 +148,7 @@
+   if(files_state==1)return;
+   if(files_state!=2){br_result.transport=files_transport_error;first(cancelled?BR_CANCEL:(files_error==2?BR_TRANSPORT:(files_error==3?BR_STATUS:BR_PROTOCOL)));}
+   else if(q.op==BR_INFO){br_result.size=(br_u32)uci_data[0]|((br_u32)uci_data[1]<<8)|((br_u32)uci_data[2]<<16)|((br_u32)uci_data[3]<<24);br_result.known=files_count_known;}
++  if(q.op==BR_READ&&files_state==2)cpu_read_reply();
+   terminal();return;
+  }
+  uci_poll();
+--- a/bulk_reu.h
++++ b/bulk_reu.h
+@@ -15,6 +15,7 @@
+ typedef unsigned long br_u32;
+ #define BR_OPEN 2
+ #define BR_CLOSE 3
++#define BR_READ 4 /* CPU reply1..512B in uci_data; setup HIGH_CODE must be installed */
+ #define BR_SEEK 6
+ #define BR_INFO 7
+ #define BR_LOAD 0x21
+--- a/bulk_context.c
++++ b/bulk_context.c
+@@ -91,7 +91,7 @@
+   else if(q.op==BR_INFO){ledger[active].file_size=br_result.size;ledger[active].size_known=1;}
+   else if(q.op==BR_CLOSE)ledger[active].position_known=0;
+   else if(q.op==BR_SEEK){ledger[active].position=q.offset;ledger[active].position_known=1;}
+-  else if(q.op==BR_LOAD||q.op==BR_SAVE) {
++  else if(q.op==BR_LOAD||q.op==BR_SAVE||q.op==BR_READ) {
+    if(ledger[active].position_known) {
+     if(br_result.actual>0xffffffffUL-ledger[active].position)ledger[active].position_known=0;
+     else {ledger[active].position+=br_result.actual;
+@@ -100,7 +100,7 @@
+    }
+   }
+  } else {if(q.op==BR_SAVE||q.op==BR_OPEN||q.op==BR_CLOSE)ledger[active].size_known=0;
+- if(q.op==BR_OPEN||q.op==BR_CLOSE||q.op==BR_SEEK||q.op==BR_LOAD||q.op==BR_SAVE)ledger[active].position_known=0;
++ if(q.op==BR_OPEN||q.op==BR_CLOSE||q.op==BR_SEEK||q.op==BR_LOAD||q.op==BR_SAVE||q.op==BR_READ)ledger[active].position_known=0;
+  }
+  bc_status[active]=ledger[active];
+ }
+--- a/startup_glue.s
++++ b/startup_glue.s
+@@ -1,2 +1,5 @@
+ .import dos64_files_owned_target
+ .export _files_owned_target := dos64_files_owned_target
++
++.import dos64_files_count
++.export _files_count := dos64_files_count
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -9,13 +9,15 @@
+  UCI:start=$c000,size=$0800,file="",type=rw;
+  DEVICE:start=$c800,size=$0100,file="",type=rw;
+  TABLES:start=$c900,size=$0400,file="",type=rw;
+- HIGH:start=$e000,size=$1ffa,file="",type=rw;
++ COORD:start=$f700,size=$08fa,file="",type=rw;
++ HIGH:start=$e000,size=$1700,file="",type=rw;
+ }
+ SEGMENTS {
+  LOADADDR:load=HEADER,type=ro;BASIC:load=RESIDENT,type=ro;
+  DEVICECODE:load=RESIDENT,type=rw;FILECODE:load=RESIDENT,type=rw;CODE:load=RESIDENT,type=rw;
+  RODATA:load=RESIDENT,type=ro;DATA:load=RESIDENT,type=rw;
+  UI_CODE:load=UI,type=ro,define=yes;UI_RO:load=UI,type=ro,define=yes;
++ HIGH_CODE:load=UI,run=COORD,type=rw,define=yes;
+  UIBSS:load=UI,type=bss,define=yes;
+  FAT_CODE:load=FAT,type=ro,define=yes;FAT_RO:load=FAT,type=ro,define=yes;
+  PUB_CODE:load=PUBLISH,type=ro,define=yes;PUB_RO:load=PUBLISH,type=ro,define=yes,optional=yes;
+--- a/build.py
++++ b/build.py
+@@ -1,8 +1,8 @@
+ from pathlib import Path
+ import subprocess,hashlib,json,struct,zlib
+-W=Path(__file__).resolve().parent;assert Path.cwd()==W and W.parent.name=='native-installer-raw-output'
++W=Path(__file__).resolve().parent;assert Path.cwd()==W and W.parent.name=='native-setup-source-loading'
+ B=W/'build';B.mkdir(exist_ok=True)
+-c_names=['native_fat','bulk_context','install_config','directory_browser','lease_context','platform','release','setup_io','install_writer','writer_fixture','setup_overlay','setup_select','ui_fixture','selection_capsule','publish_fixture','raw_output']
++c_names=['native_fat','bulk_context','install_config','directory_browser','lease_context','platform','setup_io','install_writer','writer_fixture','setup_overlay','setup_select','ui_fixture','selection_capsule','publish_fixture','raw_output','source_load']
+ as_names=['startup','bindings','context_bindings','uci','files','setup_dma','crc32','overlay_manifest','startup_close','startup_glue','overlay_bindings']
+ inputs=[p for p in W.rglob('*') if p.is_file() and not any(n in p.parts for n in ['build','.zig-cache','zig-out','__pycache__']) and p.suffix not in ['.dylib','.stdout','.stderr']]+[Path('/opt/homebrew/share/cc65/lib/none.lib')]
+ sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();pins={str(p):sha(p)for p in inputs};cmds=[]
+@@ -18,16 +18,16 @@
+ metadata(bytes(6630),bytes(18587),bytes(0x5000),16)
+ for n in c_names:
+  o=n+'_c' if n=='platform'else n
+- phase='PUB'if n in ['publish_fixture','raw_output']else'FAT'if n in ['native_fat','writer_fixture']else'UI'if n in ['install_config','directory_browser','lease_context','release','setup_select','ui_fixture']else None
++ phase='PUB'if n in ['publish_fixture','raw_output']else'FAT'if n in ['native_fat','writer_fixture']else'UI'if n in ['install_config','directory_browser','lease_context','release','setup_select','ui_fixture','source_load']else None
+  opts=['--code-name',phase+'_CODE','--rodata-name',phase+'_RO']if phase else []
+- run(['cc65','-O','-t','none','--cpu','6502',*opts,*(['--bss-name','PUBBSS']if n in ['publish_fixture','raw_output']else ['--bss-name','HIGHBSS']if n in ['directory_browser','install_config','platform','release','setup_io','install_writer','writer_fixture','selection_capsule']else ['--bss-name','UIBSS']if n in ['setup_select','ui_fixture','selection_capsule','publish_fixture','raw_output']else []),'-I',str(W),'-o',str(B/(o+'.s')),str(W/(n+'.c'))])
++ run(['cc65','-O','-t','none','--cpu','6502',*opts,*(['--bss-name','PUBBSS']if n in ['publish_fixture','raw_output']else ['--bss-name','HIGHBSS']if n in ['directory_browser','platform','setup_io','install_writer','writer_fixture','selection_capsule','source_load']else ['--bss-name','UIBSS']if n in ['install_config','setup_select','ui_fixture','selection_capsule','publish_fixture','raw_output']else []),'-I',str(W),'-o',str(B/(o+'.s')),str(W/(n+'.c'))])
+  run(['ca65','-g','-D','DOS64_FILES_INFO=1','-I',str(W),'-I',str(W/'shared'),'-o',str(B/(o+'.o')),str(B/(o+'.s'))])
+ for n in as_names+['platform_asm','reu']:
+  src=W/'platform.s'if n=='platform_asm'else W/'shared/reu.s'if n=='reu'else W/(n+'.s')
+  run(['ca65','-g','-D','DOS64_FILES_INFO=1','-I',str(W),'-I',str(W/'shared'),'-o',str(B/(n+'.o')),str(src)])
+ objs=as_names+['platform_asm','reu']+[n+'_c'if n=='platform'else n for n in c_names]
+ run(['ld65','-C',str(W/'setup.cfg'),'-o',str(B/'setup.prg'),'-Ln',str(B/'setup.labels'),'-m',str(B/'setup.map'),*[str(B/(n+'.o'))for n in objs],'/opt/homebrew/share/cc65/lib/none.lib'])
+-labels={s.split()[2].lstrip('.'):int(s.split()[1],16)for s in(B/'setup.labels').read_text().splitlines()if s.startswith('al ')};ui_length=labels['__UI_CODE_SIZE__']+labels['__UI_RO_SIZE__'];assert labels['__UI_RO_RUN__']==0x6000+labels['__UI_CODE_SIZE__'];ui=(B/'setup.prg').read_bytes()[0x6000-0x0801+2:0x6000-0x0801+2+ui_length];fat=(B/'fat-overlay.bin').read_bytes();assert len(ui)==ui_length<=0x5000 and len(fat)<=0x5000
++labels={s.split()[2].lstrip('.'):int(s.split()[1],16)for s in(B/'setup.labels').read_text().splitlines()if s.startswith('al ')};ui_length=labels['__UI_CODE_SIZE__']+labels['__UI_RO_SIZE__']+labels['__HIGH_CODE_SIZE__'];assert labels['__UI_RO_RUN__']==0x6000+labels['__UI_CODE_SIZE__'];assert labels['__HIGH_CODE_LOAD__']==0x6000+labels['__UI_CODE_SIZE__']+labels['__UI_RO_SIZE__'];assert labels['__UIBSS_RUN__']>=labels['__HIGH_CODE_LOAD__']+labels['__HIGH_CODE_SIZE__'];ui=(B/'setup.prg').read_bytes()[0x6000-0x0801+2:0x6000-0x0801+2+ui_length];fat=(B/'fat-overlay.bin').read_bytes();assert len(ui)==ui_length<=0x5000 and len(fat)<=0x5000
+ pub_length=labels['__PUB_CODE_SIZE__']+labels.get('__PUB_RO_SIZE__',0);pub=(B/'publish-overlay.bin').read_bytes().ljust(0x5000,b'\0');assert len(pub)==0x5000 and pub[pub_length:]==bytes(0x5000-pub_length)
+ header,pub_header=metadata(ui,fat,pub,pub_length);run(['ca65','-g','-I',str(W),'-o',str(B/'overlay_manifest.o'),str(W/'overlay_manifest.s')]);run(['ld65','-C',str(W/'setup.cfg'),'-o',str(B/'setup.prg'),'-Ln',str(B/'setup.labels'),'-m',str(B/'setup.map'),*[str(B/(n+'.o'))for n in objs],'/opt/homebrew/share/cc65/lib/none.lib'])
+ assert (B/'setup.prg').read_bytes()[0x6000-0x0801+2:0x6000-0x0801+2+ui_length]==ui and (B/'fat-overlay.bin').read_bytes()==fat

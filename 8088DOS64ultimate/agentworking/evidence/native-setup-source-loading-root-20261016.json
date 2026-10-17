@@ -1,0 +1,127 @@
+{
+  "status": "ROOT_MODEL_SOURCE_COMPONENT_PASS_INDEPENDENT_REVIEW_PASS",
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-setup-source-loading/MANIFEST.json",
+  "manifest_sha256": "37e6eb3ccb7781d1111d84a0b29eee1c6b890d9e6ae4ac241973d2a567bc3fa9",
+  "pins_verified": 239,
+  "attestation": {
+    "status": "SOURCE_LOADING_MODEL_COMPONENT_PASS_FULL_SETUP_PHYSICAL_PENDING",
+    "native": "33db3a268fba04df655be2dec853a1d79a39ef543054736da662589009f8d6ce",
+    "labels": "2fedf7f7b6192b6f7b706ff3d939047e0d7a16765d32617d8eb62787ef76e877",
+    "source_tool_inputs": 125,
+    "products": 56,
+    "actual_python_groups": 55,
+    "actual_zig_groups": 9,
+    "results": [
+      {
+        "name": "native",
+        "command": [
+          "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+          "-B",
+          "build.py"
+        ],
+        "exit": 0,
+        "groups": null
+      },
+      {
+        "name": "bridge",
+        "command": [
+          "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+          "-B",
+          "build_bridge.py"
+        ],
+        "exit": 0,
+        "groups": null
+      },
+      {
+        "name": "zig-compile",
+        "command": [
+          "/Users/karlprosserpp/dev/c64projects/zeropage-tooling/bin/zig",
+          "build",
+          "--build-file",
+          "build-select.zig",
+          "compile",
+          "--summary",
+          "all"
+        ],
+        "exit": 0,
+        "groups": null
+      },
+      {
+        "name": "source_load",
+        "command": [
+          "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+          "-B",
+          "test_source_load.py"
+        ],
+        "exit": 0,
+        "groups": 8
+      },
+      {
+        "name": "select",
+        "command": [
+          "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+          "-B",
+          "test_select.py"
+        ],
+        "exit": 0,
+        "groups": 12
+      },
+      {
+        "name": "capsule",
+        "command": [
+          "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+          "-B",
+          "test_capsule.py"
+        ],
+        "exit": 0,
+        "groups": 22
+      },
+      {
+        "name": "publish_phase",
+        "command": [
+          "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+          "-B",
+          "test_publish_phase.py"
+        ],
+        "exit": 0,
+        "groups": 13
+      },
+      {
+        "name": "zig-direct",
+        "command": [
+          "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-setup-source-loading/work/zig-out/bin/setup-tests"
+        ],
+        "exit": 0,
+        "groups": null
+      }
+    ],
+    "hardware": false
+  },
+  "independent": {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-setup-source-read04-peer-review-20261016/MANIFEST.json",
+    "sha256": "00103ff75ea32319b99be8acded508e9421e6d56f65e2453823090112f6fb8b0",
+    "pins_verified": 277,
+    "actual_groups": 25
+  },
+  "implementation_delta": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-setup-source-loading-20261016.patch",
+  "implementation_delta_sha256": "70b4766a905e4c5deb48f5d924b35f16de5011aa6a262bda9fc200be58f6d100",
+  "model_provenance": "READ04 model from native-publish-assets-builder/start-continuation; three actual unchanged FILES native packet groups separately verified by author",
+  "memory": {
+    "resident_end": "5FA7",
+    "resident_free": 88,
+    "high_code_run": "F700..F8A3",
+    "high_code_bytes": 420,
+    "high_code_load": "9AB9..9C5C",
+    "high_bss_end": "F61B",
+    "high_bss_free_before_F700": 228,
+    "ui_bss": "9C5D..ACB0",
+    "ui_free": 847
+  },
+  "limitations": [
+    "No physical acceptance or full installer",
+    "Both command paths may share common-mode faults; trusted external source digest needed to detect arbitrary repeatable corruption",
+    "SETUP-only HIGH_CODE wrapper must not replace shared START/native sources without explicit default-OFF profile or separate translation unit",
+    "Current source count/header is release-bound; geometry and descriptor acceptance remain downstream",
+    "Combined source/FAT/PUB/coordinator needs actual native graph replay"
+  ]
+}
