@@ -1,3 +1,11 @@
+# Current V1 checkpoint — reviewed combined CONFIG usability fixes, 2026-10-17
+
+Root checked all1364 sealed combined records and reviewed actual conflict merges, permanent terminal fetch/CRC/fallback and full127-byte encoded paths. Private5c91bb74 CONFIG combines relocation and file errors within measured bounds. Author21 actual groups/265inputs+copies/3products pass, including full moved realSETUP SYS/CIA and4 terminal fault/fallback cases. Generated9files equal prior closed genuineDOS80 inputs. Root does not repeat the long unchanged consumer. [Evidence](evidence/v1-config-relocation-diagnostics-root-review-20261017.json), archive dc3a5fcf/30pins.
+
+Default PRG3deb and labels50fd remain exact; maps legitimately differ in empty module/source/debug metadata. The initial copied report literal claiming all3 exact is retained with explicit erratum; final RESULT correctly says false. Public integration, remaining SETUP full-file diagnostics and final Ultimate/human qualification stay open. Memory worker now prepares source-only conditional builders; compiled worker closes SETUP faults. Root private TF correctness has17 focused checks,9 package controls and6 same-tree profile controls; final18/base507/full5701 source-bound closure is running. No current hardware or performance result; local commits/no push.
+
+Earlier snapshots below are historical.
+
 # Current V1 checkpoint — reviewed native folder relocation, 2026-10-17
 
 Root verified all3,360 sealed relocation records and reviewed private pending/confirmation, descendant rebasing, strict CRC and publication authority. The private54632dea component passes28 author actual groups:16focused,11applicable inherited and1full SYS/CIA flow using unmodified actualSETUP files with oldHome absent. Its9 generated files equal the closed genuineDOS80 consumer inputs. All originals remain exact; defaultunset/numeric0 builds remain3deb. Root performed integrity/source review, no additional native replay. [Evidence](evidence/v1-config-relocation-root-review-20261017.json), archive454c8211/22pins.

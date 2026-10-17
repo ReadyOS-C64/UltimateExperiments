@@ -910,3 +910,8 @@ Evidence/v1-dos-batch-root-review-20261017.json, archive c2ebc6c0/19. Root archi
 ## 2026-10-17 — Root relocation component integrity/source review
 
 Reviewed scratch/native-config-relocation-20261017/HANDOFF.md, FIRST_FAILURES.md, portable RI/rebase/UI/CFG/publication sources and closed producer/consumer results. Python3 independent SHA256/length comparison checks all3360 records from MANIFEST68fde2da before and after review/copy; no mismatch. Root does not repeat native application tests: author28groups/260inputs/3products and generated9file exact equality retain their source-specific scope. Research archive v1-config-relocation-root-review-20261017 contains22pins, manifest454c82115d17872b0ecdb234d6086d5275477ec5d0098fd8cb7087503adca68c. Receipt evidence/v1-config-relocation-root-review-20261017.json. No public native changes, LAN or hardware claim; performance remains postV1.
+
+
+## 2026-10-17 — Root combined CONFIG component review
+
+Independent SHA256/length check of every1364 record in parent MANIFEST06606216 before/after source+metadata review passes. Reviewed HANDOFF/RESULT/METADATA_ERRATA/DEFAULT_MAP.diff,16portable sources, private RI+CP merge conflicts and terminal FD_CODE/fallback ownership. No new Root native replay:21authorgroups/265sourcecopies/3products and unchanged9file consumer equality retain their exact scope. Archive30pins dc3a5fcf48bafbb4ddfc1060ee8ccc844c6c774fe6a81b4301d1aa4a5c1def54; receipt evidence/v1-config-relocation-diagnostics-root-review-20261017.json. Defaultall3=False retained; PRG/labels exact, mapmetadata differs. No public native or hardware acceptance.

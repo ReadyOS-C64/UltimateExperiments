@@ -1,0 +1,322 @@
+{
+  "scope": "source-frozen CONFIG optional all-file diagnostics; actual RI/CIA3+cachefallback; not complete installer acceptance",
+  "files": [
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/build_support/config_generation.py",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/build_support/config_generation.py",
+      "sha256": "8963ab76b89b0cf434ab4f6df0bee8d72ee09c4124fae92409b621b5218cb3f4",
+      "bytes": 21226
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/build_support/config_sources.json",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/build_support/config_sources.json",
+      "sha256": "bf7ace47f054ba5a2dcdae71b4e9094da895de616693c58b657fcdcd21952702",
+      "bytes": 2201
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/include/files.inc",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/include/files.inc",
+      "sha256": "dc87a9afa6bd56314a0a9c7f13598e362287b1e6bb8a8ef329575c563dc990a4",
+      "bytes": 2591
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/include/uci.inc",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/include/uci.inc",
+      "sha256": "574d140bfa3772a438f45510309018190c41f54ee205cab691523f034cf9640d",
+      "bytes": 2351
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/src/files.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/src/files.s",
+      "sha256": "7d9cd1058d908c4d4de69cdc9fcb90bb47c227479f7211d529cf6b554d47f596",
+      "bytes": 9545
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/src/uci.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/src/uci.s",
+      "sha256": "eaca8f4f9b3089564990a738827fc86f66fe5e477e66e29e1847a6db83367715",
+      "bytes": 12115
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/all-file-diagnostics.cfg",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/all-file-diagnostics.cfg",
+      "sha256": "eef3f08f50de0c79120f8a3a8cf83aa93d68b5bc31cb987b431f38939d9bce94",
+      "bytes": 1811
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/config_publish.c",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/config_publish.c",
+      "sha256": "beee434301c708236f5145b14210dea48a0852f53e45b99ca9132b9b91151256",
+      "bytes": 15282
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/config_publish.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/config_publish.h",
+      "sha256": "9dddb8abf0b4bf4c70a5f1550d562842f96bff8e7cf3274743bb4a7cd86f319f",
+      "bytes": 1153
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/config_ui.c",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/config_ui.c",
+      "sha256": "d247dc716087a417e0c81f3831f64c3b3d4a4273d1384fd906e5c96681729c55",
+      "bytes": 10642
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/config_ui.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/config_ui.h",
+      "sha256": "39cbe511cd514ee822d1501ba54d87ac80703e5dbd5f991ffa6a773d2671360b",
+      "bytes": 1880
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/coordinator.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/coordinator.s",
+      "sha256": "2f5f3740b43469d10e3068aa5445e3460c784904428f916d278a7a6e7758874e",
+      "bytes": 3774
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/core_fixture.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/core_fixture.s",
+      "sha256": "7707e66e2b1a34325da294a5352086b22e9ce68692d124ef27cda5296a8cea27",
+      "bytes": 1854
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/crc32.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/crc32.s",
+      "sha256": "9de1d046c8a03e1956b0ca44336bc20716ec48232888a87ae325b909d72e12ef",
+      "bytes": 3069
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/existing_cfg.c",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/existing_cfg.c",
+      "sha256": "3f4127a28d2b5e229afc06a054d88baf3855b1332f592c04e09901bb22111685",
+      "bytes": 7247
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/existing_cfg.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/existing_cfg.h",
+      "sha256": "6cabec43a50c3ff09069217be054284b2488b40cf0638f41853945cf9be0b9d0",
+      "bytes": 1977
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/high_bootstrap.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/high_bootstrap.s",
+      "sha256": "a3815805b548befbf01880b086ad9bd0a3be05304eeb4b492df58f6faeb6ab6c",
+      "bytes": 3346
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/media_dma.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/media_dma.s",
+      "sha256": "283e9abbb117fde96ab4a66acd6ffb0fe4ee1793c51e0c8ae6698aef8606f67a",
+      "bytes": 786
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/media_reinspect.c",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/media_reinspect.c",
+      "sha256": "13bb7430663cf6f039e7b959216cffe9b3984703c86010059aef51eca03692e0",
+      "bytes": 10933
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/media_reinspect.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/media_reinspect.h",
+      "sha256": "0c66a8fe8dee201d47058759cce271e3d3b965592ef55d49333722b6d60e2458",
+      "bytes": 2048
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/publisher-diagnostics.cfg",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/publisher-diagnostics.cfg",
+      "sha256": "1338035cd10c72a75b984013c3923ad5e2f0e42583502fe47e5c80e36f6346ba",
+      "bytes": 1443
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/publisher.cfg",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/publisher.cfg",
+      "sha256": "8845b02e10af1b86d77d5af0eb874c59920130865172e6c06472e0de18060b68",
+      "bytes": 1339
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/release_patch.c",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/release_patch.c",
+      "sha256": "083682c677f44338452f8aba56f17ef332869d0113f1078b0d89570d23adb0e6",
+      "bytes": 2251
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/config/release_patch.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/config/release_patch.h",
+      "sha256": "a354aa2f6a5729f842e0b016c1069ce124c31dc7929e2327cdb52c3a31fae359",
+      "bytes": 1196
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/native/bootstrap_diag.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/native/bootstrap_diag.s",
+      "sha256": "af0a9f6cb7f2418630f7ca0aacd4f470cc2de315c43d131a015903fefc9bdc62",
+      "bytes": 2365
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/native/bulk_uci.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/native/bulk_uci.h",
+      "sha256": "61b92fb2ba8413ab547211cd981eaad6c962fdf3145f914e040f136132092475",
+      "bytes": 1217
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/native/crc32.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/native/crc32.h",
+      "sha256": "310b913a21424f47421ba33ff98b4ac10a9084cf74bf66b35c2358dab1c90ac1",
+      "bytes": 894
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/native/file_error.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/native/file_error.h",
+      "sha256": "05a89c0465037c8c1b6f051c214112f9be44a930be2cb3d598fd5aa39022c99b",
+      "bytes": 727
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/native/file_error.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/native/file_error.s",
+      "sha256": "f05c0162fd5bcbe7b2f3fcd122210da9d34489b0dfc6b259b52526c391c15ce2",
+      "bytes": 8721
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/native/platform.c",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/native/platform.c",
+      "sha256": "b91ff826c545b4647c561c8aca110b432f670b6986183cb74a24c775aa84d4d9",
+      "bytes": 3414
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/native/platform.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/native/platform.h",
+      "sha256": "cf915040d8d6b669fcfc3ce0bfbca22574a6a12ee850b3c69ee97f8ee48ac11c",
+      "bytes": 1696
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/native/platform.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/native/platform.s",
+      "sha256": "dd04006d754139ccca371ad3d021014750f457485f498a41f2a003c1866c694a",
+      "bytes": 586
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/native/startup_close.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/native/startup_close.h",
+      "sha256": "40752fe1365856e45746ca8d421abecf3ebc8b5facc5dc6b68c333c1f6363135",
+      "bytes": 1387
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/native/startup_close.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/native/startup_close.s",
+      "sha256": "741368b7c35ab52b43495c86c83a15740e76d8597b5013618e4de916dc775611",
+      "bytes": 3060
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/setup/app/bindings.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/setup/app/bindings.s",
+      "sha256": "a8d627c2a72f99f7c88897b96e6e8db8036074ddab1a359d80c68adf545fe706",
+      "bytes": 2892
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/setup/app/bulk_context.c",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/setup/app/bulk_context.c",
+      "sha256": "20bf20d6fdab983fe5e83c130c77575b91a591aa6b8c2595c2c67c61b13ac542",
+      "bytes": 6434
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/setup/app/bulk_context.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/setup/app/bulk_context.h",
+      "sha256": "89583293600dddb5405d9ce6fbfef3d7ba834bb343107488de5f7ea81527404e",
+      "bytes": 2852
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/setup/app/bulk_reu.c",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/setup/app/bulk_reu.c",
+      "sha256": "457a3864419a4a80fd399cceb97891bc7a4da727bb4cfb81260e49ca669cebfb",
+      "bytes": 8589
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/setup/app/bulk_reu.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/setup/app/bulk_reu.h",
+      "sha256": "0f15640839327a053e93cbe0c58f563ea67ec9667712c6f99ebce9ae502aaf99",
+      "bytes": 2793
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/setup/app/context_bindings.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/setup/app/context_bindings.s",
+      "sha256": "2e5994f1fd70ae2f3a126cb3536a68067596d3d17a0a023e27b7c81826b80856",
+      "bytes": 328
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/setup/app/directory_browser.c",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/setup/app/directory_browser.c",
+      "sha256": "9485ebac248bb945fef9b0bc9e1d8e234786c5420cfae9d60696913f7cfa60ae",
+      "bytes": 7741
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/setup/app/directory_browser.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/setup/app/directory_browser.h",
+      "sha256": "3abe23bc236b0fc85fa52bddee23693dd516180dd169ffa6ce8b760175caded5",
+      "bytes": 2981
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/setup/app/install_config.c",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/setup/app/install_config.c",
+      "sha256": "5f85f9e61d35d22ea40b1e0c4fd48e55da0c0ff5b9c49777da84187d3ddfc786",
+      "bytes": 7987
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/setup/app/install_config.h",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/setup/app/install_config.h",
+      "sha256": "e3f41648267526f6dfb2df08db41896445ec4da4eab6198ef7d53cc8d7d40c7b",
+      "bytes": 1380
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/setup/app/lease_context.c",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/setup/app/lease_context.c",
+      "sha256": "e0b8d25c3353e9d27052f64fd9fbbb92f6b4e7dd853b1e0746cd9d6e1b8c59d5",
+      "bytes": 165
+    },
+    {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/tools/setup/app/startup_glue.s",
+      "copy": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/config-window/tools/setup/app/startup_glue.s",
+      "sha256": "80bd9392676845d1ba89e1b1ccb067af4963fe7f956b1d58994a275db86e030b",
+      "bytes": 158
+    }
+  ],
+  "native": {
+    "CONFIG.PRG": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/build/config-fit13/run-831ks0du/products/CONFIG.PRG",
+      "sha256": "2c9b5c59493ad3e88081a4e7777c60ecf7a0e181a79a4779631b73d0291832cc",
+      "bytes": 44382
+    },
+    "CONFIG.labels": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/build/config-fit13/run-831ks0du/products/CONFIG.labels",
+      "sha256": "061dac9030025cd269e60985834584b4d5f621d8a4155e4b5a6c15cf389e0c09",
+      "bytes": 21361
+    },
+    "CONFIG.map": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-20261017/project/build/config-fit13/run-831ks0du/products/CONFIG.map",
+      "sha256": "43ccb7b583e3f29b38e0ff9d8a3d960055f7ee006bfae351a8ec4555d21198bd",
+      "bytes": 311206
+    }
+  },
+  "memory": {
+    "HIGH_source": 36864,
+    "HIGH_run": 57344,
+    "HIGH_bytes": 8184,
+    "HIGH_crc": 514376875,
+    "HIGH_source_sha256": "de65526b54c0ae9beaf5247883e8d84c03635043dac02d7697309deaa5c19cf8",
+    "expected_field": 24425,
+    "entry": 2061,
+    "vectors_excluded": true,
+    "initial_SOURCE_before_phase_zero": true,
+    "trusted_boot_diagnostics": true,
+    "diagnostic_cold_strip": {
+      "run": 45056,
+      "bytes": 224,
+      "retired_by_zerobss": true
+    },
+    "phase_code_end_exclusive": 34625,
+    "phase_state_start": 34632,
+    "phase_state_end_exclusive": 45056,
+    "permanent_state_end_exclusive": 49093
+  },
+  "flag": "DOS64_ALL_FILE_DIAGNOSTICS=1; --startup-diagnostics --all-file-diagnostics",
+  "shared_native_source_frozen": true,
+  "open": "final controls/closure and SETUP producer faults still pending"
+}

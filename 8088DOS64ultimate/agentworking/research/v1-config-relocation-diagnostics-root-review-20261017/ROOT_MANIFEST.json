@@ -1,0 +1,122 @@
+{
+  "CLOSED_RESULT_INITIAL_METADATA.json": {
+    "bytes": 2873,
+    "sha256": "2a85a6337491e37b8ec2b7174f4ef68f25e9d04e84d50de8ebf5d1bc4206dfdf"
+  },
+  "COMBINED_ERRORS_REPORT.json": {
+    "bytes": 35,
+    "sha256": "cc93e478162502a91e208e65f941af8a3de973651c6c189f902a56980e2223fb"
+  },
+  "DEFAULT_MAP.diff": {
+    "bytes": 465479,
+    "sha256": "bb96c9947ca6ea57c18dd1feccd1a228c44f1d7387faf1f267311ac46be7ef2d"
+  },
+  "DEFAULT_RESULTS.json": {
+    "bytes": 1134,
+    "sha256": "7078b67f7a40dc38d75272e8439d12ce6c40fd1275f5f4be0380382a3843f713"
+  },
+  "DIAGNOSTIC_WINDOW.json": {
+    "bytes": 24892,
+    "sha256": "2aeaf33a871dd209ae3689579ed25aac54a62d13434452b1409e242d9f78d429"
+  },
+  "HANDOFF.md": {
+    "bytes": 3961,
+    "sha256": "acbac0ae23bf50078c5495325f20a51470e2cf16f8dde6812772e2ce3e1eb236"
+  },
+  "MANIFEST.json": {
+    "bytes": 277161,
+    "sha256": "066062161b423cbff445221d26d5afe00a7ee43387dffc2c3b274cbcd70785b9"
+  },
+  "MERGE_CONFLICTS.json": {
+    "bytes": 127,
+    "sha256": "ce27938e241c14b757bebdccf153142c1f58bf01c945f279d3a8e37334fe4b8e"
+  },
+  "METADATA_ERRATA.json": {
+    "bytes": 565,
+    "sha256": "276e15d2a120971d703e94b32ccf86b7e38adf4611b3865ad3f40586e188e95a"
+  },
+  "MOVED_SYS_RESULT.json": {
+    "bytes": 1680,
+    "sha256": "6f8a6a102587a5da112eba08cb06ba80b64ef45c4a68d873b31ff43be83dcd37"
+  },
+  "POLICY_BEFORE_CODE.md": {
+    "bytes": 1767,
+    "sha256": "bf771863ac45db96225f04ff2f65a1b751211628de67105c264f336844e1acc4"
+  },
+  "PORTABLE_NATIVE.json": {
+    "bytes": 2055,
+    "sha256": "a9e22cb2a72632f1500d32756c88286d8bb3b5068b546f72e742c4c6b637feb6"
+  },
+  "RESULT.json": {
+    "bytes": 4852,
+    "sha256": "3307ef86b2be87f3057479a19fdba9963b034374c951bcc4f7270aae6d914c4c"
+  },
+  "ROOT_REVIEW.json": {
+    "bytes": 2787,
+    "sha256": "3fe3bf7fdb16536e41162ac8d55c7ad1e5fb7b51cbc5cf4a5fbc35ae84a99b42"
+  },
+  "portable/all-file-diagnostics.cfg": {
+    "bytes": 1811,
+    "sha256": "eef3f08f50de0c79120f8a3a8cf83aa93d68b5bc31cb987b431f38939d9bce94"
+  },
+  "portable/config_publish.c": {
+    "bytes": 15341,
+    "sha256": "b889acd7f6b6cb2928e7e88a5e4ae2114ca19b75c62eee247caf9d1aa7b4cec8"
+  },
+  "portable/config_ui.c": {
+    "bytes": 12419,
+    "sha256": "f83a6c09bc8d4793cd21635ff54345e48e0f26e75aab7704591fa1425cd14792"
+  },
+  "portable/config_ui.h": {
+    "bytes": 1903,
+    "sha256": "e35dc7b2b8000dcce795934f4f1ca17b28695cc89dd87c4cc71d71926b4acb6d"
+  },
+  "portable/coordinator.s": {
+    "bytes": 3774,
+    "sha256": "2f5f3740b43469d10e3068aa5445e3460c784904428f916d278a7a6e7758874e"
+  },
+  "portable/core_fixture.s": {
+    "bytes": 1854,
+    "sha256": "7707e66e2b1a34325da294a5352086b22e9ce68692d124ef27cda5296a8cea27"
+  },
+  "portable/existing_cfg.c": {
+    "bytes": 8626,
+    "sha256": "0ba504bfc3437099cb96a12338058674bd06f5d21fd59e7cce3b0256f939d744"
+  },
+  "portable/existing_cfg.h": {
+    "bytes": 2370,
+    "sha256": "9fb87090f7ba45202e6a5d087f457537a3f5d519ffed0ada2f83215220093850"
+  },
+  "portable/file_error.h": {
+    "bytes": 727,
+    "sha256": "05a89c0465037c8c1b6f051c214112f9be44a930be2cb3d598fd5aa39022c99b"
+  },
+  "portable/file_error.s": {
+    "bytes": 8721,
+    "sha256": "f05c0162fd5bcbe7b2f3fcd122210da9d34489b0dfc6b259b52526c391c15ce2"
+  },
+  "portable/high_bootstrap.s": {
+    "bytes": 3346,
+    "sha256": "a3815805b548befbf01880b086ad9bd0a3be05304eeb4b492df58f6faeb6ab6c"
+  },
+  "portable/install_config.c": {
+    "bytes": 9564,
+    "sha256": "808da143409127d20ba6f7b32b359954c842be7dda5dfb6384f7d511329b5270"
+  },
+  "portable/install_config.h": {
+    "bytes": 1785,
+    "sha256": "ad394f7b2a350b432a21be672790307be71aa2bcf083e4ccae0a9713c570cc65"
+  },
+  "portable/media_reinspect.c": {
+    "bytes": 10933,
+    "sha256": "13bb7430663cf6f039e7b959216cffe9b3984703c86010059aef51eca03692e0"
+  },
+  "portable/publisher-relocation.cfg": {
+    "bytes": 1811,
+    "sha256": "2cd7969b43f1e9c4b25625c08533010b211dfd4e10a1c9973083018983b731e9"
+  },
+  "portable/relocation.s": {
+    "bytes": 2283,
+    "sha256": "70016cba0318819d98f049533ae916096ca8dea262912fd97691e89e4bc48f4f"
+  }
+}

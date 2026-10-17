@@ -1,0 +1,66 @@
+{
+  "install_config.h": {
+    "sha256": "ad394f7b2a350b432a21be672790307be71aa2bcf083e4ccae0a9713c570cc65",
+    "bytes": 1785
+  },
+  "publisher-relocation.cfg": {
+    "sha256": "2cd7969b43f1e9c4b25625c08533010b211dfd4e10a1c9973083018983b731e9",
+    "bytes": 1811
+  },
+  "config_ui.c": {
+    "sha256": "f83a6c09bc8d4793cd21635ff54345e48e0f26e75aab7704591fa1425cd14792",
+    "bytes": 12419
+  },
+  "file_error.s": {
+    "sha256": "f05c0162fd5bcbe7b2f3fcd122210da9d34489b0dfc6b259b52526c391c15ce2",
+    "bytes": 8721
+  },
+  "file_error.h": {
+    "sha256": "05a89c0465037c8c1b6f051c214112f9be44a930be2cb3d598fd5aa39022c99b",
+    "bytes": 727
+  },
+  "core_fixture.s": {
+    "sha256": "7707e66e2b1a34325da294a5352086b22e9ce68692d124ef27cda5296a8cea27",
+    "bytes": 1854
+  },
+  "high_bootstrap.s": {
+    "sha256": "a3815805b548befbf01880b086ad9bd0a3be05304eeb4b492df58f6faeb6ab6c",
+    "bytes": 3346
+  },
+  "existing_cfg.c": {
+    "sha256": "0ba504bfc3437099cb96a12338058674bd06f5d21fd59e7cce3b0256f939d744",
+    "bytes": 8626
+  },
+  "config_ui.h": {
+    "sha256": "e35dc7b2b8000dcce795934f4f1ca17b28695cc89dd87c4cc71d71926b4acb6d",
+    "bytes": 1903
+  },
+  "config_publish.c": {
+    "sha256": "b889acd7f6b6cb2928e7e88a5e4ae2114ca19b75c62eee247caf9d1aa7b4cec8",
+    "bytes": 15341
+  },
+  "install_config.c": {
+    "sha256": "808da143409127d20ba6f7b32b359954c842be7dda5dfb6384f7d511329b5270",
+    "bytes": 9564
+  },
+  "coordinator.s": {
+    "sha256": "2f5f3740b43469d10e3068aa5445e3460c784904428f916d278a7a6e7758874e",
+    "bytes": 3774
+  },
+  "existing_cfg.h": {
+    "sha256": "9fb87090f7ba45202e6a5d087f457537a3f5d519ffed0ada2f83215220093850",
+    "bytes": 2370
+  },
+  "media_reinspect.c": {
+    "sha256": "13bb7430663cf6f039e7b959216cffe9b3984703c86010059aef51eca03692e0",
+    "bytes": 10933
+  },
+  "relocation.s": {
+    "sha256": "70016cba0318819d98f049533ae916096ca8dea262912fd97691e89e4bc48f4f",
+    "bytes": 2283
+  },
+  "all-file-diagnostics.cfg": {
+    "sha256": "eef3f08f50de0c79120f8a3a8cf83aa93d68b5bc31cb987b431f38939d9bce94",
+    "bytes": 1811
+  }
+}

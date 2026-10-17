@@ -1,0 +1,44 @@
+{
+  "products": {
+    "0": {
+      "config.prg": {
+        "sha256": "3deb783d9d94848b7595310d174e6ce3490bcc19b2e4510d1852f901f048635d",
+        "bytes": 43233
+      },
+      "config.labels": {
+        "sha256": "50fd8a00e2252bc9d6e98eb0991005ce07f439b05cac7e24755a6da3ad564b87",
+        "bytes": 19451
+      },
+      "config.map": {
+        "sha256": "595783d3680c8a4d643a4b224fbb6e4edfed1be32f41f71b604713abdef40ac4",
+        "bytes": 296659
+      }
+    },
+    "2": {
+      "config.prg": {
+        "sha256": "3deb783d9d94848b7595310d174e6ce3490bcc19b2e4510d1852f901f048635d",
+        "bytes": 43233
+      },
+      "config.labels": {
+        "sha256": "50fd8a00e2252bc9d6e98eb0991005ce07f439b05cac7e24755a6da3ad564b87",
+        "bytes": 19451
+      },
+      "config.map": {
+        "sha256": "595783d3680c8a4d643a4b224fbb6e4edfed1be32f41f71b604713abdef40ac4",
+        "bytes": 296659
+      }
+    }
+  },
+  "equal_original_all3": {
+    "0": {
+      "config.prg": true,
+      "config.labels": true,
+      "config.map": false
+    },
+    "2": {
+      "config.prg": true,
+      "config.labels": true,
+      "config.map": false
+    }
+  }
+}

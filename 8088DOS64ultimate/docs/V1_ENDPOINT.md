@@ -10,6 +10,8 @@ CONFIG currently creates another launcher sharing the existing media, but reject
 
 Private relocation successor now passes actual CIA-confirmed moved-folder CONFIG and generated START/DOS80 model checks, with originals preserved. Root verified its full source/evidence closure; combined diagnostics and public integration remain open. The public rejection above remains reproducible until that integration. [Reviewed relocation component](../agentworking/evidence/v1-config-relocation-root-review-20261017.json).
 
+The combined private CONFIG successor also passes named-file errors and a permanent safe error-screen fallback within the relocation layout. Source-only builder integration is in progress; this is still component/model evidence. [Combined review](../agentworking/evidence/v1-config-relocation-diagnostics-root-review-20261017.json).
+
 ## What using V1 should feel like
 
 Copy the release and separately obtained DOS images into a folder. Run SETUP, browse to the images and choose a C-drive size; SETUP prepares the disks and launcher directly through Ultimate DOS. Launch START to reach DOS. Use CONFIG to make a new configuration while preserving existing media; after moving the installation, regenerate its folder-aware launcher. Edit the documented same-folder INI for supported startup options.

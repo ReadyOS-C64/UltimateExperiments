@@ -355,3 +355,6 @@ V1-02 includes moving the installation, in addition to making another launcher w
 
 
 2026-10-17: Accept private CONFIG relocation54632dea only after Root all3360pin/source review. Pending RI_CONFIRM never grants normal ri_get/RM/publication; actual Y confirms rebasing component-boundary FatFs-casefold descendants, preserving external shared paths. Recompute and strict-validate derived CRC including0, inspect moved media, CREATE_NEW/CFGlast. Root21artifactcopies plus review form22pins. Defaultunset/0 products stay3deb. Combined full-file diagnostics/source-only builder integration and physical acceptance remain separate; nonroot savedhome limitation must stay explicit.
+
+
+2026-10-17: Accept combined CONFIG5c91/104a component after Root all1364-pin review: terminal diagnostics must use permanent direct REU fetch and bit-CRC, never retired512B RM DMA/table state. Verify fallbackBFC8..BFFE before phase retirement. Preserve original first cause/unknown CLOSE/no retry and private confirmation/rebase authority. DefaultPRG+labels exact is the honest claim; map/debug differences and the oldreportmetadataerratum stay explicit. Consumer inputs are same9bytes, not a new consumer run. Source-only builders/public candidate and hardware remain separate.

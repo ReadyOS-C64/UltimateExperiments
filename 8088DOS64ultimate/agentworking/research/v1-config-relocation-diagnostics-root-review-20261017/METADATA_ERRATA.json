@@ -1,0 +1,10 @@
+{
+  "scope": "report metadata only; native test/source/product ledgers unchanged",
+  "retained_initial": "CLOSED_RESULT_INITIAL_METADATA.json and closed/RESULT.json",
+  "field": "default_unset_and_numeric0_all3_products_exact",
+  "initial": true,
+  "correct": false,
+  "reason": "copied literal from prior relocation-only driver; combined map contains extra empty file_error.o plus source-line cross-reference/debug metadata, without nativePRG/labels change",
+  "actual_default_PRG_and_labels_exact_original": true,
+  "map_difference_expected_empty_module": true
+}

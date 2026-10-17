@@ -1,0 +1,10 @@
+{
+  "config_publish.c": {
+    "return": 1,
+    "stderr": ""
+  },
+  "existing_cfg.c": {
+    "return": 1,
+    "stderr": ""
+  }
+}
