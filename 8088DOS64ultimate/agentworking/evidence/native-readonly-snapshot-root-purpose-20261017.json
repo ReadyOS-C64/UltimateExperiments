@@ -1,0 +1,28 @@
+{
+  "verdict": "ROOT_REVIEWED_CONCRETE_READONLY_SNAPSHOT_PURPOSE",
+  "launch_sha256": "95f96acbd73a26f869e9e20d902b60d5d260433d75cf3e8316e531d919861f9e",
+  "launch_pins_verified": 269,
+  "package_pins_verified": 373,
+  "native_pins_verified": 237,
+  "actual_root_offline": {
+    "offline_constructor": "passed",
+    "no_network": true,
+    "pins": 269,
+    "configured_sha256": "9c73116448968daccc25c2d8e09dcc77e3f4602f8854ed45e5a617965264c86b",
+    "baseline_bytes": 4194304
+  },
+  "reviewed": [
+    "original immutableac43 full4MiB authority",
+    "zeroREUwrite native26/sourcegate/SMC bounds",
+    "ownedfreshFTPdirectory/markerpreflight beforehelper",
+    "oneFTPconnection/oneCURRENT.REU RETR/allbytes/final226",
+    "exactdevicefwidentity beforetakeover",
+    "sameengine startupCLOSE/nativeknownquiet required",
+    "truly detached supervisor/newsession/devnull/PID+exit",
+    "boundedfirstcause/cancel/settings/media/C64reset only afterquiet",
+    "no fullboardreset/no3880writeback/no upper12MiB access"
+  ],
+  "corrected_review_inference": "16KiB40fe staging limit is not RESTreadmem limit; actual v3.14 source permits address0,length65536. No runtimechange requested for that mistaken cap inference.",
+  "authorized_next": "Sole hardware owner may dispatch this exact purpose once, retain firstfailure/partialbytes and audit after. No recovery retry or automatic writeback on mismatch.",
+  "physical_result": "NOT_STARTED"
+}

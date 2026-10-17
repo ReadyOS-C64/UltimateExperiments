@@ -1,0 +1,80 @@
+{
+  "verdict": "ROOT_VERIFIED_FAILED_READONLY_PREFLIGHT",
+  "physical": true,
+  "failure_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-readonly-snapshot-physical-preparation/PHYSICAL_FAILURE_MANIFEST.json",
+  "failure_manifest_sha256": "8436b86275440cf46a3548798aa5bcccb6ffacd608bb851205bb9ceae6231cb9",
+  "failure_pins_verified": 20,
+  "launch_sha256": "95f96acbd73a26f869e9e20d902b60d5d260433d75cf3e8316e531d919861f9e",
+  "owned_supervisor_pid": 37641,
+  "owned_child_pid": 37648,
+  "exit": 1,
+  "original_local_ac43_unchanged": true,
+  "device_full4MiB_equality_verified": false,
+  "native_helper_loaded_or_started": false,
+  "REU_write_commands": 0,
+  "CURRENT_REU_retrievals": 0,
+  "failure": "ActiveFTP OWNER STOR dataaccept timedout5s beforehelper; cleanupREST config/reset eachReset54.",
+  "settings": "Manual64configurationwritehadnotbeenattempted; cleanupunverifieddoesnotmeanconfigurationchanged. CPUrunningstateunknownafterambiguousreset.",
+  "path_review": "DoubledMKDreplycosmetic; actualfirmwareabsolutePathresetsroot. Misplacedfolder isnotproven cause; prioraccepted0ce2 usedsameabsolute pattern.",
+  "device_reserved": true,
+  "next": "CIA LOCALsource research/newconcretepurpose; noautomaticretry/reconnect/REUwriteback/fullboardreset.",
+  "author_failure_report": {
+    "status": "FAILED_PRE_NATIVE_FTP_PREFLIGHT",
+    "physical_native_snapshot_executed": false,
+    "launch_manifest_sha256": "95f96acbd73a26f869e9e20d902b60d5d260433d75cf3e8316e531d919861f9e",
+    "package_all373_exact": true,
+    "launch_all269_exact": true,
+    "native_all237_exact": true,
+    "first_error": "timeout('timed out')",
+    "first_failure_phase": "activeFTP OWNERSTOR data-socket accept5s timeout",
+    "settings_media_verified_after": false,
+    "reset_resume_verified_after": false,
+    "turbo_manual64_modification_attempted_before_failure": false,
+    "original64KiB_RAM_captured": true,
+    "RAM_sha256": "8f042d60e41297a7fb7b8dec8cbf039adbb34241c9d78194fb8558380fd2f1c1",
+    "baseline_originalac43_local_exact": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+    "native_loader_SYS_attempts": 0,
+    "REU_write_commands": 0,
+    "upper12MiB_accessed": false,
+    "snapshot_RETR_attempts": 0,
+    "FTP_connections": 1,
+    "marker_write_completion_unknown": true,
+    "MKD_reply_path": "/usb1/DOS64_TEST//usb1/DOS64_TEST/readonly-reu-20261017-043500",
+    "MKD_reply_qualification": "Reply string is doubled; actual path placement is not inferred until source analysis. No directory probe/retry performed.",
+    "owned_supervisor": {
+      "pid": 37641,
+      "parent_pid": 1,
+      "stdin_is_tty": false,
+      "terminal": "1613",
+      "entry": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-readonly-snapshot-physical-preparation/work/launch.py",
+      "manifest_sha256": "95f96acbd73a26f869e9e20d902b60d5d260433d75cf3e8316e531d919861f9e"
+    },
+    "owned_child": {
+      "pid": 37648,
+      "supervisor_pid": 37641,
+      "terminal": "1613",
+      "new_session": true,
+      "stdin": "/dev/null",
+      "stdout_stderr": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-readonly-snapshot-physical-preparation/work/detached/child.log"
+    },
+    "exit": {
+      "pid": 37648,
+      "exit_code": 1
+    },
+    "both_owned_PIDs_absent": true,
+    "device_reserved": true,
+    "no_retry_or_further_device_call": true,
+    "finished_utc": "2026-10-17T04:41:48.631883+00:00",
+    "ACTIVE_owner_correction": "Oldcontroller inherited stale previouscampaign flags. Exact prior bytes retained; owner corrected facts only from savedcurrentreport/exit/logs. Nativeunstarted doesnotprove originalREUbaseline fullcontents."
+  },
+  "INI_component_review": {
+    "native-ini-parser-independent-review-20261017": {
+      "sha256": "a799937c70b5fa5014979702bba3acbf87a2a44c31aaaaf49c7c48d8a53196bc",
+      "verified_pins": 200
+    },
+    "native-start-ini-layout-20261017": {
+      "sha256": "ff25030a7c38611b607727d1524b3b7b14b0dfe9989e045633fd0f10e9ebded1",
+      "verified_pins": 192
+    }
+  }
+}
