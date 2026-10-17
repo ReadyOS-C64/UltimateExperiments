@@ -91,6 +91,13 @@ not BSS, and reads DOS64.CFG / DOS64.REL / DOS64.PRG there. It uses the CFG's
 explicit A/B/C paths. No mounted D81, guessed current directory, firmware REST,
 guest DOS copying, bundled DOS image or preallocated HD template is required.
 
+User-directed extension, not part of implemented ABI1: the same home also locates
+editable emulator options. Native prelaunch code parses these once and publishes
+a separately versioned, launch-bound REU options record for the emulator. Current
+one-byte START headroom requires a measured overlay/startup design; do not reuse
+ABI1 reserved bytes or assume unallocated REU is spare. See the
+[same-folder options design](NATIVE_SETUP_CONFIG.md#same-folder-emulator-options).
+
 Current components: public `make setup-release-tests` runs four actual Zig/Peddle descriptor groups and four host-tool groups. Private staging controller faa30 and main cold consumer ce482 have separate native proofs; their composition, runnable START, setup UI and physical acceptance remain pending. Physical bulk32K c5 is accepted with complete recovery; it does not accept this launcher.
 
 ## Standalone launcher build

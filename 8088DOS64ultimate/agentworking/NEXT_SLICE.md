@@ -1,5 +1,7 @@
 # Next work — 2026-10-16
 
+New user direction: same-home emulator options, parsed natively before guest startup and handed through REU. Integrate this after the complete installer flow: shared SETUP/prelaunch parser, optional editable DOS64.INI, explicit schema/defaults/closure, measured overlay placement and allocated launch-bound record/consumer. Preserve current ABI1 until a compatible producer/consumer extension is implemented. See docs/NATIVE_SETUP_CONFIG.md. Design recorded only; not delivered.
+
 1. Qualify the committed native START and D64S template on the real Ultimate using a fresh owned A/B installation. CIA remains the only hardware worker. REST-only staging must establish complete source and saved-file bytes without relying on unhealthy FTP; the local stager is not yet physically qualified.
 2. Independently review the frozen repeated-writer componenta9ed0ab9, then compose it with the repaired selection UI, private browser authority and D64Q capsule in a measured resident SETUP dispatcher. Preserve selected paths before retiring UI. Add derived-A/raw-asset persistence and cooperative keyboard cancellation, then finish fully verified outputs, checked D64S launcher patch and configuration-last publication. Repeated NF outputs now pass component tests; the complete installer still does not.
 3. Continue independent interpreter/compiled-block performance work against genuine DOS, preserving every timing, interrupt and memory-coherence boundary. Installer speedups do not satisfy the XT target.
