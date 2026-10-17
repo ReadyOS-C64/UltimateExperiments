@@ -41,6 +41,11 @@ extern const br_u16 rw_abi_sizes[2];
  * rearm clears the binding. Mandatory for DOS64.CFG, forbidden for other leaves. */
 br_u8 rw_expect_cfg(br_u32 identity);
 br_u8 rw_begin(void);
+#if DOS64_SETUP_COLD_INVENTORY
+/* Same exact three source-bound cached assets; readonly reopen/INFO/poisoned
+ * LOAD/compare/EOF/CLOSE only. Request cannot select arbitrary names/CRCs. */
+br_u8 rw_begin_existing(void);
+#endif
 void rw_poll(void),rw_cancel(void);
 br_u8 rw_state(void),rw_closed_quiet(void),rw_rearm(void);
 #endif

@@ -1,5 +1,6 @@
 #ifndef DOS64_START_TEMPLATE_H
 #define DOS64_START_TEMPLATE_H
+#include "template_limits.h"
 /* UI-phase utility. Byte-reader and byte-writer use file-relative offsets.
    st_io_error is a callback-owned sticky failure flag; byte0 is valid data.
    Caller owns immutable/read-only source, fresh disposable output, and the

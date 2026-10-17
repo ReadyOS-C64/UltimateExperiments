@@ -6,6 +6,11 @@
  * after privateSI_DONE refresh+exactcounts+NFconsumed. PUB writes A afterRAWdone.
  * Maskbits C1,B2,A4. Outputs are size,CRC pairs C/B/A. Exact183B cc65 layout. */
 struct rc_record_t {char home[128];br_u16 generation;br_u32 identity,source_crc[5],output[6];br_u8 flags,source_mask,output_mask,valid,started;};
+#if DOS64_SETUP_COLD_INVENTORY
+#pragma bss-name(push,"HIGHBSS")
+extern br_u8 rc_inventory_ready;
+#pragma bss-name(pop)
+#endif
 #define RC_C_PAIR 0u
 #define RC_B_PAIR 2u
 #define RC_A_PAIR 4u

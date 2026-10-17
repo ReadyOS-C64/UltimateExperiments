@@ -86,3 +86,11 @@ _files_start:
  rol a
  ldx #0
  rts
+
+.ifdef DOS64_SETUP_COLD_INVENTORY
+.if DOS64_SETUP_COLD_INVENTORY
+.import _pub_scratch
+.export _so_scratch
+_so_scratch = _pub_scratch
+.endif
+.endif

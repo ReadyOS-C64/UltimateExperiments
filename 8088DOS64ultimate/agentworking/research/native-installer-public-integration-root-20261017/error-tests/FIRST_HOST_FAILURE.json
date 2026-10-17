@@ -1,0 +1,6 @@
+{
+  "phase": "before any native execution",
+  "error": "AttributeError: list has no items",
+  "cause": "Root closure reader assumed model BEFORE ledger dictionary; actual is list",
+  "SUT_change": false
+}

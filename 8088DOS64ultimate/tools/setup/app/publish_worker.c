@@ -1,3 +1,4 @@
+#include "template_limits.h"
 #include "publish_worker.h"
 #include "coordinator_internal.h"
 #include "setup_overlay.h"
@@ -32,7 +33,7 @@ br_u8 pb_verified_fact(br_u8 kind,br_u16 gen,br_u32 identity,br_u32*out){br_u8 p
  case PB_C_BYTES:pair=RC_C_PAIR;break;
  case PB_TEMPLATE_BYTES:
   sl_kind=3;sl_generation=gen;sl_identity=identity;
-  if(!sl_fact()||sl_receipt.bytes!=18432UL||sl_receipt.crc!=rc_retained.source_crc[3])return 0;
+  if(!sl_fact()||sl_receipt.bytes!=ST_TEMPLATE_BYTES||sl_receipt.crc!=rc_retained.source_crc[3])return 0;
   *out=sl_receipt.bytes;return 1;
  default:return 0;
  }

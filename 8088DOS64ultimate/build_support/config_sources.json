@@ -37,5 +37,7 @@
   "startup_glue.s": "tools/setup/app/startup_glue.s",
   "uci.inc": "include/uci.inc",
   "uci.s": "src/uci.s",
-  "bulk_reu.c": "tools/setup/app/bulk_reu.c"
+  "bulk_reu.c": "tools/setup/app/bulk_reu.c",
+  "bootstrap_diag.s": "tools/native/bootstrap_diag.s",
+  "publisher-diagnostics.cfg": "tools/config/publisher-diagnostics.cfg"
 }

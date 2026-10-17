@@ -3,6 +3,9 @@
 #include "install_config.h"
 #include "crc32.h"
 #include <string.h>
+#if DOS64_FILE_DIAGNOSTICS
+#include "file_diag.h"
+#endif
 extern const br_u8 so_asset_header[64];
 extern const br_u16 so_ui_bytes,so_fat_bytes,so_asset_bytes;
 extern const br_u32 so_ui_crc,so_ui_full_crc,so_fat_crc;
@@ -25,7 +28,13 @@ br_u16 so_now,so_ticket;
 br_u8 so_phase_request;
 static struct so_request_t owned;
 static struct so_result_t ledger;
+#if DOS64_SETUP_COLD_INVENTORY
+#include "publish_scratch.h"
+union pub_scratch_t pub_scratch;
+#define so_scratch pub_scratch.verify
+#else
 br_u8 so_scratch[512];
+#endif
 static br_u8 started,bound,loaded,waiting,stage,destination,leased,handle,cancelled;
 static br_u16 began,at,count,next_ticket;
 static br_u32 slot,expected,crc;
@@ -33,7 +42,19 @@ static br_u16 asset_bytes(void){return destination==SO_FAT?so_asset_bytes:so_pub
 static br_u16 phase_bytes(br_u8 p){return p==SO_UI?so_ui_core_bytes:p==SO_FAT?so_fat_bytes:so_publish_bytes;}
 static br_u32 phase_crc(br_u8 p){return p==SO_UI?so_ui_core_crc:p==SO_FAT?so_fat_crc:so_publish_crc;}
 static void publish(void){so_result=ledger;}
-static void first(br_u8 e){if(!ledger.error)ledger.error=e;}
+#if DOS64_FILE_DIAGNOSTICS
+#pragma code-name(push,"FILE_DIAG")
+#pragma rodata-name(push,"AUX_RO")
+#endif
+static void first(br_u8 e){if(!ledger.error){ledger.error=e;
+#if DOS64_FILE_DIAGNOSTICS
+ if(destination>=SO_FAT){memcpy(sf_name,destination==SO_FAT?"SETUP.FAT":"SETUP.PUB",10);sf_op=stage;sf_code=ledger.error;sf_leaf=ledger.leaf;sf_transport=ledger.transport;}
+#endif
+}}
+#if DOS64_FILE_DIAGNOSTICS
+#pragma rodata-name(pop)
+#pragma code-name(pop)
+#endif
 static br_u8 dma(br_u32 reu_address,br_u16 host,br_u16 n,br_u8 direction){
  nf_io_address=reu_address;nf_io_buffer=host;nf_io_length=n;nf_io_direction=direction;nf_dma();return !nf_io_status;
 }

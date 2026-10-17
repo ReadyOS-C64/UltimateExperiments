@@ -1,0 +1,11 @@
+test_changed_provider_source_and_generated_product_are_refused (test_release_inputs.Inputs) ... ok
+test_each_corrupted_metadata_file_is_refused (test_release_inputs.Inputs) ... ok
+test_named_and_recorded_legacy_layouts_are_accepted (test_release_inputs.Inputs) ... ok
+test_unrecorded_legacy_metadata_is_refused (test_release_inputs.Inputs) ... ok
+test_unused_declared_product_corruption_is_refused (test_release_inputs.Inputs) ... ok
+test_valid_hash_outside_owned_run_is_not_metadata_authority (test_release_inputs.Inputs) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.015s
+
+OK

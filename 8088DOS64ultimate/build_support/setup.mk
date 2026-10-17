@@ -63,3 +63,26 @@ setup-installer-preflight:
 	$(DOS64_PYTHON) -B build_support/setup_installer.py --bundle-result "$(DOS64_SETUP_BUNDLE_RESULT)" --out build/setup-installer-bound
 setup-installer-preflight-tests:
 	$(DOS64_PYTHON) -B build_support/setup_preflight_tests.py --bundle-result "$(DOS64_SETUP_BUNDLE_RESULT)" $(DOS64_SETUP_PREFLIGHT_ARGS)
+
+# Explicit eight-asset cold release. No dependency from default build/test.
+DOS64_COLD_COHORT ?=
+DOS64_COLD_INPUTS ?=
+DOS64_COLD_BUNDLE_OUT ?= build/cold-release-bundle
+.PHONY: cold-release-bundle setup-installer-cold config-cold
+cold-release-bundle:
+	@test -n "$(DOS64_COLD_COHORT)" -a -n "$(DOS64_COLD_INPUTS)" || { echo 'Set exact DOS64_COLD_COHORT and DOS64_COLD_INPUTS'; exit 1; }
+	$(DOS64_PYTHON) -B build_support/cold_release_bundle.py --cohort "$(DOS64_COLD_COHORT)" --inputs "$(DOS64_COLD_INPUTS)" --out "$(DOS64_COLD_BUNDLE_OUT)"
+setup-installer-cold: cold-release-bundle
+	$(DOS64_PYTHON) -B build_support/setup_installer.py --cold-inventory --start20k --bundle-result "$(DOS64_COLD_BUNDLE_OUT)/RESULT.json" --out build/setup-installer-cold
+config-cold: cold-release-bundle
+	$(DOS64_PYTHON) -B build_support/config_generation.py --cold-inventory --start20k --bundle-result "$(DOS64_COLD_BUNDLE_OUT)/RESULT.json" --out build/config-cold
+
+# Explicit future 56KiB menu profile; separate outputs and no default dependency.
+.PHONY: cold-release-bundle56 setup-installer-cold56 config-cold56
+cold-release-bundle56:
+	@test -n "$(DOS64_COLD_COHORT)" -a -n "$(DOS64_COLD_INPUTS)" || { echo 'Set exact DOS64_COLD_COHORT and DOS64_COLD_INPUTS'; exit 1; }
+	$(DOS64_PYTHON) -B build_support/cold_release_bundle.py --mnu56k --cohort "$(DOS64_COLD_COHORT)" --inputs "$(DOS64_COLD_INPUTS)" --out "$(DOS64_COLD_BUNDLE_OUT)"
+setup-installer-cold56: cold-release-bundle56
+	$(DOS64_PYTHON) -B build_support/setup_installer.py --cold-inventory --start20k --mnu56k --bundle-result "$(DOS64_COLD_BUNDLE_OUT)/RESULT.json" --out build/setup-installer-cold56
+config-cold56: cold-release-bundle56
+	$(DOS64_PYTHON) -B build_support/config_generation.py --cold-inventory --start20k --mnu56k --bundle-result "$(DOS64_COLD_BUNDLE_OUT)/RESULT.json" --out build/config-cold56

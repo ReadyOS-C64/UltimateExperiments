@@ -5,6 +5,9 @@
 #pragma rodata-name("CONFIG_HRO")
 #define RP_CONSTANTS_ONLY 1
 #include "release_assets.h"
+#ifndef RP_TEMPLATE_BYTES
+#define RP_TEMPLATE_BYTES 18432u
+#endif
 #pragma bss-name("BSS")
 br_u8 rp_error;
 br_u32 rp_output_crc;
@@ -20,7 +23,7 @@ br_u8 rp_patch(void){br_u16 at,n,i,control;const char*home;br_u8 v,w,relative;
  for(i=1;i<=n;++i){v=home[i];if(i==n||v=='/'){if(home[i-1]=='/'||home[i-1]==' '||home[i-1]=='.')return rp_error=2,0;}else if(v<32||v>126||v=='\\'||v==':'||v=='"'||v=='*'||v=='<'||v=='>'||v=='?'||v=='|')return rp_error=2,0;}
  /* This offset is from the exact linked D64S descriptor, never caller input. */
  control=RP_CONTROL;original=changed=0xffffffffUL;
- for(at=0;at<18432u;at+=n){n=18432u-at>256u?256u:18432u-at;
+ for(at=0;at<RP_TEMPLATE_BYTES;at+=n){n=RP_TEMPLATE_BYTES-at>256u?256u:RP_TEMPLATE_BYTES-at;
   memset(rp_buffer,0xa7,256);if(!rp_read(at,n))return rp_error=3,0;
   if(!crc_part(rp_buffer,n,0))return rp_error=4,0;
   for(i=0;i<n;++i){v=rp_buffer[i];w=v;if(at+i<14&&v!=basic[at+i])return rp_error=5,0;

@@ -1,3 +1,13 @@
+# Next V1 work — matched installer compiled and focused faults pass
+
+Current Rootsource cohort scratch/native-installer-public-integration-root-20261017, seal a88f6139/1891pins, durable evidence/native-installer-public-integration-root-20261017.json.38layered paths+Root config metadata resolver; actuale710/FAT35a3/PUBafae/CONFIG3deb against unchangedc7/407f/2f8. Sixnative methods/ninefault cases and6host provenance groups pass. Default0df4/508d/coupled5 exact. Don't rerun old broad CPU suites merely for metadata.
+
+Memoryworker freezes final12 and executes real nativeSETUP→FW/PW→generatedSTART→DOS/media/Finish plusCONFIG40/80. Compiledworker sealed candidate12 2134a152/7971, only3publicpaths; Root nextreview/promote/build/test. Compiled now implements remainingDOS/release/FW/PW/CONFIG namedfirstcause errors with measuredterminalphase lifetime, preservingunknownCLOSE andcachedUI trust. CIA sealed20dc backend/26eb SETUPpostentry/bb1d c7knownC; prepare concrete final16 staging+registeredlargeLOAD/SYS+postentry/humanCIA/knownquiet/recoverypurpose, noRootunreviewedLAN. Preserve trustedloader assumption and explicitlyunverifiedhiddenpreSYS RAM; don't invent broaderbootstrapcorruption guarantees.
+
+Root nextaccepts current806e Turbo121761 +FORMATE93+c7cold1554 at exactscopes, then final candidate/hardware/human V1matrix. Performance post-V1. Localcommits/no push.
+
+Earlier snapshots below are historical.
+
 # Next V1 work — public cold bundle now builds, 2026-10-17
 
 Root public cold eight-asset builder and14host checks pass; evidence/native-cold-public-builder-root-20261017.json. New Makeinclude retags runtime c7a14a3a/MNU407f91b8/START2f8e86c9, while native code and INO/RCV/RFW remain exact. Memory worker to finish corrected actual806e Turbo20M persistence/reopen and then run fresh40/80 genuine consumers against public build/cold-start/RESULT.json. Do not transfer806e complete-workflow acceptance to c7 or infer hardware from model.

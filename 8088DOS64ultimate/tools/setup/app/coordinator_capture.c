@@ -1,3 +1,4 @@
+#include "template_limits.h"
 #include "coordinator_capture.h"
 #include "coordinator_internal.h"
 #include "setup_ui_run.h"
@@ -9,6 +10,10 @@
 #include <stddef.h>
 #pragma bss-name(push,"HIGHBSS")
 struct rc_record_t rc_retained;
+#if DOS64_SETUP_COLD_INVENTORY
+br_u8 rc_inventory_ready;
+extern br_u8 sl_inventory_fact(void);
+#endif
 #pragma bss-name(pop)
 #pragma bss-name(push,"BSS")
 br_u16 rc_expected_ticket,rc_generation;
@@ -29,10 +34,13 @@ br_u8 rc_capture(void){br_u8 k;
  rc_retained.identity=dword(sq_bytes+188);rc_retained.flags=sq_bytes[160]|(sq_bytes[161]<<1);
  for(k=0;k<5u;++k){
   sl_kind=k;sl_generation=rc_retained.generation;sl_identity=rc_retained.identity;
-  if(!sl_fact()||sl_receipt.generation!=rc_retained.generation||sl_receipt.identity!=rc_retained.identity||sl_receipt.bytes!=(k<3u?368640UL:k==3u?18432UL:64UL))return 0;
+  if(!sl_fact()||sl_receipt.generation!=rc_retained.generation||sl_receipt.identity!=rc_retained.identity||sl_receipt.bytes!=(k<3u?368640UL:k==3u?ST_TEMPLATE_BYTES:64UL))return 0;
   rc_retained.source_crc[k]=sl_receipt.crc;rc_retained.source_mask|=1u<<k;
  }
  if(so_ui_ticket()!=rc_expected_ticket||sq_state()!=SQ_READY||!bc_files_closed())return 0;
+#if DOS64_SETUP_COLD_INVENTORY
+ if(!sl_inventory_fact())return 0;rc_inventory_ready=1;
+#endif
  rc_retained.valid=1;rc_generation=rc_retained.generation;rc_identity=rc_retained.identity;
  rc_flags=rc_retained.flags;rc_source_mask=rc_retained.source_mask;return 1;
 }

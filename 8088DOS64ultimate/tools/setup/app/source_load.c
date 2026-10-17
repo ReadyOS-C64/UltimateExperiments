@@ -1,3 +1,4 @@
+#include "template_limits.h"
 #include "source_load.h"
 #include "bulk_context.h"
 #include "setup_overlay.h"
@@ -8,13 +9,21 @@
 #include "platform.h"
 #include "crc32.h"
 #include <string.h>
+#if DOS64_FILE_DIAGNOSTICS
+#include "file_diag.h"
+#endif
 #ifndef DOS64_SETUP_RELEASE_PREFLIGHT
 #define DOS64_SETUP_RELEASE_PREFLIGHT 0
 #endif
 #if DOS64_SETUP_RELEASE_PREFLIGHT
 #include "release_assets.h"
+#if DOS64_SETUP_COLD_INVENTORY
+#define SL_KIND_COUNT 11u
+static const br_u8 kind_asset[11]={0,0,0,3,4,0,1,2,5,6,7};
+#else
 #define SL_KIND_COUNT 8u
 static const br_u8 kind_asset[8]={0,0,0,3,4,0,1,2};
+#endif
 #else
 #define SL_KIND_COUNT 5u
 #endif
@@ -38,6 +47,9 @@ static struct {
  br_u16 generation,ticket,now,began,relative,wanted,steps,bad_steps,timeout;
  br_u8 state,error,phase,leaf,transport,waiting,cancelled,clock_bad,clock_failed,kind,second,valid,installed;
 } q;
+#if DOS64_SETUP_COLD_INVENTORY
+static br_u8 inventory_valid;
+#endif
 br_u8 sl_kind;
 br_u16 sl_timeout,sl_generation;
 br_u32 sl_identity;
@@ -58,6 +70,14 @@ extern br_u8 _AUX_RO_SIZE__;
 #endif
 static br_u32 address(br_u8 k){if(k==0)return 0x100000UL;if(k==1)return 0x180000UL;if(k==2)return 0x380000UL;if(k==3)return 0x2e0000UL;
 #if DOS64_SETUP_RELEASE_PREFLIGHT
+#if DOS64_SETUP_COLD_INVENTORY
+ if(k==8)return 0x080000UL;
+#if DOS64_SETUP_MNU_56K
+ if(k==9)return 0x08e000UL;if(k==10)return 0x090000UL;
+#else
+ if(k==9)return 0x08a000UL;if(k==10)return 0x08c000UL;
+#endif
+#endif
  if(k==5)return 0x2f0000UL;if(k==6)return 0x3fed00UL;if(k==7)return 0x3f8000UL;
 #endif
  return 0x3fec00UL;}
@@ -65,10 +85,10 @@ static br_u32 size(br_u8 k){
 #if DOS64_SETUP_RELEASE_PREFLIGHT
  if(k>=3)return asset_size[kind_asset[k]];
 #endif
- return k<3?368640UL:k==3?18432UL:64UL;}
+ return k<3?368640UL:k==3?ST_TEMPLATE_BYTES:64UL;}
 #if DOS64_SETUP_RELEASE_PREFLIGHT
 static br_u8 bound(void){br_u32 a=address(q.kind),n=size(q.kind);
- return asset_size[0]<=0xb801UL&&asset_size[1]==64UL&&asset_size[2]<=8192UL&&asset_size[3]==18432UL&&asset_size[4]==64UL&&a<q.capacity&&n<=q.capacity-a;
+ return asset_size[0]<=0xb801UL&&asset_size[1]==64UL&&asset_size[2]<=8192UL&&asset_size[3]==ST_TEMPLATE_BYTES&&asset_size[4]==64UL&&a<q.capacity&&n<=q.capacity-a;
 }
 static br_u8 match(br_u16 n){br_u16 i,off;
  static const br_u8 basic[14]={1,8,11,8,10,0,0x9e,'2','0','6','1',0,0,0};
@@ -82,7 +102,14 @@ static br_u8 match(br_u16 n){br_u16 i,off;
 }
 #endif
 static void publish(void){sl_result.state=q.state;sl_result.error=q.error;sl_result.phase=q.phase;sl_result.leaf=q.leaf;sl_result.transport=q.transport;sl_result.cleanup=q.waiting||!bc_files_closed();}
-static void first(br_u8 e){if(!q.error)q.error=e;}
+#if DOS64_FILE_DIAGNOSTICS
+static const br_u8 sf_source_ops[]={0,1,2,0,3,6,5,4,1,2,3,6,5,4};
+#endif
+static void first(br_u8 e){if(!q.error){q.error=e;
+#if DOS64_FILE_DIAGNOSTICS
+ if(q.kind==7u){memcpy(sf_name,"START.INO",10);sf_op=sf_source_ops[q.phase];sf_code=q.error;sf_leaf=q.leaf;sf_transport=q.transport;}
+#endif
+}}
 static void failed(void){q.state=SL_FAILED;q.valid=0;}
 static br_u8 eof(void){return (q.phase==EOF1||q.phase==EOF2)&&br_result.error==BR_COUNT&&br_result.known&&!br_result.actual&&!br_result.transport&&br_result.handle==1;}
 static void sample(void){if(!ps_clock_poll())q.clock_bad=q.clock_failed=1;else q.now=ps_ticks;}
@@ -114,7 +141,11 @@ br_u8 sl_install(void){br_u16 n=(br_u16)&_HIGH_CODE_SIZE__;br_u8*to=&_HIGH_CODE_
 br_u8 sl_begin(void){br_u16 offset,n,generation; br_u32 identity; br_u8 kind=sl_kind;
  if(q.installed!=0xa5||kind>=SL_KIND_COUNT||!sl_timeout||sl_timeout>=0x8000u||(q.state!=SL_IDLE&&q.state!=SL_DONE)||!bc_files_closed()||!so_ui_ticket()||ns_io_owner!=0xa5||ns_capacity!=so_capacity()||ns_io_error||ns_cancel)return 0;
  sq_page=0;if(sq_read()!=512u)return 0;memcpy(&generation,sq_bytes+8,2);
+#if DOS64_SETUP_COLD_INVENTORY
+ if((q.valid||inventory_valid)&&generation!=q.generation)return 0;
+#else
  if(q.valid&&generation!=q.generation)return 0;
+#endif
  if(kind<3){offset=160u+(br_u16)kind*128u;n=512u-offset;if(n>128u)n=128u;memcpy(path,sq_bytes+offset,n);}
  else {memcpy(d64_path_source,sq_bytes+32,128);memset(d64_path_relative,0,128);memcpy(d64_path_relative,
 #if DOS64_SETUP_RELEASE_PREFLIGHT
@@ -124,7 +155,11 @@ br_u8 sl_begin(void){br_u16 offset,n,generation; br_u32 identity; br_u8 kind=sl_
 #endif
  9);if(!d64_path_join())return 0;memcpy(path,d64_path_output,128);}
  sq_page=1;if(sq_read()!=192u)return 0;memcpy(&identity,sq_bytes+188,4);if(kind==2)memcpy(path+96,sq_bytes,32);
+#if DOS64_SETUP_COLD_INVENTORY
+ if((q.valid||inventory_valid)&&(identity!=q.identity||(kind<8u?(q.valid&(1u<<kind)):(inventory_valid&(1u<<(kind-8u))))))return 0;
+#else
  if(q.valid&&(identity!=q.identity||(q.valid&(1u<<kind))))return 0;
+#endif
  memcpy(d64_path_source,path,128);if(!d64_path_parent())return 0;
  bc_config[0].owner=0xa5;bc_config[0].target=1;bc_config[0].capacity=so_capacity();memcpy(bc_config[0].root,d64_path_output,128);
  bc_slot=0;if(!bc_clear_error()||!c32_init())return 0;
@@ -176,16 +211,27 @@ void sl_poll(void){br_u16 n;
  case CLOSE2:
   if(!bc_files_closed()||so_ui_ticket()!=q.ticket){first(SL_INPUT);failed();break;}service();if(q.error){failed();break;}
 #if DOS64_SETUP_RELEASE_PREFLIGHT
-  if(q.kind>=3u&&(q.raw^0xffffffffUL)!=asset_crc[kind_asset[q.kind]]){first(SL_RELEASE);failed();break;}
+  if(q.kind>=3u&&(q.raw^0xffffffffUL)!=asset_crc[kind_asset[q.kind]]){first(SL_RELEASE);
+#if DOS64_FILE_DIAGNOSTICS
+   sf_op=6u; /* Actual final whole-file CRC comparison, after known CLOSE. */
+#endif
+   failed();break;}
   if(q.kind<5u)
 #endif
-  q.crc[q.kind]=q.raw^0xffffffffUL;q.valid|=1u<<q.kind;q.state=SL_DONE;break;
+  q.crc[q.kind]=q.raw^0xffffffffUL;
+#if DOS64_SETUP_COLD_INVENTORY
+  if(q.kind>=8u)inventory_valid|=1u<<(q.kind-8u);else
+#endif
+  q.valid|=1u<<q.kind;q.state=SL_DONE;break;
  default:first(SL_INPUT);failed();break;
  }publish();
 }
 void sl_cancel(void){if(q.state==SL_BUSY){q.clock_bad=0;sample();if(q.waiting)observe();cancel(SL_CANCEL);if(!q.waiting)failed();}publish();}
+#if DOS64_SETUP_COLD_INVENTORY
+br_u8 sl_inventory_fact(void){return q.installed==0xa5&&q.state==SL_DONE&&!q.error&&q.valid==255u&&inventory_valid==7u&&sl_generation==q.generation&&sl_identity==q.identity;}
+#endif
 #pragma code-name(push,"HIGH_CODE")
 br_u8 sl_state(void){return q.state;}
 br_u8 sl_error(void){return q.error;}
-br_u8 sl_fact(void){br_u8 k=sl_kind;if(q.installed!=0xa5||q.state==SL_BUSY||q.state==SL_FAILED||k>=5||!(q.valid&(1u<<k))||sl_generation!=q.generation||sl_identity!=q.identity)return 0;sl_receipt.generation=q.generation;sl_receipt.identity=q.identity;sl_receipt.bytes=k<3?368640UL:k==3?18432UL:64UL;sl_receipt.crc=q.crc[k];return 1;}
+br_u8 sl_fact(void){br_u8 k=sl_kind;if(q.installed!=0xa5||q.state==SL_BUSY||q.state==SL_FAILED||k>=5||!(q.valid&(1u<<k))||sl_generation!=q.generation||sl_identity!=q.identity)return 0;sl_receipt.generation=q.generation;sl_receipt.identity=q.identity;sl_receipt.bytes=k<3?368640UL:k==3?ST_TEMPLATE_BYTES:64UL;sl_receipt.crc=q.crc[k];return 1;}
 #pragma code-name(pop)

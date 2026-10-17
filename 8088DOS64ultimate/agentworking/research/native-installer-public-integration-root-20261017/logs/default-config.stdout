@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/default-config/run-dacksga0",
+  "products": {
+    "CONFIG.PRG": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/default-config/run-dacksga0/products/CONFIG.PRG",
+      "sha256": "508d1943fe021f956b62a6ac7b8be1a6b9e7725736e364f05be70839a6f4486a",
+      "bytes": 42892
+    },
+    "CONFIG.labels": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/default-config/run-dacksga0/products/CONFIG.labels",
+      "sha256": "e5306ea71819b75835143180f15dd641cad649f66b88f1c4f309ed1995481a86",
+      "bytes": 19121
+    },
+    "CONFIG.map": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/default-config/run-dacksga0/products/CONFIG.map",
+      "sha256": "836e0a07d66676843e3bc080f40458ebe41fd70099c83d3f5f5537dbb4a799dd",
+      "bytes": 299483
+    }
+  },
+  "groups": {}
+}

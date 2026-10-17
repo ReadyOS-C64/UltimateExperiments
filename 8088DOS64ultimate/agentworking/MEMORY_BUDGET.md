@@ -319,3 +319,8 @@ Optional native main CODE080D..3C8D/RO3C8E..3FEC/NATIVESTATE3FED..3FF4 leaves11B
 ## 2026-10-17 — public source-built matched cold bundle
 
 Public START2f8e86c9 is20480B, loads0801..57FE; INO44dd9461=7692B6000..7E0B (sharedprefix1350B), RCV08715a79=7902B6000..7EDD with1226B private state9000..94C9, RFWf11b0c1d=5578B codeA000..B5C9 with871B state9800..9B66. Actual linker layout and strict bundle checks pass; allthree raw executable assets exact sealedparent. Runtime c7a14a3a/MNU407f91b8 same size/layout as806e/1b70; only cohortDATA retagged. Split56KiB MNU spans3DA000/24576 and3F0000/32768; threecompletefloppy arenas and minimum4MiB unchanged. No new allocations from builder promotion.
+
+
+## 2026-10-17 — public current cold56 native installer
+
+Measured source-built SETUPe71043197B: residentDATA5FFF/no spare; FATCODE6000..AF96/ROAF97..AFFC (3Bfree), UICODE6000..9C14/RO9C15..A24B, UIBSS A24C..ABEA, initialUI serialized/padded20KiB6000..AFFF then BOOTstripB000..B0BB. PUBCODE6000..A180/ROA181..A2CC, PUBBSSA2CD..AF39. OrdinaryBSSB000..BF9E,94BFILEhelperBFA0..BFFD; UCI C000..C39F, AUXC3A0..C7FF/no spare, DEVICESTATEC800..C842, BOOTDIAGC843..C8FE, CRCtablesC900..CCFF. StackCFFF downward reservedCD00..CFFF; currentfocusedfault lowwaterguards pass, parent's perinstruction fullFW minimumCF89 remains its ownscope. HIGHBSS E000..F6F0/15Bfree, HIGHCODE F700..FFF2/7Bfree. CONFIG3deb43233B keeps HIGHsource9000/runE000/8116B and224BcoldstripB000; permanentstateendBFBE/phasecodeend86A3/state8700..AFB7. Exact maps/metadata in Rootintegrationarchive. Split56KiB MNUcache080000..08DFFF, RCV08E000..08FFFF, RFW090000..091FFF; unchanged4MiB/threefullfloppy arenas.

@@ -1,4 +1,17 @@
 .setcpu "6502"
+.ifndef DOS64_BOOT_DIAGNOSTICS
+DOS64_BOOT_DIAGNOSTICS=0
+.endif
+.if DOS64_BOOT_DIAGNOSTICS
+.import bd_render,__BOOT_DIAG_LOAD__
+.export failure_closed
+.endif
+.ifndef DOS64_FILE_DIAGNOSTICS
+DOS64_FILE_DIAGNOSTICS=0
+.endif
+.if DOS64_FILE_DIAGNOSTICS
+.import _sf_name,_sf_op,_sf_code,_sf_leaf,_sf_transport
+.endif
 .macpack longbranch
 .include "coordinator_internal.inc"
 .importzp ptr1
@@ -40,8 +53,14 @@ setup_loop:
  jsr _rc_poll
  jmp setup_loop
 setup_boot_failed:
+.if DOS64_BOOT_DIAGNOSTICS
+ lda #1
+ jmp bd_render ; diagnostic range completed/readback before installation can fail
+ nop
+.else
  inc $d020
  jmp setup_boot_failed
+.endif
 .assert setup_boot=$080d,lderror,"BASIC SYS must enter real bootstrap"
 .segment "HIGH_CODE"
 _rc_state:
@@ -146,8 +165,12 @@ _rc_poll:
  jeq publish_run
  cmp #5
  bne @idle
+.if DOS64_BOOT_DIAGNOSTICS
+ jmp rc_failure_screen
+.else
  lda phase_verified
  jne rc_failure_screen
+.endif
 @idle:
  rts
 close_poll:
@@ -349,6 +372,115 @@ retire:
 ; Permanent copied code, independent of UI/FAT/PUB residency. All text is
 ; bounded at assembly time. The display is informational, never job authority.
 rc_failure_screen:
+.if DOS64_BOOT_DIAGNOSTICS
+.if DOS64_FILE_DIAGNOSTICS
+ lda phase_verified
+ beq @early
+ lda _sf_name
+ bne :+
+@early:
+.else
+ lda phase_verified
+ bne :+
+.endif
+ lda error
+ jmp bd_render ; installed/readback before admitted startup, no UI dependency
+:
+.endif
+.if DOS64_FILE_DIAGNOSTICS
+ lda failure_shown
+ beq :+
+ rts
+:
+ inc failure_shown
+ ldx #159
+@clear:
+ lda #32
+ sta $0748,x
+ lda #1
+ sta $db48,x
+ dex
+ cpx #$ff
+ bne @clear
+ lda #<sf_common
+ sta ptr1
+ lda #>sf_common
+ sta ptr1+1
+ ldy #0
+ ldx #0
+ jsr rc_draw_line
+ ldx #40
+ iny
+ jsr rc_draw_line
+ lda error
+ ldx #3
+ jsr sf_hex
+ lda _sf_code
+ ldx #9
+ jsr sf_hex
+ lda _sf_leaf
+ ldx #59
+ jsr sf_hex
+ lda _sf_transport
+ ldx #65
+ jsr sf_hex
+ ldy #8
+@name:
+ lda _sf_name,y
+ beq :+
+ and #$3f
+ sta $0748+45,y
+:
+ dey
+ bpl @name
+ lda _sf_op
+ cmp #9
+ bcc :+
+ lda #0
+:
+ asl
+ asl
+ tay
+ ldx #0
+@op:
+ lda sf_ops,y
+ and #$3f
+ sta $0748+15,x
+ iny
+ inx
+ cpx #4
+ bne @op
+ lda failure_closed
+ beq @unknown
+ lda #<sf_closed
+ ldx #>sf_closed
+ bne @message
+@unknown:
+ lda #<sf_unknown
+ ldx #>sf_unknown
+@message:
+ sta ptr1
+ stx ptr1+1
+ ldy #0
+ ldx #80
+ jsr rc_draw_line
+ ldx #120
+ iny
+ jmp rc_draw_line
+sf_hex:
+ pha
+ lsr
+ lsr
+ lsr
+ lsr
+ jsr rc_hex_glyph
+ sta $0748,x
+ pla
+ and #15
+ jsr rc_hex_glyph
+ sta $0749,x
+ rts
+.else
  lda failure_shown
  bne @done
  inc failure_shown
@@ -402,6 +534,7 @@ rc_failure_screen:
  jmp rc_draw_line
 @done:
  rts
+.endif
 rc_draw_line:
  lda (ptr1),y
  beq @done
@@ -412,6 +545,9 @@ rc_draw_line:
  bne rc_draw_line
 @done:
  rts
+.if DOS64_FILE_DIAGNOSTICS
+.segment "FILE_DIAG"
+.endif
 rc_hex_glyph:
  cmp #10
  bcc :+
@@ -421,6 +557,17 @@ rc_hex_glyph:
  and #$3f
  rts
 .segment "AUX_RO"
+.if DOS64_FILE_DIAGNOSTICS
+sf_common:
+ .byte "ERR00 WHY00 OP:    ",0
+ .byte "FILE:          LEAF00 UCI00",0
+sf_closed:
+ .byte "CLOSE:Y",0,"RELOAD,NEW DIR",0
+sf_unknown:
+ .byte "CLOSE:?",0,"STOP. NO RETRY.",0
+sf_ops:
+ .byte "CHEKOPENINFOLOADCLOSCHEKCRC INSTCLOS"
+.else
 rc_failed_common:
  .byte "SETUP STOPPED - ERROR "
 rc_error_digits:
@@ -442,3 +589,4 @@ rc_failed_text_end:
 .assert rc_failed_unknown-rc_closed_second<=41,error,"failure row24 closed bounds"
 .assert rc_unknown_second-rc_failed_unknown<=41,error,"failure row23 unknown bounds"
 .assert rc_failed_text_end-rc_unknown_second<=41,error,"failure row24 unknown bounds"
+.endif

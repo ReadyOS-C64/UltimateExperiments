@@ -340,3 +340,8 @@ Promote the reviewed cold builder18owned paths and exact accepted27 Python descr
 ## 2026-10-17 — public FORMAT tests execute the runtime profile directly
 
 Expose `make test-floppy-format` using public runtime/model sources and actual12Python+2Zig assertions; do not make an oversized fullFORMAT1 UNIT fit by silently deleting coverage. The ordinary UNIT0 remains its own lane. Model and Zig binaries are freshly compiled; record actualclang SDK dependencies and installedZig distribution before/after. Synthetictrack/corruption/fault tests do not replace genuineDOS/SYS/boot/persistence orUltimate gates.
+
+
+## 2026-10-17 — public cold56 installer and checked metadata intake
+
+Promote the38path layered27/1b20/78e graph, with actual BASIC37 bankguard before B000 diagnostic reads. Preserve numericdefault0 and earlierfiveasset/default nativebytes. Newcold sourcebuilder publishes named metadata products; SETUP/CONFIG intake verifies exact hash/ownedrun and all declared provider inputs/products, with recordedlegacy metadata fallback. No unrecordedmap/labels authority or unuseddeclaredproduct corruption accepted. Current trusted FAT/PUB/INO panes cover their measuredscope only; remaining path/operation errorUX stays V1work. Trustedregisteredfileload/bootstrap is an explicitassumption, not a promise against arbitrary corrupt bootstrapcode.

@@ -105,3 +105,6 @@ The source-only matched cold START builder is now public and passes11host groups
 
 
 The clean public `make test-floppy-format` command now passes12actual-runtime Python and2directZig groups with fresh source-built models. This makes the FORMAT component tests reproducible without vendor media; genuineDOS FORMAT/SYS/boot, saving and finalUltimate acceptance keep their own gates. [Test evidence](../agentworking/evidence/public-format-tests-root-20261017.json).
+
+
+The current public cold56 SETUP/CONFIG source profile now builds against the matched eight assets; actual BASIC37 startup/error components and checkedmetadata intake pass. Defaults remain byteexact. FullnewSETUP/CONFIG-generatedDOS/media, remainingfilename/CONFIGpublication clarity and finalUltimate/human gates remainopen. [Installer integration evidence](../agentworking/evidence/native-installer-public-integration-root-20261017.json).

@@ -1,0 +1,108 @@
+{
+  "base_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-cold-matched-20261017/MANIFEST.json",
+  "base_sha256": "e22ada909926b55360aacc43b30486b0180cac49f4f8ded2bcc6d725a994347a",
+  "files": {
+    "tools/setup/template_limits.h": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-cold56-inventory-20261017/project/tools/setup/template_limits.h",
+      "base": {
+        "sha256": "94f3edc1910c7e468d68dd92380cedf7caaf4716dede7a9bc2645bc3c6ef9c93",
+        "bytes": 456
+      },
+      "new": {
+        "sha256": "1001a2b4ebf43a1134628592cdac5c827a8392d96345f6cb4774696ce7df8e17",
+        "bytes": 624
+      }
+    },
+    "tools/setup/app/source_load.c": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-cold56-inventory-20261017/project/tools/setup/app/source_load.c",
+      "base": {
+        "sha256": "8638a34963381ca81b6c5b3974f027e073ede3eabc427f1af73ddb0f42c83e1d",
+        "bytes": 12124
+      },
+      "new": {
+        "sha256": "c59a9ecb58f486e6f17c7bb4feb49a1806f3917bf97833a3fbc416c6fafe5f3a",
+        "bytes": 12218
+      }
+    },
+    "tools/setup/app/raw_output.c": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-cold56-inventory-20261017/project/tools/setup/app/raw_output.c",
+      "base": {
+        "sha256": "b45a27700846ec01022a6dedf5db0797063d1f20d9d8170717f9090f2c17e413",
+        "bytes": 12998
+      },
+      "new": {
+        "sha256": "d77fa7ca869c8779faf8d909b57bef3ee9f9baa194cd21eecf84b208e11670ef",
+        "bytes": 13192
+      }
+    },
+    "tools/setup/app/publish_worker_asm.s": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-cold56-inventory-20261017/project/tools/setup/app/publish_worker_asm.s",
+      "base": {
+        "sha256": "15a7417921c64865f878068140e96c8924b360705c1576d59c919d11f89aac01",
+        "bytes": 11325
+      },
+      "new": {
+        "sha256": "7e8635e9cbb944b471283aa9dde52dff9a4da0e37a3bb44094e42fc718c45d03",
+        "bytes": 11503
+      }
+    },
+    "build_support/setup_installer.py": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-cold56-inventory-20261017/project/build_support/setup_installer.py",
+      "base": {
+        "sha256": "ee48a2d36cd4acbd58e8125310940c4c76703fdfb91316f2f8e01c3d9e11a77c",
+        "bytes": 21140
+      },
+      "new": {
+        "sha256": "cbc5cd2c5bca07e9666360b81ca06d960065e2727f09c3860864cd07e6dbd9fe",
+        "bytes": 21533
+      }
+    },
+    "build_support/setup.mk": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-cold56-inventory-20261017/project/build_support/setup.mk",
+      "base": {
+        "sha256": "8abd0f480c8c1ba93efcb156d99b1ca27688b2d13d2fe5b1f670a80164942e95",
+        "bytes": 4407
+      },
+      "new": {
+        "sha256": "93db15dc41ae1cc29e29dce20d4adf399b5b91a1c41febdda85aa68dc733e9b0",
+        "bytes": 5314
+      }
+    },
+    "build_support/start_ini_bundle.py": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-cold56-inventory-20261017/project/build_support/start_ini_bundle.py",
+      "base": {
+        "sha256": "25e61f0de98d8ed32df38beaebca088af56d59f9a6d3350e5027681a8e39e666",
+        "bytes": 9362
+      },
+      "new": {
+        "sha256": "d5e4467c3496dccb49e2c300dd4bd1d9949c37ea96a58cba4c4fbf9ce666a567",
+        "bytes": 9537
+      }
+    },
+    "build_support/config_generation.py": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-cold56-inventory-20261017/project/build_support/config_generation.py",
+      "base": {
+        "sha256": "1bbff92d2cf58a9a4383bf85fa6fcfbca3da6ea1e77ac14a1f9d92caed9e9a4d",
+        "bytes": 16816
+      },
+      "new": {
+        "sha256": "e227e33a35b207e59afeeb2c8b8ac5e69a678fc3c1058c798995b8c709e310c1",
+        "bytes": 17163
+      }
+    },
+    "build_support/cold_release_bundle.py": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-cold56-inventory-20261017/project/build_support/cold_release_bundle.py",
+      "base": {
+        "sha256": "52ba69be731f25d5cbb5ebcb2cd8a34c05dabb4bcd478401ca74d537d03b186f",
+        "bytes": 5032
+      },
+      "new": {
+        "sha256": "0852ac6ee795475ffc815586bd2a0a2d519b006c72493bf589bd3471eb9f8b9b",
+        "bytes": 5124
+      }
+    }
+  },
+  "numeric_default_OFF": "DOS64_SETUP_MNU_56K=0",
+  "explicit_flags": "--cold-inventory --start20k --mnu56k",
+  "physical": false
+}

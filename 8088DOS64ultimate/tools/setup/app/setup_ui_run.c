@@ -11,7 +11,11 @@
 #define DOS64_SETUP_RELEASE_PREFLIGHT 0
 #endif
 #if DOS64_SETUP_RELEASE_PREFLIGHT
+#if DOS64_SETUP_COLD_INVENTORY
+#define SU_SOURCE_COUNT 11u
+#else
 #define SU_SOURCE_COUNT 8u
+#endif
 #else
 #define SU_SOURCE_COUNT 5u
 #endif
@@ -21,7 +25,12 @@ static br_u8 state,error,phase,kind,drain;
 static void first(br_u8 e){if(!error)error=e;}
 static void failed(void){phase=5;}
 #if DOS64_SETUP_RELEASE_PREFLIGHT
-static void caption(void){br_u8 i;const char*p=kind<3u?"Loading DOS ":kind==3u?"Checking START.TPL":kind==4u?"Checking START.REL":kind==5u?"Checking DOS64.PRG":kind==6u?"Checking DOS64.REL":"Checking START.INO";
+static void caption(void){br_u8 i;const char*p=
+#if DOS64_SETUP_COLD_INVENTORY
+ kind<3u?"Loading DOS ":"Checking release files.";
+#else
+ kind<3u?"Loading DOS ":kind==3u?"Checking START.TPL":kind==4u?"Checking START.REL":kind==5u?"Checking DOS64.PRG":kind==6u?"Checking DOS64.REL":"Checking START.INO";
+#endif
  ps_row=20;ps_color=1;for(i=0;i<40u;++i){ps_col=i;ps_ascii=*p?*p++:' ';ps_put();}if(kind<3u){ps_col=12;ps_ascii='1'+kind;ps_put();}}
 #else
 static void caption(void){const char*p=kind<3u?"Loading DOS ":kind==3u?"Loading START":"Loading info ";

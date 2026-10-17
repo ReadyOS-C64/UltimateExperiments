@@ -1,6 +1,15 @@
+.ifndef DOS64_SETUP_MNU_56K
+DOS64_SETUP_MNU_56K=0
+.endif
 .setcpu "6502"
 .macpack longbranch
 .include "coordinator_internal.inc"
+.ifdef DOS64_SETUP_COLD_INVENTORY
+.if DOS64_SETUP_COLD_INVENTORY
+.include "cold_assets.inc"
+.import _rw_begin_existing,_rc_inventory_ready
+.endif
+.endif
 .importzp ptr1,sreg
 .import _rc_retained,_fw_internal,_so_publish_ticket,_so_capacity
 .import _bc_files_closed,_ps_clock_poll,_ps_ticks,_c32_init
@@ -270,6 +279,25 @@ _pw_run:
  jsr _rw_rearm
  cmp #1
  jne raw_fail
+.ifdef DOS64_SETUP_COLD_INVENTORY
+.if DOS64_SETUP_COLD_INVENTORY
+ lda _rc_inventory_ready
+ cmp #1
+ jne input_fail
+ lda #3
+@existing:
+ jsr raw_file
+ MUST
+ jsr _rw_rearm
+ cmp #1
+ jne raw_fail
+ lda kind
+ clc
+ adc #1
+ cmp #6
+ bcc @existing
+.endif
+.endif
  lda #4
  sta _pw_private_stage
  jsr _pb_ready
@@ -354,6 +382,33 @@ raw_file:
  cpy #4
  bne @size
  lda kind
+.ifdef DOS64_SETUP_COLD_INVENTORY
+.if DOS64_SETUP_COLD_INVENTORY
+ cmp #3
+ bcc :+
+ sec
+ sbc #3
+ asl a
+ asl a
+ tax
+ lda extra_crc,x
+ ldy extra_crc+2,x
+ sty sreg
+ ldy extra_crc+3,x
+ sty sreg+1
+ pha
+ lda extra_crc+1,x
+ tax
+ pla
+ jmp @savecrc
+:
+.endif
+.endif
+.ifdef DOS64_SETUP_COLD_INVENTORY
+.if DOS64_SETUP_COLD_INVENTORY
+ lda kind
+.endif
+.endif
  beq @acr
  cmp #1
  bne @cfgcrc
@@ -429,7 +484,18 @@ raw_file:
  iny
  jmp @name
 @begin:
+.ifdef DOS64_SETUP_COLD_INVENTORY
+.if DOS64_SETUP_COLD_INVENTORY
+ lda kind
+ cmp #3
+ bcc :+
+ jsr _rw_begin_existing
+ jmp @begun
+:
+.endif
+.endif
  jsr _rw_begin
+@begun:
  cmp #1
  jne raw_fail
 @poll:
@@ -458,8 +524,26 @@ raw_file:
  ldy #0
 @facts:
  lda sizes,x
+.ifdef DOS64_SETUP_COLD_INVENTORY
+.if DOS64_SETUP_COLD_INVENTORY
+ pha
+ lda kind
+ cmp #3
+ bcc @written
+ lda _rw_result+8,y
+ bne @existing_bad
+ pla
+ jmp @verified
+@existing_bad:
+ pla
+ jmp raw_fail
+@written:
+ pla
+.endif
+.endif
  cmp _rw_result+8,y
  jne raw_fail
+@verified:
  cmp _rw_result+12,y
  jne raw_fail
  lda job_crc,y
@@ -592,14 +676,51 @@ a_source:.dword $200000
 template_source:.dword $2e0000
 descriptor_source:.dword $3fec00
 descriptor_size:.dword 64
+.ifndef DOS64_START_TEMPLATE_20K
+DOS64_START_TEMPLATE_20K=0
+.endif
+.if DOS64_START_TEMPLATE_20K
+sizes:.dword 368640,20480,576
+.else
 sizes:.dword 368640,18432,576
+.endif
+.ifdef DOS64_SETUP_COLD_INVENTORY
+.if DOS64_SETUP_COLD_INVENTORY
+.dword CI_MNU_BYTES,CI_RCV_BYTES,CI_RFW_BYTES
+.endif
+.endif
 c_size0:.dword $200000
 c_size1:.dword $1400000
+.ifdef DOS64_SETUP_COLD_INVENTORY
+.if DOS64_SETUP_COLD_INVENTORY
+sources_lo:.byte $00,$00,$00,$00,$00,$00
+.if DOS64_SETUP_MNU_56K
+sources_hi:.byte $00,$80,$d0,$00,$e0,$00
+sources_bank:.byte $20,$3f,$3f,$08,$08,$09
+.else
+sources_hi:.byte $00,$80,$d0,$00,$a0,$c0
+sources_bank:.byte $20,$3f,$3f,$08,$08,$08
+.endif
+names_lo:.byte <name_a,<name_start,<name_cfg,<name_mnu,<name_rcv,<name_rfw
+names_hi:.byte >name_a,>name_start,>name_cfg,>name_mnu,>name_rcv,>name_rfw
+extra_crc:.dword CI_MNU_CRC,CI_RCV_CRC,CI_RFW_CRC
+name_mnu:.asciiz "DOS64.MNU"
+name_rcv:.asciiz "START.RCV"
+name_rfw:.asciiz "START.RFW"
+.else
 sources_lo:.byte $00,$00,$00
 sources_hi:.byte $00,$80,$d0
 sources_bank:.byte $20,$3f,$3f
 names_lo:.byte <name_a,<name_start,<name_cfg
 names_hi:.byte >name_a,>name_start,>name_cfg
+.endif
+.else
+sources_lo:.byte $00,$00,$00
+sources_hi:.byte $00,$80,$d0
+sources_bank:.byte $20,$3f,$3f
+names_lo:.byte <name_a,<name_start,<name_cfg
+names_hi:.byte >name_a,>name_start,>name_cfg
+.endif
 name_a:.asciiz "A.IMG"
 name_start:.asciiz "START.PRG"
 name_cfg:.asciiz "DOS64.CFG"

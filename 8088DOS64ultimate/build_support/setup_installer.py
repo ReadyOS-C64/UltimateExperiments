@@ -52,12 +52,12 @@ def check_preflight_layout(work):
     if control%512+131>512:
         raise RuntimeError('SETUP preflight requires the disabled START control capsule within one512-byte source block')
 
-def bind_release(result_path,work,record):
+def bind_release(result_path,work,record,*,start20k=False,cold_inventory=False,mnu56k=False):
     # One existing validated five-asset binding engine serves SETUP and CONFIG.
     path=ROOT/'build_support/config_generation.py';record[str(path)]=digest(path)
     spec=importlib.util.spec_from_file_location('setup_release_binding',path)
     helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
-    result=helper.bind_release(result_path.resolve(),work,record)
+    result=helper.bind_release(result_path.resolve(),work,record,start20k=start20k,cold_inventory=cold_inventory,mnu56k=mnu56k)
     check_preflight_layout(work)
     verify(record)
     return result
@@ -90,7 +90,7 @@ def memory_check(build):
         'AUX_serialized_after_HIGH':l['__AUX_CODE_LOAD__']==l['__HIGH_CODE_LOAD__']+l['__HIGH_CODE_SIZE__'],
         'AUX_RO_serialized':l['__AUX_RO_LOAD__']==l['__AUX_CODE_LOAD__']+l['__AUX_CODE_SIZE__'],
         'UI_BSS_after_live_core':l['__UIBSS_RUN__']==end('UI_RO'),
-        'initial_serialized_image_fits':l['__AUX_RO_LOAD__']+l['__AUX_RO_SIZE__']<=0xb000,
+        'initial_serialized_image_fits':max(l['__AUX_RO_LOAD__']+l['__AUX_RO_SIZE__'],l.get('__FILE_DIAG_LOAD__',0)+l.get('__FILE_DIAG_SIZE__',0),0 if l.get('__BOOT_DIAG_LOAD__')==0xb000 else l.get('__BOOT_DIAG_LOAD__',0)+l.get('__BOOT_DIAG_SIZE__',0))<=0xb000,
         'UI_fits':end('UIBSS')<=0xb000,
         'FAT_fits':end('FAT_RO')<=0xb000,
         'PUB_fits':end('PUBBSS')<=0xb000,
@@ -99,6 +99,15 @@ def memory_check(build):
         'HIGH_code_vectors_disjoint':l['__HIGH_CODE_RUN__']==0xf700 and end('HIGH_CODE')<=0xfffa,
         'AUX_run_bounds':l['__AUX_CODE_RUN__']==0xc3a0 and end('AUX_RO')<=0xc800,
     }
+    if l.get('__BOOT_DIAG_SIZE__',0):
+        checks.update({'trusted_DIAG_source_placement':l['__BOOT_DIAG_LOAD__']==l['__AUX_RO_LOAD__']+l['__AUX_RO_SIZE__'] or (l.get('__FILE_DIAG_SIZE__',0)>0 and l['__BOOT_DIAG_LOAD__']==0xb000),
+                       'trusted_DIAG_device_tail':l['__BOOT_DIAG_RUN__']==0xc843 and end('BOOT_DIAG')<=0xc900,
+                       'trusted_DIAG_source_lifetime':l['__BOOT_DIAG_LOAD__']+l['__BOOT_DIAG_SIZE__']<=0xb000 or (l['__BOOT_DIAG_LOAD__']==0xb000 and l['__BOOT_DIAG_SIZE__']<=256),
+                       'trusted_DIAG_excludes_FILES_STATE':l['dos64_files_state_end']<=l['__BOOT_DIAG_RUN__']})
+    if l.get('__FILE_DIAG_SIZE__',0):
+        checks.update({'file_helper_run':l['__FILE_DIAG_RUN__']==0xbfa0 and end('FILE_DIAG')<=0xc000,
+                       'file_helper_source':l['__FILE_DIAG_LOAD__']==l['__AUX_RO_LOAD__']+l['__AUX_RO_SIZE__'],
+                       'file_helper_BSS_disjoint':end('BSS')<=0xbfa0})
     if not all(checks.values()):raise RuntimeError('SETUP memory contract failed: '+json.dumps(checks))
     segments={}
     for line in (build/'setup.map').read_text().splitlines():
@@ -108,10 +117,10 @@ def memory_check(build):
     if segments['DATA']['end']>=0x6000:raise RuntimeError('Resident SETUP exceeds6000')
     return {'checks':checks,'segments':segments,'free':{'resident':0x6000-segments['DATA']['end']-1,'FAT':0xb000-end('FAT_RO'),'UI_stage':0xb000-end('UIBSS'),'PUB':0xb000-end('PUBBSS'),'HIGH_code':0xfffa-end('HIGH_CODE'),'HIGH_state':0xf700-end('HIGHBSS'),'AUX':0xc800-end('AUX_RO')}}
 
-SOURCES={'bindings.s': 'tools/setup/app/bindings.s', 'bulk_context.c': 'tools/setup/app/bulk_context.c', 'bulk_context.h': 'tools/setup/app/bulk_context.h', 'bulk_reu.c': 'tools/setup/app/bulk_reu.c', 'bulk_reu.h': 'tools/setup/app/bulk_reu.h', 'bulk_uci.h': 'tools/native/bulk_uci.h', 'compact.cfg': 'tools/setup/app/compact.cfg', 'context_bindings.s': 'tools/setup/app/context_bindings.s', 'coordinator.s': 'tools/setup/app/coordinator.s', 'coordinator_capture.c': 'tools/setup/app/coordinator_capture.c', 'coordinator_capture.h': 'tools/setup/app/coordinator_capture.h', 'coordinator_internal.h': 'tools/setup/app/coordinator_internal.h', 'coordinator_internal.inc': 'tools/setup/app/coordinator_internal.inc', 'crc32.h': 'tools/native/crc32.h', 'crc32.s': 'tools/native/crc32.s', 'directory_browser.c': 'tools/setup/app/directory_browser.c', 'directory_browser.h': 'tools/setup/app/directory_browser.h', 'existing_c.inc': 'tools/setup/app/existing_c.inc', 'fat_prepare.c': 'tools/setup/app/fat_prepare.c', 'fat_prepare.h': 'tools/setup/app/fat_prepare.h', 'fat_worker.s': 'tools/setup/app/fat_worker.s', 'files.inc': 'include/files.inc', 'files.s': 'tools/setup/app/files.s', 'install_config.c': 'tools/setup/app/install_config.c', 'install_config.h': 'tools/setup/app/install_config.h', 'install_writer.c': 'tools/setup/app/install_writer.c', 'install_writer.h': 'tools/setup/app/install_writer.h', 'lease_context.c': 'tools/setup/app/lease_context.c', 'native_fat.c': 'tools/setup/app/native_fat.c', 'native_fat.h': 'tools/setup/app/native_fat.h', 'overlay_bindings.s': 'tools/setup/app/overlay_bindings.s', 'overlay_manifest.s': 'tools/setup/app/overlay_manifest.s', 'platform.c': 'tools/native/platform.c', 'platform.h': 'tools/native/platform.h', 'platform.s': 'tools/native/platform.s', 'pub_codec.c': 'tools/setup/app/pub_codec.c', 'pub_config.c': 'tools/setup/app/pub_config.c', 'pub_config_original.h': 'tools/setup/app/pub_config_original.h', 'pub_config_prefix.h': 'tools/setup/app/pub_config_prefix.h', 'pub_crc_adapter.c': 'tools/setup/app/pub_crc_adapter.c', 'publish_assets.c': 'tools/setup/app/publish_assets.c', 'publish_assets.h': 'tools/setup/app/publish_assets.h', 'publish_scratch.c': 'tools/setup/app/publish_scratch.c', 'publish_scratch.h': 'tools/setup/app/publish_scratch.h', 'publish_worker.c': 'tools/setup/app/publish_worker.c', 'publish_worker.h': 'tools/setup/app/publish_worker.h', 'publish_worker_asm.s': 'tools/setup/app/publish_worker_asm.s', 'raw_output.c': 'tools/setup/app/raw_output.c', 'raw_output.h': 'tools/setup/app/raw_output.h', 'selection_capsule.c': 'tools/setup/app/selection_capsule.c', 'selection_capsule.h': 'tools/setup/app/selection_capsule.h', 'setup_cooperate.c': 'tools/setup/app/setup_cooperate.c', 'setup_cooperate.h': 'tools/setup/app/setup_cooperate.h', 'setup_copy.s': 'tools/setup/app/setup_copy.s', 'setup_dma.s': 'tools/setup/app/setup_dma.s', 'setup_io.c': 'tools/setup/app/setup_io.c', 'setup_io.h': 'tools/setup/app/setup_io.h', 'setup_overlay.c': 'tools/setup/app/setup_overlay.c', 'setup_overlay.h': 'tools/setup/app/setup_overlay.h', 'setup_select.c': 'tools/setup/app/setup_select.c', 'setup_select.h': 'tools/setup/app/setup_select.h', 'setup_ui_run.c': 'tools/setup/app/setup_ui_run.c', 'setup_ui_run.h': 'tools/setup/app/setup_ui_run.h', 'shared/abi.inc': 'include/abi.inc', 'shared/reu.inc': 'include/reu.inc', 'shared/reu.s': 'tools/setup/app/shared/reu.s', 'source_load.c': 'tools/setup/app/source_load.c', 'source_load.h': 'tools/setup/app/source_load.h', 'start_template.c': 'tools/setup/start_template.c', 'start_template.h': 'tools/setup/start_template.h', 'startup.s': 'tools/setup/app/startup.s', 'startup_close.s': 'tools/native/startup_close.s', 'startup_glue.s': 'tools/setup/app/startup_glue.s', 'uci.inc': 'include/uci.inc', 'uci.s': 'tools/setup/app/uci.s', 'ui_fixture.c': 'tools/setup/app/selection_abi.c', 'validator_crc.c': 'tools/native/validator_crc.c', 'validator_crc.h': 'tools/native/validator_crc.h'}
-C_NAMES=['native_fat', 'bulk_context', 'install_config', 'directory_browser', 'lease_context', 'platform', 'setup_io', 'install_writer', 'setup_overlay', 'setup_select', 'ui_fixture', 'selection_capsule', 'raw_output', 'source_load', 'fat_prepare', 'pub_codec', 'pub_crc_adapter', 'start_template', 'publish_assets', 'publish_worker', 'publish_scratch', 'setup_ui_run', 'coordinator_capture', 'setup_cooperate']
-ASM_NAMES=['startup', 'bindings', 'context_bindings', 'uci', 'files', 'setup_dma', 'crc32', 'overlay_manifest', 'startup_close', 'startup_glue', 'overlay_bindings', 'coordinator', 'fat_worker', 'publish_worker_asm', 'setup_copy', 'platform_asm', 'reu']
-PUB_NAMES=['raw_output','pub_codec','pub_crc_adapter','start_template','publish_assets','publish_worker','publish_scratch']
+SOURCES={'file-diagnostics.cfg':'tools/setup/app/file-diagnostics.cfg','file_diag.s':'tools/setup/app/file_diag.s','file_diag.h':'tools/setup/app/file_diag.h','bootstrap_diag.s':'tools/native/bootstrap_diag.s','publish_construct.c':'tools/setup/app/publish_construct.c','publish_construct.h':'tools/setup/app/publish_construct.h','template_limits.h':'tools/setup/template_limits.h','bindings.s': 'tools/setup/app/bindings.s', 'bulk_context.c': 'tools/setup/app/bulk_context.c', 'bulk_context.h': 'tools/setup/app/bulk_context.h', 'bulk_reu.c': 'tools/setup/app/bulk_reu.c', 'bulk_reu.h': 'tools/setup/app/bulk_reu.h', 'bulk_uci.h': 'tools/native/bulk_uci.h', 'compact.cfg': 'tools/setup/app/compact.cfg', 'context_bindings.s': 'tools/setup/app/context_bindings.s', 'coordinator.s': 'tools/setup/app/coordinator.s', 'coordinator_capture.c': 'tools/setup/app/coordinator_capture.c', 'coordinator_capture.h': 'tools/setup/app/coordinator_capture.h', 'coordinator_internal.h': 'tools/setup/app/coordinator_internal.h', 'coordinator_internal.inc': 'tools/setup/app/coordinator_internal.inc', 'crc32.h': 'tools/native/crc32.h', 'crc32.s': 'tools/native/crc32.s', 'directory_browser.c': 'tools/setup/app/directory_browser.c', 'directory_browser.h': 'tools/setup/app/directory_browser.h', 'existing_c.inc': 'tools/setup/app/existing_c.inc', 'fat_prepare.c': 'tools/setup/app/fat_prepare.c', 'fat_prepare.h': 'tools/setup/app/fat_prepare.h', 'fat_worker.s': 'tools/setup/app/fat_worker.s', 'files.inc': 'include/files.inc', 'files.s': 'tools/setup/app/files.s', 'install_config.c': 'tools/setup/app/install_config.c', 'install_config.h': 'tools/setup/app/install_config.h', 'install_writer.c': 'tools/setup/app/install_writer.c', 'install_writer.h': 'tools/setup/app/install_writer.h', 'lease_context.c': 'tools/setup/app/lease_context.c', 'native_fat.c': 'tools/setup/app/native_fat.c', 'native_fat.h': 'tools/setup/app/native_fat.h', 'overlay_bindings.s': 'tools/setup/app/overlay_bindings.s', 'overlay_manifest.s': 'tools/setup/app/overlay_manifest.s', 'platform.c': 'tools/native/platform.c', 'platform.h': 'tools/native/platform.h', 'platform.s': 'tools/native/platform.s', 'pub_codec.c': 'tools/setup/app/pub_codec.c', 'pub_config.c': 'tools/setup/app/pub_config.c', 'pub_config_original.h': 'tools/setup/app/pub_config_original.h', 'pub_config_prefix.h': 'tools/setup/app/pub_config_prefix.h', 'pub_crc_adapter.c': 'tools/setup/app/pub_crc_adapter.c', 'publish_assets.c': 'tools/setup/app/publish_assets.c', 'publish_assets.h': 'tools/setup/app/publish_assets.h', 'publish_scratch.c': 'tools/setup/app/publish_scratch.c', 'publish_scratch.h': 'tools/setup/app/publish_scratch.h', 'publish_worker.c': 'tools/setup/app/publish_worker.c', 'publish_worker.h': 'tools/setup/app/publish_worker.h', 'publish_worker_asm.s': 'tools/setup/app/publish_worker_asm.s', 'raw_output.c': 'tools/setup/app/raw_output.c', 'raw_output.h': 'tools/setup/app/raw_output.h', 'selection_capsule.c': 'tools/setup/app/selection_capsule.c', 'selection_capsule.h': 'tools/setup/app/selection_capsule.h', 'setup_cooperate.c': 'tools/setup/app/setup_cooperate.c', 'setup_cooperate.h': 'tools/setup/app/setup_cooperate.h', 'setup_copy.s': 'tools/setup/app/setup_copy.s', 'setup_dma.s': 'tools/setup/app/setup_dma.s', 'setup_io.c': 'tools/setup/app/setup_io.c', 'setup_io.h': 'tools/setup/app/setup_io.h', 'setup_overlay.c': 'tools/setup/app/setup_overlay.c', 'setup_overlay.h': 'tools/setup/app/setup_overlay.h', 'setup_select.c': 'tools/setup/app/setup_select.c', 'setup_select.h': 'tools/setup/app/setup_select.h', 'setup_ui_run.c': 'tools/setup/app/setup_ui_run.c', 'setup_ui_run.h': 'tools/setup/app/setup_ui_run.h', 'shared/abi.inc': 'include/abi.inc', 'shared/reu.inc': 'include/reu.inc', 'shared/reu.s': 'tools/setup/app/shared/reu.s', 'source_load.c': 'tools/setup/app/source_load.c', 'source_load.h': 'tools/setup/app/source_load.h', 'start_template.c': 'tools/setup/start_template.c', 'start_template.h': 'tools/setup/start_template.h', 'startup.s': 'tools/setup/app/startup.s', 'startup_close.s': 'tools/native/startup_close.s', 'startup_glue.s': 'tools/setup/app/startup_glue.s', 'uci.inc': 'include/uci.inc', 'uci.s': 'tools/setup/app/uci.s', 'ui_fixture.c': 'tools/setup/app/selection_abi.c', 'validator_crc.c': 'tools/native/validator_crc.c', 'validator_crc.h': 'tools/native/validator_crc.h'}
+C_NAMES=['publish_construct','native_fat', 'bulk_context', 'install_config', 'directory_browser', 'lease_context', 'platform', 'setup_io', 'install_writer', 'setup_overlay', 'setup_select', 'ui_fixture', 'selection_capsule', 'raw_output', 'source_load', 'fat_prepare', 'pub_codec', 'pub_crc_adapter', 'start_template', 'publish_assets', 'publish_worker', 'publish_scratch', 'setup_ui_run', 'coordinator_capture', 'setup_cooperate']
+ASM_NAMES=['file_diag','bootstrap_diag','startup', 'bindings', 'context_bindings', 'uci', 'files', 'setup_dma', 'crc32', 'overlay_manifest', 'startup_close', 'startup_glue', 'overlay_bindings', 'coordinator', 'fat_worker', 'publish_worker_asm', 'setup_copy', 'platform_asm', 'reu']
+PUB_NAMES=['publish_construct','raw_output','pub_codec','pub_crc_adapter','start_template','publish_assets','publish_worker','publish_scratch']
 FAT_NAMES=['native_fat','fat_prepare']
 UI_NAMES=['install_config','directory_browser','lease_context','setup_select','ui_fixture','source_load','setup_ui_run','coordinator_capture']
 HIGH_BSS_NAMES=['directory_browser','platform','setup_io','install_writer','selection_capsule','source_load']
@@ -129,7 +138,7 @@ def metadata(B,ui,fat,pub,pub_length,core_length=None):
  for name,value,size in [('publish_bytes',pub_length,2),('publish_asset_bytes',len(pub)+64,2),('publish_crc',zlib.crc32(pub[:pub_length]),4),('publish_full_crc',zlib.crc32(pub),4)]:text+='_so_'+name+':\n.'+('word'if size==2 else'dword')+' '+str(value)+'\n'
  (B/'overlay_metadata.inc').write_text(text);return bytes(h),bytes(pub_header)
 
-def build_native(work,t,release_bound=False):
+def build_native(work,t,release_bound=False,*,start20k=None,cold_inventory=False,mnu56k=False,startup_diagnostics=False,file_diagnostics=False):
     commands=[];B=work/'build';B.mkdir()
     # Fixed-size placeholders do not affect placement. Actual phase bytes are
     # measured below and replace these fields before the second link.
@@ -138,18 +147,23 @@ def build_native(work,t,release_bound=False):
         output=n+'_c'if n=='platform'else n
         phase='PUB'if n in PUB_NAMES else'FAT'if n in FAT_NAMES else'UI'if n in UI_NAMES else None
         opts=['--code-name',phase+'_CODE','--rodata-name',phase+'_RO']if phase else[]
+        if cold_inventory:opts += ['-D','DOS64_SETUP_COLD_INVENTORY=1']
+        if mnu56k:opts += ['-D','DOS64_SETUP_MNU_56K=1']
+        if start20k is not None:opts += ['-D','DOS64_START_TEMPLATE_20K='+str(int(start20k))]
         opts += [item for flag in DEFINES.get(n,[])for item in ['-D',flag]]
+        if file_diagnostics and not startup_diagnostics:raise RuntimeError('File diagnostics requires explicit startup diagnostics')
+        if file_diagnostics:opts += ['-D','DOS64_FILE_DIAGNOSTICS=1']
         if release_bound and n in ['source_load','setup_ui_run']:opts += ['-D','DOS64_SETUP_RELEASE_PREFLIGHT=1']
         bss='PUBBSS'if n in PUB_NAMES else'HIGHBSS'if n in HIGH_BSS_NAMES else'UIBSS'if n in UI_BSS_NAMES else None
         run([t['cc65'],'-O','-t','none','--cpu','6502',*opts,*(['--bss-name',bss]if bss else[]),'-I',work,'-o',B/(output+'.s'),work/(n+'.c')],work,commands)
         run([t['ca65'],'-g','-D','DOS64_FILES_INFO=1','-I',work,'-I',work/'shared','-o',B/(output+'.o'),B/(output+'.s')],work,commands)
     for n in ASM_NAMES:
         source=work/'platform.s'if n=='platform_asm'else work/'shared/reu.s'if n=='reu'else work/(n+'.s')
-        run([t['ca65'],'-g','-D','DOS64_FILES_INFO=1',*(['-D','DOS64_SETUP_SMALL_UCI=1']if n in ['uci','files']else[]),'-I',work,'-I',work/'shared','-o',B/(n+'.o'),source],work,commands)
+        run([t['ca65'],'-g','-D','DOS64_FILES_INFO=1',*(['-D','DOS64_FILE_DIAGNOSTICS=1']if file_diagnostics else[]),*(['-D','DOS64_BOOT_DIAGNOSTICS=1','-D','BD_SETUP=1']if startup_diagnostics else[]),*(['-D','DOS64_SETUP_COLD_INVENTORY=1']if cold_inventory else[]),*(['-D','DOS64_SETUP_MNU_56K=1']if mnu56k else[]),*(['-D','DOS64_START_TEMPLATE_20K='+str(int(start20k))]if start20k is not None else[]),*(['-D','DOS64_SETUP_SMALL_UCI=1']if n in ['uci','files']else[]),'-I',work,'-I',work/'shared','-o',B/(n+'.o'),source],work,commands)
     objects=[B/(n+'.o')for n in ASM_NAMES+[n+'_c'if n=='platform'else n for n in C_NAMES]]
-    link=[t['ld65'],'-C',work/'compact.cfg','-o',B/'setup.prg','-Ln',B/'setup.labels','-m',B/'setup.map',*objects,t['library']]
+    link=[t['ld65'],'-C',work/('file-diagnostics.cfg'if file_diagnostics else'compact.cfg'),'-o',B/'setup.prg','-Ln',B/'setup.labels','-m',B/'setup.map',*objects,t['library']]
     run(link,work,commands);layout=memory_check(B);l=read_labels(B/'setup.labels')
-    ui_length=sum(l.get('__'+n+'_SIZE__',0)for n in ['UI_CODE','UI_RO','HIGH_CODE','AUX_CODE','AUX_RO'])
+    ui_length=0x5000 if file_diagnostics else sum(l.get('__'+n+'_SIZE__',0)for n in ['UI_CODE','UI_RO','HIGH_CODE','AUX_CODE','AUX_RO','BOOT_DIAG'])
     ui=(B/'setup.prg').read_bytes()[0x6000-0x801+2:0x6000-0x801+2+ui_length]
     fat=(B/'fat-overlay.bin').read_bytes();pub_length=l['__PUB_CODE_SIZE__']+l.get('__PUB_RO_SIZE__',0);pub=(B/'publish-overlay.bin').read_bytes().ljust(0x5000,b'\0')
     if len(ui)!=ui_length or ui_length>0x5000 or len(fat)>0x5000 or len(pub)!=0x5000 or any(pub[pub_length:]):raise RuntimeError('Invalid measured phase payload')
@@ -157,7 +171,7 @@ def build_native(work,t,release_bound=False):
     run([t['ca65'],'-g','-I',work,'-o',B/'overlay_manifest.o',work/'overlay_manifest.s'],work,commands);run(link,work,commands)
     if (B/'setup.prg').read_bytes()[0x6000-0x801+2:0x6000-0x801+2+ui_length]!=ui or(B/'fat-overlay.bin').read_bytes()!=fat or(B/'publish-overlay.bin').read_bytes()!=pub[:pub_length]:raise RuntimeError('Metadata relink changed phase bytes')
     data=(B/'setup.prg').read_bytes()
-    if data[:2]!=b'\x01\x08' or len(data)!=0x6000-0x801+2+ui_length:raise RuntimeError('Native PRG load/length changed')
+    if data[:2]!=b'\x01\x08' or len(data)!=0x6000-0x801+2+ui_length+(l['__BOOT_DIAG_SIZE__']if file_diagnostics else 0):raise RuntimeError('Native PRG load/length changed')
     (B/'SETUP.FAT').write_bytes(header+fat);(B/'SETUP.PUB').write_bytes(pub_header+pub)
     return commands,layout
 
@@ -165,8 +179,15 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--out',type=Path,default=ROOT/'build/setup-installer',help='Output folder; each build uses a fresh work directory')
     p.add_argument('--bundle-result',type=Path,help='Explicit matched coupled release RESULT; enables native early runtime preflight (default disabled)')
+    p.add_argument('--cold-inventory',action='store_true',help='Private full cold asset preflight profile; requires explicit20KiB bundle')
+    p.add_argument('--file-diagnostics',action='store_true');p.add_argument('--startup-diagnostics',action='store_true',help='Explicit trusted cold startup diagnostic strip')
+    p.add_argument('--mnu56k',action='store_true',help='Explicit56KiB MNU cache profile; requires cold inventory')
+    p.add_argument('--start20k',action='store_true',help='Private component profile for exact20KiB cold template; full RCV/RFW package remains separate')
     p.add_argument('--verify-against',type=Path,help='Development-only comparison with a qualified native build folder')
-    args=p.parse_args();out=args.out.resolve();out.mkdir(parents=True,exist_ok=True)
+    args=p.parse_args()
+    if args.mnu56k and not args.cold_inventory:p.error('--mnu56k requires --cold-inventory')
+    if args.cold_inventory and(not args.start20k or not args.bundle_result):p.error('Cold inventory requires --start20k and --bundle-result')
+    out=args.out.resolve();out.mkdir(parents=True,exist_ok=True)
     t=toolchain();record={str(Path(x).resolve()):digest(Path(x).resolve())for x in [*t.values(),sys.executable,__file__]}
     includes=Path(t['cc65']).parent.parent/'share/cc65/include'
     if not includes.is_dir():raise RuntimeError('Missing cc65 toolchain include directory')
@@ -178,13 +199,13 @@ def main():
         release=None
         if args.bundle_result:
             phase='bind coupled runtime release'
-            release=bind_release(args.bundle_result,work,record)
+            release=bind_release(args.bundle_result,work,record,start20k=args.start20k,cold_inventory=args.cold_inventory,mnu56k=args.mnu56k)
         if args.verify_against:
             reference=args.verify_against.resolve()
             for name in ['setup.prg','SETUP.FAT','SETUP.PUB','fat-overlay.bin','publish-overlay.bin','overlay_metadata.inc','setup.labels']:
                 record[str(reference/name)]=digest(reference/name)
         (work/'SOURCE_BEFORE.json').write_text(json.dumps(record,indent=2)+'\n')
-        phase='compile';commands,layout=build_native(work,t,release_bound=release is not None);verify(record)
+        phase='compile';commands,layout=build_native(work,t,release_bound=release is not None,start20k=True if args.start20k else None,cold_inventory=args.cold_inventory,mnu56k=args.mnu56k,startup_diagnostics=args.startup_diagnostics,file_diagnostics=args.file_diagnostics);verify(record)
         built=work/'build';comparisons={}
         if args.verify_against:
             phase='reference comparison'

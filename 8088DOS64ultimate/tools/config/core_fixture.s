@@ -1,4 +1,11 @@
 .setcpu "6502"
+.ifndef DOS64_BOOT_DIAGNOSTICS
+DOS64_BOOT_DIAGNOSTICS=0
+.endif
+.if DOS64_BOOT_DIAGNOSTICS
+.import bd_render,__BOOT_DIAG_RUN__,__BSS_RUN__
+.assert __BOOT_DIAG_RUN__=__BSS_RUN__,lderror,"CONFIG cold-strip/BSS exact lifetime alias"
+.endif
 .importzp sp
 .import zerobss
 .import _cg_default_start,_co_poll,_ps_guard
@@ -32,6 +39,12 @@ fixture_return: jmp fixture_return
 runtime_init:
  jsr _ps_guard
  jsr cp_bootstrap
+.if DOS64_BOOT_DIAGNOSTICS
+ bcc :+
+ lda #1
+ jmp bd_render ; failure only, before zerobss destroys this trusted cold strip
+:
+.endif
  php
  lda #$ff
  sta sp

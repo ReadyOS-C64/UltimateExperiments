@@ -1,4 +1,5 @@
 #include "raw_output.h"
+#include "template_limits.h"
 #include "bulk_context.h"
 #include "setup_overlay.h"
 #include "selection_capsule.h"
@@ -35,6 +36,21 @@ static br_u8 verify[512];
 static br_u8 waiting,cancelled,clock_bad,clock_failed;
 static br_u16 now,began,relative,wanted,steps,bad_steps,ticket;
 static br_u32 at,raw;
+#if DOS64_SETUP_COLD_INVENTORY
+#include "cold_assets.h"
+#include "coordinator_internal.h"
+static br_u8 check_only;
+static const char *const check_name[3]={"DOS64.MNU","START.RCV","START.RFW"};
+#if DOS64_SETUP_MNU_56K
+static const br_u32 check_source[3]={0x080000UL,0x08e000UL,0x090000UL};
+#define CHECK_END 0x092000UL
+#else
+static const br_u32 check_source[3]={0x080000UL,0x08a000UL,0x08c000UL};
+#define CHECK_END 0x08e000UL
+#endif
+static const br_u32 check_size[3]={CI_MNU_BYTES,CI_RCV_BYTES,CI_RFW_BYTES};
+static const br_u32 check_crc[3]={CI_MNU_CRC,CI_RCV_CRC,CI_RFW_CRC};
+#endif
 #if defined(DOS64_SETUP_PUBLICATION) && DOS64_SETUP_PUBLICATION
 static br_u32 cfg_identity,body_raw;
 static br_u8 cfg_bound;
@@ -69,6 +85,9 @@ static void failed(void){
 }
 static br_u8 source_ok(void){
  if(!owned.bytes)return 0;
+#if DOS64_SETUP_COLD_INVENTORY
+ if(check_only)return owned.source>=0x080000UL&&owned.source<CHECK_END&&owned.bytes<=CHECK_END-owned.source;
+#endif
  return (owned.source>=0x200000UL&&owned.source<0x25a000UL&&owned.bytes<=0x25a000UL-owned.source)||(owned.source>=0x3f8000UL&&owned.source<0x3ff000UL&&owned.bytes<=0x3ff000UL-owned.source);
 }
 static br_u8 path_ok(void){br_u8 n,i,length;
@@ -77,6 +96,12 @@ static br_u8 path_ok(void){br_u8 n,i,length;
  for(i=n+1u;i<128u&&owned.path[i];++i){}
  if(i==128u)return 0;length=i-n-1u;
  for(++i;i<128u;++i)if(owned.path[i])return 0;
+#if DOS64_SETUP_COLD_INVENTORY
+ if(check_only){if(!rc_inventory_ready||length!=9u||cfg_bound)return 0;
+  for(i=0;i<3u;++i)if(!memcmp(owned.path+n+1u,check_name[i],9))return owned.source==check_source[i]&&owned.bytes==check_size[i]&&owned.crc==check_crc[i];
+  return 0;
+ }
+#endif
 #if defined(DOS64_SETUP_PUBLICATION) && DOS64_SETUP_PUBLICATION
  if(length==9u&&!memcmp(owned.path+n+1u,"DOS64.CFG",9))return cfg_bound&&owned.bytes==576UL;
  if(cfg_bound)return 0;
@@ -135,11 +160,18 @@ static br_u8 cfg_chunk(const br_u8*p,br_u16 n,br_u16 offset){br_u16 count=0,i;
 }
 br_u8 rw_expect_cfg(br_u32 identity){if(ledger.state!=RW_IDLE||cfg_bound||!so_publish_ticket())return 0;cfg_identity=identity;cfg_bound=1;return 1;}
 #endif
+#if DOS64_SETUP_COLD_INVENTORY
+static br_u8 begin(br_u8 existing){br_u8 reason;
+#else
 br_u8 rw_begin(void){br_u8 reason;
+#endif
 #if defined(DOS64_SETUP_PUBLICATION) && DOS64_SETUP_PUBLICATION
  if(pb_state()==1){ledger.rejected=1;publish();return 0;}
 #endif
  if(ledger.state!=RW_IDLE||rw_request.owner!=0xa5||!rw_request.timeout||rw_request.timeout>=0x8000u||!so_publish_ticket()||si_state()!=SI_DONE||!si_closed_quiet()){ledger.rejected=1;publish();return 0;}
+#if DOS64_SETUP_COLD_INVENTORY
+ check_only=existing;
+#endif
  owned=rw_request;
  if(owned.capacity!=so_capacity()||ns_io_owner!=0xa5||ns_capacity!=owned.capacity||ns_io_error||ns_cancel||!source_ok()||!path_ok()){ledger.rejected=1;publish();return 0;}
  sq_page=0;
@@ -152,6 +184,10 @@ br_u8 rw_begin(void){br_u8 reason;
  if(!ps_clock_poll()){request_cancel(RW_CLOCK);failed();publish();return 0;}now=began=ps_ticks;
  service();if(ledger.error){failed();publish();return 0;}publish();return 1;
 }
+#if DOS64_SETUP_COLD_INVENTORY
+br_u8 rw_begin(void){return begin(0);}
+br_u8 rw_begin_existing(void){return begin(1);}
+#endif
 void rw_poll(void){br_u16 n,i;
  if(ledger.state!=RW_BUSY){publish();return;}
  clock_bad=0;sample_clock(); /* fresh elapsed deadline, without latching yet */
@@ -178,7 +214,11 @@ void rw_poll(void){br_u16 n,i;
    if((raw^0xffffffffUL)!=owned.crc||BODY_BAD){first(RW_CRC);failed();break;}
    if(so_publish_ticket()!=ticket){first(RW_INPUT);failed();break;}
    service();if(ledger.error){failed();break;}
-   at=0;ledger.crc=owned.crc;op(OPEN_WRITE,BR_OPEN,6,0,0);break;
+   at=0;ledger.crc=owned.crc;
+#if DOS64_SETUP_COLD_INVENTORY
+   if(check_only){op(OPEN_READ,BR_OPEN,1,0,0);break;}
+#endif
+   op(OPEN_WRITE,BR_OPEN,6,0,0);break;
   }
   n=owned.bytes-at>512UL?512u:(br_u16)(owned.bytes-at);
   if(read(owned.source+at,nf_sector,n)&&feed(nf_sector,n)&&cfg_chunk(nf_sector,n,(br_u16)at)){at+=n;began=now;steps=0;}break;

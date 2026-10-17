@@ -1,0 +1,9 @@
+test_corrupt_FAT_and_PUB_CRC_knownclose_no_phase_instructions (__main__.Cases) ... ok
+test_missing_FAT_and_PUB_open_knownclose (__main__.Cases) ... ok
+test_short_FAT_and_PUB_info_knownclose (__main__.Cases) ... ok
+test_short_INFO_then_failed_CLOSE_keeps_firstdetail_and_blocks (__main__.Cases) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.731s
+
+OK

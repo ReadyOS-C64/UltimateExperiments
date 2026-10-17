@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "groups": 4,
+  "records": [
+    {
+      "phase": 2,
+      "fault": "CRC",
+      "no_partial_overlay_PC": true,
+      "software_stack_low": 53232
+    },
+    {
+      "phase": 3,
+      "fault": "CRC",
+      "no_partial_overlay_PC": true,
+      "software_stack_low": 53232
+    },
+    {
+      "phase": 2,
+      "fault": "missing",
+      "software_stack_low": 53232,
+      "screen": "0512120534201708193035200f103a0f10050e20202020202020202020202020202020202020202006090c053a13051415102e060114200c050106303320150309303520202020202020202020202020030c0f13053a1920202020202020202020202020202020202020202020202020202020202020202012050c0f01042c0e0517200409122020202020202020202020202020202020202020202020202020",
+      "actual_boot_owned_public_loader_API": true
+    },
+    {
+      "phase": 3,
+      "fault": "missing",
+      "software_stack_low": 53232,
+      "screen": "0512120534201708193035200f103a0f10050e20202020202020202020202020202020202020202006090c053a13051415102e101502200c050106303320150309303520202020202020202020202020030c0f13053a1920202020202020202020202020202020202020202020202020202020202020202012050c0f01042c0e0517200409122020202020202020202020202020202020202020202020202020",
+      "actual_boot_owned_public_loader_API": true
+    },
+    {
+      "phase": 2,
+      "fault": "short",
+      "software_stack_low": 53232
+    },
+    {
+      "phase": 3,
+      "fault": "short",
+      "software_stack_low": 53232
+    },
+    {
+      "fault": "short then CLOSE failure",
+      "unknown_close": true,
+      "first_INFO_detail_retained": true,
+      "software_stack_low": 53232
+    }
+  ],
+  "scope": "actual cold SYS ownership, public SO API asset-loader fault components/root failure continuation plus true CIA START.INO dispatcher fault; no full output publication"
+}

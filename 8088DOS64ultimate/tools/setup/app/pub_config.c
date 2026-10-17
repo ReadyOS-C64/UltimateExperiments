@@ -17,7 +17,12 @@ unsigned char d64_path_relative[D64_PATH_BYTES];
 unsigned char d64_path_output[D64_PATH_BYTES];
 unsigned char d64_cfg_error;
 #if !D64_CONFIG_VALIDATE_ONLY
+#if DOS64_SETUP_COLD_INVENTORY
+#include "publish_construct.h"
+#define prepared pub_construct.prepared
+#else
 static unsigned char prepared[D64_CFG_BYTES];
+#endif
 #endif
 static unsigned char joined[D64_PATH_BYTES];
 
@@ -125,6 +130,10 @@ unsigned char d64_config_make(void) {
     unsigned char i;
     d64_cfg_error = 0u;
     if (!fields_valid(d64_cfg_input)) return 0u;
+#if DOS64_SETUP_COLD_INVENTORY
+    if(pub_construct_owner)return fail(7u);
+    pub_construct_owner=1u;
+#endif
     memset(prepared, 0, sizeof(prepared));
     prepared[0] = 0x44u; prepared[1] = 0x36u;
     prepared[2] = 0x34u; prepared[3] = 0x43u;
@@ -137,13 +146,23 @@ unsigned char d64_config_make(void) {
     prepared[526] = prepared[527] = 0u;
     crc = crc32(prepared, D64_CFG_CRC);
 #if D64_VALIDATOR_FAST_CRC
-    if(c32_error)return fail(2u);
+    if(c32_error){
+#if DOS64_SETUP_COLD_INVENTORY
+      pub_construct_owner=3u;
+#endif
+      return fail(2u);}
 #endif
     for (i = 0; i < 4u; ++i) {
         prepared[D64_CFG_CRC+i] = (unsigned char)crc;
         crc >>= 8;
     }
+#if DOS64_SETUP_COLD_INVENTORY
+    if(pub_construct_owner!=1u)return fail(7u);
+#endif
     memcpy(d64_cfg_output, prepared, sizeof(prepared));
+#if DOS64_SETUP_COLD_INVENTORY
+    pub_construct_owner=0u;
+#endif
     return 1u;
 }
 
@@ -164,7 +183,11 @@ unsigned char d64_config_validate(void) {
         if (d64_cfg_input[i]) return fail(1u);
     crc = crc32(d64_cfg_input, D64_CFG_CRC);
 #if D64_VALIDATOR_FAST_CRC
-    if(c32_error)return fail(2u);
+    if(c32_error){
+#if DOS64_SETUP_COLD_INVENTORY
+      pub_construct_owner=3u;
+#endif
+      return fail(2u);}
 #endif
     for (i = 0; i < 4u; ++i) {
         if (d64_cfg_input[D64_CFG_CRC+i] != (unsigned char)crc) return fail(2u);

@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "source_root": "project",
+  "parent_manifest": "726c0f0ed0c14170777d8ccc5afbcbf1729c082dff6eb292c6b61cf9709b063f",
+  "paths": {
+    "build_support/config_generation.py": {
+      "sha256": "a794c84eff13789c6d4999aa51cf871acfd7afda3cf76db0400121e5805f3771",
+      "bytes": 17996
+    },
+    "build_support/config_sources.json": {
+      "sha256": "373f026a8d25be913520e20ab8e02eb2d35e35866b43b3917a7e17cb2ce1ac7c",
+      "bytes": 2036
+    },
+    "build_support/setup_installer.py": {
+      "sha256": "03b1cc98aebfdb96fa8bce9e77f127e04e090445544e347901f4fd23292d9e85",
+      "bytes": 22453
+    },
+    "tools/config/core_fixture.s": {
+      "sha256": "bbcf427d5c89add990e51993e1c55a710f61694aaf48b4295467333a62b14cd0",
+      "bytes": 1676
+    },
+    "tools/config/publisher-diagnostics.cfg": {
+      "sha256": "1338035cd10c72a75b984013c3923ad5e2f0e42583502fe47e5c80e36f6346ba",
+      "bytes": 1443
+    },
+    "tools/native/bootstrap_diag.s": {
+      "sha256": "1a2699b76180d56bacb3aeed7da159eea91d9a7b0929982d34a8bf9bd68b6868",
+      "bytes": 2154
+    },
+    "tools/setup/app/compact.cfg": {
+      "sha256": "3b90a70e7a5cbae18ba495f29bd92d6f62eeb10017b84229491b85b3a6ff2ef8",
+      "bytes": 1960
+    },
+    "tools/setup/app/coordinator.s": {
+      "sha256": "cdc4a460108296aed83ef5801c8e3f83b97a93fb4d22052fabf34cc9e7425250",
+      "bytes": 8832
+    },
+    "tools/setup/app/setup_copy.s": {
+      "sha256": "b8b3f1ce7026ae493179dc0ec7333ec2142a1d6e31162255198ac6bc4eeaeb36",
+      "bytes": 2335
+    }
+  },
+  "flag": "DOS64_BOOT_DIAGNOSTICS=1",
+  "CLI_flag": "--startup-diagnostics",
+  "default": "undefined/numeric0 unchanged",
+  "scope": "trusted startup diagnostics only; later external FAT/PUB/INO filenames remain separate"
+}

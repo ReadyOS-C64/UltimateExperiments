@@ -1,0 +1,21 @@
+{
+  "first_archive_attempt": "stopped before seal; Root incorrectly compared scalar SHA parent entries to SHA+size dictionaries; no source/native failure",
+  "corrected_hash_decoder": "compare scalar SHA directly; hash+size for structured rows",
+  "parent_integrity": {
+    "native-installer-cold56-inventory-20261017": {
+      "owned_exact": 2151,
+      "external_exact": 183,
+      "external_changed": []
+    },
+    "native-installer-bootstrap-diagnostics-20261017": {
+      "owned_exact": 5257,
+      "external_exact": 0,
+      "external_changed": []
+    },
+    "native-installer-file-diagnostics-20261017": {
+      "owned_exact": 8390,
+      "external_exact": 0,
+      "external_changed": []
+    }
+  }
+}

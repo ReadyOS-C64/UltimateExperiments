@@ -1,3 +1,4 @@
+#include "template_limits.h"
 #include "publish_assets.h"
 #include "setup_overlay.h"
 #include "selection_capsule.h"
@@ -79,7 +80,7 @@ br_u8 pb_build(void){br_u32 expected;
  if(!get(PB_A_BYTES)||fact!=368640UL)return ledger.error?0:fail(PB_FACT);if(!get(PB_A_CRC))return 0;put(pb_codec_input+D64_CFG_A_CRC,fact);
  if(!get(PB_B_BYTES)||fact!=368640UL)return ledger.error?0:fail(PB_FACT);if(!get(PB_B_CRC))return 0;put(pb_codec_input+D64_CFG_B_CRC,fact);
  if(!get(PB_C_BYTES)||fact!=(profile?20971520UL:2097152UL))return ledger.error?0:fail(PB_FACT);
- if(!get(PB_TEMPLATE_BYTES))return 0;source_size=fact;if(source_size!=18432UL)return fail(PB_FACT);
+ if(!get(PB_TEMPLATE_BYTES))return 0;source_size=fact;if(source_size!=ST_TEMPLATE_BYTES)return fail(PB_FACT);
  if(!joined(D64_CFG_A,"A.IMG")||!joined(D64_CFG_B,"B.IMG")||!joined(D64_CFG_C,"C.IMG"))return 0;
  pb_codec_input[D64_CFG_PROFILE+2u]=profile;pb_codec_input[D64_CFG_PRESENT]=7;pb_codec_input[D64_CFG_BOOT_ABI]=1;put(pb_codec_input+D64_CFG_REU_BYTES,capacity);
  if(!pb_codec_make()){ledger.detail=pb_codec_error;return fail(PB_CONFIG);}memcpy(pb_codec_input,pb_codec_output,D64_CFG_BYTES);if(!pb_codec_validate()){ledger.detail=pb_codec_error;return fail(PB_CONFIG);}cfg_identity=wide(pb_codec_output+D64_CFG_CRC);ledger.cfg_crc=pb_codec_fast_crc(pb_codec_output,D64_CFG_BYTES);if(c32_error)return fail(PB_CRC);

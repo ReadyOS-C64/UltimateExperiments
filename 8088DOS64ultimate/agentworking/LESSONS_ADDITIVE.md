@@ -397,3 +397,8 @@ The optionalFORMAT1 runtime can be tested directly with both PythonABI andZig as
 
 
 2026-10-17: After exclusive lock creation, record ownership before closing its descriptor. An error from close must preserve its exact first cause while cleanup removes the newly owned lock. Never remove a preexisting foreign lock. The small host regression suite tests these boundaries without rerunning native CPU suites.
+
+
+## 2026-10-17 — bind metadata through the actual result schema
+
+A source-built cold bundle publishes named START/DOS labels/maps with paths+hashes; the priorcopiedbundle laid them in start/ and main/build. Resolve checkeddeclaredproducts and require ownedrun membership; retain only recordedlegacyfallback. Validate unuseddeclaredproducts too. Closureledgers differ (listrecords, scalarSHA maps, SHA+size maps); preserve firstformatmistakes, normalize theactualschema without weakening hashchecks or rerunning unchangednativework.
