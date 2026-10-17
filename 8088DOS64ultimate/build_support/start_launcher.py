@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import zlib
 
 ROOT = Path(__file__).resolve().parents[1]
 NATIVE = {
@@ -18,6 +19,9 @@ NATIVE = {
     'codec_test_entry.s': 'tools/start/entry.s', 'controller.cfg': 'tools/start/start.cfg',
     'uci.s':'src/uci.s', 'files.s':'src/files.s', 'uci.inc':'include/uci.inc', 'files.inc':'include/files.inc',
 }
+OPTIONS_NATIVE = {n:'tools/start/'+n for n in ['ini_parser.c','ini_parser.h','ini_io.c','ini_io.h','overlay_capsule.s']}
+OPTIONS_NATIVE['controller.cfg']='tools/start/start-options.cfg'
+
 NAMES = ['codec_test_entry','bulk_reu','bindings','uci','files','install_config','release','controller','dma','crc32','platform_c','platform','frontend','handoff','validator_crc','startup_close']
 
 def digest(path):
@@ -40,23 +44,37 @@ def tools(test=False):
 def command(argv, work):
     subprocess.run([str(x) for x in argv], cwd=work, check=True, env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
 
-def sources(work, record):
-    for destination, source in NATIVE.items():
+def sources(work, record, options=False):
+    selected = dict(NATIVE, **OPTIONS_NATIVE) if options else NATIVE
+    for destination, source in selected.items():
         p = ROOT/source
         record[str(p)] = digest(p)
         shutil.copyfile(p, work/destination)
 
-def build(work, t):
-    for name in ['bulk_reu','install_config','release','controller','validator_crc']:
-        command([t['cc65'],'-t','none','-O','--add-source','-D','D64_VALIDATOR_FAST_CRC=1','-D','D64_CONFIG_VALIDATE_ONLY=1',name+'.c','-o',name+'.s'], work)
+def build(work, t, options=False):
+    extra = ['-D','D64_START_OPTIONS=1'] if options else []
+    names = NAMES + ['ini_parser','ini_io','overlay_capsule'] if options else NAMES
+    for name in (['bulk_reu','install_config','release','controller','validator_crc'] + (['ini_parser','ini_io'] if options else [])):
+        command([t['cc65'],'-t','none','-O','--add-source','-D','D64_VALIDATOR_FAST_CRC=1','-D','D64_CONFIG_VALIDATE_ONLY=1',*extra,name+'.c','-o',name+'.s'], work)
     command([t['cc65'],'-t','none','-O','--add-source','platform.c','-o','platform_c.s'], work)
-    for name in NAMES:
-        command([t['ca65'],'-g','-D','DOS64_FILES_INFO=1','-I','.',name+'.s','-o',name+'.o'], work)
-    command([t['ld65'],'-C','controller.cfg','-o','controller.prg','-Ln','controller.labels','-m','controller.map',*[n+'.o' for n in NAMES],t['library']], work)
+    for name in names:
+        command([t['ca65'],'-g',*extra,'-D','DOS64_FILES_INFO=1','-I','.',name+'.s','-o',name+'.o'], work)
+    command([t['ld65'],'-C','controller.cfg','-o','controller.prg','-Ln','controller.labels','-m','controller.map',*[n+'.o' for n in names],t['library']], work)
     data=(work/'controller.prg').read_bytes()
     if data[:2] != b'\x01\x08' or len(data) > 0x4801:
         raise RuntimeError('START must load at0801 and finish below5000')
-    return {n:digest(work/n) for n in ['controller.prg','controller.labels','controller.map']}
+    products = ['controller.prg','controller.labels','controller.map']
+    if options:
+        symbols = {line.split()[2].lstrip('.'):int(line.split()[1],16) for line in (work/'controller.labels').read_text().splitlines() if line.startswith('al ')}
+        asset=(work/'START.INO').read_bytes();at=symbols['_so_overlay_spec']-0x0801+2
+        if not 2<=at<=len(data)-16 or data[at:at+6]!=b'D64I\x01\x10' or data[at+8:at+12]!=b'CRC?' or int.from_bytes(data[at+6:at+8],'little')!=len(asset) or data[at+12:at+16]!=b'\0\x60\0\0':
+            raise RuntimeError('Unbound prelaunch capsule')
+        if len(data)!=18432 or symbols['__PRELAUNCH_RUN__']!=0x6000 or symbols['__PRELAUNCH_RO_RUN__']+symbols['__PRELAUNCH_RO_SIZE__']!=0x6000+len(asset) or len(asset)>8192:
+            raise RuntimeError('Prelaunch layout changed')
+        bound=bytearray(data);bound[at+8:at+12]=zlib.crc32(asset).to_bytes(4,'little')
+        (work/'controller.prg').write_bytes(bound)
+        products.append('START.INO')
+    return {n:digest(work/n) for n in products}
 
 def verify(record):
     for name, expected in record.items():

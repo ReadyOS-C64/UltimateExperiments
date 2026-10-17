@@ -1,3 +1,7 @@
+#if D64_START_OPTIONS
+#pragma code-name ("PRELAUNCH")
+#pragma rodata-name ("PRELAUNCH_RO")
+#endif
 #ifndef D64_VALIDATOR_FAST_CRC
 #define D64_VALIDATOR_FAST_CRC 0
 #endif
@@ -45,10 +49,19 @@ static unsigned char disjoint(unsigned long a,unsigned int an,
 }
 unsigned char d64_release_validate(void) {
     unsigned long size,n,h,f;
+#if D64_START_OPTIONS
+    unsigned long o;
+#endif
     unsigned char i;
     d64_release_error=0;
     if(memcmp(d64_release_input,"D64L",4) ||
-       d64_release_input[4]!=1u || d64_release_input[5]!=1u || word(6)!=64u)
+       d64_release_input[4]!=
+#if D64_START_OPTIONS
+       2u
+#else
+       1u
+#endif
+       || d64_release_input[5]!=1u || word(6)!=64u)
         return fail(1);
     if(crc()!=wide(60)) return fail(2);
 #if D64_VALIDATOR_FAST_CRC
@@ -58,7 +71,9 @@ unsigned char d64_release_validate(void) {
        wide(40)!=0x3e0000UL || wide(44)!=0x3ff000UL || word(48)!=576u ||
        d64_release_input[50]!=32u || d64_release_input[51]!=0x40u ||
        word(52)!=142u || word(54)!=140u) return fail(3);
+    #if !D64_START_OPTIONS
     for(i=56;i<60u;++i) if(d64_release_input[i]) return fail(3);
+#endif
     size=wide(8);
     if(size<2UL || size>0xb801UL || (unsigned long)word(18)!=size-2UL)
         return fail(4);
@@ -76,6 +91,12 @@ unsigned char d64_release_validate(void) {
     /* Release metadata cannot approve replacing a callable entry or vice versa. */
     for(i=20;i<26u;i+=2u)
         if(f==(unsigned long)word(i)-0x0801UL+2UL) return fail(5);
+    #if D64_START_OPTIONS
+    o=wide(56);
+    if(!span(o,1u,size,0x0801u,0x4000u)||
+       !disjoint(o,1u,n,142u)||!disjoint(o,1u,h,140u)||!disjoint(o,1u,f,1u))return fail(5);
+    for(i=20;i<26u;i+=2u)if(o==(unsigned long)word(i)-0x0801UL+2UL)return fail(5);
+#endif
     memcpy(d64_release_output,d64_release_input,64);
     return 1;
 }

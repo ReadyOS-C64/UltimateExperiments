@@ -7,16 +7,19 @@ import json
 from pathlib import Path
 import re
 import sys
+import os
 import tempfile
 import unittest
 from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[2]
+sys.dont_write_bytecode=True
+sys.pycache_prefix=str(ROOT/'build'/('.absent-shadow-identity-test-'+str(os.getpid())))
+if Path(sys.pycache_prefix).exists():raise RuntimeError('Source-only shadow test cache prefix must be absent')
 sys.path.insert(0,str(ROOT/'build_support'))
 import c64u_native_application as app
 import c64u_native_shadow_identity as shadow
 PROJECT=next(p for p in Path(__file__).resolve().parents if (p/'reference').is_dir())
 # Optional private frozen inputs; default normal build remains the production gate.
-import os
 BUILD=Path(os.environ.get('DOS64_SHADOW_TEST_BUILD',str(PROJECT/'build')))
 SOURCE=PROJECT/'reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img'
 MEDIA={'status':'verified','source_sha256':app.SOURCE_SHA,'source_bytes':368640,
@@ -97,7 +100,7 @@ class Tests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 app.Application(self.prg,self.labels,MEDIA,SOURCE,b'',shadow.sha(self.prg),resident_segments=self.segments)
     def test_all_shadow_symbol_metadata_and_load_contract_fields_are_strict(self):
-        for key in ['__HDEXT_START__','__HDEXT_SIZE__','__HDEXT_FILEOFFS__','__HDEXT_LAST__','__HDBIOS_LOAD__','__HDBIOS_RUN__','__HDBIOS_SIZE__','__NATIVESTATE_LOAD__','__NATIVESTATE_RUN__','__NATIVESTATE_SIZE__','hdb_boot_drive','hdb_extension_ready','__HDCODE_LOAD__','__HDCODE_RUN__','__HDCODE_SIZE__']:
+        for key in ['__HDEXT_START__','__HDEXT_SIZE__','__HDEXT_FILEOFFS__','__HDEXT_LAST__','__HDBIOS_LOAD__','__HDBIOS_RUN__','__HDBIOS_SIZE__','__NATIVESTATE_LOAD__','__NATIVESTATE_RUN__','__NATIVESTATE_SIZE__','hdb_boot_drive','hdb_extension_ready','__HDCODE_LOAD__','__HDCODE_RUN__','__HDCODE_SIZE__','dos64_bios_initial_mode','dos64_cold_open','dos64_cold_error','n_started','dos64_native_started','dos64_loader_required','dos64_options_required']:
             labels=dict(self.labels);labels[key]+=1
             with self.subTest(symbol=key),self.assertRaises(ValueError):self.make(labels=labels)
         paths=[('package','version'),('package','shadow','ownership'),('memory','load','shadow','ownership'),('memory','load','shadow','excludes'),('package','shadow','source'),('package','shadow','run'),('package','shadow','window_bytes'),('package','shadow','linked_bytes'),('package','shadow','tail_zero_bytes'),('package','shadow','sha256'),('package','sha256','packaged_prg'),('memory','passed'),('memory','load','start'),('memory','load','end_exclusive'),('memory','load','prg_bytes'),('memory','load','payload_checked'),('memory','load','shadow','payload_checked'),('memory','load','shadow','source'),('memory','load','shadow','run'),('memory','load','shadow','window_bytes'),('memory','load','shadow','linked_bytes')]
@@ -114,8 +117,8 @@ class Tests(unittest.TestCase):
             with self.subTest(address=hex(address)),self.assertRaises(ValueError):self.make(prg=bytes(prg),metadata=meta)
         for raw in [self.prg[:-1],self.prg+b'\0',b'\x00\x08'+self.prg[2:]]:
             with self.assertRaises(ValueError):self.make(prg=raw)
-    def test_loader_flag_requires_six_byte_state_explicit_legacy_zero(self):
-        at=self.labels['dos64_loader_required'];self.assertEqual(self.labels['__NATIVESTATE_SIZE__'],6)
+    def test_loader_flag_requires_eight_byte_state_explicit_disabled_zero(self):
+        at=self.labels['dos64_loader_required'];self.assertEqual(self.labels['__NATIVESTATE_SIZE__'],8)
         for value in (1,0xa5,0xff):
             prg=bytearray(self.prg);prg[at-0x801+2]=value;meta=copy.deepcopy(self.metadata)
             meta['package']['sha256']['packaged_prg']=shadow.sha(prg)
@@ -125,6 +128,29 @@ class Tests(unittest.TestCase):
             if bad is None:del labels['dos64_loader_required']
             else:labels['dos64_loader_required']=bad
             with self.assertRaises(ValueError):self.make(labels=labels)
+    def test_each_eight_byte_initialized_default_is_exact(self):
+        start=self.labels['__NATIVESTATE_RUN__'];at=start-0x801+2
+        self.assertEqual(self.prg[at:at+8],b'\3\xa5'+bytes(6))
+        for i in range(8):
+            for value in range(256):
+                if value==self.prg[at+i]:continue
+                prg=bytearray(self.prg);prg[at+i]=value;meta=copy.deepcopy(self.metadata)
+                meta['package']['sha256']['packaged_prg']=shadow.sha(prg)
+                with self.subTest(byte=i,value=value),self.assertRaises(ValueError):self.make(prg=bytes(prg),metadata=meta)
+    def test_eight_byte_symbols_missing_or_noninteger_cannot_authorize(self):
+        names=['dos64_bios_initial_mode','dos64_cold_open','dos64_cold_error','n_started',
+               'dos64_native_started','hdb_boot_drive','hdb_extension_ready',
+               'dos64_loader_required','dos64_options_required']
+        for name in names:
+            for value in [None,True,float(self.labels[name])]:
+                labels=dict(self.labels)
+                if value is None:del labels[name]
+                else:labels[name]=value
+                with self.subTest(symbol=name,value=value),self.assertRaises(ValueError):self.make(labels=labels)
+        for size in [5,6,7,9]:
+            segs=copy.deepcopy(self.segments);state=next(s for s in segs if s['name']=='HDBIOS');state['state_length']=size
+            labels=dict(self.labels);labels['__NATIVESTATE_SIZE__']=size
+            with self.subTest(state_size=size),self.assertRaises(ValueError):self.make(labels=labels,segments=segs)
     def test_metadata_artifacts_must_be_paired_and_pinned(self):
         p=BUILD/'dos64-tests-overlay-package.json';m=BUILD/'dos64-tests.memory.json'
         pins={shadow.sha(p.read_bytes()),shadow.sha(m.read_bytes())}

@@ -61,6 +61,13 @@ pub const Fixture = struct {
             if (std.mem.eql(u8, entry, "dos64_" ++ suffix)) target = "dos64_overlay_" ++ suffix;
         }
         const entry_address = try self.symbol(target);
+        // This fixture bootstraps overlays during init and never loads cold
+        // EF00 sidecar bytes. Refuse their entrypoints before target execution.
+        if (self.symbols.get("__UNITEXTRA_RUN__")) |extra| {
+            const count = self.symbols.get("__UNITEXTRA_SIZE__") orelse 0;
+            if (entry_address >= extra and @as(u32, entry_address) < @as(u32, extra) + count)
+                return error.DiscardedUnitFixture;
+        }
         // Unit-only moved helpers exist only before bitmap ownership. Refuse
         // before seeding the host stack or changing native registers.
         if (self.symbols.get("__UNITCOLD_RUN__")) |cold_start| {

@@ -9,10 +9,13 @@
 .import __FILECODE_SIZE__,__LOADERADOPT_SIZE__,__LOADERADOPT_LOAD__
 .importzp dos64_segment,dos64_offset,dos64_address
 .export dos64_loader_required,dos64_loader_validate,dos64_loader_adopt
+.export dos64_options_required,dos64_options_validate
+.import dos64_bios_initial_mode
 .export dos64_loader_code_start,dos64_loader_code_end
 .export dos64_loader_install,dos64_loader_adopt_end
 .segment "NATIVESTATE"
 dos64_loader_required: .byte 0
+dos64_options_required: .byte 0
 .segment "LOADERCOLD"
 dos64_loader_code_start:
 ; This initialized RAM is discarded only when native text/bitmap takes over.
@@ -640,3 +643,107 @@ dos64_loader_adopt:
  clc
  rts
 dos64_loader_adopt_end:
+
+.segment "COLDINIT"
+options_header: .byte "D64O",1,$a5,32,0
+options_request: .byte 0,$c4,0,$f5,$3f,32,0,1
+options_bad:
+ sec
+ rts
+options_ok:
+ clc
+ rts
+; Current validated D64R header remains C100 until FILES initialization.
+; The initial setting is consumed only on the matched required path; legacy
+; entry restores mode3 and ignores surviving REU options without reading them.
+dos64_options_validate:
+ lda #3
+ sta dos64_bios_initial_mode
+ lda dos64_options_required
+ beq options_ok
+ cmp #$a5
+ bne options_bad
+ lda dos64_loader_required
+ cmp #$a5
+ bne options_bad
+ lda #0
+ ldx #31
+@poison_options:
+ sta $c400,x
+ dex
+ bpl @poison_options
+ ldx #7
+@request:
+ lda options_request,x
+ sta dos64_reu_request,x
+ dex
+ bpl @request
+ jsr dos64_reu_transfer
+ jcs options_bad
+ ldx #7
+@header:
+ lda $c400,x
+ cmp options_header,x
+ bne options_bad
+ lda $c408,x
+ cmp $c108,x
+ bne options_bad
+ dex
+ bpl @header
+ ldx #27
+@reserved:
+ lda $c400,x
+ bne options_bad
+ dex
+ cpx #16
+ bne @reserved
+ lda $c410
+ cmp #40
+ beq @value_ok
+ cmp #80
+ bne options_bad
+@value_ok:
+ jsr lh_crc_init
+ lda #0
+ sta dos64_segment
+ lda #$c4
+ sta dos64_segment+1
+ lda #28
+ sta dos64_offset
+ lda #0
+ sta dos64_offset+1
+ jsr lh_crc_run
+ lda #$1c
+ sta dos64_address
+ lda #$c4
+ sta dos64_address+1
+ jsr lh_crc_check
+ jcs options_bad
+ ; Consume readiness before publishing the validated frequent setting.
+ lda #0
+ sta $c405
+ lda #5
+ sta dos64_reu_request+R_HOST
+ sta dos64_reu_request+R_REU
+ lda #1
+ sta dos64_reu_request+R_LENGTH
+ lda #0
+ sta dos64_reu_request+R_DIRECTION
+ jsr dos64_reu_transfer
+ jcs options_bad
+ ; Prove one-shot consumption independently, including suppressed DMA writes.
+ lda #$a5
+ sta $c405
+ lda #1
+ sta dos64_reu_request+R_DIRECTION
+ jsr dos64_reu_transfer
+ jcs options_bad
+ lda $c405
+ jne options_bad
+ lda $c410
+ cmp #40
+ jne options_ok
+ lda #1
+ sta dos64_bios_initial_mode
+ clc
+ rts

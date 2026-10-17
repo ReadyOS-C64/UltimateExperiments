@@ -61,7 +61,7 @@ build/host_clock_probe.o: include/host_clock.inc Makefile
 
 .PHONY: all build test verify-memory manifest clean
 all: build
-build: build/dos64.prg build/dos64-tests.prg build/dos64-tests.bin verify-memory manifest
+build: build/dos64.prg build/dos64-tests.prg build/dos64-tests.prg.unit-extra.bin build/dos64-tests.bin verify-memory manifest
 
 build/%.o: src/%.s include/abi.inc include/reu.inc include/memory.inc Makefile
 	@mkdir -p build
@@ -192,9 +192,17 @@ build/dos64.prg: $(OBJECTS) cfg/dos64-runtime.cfg build_support/overlay_package.
 	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o build/dos64-resident.prg -m build/dos64.map -Ln build/dos64.labels $(OBJECTS)
 	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-resident.prg --files build/dos64-resident.prg.files.bin --render build/dos64-resident.prg.render.bin --input build/dos64-resident.prg.input.bin --pit build/dos64-resident.prg.pit.bin --gfx build/dos64-resident.prg.gfx.bin --hd build/dos64-resident.prg.hd.bin --shadow build/dos64-resident.prg.hdb.bin --saver build/dos64-resident.prg.saver.bin --disk build/dos64-resident.prg.disk.bin --import-code build/dos64-resident.prg.import.bin --labels build/dos64.labels --output-prg $@ --output-assets build/dos64-overlay-startup.bin --manifest build/dos64-overlay-package.json
 
-build/dos64-tests.prg: $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o cfg/dos64-runtime.cfg build_support/overlay_package.py Makefile
-	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o build/dos64-tests-resident.prg -m build/dos64-tests.map -Ln build/dos64-tests.labels $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
+build/dos64-tests.prg: $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o cfg/dos64-unit-runtime.cfg build_support/overlay_package.py Makefile
+	$(DOS64_LD65) -C cfg/dos64-unit-runtime.cfg -o build/dos64-tests-resident.prg -m build/dos64-tests.map -Ln build/dos64-tests.labels $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
 	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-tests-resident.prg --files build/dos64-tests-resident.prg.files.bin --render build/dos64-tests-resident.prg.render.bin --input build/dos64-tests-resident.prg.input.bin --pit build/dos64-tests-resident.prg.pit.bin --gfx build/dos64-tests-resident.prg.gfx.bin --hd build/dos64-tests-resident.prg.hd.bin --shadow build/dos64-tests-resident.prg.hdb.bin --saver build/dos64-tests-resident.prg.saver.bin --disk build/dos64-tests-resident.prg.disk.bin --import-code build/dos64-tests-resident.prg.import.bin --labels build/dos64-tests.labels --output-prg $@ --output-assets build/dos64-tests-overlay-startup.bin --manifest build/dos64-tests-overlay-package.json
+
+	cp build/dos64-tests-resident.prg.unit-extra.bin build/dos64-tests.prg.unit-extra.bin
+
+# Recover a deleted unit-only sidecar by relinking its exact source graph.
+# Production release/runtime packages never depend on or load this artifact.
+build/dos64-tests.prg.unit-extra.bin: build/dos64-tests.prg
+	$(DOS64_LD65) -C cfg/dos64-unit-runtime.cfg -o build/dos64-tests-sidecar-relink.prg $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
+	cp build/dos64-tests-sidecar-relink.prg.unit-extra.bin $@
 
 build/dos64-tests.bin: build/dos64-tests.prg
 	$(DOS64_PYTHON) build_support/raw_payload.py $< $@
@@ -316,3 +324,6 @@ ac-host-tests: ac-close-helper
 ac-development-tests: ac-helper-tests ac-host-tests
 
 include build_support/setup.mk
+
+# Coupled same-home INI release and opt-in model-only tests.
+include build_support/start_ini.mk

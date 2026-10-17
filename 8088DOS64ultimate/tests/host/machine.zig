@@ -9,6 +9,7 @@ pub const Fixture = struct {
     last_regs: ?c.Dos64Regs = null,
     stack_high_water: u8 = 0,
     initial_status: u8 = 0x24,
+    unit_extra: ?[]u8 = null,
 
     pub fn init() !Fixture {
         return initPaths("build/dos64-tests.prg", "build/dos64-tests.labels");
@@ -36,9 +37,25 @@ pub const Fixture = struct {
             const name = if (raw_name[0] == '.') raw_name[1..] else raw_name;
             if (!symbols.contains(name)) try symbols.put(allocator, name, try std.fmt.parseInt(u16, symbol_address, 16));
         }
-        return .{ .machine = machine, .labels = labels, .symbols = symbols };
+        var extra: ?[]u8 = null;
+        errdefer if (extra) |owned| allocator.free(owned);
+        if (symbols.get("__UNITEXTRA_SIZE__")) |count| {
+            const start = symbols.get("__UNITEXTRA_RUN__") orelse return error.InvalidUnitSidecar;
+            const device = symbols.get("__DEVICESTATE_RUN__") orelse return error.InvalidUnitSidecar;
+            const device_size = symbols.get("__DEVICESTATE_SIZE__") orelse return error.InvalidUnitSidecar;
+            if (start != 0xef00 or count != 251 or @as(u32, start) + count > 0xf000 or
+                @as(u32, device) + device_size > start) return error.InvalidUnitSidecar;
+            const path = try std.fmt.allocPrint(allocator, "{s}.unit-extra.bin", .{prg_path});
+            defer allocator.free(path);
+            const code = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io, path, allocator, .limited(256));
+            extra = code;
+            if (code.len != count) return error.InvalidUnitSidecar;
+            c.dos64_load(machine, start, code.ptr, code.len);
+        }
+        return .{ .machine = machine, .labels = labels, .symbols = symbols, .unit_extra = extra };
     }
     pub fn deinit(self: *Fixture) void {
+        if (self.unit_extra) |owned| allocator.free(owned);
         self.symbols.deinit(allocator);
         allocator.free(self.labels);
         c.dos64_destroy(self.machine);
@@ -52,8 +69,25 @@ pub const Fixture = struct {
     pub fn poke(self: *Fixture, address: u16, value: u8) void { c.dos64_poke(self.machine, address, value); }
     pub fn word(self: *const Fixture, address: u16) u16 { return @as(u16, self.peek(address)) | (@as(u16, self.peek(address+%1)) << 8); }
 
+    fn checkUnitExtra(self: *const Fixture, writes: bool) !void {
+        if (self.unit_extra) |code| for (code, 0..) |expected, index| {
+            const address = 0xef00 + @as(u16, @intCast(index));
+            if (self.peek(address) != expected or (writes and c.dos64_was_written(self.machine, address) != 0))
+                return error.UnitFixtureCodeWrite;
+        };
+    }
     pub fn call(self: *Fixture, entry: []const u8, budget: u64) !c.Dos64Regs {
         const entry_address = try self.symbol(entry);
+        try self.checkUnitExtra(false);
+        if (self.unit_extra) |code| {
+            if (entry_address >= 0xef00 and @as(u32, entry_address) < 0xef00 + code.len) {
+                // EF00 code requires RAM+I/O visible, with driven port bits.
+                if ((self.peek(0) & 7) != 7 or (self.peek(1) & 7) != 5) return error.UnitFixtureBank;
+                if (self.peek(try self.symbol("dos64_cold_open")) != 0xa5 or
+                    self.peek(try self.symbol("dos64_overlay_ready")) != 0 or
+                    self.peek(try self.symbol("dos64_native_started")) != 0) return error.DiscardedUnitFixture;
+            }
+        }
         // Unit-only moved helpers exist only before bitmap ownership. Refuse
         // before seeding the host stack or changing native registers.
         if (self.symbols.get("__UNITCOLD_RUN__")) |cold_start| {
@@ -68,6 +102,7 @@ pub const Fixture = struct {
         c.dos64_clear_writes(self.machine);
         c.dos64_set_regs(self.machine, .{ .pc = entry_address, .sp = 0xfd, .a = 0x71, .x = 0x82, .y = 0x93, .p = self.initial_status, .cycles = 0, .instructions = 0 });
         const result = c.dos64_run(self.machine, sentinel, budget);
+        try self.checkUnitExtra(true);
         self.last_regs = result.regs;
         self.stack_high_water = @max(self.stack_high_water, result.stack_high_water);
         return switch (result.status) {

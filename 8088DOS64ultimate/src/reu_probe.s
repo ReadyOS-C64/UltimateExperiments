@@ -7,7 +7,7 @@
 .segment "ZEROPAGE"
 probe_ptr: .res 2
 .ifdef DOS64_UNIT_COLD
-.segment "UNITCOLD"
+.segment "UNITEXTRA"
 .else
 .segment "CODE"
 .endif

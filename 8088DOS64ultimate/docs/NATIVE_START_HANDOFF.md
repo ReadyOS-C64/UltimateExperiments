@@ -1,14 +1,15 @@
 # Native START / main handoff ABI 1
 
-ABI1 is implemented in native START8b68 and current mainc6e43/47105B.
+ABI1 is implemented in the default native START8b68 and mainf7ea026b/47105B.
 `make start` builds the disabled path-aware template; the installer configures
 its persistent home after verified output creation. Main validation/adoption
 is covered by `make test-loader-handoff` and genuine DOS by
 `make test-loader-dos`. The actual generated START/CFG/A/B/C have also launched
 through main into genuine DOS with C mounted, VER and paged A/C listings in
 Peddle. Physical qualification of this new pair remains pending. The complete
-public installer, reconfiguration/media UI and INI consumer remain separate
-unfinished work; private full installer/cleanup proofs do not certify those.
+reconfiguration/media UI and physical installation remain separate unfinished
+work. The optional matched START79bb adds the INI consumer described below;
+private full installer/cleanup proofs do not certify physical installation.
 Default main required flag0 preserves legacy startup. Startup now refreshes
 coherent time before initial import and HD file operations; it retains the
 existing256-attempt sample bound and ordinary guest timing policy.
@@ -97,12 +98,9 @@ not BSS, and reads DOS64.CFG / DOS64.REL / DOS64.PRG there. It uses the CFG's
 explicit A/B/C paths. No mounted D81, guessed current directory, firmware REST,
 guest DOS copying, bundled DOS image or preallocated HD template is required.
 
-User-directed extension, not part of implemented ABI1: the same home also locates
-editable emulator options. Native prelaunch code parses these once and publishes
-a separately versioned, launch-bound REU options record for the emulator. Current
-one-byte START headroom requires a measured overlay/startup design; do not reuse
-ABI1 reserved bytes or assume unallocated REU is spare. See the
-[same-folder options design](NATIVE_SETUP_CONFIG.md#same-folder-emulator-options).
+An optional matched launcher adds same-home INI without changing D64C or D64R.
+See [options-enabled launcher](#options-enabled-launcher) below. The default
+START target retains its legacy behavior and ignores INI.
 
 Current public `make setup-release-tests` runs four actual Zig/Peddle descriptor groups and four host-tool groups. Public START has its 46-group native model proof. The complete SETUP source build now reproduces c45dea7b, whose model coordinator creates and verifies all five outputs. The unmodified generated launcher and A/B/C/config boot genuine DOS with public main c6e43fce after its startup-clock fix: VER, paged A listing and paged C:\DOS listing return to C>. Physical SETUP/START/new-main acceptance, whole-session error UI and reconfiguration remain pending. Earlier physical bulk transfer acceptance does not qualify this launcher.
 
@@ -119,3 +117,58 @@ Configured A/B model boot verifies the complete main payload and delivers NMIs t
 `make start-template` additionally creates the64-byte `build/start/START.REL` D64S descriptor; `make start-template-tests` checks the host generator against the actual launcher. This descriptor binds the disabled START template and is distinct from D64L `DOS64.REL`, which binds the emulator. The native UI-phase helper `tools/setup/start_template.c` validates received size, descriptor/template CRCs, initialized DATA/control defaults and canonical home/base before streaming a copy that changes only the131-byte persistent control. It adds no resident START bytes.
 
 The caller supplies buffered readonly source and fresh output callbacks. Native completion is byte-copy acceptance only: flush, WRITE/CLOSE, reopen, fullCRC/EOF and finalCLOSE must finish before the installer publishes START or CFG. Discard partial outputs. Actual helper/error/CRC0 and patched START-entry tests are recorded in `agentworking/evidence/native-start-template-root-20261016.json`; full installer integration remains pending.
+
+## Options-enabled launcher
+
+`make start-ini-bundle` builds a complete matched set: `START.TPL`, `START.REL`,
+`START.INO`, `DOS64.PRG` and `DOS64.REL`. Its source and product checks must pass
+before the result is published; use the bundle directory recorded in
+`build/start-ini-bundle/RESULT.json`. SETUP patches the template's persistent home
+using the existing D64S version 1 contract. D64S is 64 bytes; its persistent
+control is 131 bytes. The new START template is still 18,432 bytes. Ordinary
+`make start-template` and the default release generator remain version 1.
+
+The options-enabled START requires D64L version 2. It adds the initialized
+`dos64_options_required` file offset at descriptor bytes 56..59, with all other
+fields and the descriptor CRC unchanged. The two one-byte required flags must
+be distinct from each other and from D64N/D64H. Both default to zero; matched
+START patches both to A5. Version 1 keeps bytes 56..59 zero. Do not distribute
+the options START without its matching overlay, main and descriptors.
+
+Before using prelaunch code, START loads `START.INO` into REU $3F8000, closes
+the file, checks its exact count and CRC, independently fetches each chunk twice,
+and verifies the installed RAM bytes and CRC. Its initialized 16-byte D64I
+capsule binds version, size, whole-asset CRC and run address $6000. The measured
+overlay occupies $6000..$7A8D (6,798 bytes). It remains immutable while called;
+the final main DMA retires it, with no surviving C stack frame.
+
+On every cold launch, this code rereads the optional `DOS64.INI` from the
+embedded home. See [syntax and defaults](NATIVE_SETUP_CONFIG.md#same-folder-emulator-options).
+After validated parsing and known closure it publishes a separate record:
+
+| Offset | Bytes | D64O value at REU $3FF500 |
+| --- | --- | --- |
+| 0 | 4 | ASCII D64O |
+| 4 | 1 | Version 1 |
+| 5 | 1 | Ready A5, published last |
+| 6 | 2 | Length 32 |
+| 8 | 4 | CFG body CRC, matching D64R |
+| 12 | 4 | Patched main CRC, matching D64R |
+| 16 | 1 | Initial columns, 40 or 80 |
+| 17 | 11 | Reserved zero |
+| 28 | 4 | CRC of bytes 0..27 with ready A5 |
+
+This record is disjoint from D64R/CFG and the release record in the existing
+$3FF000 anchor. START clears both readiness bytes before work, independently
+checks options body and final ready readback, then publishes D64R readiness.
+Main consumes options after validating D64R and before FILES reuses its scratch.
+It checks all fields, bindings, CRC and supported values, consumes ready, and
+independently reads it back before committing BIOS mode 1 or 3. Required paths
+fail closed. Legacy entry performs no options DMA and restores default mode 3.
+
+`make start-options-tests` runs 23 actual 6510/Peddle component groups using
+synthetic files, without DOS images. `make ini-options-tests` and
+`make unit-sidecar-tests` exercise the actual main consumer and guarded unit
+helpers. Separate source-closed integration runs boot genuine DOS in both modes
+from native-installer-generated files. These are model results; physical
+qualification of the new launcher/main pair remains pending.

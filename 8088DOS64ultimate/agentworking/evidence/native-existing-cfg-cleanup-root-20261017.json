@@ -1,0 +1,23 @@
+{
+  "status": "reviewed_private_component_not_composed_with_SETUP",
+  "author_manifest": "8c1ed4e4ea67c5f4292925f75fa1eccd60cf9c9086728a605d97247226b83b0f",
+  "successor_manifest": "859968ff4390a54c75d37ef16db7646935f5f6a7fafdd029957241447d6ef65f",
+  "root_verified_files": 481,
+  "native_sha256_prefix": "d89d767c",
+  "native_bytes": 27215,
+  "code_growth": 6,
+  "state_growth": 0,
+  "root_source_review": "One cleanup observation expression adds startup sc_ready; getter/private authority and operations unchanged",
+  "actual_peer_groups": {
+    "Python_native": 24,
+    "Zig": 2
+  },
+  "counterexample": "Actual RunStop during each startup CLOSE yields RI_FAILED, SCready0, BCclosed1 and old cleanup0; successor cleanup1. Generic85 error was not this counterexample and already reported cleanup1.",
+  "first_failure_seal_prefix": "819f244b",
+  "physical": false,
+  "limits": [
+    "Standalone fresh-engine readonly CFG component only",
+    "No attachment to running SETUP engine or firmware ownership reuse",
+    "Public reconfiguration not complete"
+  ]
+}

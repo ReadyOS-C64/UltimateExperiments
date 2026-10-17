@@ -15,6 +15,9 @@ typedef unsigned int br_u16;
 typedef unsigned long br_u32;
 #define BR_OPEN 2
 #define BR_CLOSE 3
+#if D64_START_OPTIONS
+#define BR_READ 4 /*CPU read1..512, only after verified prelaunch installation*/
+#endif
 #define BR_SEEK 6
 #define BR_INFO 7
 #define BR_LOAD 0x21

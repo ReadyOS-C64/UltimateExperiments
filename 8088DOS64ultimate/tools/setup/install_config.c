@@ -21,6 +21,9 @@ static unsigned char prepared[D64_CFG_BYTES];
 #endif
 static unsigned char joined[D64_PATH_BYTES];
 
+#if D64_START_OPTIONS
+#pragma code-name ("PRELAUNCH")
+#endif
 #if D64_VALIDATOR_FAST_CRC
 static unsigned long crc32(const unsigned char *p,unsigned int n) {
     return d64_fast_crc(p,n);
@@ -39,6 +42,9 @@ static unsigned long crc32(const unsigned char *p, unsigned int n) {
 
 #endif
 
+#if D64_START_OPTIONS
+#pragma code-name ("CODE")
+#endif
 static unsigned char fail(unsigned char error) {
     d64_cfg_error = error;
     return 0u;
@@ -77,6 +83,9 @@ static unsigned char path_valid(const unsigned char *p, unsigned char absolute) 
     return 1u;
 }
 
+#if D64_START_OPTIONS
+#pragma code-name ("PRELAUNCH")
+#endif
 static unsigned char field_valid(const unsigned char *p, unsigned char present) {
     unsigned int i;
     unsigned char n = path_length(p);
@@ -175,6 +184,9 @@ unsigned char d64_config_validate(void) {
     return 1u;
 }
 
+#if D64_START_OPTIONS
+#pragma code-name ("CODE")
+#endif
 unsigned char d64_path_join(void) {
     unsigned char home, relative, slash;
     d64_cfg_error = 0u;

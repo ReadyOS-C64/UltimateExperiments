@@ -35,19 +35,21 @@ Actual target tests compare serialization/CRC against an independent host oracle
 
 ## Same-folder emulator options
 
-Accepted user direction, 2026-10-16. START's persistent installation home also locates emulator options. Native startup will read and parse them before DOS boots, then pass validated settings through REU. The launcher does the file and parser work once per launch; the emulator copies frequently used options into resident state. Preserve the validated home for later native file operations; do not discover or assume a current directory. The isolated native parser foundation passes 17 Zig/Peddle groups, with additional independent boundary controls. A matched native file reader, startup overlay and settings consumer are in private integration testing; public START still ignores INI.
+The options-enabled launcher reads `DOS64.INI` from its embedded installation home on every cold launch, parses it before DOS boots, and passes validated settings through REU. The emulator copies the initial display setting into resident state. Editing INI takes effect on the next launch without reinstalling or regenerating START. Surviving REU contents never substitute for rereading the file.
 
-Keep binary `DOS64.CFG` and its ABI1 reserved-zero rules intact. Plan a separate human-editable `DOS64.INI` for supported emulator options. Changing a display preference should not invalidate disk identities or require regenerating START. SETUP should expose the same settings. Candidate options include initial 40/80-column presentation and supported display preferences; exact names and behavior require implementation. Settings must not implicitly enable unqualified timing/compiled-code profiles or change the original 8088 compatibility target.
+Build the complete matched release with `make start-ini-bundle`; use all five files from the bundle named by `build/start-ini-bundle/RESULT.json`. The default `make start-template` remains the legacy launcher, which ignores INI. Do not mix the two launchers or their release assets. See [installation](NATIVE_SETUP_INSTALLER.md) and [the options handoff](NATIVE_START_HANDOFF.md#options-enabled-launcher).
 
-Resolve INI from the embedded canonical home and parse once at native startup, with bounded file/line lengths, schema/value checks, exact EOF and known file closure. Missing optional INI selects documented defaults; present malformed or unsupported settings produce a useful startup error. Preserve the first failure and support Run/Stop cleanup. Edits take effect on the next launch without reinstalling. No per-instruction text parsing or configuration file access belongs in the emulator execution loop.
+Binary `DOS64.CFG` and its ABI1 reserved-zero rules stay intact. INI currently supports the initial 40/80-column display setting only; it does not enable timing or compiled-code experiments. A native SETUP preferences editor is still pending.
 
-Public START has one byte of headroom below $5000. Prefer a native prelaunch parser overlay with an explicit return/lifetime contract, or another measured startup arrangement; do not assume the parser fits START. SETUP may share parsing code.
+Missing optional INI selects 80 columns. Only the exact qualified file-not-found response with successful recovery and known closure permits that default; inaccessible paths and other I/O errors stop startup. A present malformed or unsupported setting also stops startup. Reads have bounded lengths, exact EOF and known closure; cancellation retains the first failure. No INI file access or text parsing occurs in the emulator execution loop.
 
-Publish a compact binary options record in explicitly allocated REU space, with magic, schema, length, checksum and current release/handoff binding. Invalidate readiness before work and publish last after successful parsing and closed files. The consumer validates values and launch binding, copies frequent settings into resident state, and consumes one-shot validity before arena reuse. Define address/defaults/ownership/lifetime from the combined memory map. This design reserves no range and changes neither D64R nor D64C ABI1. Releases requiring options need matching producer/consumer support and explicit compatibility rejection by older code.
+The options launcher verifies and installs the 6,798-byte `START.INO` prelaunch overlay at $6000. That code is retired by the final emulator payload DMA; no C frame survives that handoff. This fits without enlarging the 18,432-byte START template.
 
-The qualified private parser accepts `[emulator]`, optional `schema=1`, and `initial_columns=40|80` with default 80. It bounds files to 1,024 bytes, lines to 128 bytes and input chunks to 64 bytes; it checks complete values and rejects unknown or duplicate keys. This parser does not apply settings or prove successful file EOF/closure. Its production integration is still pending.
+A separate 32-byte D64O record at REU $3FF500 carries the validated setting, checksum and current CFG/main binding. START invalidates readiness before work, verifies the body by readback, and publishes readiness last after closing files. The main validates and consumes readiness, proves consumption by independent readback, then applies BIOS text mode 1 (40 columns) or 3 (80 columns). Legacy entry ignores this record and starts in mode 3. D64R and D64C ABI1 are unchanged; options-enabled START requires the matching D64L version 2 descriptor.
 
-Example for the planned startup integration:
+The parser accepts `[emulator]`, optional `schema=1`, and `initial_columns=40|80` with default 80. Names are case insensitive; ASCII spaces/tabs, CR/LF and `;` or `#` comments are supported. Files are limited to 1,024 bytes and lines to 128 bytes, read in chunks of at most 64 bytes. Unknown sections/keys, duplicate keys, unsupported values and non-ASCII input are rejected.
+
+Place this ordinary ASCII file alongside `START.PRG` and `DOS64.CFG`:
 
 ```ini
 [emulator]
@@ -55,6 +57,4 @@ schema=1
 initial_columns=40
 ```
 
-After integration, editing this file will take effect on the next launch without regenerating START. Missing INI will use defaults; an unreadable or malformed present file must report an error rather than silently using defaults. REU holds the validated binary handoff only, so its surviving contents cannot substitute for reading the current file.
-
-Acceptance requires actual parser/consumer integration tests for defaults, supported values, malformed/oversize input, unsupported versions, stale/corrupt records, cancellation, arena guards and file closure; then cold START-to-DOS tests and physical Ultimate qualification. The existing public launcher does not yet read INI or consume a settings record.
+The initial setting does not prevent DOS `MODE CO40` or `MODE CO80` from changing modes later. Actual 6510/Peddle tests cover parser/I/O, stale and corrupt records, readback failures, cancellation and both generated START-to-DOS modes. Physical qualification of this new launcher/main pair remains pending.

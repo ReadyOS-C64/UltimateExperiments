@@ -51,6 +51,13 @@ pub const Fixture = struct {
 
     pub fn call(self: *Fixture, entry: []const u8, budget: u64) !c.Dos64Regs {
         const entry_address = try self.symbol(entry);
+        // This fixture bootstraps overlays during init and never loads cold
+        // EF00 sidecar bytes. Refuse their entrypoints before target execution.
+        if (self.symbols.get("__UNITEXTRA_RUN__")) |extra| {
+            const count = self.symbols.get("__UNITEXTRA_SIZE__") orelse 0;
+            if (entry_address >= extra and @as(u32, entry_address) < @as(u32, extra) + count)
+                return error.DiscardedUnitFixture;
+        }
         // Unit-only moved helpers exist only before bitmap ownership. Refuse
         // before seeding the host stack or changing native registers.
         if (self.symbols.get("__UNITCOLD_RUN__")) |cold_start| {

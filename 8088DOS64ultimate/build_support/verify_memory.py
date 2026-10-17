@@ -11,6 +11,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     errors = []
     symbols = {name.lstrip("."): int(addr, 16) for addr, name in
                re.findall(r"^al ([0-9A-Fa-f]+) (\S+)", labels_text, re.M)}
+    options_state = "dos64_options_required" in symbols or "dos64_bios_initial_mode" in symbols
     expected = {"__MAIN_START__": 0x0801, "__MAIN_SIZE__": 0x37FF,
                 "__ZP_START__": 0x20, "__ZP_SIZE__": 0xC0,
                 "__CONTROL_START__": 0xE000, "__CONTROL_SIZE__": 0x1000,
@@ -25,6 +26,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
               "LOADERCOLD": (0x4000,0x43FF), "LOADERADOPT": (0x6000,0x617F),
               "IMPORTCODE": (0x7000, 0x7FFF),
               "COLDINIT": (0x7000,0x7FFF), "COLDRODATA": (0x7000,0x7FFF), "UNITCOLD": (0x7401,0x7FFF),
+              "UNITEXTRA": (0xEF00,0xEFFA),
               "NATIVESTATE": (0x080D,0x3FFF), "INPUTCODE": (0xC900,0xCFFF),
               "UCIBUFFER": (0xC100, 0xC8FF),
               "IRQMAIN":(0xC900,0xCFFF),"IRQDEVICE":(0xC900,0xCFFF),"PITCODE":(0xC900,0xCFFF),"GFXCODE":(0xC900,0xCFFF),
@@ -42,6 +44,10 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             errors.append(f"{name} outside owned range: ${a:04X}-${b:04X}")
         if b - a + 1 != count:
             errors.append(f"{name} has inconsistent size")
+    extra = [x for x in segments if x["name"] == "UNITEXTRA"]
+    if extra and (len(extra) != 1 or extra[0]["start"] != 0xef00 or extra[0]["bytes"] != 251 or
+                  not any(x["name"] == "UNITCOLD" for x in segments)):
+        errors.append("UNITEXTRA must be the exact251-byte unit-only sidecar")
     if not segments:
         errors.append("No linker segments found")
     for index, seg in enumerate(segments):
@@ -264,18 +270,25 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
         state=[seg for seg in segments if seg["name"]=="NATIVESTATE"]
         native_runtime = "dos64_native_entry" in symbols
         initialized = (b"\xa5\x00\x00\x00\x00"if "HDCODE"in overlays else b"\xa5\x00\x00") if native_runtime else b"\xa5\x00"
-        if loader:
+        cold_offset = 0
+        if options_state:
+            # Matched options is an explicit eight-byte schema, not spare state.
+            initialized=b"\x03\xa5\x00\x00\x00\x00\x00\x00"
+            cold_offset=1
+            if not native_runtime or "HDCODE" not in overlays or not loader or len(state)!=1 or symbols.get('dos64_bios_initial_mode')!=state[0]['start'] or symbols.get('dos64_options_required')!=state[0]['end'] or symbols.get('dos64_loader_required')!=state[0]['end']-1:
+                errors.append('Matched options state requires exact mode/cold/HD/loader/options eight-byte schema')
+        elif loader:
             initialized+=b'\x00'
             if len(state)!=1 or symbols.get('dos64_loader_required')!=state[0]['end']:
                 errors.append('Serialized loader-required flag must be final resident initialized byte')
-        if len(state)!=1 or state[0]["bytes"]!=len(initialized) or symbols.get("dos64_cold_open")!=state[0]["start"] or symbols.get("dos64_cold_error")!=state[0]["start"]+1:
+        if len(state)!=1 or state[0]["bytes"]!=len(initialized) or symbols.get("dos64_cold_open")!=state[0]["start"]+cold_offset or symbols.get("dos64_cold_error")!=state[0]["start"]+cold_offset+1:
             errors.append("Cold/native reload guards must be initialized resident state bytes")
-        elif native_runtime and (symbols.get("n_started")!=state[0]["start"]+2 or symbols.get("dos64_native_started")!=state[0]["start"]+2):
+        elif native_runtime and (symbols.get("n_started")!=state[0]["start"]+cold_offset+2 or symbols.get("dos64_native_started")!=state[0]["start"]+cold_offset+2):
             errors.append("Native reload guard must follow cold-open/error state")
         elif prg is not None:
             offset=state[0]["start"]-0x0801+2
             if prg[offset:offset+len(initialized)]!=initialized:
-                errors.append("Cold/native reload guards must load A5,error00,started00 with the PRG")
+                errors.append("Cold/native reload guards must load exact initialized defaults with the PRG")
     shadow=[seg for seg in segments if seg["name"]=="HDBIOS"]
     load["shadow"]=None
     if "HDCODE"in overlays or shadow or shadow_payload is not None:
@@ -286,7 +299,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             expected={"__HDEXT_START__":0xf000,"__HDEXT_SIZE__":0xe00,"__HDEXT_FILEOFFS__":0,"__HDEXT_LAST__":part["end"]+1,"__HDBIOS_LOAD__":0xf000,"__HDBIOS_RUN__":0xf000,"__HDBIOS_SIZE__":count}
             if part["start"]!=0xf000 or not 1<=count<=3584 or any(symbols.get(k)!=v for k,v in expected.items()):errors.append("Shadow linked placement/length metadata mismatch")
             state=next((seg for seg in segments if seg["name"]=="NATIVESTATE"),None)
-            if state is None or symbols.get("hdb_boot_drive")!=state["start"]+3 or symbols.get("hdb_extension_ready")!=state["start"]+4:errors.append("HD shadow/reload guards must be explicit initialized resident bytes")
+            if state is None or symbols.get("hdb_boot_drive")!=state["start"]+3+(1 if options_state else 0) or symbols.get("hdb_extension_ready")!=state["start"]+4+(1 if options_state else 0):errors.append("HD shadow/reload guards must be explicit initialized resident bytes")
             if prg is not None and shadow_payload is None:errors.append("HD shadow exact linked bytes are required for packaged verification")
             if shadow_payload is not None and(len(shadow_payload)!=count or(prg is not None and prg[0xa000-0x801+2:0xa000-0x801+2+count]!=shadow_payload)):errors.append("Shadow source differs from exact linked bytes")
             load["padding"].append({"name":"shadow_source_tail_zero","start":0xa000+count,"end":0xadff,"bytes":3584-count,"file_offset":0xa000+count-0x801+2,"value":0})

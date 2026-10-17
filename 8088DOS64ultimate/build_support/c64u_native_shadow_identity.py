@@ -2,6 +2,9 @@
 
 The expected bytes come only from the pinned packaged PRG, never live A000.
 No network, target execution, persistence or physical banking proof is implied.
+Legacy five/six-byte state stays supported. The matched options format requires
+exact eight-byte serialized defaults; capture checks only the live ready guard,
+because the other startup fields legitimately change during execution.
 """
 import hashlib
 import json
@@ -42,7 +45,7 @@ def shadow_from_map(text):
     run,linked=rows['HDBIOS'];hd_run,hd_size=rows['HDCODE'];state,state_size=rows['NATIVESTATE']
     require(run==RUN and 1<=linked<=SIZE,'shadow linker range')
     require(hd_run==0xc900 and 1<=hd_size<=0x700,'HD overlay linker range')
-    require(LOAD<=state<state+state_size<=0x4000 and state_size in (5,6),'initialized guard state range')
+    require(LOAD<=state<state+state_size<=0x4000 and state_size in (5,6,8),'initialized guard state range')
     return [{'name':'HDBIOS','start':RUN,'length':SIZE,'source_start':SOURCE,'linked_length':linked,
              'state_start':state,'state_length':state_size,'hd_linked_length':hd_size}]
 
@@ -71,7 +74,7 @@ def prepare(prg,labels,segments,metadata):
     linked=segment['linked_length'];state=segment['state_start'];hd_size=segment['hd_linked_length']
     require((segment['start'],segment['length'],segment['source_start'])==(RUN,SIZE,SOURCE),'source/run/window ranges')
     state_size=segment['state_length']
-    require(1<=linked<=SIZE and state_size in (5,6) and LOAD<=state<state+state_size<=0x4000,'linked image/state size')
+    require(1<=linked<=SIZE and state_size in (5,6,8) and LOAD<=state<state+state_size<=0x4000,'linked image/state size')
     require(1<=hd_size<=0x700,'HD payload size')
     saver_size=labels.get("__SAVERCODE_SIZE__",0)
     require(type(saver_size)is int and 0<=saver_size<=0x7f0,"SAVER linked size")
@@ -79,14 +82,28 @@ def prepare(prg,labels,segments,metadata):
     require(type(disk_size)is int and 0<=disk_size<=0x700 and (not disk_size or saver_size),"DISK linked size/paired SAVER")
     packaged_end=0xc000 if disk_size else 0xb800 if saver_size else END
     require(prg[:2]==LOAD.to_bytes(2,'little') and len(prg)==packaged_end-LOAD+2,'PRG load address/complete packaged length')
+    options_state=any(k in labels for k in ('dos64_bios_initial_mode','dos64_options_required'))
+    require((state_size==8)==options_state,'matched options symbols require exact eight-byte initialized schema')
+    cold_offset=1 if state_size==8 else 0
     expected_labels={'__HDEXT_START__':RUN,'__HDEXT_SIZE__':SIZE,'__HDEXT_FILEOFFS__':0,
                      '__HDEXT_LAST__':RUN+linked,'__HDBIOS_LOAD__':RUN,'__HDBIOS_RUN__':RUN,'__HDBIOS_SIZE__':linked,
                      '__NATIVESTATE_LOAD__':state,'__NATIVESTATE_RUN__':state,'__NATIVESTATE_SIZE__':state_size,
-                     'hdb_boot_drive':state+3,'hdb_extension_ready':state+4,
+                     'hdb_boot_drive':state+3+cold_offset,'hdb_extension_ready':state+4+cold_offset,
                      '__HDCODE_LOAD__':0xc900,'__HDCODE_RUN__':0xc900,'__HDCODE_SIZE__':hd_size}
     require(all(type(labels.get(k)) is int and labels[k]==v for k,v in expected_labels.items()),'linked source/run/guard symbols')
-    require(prg[state+4-LOAD+2]==0,'packaged guard must start clear')
-    if state_size==6:
+    guard=state+4+cold_offset
+    require(prg[guard-LOAD+2]==0,'packaged guard must start clear')
+    if state_size==8:
+        state_labels={'dos64_bios_initial_mode':state,'dos64_cold_open':state+1,
+                      'dos64_cold_error':state+2,'n_started':state+3,
+                      'dos64_native_started':state+3,'hdb_boot_drive':state+4,
+                      'hdb_extension_ready':state+5,'dos64_loader_required':state+6,
+                      'dos64_options_required':state+7}
+        require(all(type(labels.get(k))is int and labels[k]==v for k,v in state_labels.items()),'exact mode/cold/native/HD/loader/options symbols')
+        require(type(labels.get('dos64_native_entry'))is int and LOAD<=labels['dos64_native_entry']<0x4000,'eight-byte schema requires resident native entry')
+        require(prg[state-LOAD+2:state-LOAD+2+8]==b'\x03\xa5\0\0\0\0\0\0','exact eight-byte initialized defaults')
+    elif state_size==6:
+
         require(labels.get('dos64_loader_required')==state+5 and prg[state+5-LOAD+2]==0,'packaged loader flag must be explicit legacy0')
     else:
         require('dos64_loader_required' not in labels,'loader flag needs its initialized resident byte')
@@ -154,7 +171,7 @@ def prepare(prg,labels,segments,metadata):
     else:
         require(package.get('disk')is None and load.get('disk')is None,'DISK metadata without linked payload')
     return {'expected':expected,'source_start':SOURCE,'start':RUN,'length':SIZE,'linked_length':linked,
-            'zero_tail_bytes':SIZE-linked,'loaded_guard_address':state+4,'loaded_guard_required':0xa5,
+            'zero_tail_bytes':SIZE-linked,'loaded_guard_address':guard,'loaded_guard_required':0xa5,
             'expected_window_sha256':sha(expected),'base_prg_sha256':sha(prg)}
 
 

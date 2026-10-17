@@ -16,6 +16,7 @@ public:
     bool unsupported = false;
     // Synthetic one-shot transaction failure, not a claimed hardware behavior.
     bool fault_armed = false;
+    bool fault_success = false; // test-only suppressed/partial DMA with DONE status
     uint64_t fault_skip = 0;
     uint32_t fault_prefix = 0;
     explicit ReuModel(uint32_t size_kib = 4096) : bytes(size_kib*1024u) {}
@@ -67,10 +68,10 @@ public:
         } else {
             regs[2] = uint8_t(host); regs[3] = uint8_t(host>>8);
             regs[4] = uint8_t(far); regs[5] = uint8_t(far>>8); regs[6] = uint8_t(far>>16);
-            const unsigned remaining = fail ? count-transferred : 1;
+            const unsigned remaining = fail && !fault_success ? count-transferred : 1;
             regs[7] = uint8_t(remaining); regs[8] = uint8_t(remaining>>8);
         }
-        regs[0] |= fail ? 0x20 : 0x40;
+        regs[0] |= fail && !fault_success ? 0x20 : 0x40;
         regs[1] = (value & 0x7f) | 0x10;
     }
 };

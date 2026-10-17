@@ -12,6 +12,9 @@ void lc_init(void); /*startup-only, initializes same single-context UCI engine*/
 br_u8 lc_validate_start(void); /*canonical persistent settings only, no fileIO*/
 br_u8 lc_begin(void); /*1accepted, ownerA5, exact canonical home;0no publication*/
 void lc_poll(void),lc_cancel(void);
+#if D64_START_OPTIONS
+void lc_clock_fail(void);
+#endif
 /* One-shot private authority; prepared4 -> consumed5. Reject clears ready.
  * No other FILES/UCI owner may interleave; consume immediately before DMA. */
 br_u8 lc_prepare_handoff(void),lc_consume_handoff(void);

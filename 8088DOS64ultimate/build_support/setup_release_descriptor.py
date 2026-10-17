@@ -5,7 +5,7 @@ import zlib
 from pathlib import Path
 
 
-def descriptor(prg: bytes, labels: str) -> bytes:
+def descriptor(prg: bytes, labels: str, options: bool = False) -> bytes:
     symbols = {}
     for line in labels.splitlines():
         fields = line.split()
@@ -13,11 +13,13 @@ def descriptor(prg: bytes, labels: str) -> bytes:
             key, value = fields[2].lstrip('.'), int(fields[1], 16)
             if key not in {'dos64_native_start','dos64_native_loop','dos64_native_idle',
                            'dos64_native_nmi','dos64_native_config','dos64_native_config_end',
-                           'hdc_config','hdc_config_end','dos64_loader_required'}:
+                           'hdc_config','hdc_config_end','dos64_loader_required','dos64_options_required','__UNITEXTRA_SIZE__'}:
                 continue  # private and overlay-local symbols can repeat
             if key in symbols and symbols[key] != value:
                 raise ValueError('conflicting symbol: '+key)
             symbols[key] = value
+    if symbols.get("__UNITEXTRA_SIZE__",0):
+        raise ValueError("unit-only sidecar is not a release payload")
     def symbol(name):
         if name not in symbols:
             raise ValueError('missing native handoff ABI symbol: '+name)
@@ -52,6 +54,12 @@ def descriptor(prg: bytes, labels: str) -> bytes:
     struct.pack_into('<4sBBHIIHHHHHHIII',out,0,b'D64L',1,1,64,len(prg),
                      zlib.crc32(prg),0x0801,len(prg)-2,*entries,nmi,n,h,f)
     struct.pack_into('<IIHBBHH',out,40,0x3e0000,0x3ff000,576,32,0x40,142,140)
+    if options:
+        o = offset('dos64_options_required',1,0x0801,0x4000)
+        if any(a <= o < b for a,b in spans) or o in [a-0x0801+2 for a in entries] or prg[o]:
+            raise ValueError('invalid initialized options patch span')
+        out[4] = 2
+        struct.pack_into('<I',out,56,o)
     struct.pack_into('<I',out,60,zlib.crc32(out[:60]))
     return bytes(out)
 
@@ -61,7 +69,8 @@ if __name__ == '__main__':
     p.add_argument('--prg',type=Path,required=True)
     p.add_argument('--labels',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--options',action='store_true')
     a=p.parse_args()
     # No partial/stale descriptor is written on rejected inputs.
-    data=descriptor(a.prg.read_bytes(),a.labels.read_text())
+    data=descriptor(a.prg.read_bytes(),a.labels.read_text(),a.options)
     a.output.write_bytes(data)

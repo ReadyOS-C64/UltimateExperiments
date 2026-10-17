@@ -41,7 +41,14 @@ class ImageImportContract(unittest.TestCase):
         self.assertTrue(r["passed"], r["errors"])
         cold = r["load"]["cold_import"]
         self.assertEqual(cold["start"], 0x7000)
-        self.assertEqual(cold["linked_bytes"], 4095)
+        # The options consumer adds232 cold bytes; probe/snapshot251 moved
+        # into the guarded unit-only sidecar. Neither is compiled out.
+        self.assertEqual(cold["linked_bytes"], 4076)
+        sidecar = Path("build/dos64-tests.prg.unit-extra.bin").read_bytes()
+        self.assertEqual(len(sidecar), 251)
+        self.assertEqual(len(self.cold) + len(sidecar), 4095 + 232)
+        self.assertEqual([(s["start"], s["end"], s["bytes"]) for s in r["segments"]
+                          if s["name"] == "UNITEXTRA"], [(0xEF00, 0xEFFA, 251)])
         self.assertEqual(cold["state_bytes"], 26)
         self.assertTrue(cold["payload_checked"])
         self.assertEqual(r["load"]["prg_bytes"], 47105)

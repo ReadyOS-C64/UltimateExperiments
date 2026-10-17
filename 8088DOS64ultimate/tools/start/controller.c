@@ -3,6 +3,9 @@
 #include "install_config.h"
 #include "release.h"
 #include "crc32.h"
+#if D64_START_OPTIONS
+#include "ini_io.h"
+#endif
 #include <string.h>
 
 struct lc_control_t lc_control={0xffu,0xdf1cu,{0xffu,0}};
@@ -23,6 +26,12 @@ static br_u8 buffer[256],header[32],cfg[576],release[64];
 static char home[128],path[128];
 static br_u16 base;
 static br_u32 capacity,bytes,address,checked,crc,expect_crc,main_crc;
+#if D64_START_OPTIONS
+extern br_u8 so_overlay_spec[16];
+static br_u8 overlay_installed;
+#define P_OVERLAY 9u
+#define P_OPTIONS 10u
+#endif
 #define P_CFG 1u
 #define P_RELEASE 2u
 #define P_MAIN 3u
@@ -68,7 +77,13 @@ static br_u8 dma(void *p,br_u32 at,br_u16 n,br_u8 dir) {
     lc_dma_c64=(br_u16)p;lc_dma_reu=at;lc_dma_length=n;lc_dma_direction=dir;
     return lc_dma();
 }
-static br_u8 clear_ready(void) {buffer[0]=0;return dma(buffer,0x3ff005UL,1u,0u);}
+static br_u8 clear_ready(void) {
+#if D64_START_OPTIONS
+ br_u8 a,b;buffer[0]=0;a=dma(buffer,0x3ff005UL,1u,0u);b=dma(buffer,0x3ff505UL,1u,0u);return a&&b;
+#else
+ buffer[0]=0;return dma(buffer,0x3ff005UL,1u,0u);
+#endif
+}
 static void fail(br_u8 reason) {
     if(!error){error=reason;if(reason==2u){failed_op=br_result.op;
         io_error=br_result.error;transport=br_result.transport;}}
@@ -107,6 +122,9 @@ static br_u8 file(const char *p,br_u32 size,br_u32 at) {
 void lc_init(void) {
     br_init();capture_leaf();c32_init();state=error=cleanup=phase=io=cancelled=0u;
     loaded_count=failed_op=io_error=transport=launch_ticket=0u;
+#if D64_START_OPTIONS
+    overlay_installed=0u;
+#endif
     memset(&lc_result,0,sizeof(lc_result));publish();
 }
 br_u8 lc_validate_start(void) {
@@ -125,7 +143,18 @@ br_u8 lc_begin(void) {
     loaded_count=failed_op=io_error=transport=0u;capacity=0x400000UL;
     br_config.owner=0xa5u;br_config.target=1u;br_config.capacity=capacity;
     if(!clear_ready()){fail(7u);return 1u;}
-    file(path,576UL,0x3ff020UL);publish();return 1u;
+    #if D64_START_OPTIONS
+    if(memcmp(so_overlay_spec,"D64I\1\20",6u) ||
+       so_overlay_spec[12]!=0u || so_overlay_spec[13]!=0x60u ||
+       so_overlay_spec[14] || so_overlay_spec[15]){fail(5u);return 1u;}
+    bytes=(br_u16)so_overlay_spec[6]|((br_u16)so_overlay_spec[7]<<8);
+    if(!bytes || bytes>0x2000UL || !named("START.INO")){fail(5u);return 1u;}
+    phase=P_OVERLAY;expect_crc=wide(so_overlay_spec+8u);
+    file(path,bytes,0x3f8000UL);
+#else
+    file(path,576UL,0x3ff020UL);
+#endif
+    publish();return 1u;
 }
 static br_u8 fetch(br_u8 *out,br_u32 at,br_u16 n) {
     br_u16 part;
@@ -142,6 +171,9 @@ static br_u8 stash(const br_u8 *in,br_u32 at,br_u16 n) {
 static void loaded(void) {
     ++loaded_count;io=0u;
     if(phase==P_CFG) {
+#if D64_START_OPTIONS
+        if(!overlay_installed){fail(5u);return;}
+#endif
         if(!fetch(cfg,0x3ff020UL,576u)){fail(7u);return;}
         memcpy(d64_cfg_input,cfg,576u);
         if(!d64_config_validate() || memcmp(cfg+8u,home,128u)){fail(6u);return;}
@@ -181,6 +213,11 @@ static br_u8 patch_main(void) {
     at=0x3e0000UL+wide(release+36u);
     if(!fetch(buffer,at,1u) || buffer[0])return 0u;
     buffer[0]=0xa5u;if(!dma(buffer,at,1u,0u))return 0u;
+    #if D64_START_OPTIONS
+    at=0x3e0000UL+wide(release+56u);
+    if(!fetch(buffer,at,1u)||buffer[0])return 0u;
+    buffer[0]=0xa5u;if(!dma(buffer,at,1u,0u))return 0u;
+#endif
     if(!fetch(buffer,0x3e0000UL,2u) || buffer[0]!=1u || buffer[1]!=8u)return 0u;
     if(!fetch(buffer,0x3e0000UL+(0x5882UL-0x0801UL+2UL),1u) || buffer[0]!=0x40u)return 0u;
     return 1u;
@@ -193,13 +230,74 @@ static void crc_poll(void) {
         crc=crc_bytes(crc,buffer,part);if(c32_error){fail(7u);return;}checked+=part;return;
     }
     crc^=0xffffffffUL;
-    if(phase==P_PATCH_CRC){main_crc=crc;phase=P_PUBLISH;io=0u;return;}
+    if(phase==P_PATCH_CRC){main_crc=crc;
+#if D64_START_OPTIONS
+        phase=P_OPTIONS;
+#else
+        phase=P_PUBLISH;
+#endif
+        io=0u;return;}
     if(crc!=expect_crc){fail(4u);return;}
     io=0u;
+    #if D64_START_OPTIONS
+    if(phase==P_OVERLAY){io=7u;checked=0;crc=0xffffffffUL;return;}
+#endif
     if(phase==P_MAIN){phase=P_A;expect_crc=wide(cfg+528u);file((char *)cfg+136u,0x5a000UL,0x100000UL);}
     else if(phase==P_A && (cfg[525u]&2u)){phase=P_B;expect_crc=wide(cfg+532u);file((char *)cfg+264u,0x5a000UL,0x180000UL);}
     else phase=P_PATCH;
 }
+#if D64_START_OPTIONS
+/* cfg is not populated until this source-bound overlay installation finishes.
+ * Two independent initialized FETCHes prevent suppressed/partial reads from
+ * comparing a buffer to itself. Final RAM CRC binds the executed bytes. */
+static void overlay_poll(void) {
+    br_u16 part;
+    if(checked<bytes) {
+        part=bytes-checked>256UL?256u:(br_u16)(bytes-checked);
+        memset(buffer,0xa5u,part);memset(cfg,0x5au,part);
+        if(!dma(buffer,0x3f8000UL+checked,part,1u) ||
+           !dma(cfg,0x3f8000UL+checked,part,1u) || memcmp(buffer,cfg,part)){
+            fail(7u);return;
+        }
+        memcpy((br_u8 *)(0x6000u+(br_u16)checked),buffer,part);
+        if(memcmp((br_u8 *)(0x6000u+(br_u16)checked),buffer,part)){
+            fail(7u);return;
+        }
+        crc=crc_bytes(crc,(br_u8 *)(0x6000u+(br_u16)checked),part);
+        if(c32_error){fail(7u);return;}checked+=part;return;
+    }
+    if((crc^0xffffffffUL)!=expect_crc){fail(4u);return;}
+    overlay_installed=1u;phase=P_CFG;io=0u;
+}
+#endif
+#if D64_START_OPTIONS
+#pragma code-name(push,"PRELAUNCH")
+static void ini_first(void) {
+    br_u8 e=ii_error();
+    if(!error&&e){error=e==1u?2u:e==2u?6u:e==3u?8u:10u;
+        if(e==1u){failed_op=ii_failed_op();io_error=ii_leaf_error();transport=ii_transport();}}
+}
+static void ini_poll(void) {
+    ii_now=lc_now;ii_poll();ini_first();
+    if(ii_state()==3u){leaf_result=br_result;cleanup=ii_cleanup()?2u:0u;
+        if(!clear_ready()&&!cleanup)cleanup=7u;state=3u;return;}
+    if(ii_state()==2u){leaf_result=br_result;io=0u;phase=P_PUBLISH;}
+}
+static br_u8 options_publish(void) {
+    br_u8 n,columns=ii_commit();
+    if(!columns){ini_first();return 0u;}
+    memset(header,0,32u);memcpy(header,"D64O",4u);header[4]=1u;header[5]=0xa5u;header[6]=32u;
+    memcpy(header+8u,cfg+572u,4u);put32(header+12u,main_crc);header[16]=columns;
+    put32(header+28u,crc_bytes(0xffffffffUL,header,28u)^0xffffffffUL);if(c32_error)return 0u;
+    header[5]=0u;if(!stash(header,0x3ff500UL,32u))return 0u;
+    for(n=0;n<32u;++n)buffer[n]=~header[n];
+    if(!fetch(buffer,0x3ff500UL,32u)||memcmp(buffer,header,32u))return 0u;
+    buffer[0]=0xa5u;if(!dma(buffer,0x3ff505UL,1u,0u))return 0u;
+    header[5]=0xa5u;for(n=0;n<32u;++n)buffer[n]=~header[n];
+    return fetch(buffer,0x3ff500UL,32u)&&!memcmp(buffer,header,32u);
+}
+#pragma code-name(pop)
+#endif
 static void anchor(void) {
     memset(header,0,32u);memcpy(header,"D64R",4u);header[4]=1u;header[5]=0xa5u;header[6]=32u;
     memcpy(header+8u,cfg+572u,4u);put32(header+12u,main_crc);
@@ -211,6 +309,9 @@ static void anchor(void) {
     if(!leaf_ui_release()){fail(2u);return;}
     if(!stash(cfg,0x3ff020UL,576u)){fail(7u);return;}
     header[5]=0u;if(!stash(header,0x3ff000UL,32u)){fail(7u);return;}
+    #if D64_START_OPTIONS
+    if(!options_publish()){fail(error?error:7u);return;}
+#endif
     buffer[0]=0xa5u;if(!dma(buffer,0x3ff005UL,1u,0u)){fail(7u);return;}
     state=2u;
 }
@@ -218,6 +319,14 @@ void lc_poll(void) {
     restore_leaf();
     if(state!=1u)return;
     br_now=lc_now;
+#if D64_START_OPTIONS
+    if(io==8u){ini_poll();publish();return;}
+    if(phase==P_OPTIONS&&!io){
+        if(!overlay_installed||!named("DOS64.INI")||!set_path(path)){fail(1u);return;}
+        ii_now=lc_now;if(!ii_begin(path)){ini_first();fail(error?error:2u);return;}
+        io=8u;publish();return;
+    }
+#endif
     if(io>=1u && io<=5u) {
         br_poll();capture_leaf();
         if(br_result.state==BR_BUSY){publish();return;}
@@ -230,6 +339,13 @@ void lc_poll(void) {
         else loaded();
     } else if(cancelled)fail(8u);
     else if(io==6u)crc_poll();
+#if D64_START_OPTIONS
+    else if(io==7u)overlay_poll();
+    else if(phase==P_CFG && overlay_installed) {
+        if(!named("DOS64.CFG")){fail(1u);return;}
+        file(path,576UL,0x3ff020UL);
+    }
+#endif
     else if(phase==P_PATCH) {
         if(!patch_main()){fail(5u);return;}
         phase=P_PATCH_CRC;address=0x3e0000UL;bytes=wide(release+8u);checked=0;crc=0xffffffffUL;io=6u;
@@ -242,6 +358,9 @@ void lc_cancel(void) {
         launch_ticket=2u;fail(8u);return;
     }
     if(state!=1u || cancelled)return;
+#if D64_START_OPTIONS
+    if(io==8u){ii_now=lc_now;ii_cancel();ini_first();cancelled=1u;publish();return;}
+#endif
     cancelled=1u;if(!error)error=8u;
     br_now=lc_now;
     if(io>=1u && io<=4u && br_result.state==BR_BUSY){br_cancel();capture_leaf();}
@@ -274,3 +393,10 @@ br_u8 lc_consume_handoff(void) {
     if(!leaf_ui_acquire() || !leaf_ui_release()){fail(2u);return 0u;}
     launch_ticket=2u;state=5u;publish();return 1u;
 }
+
+#if D64_START_OPTIONS
+void lc_clock_fail(void) {
+    if(state==1u&&io==8u){ii_now=lc_now;ii_clock_fail();ini_first();cancelled=1u;publish();return;}
+    lc_cancel();
+}
+#endif

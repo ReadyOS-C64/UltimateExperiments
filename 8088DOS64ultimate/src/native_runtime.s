@@ -10,6 +10,7 @@
 .import hdc_enabled,hdc_flags,hdc_phase,hdc_error
 .export n_cpu_error,n_tick_return,n_burst,n_timer_cpu_error
 .import dos64_cga_cursor_sample
+.import dos64_options_validate
 .import dos64_loader_validate,dos64_loader_install,dos64_loader_adopt,dos64_loader_required
 .import dos64_mem_read
 .importzp dos64_address
@@ -466,6 +467,8 @@ dos64_native_cold_start:
  lda #1
  sta n_stage
  jsr dos64_loader_validate
+ jcs n_config_bad
+ jsr dos64_options_validate
  jcs n_config_bad
  ldx #3
 @magic:

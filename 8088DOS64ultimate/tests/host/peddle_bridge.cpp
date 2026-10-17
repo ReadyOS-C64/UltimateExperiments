@@ -210,6 +210,7 @@ void dos64_bus_write(Dos64Machine *m, uint16_t a, uint8_t v) { m->cpu.busWrite(a
 uint64_t dos64_dma_bytes(const Dos64Machine *m) { return m->cpu.reu ? m->cpu.reu->dma_bytes : 0; }
 uint64_t dos64_dma_transfers(const Dos64Machine *m) { return m->cpu.reu ? m->cpu.reu->transfers : 0; }
 void dos64_reu_fail_after(Dos64Machine *m, uint64_t skip, uint32_t prefix_bytes) {
+    m->cpu.reu->fault_success = false;
     m->cpu.reu->fault_armed = true;
     m->cpu.reu->fault_skip = skip;
     m->cpu.reu->fault_prefix = prefix_bytes;
@@ -412,3 +413,5 @@ uint8_t hd_model_copy_source(void *p,uint8_t *out,size_t n){auto &m=static_cast<
 }
 
 extern "C" void diagnostic_publish_after_upload(void *p,size_t n){static_cast<Dos64Machine *>(p)->cpu.uci->publish_after_command=n;}
+
+extern "C" void dos64_reu_silent_after(Dos64Machine*m,uint64_t skip,uint32_t prefix){dos64_reu_fail_after(m,skip,prefix);m->cpu.reu->fault_success=true;}

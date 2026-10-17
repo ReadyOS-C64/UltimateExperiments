@@ -3,6 +3,11 @@
 .import _ps_init,_ps_put,_ps_key_poll,_ps_clock_poll
 .import _ps_row,_ps_col,_ps_ascii,_ps_key,_ps_ticks
 .import _lc_init,_lc_validate_start,_lc_begin,_lc_poll,_lc_cancel
+.ifdef D64_START_OPTIONS
+.if D64_START_OPTIONS
+.import _lc_clock_fail
+.endif
+.endif
 .import _lc_prepare_handoff,_lc_result,_lc_control,_lc_now,_sf_handoff
 .import _sc_begin,_sc_poll,_sc_cancel,_sc_ready,_sc_now
 .export _sf_main,_sf_status,_sf_error,sf_sample,sf_drain
@@ -80,7 +85,17 @@ sf_sample:
  bne :+
  lda #1
  sta _sf_error
-: jsr cancel
+:
+.ifdef D64_START_OPTIONS
+.if D64_START_OPTIONS
+ lda _sf_status
+ beq :+
+ jsr _lc_clock_fail
+ jmp @key
+:
+.endif
+.endif
+ jsr cancel
 @key:
  jsr _ps_key_poll
  cmp #0

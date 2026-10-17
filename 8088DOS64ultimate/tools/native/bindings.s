@@ -89,3 +89,10 @@ _files_start:
 
 .import dos64_files_owned_target
 .export _files_owned_target := dos64_files_owned_target
+
+.ifdef D64_START_OPTIONS
+.if D64_START_OPTIONS
+.import dos64_files_count
+.export _files_count := dos64_files_count
+.endif
+.endif

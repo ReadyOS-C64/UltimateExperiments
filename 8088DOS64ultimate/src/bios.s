@@ -21,6 +21,9 @@ dos64_bios_waiting: .res 1
 .import dos64_disk_transfer, dos64_disk_spt, dos64_disk_host_error
 .importzp dos64_address, dos64_segment, dos64_offset, dos64_mem_value
 .export dos64_bios_init, dos64_bios_port
+.export dos64_bios_initial_mode
+.segment "NATIVESTATE"
+dos64_bios_initial_mode: .byte 3
 .export dos64_bios_ready, dos64_bios_host_error, dos64_bios_boot_status
 
 .segment "BSS"
@@ -132,12 +135,12 @@ dos64_bios_cold_init:
     sta dos64_mem_value
     jsr dos64_mem_write
     jcs bios_init_failed
-    ; POST mode3 initializes the logical CGA aperture before guest reset.
+    ; Validated initial mode initializes the real CGA/BDA before guest reset.
     lda dos64_guest+G_AX
     sta bios_count
     lda dos64_guest+G_AX+1
     sta bios_count+1
-    lda #3
+    lda dos64_bios_initial_mode
     sta dos64_guest+G_AX
     lda #0
     sta dos64_guest+G_AX+1

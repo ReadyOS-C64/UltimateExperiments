@@ -1,3 +1,11 @@
+# Next after same-home INI integration — 2026-10-17
+
+Public main f7ea/unit9d5 and matched optional START79bb/INOeebb are integrated. ROOT full334/503 plus43 focused native groups and host gates passed; no unchanged repeat is needed. Keep default legacy START8b68 and v1 descriptor behavior intact. Use complete five-file `make start-ini-bundle` assets, not a lone new START. SETUP0df bytes remain unchanged. Evidence native-start-ini-public-root-20261017.json records first failures, one ancillary map rebuild, source closure and historical4da producer qualification.
+
+Memory agent: fresh standalone native readonly media inspection from RI859968ff receipt; full fresh A/B CRC/independent READ checks and C geometry/size only, no writes or fullC-copy claim. Compiled agent: f7ea paired profile/prototype, preserve historical strict builtins retirement mismatch and explicit layout/cadence. CIA: source-backed cold backend for readonly4MiB stream, no live activation until ROOT concrete purpose review. No arbitrary CPU/RAM restoration claim; upper12MiB unbacked, no full-board reset or FTP retry. Device reservation unchanged.
+
+ROOT owns generation-home CONFIG/native preferences UI, all promotions, hardware-purpose review and final integration. Preserve complete emulator/installer/SaveSwap/C-online/graphics/IEC/human/performance scope. Local commits only; never push.
+
 # Next after home preflight — 2026-10-17
 
 Public SETUP0df promotion is verified; do not repeat unchanged full4/home5/Zig11. ROOT owns matched INI review/public integration when author freezes, then generation-home CONFIG/SETUP reconfiguration and media controls. Memory agent closes matched native INI producer/consumer/genuine40+80 and rejection/source-only proof; CIA prioritizes independent replay of that frozen cohort, otherwise implements a fresh local bounded readonly-stream transport proposal. No hardware calls without closed concrete purpose review. Compiled agent implements separate native readonly CFG inspection and receipt as first real generation-home reconfiguration component.

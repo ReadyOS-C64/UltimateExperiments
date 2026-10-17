@@ -4,7 +4,7 @@
 .export dos64_reu_backup, dos64_reu_restore
 
 .ifdef DOS64_UNIT_COLD
-.segment "UNITCOLD"
+.segment "UNITEXTRA"
 .else
 .segment "CODE"
 .endif

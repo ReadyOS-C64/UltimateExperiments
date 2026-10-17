@@ -12,6 +12,9 @@ extern br_u16 uci_data_capacity,uci_status_capacity;
 extern br_u8 files_state,files_error,files_transport_error,files_handle;
 extern br_u8 files_target,files_op,files_mode,files_path_len,files_count_known,files_uncertain;
 extern br_u16 files_now,files_actual;
+#if D64_START_OPTIONS
+extern br_u16 files_count;
+#endif
 extern br_u8 files_offset[];
 struct br_config_t br_config={0,1,0x400000UL,{0}};
 struct br_request_t br_request;
@@ -68,6 +71,12 @@ static void terminal(void) {
 }
 static void clock_copy(void) { uci_now=br_now;files_now=br_now; }
 static void put32(br_u8 *at,br_u32 n) { br_u8 j;for(j=0;j<4;++j){at[j]=(br_u8)n;n>>=8;} }
+#if D64_START_OPTIONS
+#pragma code-name(push,"PRELAUNCH")
+static br_u8 cpu_read_admit(void){if(!(access_mode&1)||!q.length||q.length>512UL)return 0;files_count=(br_u16)q.length;return 1;}
+static void cpu_read_reply(void){br_result.actual=files_actual;br_result.known=files_count_known;if(!br_result.known||br_result.actual!=q.length)first(BR_COUNT);}
+#pragma code-name(pop)
+#endif
 void br_init(void) {
  uci_init();files_init();br_result.state=BR_IDLE;br_result.error=0;br_result.transport=0;br_result.handle=0;
  br_result.known=0;br_result.uncertain=0;br_result.rejected=0;br_result.accepted=0;br_result.actual=0;br_result.size=0;br_result.op=0;
@@ -79,13 +88,20 @@ br_u8 br_start(void) {
  if(external||br_result.state==BR_BUSY || !quiet() || !validate_root())return 0;
  if(files_handle&&!same_config())return 0;
  q=br_request;
- if(q.op!=BR_OPEN&&q.op!=BR_CLOSE&&q.op!=BR_SEEK&&q.op!=BR_INFO&&q.op!=BR_LOAD&&q.op!=BR_SAVE)return 0;
+ if(q.op!=BR_OPEN&&q.op!=BR_CLOSE
+#if D64_START_OPTIONS
+ &&q.op!=BR_READ
+#endif
+ &&q.op!=BR_SEEK&&q.op!=BR_INFO&&q.op!=BR_LOAD&&q.op!=BR_SAVE)return 0;
  if(q.op==BR_OPEN) {
   if(files_handle||!validate_path())return 0;
   if(q.mode!=1&&q.mode!=2&&q.mode!=3&&q.mode!=6&&q.mode!=7)return 0;
  } else {
   if(!files_handle || (files_handle==2&&q.op!=BR_CLOSE))return 0;
  }
+ #if D64_START_OPTIONS
+ if(q.op==BR_READ&&!cpu_read_admit())return 0;
+#endif
  bulk=q.op==BR_LOAD||q.op==BR_SAVE;
  if(bulk) {
   if((q.op==BR_LOAD&&!(access_mode&1))||(q.op==BR_SAVE&&!(access_mode&2)))return 0;
@@ -141,6 +157,9 @@ void br_poll(void) {
   if(files_error){br_result.transport=files_transport_error;first(files_error==2?BR_TRANSPORT:(files_error==3?BR_STATUS:BR_PROTOCOL));}
   if(uci_state==8&&uci_error){br_result.transport=uci_error;first(BR_TRANSPORT);}
   if(files_state==1)return;
+  #if D64_START_OPTIONS
+  if(q.op==BR_READ&&files_state==2)cpu_read_reply();
+#endif
   if(files_state!=2){br_result.transport=files_transport_error;first(cancelled?BR_CANCEL:(files_error==2?BR_TRANSPORT:(files_error==3?BR_STATUS:BR_PROTOCOL)));}
   else if(q.op==BR_INFO){br_result.size=(br_u32)uci_data[0]|((br_u32)uci_data[1]<<8)|((br_u32)uci_data[2]<<16)|((br_u32)uci_data[3]<<24);br_result.known=files_count_known;}
   terminal();return;
