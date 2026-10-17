@@ -10,7 +10,7 @@ cache_probe_pointer: .res 2
 cache_probe_value: .res 1
 
 .ifdef DOS64_UNIT_COLD
-.segment "UNITCOLD"
+.segment "UNITTAIL"
 .else
 .segment "CODE"
 .endif

@@ -124,7 +124,8 @@ test "unit cold fixtures reject after real release before target stack or regist
     const start = try f.symbol("__UNITCOLD_RUN__");
     const size = try f.symbol("__UNITCOLD_SIZE__");
     try std.testing.expectEqual((try f.symbol("__COLDRODATA_RUN__")) + (try f.symbol("__COLDRODATA_SIZE__")),start);
-    try std.testing.expectEqual(@as(u16,975),size);
+    try std.testing.expectEqual(@as(u16,517),size);
+    try std.testing.expectEqual(@as(u16,975),size+(try f.symbol("__UNITEXTRA_SIZE__"))+(try f.symbol("__UNITTAIL_SIZE__")));
     for (0..size) |i| f.poke(start+@as(u16,@intCast(i)),0);
     const before = host.c.dos64_get_regs(f.machine);
     for ([_][]const u8{ "fixture_pass", "fixture_fail", "fixture_runaway", "fixture_unbalanced", "fixture_bad_write", "fixture_timed", "fixture_unimplemented_reu", "dos64_reu_probe", "dos64_cache_probe", "dos64_reu_backup", "dos64_reu_restore", "dos64_range_probe", "dos64_range_backup", "dos64_range_restore" }) |entry| {

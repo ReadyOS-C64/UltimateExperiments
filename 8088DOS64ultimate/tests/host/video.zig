@@ -452,7 +452,7 @@ test "video rejects unknown modes services graphics glyphs and malformed windows
     var s = Screen.init(80);
     try seedScreen(&f, &s);
     for ([_]u16{ 7, 0x80, 0x83, 0xff, 0x0400, 0x0c01, 0x0d00 }) |ax| try invoke(&f, ax, 0, 0, 0, &.{}, false);
-    for ([_][2]u16{ .{ 0x1900, 0x1800 }, .{ 0x000a, 0x1809 }, .{ 0, 0x1900 }, .{ 0, 0x1850 }, .{ 0xffff, 0xffff } }) |window| {
+    for ([_][2]u16{ .{ 0x1900, 0x1800 }, .{ 0x000a, 0x1809 }, .{ 0, 0x1a00 }, .{ 0, 0x1850 }, .{ 0xffff, 0xffff } }) |window| {
         try invoke(&f, 0x0601, 0x7700, window[0], window[1], &.{}, false);
         try invoke(&f, 0x0700, 0x7700, window[0], window[1], &.{}, false);
     }
@@ -572,4 +572,81 @@ test "XT palette cold BDA cache failure unwinds host stack without changing gues
     try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_video_host_error")));
     try std.testing.expectEqualSlices(u8,&before,&try guest(&f));
     try std.testing.expect(f.stack_high_water<=32);
+}
+
+test "video XT row25 clears26rows and scrolls both directions without clipping legitimate nextpage spill" {
+    for ([_]u8{ 1, 32 }) |frames| {
+        for ([_]u8{ 1, 3 }) |m| {
+            var f = try init(frames);
+            defer f.deinit();
+            try mode(&f, m);
+            var s = Screen.init(if (m == 1) 40 else 80);
+            try seedScreen(&f, &s);
+            c.dos64_reu_poke(f.machine, 0xb7fff, 0xa7);
+            c.dos64_reu_poke(f.machine, 0xbc000, 0x5c);
+            for ([_]bool{ false, true }) |down| {
+                for ([_]u8{ 0, 1, 3, 26, 255 }) |lines| {
+                    try invoke(&f, (if (down) @as(u16, 0x0700) else @as(u16, 0x0600)) | lines, 0x1400, 0, 0x1900 | @as(u16, s.cols - 1), &.{}, true);
+                    s.scroll(0, 0, 0, 25, s.cols - 1, lines, 0x14, down);
+                    try s.compare(&f);
+                    try std.testing.expectEqual(@as(u8, 0xa7), c.dos64_reu_peek(f.machine, 0xb7fff));
+                    try std.testing.expectEqual(@as(u8, 0x5c), c.dos64_reu_peek(f.machine, 0xbc000));
+                }
+            }
+            // Full aperture oracle includes nextpage32/64bytes and proves
+            // all later bytes remain their original pattern.
+            const touched = 26 * @as(usize, s.cols) * 2;
+            try std.testing.expect(touched > s.stride);
+        }
+    }
+}
+
+test "video XT row25 validates lastpage end exactly and refuses first byte beyond CGA before anywrite" {
+    for ([_]u8{ 1, 32 }) |frames| {
+        for ([_]u8{ 1, 3 }) |m| {
+            var f = try init(frames);
+            defer f.deinit();
+            try mode(&f, m);
+            var s = Screen.init(if (m == 1) 40 else 80);
+            try seedScreen(&f, &s);
+            const page = s.pages - 1;
+            try invoke(&f, 0x0500 | @as(u16, page), 0, 0, 0, &.{}, true);
+            const right: u8 = if (m == 1) 23 else 47;
+            for ([_]bool{ false, true }) |down| {
+                try invoke(&f, if (down) 0x0700 else 0x0600, 0x3c00, 0x1900, 0x1900 | @as(u16, right), &.{}, true);
+                s.scroll(page, 25, 0, 25, right, 0, 0x3c, down);
+                try s.compare(&f);
+                try invoke(&f, if (down) 0x0701 else 0x0601, 0x6e00, 0, 0x1900 | @as(u16, right + 1), &.{}, false);
+                try s.compare(&f);
+                try invoke(&f, if (down) 0x0700 else 0x0600, 0x6e00, 0, 0x1900 | @as(u16, s.cols - 1), &.{}, false);
+                try s.compare(&f);
+            }
+            // Component deliberately remains bounded to rows0..25.
+            try invoke(&f, 0x0600, 0x7700, 0, 0x1a00, &.{}, false);
+            try s.compare(&f);
+            try invoke(&f, 0x0700, 0x7700, 0x1900, 0x1800, &.{}, false);
+            try s.compare(&f);
+        }
+    }
+}
+
+test "video XT row25 cache-one-frame and32frame implementations agree on patterned copied rows and full guestFLAGS" {
+    for ([_]u8{ 1, 32 }) |frames| {
+        for ([_]u8{ 1, 3 }) |m| {
+            var f = try init(frames);
+            defer f.deinit();
+            try mode(&f, m);
+            var s = Screen.init(if (m == 1) 40 else 80);
+            try seedScreen(&f, &s);
+            for ([_]u8{ 1, 3, 25 }) |lines| {
+                for ([_]bool{ false, true }) |down| {
+                    // Each copycase starts patterned, not a prior clear.
+                    try seedScreen(&f, &s);
+                    try invoke(&f, (if (down) @as(u16, 0x0700) else @as(u16, 0x0600)) | lines, 0x7f00, 0x0102, 0x1900 | @as(u16, s.cols - 3), &.{}, true);
+                    s.scroll(0, 1, 2, 25, s.cols - 3, lines, 0x7f, down);
+                    try s.compare(&f);
+                }
+            }
+        }
+    }
 }

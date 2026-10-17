@@ -8,7 +8,7 @@ sys.pycache_prefix=str(ROOT/'build'/('.absent-native-media-'+str(os.getpid())))
 if Path(sys.pycache_prefix).exists():raise RuntimeError('Source-only cache prefix must be absent')
 import argparse,hashlib,json,shutil,subprocess,tempfile,platform,re
 OWNER={'kind':'dos64-native-media','version':1}
-PUBLISH=['dos64.prg','dos64-tests.prg','dos64.labels','dos64-tests.labels','dos64.map','dos64-tests.map','dos64.memory.json','dos64-tests.memory.json']
+PUBLISH=['dos64.prg','dos64-tests.prg','dos64-tests.prg.unit-extra.bin','dos64-tests.prg.unit-tail.bin','dos64.labels','dos64-tests.labels','dos64.map','dos64-tests.map','dos64.memory.json','dos64-tests.memory.json']
 SUITES=[('selected','test_selected_save.py','SELECTED_RESULT.json',5),('sequential','test_sequential_cancel.py','SEQUENTIAL_RESULT.json',4),('online','test_online_save.py','ONLINE_SAVE_REPORT.json',10),('crc','test_crc.py','CRC_RESULT.json',5)]
 def digest(p):
  b=Path(p).read_bytes();return {'sha256':hashlib.sha256(b).hexdigest(),'bytes':len(b)}
@@ -81,7 +81,7 @@ def stage(run,record,test):
  return run/'work'
 def native(work,t,command,default):
  flags={'DOS64_SAVE_HD_CONTEXT':0 if default else 1,'DOS64_EXPORT_CRC':0 if default else 1}
- command([t['make'],'-B',*[n+'='+str(v)for n,v in flags.items()],'DOS64_CA65='+str(t['ca65']),'DOS64_LD65='+str(t['ld65']),'DOS64_PYTHON='+str(Path(sys.executable).resolve()),'build/dos64.prg','build/dos64-tests.prg','build/dos64-tests.prg.unit-extra.bin','build/dos64-tests.bin','verify-memory'],cwd=work)
+ command([t['make'],'-B',*[n+'='+str(v)for n,v in flags.items()],'DOS64_CA65='+str(t['ca65']),'DOS64_LD65='+str(t['ld65']),'DOS64_PYTHON='+str(Path(sys.executable).resolve()),'build/dos64.prg','build/dos64-tests.prg','build/dos64-tests.prg.unit-extra.bin','build/dos64-tests.prg.unit-tail.bin','build/dos64-tests.bin','verify-memory'],cwd=work)
  for n in ['dos64','dos64-tests']:
   if json.loads((work/'build'/(n+'.memory.json')).read_text()).get('passed')is not True:raise RuntimeError('Native memory verification failed')
  if not default:

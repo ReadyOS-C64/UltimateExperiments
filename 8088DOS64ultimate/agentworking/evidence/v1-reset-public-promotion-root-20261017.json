@@ -1,0 +1,26 @@
+{
+  "status": "ROOT_ACCEPTED_PUBLIC_SOURCE_BUILT_DEVELOPMENT_CANDIDATE",
+  "promoted_paths": 34,
+  "base_entries_pass": 518,
+  "source_tool_inputs_unchanged": 904,
+  "execution_inputs_unchanged": 910,
+  "base_native_UNIT": {
+    "sha256": "180a0ee69c871da9ed720b221e2c3b2d79739d36ee5c3c6e1bef1aca3e30cef2",
+    "bytes": 47105
+  },
+  "package_controls_pass": 25,
+  "media_builder_controls_pass": 15,
+  "all_provider_rows_verified_after_tests": 1567,
+  "all16packagefiles_and_ZIP_match_reviewed_candidate": true,
+  "archive_identity": {
+    "sha256": "daf98d2ebf17cb4a0d456410d0fcb19b144bcaaadf4661185772e8164e376ab2",
+    "bytes": 139938
+  },
+  "runtime_identity": {
+    "sha256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+    "bytes": 47105
+  },
+  "V1_release": false,
+  "physical_acceptance": false,
+  "consumer_workflow_seals": "FDISK and Turbo reportedactualPASS; finalsealedRootintake recordedseparately"
+}

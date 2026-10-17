@@ -299,7 +299,11 @@ test "fixed BIOS PIT accepts only same divisor zero lohi rewrites preserving all
         _=try cycle(&f,0x140,0,0,false,1);
         for(1..256)|value|_=try cycle(&f,0x40,@intCast(value),0,false,1);
         try expectState(&f,"dos64_pit_write_phase",@intCast((n+1)&1));
-        for([_]u16{0x41,0x42,0x43})|port| { for(0..256)|value| { _=try cycle(&f,port,@intCast(value),0,false,1); } }
+        for(0..256)|value| {
+            _=try cycle(&f,0x41,@intCast(value),0,false,1);
+            _=try cycle(&f,0x42,@intCast(value),0,false,0);
+            _=try cycle(&f,0x43,@intCast(value),0,false,if(value==0xb6) 0 else 1);
+        }
     }
 }
 
@@ -311,4 +315,31 @@ test "absent XT game adapter byte input is pulled high without pretending joysti
     _=try cycle(&f,0x201,0x1234,0,false,1);
     _=try cycle(&f,0x201,0x1234,1,false,1);
     for([_]u16{0x200,0x202,0x301,0x1201})|port|_=try cycle(&f,port,0x1234,0,true,1);
+}
+
+// Genuine DOS3.30 FDISK's error beep uses B6h/42h then the port61 latch.
+// Audio is absent: this sequence must return without perturbing IRQ0.
+test "silent FDISK speaker programming preserves timer PIC and output latch" {
+    var f=try init();defer f.deinit();
+    const a=try f.symbol("dos64_pit_state_start");const z=try f.symbol("dos64_pit_state_end");
+    for(a..z)|i|f.poke(@intCast(i),@truncate(i*17+3));
+    try put(&f,"dos64_pic_irr",0x91);try put(&f,"dos64_pic_isr",0x28);
+    try out(&f,0x40,0);
+    for(0..256)|value| {
+        try out(&f,0x43,0xb6);
+        try out(&f,0x42,@intCast(value));
+        try out(&f,0x42,@intCast(255-value));
+        for(a..z)|i|try std.testing.expectEqual(@as(u8,@truncate(i*17+3)),f.peek(@intCast(i)));
+        try expectState(&f,"dos64_pit_write_phase",1);
+        try expectState(&f,"dos64_pic_irr",0x91);try expectState(&f,"dos64_pic_isr",0x28);try expectState(&f,"dos64_pic_imr",0xfc);
+        try expectState(&f,"dos64_ppi_port_b",0x48);
+        for([_]u16{0x42,0x43})|port| {
+            _=try cycle(&f,port,@intCast(value),0,true,1);
+            _=try cycle(&f,port,@intCast(value),1,true,1);
+            _=try cycle(&f,port,@intCast(value),1,false,1);
+            _=try cycle(&f,port+0x100,@intCast(value),0,false,1);
+        }
+    }
+    try out(&f,0x61,0x4b);try std.testing.expectEqual(@as(u16,0xa54b),try cycle(&f,0x61,0xa500,0,true,0));
+    try out(&f,0x61,0x48);try expectState(&f,"dos64_ppi_port_b",0x48);
 }

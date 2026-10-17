@@ -10,6 +10,7 @@ pub const Fixture = struct {
     stack_high_water: u8 = 0,
     initial_status: u8 = 0x24,
     unit_extra: ?[]u8 = null,
+    unit_tail: ?[]u8 = null,
 
     pub fn init() !Fixture {
         return initPaths("build/dos64-tests.prg", "build/dos64-tests.labels");
@@ -52,6 +53,18 @@ pub const Fixture = struct {
             if (code.len != count) return error.InvalidUnitSidecar;
             c.dos64_load(machine, start, code.ptr, code.len);
         }
+        var tail: ?[]u8 = null;
+        errdefer if (tail) |owned| allocator.free(owned);
+        if (symbols.get("__UNITTAIL_SIZE__")) |count| {
+            const start = symbols.get("__UNITTAIL_RUN__") orelse return error.InvalidUnitSidecar;
+            if (start != 0xff00 or count != 207 or @as(u32,start)+count != 0xffcf or extra == null) return error.InvalidUnitSidecar;
+            const path = try std.fmt.allocPrint(allocator,"{s}.unit-tail.bin",.{prg_path});
+            defer allocator.free(path);
+            const code = try std.Io.Dir.cwd().readFileAlloc(std.Options.debug_io,path,allocator,.limited(250));
+            tail=code;
+            if (code.len != count) return error.InvalidUnitSidecar;
+            c.dos64_load(machine,start,code.ptr,code.len);
+        } else if (extra != null) return error.InvalidUnitSidecar;
         // Isolated CPU calls bypass cold bootstrap. Install the exact packaged
         // helper for that fixture only; cold tests exercise the native copy.
         if (symbols.get("__CPUTRAP_SIZE__")) |count| {
@@ -61,10 +74,11 @@ pub const Fixture = struct {
             if (run != 0xfe00 or load != run or count == 0 or count > 256 or source+count > bytes.len) return error.InvalidTrapSidecar;
             c.dos64_load(machine, run, bytes[source..][0..count].ptr, count);
         }
-        return .{ .machine = machine, .labels = labels, .symbols = symbols, .unit_extra = extra };
+        return .{ .machine = machine, .labels = labels, .symbols = symbols, .unit_extra = extra, .unit_tail = tail };
     }
     pub fn deinit(self: *Fixture) void {
         if (self.unit_extra) |owned| allocator.free(owned);
+        if (self.unit_tail) |owned| allocator.free(owned);
         self.symbols.deinit(allocator);
         allocator.free(self.labels);
         c.dos64_destroy(self.machine);
@@ -85,9 +99,22 @@ pub const Fixture = struct {
                 return error.UnitFixtureCodeWrite;
         };
     }
+    fn checkUnitTail(self: *const Fixture, writes: bool) !void {
+        if (self.unit_tail) |code| for (code,0..) |expected,index| {
+            const address=0xff00+@as(u16,@intCast(index));
+            if (self.peek(address)!=expected or (writes and c.dos64_was_written(self.machine,address)!=0)) return error.UnitFixtureCodeWrite;
+        };
+    }
     pub fn call(self: *Fixture, entry: []const u8, budget: u64) !c.Dos64Regs {
         const entry_address = try self.symbol(entry);
         try self.checkUnitExtra(false);
+        try self.checkUnitTail(false);
+        if (self.unit_tail) |code| {
+            if (entry_address >= 0xff00 and @as(u32,entry_address)<0xff00+code.len) {
+                if ((self.peek(0)&7)!=7 or (self.peek(1)&7)!=5) return error.UnitFixtureBank;
+                if (self.peek(try self.symbol("dos64_cold_open"))!=0xa5 or self.peek(try self.symbol("dos64_overlay_ready"))!=0 or self.peek(try self.symbol("dos64_native_started"))!=0) return error.DiscardedUnitFixture;
+            }
+        }
         if (self.unit_extra) |code| {
             if (entry_address >= 0xef00 and @as(u32, entry_address) < 0xef00 + code.len) {
                 // EF00 code requires RAM+I/O visible, with driven port bits.
@@ -112,6 +139,7 @@ pub const Fixture = struct {
         c.dos64_set_regs(self.machine, .{ .pc = entry_address, .sp = 0xfd, .a = 0x71, .x = 0x82, .y = 0x93, .p = self.initial_status, .cycles = 0, .instructions = 0 });
         const result = c.dos64_run(self.machine, sentinel, budget);
         try self.checkUnitExtra(true);
+        try self.checkUnitTail(true);
         self.last_regs = result.regs;
         self.stack_high_water = @max(self.stack_high_water, result.stack_high_water);
         return switch (result.status) {

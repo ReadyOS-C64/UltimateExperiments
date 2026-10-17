@@ -111,7 +111,9 @@ test "owned synthetic BIOS initializes exact ROM IVT BDA and preserves conventio
     @memcpy(rom[0x1a0..0x1ad], &[_]u8{0xfb,0x50,0xe6,0xf8,0xcd,0x1c,0xb0,0x20,0xe6,0x20,0x58,0xcf,0xff});
     rom[0x1c0]=0xcf;
     @memcpy(rom[0x300..0x30b], &[_]u8{ 0xcf, 2, 0x25, 2, 9, 0x2a, 0xff, 0x50, 0xf6, 0x19, 4 });
-    @memcpy(rom[0xfff0..0xfffe], &[_]u8{ 0xea, 0x10, 1, 0, 0xf0, '1', '0', '/', '1', '5', '/', '2', '6', 0xff });
+    @memcpy(rom[0x400..0x41a], &[_]u8{ 0xfa, 0xfc, 0xb8, 0x00, 0xf0, 0x8e, 0xd8, 0x31, 0xc0, 0x8e, 0xc0, 0x31, 0xff, 0xbe, 0x00, 0x08, 0xb9, 0x00, 0x02, 0xf3, 0xa5, 0xea, 0x10, 0x01, 0x00, 0xf0 });
+    @memcpy(rom[0x800..0xc00], low[0..0x400]);
+    @memcpy(rom[0xfff0..0xfffe], &[_]u8{ 0xea, 0, 4, 0, 0xf0, '1', '0', '/', '1', '5', '/', '2', '6', 0xff });
     rom[0xfffe] = 0xfe;
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0xf0000, rom.ptr, rom.len));
     try std.testing.expectEqual(@as(u8, 0xab), c.dos64_reu_peek(f.machine, 0x500));
@@ -396,8 +398,7 @@ test "real guest reset reaches BIOS bootstrap and loads original disk sector exa
     defer f.deinit();
     const bytes = try disk1(&f);
     defer allocator.free(bytes);
-    try step(&f);
-    try std.testing.expectEqual(@as(u16, 0x110), f.word((try f.symbol("dos64_guest")) + 24));
+    try reachResetBootstrap(&f);
     try step(&f);
     const g = try f.symbol("dos64_guest");
     for ([_]u16{ 8, 9, 10, 11 }) |i| try std.testing.expectEqual(@as(u16, 0), f.word(g + i * 2));
@@ -426,7 +427,7 @@ test "failed real reset bootstrap retains ROM halt path and exports disk status"
     var f = try init(true);
     defer f.deinit();
     const g = try f.symbol("dos64_guest");
-    try step(&f);
+    try reachResetBootstrap(&f);
     try step(&f);
     try std.testing.expectEqual(@as(u16, 0xf000), f.word(g + 18));
     try std.testing.expectEqual(@as(u16, 0x112), f.word(g + 24));
@@ -561,4 +562,95 @@ test "INT13 B drive normal IRET and last diskette BDA status are coherent" {
         const status:u8=if(ax==0x0201)0 else 3;try std.testing.expectEqual(@as(u16,status)<<8|@as(u16,if(status==0)1 else 0),f.word(g));try std.testing.expectEqual(@as(u16,0xf602)|@as(u16,if(status==0)0 else 1),f.word(g+26));
         try flush(&f);try std.testing.expectEqual(status,c.dos64_reu_peek(f.machine,0x441));
     }
+}
+
+// DOS installs interrupt hooks in low RAM; FDISK restarts at FFFF:0000.
+// Reboot must remove those hooks before IO.SYS overwrites their code.
+test "reset vector restores all BIOS vectors but INT19 preserves installed hooks" {
+    var f = try init(true);
+    defer f.deinit();
+    const bytes = try disk1(&f);
+    defer allocator.free(bytes);
+    try flush(&f);
+    var original: [1024]u8 = undefined;
+    for (&original, 0..) |*v, i| v.* = c.dos64_reu_peek(f.machine, @intCast(i));
+    const poison = [_]u8{0xa6} ** 1024;
+    try coherentCode(&f, 0, &poison);
+    const g = try f.symbol("dos64_guest");
+    // INT19's existing native bootstrap must not grow into a reset/POST.
+    try reg(&f, 9, 0xf000);
+    try reg(&f, 12, 0x110);
+    try step(&f);
+    try flush(&f);
+    try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0, &poison, poison.len));
+    // Poisoned stack/segments/DF deliberately cannot be used by reset setup.
+    try reg(&f, 10, 0xdead);
+    try reg(&f, 4, 1);
+    try reg(&f, 8, 0xbeef);
+    try reg(&f, 11, 0xcafe);
+    try reg(&f, 9, 0xffff);
+    try reg(&f, 12, 0);
+    try reg(&f, 13, 0xf602);
+    for (0..600) |_| {
+        if (f.word(g + 18) == 0xf000 and f.word(g + 24) == 0x110) break;
+        try step(&f);
+    } else return error.ResetDidNotReachBootstrap;
+    try flush(&f);
+    try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0, &original, original.len));
+    try std.testing.expectEqual(@as(u16, 0), f.word(g + 26) & 0x600);
+    try step(&f);
+    try flush(&f);
+    try std.testing.expectEqual(@as(u16, 0x7c00), f.word(g + 24));
+    try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x7c00, bytes.ptr, 512));
+}
+
+fn reachResetBootstrap(f: *Fixture) !void {
+    const g = try f.symbol("dos64_guest");
+    for (0..600) |_| {
+        if (f.word(g + 18) == 0xf000 and f.word(g + 24) == 0x110) return;
+        try step(f);
+    }
+    return error.ResetDidNotReachBootstrap;
+}
+
+test "final cold vector snapshot preserves optional mounted HD table across guest reset" {
+    var f = try init(true);
+    defer f.deinit();
+    const hd_vector = [_]u8{0x40, 3, 0, 0xf0};
+    try coherentCode(&f, 0x104, &hd_vector);
+    const r = try f.call("dos64_bios_finalize_vectors", 2_000_000);
+    try std.testing.expectEqual(@as(u8, 0), r.p & 1);
+    try std.testing.expectEqual(@as(u8, 0), f.peek(try f.symbol("dos64_memory_mode")));
+    try coherentCode(&f, 0x104, &[_]u8{0xde,0xad,0xbe,0xef});
+    try reachResetBootstrap(&f);
+    try flush(&f);
+    try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x104, &hd_vector, hd_vector.len));
+}
+
+test "final cold vector snapshot failure restores mapping and reports terminal host failure" {
+    var f = try init(true);
+    defer f.deinit();
+    try flush(&f);
+    _ = try f.call("dos64_cache_init", 50_000);
+    c.dos64_reu_fail_after(f.machine, 0, 16);
+    f.initial_status = 0x2c;
+    const r = try f.call("dos64_bios_finalize_vectors", 2_000_000);
+    try std.testing.expectEqual(@as(u8, 1), r.p & 1);
+    try std.testing.expectEqual(@as(u8, 0x2c), r.p & 0x2c);
+    try std.testing.expectEqual(@as(u8, 1), f.peek(try f.symbol("dos64_bios_host_error")));
+    try std.testing.expectEqual(@as(u8, 0), f.peek(try f.symbol("dos64_memory_mode")));
+}
+
+test "reset vector restores coherent IVT through single-frame cache eviction" {
+    var f = try init(true);
+    defer f.deinit();
+    try flush(&f);
+    var original: [1024]u8 = undefined;
+    for (&original, 0..) |*v, i| v.* = c.dos64_reu_peek(f.machine, @intCast(i));
+    f.poke(try f.symbol("dos64_cache_limit"), 1);
+    _ = try f.call("dos64_cache_init", 50_000);
+    try coherentCode(&f, 0, &([_]u8{0x5a} ** 1024));
+    try reachResetBootstrap(&f);
+    try flush(&f);
+    try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0, &original, original.len));
 }

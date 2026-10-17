@@ -1,0 +1,81 @@
+{
+  "status": "PASS_FINAL_BIOS_RESET_TURBO_3_ACTUAL_START_MACHINES",
+  "execution": "PASS_ACTUAL_NEW_COLD_TURBO_EDIT_SAVE_DISKCOMPILE_RUN_EXIT_CIA_FINISH_FRESH40_RUN_FRESH80_IDEREOPEN_FULL_NATIVE20M_READBACK",
+  "actual_native_runtime": {
+    "DOS64.PRG": {
+      "sha256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+      "bytes": 47105
+    },
+    "DOS64.REL": {
+      "sha256": "e45f4b1bda34ac551eacb90bcc880c3d37df6f4729e5c4f1d2b6d8b6e4c1c5d9",
+      "bytes": 64
+    },
+    "DOS64.MNU": {
+      "sha256": "a2cd29cb1156c0d38a5491db6ac11a74bf52496d256e2ac7a91c280212ad847c",
+      "bytes": 57344
+    },
+    "START.TPL": {
+      "sha256": "fbf9d3acfc8772850a9de55cb7ff4babe0d286533a6599e10486a9bdc763bb04",
+      "bytes": 20480
+    },
+    "START.REL": {
+      "sha256": "02cb0ce4dd8a79d88a815593690dc90c2381dfe350c27e1af1fc01439e51272c",
+      "bytes": 64
+    },
+    "START.INO": {
+      "sha256": "44dd94617a3e76c4451a0e235626108ded3e30c911ce665d7e16e6499f717621",
+      "bytes": 7692
+    },
+    "START.RCV": {
+      "sha256": "08715a793b6fe0abf6dc95e09bad6b13356936b49ba0901793261568faec444e",
+      "bytes": 7902
+    },
+    "START.RFW": {
+      "sha256": "f11b0c1d66a9116b005651529de53bec19939ae03fd9c60ef0599a78b6c84824",
+      "bytes": 5578
+    }
+  },
+  "executed_model": {
+    "sha256": "450ca17b54b216330ec62f9d8604ade4930b31d35f3743fb639f2e0b8d1ff6d4",
+    "bytes": 207880
+  },
+  "immutable_execution_inputs_and_copies": 2310,
+  "fresh_source_model_inputs": 1013,
+  "three_machine_scopes": [
+    "80 IDE edit+backspace+SaveAs+diskcompile+IDErun+AltX+DOS redirection+actual CIA Finish",
+    "fresh40 source/output read+CLS exact-tail EXE run+actualCIAFinish",
+    "fresh80 actualIDEreopen exact5 source lines+AltX+knownclose/read-onlyreopen/INFO/full20M READ04/EOF/finalclose"
+  ],
+  "source_original_media_preserved": true,
+  "base_C": "hostprepared original-vendor20MiB; not newly executed native SETUP",
+  "physical_or_human_keyboard": false,
+  "VM_reexecuted_for_post_oracle": false,
+  "post_execution_exact_model_source_toolchain_rebuild": {
+    "status": "PASS_SOURCE_ONLY_REBUILD_EXACT_EXECUTED_MODEL",
+    "argv": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-O2",
+      "-dynamiclib",
+      "-Itests/floppy_export",
+      "-Itests/host",
+      "-Ithird_party/peddle/Peddle",
+      "tests/floppy_export/bridge.cpp",
+      "v1_bridge.cpp",
+      "third_party/peddle/Peddle/Peddle.cpp",
+      "third_party/peddle/Peddle/PeddleDebugger.cpp",
+      "third_party/peddle/Peddle/PeddleDisassembler.cpp",
+      "third_party/peddle/Peddle/StrWriter.cpp",
+      "-o",
+      "journal-peddle.dylib"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-turbo-bios-reset-final-20261017/model-rebuild/work",
+    "source_tool_existing_execution_inputs": 2346,
+    "product": {
+      "sha256": "450ca17b54b216330ec62f9d8604ade4930b31d35f3743fb639f2e0b8d1ff6d4",
+      "bytes": 207880
+    },
+    "VM_reexecuted": false
+  },
+  "model_toolchain_qualification": "Initial pre-VM compile pins wrapper+1013 source/SDK rows; separate post-VM source-only rebuild additionally pins actual Xcode clang++ binary and reproduces exact executed450 product; no VM replay"
+}

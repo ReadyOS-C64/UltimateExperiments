@@ -79,7 +79,7 @@ build/host_clock_probe.o: include/host_clock.inc Makefile
 
 .PHONY: all build test verify-memory manifest clean
 all: build
-build: build/dos64.prg build/dos64-tests.prg build/dos64-tests.prg.unit-extra.bin build/dos64-tests.bin verify-memory manifest
+build: build/dos64.prg build/dos64-tests.prg build/dos64-tests.prg.unit-extra.bin build/dos64-tests.prg.unit-tail.bin build/dos64-tests.bin verify-memory manifest
 
 build/%.o: src/%.s include/abi.inc include/reu.inc include/memory.inc Makefile
 	@mkdir -p build
@@ -215,12 +215,18 @@ build/dos64-tests.prg: $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/
 	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-tests-resident.prg $(if $(filter 1,$(DOS64_TRAP1)),--cpu-trap build/dos64-tests-resident.prg.trap.bin,) --files build/dos64-tests-resident.prg.files.bin --render build/dos64-tests-resident.prg.render.bin --input build/dos64-tests-resident.prg.input.bin --pit build/dos64-tests-resident.prg.pit.bin --gfx build/dos64-tests-resident.prg.gfx.bin --hd build/dos64-tests-resident.prg.hd.bin --shadow build/dos64-tests-resident.prg.hdb.bin --saver build/dos64-tests-resident.prg.saver.bin --disk build/dos64-tests-resident.prg.disk.bin $(if $(filter 1,$(DOS64_FLOPPY_FORMAT)),--format build/dos64-tests-resident.prg.format.bin,) --import-code build/dos64-tests-resident.prg.import.bin --labels build/dos64-tests.labels --output-prg $@ --output-assets build/dos64-tests-overlay-startup.bin --manifest build/dos64-tests-overlay-package.json
 
 	cp build/dos64-tests-resident.prg.unit-extra.bin build/dos64-tests.prg.unit-extra.bin
+	cp build/dos64-tests-resident.prg.unit-tail.bin build/dos64-tests.prg.unit-tail.bin
 
 # Recover a deleted unit-only sidecar by relinking its exact source graph.
 # Production release/runtime packages never depend on or load this artifact.
 build/dos64-tests.prg.unit-extra.bin: build/dos64-tests.prg $(if $(filter 1,$(DOS64_TRAP1)),cfg/dos64-unit-runtime-trap.cfg,cfg/dos64-unit-runtime.cfg)
 	$(DOS64_LD65) -C $(if $(filter 1,$(DOS64_TRAP1)),cfg/dos64-unit-runtime-trap.cfg,cfg/dos64-unit-runtime.cfg) -o build/dos64-tests-sidecar-relink.prg $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
 	cp build/dos64-tests-sidecar-relink.prg.unit-extra.bin $@
+
+# Recover this separate unit-only sidecar from the same exact objects.
+build/dos64-tests.prg.unit-tail.bin: build/dos64-tests.prg $(if $(filter 1,$(DOS64_TRAP1)),cfg/dos64-unit-runtime-trap.cfg,cfg/dos64-unit-runtime.cfg)
+	$(DOS64_LD65) -C $(if $(filter 1,$(DOS64_TRAP1)),cfg/dos64-unit-runtime-trap.cfg,cfg/dos64-unit-runtime.cfg) -o build/dos64-tests-tail-relink.prg $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
+	cp build/dos64-tests-tail-relink.prg.unit-tail.bin $@
 
 build/dos64-tests.bin: build/dos64-tests.prg
 	$(DOS64_PYTHON) build_support/raw_payload.py $< $@

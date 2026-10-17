@@ -1,0 +1,12 @@
+{
+  "status": "PASS_ACTUAL_GENUINE_FDISK_RESET_FORMAT_SYS_COPY_FINISH_FRESH",
+  "runtime": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+  "host_prepared_original_validC": true,
+  "no_host_guest_reset_or_output_injection": true,
+  "complete_C_bytes": 2097152,
+  "C_sha256": "158d819c0ca86e896cf78eff1cdd13d2987194c7e99c415dd473792d9f0b86d6",
+  "system_payloads_exact": true,
+  "fresh_C_COMMAND_executed": true,
+  "two_actual_nativeCIAFinish": true,
+  "no_hardware": true
+}

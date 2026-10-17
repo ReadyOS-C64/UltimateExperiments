@@ -68,6 +68,11 @@ pub const Fixture = struct {
             if (entry_address >= extra and @as(u32, entry_address) < @as(u32, extra) + count)
                 return error.DiscardedUnitFixture;
         }
+        // This late fixture does not load the FF00 unit-only companion.
+        if (self.symbols.get("__UNITTAIL_RUN__")) |tail| {
+            const count=self.symbols.get("__UNITTAIL_SIZE__") orelse 0;
+            if (entry_address>=tail and @as(u32,entry_address)<@as(u32,tail)+count) return error.DiscardedUnitFixture;
+        }
         // Unit-only moved helpers exist only before bitmap ownership. Refuse
         // before seeding the host stack or changing native registers.
         if (self.symbols.get("__UNITCOLD_RUN__")) |cold_start| {

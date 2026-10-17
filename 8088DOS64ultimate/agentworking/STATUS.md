@@ -1,8 +1,22 @@
+# Current consumer proofs accepted — public1506, 2026-10-17
+
+Root accepted both final model workflows after checking all1150 FDISK pins/1587 inputs/759 copies and all2902 Turbo pins/2310 inputs pluscopies. Genuine FDISK→warm reset→FORMAT/SYS/COPY→two native Finish/freshC execution passes; all four saved system files equal originalA, C remains exactly2MiB, HD vectors/PIC healthy and sameVM clock advances579→679. Turbo edit/save/diskcompile/run/Finish/fresh40/fresh80IDE reopen/fullnative20MiB readback passes, preserving360 original and363 final livepayloads. Hostprepared starting media and injected XT guest keys remain explicit model scope. [FDISK](evidence/v1-reset-fdisk-root-20261017.json), [Turbo](evidence/v1-reset-turbo-root-20261017.json).
+
+All518 public base tests,25 package controls and15 media-builder controls pass; matching12/all16packagefiles/ZIP byteexact reviewed candidate. Native changes are ready for local commit. Memory worker next runs actual final SETUP→unchanged generatedSTART→DOS/Finish and focusedCONFIG40/80; compiled worker tests genuine same-drive DISKCOPY/native swapping; CIA prepares split-read hardware purpose offline. Final physical/human V1 gates remain open. No push. Earlier snapshots below are historical.
+
+# Public development candidate1506 verified — 2026-10-17
+
+Promoted34 reviewed production/build/test paths. Fresh public source-built matching12 assets, all16 packaged files and139938B ZIP are byteexact the reviewed1506 test candidate. The complete canonical base suite now passes all518 entries;904 source/tool and910 execution inputs are unchanged through execution. Fresh package25 and native-media builder15 host tests also pass; all1567 provider rows remain exact. This closes the three earlier stale host fixture assumptions while retaining their first failed run. [Public promotion proof](evidence/v1-reset-public-promotion-root-20261017.json).
+
+Genuine full FDISK workflow has now reported actual model success: invalid input/beep, delete/create/activate, guest warm restart, FORMAT C:, SYS C:, COPY, actual CIA Finish, fresh START, persisted C file reads and C COMMAND.COM execution, second Finish. New Turbo three-machine workflow likewise passed. Their final source-closed Root intake is being recorded separately; physical/human V1 gates remain open.
+
+Local evidence checkpointc067e92 is committed; no push. Earlier entries below are historical.
+
 # V1 continuation — FDISK warm restart fixed; final consumer qualification running, 2026-10-17
 
 The new matched test package1506210a source-builds successfully. Genuine FDISK now survives its own far-jump restart, boots DOS3.30 again, and FORMAT C: completes on a disposable2MiB image. SYS/COPY/Finish/fresh persisted verification is still running; no completed preparation or final physical V1 acceptance is claimed. In parallel the new Turbo Pascal producer80 and fresh40 execution pass actual CIA Finish; fresh80 source reopening/native20MiB readback is pending. Public native production remains0bfa until complete workflow review.
 
-The BIOS correction snapshots the finalized interrupt vectors, including mounted-HD vectors, and restores them through ordinary guest ROM instructions when DOS jumps toFFFF:0000. INT19 stays bootstrap-only. Unit helpers gain an explicit207B FF00..FFCE sidecar without dropping tests. Separate initialization changes recover38B MAIN and5B cold space; the selected runtime has1B MAIN spare and selected UNIT has0B, so future growth must be measured. [Composition evidence](evidence/v1-reset-composition-root-20261017.json).
+The BIOS correction snapshots the finalized interrupt vectors, including mounted-HD vectors, and restores them through ordinary guest ROM instructions when DOS jumps toFFFF:0000. INT19 stays bootstrap-only. Unit helpers gain an explicit207B FF00..FFCE sidecar without dropping tests. Separate initialization changes recover38B MAIN and5B cold space; the separate expanded media-test profile has1B MAIN spare and UNIT has0B; the final twelve-file runtime has56B MAIN spare. Future growth must be measured. [Composition evidence](evidence/v1-reset-composition-root-20261017.json).
 
 Verification: the complete518-entry base run executed515PASS/3FAIL, all three due to host fixture assumptions about the longer reset path. Their first failures and original source are retained. Corrected three cases plus import hook pass with908 inputs unchanged;909 of911 original execution inputs remain unchanged and the two replaced host sources are retained byteexact. Native-media host15 and candidate host25 pass. This is not an all518-green rerun or physical acceptance.
 

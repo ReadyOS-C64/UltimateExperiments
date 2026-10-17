@@ -18,7 +18,9 @@ PIC_DATA_PORT = $0021
 ; Fixed BIOS PITcounter0 binary mode3/divisor65536/RWlohi additionally accepts
 ; only zero byte writes40h, tracking the nextLSB/MSB phase. Same-divisor writes
 ; retain the current phase, rational remainder, edge accounting and PIC state.
-; Nonzero data, reads, words, controls43h and other PIT channels are rejected.
+; Silent XT speaker compatibility accepts only byte OUT43h value B6h and
+; arbitrary byte OUT42h data. No waveform, speaker-counter state or reads are
+; modeled. Other43h controls, PIT reads/words and other channels are rejected.
 ; Absent game adapter201h has explicit byte inputFFh. This is an absent-device
 ; profile; no joystick/button support or broader unknown-port fallback exists.
 ; Writes/words and neighboring/high-alias game addresses remain rejected.

@@ -423,3 +423,7 @@ DOS LABEL may create an archive-marked volume label beside a same-named director
 A guest restart can legally jump toFFFF:0000 after CLI/CLD. Direct bootstrapping retains DOS IVT hooks into code overwritten by IO.SYS; finalized vectors must be restored by the reset path, including HD vectors. Tests that assumed two guest steps or tiny cold budgets must exercise the real ROM sequence. Cold-clock negative tests need valid BIOS/cache/REU prerequisites to isolate clock failure.
 
 When sharing LOAD/STORE request descriptors, a repeated local label is not a safe text-edit anchor. The rejected layout successor modified live sav_begin rather than cold sav_boot, inverting both operations; a full2048B cold-SAVER/one-DMA assertion and source peer caught it. Keep that failed attempt and qualify both descriptor users.
+
+### 2026-10-17 Root consumer review expectations
+
+Read the frozen producer's literal program/output before asserting a guessed string. Compare clock progression only within the same VM/session; fresh START seeds a new epoch and its absolute BDA ticks need not exceed a previous VM's. Two Root read-only review draft failures are retained in the final Turbo/FDISK archives; neither required native changes or replay.

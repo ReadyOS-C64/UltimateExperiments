@@ -686,10 +686,13 @@ sav_context_finish:
 sav_boot:
  ldx #7
 @descriptor:
- lda sav_store,x
+ lda sav_load,x
  sta dos64_reu_request,x
  dex
  bpl @descriptor
+ ; Last copied byte is immutable sav_load host low byte ($B000), hence A=0.
+ ; Convert only direction LOAD1 to STORE0 before issuing any DMA command.
+ sta dos64_reu_request+7
  jsr dos64_reu_transfer
  bcs @return
  jsr dos64_export_init
@@ -707,9 +710,4 @@ sav_boot:
  clc
 @return:
  rts
-sav_store:
- .word $b000
- .byte $00,$30,$34
- .word $800
- .byte 0
 .assert __SAVERCODE_SIZE__ <= $7f0,lderror,"SAVER exceeds modal source payload"

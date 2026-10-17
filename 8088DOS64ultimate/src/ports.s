@@ -180,6 +180,10 @@ io_write_body:
     lda dos64_io_port+1
     bne @validate
     lda dos64_io_port
+    cmp #$42
+    beq @speaker_data
+    cmp #$43
+    beq @speaker_control
     cmp #$40
     bne @validate
     lda dos64_io_value
@@ -222,6 +226,18 @@ io_write_body:
 @data:
     lda dos64_io_value
     jsr pic_data
+    jmp io_success
+
+@speaker_control:
+    ; Silent PC-speaker compatibility: FDISK programs channel2 binary
+    ; mode3, lo/hi (B6h). It has no IRQ0/PIC effect. No speaker waveform
+    ; or counter reads are advertised; other control words still refuse.
+    lda dos64_io_value
+    cmp #$B6
+    bne @bad_pit
+@speaker_data:
+    ; Channel2 divisor writes feed the absent audio sink. Port61 retains
+    ; the independent XT output latch. Never touch channel0 phase/IRQ0.
     jmp io_success
 
 pic_data:

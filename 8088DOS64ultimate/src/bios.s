@@ -16,7 +16,7 @@
 .export dos64_bios_waiting
 .segment "DEVICESTATE"
 dos64_bios_waiting: .res 1
-.import dos64_mem_write, dos64_memory_mode, dos64_physical
+.import dos64_mem_read, dos64_mem_write, dos64_memory_mode, dos64_physical
 .import dos64_cpu_word_read, dos64_cpu_word_write
 .import dos64_disk_transfer, dos64_disk_spt, dos64_disk_host_error
 .importzp dos64_address, dos64_segment, dos64_offset, dos64_mem_value
@@ -135,6 +135,8 @@ dos64_bios_cold_init:
     sta dos64_mem_value
     jsr dos64_mem_write
     jcs bios_init_failed
+    jsr bios_copy_ivt
+    jcs bios_init_failed
     ; Validated initial mode initializes the real CGA/BDA before guest reset.
     lda dos64_guest+G_AX
     sta bios_count
@@ -181,6 +183,65 @@ bios_fill_bytes:
     lda bios_count
     ora bios_count+1
     bne bios_fill_bytes
+    clc
+@return:
+    rts
+
+; Final snapshot follows optional HD mount, before cold code retirement.
+.export dos64_bios_finalize_vectors
+dos64_bios_finalize_vectors:
+    php
+    sei
+    cld
+    lda dos64_memory_mode
+    pha
+    lda #MEM_ALL_RAM
+    sta dos64_memory_mode
+    jsr bios_copy_ivt
+    pla
+    sta dos64_memory_mode
+    bcs @failed
+    plp
+    clc
+    rts
+@failed:
+    lda #1
+    sta dos64_bios_host_error
+    plp
+    sec
+    rts
+
+; Snapshot IVT into immutable guest ROM F0800..F0BFF through coherent bus.
+; Caller owns MEM_ALL_RAM and cold lifetime; no runtime calls after retirement.
+bios_copy_ivt:
+    lda #0
+    sta bios_count
+    sta bios_count+1
+@byte:
+    lda bios_count
+    sta dos64_address
+    lda bios_count+1
+    sta dos64_address+1
+    lda #0
+    sta dos64_address+2
+    jsr dos64_mem_read
+    bcs @return
+    sta dos64_mem_value
+    lda bios_count
+    sta dos64_address
+    lda bios_count+1
+    ora #8
+    sta dos64_address+1
+    lda #$0f
+    sta dos64_address+2
+    jsr dos64_mem_write
+    bcs @return
+    inc bios_count
+    bne @byte
+    inc bios_count+1
+    lda bios_count+1
+    cmp #4
+    bne @byte
     clc
 @return:
     rts
@@ -606,9 +667,37 @@ bios_patches:
     patch $F0308, $F6
     patch $F0309, $19
     patch $F030A, $04
+    ; Reset only: CLI/CLD; DS=F000, ES=0, DI=0; SI=0800, CX=0200;
+    ; REP MOVSW; JMP FAR F000:0110. No stale DOS stack/hook is used.
+    patch $F0400, $FA
+    patch $F0401, $FC
+    patch $F0402, $B8
+    patch $F0403, $00
+    patch $F0404, $F0
+    patch $F0405, $8E
+    patch $F0406, $D8
+    patch $F0407, $31
+    patch $F0408, $C0
+    patch $F0409, $8E
+    patch $F040A, $C0
+    patch $F040B, $31
+    patch $F040C, $FF
+    patch $F040D, $BE
+    patch $F040E, $00
+    patch $F040F, $08
+    patch $F0410, $B9
+    patch $F0411, $00
+    patch $F0412, $02
+    patch $F0413, $F3
+    patch $F0414, $A5
+    patch $F0415, $EA
+    patch $F0416, $10
+    patch $F0417, $01
+    patch $F0418, $00
+    patch $F0419, $F0
     patch $FFFF0, $EA
-    patch $FFFF1, $10
-    patch $FFFF2, $01
+    patch $FFFF1, $00
+    patch $FFFF2, $04
     patch $FFFF3, $00
     patch $FFFF4, $F0
     ; Synthetic build date at the original XT date location; model FE.

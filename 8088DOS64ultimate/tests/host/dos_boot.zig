@@ -463,8 +463,12 @@ test "unchanged DOS boot sector loads FAT12 IO.SYS through real BIOS and reaches
     try std.testing.expectEqual(@as(u8, 0xa5), lane.f.peek(try lane.f.symbol("dos64_bios_ready")));
     try std.testing.expectEqual(@as(u16, 0xffff), lane.f.word(lane.guest + 18));
     try std.testing.expectEqual(@as(u16, 0), lane.f.word(lane.guest + 24));
-    _ = try lane.step(oracle);
-    _ = try lane.step(oracle);
+    // Run the actual reset ROM, including bounded IVT restoration, rather
+    // than assuming a fixed two-instruction reset-to-sector shortcut.
+    for (0..600) |_| {
+        if (lane.f.word(lane.guest + 18) == 0 and lane.f.word(lane.guest + 24) == 0x7c00) break;
+        _ = try lane.step(oracle);
+    } else return error.ResetDidNotReachBootSector;
     try std.testing.expectEqual(@as(u16, 0), lane.f.word(lane.guest + 18));
     try std.testing.expectEqual(@as(u16, 0x7c00), lane.f.word(lane.guest + 24));
     try lane.flush();

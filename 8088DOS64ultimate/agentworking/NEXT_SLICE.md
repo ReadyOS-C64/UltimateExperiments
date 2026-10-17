@@ -1,3 +1,7 @@
+# Immediate next — public1506 consumer and hardware qualification, 2026-10-17
+
+Public34-path promotion and source-built matching12/ZIP are now verified, including all518 base tests and25+15 host controls. Do not repeat these unchanged broad checks. Finish Root intake of sealed full FDISK/Turbo workflows; memory worker next checks actual final SETUP→generatedSTART→DOS/Finish and focusedCONFIG40/80, reusing qualified model where exact. CIA prepares reviewed paired32KiB transport/purpose offline; sole hardware ownership and no-dispatch-until-concrete-review remain. Then execute physical final install/media/Turbo and human matrix. All ten release gates still open. Performance remains post-V1; commit locally, never push.
+
 # Immediate next — final1506 consumer closure and physical transport, 2026-10-17
 
 1. Complete current retained FDISK VM: SYS/COPY, actual CIA Finish, fresh persisted C execution and independent FAT/content inspection. Warm restart and FORMAT have passed; no host reset shortcut. Preserve all first failures. Complete current Turbo fresh80/native20MiB readback and source closure without rerunning unchanged earlier stages.

@@ -113,6 +113,10 @@ test "8088 byte IO reaches XT PPI fixed PIT and absent game adapter with unchang
         .{.opcode=0xee,.port=0x61,.ax=0xa54b,.expected=0xa54b},
         .{.opcode=0xe6,.port=0x40,.ax=0xa500,.expected=0xa500},
         .{.opcode=0xee,.port=0x40,.ax=0xa500,.expected=0xa500},
+        .{.opcode=0xe6,.port=0x43,.ax=0xa5b6,.expected=0xa5b6},
+        .{.opcode=0xee,.port=0x43,.ax=0xa5b6,.expected=0xa5b6},
+        .{.opcode=0xe6,.port=0x42,.ax=0xa537,.expected=0xa537},
+        .{.opcode=0xee,.port=0x42,.ax=0xa509,.expected=0xa509},
         .{.opcode=0xec,.port=0x201,.ax=0xa500,.expected=0xa5ff},
     };
     for(rows)|row| {

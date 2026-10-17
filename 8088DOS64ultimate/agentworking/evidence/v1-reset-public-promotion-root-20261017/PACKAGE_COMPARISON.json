@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "package_files": 16,
+  "all_files_byteexact_test_candidate": true,
+  "archive_byteexact": {
+    "sha256": "daf98d2ebf17cb4a0d456410d0fcb19b144bcaaadf4661185772e8164e376ab2",
+    "bytes": 139938
+  },
+  "source_products_verified": 1567
+}

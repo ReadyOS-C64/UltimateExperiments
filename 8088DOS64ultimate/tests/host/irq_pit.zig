@@ -1143,7 +1143,7 @@ test "CIA transient sample preserves PIT epoch and fatal control stops at comple
         try std.testing.expectEqual(@as(u8, if (fatal == 1) 3 else 4), try get(&f, "dos64_pit_poll_error"));
     }
 }
-test "fixed BIOS PIT profile leaves all guest8253 ports explicitly unsupported" {
+test "fixed BIOS PIT rejects unmodeled access while silent speaker data leaves IRQ0 exact" {
     var f = try init();
     defer f.deinit();
     try pitInit(&f, 12345);
@@ -1154,7 +1154,8 @@ test "fixed BIOS PIT profile leaves all guest8253 ports explicitly unsupported" 
             try putWide(&f, "dos64_io_value", 0x0036, 2);
             for ([_][]const u8{ "dos64_io_read", "dos64_io_write" }) |entry| {
                 const r = try f.call(entry, 10000);
-                try std.testing.expectEqual(@as(u8, 1), r.p & 1);
+                const supported = port == 0x42 and width == 0 and std.mem.eql(u8, entry, "dos64_io_write");
+                try std.testing.expectEqual(@as(u8, if (supported) 0 else 1), r.p & 1);
                 try std.testing.expectEqual(@as(u64, 12345), try getWide(&f, "dos64_pit_last", 4));
                 try std.testing.expectEqual(@as(u64, 0), try getWide(&f, "dos64_pit_phase", 2));
                 try std.testing.expectEqual(@as(u8, 0), try get(&f, "dos64_pic_irr"));

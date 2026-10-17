@@ -26,6 +26,13 @@ const F = struct {
         c.dos64_load(f.m, try f.sym(n), b.ptr, b.len);
     }
     fn call(f: *F, n: []const u8) !void {
+        const entry=try f.sym(n);
+        inline for (.{"UNITEXTRA","UNITTAIL"}) |prefix| {
+            if (f.s.get("__" ++ prefix ++ "_RUN__")) |start| {
+                const count=f.s.get("__" ++ prefix ++ "_SIZE__") orelse 0;
+                if (entry>=start and @as(u32,entry)<@as(u32,start)+count) return error.DiscardedUnitFixture;
+            }
+        }
         const before = c.dos64_get_regs(f.m).cycles;
         const ret = (try f.sym("fixture_return")) -% 1;
         c.dos64_poke(f.m, 0x1ff, @truncate(ret >> 8));

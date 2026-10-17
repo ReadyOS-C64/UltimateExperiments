@@ -52,44 +52,32 @@ disk_end: .res 3
 dos64_disk_init:
     php
     sei
-    cld
-    lda #0
-    sta dos64_disk_reu_base
-    sta dos64_disk_reu_base+1
-    sta dos64_disk_cylinders+1
-    sta dos64_disk_loaded
-    sta dos64_disk_last_status
-    sta dos64_disk_host_error
-    lda #$10
-    sta dos64_disk_reu_base+2
-    lda #<$02D0
-    sta dos64_disk_sectors
-    lda #>$02D0
-    sta dos64_disk_sectors+1
-    lda #40
-    sta dos64_disk_cylinders
-    lda #2
-    sta dos64_disk_heads
-    lda #9
-    sta dos64_disk_spt
-    lda #0
+    ; No decimal arithmetic here or in floppy_control_init. Preserve caller D.
+    ; A12 includes last-status/error; B indices10/11 are immediately cleared
+    ; with the rest of metadata while IRQs remain masked.
+    ldx #11
+@descriptor:
+    lda disk_initial_descriptor,x
+    sta dos64_disk_reu_base,x
+    sta dos64_disk_b_descriptor,x
+    dex
+    bpl @descriptor
+    ; Descriptor byte0 is zero, so A already contains the metadata fill byte.
     ldx #dos64_disk_meta_end-dos64_disk_readonly-1
 @meta:
     sta dos64_disk_readonly,x
     dex
     bpl @meta
-    ldx #9
-@b:
-    lda dos64_disk_reu_base,x
-    sta dos64_disk_b_descriptor,x
-    dex
-    bpl @b
     lda #$18
     sta dos64_disk_b_descriptor+2
     jsr dos64_floppy_control_init
     plp
     clc
     rts
+.segment "RODATA"
+disk_initial_descriptor:
+    .byte $00,$00,$10,$d0,$02,$28,$00,$02,$09,$00,$00,$00
+.segment "CODE"
 
 ; Resident wrapper owns the ordinary C900 overlay lease.
 .import dos64_overlay_disk_transfer,dos64_overlay_error,dos64_floppy_control_init

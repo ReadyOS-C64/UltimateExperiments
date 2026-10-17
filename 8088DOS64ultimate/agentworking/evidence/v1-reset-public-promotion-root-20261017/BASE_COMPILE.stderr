@@ -1,0 +1,6 @@
+Build Summary: 4/4 steps succeeded
+base-full-compile success
++- install generated to bin/base-full-tests success
+   +- compile test Debug native success 11s MaxRSS:562M
+      +- options success
+

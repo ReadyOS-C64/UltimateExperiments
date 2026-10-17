@@ -272,6 +272,19 @@ v_cell:                    ; A=row, v_col=column; out v_ptr
 @done:
     rts
 
+.segment "CODE"
+; Original XT scroll loops use inclusive coordinates without viewport clipping.
+; Permit its common row25 caller only after proving the last character+attribute
+; remains in the physical16KiB CGA aperture. A=right; geometry is already checked.
+v_scroll_span:
+    sta v_col
+    lda v_bottom
+    jsr v_cell
+    lda v_ptr+1
+    cmp #$40
+    jcs v_unsupported
+    rts
+
 .segment "DEVICECODE"
 v_get_mode:
     lda #$49
@@ -480,8 +493,10 @@ v_write_char:
     bne @char
     jmp v_done
 
-; Scrolls use only the active text page. Invalid/inverted rectangles are
-; rejected before writes. Zero or >=height lines clears the entire window.
+; Scrolls start at the active text page. The bounded original-XT row25
+; rectangle may legitimately spill into its next page/padding, but never beyond
+; the physical16KiB aperture. Invalid/inverted rectangles reject before writes.
+; Zero or >=height lines clears the entire window.
 v_scroll_up:
     lda #0
     beq v_scroll
@@ -497,10 +512,13 @@ v_scroll:
     sta v_top
     lda dos64_guest+G_DX+1
     sta v_bottom
-    cmp #VIDEO_ROWS
-    jcs v_unsupported
+    cmp #VIDEO_ROWS+1
+    bcs @bad_row
     cmp v_top
-    jcc v_unsupported
+    bcs @row_ok
+@bad_row:
+    jmp v_unsupported
+@row_ok:
     lda dos64_guest+G_CX
     sta v_left
     lda dos64_guest+G_DX
@@ -509,6 +527,7 @@ v_scroll:
     jcs v_unsupported
     cmp v_left
     jcc v_unsupported
+    jsr v_scroll_span
     lda dos64_guest+G_AX
     sta v_lines
     lda dos64_guest+G_BX+1

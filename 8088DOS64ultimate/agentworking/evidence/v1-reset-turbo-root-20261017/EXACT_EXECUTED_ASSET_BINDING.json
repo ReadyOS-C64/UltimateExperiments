@@ -1,0 +1,48 @@
+{
+  "final_provider": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-bios-reset-20261017/candidate-build/run-0od8ctdg/coupled/RESULT.json",
+  "final_identity": {
+    "sha256": "26e9c4aa229cc6ef6bf5663cbf0256edd40b921b05d570a882650f4ec6461d49",
+    "bytes": 371177
+  },
+  "exact_new_8_asset_provider": true,
+  "assets": {
+    "DOS64.PRG": {
+      "sha256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+      "bytes": 47105
+    },
+    "DOS64.REL": {
+      "sha256": "e45f4b1bda34ac551eacb90bcc880c3d37df6f4729e5c4f1d2b6d8b6e4c1c5d9",
+      "bytes": 64
+    },
+    "DOS64.MNU": {
+      "sha256": "a2cd29cb1156c0d38a5491db6ac11a74bf52496d256e2ac7a91c280212ad847c",
+      "bytes": 57344
+    },
+    "START.TPL": {
+      "sha256": "fbf9d3acfc8772850a9de55cb7ff4babe0d286533a6599e10486a9bdc763bb04",
+      "bytes": 20480
+    },
+    "START.REL": {
+      "sha256": "02cb0ce4dd8a79d88a815593690dc90c2381dfe350c27e1af1fc01439e51272c",
+      "bytes": 64
+    },
+    "START.INO": {
+      "sha256": "44dd94617a3e76c4451a0e235626108ded3e30c911ce665d7e16e6499f717621",
+      "bytes": 7692
+    },
+    "START.RCV": {
+      "sha256": "08715a793b6fe0abf6dc95e09bad6b13356936b49ba0901793261568faec444e",
+      "bytes": 7902
+    },
+    "START.RFW": {
+      "sha256": "f11b0c1d66a9116b005651529de53bec19939ae03fd9c60ef0599a78b6c84824",
+      "bytes": 5578
+    }
+  },
+  "vendor_and20M_ancestry": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-turbo-final-trap-cold-20261017/MANIFEST.json",
+  "base_C": {
+    "sha256": "ac1cea543ad27f4fad4d3ba9d15e482bac05e9e48c4be6373c889bca4bc6c197",
+    "bytes": 20971520
+  },
+  "base20M_nativeSETUP": false
+}

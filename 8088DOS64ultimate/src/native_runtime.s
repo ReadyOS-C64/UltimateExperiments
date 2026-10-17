@@ -28,6 +28,7 @@ DOS64_MODAL_MENU=0
 .import dos64_cpu_init, dos64_cpu_step, dos64_cpu_status, dos64_cpu_opcode
 .import dos64_cache_init, dos64_cache_limit, dos64_cache_flush, dos64_memory_error
 .import dos64_disk_init, dos64_bios_init, dos64_bios_host_error
+.import dos64_bios_finalize_vectors
 .import dos64_overlay_init, dos64_overlay_bootstrap, dos64_overlay_reu_mib, dos64_overlay_error
 .import dos64_overlay_files_init, dos64_overlay_text_setup
 .import dos64_overlay_input_init, dos64_overlay_input_poll, dos64_overlay_render_text_row
@@ -732,6 +733,8 @@ n_hd_poll:
  cmp #2
  jne n_hd_defer
 n_finish_cold:
+ jsr dos64_bios_finalize_vectors
+ jcs n_bios_bad
  jsr n_fresh_initial_clock
  jcs n_clock_bad
 @timer_ready:

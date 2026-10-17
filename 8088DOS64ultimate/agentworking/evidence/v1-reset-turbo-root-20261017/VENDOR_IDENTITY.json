@@ -1,0 +1,30 @@
+{
+  "original_C": {
+    "sha256": "ac1cea543ad27f4fad4d3ba9d15e482bac05e9e48c4be6373c889bca4bc6c197",
+    "bytes": 20971520
+  },
+  "original_payload_count": 360,
+  "original_appfiles": {
+    "TP/BIN/TPX.EXE": {
+      "sha256": "a70f542bd7967b764dd4a292f84257f51cb612462a3f9b84932dc9e10b914ba6",
+      "bytes": 475079
+    },
+    "TP/BIN/TURBO.EXE": {
+      "sha256": "140eeeed35c37854e94cb72089646a14a6d8b513bd02f8219bf460265defdfbb",
+      "bytes": 403839
+    },
+    "TP/BIN/TURBO.TPH": {
+      "sha256": "2fe6942021d161c50e206d7fa0c41038c1f68e877ef2fb1c11764c2c767311f3",
+      "bytes": 700786
+    },
+    "TP/BIN/TURBO.TPL": {
+      "sha256": "025cf348b34b737f7db84e98b77041d25c7d62e6210e2c410e660f5149c05896",
+      "bytes": 48464
+    },
+    "TP/FLOPPY/TURBO.EXE": {
+      "sha256": "f6ede2a39e27925f1b2cc81a068689015c590ec0bf9bb3ad5cf0264a411d4779",
+      "bytes": 359551
+    }
+  },
+  "provenance": "Unmodified prior reviewed original Turbo Pascal7.01 distribution fixture; interactive banner7.0; no vendor app bytes edited"
+}

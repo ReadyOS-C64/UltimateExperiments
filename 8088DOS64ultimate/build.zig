@@ -24,6 +24,7 @@ fn nativeInputs(run: *std.Build.Step.Run, b: *std.Build) void {
     run.addFileInput(b.path("build/dos64-tests.prg"));
     run.addFileInput(b.path("build/dos64-tests.labels"));
     run.addFileInput(b.path("build/dos64-tests.prg.unit-extra.bin"));
+    run.addFileInput(b.path("build/dos64-tests.prg.unit-tail.bin"));
 }
 
 fn nativeRun(b: *std.Build, artifact: *std.Build.Step.Compile) *std.Build.Step.Run {
@@ -34,6 +35,7 @@ fn nativeRun(b: *std.Build, artifact: *std.Build.Step.Compile) *std.Build.Step.R
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
+    const ports=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/ports.zig"),.target=target,.optimize=.Debug})});addPeddle(ports.root_module,b);const pr=nativeRun(b,ports);nativeInputs(pr,b);b.step("speaker-ports","Silent speaker compatibility actual assembly").dependOn(&pr.step);
     const trap=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/trap.zig"),.target=target,.optimize=.Debug})});addPeddle(trap.root_module,b);b.step("cpu-trap","Original8088 TF type1 actual assembly").dependOn(&nativeRun(b,trap).step);b.step("cpu-trap-compile","Compile original8088 trap assertions").dependOn(&b.addInstallFile(trap.getEmittedBin(),"bin/cpu-trap-tests").step);
     const loader=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/loader_handoff.zig"),.target=target,.optimize=.Debug})});addPeddle(loader.root_module,b);loader.filters=b.option([]const []const u8,"loader-filter","Focused cold handoff cases") orelse &.{};const run_loader=nativeRun(b,loader);nativeInputs(run_loader,b);b.step("loader-handoff","Actual cold REU handoff and preloaded floppy adoption").dependOn(&run_loader.step);
     const loader_dos=b.addTest(.{.root_module=b.createModule(.{.root_source_file=b.path("tests/host/loader_dos_boot.zig"),.target=target,.optimize=.Debug})});addPeddle(loader_dos.root_module,b);const run_loader_dos=nativeRun(b,loader_dos);nativeInputs(run_loader_dos,b);b.step("loader-dos","Genuine DOS VER DIR through required preloaded main handoff").dependOn(&run_loader_dos.step);

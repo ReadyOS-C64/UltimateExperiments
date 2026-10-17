@@ -11,6 +11,8 @@ pub fn build(b: *std.Build) void {
     run.has_side_effects = true;
     run.addFileInput(b.path("work/build/dos64-tests.prg"));
     run.addFileInput(b.path("work/build/dos64-tests.labels"));
+    run.addFileInput(b.path("work/build/dos64-tests.prg.unit-extra.bin"));
+    run.addFileInput(b.path("work/build/dos64-tests.prg.unit-tail.bin"));
     b.step("test", "Actual C-online Save native assertions").dependOn(&run.step);
     b.step("compile", "Compile source-only assertions").dependOn(&b.addInstallFile(t.getEmittedBin(), "bin/save-tests").step);
 }

@@ -22,6 +22,8 @@ class ImageImportContract(unittest.TestCase):
     def check(self, **changes):
         args = dict(map_text=self.map, labels_text=self.labels, prg=self.prg,
                     overlay_payloads=self.payloads, import_payload=self.cold, shadow_payload=Path("build/dos64-tests-resident.prg.hdb.bin").read_bytes(),saver_payload=Path("build/dos64-tests-resident.prg.saver.bin").read_bytes())
+        if "__CPUTRAP_SIZE__" in self.labels:
+            args["trap_payload"]=Path("build/dos64-tests-resident.prg.trap.bin").read_bytes()
         args.update(changes)
         return verify(**args)
 
@@ -41,12 +43,14 @@ class ImageImportContract(unittest.TestCase):
         self.assertTrue(r["passed"], r["errors"])
         cold = r["load"]["cold_import"]
         self.assertEqual(cold["start"], 0x7000)
-        # The options consumer adds232 cold bytes; probe/snapshot251 moved
-        # into the guarded unit-only sidecar. Neither is compiled out.
-        self.assertEqual(cold["linked_bytes"], 4076)
+        # Options add232 bytes and reset adds219; guarded unit-only
+        # sidecars move251+207 helpers and shared SAVER descriptor removes5 duplicate cold bytes.
+        self.assertEqual(cold["linked_bytes"], 4083)
         sidecar = Path("build/dos64-tests.prg.unit-extra.bin").read_bytes()
         self.assertEqual(len(sidecar), 251)
-        self.assertEqual(len(self.cold) + len(sidecar), 4095 + 232)
+        tail = Path("build/dos64-tests.prg.unit-tail.bin").read_bytes()
+        self.assertEqual(len(tail), 207)
+        self.assertEqual(len(self.cold) + len(sidecar) + len(tail), 4095 + 232 + 219 - 5)
         self.assertEqual([(s["start"], s["end"], s["bytes"]) for s in r["segments"]
                           if s["name"] == "UNITEXTRA"], [(0xEF00, 0xEFFA, 251)])
         self.assertEqual(cold["state_bytes"], 26)
@@ -107,3 +111,31 @@ class ImageImportContract(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class UnitTailContract(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.map=Path("build/dos64-tests.map").read_text()
+        cls.labels=Path("build/dos64-tests.labels").read_text()
+
+    def test_actual_unit_tail_and_hardware_vector_exclusion(self):
+        result=verify(self.map,self.labels)
+        self.assertTrue(result["passed"],result["errors"])
+        tail=[s for s in result["segments"] if s["name"]=="UNITTAIL"]
+        self.assertEqual(tail,[{"name":"UNITTAIL","start":0xff00,"end":0xffce,"bytes":207}])
+        self.assertEqual(len(Path("build/dos64-tests.prg.unit-tail.bin").read_bytes()),207)
+
+    def test_moved_extended_missing_or_unpaired_tail_refused(self):
+        line=re.search(r"^UNITTAIL\s+.*$",self.map,re.M).group()
+        for changed in (line.replace("00FF00","00FEFF"),line.replace("00FFCE","00FFFA"),line.replace("0000CF","0000CE"),""):
+            self.assertFalse(verify(self.map.replace(line,changed),self.labels)["passed"])
+        extra=re.search(r"^UNITEXTRA\s+.*$",self.map,re.M).group()
+        self.assertFalse(verify(self.map.replace(extra,""),self.labels)["passed"])
+
+    def test_tail_identity_cannot_disagree_with_linked_map(self):
+        for symbol,value in (("__UNITTAIL_RUN__",0xff01),("__UNITTAIL_LOAD__",0xff01),("__UNITTAIL_SIZE__",208)):
+            pattern=r"^(al )([0-9A-F]+)( \."+symbol+r")$"
+            changed=re.sub(pattern,lambda m:m[1]+f"{value:06X}"+m[3],self.labels,flags=re.M)
+            self.assertNotEqual(changed,self.labels)
+            self.assertFalse(verify(self.map,changed)["passed"])

@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "bothknownclosed": true,
+  "A_B_exact": true,
+  "third_arena_exact": true,
+  "C_bytes": 2097152,
+  "C_sha256": "158d819c0ca86e896cf78eff1cdd13d2987194c7e99c415dd473792d9f0b86d6"
+}

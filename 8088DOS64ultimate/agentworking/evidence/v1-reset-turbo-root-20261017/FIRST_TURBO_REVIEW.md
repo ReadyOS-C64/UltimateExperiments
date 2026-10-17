@@ -1,0 +1,1 @@
+First Root read-only review failed its own invented output literal TURBO IDE READY. Actual frozen v1_lane.py:16/17 explicitly defines DOS64 V1 EDIT 1 and the exact five-line source with {$G-}. Corrected both literal assertions, removing the first draft length-only fallback before acceptance. No VM/source/media changes or replay; retained first review script.

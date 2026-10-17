@@ -27,7 +27,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
               "LOADERCOLD": (0x4000,0x43FF), "LOADERADOPT": (0x6000,0x617F),
               "IMPORTCODE": (0x7000, 0x7FFF),
               "COLDINIT": (0x7000,0x7FFF), "COLDRODATA": (0x7000,0x7FFF), "UNITCOLD": (0x7401,0x7FFF),
-              "UNITEXTRA": (0xEF00,0xEFFA), "CPUTRAP":(0xFE00,0xFEFF),
+              "UNITEXTRA": (0xEF00,0xEFFA), "UNITTAIL": (0xFF00,0xFFCE), "CPUTRAP":(0xFE00,0xFEFF),
               "NATIVESTATE": (0x080D,0x3FFF), "INPUTCODE": (0xC900,0xCFFF),
               "UCIBUFFER": (0xC100, 0xC8FF),
               "IRQMAIN":(0xC900,0xCFFF),"IRQDEVICE":(0xC900,0xCFFF),"PITCODE":(0xC900,0xCFFF),"GFXCODE":(0xC900,0xCFFF),
@@ -49,6 +49,16 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     if extra and (len(extra) != 1 or extra[0]["start"] != 0xef00 or extra[0]["bytes"] != 251 or
                   not any(x["name"] == "UNITCOLD" for x in segments)):
         errors.append("UNITEXTRA must be the exact251-byte unit-only sidecar")
+    tail = [x for x in segments if x["name"] == "UNITTAIL"]
+    if tail and (len(tail) != 1 or tail[0]["start"] != 0xff00 or tail[0]["bytes"] != 207 or not extra):
+        errors.append("UNITTAIL must be the exact207-byte unit-only sidecar with UNITEXTRA")
+    if extra and not tail:
+        errors.append("UNITEXTRA requires its exact UNITTAIL companion")
+    for name,value in {"__UNITTAIL_RUN__":0xff00,"__UNITTAIL_LOAD__":0xff00,"__UNITTAIL_SIZE__":207}.items():
+        if tail and symbols.get(name)!=value:
+            errors.append(name+": invalid unit-only sidecar identity")
+        if not tail and name in symbols:
+            errors.append(name+": sidecar symbol without linked segment")
     if not segments:
         errors.append("No linker segments found")
     for index, seg in enumerate(segments):

@@ -28,6 +28,11 @@ class Machine:
  def get(self,n,count):return bytes(self.g(self.addr(n)+i)for i in range(count))
  def wide(self,n,v,count):self.put(n,v.to_bytes(count,'little'))
  def call(self,n,budget=100000):
+  # This fixture retires cold ownership during bootstrap and loads neither
+  # unit-only sidecar. Refuse helper execution before stack/register changes.
+  for prefix in ['UNITEXTRA','UNITTAIL']:
+   start=symbols.get('__'+prefix+'_RUN__');count=symbols.get('__'+prefix+'_SIZE__',0)
+   if start is not None and start<=symbols[n]<start+count:raise RuntimeError('DiscardedUnitFixture')
   before=L.dos64_get_regs(self.m).cycles;ret=symbols['fixture_return']-1;self.p(0x1ff,ret>>8);self.p(0x1fe,ret&255);L.dos64_set_regs(self.m,Regs(symbols[n],0xfd,0x71,0x82,0x93,0x24,0,0));r=L.dos64_run(self.m,symbols['fixture_return'],budget)
   assert r.status==0,(n,r.status,hex(r.regs.pc),r.regs.cycles)
   L.dos64_cia_clock_advance(self.m,(r.regs.cycles-before)//64);return r

@@ -12,12 +12,12 @@ class Tests(unittest.TestCase):
  def tearDown(self):self.temp.cleanup()
  def baseline(self):
   with patch.dict(os.environ,{'DOS64_ZIG':'/absent/optional/zig','DOS64_CLANGXX':'/absent/optional/clang'}):r=M.build(self.out,test=False)
-  self.assertEqual(r['products']['dos64.prg']['sha256'],'46fa2e54275818c1d946400c06c3e23bfd1c066c33fa967c399d39270d7f554f');return (self.out/'RESULT.json').read_bytes(),{q['path']:Path(q['path']).read_bytes()for q in r['products'].values()}
+  self.assertEqual(r['products']['dos64.prg']['sha256'],'d608699b194dd2a783c1f471108194a11be99842dd2aac284d48d3832f743561');return (self.out/'RESULT.json').read_bytes(),{q['path']:Path(q['path']).read_bytes()for q in r['products'].values()}
  def unchanged(self,before):
   self.assertEqual((self.out/'RESULT.json').read_bytes(),before[0])
   for s,b in before[1].items():self.assertEqual(Path(s).read_bytes(),b)
  def test_01_real_native_only_ignores_optional_tools_and_default_exact(self):
-  self.baseline();r=M.build(self.p/'default',test=False,default=True);self.assertEqual(r['products']['dos64.prg']['sha256'],'666089b57e5611a67b5d87ae84880256ef5dafb121b152e1de81b9ec1cc29064');self.assertEqual(r['products']['dos64-tests.prg']['sha256'],'b9e9cc9e7d87176848ccf8bae49dfe4f4ff0125b3aad5a1cb874341436b78df6')
+  self.baseline();r=M.build(self.p/'default',test=False,default=True);self.assertEqual(r['products']['dos64.prg']['sha256'],'99ddeddccd149a8dfc4e1151826adcd2d5cfe786172d02964da935f77398d20f');self.assertEqual(r['products']['dos64-tests.prg']['sha256'],'4f5f3c09fa59ad0b442522c1805dd2b0db8416f5f546076337ea314280d30c37')
  def test_02_partial_publish_copy_failure_preserves_previous(self):
   before=self.baseline();primary=OSError('copy-primary');real=shutil.copyfile
   def copy(s,d,*a,**kw):

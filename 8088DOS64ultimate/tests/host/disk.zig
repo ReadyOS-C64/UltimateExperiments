@@ -258,3 +258,65 @@ test "verify and range failures report only complete sectors and never false suc
     try transfer(&cache, 0, 0);
     try std.testing.expectEqual(@as(u8, 0), cache.peek(try cache.symbol("dos64_disk_host_error")));
 }
+
+test "disk init replaces hostile dual descriptors and all protocol state for every native P" {
+    var f=try Fixture.init();defer f.deinit();
+    const a=try f.symbol("dos64_disk_reu_base");
+    const b=try f.symbol("dos64_disk_b_descriptor");
+    const meta_end=(try f.symbol("dos64_disk_cf"))+1;
+    const rq=try f.symbol("dos64_floppy_request");
+    const request_end=(try f.symbol("dos64_floppy_token"))+4;
+    const expected=[_]u8{0,0,0x10,0xd0,2,40,0,2,9,0,0,0};
+    const initial_dma=c.dos64_dma_transfers(f.machine);
+    const port=f.peek(1);const ddr=f.peek(0);
+    for(0..256) |p| {
+        for(0..12)|i|f.poke(a+@as(u16,@intCast(i)),@truncate(i*19+p+1));
+        for(b..meta_end)|i|f.poke(@intCast(i),@truncate(i*13+p+1));
+        for(rq..request_end)|i|f.poke(@intCast(i),@truncate(i*17+p+1));
+        f.initial_status=@intCast(p);
+        const r=try f.call("dos64_disk_init",10000);
+        try std.testing.expectEqual(@as(u8,@intCast(p))&0xce,r.p&0xce);
+        try std.testing.expectEqual(@as(u8,0),r.p&1);
+        try std.testing.expectEqual(@as(u8,0x93),r.y);
+        for(expected,0..)|v,i|try std.testing.expectEqual(v,f.peek(a+@as(u16,@intCast(i))));
+        for(expected[0..10],0..)|v,i|try std.testing.expectEqual(if(i==2)@as(u8,0x18)else v,f.peek(b+@as(u16,@intCast(i))));
+        for(b+10..meta_end)|i|try std.testing.expectEqual(@as(u8,0),f.peek(@intCast(i)));
+        for(rq..request_end)|i|try std.testing.expectEqual(@as(u8,0),f.peek(@intCast(i)));
+        try std.testing.expectEqual(port,f.peek(1));try std.testing.expectEqual(ddr,f.peek(0));
+    }
+    try std.testing.expectEqual(initial_dma,c.dos64_dma_transfers(f.machine));
+}
+
+test "disk init writes only complete owned descriptor metadata and request spans plus native stack" {
+    var f=try Fixture.init();defer f.deinit();
+    const a=try f.symbol("dos64_disk_reu_base");const b=try f.symbol("dos64_disk_b_descriptor");
+    const meta_end=(try f.symbol("dos64_disk_cf"))+1;
+    const rq=try f.symbol("dos64_floppy_request");const request_end=(try f.symbol("dos64_floppy_token"))+4;
+    f.initial_status=0xcf;_ = try f.call("dos64_disk_init",10000);
+    for(0..65536)|i| {
+        const address:@TypeOf(a)=@intCast(i);
+        const owned=(i>=a and i<a+12)or(i>=b and i<meta_end)or(i>=rq and i<request_end)or(i>=0x100 and i<0x200);
+        if(!owned)try std.testing.expectEqual(@as(u8,0),c.dos64_was_written(f.machine,address));
+    }
+}
+
+test "shared cold SAVER descriptor completes STORE0 from hostile request and preserves immutable LOAD1" {
+    var f=try Fixture.init();defer f.deinit();c.dos64_enable_reu(f.machine);
+    // Real bootstrap installs immutable HDBIOS before its cold SAVER store.
+    const installed=try f.call("hdb_load_extension",200000);try std.testing.expectEqual(@as(u8,0),installed.p&1);
+    const rq=try f.symbol("dos64_reu_request");const source=try f.symbol("sav_load");
+    const load=[_]u8{0,0xb0,0,0x30,0x34,0,8,1};
+    const store=[_]u8{0,0xb0,0,0x30,0x34,0,8,0};
+    for(load,0..)|v,i|try std.testing.expectEqual(v,f.peek(source+@as(u16,@intCast(i))));
+    var bytes:[2048]u8=undefined;for(&bytes,0..)|*v,i|v.*=f.peek(0xb000+@as(u16,@intCast(i)));
+    for(bytes,0..)|v,i|c.dos64_reu_poke(f.machine,0x343000+@as(u32,@intCast(i)),v^0xff);
+    c.dos64_reu_poke(f.machine,0x342fff,0x91);c.dos64_reu_poke(f.machine,0x343800,0x37);
+    for(0..10)|i|f.poke(rq+@as(u16,@intCast(i)),@truncate(0x80+i*7));
+    const before=c.dos64_dma_transfers(f.machine);const r=try f.call("sav_boot",50000);
+    try std.testing.expectEqual(@as(u8,0),r.p&1);try std.testing.expectEqual(@as(u8,0xa5),f.peek(try f.symbol("sav_ready")));
+    try std.testing.expectEqual(before+1,c.dos64_dma_transfers(f.machine));
+    for(store,0..)|v,i|try std.testing.expectEqual(v,f.peek(rq+@as(u16,@intCast(i))));
+    for(load,0..)|v,i|try std.testing.expectEqual(v,f.peek(source+@as(u16,@intCast(i))));
+    for(bytes,0..)|v,i|{try std.testing.expectEqual(v,c.dos64_reu_peek(f.machine,0x343000+@as(u32,@intCast(i))));try std.testing.expectEqual(v,f.peek(0xb000+@as(u16,@intCast(i))));}
+    try std.testing.expectEqual(@as(u8,0x91),c.dos64_reu_peek(f.machine,0x342fff));try std.testing.expectEqual(@as(u8,0x37),c.dos64_reu_peek(f.machine,0x343800));
+}

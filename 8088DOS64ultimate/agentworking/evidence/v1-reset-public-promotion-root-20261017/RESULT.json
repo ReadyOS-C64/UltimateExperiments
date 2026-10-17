@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "commands": [
+    {
+      "argv": [
+        "make",
+        "-B",
+        "DOS64_TRAP1=1",
+        "DOS64_FLOPPY_FORMAT=0",
+        "DOS64_SAVE_HD_CONTEXT=0",
+        "DOS64_EXPORT_CRC=0",
+        "DOS64_SAVE_MODAL=0",
+        "DOS64_MEDIA_BINDING=0",
+        "DOS64_MODAL_MENU=0",
+        "build/dos64.prg",
+        "build/dos64-tests.prg",
+        "build/dos64-tests.prg.unit-extra.bin",
+        "build/dos64-tests.prg.unit-tail.bin",
+        "build/dos64-tests.bin",
+        "verify-memory"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate",
+      "exit": 0,
+      "seconds": 0.607083125
+    },
+    {
+      "argv": [
+        "/Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig",
+        "build",
+        "base-full-compile",
+        "--prefix",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-reset-public-20261017/base-out",
+        "--cache-dir",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-reset-public-20261017/base-cache",
+        "--global-cache-dir",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-reset-public-20261017/base-global",
+        "--summary",
+        "all"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate",
+      "exit": 0,
+      "seconds": 17.380986125
+    },
+    {
+      "argv": [
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-reset-public-20261017/base-out/bin/base-full-tests"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate",
+      "exit": 0,
+      "seconds": 90.183826375
+    }
+  ],
+  "source_tool_inputs": 904,
+  "execution_inputs": 910,
+  "native_UNIT": {
+    "sha256": "180a0ee69c871da9ed720b221e2c3b2d79739d36ee5c3c6e1bef1aca3e30cef2",
+    "bytes": 47105
+  },
+  "test_executable": {
+    "sha256": "1564670d80947f0579168ab9141e31cc9a29c51c5fc73fc95a4bdc7990c5c684",
+    "bytes": 6571416
+  },
+  "scope": "Fresh public518-entry canonicalTRAP1/FMT0 base, actual linked code; no fullSDK/corpus/physical claim"
+}

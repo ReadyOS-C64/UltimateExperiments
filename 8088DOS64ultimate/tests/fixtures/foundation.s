@@ -6,7 +6,7 @@
 .export fixture_unimplemented_reu
 
 .ifdef DOS64_UNIT_COLD
-.segment "UNITCOLD"
+.segment "UNITTAIL"
 .else
 .segment "TESTCODE"
 .endif
