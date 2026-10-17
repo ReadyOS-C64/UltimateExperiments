@@ -378,3 +378,6 @@ A completed file writer and its readonly source cache each need explicit clean-s
 
 
 2026-10-17: Clear bridge observation before controller entry guard: an early refusal can bypass zerobss and otherwise advertise stale Resume even when the native release guard correctly blocks it. Source graph tags are whole-source identities; moving to a portable build changes tags/whole assets and requires cold descriptors to be regenerated. Metadata named MANIFEST.json nested inside a copied runtime must not silently escape filename closure; retain the first failure and create an exact clean child instead of mutating the seal. A nonexistent command cwd fails before process creation: stage from an existing cwd, then launch the dependent test.
+
+
+2026-10-17: elapsed_poll carry/status4 is an expected bounded-sampler seam, not always a broken clock. Admission sites need the same boundedretry distinction as active job polls, before mutating ownership. A host debugpoke does not necessarily model an I/O write: use real CPU STA for the control-fault fixture. Independent leaf pumping has different coordinator overhead and must have its own measured bound; retain the first short host budget failure, and do not change the SUT merely to meet it.

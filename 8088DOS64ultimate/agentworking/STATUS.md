@@ -1,3 +1,11 @@
+# Current V1 correctness checkpoint — bounded media admission, 2026-10-17
+
+The CONFIG80 saving refusal was traced to one-shot WIRE admission rejecting normal transient clock sample status4. WIRE and modal Save now retry only that status up to256 fresh calls, before FILES/context mutation; terminal owner/unready/control faults still refuse. Root13 actual groups pass with1267 inputs/products unchanged:10 actual CIA-provider admission tests and3 complete CIA menu SaveAs/Insert/assetrefusal. Persistent pending exhausts exactly256samples/2048TAHIreads with no file/context/timestamp publication. Prior allocation authority is not cleared on rejected admission. First host import, mapped-I/O injection and standalone poll-budget mistakes are preserved.
+
+Two exact public phase sources promoted; fresh public build reproduces tested runtime0b523722/MNU4424dfd7 and all9products,509inputs/467products exact. The earlier58fa/aa13 public checkpoint remains its own historical acceptance. Default build sources/binaries are unaffected by these phase-only changes. [Evidence](evidence/native-media-admission-clock-root-20261017.json). CIA is rerunning the previouslyfailedCONFIG80 consumer against a distinct matching cold child; final result pending. Memory agent separately repairs pending handling at broker entry/release and bridge failed-job checks. All V1 final gates remain open; required FORMAT source component7a316/4221pins has23groups but is not yet composed/promoted. Compiled agent works on trusted early startup diagnostics. No speed work, LAN or push in this Root slice.
+
+Earlier snapshots below are historical.
+
 # Current V1 checkpoint — runtime Insert and public media graph, 2026-10-17
 
 User priority remains docs/V1_ENDPOINT.md: polished install/configuration, reliable A/B/C and complete original Turbo Pascal IDE edit/save/diskcompile/run/Finish/reset/reopen on the Ultimate. Further performance improvements are deferred; all final matched-release gates remain open.

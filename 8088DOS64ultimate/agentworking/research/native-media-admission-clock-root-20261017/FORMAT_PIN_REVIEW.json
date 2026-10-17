@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "manifest": "agentworking/scratch/native-floppy-format-extension-20261017/MANIFEST.json",
+  "sha256": "7a316ca2ee56e6c4bcc9a8d0da0e5815cc30b7757815266c92c2ebd1cc9ac4e5",
+  "pins": 4221,
+  "scope": "all-pin integrity review; production review/independent actual replay pending"
+}

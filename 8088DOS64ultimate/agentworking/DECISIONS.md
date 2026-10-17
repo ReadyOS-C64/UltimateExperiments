@@ -324,3 +324,6 @@ DurableSave/SaveAs implementationdirection: nondestructiveCREATE_NEWverifiedimag
 
 
 2026-10-17: Promote runtime media compiler graph67paths only after Root all11083pins/107shared equality, fresh public build509inputs/467products, independent actualCIA3 and existing27 native groups. Whole runtime/MNU tags legitimately change with portable source ancestry while executable workers match d6db. Bind all future cold assets to actual public58fa/aa13/531c, never old tag hashes. Default666/b9 stays exact; fullUNIT0 CPU suite need not repeat when its exact binary is unchanged. All final V1 gates stay open; retain separate CONFIG80 saving refusal and required FORMAT/physical work.
+
+
+2026-10-17: Media admission must distinguish documented transientHC_ERR_SAMPLE4 from terminal clock failures. WIRE/Save retry only4 up to256 fresh samples with no pre-success FILES/context mutation; never reuse oldelapsed_now or reinitialize timers. Remove redundant pre-admission alloc_readyclear, retain accepted-jobclear. Root13actual/1267records closes two-phase repair and public0b52/4424 build; broker/bridge pending boundaries remain separate defects. No V1 or physical acceptance transfers.

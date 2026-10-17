@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "groups": 3,
+  "scope": "actual runtime source-built portable graph, CIA/private menu and workers, synthetic FAT/C fixture; no cold/DOS/physical",
+  "save_records": [
+    {
+      "native_stage": 8,
+      "UI_result": "010102000100",
+      "bridge_result": "020004000101010100",
+      "bridge_error": 0,
+      "bridge_success": 1,
+      "wire_commands": 2303,
+      "elapsed": 5.172800583000001,
+      "forged_public_event_ignored": false,
+      "C_exact": true,
+      "all4M_guards": true,
+      "actual_CIA_path": true,
+      "UI_code_reloaded_and_WAIT_ticket_consumed": true,
+      "new_path_exact": true
+    },
+    {
+      "fault": "controller_source",
+      "no_incomplete_CUI_execution": true,
+      "native_fallback_screen": true,
+      "native_release_denied": true,
+      "C_exact": true
+    }
+  ],
+  "insert_records": [
+    {
+      "case": "first_B",
+      "result": "020006000101010100",
+      "native_diag": 8,
+      "UI": "010103000100",
+      "intent": "0100030100",
+      "actual_CIA_private_intent_complete_Insert_and_Resume": true,
+      "C_preserved": true,
+      "save_first": false,
+      "scope": "synthetic media; no cold/DOS/physical"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/runtime/test_admission_clock.py", line 7, in <module>
+    from fixture_base import L,symbols,load,labels,HD
+ImportError: cannot import name 'HD' from 'fixture_base' (/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/runtime/fixture_base.py)

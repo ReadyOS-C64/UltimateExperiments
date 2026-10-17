@@ -1,0 +1,22 @@
+[
+  {
+    "argv": [
+      "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+      "-B",
+      "test_admission_clock.py"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/runtime",
+    "exit": 0,
+    "seconds": 6.913437709
+  },
+  {
+    "argv": [
+      "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+      "-B",
+      "run_smoke.py"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/runtime",
+    "exit": 0,
+    "seconds": 15.177176250000002
+  }
+]

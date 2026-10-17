@@ -1,3 +1,11 @@
+# Next V1 correctness/integration — after bounded WIRE/Save admission
+
+Public source-only RESULT scratch/native-media-admission-clock-public-root-20261017/build/RESULT.json binds0b523722/MNU4424dfd7, exactprivate13-group e7b42887/2048pins;1267records closed. CIA reruns only previouslyfailedCONFIG80 genuineDOS/S/Insert/B-read/C/Finish with fresh bound cold assets; old4e03/5918 remains NOT_READY. Memory agent owns fresh private broker/bridge pending-entry/release/failedjob repair; Root must review/compose its source and tests before final matching runtime rebake.
+
+Root independently verified all4221 FORMAT7a316pins and read native AH05/checker/HANDOFF; production9-file diff/build adaptation and independent actual replay remain pending. It fills the existingGFX2048slot with FORMAT687+header; TEXT checker158, fullenabled MAIN0spare, fullUNIT1 unsupported/retained. Preserve ordinary UNIT0; use actual runtime-only tests. Compiled earlydiagnostics now verify renderer copy FIRST; bad renderer-copy falls to trusted park rather than execute partialcode; actualcontrols/sourceclosure pending. After these correctness pieces, publish coherent eightasset cold +SETUP/CONFIG package, final2/20MiB editedTurbo/Finish/restart and concrete Ultimate/human qualification.
+
+Do not rerun unchanged large suites for bookkeeping. No further performance improvement. Local commits only/no push; soleCIA hardware ownership and detachedshell requirement persist.
+
 # Next V1 integration — after public runtime media checkpoint
 
 67 portable paths now public; fresh `make runtime-media` RESULT at scratch/runtime-media-root-promotion-20261017/public-build/RESULT.json binds runtime58fa95e2/MNUaa135d2b/REL531c74c3. Root complete Insert21, public CIA3 and old media27 pass; source/default/memory closures recorded in evidence/native-runtime-media-root-20261017.json. Do not rerun unchanged suites merely for bookkeeping.

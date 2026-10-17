@@ -33,8 +33,20 @@ ms_begin:
  lda ms_drive
  cmp #2
  jcs bad
+ ; A coherent counter sample may be temporarily unavailable at a CIA seam.
+ ; Retry only that documented status, with a strict bound and no FILES/context
+ ; mutation before a fresh timestamp. elapsed_poll preserves X on both exits.
+ ldx #0
+@admission_sample:
  jsr dos64_elapsed_poll
- jcs bad
+ bcc @admission_ready
+ lda dos64_host_clock_status
+ cmp #4
+ jne bad
+ inx
+ bne @admission_sample
+ jmp bad
+@admission_ready:
  lda #0
  sta ML_VALID
  sta ML_PLAN

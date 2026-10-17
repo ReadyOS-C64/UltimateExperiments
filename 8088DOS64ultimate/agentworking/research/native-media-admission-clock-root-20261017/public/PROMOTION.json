@@ -1,0 +1,18 @@
+{
+  "status": "PASS_EXACT_TWO_SOURCE_PROMOTION",
+  "parent_manifest": "e7b42887a6561c6688545657339fac32fd674f59db1d1492107cdca61a3a6d1b",
+  "pins_verified": 2048,
+  "paths": {
+    "tools/native_media/phase/transaction_wire.s": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/project/tools/native_media/phase/transaction_wire.s",
+      "sha256": "60f7493b73afd533618af8837aed76ad6ba07ad572d826f21f5ee2e6ad2dc417",
+      "bytes": 34410
+    },
+    "tools/native_media/phase/modal_save.s": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/project/tools/native_media/phase/modal_save.s",
+      "sha256": "e64ffdc7d896196edea593e52d123a83234735059a1c5d0e081fc11e87400032",
+      "bytes": 2650
+    }
+  },
+  "scope": "native admission13 component; no final cold/physical acceptance"
+}

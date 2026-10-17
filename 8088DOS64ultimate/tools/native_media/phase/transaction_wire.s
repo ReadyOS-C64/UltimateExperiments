@@ -281,18 +281,27 @@ path_capture:
  rts
 ; All new operations reset stale cancellation ONLY after accepted ownership.
 begin_job:
-.if DOS64_MEDIA_SEQUENCE
- lda #0
- sta alloc_ready
-.endif
+ ; Prior one-shot allocation authority is retired only after full admission.
  lda state
  cmp #1
  jeq reject
  lda context
  jne reject
  ; No context/FILES mutation without a fresh coherent admission timestamp.
+ ; A coherent counter sample may be temporarily unavailable at a CIA seam.
+ ; Retry only that documented status, with a strict bound and no FILES/context
+ ; mutation before a fresh timestamp. elapsed_poll preserves X on both exits.
+ ldx #0
+@admission_sample:
  jsr dos64_elapsed_poll
- jcs reject
+ bcc @admission_ready
+ lda dos64_host_clock_status
+ cmp #4
+ jne reject
+ inx
+ bne @admission_sample
+ jmp reject
+@admission_ready:
  jsr quiet
  jcs reject
  lda dos64_native_diag

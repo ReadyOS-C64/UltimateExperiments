@@ -1,0 +1,39 @@
+test_save_control (__main__.Tests) ... ERROR
+test_save_owner (__main__.Tests) ... ok
+test_save_pending_ready (__main__.Tests) ... ok
+test_save_pending_stalled (__main__.Tests) ... ok
+test_save_unready (__main__.Tests) ... ok
+test_wire_control (__main__.Tests) ... ERROR
+test_wire_owner (__main__.Tests) ... ok
+test_wire_pending_ready (__main__.Tests) ... ok
+test_wire_pending_stalled (__main__.Tests) ... ok
+test_wire_unready (__main__.Tests) ... ok
+
+======================================================================
+ERROR: test_save_control (__main__.Tests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/runtime/test_admission_clock.py", line 61, in test
+    def test(self,w=worker,k=kind):self.case(w,k)
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/runtime/test_admission_clock.py", line 37, in case
+    code=bytes.fromhex('a9008d0edd60');L.dos64_load(m.m,0x0200,code,len(code));m.call(0x0200)
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/runtime/test_online_save.py", line 31, in call
+    before=L.dos64_get_regs(self.m).cycles;ret=symbols['fixture_return']-1;self.p(0x1ff,ret>>8);self.p(0x1fe,ret&255);L.dos64_set_regs(self.m,Regs(symbols[n],0xfd,0x71,0x82,0x93,0x24,0,0));r=L.dos64_run(self.m,symbols['fixture_return'],budget)
+KeyError: 512
+
+======================================================================
+ERROR: test_wire_control (__main__.Tests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/runtime/test_admission_clock.py", line 61, in test
+    def test(self,w=worker,k=kind):self.case(w,k)
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/runtime/test_admission_clock.py", line 37, in case
+    code=bytes.fromhex('a9008d0edd60');L.dos64_load(m.m,0x0200,code,len(code));m.call(0x0200)
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/runtime/test_online_save.py", line 31, in call
+    before=L.dos64_get_regs(self.m).cycles;ret=symbols['fixture_return']-1;self.p(0x1ff,ret>>8);self.p(0x1fe,ret&255);L.dos64_set_regs(self.m,Regs(symbols[n],0xfd,0x71,0x82,0x93,0x24,0,0));r=L.dos64_run(self.m,symbols['fixture_return'],budget)
+KeyError: 512
+
+----------------------------------------------------------------------
+Ran 10 tests in 6.719s
+
+FAILED (errors=2)

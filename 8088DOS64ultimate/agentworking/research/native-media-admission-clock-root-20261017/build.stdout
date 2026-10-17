@@ -1,0 +1,52 @@
+python3 -B build_support/runtime_media.py --out ../build
+{
+  "status": "passed",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/build/run-l2f__49b",
+  "products": {
+    "DOS64.PRG": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/build/run-l2f__49b/products/DOS64.PRG",
+      "sha256": "b3831cfb1b558c7ba8c378c7bb4e7a757abf90a24a13e0b958ee083b319c1148",
+      "bytes": 47105
+    },
+    "DOS64.MNU": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/build/run-l2f__49b/products/DOS64.MNU",
+      "sha256": "f35262915fdef37cce31e09ca3e60990ef16bcb82d58cb8cd5b039b1fb4d371d",
+      "bytes": 57344
+    },
+    "DOS64.REL": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/build/run-l2f__49b/products/DOS64.REL",
+      "sha256": "e8823e48bd993931f1f6c4a7e78673b10ba60bdfdb5f91e4dff435d3a3c06859",
+      "bytes": 64
+    },
+    "DOS64.labels": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/build/run-l2f__49b/products/DOS64.labels",
+      "sha256": "785f57240b1214542defbc896aa209b05547e457a706cd128525a5008f26ea01",
+      "bytes": 75258
+    },
+    "DOS64.map": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/build/run-l2f__49b/products/DOS64.map",
+      "sha256": "9356c08c83094e3dc42ca55fa83532fb4a5009c2907eaa89c25ab1c91ccef9a9",
+      "bytes": 93588
+    },
+    "DOS64.memory.json": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/build/run-l2f__49b/products/DOS64.memory.json",
+      "sha256": "a126e84cd75193e17d551463c2a05c6763d70c7993044a391054912f66bb71ea",
+      "bytes": 10399
+    },
+    "MODAL_HEADER.bin": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/build/run-l2f__49b/products/MODAL_HEADER.bin",
+      "sha256": "308027b664a65ac90c28351ccebb6a757037f0dc74f9002e17d34eccaeb3d440",
+      "bytes": 64
+    },
+    "MEDIA_BUILD.json": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/build/run-l2f__49b/products/MEDIA_BUILD.json",
+      "sha256": "52c49ee1d13a4524664afbe121c6e959cc857bb00aa6b02954a88011ca41bcc1",
+      "bytes": 26585
+    },
+    "MEDIA_PHASES.json": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-admission-clock-root-20261017/build/run-l2f__49b/products/MEDIA_PHASES.json",
+      "sha256": "8aa8fb4f370cf9709b3a77247e21cf4653e00f5558934cae1ca444d79a7c8d65",
+      "bytes": 3810
+    }
+  }
+}

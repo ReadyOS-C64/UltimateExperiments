@@ -1,0 +1,15 @@
+test_save_control (__main__.Tests) ... ok
+test_save_owner (__main__.Tests) ... ok
+test_save_pending_ready (__main__.Tests) ... ok
+test_save_pending_stalled (__main__.Tests) ... ok
+test_save_unready (__main__.Tests) ... ok
+test_wire_control (__main__.Tests) ... ok
+test_wire_owner (__main__.Tests) ... ok
+test_wire_pending_ready (__main__.Tests) ... ok
+test_wire_pending_stalled (__main__.Tests) ... ok
+test_wire_unready (__main__.Tests) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 6.690s
+
+OK

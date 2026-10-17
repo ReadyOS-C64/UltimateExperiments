@@ -1,0 +1,9 @@
+{
+  "public_graph_manifest": "10a3d29b11eff95248d3bd8a4011e0596241e3b91634b8ab80fea22a0a7664a5",
+  "public_checkpoint_commit": "74be7ef",
+  "changed": [
+    "tools/native_media/phase/transaction_wire.s",
+    "tools/native_media/phase/modal_save.s"
+  ],
+  "diagnostic": "CIA matched CONFIG80 WIRE begin rejects actual HC_ERR_SAMPLE4; no context mutation or filesystem error"
+}

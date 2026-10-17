@@ -1,0 +1,8 @@
+test01_actualCIA_SaveAs_B38_Ctarget1 (__main__.Tests) ... ok
+test02_actualCIA_firstB_Insert_Ctarget2 (__main__.Tests) ... ok
+test03_actualCIA_controllerCRC_refuses_beforeFILE (__main__.Tests) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 14.915s
+
+OK

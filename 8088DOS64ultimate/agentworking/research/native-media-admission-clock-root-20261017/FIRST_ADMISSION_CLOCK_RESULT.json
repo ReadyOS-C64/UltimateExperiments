@@ -1,0 +1,63 @@
+{
+  "passed": false,
+  "groups": 10,
+  "records": [
+    {
+      "worker": "save",
+      "case": "owner",
+      "TAHI_reads": 0,
+      "clock_status": 1,
+      "actual_native_admission_A": 0,
+      "C_and_CFG_exact": true
+    },
+    {
+      "worker": "save",
+      "case": "pending_stalled",
+      "TAHI_reads": 2048,
+      "clock_status": 4,
+      "actual_native_admission_A": 0,
+      "C_and_CFG_exact": true
+    },
+    {
+      "worker": "save",
+      "case": "unready",
+      "TAHI_reads": 0,
+      "clock_status": 2,
+      "actual_native_admission_A": 0,
+      "C_and_CFG_exact": true
+    },
+    {
+      "worker": "wire",
+      "case": "owner",
+      "TAHI_reads": 0,
+      "clock_status": 1,
+      "actual_native_admission_A": 0,
+      "C_and_CFG_exact": true
+    },
+    {
+      "worker": "wire",
+      "case": "pending_ready",
+      "TAHI_reads": 61,
+      "clock_status": 0,
+      "actual_native_admission_A": 1,
+      "C_and_CFG_exact": true
+    },
+    {
+      "worker": "wire",
+      "case": "pending_stalled",
+      "TAHI_reads": 2048,
+      "clock_status": 4,
+      "actual_native_admission_A": 0,
+      "C_and_CFG_exact": true
+    },
+    {
+      "worker": "wire",
+      "case": "unready",
+      "TAHI_reads": 0,
+      "clock_status": 2,
+      "actual_native_admission_A": 0,
+      "C_and_CFG_exact": true
+    }
+  ],
+  "scope": "actual linked WIRE/Save APIs with real modeled CIA sampler; synthetic media, no cold/DOS/physical"
+}
