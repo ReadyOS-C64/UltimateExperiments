@@ -1,0 +1,17 @@
+{
+  "verdict": "PASS_NATIVE_FULLROOT_AND_COLLISION_CLEANUP_MODEL",
+  "native": "c45dea7b8ed81832167d4071618b7eafb404495e9f4ccb222d68446326f63fcf",
+  "python_actual": 4,
+  "direct_zig_actual": 5,
+  "source_tool_product_pins": 256,
+  "hardware": false,
+  "complete_installer_scope": false,
+  "component_independent_review": "pending",
+  "manifest": "agentworking/scratch/native-installer-full-cleanup-successor-20261017/MANIFEST.json",
+  "manifest_sha256": "14341286d2b1dba7a02479c20bcce9744733eb9646bfc9e5d66253f5b5ee13ec",
+  "manifest_pins": 537,
+  "production_source": {
+    "raw_output.c": "3503b667305f2d72ae72de8c0a950054ad05f63f401015f7c50c79791bfc2895",
+    "publish_worker_asm.s": "f829e9c5dff9e7ca0ffe6889186dd35fb5898699a0bcbe0e4d9ee93812f5627f"
+  }
+}
