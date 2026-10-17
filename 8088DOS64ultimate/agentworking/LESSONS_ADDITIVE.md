@@ -402,3 +402,6 @@ The optionalFORMAT1 runtime can be tested directly with both PythonABI andZig as
 ## 2026-10-17 — bind metadata through the actual result schema
 
 A source-built cold bundle publishes named START/DOS labels/maps with paths+hashes; the priorcopiedbundle laid them in start/ and main/build. Resolve checkeddeclaredproducts and require ownedrun membership; retain only recordedlegacyfallback. Validate unuseddeclaredproducts too. Closureledgers differ (listrecords, scalarSHA maps, SHA+size maps); preserve firstformatmistakes, normalize theactualschema without weakening hashchecks or rerunning unchangednativework.
+
+
+2026-10-17 TF correctness: check original Intel2-28 before copying modern/reference suppression behavior; original8088 nests type1 before an interrupt routine's first opcode. CurrentTF and a sampled/pendingtrace are different, including POPFclear and newly-enabledTF→INTR. Keep fullTF fuzz fixtures and run a real guestISR/IRET; flush/invalidate coherent setup before subsequentrawREU seed writes. OldMake can reuse same-second objects even after a changedcontentstamp: explicitly force the graph from parse-time profile comparison, and test0→1→0 with no sleeps. Full5701corpus excludesIF/TF/0F and cannot establish complete8088compatibility.

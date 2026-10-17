@@ -1,0 +1,20 @@
+{
+  "Intel1979": {
+    "url": "https://studylib.net/doc/27791273/9800722-03-the-8086-family-users-manual-oct79",
+    "pages": ["2-23", "2-27 figure2-31", "2-28"],
+    "use": "Original segment inhibition and nested type1 before the first ordinary interrupt-handler instruction; sample-before POPF/IRET and flags-frame rules. Technical authority over contrary modern behavior or reference-implementation inference."
+  },
+  "MartyPC": {
+    "commit": "05c0d088e84ad6bbfac9b3f0d051e7eadefd9f44",
+    "files": ["step.rs", "interrupt.rs", "stack.rs", "execute_fn.rs"],
+    "use": "Pinned MIT author implementation cross-check for flag-load delay and repeat boundaries, not copied target code or authority overriding Intel1979."
+  },
+  "SingleStepTests8088": {
+    "url": "https://github.com/SingleStepTests/8088",
+    "limitations": "Author explicitly excludes IF/TF coverage and temporarily omits opcode0F fromV2. Full5701 projected corpus does not prove traps or POP CS."
+  },
+  "ShirriffOriginalDieAnalysis": {
+    "url": "https://www.righto.com/2023/07/undocumented-8086-instructions.html",
+    "use": "Original microcode analysis explains0F POP CS and why segment changes can retain prefetched bytes. Decoder0F and prefetch-sensitive semantics remain explicit separate limitations; no new target support is inferred."
+  }
+}

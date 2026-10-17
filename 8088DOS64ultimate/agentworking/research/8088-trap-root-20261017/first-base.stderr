@@ -1,0 +1,151 @@
+test
++- run test 497 pass, 10 fail (507 total)
+error: 'future_layout.test.eight assets commit before cache frames are reclaimed and every payload switches exactly' failed:
+       SCROLLFAULT accepted_failures=40 cases=60
+       native CGA full snapshot CPU cycles modes4/5/6={ 6276887, 6269433, 6154633 }, budget15000000; excludes DMA stalls and real elapsed
+       native input+8GFX lines+16CPU calls cycles=260892/3000000
+       expected 165, found 32
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x100389877 in expectEqualInner__anon_36713 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x1003db513 in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/future_layout.zig:40:29: 0x1003db597 in test.eight assets commit before cache frames are reclaimed and every payload switches exactly (test)
+           for(0xfe00..0x10000)|at|try std.testing.expectEqual(@as(u8,@truncate(at^0xa5)),f.peek(@intCast(at)));
+                                   ^
+error: 'io_instructions.test.immediate I O wraps IP and prefixes do not invent repeated bus cycles' failed:
+       CGA 600 scanlines max native cycles modes4/5/6={ 34016, 33985, 33412 }; excludes REU stalls and physical elapsed
+       IRQ_METRICS pulse=177 disabled=193 select0=288 cold_frame1=4493 CPUcycles
+       IRQ_FAILURE_STAGE after=0 carry=1 result=2 status=3 sp=1000 cycles=1230
+       IRQ_FAILURE_STAGE after=1 carry=1 result=2 status=3 sp=ffe cycles=2878
+       IRQ_FAILURE_STAGE after=2 carry=0 result=1 status=0 sp=ffa cycles=4493
+       IRQ_FAILURE_STAGE after=3 carry=0 result=1 status=0 sp=ffa cycles=4493
+       IRQ_FAILURE_STAGE after=4 carry=0 result=1 status=0 sp=ffa cycles=4493
+       PIT_SAMPLE delta=0 cycles=219
+       PIT_SAMPLE delta=1 cycles=494
+       PIT_SAMPLE delta=54116 cycles=11411
+       PIT_SAMPLE delta=985248 cycles=11909
+       PIT_SAMPLE delta=134213632 cycles=12561
+       PIT_MAX_SAMPLE_CPU_CYCLES 12561; ALL_OBSERVED 13172
+       INTEGRATED_TIMER label=same-raw-noedge-IFset rawdelta=0 warmNOP=721 callback=866 nativeStep=1598 CPUcycles
+       INTEGRATED_TIMER label=one-phi2-noedge-IFset rawdelta=1 warmNOP=721 callback=1141 nativeStep=1873 CPUcycles
+       INTEGRATED_TIMER label=100-phi2-noedge-IFset rawdelta=100 warmNOP=721 callback=1555 nativeStep=2287 CPUcycles
+       INTEGRATED_TIMER label=many-bits-noedge-IFset rawdelta=32767 warmNOP=721 callback=2931 nativeStep=3663 CPUcycles
+       INTEGRATED_TIMER label=one-before-edge-IFset rawdelta=54115 warmNOP=721 callback=2371 nativeStep=3103 CPUcycles
+       INTEGRATED_TIMER label=due-edge-IFclear rawdelta=54116 warmNOP=721 callback=11976 nativeStep=12708 CPUcycles
+       INTEGRATED_TIMER label=due-edge-frame rawdelta=54116 warmNOP=721 callback=16363 nativeStep=20438 CPUcycles
+       Overlay manager native cycles: bootstrap=119652, file load=1326, text load=1326, same-image hit=77; excludes DMA stalls and physical elapsed
+       Text renderer 600 rows: max native cycles modes 0..3={ 51717, 51726, 95727, 95769 }; excludes REU stalls/physical elapsed
+       expected 1, found 0
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x10038b3e3 in expectEqualInner__anon_36880 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x10048a0ff in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/io_instructions.zig:100:5: 0x10048a187 in test.immediate I O wraps IP and prefixes do not invent repeated bus cycles (test)
+           try std.testing.expectEqual(@as(u16, 1), f.word(g + 24));
+           ^
+error: 'bios.test.INT1A RTC probe follows original XT AH decrement and restores caller flags' failed:
+       Warm actual-assembly fetch 127 bytes: fast=19558 slow=45974 host CPU cycles (functional DMA; no physical throughput claim)
+       Verified cold 261-instruction register/branch workload: fast=262967 slow=364267 host CPU cycles (no physical throughput claim)
+       Verified warm 261-instruction register/branch workload: fast=262382 slow=363682 host CPU cycles (no physical throughput claim)
+       Genuine DOS IO.SYS handoff 70:0: 392 instructions, 10786786 native cycles, 51 raw sectors (44 IO.SYS rounded sectors)
+       expected 457, found 713
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x10038b3e3 in expectEqualInner__anon_36880 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x1004fceb7 in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/bios.zig:237:5: 0x1004fcf2f in test.INT1A RTC probe follows original XT AH decrement and restores caller flags (test)
+           try std.testing.expectEqual(@as(u16, 0x01c9), f.word(g));
+           ^
+error: 'bios.test.INT16 peek patches original CMP TF IF return flags and leaves the key queued' failed:
+       expected 63107, found 62534
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x10038b3e3 in expectEqualInner__anon_36880 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x1004facf7 in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/bios.zig:295:5: 0x1004fad8f in test.INT16 peek patches original CMP TF IF return flags and leaves the key queued (test)
+           try std.testing.expectEqual(@as(u16, (0xfdd7 & ~@as(u16, 0x0bd5)) | 0x0281), f.word(g + 26));
+           ^
+error: 'bios.test.ordinary INT11 and INT12 ROM handlers query mutable dirty BDA and preserve DS saved flags and stack' failed:
+       expected 97, found 0
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x10038b3e3 in expectEqualInner__anon_36880 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x1004f463f in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/bios.zig:489:9: 0x1004f46bf in test.ordinary INT11 and INT12 ROM handlers query mutable dirty BDA and preserve DS saved flags and stack (test)
+               try std.testing.expectEqual(expected, f.word(g));
+               ^
+error: 'interrupts.test.INT uses guest IVT and IRET returns guest handler changes to saved flags' failed:
+       expected 4096, found 0
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x10038b3e3 in expectEqualInner__anon_36880 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x1005351bf in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/interrupts.zig:42:5: 0x10053523b in test.INT uses guest IVT and IRET returns guest handler changes to saved flags (test)
+           try std.testing.expectEqual(@as(u16,0x1000),try get(&f,9));
+           ^
+error: 'interrupts.test.INT captures aliased IVT before writing original FLAGS CS IP stack frame' failed:
+       expected 4096, found 0
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x10038b3e3 in expectEqualInner__anon_36880 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x100533e0b in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/interrupts.zig:60:18: 0x100533e87 in test.INT captures aliased IVT before writing original FLAGS CS IP stack frame (test)
+           try step(&f);try std.testing.expectEqual(@as(u16,0x1000),try get(&f,9));try std.testing.expectEqual(@as(u16,0x102),try get(&f,12));
+                        ^
+error: 'interrupts.test.INT3 INTO and final IVT entry preserve software routing and stack wrap' failed:
+       expected 65535, found 0
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x10038b3e3 in expectEqualInner__anon_36880 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x100532573 in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/interrupts.zig:73:22: 0x1005325e7 in test.INT3 INTO and final IVT entry preserve software routing and stack wrap (test)
+               try step(&f);try std.testing.expectEqual(@as(u16,0xffff),try get(&f,9));
+                            ^
+error: 'stack.test.SAHF LAHF exhaust low byte preserving high flags and AL' failed:
+       expected 567, found 55
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x10038b3e3 in expectEqualInner__anon_36880 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x100544b5f in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/stack.zig:147:9: 0x100544bc7 in test.SAHF LAHF exhaust low byte preserving high flags and AL (test)
+               try std.testing.expectEqual((expected << 8) | 0x37, try get(&f, 0));
+               ^
+error: 'cpu.test.LOOP family wraps counters preserves flags and applies signed prefixed displacement' failed:
+       expected 2, found 0
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x10038b3e3 in expectEqualInner__anon_36880 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x100550213 in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/cpu.zig:338:13: 0x10055028f in test.LOOP family wraps counters preserves flags and applies signed prefixed displacement (test)
+                   try std.testing.expectEqual(if(taken) target else @as(u16,2),f.word(g+24));
+                   ^
+failed command: ./.zig-cache/o/f4485d52a05dc78b6b963b4a12f29e89/test --cache-dir=./.zig-cache --seed=0x2496d466 --listen=-
+
+Build Summary: 2/4 steps succeeded (1 failed); 497/507 tests passed (10 failed)
+test transitive failure
++- run test 497 pass, 10 fail (507 total)
+   +- compile test Debug native success 3s MaxRSS:547M
+      +- options success
+
+error: the following build command failed with exit code 1:
+.zig-cache/o/8a8015b249bcebf7b10bb68646761b9d/build /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project .zig-cache /Users/karlprosserpp/.cache/zig --seed 0x2496d466 -Z7c863975ee12cb73 test --summary all

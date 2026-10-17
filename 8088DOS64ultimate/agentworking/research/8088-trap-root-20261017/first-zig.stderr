@@ -1,0 +1,18 @@
+cpu-trap
++- run test
+   +- compile test Debug native 1 errors
+project/tests/host/trap.zig:18:158: error: type 'u16' cannot represent integer value '131072'
+fn trap(f:*F,ip:u16,n:u16)!void{try step(f);try loc(f,0x3000,0x200);try std.testing.expectEqual(n,try count(f));try std.testing.expectEqual(ip,try memword(f,0x20000+try get(f,4)));try std.testing.expectEqual(@as(u16,0),try get(f,13)&0x300);}
+                                                                                                                                                             ^~~~~~~
+referenced by:
+    test.type1 follows completed NOP and preserves exact normalized frame without extra retirement: project/tests/host/trap.zig:21:118
+error: 1 compilation errors
+failed command: /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig test -cflags -std=c++20 -O2 -Wno-unused-parameter -Wno-unused-variable -- project/tests/host/peddle_bridge.cpp project/third_party/peddle/Peddle/Peddle.cpp project/third_party/peddle/Peddle/PeddleDebugger.cpp project/third_party/peddle/Peddle/PeddleDisassembler.cpp project/third_party/peddle/Peddle/StrWriter.cpp -ODebug -I project/tests/host -I project/third_party/peddle/Peddle -Mroot=project/tests/host/trap.zig -lc++ --cache-dir project/.zig-cache --global-cache-dir /Users/karlprosserpp/.cache/zig --name test --zig-lib-dir /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/ --listen=-
+
+Build Summary: 0/3 steps succeeded (1 failed)
+cpu-trap transitive failure
++- run test transitive failure
+   +- compile test Debug native 1 errors
+
+error: the following build command failed with exit code 1:
+project/.zig-cache/o/b55550ef78495fc83fc7d52a34ff4731/build /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib project project/.zig-cache /Users/karlprosserpp/.cache/zig --seed 0xa9163f0e -Zce94efa7f45b0450 cpu-trap --summary all

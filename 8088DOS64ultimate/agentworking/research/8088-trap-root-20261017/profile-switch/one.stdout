@@ -1,0 +1,2 @@
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -D DOS64_MEDIA_BINDING=0 -I include -o build/loader_handoff.o src/loader_handoff.s
+make: `build/dos64-tests.prg' is up to date.

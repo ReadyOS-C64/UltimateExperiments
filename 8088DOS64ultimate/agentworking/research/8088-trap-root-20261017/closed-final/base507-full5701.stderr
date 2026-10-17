@@ -1,0 +1,537 @@
+1/507 foundation.test_0...OK
+2/507 foundation.test_1...OK
+3/507 foundation.test_2...OK
+4/507 foundation.test_3...OK
+5/507 foundation.test_4...OK
+6/507 foundation.test_5...OK
+7/507 foundation.test_6...OK
+8/507 foundation.test_7...OK
+9/507 foundation.test.assembly reset initializes original CPU state and preserves host ABI...OK
+10/507 foundation.test.wrong expected behavior is detected by the Zig harness...OK
+11/507 foundation.test.target-reported failure is observable...OK
+12/507 foundation.test.runaway actual assembly stops at the CPU cycle budget...OK
+13/507 foundation.test.unbalanced host stack fails even when the completion address is reached...OK
+14/507 foundation.test.write guards catch a target write into the reserved display matrix...OK
+15/507 foundation.test.raw unit payload is byte-identical to the linked PRG payload...OK
+16/507 foundation.test.Peddle bridge counts all two LDA and six RTS microcycles...OK
+17/507 foundation.test.unsupported REU access is rejected rather than treated as ordinary RAM...OK
+18/507 foundation.test.actual disabled PRG entry safely reports config failure with KERNAL visible...OK
+19/507 foundation.test_8...OK
+20/507 foundation.test_9...OK
+21/507 foundation.test_10...OK
+22/507 foundation.test_11...OK
+23/507 foundation.test_12...OK
+24/507 foundation.test_13...OK
+25/507 foundation.test_14...OK
+26/507 foundation.test_15...OK
+27/507 foundation.test_16...OK
+28/507 foundation.test_17...OK
+29/507 foundation.test_18...OK
+30/507 foundation.test_19...OK
+31/507 foundation.test_20...OK
+32/507 foundation.test_21...OK
+33/507 foundation.test_22...OK
+34/507 foundation.test_23...OK
+35/507 foundation.test_24...OK
+36/507 foundation.test_25...OK
+37/507 foundation.test_26...OK
+38/507 foundation.test_27...OK
+39/507 foundation.test_28...OK
+40/507 foundation.test_29...OK
+41/507 foundation.test_30...OK
+42/507 foundation.test_31...OK
+43/507 foundation.test_32...OK
+44/507 foundation.test_33...OK
+45/507 foundation.test_34...OK
+46/507 foundation.test_35...OK
+47/507 foundation.test_36...OK
+48/507 foundation.test_37...OK
+49/507 foundation.test_38...OK
+50/507 foundation.test_39...OK
+51/507 foundation.test_40...OK
+52/507 foundation.test_41...OK
+53/507 foundation.test_42...OK
+54/507 foundation.test_43...OK
+55/507 foundation.test_44...OK
+56/507 foundation.test_45...OK
+57/507 foundation.test_46...OK
+58/507 foundation.test_47...OK
+59/507 cga_cursor.test.nativeCGA hardwarecursor addsforeground underline to actual complete40column bitmap and preserves guest source...OK
+60/507 cga_cursor.test.actual48bit divider retains full quotient across random maximum and every field phase without portreads overwriting sampled frame...OK
+61/507 cga_cursor.test.hardware cursor full40and80 bitmap oracle honors every textmode activepage address halfcell offpage and14bit nonalias...OK
+62/507 cga_cursor.test.CGA external16field gate and original6845 nonblink hidden16on32on modes compose at field boundaries...OK
+63/507 cga_cursor.test.cursor ORs foreground after hidden attribute glyph preserves source and honors video blanking and clipped shape...OK
+64/507 cga_cursor.test.stale sample owner busy clock and originaloverlay failures retain old phase reject render before every output byte...OK
+65/507 cga_cursor.test.native presenter samples once at frame rowzero freezes full frame and propagates truthful stale failure...OK
+66/507 cga_cursor.test.complete captured40and80 actual bitmap matrix agree with separately executed pure host oracle including glyphs attributes pages and halfcursor...OK
+67/507 cga_cursor.test.cursor sampler preserves all256 nativeFLAGS guest PIT FILE UCI and no guest retirement on success and failure...OK
+68/507 cga_cursor.test.unsupported direct start invertedshape and failedREU retain truthful cache and refuse before full output while hidden shape is harmless...OK
+69/507 cga_cursor.test.existing native workflow bitmap oracle requires captured phase and exact physical halfcursor rather than disabling it...OK
+70/507 cga_status.test.CGA status follows standard beam fractional boundaries verticalsync full48bit time and unchanged repeated reads...OK
+71/507 cga_status.test.all original BIOS modes share raster and malformed timing latch clock errors width aliases refuse without mutation...OK
+72/507 cga_status.test.CGA status exclusive FILE arithmetic lease preserves FILE state rejects busy missing owner and transferfailure...OK
+73/507 cga_status.test.actual rational PIT advance clocksCGA across fractional and native32bit wrap without portread driven progress...OK
+74/507 cga_status.test.actual TURBO polling loop waits for time then crosses safe interval with CLI and no syntheticread progress...OK
+75/507 cga_status.test.CGA status rejects originalcaller in replacedoverlay before lease even with nativeouterreturn in HDBIOS...OK
+76/507 cga_status.test.status rejects nonnormalized rational publication and preserves all caller nativeFLAGS...OK
+77/507 cga_crtc.test.originalCGA all mirrored index data pairs honor5bit selector masks readonly lightpen and writeonly reads...OK
+78/507 cga_crtc.test.CGA wordwrite preflight is atomic at3D7 boundary while odd and even aliases preserve descriptor order...OK
+79/507 cga_crtc.test.CGA resident gates reject absent extension before access and preserve all256 caller statuses...OK
+80/507 cga_crtc.test.BIOSmode cursor inactivepage shape and activepage program actualCGA latches while hardwarewrites leaveBDA softwarecursor...OK
+81/507 cga_crtc.test.exact originalTURBO CRTCcursor probe executes OUT IN66 comparison restore without vendorpatch...OK
+82/507 cga_crtc.test.absentMDA byteports returnFF ignorewrites and preserve everyCGA latch BIOSBDA and neighboringfailclosed ports...OK
+83/507 cga_crtc.test.AH05 accepts raw saved cursor bytes after page change and programs full14bit physical cursor...OK
+84/507 cga_crtc.test.CGA modecontrol is6bit writeonly and supports blank blink intensity only within BIOS geometry atomically...OK
+85/507 cga_crtc.test.CGA text blanking paintsblack without guest VRAM mutation and intensity disables glyphblink...OK
+86/507 cga_crtc.test.CGA graphicsblank emitsblack matrix colorRAM and background while preserving source bitmap and restoresenabledpalette...OK
+87/507 owned_clock_internal.test.owned elapsed gateway keeps exact raw and elapsed publications and coherent CIA read counts...OK
+88/507 owned_clock_internal.test.owned elapsed gateway retains both old publications on owner readiness control and reload errors...OK
+89/507 video_spans.test.optimized text scroll full1MiB independent oracle metadata and measured cycles...OK
+90/507 video_spans.test.optimized scroll pin pressure and overflow use scalar fallback preserving external ownership...OK
+91/507 video_spans.test.optimized scroll injected DMA failures preserve authoritative scalar-prefix full1MiB and release all pins...SCROLLFAULT accepted_failures=40 cases=60
+OK
+92/507 video_spans.test.span mode clear matches independent full1MiB bus and exact BDA oracle for every CGA mode...OK
+93/507 video_spans.test.resolved writable span byte preserves every host flag state Y and exact per-byte bookkeeping...OK
+94/507 video_spans.test.span aperture clear failure remains a legal byte prefix with full1MiB authority and untouched BDA...OK
+95/507 video_xt_compat.test.original XT out of range INT10 functions preserve guest registers flags memory and absent device models...OK
+96/507 video_xt_compat.test.MODE video state probe AH1B preserves every AL and native arithmetic status combination...OK
+97/507 unit_cold_lifetime.test.unit cold fixtures reject after real release before target stack or register writes...OK
+98/507 unit_cold_lifetime.test.unit fixture ownership ends before bootstrap or any native startup attempt...OK
+99/507 native_cga.test.real BIOS graphics modes dirty guest bytes snapshot full frame exact and immutable source...native CGA full snapshot CPU cycles modes4/5/6={ 6276887, 6269433, 6154633 }, budget15000000; excludes DMA stalls and real elapsed
+OK
+100/507 native_cga.test.native switches graphics to both text widths and back through coherent BDA...OK
+101/507 native_cga.test.guest executed INT10 mode set and guest MOV VRAM reaches scheduled graphics line...native input+8GFX lines+16CPU calls cycles=260892/3000000
+OK
+102/507 native_cga.test.graphics snapshot faults remain unacknowledged and paused only after full successful frame...OK
+103/507 native_cga.test.unsupported video mode rejected and color RAM mock remains explicit default off...OK
+104/507 native_cga.test.presentation restores bank and native flags and touches no clock timer register...OK
+105/507 native_cga.test.direct GFX facade banks before owner state and preserves all driven mapping bits...OK
+106/507 native_cga.test.native rejects nonzero graphics page and start without publishing VIC changes...OK
+107/507 native_cga.test_0...OK
+108/507 future_layout.test.eight assets commit before cache frames are reclaimed and every payload switches exactly...OK
+109/507 future_layout.test.PIT wrappers hold one combined image for nested helper calls and release success and failure carry...OK
+110/507 future_layout.test.PIT frame injection reaches resident cache and stack under its lease then returns resident...OK
+111/507 future_layout.test.fifth GFX wrapper rejects early bitmap ownership and releases target argument failure...OK
+112/507 future_layout.test.fourth and fifth partial replacements invalidate current and preserve target state until retry...OK
+113/507 future_layout.test.new asset headers validate all bytes before publishing their code...OK
+114/507 future_layout.test.every new wrapper refuses reentry before target state or requested identity changes...OK
+115/507 render_graphics.test.CGA all 600 scanlines match full independent geometry bitmap palette guards...CGA 600 scanlines max native cycles modes4/5/6={ 34016, 33985, 33412 }; excludes REU stalls and physical elapsed
+OK
+116/507 render_graphics.test.CGA all 256 color control bytes each mode preserve background intensity and palette policy...OK
+117/507 render_graphics.test.CGA rejects invalid mode scanline active page and start offset without output...OK
+118/507 render_graphics.test.CGA cache load failures commit only complete bytes and retry exact scanline...OK
+119/507 render_graphics.test.CGA sees dirty BDA and final odd scanline VRAM with one cache frame...OK
+120/507 render_graphics.test.CGA dirty writeback failure preserves guest authority and output on retry...OK
+121/507 render_graphics.test.CGA restores native flags DDR port outputs across ROM and input pin mappings...OK
+122/507 render_graphics.test.CGA exhaustively reduces every possible source byte without inventing foreground indices...OK
+123/507 native_timer_startup.test.native failed cold configuration explicitly disables poisoned callback flags before CPU or device takeover...OK
+124/507 native_timer_startup.test.bounded native cold timer seam seeds fresh raw epoch before enabling and TEXT activation releases PIT...OK
+125/507 native_timer_startup.test.cold timer sampling retry remains bounded and never enables PIT on stopped CIA...OK
+126/507 irq_pit.test.PIC edge pulse latches while masked and IFclear, coalesces, rejects invalid descriptor...OK
+127/507 irq_pit.test.PIC priority selection independent oracle 32768 combinations leaves controller unchanged...OK
+128/507 irq_pit.test.all eight IRQ vectors original FLAGS frame count preserved and native status restored...OK
+129/507 irq_pit.test.IVT read before aliasing stack writes and offset wrap are actual assembly behavior...OK
+130/507 irq_pit.test.nested priority blocks same lower IRQ and EOI admits pending request...OK
+131/507 irq_pit.test.AEOI rotation changes lowest priority only when enabled unsupported modes have no effects...OK
+132/507 irq_pit.test.STI MOVSS POPSS shadow blocks one complete next instruction and HLT wakes...OK
+133/507 irq_pit.test.prefix-only yield cannot acknowledge IRQ and last prefix is REP interrupt restart...OK
+134/507 irq_pit.test.REP accepts after first iteration shadow expires and IRET completes exactly once...OK
+135/507 irq_pit.test.original8088 multiple prefix loss is explicit for override REP and REP override orders...OK
+136/507 irq_pit.test.dirty mutable IVT is authoritative and failed DMA is terminal after acknowledge without duplicate...OK
+137/507 irq_pit.test.IRQ during REP re-fetches mutable instruction bytes instead of retained decode...OK
+138/507 irq_pit.test.REP word copies in both DF directions preserve each element around an IRQ...OK
+139/507 irq_pit.test.REPE and REPNE compare termination stops restart and saves last completed FLAGS...OK
+140/507 irq_pit.test.representative frame changes only six guest bytes with cache and native state guards...OK
+141/507 irq_pit.test.bounded helper native cycle samples and acknowledgement failure stages...IRQ_METRICS pulse=177 disabled=193 select0=288 cold_frame1=4493 CPUcycles
+IRQ_FAILURE_STAGE after=0 carry=1 result=2 status=3 sp=1000 cycles=1230
+IRQ_FAILURE_STAGE after=1 carry=1 result=2 status=3 sp=ffe cycles=2878
+IRQ_FAILURE_STAGE after=2 carry=0 result=1 status=0 sp=ffa cycles=4493
+IRQ_FAILURE_STAGE after=3 carry=0 result=1 status=0 sp=ffa cycles=4493
+IRQ_FAILURE_STAGE after=4 carry=0 result=1 status=0 sp=ffa cycles=4493
+OK
+142/507 irq_pit.test.guest INT08 updates BDA once calls mutable INT1C then EOI and replacement INT08 owns behavior...OK
+143/507 irq_pit.test.in-core REP callback samples final element before CXzero for all ten string opcodes...OK
+144/507 irq_pit.test.compare condition termination precedes INTR sampling for REPE REPNE byte and word...OK
+145/507 irq_pit.test.masked IFclear or nestedblocked final REP element retires normally without rewinding...OK
+146/507 irq_pit.test.STI0to1 defers then repeated STI with IF1 does not extend its shadow...OK
+147/507 irq_pit.test.previous STI MOVSS POPSS shadow expires at first REP element before callback acceptance...OK
+148/507 irq_pit.test.repaired NMOS8088 MOV ES CS SS DS and POP ES SS DS all inhibit next instruction...OK
+149/507 irq_pit.test.PUSH segments MOV from segments general POP LDS LES never gain a segment load shadow...OK
+150/507 irq_pit.test.chained MOV and POP segment shadows extend through final load then one following instruction...OK
+151/507 irq_pit.test.in-core IRQ DMA failure preserves completed REP element and latches terminal ownership...OK
+152/507 irq_pit.test.PIT rational conversion wide oracle 512 deterministic varied deltas and modulo host epochs...OK
+153/507 irq_pit.test.PIT fragmentation preserves exact rational remainder phase and total across one PAL second...OK
+154/507 irq_pit.test.PIT invalid gaps and reversed time latch explicit pause and rebase keeps oscillator phase...OK
+155/507 irq_pit.test.PIT native time bookkeeping never changes guest RAM or registers and bounds every call...PIT_SAMPLE delta=0 cycles=219
+PIT_SAMPLE delta=1 cycles=494
+PIT_SAMPLE delta=54116 cycles=11411
+PIT_SAMPLE delta=985248 cycles=11909
+PIT_SAMPLE delta=134213632 cycles=12561
+PIT_MAX_SAMPLE_CPU_CYCLES 12561; ALL_OBSERVED 13172
+OK
+156/507 irq_pit.test.PIT IRQ0 wakes HLT and midnight advances only through guest INT08 INT1C EOI IRET...OK
+157/507 irq_pit.test.PIT masked and in-service elapsed periods coalesce as PIC edges without BIOS catchup...OK
+158/507 irq_pit.test.PIT follows replaced INT08 vector and never repairs guest custom EOI or time behavior...OK
+159/507 irq_pit.test.actual elapsed raw publication wraps its16bit view while PIT retains subunit and32bit epochs...OK
+160/507 irq_pit.test.CIA advances during final REP element and real polling produces restartable IRQ0...OK
+161/507 irq_pit.test.CIA transient sample preserves PIT epoch and fatal control stops at completed REP boundary...OK
+162/507 irq_pit.test.fixed BIOS PIT profile leaves all guest8253 ports explicitly unsupported...OK
+163/507 irq_pit.test.actual CIA long pause and unready PIT report separate tagged terminal poll failures...OK
+164/507 irq_pit.test.resident disabled callback clears stale delivery without overlay or device activity...OK
+165/507 irq_pit.test.native BIOS INT08 alone updates midnight and mutable INT1C then guest EOI restores AX DS FLAGS...OK
+166/507 irq_pit.test.native bounded loop polls physical timer wakes HLT and custom INT08 suppresses default clock...OK
+167/507 irq_pit.test.native resume explicitly rebases long paused interval retaining phase pending IRQ and ISR...OK
+168/507 irq_pit.test.native unannounced long pause is terminal without BDA catchup...OK
+169/507 irq_pit.test.native REP lease acquisition failure retains completed element and never acknowledges pending IRQ...OK
+170/507 irq_pit.test.disabled resident callback preserves REP progress after stale delivered result...OK
+171/507 irq_pit.test.native resume transient physical sample retains pending command paused stage and oscillator epoch...OK
+172/507 irq_pit.test.native resume lease fault fails paused runtime without publishing running state or clearing pending PIC...OK
+173/507 irq_pit.test.integrated native polling overhead separates warm NOP noedge duepulse and accepted frame...INTEGRATED_TIMER label=same-raw-noedge-IFset rawdelta=0 warmNOP=721 callback=866 nativeStep=1598 CPUcycles
+INTEGRATED_TIMER label=one-phi2-noedge-IFset rawdelta=1 warmNOP=721 callback=1141 nativeStep=1873 CPUcycles
+INTEGRATED_TIMER label=100-phi2-noedge-IFset rawdelta=100 warmNOP=721 callback=1555 nativeStep=2287 CPUcycles
+INTEGRATED_TIMER label=many-bits-noedge-IFset rawdelta=32767 warmNOP=721 callback=2931 nativeStep=3663 CPUcycles
+INTEGRATED_TIMER label=one-before-edge-IFset rawdelta=54115 warmNOP=721 callback=2371 nativeStep=3103 CPUcycles
+INTEGRATED_TIMER label=due-edge-IFclear rawdelta=54116 warmNOP=721 callback=11976 nativeStep=12708 CPUcycles
+INTEGRATED_TIMER label=due-edge-frame rawdelta=54116 warmNOP=721 callback=16363 nativeStep=20438 CPUcycles
+OK
+174/507 irq_pit.test.empty or fully masked IRR still validates every PIC programming byte before returning none...OK
+175/507 elapsed.test.actual CIA publication converts exact 4096-tick units at boundaries and both wraps...OK
+176/507 elapsed.test.clock faults and reload sample rejection preserve old elapsed publication...OK
+177/507 elapsed.test.elapsed reader banks resident state and preserves every native flag and driven bank bit...OK
+178/507 native_text_display.test.native display I/O model is disabled by default...OK
+179/507 native_text_display.test.TEXT phase guard rejects row setup and restore before cold release without entering overlay...OK
+180/507 native_text_display.test.loaded TEXT setup restore keeps observable VIC CIA bank and native ABI across64 mappings...OK
+181/507 native_text_display.test.TEXT wrappers preserve initialized display across FILE INPUT switches without touching elapsed CIA...OK
+182/507 native_text_display.test.packaged licensed fonts produce complete bitmap oracle in every text mode...OK
+183/507 cold_phase.test.cold release requires bootstrap BIOS readiness and no live overlay owner...OK
+184/507 cold_phase.test.released cold RAM traps cannot be entered by BIOS importer or overlay reinitialization...OK
+185/507 cold_phase.test.released first four cache frames cannot alter committed INPUT code asset...OK
+186/507 cold_phase.test.INPUT locked wrappers survive FILE and TEXT replacements with exact native queue word...OK
+187/507 cold_phase.test.BIOS cold initialization cannot consume uncommitted INPUT cache-source bytes...OK
+188/507 host_input.test.native input owns CIA scan only after claim and initialization...OK
+189/507 host_input.test.native input scans all64 physical keys with held edges release and exact XT translations...OK
+190/507 host_input.test.native input SHIFT legends cursors delete home and function pairs cover every position...OK
+191/507 host_input.test.native input modifiers update dirty BDA flags and CTRL and Commodore Alt affect accepted words...OK
+192/507 host_input.test.native input pending full-ring word survives release and modifier changes without duplicates...OK
+193/507 host_input.test.native input switch-network ghost rectangle is rejected before BDA or FIFO updates...OK
+194/507 host_input.test.native input failed coherent load and invalid queue retry without accepting duplicate edges...OK
+195/507 host_input.test.native input restores CIA port outputs DDRs banking and ABI while never touching other CIA registers...OK
+196/507 host_input.test.native input matrix matches every two-switch chord and rejects every three-corner rectangle...OK
+197/507 host_input.test.native input bounded writes leave overlay code and memory guards unchanged...OK
+198/507 host_input.test.native input maximal disjoint matrix stars consume layer prefix and enqueue13 edges once...OK
+199/507 host_input.test.XT IDE physical Fn F9 F10 and all F1 F8 modifier words have no leaked prefix...OK
+200/507 host_input.test.XT IDE Fn first function first release ordering and ordinary rollover are explicit...OK
+201/507 host_input.test.XT IDE deferred printable and chord full queue preserve original word without repeats...OK
+202/507 host_input.test.XT IDE Fn ghost ambiguity rejects before modifier queue or layer state changes...OK
+203/507 host_input.test.XT IDE ordinary rollover under full queue commits printable before held ordinary edge...OK
+204/507 host_input.test.pending lifecycle released commit immediately admits fresh ordinary press...OK
+205/507 host_input.test.pending lifecycle released commit immediately admits fresh Fn press after ghost...OK
+206/507 host_input.test.pending lifecycle held acceptance and precommit repress coalesce without duplicates...OK
+207/507 host_input.test.pending pound held commitment coalesces release under every captured modifier...OK
+208/507 host_input.test.pending pound released commitment allows fresh printable and Fn immediately...OK
+209/507 host_input.test.pending pound consumed at held commitment cannot become a layer before release...OK
+210/507 host_input.test.pending ordinary acceptance does not consume a newly pressed pound layer...OK
+211/507 overlay_startup.test.configured native entry commits all real overlays before starting read-only import...OK
+212/507 overlay_startup.test.configured native malformed overlay header fails before REU writes and SYS cannot reset evidence...OK
+213/507 overlay_startup.test.configured native partial bootstrap stays unpublished and explicit cold repair restores exact assets...OK
+214/507 overlay_startup.test.loaded FILE direct ABI retains register flag and mapping coverage under overlay lock...OK
+215/507 overlays.test.overlays bootstrap exact whole 4 MiB REU oracle and startup phase ownership...OK
+216/507 overlays.test.overlays exact replacement image and immutable source guards across switches...OK
+217/507 overlays.test.overlays reject every malformed startup header byte before either copy...OK
+218/507 overlays.test.overlays replacement checks all REU header bytes and rejects wrong slot identity...OK
+219/507 overlays.test.overlays partial bootstrap DMA never publishes ready and full retry repairs both slots...OK
+220/507 overlays.test.overlays partial header or code DMA invalidates current and wrapper requires full retry...OK
+221/507 overlays.test.overlays capacity identity unready and busy guards preserve ownership without DMA...OK
+222/507 overlays.test.overlays real file transaction survives rendering switch between asynchronous native polls...OK
+223/507 overlays.test.overlays wrapper failure never executes invalid target and native flags survive...OK
+224/507 overlays.test.overlays reject direct replacement with native return inside execution window...OK
+225/507 overlays.test.overlays preserve wrapped target carry and measure verified native manager costs...Overlay manager native cycles: bootstrap=119652, file load=1326, text load=1326, same-image hit=77; excludes DMA stalls and physical elapsed
+OK
+226/507 render_text.test.text renderer every mode page and row matches full independent bitmap matrix font and guard oracle...Text renderer 600 rows: max native cycles modes 0..3={ 51717, 51726, 95727, 95769 }; excludes REU stalls/physical elapsed
+OK
+227/507 render_text.test.text renderer rejects inconsistent geometry invalid pages rows and blink without output...OK
+228/507 render_text.test.text renderer sees dirty one-frame VRAM and restores bank outputs DDR and native flags...OK
+229/507 render_text.test.text renderer reports exact committed cells on cache failure and whole row retry...OK
+230/507 render_text.test.text renderer independent blink halves and all RGBI palette entries...OK
+231/507 render_text.test.text renderer reads dirty BDA geometry and leaves coherent guest state untouched...OK
+232/507 render_text.test.text renderer dirty VRAM write-back failure preserves authority and succeeds on retry...OK
+233/507 render_text.test.text renderer all 256 text attributes retain left palette and blink policy...OK
+234/507 files.test.files pinned identify path open seek read close exact commands and response bytes...OK
+235/507 files.test.files short reads EOF and 512 bytes retain actual count...OK
+236/507 files.test.files WRITE has unknown count despite OK and CLOSE cannot prove persistence...OK
+237/507 files.test.files rejects stale reordered invalid requests without PUSH...OK
+238/507 files.test.files status errors malformed response and oversized count cannot report success...OK
+239/507 files.test.files unexpected MORE aborts without replacing first retained response...OK
+240/507 files.test.files elapsed timeout wraps and failed recovery requires caller reset...OK
+241/507 files.test.files closed firmware handle can recover after failed OPEN without false CLOSE success...OK
+242/507 files.test.files active transaction rejects another start and does not replace command bytes...OK
+243/507 files.test.files exact path boundaries target two and input terminators validate before PUSH...OK
+244/507 files.test.files stale published reply cannot become a new operation result...OK
+245/507 files.test.files scripted independent backing bytes survive seek and chunked binary reads...OK
+246/507 files.test.files accepts pinned read write and create-new access masks only...OK
+247/507 host_clock.test.clock requires explicit ownership and readiness before touching CIA...OK
+248/507 host_clock.test.clock programs stopped latches and cascade without consuming NMI state...OK
+249/507 host_clock.test.clock returns coherent raw counter with independent phi2 advance...OK
+250/507 host_clock.test.clock retries every low byte seam and preserves sampled instant...OK
+251/507 host_clock.test.clock bounded reload rejection handles delayed cascade and later resumes...OK
+252/507 host_clock.test.clock handles full 32-bit wrap and rejects B high-low read seam...OK
+253/507 host_clock.test.clock detects timer ownership damage without replacing last good publication...OK
+254/507 host_clock.test.clock preserves registers flags and observable banking for all DDR modes...OK
+255/507 host_clock.test.clock only writes its state stack mapping and explicitly owned timer registers...OK
+256/507 host_clock.test.clock model exposes stopped latch force load start and ICR semantics independently...OK
+257/507 host_clock.test.CIA model is optional and obeys ordinary 6510 I/O banking...OK
+258/507 uci.test.UCI bounded command upload, full response and status queues preserve ABI and mapping...OK
+259/507 uci.test.UCI MORE streaming holds each block until consumer accepts and handles missed BUSY...OK
+260/507 uci.test.UCI capacity truncation drains both queues without crossing buffers...OK
+261/507 uci.test.UCI rejects invalid lengths capacities bases and tick durations before PUSH...OK
+262/507 uci.test.UCI elapsed deadline wraps, expires exactly, and stuck recovery is explicit...OK
+263/507 uci.test.UCI cancellation aborts once, verifies quiet, then permits a new command...OK
+264/507 uci.test.UCI protocol error is cleared during bounded abort recovery...OK
+265/507 uci.test.UCI preexisting response is aborted safely and never reported as this command...OK
+266/507 uci.test.UCI backpressure deadline counts caller time and no poll-count timing...OK
+267/507 uci.test.UCI actual FPGA queue boundary detects saturated response and 8-bit status length...OK
+268/507 uci.test.UCI 24-bit aggregate counts cross 64 KiB with independent block bounds...OK
+269/507 uci.test.UCI aggregate overflow aborts rather than silently wrapping...OK
+270/507 uci.test.UCI temporarily forces banking outputs and restores arbitrary DDR mappings...OK
+271/507 uci.test.UCI no-reply commands are rejected and init does not erase owned buffers...OK
+272/507 uci.test.UCI source and response storage remain bounded and unrelated native RAM is untouched...OK
+273/507 uci.test.UCI unexpected idle after PUSH is never completion and timeout can recover...OK
+274/507 keyboard.test.XT keyboard empty read yields without inventing input and unsupported functions are explicit...OK
+275/507 keyboard.test.XT keyboard15-entry FIFO full rejection wraps head and tail repeatedly and preserves all neighboring BDA...OK
+276/507 keyboard.test.original XT AH01 always loads head word including empty ring and exports exact CMP RET2 flags...OK
+277/507 keyboard.test.original XT AH02 returns all mutable shift bytes with AH zero and caller flags untouched...OK
+278/507 keyboard.test.keyboard malformed odd out of bounds and high byte pointers fail before AX or queue mutation...OK
+279/507 keyboard.test.keyboard observes dirty BDA with one cache frame and publishes ring changes coherently...OK
+280/507 keyboard.test.keyboard partial REU load and dirty eviction failures remain terminal cache errors with retry authority...OK
+281/507 keyboard.test.keyboard callback preserves all native status combinations and bounds every observed native write...OK
+282/507 clock.test.XT clock all256 functions retain original AH decrement and saved guest FLAGS...OK
+283/507 clock.test.XT AH00 returns full midnight byte exactly once and coherent high low words...OK
+284/507 clock.test.XT AH01 accepts unnormalized times including high words and preserves AL CX DX...OK
+285/507 clock.test.XT unsupported RTC AH02 probe is handled unchanged except AH and performs no DMA...OK
+286/507 clock.test.clock advance wide arithmetic oracle covers exact midnight and invalid set wrap...OK
+287/507 clock.test.zero advance is bounded no-op with no cache access and clears stale status progress...OK
+288/507 clock.test.clock cache acquisition failures leave guest BDA progress authoritative and retry...OK
+289/507 clock.test.dirty BDA one-frame eviction faults preserve completed ticks and retry exactly once...OK
+290/507 clock.test.native caller flags preserved on service tick no-op and fatal paths...OK
+291/507 clock.test.same-page clock commits need one DMA and preserve complete BDA and state guards...OK
+292/507 aux_bios.test.absent original XT serial and printer preserve all registers for every AH before dispatch...OK
+293/507 aux_bios.test.actual DOS startup COM4 initialization is no-op rather than invented timeout...OK
+294/507 aux_bios.test.native caller status preserved for handled unsupported and host failure paths...OK
+295/507 aux_bios.test.nonzero BDA base explicitly unsupported without changing AX including high byte only...OK
+296/507 aux_bios.test.original unchecked DX word index wraps and printer table addition also wraps...OK
+297/507 aux_bios.test.BDA base reads see coherent dirty guest updates before REU flush...OK
+298/507 aux_bios.test.cache failure distinguishes fatal unavailable BDA from absent device and can retry...OK
+299/507 aux_bios.test.unknown vectors reject before any BDA DMA and clear prior host error...OK
+300/507 adjust.test.8088 DAA DAS exhaust AL and AF CF including AF-sensitive 9A..9F and DAS borrow...OK
+301/507 adjust.test.8088 AAA AAS independent AL and AH byte corrections and every low input...OK
+302/507 adjust.test.AAM all byte dividends and bases including nondecimal quotient remainder...OK
+303/507 adjust.test.AAD all bases and seeded full AX modulo arithmetic including base zero...OK
+304/507 adjust.test.AAM zero enters original divide-error frame with following IP and unchanged AX...OK
+305/507 adjust.test.REP AAM AAD ignores repeat without negating the result and SALC preserves flags...OK
+306/507 adjust.test.XLAT segment overrides offset wrap physical wrap and memory holes...OK
+307/507 adjust.test.XLAT reads dirty coherent source and preserves every unrelated guest register...OK
+308/507 adjust.test.XLAT operand DMA error and AAM immediate DMA error preserve AX and roll back IP...OK
+309/507 adjust.test.adjust instructions restore host decimal and interrupt flags through CPU completion...OK
+310/507 video.test.video modes 0 through 6 clear every CGA byte and establish exact BDA with one and two cache frames...OK
+311/507 video.test.video AH0F queries mutable dirty BDA and preserves BL other guest registers and all flags...OK
+312/507 video.test.video cursor shape positions and active page cover every text column and all 40 and 80 column pages...OK
+313/507 video.test.video text writes retain exact CP437 attributes cursor and linear repetitions across page padding and CGA end...OK
+314/507 video.test.video window scroll matches a snapshot oracle for overlap clipping counts active pages and exact attributes...OK
+315/507 video.test.video teletype handles carriage return linefeed backspace bell wrap and bottom scroll on every page...OK
+316/507 video.test.video CGA pixel read write and XOR match an independent oracle at every x odd even and bank edges...OK
+317/507 video.test.video rejects unknown modes services graphics glyphs and malformed windows before changing guest memory...OK
+318/507 video.test.video cache failures at deep mode and pixel helpers unwind host stack preserve flags and report fatal...OK
+319/507 video.test.video operations leave native executable staging unused control and guest VRAM envelope guards intact...OK
+320/507 video.test.XT palette background and selection preserve other bits guest registers and adjacent memory...OK
+321/507 video.test.XT palette cold BDA cache failure unwinds host stack without changing guest...OK
+322/507 io_instructions.test.all eight IN OUT forms execute PIC cycles and preserve guest flags and unrelated registers...OK
+323/507 io_instructions.test.unsupported port and width rewind the instruction without partial PIC or AX effects...OK
+324/507 io_instructions.test.immediate I O wraps IP and prefixes do not invent repeated bus cycles...OK
+325/507 io_instructions.test.8088 byte IO reaches XT PPI fixed PIT and absent game adapter with unchanged guest flags...OK
+326/507 ports.test.PIC original XT BIOS defaults and native initialization ABI...OK
+327/507 ports.test.PIC all four ICW sequence lengths route data and reset transient command state...OK
+328/507 ports.test.PIC masks IRR ISR read selection persists and RR0 leaves selection unchanged...OK
+329/507 ports.test.PIC nonspecific EOI uses rotating priority and specific EOI only named ISR...OK
+330/507 ports.test.PIC special mask mode excludes masked ISR from nonspecific EOI only...OK
+331/507 ports.test.PIC word cycles preserve descriptors and preflight unsupported widths and boundary ports...OK
+332/507 ports.test.DOS shared IRQ global rearm accepts only documented absent-board byte broadcasts...OK
+333/507 ports.test.XT8255 port B readback all mode0 output latch bits and no adjacent word side effects...OK
+334/507 ports.test.fixed BIOS PIT accepts only same divisor zero lohi rewrites preserving all timer IRQ state...OK
+335/507 ports.test.absent XT game adapter byte input is pulled high without pretending joystick hardware...OK
+336/507 fetch.test.fast fetch matches slow byte path across every span byte and final boundary...OK
+337/507 fetch.test.fast fetch does not pin code across one-frame operand eviction or dirty alias writes...OK
+338/507 fetch.test.fast fetch validates CS and redirected IP and separately wraps offset and physical address...OK
+339/507 fetch.test.fast fetch cold reset validates ownership even when generation counters repeat...OK
+340/507 fetch.test.fast fetch retains PC holes ROM CGA and bus-mode failure behavior...OK
+341/507 fetch.test.fast fetch preserves IP on fresh span boundary and cache initialization failures...OK
+342/507 fetch.test.fast fetch bounded long prefix slices preserve the original CPU contract...OK
+343/507 fetch.test.fast fetch reports all-frames-pinned failure and never consumes the failing byte...OK
+344/507 fetch.test.fast fetch warm sequential helper costs less than the retained assembly byte path...Warm actual-assembly fetch 127 bytes: fast=19558 slow=45974 host CPU cycles (functional DMA; no physical throughput claim)
+OK
+345/507 fetch.test.fast fetch improves a complete register and taken-branch guest workload with full RAM checks...Verified cold 261-instruction register/branch workload: fast=262967 slow=364267 host CPU cycles (no physical throughput claim)
+Verified warm 261-instruction register/branch workload: fast=262382 slow=363682 host CPU cycles (no physical throughput claim)
+OK
+346/507 fetch.test.owned immediate words retain independent slow-byte behavior at PC frame IP and physical seams...OK
+347/507 fetch.test.live frame fetch sees same-tag writes through generation and epoch wrap...OK
+348/507 fetch.test.live fetch reads all dirty future bytes without cache pinning or copied code...OK
+349/507 range_snapshot.test.range recovery helpers preserve all three nonzero envelopes and neighboring bytes...OK
+350/507 range_snapshot.test.range recovery reports each incomplete chunk and a full retry recovers partial restore...OK
+351/507 dos_boot.test.unchanged DOS boot sector loads FAT12 IO.SYS through real BIOS and reaches kernel entry...Genuine DOS IO.SYS handoff 70:0: 392 instructions, 10786786 native cycles, 51 raw sectors (44 IO.SYS rounded sectors)
+OK
+352/507 range_probe.test.shared range probe verifies source dirty guest export and host readback across both seams...OK
+353/507 range_probe.test.range probe output oracle catches wrong expectations and corruption despite pass mailbox...OK
+354/507 range_probe.test.range probe reports partial DMA failures without exporting uncommitted bytes...OK
+355/507 bios.test.owned synthetic BIOS initializes exact ROM IVT BDA and preserves conventional RAM and disk configuration...OK
+356/507 bios.test.BIOS initialization restores caller memory mode and refuses publication after partial cache failure...OK
+357/507 bios.test.INT10 query and absent INT14 INT17 use owned gates and normal IRET frames...OK
+358/507 bios.test.video and auxiliary callback whitelists reject wrong gates and propagate cache failure...OK
+359/507 bios.test.INT1A RTC probe follows original XT AH decrement and restores caller flags...OK
+360/507 bios.test.INT16 empty read yields in its owned gate then consumes an enqueued key without stack drift...OK
+361/507 bios.test.INT16 peek patches original CMP TF IF return flags and leaves the key queued...OK
+362/507 bios.test.BIOS private ports whitelist physical owned opcodes including aliases and reject arbitrary guest instructions...OK
+363/507 bios.test.INT13 normal ROM IRET patches only saved carry and preserves other guest registers on success and error...OK
+364/507 bios.test.PUSHF CALL FAR BIOS disk chain returns through ordinary IRET and cache failures remain terminal...OK
+365/507 bios.test.real guest reset reaches BIOS bootstrap and loads original disk sector exactly at 0000 7C00...OK
+366/507 bios.test.failed real reset bootstrap retains ROM halt path and exports disk status...OK
+367/507 bios.test.BIOS gate forwards guest disk cache faults as terminal host failures...OK
+368/507 bios.test.ordinary INT11 and INT12 ROM handlers query mutable dirty BDA and preserve DS saved flags and stack...OK
+369/507 bios.test.original XT INT15 configuration request returns unsupported AH86 CF1 through guest frame and IRET...OK
+370/507 bios.test.INT13 B drive normal IRET and last diskette BDA status are coherent...OK
+371/507 disk.test.disk init explicitly configures unloaded 360 KiB media and reset requires no image...OK
+372/507 disk.test.all 720 CHS sectors match independent linear addressing and verify reads data without guest writes...OK
+373/507 disk.test.disk reads cross track page and REU bank seams and writes export dirty coherent bytes...OK
+374/507 disk.test.physical 64 KiB DMA limits allow exact end and reject crossing even inside BX window...OK
+375/507 disk.test.CHS geometry count drive and slot errors fail before DMA or guest writes...OK
+376/507 disk.test.10-bit cylinder translation and exact 4 MiB image end are checked without overflow...OK
+377/507 disk.test.verify and range failures report only complete sectors and never false success...OK
+378/507 range.test.coherent range import export preserve dirty ownership guards and REU bank seams...OK
+379/507 range.test.range guest physical wrap is linear and 65535 byte extent remains bounded...OK
+380/507 range.test.range uses PC bus policy for ROM holes and CGA rather than guest backing DMA...OK
+381/507 range.test.range validates input and disjoint REU extent before touching data including empty...OK
+382/507 range.test.range import error reports only bytes committed and retry imports remaining...OK
+383/507 range.test.range DMA failures never publish uncertain current chunk progress...OK
+384/507 range.test.range export advances only complete chunks and retries uncertain tail...OK
+385/507 indirect.test.CBW and CWD sign extension preserves all flags and unrelated registers...OK
+386/507 indirect.test.INC DEC r/m preserve carry and match independent edge flag oracle...OK
+387/507 indirect.test.XCHG covers every byte and word register pair including aliases...OK
+388/507 indirect.test.XCHG writes memory using original base register before replacing it...OK
+389/507 indirect.test.TEST accumulator immediate updates only defined AND flags...OK
+390/507 indirect.test.indirect PUSH SP alias uses decremented SP and POP SP overwrites its increment...OK
+391/507 indirect.test.indirect near CALL captures memory target before overlapping return push...OK
+392/507 indirect.test.near indirect register CALL captures original SP and JMP leaves stack unchanged...OK
+393/507 indirect.test.POP memory retains decoded SS address across stack read and eviction...OK
+394/507 indirect.test.far indirect pointers wrap and are read before overlapping call stack writes...OK
+395/507 indirect.test.undefined far register and unaudited byte control forms diagnose explicitly...OK
+396/507 math.test.math NOT NEG all bytes and seeded words preserve unrelated state and flags...OK
+397/507 math.test.MUL IMUL match independent double width integer oracle including REP products...OK
+398/507 math.test.DIV IDIV quotient remainder and original overflow route through guest INT0...OK
+399/507 math.test.group TEST alias byte and word use immediate without writing operand...OK
+400/507 math.test.NEG high byte register and wrapped memory operands execute actual writeback...OK
+401/507 strings.test.all non-REP MOVS STOS LODS widths honor DF and pointer wrapping with CX zero...OK
+402/507 strings.test.CMPS SCAS set independent comparison flags in both widths and directions...OK
+403/507 strings.test.REP CX zero performs no data access or flag and pointer changes for all strings...OK
+404/507 strings.test.REP MOVS bounded continuation preserves long prefixes override and instruction count...OK
+405/507 strings.test.REP LODS and STOS repeat for both prefixes with fixed ES destination...OK
+406/507 strings.test.REPE REPNE CMPS SCAS stop after comparison including after a continuation...OK
+407/507 strings.test.overlapping REP MOVS is sequential and can overwrite its own decoded opcode...OK
+408/507 strings.test.REP data failure latches terminal error and preserves last complete iteration...OK
+409/507 shifts.test.assembled original 8088 rotate and shift counts match independent ring oracle...OK
+410/507 shifts.test.one-bit opcodes select high byte and word registers without CL dependency...OK
+411/507 shifts.test.memory shifts preserve zero count and survive eviction and 16-bit word wrapping...OK
+412/507 interrupts.test.INT uses guest IVT and IRET returns guest handler changes to saved flags...OK
+413/507 interrupts.test.INT captures aliased IVT before writing original FLAGS CS IP stack frame...OK
+414/507 interrupts.test.INT3 INTO and final IVT entry preserve software routing and stack wrap...OK
+415/507 interrupts.test.software interrupt IVT memory failure latches without claiming a guest exception...OK
+416/507 runner.test.batched runner preserves bounded stepping, failure precedence and bus writes...OK
+417/507 runner.test.batched return wins over zero budget and a preexisting model fault wins over return...OK
+418/507 runner.test.Fixture keeps cached symbols and cumulative stack high water with batched execution...OK
+419/507 operands.test.assembled ModRM decoder matches independent complete 16-bit address matrix...OK
+420/507 operands.test.register operands preserve neighbouring bytes including AH CH DH BH...OK
+421/507 operands.test.decoded memory descriptor survives immediate fetch eviction and wrapping word store...OK
+422/507 stack.test.assembly stack primitives preserve host flags and wrap guest SS SP per byte...OK
+423/507 stack.test.all register PUSH POP execute with original 8088 PUSH SP and POP SP order...OK
+424/507 stack.test.segment stack instructions use SS and repaired NMOS POP segment inhibits next instruction...OK
+425/507 stack.test.SAHF LAHF exhaust low byte preserving high flags and AL...OK
+426/507 stack.test.PUSHF POPF normalize original 8088 reserved bits and IF transition shadow...OK
+427/507 stack.test.near CALL RET and RET immediate execute guest return and wrap displacement...OK
+428/507 stack.test.far CALL RETF return CS IP in correct stack order and cleanup wraps SP...OK
+429/507 stack.test.stack memory failure leaves documented partial write and no false pop advance...OK
+430/507 alu.test.assembled ALU matches independent integer flag oracle at edges and seeded inputs...OK
+431/507 alu.test.ALU rejects invalid width and operation without changing guest flags...OK
+432/507 escape.test.8088 absent8087 all8 ESC opcodes decode all256 ModRM forms with exact IP registers flags and dummy word...OK
+433/507 escape.test.8088 ESC segment overrides offset wrap physical wrap and no FNSTCW memory store...OK
+434/507 escape.test.8088 ESC ModRM and both displacement fetch faults restore original IP and retire none...OK
+435/507 escape.test.8088 ESC dummy word low and high byte DMA failures remain real host faults...OK
+436/507 escape.test.8088 absent8087 WAIT yields original IP with unchanged FLAGS registers count and consumed first-test IRQ shadow...OK
+437/507 escape.test.actual unmodified TPC FNINIT FNSTCW absence probe observes its unchanged pushedzero and restores BX...OK
+438/507 escape.test.8088 ESC and WAIT retain bounded prefix continuation and native caller status ABI...OK
+439/507 escape.test.8088 WAIT accepts enabled real PIC interrupt saves WAIT IP and IRET reenters without retiring WAIT...OK
+440/507 escape.test.STI MOVSS POPSS WAIT admits pending PIC after first wait test and IRET reenters with no WAIT retire...OK
+441/507 cpu.test.real CPU core executes register immediates exchanges flags and halt...OK
+442/507 cpu.test.instruction fetch wraps IP independently of physical address wrap...OK
+443/507 cpu.test.original 8088 segmented word helper wraps offset and preserves input words...OK
+444/507 cpu.test.word transfer physical wrap and RAM-hole boundary dispatch each byte...OK
+445/507 cpu.test.prefix streams yield without invented length faults and last override wins...OK
+446/507 cpu.test.coherent self modification followed by jump is visible to instruction fetch...OK
+447/507 cpu.test.reset ROM far jump reaches guest code and repeated short loop stays bounded...OK
+448/507 cpu.test.STI shadow covers following instruction and unsupported instruction latches...OK
+449/507 cpu.test.word high-byte load failure restores input offset and returns failure...OK
+450/507 cpu.test.supplied boot sector computes real root and data LBAs and requests the first disk read...OK
+451/507 cpu.test.pinned hardware-generated original 8088 cases match registers and complete RAM...OK
+452/507 cpu.test.full RAM oracle comparator detects first middle last mismatches and bounds...OK
+453/507 cpu.test.all original Jcc conditions and 60 aliases match every relevant flag combination...OK
+454/507 cpu.test.LOOP family wraps counters preserves flags and applies signed prefixed displacement...OK
+455/507 cpu.test.divide-error RAM masks admit only undefined saved flags and detect control or adjacent corruption...OK
+456/507 cpu.test.word transfer continuation preserves byte publications and bus rules through every low byte and region seam...OK
+457/507 cpu.test.word continuation seam failure keeps low-byte acknowledgment and restores offset...OK
+458/507 cpu.test.owned ModRM continuation wraps displacement independently at IP physical and frame seams...OK
+459/507 cpu.test.owned operand sites revalidate after oneframe data eviction and dirty selfmodification...OK
+460/507 cpu.test.owned decoder receives no RAM span from PC hole opcode before CGA boundary...OK
+461/507 memory.test.20-bit assembly translation handles aliases carry wrap and seeded pairs...OK
+462/507 memory.test.20-bit translation preserves all native flags at nibble and offset carries...OK
+463/507 memory.test.cache cold initialization validates capacity and clears full page map...OK
+464/507 memory.test.every physical page and both page edges use only the one MiB guest arena...OK
+465/507 memory.test.segment aliases share one dirty frame and flush preserves neighboring bytes...OK
+466/507 memory.test.dirty eviction and seeded random accesses match an independent RAM oracle...OK
+467/507 memory.test.pinned frames survive replacement and pin exhaustion is bounded without DMA...OK
+468/507 memory.test.nested pins reject overflow and flushing keeps a pinned pointer valid...OK
+469/507 memory.test.PC bus protects ROM and holes while CGA and conventional RAM stay coherent...OK
+470/507 memory.test.uninitialized access bad mode and physical overflow never issue DMA...OK
+471/507 memory.test.partial dirty writeback failure retains the authoritative frame for retry...OK
+472/507 memory.test.partial load failure never publishes overwritten victim and retry reloads backing...OK
+473/507 memory.test.warm read has no DMA and preserves host decimal and interrupt state...OK
+474/507 memory.test.shared cache probe evicts across REC seam and preserves untouched partial pages...OK
+475/507 memory.test.memory routines write only owned host frames metadata scratch and REU registers...OK
+476/507 memory.test.CPU-owned CLD translation independently covers every segment without widening public ABI...OK
+477/507 memory.test.public byte operands retain decimal-safe read and write for every native status...OK
+478/507 dual_floppy.test.independent actual A and B reads writes and verify preserve other full image...OK
+479/507 dual_floppy.test.readonly failures and empty drives distinguish installed geometry from media presence...OK
+480/507 dual_floppy.test.three arena rotation never stages mounted A or B and stale capability cannot publish...OK
+481/507 dual_floppy.test.incoming incomplete geometry IO and cancel failures leave old media authoritative...OK
+482/507 dual_floppy.test.dirty discard saved clean pairs and old generation acknowledgements fail closed...OK
+483/507 dual_floppy.test.guard busy capacity and generation exhaustion prevent unsafe state reuse...OK
+484/507 dual_floppy.test.failed partial write is conservatively dirty and preserves other drive...OK
+485/507 dual_floppy.test.native flags and descriptors survive alternating A B requests for every host P...OK
+486/507 dual_floppy.test.stale stage after guest mutation cannot publish even with explicit discard...OK
+487/507 dual_floppy.test.mount capability echoed length base and latched readonly policy are enforced...OK
+488/507 dual_floppy.test.all DISK startup header bytes fail before DMA and replacement errors preserve both media...OK
+489/507 dual_floppy.test.independent reviewer B multi-sector writes preserve complete readonly A and bind B clean generations...OK
+490/507 dual_floppy.test.independent reviewer failed B export preserves full A and only dirties B...OK
+491/507 dual_floppy.test.independent reviewer native control preserves all host P and crosses token byte carry...OK
+492/507 reu.test.actual DMA assembly roundtrips unaligned buffers at multiple sizes and far banks...OK
+493/507 reu.test.DMA assembly preserves decimal and interrupt state while returning carry...OK
+494/507 reu.test.DMA assembly rejects unsafe host and cross-bank ranges before issuing commands...OK
+495/507 reu.test.DMA exact bank end and exact safe host end are valid...OK
+496/507 reu.test.REU model postconditions include address increments count one and clear-on-read status...OK
+497/507 reu.test.REU model autoload restores addresses and count...OK
+498/507 reu.test.REU model zero hardware count means 65536 with fixed host address...OK
+499/507 reu.test.expanded REU REC counter wraps within 512 KiB without carrying upper bank latch...OK
+500/507 reu.test.unmodeled REU compare deferred trigger and interrupts fail explicitly...OK
+501/507 reu.test.C64 bus hides RAM under each ROM and routes writes to underlying RAM...OK
+502/507 reu.test.fixed REU address fills host buffer without incrementing REU pointer...OK
+503/507 reu.test.unmodeled REU interrupt request is rejected...OK
+504/507 reu.test.shared integrity probe runs the actual assembly and checks 4096 restored bytes...OK
+505/507 reu.test.unimplemented CIA or VIC registers cannot silently act as RAM...OK
+506/507 reu.test.4 8 and 16 MiB capacity models reach their last bank with actual DMA assembly...OK
+507/507 reu.test.hardware envelope helper backs up and restores both sides of REC seam exactly...OK
+All 507 tests passed.

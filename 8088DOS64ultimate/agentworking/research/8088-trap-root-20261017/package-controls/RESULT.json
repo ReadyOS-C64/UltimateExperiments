@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "groups": [
+    {
+      "case": "paired",
+      "passed": true,
+      "exit": 0,
+      "no_rejected_outputs": false
+    },
+    {
+      "case": "missing_payload",
+      "passed": true,
+      "exit": 2,
+      "no_rejected_outputs": true
+    },
+    {
+      "case": "short_payload",
+      "passed": true,
+      "exit": 2,
+      "no_rejected_outputs": true
+    },
+    {
+      "case": "oversized_payload",
+      "passed": true,
+      "exit": 2,
+      "no_rejected_outputs": true
+    },
+    {
+      "case": "vector_page_target",
+      "passed": true,
+      "exit": 2,
+      "no_rejected_outputs": true
+    },
+    {
+      "case": "memory_exact",
+      "passed": true
+    },
+    {
+      "case": "changed_trap_source",
+      "passed": true,
+      "refused": [
+        "CPU trap exact linked source required"
+      ]
+    },
+    {
+      "case": "changed_zero_tail",
+      "passed": true,
+      "refused": [
+        "PRG saver_source_gap_zero is not complete zero initialization"
+      ]
+    },
+    {
+      "case": "memory_unpaired",
+      "passed": true,
+      "refused": [
+        "CPU trap exact linked source required"
+      ]
+    }
+  ],
+  "target_sha256": "a25e171c80e37a9ee54e9b6eb8a027b8c25f52eb95cd60361573452b2ab52e07"
+}

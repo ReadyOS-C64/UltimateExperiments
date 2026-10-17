@@ -1,0 +1,70 @@
+{
+  "scope": "read-only source review of mutable Root cohort, no independent native execution or wholecohortseal",
+  "source_root": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017",
+  "files": {
+    "src/trap.s": {
+      "sha256": "4a25b7bb3b9307bb4e64c400338a5d0e868276b94574930135e13c6f6efbee7b",
+      "bytes": 3054
+    },
+    "src/cpu.s": {
+      "sha256": "4ebe70079083cc0edbf2fdd83d0ff1d38b8b0a96f182c460276ef19b05cb3540",
+      "bytes": 31200
+    },
+    "src/stack.s": {
+      "sha256": "56847de060a282dde029ab1621e66ebd84a4801b12cb70449aaf5dc6c83563a9",
+      "bytes": 6638
+    },
+    "src/strings.s": {
+      "sha256": "330dec76b648f014fe4213ddc1b641d69bac0e71e4eb7bf60adc78dc2cbee053",
+      "bytes": 6147
+    },
+    "src/hd_extension_load.s": {
+      "sha256": "1fe5a51177a7dfcd216ce9e9207d5ba62b4f55f7eed76ce6b93717ea6d1e6ce0",
+      "bytes": 1340
+    },
+    "src/control.s": {
+      "sha256": "2f0dfee11bf3ae8bc96f6c3da0b9b9c29bf8e212e50418f753469c67efbe2af5",
+      "bytes": 5731
+    },
+    "src/virtual_irq.s": {
+      "sha256": "03376202d0e3218e534880aaf91ddac11ded1e9260c6b76ade3d3c2652175c37",
+      "bytes": 6791
+    },
+    "src/native_timer.s": {
+      "sha256": "34b5a5b8f6aef19ead3d05a6dce212d4d1d7e0603386e2adfdedea9fffbab50e",
+      "bytes": 2047
+    },
+    "src/native_runtime.s": {
+      "sha256": "e3342f0865ebddffd3620f844589165b7361e934f04d155a02113d33bfa25242",
+      "bytes": 15687
+    },
+    "build_support/overlay_package.py": {
+      "sha256": "55aa19536f08ed8c65562e68d795c43faddd6e60d6c7193b8568bf3070abb0a2",
+      "bytes": 19639
+    },
+    "build_support/verify_memory.py": {
+      "sha256": "7c8369253a1a2bc06ef3aae9b1294f098840225cc4d5272d57a7e1e1c87a546c",
+      "bytes": 34718
+    },
+    "cfg/dos64-runtime-trap.cfg": {
+      "sha256": "aa241131616f9d601c710dc0a5ba18ff4f7a8c0aa14dbea4ddd8f38d2854f0f5",
+      "bytes": 4529
+    },
+    "cfg/dos64-unit-runtime-trap.cfg": {
+      "sha256": "f74d02abe478eb776d51e16de9640f527b8e26c895bb89e5ba5259727cd2cb56",
+      "bytes": 4667
+    },
+    "Makefile": {
+      "sha256": "73e17365d0d57dd741f6ea02f7e69afe3af0be7337321abb37d2cd0a171b6ce5",
+      "bytes": 27522
+    },
+    "tests/host/machine.zig": {
+      "sha256": "d89277168166bfac2b3572f4aa2fde271996d4ec77d4b0f1ae6f139c3ab59767",
+      "bytes": 8245
+    },
+    "tests/host/trap.zig": {
+      "sha256": "0a54d647c55a162e756dd11ccff7537167db643afbee0e59ce0f0c2c515021ee",
+      "bytes": 10604
+    }
+  }
+}

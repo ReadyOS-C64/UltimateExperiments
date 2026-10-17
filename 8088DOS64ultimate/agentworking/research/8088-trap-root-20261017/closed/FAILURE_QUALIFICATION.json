@@ -1,0 +1,10 @@
+{
+  "status": "FAILED_TEST_EXPECTATION_UNSUPPORTED_OPCODE_0F",
+  "inputs_unchanged": 25102,
+  "focused_pass": 17,
+  "failed": 1,
+  "full_suite_not_started_by_this_driver": true,
+  "native_changed": false,
+  "explanation": "Added exploratory POP CS0F case is outside implemented decoder; it fails first step with terminal unsupported, while existing MOV CS is supported. Preserve this as an explicit CPU compatibility backlog; do not infer opcode0F coverage from5701SST cases (upstream omits0F). Final required TF profile regression tests supported MOV CS separately.",
+  "physical": false
+}

@@ -1,0 +1,19 @@
+1/18 trap.test.type1 follows completed NOP and preserves exact normalized frame without extra retirement...OK
+2/18 trap.test.TF zero has no type1 and HLT stays halted...OK
+3/18 trap.test.POPF enable waits through one following instruction and disable still traps once...OK
+4/18 trap.test.IRET newly restored TF traces following opcode not IRET itself...OK
+5/18 trap.test.single step enters software INT3 vector then nests type1 before handler opcode...OK
+6/18 trap.test.HLT under TF wakes into type1 with post HLT return IP...OK
+7/18 trap.test.original8088 MOV segment suppresses own trap including non SS while STI does not...OK
+8/18 trap.test.original8088 POP segment suppresses own type1 with following opcode single stepped...OK
+9/18 trap.test.prefix slice yield retains TF without an intermediate trap...OK
+10/18 trap.test.REP type1 interrupts after one MOVSB including final CX zero and follows original restart loss...OK
+11/18 trap.test.WAIT pending traces its test cycle without completing WAIT...OK
+12/18 trap.test.failed type1 IVT fetch is terminal and retains already completed IP...OK
+13/18 trap.test.native cold copy installs trap helper exactly before cache and preserves vector page...OK
+14/18 trap.test.INTR wins type1 priority and trap precedes ISR opcode including freshly enabled TF...OK
+15/18 trap.test.type1 entry failure after IVT and partial stack keeps post instruction IP and never retries...OK
+16/18 trap.test.type1 boundary preserves all256 native caller status combinations...OK
+17/18 trap.test.REP accepted INTR precedes type1 after exactly one completed element...OK
+18/18 trap.test.original MOV CS suppresses own trace and fetches from the new code segment...OK
+All 18 tests passed.

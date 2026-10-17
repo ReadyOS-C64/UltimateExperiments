@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "groups": [
+    "first0_matches_public_default_runtime_and_UNIT",
+    "same_tree0to1_changes_runtime",
+    "selected_cfg_dependencies_present",
+    "cfg_touch_relinks_exact_products",
+    "same_tree1to0_reproduces_all6products",
+    "all_source_inputs_unchanged"
+  ],
+  "source_inputs": 815,
+  "zero": {
+    "dos64.prg": {
+      "sha256": "666089b57e5611a67b5d87ae84880256ef5dafb121b152e1de81b9ec1cc29064",
+      "bytes": 47105
+    },
+    "dos64.labels": {
+      "sha256": "405be05d33552da740fbb47ed846895b80f62c3e9cb0e9603a17b0e829b2481c",
+      "bytes": 73389
+    },
+    "dos64.map": {
+      "sha256": "f162eddc7a5ebdcc041495a12f620c56020846c668e672ccca98cde0460c6d27",
+      "bytes": 89952
+    },
+    "dos64-tests.prg": {
+      "sha256": "b9e9cc9e7d87176848ccf8bae49dfe4f4ff0125b3aad5a1cb874341436b78df6",
+      "bytes": 47105
+    },
+    "dos64-tests.labels": {
+      "sha256": "d34fe12a558198246bfb0981e23216d9d2b50baa80dab3320b0cd0436eb2c723",
+      "bytes": 75900
+    },
+    "dos64-tests.map": {
+      "sha256": "b3172b829b23f4b5df29e8decd3bb0d6b434e17ff36b704b28971187cda990de",
+      "bytes": 93013
+    }
+  },
+  "one": {
+    "dos64.prg": {
+      "sha256": "a25e171c80e37a9ee54e9b6eb8a027b8c25f52eb95cd60361573452b2ab52e07",
+      "bytes": 47105
+    },
+    "dos64.labels": {
+      "sha256": "9ba280962d3e2b501d44ede53ec4a813107ac06f30d739c217720185198f952a",
+      "bytes": 74083
+    },
+    "dos64.map": {
+      "sha256": "6d746229e44ee2e50f7777678be554c07cbc80bd594e9327a121cdba4dbb25ce",
+      "bytes": 92727
+    },
+    "dos64-tests.prg": {
+      "sha256": "a1d370121e4af7b3aefdd6967d0771252a2fe25d0ffc7432ed30af4a32144495",
+      "bytes": 47105
+    },
+    "dos64-tests.labels": {
+      "sha256": "a3bfe68d576db89d0ea1309e2dd23f72958cc13e021bbc22dde71f3236dfce43",
+      "bytes": 76594
+    },
+    "dos64-tests.map": {
+      "sha256": "549b4be92e35fa90d91aed0a61140362518772378c34ad74dd4179f130a2d0c0",
+      "bytes": 95790
+    }
+  },
+  "last_zero": {
+    "dos64.prg": {
+      "sha256": "666089b57e5611a67b5d87ae84880256ef5dafb121b152e1de81b9ec1cc29064",
+      "bytes": 47105
+    },
+    "dos64.labels": {
+      "sha256": "405be05d33552da740fbb47ed846895b80f62c3e9cb0e9603a17b0e829b2481c",
+      "bytes": 73389
+    },
+    "dos64.map": {
+      "sha256": "f162eddc7a5ebdcc041495a12f620c56020846c668e672ccca98cde0460c6d27",
+      "bytes": 89952
+    },
+    "dos64-tests.prg": {
+      "sha256": "b9e9cc9e7d87176848ccf8bae49dfe4f4ff0125b3aad5a1cb874341436b78df6",
+      "bytes": 47105
+    },
+    "dos64-tests.labels": {
+      "sha256": "d34fe12a558198246bfb0981e23216d9d2b50baa80dab3320b0cd0436eb2c723",
+      "bytes": 75900
+    },
+    "dos64-tests.map": {
+      "sha256": "b3172b829b23f4b5df29e8decd3bb0d6b434e17ff36b704b28971187cda990de",
+      "bytes": 93013
+    }
+  }
+}

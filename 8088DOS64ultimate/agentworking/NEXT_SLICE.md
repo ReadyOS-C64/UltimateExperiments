@@ -1,3 +1,13 @@
+# Current V1 checkpoint — private DEBUG trap correctness component, 2026-10-17
+
+Root actualsource-bound TF/type1 assembly profile passes18focused plus507base Zig/Peddle groups (the latter includes5701hardwarecorpuscases). Fresh native/host builds preserve25,102 source/copy/tool/SDK records and138products before/after; resourcecount includes installedSDKs. Nativea25e171c/UNITa1d37012 are47,105B. Ninepackage controls and6same-tree profile/default controls pass on identical nativebytes; default666/b9 remainexact. Root132parentpins/61archivepins exact, archivee50a048e. [Evidence](evidence/8088-trap-root-20261017.json), [component handoff](research/8088-trap-root-20261017/HANDOFF.md).
+
+This is private required DEBUG correctness, not speedwork or public/V1acceptance.222B FE00..FEDD helper uses oldAE00 startupgap and existingverified15-page HDBcopy; no extraREU/cache loss, FF00..FFFF untouched. Preserve all first failures, including same-secondMake profile reuse and fullTF testfixture assumptions; correctedfixtures execute real guesttrap+IRET, without maskingTF. 0F POPCS remains explicitunsupported/prefetch-sensitive compatibilitybacklog; corpusdoesnotcoverit orTF.
+
+Next Root: compose optional source-only runtime-media/FORMAT profile and newmatched cold/installer cohort, then execute genuineDOS DEBUG T/INT3/Finish/freshlaunch before publicpromotion. Keep c7/806e Turbo/media evidence scoped. Memoryworker's CONFIGbuilder/candidate integration and compiledworker's finalSETUP all-file diagnostics closure continue; CIA closes offline owned20M reader, solehardwareowner/no newLAN. AllfinalV1gatesremainopen, performancepostV1, localcommits/no push.
+
+Earlier snapshots below are historical.
+
 # Current V1 checkpoint — reviewed combined CONFIG usability fixes, 2026-10-17
 
 Root checked all1364 sealed combined records and reviewed actual conflict merges, permanent terminal fetch/CRC/fallback and full127-byte encoded paths. Private5c91bb74 CONFIG combines relocation and file errors within measured bounds. Author21 actual groups/265inputs+copies/3products pass, including full moved realSETUP SYS/CIA and4 terminal fault/fallback cases. Generated9files equal prior closed genuineDOS80 inputs. Root does not repeat the long unchanged consumer. [Evidence](evidence/v1-config-relocation-diagnostics-root-review-20261017.json), archive dc3a5fcf/30pins.

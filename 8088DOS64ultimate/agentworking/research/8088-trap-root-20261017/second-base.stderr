@@ -1,0 +1,83 @@
+test
++- run test 504 pass, 3 fail (507 total)
+error: 'bios.test.INT1A RTC probe follows original XT AH decrement and restores caller flags' failed:
+       SCROLLFAULT accepted_failures=40 cases=60
+       native CGA full snapshot CPU cycles modes4/5/6={ 6276887, 6269433, 6154633 }, budget15000000; excludes DMA stalls and real elapsed
+       native input+8GFX lines+16CPU calls cycles=260892/3000000
+       CGA 600 scanlines max native cycles modes4/5/6={ 34016, 33985, 33412 }; excludes REU stalls and physical elapsed
+       IRQ_METRICS pulse=177 disabled=193 select0=288 cold_frame1=4493 CPUcycles
+       IRQ_FAILURE_STAGE after=0 carry=1 result=2 status=3 sp=1000 cycles=1230
+       IRQ_FAILURE_STAGE after=1 carry=1 result=2 status=3 sp=ffe cycles=2878
+       IRQ_FAILURE_STAGE after=2 carry=0 result=1 status=0 sp=ffa cycles=4493
+       IRQ_FAILURE_STAGE after=3 carry=0 result=1 status=0 sp=ffa cycles=4493
+       IRQ_FAILURE_STAGE after=4 carry=0 result=1 status=0 sp=ffa cycles=4493
+       PIT_SAMPLE delta=0 cycles=219
+       PIT_SAMPLE delta=1 cycles=494
+       PIT_SAMPLE delta=54116 cycles=11411
+       PIT_SAMPLE delta=985248 cycles=11909
+       PIT_SAMPLE delta=134213632 cycles=12561
+       PIT_MAX_SAMPLE_CPU_CYCLES 12561; ALL_OBSERVED 13172
+       INTEGRATED_TIMER label=same-raw-noedge-IFset rawdelta=0 warmNOP=721 callback=866 nativeStep=1598 CPUcycles
+       INTEGRATED_TIMER label=one-phi2-noedge-IFset rawdelta=1 warmNOP=721 callback=1141 nativeStep=1873 CPUcycles
+       INTEGRATED_TIMER label=100-phi2-noedge-IFset rawdelta=100 warmNOP=721 callback=1555 nativeStep=2287 CPUcycles
+       INTEGRATED_TIMER label=many-bits-noedge-IFset rawdelta=32767 warmNOP=721 callback=2931 nativeStep=3663 CPUcycles
+       INTEGRATED_TIMER label=one-before-edge-IFset rawdelta=54115 warmNOP=721 callback=2371 nativeStep=3103 CPUcycles
+       INTEGRATED_TIMER label=due-edge-IFclear rawdelta=54116 warmNOP=721 callback=11976 nativeStep=12708 CPUcycles
+       INTEGRATED_TIMER label=due-edge-frame rawdelta=54116 warmNOP=721 callback=16363 nativeStep=20438 CPUcycles
+       Overlay manager native cycles: bootstrap=119652, file load=1326, text load=1326, same-image hit=77; excludes DMA stalls and physical elapsed
+       Text renderer 600 rows: max native cycles modes 0..3={ 51717, 51726, 95727, 95769 }; excludes REU stalls/physical elapsed
+       Warm actual-assembly fetch 127 bytes: fast=19558 slow=45974 host CPU cycles (functional DMA; no physical throughput claim)
+       Verified cold 261-instruction register/branch workload: fast=262967 slow=364267 host CPU cycles (no physical throughput claim)
+       Verified warm 261-instruction register/branch workload: fast=262382 slow=363682 host CPU cycles (no physical throughput claim)
+       Genuine DOS IO.SYS handoff 70:0: 392 instructions, 10786786 native cycles, 51 raw sectors (44 IO.SYS rounded sectors)
+       expected 400, found 2
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x100fc33e3 in expectEqualInner__anon_36880 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x1010c269b in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/trap_fixture.zig:15:91: 0x1010c270b in enterAndReturn (test)
+        const r=try f.call("dos64_cpu_step",200000);try std.testing.expectEqual(@as(u8,0),r.p&1);try std.testing.expectEqual(ip,f.word(g+24));try std.testing.expectEqual(cs,f.word(g+18));try std.testing.expectEqual(sp,f.word(g+8));try std.testing.expectEqual((flags&0x0fd5)|0xf002,f.word(g+26));try std.testing.expectEqual(count+%1,f.word(try f.symbol("dos64_cpu_instructions")));
+                                                                                                 ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/bios.zig:236:5: 0x101136213 in test.INT1A RTC probe follows original XT AH decrement and restores caller flags (test)
+           try trace.enterAndReturn(&f);
+           ^
+error: 'bios.test.INT16 peek patches original CMP TF IF return flags and leaves the key queued' failed:
+       expected 384, found 2
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x100fc33e3 in expectEqualInner__anon_36880 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x1010c269b in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/trap_fixture.zig:15:91: 0x1010c270b in enterAndReturn (test)
+        const r=try f.call("dos64_cpu_step",200000);try std.testing.expectEqual(@as(u8,0),r.p&1);try std.testing.expectEqual(ip,f.word(g+24));try std.testing.expectEqual(cs,f.word(g+18));try std.testing.expectEqual(sp,f.word(g+8));try std.testing.expectEqual((flags&0x0fd5)|0xf002,f.word(g+26));try std.testing.expectEqual(count+%1,f.word(try f.symbol("dos64_cpu_instructions")));
+                                                                                                 ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/bios.zig:294:5: 0x101133fb7 in test.INT16 peek patches original CMP TF IF return flags and leaves the key queued (test)
+           try trace.enterAndReturn(&f);
+           ^
+error: 'bios.test.ordinary INT11 and INT12 ROM handlers query mutable dirty BDA and preserve DS saved flags and stack' failed:
+       expected 288, found 2
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:118:17: 0x100fc33e3 in expectEqualInner__anon_36880 (test)
+                       return error.TestExpectedEqual;
+                       ^
+       /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib/std/testing.zig:83:5: 0x1010c269b in expectEqual (test)
+           return expectEqualInner(T, expected, actual);
+           ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/trap_fixture.zig:15:91: 0x1010c270b in enterAndReturn (test)
+        const r=try f.call("dos64_cpu_step",200000);try std.testing.expectEqual(@as(u8,0),r.p&1);try std.testing.expectEqual(ip,f.word(g+24));try std.testing.expectEqual(cs,f.word(g+18));try std.testing.expectEqual(sp,f.word(g+8));try std.testing.expectEqual((flags&0x0fd5)|0xf002,f.word(g+26));try std.testing.expectEqual(count+%1,f.word(try f.symbol("dos64_cpu_instructions")));
+                                                                                                 ^
+       /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/tests/host/bios.zig:491:9: 0x10112d8d7 in test.ordinary INT11 and INT12 ROM handlers query mutable dirty BDA and preserve DS saved flags and stack (test)
+               try trace.enterAndReturn(&f);
+               ^
+failed command: ./.zig-cache/o/2039fcc9715179a7b0ea66214abcdde0/test --cache-dir=./.zig-cache --seed=0x39a0869a --listen=-
+
+Build Summary: 2/4 steps succeeded (1 failed); 504/507 tests passed (3 failed)
+test transitive failure
++- run test 504 pass, 3 fail (507 total)
+   +- compile test Debug native success 3s MaxRSS:544M
+      +- options cached
+
+error: the following build command failed with exit code 1:
+.zig-cache/o/8a8015b249bcebf7b10bb68646761b9d/build /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig /Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/lib /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project .zig-cache /Users/karlprosserpp/.cache/zig --seed 0x39a0869a -Z85d9c8fe5faec22f test --summary all

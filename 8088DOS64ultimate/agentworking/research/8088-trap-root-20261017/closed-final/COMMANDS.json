@@ -1,0 +1,52 @@
+[
+  {
+    "argv": [
+      "make",
+      "-j4",
+      "build",
+      "hardware-helpers",
+      "range-probe",
+      "DOS64_TRAP1=1",
+      "DOS64_ZIG=/Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project",
+    "exit": 0,
+    "name": "native-build",
+    "seconds": 0.4435143749999999
+  },
+  {
+    "argv": [
+      "/Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig",
+      "build",
+      "base-full-compile",
+      "cpu-trap-compile",
+      "-Dcpu-corpus=true",
+      "--summary",
+      "all",
+      "--cache-dir",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/closed-final/zig-cache"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project",
+    "exit": 0,
+    "name": "zig-compile",
+    "seconds": 14.931445
+  },
+  {
+    "argv": [
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/zig-out/bin/cpu-trap-tests"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project",
+    "exit": 0,
+    "name": "trap18",
+    "seconds": 2.529723959000002
+  },
+  {
+    "argv": [
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/zig-out/bin/base-full-tests"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project",
+    "exit": 0,
+    "name": "base507-full5701",
+    "seconds": 120.98576116699999
+  }
+]

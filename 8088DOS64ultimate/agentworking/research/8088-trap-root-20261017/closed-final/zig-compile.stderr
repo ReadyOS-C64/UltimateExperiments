@@ -1,0 +1,9 @@
+Build Summary: 7/7 steps succeeded
+base-full-compile success
++- install generated to bin/base-full-tests success
+   +- compile test Debug native success 10s MaxRSS:568M
+      +- options success
+cpu-trap-compile success
++- install generated to bin/cpu-trap-tests success
+   +- compile test Debug native success 9s MaxRSS:299M
+

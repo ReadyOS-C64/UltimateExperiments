@@ -1,0 +1,78 @@
+{
+  "UNIT": {
+    "bytes": 47105,
+    "sha256": "a1d370121e4af7b3aefdd6967d0771252a2fe25d0ffc7432ed30af4a32144495"
+  },
+  "all_inputs_copies_before_after_exact": true,
+  "all_products_before_after_exact": true,
+  "commands": [
+    {
+      "argv": [
+        "make",
+        "-j4",
+        "build",
+        "hardware-helpers",
+        "range-probe",
+        "DOS64_TRAP1=1",
+        "DOS64_ZIG=/Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project",
+      "exit": 0,
+      "name": "native-build",
+      "seconds": 0.4435143749999999
+    },
+    {
+      "argv": [
+        "/Users/karlprosserpp/dev/c64projects/zeropage-tooling/zig/0.16.0/zig",
+        "build",
+        "base-full-compile",
+        "cpu-trap-compile",
+        "-Dcpu-corpus=true",
+        "--summary",
+        "all",
+        "--cache-dir",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/closed-final/zig-cache"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project",
+      "exit": 0,
+      "name": "zig-compile",
+      "seconds": 14.931445
+    },
+    {
+      "argv": [
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/zig-out/bin/cpu-trap-tests"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project",
+      "exit": 0,
+      "name": "trap18",
+      "seconds": 2.529723959000002
+    },
+    {
+      "argv": [
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project/zig-out/bin/base-full-tests"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/project",
+      "exit": 0,
+      "name": "base507-full5701",
+      "seconds": 120.98576116699999
+    }
+  ],
+  "genuine_DEBUG_DOS_execution": false,
+  "groups": {
+    "actual_base": 507,
+    "actual_trap": 18,
+    "hardware_corpus_cases": 5701
+  },
+  "inputs": 25102,
+  "performance_claim": false,
+  "physical": false,
+  "platform": "macOS-15.7.7-arm64-arm-64bit",
+  "products": 138,
+  "public_native_changes": false,
+  "runtime": {
+    "bytes": 47105,
+    "sha256": "a25e171c80e37a9ee54e9b6eb8a027b8c25f52eb95cd60361573452b2ab52e07"
+  },
+  "source_only_runtime_media_builder": false,
+  "status": "PASSED_PRIVATE_OPTIONAL_8088_TF_COMPONENT"
+}
