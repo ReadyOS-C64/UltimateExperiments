@@ -1,0 +1,468 @@
+{
+  "verdict": "PASS_PUBLIC_SETUP_SOURCE_BUILD_MODEL_COMPOSITION",
+  "physical": false,
+  "public_source_files": 64,
+  "source_and_staged_inputs": 169,
+  "native": {
+    "sha256": "c45dea7b8ed81832167d4071618b7eafb404495e9f4ccb222d68446326f63fcf",
+    "bytes": 40542
+  },
+  "comparisons": {
+    "setup.prg": true,
+    "SETUP.FAT": true,
+    "SETUP.PUB": true,
+    "fat-overlay.bin": true,
+    "publish-overlay.bin": true,
+    "overlay_metadata.inc": true,
+    "label_addresses": true
+  },
+  "memory": {
+    "checks": {
+      "real_SYS_bootstrap": true,
+      "UI_at6000": true,
+      "UI_RO_contiguous": true,
+      "HIGH_serialized_after_UI": true,
+      "AUX_serialized_after_HIGH": true,
+      "AUX_RO_serialized": true,
+      "UI_BSS_after_serialized_code": true,
+      "UI_fits": true,
+      "FAT_fits": true,
+      "PUB_fits": true,
+      "STATE_fits": true,
+      "HIGH_state_fits": true,
+      "HIGH_code_vectors_disjoint": true,
+      "AUX_run_bounds": true
+    },
+    "segments": {
+      "LOADADDR": {
+        "start": 0,
+        "end": 1,
+        "bytes": 2
+      },
+      "ZEROPAGE": {
+        "start": 32,
+        "end": 63,
+        "bytes": 32
+      },
+      "BASIC": {
+        "start": 2049,
+        "end": 2060,
+        "bytes": 12
+      },
+      "BOOT": {
+        "start": 2061,
+        "end": 2099,
+        "bytes": 39
+      },
+      "DEVICECODE": {
+        "start": 2100,
+        "end": 3360,
+        "bytes": 1261
+      },
+      "FILECODE": {
+        "start": 3361,
+        "end": 4537,
+        "bytes": 1177
+      },
+      "CODE": {
+        "start": 4538,
+        "end": 24022,
+        "bytes": 19485
+      },
+      "RODATA": {
+        "start": 24023,
+        "end": 24434,
+        "bytes": 412
+      },
+      "DATA": {
+        "start": 24435,
+        "end": 24569,
+        "bytes": 135
+      },
+      "FAT_CODE": {
+        "start": 24576,
+        "end": 44950,
+        "bytes": 20375
+      },
+      "PUB_CODE": {
+        "start": 24576,
+        "end": 40706,
+        "bytes": 16131
+      },
+      "UI_CODE": {
+        "start": 24576,
+        "end": 38412,
+        "bytes": 13837
+      },
+      "UI_RO": {
+        "start": 38413,
+        "end": 39532,
+        "bytes": 1120
+      },
+      "PUB_RO": {
+        "start": 40707,
+        "end": 40897,
+        "bytes": 191
+      },
+      "PUBBSS": {
+        "start": 40898,
+        "end": 45054,
+        "bytes": 4157
+      },
+      "UIBSS": {
+        "start": 42589,
+        "end": 45051,
+        "bytes": 2463
+      },
+      "FAT_RO": {
+        "start": 44951,
+        "end": 45052,
+        "bytes": 102
+      },
+      "BSS": {
+        "start": 45056,
+        "end": 49051,
+        "bytes": 3996
+      },
+      "UCIBUFFER": {
+        "start": 49152,
+        "end": 50079,
+        "bytes": 928
+      },
+      "AUX_CODE": {
+        "start": 50080,
+        "end": 50863,
+        "bytes": 784
+      },
+      "DEVICESTATE": {
+        "start": 51200,
+        "end": 51266,
+        "bytes": 67
+      },
+      "CRC_TABLES": {
+        "start": 51456,
+        "end": 52479,
+        "bytes": 1024
+      },
+      "HIGHBSS": {
+        "start": 57344,
+        "end": 63198,
+        "bytes": 5855
+      },
+      "HIGH_CODE": {
+        "start": 63232,
+        "end": 65503,
+        "bytes": 2272
+      }
+    },
+    "free": {
+      "resident": 6,
+      "FAT": 3,
+      "UI_stage": 4,
+      "PUB": 1,
+      "HIGH_code": 26,
+      "HIGH_state": 33,
+      "AUX": 336
+    }
+  },
+  "qualified_cohorts": {
+    "native-setup-builder-source-closure-successor": {
+      "sha256": "01516a9753b3274975bf15851a55b4937a80fbea1c3e574c53a58d9b2d582f43",
+      "bytes": 363424,
+      "verified_pins": 2007
+    },
+    "native-installer-full-cleanup-successor-20261017": {
+      "sha256": "14341286d2b1dba7a02479c20bcce9744733eb9646bfc9e5d66253f5b5ee13ec",
+      "bytes": 78224,
+      "verified_pins": 537
+    },
+    "native-installer-pub-cleanup-successor": {
+      "sha256": "7d0399a1106e6acc2ee2c07b928c99400a84b5d0b2bf92069028f87fa3d0b627",
+      "bytes": 106933,
+      "verified_pins": 702
+    },
+    "native-installer-pub-cleanup-independent-review": {
+      "sha256": "0abde600a492f0771ace10d3497d33359387070fa2e1027cedbee56b5a79473e",
+      "bytes": 153692,
+      "verified_pins": 868
+    },
+    "native-emulator-ini-parser-20261017": {
+      "sha256": "4328093da7527d86eb7bb657a6af80867f142c143912a1d6aa4d0b75bef80942",
+      "bytes": 20116,
+      "verified_pins": 127
+    }
+  },
+  "public_source": {
+    "tools/setup/app/publish_worker.c": {
+      "sha256": "ce45f859d50c4a38b269746d75abcd71a840a8302e43c6912221c224a89734e5",
+      "bytes": 1772
+    },
+    "tools/setup/app/install_config.h": {
+      "sha256": "e3f41648267526f6dfb2df08db41896445ec4da4eab6198ef7d53cc8d7d40c7b",
+      "bytes": 1380
+    },
+    "tools/setup/app/source_load.c": {
+      "sha256": "0cefc82536b81675eda49a4835cfa2b2b465397f0f6d7bae429bcd4a0359a929",
+      "bytes": 9417
+    },
+    "tools/setup/app/directory_browser.c": {
+      "sha256": "20fd413f8ad602f0cfd457f0bf5ebc37f0b6c4d3beb6b6a25e273d62cf8eed7f",
+      "bytes": 6676
+    },
+    "tools/setup/app/bulk_reu.c": {
+      "sha256": "457a3864419a4a80fd399cceb97891bc7a4da727bb4cfb81260e49ca669cebfb",
+      "bytes": 8589
+    },
+    "tools/setup/app/selection_capsule.h": {
+      "sha256": "37bb16b45cd278324017b006213fdb4624351cc51043911448e567fdc8d247c5",
+      "bytes": 1965
+    },
+    "tools/setup/app/install_writer.c": {
+      "sha256": "4cdbe94ee027a71e7d4295bc903acedf964f8ae157a3b52b59f1bec532319f50",
+      "bytes": 6597
+    },
+    "tools/setup/app/setup_cooperate.h": {
+      "sha256": "8fb282e3f7720034f02eb84ac94ea59bc145b62a550a4ef7dc2e04a63b2e20a1",
+      "bytes": 1327
+    },
+    "tools/setup/app/raw_output.c": {
+      "sha256": "3503b667305f2d72ae72de8c0a950054ad05f63f401015f7c50c79791bfc2895",
+      "bytes": 11779
+    },
+    "tools/setup/app/coordinator_capture.c": {
+      "sha256": "6bb4bcb7c5f0d7e97ced1de03844eb9b0f90d5c67a405a2d9f1bb3778bbc42d9",
+      "bytes": 2107
+    },
+    "tools/setup/app/publish_worker_asm.s": {
+      "sha256": "f829e9c5dff9e7ca0ffe6889186dd35fb5898699a0bcbe0e4d9ee93812f5627f",
+      "bytes": 9247
+    },
+    "tools/setup/app/setup_overlay.c": {
+      "sha256": "c7e49c4b293133499557f7b8878c1963adbe29edb0c20e3e4d60864692314dfa",
+      "bytes": 9231
+    },
+    "tools/setup/app/setup_select.c": {
+      "sha256": "96255fe46d9a1c64fb00935a62d88665a6d5661b67a4bc53d974e8b8a310ea5b",
+      "bytes": 6583
+    },
+    "tools/setup/app/coordinator_internal.inc": {
+      "sha256": "f26ddfdf840af366eb456095aacac0095e2c0b2def3cbbc90823bd0779e2592e",
+      "bytes": 339
+    },
+    "tools/setup/app/compact.cfg": {
+      "sha256": "e6a25317a1a244384decc14ae4b6f52e7574e85a02be8f4b52e02c0625d560f6",
+      "bytes": 1573
+    },
+    "tools/setup/app/native_fat.c": {
+      "sha256": "6de4235377d61c3721b0d3457555389f866e783547f4800240264e6ff2958570",
+      "bytes": 21016
+    },
+    "tools/setup/app/fat_prepare.c": {
+      "sha256": "d231d630ba11b4691be2f13b36d679abf7b2938a44c5417bb56e918715acc7f6",
+      "bytes": 1203
+    },
+    "tools/setup/app/setup_ui_run.h": {
+      "sha256": "12638f37c6c6206eed01d34a0986716095270f0f7c9a56e28d810a6ccca0f7d7",
+      "bytes": 1093
+    },
+    "tools/setup/app/context_bindings.s": {
+      "sha256": "2e5994f1fd70ae2f3a126cb3536a68067596d3d17a0a023e27b7c81826b80856",
+      "bytes": 328
+    },
+    "tools/setup/app/overlay_bindings.s": {
+      "sha256": "5e0ece9a225043f4f01b6d73e43938077156344031ba5475d64e6cd38bba0643",
+      "bytes": 57
+    },
+    "tools/setup/app/startup.s": {
+      "sha256": "c077f9c54f72ae5ce49af8552fe560e0d296559e4a671cc2ef189db7c1a37358",
+      "bytes": 658
+    },
+    "tools/setup/app/setup_io.h": {
+      "sha256": "e6eca1ae72246a9c58efbd22a9dfed75da9daa4f0e09dda01ff1392cc28fb5ff",
+      "bytes": 1104
+    },
+    "tools/setup/app/publish_assets.h": {
+      "sha256": "4fe5b72918c94becaa1b6ae2e8b4566d8d3bfdb5535b735457e2bf094ef92f6b",
+      "bytes": 2336
+    },
+    "tools/setup/app/bulk_context.c": {
+      "sha256": "20bf20d6fdab983fe5e83c130c77575b91a591aa6b8c2595c2c67c61b13ac542",
+      "bytes": 6434
+    },
+    "tools/setup/app/pub_config_prefix.h": {
+      "sha256": "95642cc4603918c813ca1eee161c6172f38c6777a50efd7bf103b4e0fce641cc",
+      "bytes": 584
+    },
+    "tools/setup/app/publish_scratch.h": {
+      "sha256": "984c5e0e176cd61998e76304c0efff6c32f97d8470aa93f4e14a0cacdd09fd9c",
+      "bytes": 364
+    },
+    "tools/setup/app/pub_config.c": {
+      "sha256": "8eaf17651abe420a9c27f5e79c89306dc6df6aee788b4adb292fd048106c8820",
+      "bytes": 7563
+    },
+    "tools/setup/app/setup_cooperate.c": {
+      "sha256": "c1eaba29fd5c9cd10e68751a673a941f4953d7e30e03e2b0d620bac72b726da3",
+      "bytes": 3134
+    },
+    "tools/setup/app/selection_abi.c": {
+      "sha256": "8dc0fdfc9ecb9f5bf7082ce69a205ce91a13b96adfd5f99039da45426c5867d1",
+      "bytes": 166
+    },
+    "tools/setup/app/raw_output.h": {
+      "sha256": "b1018a16a86532f1cba3c0fb4c836c4bd73f1fdc8a5097e7a2ba7e48d32ca9f3",
+      "bytes": 2043
+    },
+    "tools/setup/app/bulk_reu.h": {
+      "sha256": "0f15640839327a053e93cbe0c58f563ea67ec9667712c6f99ebce9ae502aaf99",
+      "bytes": 2793
+    },
+    "tools/setup/app/pub_config_original.h": {
+      "sha256": "4be20cc4c6fd3e145bf5de3f0c76205c5b286caadcb584fdb4fdac887b26376f",
+      "bytes": 1092
+    },
+    "tools/setup/app/install_writer.h": {
+      "sha256": "c2bce8d14c2f1c085c26e490163fb28e8a3fa517c321a2d2b4f612006123b3a2",
+      "bytes": 2558
+    },
+    "tools/setup/app/selection_capsule.c": {
+      "sha256": "36f322d2fabc7da6c91dd44296e02e563f392d656d664727601237175d8cbf32",
+      "bytes": 5133
+    },
+    "tools/setup/app/pub_crc_adapter.c": {
+      "sha256": "a042b1dfcf504184fa67aabee73fb9ddf4858e53bbb0b97de21c17b229529891",
+      "bytes": 58
+    },
+    "tools/setup/app/directory_browser.h": {
+      "sha256": "19fbf7d6e91522e03d21913abc9d272b18ae15dab13b7779440cd6b073ba0088",
+      "bytes": 2655
+    },
+    "tools/setup/app/bindings.s": {
+      "sha256": "725bcc392522a20a16fdfd848e503a714f4f2fd40f5886c56b227fae6eb64d05",
+      "bytes": 2744
+    },
+    "tools/setup/app/publish_worker.h": {
+      "sha256": "b94eecd79627bb2bf518262f9677a81e7eb371af48edea857635626c3f17d89f",
+      "bytes": 544
+    },
+    "tools/setup/app/source_load.h": {
+      "sha256": "01ff6591c8dba67623a2dfe65d6baf13ce4190cc9b31c7019395cf71f8eaaa23",
+      "bytes": 1649
+    },
+    "tools/setup/app/install_config.c": {
+      "sha256": "5f85f9e61d35d22ea40b1e0c4fd48e55da0c0ff5b9c49777da84187d3ddfc786",
+      "bytes": 7987
+    },
+    "tools/setup/app/setup_select.h": {
+      "sha256": "74677ee9fb5fcf67cd49f7d27123e2190bf03e308fc176193f0a44d3e5eb97cd",
+      "bytes": 1311
+    },
+    "tools/setup/app/setup_overlay.h": {
+      "sha256": "4253b5bb85b1e04236f5c45b9d4ca1e2febce893f21e630a7b2e316dcb0e00bf",
+      "bytes": 3012
+    },
+    "tools/setup/app/fat_worker.s": {
+      "sha256": "37d5e50ddccc2d5aec9f1e1b29fc1b1c09d87a7b52cbd19482ea0940e0f698d3",
+      "bytes": 8745
+    },
+    "tools/setup/app/coordinator_capture.h": {
+      "sha256": "f119a62347fab43a031adbdca16f6e01c838bd831386d09fca4a56a7fdc87bcc",
+      "bytes": 553
+    },
+    "tools/setup/app/existing_c.inc": {
+      "sha256": "f09bedec1310f8d18e4b4d29ce5ee46f90f860497b1285e8dcd5fa0e043bef7f",
+      "bytes": 9490
+    },
+    "tools/setup/app/pub_codec.c": {
+      "sha256": "30e478e9ec6f39219d5ea65f929fb943353125750e0b8201c37927e3d828d5f3",
+      "bytes": 88
+    },
+    "tools/setup/app/coordinator.s": {
+      "sha256": "76222c59d4cf1648892b98e67742cbbbff21583de85e709d0f45ebcb02e1758d",
+      "bytes": 5736
+    },
+    "tools/setup/app/overlay_manifest.s": {
+      "sha256": "13dcf77cab991c338599bbd267cace2f58de3652433b37ba98b53a4f6ac7aa91",
+      "bytes": 300
+    },
+    "tools/setup/app/fat_prepare.h": {
+      "sha256": "6bf929b06427666ba3b05e735736ec2c08c11bb44c4089277a35eb9a7dcfc263",
+      "bytes": 1445
+    },
+    "tools/setup/app/native_fat.h": {
+      "sha256": "84056822e90025f75810f69c7222aeeb6db633b6e2d876e1d59684a6346c6e5e",
+      "bytes": 3691
+    },
+    "tools/setup/app/setup_ui_run.c": {
+      "sha256": "9e66ed8bd352d069c9078f6775bb5296dac2fc19749305ca7536997471dd01de",
+      "bytes": 2180
+    },
+    "tools/setup/app/files.s": {
+      "sha256": "5d375e5be23e77364e7bc10077d549916857e3ba8864f90623a79885181d90a9",
+      "bytes": 10058
+    },
+    "tools/setup/app/coordinator_internal.h": {
+      "sha256": "4fca7b59530e89a868a26aec289eb130faba6c210ba3ca09c94be1bc16423098",
+      "bytes": 1296
+    },
+    "tools/setup/app/lease_context.c": {
+      "sha256": "e0b8d25c3353e9d27052f64fd9fbbb92f6b4e7dd853b1e0746cd9d6e1b8c59d5",
+      "bytes": 165
+    },
+    "tools/setup/app/startup_glue.s": {
+      "sha256": "80bd9392676845d1ba89e1b1ccb067af4963fe7f956b1d58994a275db86e030b",
+      "bytes": 158
+    },
+    "tools/setup/app/uci.s": {
+      "sha256": "5d6ec2689642be175035cde618e85b9768dfdaa5e857f09b7a8786cbc234fd8f",
+      "bytes": 12707
+    },
+    "tools/setup/app/publish_scratch.c": {
+      "sha256": "99bb0a3a670a7d03203350a37c7697d9358a3f5e3b329dd28cb4cfd4fe36122a",
+      "bytes": 62
+    },
+    "tools/setup/app/publish_assets.c": {
+      "sha256": "3bdb74b962270b0bb60ac9760eedfbd1ecf238ac3008a0a4dd854be84c3140cf",
+      "bytes": 7285
+    },
+    "tools/setup/app/setup_copy.s": {
+      "sha256": "533e75576e969823f47eeb0bba462b3baceaf04cef23f0e17e2cbc082c5061ed",
+      "bytes": 1637
+    },
+    "tools/setup/app/bulk_context.h": {
+      "sha256": "89583293600dddb5405d9ce6fbfef3d7ba834bb343107488de5f7ea81527404e",
+      "bytes": 2852
+    },
+    "tools/setup/app/setup_dma.s": {
+      "sha256": "ad8dea074aa7f1ae2267560247d63741914ee22179a0d425b354e08b668cc42a",
+      "bytes": 620
+    },
+    "tools/setup/app/setup_io.c": {
+      "sha256": "43213e4266bb55414ef6a5b17af24edb81a4734b5232b8be8564f2f7b1a06334",
+      "bytes": 5287
+    },
+    "tools/setup/app/shared/reu.s": {
+      "sha256": "3bea123734d1e75417d1151531048d6731895ab80519bd6027f0e74de61db4ef",
+      "bytes": 3474
+    },
+    "build_support/setup_installer.py": {
+      "sha256": "250577babda23d68e59bed03fd2a56cf62265da886ce9d66951e8726488ee0bf",
+      "bytes": 17371
+    }
+  },
+  "model_execution": "Full ROOT4 integration cases and5 direct Zig groups; independent peer12 groups. Public build source-only reproduces qualifiedROOT bytes. No claim that the public build reran all long integrations.",
+  "pending": [
+    "physical SETUP/START/newmain qualification",
+    "full-session error UI",
+    "reconfiguration",
+    "INI reader/handoff/consumer",
+    "Save/Discard/Swap with C online",
+    "50\u201385% XT performance"
+  ],
+  "root_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-setup-public-root-promotion-20261017/MANIFEST.json",
+  "root_manifest_pin": {
+    "sha256": "78ccd37295c4bd14124d57bb03750d5c5e0af77405124c421d0cbaf8ea6a5520",
+    "bytes": 11512
+  },
+  "root_manifest_files": 70
+}

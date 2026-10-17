@@ -35,7 +35,7 @@ Actual target tests compare serialization/CRC against an independent host oracle
 
 ## Same-folder emulator options
 
-Accepted user direction, 2026-10-16; implementation pending. START's persistent installation home also locates emulator options. Native startup reads and parses them before DOS boots, then passes validated settings through REU. Preserve the validated home for later native file operations; do not discover or assume a current directory.
+Accepted user direction, 2026-10-16. START's persistent installation home also locates emulator options. Native startup will read and parse them before DOS boots, then pass validated settings through REU. Preserve the validated home for later native file operations; do not discover or assume a current directory. The isolated native parser foundation now passes 17 Zig/Peddle groups; file I/O, the startup overlay, settings handoff and consumer remain pending.
 
 Keep binary `DOS64.CFG` and its ABI1 reserved-zero rules intact. Plan a separate human-editable `DOS64.INI` for supported emulator options. Changing a display preference should not invalidate disk identities or require regenerating START. SETUP should expose the same settings. Candidate options include initial 40/80-column presentation and supported display preferences; exact names and behavior require implementation. Settings must not implicitly enable unqualified timing/compiled-code profiles or change the original 8088 compatibility target.
 
@@ -45,4 +45,6 @@ Public START has one byte of headroom below $5000. Prefer a native prelaunch par
 
 Publish a compact binary options record in explicitly allocated REU space, with magic, schema, length, checksum and current release/handoff binding. Invalidate readiness before work and publish last after successful parsing and closed files. The consumer validates values and launch binding, copies frequent settings into resident state, and consumes one-shot validity before arena reuse. Define address/defaults/ownership/lifetime from the combined memory map. This design reserves no range and changes neither D64R nor D64C ABI1. Releases requiring options need matching producer/consumer support and explicit compatibility rejection by older code.
 
-Acceptance requires actual native parser/consumer tests for defaults, supported values, malformed/oversize input, unsupported versions, stale/corrupt records, cancellation, arena guards and file closure; then cold START-to-DOS tests and physical Ultimate qualification. This documentation adds no INI parser, handoff implementation or runtime option consumer.
+The qualified private parser accepts `[emulator]`, optional `schema=1`, and `initial_columns=40|80` with default 80. It bounds files to 1,024 bytes, lines to 128 bytes and input chunks to 64 bytes; it checks complete values and rejects unknown or duplicate keys. This parser does not apply settings or prove successful file EOF/closure. Its production integration is still pending.
+
+Acceptance requires actual parser/consumer integration tests for defaults, supported values, malformed/oversize input, unsupported versions, stale/corrupt records, cancellation, arena guards and file closure; then cold START-to-DOS tests and physical Ultimate qualification. The existing public launcher does not yet read INI or consume a settings record.

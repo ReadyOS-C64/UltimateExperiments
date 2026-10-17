@@ -1,3 +1,9 @@
+# Next after public SETUP source build — 2026-10-17
+
+Do not re-propose public SETUP: source/build is live and byte-exact c45; independent cleanup review0abde600/all868pins passes. Finish portable opt-in actual-model test distribution, owned by memory agent. Root owns next matched native INI startup file reader/overlay/REU record/consumer with same-home edits each launch, then remaining installer error/reconfiguration/media UI. Parser foundation4328093/127 ROOTverified; it alone does not read or apply options.
+
+CIA owns concrete readonly4MiB snapshot package and sole hardware reservation; ROOT review required before new device calls. Compiled agent continues paired c6 performance successor with the same corrected2 timer-test references on baseline/candidate, preserving actual first failures and clock/IRQ/REP/coherence. Default public500 actualPASS; no need to repeat unchanged gates. No push.
+
 # Next after public main clock fix — 2026-10-17
 
 Main clock repair is nowpublicc6e43/01d9 andROOTpublic29unique/modelgeneratedSTARTconsumerqualified; do not propose itagain. FinishCIAindependentRAWcleanup7d0399 review, thenimport2frozenfilesinto01516publicbuilderfreshderivative, reproduceROOTc45/metadata/labeladdresses, promoteproductionSETUPsource/buildgraph andactualmodeltests/docs. Rootcleanup14341286/537pins actualall9casespass. Physicalnewmain/SETUP remainsunqualified anddevice reserved.

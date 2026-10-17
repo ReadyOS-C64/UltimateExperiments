@@ -43,3 +43,10 @@ start-template: start
 	$(DOS64_PYTHON) -B build_support/start_template_descriptor.py --prg build/start/START.PRG --labels build/start/START.labels --map build/start/START.map --out build/start/START.REL
 start-template-tests: start-template
 	$(DOS64_PYTHON) -B tests/tooling/test_start_template_descriptor.py -v
+
+# Standalone native SETUP build; main and START defaults are unchanged.
+.PHONY: setup-installer setup-installer-memory
+setup-installer:
+	$(DOS64_PYTHON) -B build_support/setup_installer.py
+setup-installer-memory: setup-installer
+	@echo "Memory checks and source/product closure: build/setup-installer/RESULT.json"

@@ -1,3 +1,11 @@
+# Public SETUP build promoted — 2026-10-17
+
+Public source/build graph now produces actual SETUP c45dea7b/40,542B, byte-exact to closed ROOT14341286 across PRG/FAT/PUB/raw phases/metadata/all symbol addresses. Builder pins169 original+staged/tool/reference inputs and checks them before publication. Root verifies builder01516/2007pins, ROOT537, RAWauthor702, independentpeer868 and INIparser127. No test-fact callback links into production. Full model flow: authenticSYS/UI/SRC5→FW C/B/deriveA→PW A/START/CFG, private31/knownclosed; ROOT4 integrations+5directZig, peer12 actual groups. Public optional model-test distribution is being prepared separately.
+
+Public main c6e43/01d9 now also passes actual default500/500. Two timer-test references use stable full continuation n_finish_cold after removal of debug-local @timer_sample; assembly unchanged. See native-main-clock-default-followup-20261017.json.
+
+INI foundation4328093/127pins ROOTverified:17 actual Zig groups/5208 native calls; initial_columns40|80/default80 and bounded strict parser. No public INI I/O/overlay/record/consumer yet. Latest user confirms same-home launcher/REU direction; integrate matched producer and consumer without reusing ABI1 reserved bytes. Hardware remains reserved; CIA prepares a concrete lower-roundtrip readonly4MiB snapshot purpose, no new device call yet. Complete error UI/reconfiguration/INI/SaveSwap/C-online/physical and50–85%XT goals remain active. Local commits only/no push.
+
 # Public native startup clock repaired — 2026-10-17
 
 Public runtime nowc6e43fce/labelsaf240127/unit01d97461;47105B and all segment ranges unchanged. Narrow native_runtime.s refreshes coherent elapsedtime immediatelybefore nativeimport/HDOPEN afterexpensivecoldwork, factoringtwoexisting256-attempt loops withsamefirstcause/IRQ/defer policy. Originalcea574 realgeneratedSTART failed HDOPEN onstale0/deadline1024→fresh1744; preserved44379 rejectedproof. Newmain reachesrealDOS usingunmodifiedgeneratedSTART/CFG/A/B/C: VER3.30, DIR A:/P36entries/free8192/1page and C:\DOS/P57/free282624/2pages inclGW-BASIC, returnsC>. Actual2NMIs/wholepayload/adoption/REU/files preservation pass. No physical acceptance.
