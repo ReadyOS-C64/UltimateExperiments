@@ -1,3 +1,9 @@
+# Immediate integration update — 2026-10-17
+
+Compact UCI/AUX source is CLOSED cf61e4be/328pins, not a proposed task. CIA integrates real FAT worker773 plus accepted SI leaf-first/cleanup into this profile and executes genuine-input2M/20M/existing-C/error cases. Memory independently reviews frozen compact limits/copying. PUB agent imports qualified real FW core and runs actual publication flow; ROOT extends resident/HIGH dispatcher to consume private FW/PW receipts, load PUB and finish only after START and finalCFG known-close verification. Probe768 must be replaced, never treated as worker proof. Reuse shared183-byte internal ledger with C0/B2/A4 pairs and private finalmask31.
+
+After actual full flow, promote runnable public SETUP/build/testgraph, then same-home native INI parser/launch-bound REU settings/consumer. Hardware remains reserved; no new call from local profile proof. No push.
+
 # Immediate integration — 2026-10-17
 
 RunStop27 successor895719a5 is qualified (17 peer groups, ROOT277pins+2 fresh groups). Next ROOT implements a defaultOFF SETUP-only compact UCI-buffer profile and verified extra runsegment; the complete FAT worker currently overflows412B, before SI cleanup. Preserve default byte-exact behavior, bounded request/reply capacities, all queues/drain/error checks, UI staging868B limit and all immutable-code/banking guards. Then connect the actual FAT worker C→sourceCLOSE/rearm→B→derivedA and PUB/raw asset transactions to the root dispatcher. Capture source and durable output facts in the trusted internal183-byte cross-phase ledger; no test injection or mutable observations may authorize publication. Publish and verify START before final DOS64.CFG (configuration-last). The source/state4 checkpoint is implemented; do not repeat that as the next proposed task.

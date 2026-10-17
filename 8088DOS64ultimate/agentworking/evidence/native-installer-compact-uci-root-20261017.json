@@ -1,0 +1,52 @@
+{
+  "verdict": "PASS_COMPACT_UCI_AND_VERIFIED_AUX_BOOTSTRAP_ONLY",
+  "native": "cc0934a0d6ec833562565313f0a7793ab1e15601716b133e225bea2c339bab24",
+  "labels": "313b61ab191d7b04b464d0e181c69b80a37b151df39f2e1f130f111b9c6fcc8f",
+  "bytes": 40459,
+  "source_inputs_unchanged": 159,
+  "actual_python_groups": 22,
+  "actual_direct_zig_groups": 5,
+  "default_undefined_exact": {
+    "setup.prg": {
+      "exact": true,
+      "sha256": "895719a52a1f13e6f0e0ad726c0968f142ed8450ec6400f222454b3aab2e4a45"
+    },
+    "setup.labels": {
+      "exact": true,
+      "sha256": "ee0a2e07f51b26a983568c9311d18cb70f11707700acd09b6faee7d73f3208cd"
+    },
+    "SETUP.FAT": {
+      "exact": true,
+      "sha256": "eeacbe733a4222f963e42e665c1b38f8643be271d0b2a2310e118c6706b5f70e"
+    },
+    "SETUP.PUB": {
+      "exact": true,
+      "sha256": "e71e214e1e519edb9c99227f50794d4c4b77a3a735c2c5d8cf4e633964140eb4"
+    },
+    "fat-overlay.bin": {
+      "exact": true,
+      "sha256": "2f42ec0d665eaef85e614e7c8d87bccc677bf4e2e79693dcf3e54fe6263ef3d1"
+    },
+    "publish-overlay.bin": {
+      "exact": true,
+      "sha256": "eb2e3abc084ecd3bcfb6a98a2eb6e443ed4ab6abeb001560e1f3420c5a9578e8"
+    }
+  },
+  "default_zero_exact": {
+    "setup.prg": "895719a52a1f13e6f0e0ad726c0968f142ed8450ec6400f222454b3aab2e4a45",
+    "setup.labels": "ee0a2e07f51b26a983568c9311d18cb70f11707700acd09b6faee7d73f3208cd",
+    "SETUP.FAT": "eeacbe733a4222f963e42e665c1b38f8643be271d0b2a2310e118c6706b5f70e",
+    "SETUP.PUB": "e71e214e1e519edb9c99227f50794d4c4b77a3a735c2c5d8cf4e633964140eb4",
+    "fat-overlay.bin": "2f42ec0d665eaef85e614e7c8d87bccc677bf4e2e79693dcf3e54fe6263ef3d1",
+    "publish-overlay.bin": "eb2e3abc084ecd3bcfb6a98a2eb6e443ed4ab6abeb001560e1f3420c5a9578e8"
+  },
+  "hardware": false,
+  "complete_installer": false,
+  "manifest": "agentworking/scratch/native-installer-compact-uci-20261017/MANIFEST.json",
+  "manifest_sha256": "cf61e4be45b53d6aed6009b4671f4e7f81bbea51fa114752a22912d10f0f8ac9",
+  "verified_manifest_pins": 328,
+  "portable_patch_sha256": "8f0e7c722f7080ac490055be4868d27e87b42bb83880f57cf19198565fdfd2f2",
+  "PUB_peer_manifest": "agentworking/scratch/native-installer-pub-binding-peer-review-20261017/MANIFEST.json",
+  "PUB_peer_manifest_sha256": "085052fd7577aba36e422a2bcf27af150732079802c07044d524b5cee365b392",
+  "PUB_peer_verified_pins": 756
+}

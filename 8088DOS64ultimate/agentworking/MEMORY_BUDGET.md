@@ -1,3 +1,7 @@
+## Compact SETUP UCI/AUX measured layout — 2026-10-17
+
+Private cc0934a0/40,459B: UCI C000..C39F928B (command160/data512/status256), AUX C3A0..C7FF1120B. Actual test AUX_CODE760+RO8=768; HIGH2205/free93 unchanged. UI_CODE13837/UI_RO1120; UIBSS A60A..AFA8/free87. STATE BF8D/free114; HIGHBSS F6DA/free37; resident5F5E/free161 (UCI-4/FILES+7 = +3), FATfree590/PUB1934 before worker/cleanup changes. Generic descriptor copier reuses existing contiguous ptr1/2/3 with linker assertions; per-byte readback/no SMC. Both serialized HIGH and AUX count toward UI metadata/cacheCRC. Actual FW773 predicts82UIfree; not measured here. Undefined/zero exact parent map. No new REU range or public layout changes.
+
 ## Native installer coordinator measured fit — 2026-10-17
 
 Private root5356cd1d/39,678B (first cohort rejected for RunStop handling, not layout): BOOT080D..0833=39B; resident ends5F5B/free164; UIBSS A2FD..AC9B/free868; HIGH_CODE F700..FF9C=2205/free93 before vector area; HIGHBSS E000..F6DA/free37; STATE B000..BF8D/free114; FAT19890/free590; PUBfree1934. Includes1174B/17B cooperative source service, new bootstrap/control and183B retained internal source/output ledger (outputs remain zero). No stack, CRC-table, IO or vector allocation was reduced. RunStop3→27 successor has zero measured code/data growth. Complete FAT/PUB worker integration is not yet fitted; the upcoming SI leaf-first change adds67 resident bytes and is not included in these figures.

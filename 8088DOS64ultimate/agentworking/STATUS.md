@@ -1,3 +1,9 @@
+# Compact installer checkpoint — 2026-10-17
+
+ROOT compact SETUP profile cc0934a0/40,459B passes22 actual native Python groups and5 directly executed Zig/Peddle groups;159 source inputs unchanged. Sealed cf61e4be/328pins verified. Undefined and explicit-zero builds remain byte-exact895719 parent, including labels/overlays. Enabled profile has command160/data512/status256 atC000..C39F, leaving verified AUX C3A0..C7FF/1120B. Generic ASM HIGH/AUX copy and immediate readback saves68UI bytes versus two C copy/compare calls; no new ZP/BSS. Probe768 gives UIfree87; actual worker773 predicts82, integration must measure. This is source/bootstrap qualification, not actual FAT worker execution. CIA now integrates full C/B/derivedA worker; memory independently reviews compact source.
+
+Narrow PUB sharing/body-binding peer085052/756pins ROOTverified:15 actual groups, undefined/zero byte-exact, valid zero CFG identity and64KiB seam covered. No full PW flow acceptance yet. Existing public main/START remain unchanged; no hardware call. Same-home DOS64.INI is recorded, parser/REU record/consumer still pending. Full installer integration and original scope continue.
+
 # Installer coordinator checkpoint — 2026-10-17
 
 ROOT now implements the actual SYS080D bootstrap through native startup CLOSE1/2, verified HIGH relocation, UI selection, all five readonly source jobs, a183-byte private retained source ledger, UI retirement/home binding and authentic FAT entry. Target5356cd1d/39,678B passes6 native Python+2 additive+3 actual Zig groups under150 unchanged source/tool pins. Root seal f0f9a3a/231pins verified. This is a development checkpoint, not a runnable complete installer; it performs no root C/B/A creation or CFG/START publication.
