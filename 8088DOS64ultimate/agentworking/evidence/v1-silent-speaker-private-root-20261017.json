@@ -1,0 +1,22 @@
+{
+  "status": "ACCEPTED_PRIVATE_COMPONENT_PENDING_GENUINE_FDISK_AND_COMPOSITION",
+  "manifest": {
+    "sha256": "3cdff6408d7fcee1480fde62d0002db4f273cc9dfe43877541d2b6d808cd5381",
+    "bytes": 5290
+  },
+  "pins_verified": 36,
+  "result": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/v1-silent-speaker-root-20261017/RESULT.json",
+  "actual_tests": {
+    "ports": 11,
+    "base": 508,
+    "package": 25
+  },
+  "candidate_runtime": "aa18c51fed630dca46bcfa0ee663f2709a426be0f04c1fb9a7063841e96abfb2",
+  "MAIN": "080D..3FD9,38B spare; CODE+18B",
+  "DEVICECODE": "5000..5FFF full,unchanged",
+  "HDBIOS": "F000..FDEA,21B spare,unchanged",
+  "native_public_promotion": false,
+  "genuine_FDISK_workflow": "Fresh consumer requested; pending",
+  "ANSI_composition": "Private BIOS fix pending",
+  "physical": false
+}

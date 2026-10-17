@@ -1,0 +1,43 @@
+{
+  "status": "NOT_READY_PIT2_BLOCKS_VALID_FDISK",
+  "runtime_sha256": "0bfaf15df9a3382bc168f6b231d663cdb81efd12c59dd34f870faae6df665d88",
+  "actual_valid_input_case_seconds": 74.80280262499582,
+  "source_tool_inputs_before_after_exact": 2330,
+  "native_new_bug": "genuineFDISK success-message beep uses binary PITcounter2 mode3 controlB6 atport43; nativeunsupportedCPU/E6, stageE1/error7",
+  "mandatory_normal_path": true,
+  "actual_progress": [
+    "original FDIskOptions and fullactiveCtable0..127/128cylinders",
+    "Delete3,Primary1 withindividualechoedfields",
+    "fullwarningN,actualYecho,thenReturn",
+    "actualPrimaryDO Spartitiondeletedmessage (pending guest state only)"
+  ],
+  "durable_C_exact": true,
+  "no_new_partition_write_claim": true,
+  "MBR_sha256": "05cb4ec522f25ffecb5c6202a6ca26e1007841dae7f62e30b7862b6705edaf93",
+  "wholeC_sha256": "3141fc19bcb040a1c58e78674c59679d7427ac7ba8d3f80556dbf877a67c2648",
+  "guest": {
+    "AX": "0x1b6",
+    "CX": "0x2601",
+    "DX": "0x0",
+    "BX": "0x1089",
+    "SP": "0x332e",
+    "BP": "0x3340",
+    "SI": "0x0",
+    "DI": "0x33d1",
+    "ES": "0x1788",
+    "CS": "0x1756",
+    "SS": "0x1788",
+    "DS": "0x1788",
+    "IP": "0x10",
+    "FLAGS": "0xf046"
+  },
+  "knownFinish_close_not_claimed": true,
+  "Root_owns_native_fix": true,
+  "replay": "run_fdisk.py +drive_valid.py andrecordedCOMMAND9Y/10Return, unchanged0bfa; borrowedmodel exactsealedDISKCOPYsource/SDKclosure",
+  "later_required": [
+    "repeat validFDISKafterqualifiedPITfix",
+    "actualcreateprimary/active/warmboot/FORMATC/SYS/COPY",
+    "independentMBR/FAT/payloads/nativeFinish/freshA+Cread",
+    "all-created-artifacts restart/version-history save"
+  ]
+}

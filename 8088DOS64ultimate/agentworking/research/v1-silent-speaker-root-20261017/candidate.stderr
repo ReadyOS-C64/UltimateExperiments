@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-fdisk-speaker-20261017/candidate-source/build_support/v1_candidate.py", line 380, in <module>
+    report = build(args.out, runtime_media=args.runtime_media)
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-fdisk-speaker-20261017/candidate-source/build_support/v1_candidate.py", line 347, in build
+    subprocess.run(command, cwd=ROOT, env=env, stdin=subprocess.DEVNULL,
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Applications/Xcode.app/Contents/Developer/usr/bin/python3', '-B', '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-fdisk-speaker-20261017/candidate-source/build_support/runtime_media.py', '--out', '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-fdisk-speaker-20261017/candidate-build/run-56lyu11z/runtime', '--floppy-format', '--cpu-trap']' returned non-zero exit status 1.

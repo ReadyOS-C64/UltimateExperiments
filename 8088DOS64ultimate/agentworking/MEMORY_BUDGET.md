@@ -339,3 +339,8 @@ Bound SETUPd2f9 has resident1B/FAT3B/PUB5B/HIGHcode0B/HIGHstate8B/AUX4B free. Te
 
 
 2026-10-17: Above final0bfa/d2f9/de0a combinedlayout is now reproduced byteexact bypublic66path sourcebuild, allcurrentmemorychecks pass. No layout change duringpromotion;26,010 linkedfilebytes versus47,105B packedPRG remain separate. Evidencev1-final-public-promotion-root-20261017.json.
+
+
+## 2026-10-17 — private silent-speaker compatibility candidate
+
+Measured new runtimeaa18/MNU6c0e: ports CODE grows18B; MAIN ends3FD9 (38B free), CODE080D..3C72, RO3C73..3FD1, NATIVESTATE3FD2..3FD9. DEVICECODE5000..5FFF4096B/full and HDBIOSF000..FDEA3563B/21B spare are unchanged. No new state, overlay, REU allocation or cache-frame loss. UNIT TRAP1/FORMAT0 DEVICECODE5000..5FEF has16B spare; that unit profile difference is not runtime headroom. Runtime47105B andMNU57344B sizes unchanged. Source-built twelve-file composition/memory checks pass; private component only until genuineFDISK and separateANSI BIOS composition are accepted. Evidence/v1-silent-speaker-private-root-20261017.json.

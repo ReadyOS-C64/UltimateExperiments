@@ -1,0 +1,19 @@
+{
+  "original_failure": "close.py included copied passive-observer modelDLL ininputset, then properly rebuilt different enum-enabled model beforeVM. Original ASSERTION/log retained.",
+  "excluded_unused_prebuild_input": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-save-restart-history-final-20261017/consumer/work/journal-peddle.dylib": {
+      "sha256": "11c3a5834fe437b21e096849f2bc47a33c3d55ce6218daf5ed228b5ebd55c7d7",
+      "bytes": 208200
+    }
+  },
+  "actual_executed_products": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-save-restart-history-final-20261017/consumer/work/journal-peddle.dylib": {
+      "sha256": "4c29d386c01b724d4a4ee10a2f4abbb97bd124ef316d04fe413b8185803fd69f",
+      "bytes": 208328
+    }
+  },
+  "source_only_samepath_rebuild_exact": true,
+  "native_repeated": false,
+  "all_other_inputs_andcopies_unchanged": 2298,
+  "controls": "read-only typed modelenumerator count/pathNUL/capacity/outofrange; no nativebehaviorchange"
+}

@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "native_result": {
+    "passed": true,
+    "runtime_sha256": "0bfaf15df9a3382bc168f6b231d663cdb81efd12c59dd34f870faae6df665d88",
+    "actual_START_CIA_ordinaryS_Finish_twice": true,
+    "fresh_machine_all_remote_files_byte_exact_before_SYS": true,
+    "first_sequence": 1,
+    "fresh_selected_sequence": 2,
+    "all_sequence1_images_archives_preserved": true,
+    "first_file_count": 12,
+    "second_file_count": 15,
+    "originals_exact": true,
+    "seconds": 23.56780304198037,
+    "scope": "actual old0bfa coldnative/realCIA and independent allfileoracle; no guestDOS/physical/FDISKclaim"
+  },
+  "corrected_source_inputs": 2298,
+  "source_before_after_andcopies_exact": true,
+  "actual_model_source_reproduces_exact": true,
+  "new_model_helpers": "read-only enumeration only, all native0bfa bytes exact",
+  "metadata_first_failure_retained": true,
+  "no_unchanged_native_repeat": true
+}

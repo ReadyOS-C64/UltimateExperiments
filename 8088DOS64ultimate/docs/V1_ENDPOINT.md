@@ -78,6 +78,12 @@ The final CONFIG passes nine native and two Zig checks using actual SETUP-produc
 
 The file/text utility lane also proves genuine XCOPY, FC, REPLACE, SORT, FIND, COMP, TREE, LABEL and VOL outputs, plus EDLIN editing and fresh-launch persistence. A real LABEL result exposed a host inspection bug; its narrow repair has eleven focused tests and retains duplicate-file and malformed-label rejection. [Utility and parser review](../agentworking/evidence/v1-utilities-parser-root-review-20261017.json).
 
+Genuine FORMAT B:, DISKCOPY A:B and DISKCOMP also pass on the current runtime, followed by native Save As, C-drive use, Finish and a fresh launch of the saved B image. All 720 sectors and 37 files match the source. This covers two-drive operation; same-drive swaps and physical persistence remain separate. [Disk-copy review](../agentworking/evidence/v1-diskcopy-root-review-20261017.json).
+
+A separate restart-history test now preserves the complete set of active files, saved images and backup/journal archives across a fresh machine. A second native save allocates version 2 and leaves every version-1 artifact intact. This tests a clean mounted B image; dirty guest edits and physical behavior retain their separate acceptance requirements. [Restart-history proof](../agentworking/evidence/v1-save-history-root-review-20261017.json).
+
+Two newly reproduced compatibility defects still block the broader DOS-tool gate: FDISK's mandatory speaker programming is rejected, and ANSI.SYS clears a 26-row text span that the BIOS currently rejects. The speaker fix is under private test; the ANSI fix must follow the original XT's bounded VRAM behavior. No final release is claimed while these are open.
+
 Next: finish the remaining DOS/media utility proofs, then execute the physical install/media/Turbo Pascal/restart matrix and human checklist. The sole hardware worker owns recovery and device state. Older accepted recovery does not close a later failed staging attempt. Current machine state is recorded in [ACTIVE_HARDWARE_SESSION.json](../agentworking/ACTIVE_HARDWARE_SESSION.json).
 
 Historical scope notes and superseded progress snapshots are preserved in [the endpoint history](../agentworking/research/v1-endpoint-history-20261017.md). Detailed continuity remains in [STATUS](../agentworking/STATUS.md) and [NEXT_SLICE](../agentworking/NEXT_SLICE.md). Historical speed measurements remain workload-specific; V1 does not imply XT speed parity.

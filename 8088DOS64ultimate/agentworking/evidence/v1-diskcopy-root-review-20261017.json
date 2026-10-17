@@ -1,0 +1,20 @@
+{
+  "status": "ACCEPTED_SCOPED_FINAL_RUNTIME_DISKCOPY_SAVE_FRESHSTART_MODEL",
+  "root_verified_pins": {
+    "native-diskcopy-persistence-final-20261017": 10525,
+    "native-diskcopy-persistence-independent-review-20261017": 16
+  },
+  "independent_execution_inputs_verified": 2297,
+  "root_new_native_replay": false,
+  "workflow": "Genuine DOS FORMAT B: 80 tracks; DISKCOPY A:B; DISKCOMP Compare OK; actual CIA native B SaveAs/CFG; Resume and exact C TYPE; Finish; fresh START using persisted B; Finish.",
+  "bytes": "All720 sectors and37 payloads equal genuine A; original A/B/C backing files exact; C112 files; CFG only B path/CRC and footer/body identity change.",
+  "runtime_sha256": "0bfaf15df9a3382bc168f6b231d663cdb81efd12c59dd34f870faae6df665d88",
+  "qualifications": [
+    "Caller-prepared disposable CFG/A and validblankB/C with nativeSETUP ancestry. No additional installer claim.",
+    "Explicit FORMAT precedes DISKCOPY. DISKCOPY autoformat is not proven.",
+    "Fresh launch seeds active files only; archived-history/repeated allocation after restart remains open.",
+    "A and third arena tested before modal; no added whole4MiB modal byte guard.",
+    "Only two-drive A:B. Same-drive swaps, physical, FDISK and throughput remain separate."
+  ],
+  "archive": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/v1-diskcopy-root-review-20261017"
+}

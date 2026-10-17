@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "before_restart_remote_count": 12,
+  "exact_fresh_before_SYS_count": 12,
+  "after_repeat_count": 15,
+  "all_files_andpaths_carried": true,
+  "source_originals_and_sequence1_all_exact": true,
+  "only3_new_sequence2_files": true,
+  "old1_and_old2_exact_CFGs": true,
+  "both_JRN_full1284_native_body_checksums_valid": true,
+  "both_CFGs_semantic_selected_path_BCRC_footer_and_unrelatedbytes_checked": true,
+  "scope": "first clean mountedB actualordinaryS andfresh actualordinaryS; noDOS/dirtyedit/physicalclaim",
+  "ticket_qualification": "fresh UI ticket numeric value not separately asserted; sequence1\u21922 is measured through actual filemap/CFG/archive names",
+  "metadata_erratum": "unused copied prebuild modelDLL excluded; actual rebuilt/used model reproduced byteexact; original failedledger retained"
+}

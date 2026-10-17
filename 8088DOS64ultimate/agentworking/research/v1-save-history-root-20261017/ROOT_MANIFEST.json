@@ -1,0 +1,33 @@
+{
+  "status": "ACCEPTED_FINAL_PUBLIC_RUNTIME_ALL_FILEMAP_SAVE_RESTART_HISTORY_MODEL",
+  "files": {
+    "ASSESSMENT.json": {
+      "sha256": "777a5f72a6f1ddd465d2cc006817dbb3397874e6316a7efbf799fb13520e173e",
+      "bytes": 834
+    },
+    "MANIFEST.json": {
+      "sha256": "515af70233b412f377bb7b9e6c555e413e4c27d04d435b0e9ca7c2b2e4228d26",
+      "bytes": 373130
+    },
+    "ROOT_RESULT.json": {
+      "sha256": "ba24d72cc46b4a1104b1940b1b3f2f487901c03efeb407be8d2fdc92e6f0608c",
+      "bytes": 1549
+    },
+    "HANDOFF.md": {
+      "sha256": "4346e865de781ccde7dc71a29f84d74e9ca12e97e54219c958b918dd4bea1177",
+      "bytes": 2766
+    },
+    "closed/RESULT.json": {
+      "sha256": "80ac3f0084c5db09e9a3ed87519ee1e1379f46b6df63bc3d90c67586ab2a3a50",
+      "bytes": 912
+    },
+    "closed/LEDGER_ERRATUM.json": {
+      "sha256": "3a20d73a85ae93e3616c7ede945666fdf63c30ce7ad1539b16d60cf95fa27326",
+      "bytes": 1085
+    },
+    "consumer/work/run_history.py": {
+      "sha256": "7350ccd6089003fccfded9db72d511552b218c70947ac0d30f9c555571bcc6b7",
+      "bytes": 3936
+    }
+  }
+}

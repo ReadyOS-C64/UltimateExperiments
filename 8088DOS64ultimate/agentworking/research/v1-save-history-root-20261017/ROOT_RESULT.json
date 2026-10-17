@@ -1,0 +1,21 @@
+{
+  "status": "ACCEPTED_FINAL_PUBLIC_RUNTIME_ALL_FILEMAP_SAVE_RESTART_HISTORY_MODEL",
+  "parent_manifest": {
+    "sha256": "515af70233b412f377bb7b9e6c555e413e4c27d04d435b0e9ca7c2b2e4228d26",
+    "bytes": 373130
+  },
+  "parent_pins_verified": 1909,
+  "source_inputs_andcopies_before_after_exact": 2298,
+  "workflow": "Actual START/realCIA ordinary B Save/Finish; harvest all12 remote files including sequence1 archives; new Machine seeded path/byte-exact before SYS; START/realCIA B Save selects2/Finish; final15 files and all prior artifacts exact.",
+  "native_runtime": "0bfaf15df9a3382bc168f6b231d663cdb81efd12c59dd34f870faae6df665d88",
+  "model": "Read-only typed file count/path enumeration; source-rebuilt4c29d386 reproduces executed product. Existing oracle reads payload bytes.",
+  "metadata_first_failure_retained": "Unused old DLL wrongly listed as prebuild input; excluded exactly one historical record. All2298 other inputs/copies and actual executed DLL preserved/reproduced. No native replay.",
+  "independent_checks": "CFG selected B path/CRC/footer/body CRC, unselected fields, exact archived old CFGs and both1284B journal-body CRCs.",
+  "qualifications": [
+    "Clean mounted B; no DOS/dirty edits or physical claim.",
+    "Numeric UI ticket not independently asserted. Sequence1\u21922 is measured from real filenames/maps/CFGs.",
+    "This closes all-created-artifacts restart gap of the earlier two-drive DISKCOPY proof in a separate cohort; scopes remain separate."
+  ],
+  "root_new_native_replay": false,
+  "physical": false
+}

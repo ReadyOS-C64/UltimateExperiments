@@ -1,0 +1,76 @@
+{
+  "status": "PHYSICAL_FAILED_FIRSTCAUSE_SEALED_PENDING_ROOT",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-ownedcopy20m-20261017-a00183ba",
+  "launch_sha256": "2766d8fa728884627b3d952e425315977f0beeb47339f44144b28d6331c868bc",
+  "frozen_package_sha256": "b6ad80a553f5b5fcc9ebc289c6f5065932b73a4b0ddb084aa3ef69c711142a77",
+  "ROOT_dispatch_receipt": "33390293a6970698760b1dac80a3f6cb6920839b76dc5c6251b066287498de02",
+  "first_error": "ValueError('Coherent mapped35 fullRAM')",
+  "owned_terminal": "1635",
+  "supervisor_pid": 83433,
+  "child_pid": 83440,
+  "exit": {
+    "pid": 83440,
+    "child_exit_code": 1,
+    "exit_code": 1,
+    "supervisor_intended_exit_code": 1,
+    "wall_watchdog_triggered": false,
+    "signals": [],
+    "finished_monotonic": 41.945377166
+  },
+  "wall_seconds": 41.860394916,
+  "source_originals_and_copies_exact": 440,
+  "initial_lower4MiB_bytes": 4194304,
+  "initial_sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+  "initial128frames_exact_ac43": true,
+  "final_snapshot_or_current4MiB_claim": false,
+  "directory_public_result_hex": "44505231040000011001010100000000a00183ba1834f10a839b6a6a50e97ca244435231a00183ba1834f10a839b6a6a50e97ca278b941711081e5ee8b1e2855b1ca4d4876160f97a5dfdb1e475fa65a699d102c",
+  "directory_receipt_admitted": false,
+  "directory_raw_RAM0_1_hex": "0001",
+  "terminal_raw_RAM0_1_hex": "0001",
+  "processor_port_observation_not_inferred": true,
+  "COPY_reader_entry_attempted": false,
+  "file_clone_admitted": false,
+  "final_snapshot_attempted": false,
+  "source_upload_chunks": {
+    "initial": 36,
+    "directory": 91,
+    "reader": 0,
+    "final": 0
+  },
+  "raw_request_plans": 975,
+  "raw_write_ACKs": 285,
+  "cleanup": {
+    "attempted": true,
+    "terminal_RAM_retained": true,
+    "cold_reset_ack": false,
+    "BASIC_ready_observed": false,
+    "resume_ack": false,
+    "settings_media_equal": true,
+    "original_RAM_restored": false,
+    "original_CPU_restored": false,
+    "original_application_resumed": false,
+    "errors": [
+      {
+        "phase": "native_owner_retention_or_cancel",
+        "error": "ValueError('Coherent mapped35 fullRAM')"
+      },
+      {
+        "phase": "cleanup_reset",
+        "not_attempted": "FILES/create/COPY/CLOSE/CWD ownership not proven quiet; no reset/loader/retry"
+      }
+    ],
+    "cold_cleanup_absolute_endpoint": 131.32200725,
+    "native_FILES_known_quiet": false,
+    "turbo_restore_attempted": true,
+    "turbo_restore_ack": true,
+    "turbo_restored_observed": true
+  },
+  "inventory_exact_before_after": true,
+  "original_CPU_RAM_app_restored": false,
+  "upper12MiB_access_or_equality": false,
+  "REU_write_operations": 0,
+  "new_device_calls_by_sealing": 0,
+  "reserved": true,
+  "ACTIVE_terminal_sha256": "b28b6d7e86f6a721c0d5c2ef042bf9894502318b6010f08c4c01640b10cc0788",
+  "physical_component_not_installer_DOS_Turbo_Finish": true
+}

@@ -1,0 +1,94 @@
+{
+  "status": "PRIVATE_SILENT_SPEAKER_NATIVE_COMPONENT_TESTS_AND_MATCHED_CANDIDATE_PASS",
+  "production_delta": "ports.s permits byte OUT43 exactB6 and byte OUT42 silent data. Reads/words/othercontrol remain unsupported; no audio waveform/counter read. Independent PPI61 latch unchanged.",
+  "actual_tests": {
+    "focused_ports": 11,
+    "base": 508,
+    "base_exit": 0,
+    "packaging": 25,
+    "packaging_seconds": 4.138
+  },
+  "source_closure": {
+    "second_inputs_products_before_after": 728,
+    "unchanged_tool_hashes": 4,
+    "candidate_inputs_products_exact": 1567
+  },
+  "first_failures_retained": [
+    "handler insertion exceeded relative branch distance; moved newhandlers afterdispatch, no native branch widening retained",
+    "private source fixture omitted unitprobe sources, then rawbin and originalmedia products; firstbase502pass6fail",
+    "old IRQ0 test assumed OUT42 unsupported; newbounded speaker contract updates expectation, timer/IRQ/FLAGS invariants retained",
+    "candidate-source assets missing; corrected copy only, no SUTchange",
+    "hostcandidate result path missing; explicit boundenvironment yields25PASS"
+  ],
+  "native_layout": {
+    "ports_CODE_bytes_added": 18,
+    "DEVICECODE_state_growth": 0,
+    "unit_DEVICECODE": "5000..5FEF,16B spare (existing profile difference)",
+    "runtime_DEVICECODE": "5000..5FFF,full; unchanged",
+    "runtime_HDBIOS": "F000..FDEA,21B spare; unchanged",
+    "main_file_bytes": 47105
+  },
+  "candidate": {
+    "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-fdisk-speaker-20261017/candidate-build-complete/run-q8sf_0ns",
+    "archive": {
+      "sha256": "81cb5268996d50c20096c18cb3c045ab7470cca32f49fd06a9a2fe01f02b899d",
+      "bytes": 139792
+    },
+    "runtime": {
+      "sha256": "aa18c51fed630dca46bcfa0ee663f2709a426be0f04c1fb9a7063841e96abfb2",
+      "bytes": 47105
+    },
+    "menu": {
+      "sha256": "6c0ec2d4da58157388ce628b363bfd765e5d4f58a36032a832329869c2aff3b6",
+      "bytes": 57344
+    }
+  },
+  "public_deltas": {
+    "src/ports.s": {
+      "public_baseline": {
+        "sha256": "c705842e934753a2f2e515e0be3a31db8c27a1a3441f937003d8152d5092aeea",
+        "bytes": 8038
+      },
+      "proposed": {
+        "sha256": "9557cacfb9d20a0cda26601520d327896074d56d729ad86691145058434298d9",
+        "bytes": 8578
+      }
+    },
+    "tests/host/ports.zig": {
+      "public_baseline": {
+        "sha256": "51ed9ffbff102f835c9e3b7e0846ac451319218ff842c81c5b909ee892f75c9d",
+        "bytes": 13823
+      },
+      "proposed": {
+        "sha256": "ab87c8ff9380efa4e59b55c4d55cb6cfdca8fe353e72cf7be72c10e3d3df2f36",
+        "bytes": 15416
+      }
+    },
+    "tests/host/irq_pit.zig": {
+      "public_baseline": {
+        "sha256": "312be676b60def2e79478196015533f56cf99849b0777c55c8874961fefec322",
+        "bytes": 70815
+      },
+      "proposed": {
+        "sha256": "772cf9a8530d47dfeadb109a08c328821225d9d2d46e09448b0dddb960dbfe1a",
+        "bytes": 70956
+      }
+    },
+    "tests/host/io_instructions.zig": {
+      "public_baseline": {
+        "sha256": "ad59446bc0755a07dcda3d661425b80a5b94ca13c238eb22fb443da92ed6c853",
+        "bytes": 7366
+      },
+      "proposed": {
+        "sha256": "1079b159b2182b5505df4e57352d9529d24896420523ec8f53b34271885db39e",
+        "bytes": 7622
+      }
+    }
+  },
+  "genuine_FDISK_success": false,
+  "ANSI_fix_included": false,
+  "physical": false,
+  "public_promotion": false,
+  "performance_claim": false,
+  "qualification": "Root explicit project/source/native-product/tool hash closure. No claim of full Zig distribution/SDK before-after inventory for this fresh Zig run. No 5701 corpus repeat: CPU instruction implementation unchanged."
+}

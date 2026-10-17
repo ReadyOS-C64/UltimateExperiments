@@ -1,0 +1,69 @@
+{
+  "status": "PASS_INDEPENDENT_SOURCE_ARTIFACT_REVIEW_NO_NATIVE_REPLAY",
+  "files": {
+    "HANDOFF.md": {
+      "sha256": "b1be88dcfc08d9d8539c605d534f75cf7d1805e6258f19115608f7631bcd56c7",
+      "bytes": 2840
+    },
+    "INPUTS_AFTER.json": {
+      "sha256": "bc16cbaa7dd483758651380b3626e4331862f6d102d8c9b1de18b6c7874923f1",
+      "bytes": 4274031
+    },
+    "INPUTS_BEFORE.json": {
+      "sha256": "bc16cbaa7dd483758651380b3626e4331862f6d102d8c9b1de18b6c7874923f1",
+      "bytes": 4274031
+    },
+    "RESULT.json": {
+      "sha256": "2479fc783463987706187619c83773cf9ac3c1bed84b8ae802436d5955a232f4",
+      "bytes": 1008
+    },
+    "RUN.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "RUN.stdout": {
+      "sha256": "3b4ccbd186df9f772fce32a83879b84d4d5bece7ac6b9b55533d5f880beda02f",
+      "bytes": 22
+    },
+    "evidence/ASSESSMENT.json": {
+      "sha256": "1e12014fcdfe5f67c1492ec4ac42eabde96d175b05d89813e951d4a45c8f8902",
+      "bytes": 1608
+    },
+    "evidence/HANDOFF.md": {
+      "sha256": "962105afff71a6ecf6b36ef2b89e2cb5193f557918862955f2a8eba15342a54a",
+      "bytes": 4707
+    },
+    "evidence/PLAN.json": {
+      "sha256": "d5e791435c3672483ee22183d359dc784a923adecd8b613e032fa52426fc77b6",
+      "bytes": 2345
+    },
+    "evidence/close.py": {
+      "sha256": "df91cd38c4d1309d7fbf3cb218bbcb15a8c3601323074784fce9e6ab8649ca58",
+      "bytes": 3215
+    },
+    "evidence/closed/RESULT.json": {
+      "sha256": "04db6881f1338f5bcf9982830cc37427575673d3e27c295c8254f2d2266a221c",
+      "bytes": 4974
+    },
+    "evidence/consumer/work/run_diskcopy.py": {
+      "sha256": "182810e2fea800db5ab005feea0f3bdf37119bccab4065497341bcd18d27e88f",
+      "bytes": 14522
+    },
+    "evidence/consumer/work/tests/floppy_export/bridge.cpp": {
+      "sha256": "622c92d41feaba8eae55cb895e8ed7747c182ab7efdcd26b94f755d3240bd71c",
+      "bytes": 32684
+    },
+    "evidence/run/RESULT.json": {
+      "sha256": "c4854a0c387eb0f59139b9b65785183714546036d25998d06cafd39605383643",
+      "bytes": 488
+    },
+    "evidence/run/SESSION1.json": {
+      "sha256": "b8b3402bbd36629711c4b2d9dfabd635f105cf9a8b11f229fd4d740a441ff8e6",
+      "bytes": 420
+    },
+    "review.py": {
+      "sha256": "264f2617d77c4d07f2e632acaeb981bfa4e97f5ddbbc94615082d08fb3335626",
+      "bytes": 4764
+    }
+  }
+}

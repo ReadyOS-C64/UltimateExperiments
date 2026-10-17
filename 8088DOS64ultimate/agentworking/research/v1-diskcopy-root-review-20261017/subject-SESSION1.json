@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "all720sectors_exact": true,
+  "all_payloads_exact": true,
+  "BIOS_format_tracks": 80,
+  "DISKCOPY_additional_FORMAT_tracks": 0,
+  "actual_CIA_SaveAs_Finish": true,
+  "C_online_exact": true,
+  "guest_instructions": 1702662,
+  "cycles": 8320249491,
+  "sources_exact": true,
+  "saved_path": "/Home/COPY0001.IMG",
+  "saved_sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb"
+}

@@ -1,0 +1,21 @@
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/boot.o src/boot.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/cpu_state.o src/cpu_state.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -D DOS64_NATIVE_REU_OBSERVER=1 -I include -o build/native-reu.o src/reu.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/address.o src/address.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/memory.o src/memory.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/cpu.o src/cpu.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/trap.o src/trap.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/fetch.o src/fetch.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/alu.o src/alu.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/operands.o src/operands.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/stack.o src/stack.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/strings.o src/strings.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/shifts.o src/shifts.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/control.o src/control.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/math.o src/math.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/indirect.o src/indirect.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/range.o src/range.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/disk.o src/disk.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -D DOS64_MEDIA_BINDING=0 -I include -o build/floppy_control.o src/floppy_control.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/bios.o src/bios.s
+ca65 -g -D DOS64_TRAP1=1 -D DOS64_FLOPPY_FORMAT=0 -I include -o build/ports.o src/ports.s

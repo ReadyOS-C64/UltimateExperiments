@@ -1,0 +1,24 @@
+{
+  "status": "ACCEPTED_FIRST_PHYSICAL_FAILURE_NOT_COPY_SUCCESS",
+  "parent_manifest": {
+    "sha256": "36c055fcc0d1bb536fe5d910c3f2222dff6324bf6c1b10f8f1927cd0c6743562",
+    "bytes": 729033
+  },
+  "parent_pins_verified": 2565,
+  "launch_sha256": "2766d8fa728884627b3d952e425315977f0beeb47339f44144b28d6331c868bc",
+  "first_error": "ValueError('Coherent mapped35 fullRAM')",
+  "initial_whole4MiB": {
+    "passed": true,
+    "sha256": "ac43c06b5e23774b298011c1a97bfbc72eb8395020465c747b135a83e9cd3eb3",
+    "frames": 128
+  },
+  "directory_public_terminal": "Observed DPR1 phase4/first0; mandatory rawRAM mapping predicate refused before private receipt admission. No directory acceptance transferred.",
+  "reader_COPY_entered": false,
+  "cleanup": "Terminal RAM retained; reset/source replacement/BASIC/resume not attempted because FILES quiet not proven. Captured Registers64 restoration ACK/readback plus settings/media inventory equality pass. Both owned processes gone/reaped1; no watchdog or signals.",
+  "current_REU_final_equality": false,
+  "original_CPU_RAM_application_restored": false,
+  "hardware_reserved": true,
+  "no_Root_network_calls": true,
+  "local_followup": "Source-backed RAW_READ vs native CPU-port observation investigation; no predicate widening or new dispatch authorization.",
+  "V1_physical_gates_closed": false
+}

@@ -1,0 +1,49 @@
+{
+  "status": "ACCEPTED_SCOPED_FINAL_RUNTIME_DISKCOPY_SAVE_FRESHSTART_MODEL",
+  "files": {
+    "peer-HANDOFF.md": {
+      "sha256": "b1be88dcfc08d9d8539c605d534f75cf7d1805e6258f19115608f7631bcd56c7",
+      "bytes": 2840
+    },
+    "peer-review.py": {
+      "sha256": "264f2617d77c4d07f2e632acaeb981bfa4e97f5ddbbc94615082d08fb3335626",
+      "bytes": 4764
+    },
+    "subject-SESSION1.json": {
+      "sha256": "b8b3402bbd36629711c4b2d9dfabd635f105cf9a8b11f229fd4d740a441ff8e6",
+      "bytes": 420
+    },
+    "peer-RESULT.json": {
+      "sha256": "2479fc783463987706187619c83773cf9ac3c1bed84b8ae802436d5955a232f4",
+      "bytes": 1008
+    },
+    "subject-HANDOFF.md": {
+      "sha256": "962105afff71a6ecf6b36ef2b89e2cb5193f557918862955f2a8eba15342a54a",
+      "bytes": 4707
+    },
+    "subject-ASSESSMENT.json": {
+      "sha256": "1e12014fcdfe5f67c1492ec4ac42eabde96d175b05d89813e951d4a45c8f8902",
+      "bytes": 1608
+    },
+    "native-diskcopy-persistence-final-20261017-MANIFEST.json": {
+      "sha256": "87522cf62accc9c7523ac8454a74b0458918064814f939b03bf86503d331f812",
+      "bytes": 2305207
+    },
+    "subject-RESULT.json": {
+      "sha256": "c4854a0c387eb0f59139b9b65785183714546036d25998d06cafd39605383643",
+      "bytes": 488
+    },
+    "native-diskcopy-persistence-independent-review-20261017-MANIFEST.json": {
+      "sha256": "bc23197063b50a5101751b3a628e6c220750078c4533b0cacf0f2bef18e86ac5",
+      "bytes": 2360
+    },
+    "subject-run_diskcopy.py": {
+      "sha256": "182810e2fea800db5ab005feea0f3bdf37119bccab4065497341bcd18d27e88f",
+      "bytes": 14522
+    },
+    "ROOT_RESULT.json": {
+      "sha256": "b57d7ad82dd208c8b40972bcc5dc1b8175628663b7b332f1f2bba1089c159fd6",
+      "bytes": 1407
+    }
+  }
+}

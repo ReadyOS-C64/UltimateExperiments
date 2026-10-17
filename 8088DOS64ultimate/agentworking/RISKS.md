@@ -93,3 +93,6 @@ K01/K02 remain HIGH. Actual nativeDOS profile has1169895754CPUstepclocks/601936c
 
 
 2026-10-17: Private TF/type1a25e closes focused event/model behavior and507base/5701case regressions, but K12 staysopen for runtime-media composition, genuineDEBUGT/INT3, finalhardware and originalprefetch/undocumentedcorners. An exploratory0F POPCS test confirms currentdecoderunsupported; upstreamcorpus omits0F. Do not infer fullCPUcompatibility or silently add prefetch-sensitive semantics to the V1trap slice.
+
+
+2026-10-17 V1 utility checks found two required compatibility defects on public0bfa: FDISK mandatory success/error speaker control OUT43/B6 is rejected before its pending MBR flush; ANSI.SYS clear through DH25 is rejected by the viewport-bounded BIOS. Original C is preserved in failed FDISK cases; failed ANSI media has no known-close authority. Private silent speaker writes and original-XT aperture-bounded scroll fixes are in progress. These are V1 correctness blockers, not renewed performance work. Current physical20M staging also remains blocked on the source/RAW_READ CPU-port observation contract; no COPY or final hardware release is accepted.

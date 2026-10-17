@@ -1,0 +1,21 @@
+{
+  "status": "ACCEPTED_FIRST_PHYSICAL_FAILURE_NOT_COPY_SUCCESS",
+  "files": {
+    "physical-MANIFEST.json": {
+      "sha256": "36c055fcc0d1bb536fe5d910c3f2222dff6324bf6c1b10f8f1927cd0c6743562",
+      "bytes": 729033
+    },
+    "ACTIVE-terminal.json": {
+      "sha256": "b28b6d7e86f6a721c0d5c2ef042bf9894502318b6010f08c4c01640b10cc0788",
+      "bytes": 2546
+    },
+    "physical-RESULT.json": {
+      "sha256": "6ae477ddb76dd7e2a58eebf8bbdd51381add38b5c394ae8512733f9d10bdb02b",
+      "bytes": 2947
+    },
+    "ROOT_RESULT.json": {
+      "sha256": "0ad6fc4065cf75d3f9c19c5571bce5a883ae87f51ad43cb61c862cf9ffd7aeb1",
+      "bytes": 1341
+    }
+  }
+}

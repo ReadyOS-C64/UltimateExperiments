@@ -1,0 +1,14 @@
+{
+  "status": "ACCEPTED_REPRODUCIBLE_V1_UTILITY_BLOCKERS_NOT_SUCCESS",
+  "cohorts": {
+    "native-fdisk-format-c-final-20261017": 7071,
+    "v1-ansi-console-final-20261017": 3794
+  },
+  "FDISK": "Original binary mandatory success-message beep OUT43/B6 faults nativeE1 before pending MBR flush; whole original2MiB C exact. Earlier invalid-entry beep same issue. No durable deletion, FORMATC, SYS or Finish claim.",
+  "ANSI": "No-driver literalCSI control+nativeCIAFinish pass. Original ANSI-enabled boot reaches DOS; CLS calls BIOS AH06 AX0600/BX0760/CX0000/DX194F; row25/26-row clear is rejected then OUTF3 falls through to fatal E6. Failed media has no knownclose/adoption.",
+  "original_IBM_semantics": "Worker checked pinned original XT SCROLL_UP/SCROLL_POSITION; no invented viewport clipping. Aperture-bounded private compatibility fix required.",
+  "runtime": "0bfaf15df9a3382bc168f6b231d663cdb81efd12c59dd34f870faae6df665d88",
+  "root_new_native_replay": false,
+  "physical": false,
+  "V1_gate": "V1-06 remains open; both genuine utility workflows require fixes and new matched-candidate acceptance."
+}

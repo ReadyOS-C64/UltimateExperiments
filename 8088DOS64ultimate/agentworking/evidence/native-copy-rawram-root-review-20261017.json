@@ -1,0 +1,15 @@
+{
+  "status": "ACCEPTED_LOCAL_COUNTEREXAMPLE_PRIVATE_SUCCESSOR_AUTHORIZED_NOT_DISPATCH",
+  "verified_parent_manifest": {
+    "sha256": "cf238829626d969c2846c202736f713702dd7288a1614cd99fce8b551d346332",
+    "bytes": 5904
+  },
+  "pins": 40,
+  "actual_unchanged_native_controls": 2,
+  "counter": "True directory and first reader frame admit prior observer with mirrored RAM; changing only raw shadows0/1 to0001 keeps actual CPU ports2F/F5 and all other bytes exact but both observers reject.",
+  "source": "Pinned v3.14 GET readmem uses C64_DMA_RAW_READ/memcpy of raw memory, distinct from CPU port loads. Native entry does not restore mapping before terminal loop.",
+  "default_off_private_contract": "New8B A5/version31/actualDDR/actualport/complements/epochLE16, magic-last and invalidated on newphase. Reader expected1..640/terminal641; directoryterminal1. Check low mapping7/5 plus private nonce/phase/source/stack/CWD/quiet. No bank repair and no IO after badmap.",
+  "placement_qualified": "Profile-only LOWSTATE0300..030A for existing first/phase/cleanup3 plus8receipt is approved only with measured no-overlap/default0identity and wholly reliable ASM failed-mapping stop before any ROM-hidden BSS access.",
+  "physical_dispatch_authorized": false,
+  "physical_failure_remains_failed": true
+}
