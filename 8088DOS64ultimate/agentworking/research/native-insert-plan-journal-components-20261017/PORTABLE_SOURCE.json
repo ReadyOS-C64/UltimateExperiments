@@ -1,0 +1,18 @@
+{
+  "production_deltas": {
+    "runtime/phase/media_plan.c": {
+      "parent": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/phase/media_plan.c",
+      "parent_sha256": "5084cafa66811f540ab1ea2d8fe7b4370b62e3bc5755bb172e0834fece09696b",
+      "sha256": "8a0231e1a84283fa7d8babe5f19458e3f082cbe5b7ddcb5309a0dcab7f27e728",
+      "bytes": 8033
+    },
+    "cold/gate/journal_gate.c": {
+      "parent": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-initial-binding-20261017/gate/journal_gate.c",
+      "parent_sha256": "43877a5ecf0632182421a66476651a3610e0bc3cf2a9da1cf04d925bd705bca5",
+      "sha256": "7683b45a9c3e71aa37a202e21c52b99a8c564e9ff7da466807a822a620de85d8",
+      "bytes": 12830
+    }
+  },
+  "regenerate": "runtime imports/aliases, cold prefix and RFW exports, final capsules/MNU/whole-file CRCs/descriptors",
+  "no_D64J_version_change": true
+}

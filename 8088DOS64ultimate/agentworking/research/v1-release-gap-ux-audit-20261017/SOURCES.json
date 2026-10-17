@@ -1,0 +1,151 @@
+{
+  "scope": "read-only source/evidence audit, not repeated component acceptance; snapshots at audit finalization",
+  "unchanged_during_capture": true,
+  "sources": {
+    "docs/V1_ENDPOINT.md": {
+      "sha256": "d494483147921ba17c2e96f49f338b780d4195030796ce37838e359477e95656",
+      "bytes": 16228
+    },
+    "docs/TESTING.md": {
+      "sha256": "ac52c7bdc9c9525ce569ab6e84be4875bb2aeeb2ea30a3be84552ba33faf1b1e",
+      "bytes": 14827
+    },
+    "docs/PLAN.md": {
+      "sha256": "6907311ce74cdb2ea35708464f9b6e0d1ccb8e32311dd16c6350e34589ad8f21",
+      "bytes": 11364
+    },
+    "docs/REQUIREMENTS.md": {
+      "sha256": "bf8ada946c0a9a3cd10fad36382fe3be0ff80dbc3182538a63e601ec8002914a",
+      "bytes": 6265
+    },
+    "docs/NATIVE_SETUP_INSTALLER.md": {
+      "sha256": "663f9bcb34d74f8c874b3537963117a63e3c24bd94c834f2f279c27fd8b5e4a5",
+      "bytes": 9477
+    },
+    "docs/NATIVE_SETUP_CONFIG.md": {
+      "sha256": "654898206505f325047b0d5c5e5620863e6ab599659a403a74c976a706504f98",
+      "bytes": 11098
+    },
+    "docs/NATIVE_INI_BUNDLE.md": {
+      "sha256": "af63d13283ac231297fe173e94b5b56dfdc22335c60a8daaeb8cb2b39c6ba793",
+      "bytes": 3326
+    },
+    "docs/NATIVE_MEDIA_TESTS.md": {
+      "sha256": "8234830bc16f7157eb7bc77ea77cf59c711c429172d852a478657d414aac5537",
+      "bytes": 3821
+    },
+    "docs/TURBO_PASCAL.md": {
+      "sha256": "bccad69c7b6fa01ebd7a04063424aeee2f446a77bb9dff4b1c9cd6ebcd973fe3",
+      "bytes": 5232
+    },
+    "docs/FLOPPY_CORE.md": {
+      "sha256": "2b5f346bd02ff7c571fbf0b819c5f5733eb19b954872fe566aaa6b0eaeb51f80",
+      "bytes": 4834
+    },
+    "docs/HD_IMPLEMENTATION.md": {
+      "sha256": "a2da7415c995cd80d0fcc2c59b34f144abd77b526a85d9a23268ef73fcff02d2",
+      "bytes": 5347
+    },
+    "docs/DISPLAY_INPUT.md": {
+      "sha256": "053faff04ec2365f415cd624c20dbae8e7cb2bc9bf9c71ca967934e3bd21854b",
+      "bytes": 8806
+    },
+    "docs/HOST_INPUT_IMPLEMENTATION.md": {
+      "sha256": "924ce25e8d0b3427318faceb26a75395bf1d0ce8d8b7aaad6b2fae5042a13465",
+      "bytes": 1810
+    },
+    "build_support/v1_candidate.py": {
+      "sha256": "06fb0ad924b2f9f28d060bb2bd901f35b99a3819b3a3dc6b9c38aae03310659e",
+      "bytes": 11582
+    },
+    "src/disk.s": {
+      "sha256": "75ed25f9fe3856af8f5a5f50b2381c55f730d6f897cc7ef2468636416abbb4ee",
+      "bytes": 13786
+    },
+    "include/host_input.inc": {
+      "sha256": "b14bd490812b142761633cbe73491b6289ddb74184b7fdace342b81375476e59",
+      "bytes": 2594
+    },
+    "src/host_input.s": {
+      "sha256": "3c65f4010eb7bec91e41196534460d36ec60421fb2ffbd433c407bfcdc14c4aa",
+      "bytes": 9928
+    },
+    "tools/setup/app/coordinator.s": {
+      "sha256": "161a3fc7d4f3a7f208f30bd1fb7d082371abf375495cffebfec9bc4981654aab",
+      "bytes": 8324
+    },
+    "tools/config/core_fixture.s": {
+      "sha256": "16b6fdcf1a1c312f1688203adddb893418cfbfe19d2a38e5dc17b8cb414e9b70",
+      "bytes": 1309
+    },
+    "tools/config/config_ui.c": {
+      "sha256": "3614c394c5a41e352dd9455ee29e885f55fe2c4cb3199f3749ce2c1d1f0c9562",
+      "bytes": 10420
+    },
+    "tests/host/hd_backend.zig": {
+      "sha256": "b5cd1a73d20c84dc958520dc8e11ff312a46c61be7d8f5a71bf0ca53ab68c017",
+      "bytes": 24348
+    },
+    "agentworking/evidence/v1-turbo-persistence-root-20261017.json": {
+      "sha256": "a0312ac88a37fb8d14c1a34a65a027fa3b8f238cc556e23e045b1c45baa363d0",
+      "bytes": 2390
+    },
+    "agentworking/evidence/v1-turbo-reopen-root-20261017.json": {
+      "sha256": "485e17a677a1559ecc3a06db54d4e389c505aad43cb1db133945b99f865c55f7",
+      "bytes": 909
+    },
+    "agentworking/evidence/c64u-current9-staging-failure-root-20261017.json": {
+      "sha256": "499d0172caa9546fddfb94a72c80ba53f757ea910141f8483faa47283d2becad",
+      "bytes": 3203
+    },
+    "agentworking/evidence/dos-command-builtins-20261015.json": {
+      "sha256": "b2b1cb69adac0e4eaac32b39053731794fe5c4ff5252607e6e857fddea7a94e0",
+      "bytes": 53267
+    },
+    "agentworking/scratch/cold-runtime-media-controls-20261017/MANIFEST.json": {
+      "sha256": "c866d8f6098375847af07e6290936d5c0ad5097a0da0be72adbfa51465b6b13f",
+      "bytes": 700108
+    },
+    "agentworking/scratch/cold-runtime-media-controls-20261017/HANDOFF.md": {
+      "sha256": "bf7be0cc0d61b9bf08dc3ee8bb547dac82c6d0fa7fcd3a0bd74796034b51a844",
+      "bytes": 4031
+    },
+    "agentworking/scratch/cold-runtime-media-controls-20261017/RESULT.json": {
+      "sha256": "5e3dd62ae75bd4a524f7c5e7b1ef2daa61eefc5d6638e98764471f22c4f3cc58",
+      "bytes": 3763
+    },
+    "agentworking/scratch/cold-runtime-media-controls-20261017/runtime/bridge/bridge.s": {
+      "sha256": "6eacfe2091e5107e0703a5fec4df3b009c3156b2cc173c0ea73b99659c51e659",
+      "bytes": 8631
+    },
+    "agentworking/scratch/cold-runtime-media-controls-20261017/runtime/ui/panel.c": {
+      "sha256": "b1bc70724d150f87240895139e1ab455c8a33c162ea2b8180cc001c8b1efac7b",
+      "bytes": 9744
+    },
+    "agentworking/scratch/native-installer-cold-inventory-20261017/MANIFEST.json": {
+      "sha256": "c115e82c8dc41f8d8729814df1e0af7cbcfcda254fdaba68351cc6c90832b4e7",
+      "bytes": 1001776
+    },
+    "agentworking/scratch/native-installer-cold-inventory-20261017/HANDOFF.md": {
+      "sha256": "bf06dfdad1fdfc15cfd87e2026c4a8dac22d67afbeef9db59ac136ccf9a729fb",
+      "bytes": 4806
+    },
+    "agentworking/scratch/native-installer-cold-inventory-20261017/RESULT.json": {
+      "sha256": "82a653d24b7d3423ee162d05350d2d48c7cdd876f9637624048277a6c3c105be",
+      "bytes": 2290
+    },
+    "agentworking/scratch/live-media-incoming-stage-20261017/MANIFEST.json": {
+      "sha256": "49da57644b82239b7f4095c842c71449e828ba7af97e56b93b0217b3833534bd",
+      "bytes": 934937
+    },
+    "agentworking/scratch/live-media-incoming-stage-20261017/HANDOFF.md": {
+      "sha256": "acbe38aaa8a871f8f91adc0dd9ec92d4c77df2d373d0828a0f947686d702f8c2",
+      "bytes": 7456
+    },
+    "agentworking/scratch/live-media-incoming-stage-20261017/FINAL_RESULT.json": {
+      "sha256": "4b40548858c1561cdb8d8a07feaabd77e78c313ee64dbeaaef1b2ca5c1ba2976",
+      "bytes": 3235
+    }
+  },
+  "CIA_coordination": "current9 physical7d6b failed initial readonly capture; no later calls/closure. c115 old1307 sealed. New c866matched installer child is unsealed; testing continuation, no acceptance imported."
+}

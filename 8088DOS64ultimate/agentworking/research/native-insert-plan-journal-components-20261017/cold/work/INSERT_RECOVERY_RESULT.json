@@ -1,0 +1,86 @@
+{
+  "passed": true,
+  "groups": 9,
+  "seconds": 109.628225667,
+  "records": [
+    {
+      "case": "first_B",
+      "actual_SYS_JG_CIA_RFW_fresh_NONE_INO_handoff": true,
+      "native_PLAN_output": true,
+      "old_presence": 5,
+      "new_presence": 7,
+      "image_crc": 1295756780,
+      "known_closed": true,
+      "full_third_floppy_and_reserve_preserved": true,
+      "scope": "synthetic caller receipt/media; no full Insert or DOS/physical claim"
+    },
+    {
+      "case": "first_B_zero",
+      "actual_SYS_JG_CIA_RFW_fresh_NONE_INO_handoff": true,
+      "native_PLAN_output": true,
+      "old_presence": 5,
+      "new_presence": 7,
+      "image_crc": 0,
+      "known_closed": true,
+      "full_third_floppy_and_reserve_preserved": true,
+      "scope": "synthetic caller receipt/media; no full Insert or DOS/physical claim"
+    },
+    {
+      "case": "ejected_A",
+      "actual_SYS_JG_CIA_RFW_fresh_NONE_INO_handoff": true,
+      "native_PLAN_output": true,
+      "old_presence": 7,
+      "new_presence": 7,
+      "image_crc": 849024174,
+      "known_closed": true,
+      "full_third_floppy_and_reserve_preserved": true,
+      "scope": "synthetic caller receipt/media; no full Insert or DOS/physical claim"
+    },
+    {
+      "case": "ejected_B",
+      "actual_SYS_JG_CIA_RFW_fresh_NONE_INO_handoff": true,
+      "native_PLAN_output": true,
+      "old_presence": 7,
+      "new_presence": 7,
+      "image_crc": 1993541009,
+      "known_closed": true,
+      "full_third_floppy_and_reserve_preserved": true,
+      "scope": "synthetic caller receipt/media; no full Insert or DOS/physical claim"
+    },
+    {
+      "case": "mounted_B",
+      "actual_SYS_JG_CIA_RFW_fresh_NONE_INO_handoff": true,
+      "native_PLAN_output": true,
+      "old_presence": 7,
+      "new_presence": 7,
+      "image_crc": 2300493930,
+      "known_closed": true,
+      "full_third_floppy_and_reserve_preserved": true,
+      "scope": "synthetic caller receipt/media; no full Insert or DOS/physical claim"
+    },
+    {
+      "negative": "unrelated_C_path",
+      "actual_SYS_JG_refusal": true,
+      "no_RFW_entry_or_persistent_mutation": true,
+      "known_closed": true
+    },
+    {
+      "negative": "missing_new_B",
+      "actual_SYS_JG_refusal": true,
+      "no_RFW_entry_or_persistent_mutation": true,
+      "known_closed": true
+    },
+    {
+      "negative": "null_previously_configured_B",
+      "actual_SYS_JG_refusal": true,
+      "no_RFW_entry_or_persistent_mutation": true,
+      "known_closed": true
+    },
+    {
+      "negative": "zero_crc_corruption",
+      "actual_SYS_JG_refusal": true,
+      "no_RFW_entry_or_persistent_mutation": true,
+      "known_closed": true
+    }
+  ]
+}

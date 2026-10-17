@@ -1,0 +1,124 @@
+[
+  {
+    "name": "runtime-cpp-dependencies",
+    "argv": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-M",
+      "-MT",
+      "dos64dep",
+      "-I/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/model/tests/host",
+      "-I/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/model/tests/floppy_export",
+      "-I/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/work/third_party/peddle/Peddle",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/model/tests/floppy_export/bridge.cpp",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/work/third_party/peddle/Peddle/Peddle.cpp",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/work/third_party/peddle/Peddle/PeddleDebugger.cpp",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/work/third_party/peddle/Peddle/PeddleDisassembler.cpp",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/work/third_party/peddle/Peddle/StrWriter.cpp"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017",
+    "exit": 0,
+    "seconds": 0.602781459
+  },
+  {
+    "name": "cold-cpp-dependencies",
+    "argv": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-M",
+      "-MT",
+      "dos64dep",
+      "-I/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/tests/host",
+      "-I/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/tests/floppy_export",
+      "-I/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/third_party/peddle/Peddle",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/tests/floppy_export/bridge.cpp",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/third_party/peddle/Peddle/Peddle.cpp",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/third_party/peddle/Peddle/PeddleDebugger.cpp",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/third_party/peddle/Peddle/PeddleDisassembler.cpp",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/third_party/peddle/Peddle/StrWriter.cpp"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017",
+    "exit": 0,
+    "seconds": 0.34663841699999987
+  },
+  {
+    "name": "fresh-native-plan",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "build_ui_bridge.py",
+      "--role",
+      "runtime"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime",
+    "exit": 0,
+    "seconds": 1.9875217920000003
+  },
+  {
+    "name": "fresh-cold-coupling",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "couple.py"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold",
+    "exit": 0,
+    "seconds": 0.6109132089999996
+  },
+  {
+    "name": "fresh-runtime-model",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "build_model.py"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime",
+    "exit": 0,
+    "seconds": 3.300806292
+  },
+  {
+    "name": "fresh-cold-model",
+    "argv": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-O2",
+      "-fPIC",
+      "-shared",
+      "-I/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/tests/floppy_export",
+      "-I/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/tests/host",
+      "-I/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/third_party/peddle/Peddle",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/tests/floppy_export/bridge.cpp",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/third_party/peddle/Peddle/Peddle.cpp",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/third_party/peddle/Peddle/PeddleDebugger.cpp",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/third_party/peddle/Peddle/PeddleDisassembler.cpp",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/third_party/peddle/Peddle/StrWriter.cpp",
+      "-o",
+      "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/journal-peddle.dylib"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017",
+    "exit": 0,
+    "seconds": 2.899199542
+  },
+  {
+    "name": "actual-native-plan",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "test_insert_plan.py"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime",
+    "exit": 0,
+    "seconds": 3.272173917
+  },
+  {
+    "name": "actual-cold-insert-recovery",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "test_insert_recovery.py"
+    ],
+    "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work",
+    "exit": 0,
+    "seconds": 109.80979649999999
+  }
+]

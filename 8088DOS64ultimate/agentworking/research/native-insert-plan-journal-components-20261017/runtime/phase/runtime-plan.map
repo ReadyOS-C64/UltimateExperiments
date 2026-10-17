@@ -1,0 +1,426 @@
+Modules list:
+-------------
+media_plan.o:
+    CODE              Offs=000000  Size=000D97  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000011  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=0000BB  Align=00001  Fill=0000
+glue.o:
+    CODE              Offs=000D97  Size=0000A2  Align=00001  Fill=0000
+    BSS               Offs=0000BB  Size=00000C  Align=00001  Fill=0000
+    LOADADDR          Offs=000000  Size=000002  Align=00001  Fill=0000
+crc.o:
+    CODE              Offs=000E39  Size=000093  Align=00001  Fill=0000
+    BSS               Offs=0000C7  Size=000006  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(addeqsp.o):
+    CODE              Offs=000ECC  Size=000011  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(addysp.o):
+    CODE              Offs=000EDD  Size=00000E  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(bneg.o):
+    CODE              Offs=000EEB  Size=00000E  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(decsp1.o):
+    CODE              Offs=000EF9  Size=000009  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(decsp2.o):
+    CODE              Offs=000F02  Size=00000D  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(decsp4.o):
+    CODE              Offs=000F0F  Size=00000D  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(decsp6.o):
+    CODE              Offs=000F1C  Size=00000D  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(icmp.o):
+    CODE              Offs=000F29  Size=00002E  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(incsp1.o):
+    CODE              Offs=000F57  Size=000007  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(incsp2.o):
+    CODE              Offs=000F5E  Size=000016  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(incsp3.o):
+    CODE              Offs=000F74  Size=000005  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(incsp4.o):
+    CODE              Offs=000F79  Size=000005  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(incsp6.o):
+    CODE              Offs=000F7E  Size=000005  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(incsp7.o):
+    CODE              Offs=000F83  Size=000005  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(incsp8.o):
+    CODE              Offs=000F88  Size=000005  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(ladd.o):
+    CODE              Offs=000F8D  Size=000025  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(land.o):
+    CODE              Offs=000FB2  Size=000024  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(lcmp.o):
+    CODE              Offs=000FD6  Size=00003B  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(ldeaxysp.o):
+    CODE              Offs=001011  Size=000013  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(leq.o):
+    CODE              Offs=001024  Size=000006  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(lne.o):
+    CODE              Offs=00102A  Size=000006  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(lor.o):
+    CODE              Offs=001030  Size=000024  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(lpush.o):
+    CODE              Offs=001054  Size=000021  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(lsub.o):
+    CODE              Offs=001075  Size=000027  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(ltest.o):
+    CODE              Offs=00109C  Size=00000F  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(lugt.o):
+    CODE              Offs=0010AB  Size=000006  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(lxor.o):
+    CODE              Offs=0010B1  Size=000024  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(makebool.o):
+    CODE              Offs=0010D5  Size=00002C  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(memcmp.o):
+    CODE              Offs=001101  Size=000036  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(memcpy.o):
+    CODE              Offs=001137  Size=00003C  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(popptr1.o):
+    CODE              Offs=001173  Size=00000E  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(pusha.o):
+    CODE              Offs=001181  Size=000016  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(pushax.o):
+    CODE              Offs=001197  Size=00001A  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(pushwsp.o):
+    CODE              Offs=0011B1  Size=00001C  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(return0.o):
+    CODE              Offs=0011CD  Size=000004  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(staxsp.o):
+    CODE              Offs=0011D1  Size=00000B  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(steaxsp.o):
+    CODE              Offs=0011DC  Size=000015  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(subysp.o):
+    CODE              Offs=0011F1  Size=00000D  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(toslong.o):
+    CODE              Offs=0011FE  Size=000038  Align=00001  Fill=0000
+/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib(zeropage.o):
+    ZEROPAGE          Offs=000000  Size=00001A  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+LOADADDR              000000  000001  000002  00001
+ZEROPAGE              000080  000099  00001A  00001
+BSS                   007D00  007DCC  0000CD  00001
+CODE                  00A000  00B235  001236  00001
+RODATA                00B236  00B246  000011  00001
+
+
+Exports list by name:
+---------------------
+__BSS_RUN__               007D00 RLA    __BSS_SIZE__              0000CD REA    
+_memcmp                   00B101 RLA    _memcpy                   00B137 RLA    
+_mp_buffer                00B800 RLA    _mp_cancel                007D02 RLA    
+_mp_compare               00BA40 RLA    _mp_crc                   00AE39 RLA    
+_mp_dma                   00ADAA RLA    _mp_dma_address           007DBB RLA    
+_mp_dma_count             007DBF RLA    _mp_dma_write             007DC1 RLA    
+_mp_ledger                007F00 RLA    _mp_service               00ADDF RLA    
+addeq0sp                  00AECC RLA    addeqysp                  00AECE RLA    
+addysp                    00AEDE RLA    addysp1                   00AEDD RLA    
+bnegax                    00AEEB RLA    booleq                    00B0DB RLA    
+boolne                    00B0D5 RLA    boolugt                   00B0FA RLA    
+decsp1                    00AEF9 RLA    decsp2                    00AF02 RLA    
+decsp4                    00AF0F RLA    decsp6                    00AF1C RLA    
+incsp1                    00AF57 RLA    incsp2                    00AF66 RLA    
+incsp3                    00AF74 RLA    incsp4                    00AF79 RLA    
+incsp6                    00AF7E RLA    incsp7                    00AF83 RLA    
+incsp8                    00AF88 RLA    ldeaxysp                  00B013 RLA    
+popax                     00AF5E RLA    popptr1                   00B173 RLA    
+ptr1                      000088 RLZ    ptr2                      00008A RLZ    
+ptr3                      00008C RLZ    push0ax                   00B057 RLA    
+pusha                     00B185 RLA    pusha0                    00B199 RLA    
+pushax                    00B19B RLA    pusheax                   00B05D RLA    
+pushw0sp                  00B1B1 RLA    pushwysp                  00B1B3 RLA    
+return0                   00B1CD RLA    sp                        000080 RLZ    
+sreg                      000082 RLZ    staxysp                   00B1D3 RLA    
+steaxysp                  00B1DE RLA    subysp                    00B1F1 RLA    
+tmp1                      000090 RLZ    tosaddeax                 00AF93 RLA    
+tosand0ax                 00AFB2 RLA    toseqeax                  00B024 RLA    
+tosicmp0                  00AF29 RLA    toslcmp                   00AFD6 RLA    
+tosneeax                  00B02A RLA    tosor0ax                  00B030 RLA    
+tosoreax                  00B036 RLA    tossubeax                 00B07B RLA    
+tosugteax                 00B0AB RLA    tosulong                  00B1FE RLA    
+tosxoreax                 00B0B7 RLA    utsteax                   00B09C RLA    
+
+
+
+Exports list by value:
+----------------------
+sp                        000080 RLZ    sreg                      000082 RLZ    
+ptr1                      000088 RLZ    ptr2                      00008A RLZ    
+ptr3                      00008C RLZ    tmp1                      000090 RLZ    
+__BSS_SIZE__              0000CD REA    __BSS_RUN__               007D00 RLA    
+_mp_cancel                007D02 RLA    _mp_dma_address           007DBB RLA    
+_mp_dma_count             007DBF RLA    _mp_dma_write             007DC1 RLA    
+_mp_ledger                007F00 RLA    _mp_dma                   00ADAA RLA    
+_mp_service               00ADDF RLA    _mp_crc                   00AE39 RLA    
+addeq0sp                  00AECC RLA    addeqysp                  00AECE RLA    
+addysp1                   00AEDD RLA    addysp                    00AEDE RLA    
+bnegax                    00AEEB RLA    decsp1                    00AEF9 RLA    
+decsp2                    00AF02 RLA    decsp4                    00AF0F RLA    
+decsp6                    00AF1C RLA    tosicmp0                  00AF29 RLA    
+incsp1                    00AF57 RLA    popax                     00AF5E RLA    
+incsp2                    00AF66 RLA    incsp3                    00AF74 RLA    
+incsp4                    00AF79 RLA    incsp6                    00AF7E RLA    
+incsp7                    00AF83 RLA    incsp8                    00AF88 RLA    
+tosaddeax                 00AF93 RLA    tosand0ax                 00AFB2 RLA    
+toslcmp                   00AFD6 RLA    ldeaxysp                  00B013 RLA    
+toseqeax                  00B024 RLA    tosneeax                  00B02A RLA    
+tosor0ax                  00B030 RLA    tosoreax                  00B036 RLA    
+push0ax                   00B057 RLA    pusheax                   00B05D RLA    
+tossubeax                 00B07B RLA    utsteax                   00B09C RLA    
+tosugteax                 00B0AB RLA    tosxoreax                 00B0B7 RLA    
+boolne                    00B0D5 RLA    booleq                    00B0DB RLA    
+boolugt                   00B0FA RLA    _memcmp                   00B101 RLA    
+_memcpy                   00B137 RLA    popptr1                   00B173 RLA    
+pusha                     00B185 RLA    pusha0                    00B199 RLA    
+pushax                    00B19B RLA    pushw0sp                  00B1B1 RLA    
+pushwysp                  00B1B3 RLA    return0                   00B1CD RLA    
+staxysp                   00B1D3 RLA    steaxysp                  00B1DE RLA    
+subysp                    00B1F1 RLA    tosulong                  00B1FE RLA    
+_mp_buffer                00B800 RLA    _mp_compare               00BA40 RLA    
+
+
+
+Imports list:
+-------------
+__BSS_RUN__ ([linker generated]):
+    glue.o                    glue.s(4)
+__BSS_SIZE__ ([linker generated]):
+    glue.o                    glue.s(4)
+_memcmp (memcmp.o):
+    media_plan.o              media_plan.s(26)
+_memcpy (memcpy.o):
+    media_plan.o              media_plan.s(27)
+_mp_buffer (glue.o):
+    media_plan.o              media_plan.s(34)
+_mp_cancel (media_plan.o):
+    glue.o                    glue.s(10)
+_mp_compare (glue.o):
+    media_plan.o              media_plan.s(35)
+_mp_crc (crc.o):
+    media_plan.o              media_plan.s(36)
+_mp_dma (glue.o):
+    media_plan.o              media_plan.s(30)
+_mp_dma_address (glue.o):
+    media_plan.o              media_plan.s(31)
+_mp_dma_count (glue.o):
+    media_plan.o              media_plan.s(32)
+_mp_dma_write (glue.o):
+    media_plan.o              media_plan.s(33)
+_mp_ledger (glue.o):
+    media_plan.o              media_plan.s(29)
+_mp_service (glue.o):
+    media_plan.o              media_plan.s(37)
+addeq0sp (addeqsp.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+addeqysp (addeqsp.o):
+    media_plan.o              media_plan.s(1937)
+addysp (addysp.o):
+    incsp8.o                  runtime/incsp8.s(8)
+    incsp7.o                  runtime/incsp7.s(8)
+    incsp6.o                  runtime/incsp6.s(8)
+    incsp4.o                  runtime/incsp4.s(8)
+    incsp3.o                  runtime/incsp3.s(8)
+    media_plan.o              media_plan.s(1937)
+addysp1 (addysp.o):
+    lxor.o                    runtime/lxor.s(9)
+    lsub.o                    runtime/lsub.s(11)
+    lor.o                     runtime/lor.s(9)
+    land.o                    runtime/land.s(9)
+    ladd.o                    runtime/ladd.s(8)
+bnegax (bneg.o):
+    media_plan.o              media_plan.s(1937)
+booleq (makebool.o):
+    leq.o                     runtime/leq.s(8)
+    media_plan.o              media_plan.s(1937)
+boolne (makebool.o):
+    lne.o                     runtime/lne.s(8)
+boolugt (makebool.o):
+    lugt.o                    runtime/lugt.s(8)
+decsp1 (decsp1.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+decsp2 (decsp2.o):
+    toslong.o                 runtime/toslong.s(8)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+decsp4 (decsp4.o):
+    lpush.o                   runtime/lpush.s(12)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+decsp6 (decsp6.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+incsp1 (incsp1.o):
+    media_plan.o              media_plan.s(1937)
+incsp2 (incsp2.o):
+    popptr1.o                 runtime/popptr1.s(8)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+incsp3 (incsp3.o):
+    media_plan.o              media_plan.s(1937)
+incsp4 (incsp4.o):
+    lcmp.o                    runtime/lcmp.s(9)
+    crc.o                     crc.s(3)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+incsp6 (incsp6.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+incsp7 (incsp7.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+incsp8 (incsp8.o):
+    media_plan.o              media_plan.s(1937)
+ldeaxysp (ldeaxysp.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+popax (incsp2.o):
+    memcpy.o                  common/memcpy.s(14)
+    memcmp.o                  common/memcmp.s(8)
+popptr1 (popptr1.o):
+    memcpy.o                  common/memcpy.s(14)
+    memcmp.o                  common/memcmp.s(8)
+ptr1 (zeropage.o):
+    lcmp.o                    runtime/lcmp.s(10)
+    popptr1.o                 runtime/popptr1.s(9)
+    memcpy.o                  common/memcpy.s(15)
+    memcmp.o                  common/memcmp.s(9)
+    crc.o                     crc.s(2)
+    media_plan.o              media_plan.s(11)
+ptr2 (zeropage.o):
+    memcpy.o                  common/memcpy.s(15)
+    memcmp.o                  common/memcmp.s(9)
+ptr3 (zeropage.o):
+    memcpy.o                  common/memcpy.s(15)
+    memcmp.o                  common/memcmp.s(9)
+push0ax (lpush.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+pusha (pusha.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+pusha0 (pushax.o):
+    media_plan.o              media_plan.s(1937)
+pushax (pushax.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+pusheax (lpush.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+pushw0sp (pushwsp.o):
+    media_plan.o              media_plan.s(1937)
+pushwysp (pushwsp.o):
+    media_plan.o              media_plan.s(1937)
+return0 (return0.o):
+    memcmp.o                  common/memcmp.s(8)
+sp (zeropage.o):
+    lcmp.o                    runtime/lcmp.s(10)
+    toslong.o                 runtime/toslong.s(9)
+    subysp.o                  runtime/subysp.s(9)
+    steaxsp.o                 runtime/steaxsp.s(8)
+    staxsp.o                  runtime/staxsp.s(8)
+    pushwsp.o                 runtime/pushwsp.s(8)
+    pushax.o                  runtime/pushax.s(8)
+    pusha.o                   runtime/pusha.s(8)
+    popptr1.o                 runtime/popptr1.s(9)
+    memcpy.o                  common/memcpy.s(15)
+    lxor.o                    runtime/lxor.s(10)
+    lsub.o                    runtime/lsub.s(12)
+    lpush.o                   runtime/lpush.s(13)
+    lor.o                     runtime/lor.s(10)
+    ldeaxysp.o                runtime/ldeaxysp.s(12)
+    land.o                    runtime/land.s(10)
+    ladd.o                    runtime/ladd.s(9)
+    incsp2.o                  runtime/incsp2.s(8)
+    incsp1.o                  runtime/incsp1.s(8)
+    icmp.o                    runtime/icmp.s(9)
+    decsp6.o                  runtime/decsp6.s(8)
+    decsp4.o                  runtime/decsp4.s(8)
+    decsp2.o                  runtime/decsp2.s(8)
+    decsp1.o                  runtime/decsp1.s(8)
+    addysp.o                  runtime/addysp.s(8)
+    addeqsp.o                 runtime/addeqsp.s(8)
+    crc.o                     crc.s(2)
+    glue.o                    glue.s(3)
+    media_plan.o              media_plan.s(10)
+sreg (zeropage.o):
+    lcmp.o                    runtime/lcmp.s(10)
+    steaxsp.o                 runtime/steaxsp.s(8)
+    lxor.o                    runtime/lxor.s(10)
+    ltest.o                   runtime/ltest.s(8)
+    lsub.o                    runtime/lsub.s(12)
+    lpush.o                   runtime/lpush.s(13)
+    lor.o                     runtime/lor.s(10)
+    ldeaxysp.o                runtime/ldeaxysp.s(12)
+    land.o                    runtime/land.s(10)
+    ladd.o                    runtime/ladd.s(9)
+    icmp.o                    runtime/icmp.s(9)
+    crc.o                     crc.s(2)
+    media_plan.o              media_plan.s(10)
+staxysp (staxsp.o):
+    media_plan.o              media_plan.s(1937)
+steaxysp (steaxsp.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+subysp (subysp.o):
+    media_plan.o              media_plan.s(1937)
+tmp1 (zeropage.o):
+    lxor.o                    runtime/lxor.s(10)
+    ltest.o                   runtime/ltest.s(8)
+    lor.o                     runtime/lor.s(10)
+    land.o                    runtime/land.s(10)
+    ladd.o                    runtime/ladd.s(9)
+    media_plan.o              media_plan.s(11)
+tosaddeax (ladd.o):
+    media_plan.o              media_plan.s(1937)
+tosand0ax (land.o):
+    media_plan.o              media_plan.s(1937)
+toseqeax (leq.o):
+    media_plan.o              media_plan.s(1937)
+tosicmp0 (icmp.o):
+    media_plan.o              media_plan.s(1937)
+toslcmp (lcmp.o):
+    lugt.o                    runtime/lugt.s(8)
+    lne.o                     runtime/lne.s(8)
+    leq.o                     runtime/leq.s(8)
+tosneeax (lne.o):
+    media_plan.o              media_plan.s(1937)
+tosor0ax (lor.o):
+    media_plan.o              media_plan.s(1937)
+tosoreax (lor.o):
+    media_plan.o              media_plan.s(1937)
+tossubeax (lsub.o):
+    media_plan.o              media_plan.s(1937)
+tosugteax (lugt.o):
+    media_plan.o              media_plan.s(1937)
+tosulong (toslong.o):
+    media_plan.o              media_plan.s(1937)
+tosxoreax (lxor.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+utsteax (ltest.o):
+    media_plan.o              media_plan.s(1937)
+    media_plan.o              media_plan.s(1937)
+

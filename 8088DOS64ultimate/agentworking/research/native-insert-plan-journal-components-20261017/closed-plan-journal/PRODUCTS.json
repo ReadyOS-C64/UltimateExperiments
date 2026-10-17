@@ -1,0 +1,118 @@
+{
+  "runtime/MODAL.MNU": {
+    "sha256": "5e1bfba0ff1b065c4b547302dd2ba451b31306f69cab3db066e628b88104fefa",
+    "bytes": 40960
+  },
+  "runtime/HEADER.bin": {
+    "sha256": "d27c88c6001ec612d867fdf35873d35979dde23d0f25b17f5e02362c9364774b",
+    "bytes": 64
+  },
+  "runtime/WORKERS.MNU": {
+    "sha256": "194fd194615b2f683f044e79b10d5456d0520725bd08c5346ce2f404a648a2f9",
+    "bytes": 40960
+  },
+  "runtime/work/build/dos64.prg": {
+    "sha256": "813da7aa346b2391a6dd6c143bc759f8f3e19943afc32d0f09874922b6020579",
+    "bytes": 47105
+  },
+  "runtime/work/build/dos64.labels": {
+    "sha256": "feada50b460242938f954379006dfb43a09e5d21f8e9c92a832ad95e30817568",
+    "bytes": 75232
+  },
+  "runtime/work/build/dos64.map": {
+    "sha256": "f89bc64d0eb1f71217509fe035d06f47c463fa96c375ab6ab319c5677df0f9c8",
+    "bytes": 93580
+  },
+  "runtime/phase/runtime-plan.prg": {
+    "sha256": "336970188dd1e370e61197d99e521fe8ef7e859b6578908da291a65762947725",
+    "bytes": 4681
+  },
+  "runtime/phase/runtime-plan.labels": {
+    "sha256": "9ed45128148fea2beb1fb717ca486f3ca24dd768927d75c03eb08fc04d321c83",
+    "bytes": 3029
+  },
+  "runtime/phase/runtime-plan.map": {
+    "sha256": "96177e2693ef357b6ac9ce286dde50b5502fd14d8b3d02616d25fc40fa326249",
+    "bytes": 21800
+  },
+  "runtime/phase/worker-calls.prg": {
+    "sha256": "7a75ca16b675e04995fed71720203a2ab35dc0d5ed7349bd7c478f0f2238a4d4",
+    "bytes": 90
+  },
+  "runtime/phase/worker-calls.labels": {
+    "sha256": "f662e539d0b54729da9c7ff587d7fd7b566f961cf5ef12f6f04123e1081f662d",
+    "bytes": 78
+  },
+  "runtime/phase/worker-calls.map": {
+    "sha256": "16d5ae9a4ba40101749724930c1d73461d43160802495a1112a64693ff63e0db",
+    "bytes": 552
+  },
+  "cold/work/controller.prg": {
+    "sha256": "81aa83b831b1af308f6a19d5ea70475dd8b5f88b11807bc831e003eb2f3c210d",
+    "bytes": 20480
+  },
+  "cold/work/controller.labels": {
+    "sha256": "5d4445bc106499b1c2f96fc30eedf47677d8c06753dfabd22bc22b5bcd17d984",
+    "bytes": 18440
+  },
+  "cold/work/controller.map": {
+    "sha256": "d033ff1df308518af3d815afae328de8ece82278d33577a198c5c06874ecbb89",
+    "bytes": 84289
+  },
+  "cold/gate/START.RCV": {
+    "sha256": "0d908e16f6e57f1a3c2bbf7ed517743a6f9ee230e367ca058aa460f210fc05c4",
+    "bytes": 7904
+  },
+  "cold/worker/ROLL.PRG": {
+    "sha256": "df2f4186b606e5324f9759453ed723ece2586034ebfd1930b0ddbdda1ce839db",
+    "bytes": 5580
+  },
+  "cold/work/START.INO": {
+    "sha256": "cb4b0909b884714a3e38b60864cd7fd3027e716e47ac9abdc5b53ee957020053",
+    "bytes": 7692
+  },
+  "cold/work/START.RCV": {
+    "sha256": "08715a793b6fe0abf6dc95e09bad6b13356936b49ba0901793261568faec444e",
+    "bytes": 7902
+  },
+  "cold/work/START.RFW": {
+    "sha256": "f11b0c1d66a9116b005651529de53bec19939ae03fd9c60ef0599a78b6c84824",
+    "bytes": 5578
+  },
+  "cold/work/START.REL": {
+    "sha256": "630c70cc7743ff91901c4b5a272052f5eb1db9a6c6c7cfc011dbd55c40ffffaa",
+    "bytes": 64
+  },
+  "cold/work/DOS64.REL": {
+    "sha256": "53bf4778c41981daa4b006509acc297cb31517ee07cf8d886584b5e0d3c0e1bb",
+    "bytes": 64
+  },
+  "cold/work/DOS64.MNU": {
+    "sha256": "02bd918f169387f64c9513b51bf405c3c0aee66694003dabdd523a2e423e10d6",
+    "bytes": 40960
+  },
+  "cold/gate/gate.labels": {
+    "sha256": "7ba3c03a21d498811700d342fb7741ba5d2e2fa6483ac094249cbdf53a06d125",
+    "bytes": 12018
+  },
+  "cold/gate/gate.map": {
+    "sha256": "2c0de54527418a54d2e754bebaf4ef1d84b5ba1eb8d3b5bbe0b48a063792d8f8",
+    "bytes": 21602
+  },
+  "cold/worker/worker.labels": {
+    "sha256": "c21f15cb7bcd3394737c7cfc58bfad7badefd1d11757cd8a1c71f3467752261c",
+    "bytes": 12035
+  },
+  "cold/worker/worker.map": {
+    "sha256": "46bbec74810cf22a2bc60aa34fdc0d5248853386e5120f54aa76d90f7078a8ca",
+    "bytes": 19267
+  },
+  "runtime/model/save-peddle.dylib": {
+    "sha256": "92b375b0867beb4075a3829cc51ada135e1d677a4544904bcde4111f705fae2e",
+    "bytes": 210544
+  },
+  "cold/work/journal-peddle.dylib": {
+    "sha256": "c30d8cce22e6320461f0f73c157b77c73db8fd20870aca5a01d3d56d9c5442c0",
+    "bytes": 207752
+  }
+}

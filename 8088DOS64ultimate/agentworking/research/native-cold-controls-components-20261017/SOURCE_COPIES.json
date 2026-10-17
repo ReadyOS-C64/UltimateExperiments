@@ -1,0 +1,97 @@
+{
+  "HANDOFF.md": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/HANDOFF.md",
+    "sha256": "bf7be0cc0d61b9bf08dc3ee8bb547dac82c6d0fa7fcd3a0bd74796034b51a844",
+    "bytes": 4031
+  },
+  "PORTABLE_SOURCE.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/PORTABLE_SOURCE.json",
+    "sha256": "c50f76e3df92edc9ef776e3dde4d67da31ac48a7e64c7eb53e77a281ce913277",
+    "bytes": 1640
+  },
+  "MANIFEST.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/MANIFEST.json",
+    "sha256": "c866d8f6098375847af07e6290936d5c0ad5097a0da0be72adbfa51465b6b13f",
+    "bytes": 700108
+  },
+  "RESULT.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/RESULT.json",
+    "sha256": "5e3dd62ae75bd4a524f7c5e7b1ef2daa61eefc5d6638e98764471f22c4f3cc58",
+    "bytes": 3763
+  },
+  "PRODUCTS.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/PRODUCTS.json",
+    "sha256": "37a4b0ef204b3cc2796f4c0b0d95ae7dcba18e2ec165f4bc47da8153fe5323a5",
+    "bytes": 2143
+  },
+  "MEASURED_MAPS.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/MEASURED_MAPS.json",
+    "sha256": "8bc90cf09c9d7b6bbcda29d61f6e8565f32c18be38fc85ffba03a141afecf3e4",
+    "bytes": 5220
+  },
+  "COMBINED_RUNTIME.patch": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/COMBINED_RUNTIME.patch",
+    "sha256": "ed8ba33b0c82855920536f326696bad42e41b05cb998abf83f33c27b00efead0",
+    "bytes": 14165
+  },
+  "couple_runtime.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/couple_runtime.py",
+    "sha256": "0cf91d0b838a08b0ae4ff0378e692955f6b0f267edcd7ae4a5a3d8bfd6548e06",
+    "bytes": 4995
+  },
+  "couple.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/couple.py",
+    "sha256": "91ea551a57534831c2c5a897ba45d8578f2538ab8428c81492b6c4332c60a9e5",
+    "bytes": 3060
+  },
+  "close_combined.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/close_combined.py",
+    "sha256": "09780e56bf50d8fcbdde93e01603d643ee0c3fc0e61e53c96f2cac9e447433f6",
+    "bytes": 4346
+  },
+  "work/test_cold_media.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/work/test_cold_media.py",
+    "sha256": "43b120ba239bc4ed4c01ed0ff530f76b30154cee6afd4f4aafc6c6b23d4e66c8",
+    "bytes": 12869
+  },
+  "runtime/warm_controls.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/runtime/warm_controls.py",
+    "sha256": "980b2015e98a1d161d25a6c76324aad88b9ae034939609701617222482f610c6",
+    "bytes": 1142
+  },
+  "runtime/work/src/floppy_control.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/runtime/work/src/floppy_control.s",
+    "sha256": "0780fcd406497a23487956db8f01cf98d75a62d5c22891028fb7d577956c59f2",
+    "bytes": 12305
+  },
+  "runtime/work/include/disk.inc": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/runtime/work/include/disk.inc",
+    "sha256": "97f5aa01ba2e8992ac47764772ef3d1405ecd426ac9bc479e161d0145ba05b2f",
+    "bytes": 1955
+  },
+  "runtime/build_ui_bridge.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/runtime/build_ui_bridge.py",
+    "sha256": "38aed3a83715a22c611796db32ae0ac49e897178ec8e4352820d5e7a661ddf1e",
+    "bytes": 12483
+  },
+  "runtime/ui/panel.c": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/runtime/ui/panel.c",
+    "sha256": "b1bc70724d150f87240895139e1ab455c8a33c162ea2b8180cc001c8b1efac7b",
+    "bytes": 9744
+  },
+  "runtime/bridge/bridge.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/runtime/bridge/bridge.s",
+    "sha256": "6eacfe2091e5107e0703a5fec4df3b009c3156b2cc173c0ea73b99659c51e659",
+    "bytes": 8631
+  },
+  "runtime/work/src/loader_handoff.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/runtime/work/src/loader_handoff.s",
+    "sha256": "b6b3a1ef46ef8e6760de954f45c80f5f4b5f9217fb4ecddc886252249a670ea7",
+    "bytes": 12593
+  },
+  "runtime/work/Makefile": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/cold-runtime-media-controls-20261017/runtime/work/Makefile",
+    "sha256": "56eda575ae8275637200f22db41cad874a95c8459207e5e9731522518027c6ca",
+    "bytes": 23035
+  }
+}

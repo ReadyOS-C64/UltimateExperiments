@@ -1,0 +1,57 @@
+{
+  "relative_to_finish_f83f": {
+    "controller/action_shell.c": {
+      "sha256": "aba0ebc5483ca6233a5c1b44e10d59779f4671439225df69b37c226a87029704",
+      "bytes": 6759
+    },
+    "controller/action_shell.h": {
+      "sha256": "bb983b3d2d25e36a821dae321748622312c988fd48249a77571eae1d0bf8188b",
+      "bytes": 604
+    },
+    "phase/transaction_wire.s": {
+      "sha256": "9b67add7682374baa4d5a3220357f6c9ceaa7e17dede83aae7b3d33e3bc2af99",
+      "bytes": 27745
+    },
+    "phase/sequence_api.h": {
+      "sha256": "0824a0f5339752185c957ff8db11db8be7467e8911a45072071318f3c7cea61c",
+      "bytes": 1676
+    },
+    "bridge/bridge.s": {
+      "sha256": "1e0c2695679e089d55426bd946e7608b42e2609ae2ee73afd1b97d33e6949f63",
+      "bytes": 5791
+    },
+    "build_controller.py": {
+      "sha256": "85d37183e2d35c1a4799e05ea9d3ee4d7a3b2dcbada2a5e3d39d36fabfbdcb25",
+      "bytes": 5092
+    },
+    "role_oracle.py": {
+      "sha256": "bff9aa5ee4b3f64ddca90a695206de68e9c78a7a2dabed85e8d02804acd0ddb4",
+      "bytes": 3225
+    }
+  },
+  "source_exact_from_ordinary5737": [
+    "controller/action_shell.c",
+    "controller/action_shell.h",
+    "phase/transaction_wire.s",
+    "phase/sequence_api.h"
+  ],
+  "bridge_merge": "Preserve action7/privateFinish; add privateaction1 and capturedaction assignment only.",
+  "test_support": [
+    "runtime_versioned_replay.py",
+    "test_versioned_save.py",
+    "check_defaults.py",
+    "close_runtime.py",
+    "close_default_errata.py",
+    "upstream-default/phase/old_transaction_wire.s",
+    "upstream-default/work/include/modal_assets.inc"
+  ],
+  "unchanged_Root_dependencies": [
+    "build_ui_bridge.py",
+    "build_finish.py",
+    "finish/finish.s",
+    "phase/modal_save.s",
+    "broker/broker.s",
+    "ui/panel.c"
+  ],
+  "scope": "Private actualruntime/CIA menu component; no cold/public/device"
+}

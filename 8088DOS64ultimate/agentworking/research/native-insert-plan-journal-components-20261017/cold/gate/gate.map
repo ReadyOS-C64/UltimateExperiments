@@ -1,0 +1,430 @@
+Modules list:
+-------------
+entry.o:
+    LOADADDR          Offs=000000  Size=000002  Align=00001  Fill=0000
+    SHARED            Offs=000000  Size=000546  Align=00001  Fill=0000
+    RECOVER_DATA      Offs=000000  Size=000001  Align=00001  Fill=0000
+    RECOVER_CODE      Offs=000000  Size=00009D  Align=00001  Fill=0000
+journal_gate.o:
+    RECOVER_RO        Offs=000000  Size=000049  Align=00001  Fill=0000
+    RECOVER_BSS       Offs=000000  Size=0004CA  Align=00001  Fill=0000
+    RECOVER_CODE      Offs=00009D  Size=0018A4  Align=00001  Fill=0000
+core_imports.o:
+/opt/homebrew/share/cc65/lib/none.lib(decsp8.o):
+    CODE              Offs=000000  Size=00000D  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+LOADADDR              000000  000001  000002  00001
+SHARED                006000  006545  000546  00001
+RECOVER_CODE          006546  007E86  001941  00001
+RECOVER_RO            007E87  007ECF  000049  00001
+RECOVER_DATA          007ED0  007ED0  000001  00001
+CODE                  007ED1  007EDD  00000D  00001
+RECOVER_BSS           009000  0094C9  0004CA  00001
+
+
+Exports list by name:
+---------------------
+__RECOVER_BSS_RUN__       009000 RLA    __RECOVER_BSS_SIZE__      0004CA REA    
+_br_cancel                000D5F REA    _br_config                0053DC REA    
+_br_now                   0080A0 REA    _br_poll                  000BFB REA    
+_br_request               008000 REA    _br_result                00808E REA    
+_br_start                 0008C8 REA    _br_ui_acquire            000838 REA    
+_br_ui_release            00085D REA    _c32_address              008DC3 REA    
+_c32_crc                  008DBF REA    _c32_length               008DC5 REA    
+_c32_update               0035C8 REA    _d64_cfg_input            0081C3 REA    
+_d64_cfg_output           008403 REA    _d64_config_validate      0060A1 REA    
+_d64_path_join            00133E REA    _d64_path_output          008743 REA    
+_d64_path_parent          001445 REA    _d64_path_relative        0086C3 REA    
+_d64_path_source          008643 REA    _files_error              008F97 REA    
+_files_handle             008FA5 REA    _jg_begin                 0065E3 RLA    
+_jg_boot_ready            006C90 RLA    _jg_cancel                006C43 RLA    
+_jg_class                 006C74 RLA    _jg_cleanup               006C6B RLA    
+_jg_clock_fail            006C4E RLA    _jg_error                 006C62 RLA    
+_jg_initialized           007ED0 RLA    _jg_poll                  006786 RLA    
+_jg_state                 006C59 RLA    _lc_dma                   003499 REA    
+_lc_dma_c64               0088D7 REA    _lc_dma_direction         0088DF REA    
+_lc_dma_length            0088D9 REA    _lc_dma_reu               0088DB REA    
+_memcmp                   0044D7 REA    _memcpy                   00450D REA    
+_memset                   004551 REA    _ps_clock_poll            003AA5 REA    
+_ps_key                   008DCE REA    _ps_key_poll              0038C3 REA    
+_ps_ticks                 008DD2 REA    _sc_ready                 004134 REA    
+_strcpy                   0046CA REA    _uci_data                 00C380 REA    
+_uci_error                008F7B REA    _uci_flags                008F7E REA    
+_uci_last_status          008F7D REA    _uci_recovery_failed      008F7C REA    
+_uci_status               00C700 REA    _uci_status_len           008F85 REA    
+addeq0sp                  004177 REA    addeqysp                  004179 REA    
+addysp                    004189 REA    bnega                     0041D5 REA    
+bnegax                    0041D1 REA    bnegeax                   00435A REA    
+decsp1                    0041FF REA    decsp2                    004208 REA    
+decsp3                    004215 REA    decsp4                    004222 REA    
+decsp6                    00422F REA    decsp8                    007ED1 RLA    
+incsp1                    004286 REA    incsp2                    004295 REA    
+incsp3                    0042A3 REA    incsp4                    0042A8 REA    
+incsp6                    0042B2 REA    incsp8                    0042BC REA    
+laddeq                    0042EE REA    ldeaxysp                  0043B1 REA    
+ptr1                      00002C REZ    push0ax                   00441B REA    
+pusha                     004604 REA    pusha0                    004618 REA    
+pushax                    00461A REA    pusheax                   004421 REA    
+pushwysp                  004632 REA    sp                        000024 REZ    
+sreg                      000026 REZ    stax0sp                   0046AA REA    
+staxysp                   0046AC REA    steaxysp                  0046B7 REA    
+subysp                    004714 REA    tmp1                      000034 REZ    
+tosadd0ax                 0042C1 REA    tosaddeax                 0042C7 REA    
+toseqeax                  0043D7 REA    tosicmp                   00423E REA    
+tosicmp0                  00423C REA    tosneeax                  0043EE REA    
+tosor0ax                  0043F4 REA    tosoreax                  0043FA REA    
+tossubeax                 00443F REA    tosxoreax                 00448D REA    
+
+
+
+Exports list by value:
+----------------------
+sp                        000024 REZ    sreg                      000026 REZ    
+ptr1                      00002C REZ    tmp1                      000034 REZ    
+__RECOVER_BSS_SIZE__      0004CA REA    _br_ui_acquire            000838 REA    
+_br_ui_release            00085D REA    _br_start                 0008C8 REA    
+_br_poll                  000BFB REA    _br_cancel                000D5F REA    
+_d64_path_join            00133E REA    _d64_path_parent          001445 REA    
+_lc_dma                   003499 REA    _c32_update               0035C8 REA    
+_ps_key_poll              0038C3 REA    _ps_clock_poll            003AA5 REA    
+_sc_ready                 004134 REA    addeq0sp                  004177 REA    
+addeqysp                  004179 REA    addysp                    004189 REA    
+bnegax                    0041D1 REA    bnega                     0041D5 REA    
+decsp1                    0041FF REA    decsp2                    004208 REA    
+decsp3                    004215 REA    decsp4                    004222 REA    
+decsp6                    00422F REA    tosicmp0                  00423C REA    
+tosicmp                   00423E REA    incsp1                    004286 REA    
+incsp2                    004295 REA    incsp3                    0042A3 REA    
+incsp4                    0042A8 REA    incsp6                    0042B2 REA    
+incsp8                    0042BC REA    tosadd0ax                 0042C1 REA    
+tosaddeax                 0042C7 REA    laddeq                    0042EE REA    
+bnegeax                   00435A REA    ldeaxysp                  0043B1 REA    
+toseqeax                  0043D7 REA    tosneeax                  0043EE REA    
+tosor0ax                  0043F4 REA    tosoreax                  0043FA REA    
+push0ax                   00441B REA    pusheax                   004421 REA    
+tossubeax                 00443F REA    tosxoreax                 00448D REA    
+_memcmp                   0044D7 REA    _memcpy                   00450D REA    
+_memset                   004551 REA    pusha                     004604 REA    
+pusha0                    004618 REA    pushax                    00461A REA    
+pushwysp                  004632 REA    stax0sp                   0046AA REA    
+staxysp                   0046AC REA    steaxysp                  0046B7 REA    
+_strcpy                   0046CA REA    subysp                    004714 REA    
+_br_config                0053DC REA    _d64_config_validate      0060A1 REA    
+_jg_begin                 0065E3 RLA    _jg_poll                  006786 RLA    
+_jg_cancel                006C43 RLA    _jg_clock_fail            006C4E RLA    
+_jg_state                 006C59 RLA    _jg_error                 006C62 RLA    
+_jg_cleanup               006C6B RLA    _jg_class                 006C74 RLA    
+_jg_boot_ready            006C90 RLA    _jg_initialized           007ED0 RLA    
+decsp8                    007ED1 RLA    _br_request               008000 REA    
+_br_result                00808E REA    _br_now                   0080A0 REA    
+_d64_cfg_input            0081C3 REA    _d64_cfg_output           008403 REA    
+_d64_path_source          008643 REA    _d64_path_relative        0086C3 REA    
+_d64_path_output          008743 REA    _lc_dma_c64               0088D7 REA    
+_lc_dma_length            0088D9 REA    _lc_dma_reu               0088DB REA    
+_lc_dma_direction         0088DF REA    _c32_crc                  008DBF REA    
+_c32_address              008DC3 REA    _c32_length               008DC5 REA    
+_ps_key                   008DCE REA    _ps_ticks                 008DD2 REA    
+_uci_error                008F7B REA    _uci_recovery_failed      008F7C REA    
+_uci_last_status          008F7D REA    _uci_flags                008F7E REA    
+_uci_status_len           008F85 REA    _files_error              008F97 REA    
+_files_handle             008FA5 REA    __RECOVER_BSS_RUN__       009000 RLA    
+_uci_data                 00C380 REA    _uci_status               00C700 REA    
+
+
+
+Imports list:
+-------------
+__RECOVER_BSS_RUN__ ([linker generated]):
+    entry.o                   entry.s(4)
+__RECOVER_BSS_SIZE__ ([linker generated]):
+    entry.o                   entry.s(4)
+_br_cancel (core_imports.o):
+    journal_gate.o            journal_gate.s(21)
+_br_config (core_imports.o):
+    journal_gate.o            journal_gate.s(13)
+_br_now (core_imports.o):
+    journal_gate.o            journal_gate.s(16)
+_br_poll (core_imports.o):
+    journal_gate.o            journal_gate.s(20)
+_br_request (core_imports.o):
+    journal_gate.o            journal_gate.s(14)
+_br_result (core_imports.o):
+    journal_gate.o            journal_gate.s(15)
+_br_start (core_imports.o):
+    journal_gate.o            journal_gate.s(19)
+_br_ui_acquire (core_imports.o):
+    journal_gate.o            journal_gate.s(17)
+    entry.o                   entry.s(3)
+_br_ui_release (core_imports.o):
+    journal_gate.o            journal_gate.s(18)
+    entry.o                   entry.s(3)
+_c32_address (core_imports.o):
+    journal_gate.o            journal_gate.s(57)
+_c32_crc (core_imports.o):
+    journal_gate.o            journal_gate.s(56)
+_c32_length (core_imports.o):
+    journal_gate.o            journal_gate.s(58)
+_c32_update (core_imports.o):
+    journal_gate.o            journal_gate.s(59)
+_d64_cfg_input (core_imports.o):
+    journal_gate.o            journal_gate.s(43)
+_d64_cfg_output (core_imports.o):
+    journal_gate.o            journal_gate.s(44)
+_d64_config_validate (core_imports.o):
+    journal_gate.o            journal_gate.s(48)
+_d64_path_join (core_imports.o):
+    journal_gate.o            journal_gate.s(49)
+_d64_path_output (core_imports.o):
+    journal_gate.o            journal_gate.s(47)
+_d64_path_parent (core_imports.o):
+    journal_gate.o            journal_gate.s(50)
+_d64_path_relative (core_imports.o):
+    journal_gate.o            journal_gate.s(46)
+_d64_path_source (core_imports.o):
+    journal_gate.o            journal_gate.s(45)
+_files_error (core_imports.o):
+    journal_gate.o            journal_gate.s(65)
+_files_handle (core_imports.o):
+    journal_gate.o            journal_gate.s(64)
+_jg_begin (journal_gate.o):
+    entry.o                   entry.s(7)
+_jg_boot_ready (journal_gate.o):
+    entry.o                   entry.s(7)
+_jg_cancel (journal_gate.o):
+    entry.o                   entry.s(7)
+_jg_class (journal_gate.o):
+    entry.o                   entry.s(7)
+_jg_cleanup (journal_gate.o):
+    entry.o                   entry.s(7)
+_jg_clock_fail (journal_gate.o):
+    entry.o                   entry.s(7)
+_jg_error (journal_gate.o):
+    entry.o                   entry.s(7)
+_jg_initialized (entry.o):
+    journal_gate.o            journal_gate.s(71)
+_jg_poll (journal_gate.o):
+    entry.o                   entry.s(7)
+_jg_state (journal_gate.o):
+    entry.o                   entry.s(7)
+_lc_dma (core_imports.o):
+    journal_gate.o            journal_gate.s(70)
+_lc_dma_c64 (core_imports.o):
+    journal_gate.o            journal_gate.s(66)
+_lc_dma_direction (core_imports.o):
+    journal_gate.o            journal_gate.s(69)
+_lc_dma_length (core_imports.o):
+    journal_gate.o            journal_gate.s(67)
+_lc_dma_reu (core_imports.o):
+    journal_gate.o            journal_gate.s(68)
+_memcmp (core_imports.o):
+    journal_gate.o            journal_gate.s(61)
+_memcpy (core_imports.o):
+    journal_gate.o            journal_gate.s(62)
+_memset (core_imports.o):
+    journal_gate.o            journal_gate.s(63)
+_ps_clock_poll (core_imports.o):
+    journal_gate.o            journal_gate.s(55)
+_ps_key (core_imports.o):
+    journal_gate.o            journal_gate.s(52)
+_ps_key_poll (core_imports.o):
+    journal_gate.o            journal_gate.s(54)
+_ps_ticks (core_imports.o):
+    journal_gate.o            journal_gate.s(53)
+_sc_ready (core_imports.o):
+    journal_gate.o            journal_gate.s(51)
+    entry.o                   entry.s(3)
+_strcpy (core_imports.o):
+    journal_gate.o            journal_gate.s(60)
+_uci_data (core_imports.o):
+    journal_gate.o            journal_gate.s(40)
+_uci_error (core_imports.o):
+    journal_gate.o            journal_gate.s(36)
+_uci_flags (core_imports.o):
+    journal_gate.o            journal_gate.s(38)
+_uci_last_status (core_imports.o):
+    journal_gate.o            journal_gate.s(39)
+_uci_recovery_failed (core_imports.o):
+    journal_gate.o            journal_gate.s(37)
+_uci_status (core_imports.o):
+    journal_gate.o            journal_gate.s(41)
+_uci_status_len (core_imports.o):
+    journal_gate.o            journal_gate.s(42)
+addeq0sp (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+addeqysp (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+addysp (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+bnega (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+bnegax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+bnegeax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+decsp1 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+decsp2 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+decsp3 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+decsp4 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+decsp6 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+decsp8 (decsp8.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+incsp1 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+incsp2 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+incsp3 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+incsp4 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+incsp6 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+incsp8 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+laddeq (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+ldeaxysp (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+ptr1 (core_imports.o):
+    journal_gate.o            journal_gate.s(11)
+    entry.o                   entry.s(5)
+push0ax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+pusha (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+pusha0 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+pushax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+pusheax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+pushwysp (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+sp (core_imports.o):
+    decsp8.o                  runtime/decsp8.s(8)
+    journal_gate.o            journal_gate.s(10)
+sreg (core_imports.o):
+    journal_gate.o            journal_gate.s(10)
+stax0sp (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+staxysp (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+steaxysp (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+subysp (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+tmp1 (core_imports.o):
+    journal_gate.o            journal_gate.s(11)
+tosadd0ax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+tosaddeax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+toseqeax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+tosicmp (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+tosicmp0 (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+tosneeax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+tosor0ax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+tosoreax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+tossubeax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+tosxoreax (core_imports.o):
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+    journal_gate.o            journal_gate.s(3892)
+

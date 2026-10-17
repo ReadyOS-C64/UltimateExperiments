@@ -1,0 +1,82 @@
+{
+  "PORTABLE_SOURCE.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/PORTABLE_SOURCE.json",
+    "sha256": "eb939aee1ee8681f7ba954221380dbb343aa6222454fec46f84d8d83dd8dd29f",
+    "bytes": 1835
+  },
+  "MANIFEST.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/MANIFEST.json",
+    "sha256": "5b5468298d5dabbf967350aa20e8e046a944549500b084f1560cd2bfeee1f8e8",
+    "bytes": 1464250
+  },
+  "controller/action_shell.c": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/controller/action_shell.c",
+    "sha256": "aba0ebc5483ca6233a5c1b44e10d59779f4671439225df69b37c226a87029704",
+    "bytes": 6759
+  },
+  "controller/action_shell.h": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/controller/action_shell.h",
+    "sha256": "bb983b3d2d25e36a821dae321748622312c988fd48249a77571eae1d0bf8188b",
+    "bytes": 604
+  },
+  "phase/transaction_wire.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/phase/transaction_wire.s",
+    "sha256": "9b67add7682374baa4d5a3220357f6c9ceaa7e17dede83aae7b3d33e3bc2af99",
+    "bytes": 27745
+  },
+  "phase/sequence_api.h": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/phase/sequence_api.h",
+    "sha256": "0824a0f5339752185c957ff8db11db8be7467e8911a45072071318f3c7cea61c",
+    "bytes": 1676
+  },
+  "bridge/bridge.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/bridge/bridge.s",
+    "sha256": "1e0c2695679e089d55426bd946e7608b42e2609ae2ee73afd1b97d33e6949f63",
+    "bytes": 5791
+  },
+  "build_controller.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/build_controller.py",
+    "sha256": "85d37183e2d35c1a4799e05ea9d3ee4d7a3b2dcbada2a5e3d39d36fabfbdcb25",
+    "bytes": 5092
+  },
+  "role_oracle.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/role_oracle.py",
+    "sha256": "bff9aa5ee4b3f64ddca90a695206de68e9c78a7a2dabed85e8d02804acd0ddb4",
+    "bytes": 3225
+  },
+  "runtime_versioned_replay.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/runtime_versioned_replay.py",
+    "sha256": "f05e03be22b8db2d7d5d6bd95b889b66100c193904af79b25a67d36482c9698d",
+    "bytes": 5592
+  },
+  "test_versioned_save.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/test_versioned_save.py",
+    "sha256": "37e8b6354fccca30adcedbfd591d80e5f712b7c04ac99261c498f1c58cd28e11",
+    "bytes": 9251
+  },
+  "check_defaults.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/check_defaults.py",
+    "sha256": "5a6cf98efe5907118ad1ce1385790d82a3a951f1bbac425cf8d53728431dc824",
+    "bytes": 2666
+  },
+  "close_runtime.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/close_runtime.py",
+    "sha256": "a2c45083fc0837803447b1c45ac0ad54c08c3254a788a44ca012609480f5843b",
+    "bytes": 5514
+  },
+  "close_default_errata.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/close_default_errata.py",
+    "sha256": "c5016523bdac1a814bd5e38348899039186f29fa98d9122ba374a6050e9c1484",
+    "bytes": 3589
+  },
+  "upstream-default/phase/old_transaction_wire.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/upstream-default/phase/old_transaction_wire.s",
+    "sha256": "656c64372298696333eea323328ac0480be055e3eea344f4fb42ba701d40e74f",
+    "bytes": 26910
+  },
+  "upstream-default/work/include/modal_assets.inc": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-versioned-finish-20261017/upstream-default/work/include/modal_assets.inc",
+    "sha256": "f43657a3b01449b222abb0db8d26defc7f32c1ec5176c621483a49e70326b973",
+    "bytes": 276
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "passed": true,
+  "status": "PASS_PRIVATE_MATCHED_ACTUAL_COLD_ORDINARY_SAVE_CONTROLS_RESUME_C_READ_FINISH",
+  "native_groups": 8,
+  "source_SDK_inputs_and_copies": 1581,
+  "tools": 6,
+  "default_profiles_exact": true,
+  "parents": {
+    "binding": "14e75410dd939cbdd43e03582307a536b28e64ffb1e4872be41e114ee2846497",
+    "versioned": "5b5468298d5dabbf967350aa20e8e046a944549500b084f1560cd2bfeee1f8e8",
+    "controls": "e0dc72b4a27be0c770dac215f26e025817b4b3fdb8d917fbccb799e36d2eb30e"
+  },
+  "products": {
+    "runtime/work/build/dos64.prg": {
+      "sha256": "cd27d3e4a8a70f0785c8e31fea768091073ead6fbadeaa2fb7f3cb4f7fc8e960",
+      "bytes": 47105
+    },
+    "runtime/work/build/dos64.labels": {
+      "sha256": "785f57240b1214542defbc896aa209b05547e457a706cd128525a5008f26ea01",
+      "bytes": 75258
+    },
+    "runtime/MODAL.MNU": {
+      "sha256": "08274d29a05a742f04c4fce3565f3ce588d02b6ce970947da92a4a7bc4c79ac7",
+      "bytes": 40960
+    },
+    "runtime/HEADER.bin": {
+      "sha256": "e2ade126d798f2e4aa71b5357c6e38156b8a0a50080b6e5a79c99b7e765958fc",
+      "bytes": 64
+    },
+    "runtime/broker/broker.prg": {
+      "sha256": "fc6c88292ab806cf0af2e06d8b5343d032935d00e5b3480e81f2d5828cbde278",
+      "bytes": 1969
+    },
+    "runtime/ui/panel.prg": {
+      "sha256": "60236a23656bc1906ca9da7ee88c6280d1cd517a8210f5925ee326df3cbd1253",
+      "bytes": 7594
+    },
+    "runtime/bridge/bridge.prg": {
+      "sha256": "d0854f0eefc4d176bf36b6a1c961a241570abdcfa37f165594342bbf4c29dbe7",
+      "bytes": 1246
+    },
+    "runtime/controller/controller.prg": {
+      "sha256": "1b8f555a358b412ef64ee77bb9ddfb6941f45edcc8ffd2d67eea907ed5038f55",
+      "bytes": 4776
+    },
+    "runtime/finish/finish.prg": {
+      "sha256": "d626aa2b24e228c2243a5ee1681ade6b27275ddd1404dedd11ed07a54de0ed69",
+      "bytes": 1258
+    },
+    "work/controller.prg": {
+      "sha256": "cf766c83ae4a7abde20f013b49604d217e07eb377e1959126c100823140741cd",
+      "bytes": 20480
+    },
+    "work/controller.labels": {
+      "sha256": "5d4445bc106499b1c2f96fc30eedf47677d8c06753dfabd22bc22b5bcd17d984",
+      "bytes": 18440
+    },
+    "work/START.INO": {
+      "sha256": "cb4b0909b884714a3e38b60864cd7fd3027e716e47ac9abdc5b53ee957020053",
+      "bytes": 7692
+    },
+    "work/START.REL": {
+      "sha256": "09cbec36da2880e7dcfe97829a61a79f22382b70c9ff19a98a988463855bda84",
+      "bytes": 64
+    },
+    "work/START.RCV": {
+      "sha256": "87e0d39342ae83ba22139439651a32651f1fefaa9f64a2b2f2e42b067be194bc",
+      "bytes": 7681
+    },
+    "work/START.RFW": {
+      "sha256": "f11b0c1d66a9116b005651529de53bec19939ae03fd9c60ef0599a78b6c84824",
+      "bytes": 5578
+    },
+    "work/DOS64.REL": {
+      "sha256": "8db1b3cee35e96fe89b77f717edde8dc38ce41882694203246aa5d56d6960bd5",
+      "bytes": 64
+    }
+  },
+  "actual_chain": [
+    "SYS matched START/RCV/INO/MNU/main",
+    "genuineDOS VER and paged A DIR",
+    "CIA ordinaryS B38 new /Home/B0001.IMG",
+    "CIA EjectB and ProtectA session-only",
+    "Resume native redraw/RUN",
+    "genuineDOS TYPE C:\\BOOTOK.TXT exact output and Ctarget2 READ04",
+    "CIA Finish confirmation/privateSafe/oneknownCLOSE/nativeE1"
+  ],
+  "source_rebuild_runtime_and_two_models": true,
+  "no_UNIT_on_runtime_execution_path": true,
+  "qualifications": [
+    "clean mounted originalB, not guest edited or Turbo",
+    "Eject/Protect are session-only; durable CFG remains savedB binding",
+    "no Insert/durableSwap/publication/device or physical acceptance",
+    "ancestral first initial-binding failure and same-second directMake hazard remain qualified in sealed14e754; current combined cohort has no SUT failure",
+    "inherited test_cold_saveas.py and parent logs are historical; current acceptance uses test_cold_media.py and final-closed commands"
+  ]
+}

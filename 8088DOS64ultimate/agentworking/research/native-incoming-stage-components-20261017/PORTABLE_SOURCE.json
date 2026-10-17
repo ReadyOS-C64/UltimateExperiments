@@ -1,0 +1,56 @@
+{
+  "new_component": {
+    "worker/incoming.s": {
+      "sha256": "a112de0a0f03c6dde3a63264408de54edf2e2040baf7b63ca0d93a00f4bd0f94",
+      "bytes": 16122
+    },
+    "worker/incoming.h": {
+      "sha256": "82cad48940650271b9b6f350509dfe70ba97030cde76863ab3f00178454e0a3b",
+      "bytes": 1453
+    },
+    "worker/incoming.cfg": {
+      "sha256": "7b1ae93f097160c77b7889a41685c6c7df35d1930edf6a81bfe2549b047a75f6",
+      "bytes": 281
+    },
+    "build_incoming.py": {
+      "sha256": "f040037c77189e04740d82dd0c24a9474de27def17f3f3e2e4f79c0326b2e036",
+      "bytes": 2393
+    },
+    "test_incoming.py": {
+      "sha256": "928a629d9ec653e844a05f995d801bb55680ca08d1a4b1d35d38ed8d4d57404b",
+      "bytes": 4696
+    },
+    "test_incoming_faults.py": {
+      "sha256": "9e0d83d3a8d9d06bcdbe30896bfad12d9cbce9363fc64ce59d44ff98133c9baf",
+      "bytes": 12206
+    },
+    "check_incoming_defaults.py": {
+      "sha256": "54669b73589a5a033a250bdced0dae1ffa13a611df423b83c73d967e71aa894a",
+      "bytes": 1692
+    },
+    "close_incoming.py": {
+      "sha256": "546bcffc03c2cf2684e9df80b1c7919db7e1db740aca1d680c6427ee33a9a1d0",
+      "bytes": 5745
+    },
+    "close_default_followup.py": {
+      "sha256": "ddaa1f300607a178b2da4b65aa526528bda25ab40ddfae0ef75232404930a060",
+      "bytes": 2115
+    }
+  },
+  "required_core_only": {
+    "work/src/floppy_control.s": {
+      "sha256": "0780fcd406497a23487956db8f01cf98d75a62d5c22891028fb7d577956c59f2",
+      "bytes": 12305
+    },
+    "work/include/disk.inc": {
+      "sha256": "97f5aa01ba2e8992ac47764772ef3d1405ecd426ac9bc479e161d0145ba05b2f",
+      "bytes": 1955
+    }
+  },
+  "generated_not_portable": [
+    "worker/imports.inc",
+    "worker/geometry.inc"
+  ],
+  "fixture_support": "Source-only actual runtime/broker/model graph retained here from5b54; do not promote package-specific graph as production UI. No fixed role addresses are portable.",
+  "no_public_edits": true
+}

@@ -1,0 +1,75 @@
+{
+  "status": "PASS_LOCAL_COLD_INVENTORY_COMPONENT",
+  "physical": false,
+  "final_V1_inventory": false,
+  "native_groups": 14,
+  "native_concrete_cases": 20,
+  "host_groups": 2,
+  "native_source_product_pins_unchanged": 581,
+  "SETUP": {
+    "prg": {
+      "sha256": "14bf330d7716ac111eb8bbfaf940b4a50085feccc4f3645104468f57e9198cbe",
+      "bytes": 42790
+    },
+    "FAT": {
+      "sha256": "e6fcd2512f92dea04ccb55527d27c8184ab2b3418cd5e63dd295c43c31cae0a7",
+      "bytes": 20541
+    },
+    "PUB": {
+      "sha256": "0918cc47251e612b48251face39dba3da1f26cb86d970367f8621b0148a65977",
+      "bytes": 20544
+    },
+    "free": {
+      "resident": 0,
+      "FAT": 3,
+      "UI_stage": 1138,
+      "PUB": 198,
+      "HIGH_code": 2,
+      "HIGH_state": 29,
+      "AUX": 34
+    }
+  },
+  "CONFIG": {
+    "prg": {
+      "sha256": "32dbc12ec48b5018ab81aace3b3f05a12db5ef35c8174fa3b23e1c439cd9b958",
+      "bytes": 42933
+    },
+    "memory": {
+      "HIGH_source": 36864,
+      "HIGH_run": 57344,
+      "HIGH_bytes": 8116,
+      "HIGH_crc": 2872847740,
+      "HIGH_source_sha256": "80f99384f22dfd9052d621e2e32b5c85feebd4f0b62e329c1e50fa1e264e55e1",
+      "expected_field": 24424,
+      "entry": 2061,
+      "vectors_excluded": true,
+      "initial_SOURCE_before_phase_zero": true,
+      "phase_code_end_exclusive": 34467,
+      "phase_state_start": 34560,
+      "phase_state_end_exclusive": 44984,
+      "permanent_state_end_exclusive": 49086
+    }
+  },
+  "closure": "PRODUCT_CORRESPONDENCE.json",
+  "proofs": {
+    "setup_flow": "outputs/inventory-candidate/INVENTORY_REAL_PHASE_FLOW.json",
+    "late_change": "outputs/inventory-candidate/LATE_SOURCE_REFUSAL.json",
+    "config_log": "outputs/config-inventory-sizefix/run-ktl844an/INVENTORY_TEST.stderr",
+    "closed_groups": [
+      "CLOSED-0.stderr",
+      "CLOSED-1.stderr",
+      "CLOSED-2.stderr"
+    ],
+    "default0": [
+      "ZERO_INVENTORY_IDENTITY.json",
+      "CONFIG_ZERO_IDENTITY.json"
+    ]
+  },
+  "limitations": [
+    "Intermediate frozen1307 cold assets, not final current runtime inventory",
+    "Missing/short native SETUP source refusal can retain cleanup-required ownership",
+    "CFG-last ordering does not claim atomic external filesystem publication",
+    "No hardware or product UI acceptance"
+  ],
+  "portable_files": 19
+}

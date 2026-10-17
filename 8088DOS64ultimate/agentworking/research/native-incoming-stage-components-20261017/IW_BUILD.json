@@ -1,0 +1,32 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/opt/homebrew/bin/ca65",
+        "-g",
+        "incoming.s",
+        "-o",
+        "incoming.o"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/ld65",
+        "-C",
+        "incoming.cfg",
+        "-o",
+        "incoming.prg",
+        "-m",
+        "incoming.map",
+        "-Ln",
+        "incoming.labels",
+        "incoming.o"
+      ],
+      "exit": 0
+    }
+  ],
+  "native": "2de3934f5414db11da683ef8c6209f900b5c972b6f4062c059f91b964c037f58",
+  "worker": "43efb759166bcf3788c6b9a9557055601f40b9832907f26185fc91724583b47d",
+  "bytes": 2796
+}

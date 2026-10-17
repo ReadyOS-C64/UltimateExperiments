@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "actual_native_groups": 24,
+  "source_tool_SDK_inputs": 1415,
+  "products": 47,
+  "all_native_source_copies_products_unchanged": true,
+  "default_followup": "Initialdefaultfixtureinputstagingfailedafterall24nativegroups; retainedfailure. No default source build occurred, followup separately closed."
+}

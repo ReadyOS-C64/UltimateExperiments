@@ -1,0 +1,65 @@
+{
+  "passed": true,
+  "groups": 6,
+  "records": [
+    {
+      "case": "first_B",
+      "actual_6510_PLAN": true,
+      "old_selected_loaded": 0,
+      "old_presence": 5,
+      "new_presence": 7,
+      "image_crc": 1295756780,
+      "no_FILE_or_C_change": true,
+      "whole4MiB_guard": true,
+      "scope": "synthetic verified-image caller receipt; no Input/WIRE/COMMIT authority"
+    },
+    {
+      "case": "first_B_zero",
+      "actual_6510_PLAN": true,
+      "old_selected_loaded": 0,
+      "old_presence": 5,
+      "new_presence": 7,
+      "image_crc": 0,
+      "no_FILE_or_C_change": true,
+      "whole4MiB_guard": true,
+      "scope": "synthetic verified-image caller receipt; no Input/WIRE/COMMIT authority"
+    },
+    {
+      "case": "ejected_B",
+      "actual_6510_PLAN": true,
+      "old_selected_loaded": 0,
+      "old_presence": 7,
+      "new_presence": 7,
+      "image_crc": 1993541009,
+      "no_FILE_or_C_change": true,
+      "whole4MiB_guard": true,
+      "scope": "synthetic verified-image caller receipt; no Input/WIRE/COMMIT authority"
+    },
+    {
+      "case": "ejected_A",
+      "actual_6510_PLAN": true,
+      "old_selected_loaded": 0,
+      "old_presence": 7,
+      "new_presence": 7,
+      "image_crc": 849024174,
+      "no_FILE_or_C_change": true,
+      "whole4MiB_guard": true,
+      "scope": "synthetic verified-image caller receipt; no Input/WIRE/COMMIT authority"
+    },
+    {
+      "case": "mounted_B",
+      "actual_6510_PLAN": true,
+      "old_selected_loaded": 1,
+      "old_presence": 7,
+      "new_presence": 7,
+      "image_crc": 2300493930,
+      "no_FILE_or_C_change": true,
+      "whole4MiB_guard": true,
+      "scope": "synthetic verified-image caller receipt; no Input/WIRE/COMMIT authority"
+    },
+    {
+      "null_configured_B_null_A_bad_geometry_ledger": true,
+      "all_refused_without_REU_writes": true
+    }
+  ]
+}

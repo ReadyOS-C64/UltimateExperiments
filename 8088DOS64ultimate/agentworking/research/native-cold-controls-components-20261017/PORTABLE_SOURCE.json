@@ -1,0 +1,44 @@
+{
+  "relative_to": "sealed5b546829 runtime-role cohort, not public current",
+  "files": {
+    "work/src/floppy_control.s": {
+      "path": "runtime/work/src/floppy_control.s",
+      "sha256": "0780fcd406497a23487956db8f01cf98d75a62d5c22891028fb7d577956c59f2"
+    },
+    "work/include/disk.inc": {
+      "path": "runtime/work/include/disk.inc",
+      "sha256": "97f5aa01ba2e8992ac47764772ef3d1405ecd426ac9bc479e161d0145ba05b2f"
+    },
+    "build_ui_bridge.py": {
+      "path": "runtime/build_ui_bridge.py",
+      "sha256": "38aed3a83715a22c611796db32ae0ac49e897178ec8e4352820d5e7a661ddf1e"
+    },
+    "ui/panel.c": {
+      "path": "runtime/ui/panel.c",
+      "sha256": "b1bc70724d150f87240895139e1ab455c8a33c162ea2b8180cc001c8b1efac7b"
+    },
+    "bridge/bridge.s": {
+      "path": "runtime/bridge/bridge.s",
+      "sha256": "6eacfe2091e5107e0703a5fec4df3b009c3156b2cc173c0ea73b99659c51e659"
+    },
+    "work/src/loader_handoff.s": {
+      "path": "runtime/work/src/loader_handoff.s",
+      "sha256": "b6b3a1ef46ef8e6760de954f45c80f5f4b5f9217fb4ecddc886252249a670ea7"
+    },
+    "work/Makefile": {
+      "path": "runtime/work/Makefile",
+      "sha256": "56eda575ae8275637200f22db41cad874a95c8459207e5e9731522518027c6ca"
+    }
+  },
+  "coupling": [
+    "couple_runtime.py",
+    "couple.py"
+  ],
+  "test_only": [
+    "work/test_cold_media.py",
+    "runtime/warm_controls.py",
+    "close_combined.py"
+  ],
+  "merge": "Root Eject/Protect bridge plus ordinaryS action1/private captured action; keep mode3 aliases and actual runtime SAVER; initial binding before PREPARE only in opt-in branch",
+  "do_not_copy_generated_cross_role_aliases": true
+}

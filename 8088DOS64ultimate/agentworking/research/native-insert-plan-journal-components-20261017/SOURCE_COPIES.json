@@ -1,0 +1,162 @@
+{
+  "HANDOFF.md": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/HANDOFF.md",
+    "sha256": "d7af9bec340d2690a6d54bbb1e073e12a959fb42718fdb8a931534f045659369",
+    "bytes": 4307
+  },
+  "PORTABLE_SOURCE.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/PORTABLE_SOURCE.json",
+    "sha256": "2f258ca561c4d56544f8b3674e9cd5ce0eb7d63ddab0e96f499f023182b8a2ee",
+    "bytes": 1013
+  },
+  "PARENTS.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/PARENTS.json",
+    "sha256": "8fb5a02c8d5b0bfc6448d32b6ad0937b5fd5cd624229f3d11966cddfa0638860",
+    "bytes": 911
+  },
+  "PARENTS_AFTER.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/PARENTS_AFTER.json",
+    "sha256": "8fb5a02c8d5b0bfc6448d32b6ad0937b5fd5cd624229f3d11966cddfa0638860",
+    "bytes": 911
+  },
+  "PARENT_PIN_REVIEW.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/PARENT_PIN_REVIEW.json",
+    "sha256": "571c7c3711a9f6ceb85c573e1ec7362fcf97d9d99a3129c4aad76c0ccbfad97c",
+    "bytes": 631
+  },
+  "MANIFEST.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/MANIFEST.json",
+    "sha256": "6c6a9215c726df0162b6863f87436d2975e460a37429fb3bfbdde02b3c1563b9",
+    "bytes": 543117
+  },
+  "INSERT_PLAN_JOURNAL.patch": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/INSERT_PLAN_JOURNAL.patch",
+    "sha256": "594dfb7dbdfa746b3e7f2b452610950adf85345979d78cb6f8f32c27867908a2",
+    "bytes": 11839
+  },
+  "close_insert_plan.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/close_insert_plan.py",
+    "sha256": "c8d78ef6eab03f744d3f659b051bfcb0a5828fa4849bda74efb22b93b0f66929",
+    "bytes": 5502
+  },
+  "PLAN_FIRST_BUILD.stderr": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/PLAN_FIRST_BUILD.stderr",
+    "sha256": "05365ae7a6bd7b76e9b66cb2748ff5f90a158ed69ae8b06816ab442e0ab23559",
+    "bytes": 271
+  },
+  "CLOSE_FIRST.stdout": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/CLOSE_FIRST.stdout",
+    "sha256": "8ba3c8ad14a7d0586b29644555999f7d1a65b4c03ff22c4140e6155d0d56fb6f",
+    "bytes": 7834
+  },
+  "CLOSE_FIRST.stderr": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/CLOSE_FIRST.stderr",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "runtime/phase/media_plan.c": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/phase/media_plan.c",
+    "sha256": "8a0231e1a84283fa7d8babe5f19458e3f082cbe5b7ddcb5309a0dcab7f27e728",
+    "bytes": 8033
+  },
+  "runtime/test_insert_plan.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/test_insert_plan.py",
+    "sha256": "b4890a7730e12bd1904a6b39753f5930ed351776fb3dd277cdc666061551753b",
+    "bytes": 6061
+  },
+  "runtime/PLAN_FIRST_TEST.stderr": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/PLAN_FIRST_TEST.stderr",
+    "sha256": "ad55d70d4ea14bdaac957d136c8a53b4da67a5080cb0372fabbfeb3eac5ddd7f",
+    "bytes": 5465
+  },
+  "runtime/PLAN_SECOND_TEST.stderr": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/PLAN_SECOND_TEST.stderr",
+    "sha256": "0f5cecd749492050f04960d99dea231f166763b5560f1f102446fe180e3d388a",
+    "bytes": 439
+  },
+  "runtime/INSERT_PLAN_RESULT.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/INSERT_PLAN_RESULT.json",
+    "sha256": "03bd8cba294b252e087777acd17afbee06a29252f2d44aa8bff9e9eb75c194f8",
+    "bytes": 1864
+  },
+  "runtime/phase/runtime-plan.map": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/runtime/phase/runtime-plan.map",
+    "sha256": "96177e2693ef357b6ac9ce286dde50b5502fd14d8b3d02616d25fc40fa326249",
+    "bytes": 21800
+  },
+  "cold/gate/journal_gate.c": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/gate/journal_gate.c",
+    "sha256": "7683b45a9c3e71aa37a202e21c52b99a8c564e9ff7da466807a822a620de85d8",
+    "bytes": 12830
+  },
+  "cold/work/test_insert_recovery.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/test_insert_recovery.py",
+    "sha256": "3d512ae4c55b228a6fd676f5a4635f64cb9c935b5a7b8936cb209d9cf9b90b9b",
+    "bytes": 5115
+  },
+  "cold/work/INSERT_RECOVERY_FIRST.stderr": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/INSERT_RECOVERY_FIRST.stderr",
+    "sha256": "09de6439b501c0c8a363b0c26dfce403a80e03702ade7370b004bb8857d250c7",
+    "bytes": 568
+  },
+  "cold/work/INSERT_RECOVERY_RESULT.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/work/INSERT_RECOVERY_RESULT.json",
+    "sha256": "1faf75106da807d6142285016b8c6b1b9548b65d37b80b413384ea8739555a8d",
+    "bytes": 2670
+  },
+  "cold/gate/gate.map": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/gate/gate.map",
+    "sha256": "2c0de54527418a54d2e754bebaf4ef1d84b5ba1eb8d3b5bbe0b48a063792d8f8",
+    "bytes": 21602
+  },
+  "cold/worker/worker.map": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/worker/worker.map",
+    "sha256": "46bbec74810cf22a2bc60aa34fdc0d5248853386e5120f54aa76d90f7078a8ca",
+    "bytes": 19267
+  },
+  "cold/COUPLED_RESULT.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/cold/COUPLED_RESULT.json",
+    "sha256": "c70a8c4430411680abcca623455ddf8f93af70458e1d361d80c57ea7137b6067",
+    "bytes": 512
+  },
+  "closed-plan-journal/INPUTS_BEFORE.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/closed-plan-journal/INPUTS_BEFORE.json",
+    "sha256": "7dd9dbd37d4daa0183ca6168b1ea4ea9d71907ef0432c72923832c615978d7c6",
+    "bytes": 400076
+  },
+  "closed-plan-journal/INPUTS_AFTER.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/closed-plan-journal/INPUTS_AFTER.json",
+    "sha256": "7dd9dbd37d4daa0183ca6168b1ea4ea9d71907ef0432c72923832c615978d7c6",
+    "bytes": 400076
+  },
+  "closed-plan-journal/PRODUCTS.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/closed-plan-journal/PRODUCTS.json",
+    "sha256": "55693a626181d8092729e9959ee1fa8d590f03ef608552c00513b89202d38dff",
+    "bytes": 3989
+  },
+  "closed-plan-journal/COMMANDS.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/closed-plan-journal/COMMANDS.json",
+    "sha256": "7c48be66a47065dd0a158df09b1a746c0e97714b7ac9bc4ff1ed2b42b50a4bca",
+    "bytes": 7516
+  },
+  "closed-plan-journal/RESULT.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/closed-plan-journal/RESULT.json",
+    "sha256": "c220d2dc149fd763fa008e7110aa7e83d971b5d9b36633149c230bbe58649cb5",
+    "bytes": 7991
+  },
+  "closed-plan-journal/EXCLUDED_UNIT.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/closed-plan-journal/EXCLUDED_UNIT.json",
+    "sha256": "63d16202b6cceadfe5d03ffb86429493a169f55d33d4b4737891a387981595a1",
+    "bytes": 2697
+  },
+  "closed-plan-journal/actual-native-plan.stderr": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/closed-plan-journal/actual-native-plan.stderr",
+    "sha256": "c8fd29269af28b1b2a94096247e15935bf741662bf84b975e74e5cfb0c30f324",
+    "bytes": 439
+  },
+  "closed-plan-journal/actual-cold-insert-recovery.stderr": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-insert-plan-journal-root-20261017/closed-plan-journal/actual-cold-insert-recovery.stderr",
+    "sha256": "34f24cb8f700f5ca4d947788daac3d3bc1f73db0a06071c799d9186d1b506fb3",
+    "bytes": 568
+  }
+}
