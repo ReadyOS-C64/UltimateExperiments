@@ -113,6 +113,11 @@ class Tests(unittest.TestCase):
   with patch.object(M.shutil,'copyfile',copy):
    with self.assertRaisesRegex(RuntimeError,'Source/product changed'):M.build(self.out,test=False)
   self.unchanged(before)
+ def test_14_staged_native_graph_contains_every_make_include(self):
+  work=M.stage(self.p/'stage',{},test=False)
+  M.require_make_includes(work)
+  missing=work/'build_support/v1_candidate.mk';self.assertTrue(missing.is_file());missing.unlink()
+  with self.assertRaisesRegex(RuntimeError,'inventory omits Make include: build_support/v1_candidate.mk'):M.require_make_includes(work)
 if __name__=='__main__':
  (ROOT/'build').mkdir(exist_ok=True);r=unittest.main(exit=False,verbosity=2).result
  report={'successful':r.wasSuccessful(),'tests':r.testsRun};(ROOT/'build/native-media-host-result.json').write_text(json.dumps(report,indent=2)+'\n');sys.exit(not r.wasSuccessful())

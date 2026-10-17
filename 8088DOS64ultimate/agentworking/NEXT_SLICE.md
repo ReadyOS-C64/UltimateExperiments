@@ -1,3 +1,11 @@
+# Next V1 integration — 2026-10-17
+
+1. Close private native hotkey/footer/CUI Resume source binding and default-byte controls; integrate matched START-loaded modal assets, then disk worker routing.
+2. Review/promote portable eight-source bound SETUP preflight and rebuild coherent candidate; keep plain optional graph usable.
+3. Close durable selected-media WIRE ZP preservation, START journal recovery gate and CLEAN/backing-path publication.
+4. CIA alone completes the one approved fast-file recovery qualification; ROOT reviews physical/source/cleanup evidence before any new device purpose.
+5. Final matched native SETUP/CONFIG/media/Turbo physical acceptance remains open. Performance deferred.
+
 # Next concrete V1 integration — 2026-10-17
 
 Original turbo settings and BASIC are now physically ROOT-accepted; do not repeat settings repair. CIA sole owner does local fast native-file4M recovery lifecycle planning, no nextLAN purpose dispatched. Prior whole4M backend remains failed and currentfull4M unverified.

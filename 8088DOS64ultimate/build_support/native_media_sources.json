@@ -107,6 +107,7 @@
     "work/build_support/iec_standalone.mk": "build_support/iec_standalone.mk",
     "work/build_support/native_media.mk": "build_support/native_media.mk",
     "work/build_support/config.mk": "build_support/config.mk",
+    "work/build_support/v1_candidate.mk": "build_support/v1_candidate.mk",
     "work/build_support/overlay_package.py": "build_support/overlay_package.py",
     "work/build_support/verify_memory.py": "build_support/verify_memory.py",
     "work/build_support/raw_payload.py": "build_support/raw_payload.py",

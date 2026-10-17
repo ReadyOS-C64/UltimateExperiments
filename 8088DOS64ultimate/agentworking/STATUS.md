@@ -1,3 +1,11 @@
+# Native entry and installer preflight integration — 2026-10-17
+
+ROOT actual private CIA/INPUT/footer/broker/CUI entry and Resume now pass six focused groups in3.517s: Ctarget1/2, all64 header-byte corruptions, active-C deferral, held-chord coalescing, four partial header/broker DMA points and two UI/path load faults. Full bitmap/matrix/colors redraw precedes RUN; full4MiB equals input except the owned1000B color snapshot at3E2000; FILES/Cposition exact. Exit-key release fencing prevents Resume R entering DOS. Private/defaultOFF, no START container loader, media worker or physical acceptance. Source binding/default controls and coherent integration remain required.
+
+Native eight-source SETUP preflight private component accepted after1552 pins, source review and ROOT fresh six native negatives; author full eight includes SYS/CIA pre-CREATE. Public portable integration proceeds separately. Native-media staging now includes the new literal candidate Make include; a focused missing-include regression plus exact selected/default native builds pass(two groups1.205s).
+
+ROOT approves one source-closed detached fast native-file recovery qualification after953+468 pins,18 local groups and offline constructor. This uses a historical owned backup and independent initial/final whole4MiB captures, not fresh remote pre-write proof. Physical result remains pending; CIA sole owner. No performance work.
+
 # Current hardware closure and V1 focus — 2026-10-17
 
 The separate settings repair passed physically and ROOT review: seal5d7b86d4/312pins;16requests with one guarded individual configPUT, original full settings/media/identity exact, original Turbo Control C64U Turbo Registers64 restored. Two saved2048B BASIC READY prefixes/emptyqueue advance54137→54142, five raw200/errors[]ACKs, detached8305/8312 reaped0/no watchdog. Reservation retained for local next-purpose planning. Prior9de whole4M qualification remains failed; no finalcurrent4M comparison/backend/current-product/originalCPU/RAM/app restoration claim. No additional device calls. Evidence c64u-profile-repair-physical-root-20261017.json.

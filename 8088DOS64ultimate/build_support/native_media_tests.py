@@ -6,7 +6,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.dont_write_bytecode=True
 sys.pycache_prefix=str(ROOT/'build'/('.absent-native-media-'+str(os.getpid())))
 if Path(sys.pycache_prefix).exists():raise RuntimeError('Source-only cache prefix must be absent')
-import argparse,hashlib,json,shutil,subprocess,tempfile,platform
+import argparse,hashlib,json,shutil,subprocess,tempfile,platform,re
 OWNER={'kind':'dos64-native-media','version':1}
 PUBLISH=['dos64.prg','dos64-tests.prg','dos64.labels','dos64-tests.labels','dos64.map','dos64-tests.map','dos64.memory.json','dos64-tests.memory.json']
 SUITES=[('selected','test_selected_save.py','SELECTED_RESULT.json',5),('sequential','test_sequential_cancel.py','SEQUENTIAL_RESULT.json',4),('online','test_online_save.py','ONLINE_SAVE_REPORT.json',10),('crc','test_crc.py','CRC_RESULT.json',5)]
@@ -48,6 +48,13 @@ def command_environment(work,t):
  for n in ['make','ca65','ld65','zig']:
   if n in t:env['DOS64_'+n.upper()]=str(t[n])
  return env
+def require_make_includes(work):
+ # All current includes are literal project paths. A new packaging target must
+ # not silently break the separately staged native-only build graph.
+ for name in re.findall(r'^include\s+([^\n]+)',(work/'Makefile').read_text(),re.M):
+  for relative in name.split():
+   path=work/safe_relative(relative)
+   if not path.is_file():raise RuntimeError('Native source inventory omits Make include: '+relative)
 def stage(run,record,test):
  path=ROOT/'build_support/native_media_sources.json';w=digest(path)
  if str(path)in record and record[str(path)]!=w:raise RuntimeError('Source inventory changed between reads')
@@ -70,6 +77,7 @@ def stage(run,record,test):
   for e in j['files']:
    f=run/'work/third_party/peddle'/safe_relative(e['path'])
    if digest(f)['sha256']!=e['sha256']:raise RuntimeError('Vendored Peddle changed: '+str(f))
+ require_make_includes(run/'work')
  return run/'work'
 def native(work,t,command,default):
  flags={'DOS64_SAVE_HD_CONTEXT':0 if default else 1,'DOS64_EXPORT_CRC':0 if default else 1}

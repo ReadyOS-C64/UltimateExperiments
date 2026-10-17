@@ -1,0 +1,30 @@
+{
+  "status": "approved_one_exact_detached_dispatch",
+  "purpose": "ONE_HISTORICAL_NATIVE_FILE_RESTORE_AND_TWO_FULL4M_SNAPSHOTS",
+  "proposal_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-fast-file-recovery-runnable-20261017/MANIFEST.json",
+  "proposal_sha256": "568281c99de59f679387ec3670ec30e0da6655cba972c9f062d2ac98519a32dd",
+  "pins_verified": 953,
+  "launch_manifest_sha256": "41a1897cb0f7bbefe3eaf99ebc4707c2a60afff1461a5aed1fdf1a0c1b350a88",
+  "launch_pins_verified": 468,
+  "root_offline_tests": 18,
+  "offline_constructor": true,
+  "root_logs": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-fast-file-recovery-root-review-20261017",
+  "source_review": [
+    "fast.py",
+    "fast_transport.py",
+    "numeric_transport.py",
+    "purpose.py",
+    "history.py",
+    "launch.py",
+    "cold_session.py independent cleanup",
+    "dispatch-owned.sh"
+  ],
+  "native_algorithms_unchanged": true,
+  "historical_backup_adoption_not_fresh_remote_proof": true,
+  "one_core_endpoint_seconds": 600,
+  "automatic_retry": false,
+  "unknown_native_writer_cleanup": "pause and retain, no reset/source overwrite; independent profile finally",
+  "upper12MiB_access": false,
+  "physical_acceptance": false,
+  "product_acceptance": false
+}

@@ -1,0 +1,17 @@
+{
+  "status": "accepted_private_component",
+  "author_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-setup-release-preflight-20261017/MANIFEST.json",
+  "author_sha256": "4ea4751d64636d5b4910fd3dfae2d22c42a67c46f1c7c4564b94304c0ba9ce39",
+  "author_pins_verified": 1552,
+  "author_actual_native_groups": 8,
+  "ROOT_actual_native_groups": 6,
+  "native_main": "7901183a",
+  "native_bytes": 42627,
+  "default0_data_products_exact": 6,
+  "source_delta_reviewed": true,
+  "root_work": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-setup-preflight-root-20261017",
+  "root_full_80_second_SYS_replayed": false,
+  "early_validation_before_CREATE": true,
+  "physical": false,
+  "full_installer_guest_publication_qualified": false
+}
