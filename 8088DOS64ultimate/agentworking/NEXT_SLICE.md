@@ -1,3 +1,9 @@
+# Next after actual START recovery integration — 2026-10-17
+
+Memory reviews Rootb5f36c82/491, emphasizing fixed unknown-CLOSE/no rearm, phase lifetimes, private nojournal boot and precise source qualification. Root composes action-shell6eeb43a3/651 into actualCUI intent and asynchronousworker reloads. Compiled finishes WIREreceipt→CFG/D64R/D64O→CLEAN-last. ExtraBIND phase needs explicit asset packing; preserve fullthirdfloppy. Explicit recovery/archive/rollforward and user-visible presentation remain needed; current gate safelyblocks only.
+
+CIAphysical recovery accepted; nativeSETUP/CONFIG need realphysicalkeyboard, since KERNAL/XTqueues do not drive their CIA UI. Before helper/CONFIG/nextSTART takeover, current publicstage5 needs a realknownCclose; stage5 alone onlyflushes. CIAlocalplan sealedf7eae145/6 +source97f5e08e/32, not approvedphysicalpurpose. Finalpackage/installer/floppy/HD/Turbo/human gates stayopen; no speedwork/no push.
+
 # Next after split modal loader — 2026-10-17
 
 Root: integrate matched RCV before ordinary CFG acquisition, using generic builder against split INO7b81902f; couple fixed-size capsule then exact asset CRC. Keep all pending journals boot-blocked until explicit recovery completion exists. Memory: controller8000..9D7F with stack9E00..9FFF and nested PLAN worker stackBFFF; derive both runtime/unit brokers from the combined profile. Compiled: guarded live CFG/D64R/D64O publication and stage8 FOP_CLEAN last. Root then connects actual CUI actions, reloads UI only after every controller frame returns and proves whole save/swap/finish user flow.

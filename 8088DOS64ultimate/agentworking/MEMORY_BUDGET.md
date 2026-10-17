@@ -284,3 +284,7 @@ Sourceexactfrontenddf364fe2: CODE8000..98DF6368,RO98E0..9C75918,DATA9C76one,BSS7
 ## 2026-10-17 — measured split modal cold loader
 
 Private START3bc1656e remains18432B; INO7b81902f grows58B to7692B, mapped6000..7E0B with500B free below8000. The logical32KiB asset uses3DA000..3DFFFF24KiB plus3F0000..3F1FFF8KiB, reusing installer source cache only after SETUP retirement. Stage3E0000..3E7FFF is retired before main staging. Full third floppy380000..3D9FFF is preserved; actual whole368640B and3F2000..3F7FFF guards pass. Header ready stays zero until whole logical target CRC matches, then publishes last. Runtime controller has not yet executed from the final8KiB data fixture. Receipt native-menu-split-root-20261017.json; no public native allocation changed.
+
+## 2026-10-17 actual startup journal invocation
+
+START6d5ba2a7 fixed18432B: DATAends4F74/serializedtrampoline4FE4,26B MAINfree through4FFE; residentstateends8FAC,83B below9000. INOf7e421cc7692B6000..7E0B/free500. RCVrawa0ba9fb07297B6000..7C80/free895 (builderPRG7299B includes loadword); sharedprefix1350B/selector6546; BSS9000..94BD. Rawcache3E8000..3E9C80 retires before later mainstaging. Newprivategateflag1B;15BASMcallglue uses existingvolatileptr1, no newZP/SMC allocation. CPU/full4MiB guards pass; no publiclayoutchange.

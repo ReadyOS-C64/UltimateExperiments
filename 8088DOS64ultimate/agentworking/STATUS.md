@@ -1,3 +1,9 @@
+# Actual startup journal gate verified — 2026-10-17
+
+Private START6d5ba2a7 / INOf7e421cc verifies rawRCVa0ba9fb0 before normal CFG. Actual9 groups pass36.697s: nojournal restores INO and reaches40/80 handoff; native-produced OLD/MISSING/NEW fully verify the saved image then block unchanged. A real double-CLOSE defect was reproduced/fixed: unknown recovery ownership now emits one CLOSE, remains unresolved and blocks startup. CPU/whole4MiB/disk guards pass. Sealb5f36c82/491; closure250 records with one explicit generated debug-alias-table qualification; two defaultprofiles exact79bb/eebb. No user recovery/archive/public/physical product acceptance.
+
+Physicalfast-file recovery independently ROOTaccepted5a13dc8c/5350pins: both4MiB exactlyac43, one8192-sector CRC/knownCLOSE restore,109 typedPUTchunks/413raw200 reconstructed,4strictREADY, fullsettings/profile and reaped0/PIDsabsent. Historicalbackup/no freshprewritefile read and initiallyoriginaldata limits retained. No upper12/CPU-RAM-app/product claim. CIAlocalplan requires actualnativeUI humaninput and knownCclose before next takeover.
+
 # Split modal loader verified — 2026-10-17
 
 Private START3bc1656e / INO7b81902f loads and verifies a32KiB logical MNU across REU3DA000..3DFFFF and3F0000..3F1FFF. The latter retires SETUP-only source cache; all368640 bytes of the third floppy and3F2000..3F7FFF guards remain exact. Actual11 native groups pass, including first split STORE failure and final target-byte corruption; two fresh default profiles reproduce public79bb/eebb. Source closure223 inputs, sealb640a07b/417pins. The trailing8KiB remains a data fixture; controller execution and Save/Swap/Finish are not yet proven. No public promotion.
