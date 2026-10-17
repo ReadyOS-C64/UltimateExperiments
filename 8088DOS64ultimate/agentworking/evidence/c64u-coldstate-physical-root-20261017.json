@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "status": "ROOT_ACCEPTED_C64_ONLY_COLD_BASIC_CLOSURE",
+  "physical_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-c64-only-cold-closure-20261017/physical/MANIFEST.json",
+  "physical_manifest_sha256": "f05e94181a091ecff70f7fa6d7fde79bd373aa45a7c6f87302ce8339d946e322",
+  "verified_files": 226,
+  "source_launch_sha256": "424b86e86918959cfff68bc4d4daa370b5d41fb57a10114fc3683b14ee92f610",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-coldstate-20261017-090000",
+  "independent_checks": {
+    "all226pins": true,
+    "settings_media_equal": true,
+    "exact_identity": true,
+    "raw_control_acks": 18,
+    "exact_reset_count": 1,
+    "requests": 35,
+    "READY_empty_keyboard_and_advancing_jiffies": [
+      66,
+      260
+    ],
+    "final_resume_ACK": true,
+    "both_PIDs_absent": true,
+    "optional_mapped_RAM_bytes": 53248,
+    "source_closure": true
+  },
+  "limitations": [
+    "No current complete4MiB REU equality proof",
+    "Original CPU/RAM/application not restored",
+    "No helper/REU/UCI/FTP/config/turbo/fullboard actions",
+    "Reservation retained; no new device action authorized"
+  ],
+  "initial_ACTIVE_sha256": "f2124c22152779ce1671779c0bce5007c8e35fea8901d5ea755d9c7b02ae5807",
+  "ROOT_manifest": {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-c64-only-cold-closure-physical-root-20261017/MANIFEST.json",
+    "sha256": "7bb2571b4e3672fb6e5647152bcc28a89c5edaca84b0bd4056781e1d41104404",
+    "files": 4
+  }
+}

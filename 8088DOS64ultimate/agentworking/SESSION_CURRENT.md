@@ -1,3 +1,17 @@
+# Current continuation — V1 steering, 2026-10-17
+
+Authoritative endpoint: docs/V1_ENDPOINT.md. User asks for a solid V1 installer/configuration and floppy/HD experience, with Turbo Pascal as acceptance. Defer further performance optimization/compiled-code activation until after V1. Historical50%minimum/85%stretch remain unachieved post-V1 objectives. Earlier broader-plan records below remain history, not current assignments.
+
+Public: CONFIG508d/e530, main666089b5/unitb9e9cc9e, START79bb/INOeebb/D64L29eb1, SETUP0df; main47105B, CONFIG42892B. HEAD before V1 docs90882d6, local commits only/no push. CONFIG public native4SYS+2Zig and genuine generated DOS40/80 already qualified in model; final current physical installer/config/launcher still pending.
+
+Agents: memory owns current interpreter original-Turbo edited-source/disk-EXE/close/relaunch persistence model; compiled owns private C-online SaveAs checkpoint e88b/9ec and same-session cancel→retry gap review, then A/B/generation/CFG/UI; CIA owns sole reserved device and LOCAL next matched functional qualification purpose. ROOT owns integration, endpoint/records and reviews. No root device calls. User permits subagents; four total slots. Additional native media UI/durable saves and safe finish are major remaining V1 work.
+
+ROOT accepted physical C64-only BASIC closure f05e9418/all226: one reset,35requests/18rawACKs,READY+emptyqueue+jiffies66→260 thenresume, unchangedidentity/settings/media, processes exited0/absent. Receipt evidence/c64u-coldstate-physical-root-20261017.json. ACTIVE remains CIA reserved, BASIC observed/resumed; complete currentREU equality and originalCPU/RAM/app restoration false. New device purpose review still needed. Prior40fe Reset54/noREUWRITE failure retained.
+
+Private performance candidates archived without promotion: REP11fa realDOS+0.7191%CPUcost; ROOTfull32 prototype latest9group executable built NOTRUN after priority changed. POST_V1_HANDOFF.json in scratch/compiled-full32-gate-root-20261017 identifies exactproducts/knownfailures. Do not resume these until post-V1.
+
+Read AGENTS/README/STATUS/NEXT_SLICE/DECISIONS. Preserve unrelatedReadyFS/vendor/site/native_text_probe changes. All scratch/evidence project-local, all device communications truly detached under soleowner, upper12MiB untouched/unbacked. No push.
+
 # Current continuation — 2026-10-16
 
 Current ROOT is417c1b73/38385330:484actualPeddle and308tooling tests,bothmemoryverifierspass. Reviewedkeyboard4c39/0525 is composed withcursor/memory;503source/product/toolpins exactbefore/after pluscopies. Evidence keyboard-root-20261016.json. Earlier da95/bc6ab cursorcomposition passed69focused groups. Independently accepted cursor cfec/c325 is composed with memory performance;503 inputs exact before/after with immutablecopies. Evidence cga-cursor-root-20261016.json; docs/CGA_CURSOR.md. The independently reviewed memory/address optimization reduces modeled CPU work5.90% across12profiles and1.98% in genuine DOS. Full IRQ/REP/clock cadence remains unchanged; no physical timing or XT performance claim. Evidence: memory-fetch-root-20261016.json.

@@ -21,6 +21,10 @@
 | R17 | DOS included commands before third-party apps | TESTING M5–M10 | Explicit required/conditional/excluded utility manifest |
 | R18 | Long-horizon context, decisions, lessons | agentworking records | Updated STATUS/NEXT_SLICE/DECISIONS/LESSONS/TEST_LOG each slice |
 | R19 | Deep research, consider DOSBox comparisons | RESEARCH, TESTING M0 | Source register; installed DOSBox-X recorded; actual DOSBox-X reference boot recorded |
+| R20 | Native installer/configuration and path-aware launcher | V1-01/02/10, NATIVE_SETUP_INSTALLER/CONFIG | Physical clean install/reconfigure/launch from same-home INI; coherent user release |
+| R21 | User floppy Save/Discard/Swap with C online and durable bindings | V1-03/04/05/09, FLOPPY_MEDIA_DESIGN | A/B generation-bound saves, C preserved, CFG refreshed and restart persistence |
+| R22 | Turbo Pascal as a V1 acceptance workload | V1-07, TURBO_PASCAL | Physical IDE edit/save/compile-to-disk/run/exit and fresh-launch persistence |
+| R23 | Defer further speed improvement until after V1 | V1_ENDPOINT, PERFORMANCE | No new optimization/compiled-code activation blocks V1; retain truthful baseline and post-V1 targets |
 
 Planning coverage means each request has an implementation/test destination. It does not mean those implementation tests have passed.
 

@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "status": "ROOT_REVIEWED_READY_FOR_ONE_DOCUMENTED_C64_ONLY_COLD_CLOSURE",
+  "physical_execution": false,
+  "package_sha256": "1b5bac7575f012e98904cd2976ed05916517f27953fdf4392050787ad153e6ba",
+  "package_pins_pre_dispatch": 81,
+  "launch_sha256": "424b86e86918959cfff68bc4d4daa370b5d41fb57a10114fc3683b14ee92f610",
+  "immutable_launch_pins": 23,
+  "ROOT_runs": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "test_controller.py"
+      ],
+      "exit": 0,
+      "seconds": 0.25314725
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "test_purpose.py"
+      ],
+      "exit": 0,
+      "seconds": 0.262470833
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "launch.py",
+        "--manifest",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-c64-only-cold-closure-20261017/work/LAUNCH_MANIFEST.json",
+        "--sha",
+        "424b86e86918959cfff68bc4d4daa370b5d41fb57a10114fc3683b14ee92f610",
+        "--offline"
+      ],
+      "exit": 0,
+      "seconds": 0.07689158399999996
+    }
+  ],
+  "source_review": [
+    "DocumentedC64-only reset/pause/resume plusreadonlyinventory/exactRAM ranges; no helper/SYS/REU/UCI/FTP/config/turbo/fullboard capability.",
+    "Mandatory exactidentity/durableinventory/preloadDisabled before control; optionalonce diagnostic failure preserved while distinctresetallowedonce.",
+    "Reset/readiness ambiguity stops; eightpaused2048prefixes maximum, exactREADY/cursor/emptyqueue and advancingjiffies, finalACKresume.",
+    "Original180endpoint/max35requests/240watchdog/30grace/oneclaim/deadline/perresponsecounts; firstcause/rawreceipts/independentreadonlyfinalinventory.",
+    "Detacheddevnull/newsession/ownedTerminal/PIDs/logs/sourcecache/importguards reviewed.",
+    "Outer81-pin package is pre-dispatch snapshot and includes mutableACTIVEc095; retain this originalcopy. Inner23liveinput pins exclude mutableACTIVE and bind immutablepredecessor instead."
+  ],
+  "authorization": "SoleCIA owner may dispatch exact424b86e8 purpose once. No other device action or retry. WholeREU/oldCPU/RAM/application restoration remainsfalse; physicalreceipt review required.",
+  "ROOT_manifest": {
+    "path": "agentworking/scratch/native-c64-only-cold-closure-root-20261017/MANIFEST.json",
+    "sha256": "d295696adb6c4d692aa442128be6429ea89c75907d11bd5724078af25f0cbda7",
+    "files": 9
+  }
+}

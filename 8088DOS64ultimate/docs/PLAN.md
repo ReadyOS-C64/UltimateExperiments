@@ -1,5 +1,7 @@
 # Implementation plan for review
 
+**2026-10-17 release steering:** [V1_ENDPOINT.md](V1_ENDPOINT.md) now defines the V1 exit gates and current work order. Installer/configuration, floppy/HD persistence and the full Turbo Pascal workflow are the priority. Further performance improvement and the 50%/85% speed objectives move to post-V1; the historical milestones below remain the broader backlog.
+
 Original planning date: 2026-10-14, America/Los_Angeles. The milestone deliverables and exit criteria below remain the scope contract. Current implementation status is recorded separately from complete acceptance.
 
 Implementation update 2026-10-15: genuine DOS 3.3 boots on the physical C64U, with actual 40/80-column VER, TYPE and DIR captures. CPU, REU memory, BIOS, text, HD and CGA have substantial tested implementations. Persistence integration, full utility coverage, physical HD/graphics/input acceptance and performance remain unfinished. Roughly 60% functional progress is a subjective scope estimate excluding performance, not a prediction of remaining effort. Exact current evidence and limitations are in `agentworking/STATUS.md` and `agentworking/TEST_LOG.md`.

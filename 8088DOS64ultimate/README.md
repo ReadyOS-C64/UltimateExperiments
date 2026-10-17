@@ -1,5 +1,7 @@
 # 8088DOS64ultimate
 
+**Current release goal: a dependable V1 installer, configuration and A/B/C disk workflow, proven by an interactive Turbo Pascal edit/save/compile/run/restart session on the Ultimate. Further speed work is deferred until after V1.** See [V1 endpoint and acceptance gates](docs/V1_ENDPOINT.md).
+
 Planning and implementation of a C64 Ultimate program that boots the supplied **real MS-DOS 3.3**, emulates the 8086/8088 instruction set, and provides 640 KiB of conventional PC memory through the REU. Target hardware is the user's 64 MHz C64U with **4 MiB or larger REU**.
 
 **Status: last physically accepted A+C build45896d10/a8274e7c boots genuine DOS3.3 from A and uses the complete20MiB C drive on the physical C64U at PALManual64 MHz.** Real DOS listings, GW-BASIC file output/SYSTEM, original Turbo Pascal7.01 compilation/run, COPY/run and CHKDSK pass. Native backing-file CLOSE/reopen/readback and strict whole-image verification pass; original4MiB REU/settings/media/reset restored. [Physical A+C evidence](agentworking/evidence/c64u-ac-development-20261016.json). OriginalTURBO editor compatibility remains separate private work.

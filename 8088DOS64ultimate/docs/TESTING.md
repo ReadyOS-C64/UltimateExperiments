@@ -1,6 +1,6 @@
 # Behavior tests and end-user acceptance
 
-All tests described here are planned. Existing sibling tests were inspected, not rerun as evidence for this project. The planning-phase checks are listed separately in [TEST_LOG](../agentworking/TEST_LOG.md).
+This document retains the original test design and utility matrix; individual planned cases are not completion claims. Current executed evidence is in [TEST_LOG](../agentworking/TEST_LOG.md) and [STATUS](../agentworking/STATUS.md). The [V1 endpoint](V1_ENDPOINT.md) defines the final matched-release acceptance run, including edited Turbo Pascal source, compilation to disk and restart persistence. Further speed improvement is post-V1.
 
 ## The ZeroPage pattern to retain
 

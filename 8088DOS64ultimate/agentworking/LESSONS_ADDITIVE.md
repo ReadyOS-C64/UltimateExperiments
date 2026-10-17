@@ -336,3 +336,6 @@ A completed file writer and its readonly source cache each need explicit clean-s
 
 
 2026-10-17: A compiler environment can add an unrecorded source even when all staged files/tool hashes are pinned. Peer actually changed CONFIG through CC65_INC/string.h while the old source ledger still passed. Sanitize inherited search variables or explicitly capture their full source closure; retain supported explicit tool overrides. Validate original source asset membership before copying, since validating only selected copies silently weakens an exact-set rule.
+
+
+2026-10-17: Release acceptance should follow an actual user's complete workflow. Opening unchanged Pascal source and compiling to memory proves less than editing, saving source, compiling an EXE to disk and recovering both after a fresh launch. Label historical evidence precisely and freeze a finite V1 endpoint when the user defers optimization; preserve deferred prototypes and first failures without promoting or continuing them.

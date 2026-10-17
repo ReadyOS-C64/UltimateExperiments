@@ -280,3 +280,8 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-17: Promote publicCONFIG508d only after exact44file copy/47shared equality, independent25hostcontrols and ROOT public nativebuild+actual4SYS/2Zig at samebytes. Native-only path needs no optionalmodeltools/DOSimages; clean missingcoupledrelease also usesmake. Immutable perrunproducts precede atomicRESULT pointer; preserve prior success and firstcause on failure. Sanitize inherited untracked compiler source search environment, preserve explicit recordedDOS64 overrides. Normal main/SETUP/START graphs remain unchanged. No physical acceptance transfers.
+
+
+2026-10-17 USER V1 PRIORITY: docs/V1_ENDPOINT.md supersedes earlier milestone ordering and performance release criteria. Ship dependable native install/config/launch and A/B/C persistence, full original Turbo Pascal IDE edit/save/compile-to-disk/run/exit/fresh-launch workflow, physical usability and coherent package. Defer further performance improvements/compiled-code activation and50%/85% targets until after V1; preserve correctness fixes and truthful existing speed reports. Do not count old TPC or unchanged-source memory compilation as the edited/restarted IDE test. All ten final matched-release gates remain open until evidenced; broader backlog is not deleted.
+
+2026-10-17: Accept physicalf05e/226 only as documented C64-only cold BASIC closure after independent rawACK/READY/jiffies/settings/source/exit review. It closes the cold-state uncertainty left by failed40fe, not current completeREU equality or originalCPU/RAM/application restoration. Preserve firstfailure and soleCIA reservation. No new device action follows without a concrete owned qualification purpose.

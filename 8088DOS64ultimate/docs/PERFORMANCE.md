@@ -1,3 +1,5 @@
+> V1 steering, 2026-10-17: further performance work is deferred until after the [V1 endpoint](V1_ENDPOINT.md). The 50%/85% targets below remain post-V1 objectives, not V1 release gates. Existing measurements and correctness constraints are retained.
+
 ## Physical fixed-work baseline, 2026-10-15
 
 The frozen b29 interpreter ran on the C64 Ultimate at verified PAL/Manual64, firmware3.14/FPGA121/core1.47. Source, quiet timing, full REU authority and restoration passed. [Physical evidence](../agentworking/evidence/c64u-fixedwork-performance-20261015.json).
