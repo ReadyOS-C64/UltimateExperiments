@@ -829,3 +829,5 @@ ROOTphysicalreview verifies5350pins/109sourcequeries/413raw200 matching1810plans
 ## 2026-10-17 ROOT40KiB loader
 
 Fresh `pack.py` + `couple.py`; actual `verify.py`5native groups PASS6.486s/182source-products unchanged, two fresh `defaults.py`profiles exact79bb/eebb. The first actual5 run (10.386s) had2 breakpoint failures: modal_copy PC hit unrelated RCVcode before asset staging; even firstSTORE apparentpass rejected. Correctedharness requiresphase12+exactnormalINO beforefaultinjection. No nativebodyfix or timeoutincrease. ActualnewBINDslotSTORE and3F3FFFCRC negatives nowpass. Both fullfloppy andreserved16KiB guards exact; no actualnewcontroller/BINDexecution.
+
+2026-10-17 ROOT accepts independentstartupreviewf687edbf/374pins, exact10products/314inputs andfouractualgroups. Two additivecases deny forgedpublic JG/LC/leaf authority and installedsharedprefixmutationbeforeJRN_OPEN. Parent491unchanged; modelborrow explicit; no unchangedfull9/physical/archive replay.

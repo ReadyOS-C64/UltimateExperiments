@@ -1,3 +1,7 @@
+# Independent startup recovery review accepted — 2026-10-17
+
+ROOT verifies peerf687edbf/374pins: fresh source rebuild exactlymatches START6d5/INOf7e/rawRCVa0ba and10products,314inputs exact. Fouractualnativegroups pass (unknownCLOSE/nativeclock plus twoadditive observationforgery/sharedprefixmutation controls); original491pins preserved. No newnative defect; unchanged36s pending suite not repeated. Scope is parent32KiB startupgate, not newer40KiB loader or recoverymutations/physical.
+
 # 40KiB asset loader and cold lifetime verified — 2026-10-17
 
 Private START09e12ff0/INO9f9e164f expands logicalMNU to40KiB:24KiB3DA000 plus16KiB3F0000..3F3FFF. Actual5 pass6.486s,182 before/after source/products exact:40/80 nojournal handoff, exactallassets, RCVcache retired before MNU staging overlap, thirdfloppy368640B+reserved16KiB guards, firstnewslotSTORE andlasttargetbyteCRC failures. Freshdefaults still79bb/eebb. Newslots are datafixtures only; finalcontroller/BIND bytes and combinedcohort remain tointegrate. Evidence is in native-start-40k-root-20261017.json. Numericbreakpoint firstfailure retained; acceptedchecks require actualphase12+exactnormalINO. No public/physicalpromotion.

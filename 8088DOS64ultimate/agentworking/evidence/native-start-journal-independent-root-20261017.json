@@ -1,0 +1,23 @@
+{
+  "status": "independent_review_accepted",
+  "review_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-journal-invocation-independent-review-20261017/MANIFEST.json",
+  "sha256": "f687edbf8946ebc8d90e6612e0f03db40f2108b4c890fb849c21ca34a984ab2d",
+  "pins_verified": 374,
+  "exact_parent_source_couple_rebuild": true,
+  "actual_native_review_groups": 4,
+  "inherited_narrow_groups": 2,
+  "additive_groups": 2,
+  "additive_cases": [
+    "forged public JG/LC/leaf observations cannot grant boot during pending READ",
+    "mutated installed sharedprefix rejects begin before JRN_OPEN"
+  ],
+  "fresh_input_records": 314,
+  "exact_product_records": 10,
+  "borrowed_unchanged_model_explicit": true,
+  "parent_full9_groups_not_repeated": true,
+  "parent491_preserved": true,
+  "new_native_defect_found": false,
+  "newer40KiB_scope_included": false,
+  "recovery_mutation_or_archive": false,
+  "physical": false
+}

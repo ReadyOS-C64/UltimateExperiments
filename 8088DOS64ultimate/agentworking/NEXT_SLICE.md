@@ -1,3 +1,7 @@
+# Functional work continues — 2026-10-17
+
+Memory implements a separate cold explicit pending-save rollforward phase against actualJG private validation; do not grant boot from observations. Rootowns finalcoldloader/recoveryUI and completeactualCUI/actioncontroller orchestration. Compiled finishes livebinding/CLEAN then repairs discovered unit-modal_entry header dependency: oldunit9a7 has a stale16Bcohorttag, so preservefailedcomparison and use fresh correctmatchedrolealiases. CIA finishes knownCclosecomponent after genuineDOS write/pause; physicalproducttakeover remains a later reviewed purpose. No further speedwork.
+
 # Next loader generation — 2026-10-17
 
 Use40KiB loader09e12ff0/9f9e164f and unchangedrawRCVa0ba9fb0 when packing actualcontroller/BIND. Map3F0000..1FFF controller and3F2000..3FFF BIND; datafixture proof doesnotexecuteeither. Realruntime/unit broker/core/phase aliases must match forthcoming BIND nativeprofile. Preserve stage8/cache0, returneveryphaseframe beforeexchange, and no CLEAN untildurablebinding. IndependentRootstartupreview remains on frozen32KiB b5f36c82; that parent staysimmutable.
