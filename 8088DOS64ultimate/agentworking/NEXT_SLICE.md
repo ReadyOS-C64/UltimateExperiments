@@ -2,7 +2,7 @@
 
 Root public cold eight-asset builder and14host checks pass; evidence/native-cold-public-builder-root-20261017.json. New Makeinclude retags runtime c7a14a3a/MNU407f91b8/START2f8e86c9, while native code and INO/RCV/RFW remain exact. Memory worker to finish corrected actual806e Turbo20M persistence/reopen and then run fresh40/80 genuine consumers against public build/cold-start/RESULT.json. Do not transfer806e complete-workflow acceptance to c7 or infer hardware from model.
 
-Next Root: clean public actual-runtime FORMAT Python/Zig test command; review/publish exact27 native installer dependencies and bankguard error UX; compose one final matched candidate. CIA solehardware owner prepares16file stager and806e knownC proof locally, then needs concrete reviewed physical purpose and fresh complete baseline after CURRENT9 readonly staging failure; no automatic LANretry. Final SETUP/CONFIG/floppy/C/Turbo/reset/human matrix stays open. Performance deferred, localcommit/no push.
+Public actual-runtime FORMAT12Python+2Zig command now passes (evidence/public-format-tests-root-20261017.json). Next Root: review/publish exact27 native installer dependencies and bankguard error UX; compose one final matched candidate. CIA solehardware owner prepares16file stager and806e knownC proof locally, then needs concrete reviewed physical purpose and fresh complete baseline after CURRENT9 readonly staging failure; no automatic LANretry. Final SETUP/CONFIG/floppy/C/Turbo/reset/human matrix stays open. Performance deferred, localcommit/no push.
 
 Earlier snapshots below are historical.
 

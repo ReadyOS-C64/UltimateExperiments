@@ -389,3 +389,8 @@ A completed file writer and its readonly source cache each need explicit clean-s
 ## 2026-10-17 — new optional Make include requires all staged inventories
 
 The first public cold-builder promotion exposed the runtime's intentional missing-include check: adding cold_start.mk to Makefile also requires declaring it in both native-media source inventories, even when the selected target never executes it. Preserve the failure; extend the inventories rather than weaken validation. Rebuild truthful source-cohort tags; exact code equality does not transfer previous whole-hash workflow acceptance.
+
+
+## 2026-10-17 — separate actual runtime tests from complete UNIT layout limits
+
+The optionalFORMAT1 runtime can be tested directly with both PythonABI andZig assertions even though the fullUNIT1 linkoverflows. A clean test command must compile the publicdevice model, bind everyusedctypes pointer API, load theactualruntimePRG/labels, andcheck thoseproducts/sourceinputs afterexecution. Pin Zig's actualcompiler/distribution andclang'sactualSDKdependency list; do not let a privateprebuiltmodel or a cleanclone'sunrelatedoptionalfixture become an implicit prerequisite.

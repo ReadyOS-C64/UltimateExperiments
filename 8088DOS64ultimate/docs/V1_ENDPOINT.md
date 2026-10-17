@@ -102,3 +102,6 @@ The combined source-built runtime now includes optional XT floppy FORMAT and cor
 
 
 The source-only matched cold START builder is now public and passes11host groups plus3default-template checks. It emits the eight-file runtime/recovery bundle from verified public sources; the default launcher remains exact. This closes a development build dependency, not any final V1 gate. Current installer composition, complete Turbo/media persistence and actual Ultimate/human acceptance remain separate. [Builder evidence](../agentworking/evidence/native-cold-public-builder-root-20261017.json), [build instructions](../tools/cold/README.md).
+
+
+The clean public `make test-floppy-format` command now passes12actual-runtime Python and2directZig groups with fresh source-built models. This makes the FORMAT component tests reproducible without vendor media; genuineDOS FORMAT/SYS/boot, saving and finalUltimate acceptance keep their own gates. [Test evidence](../agentworking/evidence/public-format-tests-root-20261017.json).

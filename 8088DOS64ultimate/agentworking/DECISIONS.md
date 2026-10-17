@@ -335,3 +335,8 @@ DurableSave/SaveAs implementationdirection: nondestructiveCREATE_NEWverifiedimag
 ## 2026-10-17 — source-only matched cold bundle is an explicit optional build
 
 Promote the reviewed cold builder18owned paths and exact accepted27 Python descriptor/validator prerequisites; add only the Make include and explicit inventory entries. `cold=False`, `start20k=False` and existing five-file/default launcher behavior remain unchanged. `make cold-start` consumes a verified runtime result and emits exactly eight matched assets, with extra maps/labels separate; it does not generate configured end-user media or claim hardware acceptance. Whole source-cohort tags change truthfully after Make changes, even with identical executable phases. Keep old complete-workflow evidence scoped to its own hashes; final release tests consume the new matched cohort. Further performance remains outside V1.
+
+
+## 2026-10-17 — public FORMAT tests execute the runtime profile directly
+
+Expose `make test-floppy-format` using public runtime/model sources and actual12Python+2Zig assertions; do not make an oversized fullFORMAT1 UNIT fit by silently deleting coverage. The ordinary UNIT0 remains its own lane. Model and Zig binaries are freshly compiled; record actualclang SDK dependencies and installedZig distribution before/after. Synthetictrack/corruption/fault tests do not replace genuineDOS/SYS/boot/persistence orUltimate gates.

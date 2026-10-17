@@ -1,0 +1,25 @@
+Build Summary: 3/3 steps succeeded
+compile success
++- install generated to bin/format-tests success
+   +- compile test ReleaseFast native success 33s MaxRSS:847M
+
+test_actual_runtime_bootstrap_and_full_track (__main__.Tests) ... ok
+test_cache_failure_before_mutation_is_fatal_without_dirty_claim (__main__.Tests) ... ok
+test_cold_GFX_nested_header_body_and_padding_corruptions (__main__.Tests) ... ok
+test_each_overlay_DMA_failure_before_FORMAT_has_no_image_mutation (__main__.Tests) ... ok
+test_generation_saturation_and_coherent_dirty_ID_cache (__main__.Tests) ... ok
+test_invalid_IDs_geometry_absent_readonly_and_dma_bounds (__main__.Tests) ... ok
+test_normal_CGA_line_uses_original_GFX_after_FORMAT (__main__.Tests) ... ok
+test_partial_STORE_dirty_generation_and_completed_sector_count (__main__.Tests) ... ok
+test_reordered_IDs_and_full_native_P (__main__.Tests) ... ok
+test_retired_cold_RAM_and_immutable_native_RAM_UCI_ZP_preserved (__main__.Tests) ... ok
+test_runtime_selector8_corruptions_refuse_but_normal_GFX_policy_unchanged (__main__.Tests) ... ok
+test_track_head_last_and_arena_addresses (__main__.Tests) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 2.706s
+
+OK
+1/2 actual.test.actual FORMAT1 runtime has native bounded track writes and returns original native flags...OK
+2/2 actual.test.actual FORMAT1 malformed sector ID and immutable nested byte corruption refuse...OK
+All 2 tests passed.

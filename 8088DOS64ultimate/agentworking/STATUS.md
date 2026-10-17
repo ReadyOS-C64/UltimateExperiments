@@ -1,3 +1,11 @@
+# Current V1 checkpoint — public actual FORMAT test command, 2026-10-17
+
+`make test-floppy-format` now source-builds the FORMAT-enabled runtime, public Peddle/device model and actual Zig assertions without DOS images/private libraries. First actual invocation passes12Python groups(2.706s)+2directZig groups.22590 source/tool/SDK records and2compiledtestproducts unchanged; count includes the whole installed Zig source distribution, not22590projectsourcefiles. Root independently rechecks all records; C++ SDK dependencies/copies and exactbuild commands retained. One cheap missingcompiler control refuses, preserves exact priorpassed pointer and removes ownedlock. Existing native_media.mk gains the target, Make/nativecode unchanged. Fresh c7/407f runtime and all8rebound cold assets remain byteexact. [Evidence](evidence/public-format-tests-root-20261017.json), [testcommand](../tests/floppy_format/README.md).
+
+Root public cold-builder7e85874 is committed locally, not pushed. Turbo current806e producer/save/diskcompile/run/actualFinish and fresh40 recovery now pass; fresh80IDE reopen/sourceclosure still pending. Installer BASIC37 error-pane counterexample has a tested bankguard successor pending finalseal/review. Finalmatched installer/media/Turbo/Ultimate/human V1gates remain open; no speed work orLAN in this slice.
+
+Earlier snapshots below are historical.
+
 # Current V1 checkpoint — public matched cold builder, 2026-10-17
 
 Source-only `make cold-start` and `cold-start-tests` are now public.18owned cold paths plus2exact accepted27 prerequisites and2Make inventories promoted; Makefile receives only the new include. Fresh FORMAT runtime c7a14a3a/MNU407f91b8 and START2f8e86c9 are a checked eight-file bundle; executable INO44dd/RCV0871/RFWf11 remain byte-exact. Main/MNU differ from806e/1b70 only in16source-cohort bytes; START differs only in initialized MNU binding data. No previous full hash is relabeled. Root11cold host+3default descriptor checks pass; fresh default START PRG/labels/map exact. Runtime1001/cold1204/default34 closure records rechecked (overlapping counts, not unique test counts). First public Make-include inventory refusal is retained and fixed by explicit inventories. [Evidence](evidence/native-cold-public-builder-root-20261017.json).

@@ -4,3 +4,7 @@ native-media:
 	$(DOS64_PYTHON) -B build_support/native_media_tests.py --native-only $(DOS64_NATIVE_MEDIA_ARGS)
 test-native-media:
 	DOS64_ZIG="$(DOS64_ZIG)" $(DOS64_PYTHON) -B build_support/native_media_tests.py $(DOS64_NATIVE_MEDIA_ARGS)
+
+.PHONY: test-floppy-format
+test-floppy-format:
+	DOS64_ZIG="$(DOS64_ZIG)" $(DOS64_PYTHON) -B build_support/floppy_format_tests.py $(DOS64_FORMAT_TEST_ARGS)

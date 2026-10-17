@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/floppy_format_tests.py", line 141, in <module>
+    a = p.parse_args(); result = build(a.out)
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/floppy_format_tests.py", line 40, in build
+    native = runtime.build(run / 'runtime', floppy_format=True)
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/runtime_media.py", line 80, in build
+    phase='run';run=Path(tempfile.mkdtemp(prefix='run-',dir=out));phase='tools';t=tools()
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/runtime_media.py", line 38, in tools
+    if not q:raise RuntimeError('Set DOS64_'+n.upper()+' to '+n)
+RuntimeError: Set DOS64_CC65 to cc65
+make: *** [test-floppy-format] Error 1

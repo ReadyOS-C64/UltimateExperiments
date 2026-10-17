@@ -1,0 +1,1 @@
+DOS64_ZIG="../../zeropage-tooling/bin/zig" python3 -B build_support/floppy_format_tests.py --out agentworking/scratch/public-format-tests-root-20261017/build

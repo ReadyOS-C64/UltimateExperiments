@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "returncode": 2,
+  "failure": {
+    "status": "failed",
+    "phase": "runtime",
+    "error": "RuntimeError: Set DOS64_CC65 to cc65",
+    "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/public-format-tests-root-20261017/build/run-2qd_ew8s",
+    "prior_result_preserved": true
+  },
+  "prior_pointer_sha256": "b32db0ee224692a10a33820a7d3a54c9da777dcb4e44cfb6cafb3d2b9332be5d",
+  "prior_pointer_unchanged": true,
+  "lock_absent": true
+}
