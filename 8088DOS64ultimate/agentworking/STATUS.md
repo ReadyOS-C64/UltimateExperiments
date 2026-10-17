@@ -1,3 +1,9 @@
+# Coupled START/DOS/native-menu chain verified — 2026-10-17
+
+Private runtime86299223/unit8518c23c use separately linked broker addresses (cold_open runtime3FF8/unit3FF9). Actual runtime6+unit6 and three fresh default-build profiles pass. Source seal02e48f97/291pins. STARTa685c04a/INOb989b436 loads exact10KiBMNUc6bf3daa with source-bound wholefileCRC, copies into3DA000 with readyzero, verifies targetCRC and publishesready1last/readback. Source-closed9groups/216nativecode-toolinputs include genuineDOS A/B+valid2MiBC→VER/DIR /P→nativeCIA/CUIResume→redraw/RUN, preserving C FILES25. Media before/after hashes separately retained. Seal5e5fcf54/349pins. Independent7c03e2e2 review adds wrong-role brokerCRC and late-mainfailure-readyclear controls; no newdefect. No public promotion, Save/Swap/controller/journal-recovery/Finish/Turbo/physical acceptance.
+
+Hardware POST body-upload still fails404, retained with rawbody/complete READY+settingscleanup. Separate documented128B PUT-only nativeRAMload now physically passes36chunks+whole64KiBreadback/cleanup; ROOT physicalreview pending77d48f6b/584pins. NoSYS/native/REUwrite was allowed. CIA solely prepares a new fastnativefile-recovery purpose using that upload method; no automaticrepeat.
+
 # Public bound installer and coherent candidate verified — 2026-10-17
 
 Public native SETUP7901183a validates eight sources before CREATE: three user DOS images and five matched runtime assets. Root reviews private2259-pin proposal22a1, copies14 source writes/one test relocation; actual PUBLIC8 native+11host and fresh9assetcandidate+13host pass. ROOT verifies342 execution pinsbaf3c960; candidatezip7b465787/102053B. DefaultSETUP0df4 and main666/START79bb/CONFIG508d unchanged. Clean source-only discovery334 optional0/importfail0, discovery only. Source/public test receipts in evidence/public-setup-preflight-root-execution-20261017/RESULT.json. Final installation/menu/durable media/physicalTurbo acceptance remains open.

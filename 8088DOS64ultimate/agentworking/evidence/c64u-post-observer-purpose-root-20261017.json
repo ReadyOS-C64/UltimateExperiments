@@ -1,0 +1,22 @@
+{
+  "status": "approved_one_exact_detached_dispatch",
+  "proposal_sha256": "94cdb2d72dd7ed03e17b7099b8879a7eb4ae9adae020acbfb6540eba89bed13e",
+  "proposal_pins_verified": 138,
+  "launch_sha256": "d0f740e9d6fbe48ecb43c40c93a6eda4348ab8d3b39c081c206b1765f01d6358",
+  "launch_pins_verified": 33,
+  "ROOT_fresh_actual_tests": 19,
+  "ROOT_constructor": true,
+  "author_detached_process_controls": 3,
+  "old_observer_negative_reused_source_closed": true,
+  "ROOT_replay_qualification": "test_OLD writes an immutable existing evidence directory and is excluded after retained FileExists harness failures; other15 controller+4 purpose tests pass",
+  "prior_timeout_physical_manifest_verified": "a0ca34e7130ddbc59aa688bec853f8b464530a55052722b3a96330359761a5ef",
+  "prior_physical_pins_verified": 434,
+  "READY_predicate_unchanged": true,
+  "READY_stage_seconds": 20,
+  "readonly_observations_max_per_stage": 64,
+  "original_endpoints_unchanged": true,
+  "request_cap": 400,
+  "one_POST_no_fallback_retry": true,
+  "native_SYS_REU_UCI_config_turbo": false,
+  "physical_acceptance": false
+}

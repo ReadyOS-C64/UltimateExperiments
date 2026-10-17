@@ -1,0 +1,58 @@
+{
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/start/build.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-modal-assets-root-20261017/build.py",
+    "sha256": "9d0e33033b737de5ede941ce078d10dc795ec2f18439b1824c0cb94c18561ecb"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/start/pack.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-modal-assets-root-20261017/pack.py",
+    "sha256": "882e57f3c81cf260e416820db47bbc75ae418460d4f7303906c7fe9a40c4b31d"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/start/defaults.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-modal-assets-root-20261017/defaults.py",
+    "sha256": "16f211b4406c999b80308247c8b63802c31135828a0b92ac6966c7337dec1465"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/start/final_exec.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-modal-assets-root-20261017/final_exec.py",
+    "sha256": "1732db2e8b99aa51dd14da40294e505bef730d3a1f931cd6f8bac4cfe68b22c8"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/start/FIRST_FAILURES.md": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-modal-assets-root-20261017/FIRST_FAILURES.md",
+    "sha256": "11d27883affa804274c6ff61ecbfc02b811f3eb17ca1206759941e9d99c64589"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/start/work/controller.c": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-modal-assets-root-20261017/work/controller.c",
+    "sha256": "bd06171c1849a39a02fd19eba6a5f4395f13d1e34557aab4fdbc1456447b5e54"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/start/work/modal_capsule.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-modal-assets-root-20261017/work/modal_capsule.s",
+    "sha256": "371554f16db24aeef4f1ffaf85dc2b35a9b1ef90d7bd2987d6793e12f1c7179a"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/start/work/test_modal.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-modal-assets-root-20261017/work/test_modal.py",
+    "sha256": "0c858cca22008e5f7b3b8f25155c18b51cba70648acb91fa8fe5202fb4cf1d6a"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/start/work/test_handoff_entry.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-modal-assets-root-20261017/work/test_handoff_entry.py",
+    "sha256": "f776f9d25158068b4dc0196b420a7d3818f80de7722f6204fe50895fa4382bf3"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/start/work/dos_lane.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-modal-assets-root-20261017/work/dos_lane.py",
+    "sha256": "8262b4e567361b90724f3274305cd7fa566bf5fc4025f1e9abfcf69cfae08f01"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/entry/build_entry.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-assets-root-20261017/build_entry.py",
+    "sha256": "4e335d4ae996288def2d3ba336d7c2c729622656a5ef8d2f41b9638e49cff7c7"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/entry/test_entry.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-assets-root-20261017/test_entry.py",
+    "sha256": "6770a2e5c97ab770e98720f713b4dbaa13bf318ff624847dee2766d7b9d6b979"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/entry/test_online_save.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-assets-root-20261017/test_online_save.py",
+    "sha256": "88c435f76ee3725a32f8bf21d1e166b68dee8442c9572cae9c2733897ddc3eec"
+  },
+  "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/evidence/native-menu-start-components-20261017/entry/broker-runtime/symbols.inc": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-assets-root-20261017/broker-runtime/symbols.inc",
+    "sha256": "26b585c40d15187e84716683877c0d2e554533357bafded022c25fa557b3423c"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "status": "approved_one_exact_detached_dispatch",
+  "scope": "ONE_ACCEPTED_RAWPOST_LOAD_READBACK_NO_ENTRY",
+  "proposal_sha256": "daff4752b0fbd7b8208a34e0e1cf7005ef8077cdae7ffe7859cd3351b7415196",
+  "proposal_pins_verified": 84,
+  "launch_sha256": "cd99272097201dc33159f27ef26692f677fa92c9fb1c81a87cac4e35fbbfd694",
+  "launch_pins_verified": 33,
+  "ROOT_actual_offline_tests": 16,
+  "author_detached_process_controls": 3,
+  "ROOT_offline_constructor": true,
+  "source_review": [
+    "load_only.py",
+    "load_transport.py",
+    "purpose.py",
+    "launch.py",
+    "supervisor.py",
+    "basic readiness and context reused"
+  ],
+  "SYS_or_native_entry": false,
+  "REU_or_UCI_or_FTP": false,
+  "turbo_or_config_mutation": false,
+  "prior_failed_purpose_1b8d_preserved": true,
+  "raw_request_plan_is_packet_proof": false,
+  "one_POST_only_no_fallback_retry": true,
+  "physical_acceptance": false
+}

@@ -1,3 +1,11 @@
+# Current V1 next integration — 2026-10-17
+
+1. ROOT review/commit separately linked runtime assets and coldMNU/DOS/menu chain (9actual groups, seal5e5f; independent7c03). No public promotion before media workers and matchedRCV.
+2. CIA soleowner: review PUT-only physical584pins and prepare source-bound fastnativefile recovery using fixed128B RAMwrites, exactsource guards/twofull4M/knownCLOSE; no newdispatch without concrete review.
+3. Compiled agent: finish matched coldSTART journal gate, then live selected42/CFG/D64R/D64O publication and CLEAN. Old RCVprefix is79bb-only; rootINOb989 needs relocation/rebinding.
+4. Root native action dispatcher: keep broker7000, phase controller8000..9DFF with its own softwarestack9E00..9FFF and nativehighZPsave; fully returnCUI before overlay exchange, preserve worker stackBFFF, then reloadCUI. This is proposed, not linked. Measured core assets need~20KiB of24KiBMNU; extra controller can use explicitly retired installer sourcecache3F0000..3F1FFF, never thirdfloppy3D8000..3D9FFF. Prove cold-loading/binding and allocations before activation.
+5. Extend coherent package/SETUP preflight to finalMNU+RCV, then full physical installer/config/media/Turbo/restart/human checklist. Performance stays deferred.
+
 # Next V1 integration — 2026-10-17
 
 1. Close private native hotkey/footer/CUI Resume source binding and default-byte controls; integrate matched START-loaded modal assets, then disk worker routing.

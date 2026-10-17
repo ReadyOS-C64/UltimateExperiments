@@ -1,0 +1,32 @@
+{
+  "status": "private_runtime_and_unit_components_verified",
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-runtime-assets-root-20261017/MANIFEST.json",
+  "manifest_sha256": "02e48f97fdc6f79d6e2a1d9faaf6d302bd4e73dab634e0ce239f2d5d226f86c9",
+  "pins": 291,
+  "runtime_actual_groups": 6,
+  "unit_actual_groups": 6,
+  "source_built_default_profiles": 3,
+  "main": {
+    "sha256": "862992232fe1dd28fd98ddca9e0037471867a0d571423c2348d690de60df64c2",
+    "bytes": 47105
+  },
+  "unit": {
+    "sha256": "8518c23cd1647979d1984abd88d3a01198933f0c96b47762d9b8ecb8a266f886",
+    "bytes": 47105
+  },
+  "runtime_broker": {
+    "sha256": "d7d312edc148a8ab466aeb93e55a0b1b069d7345e0f01dbefe0de3a578c330d2",
+    "bytes": 1614
+  },
+  "unit_broker": {
+    "sha256": "0cdac889846353200cfb406f4b2b13f7bb3bb471e195f1ca9ffd982afbec4d7b",
+    "bytes": 1614
+  },
+  "source_tag": "9d050be5314221f7cf0c1788db09f621",
+  "only_broker_import_address_role_difference": "dos64_cold_open runtime3FF8/unit3FF9",
+  "host_return_sentinel_runtime": "0300; actual runtime PRG, no unitfixture code loaded",
+  "UI_and_model": "borrowed unchanged exact source-closed prior products",
+  "START_chain": "separate coldloader proof pendingsourceclosure",
+  "public": false,
+  "physical": false
+}

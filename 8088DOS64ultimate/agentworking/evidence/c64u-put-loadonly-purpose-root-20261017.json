@@ -1,0 +1,22 @@
+{
+  "status": "approved_one_exact_detached_dispatch",
+  "scope": "36 documented PUT128 RAM-source writes, load-only/readback",
+  "proposal_sha256": "4df05aa6afb21a9ca0096f31ae0c757a0bdf48ad38322ff74073df35a8b59924",
+  "proposal_pins_verified": 82,
+  "launch_sha256": "b4ef36b4f9238581061d785725ae8d4724ab8dda4906787e0b5528c21869d20f",
+  "launch_pins_verified": 33,
+  "ROOT_actual_focused_tests": 14,
+  "author_detached_controls": 3,
+  "ROOT_offline_constructor": true,
+  "source_review": "complete fixedchunk transport and typedpurpose delta; same observer/cleanup/numeric/context; pinned3.14 PUT body parser70..123 and max128",
+  "firmware_binary_identity_proven": false,
+  "chunks": 36,
+  "chunk_max": 128,
+  "last_chunk_bytes": 112,
+  "shared_upload_endpoint_seconds": 15,
+  "one_attempt_per_chunk_no_fallback_resume_retry": true,
+  "SYS_or_REU_or_UCI_or_config_or_turbo": false,
+  "prior_POST404_failures_preserved": true,
+  "physical_acceptance": false,
+  "ROOT_harness_first_failure": "wrong reused test_load_only.py filename; actual PUT suite has a different name"
+}

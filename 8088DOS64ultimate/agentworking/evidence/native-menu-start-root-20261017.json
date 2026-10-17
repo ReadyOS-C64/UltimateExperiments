@@ -1,0 +1,43 @@
+{
+  "status": "private_coupled_chain_verified",
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/start-modal-assets-root-20261017/MANIFEST.json",
+  "manifest_sha256": "5e5fcf54ffdcd9c446e55ac175a82462ee1d25d977219ebe8df248697bb8a4a4",
+  "pins": 349,
+  "execution_inputs_before_after": 216,
+  "media_before_after_records_separate": true,
+  "actual_groups": 9,
+  "actual_START_menu_load_groups": 8,
+  "actual_genuineDOS_C_MENU_chain_groups": 1,
+  "DOS_commands": [
+    "VER",
+    "DIR /P"
+  ],
+  "C_profile": "valid2MiB, native mounted/FILE25 preserved through menu",
+  "native_hotkey_CUI_Resume": true,
+  "START": {
+    "sha256": "a685c04aca898bb393435c9079188c7d2217560119b7dd61f41893e6c191505b",
+    "bytes": 18432
+  },
+  "INO": {
+    "sha256": "b989b43639679461164125ecabeaa4603d138167eaad07d9687fe540102c5414",
+    "bytes": 7634
+  },
+  "MNU": {
+    "sha256": "c6bf3daad28fba13b2879f5930514672e6c5796b4e10def87c11641d9b611602",
+    "bytes": 10240
+  },
+  "runtime_main": "862992232fe1dd28fd98ddca9e0037471867a0d571423c2348d690de60df64c2",
+  "prelaunch_run_end": "7DD1",
+  "prelaunch_free_bytes": 558,
+  "START_resident_state_end": "8FAB",
+  "new_REU_allocation": "3DA000..3DC7FF for current10KiB; bound maximum ends before3E0000",
+  "cold_staging": "3E0000..3E27FF retired before main staging",
+  "CGA_color_snapshot_separate": "3E2000 is runtime only after main startup staging retired",
+  "default_START_INO_profiles": 2,
+  "default_exact": "79bb/eebb",
+  "public_native_promotion": false,
+  "disk_worker_routing": false,
+  "journal_recovery": false,
+  "physical": false,
+  "scope": "The combined test uses an XT-key endpoint for DOS commands and actual CIA matrix for native menu; it does not establish physical keyboard/readability/Turbo or durableSave."
+}
