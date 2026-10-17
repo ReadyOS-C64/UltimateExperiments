@@ -7,7 +7,7 @@
 .export dos64_cpu_init, dos64_cpu_step, dos64_cpu_status, dos64_cpu_opcode
 .export dos64_cpu_instructions, dos64_cpu_yield, dos64_cpu_pending, dos64_cpu_irq_shadow
 .export dos64_cpu_value, dos64_cpu_word_read, dos64_cpu_word_write
-.export cpu_fetch8, cpu_fetch8_slow, cpu_fetch16, cpu_override, cpu_byte_registers
+.export cpu_fetch8, cpu_fetch8_owned, cpu_fetch8_slow, cpu_fetch16, cpu_override, cpu_byte_registers
 .import dos64_fetch_init, dos64_fast_fetch, dos64_fetch_owned_next
 .export cpu_error_return
 .export cpu_complete, cpu_memory_error, cpu_unsupported, cpu_return, cpu_rep, cpu_relative
@@ -15,7 +15,7 @@
 .import dos64_stack_execute, dos64_math_execute, dos64_indirect_execute, dos64_adjust_execute
 .import dos64_bios_port, dos64_bios_host_error, dos64_bios_waiting
 .import dos64_io_read, dos64_io_write, dos64_io_port, dos64_io_value, dos64_io_width
-.import dos64_decode_rm, dos64_operand_read, dos64_operand_write, dos64_map_register
+.import dos64_decode_rm_owned, dos64_operand_read, dos64_operand_write, dos64_map_register
 .import dos64_operand_width, dos64_modrm_reg, dos64_modrm_mod, dos64_operand_offset
 .import dos64_operand_kind, dos64_operand_segment
 .import dos64_alu_apply, dos64_alu_lhs, dos64_alu_rhs, dos64_alu_result, dos64_alu_op, dos64_alu_width
@@ -231,7 +231,7 @@ cpu_io:
     lda dos64_cpu_opcode
     and #8
     bne cpu_io_dx
-    jsr cpu_fetch8
+    jsr cpu_fetch8_owned
     jcs cpu_memory_error
     sta dos64_io_port
     lda #0
@@ -309,7 +309,7 @@ cpu_set_width:
     rts
 cpu_decode:
     jsr cpu_set_width
-    jmp dos64_decode_rm
+    jmp dos64_decode_rm_owned
 cpu_select_reg:
     lda dos64_modrm_reg
     jsr dos64_map_register
@@ -538,7 +538,7 @@ cpu_decode_word:
     lda #1
     sta dos64_operand_width
     sta dos64_alu_width
-    jmp dos64_decode_rm
+    jmp dos64_decode_rm_owned
 cpu_move_segment:
     jsr cpu_decode_word
     jcs cpu_memory_error
@@ -623,7 +623,7 @@ cpu_mov_immediate:
     bcs @word
     lda cpu_byte_registers,x
     sta cpu_reg
-    jsr cpu_fetch8
+    jsr cpu_fetch8_owned
     jcs cpu_memory_error
     ldx cpu_reg
     sta dos64_guest,x
@@ -713,7 +713,7 @@ cpu_moffs:
     jmp cpu_complete
 
 cpu_short_jump:
-    jsr cpu_fetch8
+    jsr cpu_fetch8_owned
     jcs cpu_memory_error
     sta dos64_cpu_value
     ldx #0
@@ -824,6 +824,9 @@ cpu_error_return:
     rts
 
 cpu_fetch8 = dos64_fast_fetch
+; CPU-private continuation only: selected call sites have a preceding successful
+; opcode fetch and no intervening memory/cache/device/clock/IRQ/state boundary.
+cpu_fetch8_owned = dos64_fetch_owned_next
 cpu_fetch8_slow:
     lda dos64_guest+G_CS
     sta dos64_segment

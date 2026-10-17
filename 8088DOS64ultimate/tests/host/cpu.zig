@@ -408,3 +408,33 @@ test "word continuation seam failure keeps low-byte acknowledgment and restores 
         try std.testing.expectEqual(@as(u8,0x34),c.dos64_reu_peek(f.machine,0x200));
     };
 }
+
+test "owned ModRM continuation wraps displacement independently at IP physical and frame seams" {
+    for([_][2]u16{.{0,0x1fe},.{0x1000,0xfffe},.{0xffff,0x000e},.{0xfff0,0xfe}})|at| {
+        var f=try init(1,1);defer f.deinit();
+        try program(&f,at[0],at[1],&.{0x8b,0x86,0xff,0xff});
+        try reg(&f,5,0);try reg(&f,10,0x7000);
+        c.dos64_reu_poke(f.machine,0x7ffff,0x34);c.dos64_reu_poke(f.machine,0x70000,0x12);
+        try step(&f);const g=try f.symbol("dos64_guest");
+        try std.testing.expectEqual(@as(u16,0x1234),f.word(g));
+        try std.testing.expectEqual(at[1]+%4,f.word(g+24));
+    }
+}
+test "owned operand sites revalidate after oneframe data eviction and dirty selfmodification" {
+    var f=try init(1,1);defer f.deinit();
+    try program(&f,0,0x100,&.{0x83,0x2e,0,8,1});try reg(&f,11,0x9000);
+    c.dos64_reu_poke(f.machine,0x90800,0x42);c.dos64_reu_poke(f.machine,0x90801,0);
+    try step(&f);_=try f.call("dos64_cache_flush",100000);
+    try std.testing.expectEqual(@as(u8,0x41),c.dos64_reu_peek(f.machine,0x90800));
+    try std.testing.expectEqual(@as(u16,4),f.word((try f.symbol("dos64_guest"))+26)&0x8d5);
+    _=try f.call("dos64_cache_init",50000);f.poke(try f.symbol("dos64_memory_mode"),1);_=try f.call("dos64_cpu_init",10000);
+    try program(&f,0,0x100,&.{0xb0,0x11,0xb0,0x22});try step(&f);
+    const a=try f.symbol("dos64_address");f.poke(a,3);f.poke(a+1,1);f.poke(a+2,0);f.poke(try f.symbol("dos64_mem_value"),0xa7);_=try f.call("dos64_mem_write",10000);
+    try std.testing.expectEqual(@as(u8,0x22),c.dos64_reu_peek(f.machine,0x103));
+    try step(&f);try std.testing.expectEqual(@as(u8,0xa7),f.peek(try f.symbol("dos64_guest")));
+}
+test "owned decoder receives no RAM span from PC hole opcode before CGA boundary" {
+    var f=try init(1,0);defer f.deinit();
+    try program(&f,0xb000,0x7fff,&.{0xff,0xc0});try step(&f);
+    const g=try f.symbol("dos64_guest");try std.testing.expectEqual(@as(u16,1),f.word(g));try std.testing.expectEqual(@as(u16,0x8001),f.word(g+24));
+}

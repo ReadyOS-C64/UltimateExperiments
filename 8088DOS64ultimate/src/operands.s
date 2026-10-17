@@ -1,9 +1,9 @@
 .include "abi.inc"
 .macpack longbranch
-.import dos64_guest, cpu_fetch8, cpu_fetch16, dos64_cpu_value, cpu_override, cpu_byte_registers
+.import dos64_guest, cpu_fetch8, cpu_fetch8_owned, cpu_fetch16, dos64_cpu_value, cpu_override, cpu_byte_registers
 .import dos64_cpu_word_read, dos64_cpu_word_write, dos64_physical, dos64_mem_read, dos64_mem_write
 .importzp dos64_segment, dos64_offset, dos64_mem_value
-.export dos64_decode_rm, dos64_operand_read, dos64_operand_write, dos64_map_register
+.export dos64_decode_rm, dos64_decode_rm_owned, dos64_operand_read, dos64_operand_write, dos64_map_register
 .export dos64_operand_width, dos64_operand_kind, dos64_operand_reg
 .export dos64_operand_offset, dos64_operand_segment, dos64_modrm_reg, dos64_modrm_mod
 
@@ -27,9 +27,17 @@ operand_stack_segment: .byte 0,0,1,1,0,0,1,0
 ; Internal decode under the CPU's normal mapping/CLD/non-reentrant contract.
 ; Descriptor survives immediate fetch and page eviction; no raw frame pointer
 ; is retained. ModR/M effective offsets wrap at 16 bits before translation.
+; CPU-private alternate entry. Opcode fetch still owns the live frame;
+; callers listed in the handoff have done no intervening memory/cache/device
+; operation or guest-state mutation. The ordinary public entry stays checked.
+dos64_decode_rm_owned:
+    jsr cpu_fetch8_owned
+    bcc decode_body
+    rts
 dos64_decode_rm:
     jsr cpu_fetch8
     jcs decode_failed
+decode_body:
     sta operand_modrm
     and #7
     sta operand_rm
@@ -97,7 +105,7 @@ dos64_decode_rm:
     beq @default_segment
     cmp #1
     bne @word_disp
-    jsr cpu_fetch8
+    jsr cpu_fetch8_owned
     jcs decode_failed
     sta dos64_cpu_value
     ldx #0

@@ -1,7 +1,7 @@
 .include "abi.inc"
 .macpack longbranch
 .import dos64_guest, dos64_cpu_opcode, dos64_cpu_value, dos64_cpu_irq_shadow
-.import cpu_fetch8, cpu_relative, cpu_complete, cpu_memory_error
+.import cpu_fetch8_owned, cpu_relative, cpu_complete, cpu_memory_error
 .import dos64_cpu_word_read, dos64_stack_push, dos64_stack_pop
 .importzp dos64_segment, dos64_offset
 .export dos64_control_execute, dos64_interrupt_enter
@@ -37,7 +37,7 @@ dos64_control_execute:
     lda #3
     bne dos64_interrupt_enter
 @immediate:
-    jsr cpu_fetch8
+    jsr cpu_fetch8_owned
     jcs cpu_memory_error
 dos64_interrupt_enter:
     sta control_vector
@@ -101,7 +101,7 @@ dos64_interrupt_enter:
     jmp control_commit
 
 control_displacement:
-    jsr cpu_fetch8
+    jsr cpu_fetch8_owned
     bcs @failed
     sta dos64_cpu_value
     ldx #0

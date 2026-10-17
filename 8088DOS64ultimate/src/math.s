@@ -1,7 +1,7 @@
 .include "abi.inc"
 .macpack longbranch
 .import dos64_guest, dos64_cpu_value, dos64_cpu_opcode, cpu_rep
-.import dos64_decode_rm, dos64_operand_read, dos64_operand_write
+.import dos64_decode_rm_owned, dos64_operand_read, dos64_operand_write
 .import dos64_operand_width, dos64_modrm_reg
 .import dos64_alu_apply, dos64_alu_lhs, dos64_alu_rhs, dos64_alu_result, dos64_alu_op, dos64_alu_width
 .import cpu_fetch8, cpu_fetch16, cpu_complete, cpu_memory_error, dos64_interrupt_enter
@@ -29,7 +29,7 @@ dos64_math_execute:
     sta math_width
     sta dos64_operand_width
     sta dos64_alu_width
-    jsr dos64_decode_rm
+    jsr dos64_decode_rm_owned
     jcs cpu_memory_error
     lda dos64_modrm_reg
     sta math_op

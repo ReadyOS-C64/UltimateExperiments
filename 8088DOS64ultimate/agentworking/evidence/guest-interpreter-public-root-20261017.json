@@ -1,0 +1,55 @@
+{
+  "verdict": "PASS_PUBLIC_INTERPRETER_PIT_PROMOTION",
+  "physical": false,
+  "author_manifest_sha256": "e53eb7ac8a64f4bf4ae96386b2bfb981e0f9f3271978daf9388fa5c2ca1e40a1",
+  "author_pins_verified": 2631,
+  "root_actual_groups": {
+    "default": 503,
+    "native_runtime": 17,
+    "loader_handoff": 11,
+    "genuine_loader_DOS": 1,
+    "layout": 17
+  },
+  "public_source_pins_unchanged": 193,
+  "public_native_products_unchanged": 83,
+  "runtime": {
+    "sha256": "8711c1550f5f23b1ba6c8fb847f009ee615fbf164834ce4a76328b8ba7905a41",
+    "bytes": 47105
+  },
+  "unit": {
+    "sha256": "56b1d7d861b0017783335f397f6ece0ed08d6e50a553054554a114554927238e",
+    "bytes": 47105
+  },
+  "labels": {
+    "sha256": "b357e21e2006a5b88e6dc7e22abbb17f56c5b74a75f76d50cadd95d0ff7d2667",
+    "bytes": 72727
+  },
+  "unit_labels": {
+    "sha256": "c4d016052263c80e9974ee3d0194123802f8517a9184fc4b3852299abed6fd61",
+    "bytes": 75054
+  },
+  "baseline_runtime": "c6e43fce3156f75cb62980b26d90a9d89173abdddb872a868005d664904cb2d3",
+  "changes": "Reviewed owned operand-fetch continuations, equivalent cached frame pointer arithmetic, sameepoch/noedge PIT work reduction. No sample/IRQ/REP/coherence policy change.",
+  "paired_author_results": {
+    "fixed12_reduction_percent": 2.88798,
+    "DOS_reduction_percent": 4.2546,
+    "builtins_reduction_percent": 4.35092,
+    "same_guest_retirements_and_CPU_entries": true,
+    "identical_long_run_instruction_stream": false,
+    "opcode_histogram_L1_difference_DOS": 440,
+    "opcode_histogram_L1_difference_builtins": 554,
+    "reason": "Same functional64:1 cost-derivedclock advances differently when nativecode is faster. Fixed external cadence tests separately compare exact state."
+  },
+  "memory": "Only PIT+12bytes\u21921776/1792; resident maps/BSS/ZP/REU unchanged.",
+  "limitations": [
+    "Model CPU costs exclude physicalDMA/VIC/MMIO stalls.",
+    "Does not establish50\u201385%XT target or transfer old physical acceptance.",
+    "Installer-generatedSTART\u2192newruntime physical test still pending."
+  ],
+  "root_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/guest-interpreter-public-root-promotion-20261017/MANIFEST.json",
+  "root_manifest_pin": {
+    "sha256": "09fec554c22e4958ea3cf9c47630a505faf06c0cd114a54707689174108e56b1",
+    "bytes": 5576
+  },
+  "root_manifest_files": 39
+}

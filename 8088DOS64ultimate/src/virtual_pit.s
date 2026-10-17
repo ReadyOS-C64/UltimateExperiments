@@ -98,6 +98,19 @@ dos64_pit_advance:
     beq pit_unready
     lda dos64_pit_error
     bne pit_failed
+    ; Exact same epoch requires no subtraction/gap conversion. The original
+    ; ready/error gates and zero-edge publication above still run every time.
+    ; All nonzero deltas, including wrap/reversed gaps, use the original path.
+    .repeat 4, I
+        lda dos64_pit_now+I
+        cmp dos64_pit_last+I
+        .if I < 3
+            bne @delta
+        .else
+            beq pit_ok
+        .endif
+    .endrepeat
+@delta:
     sec
     .repeat 4, I
         lda dos64_pit_now+I
@@ -119,13 +132,13 @@ dos64_pit_advance:
     bcc @gap_ok
     bne pit_gap
     lda pit_delta
-    bne pit_gap
+    jne pit_gap
 @gap_ok:
     lda pit_delta
     ora pit_delta+1
     ora pit_delta+2
     ora pit_delta+3
-    beq pit_ok
+    jeq pit_ok
     ; Only a validated delta strictly below the exact physical edge threshold
     ; may use binary increments. Public phase/fraction/epoch still update now.
     lda pit_delta+3
@@ -441,7 +454,6 @@ pit_fast_noedge:
     lda dos64_pit_until+1
     sbc pit_delta+1
     sta dos64_pit_until+1
-    jsr pit_load_acc
     ldx #0
 @bit:
     lsr pit_delta+1
@@ -453,16 +465,6 @@ pit_fast_noedge:
     lda pit_delta
     ora pit_delta+1
     bne @bit
-    ldx #2
-@frac:
-    lda pit_rem,x
-    sta dos64_pit_fraction,x
-    dex
-    bpl @frac
-    lda pit_phase
-    sta dos64_pit_phase
-    lda pit_phase+1
-    sta dos64_pit_phase+1
     ldx #3
 @last:
     lda dos64_pit_now,x
@@ -472,49 +474,51 @@ pit_fast_noedge:
     jmp pit_ok
 ; Only reachable after delta < exact first-edge distance. Every partial
 ; binary sum is <= delta, so phase cannot overflow. Update the accumulator
-; directly; the general inverse-threshold trial still uses its old path.
+; directly in the public accumulator. No callback/failure/yield follows the
+; threshold proof; SEI ownership excludes readers until return. The general
+; inverse-threshold trial still initializes and uses private scratch.
 pit_accumulate_noedge_bit:
     clc
-    lda pit_phase
+    lda dos64_pit_phase
     adc pit_qlo,x
-    sta pit_phase
-    lda pit_phase+1
+    sta dos64_pit_phase
+    lda dos64_pit_phase+1
     adc pit_qhi,x
-    sta pit_phase+1
+    sta dos64_pit_phase+1
     clc
-    lda pit_rem
+    lda dos64_pit_fraction
     adc pit_rlo,x
-    sta pit_rem
-    lda pit_rem+1
+    sta dos64_pit_fraction
+    lda dos64_pit_fraction+1
     adc pit_rmid,x
-    sta pit_rem+1
-    lda pit_rem+2
+    sta dos64_pit_fraction+1
+    lda dos64_pit_fraction+2
     adc pit_rhi,x
-    sta pit_rem+2
+    sta dos64_pit_fraction+2
     cmp #6
     bcc @done
     bne @subtract
-    lda pit_rem+1
+    lda dos64_pit_fraction+1
     cmp #$e3
     bcc @done
     bne @subtract
-    lda pit_rem
+    lda dos64_pit_fraction
     cmp #$f4
     bcc @done
 @subtract:
     sec
-    lda pit_rem
+    lda dos64_pit_fraction
     sbc #$f4
-    sta pit_rem
-    lda pit_rem+1
+    sta dos64_pit_fraction
+    lda dos64_pit_fraction+1
     sbc #$e3
-    sta pit_rem+1
-    lda pit_rem+2
+    sta dos64_pit_fraction+1
+    lda dos64_pit_fraction+2
     sbc #6
-    sta pit_rem+2
-    inc pit_phase
+    sta dos64_pit_fraction+2
+    inc dos64_pit_phase
     bne @done
-    inc pit_phase+1
+    inc dos64_pit_phase+1
 @done:
     rts
 pit_qlo: .byte $01,$02,$04,$09,$13,$26,$4D,$9B,$36,$6C,$D8,$B0,$60,$C0,$81,$03

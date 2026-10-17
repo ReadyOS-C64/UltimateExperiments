@@ -1,7 +1,7 @@
 .include "abi.inc"
 .macpack longbranch
 .import dos64_guest, dos64_cpu_opcode, dos64_cpu_value
-.import dos64_decode_rm, dos64_operand_read, dos64_operand_write
+.import dos64_decode_rm_owned, dos64_operand_read, dos64_operand_write
 .import dos64_operand_width, dos64_modrm_reg
 .import cpu_complete, cpu_memory_error
 .export dos64_shifts_execute
@@ -24,7 +24,7 @@ dos64_shifts_execute:
     lda dos64_cpu_opcode
     and #1
     sta dos64_operand_width
-    jsr dos64_decode_rm
+    jsr dos64_decode_rm_owned
     jcs cpu_memory_error
     lda dos64_cpu_opcode
     and #2

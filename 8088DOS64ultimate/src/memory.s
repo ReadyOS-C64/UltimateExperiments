@@ -421,14 +421,14 @@ mem_resolve:
     lda dos64_cache_flags,x
     ora #MEM_REFERENCED
     sta dos64_cache_flags,x
-    txa
-    asl
-    clc
-    adc #>MEM_FRAME_BASE
-    sta dos64_mem_pointer+1
+    ; Carry is the physical256-byte subpage bit. TXA preserves it;
+    ; ROL combines frame*2+subpage, and XOR80 equals modulo256 +80
+    ; even for every8-bit frame value (valid cache handles are0..31).
     lda dos64_address+1
-    and #1
-    ora dos64_mem_pointer+1
+    lsr
+    txa
+    rol
+    eor #>MEM_FRAME_BASE
     sta dos64_mem_pointer+1
     lda dos64_address
     sta dos64_mem_pointer

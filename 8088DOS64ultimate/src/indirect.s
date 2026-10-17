@@ -1,8 +1,8 @@
 .include "abi.inc"
 .macpack longbranch
 .import dos64_guest, dos64_cpu_opcode, dos64_cpu_value
-.import cpu_fetch8, cpu_fetch16, cpu_complete, cpu_memory_error, cpu_unsupported
-.import dos64_decode_rm, dos64_operand_read, dos64_operand_write, dos64_map_register
+.import cpu_fetch8, cpu_fetch8_owned, cpu_fetch16, cpu_complete, cpu_memory_error, cpu_unsupported
+.import dos64_decode_rm_owned, dos64_operand_read, dos64_operand_write, dos64_map_register
 .import dos64_operand_width, dos64_operand_kind, dos64_operand_reg, dos64_modrm_reg
 .import dos64_operand_offset
 .import dos64_stack_push, dos64_stack_pop
@@ -39,7 +39,7 @@ dos64_indirect_execute:
     jne cpu_unsupported
 @group:
     jsr indirect_width
-    jsr dos64_decode_rm
+    jsr dos64_decode_rm_owned
     jcs cpu_memory_error
     lda dos64_modrm_reg
     cmp #2
@@ -115,7 +115,7 @@ indirect_push:
 indirect_pop:
     lda #1
     sta dos64_operand_width
-    jsr dos64_decode_rm
+    jsr dos64_decode_rm_owned
     jcs cpu_memory_error
     lda dos64_modrm_reg
     jne cpu_unsupported
@@ -186,7 +186,7 @@ indirect_push_ip:
 
 indirect_exchange:
     jsr indirect_width
-    jsr dos64_decode_rm
+    jsr dos64_decode_rm_owned
     jcs cpu_memory_error
     lda dos64_modrm_reg
     jsr dos64_map_register
@@ -223,7 +223,7 @@ indirect_test_accumulator:
     jsr indirect_width
     lda dos64_operand_width
     bne @word
-    jsr cpu_fetch8
+    jsr cpu_fetch8_owned
     jcs cpu_memory_error
     sta dos64_cpu_value
     lda #0
