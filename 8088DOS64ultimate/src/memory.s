@@ -322,14 +322,14 @@ mem_check:
 mem_resolve:
     lda dos64_address+2
     lsr
-    sta mem_want_hi
+    tax
     lda dos64_address+1
     ror
-    sta mem_want_lo
-    ; Hot lookup builds the map pointer directly. ROR above must consume
-    ; the high-address bit left by LSR before any ADC changes carry.
+    ; X retains the page high byte until the map hit supplies the frame.
+    ; ROR must consume LSR carry before CLC/ADC. Miss-only wanted-tag
+    ; state is captured below, avoiding its stores on every map hit.
     sta mem_map_pointer
-    lda mem_want_hi
+    txa
     clc
     adc #>MEM_MAP_BASE
     sta mem_map_pointer+1
@@ -341,6 +341,12 @@ mem_resolve:
     tax
     jmp @found
 @miss:
+    lda mem_map_pointer
+    sta mem_want_lo
+    lda mem_map_pointer+1
+    sec
+    sbc #>MEM_MAP_BASE
+    sta mem_want_hi
     lda dos64_cache_limit
     asl
     sta mem_scan

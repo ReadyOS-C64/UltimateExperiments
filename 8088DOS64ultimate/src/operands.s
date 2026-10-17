@@ -48,12 +48,10 @@ decode_body:
     and #7
     sta dos64_modrm_reg
     lda operand_modrm
-    lsr
-    lsr
-    lsr
-    lsr
-    lsr
-    lsr
+    asl
+    rol
+    rol
+    and #3
     sta dos64_modrm_mod
     cmp #3
     bne @memory

@@ -1,22 +1,21 @@
 .include "abi.inc"
 .include "memory.inc"
 .macpack longbranch
-.import dos64_guest, dos64_physical, dos64_mem_read
+.import dos64_guest, dos64_physical_owned, dos64_mem_read
 .importzp dos64_segment, dos64_offset, dos64_address, dos64_mem_pointer
 .import dos64_cache_ready, dos64_cache_limit, dos64_memory_mode, dos64_memory_error
 .import dos64_cache_selected, dos64_cache_flags, dos64_cache_tags_lo, dos64_cache_tags_hi
-.import dos64_cache_generations_lo, dos64_cache_generations_hi
 .export dos64_fetch_init, dos64_fast_fetch, dos64_fetch_owned_next
 
 .segment "ZEROPAGE"
 fetch_pointer: .res 2
-; 13 private ZP bytes. No acquired frame survives a public call.
+; 13 private ZP bytes including two reserved bytes. No acquired frame survives a public call.
 fetch_valid: .res 1
 fetch_cs: .res 2
 fetch_ip: .res 2
 fetch_frame: .res 1
 fetch_tag: .res 2
-fetch_generation: .res 2
+fetch_generation_reserved: .res 2
 fetch_mode: .res 1
 
 .segment "CODE"
@@ -30,7 +29,9 @@ dos64_fetch_init:
 ; success. The pointer is read-only and UNPINNED: operand accesses may evict it.
 ; Validate ownership before every public dereference, including cold cache init.
 ; The CPU-only immediate continuation has the stricter local contract below.
-; Generation changes invalidate writes; valid/tag checks invalidate eviction.
+; Bytes are read live: same-frame writes need no generation invalidation.
+; VALID/tag/limit checks prove ownership after eviction or reset; no code byte
+; is prefetched, copied or retained outside the actual live frame.
 ; Reset counters can repeat, but valid+same tag still identifies the same guest
 ; page at this host frame, whose bytes are read now (never prefetched/copied).
 dos64_fast_fetch:
@@ -66,18 +67,12 @@ dos64_fast_fetch:
     lda dos64_cache_tags_hi,x
     cmp fetch_tag+1
     bne fetch_refill
-    lda dos64_cache_generations_lo,x
-    cmp fetch_generation
-    bne fetch_refill
-    lda dos64_cache_generations_hi,x
-    cmp fetch_generation+1
-    bne fetch_refill
     lda dos64_cache_flags,x
     ora #MEM_REFERENCED
     sta dos64_cache_flags,x
     ldy #0
     lda (fetch_pointer),y
-    pha
+    tay
     jmp fetch_advance
 
 ; CPU-private immediate-word continuation. Enter ONLY immediately after a
@@ -90,7 +85,7 @@ dos64_fetch_owned_next:
     beq dos64_fast_fetch
     ldy #0
     lda (fetch_pointer),y
-    pha
+    tay
     jmp fetch_advance
 
 fetch_refill:
@@ -108,12 +103,12 @@ fetch_refill:
     lda dos64_guest+G_IP+1
     sta dos64_offset+1
     sta fetch_ip+1
-    jsr dos64_physical
+    jsr dos64_physical_owned
     jsr dos64_mem_read
     bcc @success
     rts
 @success:
-    pha
+    tay
     ; mem_read returns FF for PC holes without resolving a frame. Such bytes
     ; never establish a span, even if an earlier ALL_RAM frame still exists.
     lda dos64_memory_mode
@@ -138,10 +133,6 @@ fetch_refill:
     sta fetch_tag
     lda dos64_cache_tags_hi,x
     sta fetch_tag+1
-    lda dos64_cache_generations_lo,x
-    sta fetch_generation
-    lda dos64_cache_generations_hi,x
-    sta fetch_generation+1
     lda dos64_mem_pointer
     sta fetch_pointer
     lda dos64_mem_pointer+1
@@ -162,17 +153,16 @@ fetch_advance:
     inc dos64_guest+G_IP
     bne @expected
     inc dos64_guest+G_IP+1
-    lda dos64_guest+G_IP+1
-    sta fetch_ip+1
+    inc fetch_ip+1
     bne @expected
+    lda #0
     ; Offset FFFF -> 0000 requires a fresh segmented translation even when
     ; the linear physical address would remain in this same cache page.
     sta fetch_valid
 @expected:
-    lda dos64_guest+G_IP
-    sta fetch_ip
+    inc fetch_ip
     lda #0
     sta dos64_memory_error
-    pla
+    tya
     clc
     rts

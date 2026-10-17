@@ -15,7 +15,7 @@ class Bundle(unittest.TestCase):
  def validate(self):return b.validate_bundle(self.p,self.labels,self.map,self.mainlabels,self.mods)
  def test_exact_real_five_assets_reproduce_matched_component(self):
   self.assertEqual(self.validate()['D64L_version'],2)
-  expected={'START.TPL':'79bb0470','START.REL':'45b68eaf','START.INO':'eebb43ac','DOS64.PRG':'f7ea026b','DOS64.REL':'3b454d75'}
+  expected={'START.TPL':'79bb0470','START.REL':'45b68eaf','START.INO':'eebb43ac','DOS64.PRG':'666089b5','DOS64.REL':'9eb1cd3a'}
   for n,h in expected.items():self.assertTrue(b.digest(self.p/n)['sha256'].startswith(h),n)
  def test_omitted_overlay_or_partial_extra_asset_refused(self):
   (self.p/'START.INO').unlink()

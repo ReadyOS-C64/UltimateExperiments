@@ -4,7 +4,7 @@
 .import dos64_cpu_irq_shadow
 .import dos64_guest, dos64_cpu_value, dos64_cpu_opcode, dos64_cpu_yield
 .import cpu_rep, cpu_override, cpu_return, cpu_complete, cpu_memory_error
-.import dos64_cpu_word_read, dos64_cpu_word_write, dos64_physical, dos64_mem_read, dos64_mem_write
+.import dos64_cpu_word_read, dos64_cpu_word_write, dos64_physical_owned, dos64_mem_read, dos64_mem_write
 .import dos64_alu_apply, dos64_alu_lhs, dos64_alu_rhs, dos64_alu_op, dos64_alu_width
 .importzp dos64_segment, dos64_offset, dos64_mem_value
 .export dos64_strings_execute, dos64_string_pending
@@ -184,7 +184,7 @@ string_destination_address:
 string_read:
     lda string_width
     bne @word
-    jsr dos64_physical
+    jsr dos64_physical_owned
     jsr dos64_mem_read
     bcs @failed
     sta dos64_cpu_value
@@ -199,7 +199,7 @@ string_write:
     bne @word
     lda dos64_cpu_value
     sta dos64_mem_value
-    jsr dos64_physical
+    jsr dos64_physical_owned
     jmp dos64_mem_write
 @word:
     jmp dos64_cpu_word_write

@@ -429,3 +429,52 @@ test "owned immediate words retain independent slow-byte behavior at PC frame IP
         }
     }
 }
+
+test "live frame fetch sees same-tag writes through generation and epoch wrap" {
+    for ([_]u8{ 1, 32 }) |frames| {
+        var p = try Pair.init(frames, 1);
+        defer p.deinit();
+        try p.position(0, 0x100);
+        p.backing(0x100, 0x11);
+        p.backing(0x101, 0x22);
+        try p.next(0x11, 0);
+        for ([_]*Fixture{ &p.fast, &p.slow }) |f| {
+            const frame = f.peek(try f.symbol("dos64_cache_selected"));
+            f.poke((try f.symbol("dos64_cache_generations_lo")) + frame, 0xff);
+            f.poke((try f.symbol("dos64_cache_generations_hi")) + frame, 0xff);
+            const epoch = try f.symbol("dos64_write_epoch");
+            for (0..4) |i| f.poke(epoch + @as(u16, @intCast(i)), 0xff);
+        }
+        try p.operand(0x101, 0xa7);
+        // Authoritative dirty resident bytes differ from backing after a full
+        // generation/epoch wrap. Neither a generation equality nor mismatch
+        // permits returning a copied/prefetched byte.
+        try std.testing.expectEqual(@as(u8, 0x22), c.dos64_reu_peek(p.fast.machine, 0x101));
+        try p.next(0xa7, 0);
+        for ([_]*Fixture{ &p.fast, &p.slow }) |f| {
+            const frame = f.peek(try f.symbol("dos64_cache_selected"));
+            try std.testing.expectEqual(@as(u8, 0), f.peek((try f.symbol("dos64_cache_generations_lo")) + frame));
+            try std.testing.expectEqual(@as(u8, 0), f.peek((try f.symbol("dos64_cache_generations_hi")) + frame));
+            try std.testing.expectEqual(@as(u16, 0), f.word(try f.symbol("dos64_write_epoch")));
+            try std.testing.expectEqual(@as(u16, 0), f.word((try f.symbol("dos64_write_epoch")) + 2));
+        }
+        try p.flushAndCompare();
+    }
+}
+
+test "live fetch reads all dirty future bytes without cache pinning or copied code" {
+    var p = try Pair.init(1, 1);
+    defer p.deinit();
+    try p.position(0, 0x100);
+    for (0..256) |i| p.backing(0x100 + @as(u32, @intCast(i)), 0x55);
+    try p.next(0x55, 0);
+    const dma = c.dos64_dma_transfers(p.fast.machine);
+    for (1..256) |i| {
+        const value = pattern(i);
+        try p.operand(0x100 + @as(u32, @intCast(i)), value);
+        try p.next(value, 0);
+    }
+    try std.testing.expectEqual(dma, c.dos64_dma_transfers(p.fast.machine));
+    try std.testing.expectEqual(c.dos64_dma_transfers(p.slow.machine), dma);
+    try p.flushAndCompare();
+}

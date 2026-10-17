@@ -1,6 +1,7 @@
 .include "abi.inc"
 .import __CODE_RUN__, __CODE_SIZE__
-.import dos64_guest, dos64_cpu_reset, dos64_mem_read, dos64_mem_write, dos64_physical
+.import dos64_physical
+.import dos64_guest, dos64_cpu_reset, dos64_mem_read, dos64_mem_write, dos64_physical_owned
 .importzp dos64_segment, dos64_offset, dos64_mem_value, dos64_address, dos64_mem_pointer
 .import dos64_mem_access_kind, dos64_mem_write_span_byte
 .macpack longbranch
@@ -104,7 +105,7 @@ cpu_prefix:
     sta cpu_jump
     lda #0
     sta dos64_cpu_pending
-    lda dos64_cpu_opcode
+    txa
     jmp (cpu_jump)
 cpu_prefix_special:
     ; Low table bytes encode the last segment selector or REP/LOCK kind.
@@ -689,7 +690,7 @@ cpu_moffs:
     sta dos64_guest+G_AX+1
     jmp cpu_complete
 @read_byte:
-    jsr dos64_physical
+    jsr dos64_physical_owned
     jsr dos64_mem_read
     jcs cpu_memory_error
     sta dos64_guest+G_AX
@@ -707,7 +708,7 @@ cpu_moffs:
     jcs cpu_memory_error
     jmp cpu_complete
 @write_byte:
-    jsr dos64_physical
+    jsr dos64_physical_owned
     jsr dos64_mem_write
     jcs cpu_memory_error
     jmp cpu_complete
@@ -867,7 +868,7 @@ dos64_cpu_word_read:
     php
     sei
     cld
-    jsr dos64_physical
+    jsr dos64_physical_owned
     jsr dos64_mem_read
     bcs word_failed
     sta dos64_cpu_value
@@ -881,7 +882,7 @@ dos64_cpu_word_read:
     jmp word_read_complete
 @slow:
     jsr word_next
-    jsr dos64_physical
+    jsr dos64_physical_owned
     jsr dos64_mem_read
     jsr word_previous
     bcs word_failed
@@ -897,7 +898,7 @@ dos64_cpu_word_write:
     cld
     lda dos64_cpu_value
     sta dos64_mem_value
-    jsr dos64_physical
+    jsr dos64_physical_owned
     jsr dos64_mem_write
     bcs word_failed
     jsr word_span_check
@@ -911,7 +912,7 @@ dos64_cpu_word_write:
     jsr word_next
     lda dos64_cpu_value+1
     sta dos64_mem_value
-    jsr dos64_physical
+    jsr dos64_physical_owned
     jsr dos64_mem_write
     jsr word_previous
     bcc word_success

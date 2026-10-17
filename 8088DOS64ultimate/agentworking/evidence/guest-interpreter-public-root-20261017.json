@@ -1,55 +1,203 @@
 {
-  "verdict": "PASS_PUBLIC_INTERPRETER_PIT_PROMOTION",
-  "physical": false,
-  "author_manifest_sha256": "e53eb7ac8a64f4bf4ae96386b2bfb981e0f9f3271978daf9388fa5c2ca1e40a1",
-  "author_pins_verified": 2631,
-  "root_actual_groups": {
-    "default": 503,
-    "native_runtime": 17,
-    "loader_handoff": 11,
-    "genuine_loader_DOS": 1,
-    "layout": 17
+  "status": "accepted_public_source_build_and_actual_native_tests",
+  "author_manifest_sha256": "2575316cebe83ad1c52feeb7dbd7a2df0f361ddacbe3f57169e22283c64e42f2",
+  "author_files_verified": 8172,
+  "independent_peer_manifest_sha256": "d2fb8c416df8d9609e03e17a8d9cfbe4e21b838a7381d7115fe1bf9010b4b3d9",
+  "peer_files_verified": 1587,
+  "portable_source_files": 8,
+  "additional_ROOT_test_change": "Update two exact expected bundle hashes for currentmain and regeneratedD64L2; no predicate weakening",
+  "root_result": {
+    "status": "passed",
+    "source_files_unchanged": 635,
+    "commands": [
+      {
+        "name": "default",
+        "argv": [
+          "make",
+          "test"
+        ],
+        "exit": 0,
+        "seconds": 136.41713345899998
+      },
+      {
+        "name": "options",
+        "argv": [
+          "make",
+          "start-ini-bundle-tests",
+          "start-options-tests",
+          "ini-options-tests",
+          "unit-sidecar-tests",
+          "ini-state-memory-tests"
+        ],
+        "exit": 0,
+        "seconds": 30.805290249999985
+      }
+    ],
+    "products": {
+      "dos64.prg": {
+        "sha256": "666089b57e5611a67b5d87ae84880256ef5dafb121b152e1de81b9ec1cc29064",
+        "bytes": 47105
+      },
+      "dos64-tests.prg": {
+        "sha256": "b9e9cc9e7d87176848ccf8bae49dfe4f4ff0125b3aad5a1cb874341436b78df6",
+        "bytes": 47105
+      },
+      "dos64.map": {
+        "sha256": "8ad4d195fab7c08dec69325e6ce59b32daa88d3d7279182a8d17b5a8a9ae9658",
+        "bytes": 89769
+      },
+      "dos64-tests.map": {
+        "sha256": "0a44ecffe6baf157a7df56fc653afa13fe183ff0f7c015926533e9c69af5a019",
+        "bytes": 92830
+      },
+      "dos64.labels": {
+        "sha256": "c857831204397e37b7dff327ef25157abce70451055294f5f7e535b0ce9d7123",
+        "bytes": 73212
+      },
+      "dos64-tests.labels": {
+        "sha256": "b9993ba9cb50765f5c2c08e2ec3cac466c332da185bb9291065bff610a087b79",
+        "bytes": 75723
+      },
+      "dos64-tests.prg.unit-extra.bin": {
+        "sha256": "269fbf30af8fec8c0aa3ba0b08c35796253baf7d271ea79746657a26de3701c7",
+        "bytes": 251
+      }
+    },
+    "physical": false
   },
-  "public_source_pins_unchanged": 193,
-  "public_native_products_unchanged": 83,
-  "runtime": {
-    "sha256": "8711c1550f5f23b1ba6c8fb847f009ee615fbf164834ce4a76328b8ba7905a41",
-    "bytes": 47105
+  "root_genuine_DOS": {
+    "argv": [
+      "make",
+      "test-loader-dos"
+    ],
+    "exit": 0,
+    "seconds": 32.505502666,
+    "source_files_unchanged": 635,
+    "physical": false
   },
-  "unit": {
-    "sha256": "56b1d7d861b0017783335f397f6ece0ed08d6e50a553054554a114554927238e",
-    "bytes": 47105
+  "default_actual_native_groups": 507,
+  "default_host_groups": 334,
+  "focused_native_groups": {
+    "START_options": 23,
+    "main_options": 6,
+    "unit_sidecar": 4
   },
-  "labels": {
-    "sha256": "b357e21e2006a5b88e6dc7e22abbb17f56c5b74a75f76d50cadd95d0ff7d2667",
-    "bytes": 72727
+  "focused_host_groups": {
+    "bundle": 8,
+    "state": 5,
+    "HD_contract": 8
   },
-  "unit_labels": {
-    "sha256": "c4d016052263c80e9974ee3d0194123802f8517a9184fc4b3852299abed6fd61",
-    "bytes": 75054
+  "matched_bundle_assets": {
+    "START.TPL": {
+      "sha256": "79bb0470e830b9012eac1b87beddb14a5a005542f332c53b68ec7b4d3ddb34e8",
+      "bytes": 18432
+    },
+    "START.REL": {
+      "sha256": "45b68eafff7913f47d8d2884167e48d00ba91e23a0fdf4b485d375d8eb705697",
+      "bytes": 64
+    },
+    "START.INO": {
+      "sha256": "eebb43aca1e12a67279b4b41d4b57d9b18d407f3e98dfeaadd9e5dc5f697459e",
+      "bytes": 6798
+    },
+    "DOS64.PRG": {
+      "sha256": "666089b57e5611a67b5d87ae84880256ef5dafb121b152e1de81b9ec1cc29064",
+      "bytes": 47105
+    },
+    "DOS64.REL": {
+      "sha256": "9eb1cd3a16afe31277fa7fb76911011aad26248f40341b3435a21dee854abbe4",
+      "bytes": 64
+    }
   },
-  "baseline_runtime": "c6e43fce3156f75cb62980b26d90a9d89173abdddb872a868005d664904cb2d3",
-  "changes": "Reviewed owned operand-fetch continuations, equivalent cached frame pointer arithmetic, sameepoch/noedge PIT work reduction. No sample/IRQ/REP/coherence policy change.",
-  "paired_author_results": {
-    "fixed12_reduction_percent": 2.88798,
-    "DOS_reduction_percent": 4.2546,
-    "builtins_reduction_percent": 4.35092,
-    "same_guest_retirements_and_CPU_entries": true,
-    "identical_long_run_instruction_stream": false,
-    "opcode_histogram_L1_difference_DOS": 440,
-    "opcode_histogram_L1_difference_builtins": 554,
-    "reason": "Same functional64:1 cost-derivedclock advances differently when nativecode is faster. Fixed external cadence tests separately compare exact state."
+  "fixed_work_peer_model": {
+    "baseline_CPU_cycles": 55189075,
+    "successor_CPU_cycles": 53222927,
+    "fewer_percent": 3.562567,
+    "guest_retirements": 10314,
+    "calls": 12902,
+    "DMA_transfers": 223,
+    "DMA_bytes": 114176,
+    "registers_and_full_1MiB_equal": true
   },
-  "memory": "Only PIT+12bytes\u21921776/1792; resident maps/BSS/ZP/REU unchanged.",
+  "layout": {
+    "CODE_bytes": 13402,
+    "MAIN_free_runtime": 50,
+    "MAIN_free_unit": 49,
+    "ZP_runtime_unit": [
+      36,
+      48
+    ],
+    "BSS": 207,
+    "DEVICESTATE": 1160,
+    "new_REU_allocations": false
+  },
+  "retained_failure": "Rejected029 D1 publicoperand regression repaired; historical5129 strictbuiltins equalretirement failure remains failed; not rerun/reclassified",
   "limitations": [
-    "Model CPU costs exclude physicalDMA/VIC/MMIO stalls.",
-    "Does not establish50\u201385%XT target or transfer old physical acceptance.",
-    "Installer-generatedSTART\u2192newruntime physical test still pending."
+    "No physical acceptance transfers",
+    "Modeled fixedwork cycles exclude physical DMA/VIC/device stalls and do not establish an8088 percentage",
+    "New genuineDOS check is loader-handoff VER/DIR, not a new fullbuiltins or fullinstaller run"
   ],
-  "root_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/guest-interpreter-public-root-promotion-20261017/MANIFEST.json",
-  "root_manifest_pin": {
-    "sha256": "09fec554c22e4958ea3cf9c47630a505faf06c0cd114a54707689174108e56b1",
-    "bytes": 5576
+  "files": {
+    "agentworking/scratch/guest-interpreter-public-root-20261017/review.py": {
+      "sha256": "e510a73d0d5b71eea3f2ef78e725a1d7c8d0da3f1e67e31694d5bfcfae72b89d",
+      "bytes": 1863
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/dos.py": {
+      "sha256": "7f0621b3cd57353dcbcc164401713bb89ac424193464f8d1823fb71ea74c19c0",
+      "bytes": 891
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/PORTABLE_FILES.json": {
+      "sha256": "3c24c5d4208a7388aa3cb363afeb5932b8d29e58165f8bed21b3ebfe595a3298",
+      "bytes": 1692
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/BEFORE.json": {
+      "sha256": "61f749f08933d5bb0c7599f747a5e9a52f4232ea5fb407331e6f421109a82083",
+      "bytes": 708
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/INPUTS_BEFORE.json": {
+      "sha256": "1804ffe023912acb08a574c842bc0786f943969a6a898ae2d8a8f2ffc4567010",
+      "bytes": 69702
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/RESULT.json": {
+      "sha256": "efcb459236c6e3cfacfda1fa4228c7042bd132cf08b01b44608cd4df8eb16a5f",
+      "bytes": 1515
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/COMMANDS.json": {
+      "sha256": "92f516bca9378d65389177a514a32dad8685d5d2038ed1c3f927637e9ce58f7b",
+      "bytes": 395
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/DOS_RESULT.json": {
+      "sha256": "5b617f4770c93c0d7370c07510f54d394a7e7c2292b65e3e60f6f3c15241e04c",
+      "bytes": 148
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/default.stdout": {
+      "sha256": "4a27594c38d829b8ce0c2707c922f3914893471d35c92ba386f5ebe9084b1f34",
+      "bytes": 4846
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/default.stderr": {
+      "sha256": "c836bf546768afcb5a823f0a3aa363f32aae03753fab6273f6cded4a3a1a8196",
+      "bytes": 37703
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/options.stdout": {
+      "sha256": "408e22ed547f36b428d94d12d73f7f53559c682a527b89a4de748fca0609fe2e",
+      "bytes": 2181
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/options.stderr": {
+      "sha256": "523ca9c2606496a81f5d66f2c96807313855720e7303de9df5d609e74453ae46",
+      "bytes": 2526
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/dos.stdout": {
+      "sha256": "4f124f911fc5487e5a72d236f992c52c4334132c105093ca9cc6f62cf5cfda42",
+      "bytes": 1542
+    },
+    "agentworking/scratch/guest-interpreter-public-root-20261017/dos.stderr": {
+      "sha256": "44fe7e7182db6074ebaf792e76e36969758d6e4b00927a4ee3989403250802c8",
+      "bytes": 172
+    },
+    "build/start-ini-bundle/RESULT.json": {
+      "sha256": "c5af660448c150700cf0e3f29319870a9f3fd2411ba7b73faac3e19695366b75",
+      "bytes": 180340
+    }
   },
-  "root_manifest_files": 39
+  "physical": false
 }

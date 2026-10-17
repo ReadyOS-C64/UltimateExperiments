@@ -1,3 +1,11 @@
+# Fetch/decode performance promoted — 2026-10-17
+
+Public runtime666089b5/unitb9e9cc9e reproduce the independently reviewed successor. ROOT verified author2575316c/all8172 and peerd2fb8c41/all1587 pins, copied exactly sixASM+two additive testfiles, and updated two exact expected bundle hashes. Public507 actual native +334 tooling pass; focused23 START/6 consumer/4 sidecar native and8 bundle/5 state/8 HD host groups pass. Fresh genuine DOS loader-handoff VER/DIR passes in30s. All635 selected source inputs remain exact during execution. Receipt: evidence/guest-interpreter-public-root-20261017.json.
+
+Independent fixed12 profiles use55,189,075→53,222,927 modeledCPUcycles (3.562567% fewer), with exactly10,314retirements/12,902calls/223DMA/114176bytes and equal registers/full1MiB. Private CLD translation is limited to reviewed CPU-owned paths; exported byte operand access still uses the P-preserving public wrapper. The actual rejected D1 regression and historical strictbuiltins16-retirement mismatch remain retained; no new fullbuiltins/installer or physical timing acceptance is claimed. MAINfree50runtime/49unit; no state/REU growth. Matched START79bb/INOeebb remain exact; D64L2 becomes9eb1cd3a. All commits local, no push.
+
+CONFIG startup/browser/preferences and the six-output generation publisher continue in coordinated private work. CIA reviewed response-retention successorc54272da/94pins, launchda325b03/2013pins, now has ROOT authorization for one distinct detached read-only campaign; priorbb1 physical failure remains failed. No automatic retry or full-board reset.
+
 # CONFIG inspection and cold hardware attempt — 2026-10-17
 
 ROOT accepted private readonly media reinspection56f9bdf6/405d6bad after checking all701 sealed files, source review and an independent14 actual native/Peddle groups (112.205s). All80 copied source/native products stayed exact. A/B are fully reread for fresh CRC; C is checked only for the supported size/MBR/BPB/EOF/close profile. The predecessor's real stale-clock failure remains preserved; the successor samples after CRC initialization. Evidence: evidence/native-readonly-media-root-20261017.json. CONFIG browser/startup and generation publisher are now separate coordinated implementation work; no running SETUP/emulator attachment or synthetic writer receipts.

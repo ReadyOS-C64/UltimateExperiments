@@ -327,3 +327,40 @@ test "memory routines write only owned host frames metadata scratch and REU regi
         return error.ForbiddenPagerWrite;
     }
 }
+
+
+test "CPU-owned CLD translation independently covers every segment without widening public ABI" {
+    var f=try Fixture.init();defer f.deinit();
+    const seg=try f.symbol("dos64_segment");const off=try f.symbol("dos64_offset");const a=try f.symbol("dos64_address");
+    for(0..65536)|i|{
+        const s:u16=@intCast(i);const o:u16=@truncate(i*%40503+%0xfff1);
+        try setWord(&f,"dos64_segment",s);try setWord(&f,"dos64_offset",o);
+        f.initial_status=@as(u8,@truncate(i))&0xf7;
+        const r=try f.call("dos64_physical_owned",300);
+        try std.testing.expectEqual((@as(u32,s)*16+o)&0xfffff,@as(u32,f.word(a))|(@as(u32,f.peek(a+2))<<16));
+        try std.testing.expectEqual(s,f.word(seg));try std.testing.expectEqual(o,f.word(off));
+        try std.testing.expectEqual(@as(u8,0x82),r.x);try std.testing.expectEqual(@as(u8,0x93),r.y);
+        try std.testing.expectEqual(@as(u8,0),r.p&8);
+        try std.testing.expectEqual(@as(u8,0x2f),f.peek(0));try std.testing.expectEqual(@as(u8,0x35),f.peek(1));
+    }
+}
+
+test "public byte operands retain decimal-safe read and write for every native status" {
+    var f=try Fixture.init();defer f.deinit();c.dos64_enable_reu(f.machine);
+    f.poke(try f.symbol("dos64_cache_limit"),1);
+    for(0..256)|p|{
+        _=try f.call("dos64_cache_flush",100000);_=try f.call("dos64_cache_init",50000);
+        f.poke(try f.symbol("dos64_memory_mode"),1);
+        f.poke(try f.symbol("dos64_operand_kind"),1);f.poke(try f.symbol("dos64_operand_width"),0);
+        try setWord(&f,"dos64_operand_segment",0x1234);try setWord(&f,"dos64_operand_offset",0x5678);
+        c.dos64_reu_poke(f.machine,0x179b8,0xa7);f.initial_status=@intCast(p);
+        const r=try f.call("dos64_operand_read",10000);
+        try std.testing.expectEqual(@as(u8,0),r.p&1);try std.testing.expectEqual(@as(u8,@intCast(p))&8,r.p&8);
+        try std.testing.expectEqual(@as(u16,0xa7),f.word(try f.symbol("dos64_cpu_value")));
+        try setWord(&f,"dos64_cpu_value",0x5a);f.initial_status=@intCast(p);
+        const w=try f.call("dos64_operand_write",10000);
+        try std.testing.expectEqual(@as(u8,0),w.p&1);try std.testing.expectEqual(@as(u8,@intCast(p))&8,w.p&8);
+        _=try f.call("dos64_cache_flush",100000);
+        try std.testing.expectEqual(@as(u8,0x5a),c.dos64_reu_peek(f.machine,0x179b8));
+    }
+}

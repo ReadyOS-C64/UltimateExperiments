@@ -1,6 +1,6 @@
 # Native START / main handoff ABI 1
 
-ABI1 is implemented in the default native START8b68 and mainf7ea026b/47105B.
+ABI1 is implemented in the default native START8b68 and main666089b5/47105B.
 `make start` builds the disabled path-aware template; the installer configures
 its persistent home after verified output creation. Main validation/adoption
 is covered by `make test-loader-handoff` and genuine DOS by
