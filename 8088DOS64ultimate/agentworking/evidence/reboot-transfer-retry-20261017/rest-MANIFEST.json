@@ -1,0 +1,35 @@
+{
+  "scope": "NAMED_MULTIPART_32BYTE_PROBE",
+  "owner": "root",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-reboot-rest-retry-20261017",
+  "predecessor_sha256": "aac77f609a39a33ddf3e7d7fc07701503c6537e3c748eba091b9c7f0b8253ec9",
+  "original_inventory": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy-wait76-recovery-purpose-20261017/work/original-inventory.json",
+  "temp_name": "4591165F.BIN",
+  "marker_hex": "4436345245424f4f544591165ff50c4765be7c34c3e6d0c44d30313233343536",
+  "content_type": "multipart/form-data; boundary=D644591165ff50c4765be7c34c3e6d0c44d",
+  "inputs": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy-wait76-recovery-purpose-20261017/work/original-inventory.json": "5e1111713e028e78f887aabfea4da8c6e4127a0ba3b7b55d562d040c0c717641",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy-wait76-recovery-purpose-20261017/work/ready_prefix.py": "a3f57991e2a0661a2047f06a5f43d5e3d3416e90685cc1c7581679edc8f7d7b4",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/rest-upload-reset-20261016/attachment_writer.h": "14132a475530a6460dfc6e2271f98a1ed3ea73d951181827aa08b3df924cf593",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/rest-upload-reset-20261016/route_machine.cc": "8f8b80af726749f89ded585b00be5eef6c4dad5a4a5dec175cd7bf7ce96e65e6",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/reboot-rest-retry-20261017/worker.py": "335e020dd0bffe12f914739c14fec4052c59f14a2d3879fa480a8b9aaacd05e1",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/reboot-rest-retry-20261017/supervisor.py": "eab464a9978931a15b6663a688180159caa5476dfcaba56992cf3d831cb97191",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/reboot-rest-retry-20261017/dispatch-owned.sh": "3e7c2a17a29f8e7b923bad7d653d498d873a3c7d6ca8f87c4b7cd971cd7db4b5",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/reboot-rest-retry-20261017/request.body": "8b9474c1372dbab2482e0520ea9b88d1c59f3aff6f73956b549a1633f2b4ca89"
+  },
+  "POST_max": 1,
+  "RAM_range": [
+    16384,
+    16416
+  ],
+  "BASIC_fresh_pair_required": true,
+  "fresh_named_absence_required": true,
+  "restore_original32_required": true,
+  "REU_CPUreset_UCI_FTP": false,
+  "no_retry": true,
+  "bounds": [
+    75,
+    30,
+    180
+  ]
+}

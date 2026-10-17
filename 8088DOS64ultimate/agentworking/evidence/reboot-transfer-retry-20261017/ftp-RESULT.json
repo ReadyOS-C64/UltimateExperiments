@@ -1,0 +1,37 @@
+{
+  "status": "failed",
+  "scope": "NEW_FOLDER_DEVELOPMENT_PACKAGE_STAGE_ONLY",
+  "physical": true,
+  "directory": "/usb1/DOS64_TEST/v1-reboot-retry-20261017",
+  "C64_CPU_control": true,
+  "REU_restoration_claimed": false,
+  "REU_access": false,
+  "UCI_commands": false,
+  "native_V1_gate_acceptance": false,
+  "files": {},
+  "FTP_221": false,
+  "reboot_reply": {
+    "errors": []
+  },
+  "advancing_BASIC": [
+    {
+      "jiffy": 7,
+      "row": 6,
+      "port01_observation_only": 1
+    },
+    {
+      "jiffy": 24,
+      "row": 6,
+      "port01_observation_only": 1
+    }
+  ],
+  "settings_media_equal_after_reboot": true,
+  "FTP_welcome": "220 C64 Ultimate FTP: IP = 10.0.0.79. Hello 10.0.0.15:10224",
+  "FTP_login": "230 User logged in, proceed.",
+  "fresh_MKD": "/usb1/DOS64_TEST/v1-reboot-retry-20261017",
+  "fresh_directory_created": true,
+  "first_error": "timeout('timed out')",
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/reboot-retry-20261017/worker.py\", line 48, in <module>\n    ftp.sock.settimeout(remaining());body=Path(p).read_bytes();w=ftp.storbinary('STOR '+v['name'],io.BytesIO(body),blocksize=32768,callback=lambda b:remaining());assert w.startswith('226');parts=[];length=[0]\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/ftplib.py\", line 498, in storbinary\n    with self.transfercmd(cmd, rest) as conn:\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/ftplib.py\", line 393, in transfercmd\n    return self.ntransfercmd(cmd, rest)[0]\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/ftplib.py\", line 353, in ntransfercmd\n    host, port = self.makepasv()\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/ftplib.py\", line 327, in makepasv\n    untrusted_host, port = parse227(self.sendcmd('PASV'))\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/ftplib.py\", line 281, in sendcmd\n    return self.getresp()\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/ftplib.py\", line 244, in getresp\n    resp = self.getmultiline()\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/ftplib.py\", line 230, in getmultiline\n    line = self.getline()\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/ftplib.py\", line 212, in getline\n    line = self.file.readline(self.maxline + 1)\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/socket.py\", line 704, in readinto\n    return self._sock.recv_into(b)\nsocket.timeout: timed out\n",
+  "FTP_local_socket_closed": true,
+  "settings_media_equal": true
+}

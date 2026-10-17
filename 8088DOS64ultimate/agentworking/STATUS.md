@@ -25,3 +25,9 @@ Current native fixes: silent speaker writes, bounded ANSI text clearing and fina
 * Every existing subagent has finished. Do not spawn, reuse or delegate further work. The main thread owns final installer/config/media/Turbo physical verification and local commits. All ten final physical/human V1 gates remain open. [V1 endpoint](../docs/V1_ENDPOINT.md), [human checklist](../docs/V1_HUMAN_CHECKLIST.md).
 
 Earlier checkpoints are preserved byteexact in [STATUS_HISTORY_20261017.md](STATUS_HISTORY_20261017.md); their superseded next steps are historical.
+
+## Latest user-directed reboot and retry
+
+[Reboot/retry evidence](evidence/reboot-transfer-retry-root-20261017.json): user-authorized `machine:reboot` acknowledged; actual advancing BASIC7/24 and settings/media equality passed. This source-backed endpoint restarts the C64 cartridge; it does not reboot network services or power-cycle the device. One new passive FTP attempt still timed out at PASV before payload. One new named REST multipart probe still returned404 attachment-read failure before DMA; original32 bytes remained exact, final Resume and settings/media equality passed. Both detached workers exited. No native/REU execution or final-package staging. A physical power cycle has not been performed.
+
+Between the preceding commit and this retry, a read-only native Temp directory inspection succeeded; no files were deleted. A cached REU staging helper was compiled but remains unqualified and was not run on hardware. No definitive firmware/network root cause established.
