@@ -277,3 +277,6 @@ Statuses: **user requirement** is binding scope; **proposed** awaits plan review
 
 
 2026-10-17: Reject original40fe recovery orchestration04242 after ROOT's actual line-trace counterexample: an interrupt before the inner safety guard skips scratch/profile cleanup and replaces the first Reset. Accept only fresh qualification75def with structural outer finally and at most two local pre-attempt entry frames; Program.safety_attempted is minted before preservation/reset/native side effects, so actual safety restoration remains at most once within the original600s endpoint. ROOT verifies38d77/all265 and257ac807/all186, independently executes constructor+7purpose+exacttrace, then authorizes one distinct detached physical recovery qualification. Physical acceptance remains separate.
+
+
+2026-10-17: Promote publicCONFIG508d only after exact44file copy/47shared equality, independent25hostcontrols and ROOT public nativebuild+actual4SYS/2Zig at samebytes. Native-only path needs no optionalmodeltools/DOSimages; clean missingcoupledrelease also usesmake. Immutable perrunproducts precede atomicRESULT pointer; preserve prior success and firstcause on failure. Sanitize inherited untracked compiler source search environment, preserve explicit recordedDOS64 overrides. Normal main/SETUP/START graphs remain unchanged. No physical acceptance transfers.

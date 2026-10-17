@@ -251,3 +251,8 @@ Authorfd119439/454 pins and peere6fb/393 verified by ROOT. MAIN ends5CAE/849B fr
 ### 2026-10-17 — actual SYS CONFIG508d coordinator (private/model-qualified)
 
 Authorfcd5/324,peer40a9/356 and ROOTgeneratedDOS40/80 close actualentry/loop pipeline. MAIN0801..5F21/free222,627B growth from454d; STATEB000..BFBC/free67 adds only3 coordinator bytes. HIGH8075/free111, phasecode6000..86A2/BSS8700..AFB7/free72, ZP20..46, UCI C000..C7FF, CRC C900..CCFF, CstackCD00..CFFF unchanged. SerializedHIGH9000..AF8A verified/copied before overlappingBSSzero; vectors excluded. No emulator runtime allocation/IRQ/REP/cache policy changed. Public packaging/physical acceptance pending.
+
+
+## 2026-10-17 — public CONFIG508d/e530 exact reproduction
+
+ROOT publiclinked map/labels reproduce standalone coordinator: MAIN0801..5F21/free222; RI/RM6000..86A2, codeend86A3 before phaseBSS8700..AFB7/free72; permanentSTATEB000..BFBC/free67; HIGH E000..FF8A =8075/free111 belowFFFA vectors. Serializedsource9000..AF8A is verified/copied/readback before overlappingBSSzero. ZP20..46/UCI C000..C7FF/CRC C900..CCFF/CstackCD00..CFFF unchanged. Builder enforces phase-code/state/HIGH/source limits, with independent actual prior-overlap counterexample retained. No main/REU allocation growth in this packaging slice; receipt native-config-public-root-20261017.json.

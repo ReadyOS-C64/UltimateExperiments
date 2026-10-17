@@ -1,3 +1,9 @@
+# Next after public CONFIG — 2026-10-17
+
+Publicconfig508d/e530 now independently rebuilds and actual4SYS+2Zig passes ROOT; do not repeat unchanged expensive native/DOS/installer/default suites. Use build/config/RESULT.json's immutableproducts and matchingfiveasset bundle. Physical newSTART/main/CONFIG/SETUP remains required after CIA's reserved possiblehelper/coldstate closure and reviewed lower-roundtrip recovery/staging purpose. Current257ac807 firstReset54/noREUWRITE retained, no automatic retry/fullboardreset.
+
+Compiled owns private C-onlineSave/ownership integration; memory owns next measured current666/b9 performance verticalslice with realASM/Peddle, equalwork/fullstate and preserved clock/IRQ/REP/coherence. ROOT reviews/integrates material candidates and retains records/commits. UserSaveDiscardSwap/durableCFG refresh, physical graphics/human, VICE/IEC and50%/85%XT target remain binding.
+
 # Physical continuation — 2026-10-17
 
 CIA owns reserved/possiblehelper state after257ac807 Reset54 before anyREUWRITE; ROOT accepts failure evidence da3f/all727, not wholememory/coldstate. Prepare distinct bounded coldstate closure and source-backed lower-roundtrip staging/recovery, considering accepted128×32K readonly stream around only4owned40fe scratchcommands. No unchanged516-command retry, FTP or fullboardreset. Preserve firstfailure/settings restoration and soleownership. Continue publicCONFIG packaging/realpublicSYS tests in parallel; full user SaveSwap/C-online/graphics/IEC/human/performance50/85 remain active.

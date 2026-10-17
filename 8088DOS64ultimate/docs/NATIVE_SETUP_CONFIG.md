@@ -67,4 +67,22 @@ The separate native CONFIG development program now runs from its actual BASIC SY
 
 The preference is an explicit **new** 40/80 setting, initially 80. CONFIG currently leaves the old INI unread and unchanged. Old and new launchers share the existing images; reverting a launcher does not undo writes to those images. CONFIG runs independently of a running emulator.
 
-Both actual output sets boot genuine DOS 3.3 in Peddle and pass VER and complete paged A:/C:\\DOS listings. The START/CFG/main/overlay/descriptor bytes are identical between modes; only the INI column digit changes. Source-closed evidence is in [the integration receipt](../agentworking/evidence/native-config-generated-dos-root-20261017.json). Public build packaging and physical CONFIG qualification remain pending; this proof does not turn the current SETUP into an options editor.
+Both actual output sets boot genuine DOS 3.3 in Peddle and pass VER and complete paged A:/C:\\DOS listings. The START/CFG/main/overlay/descriptor bytes are identical between modes; only the INI column digit changes. Source-closed evidence is in [the integration receipt](../agentworking/evidence/native-config-generated-dos-root-20261017.json). Physical CONFIG qualification remains pending; this proof does not turn the current SETUP into an options editor.
+
+## Building and using standalone CONFIG
+
+`make config` builds the native C/6502 application and binds it to the complete matching INI release. It requires Python and the cc65 tools/library. If no coupled release exists, it also uses make to build that release; Zig and the host C++ compiler are needed only for the optional tests. Existing compiler include-path overrides are cleared so the recorded source inputs identify the build.
+
+The successful `build/config/RESULT.json` names the immutable `products.CONFIG.PRG.path` to copy to the Ultimate. The matching five release assets are in the bundle named by `build/start-ini-bundle/RESULT.json`: `DOS64.PRG`, `DOS64.REL`, `START.INO`, `START.TPL` and `START.REL`. Keep that set together. A failed build preserves the previous successful RESULT and its products; diagnostics belong to the new failed run.
+
+On the Ultimate, use PAL, Manual 64 MHz, enabled Ultimate DOS/UCI and at least 4 MiB REU. CONFIG runs separately from the emulator. Launch CONFIG, then:
+
+1. Browse to the existing installation folder containing `DOS64.CFG`; press F1 to use it.
+2. Choose the new initial column setting and press Return.
+3. Choose the folder containing the five matching release assets.
+4. Choose an already-created new launch folder, different from both previous folders, and confirm the review screen.
+5. After CONFIG reports completion, run `START.PRG` from the new folder.
+
+Return opens a folder, Delete goes to its parent, and F1 selects the current folder. F3/F5 change directory pages; left/right scroll a long path. The new folder's absolute path must be 2–117 characters. Existing output filenames cause failure rather than replacement; partial files may remain after a failed publication. The old configuration and original INI stay unchanged, while the old and new launchers share the same disk images.
+
+`make config-tests` builds the same application and executes four actual BASIC SYS/keyboard/firmware model groups plus two Zig assertions against assembled code in Peddle. Its default media are synthetic; it is not a genuine DOS boot test or a physical Ultimate test. The genuine DOS integration receipt above covers the separately executed actual generated-file consumers in both display modes.

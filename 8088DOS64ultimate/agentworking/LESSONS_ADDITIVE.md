@@ -333,3 +333,6 @@ A completed file writer and its readonly source cache each need explicit clean-s
 
 
 2026-10-17: A safety operation's own guard must sit inside structural cleanup. ROOT's one-shot real line trace caught an exception between the outer eligibility test and guarded call, bypassing scratch and turbo restoration. Separate local pre-attempt entry from the actual once-only side-effect flag; retain the first cause and original deadline, and put independent profile cleanup in an outer finally. This is evidence for the tested boundary, not a promise that arbitrary process termination is recoverable.
+
+
+2026-10-17: A compiler environment can add an unrecorded source even when all staged files/tool hashes are pinned. Peer actually changed CONFIG through CC65_INC/string.h while the old source ledger still passed. Sanitize inherited search variables or explicitly capture their full source closure; retain supported explicit tool overrides. Validate original source asset membership before copying, since validating only selected copies silently weakens an exact-set rule.

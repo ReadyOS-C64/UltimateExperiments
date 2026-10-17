@@ -327,3 +327,5 @@ include build_support/setup.mk
 
 # Coupled same-home INI release and opt-in model-only tests.
 include build_support/start_ini.mk
+
+include build_support/config.mk
