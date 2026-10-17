@@ -1,0 +1,106 @@
+{
+  "status": "ROOT_ACCEPTED_FOR_ONE_EXACT_DISPATCH",
+  "package_sha256": "6269feed4358cd45bf911a5625dd96c84644049aeb2f8e20361a25c7a0d47c66",
+  "package_pins_verified": 682,
+  "launch_sha256": "1c1d142ee5782dedaff52cabb23a74249aec572b2c5d3b75c98aebeb12f5d71f",
+  "launch_pins_verified": 232,
+  "native_component_pins_verified": 177,
+  "ROOT_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-whole4m-original-recovery-root-20261017/MANIFEST.json",
+  "ROOT_manifest_sha256": "35978b34fe800f4776370e0183db75009273f046097ed3612d76624baba9eefc",
+  "ROOT_files": 19,
+  "ROOT_actual_native4": true,
+  "ROOT_host_transaction14": true,
+  "ROOT_purpose_process8": true,
+  "ROOT_offline_socket_forbidden_constructor": true,
+  "runs": [
+    {
+      "name": "native4",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-whole4m-original-recovery-root-20261017/native/work/test_boundary.py"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-whole4m-original-recovery-root-20261017/native/work",
+      "rc": 0,
+      "seconds": 6.29353475
+    },
+    {
+      "name": "whole14",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-whole4m-original-recovery-runnable-20261017/work/test_whole.py"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-whole4m-original-recovery-runnable-20261017/work",
+      "rc": 0,
+      "seconds": 29.924258166
+    },
+    {
+      "name": "purpose8",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-whole4m-original-recovery-runnable-20261017/work/test_purpose.py"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-whole4m-original-recovery-runnable-20261017/work",
+      "rc": 0,
+      "seconds": 5.426766125
+    },
+    {
+      "name": "constructor",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-whole4m-original-recovery-runnable-20261017/work/launch.py",
+        "--manifest",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-whole4m-original-recovery-runnable-20261017/work/LAUNCH_MANIFEST.json",
+        "--sha",
+        "1c1d142ee5782dedaff52cabb23a74249aec572b2c5d3b75c98aebeb12f5d71f",
+        "--offline"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-whole4m-original-recovery-runnable-20261017/work",
+      "rc": 0,
+      "seconds": 0.1792089580000038
+    }
+  ],
+  "source_review": [
+    "whole.py full",
+    "whole_transport.py full",
+    "original_command.py full/bodycorrespondence",
+    "purpose.py full adaptive diff againstacceptedhybrid",
+    "launch.py supervisor.py dispatch-owned.sh exactadaptation",
+    "test_whole.py test_purpose.py native/work/test_boundary.py"
+  ],
+  "unchanged_shared_components_verified": 6,
+  "actual_program_commands": 512,
+  "WRITEs": 256,
+  "READs": 256,
+  "final_WRITE_READ_sequences": [
+    511,
+    512
+  ],
+  "first_last_addresses": [
+    0,
+    4177920
+  ],
+  "only_REU_span": [
+    0,
+    4194304
+  ],
+  "payloads": "EveryWRITE andexpectedREAD exact immutableac43 slice; hardwarepass startsandendswithcompleteac43snapshots",
+  "shared_core_seconds": 600,
+  "command_seconds": 12,
+  "supervisor_seconds": 900,
+  "interrupt_grace_seconds": 120,
+  "after_failure_native_WRITEs_or_secondpass_or_retry": 0,
+  "changed_all4M_native_proof": "ActualPeddle4group; fullupper12Mmodelguard; notphysicalchangedbankproof",
+  "future_physical_empirical_limit": "Original-only unchangedmemory means omittedSTOREindistinguishablethere; priorphysicalchanged16K+newactualnativeallbankchangedmodelproof retained separately",
+  "upper12M_hardware_access": false,
+  "FTP_UCI_files_fullboardreset": false,
+  "original_CPU_RAM_application_restore": false,
+  "current_product_accepted": false,
+  "whole4M_restoration_after_product_authorized_by_this_purpose": false,
+  "ROOT_device_calls": 0,
+  "expected_ACTIVE_sha256": "05d3a78fc0da6317c26a5902392199621f0018161918588cc5e4aa623034c341",
+  "owner": "cia_probe_independent_review"
+}

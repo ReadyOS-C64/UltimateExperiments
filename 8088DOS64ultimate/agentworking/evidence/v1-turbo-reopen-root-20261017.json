@@ -1,0 +1,18 @@
+{
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-turbo-reopen-persistence-20261017/MANIFEST.json",
+  "sha256": "fdb890eb3c1125acf63bbfd8abe4e68f35c00138e357766e1e28dca4a074fc02",
+  "pins_verified": 166,
+  "raw_differences": [
+    6966854,
+    6966855,
+    6966870
+  ],
+  "deleted_entry_retained": true,
+  "exact_five_unique_source_lines": true,
+  "physical": false,
+  "independent_live_FAT_payloads_identical": 363,
+  "scope": "ROOT read-only independent review; actual fresh START80/original TURBO saved source reopen/AltX/native full C readback; model only",
+  "review": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-checkpoint-root-20261017/REVIEW.json",
+  "review_sha256": "264471a3a60d4efbce5b7ab0310fb09d5b5cf4823733dacfb49662b0e90e3477",
+  "ROOT_native_workflow_replayed": false
+}

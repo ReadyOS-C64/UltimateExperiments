@@ -1,3 +1,9 @@
+# Immediate V1 work — 2026-10-17
+
+Review the sole CIA owner's distinct settings-repair purpose, then dispatch once if its exact scope is sound; retain the failed whole4M campaign and no finalREU claim. Current Manual64 must be restored to captured original C64U Turbo Registers64; no full-board reset or upper12MiB access. Continue functional work independently.
+
+Fresh Turbo IDE reopen is now ROOT-accepted (fdb890eb166pins,363livepayloads exact). Memory agent implements a private terminal-clock-error presentation successor. Compiled agent executes actual durableSave/CFG journal phases with strict C-online ownership; final matched START recovery required. Root owns fresh coherent candidate packaging and later matched modal asset loader/resident shortcut. Ten final-release gates remain open. Performance is post-V1. Commit locally/no push.
+
 # Next V1 slice — native media worker and matched loading
 
 Read docs/MODAL_MEDIA_ARCHITECTURE.md. Rootprivateactualbroker+CUI588de3/820 andreadablesourcecheckpoint areverified (newbroker8+composition2,authorUI15); sourceusesunit63flabels, notinstallable. Implementmatchedruntime assetcontainer/STARTload into proposed3DA000..3DFFFF24K, header/mainidentity checks, hostshortcut/coherentpause/residentfooter andreturn-before-fullpausedredraw. DEVICE16bytesfree permitscarefullymeasuredsmallhook; no C900 replacement whileINPUTleaseheld. Compiledprivatelyimplements modalSave+CFGjournal/recovery phases; noframe/pointer survivesphasechange; context0/8 mustnotrestore32/5. MemoryclosesTurbo20M/fresh40proof+independentfreshIDEreopen, preservinghostfailures. CIApendingwhole4MpurposeROOTreview; current05d3reserved, changed16Kphysicalacceptedonly, no newLANcalls. Continueactualsmalltests+localcommits/no push; performancepostV1.

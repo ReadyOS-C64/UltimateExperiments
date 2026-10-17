@@ -1,3 +1,11 @@
+# V1 checkpoint — fresh Pascal reopen verified; device profile repair pending
+
+ROOT independently verifies fresh80 Turbo source reopen seal fdb890eb/166pins, exact five source lines, full20MiB native readback and363 unchanged live FAT payloads. Only three bytes in an already-deleted temporary directory record differ; model keyboard endpoint bypasses the physical matrix. The preceding edit/save/diskcompile/IDE+DOS/fresh40 chain remains independently accepted. Physical final-release Turbo gate stays open.
+
+The separate whole4MiB original-byte backend qualification FAILED after31 WRITE/READ pairs; seq63 GO returned a non200 response whose numeric status/body the inherited transport did not retain. Initial full4MiB equals ac43; no final4MiB comparison. Detached processes exited1/reaped, C64-only BASIC cleanup succeeded, original Turbo Control restoration failed (Manual64 remains). Upper12MiB untouched. ROOT verifies9de18a82/2558pins; first cause preserved. Sole CIA owner prepares a distinct, bounded source-backed settings repair locally; no retry or backend/product acceptance. Evidence c64u-whole4m-original-failure-root-20261017.json.
+
+Root now builds one coherent development candidate package from fresh source-built SETUP/CONFIG/coupled START+main. This is packaging work, not V1 completion. Durable media transaction/START recovery and modal fault presentation continue privately in parallel; no performance work.
+
 # Turbo persistence chain independently reviewed — 2026-10-17
 
 ROOT verifies all4af6605a/2609pins and independently parses the actual native-closed20MiB image34ff36cf. All360original payloads exact; exactlynew66B editedPASafbb/2208BMZEXE41e6/17BTXT55a1. ActualeditorSaved/diskcompile/exclusiveIDEoutput andfresh40post-commandEXEobservations checked. TwoactualcoldSTARTs, nativeCLOSE/reopen/INFO/all20M/EOF/CLOSE, first60WRITE05x256/fresh0; A/Bunchangedbothmachines. Root0bd3190a/5pins/receipt v1-turbo-persistence-root-20261017.json. A consumedbundleRESULTpointerwasnotindividuallybefore-frozen; actual590builderinputs/103products/5nativeassets exact, explicitmetadataqualificationretained. FreshIDEreopenconsumerwillpin/rebaseit; no fullproducerreplay. Physical/currentinstaller-output/humanacceptance stillpending; allV1finalgatesopen.

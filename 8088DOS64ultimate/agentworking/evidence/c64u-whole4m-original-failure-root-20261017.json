@@ -1,0 +1,15 @@
+{
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-whole4m-original-recovery-runnable-20261017/physical/MANIFEST.json",
+  "sha256": "9de18a82e52415113f594037477458d2ef4299219a2fdc10dc22e77b6d254b7d",
+  "pins_verified": 2558,
+  "first_error": "ValueError('Exact HTTP200 required, no redirects')",
+  "numeric_HTTP_status_unknown": true,
+  "partial_pairs": 31,
+  "pending_WRITE": 63,
+  "restored_profile": false,
+  "full_final_REU_comparison": false,
+  "scope": "ROOT read-only independent physical failure review; partial original-byte qualification; no final whole REU/profile restoration or product acceptance",
+  "review": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-checkpoint-root-20261017/REVIEW.json",
+  "review_sha256": "264471a3a60d4efbce5b7ab0310fb09d5b5cf4823733dacfb49662b0e90e3477",
+  "ROOT_native_workflow_replayed": false
+}
