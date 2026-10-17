@@ -1,0 +1,28 @@
+{
+  "status": "PHYSICAL_RESET_ONLY_PASSED_PENDING_ROOT_REVIEW",
+  "scope": "OLD_DIRECTORY_TERMINAL_C64_RESET_ONLY",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-oldterminal-reset-20261017-b28b01",
+  "terminal": "1636",
+  "supervisor_pid": 3064,
+  "child_pid": 3071,
+  "reaped_child_exit": 0,
+  "both_PIDs_absent": true,
+  "source_parent_pins": 127,
+  "source_launch_pins": 51,
+  "source_copies": 51,
+  "raw_control_ACKs": 24,
+  "exact_C64_reset_count": 1,
+  "BASIC_observations": 11,
+  "paired_jiffies": [
+    19,
+    37
+  ],
+  "original_inventory_and_profile_equal": true,
+  "REU_access": false,
+  "whole4MiB_current_equality_proven": false,
+  "original_CPU_RAM_application_restored": false,
+  "no_native_FILES_or_helper_load": true,
+  "prior_COPY20M_failure_preserved": true,
+  "ACTIVE_sha256": "a738e4a40311eeb61ce7b42d4a2642b0ba6fb10bfec8866ed40129d125780188",
+  "no_more_device_calls": true
+}

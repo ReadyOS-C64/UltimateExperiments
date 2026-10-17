@@ -118,6 +118,20 @@ class Tests(unittest.TestCase):
   M.require_make_includes(work)
   missing=work/'build_support/v1_candidate.mk';self.assertTrue(missing.is_file());missing.unlink()
   with self.assertRaisesRegex(RuntimeError,'inventory omits Make include: build_support/v1_candidate.mk'):M.require_make_includes(work)
+ def test_15_native_inventory_covers_linked_asm_without_private_text_probes(self):
+  j=json.loads((ROOT/'build_support/native_media_sources.json').read_text())
+  self.assertNotIn('src/native_text_probe.s',j['native'].values())
+  self.assertNotIn('src/native_text_probe_boot.s',j['native'].values())
+  work=M.stage(self.p/'asm-stage',{},test=False)
+  import re
+  sources=[]
+  for line in (work/'Makefile').read_text().splitlines():
+   if re.match(r'^ASM_SOURCES\s*(?::=|\+=)',line):
+    sources.extend(re.findall(r'src/[A-Za-z0-9_.-]+\.s',line))
+  self.assertIn('src/trap.s',sources)
+  self.assertGreater(len(sources),40)
+  self.assertEqual([n for n in sources if not(work/n).is_file()],[],
+   'Every source linked by the staged default Make graph must be inventoried')
 if __name__=='__main__':
  (ROOT/'build').mkdir(exist_ok=True);r=unittest.main(exit=False,verbosity=2).result
  report={'successful':r.wasSuccessful(),'tests':r.testsRun};(ROOT/'build/native-media-host-result.json').write_text(json.dumps(report,indent=2)+'\n');sys.exit(not r.wasSuccessful())

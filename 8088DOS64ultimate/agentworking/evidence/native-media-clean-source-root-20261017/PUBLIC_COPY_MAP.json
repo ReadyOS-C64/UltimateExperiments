@@ -1,0 +1,29 @@
+{
+  "writes": {
+    "build_support/native_media_sources.json": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-clean-inventory-successor-20261017/portable/build_support/native_media_sources.json",
+      "bytes": 10898,
+      "sha256": "a59904c714be81b4793f79f000490cae02934dbb1702ab8617500e0cdca3d6bf",
+      "baseline": {
+        "bytes": 10997,
+        "sha256": "e2c846bf17ff9ca32fa00dc5eeb3bde99bb98f93eabfe5507e5d3ec18d85b07b"
+      }
+    },
+    "tests/native_media/test_builder.py": {
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-clean-inventory-successor-20261017/portable/tests/native_media/test_builder.py",
+      "bytes": 9334,
+      "sha256": "d9266cea81ad0620398f4cae05f95e7a8baca7a809c5e43f6b894715091f704b",
+      "baseline": {
+        "bytes": 8565,
+        "sha256": "6510e18756304cf28111638b19660324f813bd5e3dee3c0e822009b95b18d740"
+      }
+    }
+  },
+  "existing_tracked_dependency": {
+    "src/trap.s": {
+      "bytes": 3054,
+      "sha256": "4a25b7bb3b9307bb4e64c400338a5d0e868276b94574930135e13c6f6efbee7b"
+    }
+  },
+  "no_native_source_write": true
+}

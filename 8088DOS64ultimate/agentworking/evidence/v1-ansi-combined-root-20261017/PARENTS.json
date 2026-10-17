@@ -1,0 +1,12 @@
+[
+  {
+    "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-fdisk-speaker-20261017/MANIFEST.json",
+    "sha256": "3cdff6408d7fcee1480fde62d0002db4f273cc9dfe43877541d2b6d808cd5381",
+    "pins": 36
+  },
+  {
+    "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-ansi-scroll26-code-successor-20261017/MANIFEST.json",
+    "sha256": "b4334ac968b816b1549d1a7d4280ea72cc70bc80c35d1c9b9228e7f2fc5450f3",
+    "pins": 1571
+  }
+]

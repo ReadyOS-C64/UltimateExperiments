@@ -1,0 +1,9 @@
+{
+  "status": "REPRODUCED_CLEAN_TRACKED_SNAPSHOT_STAGE_FAILURE",
+  "error": "Missing/outside public source: src/native_text_probe_boot.s",
+  "missing_untracked": [
+    "src/native_text_probe.s",
+    "src/native_text_probe_boot.s"
+  ],
+  "native_execution": false
+}

@@ -415,3 +415,5 @@ Named-path diagnostics can reuse request scratch even on successful operations. 
 ## 2026-10-17 — preserve a failed oracle and reuse only known-closed output
 
 DOS LABEL may create an archive-marked volume label beside a same-named directory. Treating labels as live filenames makes a valid disk fail inspection. Retain the first failed host cohort, separately establish an actual native known CLOSE under safe guards, and continue only from that closed image. Test label namespace and malformed metadata independently; repair the host parser without changing emulated DOS or rerunning unchanged long workloads.
+
+2026-10-17: A current default-disabled source may still be an unconditional Make link input (trap.s). Test source inventory against actual linked ASM_SOURCES; do not let unused untracked probe files hide clean-checkout failures. FDISK restart uses farJMPFFFF:0, not INT19: DOS-hooked IVT and loaded lowRAM code have different lifetimes. A BIOS reset template captured before HDmount loses later INT41; finalize after allcolddevices. Nativeproductionfit does not prove fullUNITfit when both share tight coldwindow.

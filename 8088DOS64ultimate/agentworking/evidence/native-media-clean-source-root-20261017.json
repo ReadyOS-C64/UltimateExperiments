@@ -1,0 +1,17 @@
+{
+  "status": "ROOT_REVIEWED_EXACT_TWO_PATHS_PROMOTED",
+  "author_manifest_sha256": "577f82e08818612617452afcfcf4b7b1dfe5e8871fc6bf29d13e7dcfce4ecbb7",
+  "pins_verified": 1363,
+  "public_changes": [
+    "build_support/native_media_sources.json",
+    "tests/native_media/test_builder.py"
+  ],
+  "native_sources_changed": false,
+  "clean_tracked_sources": 163,
+  "actual_fresh_native_builds": 2,
+  "memory_checks": 4,
+  "Root_public_focused_host_tests": 3,
+  "default_runtime": "666089b5",
+  "default_unit": "b9e9cc9e",
+  "limitations": "Inventory/build correctness only; no new guest/hardware claim; original probe/trap failures preserved."
+}

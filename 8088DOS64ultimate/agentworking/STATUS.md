@@ -1,3 +1,15 @@
+# V1 progress — ANSI model proof, clean-source builds and Ultimate BASIC recovery, 2026-10-17
+
+The matched test candidate5af75426 passes511 base assertions plus genuine ANSI in80/40/80 columns, backspace editing, three actual CIA Finish operations and fresh40 persistence. Root checked all6501 sealed records. Native fixes remain unpromoted while FDISK's normal reset workflow is completed; final physical/human V1 gates remain open. [ANSI review](evidence/v1-ansi-combined-root-20261017.json).
+
+The actual FDISK test now deletes/creates and activates a partition, including its speaker beeps, but its far jump toFFFF:0000 exposed stale DOS interrupt handlers. The closed partial preserves its real changed MBR; FORMAT/SYS/full preparation are not accepted. Root's poisoned-IVT counter reproduces the defect. A guest-ROM reset correction and full unit-layout qualification are in progress; INT19 remains bootstrap-only. Performance work stays deferred.
+
+Ultimate reset-only recovery passed under the sole CIA owner: exact fresh old-terminal admission, one acknowledged C64 reset, BASIC READY with jiffies19→37, final resume and unchanged inventory/settings. Root verified178 physical pins and absent/reaped processes. The earlier COPY20M attempt remains failed; no current whole4MiB or original CPU/RAM/application restoration is claimed. CIA prepares the corrected mapping-receipt COPY purpose offline before a separate concrete dispatch review. [Recovery](evidence/native-old-terminal-recovery-root-20261017.json).
+
+Fixed a clean-checkout native-media build defect: remove two unused untracked probe sources and stage existing tracked trap.s. Two fresh selected/default native builds and four memory checks pass from exact tracked inputs; Root independently passed three public staging guards. Default native bytes remain666089b5/b9e9cc9e. Only inventory/test paths change. [Build proof](evidence/native-media-clean-source-root-20261017.json).
+
+Local commits only; no push. Earlier checkpoints below remain historical.
+
 # Current V1 checkpoint — final Turbo Pascal, CONFIG and DOS utilities model proof, 2026-10-17
 
 The V1 endpoint remains installation, configuration and dependable A/B/C persistence, with original Turbo Pascal as the application acceptance test. Further performance work is deferred. The public matched twelve-file candidate is still a development candidate; all ten final physical/human gates remain open.

@@ -14,9 +14,7 @@
     "work/src/adjust.s": "src/adjust.s",
     "work/src/hd_cold.s": "src/hd_cold.s",
     "work/src/cold.s": "src/cold.s",
-    "work/src/native_text_probe_boot.s": "src/native_text_probe_boot.s",
     "work/src/host_clock_probe.s": "src/host_clock_probe.s",
-    "work/src/native_text_probe.s": "src/native_text_probe.s",
     "work/src/cga_status.s": "src/cga_status.s",
     "work/src/reu.s": "src/reu.s",
     "work/src/range_probe.s": "src/range_probe.s",
@@ -120,7 +118,8 @@
     "work/include/floppy_format.inc": "include/floppy_format.inc",
     "work/src/floppy_format.s": "src/floppy_format.s",
     "work/src/floppy_format_check.s": "src/floppy_format_check.s",
-    "work/build_support/cold_start.mk": "build_support/cold_start.mk"
+    "work/build_support/cold_start.mk": "build_support/cold_start.mk",
+    "work/src/trap.s": "src/trap.s"
   },
   "test": {
     "test_online_save.py": "tests/native_media/test_online_save.py",

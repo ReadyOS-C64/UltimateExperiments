@@ -1,0 +1,6 @@
+{
+  "expected_failure_detected": true,
+  "missing": "src/trap.s",
+  "error": "Lists differ: ['src/trap.s'] != []\n\nFirst list contains 1 additional elements.\nFirst extra element 0:\n'src/trap.s'\n\n- ['src/trap.s']\n+ [] : Every source linked by the staged default Make graph must be inventoried",
+  "native_execution": false
+}

@@ -1,0 +1,39 @@
+{
+  "status": "ROOT_ACCEPTED_C64_RESET_BASIC_CLOSURE_ONLY",
+  "physical_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-old-directory-terminal-recovery-20261017/physical/MANIFEST.json",
+  "physical_manifest_sha256": "d96b1775c5e8f23da81e1db2c434c26173e2d2fc31025cab57df6989978d354e",
+  "pins_verified": 178,
+  "direct_fresh_admission": {
+    "scope": "ONE_C64_RESET_ONLY_FROM_EXACT_OLD9901_TERMINAL",
+    "native_source_sha256": "3f195a0a0ea613be4cedbd7896a8c8a1af09a3bc88b2b50f594701a4e844c710",
+    "old_nonce": "a00183ba1834f10a839b6a6a50e97ca2",
+    "old_home": "/usb1/DOS64_TEST/copy20m-20261017-a00183ba",
+    "fresh_RAM_sha256": "12048db9bd058908b700b177557d5ddcbad8327e12af12720aff9600c770f8e4",
+    "raw00_01_diagnostic": "0001",
+    "mapping_basis": "SOURCE_DERIVED_GUARD_AND_BALANCED_WRITERS_NOT_RAW00_01",
+    "private_known_FILES_CWD_quiet": true,
+    "software_sp_consistent": true,
+    "hardware_SP_or_PC_observed": false,
+    "all_hardware_frames_returned_claim": false,
+    "reset_can_abort_harmless_return_frames": true,
+    "new_mapping_receipt": false,
+    "directory_COPY_authority": false,
+    "REU_access": false
+  },
+  "BASIC_jiffies": [
+    19,
+    37
+  ],
+  "inventories_exact": true,
+  "owned_processes_absent": [
+    3064,
+    3071
+  ],
+  "exact_C64_reset_count": 1,
+  "no_FILES_REU_config_activity": true,
+  "prior_COPY20M_stays_failed": true,
+  "current_whole4MiB_equality": false,
+  "original_CPU_RAM_application_restored": false,
+  "active_sha256": "a738e4a40311eeb61ce7b42d4a2642b0ba6fb10bfec8866ed40129d125780188",
+  "next": "Sole CIA owner may prepare corrected mapping-receipt COPY20M purpose offline; separate concrete review before dispatch."
+}

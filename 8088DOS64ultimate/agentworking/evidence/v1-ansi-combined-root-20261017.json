@@ -1,0 +1,14 @@
+{
+  "status": "ROOT_ACCEPTED_COMBINED_ANSI_MODEL_COMPONENT",
+  "author_manifest_sha256": "7302dd150ef65ab355c6db60b7139a9cacddf5d5929839a69cad591d9bfcab46",
+  "pins_verified": 6501,
+  "broad_tests": 511,
+  "genuine_ANSI_machines": 3,
+  "CIA_Finish": 3,
+  "40_80_modes": true,
+  "fresh_disk_persistence": true,
+  "runtime": "5af75426",
+  "public_native_promoted": false,
+  "physical": false,
+  "next": "Separate BIOS reset correction and full genuine FDISK preparation workflow before final native promotion."
+}

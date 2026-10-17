@@ -1,0 +1,64 @@
+{
+  "files": {
+    "HANDOFF.md": {
+      "sha256": "ada6d83b480c6df79a507b94c9dcfe7dcad672e9cfcedf4a60400f79ff385970",
+      "bytes": 4488
+    },
+    "INDEPENDENT_FAT.json": {
+      "sha256": "e0ed0c8368192d0a22343f46281e2b95497f47520443eb29be3b10b2ca5bf409",
+      "bytes": 279
+    },
+    "MATCHED_ASSETS.json": {
+      "sha256": "e897511c610b320d22c22f109f4e44ef96473a89a359f9cc402758065e75da0d",
+      "bytes": 1636
+    },
+    "MEMORY_LAYOUT.json": {
+      "sha256": "a78f6e689f11fd55c766691b8392365426ddf3c85fda9545cde218a90471e972",
+      "bytes": 647
+    },
+    "PARENTS.json": {
+      "sha256": "f095a811305c8d24dfb97b22a12c20e93753fe6e7e315040eb0ab948fda66ec2",
+      "bytes": 542
+    },
+    "PORTABLE_SOURCE.json": {
+      "sha256": "e4a3f37e13b14159e83566a08543ae1453650a87af234ef52e3c90bdc65c80ed",
+      "bytes": 1382
+    },
+    "RESULT.json": {
+      "sha256": "739110ca36a1c584fb7a8de36689a2d7e0b5a79921b96924a6440d31a59f7daf",
+      "bytes": 1319
+    },
+    "ROOT_REVIEW.json": {
+      "sha256": "fde1b9651f185a5746299326ed33a4c4b1ba5524ef450e3f789761b4ccccec9b",
+      "bytes": 511
+    },
+    "portable/include/ports.inc": {
+      "sha256": "16524d906a66e770fd2f21e629ad9cd33700581c550e91ab86759b68cc46f057",
+      "bytes": 3467
+    },
+    "portable/src/ports.s": {
+      "sha256": "9557cacfb9d20a0cda26601520d327896074d56d729ad86691145058434298d9",
+      "bytes": 8578
+    },
+    "portable/src/video.s": {
+      "sha256": "4ab61bae98bd8c3f67028b26dba697d88e52be4dc478a92435eab3f8a2c767a2",
+      "bytes": 20267
+    },
+    "portable/tests/host/io_instructions.zig": {
+      "sha256": "1079b159b2182b5505df4e57352d9529d24896420523ec8f53b34271885db39e",
+      "bytes": 7622
+    },
+    "portable/tests/host/irq_pit.zig": {
+      "sha256": "772cf9a8530d47dfeadb109a08c328821225d9d2d46e09448b0dddb960dbfe1a",
+      "bytes": 70956
+    },
+    "portable/tests/host/ports.zig": {
+      "sha256": "ab87c8ff9380efa4e59b55c4d55cb6cfdca8fe353e72cf7be72c10e3d3df2f36",
+      "bytes": 15416
+    },
+    "portable/tests/host/video.zig": {
+      "sha256": "c48b22e88c8b10b6c2b03ea0cfffb2a28d185d585bf1cba91e671a37549f581a",
+      "bytes": 30989
+    }
+  }
+}

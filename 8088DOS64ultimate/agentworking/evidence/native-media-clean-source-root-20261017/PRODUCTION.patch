@@ -1,0 +1,45 @@
+--- a/build_support/native_media_sources.json
++++ b/build_support/native_media_sources.json
+@@ -14,9 +14,7 @@
+     "work/src/adjust.s": "src/adjust.s",
+     "work/src/hd_cold.s": "src/hd_cold.s",
+     "work/src/cold.s": "src/cold.s",
+-    "work/src/native_text_probe_boot.s": "src/native_text_probe_boot.s",
+     "work/src/host_clock_probe.s": "src/host_clock_probe.s",
+-    "work/src/native_text_probe.s": "src/native_text_probe.s",
+     "work/src/cga_status.s": "src/cga_status.s",
+     "work/src/reu.s": "src/reu.s",
+     "work/src/range_probe.s": "src/range_probe.s",
+@@ -120,7 +118,8 @@
+     "work/include/floppy_format.inc": "include/floppy_format.inc",
+     "work/src/floppy_format.s": "src/floppy_format.s",
+     "work/src/floppy_format_check.s": "src/floppy_format_check.s",
+-    "work/build_support/cold_start.mk": "build_support/cold_start.mk"
++    "work/build_support/cold_start.mk": "build_support/cold_start.mk",
++    "work/src/trap.s": "src/trap.s"
+   },
+   "test": {
+     "test_online_save.py": "tests/native_media/test_online_save.py",
+--- a/tests/native_media/test_builder.py
++++ b/tests/native_media/test_builder.py
+@@ -118,6 +118,20 @@
+   M.require_make_includes(work)
+   missing=work/'build_support/v1_candidate.mk';self.assertTrue(missing.is_file());missing.unlink()
+   with self.assertRaisesRegex(RuntimeError,'inventory omits Make include: build_support/v1_candidate.mk'):M.require_make_includes(work)
++ def test_15_native_inventory_covers_linked_asm_without_private_text_probes(self):
++  j=json.loads((ROOT/'build_support/native_media_sources.json').read_text())
++  self.assertNotIn('src/native_text_probe.s',j['native'].values())
++  self.assertNotIn('src/native_text_probe_boot.s',j['native'].values())
++  work=M.stage(self.p/'asm-stage',{},test=False)
++  import re
++  sources=[]
++  for line in (work/'Makefile').read_text().splitlines():
++   if re.match(r'^ASM_SOURCES\s*(?::=|\+=)',line):
++    sources.extend(re.findall(r'src/[A-Za-z0-9_.-]+\.s',line))
++  self.assertIn('src/trap.s',sources)
++  self.assertGreater(len(sources),40)
++  self.assertEqual([n for n in sources if not(work/n).is_file()],[],
++   'Every source linked by the staged default Make graph must be inventoried')
+ if __name__=='__main__':
+  (ROOT/'build').mkdir(exist_ok=True);r=unittest.main(exit=False,verbosity=2).result
+  report={'successful':r.wasSuccessful(),'tests':r.testsRun};(ROOT/'build/native-media-host-result.json').write_text(json.dumps(report,indent=2)+'\n');sys.exit(not r.wasSuccessful())
