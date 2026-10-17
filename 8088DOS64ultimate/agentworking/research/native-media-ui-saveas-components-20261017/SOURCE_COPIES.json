@@ -1,0 +1,202 @@
+{
+  "broker/symbols.inc": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/broker/symbols.inc",
+    "sha256": "d7a7958e120f2bc704e78c74630c9f513ed1e27f4f71712568f5b7885145e0f4",
+    "bytes": 1007
+  },
+  "broker/ui_symbols.inc": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/broker/ui_symbols.inc",
+    "sha256": "563de9a992a2d8f068dc078ce9d0bb2919ea89befc825af853c278cb067339d5",
+    "bytes": 240
+  },
+  "broker/broker.cfg": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/broker/broker.cfg",
+    "sha256": "87d0b413add40d103a3e136a54d28e29b04e6fda09e3fea6396d99eddc53c7d8",
+    "bytes": 297
+  },
+  "broker/bridge_products.inc": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/broker/bridge_products.inc",
+    "sha256": "90d174f7157f9c42ea6b48449de205cbdd31748198e24d08bda95d0aea460438",
+    "bytes": 88
+  },
+  "broker/broker.s": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/broker/broker.s",
+    "sha256": "39ae0b5280bb3c975971d93657798380374a3bbb4f20517b1f4f60f1e3b4a0c6",
+    "bytes": 12907
+  },
+  "broker-runtime/symbols.inc": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/broker-runtime/symbols.inc",
+    "sha256": "554efe62040c1972e4aecdcc1df073a9059adf42600f8b56a5c6ef8d0a0912e6",
+    "bytes": 1007
+  },
+  "broker-runtime/ui_symbols.inc": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/broker-runtime/ui_symbols.inc",
+    "sha256": "563de9a992a2d8f068dc078ce9d0bb2919ea89befc825af853c278cb067339d5",
+    "bytes": 240
+  },
+  "broker-runtime/broker.cfg": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/broker-runtime/broker.cfg",
+    "sha256": "87d0b413add40d103a3e136a54d28e29b04e6fda09e3fea6396d99eddc53c7d8",
+    "bytes": 297
+  },
+  "broker-runtime/bridge_products.inc": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/broker-runtime/bridge_products.inc",
+    "sha256": "90d174f7157f9c42ea6b48449de205cbdd31748198e24d08bda95d0aea460438",
+    "bytes": 88
+  },
+  "broker-runtime/broker.s": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/broker-runtime/broker.s",
+    "sha256": "39ae0b5280bb3c975971d93657798380374a3bbb4f20517b1f4f60f1e3b4a0c6",
+    "bytes": 12907
+  },
+  "bridge/bridge.s": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/bridge/bridge.s",
+    "sha256": "30dc3dc9ca63edc08520fb9aba91f6ec6f10b3acc568a3698da1f1f63c0bfb3a",
+    "bytes": 4135
+  },
+  "bridge/symbols.inc": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/bridge/symbols.inc",
+    "sha256": "2c075ed0f4189646075836c4501bd03b1d894050a7e05a2bbbb5e41ec0c9726c",
+    "bytes": 525
+  },
+  "bridge/bridge.cfg": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/bridge/bridge.cfg",
+    "sha256": "9cef64dbc8be4ae072fdbc773525e76b0fd4371ec09eb41a783543faa90f2d8d",
+    "bytes": 294
+  },
+  "bridge/products.inc": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/bridge/products.inc",
+    "sha256": "8162b03230b9b817790f5d2ef124bf21dd89033fba832519063f3d8d1a7dc5be",
+    "bytes": 78
+  },
+  "controller/controller.cfg": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/controller/controller.cfg",
+    "sha256": "b95f301cea252e9680cc153baa11c2ef3c654477d93d226ac52d4e53a8d0dd57",
+    "bytes": 330
+  },
+  "controller/action_shell.h": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/controller/action_shell.h",
+    "sha256": "755cd5c842a7e266124e3c4f915724fa971d0a74282f29c32e50b0458308a0dc",
+    "bytes": 505
+  },
+  "controller/native.inc": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/controller/native.inc",
+    "sha256": "1e0baa1ad27af2155df1140c9830a6effbe458d3827d02030f78612662ee4ab1",
+    "bytes": 14276
+  },
+  "controller/action_assets.h": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/controller/action_assets.h",
+    "sha256": "854e53fae1ac368f406703cabb2dc6a01837d92fe5249cce795c15c1ef78d53b",
+    "bytes": 473
+  },
+  "controller/entry.s": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/controller/entry.s",
+    "sha256": "f4de9193b3102ae1888bb6a792be043fb320c183a309a703ad10b9e5b6a6e9e1",
+    "bytes": 1187
+  },
+  "controller/aliases.s": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/controller/aliases.s",
+    "sha256": "c36509d14e826d6d6772c6c453cb3b181e87d3fc40e8f5158f0f25cef1440d4f",
+    "bytes": 37
+  },
+  "controller/action_shell.c": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/controller/action_shell.c",
+    "sha256": "5417044b17d3cf9b1b1af309a97db96ffc4ea72abba02f6f2c5e960ed98f0cdb",
+    "bytes": 5831
+  },
+  "controller/native_calls.s": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/controller/native_calls.s",
+    "sha256": "8825cdb8342004a25849bbe5d7039a6d64116d11a3cae0c9585755317cd11768",
+    "bytes": 3208
+  },
+  "controller/action_io.c": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/controller/action_io.c",
+    "sha256": "8ff85224a59627b922b266e01d7b3876fadd147e21bcd8548a1cb180f1ec1526",
+    "bytes": 1350
+  },
+  "controller/media_plan.h": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/controller/media_plan.h",
+    "sha256": "3da8650d35534df2550f87f8d4476e469ef7cd390270009fad92d04de96cf47f",
+    "bytes": 1026
+  },
+  "controller/worker.inc": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/controller/worker.inc",
+    "sha256": "e2fe3c1401048c14608a4621101a15bfd99c44a8b5110c2115e9ad6b5375e590",
+    "bytes": 1500
+  },
+  "ui/panel.c": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/ui/panel.c",
+    "sha256": "5f6b7eb548b81efe544640007835d2d0c0815d2eb9b0e47416cce55e50bcaa32",
+    "bytes": 9398
+  },
+  "ui/header.s": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/ui/header.s",
+    "sha256": "a269aa99162fd245e593132ef0b88e13a2fd8e71ac4a6bacc0fe084877c13a53",
+    "bytes": 32
+  },
+  "ui/platform.c": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/ui/platform.c",
+    "sha256": "7296dca1a0231f0708d79d49ea9181771d2c653b065f541830d9039e9d0d3b0c",
+    "bytes": 3479
+  },
+  "ui/panel.h": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/ui/panel.h",
+    "sha256": "f17b30a48437f28050964211a8e9b486255b46e0b5f339a9809921db87e07018",
+    "bytes": 2355
+  },
+  "ui/panel.cfg": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/ui/panel.cfg",
+    "sha256": "b3c1f84f13ff4af947f15b700a52c480f4b0b9d99b44b115f2018b73b01ffa9f",
+    "bytes": 436
+  },
+  "ui/platform.h": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/ui/platform.h",
+    "sha256": "d0c2cb213cf70eb5ec85049800a751c338377a31f067472fe2b11ba1360f95d0",
+    "bytes": 1721
+  },
+  "ui/scan.s": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/ui/scan.s",
+    "sha256": "a2188ac4e2e650439547929a5cb437d1d55ad31cce7c33312a068d35da154f5a",
+    "bytes": 740
+  },
+  "build_ui_bridge.py": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/build_ui_bridge.py",
+    "sha256": "3ac1fcb20f6d87f59e943bb95f6b21ff2081f0f9450b417269b36e25687a2296",
+    "bytes": 8830
+  },
+  "build_controller.py": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/build_controller.py",
+    "sha256": "d67a3f519f6c6acd7c4f4bf23a0e83bc4df022d883cc1759c73ad1d8a9ba88cd",
+    "bytes": 4869
+  },
+  "test_ui_saveas.py": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/test_ui_saveas.py",
+    "sha256": "e449d6786a3c1461d4b7a8a1e9a9f10d07cdd7f08a7893974e7a80c344a5345e",
+    "bytes": 13046
+  },
+  "controller_fixture.py": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/controller_fixture.py",
+    "sha256": "995d2c174a4b582cebf9c179595479aa2f26015470ee947fb4306569e6687d83",
+    "bytes": 2990
+  },
+  "fixture_base.py": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/fixture_base.py",
+    "sha256": "51587667fece63f91456fa211fa35545d14bd0dcb78b48b376136abe5205b3b4",
+    "bytes": 1491
+  },
+  "fixture_config.py": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/fixture_config.py",
+    "sha256": "1dd456e575313fd5ea9b561cfc0e4dbefad9330784ada57ae732189317602ad9",
+    "bytes": 383
+  },
+  "test_online_save.py": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/test_online_save.py",
+    "sha256": "3702f421b564676c6d50f452ec5a66df80e04e411d3ae026f6a9ff8e6b22d21c",
+    "bytes": 16226
+  },
+  "dos_disk_inspect.py": {
+    "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-ui-saveas-root-20261017/dos_disk_inspect.py",
+    "sha256": "2b2a882d17f030ed889b76384c82ab11c0462401c60f62e84dc09d1993f4d836",
+    "bytes": 11433
+  }
+}

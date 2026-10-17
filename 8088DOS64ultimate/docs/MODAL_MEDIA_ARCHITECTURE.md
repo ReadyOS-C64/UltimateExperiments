@@ -82,3 +82,7 @@ project-local `agentworking/scratch/live-media-composition-root-20261017` and
 `live-media-panel-display-successor-20261017` cohorts.
 
 The private terminal-error successor adds six ROOT-replayed actual native controls. Owned/cache0 presentation can show a terminal stage E1 error; backend polling, release and Resume remain stage8-only. The controller must call `mu_block` with the first failure and never reinitialize a failed session. Public observations cannot clear the private block or pending ticket. [Terminal-error evidence](../agentworking/evidence/native-media-terminal-fault-root-20261017.json).
+
+## Actual menu Save As bridge checkpoint
+
+Private UNIT4fb6 now captures the private delivered WAIT intent into6E01 once before retiring CUI code, executes the complete native controller and reloads/verifies CUI before consuming the original ticket.9 actual groups and8 independent checks pass; see [evidence](../agentworking/evidence/native-media-ui-saveas-root-20261017.json). All actions including Resume route through capture; public event/result never authorizes work. Partial controller/UI loading uses native fallback and denies Resume. Idle SAMPLE4 is bounded256. BSS7800..7C99 survives controller code8000; broker state6D00 and bridge6E00 are disjoint. Runtime-role workers, cold container provenance, unused sequence allocation and remaining media/Finish actions are separate gates.

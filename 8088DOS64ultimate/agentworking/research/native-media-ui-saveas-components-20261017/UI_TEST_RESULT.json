@@ -1,0 +1,108 @@
+{
+  "pass": true,
+  "tests": 9,
+  "records": [
+    {
+      "native_stage": 8,
+      "UI_result": "010102000100",
+      "bridge_result": "020004000101010100",
+      "bridge_error": 0,
+      "bridge_success": 1,
+      "wire_commands": 2293,
+      "elapsed": 5.026395333,
+      "forged_public_event_ignored": false,
+      "C_exact": true,
+      "all4M_guards": true,
+      "actual_CIA_path": true,
+      "UI_code_reloaded_and_WAIT_ticket_consumed": true,
+      "new_path_exact": true
+    },
+    {
+      "native_stage": 8,
+      "UI_result": "010002000100",
+      "bridge_result": "020004000101010100",
+      "bridge_error": 0,
+      "bridge_success": 1,
+      "wire_commands": 2293,
+      "elapsed": 5.041811875,
+      "forged_public_event_ignored": false,
+      "C_exact": true,
+      "all4M_guards": true,
+      "actual_CIA_path": true,
+      "UI_code_reloaded_and_WAIT_ticket_consumed": true,
+      "new_path_exact": true
+    },
+    {
+      "native_stage": 225,
+      "UI_result": "050102040100",
+      "bridge_result": "030402010100000100",
+      "bridge_error": 4,
+      "bridge_success": 0,
+      "wire_commands": 80,
+      "elapsed": 0.27051791700000116,
+      "existing_file_preserved": true,
+      "terminal_UI_blocked": true,
+      "C_exact": true
+    },
+    {
+      "fault": "controller_source",
+      "no_incomplete_CUI_execution": true,
+      "native_fallback_screen": true,
+      "native_release_denied": true,
+      "C_exact": true
+    },
+    {
+      "fault": "ui_reload_source",
+      "no_incomplete_CUI_execution": true,
+      "native_fallback_screen": true,
+      "native_release_denied": true,
+      "C_exact": true
+    },
+    {
+      "initial_asset": "bridge",
+      "CRC_refused": true,
+      "native_fallback_screen": true,
+      "no_FILE_job": true
+    },
+    {
+      "initial_asset": "ui",
+      "CRC_refused": true,
+      "native_fallback_screen": true,
+      "no_FILE_job": true
+    },
+    {
+      "native_stage": 8,
+      "UI_result": "050102080100",
+      "bridge_result": "030801000101000100",
+      "bridge_error": 8,
+      "bridge_success": 0,
+      "wire_commands": 69,
+      "elapsed": 0.05901049999999941,
+      "physical_STOP_before_controller": true,
+      "no_image_created": true,
+      "Return_then_private_Resume": true,
+      "C_exact": true
+    },
+    {
+      "native_stage": 8,
+      "UI_result": "010102000100",
+      "bridge_result": "020004000101010100",
+      "bridge_error": 0,
+      "bridge_success": 1,
+      "wire_commands": 2293,
+      "elapsed": 5.085612541,
+      "forged_public_event_ignored": true,
+      "C_exact": true,
+      "all4M_guards": true,
+      "actual_CIA_path": true,
+      "UI_code_reloaded_and_WAIT_ticket_consumed": true,
+      "new_path_exact": true
+    },
+    {
+      "forged_public_event_without_private_WAIT_refused": true,
+      "no_FILE_job": true,
+      "C_exact": true
+    }
+  ],
+  "scope": "real CIA+native broker/UI/bridge/controller/worker; syntheticcfg/media/headers; no coldSTART/DOS/physical; corrected c508 STOP source; sequence allocation pending"
+}

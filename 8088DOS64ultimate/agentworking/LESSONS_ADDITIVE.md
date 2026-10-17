@@ -363,3 +363,5 @@ A completed file writer and its readonly source cache each need explicit clean-s
 
 
 2026-10-17: Test denied actions at the actual capability boundary. Root public can_resume0 passed observation checks while native modal_release still succeeded after committedCFG/BINDload failure; assert actual release rejection, retain oldtrace and revoke stage8. Also distinguish known restored C from stage8/freshclock permission: collision preserves C but native terminalE1 remains authoritative. CRC over a complete self-checksummed record may be a fixed residue; bind original body identities/exactbytes, as currentBIND and pending recovery counterexamples demonstrate.
+
+2026-10-17: Link-derived UI byte counts and actual CFG base matter across composition. CFG starts3FF020; B presence is descriptor+9, and an unsigned133-byte copy cannot use signedDEX/BPL. Capture private delivered UI intent once while its code is live, then return every C frame before phase exchange. Treat Peddle sentinel status2 at an exact nested-PC breakpoint separately from an actual top-level stack failure. A returned public denial must be backed by native release revocation.
