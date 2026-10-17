@@ -1,3 +1,9 @@
+# Next after full Save As controller — 2026-10-17
+
+Root sealed98ce2651/692; sourceclosed7actual20.466s. Compiled agent independently reviews/replays exactcontroller and actual native release denial; do not mutate frozenRoot. Root next implements CUI return→resident controller load→native ac_entry→result capture→CUI reload bridge, preserving private ticket/error and CUI7800state. Public can_resume alone never grants native release; commit/unknownclosure/freshclock failure must leave nativeE1. Use corrected BIND5d396705/runtimee9f782c5 and exactperrole core/aliases; full worker MNU header/CRC/coldSTART coupling stillneeded. Keep all368640Bthirdfloppy and4MiB minimum.
+
+Memory finishes explicit pending-save rollforward with original private nestedCFG identities, half-wrap clock and idempotent archive controls. CIA finishes default-OFF release9 PUT-only stager/current-Cclose gate locally; noRootLAN/newphysicaldispatch. Then full Save/Insert/Eject/Finish and recoveryUI, coherent SETUP/package and final Ultimate install/media/Turbo/restart/human acceptance. Performance post-V1; localcommits/no push.
+
 # Functional work continues — 2026-10-17
 
 Memory implements a separate cold explicit pending-save rollforward phase against actualJG private validation; do not grant boot from observations. Rootowns finalcoldloader/recoveryUI and completeactualCUI/actioncontroller orchestration. Compiled finishes livebinding/CLEAN then repairs discovered unit-modal_entry header dependency: oldunit9a7 has a stale16Bcohorttag, so preservefailedcomparison and use fresh correctmatchedrolealiases. CIA finishes knownCclosecomponent after genuineDOS write/pause; physicalproducttakeover remains a later reviewed purpose. No further speedwork.

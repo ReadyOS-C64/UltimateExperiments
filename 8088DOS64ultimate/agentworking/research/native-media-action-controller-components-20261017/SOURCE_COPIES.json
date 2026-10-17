@@ -1,0 +1,122 @@
+{
+  "build_controller.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/build_controller.py",
+    "sha256": "a3ce9d667a49f1898fa19c2813286c69ecc037bf9e199b833637210980bb953c"
+  },
+  "close_execution.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/close_execution.py",
+    "sha256": "4a354cfe3f9e38693d744663fb09f6f35dacdf2e36e1a5db3163f4ea7e301129"
+  },
+  "test_controller.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/test_controller.py",
+    "sha256": "490b162deb090a7c7a9906cb2843b9373e946a4237ac3d61d51dfc73be896ddb"
+  },
+  "test_online_save.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/test_online_save.py",
+    "sha256": "3702f421b564676c6d50f452ec5a66df80e04e411d3ae026f6a9ff8e6b22d21c"
+  },
+  "fixture_base.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/fixture_base.py",
+    "sha256": "51587667fece63f91456fa211fa35545d14bd0dcb78b48b376136abe5205b3b4"
+  },
+  "controller_fixture.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/controller_fixture.py",
+    "sha256": "ae766386bb5a4c4850197f9ea033f9697098ded12e856fb6f6446b816a35acec"
+  },
+  "fixture_config.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/fixture_config.py",
+    "sha256": "1dd456e575313fd5ea9b561cfc0e4dbefad9330784ada57ae732189317602ad9"
+  },
+  "dos_disk_inspect.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/dos_disk_inspect.py",
+    "sha256": "2b2a882d17f030ed889b76384c82ab11c0462401c60f62e84dc09d1993f4d836"
+  },
+  "refresh_inputs.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/refresh_inputs.py",
+    "sha256": "bf28097e42cf861d607b38e2713ef4b941b1d403a74080ce51ac76a0fec22f8f"
+  },
+  "CORRECTED_BINDING_INPUTS.json": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/CORRECTED_BINDING_INPUTS.json",
+    "sha256": "57c2d3ffa744a6d761d083ea9ba8d3d065c3001e045da25ed2fc1584d0b2b2f2"
+  },
+  "controller/action_shell.c": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/controller/action_shell.c",
+    "sha256": "43a3cb29152c65673036c9f6551c25aba386a49f5de86d404a43e133d351c42c"
+  },
+  "controller/action_shell.h": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/controller/action_shell.h",
+    "sha256": "755cd5c842a7e266124e3c4f915724fa971d0a74282f29c32e50b0458308a0dc"
+  },
+  "controller/action_io.c": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/controller/action_io.c",
+    "sha256": "8ff85224a59627b922b266e01d7b3876fadd147e21bcd8548a1cb180f1ec1526"
+  },
+  "controller/native_calls.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/controller/native_calls.s",
+    "sha256": "7bb5ec2ae1a04b9a50233d9096a7823039aa4e9aa345bd68a1343756560a688d"
+  },
+  "controller/entry.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/controller/entry.s",
+    "sha256": "f4de9193b3102ae1888bb6a792be043fb320c183a309a703ad10b9e5b6a6e9e1"
+  },
+  "controller/controller.cfg": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/controller/controller.cfg",
+    "sha256": "b95f301cea252e9680cc153baa11c2ef3c654477d93d226ac52d4e53a8d0dd57"
+  },
+  "controller/media_plan.h": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-action-controller-root-20261017/controller/media_plan.h",
+    "sha256": "3da8650d35534df2550f87f8d4476e469ef7cd390270009fad92d04de96cf47f"
+  },
+  "binding-component/work/src/floppy_control.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/work/src/floppy_control.s",
+    "sha256": "da4b9b2e187f32839d7c843cfe1ec3528d2557ca2a868d69333aeb37b17365d8"
+  },
+  "binding-component/work/Makefile": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/work/Makefile",
+    "sha256": "46699fc045b8389cb9c6a3da4b611df182fb969492c5a05d4f6e399de5322722"
+  },
+  "binding-component/phase/transaction_wire.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/phase/transaction_wire.s",
+    "sha256": "d52eebb26b2995246460179ff561233772aa17d9df0d29ae83c1b808aff92f1a"
+  },
+  "binding-component/phase/binding_receipt.inc": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/phase/binding_receipt.inc",
+    "sha256": "0ebd4d17c55f1cc50ded43e632be98c78e498d4254adbfe6fab412cece919b47"
+  },
+  "binding-component/binding/media_bind.c": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/binding/media_bind.c",
+    "sha256": "950b293674cd05cc525f80d46a446704dc7567bd469a5f08591a34855a2f56f9"
+  },
+  "binding-component/binding/media_bind.h": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/binding/media_bind.h",
+    "sha256": "6407bdf6e53023355a64894c30cff0cdf4557c83ca625b6b33e38ccd2e2f2cbd"
+  },
+  "binding-component/binding/semantic.inc": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/binding/semantic.inc",
+    "sha256": "3f706007ce5ad0eceb322eba4a572ff803c2e7145f3393a57e8a8a8b543e01ed"
+  },
+  "binding-component/binding/glue.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/binding/glue.s",
+    "sha256": "3055f0d9e1d20b043e38676da6745137b7b6f7911a1059d3b7e341b27d08653f"
+  },
+  "binding-component/phase/worker_calls.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/phase/worker_calls.s",
+    "sha256": "44bc662ccfd5869c7f7e88f60502380952e869fbe6cdf8a68623407649a9b51e"
+  },
+  "binding-component/phase/worker-calls.cfg": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/phase/worker-calls.cfg",
+    "sha256": "4101350ec3d94fc64576b18f6a029121f65e9be912222dccfd7fd2c35ee3efa1"
+  },
+  "binding-component/binding/build.py": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/binding/build.py",
+    "sha256": "1923628894d09ed03d58ebe1cb69dfd207bf2dbf396ce8d786970c55342bd6e1"
+  },
+  "binding-component/phase/crc.s": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/phase/crc.s",
+    "sha256": "08577cda57881bc6ef231f06ddaca652535cfb235865f8cb0f251d41bc531c7f"
+  },
+  "binding-component/phase/plan.cfg": {
+    "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-live-binding-clock-successor-20261017/phase/plan.cfg",
+    "sha256": "ffca419eecede0210c3bf5cdae07133ebdf1f9be416da94834675fee17b186b0"
+  }
+}

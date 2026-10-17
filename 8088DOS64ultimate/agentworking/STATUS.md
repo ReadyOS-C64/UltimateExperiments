@@ -1,3 +1,7 @@
+# Full native Save As controller verified — 2026-10-17
+
+Private controllerfe907995/3782B executes WIREold→SAVE→PLAN→WIREcommit→BIND/CLEAN in one native entry, loading exact worker bytes from REU itself. Actual7groups20.466s pass;367 source/product/tool inputs and copies unchanged, seal98ce2651/692pins. B38/Ctarget1 and A18/Ctarget2 preserve wholeimage/CFG/C25+HD/position12345/high96/P/4MiBguards. Four asset CRC faults plus collision retain modified media/originals and actual native release rejects. Real postcommit public-denial/native-release gap was reproduced then fixed by nativeE1; firstfailure retained. Parent correctedBIND29a3534b/2178 verified. Independent controller review pending; CUI bridge, matched full coldcontainer, Save/Swap/Finish/recovery and physical V1 remain open. Public666/b9 unchanged; no speedwork or push.
+
 # Independent startup recovery review accepted — 2026-10-17
 
 ROOT verifies peerf687edbf/374pins: fresh source rebuild exactlymatches START6d5/INOf7e/rawRCVa0ba and10products,314inputs exact. Fouractualnativegroups pass (unknownCLOSE/nativeclock plus twoadditive observationforgery/sharedprefixmutation controls); original491pins preserved. No newnative defect; unchanged36s pending suite not repeated. Scope is parent32KiB startupgate, not newer40KiB loader or recoverymutations/physical.

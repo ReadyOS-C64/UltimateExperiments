@@ -360,3 +360,6 @@ A completed file writer and its readonly source cache each need explicit clean-s
 - Native CIA keyboard menus do not consume the KERNAL keyboard buffer or guest XT queue. Those input lanes cannot substitute for real SETUP/CONFIG keyboard acceptance. A paused stage5 also proves neither C FILES closure nor safe helper takeover.
 
 2026-10-17 overlay tests: a numeric breakpoint is not proof that a particular function is installed. RCV and INO legitimately execute different instructions at the same address. Before injecting a modal_copy fault, require the actual resident phase and exact installed INO identity; step genuine earlier instructions normally. Reject apparent passes caused by faulting the wrong phase.
+
+
+2026-10-17: Test denied actions at the actual capability boundary. Root public can_resume0 passed observation checks while native modal_release still succeeded after committedCFG/BINDload failure; assert actual release rejection, retain oldtrace and revoke stage8. Also distinguish known restored C from stage8/freshclock permission: collision preserves C but native terminalE1 remains authoritative. CRC over a complete self-checksummed record may be a fixed residue; bind original body identities/exactbytes, as currentBIND and pending recovery counterexamples demonstrate.
