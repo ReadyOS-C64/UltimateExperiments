@@ -1,3 +1,21 @@
+# Latest hardware result — generated START, DOS and both text modes
+
+[Aggregate evidence](evidence/dotnet-native-dos-root-20261017.json): actual native-created START was loaded/read back exactly and reached native RUN; after correcting only the host prompt oracle (`C>` is normal), the same instance passed genuine DOS3.30 VER, DIR C:, MODE40/VER/MODE80. A focused follow-up passed32 full8000B bitmap +1000B matrix comparisons with exact captured cursor/control/phase/blink and3072B native fonts. Raw RAM views are retained; no external VIC/video or human readability claim. First cursor-less oracle mismatch is preserved.
+
+The Ultimate is at80-column C> with guest RUNNING and native C backing channel open. Root owns it; no host workers remain. Do not reset before native Finish or proven closure. Manual64 remains intentional; original CPU/RAM/application and current REU equality are not restored/claimed. New strict harness transport/keys/default/path prompt tests pass against both a clean committed client and the existing dirty worktree. Own harness commits46830cc/d2030dd preserve existing APIs and unrelated changes. Current CONFIGaf5f0ba2 passes9 native/4SYS/2Zig tests; the first stale default-bundle refusal and corrected explicit coupling are retained. All final V1 gates remain open, with2MiB physical install/display now demonstrated.
+
+# Latest verified work — native .NET installer, 2026-10-17
+
+The .NET harness now drives actual native SETUP menus on the physical Ultimate through the standard C64 keyboard queue. Source-built SETUP `9e1e632a` completed in `/usb1/DOS64_TEST/v1-dotnet-hex-20261017` at Manual64/PAL. Independent full output retrieval verified native-created 2 MiB C, all 58 original DOS payloads, genuine A boot files, a separate empty B, and generated START's exact template/home patch. All 20 staged inputs were unchanged; native completion state, output mask31, closed FILES handle and quiet UCI were captured. [Evidence](evidence/dotnet-native-setup-root-20261017.json).
+
+This fixes two concrete issues: native menus previously ignored the standard queue used by the established .NET harness; the bulk REU receipt parser rejected firmware uppercase hex (`$1A0000`). Existing matrix input remains tested. The new focused Peddle lane passes five queue cases, all256 shift values, twelve existing CIA menu cases, uppercase/lowercase/mixed receipts, full source loading and HIGH relocation. Emulator runtime `1506210a` and MNU `a2cd29cb` are unchanged. This is a development candidate, not V1 acceptance.
+
+User explicitly authorizes harness improvements in its own repository while preserving compatibility. Local harness commit46830cc adds opt-in checked keys and mixed-case screen decoding; additional bodyless/file-load helpers and real-DOS sample work are in progress. Clean committed-client compatibility checks pass without relying on the user's pre-existing uncommitted client changes. Upstream changes are recorded in that project's AGENTWORKING notes.
+
+Root alone owns the Ultimate. The completed SETUP was freshly source/closure-checked before the generated launcher boot campaign. The generated START and subsequent same-instance DOS/display checks now pass; all detached controllers exited. Consult ACTIVE before any new control. Do not reset a live C backing channel. Current lower4MiB backup `6e7c4fae` remains available; original CPU/RAM/application and final REU restoration are not claimed. Physical CONFIG/media/Turbo/human qualification remain open. All earlier entries below are dated historical checkpoints, superseded where this entry differs.
+
+---
+
 # Current V1 checkpoint — 2026-10-17
 
 ## Build and accepted model evidence

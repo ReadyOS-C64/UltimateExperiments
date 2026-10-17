@@ -15,7 +15,7 @@ class UI:
    L.dos64_enable_reu_sized.argtypes=[C.c_void_p,C.c_uint32];L.dos64_enable_reu_sized.restype=C.c_uint8
    installed=8192 if capacity<=0x800000 else 16384
    assert L.dos64_enable_reu_sized(f.m,installed)==1
-  for at,size in [(0,2),(0x400,1000),(0xd800,1000),(f.labels['__UIBSS_RUN__'],f.labels['__UIBSS_SIZE__']),(0xfffa,2),(f.labels['_ps_color'],1),(0xdf01,10)]:g[at:at+size]=b'\1'*size
+  for at,size in [(0,2),(0xc6,1),(0x277,10),(0x400,1000),(0xd800,1000),(f.labels['__UIBSS_RUN__'],f.labels['__UIBSS_SIZE__']),(0xfffa,2),(f.labels['_ps_color'],1),(0xdf01,10)]:g[at:at+size]=b'\1'*size
   for at in [0xd019,0xd01a,0xd011,0xd016,0xd018,0xd015,0xd020,0xd021,0xdc00,0xdc02,0xdc03,0xdc0d,0xdd00,0xdd02,0xdd04,0xdd05,0xdd06,0xdd07,0xdd0d,0xdd0e,0xdd0f]:g[at]=1
   f.guard=bytes(g);L.dos64_poke(f.m,0,0x2f);L.dos64_poke(f.m,1,0x35)
   for n in ['native_runtime_control_enable','dos64_graphics_color_enable','dos64_cia_clock_enable','dos64_native_display_enable','dos64_host_input_model_enable']:getattr(L,n)(f.m)

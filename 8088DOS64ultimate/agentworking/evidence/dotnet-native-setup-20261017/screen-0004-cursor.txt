@@ -1,0 +1,25 @@
+DOS64 setup                             
+Choose the DOS64 home folder            
+                                        
+/                                       
+                                        
+ /SD                                    
+>/Flash                                 
+ /Temp                                  
+ /USB1                                  
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+Return: open folder / choose file       
+Up/down: select  Backspace: parent      
+F3: previous page  F5: next page        
+F1: use this folder as DOS64 home       
+Left/right: view path  Run/Stop: cancel 
+                                        
+/Flash                                  

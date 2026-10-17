@@ -1,0 +1,70 @@
+{
+  "status": "REAL_NATIVE_SETUP_TO_GENERATED_START_DOS_AND_DOTNET_HARNESS_PASSED",
+  "hardware": {
+    "host": "10.0.0.79",
+    "unique_id": "DCAF71",
+    "firmware": "3.14",
+    "FPGA": "121",
+    "core": "1.47",
+    "timing": "PAL",
+    "CPU": "Manual64",
+    "REU_configured_MiB": 16,
+    "owned_baseline_MiB": 4
+  },
+  "runtime_SHA256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+  "MNU_SHA256": "a2cd29cb1156c0d38a5491db6ac11a74bf52496d256e2ac7a91c280212ad847c",
+  "SETUP_SHA256": "9e1e632a03d278b1970998b8a84e4ab4139b56c997854458effadfaf47d1e09e",
+  "CONFIG_SHA256": "af5f0ba2a94d81785d5938f1c7cf5a150fe5266c2fbffddf912145458a037e85",
+  "home": "/usb1/DOS64_TEST/v1-dotnet-hex-20261017",
+  "native_created_C_bytes": 2097152,
+  "original_DOS_payloads_exact": 58,
+  "all20_staged_inputs_preserved": true,
+  "actual_generated_START_cold_readback_SHA256": "720711d080ff1b9a16736a5c56d2dbbc045f61afcba024c80d2e6dddc2b32a96",
+  "chain": [
+    "dotnet-native-setup-root-20261017.json",
+    "dotnet-generated-start-first-20261017/ASSESSMENT.json",
+    "dotnet-dos-continued-20261017/RESULT.json",
+    "dotnet-display-cursor-20261017/RESULT.json",
+    "dotnet-display-cursor-20261017/DISPLAY_ORACLE.json"
+  ],
+  "functional_checks": [
+    "genuine DOS MS-DOS Version3.30",
+    "DIR C: native-created DOS directory",
+    "MODE CO40 and returned prompt/VER",
+    "MODE CO80 and returned prompt/VER"
+  ],
+  "complete_display_snapshots_independently_exact": 32,
+  "per_snapshot_bitmap_bytes": 8000,
+  "per_snapshot_matrix_bytes": 1000,
+  "cursor_and_blink_same_frame_captured": true,
+  "native_font_bytes_source_exact": 3072,
+  "harness_local_commits": [
+    "46830cc",
+    "d2030dd"
+  ],
+  "harness_API_defaults_unchanged": true,
+  "preexisting_dirty_harness_changes_preserved": true,
+  "owned_processes": {
+    "65650": "absent",
+    "65644": "absent"
+  },
+  "host_workers_live": false,
+  "Ultimate_left_at": "80-column C> DOS prompt, guest RUNNING, native C backing channel open",
+  "known_native_FILES_closed_now": false,
+  "no_reset_after_openC": true,
+  "current_lower4MiB_baseline_available": "6e7c4fae1254ca5c5e775e454d3b18e80aa20a7eb0f0bb22a72ef68e2adf3ff1",
+  "final_REU_or_original_RAM_CPU_application_restored": false,
+  "first_failures_retained": [
+    "Initial original decoder timeout before menu key",
+    "Actual uppercase firmware receipt rejected by old parser",
+    "Path-only DOS prompt observer timeout, continued same instance",
+    "Cursor-less display oracle mismatch; focused exact metadata + current cursor-aware oracle passes"
+  ],
+  "limitations": [
+    "No current physical CIA/human readability acceptance",
+    "No live VIC/HDMI stream captured in these new checks",
+    "Final CONFIG40/80/relocation,20MiB installation,media persistence,Turbopascal and human V1 tests remain open",
+    "Strict JSON response validation added after physical sample runs; offline tested against clean and working clients. Physical parent already validated actual firmware empty-errors replies."
+  ],
+  "V1_release": false
+}

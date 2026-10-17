@@ -1,0 +1,12 @@
+{
+  "mode": "dos-probe",
+  "host": "10.0.0.79",
+  "home": "/usb1/DOS64_TEST/v1-dotnet-hex-20261017",
+  "output": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-dotnet-generated-start-20261017/dotnet-dos",
+  "diag": 60245,
+  "disk_busy": 60475,
+  "runtime_started": 16323,
+  "native_nmi": 22658,
+  "runtime_prg": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/dotnet-ui-hex-candidate/run-c6_7fphr/package/DOS64.PRG",
+  "start_prg": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-dotnet-native-setup-hex-20261017/outputs/START.PRG"
+}

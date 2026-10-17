@@ -1,0 +1,36 @@
+{
+  "status": "SOURCE_BOUND_PHYSICAL_FIRST_FAILURE_DIAGNOSED",
+  "RAM_SHA256": "575539a7c1169387f4401bcae73231bb5d45681e2beaab9fa5832d0b8d28ee46",
+  "labels_SHA256": "0c08c498ed0f43ed515bffb521a9489b2c27afd80d143393a948b41f07936b23",
+  "receipt_ascii": "$008000 BYTES LOADED TO REU $1A0000",
+  "receipt_address": "0xc0a0",
+  "native_state_error_hex": "0532",
+  "known_closed_fields": {
+    "_files_handle": {
+      "address": "0xc839",
+      "value": 0
+    },
+    "_uci_state": {
+      "address": "0xc80e",
+      "value": 9
+    },
+    "_uci_error": {
+      "address": "0xc80f",
+      "value": 0
+    },
+    "_uci_recovery_failed": {
+      "address": "0xc810",
+      "value": 0
+    },
+    "_fd_closed": {
+      "address": "0xe004",
+      "value": 1
+    }
+  },
+  "sc_private_hex": "020000020300",
+  "source_failure": "DOS2 source load at source offset0x20000, REU address0x1A0000; lowercase-only hex6 rejected uppercaseA.",
+  "source_agreement": "reference/1541ultimate/software/filemanager/dos.cc %6x and software/system/small_printf.cc uppercase hexchar for bothx/X",
+  "negative_control": "Old actual native binary fails corrected uppercase bulk model; evidence OLD-PARSER.stderr",
+  "fix": "accept A..F/a..f; default model response uppercase with explicit lower/mixed cases",
+  "vendor_RAM_bytes_not_published": true
+}

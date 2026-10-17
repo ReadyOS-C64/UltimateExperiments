@@ -61,3 +61,5 @@ Current overlays are exclusive native owners, not arbitrary function-pointer sto
 
 - Copied-code expectations come from immutable packaged bytes; a live startup source may already be cache-owned. REST underlying RAM at6510 port addresses does not prove live banking.
 - Preserve new uncertain HD write authority before restoring a pre-run REU backup. Old backup identity does not recover new data.
+
+Current automation guidance: native C menus explicitly consume0277/C6; use opt-in mixed-case decoding and checked count-last keys. DOS default C> is valid. Capture exact same-frame CRTC/control/cursor phase/blink for whole-frame comparisons. New strict transport checks device JSON errors as well as HTTP status. Upstream changes require explicit user scope; existing dirty changes/default APIs remain preserved.

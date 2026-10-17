@@ -14,7 +14,7 @@
 | K10 | 2 MiB tests accidentally never evict HD cache | Medium | Force 64–256 KiB cache; random reads/writes; compare persisted bytes after reopen |
 | K11 | File offsets silently truncate above 16 MiB | High | Explicit 32-bit arithmetic, boundary/final-sector tests in M9 |
 | K12 | Original CPU boundary/interrupt quirks missing in vectors | Medium | Intel/Microsoft references, 8088/8086 corpora, independent hand-authored event tests before fast paths |
-| K13 | Dirty sibling compiler/harness evolves during work | Medium | Pin/copy needed Peddle sources, hash references, tool manifest; avoid modifying sibling project |
+| K13 | Dirty sibling compiler/harness evolves during work | Medium | Pin/copy needed Peddle sources, hash references, tool manifest; modify sibling projects only with explicit user authorization and preserve existing defaults/dirty work |
 | K14 | Installed C64U firmware differs from current upstream docs | Medium | Capture firmware/config, validate actual command behavior; bounded transfers and fallbacks |
 | K15 | 2/20 MiB experimental CHS conflicts with supplied FDISK | Medium | Test exact binaries; use documented conventional geometry if needed and record actual bytes |
 | K16 | Scope expands to all DOS utilities/peripheral modes | Medium | Explicit applicability matrix; no printer/network/EGA dependency; record unsupported operation instead of dropping entire useful utility |
@@ -96,3 +96,5 @@ K01/K02 remain HIGH. Actual nativeDOS profile has1169895754CPUstepclocks/601936c
 
 
 2026-10-17 V1 utility checks found two required compatibility defects on public0bfa: FDISK mandatory success/error speaker control OUT43/B6 is rejected before its pending MBR flush; ANSI.SYS clear through DH25 is rejected by the viewport-bounded BIOS. Original C is preserved in failed FDISK cases; failed ANSI media has no known-close authority. Private silent speaker writes and original-XT aperture-bounded scroll fixes are in progress. These are V1 correctness blockers, not renewed performance work. Current physical20M staging also remains blocked on the source/RAW_READ CPU-port observation contract; no COPY or final hardware release is accepted.
+
+2026-10-17: Actual native SETUP2MiB and generatedSTART→DOS/40/80 now pass on final1506 runtime. Lowercase-only firmware receipt bug is fixed against actual uppercase hardware response, with case-variant model controls. Native queue support removes the artificial manual-menu automation dependency.32 cursor-aware RAM frames compare exactly. Final CONFIG/20MiB installer/persistence/Turbo/human and other V1 coverage remain open; no physical throughput/performance improvement claimed. Upstream modifications are now explicitly authorized, opt-in and compatibility-tested.

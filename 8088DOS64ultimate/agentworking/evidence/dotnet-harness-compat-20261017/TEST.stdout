@@ -1,0 +1,22 @@
+/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/src/ViceTasks.Ultimate/ViceTasks.Ultimate.csproj : warning NU1902: Package 'SixLabors.ImageSharp' 3.1.12 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-gwg2-r3hj-4w44 [/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/tests/StrictKeyboard/StrictKeyboard.csproj]
+/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/src/ViceTasks.Ultimate/ViceTasks.Ultimate.csproj : warning NU1903: Package 'SixLabors.ImageSharp' 3.1.12 has a known high severity vulnerability, https://github.com/advisories/GHSA-j3p4-wp97-rph4 [/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/tests/StrictKeyboard/StrictKeyboard.csproj]
+/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/src/ViceTasks.Ultimate/ViceTasks.Ultimate.csproj : warning NU1903: Package 'SixLabors.ImageSharp' 3.1.12 has a known high severity vulnerability, https://github.com/advisories/GHSA-j9gm-c75j-xc9q [/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/tests/StrictKeyboard/StrictKeyboard.csproj]
+/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/src/ViceTasks.Ultimate/ViceTasks.Ultimate.csproj : warning NU1903: Package 'SixLabors.ImageSharp' 3.1.12 has a known high severity vulnerability, https://github.com/advisories/GHSA-jjfr-hcj7-qf5w [/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/tests/StrictKeyboard/StrictKeyboard.csproj]
+/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/src/ViceTasks.Ultimate/ViceTasks.Ultimate.csproj : warning NU1902: Package 'SixLabors.ImageSharp' 3.1.12 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-wmxv-xphr-5c9g [/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/tests/StrictKeyboard/StrictKeyboard.csproj]
+/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/src/ViceTasks.Ultimate/ViceTasks.Ultimate.csproj : warning NU1902: Package 'SixLabors.ImageSharp' 3.1.12 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-gwg2-r3hj-4w44
+/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/src/ViceTasks.Ultimate/ViceTasks.Ultimate.csproj : warning NU1903: Package 'SixLabors.ImageSharp' 3.1.12 has a known high severity vulnerability, https://github.com/advisories/GHSA-j3p4-wp97-rph4
+/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/src/ViceTasks.Ultimate/ViceTasks.Ultimate.csproj : warning NU1903: Package 'SixLabors.ImageSharp' 3.1.12 has a known high severity vulnerability, https://github.com/advisories/GHSA-j9gm-c75j-xc9q
+/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/src/ViceTasks.Ultimate/ViceTasks.Ultimate.csproj : warning NU1903: Package 'SixLabors.ImageSharp' 3.1.12 has a known high severity vulnerability, https://github.com/advisories/GHSA-jjfr-hcj7-qf5w
+/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/harness-clean-compat-final-20261017/src/ViceTasks.Ultimate/ViceTasks.Ultimate.csproj : warning NU1902: Package 'SixLabors.ImageSharp' 3.1.12 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-wmxv-xphr-5c9g
+PASS mixed-case and legacy decoders
+PASS normal
+PASS invalid
+PASS occupied
+PASS timeout
+PASS cancelled
+PASS httpfailure
+PASS apifailure
+PASS malformed
+PASS missingerrors
+PASS legacy
+PASS inline chunk boundaries, range refusal, file routes and URI escaping

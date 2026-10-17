@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/config_generation.py", line 254, in <module>
+    if __name__=='__main__':main()
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/config_generation.py", line 253, in main
+    report=build(args.out,result,args.test,media if all(media)else None,start20k=args.start20k,cold_inventory=args.cold_inventory,mnu56k=args.mnu56k,startup_diagnostics=args.startup_diagnostics,all_file_diagnostics=args.all_file_diagnostics,relocation=args.relocation);print(json.dumps({'status':report['status'],'run':report['run'],'products':report['products'],'groups':report['groups']},indent=2))
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/config_generation.py", line 188, in build
+    stage='sources';sources(work,record,test);stage='release';binding=bind_release(result_path.resolve(),work,record,start20k=start20k,cold_inventory=cold_inventory,mnu56k=mnu56k)
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/config_generation.py", line 79, in bind_release
+    for p,wanted in release_records(j).items():
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/config_generation.py", line 64, in release_records
+    verify(declared)
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/config_generation.py", line 16, in verify
+    if digest(Path(name))!=w:raise RuntimeError('Source/product changed: '+name)
+RuntimeError: Source/product changed: /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build_support/start_ini_bundle.py
+make: *** [config-tests] Error 1

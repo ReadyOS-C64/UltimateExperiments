@@ -22,6 +22,7 @@ class F:
   self.labels={x.split()[2].lstrip('.'):int(x.split()[1],16)for x in Path('config.labels').read_text().splitlines()if x.startswith('al ')};self.m=L.dos64_create();data=Path('config.prg').read_bytes();L.dos64_load(self.m,int.from_bytes(data[:2],'little'),data[2:],len(data)-2)
   self.guard=bytearray(65536)
   for a,n in [(0,2),(0x20,96),(0x100,256),(0xcd00,768),(0x400,1000),(0xd800,1000),(0xfffa,2),(0xc000,2048),(self.labels['__BSS_RUN__'],self.labels['__BSS_SIZE__']),(self.labels['__DEVICESTATE_RUN__'],self.labels['__DEVICESTATE_SIZE__']),(self.labels['__RIBSS_RUN__'],self.labels['__RIBSS_SIZE__']),(self.labels['__RMBSS_RUN__'],self.labels['__RMBSS_SIZE__']),(0xdf1c,2),(0xdf00,11),(0xc900,1024),(self.labels['__CONFIG_PUBSTATE_RUN__'],self.labels['__CONFIG_PUBSTATE_SIZE__']),(self.labels['_ps_color'],1),(self.labels['_br_config'],134)]:self.guard[a:a+n]=bytes([1])*n
+  self.guard[0xc6]=1;self.guard[0x277:0x281]=bytes([1])*10
   for a in [0xd019,0xd01a,0xd011,0xd016,0xd018,0xd015,0xd020,0xd021,0xdc00,0xdc02,0xdc03,0xdc0d,0xdd00,0xdd02,0xdd04,0xdd05,0xdd06,0xdd07,0xdd0d,0xdd0e,0xdd0f]:self.guard[a]=1
   for n in ['uci_status_read','uci_control_write','uci_id_read','uci_command_write','uci_data_read','uci_stat_read']:self.guard[self.labels[n]+1:self.labels[n]+3]=b'\1\1'
   for n in ['dos64_uci_upload_operand','dos64_uci_drain_operand']:

@@ -1,6 +1,8 @@
 #include "platform.h"
 #define R(a) (*(volatile ps_u8 *)(a))
 extern void ps_guard(void),ps_scan(void);
+extern ps_u8 __fastcall__ ps_shifted(ps_u8 c);
+extern ps_u8 ps_buffer_poll(void);
 extern ps_u8 ps_matrix[8];
 ps_u8 ps_row,ps_col,ps_color=1,ps_ascii;
 ps_u8 ps_key,ps_modifiers,ps_ghost,ps_clock_valid;
@@ -16,19 +18,6 @@ static const ps_u8 normal[64]={
  '\\','*',';',PS_HOME,0,'=','^','/',
  '1',9,0,'2',' ',0,'q',27
 };
-static ps_u8 shifted(ps_u8 c) {
- if(c>='a'&&c<='z')return c-32;
- if(c>='1'&&c<='9')return c-16;
- if(c=='0')return '0';
- if(c==8)return PS_DELETE;if(c==9)return 0;
- if(c=='-')return '_';if(c=='@')return '`';if(c=='^')return '~';
- if(c==PS_RIGHT)return PS_LEFT;if(c==PS_DOWN)return PS_UP;
- if(c>=PS_F1&&c<=PS_F1+6)return c+1;
- if(c=='.')return '>';if(c==',')return '<';
- if(c==':')return '[';if(c==';')return ']';
- if(c=='/')return '?';if(c=='\\')return '|';
- return c;
-}
 ps_u8 ps_glyph(ps_u8 c) {
  if(c>='a'&&c<='z')return c-96;
  if(c=='@')return 0;
@@ -61,6 +50,7 @@ void ps_init(void) {
  R(0xdd04)=255;R(0xdd05)=3;R(0xdd06)=255;R(0xdd07)=255;
  R(0xdd0f)=0x51;R(0xdd0e)=0x11;
  ps_ticks=0;ps_clock_valid=0;ps_key=ps_modifiers=ps_ghost=0;armed=1;
+ R(0xc6)=0; /* Retire the BASIC launch queue before accepting menu input. */
  ps_row=ps_col=0;ps_color=1;ps_clear();
 }
 ps_u8 ps_clock_poll(void) {
@@ -74,6 +64,9 @@ ps_u8 ps_clock_poll(void) {
 }
 ps_u8 ps_key_poll(void) {
  ps_u8 row,col,count=0,index=0,mask,other,c,inter;
+ ps_key=ps_modifiers=ps_ghost=0;
+ c=ps_buffer_poll();
+ if(c){ps_key=c;return 1;}
  ps_scan();ps_key=ps_modifiers=ps_ghost=0;
  if((ps_matrix[1]&128)||(ps_matrix[6]&16))ps_modifiers|=1;
  if(ps_matrix[7]&4)ps_modifiers|=2;
@@ -92,7 +85,7 @@ ps_u8 ps_key_poll(void) {
  if(count!=1||ps_ghost){armed=0;return 0;}
  if(!armed)return 0;armed=0;c=normal[index];
  if(!c||ps_modifiers&4)return 0;
- if(ps_modifiers&1)c=shifted(c);
+ if(ps_modifiers&1)c=ps_shifted(c);
  if(!c)return 0;
  if(ps_modifiers&2) {
   if(c>='a'&&c<='z')c-=96;

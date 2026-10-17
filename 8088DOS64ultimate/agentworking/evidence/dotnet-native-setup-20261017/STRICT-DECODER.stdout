@@ -1,0 +1,7 @@
+PASS mixed-case and legacy decoders
+PASS normal
+PASS invalid
+PASS occupied
+PASS timeout
+PASS cancelled
+PASS legacy

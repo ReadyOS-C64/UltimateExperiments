@@ -1,0 +1,12 @@
+{
+  "scope": "Final new strict partial against clean committed legacy client, preserving pre-existing dirty source changes",
+  "base_commit": "46830cc9054b6eb674e2c99286b083387f347e4b",
+  "files": {
+    "tests/StrictKeyboard/StrictKeyboard.csproj": "be0e1245cab22a994a988c0562c29a197f010296dce13550ee0c293e5fdb1ee1",
+    "tests/StrictKeyboard/Program.cs": "95a4949c036a70164ba254096887f95831f7d3808521143543eaff21d5b1cede",
+    "src/ViceTasks.Ultimate/UltimateClient.StrictKeyboard.cs": "e65b66c9d44645068da05fd73157d6e40e436aeaf351e38acf28a78910c1f861",
+    "src/ViceTasks.Ultimate/ViceTasks.Ultimate.csproj": "26162f119a374607e51c16d5f371fc07435f1f0639ba88ad5a9d258bd4f6942d",
+    "src/ViceTasks.Ultimate/C64MixedCaseScreen.cs": "ce180c647f329531688ded0283aeec84376f7db8fd1f1b9dff251435793b3f6e",
+    "src/ViceTasks.Ultimate/UltimateClient.cs": "c3c7571fb70bd3ec5113deb3de02d43a59b505685232e2a234a24619e0a65e3c"
+  }
+}

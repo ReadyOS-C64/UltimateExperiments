@@ -23,7 +23,11 @@ void ps_init(void); /* startup-only, screen clear, ownership and clock start */
 ps_u8 ps_put(void); /*1 writes one bounded40x25 screen/color cell,0 refuses */
 void ps_clear(void); /* all1000 cells, currentcolor low4 */
 ps_u8 ps_glyph(ps_u8 ascii); /* C64 mixed-case ROM glyph mapping/transliteration */
-ps_u8 ps_key_poll(void); /*1 fresh edge in ps_key,0 none; no key repeat/queue */
+/* Physical matrix edges, or one PETSCII key from the standard C64 $0277/$C6
+ * queue used by Ultimate automation. Publish at most10 bytes, count last,
+ * and wait for zero before the next batch. init clears stale launch keys.
+ * Queue input is automation input, not physical matrix acceptance. */
+ps_u8 ps_key_poll(void); /*1 key in ps_key,0 none; physical holds do not repeat */
 ps_u8 ps_clock_poll(void); /*1 coherent16bitelapsed sample in ps_ticks,0 stale */
 /* One tick=1024 CIA PHI2 clocks, approximately1ms, not PAL/NTSC calibrated.
  * TA continuous1023 reload; TB counts TA underflows. Bounded H/L/H retries.

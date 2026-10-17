@@ -1,0 +1,21 @@
+test_uppercase_lowercase_and_mixed_firmware_hex_receipts (test_source_load.Loading) ... FAIL
+
+======================================================================
+FAIL: test_uppercase_lowercase_and_mixed_firmware_hex_receipts (test_source_load.Loading)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/dotnet-native-menu-20261017/old-parser-regression/test_source_load.py", line 51, in test_uppercase_lowercase_and_mixed_firmware_hex_receipts
+    self.assertEqual(t.finish()[:2],(2,0));self.assertEqual(t.bytes(ADDR[4],64),DATA[4]);self.assertEqual(t.fact(4)[0],1)
+AssertionError: Tuples differ: (3, 2) != (2, 0)
+
+First differing element 0:
+3
+2
+
+- (3, 2)
++ (2, 0)
+
+----------------------------------------------------------------------
+Ran 1 test in 0.335s
+
+FAILED (failures=1)

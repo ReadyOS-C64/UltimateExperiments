@@ -40,11 +40,11 @@ struct BulkModel {
     if(int(history.size())==short_at&&n)--n;
     if(c[1]==0x22){if(h.pos+n>0x2000000){error();break;}if(file.size()<h.pos+n)file.resize(h.pos+n,0xcc);std::copy_n(r->bytes.begin()+addr,n,file.begin()+h.pos);}
     else {if(corrupt_at!=-2)std::copy_n(file.begin()+std::min(h.pos,file.size()),n,r->bytes.begin()+addr);if(corrupt_at>=0&&uint32_t(corrupt_at)<n)r->bytes[addr+corrupt_at]^=0x80;}
-    h.pos+=n;char msg[80];std::snprintf(msg,sizeof msg,c[1]==0x21?"$%6x BYTES LOADED TO REU $%6x":"$%6x BYTES SAVED FROM REU $%6x",n,addr);d.assign(msg,msg+std::char_traits<char>::length(msg));break;}
+    h.pos+=n;char msg[80];std::snprintf(msg,sizeof msg,c[1]==0x21?"$%6X BYTES LOADED TO REU $%6X":"$%6X BYTES SAVED FROM REU $%6X",n,addr);d.assign(msg,msg+std::char_traits<char>::length(msg));break;}
    default:w.fault=true;return false;
   }
   bool more=false;
-  if(int(history.size())==reply_at){switch(reply_fault){case 1:s={};break;case 2:s={'0','2',',','R','E','Q','U','E','S','T',' ','T','R','U','N','C','A','T','E','D'};break;case 3:if(d.size()>6)d[6]='g';break;case 4:if(d.size())d.back()=d.back()=='0'?'1':'0';break;case 5:d.push_back('X');break;case 6:more=true;break;case 7:if(d.size()>14)d[14]='X';break;case 8:if(d.size()>6)d[1]='f';break;case 9:if(d.size()>6)d[6]=0;break;}}
+  if(int(history.size())==reply_at){switch(reply_fault){case 1:s={};break;case 2:s={'0','2',',','R','E','Q','U','E','S','T',' ','T','R','U','N','C','A','T','E','D'};break;case 3:if(d.size()>6)d[6]='g';break;case 4:if(d.size())d.back()=d.back()=='0'?'1':'0';break;case 5:d.push_back('X');break;case 6:more=true;break;case 7:if(d.size()>14)d[14]='X';break;case 8:if(d.size()>6)d[1]='f';break;case 9:if(d.size()>6)d[6]=0;break;case 10:case 11:for(size_t j=0;j<d.size();++j)if((j>=1&&j<=6)||j+6>=d.size())if(d[j]>='A'&&d[j]<='F'&&(reply_fault==10||(j&1)))d[j]+=32;break;}}
   w.blocks.clear();w.blocks.push_back({d,s});if(more)w.blocks.push_back({{}, {}});return true;
  }
 };

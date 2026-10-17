@@ -1,0 +1,29 @@
+DOS64_ZIG="../../zeropage-tooling/bin/zig" python3 -B build_support/config_generation.py --test --bundle-result build/dotnet-ui-hex-candidate/run-c6_7fphr/coupled/RESULT.json --out build/config-dotnet-compat --start20k --cold-inventory --mnu56k --startup-diagnostics --all-file-diagnostics --relocation
+{
+  "status": "passed",
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/config-dotnet-compat/run-62kanfaq",
+  "products": {
+    "CONFIG.PRG": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/config-dotnet-compat/run-62kanfaq/products/CONFIG.PRG",
+      "sha256": "af5f0ba2a94d81785d5938f1c7cf5a150fe5266c2fbffddf912145458a037e85",
+      "bytes": 44382
+    },
+    "CONFIG.labels": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/config-dotnet-compat/run-62kanfaq/products/CONFIG.labels",
+      "sha256": "c09f7b211577798e37e64d4cab1d6d11df64567cd6e75accbe1a4d3131464422",
+      "bytes": 22429
+    },
+    "CONFIG.map": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/config-dotnet-compat/run-62kanfaq/products/CONFIG.map",
+      "sha256": "2463567ba81daf001b19d1a805df46069779ce469ebf1a6219b277fcadabf371",
+      "bytes": 255395
+    }
+  },
+  "groups": {
+    "actual_native": 9,
+    "actual_SYS": 4,
+    "direct_Zig": 2,
+    "synthetic_media": true,
+    "genuine_DOS_execution": false
+  }
+}

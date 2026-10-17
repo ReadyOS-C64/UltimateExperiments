@@ -2,6 +2,8 @@
 
 **Current release goal: a dependable V1 installer, configuration and A/B/C disk workflow, proven by an interactive Turbo Pascal edit/save/compile/run/restart session on the Ultimate. Further speed work is deferred until after V1.** See [V1 endpoint and acceptance gates](docs/V1_ENDPOINT.md).
 
+**Latest hardware progress (2026-10-17):** the existing .NET harness now completes actual native SETUP on the Ultimate at64MHz. Full independent readback verifies a native-created2MiB C, all58 original DOS files, distinct empty B, bootable A and the folder-aware launcher. Standard keyboard-buffer support and firmware uppercase-hex parsing are fixed and tested. The generated launcher now boots genuine DOS3.30; VER, C listing and40/80 modes pass, including32 complete cursor-aware display comparisons. Physical CONFIG/media/Turbo/human acceptance remains open. [Evidence](agentworking/evidence/dotnet-native-dos-root-20261017.json).
+
 `make cold-start RUNTIME_MEDIA_RESULT=/absolute/path/to/RESULT.json` now builds matching START/recovery assets from an actual runtime-media result. It produces one checked eight-file development bundle without DOS images or private build fixtures. See [cold START build](tools/cold/README.md). Final installer composition and Ultimate acceptance remain open.
 
 `make v1-candidate` now builds one coherent development zip containing SETUP, CONFIG and their matching launcher/emulator assets, with an installation guide and checksums. DOS images are supplied separately. This package is not a V1 release: the native media workflow and final hardware acceptance remain open. See [candidate packaging and installer scope](docs/NATIVE_SETUP_INSTALLER.md).

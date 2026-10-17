@@ -119,8 +119,11 @@ static br_u8 hex6(br_u8 at) {
   if(digit==' '&&!started)continue;
   started=1;
   if(digit>='0'&&digit<='9')digit-='0';
-  else if(digit>='a'&&digit<='f')digit=digit-'a'+10;
-  else return 0;
+  else {
+   digit|=0x20u; /* Ultimate small_printf emits uppercase even for %x. */
+   if(digit<'a'||digit>'f')return 0;
+   digit=digit-'a'+10;
+  }
   value=(value<<4)|digit;
  }
  return started;

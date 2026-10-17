@@ -86,3 +86,8 @@ setup-installer-cold56: cold-release-bundle56
 	$(DOS64_PYTHON) -B build_support/setup_installer.py --cold-inventory --start20k --mnu56k --bundle-result "$(DOS64_COLD_BUNDLE_OUT)/RESULT.json" --out build/setup-installer-cold56
 config-cold56: cold-release-bundle56
 	$(DOS64_PYTHON) -B build_support/config_generation.py --cold-inventory --start20k --mnu56k --bundle-result "$(DOS64_COLD_BUNDLE_OUT)/RESULT.json" --out build/config-cold56
+
+# Fast actual native menu input tests, including the Ultimate .NET key queue.
+.PHONY: setup-keybuffer-tests
+setup-keybuffer-tests:
+	$(DOS64_PYTHON) -B build_support/setup_keybuffer_tests.py

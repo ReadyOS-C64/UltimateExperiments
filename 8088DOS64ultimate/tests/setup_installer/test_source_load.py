@@ -41,6 +41,15 @@ class Loading(unittest.TestCase):
   for path,data in zip(PATHS,DATA):
    b=C.create_string_buffer(len(data));self.assertEqual(L.bulk_model_read(u.f.m,path,b,len(data)),1);self.assertEqual(b.raw,data)
   self.assertEqual(reu(u),self.capsule);self.assertEqual(self.start(0),0);REPORT['facts']=facts
+ def test_uppercase_lowercase_and_mixed_firmware_hex_receipts(self):
+  for fault in [0,10,11]:
+   t=Loading();t.setUp()
+   try:
+    self.assertEqual(t.start(4),1);t.until(3)
+    count=L.bulk_model_commands(t.u.f.m)
+    L.bulk_model_faults(t.u.f.m,-1,-1,count+1,fault,-1)
+    self.assertEqual(t.finish()[:2],(2,0));self.assertEqual(t.bytes(ADDR[4],64),DATA[4]);self.assertEqual(t.fact(4)[0],1)
+   finally:t.tearDown()
  def test_missing_or_wrong_size_never_grants_receipt(self):
   L.bulk_model_seed(self.u.f.m,PATHS[0],DATA[0][:-1],len(DATA[0])-1);self.assertEqual(self.start(),1);self.assertEqual(self.finish()[:2],(3,2));self.assertEqual(self.fact(0)[0],0);self.assertEqual(self.start(),0)
  def test_suppressed_or_corrupt_LOAD_cannot_match_independent_poison(self):
@@ -56,7 +65,11 @@ class Loading(unittest.TestCase):
  def test_private_paths_ignore_forged_selection_and_public_request_mutation(self):
   u=self.u;at=int.from_bytes(u.f.read('_ss_choices',2),'little');L.dos64_load(u.f.m,at,b'/WRONG'+bytes(636),642);self.assertEqual(self.start(4),1);u.f.write('_sl_kind',b'\0');u.f.write('_sl_timeout',b'\0\0');self.assertEqual(self.finish()[:2],(2,0));self.assertEqual(self.bytes(ADDR[4],64),DATA[4]);self.assertEqual(self.fact(4)[0],1);self.assertEqual(self.fact(0)[0],0)
  def test_HIGH_copy_exact_and_code_survives_UI_to_FAT_retirement(self):
-  u=self.u;f=u.f;load=f.labels['__HIGH_CODE_LOAD__'];run=f.labels['__HIGH_CODE_RUN__'];n=f.labels['__HIGH_CODE_SIZE__'];code=f.readat(run,n);self.assertEqual(code,f.readat(load,n));self.assertEqual(self.start(4),1);self.assertEqual(self.finish()[:2],(2,0));self.assertEqual(u.leave(),1);f.write('_so_request',struct.pack('<BIH',0xa5,0x400000,1000)+b'/Home'.ljust(128,b'\0'));self.assertEqual(u.call('_so_bind_home'),1)
+  u=self.u;f=u.f;load=f.labels['__HIGH_CODE_LOAD__'];run=f.labels['__HIGH_CODE_RUN__'];n=f.labels['__HIGH_CODE_SIZE__'];code=f.readat(run,n)
+  # The load-only source aliases live UI BSS after relocation. Compare the
+  # independent cold artifact, not memory now occupied by selected paths.
+  cold=Path('build/setup.prg').read_bytes();at=load-0x0801+2
+  self.assertEqual(code,cold[at:at+n]);self.assertEqual(self.start(4),1);self.assertEqual(self.finish()[:2],(2,0));self.assertEqual(u.leave(),1);f.write('_so_request',struct.pack('<BIH',0xa5,0x400000,1000)+b'/Home'.ljust(128,b'\0'));self.assertEqual(u.call('_so_bind_home'),1)
   fat=Path('build/SETUP.FAT').read_bytes();L.bulk_model_seed(f.m,b'/Home/SETUP.FAT',fat,len(fat));f.write('_so_phase_request',b'\2');self.assertEqual(u.call('_so_begin'),1)
   for i in range(20000):
    L.dos64_cia_clock_advance(f.m,1024);u.call('_ps_clock_poll');f.write('_so_now',f.read('_ps_ticks',2));u.call('_so_poll')
