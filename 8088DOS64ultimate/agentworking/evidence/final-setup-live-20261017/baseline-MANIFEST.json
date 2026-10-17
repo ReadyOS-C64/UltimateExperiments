@@ -1,0 +1,16 @@
+{
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-v1-current-baseline-fixed-20261017",
+  "directory": "/usb1/DOS64_TEST/v1-baseline-20261017",
+  "nonce": "d1702d3000ca47c7850a0332f279255b",
+  "predecessor_sha256": "54a37967808a3e71e12ba5beac3540be175bdc9880cdcaad65298f4d91a07ccc",
+  "inputs": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-hardware-session-fixed-20261017/support.py": "d29c20245946afc953dc6cb0dc410d724367b9f381dc84369dfeacc90d957ad8",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-hardware-session-fixed-20261017/worker.py": "4b9ffda58b79683693867b41a0bc540f4b3f621092e0842e39e00653fbc962d2",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-hardware-session-fixed-20261017/host_stream.py": "b9c9c197bc126a0a5b6e51d1bf69fb2de257323c0dbf946afbc0019e129ab5a4",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-hardware-session-fixed-20261017/changed_driver.py": "b527b6df94f9a1f6d5ac03ec3fe6204cefa5b25fd8375230e8e760db69005a54",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-hardware-session-fixed-20261017/SNAPSHOT.PRG": "8c809f4116e0230277f031b36c2c9d22a9c3b8ec42e98e262aec4d0bb2a26598",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-hardware-session-fixed-20261017/supervisor.py": "4160295f66d892f3c837804446de9c8e1ae7d5ec2f2195d3e292eaaafe9dba96",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-hardware-session-fixed-20261017/dispatch-owned.sh": "3e7c2a17a29f8e7b923bad7d653d498d873a3c7d6ca8f87c4b7cd971cd7db4b5"
+  },
+  "scope": "Fresh current lower4MiB after user full reboot, read-only REU; FTP backup with full reread; no historical baseline equality inferred."
+}

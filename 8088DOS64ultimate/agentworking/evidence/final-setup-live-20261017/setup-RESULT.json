@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "scope": "UNCHANGED_FINAL_SETUP_ACTUAL_PHYSICAL_UI_START",
+  "automated_native_UI_keys": false,
+  "REU_baseline_before": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-v1-current-baseline-fixed-20261017/BASELINE.REU",
+  "human_selection_pending": true,
+  "visible_cold_source_equal": true,
+  "hidden_preSYS_verified": false,
+  "full_remote_file_byteverified": true,
+  "existing_load_adopted": true,
+  "native_bootstrap_CRC_required": true,
+  "actual_native_menu_observed": true,
+  "final_resume_ACK": true,
+  "active_Manual64": true,
+  "setup_home": "/usb1/DOS64_TEST/v1-powercycle-20261017"
+}

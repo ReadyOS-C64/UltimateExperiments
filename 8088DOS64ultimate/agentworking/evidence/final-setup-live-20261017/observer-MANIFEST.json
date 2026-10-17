@@ -1,0 +1,15 @@
+{
+  "run": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-v1-setup-observe-fixed-20261017",
+  "predecessor_sha256": "7d84d5df6531eb0da52581093de8693fa54676ce189b1fee2b6149f27affe3d0",
+  "native_private_state_address": 45082,
+  "native_private_error_address": 45083,
+  "source_gate": "Exact matched final cold relocated _rc_state/_rc_error accessors; readonly observations only",
+  "inputs": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-reset-public-20261017/candidate-build/run-7kvcr9ll/setup/SETUP.PRG": "f4335eb73a92ff4b3ac4a28fedab99b48ea0f22674b8251e5c03579d8991ff12",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-reset-public-20261017/candidate-build/run-7kvcr9ll/setup/SETUP.labels": "198ca795497a31d8582d7a9674c546f5458d3736e6c413ef2f84e3245d5474d1",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-setup-observe-fixed-20261017/worker.py": "459b865c1367b5d9f5cd22242e868c9a4fbf7b6785521383cfc2c419f093a166",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-setup-observe-fixed-20261017/support.py": "d29c20245946afc953dc6cb0dc410d724367b9f381dc84369dfeacc90d957ad8",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-setup-observe-fixed-20261017/supervisor.py": "9aadc25b30b2908018faa5399d9caa04d64164834f288ca0e2683fbf869612c2",
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-setup-observe-fixed-20261017/dispatch-owned.sh": "3e7c2a17a29f8e7b923bad7d653d498d873a3c7d6ca8f87c4b7cd971cd7db4b5"
+  }
+}
