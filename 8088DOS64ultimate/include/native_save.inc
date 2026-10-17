@@ -5,6 +5,9 @@ DOS64_NATIVE_SAVE_INC=1
 ; only CANCEL9 is accepted; unrelated requests reject without touching UCI.
 ; Known-closed failure may remainPAUSED/dirty; unknown or infrastructure fault
 ; enters E1 and RUN3 cannot resume. Standard commands1..4 remain unchanged.
+; Optional C-online profile: sav_drive=0/1 is selected before command7.
+; Actual descriptor/bank/generations are captured before borrow and must remain
+; unchanged through completion. SaveAs does not alter dirty/readonly/binding.
 NATIVE_SAVE_COMMAND=7
 NATIVE_SAVE_CANCEL=9
 NATIVE_SAVE_STAGE=7

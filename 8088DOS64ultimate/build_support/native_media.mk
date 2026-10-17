@@ -1,0 +1,6 @@
+# Synthetic native A/B SaveAs development profile; no hardware or DOS images.
+.PHONY: native-media test-native-media
+native-media:
+	$(DOS64_PYTHON) -B build_support/native_media_tests.py --native-only $(DOS64_NATIVE_MEDIA_ARGS)
+test-native-media:
+	DOS64_ZIG="$(DOS64_ZIG)" $(DOS64_PYTHON) -B build_support/native_media_tests.py $(DOS64_NATIVE_MEDIA_ARGS)

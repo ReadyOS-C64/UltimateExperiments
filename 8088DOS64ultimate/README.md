@@ -51,6 +51,7 @@ make test-clock-probe # separate scripted CIA/VIC probe checks, not hardware cal
 make hardware-helpers # prepare physical backup/restore/cache probe images
 make native-file-recovery # build optional whole-file REU restore helper
 make test-native-file-recovery # fast checks for that opt-in development backend
+make test-native-media # optional selected A/B SaveAs with C online, CRC,27 actual groups
 make test-floppy-export # native create-new/save/reopen prototype, Peddle only
 make test-iec-standalone # real assembly import from mocked KERNAL APIs
 make vice-iec-standalone # owned VICE full PC image import from D81/SEQ

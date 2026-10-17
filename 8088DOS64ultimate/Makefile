@@ -2,6 +2,7 @@ DOS64_ZIG ?= $(firstword $(wildcard ../../zeropage-tooling/bin/zig) $(shell comm
 DOS64_CA65 ?= ca65
 DOS64_LD65 ?= ld65
 DOS64_PYTHON ?= python3
+DOS64_EXPORT_CRC ?= 0
 
 .DEFAULT_GOAL := all
 
@@ -19,8 +20,10 @@ build/native-uci.o: src/uci.s include/uci.inc Makefile
 OBJECTS += build/integrated-floppy_export.o
 build/integrated-floppy_export.o: src/floppy_export.s include/floppy_export.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_EXPORT_INTEGRATED=1 -I include -o $@ $<
-build/native_save.o: include/native_save.inc include/floppy_export.inc include/reu.inc include/memory.inc include/host_clock.inc Makefile
+	$(DOS64_CA65) -g -D DOS64_EXPORT_INTEGRATED=1 -D DOS64_SAVE_HD_CONTEXT=$(if $(DOS64_SAVE_HD_CONTEXT),$(DOS64_SAVE_HD_CONTEXT),0) -D DOS64_EXPORT_CRC=$(DOS64_EXPORT_CRC) -I include -o $@ $<
+build/native_save.o: src/native_save.s include/native_save.inc include/floppy_export.inc include/reu.inc include/memory.inc include/host_clock.inc Makefile
+	@mkdir -p build
+	$(DOS64_CA65) -g -D DOS64_SAVE_HD_CONTEXT=$(if $(DOS64_SAVE_HD_CONTEXT),$(DOS64_SAVE_HD_CONTEXT),0) -I include -o $@ $<
 build/owned-host_clock.o: src/host_clock.s include/host_clock.inc Makefile
 	@mkdir -p build
 	$(DOS64_CA65) -g -D DOS64_OWNED_CLOCK=1 -I include -o $@ $<
@@ -329,3 +332,6 @@ include build_support/setup.mk
 include build_support/start_ini.mk
 
 include build_support/config.mk
+
+# Optional source-only A/B SaveAs+C-online model graph.
+include build_support/native_media.mk

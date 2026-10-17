@@ -1,3 +1,7 @@
+# Current V1 integration work — 2026-10-17
+
+Optionalpublic native-media46fa/63f graph is verified/promoted; default remains666/b9. Do not rerun27/13 or unchanged fullDOS without a new change/failure. ROOTreceipt native-media-public-root-20261017.json; measured MAIN1/HDB10/SAVER4/DEV41 free. Next: actual broker admission/ZP/cache lifecycle tests and nativeC panel successor CIA tests, then real modal loader/keyboard integration, durableSave/CFG workers and safeFinish. Broker/panel remain private components; never claim menu/runtime persistence done. ROOT reviewing physical8c721aba; CIA local whole4Moriginal-only backend purpose pending; no nextdevicecalls approved. Memory finishes originalTurbo edited IDE/diskcompile/EXE/knownclose/freshlaunch. Keep tenV1 release gates honest, SETUP coherent-assets gap open and performance postV1. Local commits/no push.
+
 # Next after selected SaveAs component — 2026-10-17
 
 Compiled owns private portable optional native-media/test-native-media graph on frozen46fa/63f (actual27groups), exact source/tool/environment/cache closure and immutableproducts; no DOS images/dylib/privatepaths required in public distribution. ROOT independently accepts selectedcomponent (1650authorpins +freshsource-only exactbuild +2actualROOT7.588s/794unchangedinputs) and CRCcomponent (1658pins,5Python+2Zig); publicsource+tests promotion is next after wrapper review. Preserve default666/b9 until deliberate enabled integration; report currentPRIVATE scope. Do not rerun unchanged fullDOS/installer suites.

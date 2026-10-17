@@ -4,6 +4,12 @@
 .include "files.inc"
 .include "uci.inc"
 .include "reu.inc"
+.ifndef DOS64_SAVE_HD_CONTEXT
+DOS64_SAVE_HD_CONTEXT=0
+.endif
+.ifndef DOS64_EXPORT_CRC
+DOS64_EXPORT_CRC = 0
+.endif
 .ifdef DOS64_EXPORT_INTEGRATED
 .import dos64_overlay_files_start,dos64_overlay_files_poll
  dos64_files_start = dos64_overlay_files_start
@@ -60,6 +66,12 @@ export_last: .res 2
 export_delta: .res 2
 export_far: .res 3
 export_page: .res 1
+.if DOS64_EXPORT_CRC
+; Complement this raw CRC only after verified=1/state=DONE/known final CLOSE.
+; It is diagnostic partial state otherwise, never a persistence receipt.
+.export dos64_export_crc_raw
+dos64_export_crc_raw: .res 4
+.endif
 dos64_export_state_end:
 .ifdef DOS64_EXPORT_INTEGRATED
 .segment "SAVERCODE"
@@ -158,6 +170,10 @@ dos64_export_start:
  cmp #$10
  beq @bank
  cmp #$18
+.if DOS64_SAVE_HD_CONTEXT
+ beq @bank
+ cmp #$38
+.endif
  jne export_reject
 @bank:
  lda dos64_files_state
@@ -213,6 +229,14 @@ dos64_export_start:
 @elapsed: sta dos64_export_elapsed,x
  dex
  bpl @elapsed
+.if DOS64_EXPORT_CRC
+ lda #$ff
+ ldx #3
+@crc_init:
+ sta dos64_export_crc_raw,x
+ dex
+ bpl @crc_init
+.endif
  lda dos64_export_now
  sta export_last
  lda dos64_export_now+1
@@ -545,6 +569,9 @@ dos64_export_poll:
  lda EXPORT_STAGE,y
  cmp dos64_uci_data,y
  jne export_compare_error
+.if DOS64_EXPORT_CRC
+ jsr export_crc_byte
+.endif
  iny
  bne @first
  inc export_page
@@ -553,6 +580,9 @@ dos64_export_poll:
  lda EXPORT_STAGE+$100,y
  cmp dos64_uci_data+$100,y
  jne export_compare_error
+.if DOS64_EXPORT_CRC
+ jsr export_crc_byte
+.endif
  iny
  bne @second
  jsr export_advance
@@ -614,4 +644,35 @@ export_close:
  jcs export_file_error
 export_return:
  LEAVE 0
+.if DOS64_EXPORT_CRC
+; Reflected CRC32/ISO-HDLC polynomial EDB88320, raw accumulator.
+; A=one freshly equal REU/file byte; preserve Y (page index), clobber A/X.
+; Only the existing bounded256-byte compare poll calls this routine.
+export_crc_byte:
+ eor dos64_export_crc_raw
+ sta dos64_export_crc_raw
+ tya
+ pha
+ ldy #8
+@bit:
+ lsr dos64_export_crc_raw+3
+ ror dos64_export_crc_raw+2
+ ror dos64_export_crc_raw+1
+ ror dos64_export_crc_raw
+ bcc @next
+ ldx #3
+@xor:
+ lda dos64_export_crc_raw,x
+ eor export_crc_poly,x
+ sta dos64_export_crc_raw,x
+ dex
+ bpl @xor
+@next:
+ dey
+ bne @bit
+ pla
+ tay
+ rts
+export_crc_poly: .byte $20,$83,$b8,$ed
+.endif
 dos64_export_code_end:

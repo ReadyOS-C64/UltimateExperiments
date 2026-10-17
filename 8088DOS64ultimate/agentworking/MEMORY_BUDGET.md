@@ -260,3 +260,7 @@ Authorfcd5/324,peer40a9/356 and ROOTgeneratedDOS40/80 close actualentry/loop pip
 ## 2026-10-17 — public CONFIG508d/e530 exact reproduction
 
 ROOT publiclinked map/labels reproduce standalone coordinator: MAIN0801..5F21/free222; RI/RM6000..86A2, codeend86A3 before phaseBSS8700..AFB7/free72; permanentSTATEB000..BFBC/free67; HIGH E000..FF8A =8075/free111 belowFFFA vectors. Serializedsource9000..AF8A is verified/copied/readback before overlappingBSSzero. ZP20..46/UCI C000..C7FF/CRC C900..CCFF/CstackCD00..CFFF unchanged. Builder enforces phase-code/state/HIGH/source limits, with independent actual prior-overlap counterexample retained. No main/REU allocation growth in this packaging slice; receipt native-config-public-root-20261017.json.
+
+## 2026-10-17 optional public media profile
+
+Public native-media46fa2e54/unit63f131a7 source/profile promoted with tests. Actualmaps unchanged from selectedROOT: MAINfree1,HDBIOS3574/free10,SAVER2028/free4,DEVICESTATE1239/free41. Both memory verifiers PASS. Default flags0/undefined runtime/unit/labels exact666/b9. Optional source/testbuild uses isolated build/native-media ownedruns. New private modalbrokercurrently links CODE+snapshot7000..735A859B/1792budget, private7700..77DC221B/256; nativeC panel current416d code+RO+DATA8000..9A6D6766B,BSS7800..7C931172B,ZP80..99. These private link fits are not actual runtimeownership/admission/menu evidence. Actual broker/UI tests pending, and resident hook/assetloader/durableCFG workers notimplemented.
