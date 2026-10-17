@@ -1,0 +1,127 @@
+{
+  "status": "LOCAL_NATIVE_ENTRY_AND_CIA_STOP_PASS",
+  "transport_BASIC_registeredLOAD": "mocked, not firmware",
+  "native_SYS_bankguard_UI_source_and_STOP": "actual Peddle/e710",
+  "report": {
+    "status": "passed",
+    "SYS_resume_attempted": true,
+    "human_CIA_input_synthesized": false,
+    "registered_LOAD": {
+      "status": "REGISTERED_LOAD_ONLY_VISIBLE_VERIFIED",
+      "leaf": "SETUP.PRG",
+      "source_record_sha256": "ad4cdf250faeaff246d8b6416843048b9274a2634f64aa974f8bc894cbd3c419",
+      "visible_bytes_exact": 38911,
+      "hidden_range": [
+        40960,
+        45244
+      ],
+      "hidden_preSYS_verified": false,
+      "native_startup_verified": false,
+      "SYS_emitted": false,
+      "CIA_UI_verified": false,
+      "paired_BASIC_READY": true,
+      "paused": true
+    },
+    "postentry": {
+      "status": "SOURCE_AND_AUTHENTIC_INITIAL_UI_ADMISSION_OBSERVED",
+      "binding_sha256": "939cde5e2b06db1bdd208f4d510559447a916ad1932aafcea01fb0cdb14cc2f9",
+      "immutable_ranges": [
+        [
+          "BASIC",
+          2049,
+          12,
+          "1d7f248e93f18a1db2d23531f113a70abfb7273e969666d43e14cabd1336336c"
+        ],
+        [
+          "BOOT",
+          2061,
+          39,
+          "b62ec3762b8955f9b71d43e5b3acb2718b3bc243337919161b490fceaf298b3a"
+        ],
+        [
+          "DEVICECODE",
+          2100,
+          1261,
+          "e42be0120e0b908dafc848d3b396015fc75dfb3d5c8a267a6850afd47c9cee38"
+        ],
+        [
+          "FILECODE",
+          3361,
+          1177,
+          "70660d606dd0cd8ab45f5604df2285e9363236edcf02a9f00545ec39d7c4a462"
+        ],
+        [
+          "CODE",
+          4538,
+          19485,
+          "f745ffa46f8898426e35ebfb6b65779a94dc905db539a35aeec55b8b4449c7a1"
+        ],
+        [
+          "RODATA",
+          24023,
+          418,
+          "b8cab504b58cda7de37d86f671e6703a09bd32016b41b216fecdd416249178d0"
+        ],
+        [
+          "UI_CODE",
+          24576,
+          15381,
+          "3e328070edc1a60308e2cc065b8b22c683b4151ee2b436cc3b0f39ebc411689a"
+        ],
+        [
+          "UI_RO",
+          39957,
+          1591,
+          "623c294fa3bb3310af1de7f4ba7a6294583091918c791a7559b70550e9b32f8f"
+        ],
+        [
+          "HIGH_CODE",
+          63232,
+          2291,
+          "7be3a07df2d31f2862169664ceaa63312353c4f4c3860497cd217eedbca88e2e"
+        ],
+        [
+          "AUX",
+          50080,
+          1120,
+          "152e036a326466d5a73cc8d223ac07662cb75032d29446a4e7ba856b9f180b18"
+        ],
+        [
+          "BOOT_DIAG",
+          51267,
+          188,
+          "2bd9fd565bd4963cb9a1b9c11120869a2af601e107c47c3c8b167cf2079b8b55"
+        ],
+        [
+          "FILE_DIAG",
+          49056,
+          94,
+          "0e6dff67d98a557d3a6b730ca10a2722df010f56cd262992a9e34e7b2991b77c"
+        ]
+      ],
+      "private_installed_last_A5": true,
+      "private_startup_CLOSE_mask": 3,
+      "private_phase": "UI",
+      "private_ticket": 1,
+      "native_human_input_verified": false,
+      "public_positive_observations_used": false,
+      "browser_directory_lease": 1,
+      "current_UCI_state": 3,
+      "takeover_or_reset_authorized": false,
+      "CPU_P_register_observed": false,
+      "observation_context": "source/private admission only; physical context supplied by validated purpose"
+    },
+    "terminal": {
+      "outcome": "STOPPED_NATIVE_UI",
+      "native_state": 5,
+      "native_first_error": 19,
+      "known_closed_quiet": true,
+      "all_frames_returned": true,
+      "original_CPU_RAM_application_restore": false,
+      "human_key_origin_not_provable_from_RAM_alone": true,
+      "final_V1_acceptance": false
+    }
+  },
+  "CIA_model_only": true,
+  "physical": false
+}

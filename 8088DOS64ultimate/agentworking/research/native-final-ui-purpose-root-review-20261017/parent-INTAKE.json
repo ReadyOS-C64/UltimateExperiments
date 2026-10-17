@@ -1,0 +1,98 @@
+{
+  "status": "source-built; native consumer/physical acceptance pending",
+  "profile": "cold8+56KiB+20KiB+startup diagnostics; SETUP file diagnostics",
+  "receipts": {
+    "runtime": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/release-intake/RUNTIME_RESULT.json",
+      "identity": {
+        "sha256": "0cc729ff21e7288d968fa07f72c922a1ba29ead6e4405b17e886a92ee8c8e173",
+        "bytes": 280999
+      }
+    },
+    "cold": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/release-intake/COLD_RESULT.json",
+      "identity": {
+        "sha256": "16f9a3edf39ddf6ad29e0c2de078f41766154296b71c7fb8947b47094b789f1d",
+        "bytes": 354498
+      }
+    },
+    "setup": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/release-intake/SETUP_RESULT.json",
+      "identity": {
+        "sha256": "6b896734401e0c3bd56bf4f206b2abfc59e2291f18a4a1522d096896bd56d431",
+        "bytes": 491912
+      }
+    },
+    "config": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/release-intake/CONFIG_RESULT.json",
+      "identity": {
+        "sha256": "bc18379fb02ed88da5d289fe9d148469c083bf2bd5733f97feae51afdf2420fa",
+        "bytes": 388535
+      }
+    }
+  },
+  "assets": {
+    "DOS64.PRG": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/cold/run-fa9u4gig/bundle/DOS64.PRG",
+      "sha256": "c7a14a3a119e18ea4949efb8f37493df7afeeb1dc97d421561544cf7f79a8f93",
+      "bytes": 47105
+    },
+    "DOS64.REL": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/cold/run-fa9u4gig/bundle/DOS64.REL",
+      "sha256": "a3453e084506dcaa3959c1673b9850f04e1dde473211ad4b6343933abe9e362a",
+      "bytes": 64
+    },
+    "DOS64.MNU": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/cold/run-fa9u4gig/bundle/DOS64.MNU",
+      "sha256": "407f91b879f5ad21b13a66e6743848e60a06bf23b5cc15048b60344359115091",
+      "bytes": 57344
+    },
+    "START.TPL": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/cold/run-fa9u4gig/bundle/START.TPL",
+      "sha256": "2f8e86c9673fa0fceeedb328e680c4689f88789c120941fe588df61e843c5bc2",
+      "bytes": 20480
+    },
+    "START.REL": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/cold/run-fa9u4gig/bundle/START.REL",
+      "sha256": "95d0a23df7338552f8a9a9c609f5b4c29a70fa083fdd32f1640a54c66b8800ca",
+      "bytes": 64
+    },
+    "START.INO": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/cold/run-fa9u4gig/bundle/START.INO",
+      "sha256": "44dd94617a3e76c4451a0e235626108ded3e30c911ce665d7e16e6499f717621",
+      "bytes": 7692
+    },
+    "START.RCV": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/cold/run-fa9u4gig/bundle/START.RCV",
+      "sha256": "08715a793b6fe0abf6dc95e09bad6b13356936b49ba0901793261568faec444e",
+      "bytes": 7902
+    },
+    "START.RFW": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/cold/run-fa9u4gig/bundle/START.RFW",
+      "sha256": "f11b0c1d66a9116b005651529de53bec19939ae03fd9c60ef0599a78b6c84824",
+      "bytes": 5578
+    },
+    "SETUP.PRG": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/setup/source-nj686laa/build/setup.prg",
+      "sha256": "e7107a5a14ba246c4efd1730a59b1da36549e745061d61205e7419294dc61085",
+      "bytes": 43197
+    },
+    "SETUP.FAT": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/setup/source-nj686laa/build/SETUP.FAT",
+      "sha256": "35a30235f1fe1f91a78622112fc52e7cc65b93b38d4e54edd3115c84dff40162",
+      "bytes": 20541
+    },
+    "SETUP.PUB": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/setup/source-nj686laa/build/SETUP.PUB",
+      "sha256": "afaed4d60b0fe0aba77ba830378ea8e0ee2c29f100d23ec01c1d13cd4711fb40",
+      "bytes": 20544
+    },
+    "CONFIG.PRG": {
+      "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/config/run-gtnk6917/products/CONFIG.PRG",
+      "sha256": "3deb783d9d94848b7595310d174e6ce3490bcc19b2e4510d1852f901f048635d",
+      "bytes": 43233
+    }
+  },
+  "setup_build": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/setup/source-nj686laa/build",
+  "config_work": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-public-integration-root-20261017/config/run-gtnk6917/work"
+}

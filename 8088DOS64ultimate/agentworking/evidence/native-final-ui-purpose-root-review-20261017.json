@@ -1,0 +1,53 @@
+{
+  "status": "ACCEPT_CONCRETE_STARTUP_UI_CANCEL_PURPOSE_PENDING_HUMAN_AVAILABILITY",
+  "parent_manifest": {
+    "sha256": "2b98652749f9ad069e8c21ce765cdd7dc72d72f9434d76fbffe01d56fd39cda1",
+    "bytes": 37941
+  },
+  "parent_pins": 256,
+  "launch_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-final-ui-purpose-20261017/work/LAUNCH_MANIFEST.json",
+  "launch_manifest_identity": {
+    "sha256": "9919eb99904002fa708eaf41a5ef66f5b6345a65afec622f970b27a4147a0721",
+    "bytes": 664133
+  },
+  "launch_inputs_exact_after_Root_offline": 2050,
+  "executed_host_source_copies_exact": 59,
+  "Root_offline_constructor": {
+    "exit": 0,
+    "socket_connect_forbidden": true,
+    "stdout": {
+      "sha256": "914e94dd87c3ecebedc73717ce8829bc42ce1757665add0f1ddb1ba2d6960149",
+      "bytes": 1425
+    }
+  },
+  "reviewed": "product/product_transport/ui_backend/preserved_product/purpose/launch/setup_observer and focused product/policy/detached controls; native bc_files_closed/selectable correspondence; all consumed authority pins required",
+  "inherited_controls": {
+    "actual_Peddle": 6,
+    "transport_cleanup": 7,
+    "constructor_missing_pin": 7,
+    "detached_surrogate": 3
+  },
+  "Root_new_native_replay": false,
+  "single_dispatch_condition": "Human explicitly available for short physical native keyboard/RunStop test, soleCIA ownership and exact currentpredecessor/source audits still pass; exact reviewed9919 manifest/wrapper only. No device operation in this review.",
+  "scope": "SETUP startup/human UI/cancel component; sixteen CREATE_NEW sourcefiles; knownclosed terminal before changed4M/one originalrestore/final4M; 600score+90BASIC+45profile,120shuman/180srestore reserve",
+  "limits": [
+    "No fullinstall/DOS/Turbo/V1 acceptance",
+    "Trusted registeredLOAD/bootstrap; hidden preSYS RAM equality unverified",
+    "Human window expiry/unknownwriter retainsreservation with no syntheticSTOP/reset/restore",
+    "No restoredoriginal CPU/RAM/application claim; coldBASIC only",
+    "Historical backupadoption explicit/nativeCRC/finalindependent4M required; no upper12M"
+  ],
+  "physical": false,
+  "device_calls": 0,
+  "dispatch_occurred": false,
+  "human_availability_confirmed": false,
+  "ACTIVE_unchanged": true,
+  "archive": {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/native-final-ui-purpose-root-review-20261017",
+    "manifest": {
+      "sha256": "dcd2d5413afc30b51ba902a9965f1b4fa4879d2019680d7b26241cb6a86409bf",
+      "bytes": 11100
+    },
+    "pins": 82
+  }
+}

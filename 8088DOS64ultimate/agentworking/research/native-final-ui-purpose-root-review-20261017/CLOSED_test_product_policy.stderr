@@ -1,0 +1,12 @@
+test_firstcause_preserved_with_later_terminal_and_cleanup_faults (test_product_policy.Cleanup) ... ok
+test_original_endpoint_not_renewed_and_profile_independent_of_clock (test_product_policy.Cleanup) ... ok
+test_terminal_callback_full_cleanup_receipt (test_product_policy.Cleanup) ... ok
+test_unknown_terminal_blocks_restore_reset_but_profile_finally (test_product_policy.Cleanup) ... ok
+test_ambiguous_LOAD_and_SYS_are_attempted_once (test_product_policy.Policy) ... ok
+test_exact_body_count_and_terminal_source_gate (test_product_policy.Policy) ... ok
+test_request_whitelist_exact_source_read_and_owner (test_product_policy.Policy) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.017s
+
+OK

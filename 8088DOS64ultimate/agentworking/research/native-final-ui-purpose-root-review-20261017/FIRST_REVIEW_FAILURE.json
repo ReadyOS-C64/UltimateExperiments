@@ -1,0 +1,6 @@
+{
+  "scope": "ROOT metadata reader before any native execution/network",
+  "error": "FileNotFoundError: parent/status",
+  "cause": "Root initially iterated wrapper keys rather than MANIFEST.files. Exact immutable manifest digest was correct; normalized only Root reader. No parent/source/product changed.",
+  "native_failure": false
+}

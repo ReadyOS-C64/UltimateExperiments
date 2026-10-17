@@ -1,0 +1,12 @@
+test_asset_binding_and_observer_refuse_other_product (test_ui_purpose.Tests) ... ok
+test_capabilities_no_hidden_authority_or_synthetic_input (test_ui_purpose.Tests) ... ok
+test_context_and_currentpredecessor_and_replay_guard (test_ui_purpose.Tests) ... ok
+test_every_consumed_authority_path_must_be_pinned (test_ui_purpose.Tests) ... ok
+test_exact_constructor_and_final_intake (test_ui_purpose.Tests) ... ok
+test_finite_bounds_not_user_tunable_or_infinite (test_ui_purpose.Tests) ... ok
+test_no_live_factory_for_localcontext_and_changedsource (test_ui_purpose.Tests) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 2.886s
+
+OK

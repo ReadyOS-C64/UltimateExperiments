@@ -1,0 +1,17 @@
+[
+  {
+    "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-release16-backend-composition-20261017/MANIFEST.json",
+    "sha256": "20dc3c2759ca74f280dbcb2ac18e7539d5103fa143281daece3fb1f1b9276dac",
+    "pins_verified": 307
+  },
+  {
+    "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-setup-postentry-observer-20261017/MANIFEST.json",
+    "sha256": "26eb29936f697a33f4f8e85f746ce61ac092645998378bd83d410643ec3003d4",
+    "pins_verified": 80
+  },
+  {
+    "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-c7-current-c-close-20261017/MANIFEST.json",
+    "sha256": "bb1d2e28558959ca2dac123bf1b332f9cba1a7215b3dcf6c7c46de5104e81d1e",
+    "pins_verified": 1197
+  }
+]
