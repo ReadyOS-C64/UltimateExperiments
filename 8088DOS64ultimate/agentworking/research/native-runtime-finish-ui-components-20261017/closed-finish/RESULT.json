@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "inputs": 428,
+  "products": 37,
+  "excluded_UNIT": 20,
+  "commands": [
+    {
+      "name": "fresh-native",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "build_ui_bridge.py",
+        "--role",
+        "runtime"
+      ],
+      "exit": 0,
+      "seconds": 1.804114042
+    },
+    {
+      "name": "fresh-model",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "build_model.py"
+      ],
+      "exit": 0,
+      "seconds": 2.975096167
+    },
+    {
+      "name": "actual-runtime",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "finish_role_replay.py"
+      ],
+      "exit": 0,
+      "seconds": 9.299837334
+    }
+  ],
+  "scope": "actual runtime/CIA Finish8 + SaveAs1; synthetic media; no cold/DOS/physical"
+}

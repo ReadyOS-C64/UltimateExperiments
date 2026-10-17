@@ -1,0 +1,203 @@
+{
+  "status": "PRIVATE_RUNTIME_FINISH_UI_PASS_SOURCE_CLOSED",
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-finish-ui-root-20261017/MANIFEST.json",
+  "manifest_sha256": "f83f03287c8224275ab324d3eceb9d54237814e4d3631720e4a578af5b013ad1",
+  "manifest_pins": 946,
+  "closure": {
+    "passed": true,
+    "inputs": 428,
+    "products": 37,
+    "excluded_UNIT": 20,
+    "commands": [
+      {
+        "name": "fresh-native",
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "build_ui_bridge.py",
+          "--role",
+          "runtime"
+        ],
+        "exit": 0,
+        "seconds": 1.804114042
+      },
+      {
+        "name": "fresh-model",
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "build_model.py"
+        ],
+        "exit": 0,
+        "seconds": 2.975096167
+      },
+      {
+        "name": "actual-runtime",
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "finish_role_replay.py"
+        ],
+        "exit": 0,
+        "seconds": 9.299837334
+      }
+    ],
+    "scope": "actual runtime/CIA Finish8 + SaveAs1; synthetic media; no cold/DOS/physical"
+  },
+  "source_checkpoint": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/native-runtime-finish-ui-components-20261017",
+  "products": {
+    "MODAL.MNU": {
+      "sha256": "39782537287a561fb46f86c1d159e9f88c3795c7125f0384b3dcc074440606b8",
+      "bytes": 40960
+    },
+    "HEADER.bin": {
+      "sha256": "655cd0bcd45bf7212e8461f35f44a0eb794ebf571b64143b6a5e92c0d0758522",
+      "bytes": 64
+    },
+    "WORKERS.MNU": {
+      "sha256": "e12b3e03d5a042870e92d4be83be31d1b9254a0e870951632e3c41038c7b5cbf",
+      "bytes": 40960
+    },
+    "work/build/dos64.prg": {
+      "sha256": "65d768a48f4eb024e2c1ba70e3b0ab230dff92cb4a9b84ff142ce772dd85c504",
+      "bytes": 47105
+    },
+    "work/build/dos64.labels": {
+      "sha256": "ffabc52dc3f4e7b200d7a19a51bd9a248c80aa27b981610b3be13bcf2f80f2c6",
+      "bytes": 75209
+    },
+    "work/build/dos64.map": {
+      "sha256": "4d1a355ae2a51dc1f5f2ebef49a47ce6fa44ecaa9f798339b0c32cb8d1149bab",
+      "bytes": 93580
+    },
+    "broker/broker.prg": {
+      "sha256": "6fb94a1c52d476c62912b508ae541ff3e89d84a500cbd9c3bcdd04f1c77a1918",
+      "bytes": 1969
+    },
+    "broker/broker.labels": {
+      "sha256": "11335884536f537de11c9354d1a6e866a81bd0421e13a98dc8b7aa28fa538c0a",
+      "bytes": 2941
+    },
+    "broker/broker.map": {
+      "sha256": "1fc876c8b5ceda731aa648242ea4c24e29d6a56db261993c96c62c4cc38a843d",
+      "bytes": 669
+    },
+    "broker-runtime/broker.prg": {
+      "sha256": "6fb94a1c52d476c62912b508ae541ff3e89d84a500cbd9c3bcdd04f1c77a1918",
+      "bytes": 1969
+    },
+    "broker-runtime/broker.labels": {
+      "sha256": "11335884536f537de11c9354d1a6e866a81bd0421e13a98dc8b7aa28fa538c0a",
+      "bytes": 2941
+    },
+    "broker-runtime/broker.map": {
+      "sha256": "1fc876c8b5ceda731aa648242ea4c24e29d6a56db261993c96c62c4cc38a843d",
+      "bytes": 669
+    },
+    "ui/panel.prg": {
+      "sha256": "d1d03c3183b07b1cd2fa6db0cfcca9bfd0734bd098b9de43b766fe377af05e10",
+      "bytes": 7516
+    },
+    "ui/panel.labels": {
+      "sha256": "74f1ca65e6d3c7b922d2e6b89a474eac98ac8fd0199360bdda502d9d8a3178d0",
+      "bytes": 2945
+    },
+    "ui/panel.map": {
+      "sha256": "cbb6ccc4c34e1e7138488260a271072b8bf7f7a5f43d9cd2b0b84d048836a1dc",
+      "bytes": 20112
+    },
+    "bridge/bridge.prg": {
+      "sha256": "dcde83a39475fe7a0b916c39555c0590bcd0f17179ca68b41f6e374992ad4343",
+      "bytes": 837
+    },
+    "bridge/bridge.labels": {
+      "sha256": "bd028d656acdf5525c5e8a7ebeca356a29dabdb8d564bb1112139e6d2cc1ffbf",
+      "bytes": 1312
+    },
+    "bridge/bridge.map": {
+      "sha256": "fb237123f28e5b8452d697c0032917b8b3609cb17bcc53f15481241050428327",
+      "bytes": 1107
+    },
+    "controller/controller.prg": {
+      "sha256": "bf15c74e062a32827e7bd43bc0a8ceae555eacf5870b2f616c44256557689247",
+      "bytes": 4330
+    },
+    "controller/controller.labels": {
+      "sha256": "fe399f8629e760e89121af6a60c305bfebfa5489f804e8a421e0cc46c3d8217e",
+      "bytes": 3472
+    },
+    "controller/controller.map": {
+      "sha256": "2a69fc2448db30cfd5af733fd284e55193f18a9ebd87971934a9960970426ea5",
+      "bytes": 23010
+    },
+    "finish/finish.prg": {
+      "sha256": "6045b0e5d62cbc53efb39b235bf76463bddd3fb8b25bec9ab675961b3e8e94b2",
+      "bytes": 1258
+    },
+    "finish/finish.labels": {
+      "sha256": "d0ea45d6a76cf1b1b84438e232ab9e48944d0a31a17b395a69f7e98628298174",
+      "bytes": 2646
+    },
+    "finish/finish.map": {
+      "sha256": "be94a939db231db60c123c1fb09d90a47b65bc2d6f3ee220f2bd34b4c4b7d9e5",
+      "bytes": 1111
+    },
+    "phase/transaction-wire.prg": {
+      "sha256": "3c4a47376f2733e1f58977196fab56721fe8ae0690a1f44a8d5cf2d39ea6f3f9",
+      "bytes": 4344
+    },
+    "phase/transaction-wire.labels": {
+      "sha256": "fa633fc8265f81771b5ec9ac778653faec400b916151d1a3661675b1ea7e641b",
+      "bytes": 5526
+    },
+    "phase/transaction-wire.map": {
+      "sha256": "12379191ab14f03e8668f0f54710ea200774b2e2ceed147747660f8496fcf1fa",
+      "bytes": 1266
+    },
+    "phase/modal-save.prg": {
+      "sha256": "a6215376d8e0166478bd79d6d016e3bf51c9fc3f13a630875bccc03744f03a90",
+      "bytes": 2562
+    },
+    "phase/modal-save.labels": {
+      "sha256": "1d81fc35152f78eb7366c9ab7d8c16a3587c256c30204245f2ddbd28bf466cec",
+      "bytes": 434
+    },
+    "phase/modal-save.map": {
+      "sha256": "b223deac81bcf3d320151f81eb6df3638440c58c42d520b9e66f9a6d3038ecef",
+      "bytes": 796
+    },
+    "phase/runtime-plan.prg": {
+      "sha256": "9f51a6b402bc0a1c3b1995dd83ff337ad0f5ebfe2fb841fe0081858d86532d4f",
+      "bytes": 4527
+    },
+    "phase/runtime-plan.labels": {
+      "sha256": "285315ed21469230a539fd15f57269d29c385a9ab0687e431f16aaf76f1f417b",
+      "bytes": 2994
+    },
+    "phase/runtime-plan.map": {
+      "sha256": "a1f834beda52b60661a9cef3bfdd75aac49d0f259f67678081c2a2489f99b021",
+      "bytes": 21219
+    },
+    "binding/binding.prg": {
+      "sha256": "3d58db206d058831ebfc6049a28b8f84298961b5d2918d1f2dc6845763837ac0",
+      "bytes": 6139
+    },
+    "binding/binding.labels": {
+      "sha256": "c2765509bcab26c04f80df7d1ddb4eb5b9b6274cb91385f1c821a847e480569b",
+      "bytes": 3012
+    },
+    "binding/binding.map": {
+      "sha256": "d0a49f75a45cd29c4203adce787504ed0211b2a76d292c299f70d9cf72154777",
+      "bytes": 22918
+    },
+    "model/save-peddle.dylib": {
+      "sha256": "ab56f11949ca4df166668cfeafc0ac41d51b71edda170194748049adbecfbfad",
+      "bytes": 210544
+    }
+  },
+  "tests": "8 actual CIA Finish groups plus one SaveAs regression",
+  "first_failure": "Getter A4 with X0 changes Z; branch lost first error as FC; explicit CMP0 fixes; both versions denied Safe/Resume and issued one CLOSE",
+  "remaining": "OrdinaryS runtime merge; cold binding fix; Insert/Eject/Protect; coherent SETUP/CONFIG/cold/package; final Ultimate install/Turbo/restart/human gates",
+  "physical": "No device calls; soleCIA reserved state unchanged",
+  "public": "No public source/product promotion; no push"
+}

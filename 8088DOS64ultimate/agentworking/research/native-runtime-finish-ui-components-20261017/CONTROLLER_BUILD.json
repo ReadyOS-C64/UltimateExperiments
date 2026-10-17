@@ -1,0 +1,133 @@
+{
+  "records": [
+    {
+      "file": "phase/transaction-wire.prg",
+      "host": 40960,
+      "reu": 4048896,
+      "bytes": 4342,
+      "crc": 177683278,
+      "logical_offset": 10240,
+      "bss": 32000,
+      "bss_bytes": 362,
+      "wrapper_reu": 0,
+      "wrapper_bytes": 0,
+      "wrapper_crc": 0
+    },
+    {
+      "file": "phase/modal-save.prg",
+      "host": 44544,
+      "reu": 4053248,
+      "bytes": 2560,
+      "crc": 59129842,
+      "logical_offset": 14592,
+      "bss": 32000,
+      "bss_bytes": 130,
+      "wrapper_reu": 0,
+      "wrapper_bytes": 0,
+      "wrapper_crc": 0
+    },
+    {
+      "file": "phase/runtime-plan.prg",
+      "host": 40960,
+      "reu": 4055808,
+      "bytes": 4525,
+      "crc": 3729593732,
+      "logical_offset": 17152,
+      "bss": 32000,
+      "bss_bytes": 205,
+      "wrapper_reu": 4060416,
+      "wrapper_bytes": 88,
+      "wrapper_crc": 2041643574
+    },
+    {
+      "file": "binding/binding.prg",
+      "host": 40960,
+      "reu": 4136960,
+      "bytes": 6137,
+      "crc": 1944776460,
+      "logical_offset": 32768,
+      "bss": 32000,
+      "bss_bytes": 133,
+      "wrapper_reu": 4060672,
+      "wrapper_bytes": 88,
+      "wrapper_crc": 2496931146
+    }
+  ],
+  "core_end": 22272,
+  "role": "runtime",
+  "controller_sha256": "bf15c74e062a32827e7bd43bc0a8ceae555eacf5870b2f616c44256557689247",
+  "controller_bytes": 4330,
+  "commands": [
+    [
+      "/opt/homebrew/Cellar/cc65/2.19/bin/cc65",
+      "-t",
+      "none",
+      "-Oirs",
+      "action_shell.c",
+      "-o",
+      "action_shell.s"
+    ],
+    [
+      "/opt/homebrew/Cellar/cc65/2.19/bin/cc65",
+      "-t",
+      "none",
+      "-Oirs",
+      "action_io.c",
+      "-o",
+      "action_io.s"
+    ],
+    [
+      "/opt/homebrew/Cellar/cc65/2.19/bin/ca65",
+      "-g",
+      "entry.s",
+      "-o",
+      "entry.o"
+    ],
+    [
+      "/opt/homebrew/Cellar/cc65/2.19/bin/ca65",
+      "-g",
+      "action_shell.s",
+      "-o",
+      "action_shell.o"
+    ],
+    [
+      "/opt/homebrew/Cellar/cc65/2.19/bin/ca65",
+      "-g",
+      "action_io.s",
+      "-o",
+      "action_io.o"
+    ],
+    [
+      "/opt/homebrew/Cellar/cc65/2.19/bin/ca65",
+      "-g",
+      "native_calls.s",
+      "-o",
+      "native_calls.o"
+    ],
+    [
+      "/opt/homebrew/Cellar/cc65/2.19/bin/ca65",
+      "-g",
+      "aliases.s",
+      "-o",
+      "aliases.o"
+    ],
+    [
+      "/opt/homebrew/Cellar/cc65/2.19/bin/ld65",
+      "-C",
+      "controller.cfg",
+      "-o",
+      "controller.prg",
+      "-Ln",
+      "controller.labels",
+      "-m",
+      "controller.map",
+      "entry.o",
+      "action_shell.o",
+      "action_io.o",
+      "native_calls.o",
+      "aliases.o",
+      "/opt/homebrew/Cellar/cc65/2.19/share/cc65/lib/none.lib"
+    ]
+  ],
+  "scope": "provisional unit role/controller+exactworker payloads, not nativeUI or finalcontainer"
+}

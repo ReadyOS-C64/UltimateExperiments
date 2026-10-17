@@ -1,3 +1,9 @@
+# Private actual-runtime Finish menu qualified — 2026-10-17
+
+Root f83f0328/946 pins: source-only428 inputs/37 products, fresh native/model, all20 UNIT products absent during9 actual groups (8 CIA Finish +1 SaveAs). Confirmation/cancellation, known CLOSE targets1/2, private one-shot Safe, terminal noResume, whole4MiB/high96 and failure controls pass. First error4→FC getter-flags defect fixed explicitly; retained first failure. Actual runtime 65d768a4; final identities in receipt, no public or hardware acceptance. Finish requires mounted C and exit applications to DOS first; no guest logical-buffer flush claim.
+
+Ordinary S5737/2803 and native20KiB template1dc8/1730 independently ROOT all-pin verified. Memory merges S with Finish runtime; CIA extends final native asset preflight/publication; compiled fixes actual cold SaveAs BIND error8: PREPARE captured binding before validated CFG identity was supplied. Cold DOS/menu/Resume passed, cold SaveAs first failure retained/fenced; not falsely successful. Final V1 gates remain open; performance deferred. See evidence/native-runtime-finish-ui-root-20261017.json.
+
 # Native cold recovery confirmation independently verified — 2026-10-17
 
 Private START1307/INOcb4b/RCV87e0/RFWf11b executes SYS→pending screen→CIA C+Return→verified recovery→fresh original RCV NONE→INO/handoff. Root10 unique outcomes pass across final6+correctedobserver4; independent11/freshsixproducts/scopedwhole4MiB pass, peer6dab/352 ROOTverified. Root466d/408; parents843+344 unchanged. Actual stale-admission-clock and duplicate-CLOSE defects reproduced/fixed. Evidence native-cold-recovery-ui-root-20261017. Public main/START unchanged.20KiB native publishing, final runtime coupling, other media/Finish/package and physical Ultimate/Turbo/human remain open.

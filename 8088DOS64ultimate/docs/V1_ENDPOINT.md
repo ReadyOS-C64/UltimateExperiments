@@ -8,7 +8,7 @@ V1 is a release a user can copy onto a C64 Ultimate, install using their own DOS
 
 Copy the release and separately obtained DOS images into a folder. Run SETUP, browse to the images and choose a C-drive size; SETUP prepares the disks and launcher directly through Ultimate DOS. Launch START to reach DOS. Use CONFIG to make a new configuration while preserving existing media; after moving the installation, regenerate its folder-aware launcher. Edit the documented same-folder INI for supported startup options.
 
-During emulation, open the native disk controls to select A or B, see the current image and whether it needs saving, and insert/eject/save without guessing which drive will change. A modified disk offers Save, Discard or Cancel. A successful save names the destination and survives a fresh launch. C stays usable across these operations. Finish through an explicit flush/close action that reports when restarting is safe. Progress and errors must identify the file/operation and available next action; an incomplete operation must never look like success. Exact menu keys and captions will be documented from the implemented UI.
+During emulation, open the native disk controls to select A or B, see the current image and whether it needs saving, and insert/eject/save without guessing which drive will change. A modified disk offers Save, Discard or Cancel. A successful save names the destination and survives a fresh launch. C stays usable across these operations. Exit guest applications to DOS, then use Finish to check completed backing writes and close C before reporting when restarting is safe. Progress and errors must identify the file/operation and available next action; an incomplete operation must never look like success. Exact menu keys and captions will be documented from the implemented UI.
 
 ## Required release gates
 
@@ -35,7 +35,7 @@ Use the selected original real-mode Turbo Pascal 7.01 installation on a disposab
 2. Start TURBO.EXE in 80 columns. Use the real menus and keyboard mapping to create or edit V1CHECK.PAS, including at least one correction and cursor/navigation operation.
 3. Save the source to C and compile an EXE **to disk**. Run it in the IDE, view its output, return to the editor and exit to DOS.
 4. TYPE the saved source and generated text output; run the EXE from DOS. Perform an A/B copy-and-save operation while C remains mounted, then use C again.
-5. Complete the supported flush/close workflow, reset, and launch again through the installed START. Reopen the saved source in Turbo Pascal, run the EXE and verify the text output.
+5. Complete the supported Finish/close workflow, reset, and launch again through the installed START. Reopen the saved source in Turbo Pascal, run the EXE and verify the text output.
 6. Independently inspect the saved image: expected source/EXE/output and legitimate IDE support-file changes, intact original files, valid FAT chains and free-space accounting. Retain screens, commands, image identities and the exact release hashes.
 
 A suitable small program is:
@@ -83,3 +83,6 @@ The actual private disk-menu Save As path now passes9 native model groups and8 i
 The subsequent current9 staging attempt failed during its initial readonly snapshot, before staging files or writing REU. Original settings restoration passed; current completeREU/BASIC closure is not inferred from the older accepted recovery. This failure does not change the final-product hardware gates. [Retained attempt](../agentworking/evidence/c64u-current9-staging-failure-root-20261017.json).
 
 Private cold-start recovery now requires confirmation, completes verified saves and freshly rechecks no journal before launch. Root10 unique outcomes and11 independent model checks pass; final native20KiB publishing, runtime coupling and physical acceptance remain separate. [Recovery evidence](../agentworking/evidence/native-cold-recovery-ui-root-20261017.json).
+
+
+Private runtime Finish now passes8 actual menu/native model groups plus a SaveAs regression with UNIT products absent. It requires final confirmation and a real mounted C, obtains Safe only from known native CLOSE, and permanently blocks guest Resume. Ordinary versioned Save and the20KiB native template publisher pass separate component tests; runtime composition, remaining floppy actions and final Ultimate acceptance stay open. A genuine cold SaveAs integration test exposed an initial binding-order defect; its blocked failure is retained and being repaired. [Finish evidence](../agentworking/evidence/native-runtime-finish-ui-root-20261017.json).

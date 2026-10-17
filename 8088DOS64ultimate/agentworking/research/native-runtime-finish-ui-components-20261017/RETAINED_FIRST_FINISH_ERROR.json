@@ -1,0 +1,53 @@
+{
+  "passed": false,
+  "groups": 6,
+  "records": [
+    {
+      "status": 2,
+      "pc": "0x7566",
+      "ui": "060107000100",
+      "error": 0,
+      "safe": 1,
+      "stage": 225,
+      "target": 1,
+      "one_known_CLOSE": true,
+      "terminal_safe_park": true,
+      "all4MiB_exact": true,
+      "high96_exact": true,
+      "no_guest_Resume": true
+    },
+    {
+      "status": 2,
+      "pc": "0x7566",
+      "ui": "060107000100",
+      "error": 0,
+      "safe": 1,
+      "stage": 225,
+      "target": 2,
+      "one_known_CLOSE": true,
+      "terminal_safe_park": true,
+      "all4MiB_exact": true,
+      "high96_exact": true,
+      "no_guest_Resume": true
+    },
+    {
+      "cancel_key": 99,
+      "no_CLOSE": true,
+      "Resume_retained": true
+    },
+    {
+      "cancel_key": 27,
+      "no_CLOSE": true,
+      "Resume_retained": true
+    },
+    {
+      "Finish_CRC_refusal_before_FILE": true,
+      "native_fallback": true
+    },
+    {
+      "forged_public_SAFE_and_event_denied": true,
+      "no_FILE": true
+    }
+  ],
+  "scope": "actual runtime native/CIA/Finish; synthetic mounted media; no cold boot, guest DOS or physical qualification"
+}

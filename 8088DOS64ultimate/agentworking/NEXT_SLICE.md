@@ -1,3 +1,7 @@
+# Next after actual-runtime Finish UI — 2026-10-17
+
+Root f83f/946 sealed:428 source/tool inputs +37 products,9 actual runtime groups pass without UNIT products. Memory now merges ordinary versionedS5737 with this Finish in new child and tests S→Finish. Compiled repairs genuine cold initial binding order before FOP_PREPARE and proves actual START→DOS→SaveAs/C. CIA extends native20KiB SETUP/CONFIG preflight for DOS64.MNU/START.RCV/START.RFW; SETUP verifies same-home distribution assets, CONFIG copies into new generation, CFG-last. Root next implements remaining Insert/Eject/Protect transaction/UI and combines matched final package. Preserve immutable parents, threefullfloppy arenas, mounted C and4MiB. Final Ultimate install/config/floppy/C/Turbo edited/diskcompile/run/restart/human gates remain open; no new LAN or automatic transport retry; soleCIA reserved. Local commits/no push; no speedwork.
+
 # Next after cold recovery UI — 2026-10-17
 
 Cold408/peer352 accepted privately: confirmation, verified RFW, returned frames and fresh original RCV NONE before boot. CIA adapts native SETUP/CONFIG/D64S/publisher20KiB limits, default-OFF; payload ends57FE/control19555 (SJ19703). Add MNU/RCV/RFW to preflight/package later. Compiled combines rolebuilder4f2b with sequence+CUI dcce, proving repeated runtime saves with UNITfiles absent. Memory closes native Finish barrier: issued HD writes complete, known CLOSE/privateone-shot, no application/DOS-bufferflush claim.

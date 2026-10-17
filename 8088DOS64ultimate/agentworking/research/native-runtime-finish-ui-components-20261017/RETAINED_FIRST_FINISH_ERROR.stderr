@@ -1,0 +1,19 @@
+test01_Ctarget1_safe (__main__.FinishUI) ... ok
+test02_Ctarget2_safe (__main__.FinishUI) ... ok
+test03_cancel_before_close (__main__.FinishUI) ... ok
+test04_finish_source_CRC_refusal (__main__.FinishUI) ... ok
+test05_unknown_CLOSE_never_safe_or_retry (__main__.FinishUI) ... FAIL
+test06_public_SAFE_reply_is_not_private_intent (__main__.FinishUI) ... ok
+
+======================================================================
+FAIL: test05_unknown_CLOSE_never_safe_or_retry (__main__.FinishUI)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-finish-ui-root-20261017/test_finish_ui.py", line 44, in test05_unknown_CLOSE_never_safe_or_retry
+    self.confirm(m);L.save_model_fail_close(m.m,1);n=L.bulk_model_commands(m.m);r=self.enter(m,BR['modal_wait']);self.assertEqual((r.status,r.regs.pc),(2,BR['modal_wait']));self.assertEqual(m.g(UI['_mu_result']),5);self.assertEqual(m.g(BE['br_error']),4);self.assertEqual(m.g(BE['br_safe']),0);self.assertEqual(L.bulk_model_commands(m.m)-n,1);self.assertEqual(L.bulk_model_open(m.m,1),1);self.assertEqual(m.g('dos64_native_diag'),0xe1)
+AssertionError: 252 != 4
+
+----------------------------------------------------------------------
+Ran 6 tests in 2.550s
+
+FAILED (failures=1)

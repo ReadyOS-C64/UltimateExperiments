@@ -1,0 +1,7 @@
+{
+  "manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-start20k-template-20261017/MANIFEST.json",
+  "sha256": "1dc843ef50be6242834ba64d832618ac5bd6e313c228c3fba5a7ee5ec864a022",
+  "checked": 1730,
+  "bad": [],
+  "scope": "all manifest pins independently hashed; no new native execution or physical qualification"
+}

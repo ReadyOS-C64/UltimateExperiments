@@ -304,3 +304,8 @@ START6d5ba2a7 fixed18432B: DATAends4F74/serializedtrampoline4FE4,26B MAINfree th
 ## 2026-10-17 40KiB modal source slots
 
 LogicalMNU40960B maps3DA000..3DFFFF24KiB plus3F0000..3F3FFF16KiB (controller and BIND8KiB budgets; datafixture-only execution proof).3F4000..3F7FFF16KiB remains guarded, separate from INOcache3F8000. Stage3E0000..3E9FFF overlaps retired RCVcache3E8000..3E9C80 only after actualRCVreturn/normalINOrestoration; testprovesno liveRCV use. NativeSTART initializedlayout unchangedMAINfree26/PREfree500/STATEends8FAC; source onlyuppercountconstant changed. Allthirdfloppy bytes guarded.
+
+
+## 2026-10-17 — measured runtime Finish menu
+
+Private CUI7514B8000..9D59 (source logicalA00..2759 below2800), BSS7800..7C82/ZP80..99. Broker1967B7000..77AE/private6D00..6DE9; bridge835B6000..6342/private6E00..6E92. Finish1256B A000..A4E7/BSS76B7D00..7D4B coexists with retained UI, after all frontend frames return. Source logical9800..9CE7 maps3F3800..3F3CE7 inside existing40960B MNU; reserve3F4000 onward untouched. No REU growth/thirdfloppy truncation, minimum4MiB unchanged. Parent controller code retires before UI reload; Finish path does not install controller. Exact maps/products in native-runtime-finish-ui-components checkpoint. Actual full4MiB/high96 guard comparisons pass for knownclose targets1/2. Public layouts unchanged.
