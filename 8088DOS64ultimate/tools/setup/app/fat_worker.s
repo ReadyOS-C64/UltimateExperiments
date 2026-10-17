@@ -1,10 +1,16 @@
 .setcpu "6502"
+.ifndef DOS64_ALL_FILE_DIAGNOSTICS
+DOS64_ALL_FILE_DIAGNOSTICS=0
+.endif
 .macpack longbranch
 .include "coordinator_internal.inc"
 .importzp sreg,ptr1
 .import pusheax,pushax,pusha
 .import _rc_retained,_so_fat_ticket,_so_capacity
 .import _nc_begin,_nc_end,_nc_service,_nc_error,_nc_prepared,_nc_closed_quiet
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.import _nc_transport_error,_fd_transport
+.endif
 .import _ns_capacity,_ns_io_owner,_ns_cancel,_ns_io_error
 .import _fp_selection,_fp_prepare_c,_fp_prepare_b,_fp_prepare_a
 .import _nf_plan,_nf_import_dos,_nf_consumed,_nf_inactive,_nf_error
@@ -14,6 +20,13 @@
 .import _bc_slot,_bc_clear_error
 .import _ps_ticks,_bc_config,_br_request,_sq_page,_sq_read,_sq_bytes,_sq_error
 .export _fw_run,_fw_internal,fw_worker_start,fw_worker_end
+.ifndef DOS64_ALL_FILE_DIAGNOSTICS
+DOS64_ALL_FILE_DIAGNOSTICS=0
+.endif
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.import _fd_set_path,_fd_code,_fd_op,_fd_leaf
+.importzp _fd_origin
+.endif
 .segment "BSS"
 _fw_internal: .res 14
 .assert *-_fw_internal=14,error,"FW internal ABI14"
@@ -56,7 +69,11 @@ _fw_run:
  jne nc_fail
 @fresh:
  lda FLAGS
+ .if DOS64_ALL_FILE_DIAGNOSTICS
+ jsr fd_prepare_c
+ .else
  jsr _fp_prepare_c
+ .endif
  tax ; C ABI promises A result, not NZ after software-stack cleanup.
  jne nf_fail
  lda FLAGS
@@ -68,7 +85,11 @@ _fw_run:
  tax ; C ABI promises A result, not NZ after software-stack cleanup.
  jne nf_fail
 @plan:
+ .if DOS64_ALL_FILE_DIAGNOSTICS
+ jsr fd_plan_c
+ .else
  jsr _nf_plan
+ .endif
  tax ; C ABI promises A result, not NZ after software-stack cleanup.
  jne nf_fail
  lda #0
@@ -89,7 +110,11 @@ _fw_run:
  cmp #1
  jne input_fail
  lda FLAGS
+ .if DOS64_ALL_FILE_DIAGNOSTICS
+ jsr fd_prepare_b
+ .else
  jsr _fp_prepare_b
+ .endif
  tax ; C ABI promises A result, not NZ after software-stack cleanup.
  jne nf_fail
  lda #1
@@ -111,7 +136,11 @@ _fw_run:
  jsr pushax
  lda #<CONFIG_BYTES
  ldx #>CONFIG_BYTES
+ .if DOS64_ALL_FILE_DIAGNOSTICS
+ jsr fd_prepare_a
+ .else
  jsr _fp_prepare_a
+ .endif
  tax ; C ABI promises A result, not NZ after software-stack cleanup.
  jne nf_fail
  jsr _nc_end
@@ -196,7 +225,11 @@ nc_reason:
 first:
  ldx ERROR
  bne failed
+.if DOS64_ALL_FILE_DIAGNOSTICS
+ jsr fd_fw_first
+.else
  sta ERROR
+.endif
 failed:
  jsr _si_cleanup_begin
  cmp #1
@@ -287,7 +320,11 @@ existing_open:
  sta _br_request
  lda #1
  sta _br_request+1
+ .if DOS64_ALL_FILE_DIAGNOSTICS
+ jsr fd_existing_open
+ .else
  jsr _nc_prepared
+ .endif
  cmp #1
  jne reject
  inc OPENED
@@ -296,7 +333,16 @@ existing_open:
  jmp _nc_prepared
 ; A=0C/1B. SI state() refreshes observations from PRIVATE ledger before
 ; immediate trusted masked copy; caller cannot inject facts between calls.
+.if DOS64_ALL_FILE_DIAGNOSTICS
 writer:
+ jsr fd_output_path
+ cmp #1
+ jne reject
+ jmp fd_writer_continue
+fd_output_path:
+.else
+writer:
+.endif
  sta TEXT
  ldy #0
 @outroot:
@@ -323,6 +369,11 @@ writer:
  inx
  cpx #5
  bne @suffix
+.if DOS64_ALL_FILE_DIAGNOSTICS
+ lda #1
+ rts
+fd_writer_continue:
+.endif
  jsr _nc_service
  cmp #1
  jne nc_fail
@@ -480,6 +531,9 @@ stage_reject:
 fw_worker_end:
 .segment "RODATA"
 leaves: .byte 'C','B'
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.byte 'A'
+.endif
 suffix: .byte ".IMG",0
 masks: .byte RC_C_MASK,RC_B_MASK
 c_size0: .dword $200000
@@ -497,3 +551,86 @@ CONFIG_BYTES=*-config_text
 
 ; Explicit empty segment gives the qualified copier a zero RO length symbol.
 .segment "AUX_RO"
+
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.segment "AUX_CODE"
+; Composition-only presentation wrappers reuse the real writer's canonical
+; output-path builder. No C software-stack arguments or private receipts change.
+fd_metadata:
+ jsr fd_output_path
+ cmp #1
+ bne @bad
+ lda #<(_si_request+135)
+ ldx #>(_si_request+135)
+ jsr _fd_set_path
+ lda #7
+ sta _fd_origin
+ lda #0
+ rts
+@bad:
+ lda #1
+ rts
+fd_prepare_c:
+ lda OPENED
+ bne @existing
+ lda #0
+ jsr fd_metadata
+ bne @bad
+@existing:
+ lda FLAGS
+ jmp _fp_prepare_c
+@bad: rts
+fd_plan_c:
+ lda #0
+ jsr fd_metadata
+ bne @bad
+ jmp _nf_plan
+@bad:rts
+fd_existing_open:
+ lda #<(_br_request+14)
+ ldx #>(_br_request+14)
+ jsr _fd_set_path
+ lda #1
+ sta _fd_origin
+ jmp _nc_prepared
+fd_prepare_b:
+ lda #1
+ jsr fd_metadata
+ bne @bad
+ lda FLAGS
+ jmp _fp_prepare_b
+@bad: rts
+fd_prepare_a:
+ pha
+ txa
+ pha
+ lda #2
+ jsr fd_metadata
+ pla
+ tax
+ pla
+ jmp _fp_prepare_a
+.endif
+
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.segment "FILE_DIAG"
+; Called at the original private FW first-cause STORE, before cleanup can fail.
+fd_fw_first:
+ sta ERROR
+ ldx _fd_code
+ bne @done
+ sta _fd_code
+ jsr fd_fw_detail
+ sta _fd_transport
+ lda _fd_origin
+ sta _fd_op
+@done:rts
+.endif
+
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.segment "CODE"
+fd_fw_detail:
+ lda LEAF
+ sta _fd_leaf
+ jmp _nc_transport_error
+.endif

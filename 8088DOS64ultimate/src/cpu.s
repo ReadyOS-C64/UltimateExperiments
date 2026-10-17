@@ -1,4 +1,11 @@
 .include "abi.inc"
+.ifndef DOS64_TRAP1
+DOS64_TRAP1=0
+.endif
+.if DOS64_TRAP1<>0 .and DOS64_TRAP1<>1
+.error "DOS64_TRAP1 must be zero or one"
+.endif
+
 .import __CODE_RUN__, __CODE_SIZE__
 .import dos64_physical
 .import dos64_guest, dos64_cpu_reset, dos64_mem_read, dos64_mem_write, dos64_physical_owned
@@ -21,6 +28,10 @@
 .import dos64_operand_kind, dos64_operand_segment
 .import dos64_alu_apply, dos64_alu_lhs, dos64_alu_rhs, dos64_alu_result, dos64_alu_op, dos64_alu_width
 
+.if DOS64_TRAP1
+.import dos64_cpu_boundary,dos64_cpu_finish,dos64_segment_complete,dos64_trap_state,dos64_trap_wait
+.export cpu_running,cpu_wait,cpu_start_ip
+.endif
 .segment "BSS"
 dos64_cpu_status: .res 1       ; 0 running, 1 halted, 2 unsupported, 3 host memory error
 dos64_cpu_opcode: .res 1
@@ -49,6 +60,9 @@ cpu_no_store: .res 1
 cpu_byte_registers: .byte 0,2,4,6,1,3,5,7
 
 .segment "CODE"
+.if DOS64_TRAP1
+.segment "CPUTRAP"
+.endif
 dos64_cpu_init:
     jsr dos64_cpu_reset
     jsr dos64_fetch_init
@@ -59,7 +73,11 @@ dos64_cpu_init:
     dex
     bpl @clear
     sta dos64_string_pending
+.if DOS64_TRAP1
+    sta dos64_trap_state
+.endif
     rts
+.segment "CODE"
 
 ; One instruction or bounded prefix slice. P except C preserved, A/X/Y clobbered.
 ; Running/halted/yield return C clear. Unsupported/host error latch and return C
@@ -68,12 +86,16 @@ dos64_cpu_step:
     php
     sei
     cld
+ .if DOS64_TRAP1
+    jmp dos64_cpu_boundary
+ .else
     lda dos64_cpu_status
-    beq @running
+    beq cpu_running
     cmp #1
     jeq cpu_return
     jmp cpu_error_return
-@running:
+ .endif
+cpu_running:
     lda #0
     sta dos64_cpu_yield
     lda dos64_string_pending
@@ -256,6 +278,9 @@ cpu_wait_test:
     ; just as a completed REP primitive does, without retiring WAIT itself.
     lda #0
     sta dos64_cpu_irq_shadow
+.if DOS64_TRAP1
+    jmp dos64_trap_wait
+.endif
 cpu_wait:
     ; Fixed absent8087 TEST inactive: WAIT yields at its original IP forever,
     ; permitting native scheduler/IRQ work without retiring a guest instruction.
@@ -561,9 +586,13 @@ cpu_move_segment:
     jcs cpu_memory_error
     jsr cpu_put_reg
     ; Repaired NMOS8088 inhibits after MOV to ANY segment (Intel/manual+die).
+ .if DOS64_TRAP1
+    jmp dos64_segment_complete
+ .else
     lda #2
     sta dos64_cpu_irq_shadow
     jmp cpu_complete
+ .endif
 
 cpu_lea:
     jsr cpu_decode_word
@@ -793,6 +822,9 @@ cpu_std:
 cpu_high_flags:
     sta dos64_guest+G_FLAGS+1
 cpu_complete:
+.if DOS64_TRAP1
+    jmp dos64_cpu_finish
+.else
     lda dos64_cpu_irq_shadow
     beq @count
     dec dos64_cpu_irq_shadow
@@ -804,6 +836,7 @@ cpu_complete:
     inc dos64_cpu_instructions+2
     bne cpu_return
     inc dos64_cpu_instructions+3
+ .endif
 cpu_return:
     plp
     clc
@@ -819,6 +852,9 @@ cpu_fault:
     lda #0
     sta dos64_cpu_pending
     sta dos64_string_pending
+.if DOS64_TRAP1
+    sta dos64_trap_state
+.endif
 cpu_error_return:
     plp
     sec

@@ -37,7 +37,11 @@ test "eight assets commit before cache frames are reclaimed and every payload sw
     try std.testing.expectEqual(@as(u32, 0xffffffff), c.dos64_reu_compare(f.machine, 0x340000, assets.ptr, assets.len));
     try std.testing.expectEqual(@as(u64, 8), c.dos64_dma_transfers(f.machine));
     var shadow:[3584]u8=undefined;for(&shadow,0..)|*v,i|{v.*=f.peek(@intCast(0xa000+i));try std.testing.expectEqual(v.*,f.peek(@intCast(0xf000+i)));}
-    for(0xfe00..0x10000)|at|try std.testing.expectEqual(@as(u8,@truncate(at^0xa5)),f.peek(@intCast(at)));
+    if(f.symbols.contains("__CPUTRAP_SIZE__")){
+        for(0..256)|i|try std.testing.expectEqual(f.peek(0xae00+@as(u16,@intCast(i))),f.peek(0xfe00+@as(u16,@intCast(i))));
+    }
+    const untouched:usize=if(f.symbols.contains("__CPUTRAP_SIZE__"))0xff00 else 0xfe00;
+    for(untouched..0x10000)|at|try std.testing.expectEqual(@as(u8,@truncate(at^0xa5)),f.peek(@intCast(at)));
     try std.testing.expectEqual(@as(u8,0xa5),try get(&f,"hdb_extension_ready"));
     // Four asset slots use16 cacheframes; separate3584-byte source uses7.
     for (0x8000..0xc000) |a| f.poke(@intCast(a), 0xee);

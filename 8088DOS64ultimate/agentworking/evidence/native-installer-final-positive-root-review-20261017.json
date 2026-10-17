@@ -1,0 +1,93 @@
+{
+  "status": "ACCEPTED_FINAL_MATCHED_ACTUAL_SETUP_GENERATED_START_DOS_FINISH_MODEL",
+  "parent_manifest": {
+    "sha256": "c9f7d3941c1ed2fa4ae05d798a937674f696b95574fcb7f7a9b541685e900018",
+    "bytes": 884587
+  },
+  "all_parent_pins_verified": 4454,
+  "current_source_product_closures": {
+    "closed-producer": 2543,
+    "closed-consumer": 2295
+  },
+  "native_setup": {
+    "sha256": "d2f9791f5cf6cd6f510c1fb152d093e58f3443458881350d6151f5b7dfe365f3",
+    "bytes": 44329
+  },
+  "native_FAT": {
+    "sha256": "e3c62e4e1f63bd076baf24844ca0232d47c8f70ea10bb3ab18dd4dfe8753d98a",
+    "bytes": 20541
+  },
+  "native_PUB": {
+    "sha256": "e0cd722a65877d8528690d668f30d638e8512fcae4fc53804ca492d489c6bcc5",
+    "bytes": 20544
+  },
+  "runtime": {
+    "sha256": "0bfaf15df9a3382bc168f6b231d663cdb81efd12c59dd34f870faae6df665d88",
+    "bytes": 47105
+  },
+  "generated": {
+    "A.IMG": {
+      "sha256": "597ec0f92c993c3d683f4bb93c91cb8ebbbdce6c7d45a9d7bc141f68b1be2678",
+      "bytes": 368640
+    },
+    "B.IMG": {
+      "sha256": "db7b0eb73f7df6dcbc0fc90c156856b80822517e8e1df66d1b1e98f99abcca88",
+      "bytes": 368640
+    },
+    "C.IMG": {
+      "sha256": "3141fc19bcb040a1c58e78674c59679d7427ac7ba8d3f80556dbf877a67c2648",
+      "bytes": 2097152
+    },
+    "DOS64.CFG": {
+      "sha256": "f658944e7f789495e2caa753f716bae4ae1e739549e392613c34350f6a401437",
+      "bytes": 576
+    },
+    "DOS64.MNU": {
+      "sha256": "ca3628fa110f4e9c8fe1cd24b49262d0dbd14b180d0ca90ee822eeddb1c70096",
+      "bytes": 57344
+    },
+    "DOS64.PRG": {
+      "sha256": "0bfaf15df9a3382bc168f6b231d663cdb81efd12c59dd34f870faae6df665d88",
+      "bytes": 47105
+    },
+    "DOS64.REL": {
+      "sha256": "bb8f5797c205f9c003ef05618bf2412d51c3b40f50dccea074b8d11c11765469",
+      "bytes": 64
+    },
+    "START.INO": {
+      "sha256": "44dd94617a3e76c4451a0e235626108ded3e30c911ce665d7e16e6499f717621",
+      "bytes": 7692
+    },
+    "START.PRG": {
+      "sha256": "7008b10cd42fc7cada5147b401aba291df0ab912fb91832b0fe4bccb55b58c82",
+      "bytes": 20480
+    },
+    "START.RCV": {
+      "sha256": "08715a793b6fe0abf6dc95e09bad6b13356936b49ba0901793261568faec444e",
+      "bytes": 7902
+    },
+    "START.RFW": {
+      "sha256": "f11b0c1d66a9116b005651529de53bec19939ae03fd9c60ef0599a78b6c84824",
+      "bytes": 5578
+    }
+  },
+  "root_new_native_replay": false,
+  "source_review": [
+    "actualBASIC2061 bank37 andactualCIA private selection; no completedwriter/CFG/START facts injected",
+    "nativeC/B/A creation/verification andSTART thenCFGlast CREATE_NEW",
+    "fd_code0/privateRoot7/PWdone/mask31/bothknownclosed",
+    "completeindependent FAT/MBR/geometry/payloads and original3DOS/media preserved",
+    "sameunchanged harvested11model files feedactualSTART/RCV/INO/main0bfa andgenuineDOS3.30/full36DIR/pagination1",
+    "actualCIAFinish/privateSafe/E1/noResume/oneknownC_CLOSE/full4M/all3arenas/filebytesexact"
+  ],
+  "earlier_c6ad_partial_not_promoted_to_pass": true,
+  "physical": false,
+  "performance_claim": false,
+  "remaining": "Final20M originalTurbo/moreutilities/Ultimatehuman andsourcepublicbuild exactreproduction",
+  "archive": "agentworking/research/native-installer-final-positive-root-review-20261017",
+  "archive_manifest": {
+    "sha256": "9d152f53168e5ad4b00d4cb038735666386b05233202e5ed00671e9ba863e70a",
+    "bytes": 1523
+  },
+  "archive_pins": 11
+}

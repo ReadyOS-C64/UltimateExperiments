@@ -1,0 +1,30 @@
+{
+  "status": "PASS_ACTUAL_NATIVE_SUCCESSOR_FIRST3FRAMES_AND_OWNED_CANCEL_CLOSE",
+  "physical": false,
+  "rows": [
+    {
+      "frame": 1,
+      "offset": 0,
+      "sha256": "8b16fec9d2a8c48be47789a462c2d4b3d9be75ec91310607ec5fb5e180982ed5",
+      "private_source_validated": true
+    },
+    {
+      "frame": 2,
+      "offset": 32768,
+      "sha256": "593aee43cb564f3667563a8214201d30fae1a8e5dae5872151936dfeae634316",
+      "private_source_validated": true
+    },
+    {
+      "frame": 3,
+      "offset": 65536,
+      "sha256": "fa60e80dd3fe1b53a7c51f4c9bb53a11570baf34f040bb2ee57e893e73e3d869",
+      "private_source_validated": true
+    }
+  ],
+  "compared_bytes": 98304,
+  "REU_16MiB_equal": true,
+  "REU_DMA_bytes": 0,
+  "result": "43435231ff0800010c0001000080010055050000ffffffff0000000000",
+  "source_file_unchanged": true,
+  "complete20MiB_successor_not_claimed": true
+}

@@ -7,6 +7,12 @@ DOS64_BOOT_DIAGNOSTICS=0
 .assert __BOOT_DIAG_RUN__=__BSS_RUN__,lderror,"CONFIG cold-strip/BSS exact lifetime alias"
 .endif
 .importzp sp
+.ifndef DOS64_ALL_FILE_DIAGNOSTICS
+DOS64_ALL_FILE_DIAGNOSTICS=0
+.endif
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.import fd_stash
+.endif
 .import zerobss
 .import _cg_default_start,_co_poll,_ps_guard
 .import cp_bootstrap,_cp_high_ready
@@ -50,6 +56,9 @@ runtime_init:
  sta sp
  lda #$cf
  sta sp+1
+.if DOS64_ALL_FILE_DIAGNOSTICS
+ jsr fd_stash
+.endif
  jsr zerobss
  lda #<__RIBSS_RUN__
  sta ptr1

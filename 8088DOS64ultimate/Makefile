@@ -1,3 +1,4 @@
+DOS64_TRAP1 ?= 0
 DOS64_ZIG ?= $(firstword $(wildcard ../../zeropage-tooling/bin/zig) $(shell command -v zig 2>/dev/null))
 DOS64_CA65 ?= ca65
 DOS64_LD65 ?= ld65
@@ -9,39 +10,39 @@ DOS64_FLOPPY_FORMAT ?= 0
 
 .DEFAULT_GOAL := all
 
-ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/floppy_control.s src/bios.s src/ports.s src/cga_crtc.s src/cga_status.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s src/host_input.s src/cold.s src/elapsed.s src/native_text_display.s src/native_text_fonts.s src/native_runtime.s src/native_timer.s src/virtual_irq.s src/virtual_pit.s src/render_graphics.s src/hd_cache.s src/hd_bios.s src/hd_extension_load.s src/hd_cold.s src/uci_diagnostic.s src/native_save.s
+ASM_SOURCES := src/boot.s src/cpu_state.s src/reu.s src/address.s src/memory.s src/cpu.s src/trap.s src/fetch.s src/alu.s src/operands.s src/stack.s src/strings.s src/shifts.s src/control.s src/math.s src/indirect.s src/range.s src/disk.s src/floppy_control.s src/bios.s src/ports.s src/cga_crtc.s src/cga_status.s src/video.s src/adjust.s src/aux_bios.s src/clock.s src/keyboard.s src/uci.s src/host_clock.s src/files.s src/render_text.s src/overlays.s src/image_import.s src/host_input.s src/cold.s src/elapsed.s src/native_text_display.s src/native_text_fonts.s src/native_runtime.s src/native_timer.s src/virtual_irq.s src/virtual_pit.s src/render_graphics.s src/hd_cache.s src/hd_bios.s src/hd_extension_load.s src/hd_cold.s src/uci_diagnostic.s src/native_save.s
 ASM_SOURCES += src/loader_handoff.s src/modal_entry.s src/floppy_format.s src/floppy_format_check.s
 OBJECTS := $(patsubst src/%.s,build/%.o,$(ASM_SOURCES))
 OBJECTS := $(filter-out build/host_clock.o build/elapsed.o build/uci.o,$(OBJECTS)) build/owned-host_clock.o build/owned-elapsed.o build/native-uci.o
 OBJECTS := $(patsubst build/reu.o,build/native-reu.o,$(OBJECTS))
 build/native-reu.o: src/reu.s include/reu.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_NATIVE_REU_OBSERVER=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_NATIVE_REU_OBSERVER=1 -I include -o $@ $<
 build/native-uci.o: src/uci.s include/uci.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_NATIVE_UCI_DIAGNOSTIC=1 -D DOS64_NATIVE_REU_OBSERVER=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_NATIVE_UCI_DIAGNOSTIC=1 -D DOS64_NATIVE_REU_OBSERVER=1 -I include -o $@ $<
 OBJECTS += build/integrated-floppy_export.o
 build/integrated-floppy_export.o: src/floppy_export.s include/floppy_export.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_EXPORT_INTEGRATED=1 -D DOS64_SAVE_HD_CONTEXT=$(if $(DOS64_SAVE_HD_CONTEXT),$(DOS64_SAVE_HD_CONTEXT),0) -D DOS64_EXPORT_CRC=$(DOS64_EXPORT_CRC) -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_EXPORT_INTEGRATED=1 -D DOS64_SAVE_HD_CONTEXT=$(if $(DOS64_SAVE_HD_CONTEXT),$(DOS64_SAVE_HD_CONTEXT),0) -D DOS64_EXPORT_CRC=$(DOS64_EXPORT_CRC) -I include -o $@ $<
 build/native_save.o: src/native_save.s include/native_save.inc include/floppy_export.inc include/reu.inc include/memory.inc include/host_clock.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_SAVE_HD_CONTEXT=$(if $(DOS64_SAVE_HD_CONTEXT),$(DOS64_SAVE_HD_CONTEXT),0) -D DOS64_SAVE_MODAL=$(if $(DOS64_SAVE_MODAL),$(DOS64_SAVE_MODAL),0) -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_SAVE_HD_CONTEXT=$(if $(DOS64_SAVE_HD_CONTEXT),$(DOS64_SAVE_HD_CONTEXT),0) -D DOS64_SAVE_MODAL=$(if $(DOS64_SAVE_MODAL),$(DOS64_SAVE_MODAL),0) -I include -o $@ $<
 build/owned-host_clock.o: src/host_clock.s include/host_clock.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_OWNED_CLOCK=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_OWNED_CLOCK=1 -I include -o $@ $<
 build/owned-elapsed.o: src/elapsed.s include/elapsed.inc include/host_clock.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_OWNED_CLOCK=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_OWNED_CLOCK=1 -I include -o $@ $<
 build/alu.o: include/parity.inc Makefile
 build/range.o: include/range.inc Makefile
 build/disk.o build/unit-disk.o: include/disk.inc include/range.inc Makefile
 build/floppy_control.o: src/floppy_control.s include/disk.inc include/overlays.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_MEDIA_BINDING=$(DOS64_MEDIA_BINDING) -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_MEDIA_BINDING=$(DOS64_MEDIA_BINDING) -I include -o $@ $<
 build/unit-floppy_control.o: src/floppy_control.s include/disk.inc include/overlays.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_UNIT_COLD=1 -D DOS64_MEDIA_BINDING=$(DOS64_MEDIA_BINDING) -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_UNIT_COLD=1 -D DOS64_MEDIA_BINDING=$(DOS64_MEDIA_BINDING) -I include -o $@ $<
 build/bios.o: include/bios.inc include/video.inc Makefile
 build/ports.o: include/ports.inc Makefile
 build/video.o: include/video.inc Makefile
@@ -51,7 +52,7 @@ build/uci.o: include/uci.inc Makefile
 build/host_clock.o: include/host_clock.inc Makefile
 build/files.o: src/files.s include/files.inc include/uci.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_FILES_INFO=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_FILES_INFO=1 -I include -o $@ $<
 build/render_text.o: include/render_text.inc Makefile
 build/overlays.o: include/overlays.inc include/reu.inc Makefile
 # This profile flag changes the cold adoption bytes; force this tiny owned
@@ -60,7 +61,7 @@ build/overlays.o: include/overlays.inc include/reu.inc Makefile
 FORCE_LOADER_BINDING:
 build/loader_handoff.o: src/loader_handoff.s include/overlays.inc include/reu.inc include/disk.inc Makefile FORCE_LOADER_BINDING
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_MEDIA_BINDING=$(DOS64_MEDIA_BINDING) -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_MEDIA_BINDING=$(DOS64_MEDIA_BINDING) -I include -o $@ $<
 build/image_import.o: include/image_import.inc include/files.inc include/uci.inc include/overlays.inc include/reu.inc Makefile
 build/boot.o: include/overlays.inc Makefile
 build/native_runtime.o: include/native_save.inc include/image_import.inc include/host_clock.inc include/host_input.inc include/render_graphics.inc Makefile
@@ -82,23 +83,23 @@ build: build/dos64.prg build/dos64-tests.prg build/dos64-tests.prg.unit-extra.bi
 
 build/%.o: src/%.s include/abi.inc include/reu.inc include/memory.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -I include -o $@ $<
 
 build/unit-%.o: src/%.s include/abi.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_UNIT_COLD=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_UNIT_COLD=1 -I include -o $@ $<
 
 build/fixtures.o: tests/fixtures/foundation.s include/abi.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_UNIT_COLD=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_UNIT_COLD=1 -I include -o $@ $<
 
 build/probe_boot.o: src/boot.s include/abi.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_PROBE=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_PROBE=1 -I include -o $@ $<
 
 build/range_snapshot_boot.o: src/range_snapshot.s include/abi.inc include/reu.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_RANGE_SNAPSHOT=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_RANGE_SNAPSHOT=1 -I include -o $@ $<
 
 build/dos64-range-backup.prg: build/backup_boot.o build/cpu_state.o build/reu.o build/range_snapshot_boot.o cfg/dos64.cfg Makefile
 	$(DOS64_LD65) -C cfg/dos64.cfg -o $@ -m build/dos64-range-backup.map -Ln build/dos64-range-backup.labels build/backup_boot.o build/cpu_state.o build/reu.o build/range_snapshot_boot.o
@@ -113,19 +114,19 @@ range-hardware-helpers: build/dos64-range-backup.prg build/dos64-range-restore.p
 
 build/range_probe_boot.o: src/boot.s include/abi.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_RANGE_PROBE=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_RANGE_PROBE=1 -I include -o $@ $<
 
 build/cache_probe_boot.o: src/boot.s include/abi.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_CACHE_PROBE=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_CACHE_PROBE=1 -I include -o $@ $<
 
 build/backup_boot.o: src/boot.s include/abi.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_SNAPSHOT=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_SNAPSHOT=1 -I include -o $@ $<
 
 build/restore_boot.o: src/boot.s include/abi.inc Makefile
 	@mkdir -p build
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_SNAPSHOT=1 -D DOS64_RESTORE=1 -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_SNAPSHOT=1 -D DOS64_RESTORE=1 -I include -o $@ $<
 
 build/dos64-backup.prg: build/backup_boot.o build/cpu_state.o build/reu.o build/reu_snapshot.o cfg/dos64.cfg Makefile
 	$(DOS64_LD65) -C cfg/dos64.cfg -o $@ -m build/dos64-backup.map -Ln build/dos64-backup.labels build/backup_boot.o build/cpu_state.o build/reu.o build/reu_snapshot.o
@@ -205,28 +206,28 @@ cache-probe: build/dos64-cache-probe.prg
 test-cache-vice: cache-probe
 	$(DOS64_PYTHON) build_support/vice_probe.py --kind cache
 
-build/dos64.prg: $(OBJECTS) cfg/dos64-runtime.cfg build_support/overlay_package.py Makefile
-	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o build/dos64-resident.prg -m build/dos64.map -Ln build/dos64.labels $(OBJECTS)
-	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-resident.prg --files build/dos64-resident.prg.files.bin --render build/dos64-resident.prg.render.bin --input build/dos64-resident.prg.input.bin --pit build/dos64-resident.prg.pit.bin --gfx build/dos64-resident.prg.gfx.bin --hd build/dos64-resident.prg.hd.bin --shadow build/dos64-resident.prg.hdb.bin --saver build/dos64-resident.prg.saver.bin --disk build/dos64-resident.prg.disk.bin $(if $(filter 1,$(DOS64_FLOPPY_FORMAT)),--format build/dos64-resident.prg.format.bin,) --import-code build/dos64-resident.prg.import.bin --labels build/dos64.labels --output-prg $@ --output-assets build/dos64-overlay-startup.bin --manifest build/dos64-overlay-package.json
+build/dos64.prg: $(OBJECTS) $(if $(filter 1,$(DOS64_TRAP1)),cfg/dos64-runtime-trap.cfg,cfg/dos64-runtime.cfg) build_support/overlay_package.py Makefile
+	$(DOS64_LD65) -C $(if $(filter 1,$(DOS64_TRAP1)),cfg/dos64-runtime-trap.cfg,cfg/dos64-runtime.cfg) -o build/dos64-resident.prg -m build/dos64.map -Ln build/dos64.labels $(OBJECTS)
+	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-resident.prg $(if $(filter 1,$(DOS64_TRAP1)),--cpu-trap build/dos64-resident.prg.trap.bin,) --files build/dos64-resident.prg.files.bin --render build/dos64-resident.prg.render.bin --input build/dos64-resident.prg.input.bin --pit build/dos64-resident.prg.pit.bin --gfx build/dos64-resident.prg.gfx.bin --hd build/dos64-resident.prg.hd.bin --shadow build/dos64-resident.prg.hdb.bin --saver build/dos64-resident.prg.saver.bin --disk build/dos64-resident.prg.disk.bin $(if $(filter 1,$(DOS64_FLOPPY_FORMAT)),--format build/dos64-resident.prg.format.bin,) --import-code build/dos64-resident.prg.import.bin --labels build/dos64.labels --output-prg $@ --output-assets build/dos64-overlay-startup.bin --manifest build/dos64-overlay-package.json
 
-build/dos64-tests.prg: $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o cfg/dos64-unit-runtime.cfg build_support/overlay_package.py Makefile
-	$(DOS64_LD65) -C cfg/dos64-unit-runtime.cfg -o build/dos64-tests-resident.prg -m build/dos64-tests.map -Ln build/dos64-tests.labels $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
-	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-tests-resident.prg --files build/dos64-tests-resident.prg.files.bin --render build/dos64-tests-resident.prg.render.bin --input build/dos64-tests-resident.prg.input.bin --pit build/dos64-tests-resident.prg.pit.bin --gfx build/dos64-tests-resident.prg.gfx.bin --hd build/dos64-tests-resident.prg.hd.bin --shadow build/dos64-tests-resident.prg.hdb.bin --saver build/dos64-tests-resident.prg.saver.bin --disk build/dos64-tests-resident.prg.disk.bin $(if $(filter 1,$(DOS64_FLOPPY_FORMAT)),--format build/dos64-tests-resident.prg.format.bin,) --import-code build/dos64-tests-resident.prg.import.bin --labels build/dos64-tests.labels --output-prg $@ --output-assets build/dos64-tests-overlay-startup.bin --manifest build/dos64-tests-overlay-package.json
+build/dos64-tests.prg: $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o $(if $(filter 1,$(DOS64_TRAP1)),cfg/dos64-unit-runtime-trap.cfg,cfg/dos64-unit-runtime.cfg) build_support/overlay_package.py Makefile
+	$(DOS64_LD65) -C $(if $(filter 1,$(DOS64_TRAP1)),cfg/dos64-unit-runtime-trap.cfg,cfg/dos64-unit-runtime.cfg) -o build/dos64-tests-resident.prg -m build/dos64-tests.map -Ln build/dos64-tests.labels $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
+	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-tests-resident.prg $(if $(filter 1,$(DOS64_TRAP1)),--cpu-trap build/dos64-tests-resident.prg.trap.bin,) --files build/dos64-tests-resident.prg.files.bin --render build/dos64-tests-resident.prg.render.bin --input build/dos64-tests-resident.prg.input.bin --pit build/dos64-tests-resident.prg.pit.bin --gfx build/dos64-tests-resident.prg.gfx.bin --hd build/dos64-tests-resident.prg.hd.bin --shadow build/dos64-tests-resident.prg.hdb.bin --saver build/dos64-tests-resident.prg.saver.bin --disk build/dos64-tests-resident.prg.disk.bin $(if $(filter 1,$(DOS64_FLOPPY_FORMAT)),--format build/dos64-tests-resident.prg.format.bin,) --import-code build/dos64-tests-resident.prg.import.bin --labels build/dos64-tests.labels --output-prg $@ --output-assets build/dos64-tests-overlay-startup.bin --manifest build/dos64-tests-overlay-package.json
 
 	cp build/dos64-tests-resident.prg.unit-extra.bin build/dos64-tests.prg.unit-extra.bin
 
 # Recover a deleted unit-only sidecar by relinking its exact source graph.
 # Production release/runtime packages never depend on or load this artifact.
-build/dos64-tests.prg.unit-extra.bin: build/dos64-tests.prg
-	$(DOS64_LD65) -C cfg/dos64-unit-runtime.cfg -o build/dos64-tests-sidecar-relink.prg $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
+build/dos64-tests.prg.unit-extra.bin: build/dos64-tests.prg $(if $(filter 1,$(DOS64_TRAP1)),cfg/dos64-unit-runtime-trap.cfg,cfg/dos64-unit-runtime.cfg)
+	$(DOS64_LD65) -C $(if $(filter 1,$(DOS64_TRAP1)),cfg/dos64-unit-runtime-trap.cfg,cfg/dos64-unit-runtime.cfg) -o build/dos64-tests-sidecar-relink.prg $(OBJECTS) build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
 	cp build/dos64-tests-sidecar-relink.prg.unit-extra.bin $@
 
 build/dos64-tests.bin: build/dos64-tests.prg
 	$(DOS64_PYTHON) build_support/raw_payload.py $< $@
 
 verify-memory: build/dos64.prg build/dos64-tests.prg
-	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64.map build/dos64.labels --overlay-files build/dos64-resident.prg.files.bin --overlay-render build/dos64-resident.prg.render.bin --overlay-input build/dos64-resident.prg.input.bin --overlay-pit build/dos64-resident.prg.pit.bin --overlay-gfx build/dos64-resident.prg.gfx.bin --overlay-hd build/dos64-resident.prg.hd.bin --overlay-disk build/dos64-resident.prg.disk.bin $(if $(filter 1,$(DOS64_FLOPPY_FORMAT)),--overlay-format build/dos64-resident.prg.format.bin,) --shadow build/dos64-resident.prg.hdb.bin --saver build/dos64-resident.prg.saver.bin --import-code build/dos64-resident.prg.import.bin
-	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64-tests.map build/dos64-tests.labels --overlay-files build/dos64-tests-resident.prg.files.bin --overlay-render build/dos64-tests-resident.prg.render.bin --overlay-input build/dos64-tests-resident.prg.input.bin --overlay-pit build/dos64-tests-resident.prg.pit.bin --overlay-gfx build/dos64-tests-resident.prg.gfx.bin --overlay-hd build/dos64-tests-resident.prg.hd.bin --overlay-disk build/dos64-tests-resident.prg.disk.bin $(if $(filter 1,$(DOS64_FLOPPY_FORMAT)),--overlay-format build/dos64-tests-resident.prg.format.bin,) --shadow build/dos64-tests-resident.prg.hdb.bin --saver build/dos64-tests-resident.prg.saver.bin --import-code build/dos64-tests-resident.prg.import.bin
+	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64.map build/dos64.labels $(if $(filter 1,$(DOS64_TRAP1)),--cpu-trap build/dos64-resident.prg.trap.bin,) --overlay-files build/dos64-resident.prg.files.bin --overlay-render build/dos64-resident.prg.render.bin --overlay-input build/dos64-resident.prg.input.bin --overlay-pit build/dos64-resident.prg.pit.bin --overlay-gfx build/dos64-resident.prg.gfx.bin --overlay-hd build/dos64-resident.prg.hd.bin --overlay-disk build/dos64-resident.prg.disk.bin $(if $(filter 1,$(DOS64_FLOPPY_FORMAT)),--overlay-format build/dos64-resident.prg.format.bin,) --shadow build/dos64-resident.prg.hdb.bin --saver build/dos64-resident.prg.saver.bin --import-code build/dos64-resident.prg.import.bin
+	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64-tests.map build/dos64-tests.labels $(if $(filter 1,$(DOS64_TRAP1)),--cpu-trap build/dos64-tests-resident.prg.trap.bin,) --overlay-files build/dos64-tests-resident.prg.files.bin --overlay-render build/dos64-tests-resident.prg.render.bin --overlay-input build/dos64-tests-resident.prg.input.bin --overlay-pit build/dos64-tests-resident.prg.pit.bin --overlay-gfx build/dos64-tests-resident.prg.gfx.bin --overlay-hd build/dos64-tests-resident.prg.hd.bin --overlay-disk build/dos64-tests-resident.prg.disk.bin $(if $(filter 1,$(DOS64_FLOPPY_FORMAT)),--overlay-format build/dos64-tests-resident.prg.format.bin,) --shadow build/dos64-tests-resident.prg.hdb.bin --saver build/dos64-tests-resident.prg.saver.bin --import-code build/dos64-tests-resident.prg.import.bin
 
 manifest: build/dos64.prg build/dos64-tests.prg verify-memory
 	$(DOS64_PYTHON) build_support/hd_identity_plan.py
@@ -270,11 +271,11 @@ test-timer-graphics: build
 
 # Frozen exact converter is a separate actual-assembly oracle, opt-in only.
 build/virtual_pit_reference.o: tests/fixtures/virtual_pit_reference.s Makefile
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -I include -o $@ $<
 
 build/dos64-reference.prg: $(OBJECTS) build/virtual_pit_reference.o build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o cfg/dos64-runtime.cfg Makefile
-	$(DOS64_LD65) -C cfg/dos64-runtime.cfg -o build/dos64-reference-resident.prg -m build/dos64-reference.map -Ln build/dos64-reference.labels $(filter-out build/virtual_pit.o,$(OBJECTS)) build/virtual_pit_reference.o build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
-	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-reference-resident.prg --files build/dos64-reference-resident.prg.files.bin --render build/dos64-reference-resident.prg.render.bin --input build/dos64-reference-resident.prg.input.bin --pit build/dos64-reference-resident.prg.pit.bin --gfx build/dos64-reference-resident.prg.gfx.bin --hd build/dos64-reference-resident.prg.hd.bin --shadow build/dos64-reference-resident.prg.hdb.bin --saver build/dos64-reference-resident.prg.saver.bin --disk build/dos64-reference-resident.prg.disk.bin --import-code build/dos64-reference-resident.prg.import.bin --labels build/dos64-reference.labels --output-prg $@ --output-assets build/dos64-reference-overlay-startup.bin --manifest build/dos64-reference-overlay-package.json
+	$(DOS64_LD65) -C $(if $(filter 1,$(DOS64_TRAP1)),cfg/dos64-runtime-trap.cfg,cfg/dos64-runtime.cfg) -o build/dos64-reference-resident.prg -m build/dos64-reference.map -Ln build/dos64-reference.labels $(filter-out build/virtual_pit.o,$(OBJECTS)) build/virtual_pit_reference.o build/fixtures.o build/unit-reu_probe.o build/unit-cache_probe.o build/unit-reu_snapshot.o build/unit-range_probe.o build/unit-range_snapshot.o
+	$(DOS64_PYTHON) build_support/overlay_package.py --resident-prg build/dos64-reference-resident.prg $(if $(filter 1,$(DOS64_TRAP1)),--cpu-trap build/dos64-reference-resident.prg.trap.bin,) --files build/dos64-reference-resident.prg.files.bin --render build/dos64-reference-resident.prg.render.bin --input build/dos64-reference-resident.prg.input.bin --pit build/dos64-reference-resident.prg.pit.bin --gfx build/dos64-reference-resident.prg.gfx.bin --hd build/dos64-reference-resident.prg.hd.bin --shadow build/dos64-reference-resident.prg.hdb.bin --saver build/dos64-reference-resident.prg.saver.bin --disk build/dos64-reference-resident.prg.disk.bin --import-code build/dos64-reference-resident.prg.import.bin --labels build/dos64-reference.labels --output-prg $@ --output-assets build/dos64-reference-overlay-startup.bin --manifest build/dos64-reference-overlay-package.json
 
 .PHONY: test-timer-threshold
 test-timer-threshold: build build/dos64-reference.prg
@@ -353,23 +354,32 @@ include build_support/native_media.mk
 include build_support/v1_candidate.mk
 
 build/modal_entry.o build/unit-modal_entry.o: src/modal_entry.s include/modal_assets.inc Makefile
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_MODAL_MENU=$(DOS64_MODAL_MENU) -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_MODAL_MENU=$(DOS64_MODAL_MENU) -I include -o $@ $<
 build/host_input.o: src/host_input.s include/host_input.inc Makefile
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_MODAL_MENU=$(DOS64_MODAL_MENU) -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_MODAL_MENU=$(DOS64_MODAL_MENU) -I include -o $@ $<
 build/native_runtime.o: src/native_runtime.s include/native_save.inc Makefile
-	$(DOS64_CA65) -g -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_MODAL_MENU=$(DOS64_MODAL_MENU) -I include -o $@ $<
+	$(DOS64_CA65) -g -D DOS64_TRAP1=$(DOS64_TRAP1) -D DOS64_FLOPPY_FORMAT=$(DOS64_FLOPPY_FORMAT) -D DOS64_MODAL_MENU=$(DOS64_MODAL_MENU) -I include -o $@ $<
 
 include build_support/runtime_media.mk
 
 .PHONY: format-config-force
 build/floppy-format.flag: format-config-force
 	@mkdir -p build
-	@$(DOS64_PYTHON) -c 'from pathlib import Path; p=Path("$@"); b=b"$(DOS64_FLOPPY_FORMAT)\n"; p.write_bytes(b) if not p.exists() or p.read_bytes()!=b else None'
+	@$(DOS64_PYTHON) -c 'from pathlib import Path; p=Path("$@"); b=b"$(DOS64_FLOPPY_FORMAT):$(DOS64_TRAP1)\n"; p.write_bytes(b) if not p.exists() or p.read_bytes()!=b else None'
 $(OBJECTS) $(UNIT_OBJECTS): build/floppy-format.flag
+# Older Make versions compare second-resolution mtimes. A same-second profile
+# switch must rebuild even when the updated content stamp ties object mtimes.
+DOS64_PROFILE_CURRENT := $(shell cat build/floppy-format.flag 2>/dev/null)
+ifneq ($(DOS64_PROFILE_CURRENT),$(DOS64_FLOPPY_FORMAT):$(DOS64_TRAP1))
+.PHONY: native-profile-changed
+native-profile-changed:
+$(OBJECTS) $(UNIT_OBJECTS) build/dos64.prg build/dos64-tests.prg: native-profile-changed
+endif
+
 
 .PHONY: verify-format-runtime
 verify-format-runtime: build/dos64.prg
-	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64.map build/dos64.labels --overlay-files build/dos64-resident.prg.files.bin --overlay-render build/dos64-resident.prg.render.bin --overlay-input build/dos64-resident.prg.input.bin --overlay-pit build/dos64-resident.prg.pit.bin --overlay-gfx build/dos64-resident.prg.gfx.bin --overlay-hd build/dos64-resident.prg.hd.bin --overlay-disk build/dos64-resident.prg.disk.bin $(if $(filter 1,$(DOS64_FLOPPY_FORMAT)),--overlay-format build/dos64-resident.prg.format.bin,) --shadow build/dos64-resident.prg.hdb.bin --saver build/dos64-resident.prg.saver.bin --import-code build/dos64-resident.prg.import.bin
+	$(DOS64_PYTHON) build_support/verify_memory.py build/dos64.map build/dos64.labels $(if $(filter 1,$(DOS64_TRAP1)),--cpu-trap build/dos64-resident.prg.trap.bin,) --overlay-files build/dos64-resident.prg.files.bin --overlay-render build/dos64-resident.prg.render.bin --overlay-input build/dos64-resident.prg.input.bin --overlay-pit build/dos64-resident.prg.pit.bin --overlay-gfx build/dos64-resident.prg.gfx.bin --overlay-hd build/dos64-resident.prg.hd.bin --overlay-disk build/dos64-resident.prg.disk.bin $(if $(filter 1,$(DOS64_FLOPPY_FORMAT)),--overlay-format build/dos64-resident.prg.format.bin,) --shadow build/dos64-resident.prg.hdb.bin --saver build/dos64-resident.prg.saver.bin --import-code build/dos64-resident.prg.import.bin
 
 # Every file that consumes the optional contract rebuilds when its header changes.
 build/overlays.o build/floppy_format.o build/floppy_format_check.o: include/floppy_format.inc

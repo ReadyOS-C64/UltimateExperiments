@@ -162,6 +162,7 @@ def main():
     p.add_argument("--hd",type=pathlib.Path)
     p.add_argument("--shadow",type=pathlib.Path)
     p.add_argument("--saver",type=pathlib.Path)
+    p.add_argument("--cpu-trap",type=pathlib.Path)
     p.add_argument("--disk",type=pathlib.Path)
     p.add_argument("--format",type=pathlib.Path)
     p.add_argument("--import-code", type=pathlib.Path,required=True)
@@ -177,7 +178,8 @@ def main():
     if a.saver and not a.hd:p.error("SAVER requires paired six-overlay/shadow baseline")
     if a.disk and not a.saver:p.error("DISK requires paired SAVER baseline")
     if a.format and not a.disk:p.error("FORMAT requires full DISK baseline")
-    inputs = (a.resident_prg,a.files,a.render,a.import_code,a.labels,a.input,a.pit,a.gfx)+((a.hd,a.shadow)if a.hd else ())+((a.saver,)if a.saver else ())+((a.disk,)if a.disk else ())+((a.format,)if a.format else ())
+    if a.cpu_trap and not a.saver:p.error("CPU trap requires complete SAVER/shadow layout")
+    inputs = (a.resident_prg,a.files,a.render,a.import_code,a.labels,a.input,a.pit,a.gfx)+((a.hd,a.shadow)if a.hd else ())+((a.saver,)if a.saver else ())+((a.disk,)if a.disk else ())+((a.format,)if a.format else ())+((a.cpu_trap,)if a.cpu_trap else ())
     outputs = (a.output_prg, a.output_assets) + ((a.manifest,) if a.manifest else ())
     resolved = [path.resolve() for path in inputs + outputs]
     if len(set(resolved)) != len(resolved):
@@ -189,6 +191,8 @@ def main():
         text_members=("RENDERCODE","DISPLAYCODE")+(("FORMATCHECKCODE",)if a.format else ())
         validate_variant(raw[2],raw[4].decode(),"RENDER",text_members)
         symbols={n.lstrip("."):int(ad,16) for ad,n in re.findall(r"^al ([0-9A-Fa-f]+) (\S+)",raw[4].decode(),re.M)}
+        if bool(a.cpu_trap)!=bool(symbols.get("__CPUTRAP_SIZE__",0)):
+            raise ValueError("CPU trap linked output must be explicitly paired")
         if bool(a.format)!=bool(symbols.get("__FORMATCODE_SIZE__",0)) or bool(a.format)!=bool(symbols.get("__FORMATCHECKCODE_SIZE__",0)):
             raise ValueError("FORMAT payload/checker must be paired explicitly")
         if not a.hd and re.search(r"^al (?!000000)[0-9A-Fa-f]+ \.__HDCODE_SIZE__$",raw[4].decode(),re.M):
@@ -227,7 +231,14 @@ def main():
             if not 1<=len(payload)<=0x7f0 or symbols.get("__SAVERCODE_LOAD__")!=0xb010 or symbols.get("__SAVERCODE_RUN__")!=0xb010 or symbols.get("__SAVERCODE_SIZE__")!=len(payload):
                 raise ValueError("SAVER must be exact linked B010-B7FF payload")
             block=b"D64O"+bytes((1,7))+struct.pack("<HHH",len(payload),0xb010,0)+b"SAVE"+payload+bytes(0x7f0-len(payload))
-            prg+=bytes(0x200)+block
+            gap=bytes(0x200)
+            if a.cpu_trap:
+                trap=raw[-1]
+                expected={"__TRAP_RUN_START__":0xfe00,"__TRAP_RUN_SIZE__":0x100,"__TRAP_RUN_FILEOFFS__":0,"__TRAP_RUN_LAST__":0xfe00+len(trap),"__CPUTRAP_LOAD__":0xfe00,"__CPUTRAP_RUN__":0xfe00,"__CPUTRAP_SIZE__":len(trap)}
+                if not 1<=len(trap)<=0x100 or any(symbols.get(k)!=v for k,v in expected.items()):
+                    raise ValueError("CPU trap must be exact linked FE00-FEFF payload")
+                gap=trap+bytes(0x200-len(trap))
+            prg+=gap+block
             assets+=block
         if a.disk:
             prg,disk_slot=append_variant(prg,raw[11],raw[4].decode(),7,"DISK",("DISKCODE",),0xb800)
@@ -247,6 +258,7 @@ def main():
                   "window": WINDOW, "window_size": WINDOW_SIZE,
                   "startup_source": SOURCE, "reu_assets": ASSETS,
                   "slot_size": SLOT_SIZE, "payload_lengths": [len(raw[1]),len(raw[2]),len(raw[5]),len(raw[6]),len(raw[7])]+([len(raw[8])]if a.hd else [])+([len(raw[10])]if a.saver else [])+([len(raw[11])]if a.disk else []),
+                  **({"cpu_trap":{"source":0xae00,"run":0xfe00,"window_bytes":256,"linked_bytes":len(raw[-1]),"sha256":hashlib.sha256(raw[-1]).hexdigest(),"ownership":"15-page verified HDB cold copy before cache, excludes FF00-FFFF"}} if a.cpu_trap else {}),
                   "disk":({"source":0xb800,"run":0xc900,"reu":0x343800,"slot_bytes":2048,"linked_bytes":len(raw[11]),"sha256":hashlib.sha256(raw[11]).hexdigest(),"overlay_identity":7,"physical_slot":8}if a.disk else None),
                   "saver":({"source":0xb000,"run":0xb010,"reu":0x343000,"slot_bytes":2048,"linked_bytes":len(raw[10]),"sha256":hashlib.sha256(raw[10]).hexdigest(),"modal_cache_frames":[24,32],"compare_stage":0xb800}if a.saver else None),
                   "startup_sources": [0x6000,0x6800,0x8000,0x8800,0x9000]+([0x9800]if a.hd else [])+([0xb000]if a.saver else [])+([0xb800]if a.disk else []),

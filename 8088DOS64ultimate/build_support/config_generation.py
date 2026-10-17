@@ -8,7 +8,7 @@ if Path(sys.pycache_prefix).exists():raise RuntimeError('Source-only cache prefi
 import argparse,hashlib,importlib.util,json,shutil,subprocess,tempfile,zlib,platform
 ASSETS=['DOS64.PRG','DOS64.REL','START.INO','START.TPL','START.REL']
 CS=['bulk_context','platform','install_config','existing_cfg','directory_browser','lease_context','config_ui','media_reinspect','config_publish','release_patch']
-ASM=['bootstrap_diag','core_fixture','bindings','context_bindings','startup_glue','uci','files','platform','startup_close','crc32','media_dma','high_bootstrap','coordinator']
+ASM=['bootstrap_diag','core_fixture','bindings','context_bindings','startup_glue','uci','files','platform','startup_close','crc32','media_dma','high_bootstrap','coordinator','file_error']
 def digest(p):
  b=p.read_bytes();return {'sha256':hashlib.sha256(b).hexdigest(),'bytes':len(b)}
 def verify(record):
@@ -82,7 +82,7 @@ def bind_release(result_path,work,record,*,start20k=False,cold_inventory=False,m
  bundle=Path(j['bundle']).resolve();run=Path(j['run']).resolve()
  if not bundle.is_relative_to(run):raise RuntimeError('Bundle outside its immutable run')
  selected=ASSETS+['DOS64.MNU','START.RCV','START.RFW']if cold_inventory else ASSETS
- if {p.name for p in bundle.iterdir()}!=set(selected):raise RuntimeError('Coupled release requires exactly five asset files')
+ if {p.name for p in bundle.iterdir()}!=set(selected):raise RuntimeError('Coupled release requires exact '+str(len(selected))+'-asset inventory')
  mods={n:module('config_'+n,ROOT/'build_support'/f,record)for n,f in [('bundle','start_ini_bundle.py'),('template','start_template_descriptor.py'),('release','setup_release_descriptor.py'),('start','start_launcher.py')]}
  paths=release_metadata_paths(j)
  staged_paths=[]
@@ -130,7 +130,7 @@ def sources(work,record,test):
   for p in (ROOT/'third_party/peddle/Peddle').rglob('*'):
    if p.is_file()and p.suffix in{'.h','.cpp','.hpp','.inc'}:copy(p,work/p.relative_to(ROOT),record)
 
-def native(work,t,run_command,*,cold_inventory=False,mnu56k=False,startup_diagnostics=False):
+def native(work,t,run_command,*,cold_inventory=False,mnu56k=False,startup_diagnostics=False,all_file_diagnostics=False,relocation=False):
  o=work/'objects';o.mkdir()
  for n in CS:
   opts=['--code-name','RI_CODE','--rodata-name','RI_RO','--bss-name','RIBSS']if n in ['install_config','existing_cfg']else(['--bss-name','RIBSS']if n in ['directory_browser','lease_context']else[])
@@ -138,11 +138,14 @@ def native(work,t,run_command,*,cold_inventory=False,mnu56k=False,startup_diagno
   if n in ['existing_cfg','config_ui']:opts+=['-D','DOS64_CONFIG_ATTACHED=1']
   if cold_inventory:opts+=['-D','DOS64_SETUP_COLD_INVENTORY=1']
   if mnu56k:opts+=['-D','DOS64_SETUP_MNU_56K=1']
+  if relocation:opts+=['-D','DOS64_CONFIG_RELOCATION=1','-D','D64_CONFIG_INPLACE=1']
+  if all_file_diagnostics:opts+=['-D','DOS64_ALL_FILE_DIAGNOSTICS=1']
   if n=='install_config':opts+=['-D','D64_CONFIG_VALIDATE_ONLY=1']
   run_command([t['cc65'],'-t','none','-O',*opts,n+'.c','-o',o/(n+'_c.s')])
   run_command([t['ca65'],'-g','-D','DOS64_FILES_INFO=1','-I','.',o/(n+'_c.s'),'-o',o/(n+'_c.o')])
- for n in ASM:run_command([t['ca65'],'-g','-D','DOS64_FILES_INFO=1',*(['-D','DOS64_BOOT_DIAGNOSTICS=1']if startup_diagnostics else[]),'-I','.',n+'.s','-o',o/(n+'.o')])
- run_command([t['ld65'],'-C','publisher-diagnostics.cfg'if startup_diagnostics else'publisher.cfg','-o','config.prg','-Ln','config.labels','-m','config.map',*[o/(n+'.o')for n in ASM+[n+'_c'for n in CS]],t['library']])
+ asm_sources=ASM+(['relocation']if relocation else[])
+ for n in asm_sources:run_command([t['ca65'],'-g','-D','DOS64_FILES_INFO=1',*(['-D','DOS64_ALL_FILE_DIAGNOSTICS=1']if all_file_diagnostics else[]),*(['-D','DOS64_BOOT_DIAGNOSTICS=1']if startup_diagnostics else[]),'-I','.',n+'.s','-o',o/(n+'.o')])
+ run_command([t['ld65'],'-C','all-file-relocation.cfg'if all_file_diagnostics and relocation else'publisher-relocation.cfg'if relocation else'all-file-diagnostics.cfg'if all_file_diagnostics else'publisher-diagnostics.cfg'if startup_diagnostics else'publisher.cfg','-o','config.prg','-Ln','config.labels','-m','config.map',*[o/(n+'.o')for n in asm_sources+[n+'_c'for n in CS]],t['library']])
  labels={x.split()[2].lstrip('.'):int(x.split()[1],16)for x in(work/'config.labels').read_text().splitlines()if x.startswith('al ')}
  phase_end=labels['__RM_RO_RUN__']+labels['__RM_RO_SIZE__'];phase_state=labels['__RIBSS_RUN__'];phase_state_end=labels['__RMBSS_RUN__']+labels['__RMBSS_SIZE__'];state_end=labels['__CONFIG_PUBSTATE_RUN__']+labels['__CONFIG_PUBSTATE_SIZE__']
  if phase_end>phase_state or phase_state<0x8700 or phase_state_end>0xb000 or labels['__RMBSS_RUN__']!=phase_state+labels['__RIBSS_SIZE__'] or state_end>0xc000:raise RuntimeError('CONFIG code/state overlap or state bounds')
@@ -152,11 +155,20 @@ def native(work,t,run_command,*,cold_inventory=False,mnu56k=False,startup_diagno
  if len(source)!=count or b[off:off+4]!=bytes.fromhex('12345678'):raise RuntimeError('HIGH binding field/source mismatch')
  if startup_diagnostics:
   diag=labels['__BOOT_DIAG_RUN__'];n=labels['__BOOT_DIAG_SIZE__']
-  if labels['__BOOT_DIAG_LOAD__']!=diag or diag!=0xb000 or labels['__BSS_RUN__']!=diag or not 0<n<=256 or len(b)!=diag-base+2+n:raise RuntimeError('Trusted CONFIG cold strip extent/lifetime mismatch')
+  if labels['__BOOT_DIAG_LOAD__']!=diag or diag!=0xb000 or labels['__BSS_RUN__']!=diag or not 0<n<=256 or len(b)!=(labels['__FD_CODE_LOAD__']-base+2+labels['__FD_CODE_SIZE__']+labels['__FD_SAFE_SIZE__']if all_file_diagnostics else diag-base+2+n):raise RuntimeError('Trusted CONFIG cold strip extent/lifetime mismatch')
+ if all_file_diagnostics:
+  fd_at=labels['__FD_CODE_LOAD__']-base+2;fd_n=labels['__FD_CODE_SIZE__'];fd_off=labels['_fd_expected']-address+load-base+2
+  if state_end>0xbfc8 or labels['__FD_SAFE_RUN__']!=0xbfc8 or not 0<labels['__FD_SAFE_SIZE__']<=56 or labels['__FD_SAFE_LOAD__']!=labels['__FD_CODE_LOAD__']+labels['__FD_CODE_SIZE__']:raise RuntimeError('Permanent CONFIG fallback lifetime/bounds')
+  entry=labels['config_entry'];entry_at=entry-base+2
+  if b[0x080d-base+2:0x080d-base+5]!=b'\x4c'+entry.to_bytes(2,'little') or b[entry_at:entry_at+2]!=b'\x78\xd8':raise RuntimeError('CONFIG SYS must enter trusted guard before diagnostics')
+  if not 0<fd_n<=4096 or labels['__FD_CODE_RUN__']!=0x6000 or labels['__FD_STASH_LOAD__']!=0xb100 or b[fd_off:fd_off+4]!=bytes.fromhex('12345678'):raise RuntimeError('Terminal phase bounds/binding')
+  b[fd_off:fd_off+4]=(zlib.crc32(b[fd_at:fd_at+fd_n])^0xffffffff).to_bytes(4,'little')
+  source=bytes(b[at:at+count]) # HIGH includes the externally bound diagnostic CRC.
  crc=zlib.crc32(source);b[off:off+4]=crc.to_bytes(4,'little');(work/'config.prg').write_bytes(b)
- return {'HIGH_source':load,'HIGH_run':address,'HIGH_bytes':count,'HIGH_crc':crc,'HIGH_source_sha256':hashlib.sha256(source).hexdigest(),'expected_field':field,'entry':0x080d,'vectors_excluded':True,'initial_SOURCE_before_phase_zero':True,'trusted_boot_diagnostics':startup_diagnostics,'diagnostic_cold_strip':{'run':labels['__BOOT_DIAG_RUN__'],'bytes':labels['__BOOT_DIAG_SIZE__'],'retired_by_zerobss':True}if startup_diagnostics else None,'phase_code_end_exclusive':phase_end,'phase_state_start':phase_state,'phase_state_end_exclusive':phase_state_end,'permanent_state_end_exclusive':state_end}
+ return {'HIGH_source':load,'HIGH_run':address,'HIGH_bytes':count,'HIGH_crc':crc,'HIGH_source_sha256':hashlib.sha256(source).hexdigest(),'expected_field':field,'entry':0x080d,'vectors_excluded':True,'initial_SOURCE_before_phase_zero':True,'config_relocation':bool(relocation),'all_file_diagnostics':bool(all_file_diagnostics),'trusted_boot_diagnostics':startup_diagnostics,'diagnostic_cold_strip':{'run':labels['__BOOT_DIAG_RUN__'],'bytes':labels['__BOOT_DIAG_SIZE__'],'retired_by_zerobss':True}if startup_diagnostics else None,'phase_code_end_exclusive':phase_end,'phase_state_start':phase_state,'phase_state_end_exclusive':phase_state_end,'permanent_state_end_exclusive':state_end}
 
-def build(out,result_path,test,media,*,start20k=False,cold_inventory=False,mnu56k=False,startup_diagnostics=False):
+def build(out,result_path,test,media,*,start20k=False,cold_inventory=False,mnu56k=False,startup_diagnostics=False,all_file_diagnostics=False,relocation=False):
+ if all_file_diagnostics and not startup_diagnostics:raise ValueError('All-file diagnostics requires startup diagnostics')
  out=out.resolve();out.mkdir(parents=True,exist_ok=True);owner=out/'OWNER.json'
  if owner.exists():
   if json.loads(owner.read_text())!={'kind':'dos64-config-build','version':1}:raise RuntimeError('Output directory has another owner')
@@ -181,18 +193,23 @@ def build(out,result_path,test,media,*,start20k=False,cold_inventory=False,mnu56
   def command(argv):
    args=[str(x)for x in argv];commands.append(args)
    with(evidence/'commands.stdout').open('ab')as o,(evidence/'commands.stderr').open('ab')as e:subprocess.run(args,cwd=work,stdin=subprocess.DEVNULL,stdout=o,stderr=e,check=True,env=command_environment())
-  stage='native';memory=native(work,t,command,cold_inventory=cold_inventory,mnu56k=mnu56k,startup_diagnostics=startup_diagnostics);products={str(work/n):digest(work/n)for n in ['config.prg','config.labels','config.map']};atomic_json(evidence/'PRODUCTS_BEFORE.json',products)
+  stage='native';memory=native(work,t,command,cold_inventory=cold_inventory,mnu56k=mnu56k,startup_diagnostics=startup_diagnostics,all_file_diagnostics=all_file_diagnostics,relocation=relocation);products={str(work/n):digest(work/n)for n in ['config.prg','config.labels','config.map']};atomic_json(evidence/'PRODUCTS_BEFORE.json',products)
   groups={}
   if test:
    stage='models';flags=['-dynamiclib']if platform.system()=='Darwin'else['-shared','-fPIC']
    command([t['clang++'],'-std=c++20','-O2',*flags,'-Ithird_party/peddle/Peddle','-Itests/host','-Itests/floppy_export','tests/floppy_export/bridge.cpp',*[Path('third_party/peddle/Peddle')/n for n in ['Peddle.cpp','PeddleDebugger.cpp','PeddleDisassembler.cpp','StrWriter.cpp']],'-o','config-peddle.dylib'])
    products[str(work/'config-peddle.dylib')]=digest(work/'config-peddle.dylib');atomic_json(evidence/'PRODUCTS_BEFORE.json',products)
-   stage='actual-sys';command([sys.executable,'-B','test_sys.py'])
-   report=json.loads((run/'SYS_TEST_REPORT.json').read_text())
-   if report.get('tests_run')!=4 or report.get('successful')is not True:raise RuntimeError('Expected exactly4 passing actual SYS groups')
+   stage='actual-sys'
+   if relocation or all_file_diagnostics:
+    profile_flags=(['--relocation']if relocation else[])+(['--all-file-diagnostics']if all_file_diagnostics else[])
+    expected=(5 if relocation else 0)+(4 if all_file_diagnostics else 0)
+    command([sys.executable,'-B','test_config_profiles.py',*profile_flags]);report=json.loads((run/'PROFILE_TEST_REPORT.json').read_text())
+   else:
+    expected=4;command([sys.executable,'-B','test_sys.py']);report=json.loads((run/'SYS_TEST_REPORT.json').read_text())
+   if report.get('tests_run')!=expected or report.get('successful')is not True:raise RuntimeError('Unexpected actual native group count/result')
    stage='actual-zig';command([t['zig'],'build','--build-file','build-config.zig','compile']);command([work/'zig-out/bin/config-tests'])
    if 'All 2 tests passed.'not in(evidence/'commands.stderr').read_text():raise RuntimeError('Expected exactly2 directly executed Zig groups')
-   groups={'actual_SYS':4,'direct_Zig':2,'synthetic_media':not bool(media),'genuine_DOS_execution':False}
+   groups={'actual_native':expected,'actual_SYS':(4 if not(relocation or all_file_diagnostics)else(4 if all_file_diagnostics else 0)),'direct_Zig':2,'synthetic_media':not bool(media),'genuine_DOS_execution':False}
   stage='closure';verify(record);verify(products);atomic_json(evidence/'INPUTS_AFTER.json',record);atomic_json(evidence/'PRODUCTS_AFTER.json',products)
   stage='publication';published={};product_dir=run/'products';product_dir.mkdir()
   for name,source in [('CONFIG.PRG','config.prg'),('CONFIG.labels','config.labels'),('CONFIG.map','config.map')]:
@@ -222,7 +239,8 @@ def build(out,result_path,test,media,*,start20k=False,cold_inventory=False,mnu56
   if cleanup is not None:raise cleanup
 
 def main():
- parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--out',type=Path,default=ROOT/'build/config');parser.add_argument('--bundle-result',type=Path,default=ROOT/'build/start-ini-bundle/RESULT.json');parser.add_argument('--test',action='store_true');parser.add_argument('--start20k',action='store_true');parser.add_argument('--cold-inventory',action='store_true');parser.add_argument('--mnu56k',action='store_true');parser.add_argument('--startup-diagnostics',action='store_true');parser.add_argument('--media-a',type=Path);parser.add_argument('--media-b',type=Path);parser.add_argument('--media-c',type=Path);args=parser.parse_args()
+ parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--out',type=Path,default=ROOT/'build/config');parser.add_argument('--bundle-result',type=Path,default=ROOT/'build/start-ini-bundle/RESULT.json');parser.add_argument('--test',action='store_true');parser.add_argument('--start20k',action='store_true');parser.add_argument('--cold-inventory',action='store_true');parser.add_argument('--mnu56k',action='store_true');parser.add_argument('--startup-diagnostics',action='store_true');parser.add_argument('--all-file-diagnostics',action='store_true');parser.add_argument('--relocation',action='store_true');parser.add_argument('--media-a',type=Path);parser.add_argument('--media-b',type=Path);parser.add_argument('--media-c',type=Path);args=parser.parse_args()
+ if args.all_file_diagnostics and not args.startup_diagnostics:parser.error('--all-file-diagnostics requires --startup-diagnostics')
  if args.mnu56k and not args.cold_inventory:parser.error('--mnu56k requires --cold-inventory')
  if args.cold_inventory and not args.start20k:parser.error('--cold-inventory requires --start20k')
  media=[args.media_a,args.media_b,args.media_c]
@@ -232,5 +250,5 @@ def main():
  if not result.is_file():
   if args.bundle_result!=ROOT/'build/start-ini-bundle/RESULT.json':raise RuntimeError('Explicit coupled RESULT is missing')
   subprocess.run([sys.executable,'-B',str(ROOT/'build_support/start_ini_bundle.py')],cwd=ROOT,check=True)
- report=build(args.out,result,args.test,media if all(media)else None,start20k=args.start20k,cold_inventory=args.cold_inventory,mnu56k=args.mnu56k,startup_diagnostics=args.startup_diagnostics);print(json.dumps({'status':report['status'],'run':report['run'],'products':report['products'],'groups':report['groups']},indent=2))
+ report=build(args.out,result,args.test,media if all(media)else None,start20k=args.start20k,cold_inventory=args.cold_inventory,mnu56k=args.mnu56k,startup_diagnostics=args.startup_diagnostics,all_file_diagnostics=args.all_file_diagnostics,relocation=args.relocation);print(json.dumps({'status':report['status'],'run':report['run'],'products':report['products'],'groups':report['groups']},indent=2))
 if __name__=='__main__':main()

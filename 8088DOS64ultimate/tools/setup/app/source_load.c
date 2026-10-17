@@ -1,3 +1,4 @@
+#include "file_error.h"
 #include "template_limits.h"
 #include "source_load.h"
 #include "bulk_context.h"
@@ -102,11 +103,16 @@ static br_u8 match(br_u16 n){br_u16 i,off;
 }
 #endif
 static void publish(void){sl_result.state=q.state;sl_result.error=q.error;sl_result.phase=q.phase;sl_result.leaf=q.leaf;sl_result.transport=q.transport;sl_result.cleanup=q.waiting||!bc_files_closed();}
-#if DOS64_FILE_DIAGNOSTICS
+#if DOS64_ALL_FILE_DIAGNOSTICS
+static const br_u8 sf_source_ops[]={0,1,2,0,3,6,11,4,1,2,9,9,11,4};
+#elif DOS64_FILE_DIAGNOSTICS
 static const br_u8 sf_source_ops[]={0,1,2,0,3,6,5,4,1,2,3,6,5,4};
 #endif
 static void first(br_u8 e){if(!q.error){q.error=e;
-#if DOS64_FILE_DIAGNOSTICS
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ if(!fd_code){fd_op=sf_source_ops[q.phase];fd_leaf=q.leaf;fd_transport=q.transport;fd_code=e;}
+#endif
+#if DOS64_FILE_DIAGNOSTICS && !DOS64_ALL_FILE_DIAGNOSTICS
  if(q.kind==7u){memcpy(sf_name,"START.INO",10);sf_op=sf_source_ops[q.phase];sf_code=q.error;sf_leaf=q.leaf;sf_transport=q.transport;}
 #endif
 }}
@@ -118,6 +124,9 @@ static void service(void){sample();if(q.clock_bad)cancel(SL_CLOCK);if(ps_key_pol
 static void observe(void){br_now=q.now;bc_slot=0;bc_poll();if(br_result.error&&!eof()){if(!q.error){q.leaf=br_result.error;q.transport=br_result.transport;}first(SL_FILE);}if(br_result.state!=BR_BUSY){q.waiting=0;if(q.phase==EOF1||q.phase==EOF2){if(br_result.state!=BR_FAILED||!eof())first(SL_FILE);}else if(br_result.state!=BR_DONE||br_result.error||br_result.handle==2)first(SL_FILE);}}
 static br_u8 op(br_u8 phase,br_u8 command,br_u32 a,br_u16 n){
  memset(&br_request,0,sizeof(br_request));br_request.op=command;br_request.mode=1;br_request.address=a;br_request.length=n;if(command==BR_OPEN)memcpy(br_request.path,path,128);
+ #if DOS64_ALL_FILE_DIAGNOSTICS
+ q.phase=phase; /* Presentation first-cause uses attempted operation on refusal. */
+ #endif
  br_now=q.now;bc_slot=0;if(!bc_start()){if(!q.error){q.leaf=br_result.error?br_result.error:br_result.rejected;q.transport=br_result.transport;}first(SL_FILE);failed();return 0;}
  q.phase=phase;q.waiting=1;q.began=q.now;q.steps=0;return 1;
 }
@@ -164,6 +173,9 @@ br_u8 sl_begin(void){br_u16 offset,n,generation; br_u32 identity; br_u8 kind=sl_
  bc_config[0].owner=0xa5;bc_config[0].target=1;bc_config[0].capacity=so_capacity();memcpy(bc_config[0].root,d64_path_output,128);
  bc_slot=0;if(!bc_clear_error()||!c32_init())return 0;
  q.ticket=so_ui_ticket();if(!q.ticket)return 0;
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ fd_set_path(path);
+#endif
  q.capacity=so_capacity();q.timeout=sl_timeout;q.generation=generation;q.identity=identity;q.kind=kind;q.state=SL_BUSY;q.error=q.leaf=q.transport=q.waiting=q.cancelled=q.clock_bad=q.clock_failed=q.second=0;q.steps=q.bad_steps=0;q.at=0;q.raw=0xffffffffUL;
  
 #if DOS64_SETUP_RELEASE_PREFLIGHT
@@ -214,6 +226,9 @@ void sl_poll(void){br_u16 n;
   if(q.kind>=3u&&(q.raw^0xffffffffUL)!=asset_crc[kind_asset[q.kind]]){first(SL_RELEASE);
 #if DOS64_FILE_DIAGNOSTICS
    sf_op=6u; /* Actual final whole-file CRC comparison, after known CLOSE. */
+#if DOS64_ALL_FILE_DIAGNOSTICS
+   fd_op=6u;
+#endif
 #endif
    failed();break;}
   if(q.kind<5u)

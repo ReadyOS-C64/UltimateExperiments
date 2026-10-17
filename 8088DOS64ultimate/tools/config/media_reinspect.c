@@ -1,3 +1,4 @@
+#include "file_error.h"
 #include "media_reinspect.h"
 #include "existing_cfg.h"
 #include "bulk_context.h"
@@ -34,7 +35,22 @@ static br_u16 timeout,now,last,began,steps,drain_steps,wanted;
 static br_u32 capacity,size,position,stream_crc,token;
 static br_u16 word(const br_u8*p){return p[0]|((br_u16)p[1]<<8);}
 static br_u32 wide(const br_u8*p){return (br_u32)p[0]|((br_u32)p[1]<<8)|((br_u32)p[2]<<16)|((br_u32)p[3]<<24);}
-static void first(br_u8 e){if(!error)error=e;}
+#if DOS64_ALL_FILE_DIAGNOSTICS
+#pragma rodata-name(push,"RODATA")
+static const br_u8 fd_rm_ops[]={0,1,2,3,10,9,11,4,9,10,9,10};
+#pragma rodata-name(pop)
+#endif
+static void first(br_u8 e){
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ __asm__("tax");__asm__("lda _error");__asm__("bne @fd_done");__asm__("stx _error");
+ __asm__("lda _fd_code");__asm__("bne @fd_done");__asm__("stx _fd_code");
+ __asm__("lda _fd_origin");__asm__("sta _fd_op");
+ __asm__("lda _leaf");__asm__("sta _fd_leaf");__asm__("lda _transport");__asm__("sta _fd_transport");
+ __asm__("@fd_done:");
+#else
+ if(!error)error=e;
+#endif
+}
 static void publish(void){rm_result.state=state;rm_result.error=error;rm_result.phase=phase;rm_result.drive=drive;rm_result.leaf=leaf;rm_result.transport=transport;rm_result.cleanup=state==RM_BUSY||!ri_closed_quiet()||!bc_files_closed();rm_result.checked=position;}
 static void sample(void){if(!ps_clock_poll())clock_bad=1;else{now=ps_ticks;if((br_u16)(now-last)>=0x8000u)clock_bad=1;last=now;}}
 static void config(void){bc_slot=0;bc_config[0].owner=0xa5;bc_config[0].target=1;bc_config[0].capacity=capacity;memcpy(bc_config[0].root,root,128);br_now=now;}
@@ -54,7 +70,12 @@ static br_u8 operation(br_u8 p,br_u8 op,br_u32 value){
  if(op==BR_LOAD){br_request.address=RM_STAGE;br_request.length=RM_STAGE_BYTES;}
  if(op==BR_READ){br_request.length=value;memset(uci_data,0xa7,512);}
  if(op==BR_SEEK)br_request.offset=value;
- phase=p;began=now;steps=0;
+ #if DOS64_ALL_FILE_DIAGNOSTICS
+fd_origin=fd_rm_ops[phase=p];
+#else
+phase=p;
+#endif
+began=now;steps=0;
  if(!bc_start()){if(!error){leaf=br_result.error?br_result.error:br_result.rejected;transport=br_result.transport;}first(RM_FILE);return 0;}
  waiting=1;return 1;
 }
@@ -72,6 +93,9 @@ static br_u8 next_file(void){
  while(drive<3&&!(committed.present&(1u<<drive)))++drive;
  if(drive==3){if(checked_mask!=committed.present){first(RM_OWNER);return 0;}service();if(!error&&bc_files_closed())state=RM_DONE;else first(error?error:RM_OWNER);return !error;}
  memcpy(d64_path_source,committed.cfg+136u+(br_u16)drive*128u,128);
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ fd_set_path((const char*)d64_path_source);
+#endif
  if(!d64_path_parent()){first(RM_INPUT);return 0;}
  memcpy(root,d64_path_output,128);config();if(!bc_clear_error()){first(RM_OWNER);return 0;}
  size=drive<2?RM_STAGE_BYTES:(committed.profile?20971520UL:2097152UL);position=0;close_attempt=0;token=0;
@@ -136,7 +160,11 @@ void rm_poll(void){
   else {wanted=256;if(!operation(DATA,BR_READ,wanted))cleanup();}
  }else if(phase==MBR||phase==VBR){
   if(!source()||!br_result.known||br_result.actual!=512UL||uci_data_len!=512){first(RM_FILE);cleanup();}
-  else if(!(phase==MBR?mbr_valid():vbr_valid())){first(RM_GEOMETRY);cleanup();}
+  else if(!(phase==MBR?mbr_valid():vbr_valid())){
+#if DOS64_ALL_FILE_DIAGNOSTICS
+fd_origin=0;
+#endif
+first(RM_GEOMETRY);cleanup();}
   else {service();if(error)cleanup();else if(phase==MBR){if(!operation(VBR_SEEK,BR_SEEK,8192UL))cleanup();}else if(!operation(END_SEEK,BR_SEEK,size))cleanup();}
  }else if(phase==VBR_SEEK){if(!operation(VBR,BR_READ,512))cleanup();}
  else if(phase==END_SEEK){if(!operation(EOF_READ,BR_READ,1))cleanup();}

@@ -52,6 +52,15 @@ pub const Fixture = struct {
             if (code.len != count) return error.InvalidUnitSidecar;
             c.dos64_load(machine, start, code.ptr, code.len);
         }
+        // Isolated CPU calls bypass cold bootstrap. Install the exact packaged
+        // helper for that fixture only; cold tests exercise the native copy.
+        if (symbols.get("__CPUTRAP_SIZE__")) |count| {
+            const run = symbols.get("__CPUTRAP_RUN__") orelse return error.InvalidTrapSidecar;
+            const load = symbols.get("__CPUTRAP_LOAD__") orelse return error.InvalidTrapSidecar;
+            const source = 0xae00 - @as(usize, address) + 2;
+            if (run != 0xfe00 or load != run or count == 0 or count > 256 or source+count > bytes.len) return error.InvalidTrapSidecar;
+            c.dos64_load(machine, run, bytes[source..][0..count].ptr, count);
+        }
         return .{ .machine = machine, .labels = labels, .symbols = symbols, .unit_extra = extra };
     }
     pub fn deinit(self: *Fixture) void {

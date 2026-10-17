@@ -81,9 +81,11 @@ No blank HD download, dummy D81 or guest FORMAT/COPY is required.
 Run the generated START.PRG. It verifies the matching runtime, menu and
 startup recovery assets. A pending save journal is not silently ignored:
 follow its explicit recovery screen, retaining the original and new files.
-CONFIG.PRG can prepare a new launch folder using existing absolute media
-paths. It asks for the release folder, new folder and supported 40/80 startup
-preference. A missing same-home DOS64.INI defaults to 80; the included ASCII
+CONFIG.PRG can prepare a new launch folder. For an installation moved as
+a whole folder, explicitly confirm its displayed old and selected homes with Y.
+Only media paths beneath the old home are rebased; external shared paths stay
+unchanged. CONFIG fully checks these files before publishing a new generation.
+It asks for the release folder, new folder and supported 40/80 startup preference. A missing same-home DOS64.INI defaults to 80; the included ASCII
 example documents that option. Do not move launch folders without rebuilding
 the launcher/configuration through the supported tools.
 
@@ -207,12 +209,23 @@ def component_inputs(coupled_path, setup_path, config_path, *, runtime_media=Fal
             raise RuntimeError('Require passed actual runtime result')
         if runtime.get('flags', {}).get('DOS64_FLOPPY_FORMAT') != 1:
             raise RuntimeError('Candidate requires enabled runtime floppy FORMAT')
+        if runtime.get('flags', {}).get('DOS64_TRAP1') != 1:
+            raise RuntimeError('Candidate requires checked original8088 type1 trap profile')
         if runtime.get('MNU_REU_spans') != [[0x3da000, 24576], [0x3f0000, 32768]]:
             raise RuntimeError('Unsupported runtime menu layout')
         merge(records, {str(runtime_path): digest(runtime_path)})
         for section in ('source_inputs', 'native_products'):
             merge(records, runtime[section])
         declared_products(runtime, records)
+        memory_row = runtime.get('products', {}).get('DOS64.memory.json')
+        if not memory_row:
+            raise RuntimeError('Candidate requires checked type1 trap memory product')
+        memory_path = Path(memory_row['path']).resolve()
+        if not memory_path.is_relative_to(Path(runtime['run']).resolve()) or digest(memory_path) != {k: memory_row[k] for k in ('sha256', 'bytes')}:
+            raise RuntimeError('Unbound type1 trap memory product')
+        memory = json.loads(memory_path.read_text())
+        if memory.get('passed') is not True or not memory.get('load', {}).get('cpu_trap'):
+            raise RuntimeError('Candidate requires checked type1 trap placement')
         if set(runtime['assets']) != {'DOS64.PRG', 'DOS64.REL', 'DOS64.MNU'}:
             raise RuntimeError('Exact runtime asset inventory required')
         for name, wanted in runtime['assets'].items():
@@ -229,10 +242,13 @@ def component_inputs(coupled_path, setup_path, config_path, *, runtime_media=Fal
         checks = setup.get('memory', {}).get('checks', {})
         if not all(checks.get(k) is True for k in (
                 'trusted_DIAG_source_lifetime', 'trusted_DIAG_device_tail',
-                'file_helper_run', 'file_helper_source', 'file_helper_BSS_disjoint')):
-            raise RuntimeError('Candidate requires checked SETUP startup/file diagnostics')
-        if config.get('memory', {}).get('trusted_boot_diagnostics') is not True:
-            raise RuntimeError('Candidate requires checked CONFIG startup diagnostics')
+                'file_helper_run', 'file_helper_source', 'file_helper_BSS_disjoint',
+                'terminal_payload_count', 'terminal_payload_run', 'terminal_load_only_source',
+                'terminal_tail_names_remain_readable', 'terminal_extra_ZP_bounded',
+                'C_stack_CD00_disjoint_helpers')):
+            raise RuntimeError('Candidate requires checked SETUP all-file diagnostics')
+        if not all(config.get('memory', {}).get(k) is True for k in ('trusted_boot_diagnostics', 'all_file_diagnostics', 'config_relocation')):
+            raise RuntimeError('Candidate requires checked CONFIG all-file diagnostics and relocation')
     selected = {name: bundle / name for name in selected_assets}
     setup_build = Path(setup['work']) / 'build'
     for name, original in [('SETUP.PRG', 'setup.prg'), ('SETUP.FAT', 'SETUP.FAT'), ('SETUP.PUB', 'SETUP.PUB')]:
@@ -315,10 +331,10 @@ def build(out, *, runtime_media=False):
     ]
     if runtime_media:
         steps = [
-            ('runtime', 'runtime_media.py', ['--floppy-format']),
+            ('runtime', 'runtime_media.py', ['--floppy-format', '--cpu-trap']),
             ('coupled', 'cold_start.py', ['--runtime-result', str(run / 'runtime/RESULT.json')]),
-            ('setup', 'setup_installer.py', ['--bundle-result', str(run / 'coupled/RESULT.json'), *cold_flags, '--file-diagnostics']),
-            ('config', 'config_generation.py', ['--bundle-result', str(run / 'coupled/RESULT.json'), *cold_flags]),
+            ('setup', 'setup_installer.py', ['--bundle-result', str(run / 'coupled/RESULT.json'), *cold_flags, '--file-diagnostics', '--all-file-diagnostics']),
+            ('config', 'config_generation.py', ['--bundle-result', str(run / 'coupled/RESULT.json'), *cold_flags, '--all-file-diagnostics', '--relocation']),
         ]
     try:
         for name, script, extra in steps:

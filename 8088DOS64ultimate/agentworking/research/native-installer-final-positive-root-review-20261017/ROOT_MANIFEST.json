@@ -1,0 +1,46 @@
+{
+  "HANDOFF.md": {
+    "sha256": "f017a879776be1cf5b46830a542da5d571ec21d925c2b47c4f26e8ce5e5a719f",
+    "bytes": 4467
+  },
+  "MANIFEST.json": {
+    "sha256": "c9f7d3941c1ed2fa4ae05d798a937674f696b95574fcb7f7a9b541685e900018",
+    "bytes": 884587
+  },
+  "OUTPUTS.json": {
+    "sha256": "02f510b1a46207d2d81e5e92e646ec1cf7ee247c625c065aa29ef1c5011be623",
+    "bytes": 1533
+  },
+  "RESULT.json": {
+    "sha256": "c8d02caac9abc0fb613aff6b056ed660278c95ea54a96be792a8efa48ce8eea5",
+    "bytes": 3434
+  },
+  "ROOT_REVIEW.json": {
+    "sha256": "aeefde746f79cf3c78f09d1473b0cc8a7ca782ed43b044166021aae150613f98",
+    "bytes": 3104
+  },
+  "closed-consumer/RESULT.json": {
+    "sha256": "0cd02ed0c5bfce0d51b49a11263357dd47a2f767ba9559c6a24a7d76ec29e111",
+    "bytes": 5431
+  },
+  "closed-consumer/proof/COLD_FINISH_RESULT.json": {
+    "sha256": "f7e3948041a6ce5f7524c0f5c9934badbafd8bd3ccc7c898020fbcb01d7fab09",
+    "bytes": 240
+  },
+  "closed-consumer/proof/COUPLED_MEDIA_RESULT.json": {
+    "sha256": "bbd9dd4d4a1328b94548dafe2fc42d4eaed765cc3ab3d703e4c9e64a8c198a77",
+    "bytes": 222
+  },
+  "closed-producer/RESULT.json": {
+    "sha256": "e90626f1de5b719e93a9c086504644f3181c7389606b1a0fca624e3a50c0faa4",
+    "bytes": 4856
+  },
+  "consumer/work/test_installer_finish.py": {
+    "sha256": "879d31d1e8c060cad2b859033a9da45a543c4992e6947de7b30abc91d0663dc1",
+    "bytes": 7385
+  },
+  "producer/test_full_installer.py": {
+    "sha256": "618ab32a6994d13fa74c3bf8837e5070a6c158dae3681e525da1dafe04600e60",
+    "bytes": 8439
+  }
+}

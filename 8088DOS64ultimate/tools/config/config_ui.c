@@ -1,3 +1,4 @@
+#include "file_error.h"
 #include "config_ui.h"
 #include "existing_cfg.h"
 #include "directory_browser.h"
@@ -18,20 +19,36 @@ const br_u16 cg_abi_sizes[]={sizeof(struct cg_request_t),sizeof(struct cg_result
 static br_u32 wide(const br_u8*p){return (br_u32)p[0]|((br_u32)p[1]<<8)|((br_u32)p[2]<<16)|((br_u32)p[3]<<24);}
 static br_u8 closed(void){return sc_ready()&&bc_files_closed();}
 static void publish(void){cg_result.state=state;cg_result.error=error;cg_result.leaf=leaf;cg_result.cleanup=!closed();cg_result.stage=stage;cg_result.row=row;cg_result.columns=columns;cg_result.ready=state==CG_DONE&&!error?0xa5:0;}
-static void first(br_u8 e,br_u8 l){if(!error){error=e;leaf=l;}}
+static void first(br_u8 e,br_u8 l){if(!error){error=e;leaf=l;
+#if DOS64_ALL_FILE_DIAGNOSTICS
+if(!fd_code){fd_op=state==CG_STARTUP?4:state==CG_INSPECT?0:9;fd_leaf=l;fd_transport=0;fd_code=e;}
+#endif
+}}
 static void sample(void){if(!ps_clock_poll())clock_bad=1;else{now=ps_ticks;if((br_u16)(now-last)>=0x8000u)clock_bad=1;last=now;}}
 static br_u8 pending(void){return state==CG_STARTUP||state==CG_INSPECT||(state==CG_BROWSER&&loading);}
 static void stop(br_u8 e){
  first(e,0);if(cancelled)return;cancelled=1;
- if(state==CG_STARTUP)sc_cancel();else if(state==CG_INSPECT)ri_cancel();else if(state==CG_BROWSER&&loading)db_cancel();
+ if(state==CG_STARTUP)sc_cancel();else if(state==CG_INSPECT
+#if DOS64_CONFIG_RELOCATION
+||state==CG_RELOCATE
+#endif
+)ri_cancel();else if(state==CG_BROWSER&&loading)db_cancel();
 }
 static void failed(void){state=CG_FAILED;dirty=1;}
 static br_u8 checked_ri(void){
  ri_query_session=committed.session;memcpy(ri_query_home,committed.home,128);
  return ri_get()&&ri_receipt.identity==committed.cfg_identity;
 }
+#if DOS64_CONFIG_RELOCATION
+extern br_u8 __fastcall__ cg_same_path(const char*a,const char*b);
+#define same cg_same_path
+#else
 static br_u8 same(const char*a,const char*b){br_u8 i,x,y;for(i=0;i<128;i++){x=a[i];y=b[i];if(x>='A'&&x<='Z')x+=32;if(y>='A'&&y<='Z')y+=32;if(x!=y)return 0;if(!x)return 1;}return 1;}
+#endif
 static void refresh(br_u16 first_row){
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ fd_set_path(current);
+#endif
  memset(&db_request,0,sizeof(db_request));db_request.owner=0xa5;db_request.target=1;db_request.folders_only=1;
  db_request.first=first_row;db_request.timeout=timeout;memcpy(db_request.path,current,128);db_now=now;
  if(!db_begin()){first(CG_DIRECTORY,db_result.rejected);failed();return;}
@@ -50,19 +67,58 @@ static const char* detail(void){
  if(state==CG_BROWSER&&page_ready()&&row<db_page->count&&db_select(row))return db_selected_path;
  return current;
 }
+#if DOS64_CONFIG_RELOCATION
+#pragma code-name(push,"RI_CODE")
+#pragma rodata-name(push,"RI_RO")
+static const char rel_text0[]="Installation folder has moved.";
+static const char rel_text1[]="Saved folder:";
+static const char rel_text2[]="Selected folder:";
+static const char rel_text3[]="Move A/B/C paths inside saved folder?";
+static const char rel_text4[]="Shared external paths stay unchanged.";
+static const char rel_text5[]="Y: confirm   Run/Stop: cancel";
+static void relocation_render(void){
+ text(2,0,rel_text0);text(4,0,rel_text1);encoded(5,0,ri_receipt.home,view,40);
+ text(8,0,rel_text2);encoded(9,0,committed.home,view,40);
+ text(12,0,rel_text3);text(14,0,rel_text4);text(17,0,rel_text5);
+}
+#pragma rodata-name(pop)
+#pragma code-name(pop)
+#endif
 static void render(void){
  br_u8 i;ps_color=1;ps_clear();text(0,0,"DOS64 CONFIG");
  if(state==CG_FAILED){text(3,0,"Configuration stopped safely");text(5,0,"No files have been written.");text(7,0,closed()?"Files closed. Restart CONFIG to retry.":"File ownership unknown. Restart machine.");return;}
- if(state==CG_DONE){text(3,0,"Choices ready for new launch generation");text(5,0,"No files have been written yet.");text(7,0,"Existing media references are preserved.");return;}
+ if(state==CG_DONE){text(3,0,"Choices ready for new launch generation");text(5,0,"No files have been written yet.");
+#if DOS64_CONFIG_RELOCATION
+text(7,0,"Verified media references are retained.");
+#else
+text(7,0,"Existing media references are preserved.");
+#endif
+return;}
  if(state==CG_STARTUP){text(3,0,"Closing previous firmware file handles");return;}
  if(state==CG_INSPECT){text(3,0,"Checking original DOS64.CFG read-only");return;}
+#if DOS64_CONFIG_RELOCATION
+ if(state==CG_RELOCATE){relocation_render();}
+ else
+#endif
  if(state==CG_OPTIONS){text(2,0,"New initial DOS text columns");text(5,0,columns==40?"> 40 columns":"  40 columns");text(7,0,columns==80?"> 80 columns":"  80 columns");text(10,0,"New setting; old INI is unchanged.");text(12,0,"Up/down: select   Return: continue");}
  else if(state==CG_REVIEW){
   text(2,0,"Review new launch generation");text(4,0,row==0?"> Original configuration":"  Original configuration");encoded(5,0,committed.home,view,40);
   text(8,0,row==1?"> Matched release source folder":"  Matched release source folder");encoded(9,0,committed.release_home,view,40);
   text(12,0,row==2?"> New launch folder":"  New launch folder");encoded(13,0,committed.new_home,view,40);
-  text(16,0,columns==40?"New initial columns: 40":"New initial columns: 80");text(18,0,"Existing A/B/C paths and flags retained.");
-  text(19,0,"Writable media stay shared with old START");text(21,0,"Return: prepare choices for publication");
+  text(16,0,columns==40?"New initial columns: 40":"New initial columns: 80");
+#if DOS64_CONFIG_RELOCATION
+text(18,0,"Checked A/B/C references and flags.");
+#else
+text(18,0,"Existing A/B/C paths and flags retained.");
+#endif
+
+  
+#if DOS64_CONFIG_RELOCATION
+text(19,0,"New launch shares inspected disk images");
+#else
+text(19,0,"Writable media stay shared with old START");
+#endif
+text(21,0,"Return: prepare choices for publication");
  }else if(state==CG_BROWSER){
   text(2,0,stage==0?"Choose existing installation folder":(stage==1?"Choose matching release source folder":"Choose a new launch folder"));encoded(3,0,current,0,40);
   if(loading)text(5,0,"Reading folder...");else for(i=0;i<db_page->count;i++){text(5+i,0,i==row?">/":" /");encoded(5+i,2,(const char*)(db_page->rows[i].usable?db_page->rows[i].raw:db_page->rows[i].display),0,38);}
@@ -96,7 +152,11 @@ void cg_poll(void){
  sample();
  if(state==CG_STARTUP){sc_now=now;s=sc_poll();if(sc_error)first(CG_OWNERSHIP,sc_error);}
  else if(state==CG_BROWSER&&loading){db_now=now;db_poll();s=db_state();e=db_error();if(e)first(CG_DIRECTORY,e);}
- else if(state==CG_INSPECT){ri_poll();s=ri_state();e=ri_error();if(e)first(e==RI_CANCEL?CG_CANCEL:(e==RI_CLOCK?CG_CLOCK:(e==RI_TIMEOUT?CG_TIMEOUT:CG_CONFIG)),e);}
+ else if(state==CG_INSPECT
+#if DOS64_CONFIG_RELOCATION
+||state==CG_RELOCATE
+#endif
+){ri_poll();s=ri_state();e=ri_error();if(e)first(e==RI_CANCEL?CG_CANCEL:(e==RI_CLOCK?CG_CLOCK:(e==RI_TIMEOUT?CG_TIMEOUT:CG_CONFIG)),e);}
  /* The native leaf is observed before same-poll keyboard or clock causes. */
  if(ps_key_poll())key=ps_key;if(key==27)stop(CG_CANCEL);if(clock_bad)stop(CG_CLOCK);
  if(pending()){
@@ -108,7 +168,15 @@ void cg_poll(void){
   if(error||s!=SC_DONE||!sc_ready()){first(CG_OWNERSHIP,sc_error);failed();}
   else if(!ri_attach()){first(CG_OWNERSHIP,0);failed();}else browse(0);
  }else if(state==CG_BROWSER&&loading&&s!=DB_BUSY){loading=0;if(error||s!=DB_DONE){first(CG_DIRECTORY,e);failed();}dirty=1;}
+#if DOS64_CONFIG_RELOCATION
+ else if(state==CG_INSPECT&&s==RI_CONFIRM){if(!ri_pending()){first(CG_OWNERSHIP,0);failed();}else{state=CG_RELOCATE;dirty=1;}}
+ else if(state==CG_RELOCATE&&s==RI_CONFIRM&&key=='y'){if(ri_confirm()){state=CG_INSPECT;s=RI_DONE;}else{first(CG_CONFIG,ri_error());failed();}}
+#endif
+#if DOS64_CONFIG_RELOCATION
+ if(state==CG_INSPECT&&s!=RI_BUSY&&s!=RI_CONFIRM){
+#else
  else if(state==CG_INSPECT&&s!=RI_BUSY){
+#endif
   if(error||s!=RI_DONE){first(CG_CONFIG,e);failed();}
   else {ri_query_session=ri_result.session;memcpy(ri_query_home,committed.home,128);if(!ri_get()){first(CG_OWNERSHIP,0);failed();}
    else {committed.session=ri_receipt.session;committed.cfg_identity=ri_receipt.identity;committed.capacity=wide(ri_receipt.bytes+538);state=CG_OPTIONS;dirty=1;}}

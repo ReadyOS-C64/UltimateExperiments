@@ -1,6 +1,12 @@
 .ifndef DOS64_SETUP_MNU_56K
 DOS64_SETUP_MNU_56K=0
 .endif
+.ifndef DOS64_ALL_FILE_DIAGNOSTICS
+DOS64_ALL_FILE_DIAGNOSTICS=0
+.endif
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.import _pw_diag_a
+.endif
 .setcpu "6502"
 .macpack longbranch
 .include "coordinator_internal.inc"
@@ -193,6 +199,9 @@ _pw_run:
  bpl @counts
  lda #1
  sta _pw_private_stage
+.if DOS64_ALL_FILE_DIAGNOSTICS
+ ; crc_stream captures the current construction target for each sealed span.
+.endif
  ldx #3
 @a_source:
  lda a_source,x
@@ -567,6 +576,9 @@ completion:
  bpl @next
  jmp _pw_service
 _pw_crc_stream:
+.if DOS64_ALL_FILE_DIAGNOSTICS
+ jsr _pw_diag_a
+.endif
  lda #$ff
  ldx #3
 @init:
@@ -726,3 +738,10 @@ name_start:.asciiz "START.PRG"
 name_cfg:.asciiz "DOS64.CFG"
 complete_text:.asciiz "INSTALL COMPLETE - RUN START.PRG"
 .assert *-complete_text=33,error,"caption length"
+
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.export _fd_name_a,_fd_name_start,_fd_name_cfg
+_fd_name_a=name_a
+_fd_name_start=name_start
+_fd_name_cfg=name_cfg
+.endif

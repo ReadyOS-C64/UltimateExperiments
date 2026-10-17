@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "groups": 1,
+  "scope": "actual START runtime-role asset/main coldboot with genuine DOS A/B and valid2MiB C; genuine VER/fullDIR then native CIA/CUI Finish/knownCLOSE; no Turbo/physical acceptance"
+}

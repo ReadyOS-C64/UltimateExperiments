@@ -9,6 +9,7 @@
 #define CG_REVIEW 5u
 #define CG_DONE 6u
 #define CG_FAILED 7u
+#define CG_RELOCATE 8u
 #define CG_INPUT 1u
 #define CG_OWNERSHIP 2u
 #define CG_DIRECTORY 3u

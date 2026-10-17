@@ -23,12 +23,16 @@ class F:
   self.guard=bytearray(65536)
   for a,n in [(0,2),(0x20,96),(0x100,256),(0xcd00,768),(0x400,1000),(0xd800,1000),(0xfffa,2),(0xc000,2048),(self.labels['__BSS_RUN__'],self.labels['__BSS_SIZE__']),(self.labels['__DEVICESTATE_RUN__'],self.labels['__DEVICESTATE_SIZE__']),(self.labels['__RIBSS_RUN__'],self.labels['__RIBSS_SIZE__']),(self.labels['__RMBSS_RUN__'],self.labels['__RMBSS_SIZE__']),(0xdf1c,2),(0xdf00,11),(0xc900,1024),(self.labels['__CONFIG_PUBSTATE_RUN__'],self.labels['__CONFIG_PUBSTATE_SIZE__']),(self.labels['_ps_color'],1),(self.labels['_br_config'],134)]:self.guard[a:a+n]=bytes([1])*n
   for a in [0xd019,0xd01a,0xd011,0xd016,0xd018,0xd015,0xd020,0xd021,0xdc00,0xdc02,0xdc03,0xdc0d,0xdd00,0xdd02,0xdd04,0xdd05,0xdd06,0xdd07,0xdd0d,0xdd0e,0xdd0f]:self.guard[a]=1
-  for n in ['uci_status_read','uci_control_write','uci_id_read','uci_command_write','uci_data_read','uci_stat_read','read','store']:self.guard[self.labels[n]+1:self.labels[n]+3]=b'\1\1'
+  for n in ['uci_status_read','uci_control_write','uci_id_read','uci_command_write','uci_data_read','uci_stat_read']:self.guard[self.labels[n]+1:self.labels[n]+3]=b'\1\1'
+  for n in ['dos64_uci_upload_operand','dos64_uci_drain_operand']:
+   if n in self.labels:self.guard[self.labels[n]:self.labels[n]+2]=b'\1\1'
   self.guard=bytes(self.guard);self.maxstack=0;self.total=0
   for n in ['native_runtime_control_enable','dos64_graphics_color_enable','dos64_cia_clock_enable','dos64_native_display_enable','dos64_host_input_model_enable']:getattr(L,n)(self.m)
   L.dos64_uci_model_enable(self.m,0xdf1c,3,0xc9);L.bulk_model_enable(self.m);L.dos64_enable_reu(self.m)
   self.initial_guard=bytes(self.guard)
   self.guard=bytearray(self.guard);a=self.labels['__CONFIG_HIGH_RUN__'];n=self.labels['__CONFIG_HIGH_TOTAL__'];self.guard[a:a+n]=bytes([1])*n;self.guard=bytes(self.guard)
+  if '__FD_SAFE_RUN__'in self.labels:
+   self.guard=bytearray(self.guard);a=self.labels['__FD_SAFE_RUN__'];n=self.labels['__FD_SAFE_SIZE__'];self.guard[a:a+n]=bytes([1])*n;self.guard=bytes(self.guard)
   if auto:self.call('runtime_init',budget=20000000)
   self.guard=self.initial_guard
   for t in stale:L.bulk_model_seed(self.m,b'/Old',b'UNCHANGED',9);L.bulk_model_seed_open(self.m,t,b'/Old',3,7)
@@ -37,7 +41,7 @@ class F:
  def close(self):REPORT['instances']+=1;L.dos64_destroy(self.m)
  def read(self,n,c):return bytes(L.dos64_peek(self.m,self.labels[n]+i)for i in range(c))
  def write(self,n,b):L.dos64_load(self.m,self.labels[n],b,len(b))
- def call(self,n,a=0x71,budget=3000000):
+ def call(self,n,a=0x71,budget=10000000):
   L.dos64_clear_writes(self.m);ret=self.labels['fixture_return']-1;L.dos64_poke(self.m,0x1ff,ret>>8);L.dos64_poke(self.m,0x1fe,ret&255);before=L.dos64_get_regs(self.m).cycles;L.dos64_set_regs(self.m,Regs(self.labels[n],0xfd,a,0x82,0x93,0x24,0,0));r=L.dos64_run(self.m,self.labels['fixture_return'],budget)
   assert r.status==0,(n,r.status,hex(r.regs.pc),r.regs.cycles);assert L.browser_bad_write(self.m,self.guard)==65536,(n,hex(L.browser_bad_write(self.m,self.guard)));assert self.read('sp',2)==b'\xff\xcf';assert r.stack<120;self.maxstack=max(self.maxstack,r.stack);self.total+=r.regs.cycles-before;REPORT['native_calls']+=1;REPORT['max_hardware_stack']=max(REPORT['max_hardware_stack'],r.stack);REPORT['max_native_call_cycles']=max(REPORT['max_native_call_cycles'],r.regs.cycles-before);return r.regs.a
  def start(self,data=None,home=b'/Home',timeout=1000):

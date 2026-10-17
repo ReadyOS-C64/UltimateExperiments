@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "same_generated_START_SYS_DOS_VER_DIR_Finish_session": true,
+  "actual_CIA_Finish_confirmation": true,
+  "privateSafe": true,
+  "one_known_C_CLOSE": true,
+  "noResume_nativeE1": true,
+  "whole4MiB_and_C_exact": true
+}

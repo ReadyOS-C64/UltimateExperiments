@@ -1,0 +1,20 @@
+{
+  "status": "READY_FOR_INDEPENDENT_FIRSTCAUSE_REVIEW",
+  "physical": false,
+  "native_sha256": "9ab9324f412194a66478a12ef6cba86f1247396eeed3aec7004ea21e9760a1c9",
+  "native_bytes": 13102,
+  "source_delta": "SOURCE_DELTA.json",
+  "old_counter_manifest": "2665a66cdc6eb4c9ce09d3b1f49179cbff4d62a01c777a70f6b32dcbafe9d98f",
+  "focused_groups": {
+    "inherited_cheap": 18,
+    "old_status_first_counter_replay": 2,
+    "reverse_earliercause": 2,
+    "actual_3frame_positive_owned_cancel_knownclose": 1
+  },
+  "complete20MiB_successor_proof": false,
+  "old_full20MiB_proof_not_transferred": true,
+  "source_tool_SDK_records": 1109,
+  "source_products_rebuilt_exact": true,
+  "new_directory_and_physical_purpose_not_ready": true,
+  "device_calls": 0
+}

@@ -63,7 +63,7 @@ The initial setting does not prevent DOS `MODE CO40` or `MODE CO80` from changin
 
 ## Native reconfiguration model proof
 
-The separate native CONFIG development program now runs from its actual BASIC SYS entry through keyboard selection, existing configuration inspection, disk-image checks and creation of a new launch folder. It keeps the original absolute A/B/C image paths and readonly settings, refreshes the floppy checksums, and creates `DOS64.PRG`, `DOS64.REL`, `START.INO`, `START.PRG`, `DOS64.INI`, then `DOS64.CFG` last. Each file uses create-new semantics and full readback; partial files after a failure are not a completed installation. The destination folder must already exist and must differ from the old installation and release-source folders.
+The separate native CONFIG development program now runs from its actual BASIC SYS entry through keyboard selection, existing configuration inspection, disk-image checks and creation of a new launch folder. The default profile keeps the original absolute A/B/C image paths and readonly settings, refreshes the floppy checksums, and creates `DOS64.PRG`, `DOS64.REL`, `START.INO`, `START.PRG`, `DOS64.INI`, then `DOS64.CFG` last. Each file uses create-new semantics and full readback; partial files after a failure are not a completed installation. The destination folder must already exist and must differ from the old installation and release-source folders.
 
 The preference is an explicit **new** 40/80 setting, initially 80. CONFIG currently leaves the old INI unread and unchanged. Old and new launchers share the existing images; reverting a launcher does not undo writes to those images. CONFIG runs independently of a running emulator.
 
@@ -86,3 +86,38 @@ On the Ultimate, use PAL, Manual 64 MHz, enabled Ultimate DOS/UCI and at least 4
 Return opens a folder, Delete goes to its parent, and F1 selects the current folder. F3/F5 change directory pages; left/right scroll a long path. The new folder's absolute path must be 2–117 characters. Existing output filenames cause failure rather than replacement; partial files may remain after a failed publication. The old configuration and original INI stay unchanged, while the old and new launchers share the same disk images.
 
 `make config-tests` builds the same application and executes four actual BASIC SYS/keyboard/firmware model groups plus two Zig assertions against assembled code in Peddle. Its default media are synthetic; it is not a genuine DOS boot test or a physical Ultimate test. The genuine DOS integration receipt above covers the separately executed actual generated-file consumers in both display modes.
+
+## Optional moved-folder and full-error profile
+
+The source-only builder supports `--relocation` for CONFIG. Combine it with
+`--all-file-diagnostics --startup-diagnostics` for the reviewed V1 profile.
+Runtime-media releases also use `--start20k --cold-inventory --mnu56k` and an
+explicit matching cold `--bundle-result`. These options are not enabled by the
+unchanged default CONFIG build. The twelve-file runtime-media candidate enables these profiles; physical
+qualification remains separate.
+
+If an installation folder was moved, choose its **current** folder in CONFIG.
+CONFIG reads the original `DOS64.CFG` without changing it, then shows its saved
+folder and the selected folder. Press **Y** to confirm the move; Return does not
+confirm it. Run/Stop cancels. Left/right scroll both folder paths. CONFIG rebases
+A/B/C paths only when they are children of the saved folder, comparing ASCII
+letters without case and requiring a slash boundary. Paths elsewhere stay
+unchanged. It never falls back to an image at the old address.
+
+After confirmation, choose the new 40/80 setting, matching release folder, and
+an already-created new launch folder as usual. CONFIG verifies the resolved
+media, then creates a new generation with CFG last. Launch the generated
+`START.PRG`. The original CFG/START/INI and media remain unchanged; the moved
+original START may still point at its old home. This workflow creates the
+replacement launcher rather than modifying that original START in place.
+Shared images remain shared, so later DOS writes affect every launcher using
+them. Existing filenames and partial outputs are never silently replaced.
+
+The qualified saved and selected homes are canonical, nonroot absolute paths.
+The new launch folder is limited to 2–117 characters and each resulting media
+path to 127 characters. Invalid, aliased, overlong or inaccessible paths stop
+publication. Error panes retain the first file path and operation; an unknown
+CLOSE explicitly requires restarting the machine. The fallback display does
+not retry file commands or authorize continuing an interrupted publication.
+The current proof uses actual 6510/Peddle execution and modeled CIA keys; it is
+not a claim of physical keyboard or Ultimate acceptance.

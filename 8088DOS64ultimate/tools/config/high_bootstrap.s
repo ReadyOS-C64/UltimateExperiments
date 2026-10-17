@@ -1,4 +1,10 @@
 .setcpu "6502"
+.ifndef DOS64_ALL_FILE_DIAGNOSTICS
+DOS64_ALL_FILE_DIAGNOSTICS=0
+.endif
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.export cp_checksum_raw,cp_crc_src,cp_crc_left,cp_crc_raw
+.endif
 ; CONFIG-exclusive cold bootstrap. No C/BSS references before source validation.
 ; Actual linked HIGH count excludes FFFA..FFFF and is serialized at9000.
 .import __CONFIG_HIGH_LOAD__,__CONFIG_HIGH_RUN__,__CONFIG_HIGH_SIZE__,__CONFIG_HRO_SIZE__,__CONFIG_HRO_LOAD__,__CONFIG_HRO_RUN__
@@ -13,6 +19,11 @@ dst:.res 2
 left:.res 2
 crc:.res 4
 bits:.res 1
+.if DOS64_ALL_FILE_DIAGNOSTICS
+cp_crc_src=src
+cp_crc_left=left
+cp_crc_raw=crc
+.endif
 .segment "DATA"
 ; Host source-only builder replaces this sentinel from actual HIGH bytes.
 _cp_high_expected:.byte $12,$34,$56,$78
@@ -96,6 +107,20 @@ checksum:
  sta src
  stx src+1
  jsr count
+.if DOS64_ALL_FILE_DIAGNOSTICS
+ jsr cp_checksum_raw
+ ldx #3
+@check:
+ lda crc,x
+ eor #$ff
+ cmp _cp_high_expected,x
+ bne failure
+ dex
+ bpl @check
+ clc
+ rts
+cp_checksum_raw:
+.endif
  lda #$ff
  ldx #3
 : sta crc,x
@@ -132,6 +157,9 @@ checksum:
  ; Destination is deliberately irrelevant during CRC pass.
  jsr step
  bne @byte
+ .if DOS64_ALL_FILE_DIAGNOSTICS
+ rts
+ .else
  ldx #3
 @check:
  lda crc,x
@@ -142,3 +170,4 @@ checksum:
  bpl @check
  clc
  rts
+ .endif

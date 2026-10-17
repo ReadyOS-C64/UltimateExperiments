@@ -1,0 +1,70 @@
+{
+  "passed": true,
+  "commands": [
+    {
+      "name": "model",
+      "argv": [
+        "clang++",
+        "-std=c++20",
+        "-O2",
+        "-fPIC",
+        "-shared",
+        "-I/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/tests/floppy_export",
+        "-I/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/tests/host",
+        "-I/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/third_party/peddle/Peddle",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/tests/floppy_export/bridge.cpp",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/third_party/peddle/Peddle/Peddle.cpp",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/third_party/peddle/Peddle/PeddleDebugger.cpp",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/third_party/peddle/Peddle/PeddleDisassembler.cpp",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/third_party/peddle/Peddle/StrWriter.cpp",
+        "-o",
+        "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/browser-peddle.dylib"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer",
+      "seconds": 2.906238209019648,
+      "exit": 0
+    },
+    {
+      "name": "positive",
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "test_full_installer.py",
+        "Cases.test_full_native_SYS_UI_sources_disks_publication_root_success"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer",
+      "seconds": 77.82353295799112,
+      "exit": 0
+    }
+  ],
+  "input_pins": 2543,
+  "products": {
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/browser-peddle.dylib": {
+      "sha256": "51df464c7d5de3ec4ff3357ce360f75537ddbd084976ef474a515eaee2a160ab",
+      "bytes": 209480
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/build/setup.prg": {
+      "sha256": "d2f9791f5cf6cd6f510c1fb152d093e58f3443458881350d6151f5b7dfe365f3",
+      "bytes": 44329
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/build/setup.labels": {
+      "sha256": "198ca795497a31d8582d7a9674c546f5458d3736e6c413ef2f84e3245d5474d1",
+      "bytes": 30166
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/build/setup.map": {
+      "sha256": "a199b7067b71f41b553b168ec76dd5ddd843d8c71d652fc276ba5823c841ab2c",
+      "bytes": 685558
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/build/SETUP.FAT": {
+      "sha256": "e3c62e4e1f63bd076baf24844ca0232d47c8f70ea10bb3ab18dd4dfe8753d98a",
+      "bytes": 20541
+    },
+    "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/producer/build/SETUP.PUB": {
+      "sha256": "e0cd722a65877d8528690d668f30d638e8512fcae4fc53804ca492d489c6bcc5",
+      "bytes": 20544
+    }
+  },
+  "whole_SYS_sources_FW_PW": true,
+  "output": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-all-errors-final-positive-20261017/root-output",
+  "scope": "one complete native installer positive with genuineDOS sources; generatedconsumer follows separately; no hardware"
+}

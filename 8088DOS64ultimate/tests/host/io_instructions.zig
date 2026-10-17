@@ -1,3 +1,4 @@
+const trace=@import("trap_fixture.zig");
 const std = @import("std");
 const host = @import("machine.zig");
 const Fixture = host.Fixture;
@@ -88,10 +89,12 @@ test "immediate I O wraps IP and prefixes do not invent repeated bus cycles" {
     var f = try initialize(&.{ 0xf3, 0xf0, 0xe6, 0x21 }, 0x77a5, 0x20);
     defer f.deinit();
     const g = try f.symbol("dos64_guest");
+    try trace.install(&f);
     _ = try f.call("dos64_cpu_step", 100_000);
     try std.testing.expectEqual(@as(u16, 0x204), f.word(g + 24));
     try std.testing.expectEqual(@as(u16, 1), f.word(try f.symbol("dos64_cpu_instructions")));
     try std.testing.expectEqual(@as(u8, 0xa5), f.peek(try f.symbol("dos64_pic_imr")));
+    try trace.enterAndReturn(&f);
     c.dos64_reu_poke(f.machine, 0xffff, 0xe6);
     c.dos64_reu_poke(f.machine, 0, 0x21);
     word(&f, g + 24, 0xffff);

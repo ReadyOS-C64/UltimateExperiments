@@ -1,3 +1,4 @@
+#include "file_error.h"
 #include "template_limits.h"
 #include "publish_assets.h"
 #include "setup_overlay.h"
@@ -9,6 +10,9 @@
 #include "start_template.h"
 #include "pub_config_prefix.h"
 #include <string.h>
+#if DOS64_ALL_FILE_DIAGNOSTICS
+extern const char fd_name_start[],fd_name_cfg[];
+#endif
 struct pb_result_t pb_result;
 static struct pb_result_t ledger;
 #if defined(DOS64_SETUP_PUBLICATION) && DOS64_SETUP_PUBLICATION
@@ -23,7 +27,11 @@ static br_u8 cached,cancelled,profile;
 static br_u16 ticket,generation,last_tick,filled;
 static br_u32 capacity,wire_crc,source_size,window,written,output_raw,fact,cfg_identity;
 static void publish(void){pb_result=ledger;}
-static br_u8 fail(br_u8 error){if(!ledger.error)ledger.error=error;ledger.state=3;publish();return 0;}
+static br_u8 fail(br_u8 error){if(!ledger.error){ledger.error=error;
+#if DOS64_ALL_FILE_DIAGNOSTICS
+if(!fd_code){fd_op=7;fd_leaf=ledger.detail;fd_transport=0;fd_code=error;}
+#endif
+}ledger.state=3;publish();return 0;}
 static br_u32 wide(const br_u8*p){return (br_u32)p[0]|((br_u32)p[1]<<8)|((br_u32)p[2]<<16)|((br_u32)p[3]<<24);}
 static void put(br_u8*p,br_u32 value){br_u8 i;for(i=0;i<4u;++i){p[i]=(br_u8)value;value>>=8;}}
 static br_u8 service(void){br_u16 now;
@@ -69,13 +77,20 @@ static br_u8 verify(br_u32 at,br_u32 size,br_u32 expected){
 static br_u8 get(br_u8 kind){if(!pb_verified_fact(kind,generation,wire_crc,&fact))return fail(PB_FACT);return service();}
 static br_u8 joined(br_u16 offset,const char*name){memcpy(pb_codec_path_source,pb_codec_input+D64_CFG_HOME,128);memset(pb_codec_path_relative,0,128);strcpy((char*)pb_codec_path_relative,name);if(!pb_codec_join()){ledger.detail=pb_codec_error;return fail(PB_CONFIG);}memcpy(pb_codec_input+offset,pb_codec_path_output,128);return 1;}
 br_u8 pb_build(void){br_u32 expected;
- if(ledger.state){publish();return 0;}ledger.state=1;cancelled=cached=0;filled=0;written=0;output_raw=0xffffffffUL;
+ if(ledger.state){publish();return 0;}
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ fd_tail=(br_u16)fd_name_cfg; /* PW retained canonical home; construction target, no authority. */
+#endif
+ ledger.state=1;cancelled=cached=0;filled=0;written=0;output_raw=0xffffffffUL;
  #if defined(DOS64_SETUP_PUBLICATION) && DOS64_SETUP_PUBLICATION
  if(rw_state()!=RW_IDLE)return fail(PB_PHASE);
 #endif
  ticket=so_publish_ticket();if(!ticket||!bc_files_closed())return fail(PB_PHASE);capacity=so_capacity();
  if(!ps_clock_poll())return fail(PB_CLOCK);last_tick=ps_ticks;if(!service())return 0;
  sq_page=0;if(sq_read()!=512u){ledger.detail=sq_error();return fail(PB_INPUT);}memset(pb_codec_input,0,D64_CFG_BYTES);memcpy(pb_codec_input+D64_CFG_HOME,sq_bytes+SQ_HOME,128);generation=sq_bytes[8]|((br_u16)sq_bytes[9]<<8);if(wide(sq_bytes+12)!=capacity)return fail(PB_INPUT);
+ #if DOS64_ALL_FILE_DIAGNOSTICS
+ fd_set_path((char*)pb_codec_input+D64_CFG_HOME);fd_tail=(br_u16)fd_name_cfg;
+#endif
  sq_page=1;if(sq_read()!=192u){ledger.detail=sq_error();return fail(PB_INPUT);}profile=sq_bytes[160];wire_crc=wide(sq_bytes+188);
  if(!get(PB_A_BYTES)||fact!=368640UL)return ledger.error?0:fail(PB_FACT);if(!get(PB_A_CRC))return 0;put(pb_codec_input+D64_CFG_A_CRC,fact);
  if(!get(PB_B_BYTES)||fact!=368640UL)return ledger.error?0:fail(PB_FACT);if(!get(PB_B_CRC))return 0;put(pb_codec_input+D64_CFG_B_CRC,fact);
@@ -84,10 +99,16 @@ br_u8 pb_build(void){br_u32 expected;
  if(!joined(D64_CFG_A,"A.IMG")||!joined(D64_CFG_B,"B.IMG")||!joined(D64_CFG_C,"C.IMG"))return 0;
  pb_codec_input[D64_CFG_PROFILE+2u]=profile;pb_codec_input[D64_CFG_PRESENT]=7;pb_codec_input[D64_CFG_BOOT_ABI]=1;put(pb_codec_input+D64_CFG_REU_BYTES,capacity);
  if(!pb_codec_make()){ledger.detail=pb_codec_error;return fail(PB_CONFIG);}memcpy(pb_codec_input,pb_codec_output,D64_CFG_BYTES);if(!pb_codec_validate()){ledger.detail=pb_codec_error;return fail(PB_CONFIG);}cfg_identity=wide(pb_codec_output+D64_CFG_CRC);ledger.cfg_crc=pb_codec_fast_crc(pb_codec_output,D64_CFG_BYTES);if(c32_error)return fail(PB_CRC);
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ fd_tail=(br_u16)fd_name_start;
+#endif
  if(!read(PB_DESCRIPTOR,st_descriptor,64))return 0;memcpy(st_home,pb_codec_output+D64_CFG_HOME,128);st_base=0xdf1cu;st_template_bytes=source_size;st_cancel=st_io_error=0;
  if(!st_validate()){ledger.detail=st_error;return ledger.error?0:fail(PB_TEMPLATE);}cached=0;
  if(!st_copy_patch()||!flush()){ledger.detail=st_error;return ledger.error?0:fail(PB_TEMPLATE);}expected=output_raw^0xffffffffUL;
  if(written!=source_size||!verify(PB_START,source_size,expected))return ledger.error?0:fail(PB_DMA);
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ fd_tail=(br_u16)fd_name_cfg;
+#endif
  if(!write(PB_CFG,pb_codec_output,D64_CFG_BYTES)||!verify(PB_CFG,D64_CFG_BYTES,ledger.cfg_crc))return 0;
  if(!service()||so_publish_ticket()!=ticket||!bc_files_closed())return ledger.error?0:fail(PB_PHASE);
  ledger.start_crc=expected;ledger.start_bytes=source_size;ledger.state=2;publish();return 1;

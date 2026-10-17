@@ -1,3 +1,4 @@
+#include "file_error.h"
 #include "raw_output.h"
 #include "template_limits.h"
 #include "bulk_context.h"
@@ -62,7 +63,14 @@ static br_u8 cfg_bound;
 #define cfg_chunk(p,n,o) 1
 #endif
 static void publish(void){rw_result=ledger;}
-static void first(br_u8 e){if(!ledger.error)ledger.error=e;}
+#if DOS64_ALL_FILE_DIAGNOSTICS
+static const br_u8 fd_rw_ops[]={0,6,1,8,8,4,1,2,3,3,9,11,4};
+#endif
+static void first(br_u8 e){if(!ledger.error){ledger.error=e;
+#if DOS64_ALL_FILE_DIAGNOSTICS
+if(!fd_code){fd_op=ledger.phase<13?fd_rw_ops[ledger.phase]:0;fd_leaf=ledger.leaf;fd_transport=ledger.transport;fd_code=e;}
+#endif
+}}
 static void failed(void){
 #if defined(DOS64_SETUP_PUBLICATION) && DOS64_SETUP_PUBLICATION
  /* Private ledger offsets are locked by rw_result_t ABI20 assertions/tests.
@@ -140,6 +148,9 @@ static br_u8 op(br_u8 phase,br_u8 command,br_u8 mode,br_u32 address,br_u16 count
  memset(&br_request,0,sizeof(br_request));br_request.op=command;br_request.mode=mode;br_request.address=address;br_request.length=count;
  if(command==BR_OPEN)memcpy(br_request.path,owned.path,128);
  bc_config[1].owner=0xa5;bc_config[1].target=2;bc_config[1].capacity=owned.capacity;memcpy(bc_config[1].root,owned.root,128);
+ #if DOS64_ALL_FILE_DIAGNOSTICS
+ ledger.phase=phase;
+ #endif
  br_now=now;bc_slot=1;
  if(!bc_start()){if(!ledger.error){ledger.leaf=br_result.error?br_result.error:br_result.rejected;ledger.transport=br_result.transport;}first(RW_FILE);failed();return 0;}
  ledger.phase=phase;waiting=1;began=now;steps=0;return 1;
@@ -174,6 +185,9 @@ br_u8 rw_begin(void){br_u8 reason;
 #endif
  owned=rw_request;
  if(owned.capacity!=so_capacity()||ns_io_owner!=0xa5||ns_capacity!=owned.capacity||ns_io_error||ns_cancel||!source_ok()||!path_ok()){ledger.rejected=1;publish();return 0;}
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ fd_set_path(owned.path);
+#endif
  sq_page=0;
  if(sq_read()!=512u){reason=sq_error();first(reason==SQ_CANCEL?RW_CANCEL:reason==SQ_CLOCK?RW_CLOCK:RW_INPUT);failed();publish();return 0;}
  if(memcmp(owned.root,sq_bytes+SQ_HOME,128)){ledger.rejected=1;publish();return 0;}

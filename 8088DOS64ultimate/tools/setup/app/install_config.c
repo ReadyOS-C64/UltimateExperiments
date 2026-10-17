@@ -14,11 +14,26 @@
 #include "validator_crc.h"
 #endif
 #include "install_config.h"
+#if D64_CONFIG_INPLACE != 0 && D64_CONFIG_INPLACE != 1
+#error D64_CONFIG_INPLACE must be 0 or 1
+#endif
+#if D64_CONFIG_INPLACE && !D64_CONFIG_VALIDATE_ONLY
+#error D64_CONFIG_INPLACE requires validate-only CONFIG consumer
+#endif
 #include <string.h>
+#if D64_CONFIG_INPLACE
+#include "crc32.h"
+#endif
 
 #if !D64_CONFIG_PATH_ONLY
+#if D64_CONFIG_INPLACE
+unsigned char *d64_cfg_input;
+#else
 unsigned char d64_cfg_input[D64_CFG_BYTES];
+#endif
+#if !D64_CONFIG_INPLACE
 unsigned char d64_cfg_output[D64_CFG_BYTES];
+#endif
 #endif
 unsigned char d64_path_source[D64_PATH_BYTES];
 unsigned char d64_path_relative[D64_PATH_BYTES];
@@ -30,7 +45,14 @@ static unsigned char prepared[D64_CFG_BYTES];
 static unsigned char joined[D64_PATH_BYTES];
 
 #if !D64_CONFIG_PATH_ONLY
-#if D64_VALIDATOR_FAST_CRC
+#if D64_CONFIG_INPLACE
+/* CONFIG serial exclusive CRC engine. Callers hold private input/no callbacks;
+ * failure remains explicit even for a legitimate zero checksum. */
+static unsigned long crc32(const unsigned char*p,unsigned int n){
+ if(!c32_init())return 0;c32_address=(unsigned int)p;c32_length=n;
+ if(!c32_update()||!c32_finish())return 0;return c32_crc;
+}
+#elif D64_VALIDATOR_FAST_CRC
 static unsigned long crc32(const unsigned char *p,unsigned int n) {
     return d64_fast_crc(p,n);
 }
@@ -148,7 +170,7 @@ unsigned char d64_config_make(void) {
     /* Reserved bytes cannot smuggle unvalidated settings into a record. */
     prepared[526] = prepared[527] = 0u;
     crc = crc32(prepared, D64_CFG_CRC);
-#if D64_VALIDATOR_FAST_CRC
+#if D64_VALIDATOR_FAST_CRC || D64_CONFIG_INPLACE
     if(c32_error)return fail(2u);
 #endif
     for (i = 0; i < 4u; ++i) {
@@ -175,7 +197,7 @@ unsigned char d64_config_validate(void) {
     for (i = D64_CFG_REU_BYTES+4u; i < D64_CFG_CRC; ++i)
         if (d64_cfg_input[i]) return fail(1u);
     crc = crc32(d64_cfg_input, D64_CFG_CRC);
-#if D64_VALIDATOR_FAST_CRC
+#if D64_VALIDATOR_FAST_CRC || D64_CONFIG_INPLACE
     if(c32_error)return fail(2u);
 #endif
     for (i = 0; i < 4u; ++i) {
@@ -183,9 +205,28 @@ unsigned char d64_config_validate(void) {
         crc >>= 8;
     }
     if (!fields_valid(d64_cfg_input)) return 0u;
+#if !D64_CONFIG_INPLACE
     memcpy(d64_cfg_output, d64_cfg_input, D64_CFG_BYTES);
+#endif
     return 1u;
 }
+
+#if D64_CONFIG_INPLACE
+/* Caller has privately validated input and explicitly confirmed selected home
+ * in path_source. Rebase only complete case-folded descendant components.
+ * No filesystem probes or fallback; subsequent RM verifies every new path. */
+extern unsigned char d64_rebase_paths(void);
+unsigned char d64_config_rebase(void) {
+    unsigned long crc;
+    if(!field_valid(d64_path_source,1u) || path_length(d64_path_source)<2u || path_length(d64_path_source)>117u)return fail(3u);
+    if(!d64_rebase_paths())return fail(3u);
+    memcpy(d64_cfg_input+D64_CFG_HOME,d64_path_source,128);
+    crc=crc32(d64_cfg_input,D64_CFG_CRC);
+    if(c32_error)return fail(2u);
+    memcpy(d64_cfg_input+D64_CFG_CRC,&crc,4);
+    return d64_config_validate();
+}
+#endif
 
 #endif /* configuration fields/make/validate */
 

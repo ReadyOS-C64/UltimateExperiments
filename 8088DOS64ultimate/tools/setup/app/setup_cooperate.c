@@ -1,3 +1,4 @@
+#include "file_error.h"
 #include "setup_cooperate.h"
 #include "setup_io.h"
 #include "setup_overlay.h"
@@ -9,7 +10,11 @@
 static br_u8 enabled,error,active,stopping,drain,closing,leaf,transport,sampled;
 static br_u16 now,guard;
 static br_u32 capacity;
-static void first(br_u8 e){if(!error){error=e;if(e==NC_LEAF){leaf=br_result.error?br_result.error:br_result.rejected;transport=br_result.transport;}}if(error==NC_CANCEL)ns_cancel=1;else if(error&&!ns_io_error)ns_io_error=2;}
+static void first(br_u8 e){if(!error){error=e;if(e==NC_LEAF){leaf=br_result.error?br_result.error:br_result.rejected;transport=br_result.transport;
+#if DOS64_ALL_FILE_DIAGNOSTICS
+fd_origin=br_request.op|0x80u; /* Byte-only private first cause, before cleanup. */
+#endif
+}}if(error==NC_CANCEL)ns_cancel=1;else if(error&&!ns_io_error)ns_io_error=2;}
 static br_u8 external(void){return ns_cancel?NC_CANCEL:ns_io_error?NC_EXTERNAL:(ns_io_owner!=0xa5||ns_capacity!=capacity)?NC_OWNER:0;}
 br_u8 nc_begin(void){if(enabled||error||active||ns_io_owner!=0xa5||ns_io_error||ns_cancel||ns_capacity!=so_capacity())return 0;capacity=ns_capacity;sampled=0;enabled=1;return nc_service();}
 br_u8 nc_end(void){if(!enabled||error||active||!bc_files_closed()||!nf_inactive())return 0;enabled=0;return 1;}

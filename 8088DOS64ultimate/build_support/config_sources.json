@@ -39,5 +39,11 @@
   "uci.s": "src/uci.s",
   "bulk_reu.c": "tools/setup/app/bulk_reu.c",
   "bootstrap_diag.s": "tools/native/bootstrap_diag.s",
-  "publisher-diagnostics.cfg": "tools/config/publisher-diagnostics.cfg"
+  "publisher-diagnostics.cfg": "tools/config/publisher-diagnostics.cfg",
+  "file_error.s": "tools/native/file_error.s",
+  "file_error.h": "tools/native/file_error.h",
+  "all-file-diagnostics.cfg": "tools/config/all-file-diagnostics.cfg",
+  "relocation.s": "tools/config/relocation.s",
+  "publisher-relocation.cfg": "tools/config/publisher-relocation.cfg",
+  "all-file-relocation.cfg": "tools/config/all-file-relocation.cfg"
 }

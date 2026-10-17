@@ -1,4 +1,14 @@
 .include "abi.inc"
+.ifndef DOS64_TRAP1
+DOS64_TRAP1=0
+.endif
+.if DOS64_TRAP1<>0 .and DOS64_TRAP1<>1
+.error "DOS64_TRAP1 must be zero or one"
+.endif
+
+.if DOS64_TRAP1
+.import dos64_segment_complete
+.endif
 .macpack longbranch
 .import dos64_guest, dos64_cpu_value, dos64_cpu_opcode, dos64_cpu_irq_shadow
 .import dos64_cpu_word_read, dos64_cpu_word_write
@@ -184,8 +194,12 @@ stack_pop_register:
     ; All segment POPs inhibit on repaired NMOS8088; general POPs do not.
     cpx #G_ES
     bcc @done
+.if DOS64_TRAP1
+    jmp dos64_segment_complete
+.else
     lda #2
     sta dos64_cpu_irq_shadow
+.endif
 @done:
     jmp cpu_complete
 

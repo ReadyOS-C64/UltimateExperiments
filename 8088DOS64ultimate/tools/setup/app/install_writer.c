@@ -1,3 +1,4 @@
+#include "file_error.h"
 #include "install_writer.h"
 #include "setup_io.h"
 #include "crc32.h"
@@ -13,12 +14,29 @@ static br_u32 expected,observed,at;
 static br_u8 cancelled,waiting,phase;
 #define SLAB 0x208000UL
 #define READBACK 0x200000UL
+#if DOS64_ALL_FILE_DIAGNOSTICS
+#pragma code-name(push,"AUX_CODE")
+#pragma rodata-name(push,"AUX_RO")
+static const br_u8 fd_si_ops[]={0,1,7,8,4,1,2,9,9,11,4,4};
+static void si_first(br_u8 e){if(!ledger.error){ledger.error=e;if(!fd_code){fd_op=phase<12?fd_si_ops[phase]:0;fd_leaf=br_result.error;fd_transport=br_result.transport;fd_code=e;}}}
+static void fail(br_u8 e){si_first(e);ledger.state=SI_FAILED;}
+#pragma rodata-name(pop)
+#pragma code-name(pop)
+#else
 static void fail(br_u8 e){if(!ledger.error)ledger.error=e;ledger.state=SI_FAILED;}
+#endif
 /* Raw running CRC API; exactly the same finalXOR as the baseline writer. */
 static br_u8 feed(br_u32*v,const br_u8*b,br_u16 n){c32_crc=*v;c32_address=(br_u16)b;c32_length=n;if(!c32_update())return 0;*v=c32_crc;return 1;}
 static br_u8 op(br_u8 p,br_u8 command,br_u8 mode,br_u32 length){
  memset(&br_request,0,sizeof(br_request));br_request.op=command;br_request.mode=mode;br_request.address=command==BR_SAVE?SLAB:READBACK;br_request.length=length;
- if(command==BR_OPEN)memcpy(br_request.path,owned.path,128);
+ if(command==BR_OPEN){memcpy(br_request.path,owned.path,128);
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ fd_set_path(owned.path);
+#endif
+ }
+ #if DOS64_ALL_FILE_DIAGNOSTICS
+ phase=p;
+ #endif
  br_now=si_now;bc_slot=1;
  if(!bc_start()){fail(3);return 0;}phase=p;ledger.phase=p;waiting=1;began=si_now;return 1;
 }
@@ -32,14 +50,32 @@ static br_u8 begin(void){
  bc_config[1].owner=0xa5;bc_config[1].target=2;bc_config[1].capacity=owned.capacity;memcpy(bc_config[1].root,owned.root,128);
  return op(1,BR_OPEN,6,0);
 }
-static void cancel(void){if(ledger.state!=SI_BUSY)return;cancelled=1;if(!ledger.error)ledger.error=6;if(waiting){bc_slot=1;br_now=si_now;bc_cancel();}else fail(6);}
+static void cancel(void){if(ledger.state!=SI_BUSY)return;cancelled=1;
+#if DOS64_ALL_FILE_DIAGNOSTICS
+si_first(6);
+#else
+if(!ledger.error)ledger.error=6;
+#endif
+if(waiting){bc_slot=1;br_now=si_now;bc_cancel();}else fail(6);}
 static br_u8 expected_eof(void){return phase==9&&br_result.error==BR_COUNT&&br_result.known&&!br_result.actual&&!br_result.transport&&br_result.handle==1;}
-static void deadline(void){if((br_u16)(si_now-began)>=owned.timeout&&!cancelled){if(!ledger.error)ledger.error=7;cancel();}}
+static void deadline(void){if((br_u16)(si_now-began)>=owned.timeout&&!cancelled){
+#if DOS64_ALL_FILE_DIAGNOSTICS
+si_first(7);
+#else
+if(!ledger.error)ledger.error=7;
+#endif
+cancel();}}
 static void poll(void){br_u16 n;
  if(ledger.state!=SI_BUSY)return;
  if(waiting){bc_slot=1;br_now=si_now;bc_poll();
   /* The restored native leaf may already have failed while abort is draining. */
-  if(br_result.error&&!expected_eof()&&!ledger.error)ledger.error=4;
+  if(br_result.error&&!expected_eof()&&!ledger.error){
+#if DOS64_ALL_FILE_DIAGNOSTICS
+si_first(4);
+#else
+ledger.error=4;
+#endif
+}
   deadline();if(br_result.state==BR_BUSY)return;waiting=0;
   if(cancelled){fail(ledger.error?ledger.error:6);return;}
   /* Successful SAVE keeps durability uncertainty sticky by design. Expected

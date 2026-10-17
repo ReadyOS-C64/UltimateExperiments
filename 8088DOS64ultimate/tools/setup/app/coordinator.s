@@ -12,6 +12,13 @@ DOS64_FILE_DIAGNOSTICS=0
 .if DOS64_FILE_DIAGNOSTICS
 .import _sf_name,_sf_op,_sf_code,_sf_leaf,_sf_transport
 .endif
+.ifndef DOS64_ALL_FILE_DIAGNOSTICS
+DOS64_ALL_FILE_DIAGNOSTICS=0
+.endif
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.import fd_show,_fd_closed
+.importzp _fd_origin
+.endif
 .macpack longbranch
 .include "coordinator_internal.inc"
 .importzp ptr1
@@ -47,7 +54,11 @@ setup_boot:
  jsr _ps_init
  jsr _sl_install
  cmp #1
+.if DOS64_ALL_FILE_DIAGNOSTICS
+ bne setup_boot_failed
+.else
  jne setup_boot_failed
+.endif
  jsr _rc_begin
 setup_loop:
  jsr _rc_poll
@@ -372,6 +383,18 @@ retire:
 ; Permanent copied code, independent of UI/FAT/PUB residency. All text is
 ; bounded at assembly time. The display is informational, never job authority.
 rc_failure_screen:
+.if DOS64_ALL_FILE_DIAGNOSTICS
+ lda phase_verified
+ beq @early_all
+ lda failure_closed
+ sta _fd_closed
+ lda error
+ sta _fd_origin
+ jmp fd_show
+@early_all:
+ lda error
+ jmp bd_render
+.else
 .if DOS64_BOOT_DIAGNOSTICS
 .if DOS64_FILE_DIAGNOSTICS
  lda phase_verified
@@ -535,6 +558,7 @@ sf_hex:
 @done:
  rts
 .endif
+.endif
 rc_draw_line:
  lda (ptr1),y
  beq @done
@@ -548,6 +572,7 @@ rc_draw_line:
 .if DOS64_FILE_DIAGNOSTICS
 .segment "FILE_DIAG"
 .endif
+.if DOS64_ALL_FILE_DIAGNOSTICS=0
 rc_hex_glyph:
  cmp #10
  bcc :+
@@ -556,7 +581,9 @@ rc_hex_glyph:
  adc #48
  and #$3f
  rts
+.endif
 .segment "AUX_RO"
+.if DOS64_ALL_FILE_DIAGNOSTICS=0
 .if DOS64_FILE_DIAGNOSTICS
 sf_common:
  .byte "ERR00 WHY00 OP:    ",0
@@ -589,4 +616,6 @@ rc_failed_text_end:
 .assert rc_failed_unknown-rc_closed_second<=41,error,"failure row24 closed bounds"
 .assert rc_unknown_second-rc_failed_unknown<=41,error,"failure row23 unknown bounds"
 .assert rc_failed_text_end-rc_unknown_second<=41,error,"failure row24 unknown bounds"
+.endif
+
 .endif

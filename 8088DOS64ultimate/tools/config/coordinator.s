@@ -1,4 +1,11 @@
 .setcpu "6502"
+.ifndef DOS64_ALL_FILE_DIAGNOSTICS
+DOS64_ALL_FILE_DIAGNOSTICS=0
+.endif
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.import fd_show,_fd_closed,_fd_code
+.importzp _fd_origin
+.endif
 .import _cg_poll,_cg_state,_cg_error,_cg_get,_cg_receipt,_cg_closed_quiet
 .import _rm_begin,_rm_poll,_rm_state,_rm_error,_rm_request,_rm_closed_quiet
 .import _cp_begin,_cp_poll,_cp_state,_cp_error,_cp_request,_cp_closed_quiet
@@ -97,8 +104,10 @@ owner_failed:
  lda #2
 failed:
  sta co_error
+.if DOS64_ALL_FILE_DIAGNOSTICS=0
  lda co_state
  sta co_stage
+.endif
  lda #4
 transition:
  sta co_state
@@ -122,6 +131,22 @@ _co_closed_quiet:
  beq co_poll_return
  jmp _cp_closed_quiet
 show:
+.if DOS64_ALL_FILE_DIAGNOSTICS
+ lda co_state
+ cmp #4
+ bne :+
+ jsr _co_closed_quiet
+ sta _fd_closed
+ lda co_error
+ sta _fd_origin
+ lda _fd_code
+ bne @display
+ lda co_error
+ sta _fd_code
+@display:
+ jmp fd_show
+:
+.endif
  jsr _ps_clear
  lda co_state
  asl
@@ -140,6 +165,9 @@ show:
  cpy #40
  bne @text
 @details:
+.if DOS64_ALL_FILE_DIAGNOSTICS
+ rts
+.else
  lda co_state
  cmp #4
  bne @done
@@ -190,11 +218,17 @@ hex:
  adc #48
  and #$3f
  rts
+ .endif
 .segment "RODATA"
 messages:.word 0,media_message,publish_message,done_message,failed_message
 media_message:.asciiz "CHECKING EXISTING DISK IMAGES"
 publish_message:.asciiz "WRITING NEW LAUNCH FOLDER"
 done_message:.asciiz "CONFIG COMPLETE - NEW FOLDER READY"
+.if DOS64_ALL_FILE_DIAGNOSTICS
+failed_message=done_message
+.else
 failed_message:.asciiz "CONFIG FAILED - KEEP OLD INSTALL"
 closed_message:.asciiz "FILES CLOSED. PARTIAL NEW FILES MAY REMAIN"
 unknown_message:.asciiz "RESTART C64 - FILE OWNERSHIP UNKNOWN"
+
+.endif

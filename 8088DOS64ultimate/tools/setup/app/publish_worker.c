@@ -1,3 +1,4 @@
+#include "file_error.h"
 #include "template_limits.h"
 #include "publish_worker.h"
 #include "coordinator_internal.h"
@@ -15,7 +16,11 @@
 extern br_u8 pw_private_state,pw_private_error,pw_private_stage;
 extern br_u16 pw_ticket,pw_last;
 extern br_u32 pw_address,pw_bytes,pw_crc;
-br_u8 pw_fail(br_u8 e){if(!pw_private_error)pw_private_error=e;pw_private_state=3;return 0;}
+br_u8 pw_fail(br_u8 e){if(!pw_private_error){pw_private_error=e;
+#if DOS64_ALL_FILE_DIAGNOSTICS
+if(!fd_code){fd_code=e;fd_op=6;}
+#endif
+}pw_private_state=3;return 0;}
 br_u8 pw_service(void){br_u16 n;
  if(pw_private_error)return 0;
  if(!ps_clock_poll())return pw_fail(2);n=ps_ticks;if((br_u16)(n-pw_last)>=0x8000u)return pw_fail(2);pw_last=n;
@@ -39,3 +44,8 @@ br_u8 pb_verified_fact(br_u8 kind,br_u16 gen,br_u32 identity,br_u32*out){br_u8 p
  }
  *out=rc_retained.output[pair];return 1;
 }
+
+#if DOS64_ALL_FILE_DIAGNOSTICS
+extern const char fd_name_a[],fd_name_start[];
+void pw_diag_a(void){fd_set_path(rc_retained.home);fd_tail=(br_u16)(pw_private_stage==1?fd_name_a:fd_name_start);fd_origin=6;}
+#endif

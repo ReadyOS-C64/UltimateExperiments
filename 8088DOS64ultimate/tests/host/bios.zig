@@ -1,3 +1,4 @@
+const trace=@import("trap_fixture.zig");
 const std = @import("std");
 const host = @import("machine.zig");
 const Fixture = host.Fixture;
@@ -220,6 +221,7 @@ test "video and auxiliary callback whitelists reject wrong gates and propagate c
 test "INT1A RTC probe follows original XT AH decrement and restores caller flags" {
     var f = try init(true);
     defer f.deinit();
+    try trace.install(&f);
     const g = try f.symbol("dos64_guest");
     try coherentCode(&f, 0x200, &.{ 0xcd, 0x1a, 0xf4 });
     try reg(&f, 9, 0);
@@ -232,6 +234,7 @@ test "INT1A RTC probe follows original XT AH decrement and restores caller flags
     try reg(&f, 13, 0xf703);
     try step(&f);
     try std.testing.expectEqual(@as(u16, 0x190), f.word(g + 24));
+    try trace.enterAndReturn(&f);
     try step(&f);
     try step(&f);
     try std.testing.expectEqual(@as(u16, 0x01c9), f.word(g));
@@ -278,6 +281,7 @@ test "INT16 empty read yields in its owned gate then consumes an enqueued key wi
 test "INT16 peek patches original CMP TF IF return flags and leaves the key queued" {
     var f = try init(true);
     defer f.deinit();
+    try trace.install(&f);
     const g = try f.symbol("dos64_guest");
     word(&f, try f.symbol("dos64_keyboard_key"), 0x3062);
     _ = try f.call("dos64_keyboard_enqueue", 100_000);
@@ -289,6 +293,7 @@ test "INT16 peek patches original CMP TF IF return flags and leaves the key queu
     try reg(&f, 0, 0x0100);
     try reg(&f, 13, 0xfdd7);
     try step(&f);
+    try trace.enterAndReturn(&f);
     try step(&f);
     try step(&f);
     // CMP 001Eh,0020h = FFFEh: CF/SF set; PF/AF/ZF/OF clear; STI IF1, TF0.
@@ -454,6 +459,7 @@ test "BIOS gate forwards guest disk cache faults as terminal host failures" {
 test "ordinary INT11 and INT12 ROM handlers query mutable dirty BDA and preserve DS saved flags and stack" {
     var f = try init(true);
     defer f.deinit();
+    try trace.install(&f);
     const g = try f.symbol("dos64_guest");
     code(&f, 0x200, &.{ 0xcd, 0x11, 0xcd, 0x12, 0xcd, 0x11, 0xcd, 0x12, 0xf4 });
     try reg(&f, 9, 0);
@@ -485,6 +491,7 @@ test "ordinary INT11 and INT12 ROM handlers query mutable dirty BDA and preserve
         try step(&f);
         try std.testing.expectEqual(@as(u16, 0xf000), f.word(g + 18));
         try std.testing.expectEqual(if (query % 2 == 0) @as(u16, 0x120) else @as(u16, 0x130), f.word(g + 24));
+        try trace.enterAndReturn(&f);
         for (0..6) |_| try step(&f);
         try std.testing.expectEqual(expected, f.word(g));
         try std.testing.expectEqual(@as(u16, 0x3456), f.word(g + 22));

@@ -1,0 +1,30 @@
+{
+  "PUBLIC_PROMOTION.json": {
+    "sha256": "26490b4a750c0ea20bd5e8f0d232edcb1b12786c0d42b3a490777d7a53d44547",
+    "bytes": 32481
+  },
+  "PUBLIC_RESULT.json": {
+    "sha256": "cedb70edcc9573a83a578dd9116ad9a0fbb9c854880ab0fce733f5333a714f53",
+    "bytes": 404917
+  },
+  "ROOT_REVIEW.json": {
+    "sha256": "77d2c8062ee5e2b30b39e6e0a40df7de142f1f74641639bc0617731239834f39",
+    "bytes": 1555
+  },
+  "public-build.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "public-build.stdout": {
+    "sha256": "2840088cdb46bfe36b8db084c12d511d73baea3a7dda3dc4c64a1ccf78eceba2",
+    "bytes": 184
+  },
+  "public-host.stderr": {
+    "sha256": "c5e3a14c67473a80f9b4560978eae8072c88e1622d2d72ec1c4ebcbbb2aa614d",
+    "bytes": 2087
+  },
+  "public-host.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  }
+}

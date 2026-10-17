@@ -1,0 +1,54 @@
+{
+  "status": "ACCEPTED_PRIVATE_COPY_PREPARATION_COMPONENTS_NOT_PHYSICAL_PURPOSE",
+  "parents": {
+    "reader": {
+      "manifest": {
+        "sha256": "979b8f090d0f99295d8a44e158acb93e6d0330c96db9c1e4441fac66a72cc90b",
+        "bytes": 18364
+      },
+      "pins": 126
+    },
+    "reader-peer": {
+      "manifest": {
+        "sha256": "2a6179cf3953cd4f42d7e67c5e3a43b26c1752639a5dfb4176bd80e7d988d921",
+        "bytes": 14895
+      },
+      "pins": 103
+    },
+    "directory": {
+      "manifest": {
+        "sha256": "e5bbb54b72cd203a7119185e3c6e386d4db4cfd2a3d80b1589f913f8cf78787d",
+        "bytes": 24177
+      },
+      "pins": 158,
+      "source_tool_records_exact": 1106
+    }
+  },
+  "parent_pins_verified": 387,
+  "root_new_native_replays": 0,
+  "reader_native": "9ab9324f412194a66478a12ef6cba86f1247396eeed3aec7004ea21e9760a1c9",
+  "directory_native": "9901c211d0104ed8a233068e2c5e07d9b93e1285a92431b30a49d2123501e497",
+  "source_review": [
+    "READ04/EOF raw2 error latch before laterCancel/clock; excludesSC84; successfulACK/frame/positionunchanged",
+    "original88ac remainsfailed; sourcebuiltpeer4products/6controls exact, no20Mtransfer",
+    "directoryprefix safeleaf/nonzerononce/defaultOFF; mkdir16once after knownstartupCLOSE andfixedparent",
+    "exactCWD capture+acknowledgedrestore before anyOWNER OPEN",
+    "CREATE_NEW OWNER52 withnonce+expectedSHA; readonlyINFO52/poisonedREADcompare/exactzeroEOF/knownCLOSE",
+    "no retry/adopt/delete; failednormalCLOSE has nosecondCLOSE; firstcause whileBUSY preserved",
+    "private sourceverification andreadyledgers required; publicreceipt alone grants nothing",
+    "noREU/DMA; CstackCD00..CFFF, prefixbounded, no framewindow; whole16Mmodelguards",
+    "newSYSclearsprivateoneshot: coldsource/session exclusivity remainsouterpurpose responsibility"
+  ],
+  "author_directory_groups": 17,
+  "physical": false,
+  "device_calls": 0,
+  "whole20M_success_for_new_reader": false,
+  "root_administrative_failure": "Initial closure reader assumed mapping; actual source input records are list of path/hash/size. Corrected before any target execution; no waiver.",
+  "next": "Review exact frozen automated physicalpurpose constructor/cleanup/profile/watchdog/source gates; only then sole-owner detacheddispatch; newfull20Mclone remainsunadmitted until physicalcompletecompare/EOF/knownCLOSE",
+  "archive": "agentworking/research/native-owned-copy-components-root-review-20261017",
+  "archive_manifest": {
+    "sha256": "e18bdd26039279643c8c7ae52668ca246d63cc43f1c17ba3e11452140fe1c84f",
+    "bytes": 3643
+  },
+  "archive_pins": 26
+}

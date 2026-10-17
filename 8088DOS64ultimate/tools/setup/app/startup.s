@@ -10,6 +10,12 @@ DOS64_FILE_DIAGNOSTICS=0
 .assert __BOOT_DIAG_LOAD__=$b000,lderror,"cold diagnostic initial source"
 .assert __BOOT_DIAG_SIZE__>0 .and __BOOT_DIAG_SIZE__<=$100,lderror,"cold diagnostic copy bound"
 .endif
+.ifndef DOS64_ALL_FILE_DIAGNOSTICS
+DOS64_ALL_FILE_DIAGNOSTICS=0
+.endif
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.import fd_stash
+.endif
 .import zerobss
 .export runtime_init,fixture_return
 .segment "LOADADDR"
@@ -42,6 +48,9 @@ runtime_init:
  bne fixture_return
  inx
  bne @diag
+.endif
+.if DOS64_ALL_FILE_DIAGNOSTICS
+ jsr fd_stash
 .endif
  jsr zerobss
  lda #<__HIGHBSS_RUN__

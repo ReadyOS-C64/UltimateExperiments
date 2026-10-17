@@ -1,4 +1,14 @@
 .include "abi.inc"
+.ifndef DOS64_TRAP1
+DOS64_TRAP1=0
+.endif
+.if DOS64_TRAP1<>0 .and DOS64_TRAP1<>1
+.error "DOS64_TRAP1 must be zero or one"
+.endif
+
+.if DOS64_TRAP1
+.import dos64_trap_repeat
+.endif
 .macpack longbranch
 .import dos64_native_timer_repeat, dos64_irq_result, cpu_error_return
 .import dos64_cpu_irq_shadow
@@ -130,7 +140,11 @@ string_iteration_complete:
     ; pending marks a restartable completed element, including final CX=0.
     lda #1
     sta dos64_string_pending
+ .if DOS64_TRAP1
+    jsr dos64_trap_repeat
+ .else
     jsr dos64_native_timer_repeat
+ .endif
     jcs cpu_error_return
     lda dos64_irq_result
     cmp #1

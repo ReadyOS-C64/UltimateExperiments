@@ -1,0 +1,79 @@
+{
+  "status": "PASS_NARROW_REPAIR_PEER",
+  "parent_manifest": {
+    "sha256": "979b8f090d0f99295d8a44e158acb93e6d0330c96db9c1e4441fac66a72cc90b",
+    "bytes": 18364
+  },
+  "parent_pins": 126,
+  "native_products_reproduced_exact": {
+    "copy-reader.prg": {
+      "sha256": "9ab9324f412194a66478a12ef6cba86f1247396eeed3aec7004ea21e9760a1c9",
+      "bytes": 13102
+    },
+    "copy-reader.labels": {
+      "sha256": "8b8f2242c0855182d2eb578b04a0440f1c6198574b07b98a25fce308d2d7ed00",
+      "bytes": 14467
+    },
+    "copy-reader.map": {
+      "sha256": "fbbe701076116dbe5128ee6eb83956baa92d55c5faa0b5e928fdd3d318abaf4a",
+      "bytes": 50348
+    },
+    "bulk-peddle.dylib": {
+      "sha256": "8e9fd2fb3f7a1e1c0b59fbce6bf7baa45f386e82bf2cfad55d92de77acb44566",
+      "bytes": 209568
+    }
+  },
+  "source_products_before_after": 66,
+  "actual_controls": 6,
+  "records": [
+    {
+      "name": "counter",
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "counter_firstcause.py"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-owned-copy-reader-firstcause-peer-20261017",
+      "exit": 0,
+      "seconds": 0.49922050000168383
+    },
+    {
+      "name": "earlier",
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "earlier_cause.py"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-owned-copy-reader-firstcause-peer-20261017",
+      "exit": 0,
+      "seconds": 0.21872329100733623
+    },
+    {
+      "name": "positive",
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "short_positive.py"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-owned-copy-reader-firstcause-peer-20261017",
+      "exit": 0,
+      "seconds": 3.0557384169951547
+    },
+    {
+      "name": "ABI",
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "test_components.py",
+        "Native.test_21_all_touched_C_ABI_bound_before_construction"
+      ],
+      "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-owned-copy-reader-firstcause-peer-20261017/work",
+      "exit": 0,
+      "seconds": 2.2140919170051347
+    }
+  ],
+  "scope": "2 old status-first counters repaired+2 earliercause reversecontrols+3frame98304B positive/cancelknownclose/full16MiBREU+34CABI; no newfull20M/EOF transferclaim",
+  "public_or_device_changes": false,
+  "old88ac_preserved_NOT_READY": true,
+  "outer_entry_freshness": "OneSYS/zerobss andfreshdirectoryOWNER/exclusivecoldtransport remainexternalcallerproof; no physical purpose approval"
+}

@@ -1,4 +1,10 @@
 .include "abi.inc"
+.ifndef DOS64_TRAP1
+DOS64_TRAP1=0
+.endif
+.if DOS64_TRAP1
+.import dos64_trap_irq
+.endif
 .macpack longbranch
 .import dos64_pit_poll, dos64_pit_poll_enabled
 .import dos64_guest, dos64_cpu_status, dos64_cpu_pending, dos64_cpu_irq_shadow
@@ -211,6 +217,9 @@ dos64_irq_try:
     sta dos64_cpu_value+1
     jsr dos64_stack_push
     jcs irq_memory_error
+ .if DOS64_TRAP1
+    jsr dos64_trap_irq
+ .endif
     lda dos64_guest+G_FLAGS+1
     and #$FC
     sta dos64_guest+G_FLAGS+1

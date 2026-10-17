@@ -8,7 +8,7 @@ import hashlib
 import zlib
 
 
-def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payload=None, shadow_payload=None,saver_payload=None,format_payload=None):
+def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payload=None, shadow_payload=None,saver_payload=None,format_payload=None,trap_payload=None):
     errors = []
     symbols = {name.lstrip("."): int(addr, 16) for addr, name in
                re.findall(r"^al ([0-9A-Fa-f]+) (\S+)", labels_text, re.M)}
@@ -27,7 +27,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
               "LOADERCOLD": (0x4000,0x43FF), "LOADERADOPT": (0x6000,0x617F),
               "IMPORTCODE": (0x7000, 0x7FFF),
               "COLDINIT": (0x7000,0x7FFF), "COLDRODATA": (0x7000,0x7FFF), "UNITCOLD": (0x7401,0x7FFF),
-              "UNITEXTRA": (0xEF00,0xEFFA),
+              "UNITEXTRA": (0xEF00,0xEFFA), "CPUTRAP":(0xFE00,0xFEFF),
               "NATIVESTATE": (0x080D,0x3FFF), "INPUTCODE": (0xC900,0xCFFF),
               "UCIBUFFER": (0xC100, 0xC8FF),
               "IRQMAIN":(0xC900,0xCFFF),"IRQDEVICE":(0xC900,0xCFFF),"PITCODE":(0xC900,0xCFFF),"GFXCODE":(0xC900,0xCFFF),
@@ -334,6 +334,14 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             load["padding"].append({"name":"shadow_source_tail_zero","start":0xa000+count,"end":0xadff,"bytes":3584-count,"file_offset":0xa000+count-0x801+2,"value":0})
             load["shadow"]={"source":0xa000,"run":0xf000,"window_bytes":3584,"linked_bytes":count,"payload_checked":shadow_payload is not None,"excludes":"FE00-FFFF hardware vectors","ownership":"verified cold copy before guest cache; permanent RAM+IO/no KERNAL"}
             load["end_exclusive"]=0xae00
+    trap=next((seg for seg in segments if seg["name"]=="CPUTRAP"),None)
+    if trap:
+        count=trap["bytes"]
+        expected={"__TRAP_RUN_START__":0xfe00,"__TRAP_RUN_SIZE__":0x100,"__TRAP_RUN_FILEOFFS__":0,"__TRAP_RUN_LAST__":0xfe00+count,"__CPUTRAP_LOAD__":0xfe00,"__CPUTRAP_RUN__":0xfe00,"__CPUTRAP_SIZE__":count}
+        if not load["shadow"] or trap["start"]!=0xfe00 or not 1<=count<=256 or any(symbols.get(k)!=v for k,v in expected.items()):errors.append("CPU trap layout must fit FE00-FEFF after separate HD shadow")
+        if prg is not None and (trap_payload is None or len(trap_payload)!=count or prg[0xae00-0x801+2:0xae00-0x801+2+count]!=trap_payload):errors.append("CPU trap exact linked source required")
+        load["cpu_trap"]={"source":0xae00,"run":0xfe00,"linked_bytes":count,"verified_cold_pages":15,"ownership":"copied and verified before cache; FF00-FFFF excluded"}
+    elif trap_payload is not None:errors.append("CPU trap payload requires linked CPUTRAP")
     saver=next((seg for seg in segments if seg["name"]=="SAVERCODE"),None)
     load["saver"]=None
     if saver:
@@ -345,7 +353,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
             header=b"D64O"+bytes((1,7))+struct.pack("<HHH",count,0xb010,0)+b"SAVE"
             if len(block)!=0x800 or block[:16]!=header or any(block[16+count:]):errors.append("SAVER startup header/slot/tail mismatch")
             if saver_payload is None or len(saver_payload)!=count or block[16:16+count]!=saver_payload:errors.append("SAVER exact linked source payload required")
-        load["padding"].append({"name":"saver_source_gap_zero","start":0xae00,"end":0xafff,"bytes":512,"file_offset":0xae00-0x801+2,"value":0})
+        load["padding"].append({"name":"saver_source_gap_zero","start":0xae00+(trap["bytes"]if trap else 0),"end":0xafff,"bytes":512-(trap["bytes"]if trap else 0),"file_offset":0xae00-0x801+2+(trap["bytes"]if trap else 0),"value":0})
         load["end_exclusive"]=0xb800
         load["saver"]={"source":0xb000,"run":0xb010,"reu":0x343000,"slot_bytes":2048,"linked_bytes":count,"cache_frames":[24,32],"compare_stage":0xb800,"ownership":"modal paused borrow only; normal guest cache32frames"}
     elif saver_payload is not None:errors.append("SAVER payload requires linked SAVERCODE")
@@ -363,7 +371,7 @@ def verify(map_text, labels_text, prg=None, overlay_payloads=None, import_payloa
     load["padding_bytes"] = sum(p["bytes"] for p in load["padding"])
     load["shadow_source_bytes"]=load["shadow"]["linked_bytes"]if load["shadow"]else 0
     load["payload_bytes"] = load["end_exclusive"] - load["start"]
-    load["accounted_payload_bytes"]=load["linked_file_bytes"]+load["startup_overlay_bytes"]+load["padding_bytes"]+load["shadow_source_bytes"]
+    load["accounted_payload_bytes"]=load["linked_file_bytes"]+load["startup_overlay_bytes"]+load["padding_bytes"]+load["shadow_source_bytes"]+(trap["bytes"]if trap else 0)
     if load["accounted_payload_bytes"]!=load["payload_bytes"]:errors.append("Packaged bytes are not completely accounted by linked sources, slots and exact initialization padding")
     load["prg_bytes"] = load["payload_bytes"] + 2
     if prg is not None:
@@ -395,6 +403,7 @@ if __name__ == "__main__":
     parser.add_argument("--overlay-format",type=Path)
     parser.add_argument("--shadow",type=Path)
     parser.add_argument("--saver",type=Path)
+    parser.add_argument("--cpu-trap",type=Path)
     parser.add_argument("--import-code", type=Path)
     args = parser.parse_args()
     map_path = args.map
@@ -412,7 +421,7 @@ if __name__ == "__main__":
     if args.overlay_disk:
         if payloads is None:parser.error("DISK requires baseline payloads")
         payloads["DISKCODE"]=args.overlay_disk.read_bytes()
-    report = verify(map_path.read_text(), args.labels.read_text(), prg_path.read_bytes(), payloads, args.import_code.read_bytes() if args.import_code else None,args.shadow.read_bytes()if args.shadow else None,args.saver.read_bytes()if args.saver else None,args.overlay_format.read_bytes()if args.overlay_format else None)
+    report = verify(map_path.read_text(), args.labels.read_text(), prg_path.read_bytes(), payloads, args.import_code.read_bytes() if args.import_code else None,args.shadow.read_bytes()if args.shadow else None,args.saver.read_bytes()if args.saver else None,args.overlay_format.read_bytes()if args.overlay_format else None,args.cpu_trap.read_bytes()if args.cpu_trap else None)
     map_path.with_suffix(".memory.json").write_text(json.dumps(report, indent=2)+"\n")
     if report["errors"]:
         raise SystemExit("\n".join(report["errors"]))

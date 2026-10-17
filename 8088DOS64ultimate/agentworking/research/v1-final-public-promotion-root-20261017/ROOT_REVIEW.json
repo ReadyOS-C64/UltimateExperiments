@@ -1,0 +1,35 @@
+{
+  "status": "PROMOTED66_REVIEWED_SOURCES_FRESH_PUBLIC_BUILD_AND25HOST_PASS",
+  "public_source_writes": 66,
+  "promoted_file_successor_hashes_exact": true,
+  "native12_and_all_package_files_equal_private": true,
+  "archive_identity": {
+    "sha256": "c3a126c63acae5ccc361e46b75c88f7cd513c725bb215afe5439daa83b2ad407",
+    "bytes": 139786
+  },
+  "source_products_current_exact": 1567,
+  "actual_public_host_tests": 25,
+  "public_result_identity": {
+    "sha256": "cedb70edcc9573a83a578dd9116ad9a0fbb9c854880ab0fce733f5333a714f53",
+    "bytes": 404917
+  },
+  "installer_positive_review": "agentworking/evidence/native-installer-final-positive-root-review-20261017.json",
+  "DEBUG_vertical_review": "agentworking/evidence/v1-debug-trap-root-review-20261017.json",
+  "runtime_native": {
+    "sha256": "0bfaf15df9a3382bc168f6b231d663cdb81efd12c59dd34f870faae6df665d88",
+    "bytes": 47105
+  },
+  "setup_native": {
+    "sha256": "d2f9791f5cf6cd6f510c1fb152d093e58f3443458881350d6151f5b7dfe365f3",
+    "bytes": 44329
+  },
+  "config_native": {
+    "sha256": "de0a062f1eb5c528d9813da4426a18aa06100f834d83f6e7a34eae643c7c40b1",
+    "bytes": 44382
+  },
+  "full_private_CPU_and_default_test_scope": "18focused+507base/5701corpus and6defaultswitching controls retained on exact21sourceprofile; not unnecessarily replayed",
+  "new_performance_work": false,
+  "physical": false,
+  "V1_complete": false,
+  "scope": "Source-only coherent candidate matches exact private behavior-proven assets; finalphysical/human/currentTurbo/moreutilities remain separately required"
+}

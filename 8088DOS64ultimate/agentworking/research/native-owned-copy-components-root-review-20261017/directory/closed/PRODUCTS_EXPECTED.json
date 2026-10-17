@@ -1,0 +1,22 @@
+[
+  {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-owned-directory-prelude-20261017/work/owner-prelude.prg",
+    "sha256": "9901c211d0104ed8a233068e2c5e07d9b93e1285a92431b30a49d2123501e497",
+    "bytes": 11630
+  },
+  {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-owned-directory-prelude-20261017/work/owner-prelude.labels",
+    "sha256": "5b3e95f31a79920172cb025bda2d8727b463fd5c01112dca9f8d9cbfca9a7c2f",
+    "bytes": 13231
+  },
+  {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-owned-directory-prelude-20261017/work/owner-prelude.map",
+    "sha256": "53b0d1017dadd4e07d4b079dc765dffde278fb2f67ca6c5060dab26675d4afcd",
+    "bytes": 47746
+  },
+  {
+    "path": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-owned-directory-prelude-20261017/work/bulk-peddle.dylib",
+    "sha256": "d421f641edeb9abde2714113ddccd2381c386a7f8c01fbee02d8c5c054773084",
+    "bytes": 209792
+  }
+]

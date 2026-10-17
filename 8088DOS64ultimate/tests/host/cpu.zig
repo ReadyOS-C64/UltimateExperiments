@@ -1,3 +1,4 @@
+const trace=@import("trap_fixture.zig");
 const std=@import("std");
 const host=@import("machine.zig");
 const Fixture=host.Fixture;
@@ -326,6 +327,7 @@ test "all original Jcc conditions and 60 aliases match every relevant flag combi
 
 test "LOOP family wraps counters preserves flags and applies signed prefixed displacement" {
     var f=try init(2,1);defer f.deinit();const g=try f.symbol("dos64_guest");
+    try trace.install(&f);try reg(&f,10,0x2000);try reg(&f,4,0x800);
     for(0..4) |operation| for([_]u8{0x80,0x7f}) |displacement| {
         _=try f.call("dos64_cache_init",50_000);
         try program(&f,0x1234,0xffff,&.{0x2e,0xe0+@as(u8,@intCast(operation)),displacement});
@@ -337,9 +339,10 @@ test "LOOP family wraps counters preserves flags and applies signed prefixed dis
             const target:u16=if(displacement==0x80) 0xff82 else 0x81;
             try std.testing.expectEqual(if(taken) target else @as(u16,2),f.word(g+24));
             try std.testing.expectEqual(after,f.word(g+2));try std.testing.expectEqual(flags,f.word(g+26));
+            try trace.enterAndReturn(&f);
         };
     };
-    try std.testing.expectEqual(@as(u16,64),f.word(try f.symbol("dos64_cpu_instructions")));
+    try std.testing.expectEqual(@as(u16,if(trace.enabled(&f))128 else 64),f.word(try f.symbol("dos64_cpu_instructions")));
 }
 
 

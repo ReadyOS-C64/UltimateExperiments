@@ -1,3 +1,4 @@
+const trace=@import("trap_fixture.zig");
 const std=@import("std");
 const host=@import("machine.zig");
 const Fixture=host.Fixture;
@@ -24,6 +25,7 @@ test "INT uses guest IVT and IRET returns guest handler changes to saved flags" 
     var f=try init(2);defer f.deinit();
     try reg(&f,9,0x1000);try reg(&f,12,0x100);try reg(&f,10,0x2000);try reg(&f,4,0x800);
     try reg(&f,5,0xa55a);try reg(&f,13,0xf703);
+    try trace.install(&f);
     bytes(&f,0x1000,0x100,&.{0xcd,0x13,0xf4});
     guestWord(&f,0,0x4c,0x200);guestWord(&f,0,0x4e,0x3000);
     // Normal guest code implements a handler: preserve BP, clear saved CF,
@@ -38,6 +40,7 @@ test "INT uses guest IVT and IRET returns guest handler changes to saved flags" 
     try std.testing.expectEqual(@as(u16,0x102),reuWord(&f,0x2000,0x7fa));
     try std.testing.expectEqual(@as(u16,0x1000),reuWord(&f,0x2000,0x7fc));
     try std.testing.expectEqual(@as(u16,0xf703),reuWord(&f,0x2000,0x7fe));
+    try trace.enterAndReturn(&f);
     for(0..6) |_| try step(&f);
     try std.testing.expectEqual(@as(u16,0x1000),try get(&f,9));
     try std.testing.expectEqual(@as(u16,0x102),try get(&f,12));
@@ -52,11 +55,13 @@ test "INT uses guest IVT and IRET returns guest handler changes to saved flags" 
 test "INT captures aliased IVT before writing original FLAGS CS IP stack frame" {
     var f=try init(1);defer f.deinit();
     try reg(&f,9,0x1000);try reg(&f,12,0x100);try reg(&f,10,0);try reg(&f,4,0x50);try reg(&f,13,0xf703);
+    try trace.install(&f);
     bytes(&f,0x1000,0x100,&.{0xcd,0x13});guestWord(&f,0,0x4c,0x200);guestWord(&f,0,0x4e,0x4321);
     bytes(&f,0x4321,0x200,&.{0xcf});
     try step(&f);try std.testing.expectEqual(@as(u16,0x4321),try get(&f,9));try std.testing.expectEqual(@as(u16,0x200),try get(&f,12));
     try flush(&f);try std.testing.expectEqual(@as(u16,0xf703),reuWord(&f,0,0x4e));
     try std.testing.expectEqual(@as(u16,0x1000),reuWord(&f,0,0x4c));try std.testing.expectEqual(@as(u16,0x102),reuWord(&f,0,0x4a));
+    try trace.enterAndReturn(&f);
     try step(&f);try std.testing.expectEqual(@as(u16,0x1000),try get(&f,9));try std.testing.expectEqual(@as(u16,0x102),try get(&f,12));
     try std.testing.expectEqual(@as(u16,0x50),try get(&f,4));try std.testing.expectEqual(@as(u16,0xf703),try get(&f,13));
 }
@@ -66,10 +71,12 @@ test "INT3 INTO and final IVT entry preserve software routing and stack wrap" {
         var f=try init(2);defer f.deinit();
         const vector:u16=if(opcode==0xcc) 3 else if(opcode==0xcd) 255 else 4;
         try reg(&f,9,0xffff);try reg(&f,12,0xffff);try reg(&f,10,0x1234);try reg(&f,4,1);try reg(&f,13,0xffd7);
+        try trace.install(&f);
         bytes(&f,0xffff,0xffff,&.{0x26,opcode,0xff});
         guestWord(&f,0,vector*4,0xffff);guestWord(&f,0,vector*4+2,0x2000);bytes(&f,0x2000,0xffff,&.{0xcf});
         try step(&f);try std.testing.expectEqual(@as(u16,0x2000),try get(&f,9));try std.testing.expectEqual(@as(u16,0xffff),try get(&f,12));
         try std.testing.expectEqual(@as(u16,0xfffb),try get(&f,4));
+        try trace.enterAndReturn(&f);
         try step(&f);try std.testing.expectEqual(@as(u16,0xffff),try get(&f,9));
         try std.testing.expectEqual(@as(u16,if(opcode==0xcd) 2 else 1),try get(&f,12));
         try std.testing.expectEqual(@as(u16,1),try get(&f,4));try std.testing.expectEqual(@as(u16,0xffd7),try get(&f,13));

@@ -1,0 +1,13 @@
+{
+  "home": "/usb1/DOS64_TEST/copy20m-local",
+  "nonce": "20261017000000000000000000002000",
+  "OWNER_sha256": "6f8b55a978535a33305a411a58b7b2c661dfb975cc84f642ddb774e2c52416fa",
+  "native_source_sha256": "1328dda3ea4c8d6936de77a1b41fb2beee61c09086b7f98fdb1dabcc9663e402",
+  "mkdir_once": true,
+  "OWNER_create_new": true,
+  "OWNER_readback_exact": true,
+  "EOF_zero": true,
+  "known_closed": true,
+  "CWD_CD_restore_ack": true,
+  "REU_writes": 0
+}

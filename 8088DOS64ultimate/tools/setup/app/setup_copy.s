@@ -10,10 +10,18 @@ DOS64_BOOT_DIAGNOSTICS=0
 .ifndef DOS64_FILE_DIAGNOSTICS
 DOS64_FILE_DIAGNOSTICS=0
 .endif
+.ifndef DOS64_ALL_FILE_DIAGNOSTICS
+DOS64_ALL_FILE_DIAGNOSTICS=0
+.endif
 .if DOS64_FILE_DIAGNOSTICS
 .import __FILE_DIAG_LOAD__,__FILE_DIAG_RUN__,__FILE_DIAG_SIZE__
+.if DOS64_ALL_FILE_DIAGNOSTICS
+.assert __FILE_DIAG_RUN__=$bf9f,lderror,"all-file diagnostic exact BSS tail"
+.assert __FILE_DIAG_SIZE__<=$61,lderror,"all-file diagnostic helper bound"
+.else
 .assert __FILE_DIAG_RUN__=$bfa0,lderror,"file diagnostic helper run"
 .assert __FILE_DIAG_SIZE__<=$60,lderror,"file diagnostic helper bound"
+.endif
 .endif
 .importzp ptr1,ptr2,ptr3
 .import __HIGH_CODE_LOAD__,__HIGH_CODE_RUN__,__HIGH_CODE_SIZE__

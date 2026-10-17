@@ -1,3 +1,4 @@
+#include "file_error.h"
 #include "setup_overlay.h"
 #include "bulk_context.h"
 #include "install_config.h"
@@ -47,7 +48,10 @@ static void publish(void){so_result=ledger;}
 #pragma rodata-name(push,"AUX_RO")
 #endif
 static void first(br_u8 e){if(!ledger.error){ledger.error=e;
-#if DOS64_FILE_DIAGNOSTICS
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ if(!fd_code){fd_op=stage;fd_leaf=ledger.leaf;fd_transport=ledger.transport;fd_code=e;}
+#endif
+#if DOS64_FILE_DIAGNOSTICS && !DOS64_ALL_FILE_DIAGNOSTICS
  if(destination>=SO_FAT){memcpy(sf_name,destination==SO_FAT?"SETUP.FAT":"SETUP.PUB",10);sf_op=stage;sf_code=ledger.error;sf_leaf=ledger.leaf;sf_transport=ledger.transport;}
 #endif
 }}
@@ -69,7 +73,11 @@ static void failed(void){
 static br_u8 op(br_u8 command){
  memset(&br_request,0,sizeof(br_request));br_request.op=command;br_request.mode=1;
  br_request.address=destination==SO_FAT?SO_FAT_SLOT:SO_PUBLISH_SLOT;br_request.length=asset_bytes();
- if(command==BR_OPEN){br_u8 n=(br_u8)strlen(owned.home);memcpy(br_request.path,owned.home,n);strcpy(br_request.path+n,destination==SO_FAT?"/SETUP.FAT":"/SETUP.PUB");}
+ if(command==BR_OPEN){br_u8 n=(br_u8)strlen(owned.home);memcpy(br_request.path,owned.home,n);strcpy(br_request.path+n,destination==SO_FAT?"/SETUP.FAT":"/SETUP.PUB");
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ fd_set_path(br_request.path);
+#endif
+ }
  bc_config[0].owner=0xa5;bc_config[0].target=1;bc_config[0].capacity=owned.capacity;memcpy(bc_config[0].root,owned.home,128);
  bc_slot=0;br_now=so_now;
  if(!bc_start()){handle=br_result.handle;if(!ledger.error){ledger.leaf=br_result.error?br_result.error:br_result.rejected;ledger.transport=br_result.transport;}first(SO_FILE);return 0;}

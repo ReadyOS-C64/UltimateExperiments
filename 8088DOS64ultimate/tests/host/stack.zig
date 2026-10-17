@@ -1,3 +1,4 @@
+const trace=@import("trap_fixture.zig");
 const std = @import("std");
 const host = @import("machine.zig");
 const Fixture = host.Fixture;
@@ -134,6 +135,7 @@ test "segment stack instructions use SS and repaired NMOS POP segment inhibits n
 test "SAHF LAHF exhaust low byte preserving high flags and AL" {
     var f = try init(2);
     defer f.deinit();
+    try trace.install(&f);try reg(&f,10,0x2000);try reg(&f,4,0x800);
     try program(&f, 0x1000, 0x100, &.{ 0x9e, 0x9f });
     for (0..256) |n| {
         try reg(&f, 12, 0x100);
@@ -142,9 +144,11 @@ test "SAHF LAHF exhaust low byte preserving high flags and AL" {
         try step(&f);
         const expected: u16 = (@as(u16, @intCast(n)) & 0xd5) | 2;
         try std.testing.expectEqual(@as(u16, 0xfb00) | expected, try get(&f, 13));
+        try trace.enterAndReturn(&f);
         try reg(&f, 0, 0x0037);
         try step(&f);
         try std.testing.expectEqual((expected << 8) | 0x37, try get(&f, 0));
+        try trace.enterAndReturn(&f);
     }
 }
 

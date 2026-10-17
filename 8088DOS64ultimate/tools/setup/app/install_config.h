@@ -7,6 +7,11 @@
 #define D64_CONFIG_PATH_ONLY 0
 #endif
 
+#ifndef D64_CONFIG_INPLACE
+#define D64_CONFIG_INPLACE 0
+#endif
+/* CONFIG-only validation capability. Input is the validated output; strict
+ * checks are unchanged. Generic full/START builds retain independent output. */
 /* Byte-defined durable CFG and REU handoff body. Never serialize C structs. */
 #define D64_CFG_BYTES 576u
 #define D64_CFG_HOME 8u
@@ -25,8 +30,17 @@
 #define D64_CFG_VERSION 1u
 
 #if !D64_CONFIG_PATH_ONLY
+#if D64_CONFIG_INPLACE
+extern unsigned char *d64_cfg_input;
+#else
 extern unsigned char d64_cfg_input[D64_CFG_BYTES];
+#endif
+#if D64_CONFIG_INPLACE
+#define d64_cfg_output d64_cfg_input
+unsigned char d64_config_rebase(void);
+#else
 extern unsigned char d64_cfg_output[D64_CFG_BYTES];
+#endif
 #endif
 extern unsigned char d64_path_source[D64_PATH_BYTES];
 extern unsigned char d64_path_relative[D64_PATH_BYTES];

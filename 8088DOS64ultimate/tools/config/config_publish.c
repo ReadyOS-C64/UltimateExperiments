@@ -1,3 +1,4 @@
+#include "file_error.h"
 #include "config_publish.h"
 #include "config_ui.h"
 #include "media_reinspect.h"
@@ -75,7 +76,28 @@ static const char *const output_name[6]={"DOS64.PRG","DOS64.REL","START.INO","ST
 #endif
 static br_u32 wide(const br_u8*p){return (br_u32)p[0]|((br_u32)p[1]<<8)|((br_u32)p[2]<<16)|((br_u32)p[3]<<24);}
 static void put(br_u8*p,br_u32 v){br_u8 i;for(i=0;i<4;++i){p[i]=(br_u8)v;v>>=8;}}
+#if DOS64_ALL_FILE_DIAGNOSTICS
+#pragma code-name(push,"RI_CODE")
+#pragma rodata-name(push,"RODATA")
+static const br_u8 fd_cp_ops[]={0,1,2,3,10,9,11,4,8,1,7};
+static void first(br_u8 e){
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ __asm__("tax");__asm__("lda _error");__asm__("bne @fd_done");__asm__("stx _error");
+ __asm__("lda _fd_code");__asm__("bne @fd_done");__asm__("stx _fd_code");
+ __asm__("lda _fd_origin");__asm__("sta _fd_op");
+ __asm__("lda _leaf");__asm__("sta _fd_leaf");__asm__("lda _transport");__asm__("sta _fd_transport");
+ __asm__("@fd_done:");
+#else
+ if(!error)error=e;
+#endif
+}
+#pragma rodata-name(pop)
+#pragma code-name(pop)
+/* Only reached within private PREPARE before any error; each failing step returns immediately. */
+static void diagnostic_build(const char*name){fd_set_path(new_root);fd_tail=(br_u16)name;fd_origin=7;}
+#else
 static void first(br_u8 e){if(!error)error=e;}
+#endif
 static void publish(void){cp_result.state=state;cp_result.error=error;cp_result.stage=phase;cp_result.file=file;cp_result.leaf=leaf;cp_result.transport=transport;cp_result.cleanup=state==CP_BUSY||!bc_files_closed();cp_result.mask=mask;cp_result.identity=identity;}
 static void sample(void){if(!ps_clock_poll())clock_bad=1;else{now=ps_ticks;if((br_u16)(now-last)>=0x8000u)clock_bad=1;last=now;}}
 static void config(void){bc_slot=slot;bc_config[slot].owner=0xa5;bc_config[slot].target=slot+1;bc_config[slot].capacity=capacity;memcpy(bc_config[slot].root,slot?new_root:release_root,128);br_now=now;}
@@ -103,10 +125,18 @@ return file<3?asset_crc[file]:(file==3?start_crc:(file==4?ini_crc:checksum));
 static void make_ini(void){static const br_u8 text[]="[emulator]\r\ninitial_columns=80\r\n";ini_length=sizeof(text)-1;memcpy(io,text,ini_length);if(columns==40)io[28]='4';}
 static br_u8 alias(const char*a,const char*b){br_u8 i,x,y;for(i=0;i<128;++i){x=a[i];y=b[i];if(x>='A'&&x<='Z')x+=32;if(y>='A'&&y<='Z')y+=32;if(x!=y)return 0;if(!x)return 1;}return 1;}
 static br_u8 operation(br_u8 p,br_u8 op){config();memset(&br_request,0,sizeof(br_request));br_request.op=op;br_request.mode=slot&&p==OPEN?6u:1u;
- if(op==BR_OPEN){memcpy(d64_path_source,slot?new_root:release_root,128);memset(d64_path_relative,0,128);strcpy((char*)d64_path_relative,output?output_name[file]:asset_name[file]);if(!d64_path_join()){first(CP_INPUT);return 0;}memcpy(br_request.path,d64_path_output,128);}
+ if(op==BR_OPEN){memcpy(d64_path_source,slot?new_root:release_root,128);memset(d64_path_relative,0,128);strcpy((char*)d64_path_relative,output?output_name[file]:asset_name[file]);if(!d64_path_join()){first(CP_INPUT);return 0;}memcpy(br_request.path,d64_path_output,128);
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ fd_set_path(br_request.path);
+#endif
+ }
  if(op==BR_LOAD||op==BR_SAVE){br_request.address=address();br_request.length=size;}
  if(op==BR_READ){br_request.length=p==END_READ?1UL:(br_u32)wanted;memset(uci_data,0xa7,512);}
- phase=p;sample();if(clock_bad){first(CP_CLOCK);return 0;}br_now=began=now;steps=0;
+ phase=p;
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ fd_origin=fd_cp_ops[phase];
+#endif
+ sample();if(clock_bad){first(CP_CLOCK);return 0;}br_now=began=now;steps=0;
  if(!bc_start()){if(!error){leaf=br_result.error?br_result.error:br_result.rejected;transport=br_result.transport;}first(CP_FILE);return 0;}waiting=1;return 1;
 }
 static void fail(void){state=CP_FAILED;}
@@ -131,10 +161,28 @@ br_u8 rp_read(br_u16 at,br_u16 n){if(error||at>RP_TEMPLATE_BYTES||n>RP_TEMPLATE_
 br_u8 rp_write(br_u16 at,br_u16 n){br_u16 i;if(error||at>RP_TEMPLATE_BYTES||n>RP_TEMPLATE_BYTES-at||n>256)return 0;if(!dma(OUTPUT_START+at,n,0,io+256))return 0;for(i=0;i<n;++i)io[i]=~io[256u+i];if(!dma(OUTPUT_START+at,n,1,io))return 0;service();return !error;}
 static br_u8 crc_reu(br_u32 at,br_u32 count){br_u16 n;raw=0xffffffffUL;while(count){n=count>512?512u:(br_u16)count;memset(io,0xa7,512);if(!dma(at,n,1,io)||!feed(io,n))return 0;at+=n;count-=n;service();if(error)return 0;}return 1;}
 static br_u8 prepare(void){br_u16 n,at;phase=PREPARE;sample();began=now;
- memcpy(cfg+8,new_root,128);raw=0xffffffffUL;if(!feed(cfg,572))return 0;identity=raw^0xffffffffUL;put(cfg+572,identity);memcpy(d64_cfg_input,cfg,576);if(!d64_config_validate()||memcmp(d64_cfg_output,cfg,576)){first(CP_CONFIG);return 0;}
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ diagnostic_build(output_name[CP_CFG]);
+#endif
+ memcpy(cfg+8,new_root,128);raw=0xffffffffUL;if(!feed(cfg,572))return 0;identity=raw^0xffffffffUL;put(cfg+572,identity);
+#if D64_CONFIG_INPLACE
+ d64_cfg_input=cfg;
+#else
+ memcpy(d64_cfg_input,cfg,576);
+#endif
+if(!d64_config_validate()||memcmp(d64_cfg_output,cfg,576)){first(CP_CONFIG);return 0;}
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ diagnostic_build(output_name[3]);
+#endif
  if(!rp_patch()){first(CP_ASSET);return 0;}start_crc=rp_output_crc;
  if(!crc_reu(OUTPUT_START,asset_size[3])||(raw^0xffffffffUL)!=start_crc){first(CP_COMPARE);return 0;}
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ diagnostic_build(output_name[CP_INI]);
+#endif
  make_ini();raw=0xffffffffUL;if(!feed(io,ini_length))return 0;ini_crc=raw^0xffffffffUL;if(!stage(OUTPUT_INI,io,ini_length)){first(CP_COMPARE);return 0;}
+#if DOS64_ALL_FILE_DIAGNOSTICS
+ diagnostic_build(output_name[CP_CFG]);
+#endif
  for(at=0;at<576;at+=n){n=576-at>256?256u:576-at;if(!stage(OUTPUT_CFG+at,cfg+at,n)){first(CP_COMPARE);return 0;}}
  raw=0xffffffffUL;if(!feed(cfg,576))return 0;checksum=raw^0xffffffffUL;service();return !error;
 }

@@ -1,6 +1,6 @@
 from pathlib import Path
 import json,hashlib,subprocess,shutil,os,sys,zlib,argparse
-ap=argparse.ArgumentParser();ap.add_argument('--role',choices=['runtime'],default='runtime');ap.add_argument('--floppy-format',action='store_true');options=ap.parse_args();role=options.role
+ap=argparse.ArgumentParser();ap.add_argument('--role',choices=['runtime'],default='runtime');ap.add_argument('--floppy-format',action='store_true');ap.add_argument('--cpu-trap',action='store_true');options=ap.parse_args();role=options.role
 P=Path(__file__).resolve().parent;W=P/'work';tools={n:str(Path(shutil.which(n)).resolve())for n in ['cc65','ca65','ld65','make']};env=dict(os.environ)
 for n in ['PYTHONPATH','PYTHONPYCACHEPREFIX','CC65_HOME','CC65_INC','CA65_INC','LD65_LIB','LD65_CFG']:env.pop(n,None)
 env['PYTHONDONTWRITEBYTECODE']='1';env['PYTHONPYCACHEPREFIX']=str(P/'.absent-ui-build-cache');assert not Path(env['PYTHONPYCACHEPREFIX']).exists()
@@ -9,7 +9,7 @@ def run(a,d=P):
  a=list(map(str,a));i=len(commands);r=subprocess.run(a,cwd=d,env=env,capture_output=True);(P/f'UIBUILD{i:02d}.stdout').write_bytes(r.stdout);(P/f'UIBUILD{i:02d}.stderr').write_bytes(r.stderr);commands.append({'argv':a,'cwd':str(d),'exit':r.returncode});(P/'UI_BUILD_COMMANDS.json').write_text(json.dumps(commands,indent=2)+'\n');assert not r.returncode,(i,a,r.stderr.decode())
 def labels(p):return{l.split()[2].lstrip('.'):int(l.split()[1],16)for l in p.read_text().splitlines()if l.startswith('al ')}
 def info(p):b=p.read_bytes();return{'sha256':hashlib.sha256(b).hexdigest(),'bytes':len(b)}
-flags=['DOS64_MODAL_MENU=1','DOS64_SAVE_HD_CONTEXT=1','DOS64_EXPORT_CRC=1','DOS64_SAVE_MODAL=1','DOS64_MEDIA_BINDING=1','DOS64_FLOPPY_FORMAT='+str(int(options.floppy_format))]
+flags=['DOS64_MODAL_MENU=1','DOS64_SAVE_HD_CONTEXT=1','DOS64_EXPORT_CRC=1','DOS64_SAVE_MODAL=1','DOS64_MEDIA_BINDING=1','DOS64_FLOPPY_FORMAT='+str(int(options.floppy_format)),'DOS64_TRAP1='+str(int(options.cpu_trap))]
 # First native link establishes role-specific addresses; header retagging below
 # changes only fixed bytes. No foreign aliases may survive final verification.
 run([tools['make'],'build/dos64.prg',*flags],W)
@@ -81,6 +81,6 @@ run([tools['make'],'build/dos64.prg',*flags],W)
 assert (W/'build'/('dos64.prg'if role=='runtime'else'dos64-tests.prg')).read_bytes().count(header[8:24])==1
 finalN=labels(W/'build'/('dos64.labels'if role=='runtime'else'dos64-tests.labels'));assert all(N[n]==finalN[n]for n in N if n.startswith(('dos64_','hdb_','hd_','hdc_','sav_')))
 body=bytearray((P/'WORKERS.MNU').read_bytes());body[:64]=header;body[0x200:0x200+len(broker)]=broker;body[0xa00:0xa00+len(ui)]=ui;assert 0xa00+len(ui)<=0x2900;body[bridge_offset:bridge_offset+len(bridge)]=bridge;assert 0x9800+len(finish)<=len(body);body[0x9800:0x9800+len(finish)]=finish;(P/'MODAL.MNU').write_bytes(body)
-memory_assets=[('--overlay-files','files'),('--overlay-render','render'),('--overlay-input','input'),('--overlay-pit','pit'),('--overlay-gfx','gfx'),('--overlay-hd','hd'),('--overlay-disk','disk'),('--shadow','hdb'),('--saver','saver'),('--import-code','import')]+([('--overlay-format','format')]if options.floppy_format else [])
+memory_assets=[('--overlay-files','files'),('--overlay-render','render'),('--overlay-input','input'),('--overlay-pit','pit'),('--overlay-gfx','gfx'),('--overlay-hd','hd'),('--overlay-disk','disk'),('--shadow','hdb'),('--saver','saver'),('--import-code','import')]+([('--overlay-format','format')]if options.floppy_format else [])+([('--cpu-trap','trap')]if options.cpu_trap else [])
 run([sys.executable,'-B','build_support/verify_memory.py','build/dos64.map','build/dos64.labels',*sum(([flag,'build/dos64-resident.prg.'+suffix+'.bin'] for flag,suffix in memory_assets),[])],W)
 result={'scope':'source-built runtime Save/Insert/Finish CUI graph; execution and coldSTART/public/physical acceptance separate','role':role,'native':info(W/'build'/('dos64.prg'if role=='runtime'else'dos64-tests.prg')),'broker':info(P/'broker/broker.prg'),'ui':info(P/'ui/panel.prg'),'bridge':info(P/'bridge/bridge.prg'),'controller':info(P/'controller/controller.prg'),'finish':info(P/'finish/finish.prg'),'MNU':info(P/'MODAL.MNU'),'tag':tag.hex(),'inputs':sources};(P/'UI_BUILD_RESULT.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({k:v for k,v in result.items()if k!='inputs'}))

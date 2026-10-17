@@ -176,6 +176,36 @@ class Candidate(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'archive bytes differ'):
             b.archive(self.p / 'package', self.p / 'candidate.zip', files)
 
+    def test_runtime_requires_all_file_diagnostics_and_relocation_profiles(self):
+        if not self.runtime_media:
+            self.skipTest('runtime-media profile only')
+        for key in ['trusted_boot_diagnostics','all_file_diagnostics','config_relocation']:
+            original=self.g.read_bytes()
+            try:
+                self.edit(self.g,lambda r:r['memory'].update({key:False}))
+                with self.assertRaisesRegex(RuntimeError,'CONFIG all-file diagnostics and relocation'):
+                    self.assemble()
+            finally:self.g.write_bytes(original)
+        for key in ['terminal_payload_count','terminal_payload_run','terminal_load_only_source','terminal_tail_names_remain_readable','terminal_extra_ZP_bounded','C_stack_CD00_disjoint_helpers']:
+            original=self.s.read_bytes()
+            try:
+                self.edit(self.s,lambda r:r['memory']['checks'].update({key:False}))
+                with self.assertRaisesRegex(RuntimeError,'SETUP all-file diagnostics'):
+                    self.assemble()
+            finally:self.s.write_bytes(original)
+
+    def test_runtime_dispatch_selects_new_profiles_default_dispatch_does_not(self):
+        for enabled in [False,True]:
+            commands=[]
+            def command(argv,**kw):commands.append(argv)
+            with patch.object(b.subprocess,'run',side_effect=command):
+                with self.assertRaises(FileNotFoundError):b.build(self.p/('dispatch-'+str(enabled)),runtime_media=enabled)
+            setup=next(row for row in commands if Path(row[2]).name=='setup_installer.py')
+            config=next(row for row in commands if Path(row[2]).name=='config_generation.py')
+            self.assertEqual('--all-file-diagnostics'in setup,enabled)
+            self.assertEqual('--all-file-diagnostics'in config,enabled)
+            self.assertEqual('--relocation'in config,enabled)
+
     def test_failed_build_preserves_previous_result_and_first_exception(self):
         out = self.p / 'output'
         out.mkdir()
@@ -221,6 +251,36 @@ class Candidate(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'FORMAT'):
             self.assemble()
 
+    def test_runtime_requires_original8088_type1_profile(self):
+        if not self.runtime_media:
+            self.skipTest('runtime-media profile only')
+        self.edit(self.runtime, lambda r: r['flags'].update(DOS64_TRAP1=0))
+        self.edit(self.c, lambda r: r.update(runtime_result_identity=b.digest(self.runtime)))
+        with self.assertRaisesRegex(RuntimeError, 'type1 trap'):
+            self.assemble()
+
+    def test_runtime_requires_bound_checked_trap_memory(self):
+        if not self.runtime_media:
+            self.skipTest('runtime-media profile only')
+        original = self.runtime.read_bytes()
+        self.edit(self.runtime, lambda r: r['products'].pop('DOS64.memory.json'))
+        self.edit(self.c, lambda r: r.update(runtime_result_identity=b.digest(self.runtime)))
+        with self.assertRaisesRegex(RuntimeError, 'type1 trap memory product'):
+            self.assemble()
+        self.runtime.write_bytes(original)
+        runtime = json.loads(original)
+        row = runtime['products']['DOS64.memory.json']
+        memory = json.loads(Path(row['path']).read_text())
+        memory['load']['cpu_trap'] = None
+        target = self.p / 'unchecked-memory.json'
+        b.atomic_json(target, memory)
+        runtime['run'] = str(self.p)
+        runtime['products']['DOS64.memory.json'] = {'path':str(target), **b.digest(target)}
+        b.atomic_json(self.runtime, runtime)
+        self.edit(self.c, lambda r: r.update(runtime_result_identity=b.digest(self.runtime)))
+        with self.assertRaisesRegex(RuntimeError, 'type1 trap placement'):
+            self.assemble()
+
     def test_runtime_wrong_role_and_assets_rejected(self):
         if not self.runtime_media:
             self.skipTest('runtime-media profile only')
@@ -241,11 +301,11 @@ class Candidate(unittest.TestCase):
             self.skipTest('runtime-media profile only')
         original = self.s.read_bytes()
         self.edit(self.s, lambda r: r['memory']['checks'].update(file_helper_run=False))
-        with self.assertRaisesRegex(RuntimeError, 'SETUP startup/file diagnostics'):
+        with self.assertRaisesRegex(RuntimeError, 'SETUP all-file diagnostics'):
             self.assemble()
         self.s.write_bytes(original)
         self.edit(self.g, lambda r: r['memory'].update(trusted_boot_diagnostics=False))
-        with self.assertRaisesRegex(RuntimeError, 'CONFIG startup diagnostics'):
+        with self.assertRaisesRegex(RuntimeError, 'CONFIG all-file diagnostics and relocation'):
             self.assemble()
 
     def test_archive_failure_and_report_failure_preserve_first_cause(self):
@@ -297,6 +357,7 @@ class Candidate(unittest.TestCase):
         self.assertIs(raised.exception, primary)
         self.assertEqual([Path(a[0][2]).name for a in commands], ['runtime_media.py', 'cold_start.py', 'setup_installer.py', 'config_generation.py'])
         self.assertIn('--floppy-format', commands[0][0])
+        self.assertIn('--cpu-trap', commands[0][0])
         self.assertIn('--runtime-result', commands[1][0])
         for argv, env in commands:
             self.assertNotIn('PYTHONPATH', env)

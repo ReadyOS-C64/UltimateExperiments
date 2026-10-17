@@ -4,6 +4,16 @@
 #ifndef DOS64_CONFIG_ATTACHED
 #define DOS64_CONFIG_ATTACHED 0
 #endif
+#ifndef DOS64_CONFIG_RELOCATION
+#define DOS64_CONFIG_RELOCATION 0
+#endif
+#if DOS64_CONFIG_RELOCATION
+#define RI_CONFIRM 4
+/* Private pending state only, known-closed validated original. Query matches
+ * private selected job; no normal receipt or media job is authorized yet. */
+br_u8 ri_pending(void),ri_confirm(void);
+extern br_u32 ri_original_identity; /* display observation only */
+#endif
 #define RI_IDLE 0
 #define RI_BUSY 1
 #define RI_DONE 2

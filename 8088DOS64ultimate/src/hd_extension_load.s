@@ -1,6 +1,18 @@
 .setcpu "6502"
+.ifndef DOS64_TRAP1
+DOS64_TRAP1=0
+.endif
+.if DOS64_TRAP1<>0 .and DOS64_TRAP1<>1
+.error "DOS64_TRAP1 must be zero or one"
+.endif
+
 .macpack longbranch
 .import __HDBIOS_SIZE__,hdb_startup,dos64_cold_open
+.if DOS64_TRAP1
+.import __CPUTRAP_SIZE__,__CPUTRAP_RUN__
+.assert __CPUTRAP_RUN__=$fe00,lderror,"CPU trap must follow verified HD pages"
+.assert __CPUTRAP_SIZE__<=$100,lderror,"CPU trap must exclude FF00-FFFF"
+.endif
 .export hdb_load_extension,hdb_extension_ready
 .segment "NATIVESTATE"
 hdb_extension_ready: .byte 0
@@ -19,7 +31,11 @@ hdb_load_extension:
  lda #$f0
  sta copy_target+2
  sta verify_target+2
+ .if DOS64_TRAP1
+ ldy #15
+ .else
  ldy #14
+ .endif
  ldx #0
 copy_source:
  lda $a000,x
@@ -31,7 +47,11 @@ copy_target:
  inc copy_target+2
  dey
  bne copy_source
+ .if DOS64_TRAP1
+ ldy #15
+ .else
  ldy #14
+ .endif
 verify_source:
  lda $a000,x
 verify_target:
