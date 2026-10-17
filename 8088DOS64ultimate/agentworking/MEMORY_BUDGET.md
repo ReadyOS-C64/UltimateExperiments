@@ -247,3 +247,7 @@ ROOT exact native/map/source replay and author420-pin closure: PHASE code/RO end
 ### 2026-10-17 — private CONFIG publisher454d (component, not native coordinator)
 
 Authorfd119439/454 pins and peere6fb/393 verified by ROOT. MAIN ends5CAE/849B free. HIGH codeE000..FE35 (7734) and ROFE36..FF8A (341), total8075/8186 leaves111B; vectorsFFFA..FFFF excluded. Serialized9000..AF8A is fully sourceCRC/copy/destinationCRC/byte compared before phaseBSS8700..AFB7 (10424B/72B free) overwrites it. STATEB000..BFB9 leaves70B, including1088-byte CFG576/IO512 buffer; ZP20..46 (39B), UCIC000..C7FF/CRCC900..CCFF/stackCD00..CFFF unchanged. Actual peer whole8075PCobserver rejects corrupted source/destination without executingHIGH or mintingready. Generic overflow1446, duplicate metadata144 and merged code/RO BRK remain failed. Native coordinator fit remains pending; no public allocation changed.
+
+### 2026-10-17 — actual SYS CONFIG508d coordinator (private/model-qualified)
+
+Authorfcd5/324,peer40a9/356 and ROOTgeneratedDOS40/80 close actualentry/loop pipeline. MAIN0801..5F21/free222,627B growth from454d; STATEB000..BFBC/free67 adds only3 coordinator bytes. HIGH8075/free111, phasecode6000..86A2/BSS8700..AFB7/free72, ZP20..46, UCI C000..C7FF, CRC C900..CCFF, CstackCD00..CFFF unchanged. SerializedHIGH9000..AF8A verified/copied before overlappingBSSzero; vectors excluded. No emulator runtime allocation/IRQ/REP/cache policy changed. Public packaging/physical acceptance pending.

@@ -60,3 +60,11 @@ initial_columns=40
 ```
 
 The initial setting does not prevent DOS `MODE CO40` or `MODE CO80` from changing modes later. Actual 6510/Peddle tests cover parser/I/O, stale and corrupt records, readback failures, cancellation and both generated START-to-DOS modes. Physical qualification of this new launcher/main pair remains pending.
+
+## Native reconfiguration model proof
+
+The separate native CONFIG development program now runs from its actual BASIC SYS entry through keyboard selection, existing configuration inspection, disk-image checks and creation of a new launch folder. It keeps the original absolute A/B/C image paths and readonly settings, refreshes the floppy checksums, and creates `DOS64.PRG`, `DOS64.REL`, `START.INO`, `START.PRG`, `DOS64.INI`, then `DOS64.CFG` last. Each file uses create-new semantics and full readback; partial files after a failure are not a completed installation. The destination folder must already exist and must differ from the old installation and release-source folders.
+
+The preference is an explicit **new** 40/80 setting, initially 80. CONFIG currently leaves the old INI unread and unchanged. Old and new launchers share the existing images; reverting a launcher does not undo writes to those images. CONFIG runs independently of a running emulator.
+
+Both actual output sets boot genuine DOS 3.3 in Peddle and pass VER and complete paged A:/C:\\DOS listings. The START/CFG/main/overlay/descriptor bytes are identical between modes; only the INI column digit changes. Source-closed evidence is in [the integration receipt](../agentworking/evidence/native-config-generated-dos-root-20261017.json). Public build packaging and physical CONFIG qualification remain pending; this proof does not turn the current SETUP into an options editor.

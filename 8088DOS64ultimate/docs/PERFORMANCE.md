@@ -11,9 +11,9 @@ The reference uses the pinned original8088 core in [MartyPC](https://github.com/
 
 # Performance hypothesis and experiments
 
-**Near-XT speed is unproven.** Target a 4.77 MHz 8088 workload baseline (the user's approximate “4 MHz” PC), not a ratio of CPU MHz or DOSBox cycle settings. The 64 MHz host has about 13.4 nominal host cycles per XT cycle before display/bus/DMA effects. This is a budget, not an instruction-throughput prediction.
+**Near-XT speed is unproven.** The user's comparison target is a declared 4 MHz 8088 workload baseline. Report a 4.77 MHz XT comparison separately if available; keep the reference clock explicit and unchanged between compared runs. A ratio of CPU MHz or DOSBox cycle settings is insufficient. The 64 MHz host has 16 nominal host cycles per 4 MHz reference cycle (about 13.4 per 4.77 MHz cycle), before display/bus/DMA effects. This is a budget, not an instruction-throughput prediction.
 
-Proposed review criterion: report the speed ratio for every benchmark and aim for at least 0.75× XT on a declared representative CPU/utility set, with interactive input/presentation normally within 100 ms. This threshold is a planning definition of “pretty close,” subject to user review and measurement. Never hide a poor working-set result behind a fast disk-copy average. Raw CPU throughput and end-to-end utility latency are separate results.
+The user's current objective is **at least 50% of the 8088 reference performance, with 85% as the stretch target**, on a declared representative CPU/utility set. This supersedes the original provisional 75% planning threshold. Report each workload's speed ratio; retain the separate planning aim of interactive input/presentation normally within 100 ms. Never hide a poor working-set result behind a fast disk-copy average. Raw CPU throughput and end-to-end utility latency are separate results.
 
 ## Cost model
 
