@@ -1,3 +1,9 @@
+# Physical screenshot campaign in progress — 2026-10-17
+
+Actual .NET automation now captures the Ultimate VIC stream at DOS40/80, paged DIR, A/B listings, C file write/read and GW-BASIC LIST/RUN/SYSTEM.18 physical PNGs are retained across four lanes; early observer failures and corrected continuations are preserved. Images are being posted inline in chat at the user's request. A native disk-busy SNAPSHOT refusal now has narrow bounded source-defined handling; KEY and ambiguous acknowledgements are never retried.
+
+Fresh actual native FILES CLOSE and2MiB readback prove all58 original payloads plus DOS-written AUTOTEST.TXT. Knownclosed reset and21 source-exact readback inputs staged the20MiB Turbo collection. Terminal1674 is now executing actual native SETUP20MiB import with live screenshots. See [campaign continuity](CURRENT_GALLERY_CAMPAIGN_20261017.md), ACTIVE and its detached logs before controlling hardware. No full V1 or native UI Finish claim. Latest admitted baseline remains6e7c4fae; original CPU/RAM/application and finalREU restoration are not claimed.
+
 # Latest hardware result — generated START, DOS and both text modes
 
 [Aggregate evidence](evidence/dotnet-native-dos-root-20261017.json): actual native-created START was loaded/read back exactly and reached native RUN; after correcting only the host prompt oracle (`C>` is normal), the same instance passed genuine DOS3.30 VER, DIR C:, MODE40/VER/MODE80. A focused follow-up passed32 full8000B bitmap +1000B matrix comparisons with exact captured cursor/control/phase/blink and3072B native fonts. Raw RAM views are retained; no external VIC/video or human readability claim. First cursor-less oracle mismatch is preserved.

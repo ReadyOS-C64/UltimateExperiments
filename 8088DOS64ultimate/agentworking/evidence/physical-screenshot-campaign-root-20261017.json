@@ -1,0 +1,22 @@
+{
+  "status": "passed_for_recorded_scope_not_V1_release",
+  "physical": true,
+  "upstream_harness_commit": "0f8c388",
+  "actual_VIC_stream_captures": 18,
+  "all18_pass_full8000_bitmap1000_matrix_independent_cursor_oracle": true,
+  "all18_pass_full64000_active_VIC_pixel_comparison": true,
+  "gallery_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-gallery-verified-dos-basic-20261017/GALLERY.json",
+  "actual_DOS_write_native_CLOSE_readback": {
+    "all_original_installed_payloads_preserved": 112,
+    "only_new_file": "AUTOTEST.TXT",
+    "exact_bytes_hex": "5245414c2043363455204155544f4d4154494f4e200d0a",
+    "before_sha256": "3141fc19bcb040a1c58e78674c59679d7427ac7ba8d3f80556dbf877a67c2648",
+    "after_sha256": "6460ad684085874320963b4ddb6bacb90ac7948afdbcf19c652479b9027a5370",
+    "native_UI_Finish": false
+  },
+  "first_native20M_import_attempt": "failed,all360existingfilesread;NF_E_NAME4onduplicateDOSarchives,actualprivateFILESclosed",
+  "new_disposable_import_source": "302exactpayloadsplus58originalDOSarchivepayloadsverifiedagainstsuppliedfloppies;not_original_source_mutation",
+  "Turbo_Pascal_screenshots": "pending",
+  "physical_CIA_keyboard_acceptance": false,
+  "baseline_REU_or_original_CPU_RAM_restoration_claim": false
+}
