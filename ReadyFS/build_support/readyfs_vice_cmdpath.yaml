@@ -1,0 +1,336 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_cmdpath
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 120, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-overlay-lab.d81"
+    disk9: null
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch_readyfs_overlay
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: cmdpath_ready
+    type: screen.wait_contains
+    params: { text: "CMDPATH: READY", wait_timeout_s: 30, capture_label: rf_ui_121_cmdpath_ready }
+  - id: profile_iec9_unprobed_input
+    type: input.sequence
+    params: { keys: [80,82,79,70,73,76,69,32,73,69,67,32,57,58,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: profile_iec9_unprobed_state
+    type: screen.capture
+    params: { label: profile_iec9_unprobed_state }
+  - id: profile_iec9_unprobed_result
+    type: screen.wait_contains
+    params: { text: "PROFILE: UNPROBED", wait_timeout_s: 10, capture_label: rf_ui_122_profile9_unprobed }
+  - id: clear_before_probe
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: probe_iec8_input
+    type: input.sequence
+    params: { keys: [80,82,79,66,69,32,73,69,67,32,56,58,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: probe_iec8_profile
+    type: screen.wait_contains
+    params: { text: "PROFILE: LEGACY", wait_timeout_s: 10, capture_label: rf_ui_122_iec8_legacy }
+  - id: probe_iec8_flags
+    type: screen.wait_contains
+    params: { text: "P0 F0 I0", wait_timeout_s: 10, capture_label: rf_ui_123_iec8_flags }
+  - id: clear_before_profile8
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: profile_iec8_input
+    type: input.sequence
+    params: { keys: [80,82,79,70,73,76,69,32,73,69,67,32,56,58,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: profile_iec8_result
+    type: screen.wait_contains
+    params: { text: "PROFILE: LEGACY", wait_timeout_s: 10, capture_label: rf_ui_123a_profile8_cached }
+  - id: profile_iec8_flags
+    type: screen.wait_contains
+    params: { text: "P0 F0 I0", wait_timeout_s: 10, capture_label: rf_ui_123b_profile8_flags }
+  - id: clear_before_profile8_mount
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: profile_iec8_mount_input
+    type: input.sequence
+    params: { keys: [80,82,79,70,73,76,69,32,73,69,67,32,56,58,32,77,79,85,78,84,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: profile_iec8_mount_denied
+    type: screen.wait_contains
+    params: { text: "OP: DENIED", wait_timeout_s: 10, capture_label: rf_ui_123c_legacy_mount_denied }
+  - id: clear_before_normal_partition_gate
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: normal_partition_mkdir_input
+    type: input.sequence
+    params: { keys: [77,75,68,73,82,32,56,46,49,58,47,68,69,78,73,69,68,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: normal_partition_mkdir_denied
+    type: screen.wait_contains
+    params: { text: "PROFILE DENIED", wait_timeout_s: 10, capture_label: rf_ui_123d_normal_partition_gate }
+  - id: partition_alias_input
+    type: input.sequence
+    params: { keys: [65,76,73,65,83,32,80,65,82,84,32,56,46,49,58,47,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: partition_alias_set
+    type: screen.wait_contains
+    params: { text: "ALIAS SET", wait_timeout_s: 10, capture_label: rf_ui_123e_partition_alias }
+  - id: clear_before_partition_alias_gate
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: partition_alias_mkdir_input
+    type: input.sequence
+    params: { keys: [77,75,68,73,82,32,64,80,65,82,84,58,47,68,69,78,73,69,68,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: partition_alias_mkdir_denied
+    type: screen.wait_contains
+    params: { text: "PROFILE DENIED", wait_timeout_s: 10, capture_label: rf_ui_123f_partition_alias_gate }
+  - id: clear_before_partition_alias_dir
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: partition_alias_dir_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,64,80,65,82,84,58,47,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: partition_alias_dir_denied
+    type: screen.wait_contains
+    params: { text: "PROFILE DENIED", wait_timeout_s: 10, capture_label: rf_ui_123g_partition_alias_dir_gate }
+  - id: clear_before_partition_delete_force_gate
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: partition_delete_without_force_input
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,64,80,65,82,84,58,47,68,69,78,73,69,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: partition_delete_without_force_denied
+    type: screen.wait_contains
+    params: { text: "USE --FORCE", wait_timeout_s: 10, capture_label: rf_ui_123h_partition_delete_force_gate }
+  - id: clear_before_partition_delete_profile_gate
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: forced_partition_delete_input
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,64,80,65,82,84,58,47,68,69,78,73,69,68,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: forced_partition_delete_profile_denied
+    type: screen.wait_contains
+    params: { text: "PROFILE DENIED", wait_timeout_s: 10, capture_label: rf_ui_123i_partition_delete_profile_gate }
+  - id: clear_before_partition_rename_force_gate
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: partition_rename_without_force_input
+    type: input.sequence
+    params: { keys: [82,69,78,65,77,69,32,64,80,65,82,84,58,47,79,76,68,46,83,69,81,32,64,80,65,82,84,58,47,78,69,87,46,83,69,81,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: partition_rename_without_force_denied
+    type: screen.wait_contains
+    params: { text: "USE --FORCE", wait_timeout_s: 10, capture_label: rf_ui_123j_partition_rename_force_gate }
+  - id: clear_before_partition_rename_profile_gate
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: forced_partition_rename_input
+    type: input.sequence
+    params: { keys: [82,69,78,65,77,69,32,64,80,65,82,84,58,47,79,76,68,46,83,69,81,32,64,80,65,82,84,58,47,78,69,87,46,83,69,81,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: forced_partition_rename_profile_denied
+    type: screen.wait_contains
+    params: { text: "PROFILE DENIED", wait_timeout_s: 10, capture_label: rf_ui_123k_partition_rename_profile_gate }
+  - id: clear_before_partition_mount_force_gate
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: partition_mount_without_force_input
+    type: input.sequence
+    params: { keys: [77,79,85,78,84,32,64,80,65,82,84,58,47,68,69,77,79,46,68,54,52,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: partition_mount_without_force_denied
+    type: screen.wait_contains
+    params: { text: "USE --FORCE", wait_timeout_s: 10, capture_label: rf_ui_123l_partition_mount_force_gate }
+  - id: clear_before_partition_mount_profile_gate
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: forced_partition_mount_input
+    type: input.sequence
+    params: { keys: [77,79,85,78,84,32,64,80,65,82,84,58,47,68,69,77,79,46,68,54,52,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: forced_partition_mount_profile_denied
+    type: screen.wait_contains
+    params: { text: "PROFILE DENIED", wait_timeout_s: 10, capture_label: rf_ui_123m_partition_mount_profile_gate }
+  - id: clear_before_partition_unmount_force_gate
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: partition_unmount_without_force_input
+    type: input.sequence
+    params: { keys: [68,73,83,77,79,85,78,84,32,64,80,65,82,84,58,47,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: partition_unmount_without_force_denied
+    type: screen.wait_contains
+    params: { text: "USE --FORCE", wait_timeout_s: 10, capture_label: rf_ui_123n_partition_unmount_force_gate }
+  - id: clear_before_partition_unmount_profile_gate
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: forced_partition_unmount_input
+    type: input.sequence
+    params: { keys: [68,73,83,77,79,85,78,84,32,64,80,65,82,84,58,47,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: forced_partition_unmount_profile_denied
+    type: screen.wait_contains
+    params: { text: "PROFILE DENIED", wait_timeout_s: 10, capture_label: rf_ui_123o_partition_unmount_profile_gate }
+  - id: clear_before_native
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: native_open_input
+    type: input.sequence
+    params: { keys: [78,65,84,73,86,69,32,79,80,69,78,32,49,49,46,51,58,47,71,65,77,69,83,47,72,69,76,76,79,46,80,82,71,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: native_open_result
+    type: screen.wait_contains
+    params: { text: "NATIVE: 3//GAMES/:HELLO.PRG", wait_timeout_s: 10, capture_label: rf_ui_124_native_open }
+  - id: native_dir_input
+    type: input.sequence
+    params: { keys: [78,65,84,73,86,69,32,68,73,82,32,49,49,46,51,58,47,71,65,77,69,83,47,84,79,79,76,83,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: native_dir_result
+    type: screen.wait_contains
+    params: { text: "NATIVE: $3//GAMES/TOOLS/", wait_timeout_s: 10, capture_label: rf_ui_125_native_dir }
+  - id: native_scratch_input
+    type: input.sequence
+    params: { keys: [78,65,84,73,86,69,32,83,67,82,65,84,67,72,32,49,49,46,51,58,47,71,65,77,69,83,47,79,76,68,46,83,69,81,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: native_scratch_state
+    type: screen.capture
+    params: { label: readyfs_native_scratch_state }
+  - id: native_scratch_result
+    type: screen.wait_contains
+    params: { text: "NATIVE: S3//GAMES/:OLD.SEQ", wait_timeout_s: 10, capture_label: rf_ui_126_native_scratch }
+  - id: native_mkdir_input
+    type: input.sequence
+    params: { keys: [78,65,84,73,86,69,32,77,75,68,73,82,32,49,49,46,51,58,47,71,65,77,69,83,47,78,69,87,68,73,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: native_mkdir_result
+    type: screen.wait_contains
+    params: { text: "NATIVE: MD3//GAMES/:NEWDIR", wait_timeout_s: 10, capture_label: rf_ui_127_native_mkdir }
+  - id: native_rmdir_input
+    type: input.sequence
+    params: { keys: [78,65,84,73,86,69,32,82,77,68,73,82,32,49,49,46,51,58,47,71,65,77,69,83,47,79,76,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: native_rmdir_result
+    type: screen.wait_contains
+    params: { text: "NATIVE: RD3//GAMES/:OLD", wait_timeout_s: 10, capture_label: rf_ui_128_native_rmdir }
+  - id: native_rename_input
+    type: input.sequence
+    params: { keys: [78,65,84,73,86,69,32,82,69,78,65,77,69,32,49,49,46,51,58,47,71,65,77,69,83,47,79,76,68,46,83,69,81,32,49,49,46,51,58,47,65,82,67,72,73,86,69,47,78,69,87,46,83,69,81,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: native_rename_result
+    type: screen.wait_contains
+    params: { text: "R3//ARCHIVE/:NEW.SEQ=", wait_timeout_s: 10, capture_label: rf_ui_129_native_rename }
+  - id: native_mount_input
+    type: input.sequence
+    params: { keys: [78,65,84,73,86,69,32,77,79,85,78,84,32,49,49,46,51,58,47,71,65,77,69,83,47,68,69,77,79,46,68,54,52,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: native_mount_result
+    type: screen.wait_contains
+    params: { text: "NATIVE: CD3//GAMES/DEMO.D64", wait_timeout_s: 10, capture_label: rf_ui_130_native_mount }
+  - id: native_unmount_input
+    type: input.sequence
+    params: { keys: [78,65,84,73,86,69,32,85,78,77,79,85,78,84,32,49,49,46,51,58,47,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: native_unmount_result
+    type: screen.wait_contains
+    params: { text: "NATIVE: CD//", wait_timeout_s: 10, capture_label: rf_ui_131_native_unmount }
+  - id: native_unmount_followup
+    type: screen.wait_contains
+    params: { text: "THEN: CD", wait_timeout_s: 10, capture_label: rf_ui_132_native_unmount_followup }
+  - id: clear_before_native_pattern
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_24_unflagged_pattern_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,56,58,47,82,70,42,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: rf_ui_24_unflagged_pattern_rejected
+    type: screen.wait_contains
+    params: { text: "UNSUPPORTED", wait_timeout_s: 10, capture_label: rf_ui_24_unflagged_pattern_rejected }
+  - id: clear_before_flagged_native_pattern
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_24_native_pattern_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,56,58,47,82,70,42,32,45,45,78,65,84,73,86,69,45,80,65,84,84,69,82,78,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: rf_ui_24_native_pattern_entry
+    type: screen.wait_contains
+    params: { text: "RFMATCH", wait_timeout_s: 15, capture_label: rf_ui_24_native_pattern }
+  - id: rf_ui_24_native_pattern_page
+    type: input.sequence
+    params: { keys: [32], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: rf_ui_24_native_pattern_count
+    type: screen.wait_contains
+    params: { text: "ENTRIES: 22", wait_timeout_s: 15 }
+  - id: clear_before_invalid_native_pattern
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_24_invalid_native_pattern_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,56,58,47,82,70,32,45,45,78,65,84,73,86,69,45,80,65,84,84,69,82,78,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: rf_ui_24_invalid_native_pattern
+    type: screen.wait_contains
+    params: { text: "XLATE ERR", wait_timeout_s: 10, capture_label: rf_ui_24_native_pattern_reject }
+  - id: clear_for_match
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: matcher_after_cmdpath_input
+    type: input.sequence
+    params: { keys: [77,65,84,67,72,32,42,46,80,82,71,32,65,46,80,82,71,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: matcher_after_cmdpath_result
+    type: screen.wait_contains
+    params: { text: "MATCH: YES", wait_timeout_s: 10, capture_label: rf_ui_133_match_after_cmdpath }
+  # Emulate only the ReadyFS capability cache, not an SD2IEC device.  IEC 8's
+  # record is {magic, device, kind, flags} at session offset $0888; the session
+  # starts at REU $2000 and the 16 MiB VICE REU history/session bank is $FF.
+  # This lets the same plan prove both legacy denial above and compatible-path
+  # admission below without claiming that VICE's 1581 is real SD2IEC hardware.
+  - id: sd2iec_profile_record_in_c64_ram
+    type: memory.write
+    params: { start: 0x033C, bytes_hex: "52 08 02 07" }
+  - id: sd2iec_profile_reu_dma_registers
+    type: memory.write
+    params: { start: 0xDF02, bytes_hex: "3C 03 88 28 FF 04 00" }
+  - id: sd2iec_profile_reu_dma_stash
+    type: memory.write
+    params: { start: 0xDF01, bytes_hex: "90" }
+  - id: clear_before_sd2iec_profile
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: sd2iec_profile_input
+    type: input.sequence
+    params: { keys: [80,82,79,70,73,76,69,32,73,69,67,32,56,58,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: sd2iec_profile_kind
+    type: screen.wait_contains
+    params: { text: "PROFILE: SD2IEC", wait_timeout_s: 10, capture_label: rf_ui_134_sd2iec_profile }
+  - id: sd2iec_profile_flags
+    type: screen.wait_contains
+    params: { text: "P1 F1 I1", wait_timeout_s: 10 }
+  - id: clear_before_sd2iec_directory_dispatch
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: sd2iec_directory_dispatch_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,56,46,49,58,47,13], inter_key_delay_s: 0.03, post_delay_s: 1.0 }
+  - id: sd2iec_directory_dispatch_result
+    type: screen.wait_contains
+    params: { text: "DIR OPEN FAILED", wait_timeout_s: 10, capture_label: rf_ui_135_sd2iec_directory_dispatch }
+  - id: clear_before_sd2iec_mkdir_dispatch
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: sd2iec_mkdir_dispatch_input
+    type: input.sequence
+    params: { keys: [77,75,68,73,82,32,56,46,49,58,47,82,70,83,73,77,13], inter_key_delay_s: 0.03, post_delay_s: 1.0 }
+  - id: sd2iec_mkdir_dispatch_result
+    type: screen.wait_contains
+    params: { text: "CREATED", wait_timeout_s: 10, capture_label: rf_ui_136_sd2iec_mkdir_dispatch }
+  - id: clear_before_sd2iec_mount_dispatch
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: sd2iec_mount_dispatch_input
+    type: input.sequence
+    params: { keys: [77,79,85,78,84,32,56,46,49,58,47,82,70,83,73,77,46,68,54,52,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.03, post_delay_s: 1.0 }
+  - id: sd2iec_mount_dispatch_result
+    type: screen.wait_contains
+    params: { text: "FAIL", wait_timeout_s: 10, capture_label: rf_ui_137_sd2iec_mount_dispatch }
+  - id: clear_before_sd2iec_tree_dispatch
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: sd2iec_tree_dispatch_input
+    type: input.sequence
+    params: { keys: [84,82,69,69,32,56,46,49,58,47,13], inter_key_delay_s: 0.03, post_delay_s: 1.0 }
+  - id: sd2iec_tree_dispatch_result
+    type: screen.wait_contains
+    params: { text: "TREE FAILED F0 D0", wait_timeout_s: 10, capture_label: rf_ui_138_sd2iec_tree_dispatch }

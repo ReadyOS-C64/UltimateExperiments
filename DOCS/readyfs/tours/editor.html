@@ -1,0 +1,1485 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS editor and filesystem screenshot walkthrough · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS editor and filesystem screenshot walkthrough"><link rel="stylesheet" href="../../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../../index.html">All experiments</a><details class="project-nav" data-project="readyfs" open><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../index.html">Overview and downloads</a></li><li><a href="../READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="editor.html" aria-current="page">Editor screenshot tour</a></li><li><a href="sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../READYFS_SAFETY.html">Safety</a></li><li><a href="../READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../dos64/index.html">Overview and downloads</a></li><li><a href="../../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../../dos64/BUILD.html">Build and tests</a></li><li><a href="../../dos64/STATUS.html">Current status and limits</a></li><li><a href="../../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../../dos64/examples/index.html">Example applications</a></li><li><a href="../../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../reusql/index.html">Overview and downloads</a></li><li><a href="../../reusql/performance.html">Performance and staged queries</a></li><li><a href="../../reusql/shell.html">Interactive shell</a></li><li><a href="../../reusql/sql-language.html">SQL language</a></li><li><a href="../../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../../reusql/architecture.html">Architecture</a></li><li><a href="../../reusql/memory-map.html">Memory map</a></li><li><a href="../../reusql/public-api.html">Public API</a></li><li><a href="../../reusql/storage-format.html">Storage format</a></li><li><a href="../../reusql/export-format.html">Export format</a></li><li><a href="../../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../c77/index.html">Overview and downloads</a></li><li><a href="../../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#01-help-directories">01 · Help &amp; directories</a></li><li><a href="#02-native-mounts">02 · Native mounts</a></li><li><a href="#03-disk-to-host-and-back">03 · Disk to host, and back</a></li><li><a href="#04-edit-a-command">04 · Edit a command</a></li><li><a href="#05-history-paging">05 · History &amp; paging</a></li><li><a href="#06-preview-copy">06 · Preview &amp; copy</a></li><li><a href="#07-move-without-readback">07 · Move without readback</a></li><li><a href="#08-delete-test-copies">08 · Delete test copies</a></li><li><a href="#09-checks-complete">09 · Checks complete</a></li><li><a href="#10-parameterized-batch-backup">10 · Parameterized batch backup</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="editor.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs-editor-and-filesystem-screenshot-walkthrough">ReadyFS editor and filesystem screenshot walkthrough</h1>
+<p>These physical C64 screenshots follow help, editing, history, previews, transfers and the parameterized backup example. Earlier captures show their contemporary build; use the current user guide for current limits. This edition preserves the commands and still images without requiring video. The original editor tour and appended backup demonstration used separate owned fixtures.</p>
+<p><a href="../READYFS_USER_GUIDE.html">User guide</a> · <a href="../READYFS_ACCEPTANCE.html">Current acceptance</a></p>
+<h2 id="01-help-directories">01 · Help &amp; directories</h2>
+<p>Full commands and shortcuts share the same help.</p>
+<h3 id="step-1">Step 1</h3>
+<p>Read command-specific help and varied examples.</p>
+<pre><code class="language-text">HELP DIR
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-01.png" alt="Actual C64 display after step 1"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+
+
+
+
+
+
+
+
+
+
+
+RF&gt; HELP DIR
+DIR .PATH. / D / LS
+QUOTED NAMES, TYPES AND DISK BLOCKS.
+HOST SIZE ? MEANS NOT SUPPLIED.
+EXAMPLES:
+DIR 8:/
+LS @USB:/
+D
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-2">Step 2</h3>
+<p>List the current directory; disk files use classic names, types and block counts.</p>
+<pre><code class="language-text">DIR 9:/
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-02.png" alt="Actual C64 display after step 2"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">HOST SIZE ? MEANS NOT SUPPLIED.
+EXAMPLES:
+DIR 8:/
+LS @USB:/
+D
+RF&gt; DIR 9:/
+9: IMAGE PATH UNKNOWN
+0    &quot;READYFS OVL     &quot;
+167  &quot;READYFS-OVERLAY&quot;  PRG
+16   &quot;RFMATCH&quot;          PRG
+17   &quot;RFPLAN&quot;           PRG
+17   &quot;RFHELP&quot;           PRG
+17   &quot;RFBACKEND&quot;        PRG
+17   &quot;RFCMDPATH&quot;        PRG
+17   &quot;RFDRIVE&quot;          PRG
+14   &quot;RFUTIL&quot;           PRG
+14   &quot;RFTREE&quot;           PRG
+17   &quot;RFCONTENT&quot;        PRG
+12   &quot;RFBATCH&quot;          PRG
+16   &quot;RFRECUR&quot;          PRG
+16   &quot;RFTAPE&quot;           PRG
+16   &quot;RFUI&quot;             PRG
+16   &quot;RFSHOW&quot;           PRG
+16   &quot;RFEXAMPLES&quot;       PRG
+-- MORE --
+</code></pre></details>
+<h3 id="step-3">Step 3</h3>
+<p>Read command-specific help and varied examples.</p>
+<pre><code class="language-text">HELP CP
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-03.png" alt="Actual C64 display after step 3"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+
+RF&gt; HELP CP
+COPY SOURCE DEST .OPTIONS. / CP
+FILE DEST NAMES A FILE; TREE DEST EXISTS
+.
+USE 8:/NAME, NOT 8:NAME.
+VERIFY ON; --NO-VERIFY/-NV SKIPS READBAC
+K.
+WHATIF LISTS SELECTED FILES AND FOLDERS.
+
+EXAMPLES:
+COPY 8:/SHEET2 U:/USB1/SHEET2 -W
+CP @DISK:/SHEET2 @USB:/SHEET2
+CP @LAB:/SRC @LAB:/COPY -R -W
+CP @LAB:/SOURCE @LAB:/COPY -R -NV
+-R --RECURSIVE  -W --WHATIF/--DRY-RUN
+-I --INCLUDE p  -X --EXCLUDE p
+-F --FORCE OVERWRITE; -Y --YES DELETE
+WHATIF MAKES NO CHANGES; INSPECT FIRST.
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-4">Step 4</h3>
+<p>Give an absolute location a short, reusable name.</p>
+<pre><code class="language-text">AL LAB u:/usb1/READYFS_TEST/readyfs-20261013-013111-90069
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-04.png" alt="Actual C64 display after step 4"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">COPY SOURCE DEST .OPTIONS. / CP
+FILE DEST NAMES A FILE; TREE DEST EXISTS
+.
+USE 8:/NAME, NOT 8:NAME.
+VERIFY ON; --NO-VERIFY/-NV SKIPS READBAC
+K.
+WHATIF LISTS SELECTED FILES AND FOLDERS.
+
+EXAMPLES:
+COPY 8:/SHEET2 U:/USB1/SHEET2 -W
+CP @DISK:/SHEET2 @USB:/SHEET2
+CP @LAB:/SRC @LAB:/COPY -R -W
+CP @LAB:/SOURCE @LAB:/COPY -R -NV
+-R --RECURSIVE  -W --WHATIF/--DRY-RUN
+-I --INCLUDE p  -X --EXCLUDE p
+-F --FORCE OVERWRITE; -Y --YES DELETE
+WHATIF MAKES NO CHANGES; INSPECT FIRST.
+RF&gt; AL LAB U:/USB1/READYFS.TEST/READYFS-
+20261013-013111-90069
+ALIAS SET
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-5">Step 5</h3>
+<p>Show the folder structure and nested files.</p>
+<pre><code class="language-text">TREE @LAB:/SOURCE
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-05.png" alt="Actual C64 display after step 5"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">CP @DISK:/SHEET2 @USB:/SHEET2
+CP @LAB:/SRC @LAB:/COPY -R -W
+CP @LAB:/SOURCE @LAB:/COPY -R -NV
+-R --RECURSIVE  -W --WHATIF/--DRY-RUN
+-I --INCLUDE p  -X --EXCLUDE p
+-F --FORCE OVERWRITE; -Y --YES DELETE
+WHATIF MAKES NO CHANGES; INSPECT FIRST.
+RF&gt; AL LAB U:/USB1/READYFS.TEST/READYFS-
+20261013-013111-90069
+ALIAS SET
+RF&gt; TREE @LAB:/SOURCE
+/alpha
+/beta
+ readme.seq
+ alpha/one.seq
+ alpha/two.seq
+/beta/deep
+ beta/four.seq
+ beta/deep/three.seq
+TREE DONE F5 D3
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h2 id="02-native-mounts">02 · Native mounts</h2>
+<p>Mount paths are hints and may become stale.</p>
+<h3 id="step-6">Step 6</h3>
+<p>List responding devices. Only mounts made by ReadyFS have a remembered host path.</p>
+<pre><code class="language-text">DRIVES
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-06.png" alt="Actual C64 display after step 6"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">20261013-013111-90069
+ALIAS SET
+RF&gt; TREE @LAB:/SOURCE
+/alpha
+/beta
+ readme.seq
+ alpha/one.seq
+ alpha/two.seq
+/beta/deep
+ beta/four.seq
+ beta/deep/three.seq
+TREE DONE F5 D3
+RF&gt; DRIVES
+IEC SCAN 8-30
+8: IMAGE PATH UNKNOWN
+9: IMAGE PATH UNKNOWN
+10: IMAGE PATH UNKNOWN
+U: ULTIMATE DOS
+S: SOFTIEC BUS 11
+T: SEQUENTIAL TAPE
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-7">Step 7</h3>
+<p>List the current directory; disk files use classic names, types and block counts.</p>
+<pre><code class="language-text">DIR 8:/
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-07.png" alt="Actual C64 display after step 7"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">9: IMAGE PATH UNKNOWN
+10: IMAGE PATH UNKNOWN
+U: ULTIMATE DOS
+S: SOFTIEC BUS 11
+T: SEQUENTIAL TAPE
+RF&gt; DIR 8:/
+8: IMAGE PATH UNKNOWN
+0    &quot;READYOSD81      &quot;
+1    &quot;PREBOOT&quot;          PRG
+4    &quot;SHOWCFG&quot;          PRG
+8    &quot;BOOT&quot;             PRG
+155  &quot;LAUNCHER&quot;         PRG
+97   &quot;EDITOR&quot;           PRG
+124  &quot;QUICKNOTES&quot;       PRG
+148  &quot;CALCPLUS&quot;         PRG
+51   &quot;HEXVIEW&quot;          PRG
+122  &quot;CLIPMGR&quot;          PRG
+60   &quot;REUVIEWER&quot;        PRG
+65   &quot;SYSINFO&quot;          PRG
+124  &quot;TASKLIST&quot;         PRG
+118  &quot;SIMPLEFILES&quot;      PRG
+138  &quot;SIMPLECELLS&quot;      PRG
+67   &quot;GAME2048&quot;         PRG
+62   &quot;SIDETRIS&quot;         PRG
+-- MORE --
+</code></pre></details>
+<h3 id="step-8">Step 8</h3>
+<p>Mount our disposable image through native UCI and remember its resolved path for this session.</p>
+<pre><code class="language-text">MOUNT @LAB:/MEDIA.D81 9: --force
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-08.png" alt="Actual C64 display after step 8"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+
+
+
+
+
+
+
+
+
+
+
+
+
+RF&gt; MOUNT @LAB:/MEDIA.D81 9: --FORCE
+MOUNTED ON 9:
+9: LAST MOUNTED BY READYFS
+U:/USB1/READYFS.TEST/READYFS-20261013-01
+3111-90069/MEDIA.D81
+MAY HAVE CHANGED ELSEWHERE
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-9">Step 9</h3>
+<p>The short form of DRIVES shows the same last-mount hints.</p>
+<pre><code class="language-text">DV
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-09.png" alt="Actual C64 display after step 9"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+
+
+RF&gt; MOUNT @LAB:/MEDIA.D81 9: --FORCE
+MOUNTED ON 9:
+9: LAST MOUNTED BY READYFS
+U:/USB1/READYFS.TEST/READYFS-20261013-01
+3111-90069/MEDIA.D81
+MAY HAVE CHANGED ELSEWHERE
+RF&gt; DV
+IEC SCAN 8-30
+8: IMAGE PATH UNKNOWN
+9: LAST MOUNTED BY READYFS
+U:/USB1/READYFS.TEST/READYFS-20261013-01
+3111-90069/MEDIA.D81
+MAY HAVE CHANGED ELSEWHERE
+10: IMAGE PATH UNKNOWN
+U: ULTIMATE DOS
+S: SOFTIEC BUS 11
+T: SEQUENTIAL TAPE
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-10">Step 10</h3>
+<p>List the current directory; disk files use classic names, types and block counts.</p>
+<pre><code class="language-text">DIR 9:/
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-10.png" alt="Actual C64 display after step 10"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">MAY HAVE CHANGED ELSEWHERE
+10: IMAGE PATH UNKNOWN
+U: ULTIMATE DOS
+S: SOFTIEC BUS 11
+T: SEQUENTIAL TAPE
+RF&gt; DIR 9:/
+9: LAST MOUNTED BY READYFS
+U:/USB1/READYFS.TEST/READYFS-20261013-01
+3111-90069/MEDIA.D81
+MAY HAVE CHANGED ELSEWHERE
+0    &quot;READYFS OVL     &quot;
+167  &quot;READYFS-OVERLAY&quot;  PRG
+16   &quot;RFMATCH&quot;          PRG
+17   &quot;RFPLAN&quot;           PRG
+17   &quot;RFHELP&quot;           PRG
+17   &quot;RFBACKEND&quot;        PRG
+17   &quot;RFCMDPATH&quot;        PRG
+17   &quot;RFDRIVE&quot;          PRG
+14   &quot;RFUTIL&quot;           PRG
+14   &quot;RFTREE&quot;           PRG
+17   &quot;RFCONTENT&quot;        PRG
+12   &quot;RFBATCH&quot;          PRG
+16   &quot;RFRECUR&quot;          PRG
+16   &quot;RFTAPE&quot;           PRG
+-- MORE --
+</code></pre></details>
+<h3 id="step-11">Step 11</h3>
+<p>Inspect file metadata with a last-mount hint for an IEC file.</p>
+<pre><code class="language-text">STAT 9:/RFVIEW
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-11.png" alt="Actual C64 display after step 11"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">1    &quot;RFBNEST&quot;          SEQ
+1    &quot;RFBPROMPT&quot;        SEQ
+1    &quot;RFGUARD&quot;          SEQ
+1    &quot;RFBTYPED&quot;         SEQ
+11   &quot;RFRING&quot;           SEQ
+2733 BLOCKS FREE.
+
+
+
+
+
+RF&gt; STAT 9:/RFVIEW
+9: LAST MOUNTED BY READYFS
+U:/USB1/READYFS.TEST/READYFS-20261013-01
+3111-90069/MEDIA.D81
+MAY HAVE CHANGED ELSEWHERE
+DISPLAY: RFVIEW
+TYPE: $10
+RAW: RFVIEW
+SIZE EST: 1 C64 BLOCKS
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-12">Step 12</h3>
+<p>Show volume details with the same clearly marked historical mount hint.</p>
+<pre><code class="language-text">VOLUME 9:/
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-12.png" alt="Actual C64 display after step 12"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+
+RF&gt; STAT 9:/RFVIEW
+9: LAST MOUNTED BY READYFS
+U:/USB1/READYFS.TEST/READYFS-20261013-01
+3111-90069/MEDIA.D81
+MAY HAVE CHANGED ELSEWHERE
+DISPLAY: RFVIEW
+TYPE: $10
+RAW: RFVIEW
+SIZE EST: 1 C64 BLOCKS
+RF&gt; VOLUME 9:/
+PATH: 9:/
+9: LAST MOUNTED BY READYFS
+U:/USB1/READYFS.TEST/READYFS-20261013-01
+3111-90069/MEDIA.D81
+MAY HAVE CHANGED ELSEWHERE
+BACKEND: IEC DEVICE 9
+VOLUME: READYFS OVL
+FREE: 2733 C64 BLOCKS
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-13">Step 13</h3>
+<p>Give an absolute location a short, reusable name.</p>
+<pre><code class="language-text">AL DISK 9:/
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-13.png" alt="Actual C64 display after step 13"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">RF&gt; STAT 9:/RFVIEW
+9: LAST MOUNTED BY READYFS
+U:/USB1/READYFS.TEST/READYFS-20261013-01
+3111-90069/MEDIA.D81
+MAY HAVE CHANGED ELSEWHERE
+DISPLAY: RFVIEW
+TYPE: $10
+RAW: RFVIEW
+SIZE EST: 1 C64 BLOCKS
+RF&gt; VOLUME 9:/
+PATH: 9:/
+9: LAST MOUNTED BY READYFS
+U:/USB1/READYFS.TEST/READYFS-20261013-01
+3111-90069/MEDIA.D81
+MAY HAVE CHANGED ELSEWHERE
+BACKEND: IEC DEVICE 9
+VOLUME: READYFS OVL
+FREE: 2733 C64 BLOCKS
+RF&gt; AL DISK 9:/
+ALIAS SET
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h2 id="03-disk-to-host-and-back">03 · Disk to host, and back</h2>
+<p>Copy both ways; compare when you choose.</p>
+<h3 id="step-14">Step 14</h3>
+<p>Copy an ordinary byte stream or a selected recursive tree.</p>
+<pre><code class="language-text">COPY @DISK:/RFVIEW @LAB:/FROM-DISK.SEQ
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-14.png" alt="Actual C64 display after step 14"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">DISPLAY: RFVIEW
+TYPE: $10
+RAW: RFVIEW
+SIZE EST: 1 C64 BLOCKS
+RF&gt; VOLUME 9:/
+PATH: 9:/
+9: LAST MOUNTED BY READYFS
+U:/USB1/READYFS.TEST/READYFS-20261013-01
+3111-90069/MEDIA.D81
+MAY HAVE CHANGED ELSEWHERE
+BACKEND: IEC DEVICE 9
+VOLUME: READYFS OVL
+FREE: 2733 C64 BLOCKS
+RF&gt; AL DISK 9:/
+ALIAS SET
+RF&gt; COPY @DISK:/RFVIEW @LAB:/FROM-DISK.S
+EQ
+COPYING 9:/RFVIEW
+VERIFY: IDENTICAL
+COPIED RFVIEW: 84 BYTES
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-15">Step 15</h3>
+<p>Read both files and check their contents.</p>
+<pre><code class="language-text">COMPARE @DISK:/RFVIEW @LAB:/FROM-DISK.SEQ
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-15.png" alt="Actual C64 display after step 15"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">SIZE EST: 1 C64 BLOCKS
+RF&gt; VOLUME 9:/
+PATH: 9:/
+9: LAST MOUNTED BY READYFS
+U:/USB1/READYFS.TEST/READYFS-20261013-01
+3111-90069/MEDIA.D81
+MAY HAVE CHANGED ELSEWHERE
+BACKEND: IEC DEVICE 9
+VOLUME: READYFS OVL
+FREE: 2733 C64 BLOCKS
+RF&gt; AL DISK 9:/
+ALIAS SET
+RF&gt; COPY @DISK:/RFVIEW @LAB:/FROM-DISK.S
+EQ
+COPYING 9:/RFVIEW
+VERIFY: IDENTICAL
+COPIED RFVIEW: 84 BYTES
+RF&gt; COMPARE @DISK:/RFVIEW @LAB:/FROM-DIS
+K.SEQ
+VERIFY: IDENTICAL
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-16">Step 16</h3>
+<p>The short form of COPY works with aliases and endpoint paths.</p>
+<pre><code class="language-text">CP @LAB:/SOURCE/README.SEQ @DISK:/HOSTSEQ --no-verify
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-16.png" alt="Actual C64 display after step 16"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">MAY HAVE CHANGED ELSEWHERE
+BACKEND: IEC DEVICE 9
+VOLUME: READYFS OVL
+FREE: 2733 C64 BLOCKS
+RF&gt; AL DISK 9:/
+ALIAS SET
+RF&gt; COPY @DISK:/RFVIEW @LAB:/FROM-DISK.S
+EQ
+COPYING 9:/RFVIEW
+VERIFY: IDENTICAL
+COPIED RFVIEW: 84 BYTES
+RF&gt; COMPARE @DISK:/RFVIEW @LAB:/FROM-DIS
+K.SEQ
+VERIFY: IDENTICAL
+RF&gt; CP @LAB:/SOURCE/README.SEQ @DISK:/HO
+STSEQ --NO-VERIFY
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/SOURCE/README.SEQ
+VERIFY: SKIPPED
+COPIED README.SEQ: 38 BYTES
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-17">Step 17</h3>
+<p>Read both files and check their contents.</p>
+<pre><code class="language-text">COMPARE @DISK:/HOSTSEQ @LAB:/SOURCE/README.SEQ
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-17.png" alt="Actual C64 display after step 17"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">FREE: 2733 C64 BLOCKS
+RF&gt; AL DISK 9:/
+ALIAS SET
+RF&gt; COPY @DISK:/RFVIEW @LAB:/FROM-DISK.S
+EQ
+COPYING 9:/RFVIEW
+VERIFY: IDENTICAL
+COPIED RFVIEW: 84 BYTES
+RF&gt; COMPARE @DISK:/RFVIEW @LAB:/FROM-DIS
+K.SEQ
+VERIFY: IDENTICAL
+RF&gt; CP @LAB:/SOURCE/README.SEQ @DISK:/HO
+STSEQ --NO-VERIFY
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/SOURCE/README.SEQ
+VERIFY: SKIPPED
+COPIED README.SEQ: 38 BYTES
+RF&gt; COMPARE @DISK:/HOSTSEQ @LAB:/SOURCE/
+README.SEQ
+VERIFY: IDENTICAL
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-18">Step 18</h3>
+<p>Show the boundary of a flat mounted disk: a nested folder path is unsupported, and the error appears in red.</p>
+<pre><code class="language-text">DIR 9:/FOLDER
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-18.png" alt="Actual C64 display after step 18"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">ALIAS SET
+RF&gt; COPY @DISK:/RFVIEW @LAB:/FROM-DISK.S
+EQ
+COPYING 9:/RFVIEW
+VERIFY: IDENTICAL
+COPIED RFVIEW: 84 BYTES
+RF&gt; COMPARE @DISK:/RFVIEW @LAB:/FROM-DIS
+K.SEQ
+VERIFY: IDENTICAL
+RF&gt; CP @LAB:/SOURCE/README.SEQ @DISK:/HO
+STSEQ --NO-VERIFY
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/SOURCE/README.SEQ
+VERIFY: SKIPPED
+COPIED README.SEQ: 38 BYTES
+RF&gt; COMPARE @DISK:/HOSTSEQ @LAB:/SOURCE/
+README.SEQ
+VERIFY: IDENTICAL
+RF&gt; DIR 9:/FOLDER
+UNSUPPORTED
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h2 id="04-edit-a-command">04 · Edit a command</h2>
+<p>Insert, overwrite and navigate a long command.</p>
+<h3 id="step-19">Step 19</h3>
+<p>Insert the missing A in HED using Home and cursor movement, then execute HEAD.</p>
+<pre><code class="language-text">HEAD @LAB:/SOURCE/README.SEQ 2
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-19.png" alt="Actual C64 display after step 19"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">VERIFY: IDENTICAL
+COPIED RFVIEW: 84 BYTES
+RF&gt; COMPARE @DISK:/RFVIEW @LAB:/FROM-DIS
+K.SEQ
+VERIFY: IDENTICAL
+RF&gt; CP @LAB:/SOURCE/README.SEQ @DISK:/HO
+STSEQ --NO-VERIFY
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/SOURCE/README.SEQ
+VERIFY: SKIPPED
+COPIED README.SEQ: 38 BYTES
+RF&gt; COMPARE @DISK:/HOSTSEQ @LAB:/SOURCE/
+README.SEQ
+VERIFY: IDENTICAL
+RF&gt; DIR 9:/FOLDER
+UNSUPPORTED
+RF&gt; HEAD @LAB:/SOURCE/README.SEQ 2
+READYFS NESTED DEMO
+SOURCE STAYS SAFE
+HEAD; READ 38 BYTES
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-20">Step 20</h3>
+<p>Edit a 255-byte quoted command using Home, End and overwrite mode. Execute only its preview. What-if previews the plan without changing storage.</p>
+<pre><code class="language-text">WRITE &quot;@LAB:/FIELD NOTES.SEQ&quot; &quot;LONG INPUT, SMALL REDRAWS. USE HOME AND END TO NAVIGATE THE FOUR ROW EDITOR. LONG INPUT, SMALL REDRAWS. USE HOME AND END TO NAVIGATE THE FOUR ROW EDITOR. LONG INPUT, SMALL REDRAWS. USE HOME AND END TO NAVIGATE THX &quot; --WHATIF
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-20.png" alt="Actual C64 display after step 20"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">UNSUPPORTED
+RF&gt; HEAD @LAB:/SOURCE/README.SEQ 2
+READYFS NESTED DEMO
+SOURCE STAYS SAFE
+HEAD; READ 38 BYTES
+RF&gt; WRITE &quot;@LAB:/FIELD NOTES.SEQ&quot; &quot;LONG
+INPUT, SMALL REDRAWS. USE HOME AND END T
+O NAVIGATE THE FOUR ROW EDITOR. LONG INP
+UT, SMALL REDRAWS. USE HOME AND END TO N
+AVIGATE THE FOUR ROW EDITOR. LONG INPUT,
+ SMALL REDRAWS. USE HOME AND END TO NAVI
+GATE THX &quot; --WHATIF
+WOULD WRITE @LAB:/FIELD NOTES.SEQ LONG I
+NPUT, SMALL REDRAWS. USE HOME AND END TO
+ NAVIGATE THE FOUR ROW EDITOR. LONG INPU
+T, SMALL REDRAWS. USE HOME AND END TO NA
+VIGATE THE FOUR ROW EDITOR. LONG INPUT,
+SMALL REDRAWS. USE HOME AND END TO NAVIG
+ATE THX
+PLAN W1 D0 M0; DONE W0 D0 M0
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h2 id="05-history-paging">05 · History &amp; paging</h2>
+<p>Recall commands, restore drafts and page output.</p>
+<h3 id="step-21">Step 21</h3>
+<p>Recall older commands, restore an unsent draft, page output with F1/F3, then execute the preserved draft.</p>
+<pre><code class="language-text">HD @LAB:/SOURCE/README.SEQ 1
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-21.png" alt="Actual C64 display after step 21"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">SOURCE STAYS SAFE
+HEAD; READ 38 BYTES
+RF&gt; WRITE &quot;@LAB:/FIELD NOTES.SEQ&quot; &quot;LONG
+INPUT, SMALL REDRAWS. USE HOME AND END T
+O NAVIGATE THE FOUR ROW EDITOR. LONG INP
+UT, SMALL REDRAWS. USE HOME AND END TO N
+AVIGATE THE FOUR ROW EDITOR. LONG INPUT,
+ SMALL REDRAWS. USE HOME AND END TO NAVI
+GATE THX &quot; --WHATIF
+WOULD WRITE @LAB:/FIELD NOTES.SEQ LONG I
+NPUT, SMALL REDRAWS. USE HOME AND END TO
+ NAVIGATE THE FOUR ROW EDITOR. LONG INPU
+T, SMALL REDRAWS. USE HOME AND END TO NA
+VIGATE THE FOUR ROW EDITOR. LONG INPUT,
+SMALL REDRAWS. USE HOME AND END TO NAVIG
+ATE THX
+PLAN W1 D0 M0; DONE W0 D0 M0
+RF&gt; HD @LAB:/SOURCE/README.SEQ 1
+READYFS NESTED DEMO
+HEAD; READ 32 BYTES
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h2 id="06-preview-copy">06 · Preview &amp; copy</h2>
+<p>List selected files, then copy with verification.</p>
+<h3 id="step-22">Step 22</h3>
+<p>The short form of COPY works with aliases and endpoint paths. What-if previews the plan without changing storage.</p>
+<pre><code class="language-text">CP @LAB:/SOURCE @LAB:/COPY -R -W
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-22.png" alt="Actual C64 display after step 22"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">WOULD COPY DIR alpha
+WOULD COPY DIR beta
+WOULD COPY readme.seq
+WOULD COPY alpha/one.seq
+WOULD COPY alpha/two.seq
+WOULD COPY DIR beta/deep
+WOULD COPY beta/four.seq
+WOULD COPY beta/deep/three.seq
+WHATIF: NO FILES CHANGED
+
+
+
+
+
+
+
+
+
+
+
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<p>Earlier preview page:</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/preview-22-page-01.png" alt="Actual preview page"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">INPUT, SMALL REDRAWS. USE HOME AND END T
+O NAVIGATE THE FOUR ROW EDITOR. LONG INP
+UT, SMALL REDRAWS. USE HOME AND END TO N
+AVIGATE THE FOUR ROW EDITOR. LONG INPUT,
+ SMALL REDRAWS. USE HOME AND END TO NAVI
+GATE THX &quot; --WHATIF
+WOULD WRITE @LAB:/FIELD NOTES.SEQ LONG I
+NPUT, SMALL REDRAWS. USE HOME AND END TO
+ NAVIGATE THE FOUR ROW EDITOR. LONG INPU
+T, SMALL REDRAWS. USE HOME AND END TO NA
+VIGATE THE FOUR ROW EDITOR. LONG INPUT,
+SMALL REDRAWS. USE HOME AND END TO NAVIG
+ATE THX
+PLAN W1 D0 M0; DONE W0 D0 M0
+RF&gt; HD @LAB:/SOURCE/README.SEQ 1
+READYFS NESTED DEMO
+HEAD; READ 32 BYTES
+RF&gt; CP @LAB:/SOURCE @LAB:/COPY -R -W
+RECURSIVE PLAN F8 SELECTED 8
+PLAN W8 D0 M0; DONE W0 D0 M0
+FROM U:/USB1/READYFS.TEST/READYFS-202610
+13-013111-90069/SOURCE
+TO   U:/USB1/READYFS.TEST/READYFS-202610
+13-013111-90069/COPY
+-- MORE --
+</code></pre></details>
+<h3 id="step-23">Step 23</h3>
+<p>Create an empty destination inside the test root.</p>
+<pre><code class="language-text">MD @LAB:/COPY
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-23.png" alt="Actual C64 display after step 23"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">WOULD COPY readme.seq
+WOULD COPY alpha/one.seq
+WOULD COPY alpha/two.seq
+WOULD COPY DIR beta/deep
+WOULD COPY beta/four.seq
+WOULD COPY beta/deep/three.seq
+WHATIF: NO FILES CHANGED
+
+
+
+
+
+
+
+
+
+
+
+RF&gt; MD @LAB:/COPY
+DIRECTORY CREATED
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-24">Step 24</h3>
+<p>Copy an ordinary byte stream or a selected recursive tree.</p>
+<pre><code class="language-text">COPY @LAB:/SOURCE @LAB:/COPY --recursive
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-24.png" alt="Actual C64 display after step 24"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">VERIFY: IDENTICAL
+COPIED readme.seq: 38 BYTES
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/SOURCE/alpha/one.seq
+VERIFY: IDENTICAL
+COPIED one.seq: 10 BYTES
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/SOURCE/alpha/two.seq
+VERIFY: IDENTICAL
+COPIED two.seq: 10 BYTES
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/SOURCE/beta/four.seq
+VERIFY: IDENTICAL
+COPIED four.seq: 10 BYTES
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/SOURCE/beta/deep/thre
+e.seq
+VERIFY: IDENTICAL
+COPIED three.seq: 13 BYTES
+BATCH DONE 8/8 FAIL 0
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-25">Step 25</h3>
+<p>Show the folder structure and nested files.</p>
+<pre><code class="language-text">TREE @LAB:/COPY
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-25.png" alt="Actual C64 display after step 25"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/SOURCE/beta/four.seq
+VERIFY: IDENTICAL
+COPIED four.seq: 10 BYTES
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/SOURCE/beta/deep/thre
+e.seq
+VERIFY: IDENTICAL
+COPIED three.seq: 13 BYTES
+BATCH DONE 8/8 FAIL 0
+RF&gt; TREE @LAB:/COPY
+/alpha
+/beta
+ readme.seq
+ alpha/one.seq
+ alpha/two.seq
+/beta/deep
+ beta/four.seq
+ beta/deep/three.seq
+TREE DONE F5 D3
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h2 id="07-move-without-readback">07 · Move without readback</h2>
+<p>Use -nv; check the moved files independently.</p>
+<h3 id="step-26">Step 26</h3>
+<p>Create a destination with the full command name.</p>
+<pre><code class="language-text">MKDIR @LAB:/MOVED
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-26.png" alt="Actual C64 display after step 26"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">VERIFY: IDENTICAL
+COPIED four.seq: 10 BYTES
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/SOURCE/beta/deep/thre
+e.seq
+VERIFY: IDENTICAL
+COPIED three.seq: 13 BYTES
+BATCH DONE 8/8 FAIL 0
+RF&gt; TREE @LAB:/COPY
+/alpha
+/beta
+ readme.seq
+ alpha/one.seq
+ alpha/two.seq
+/beta/deep
+ beta/four.seq
+ beta/deep/three.seq
+TREE DONE F5 D3
+RF&gt; MKDIR @LAB:/MOVED
+DIRECTORY CREATED
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-27">Step 27</h3>
+<p>Move the copied tree, keeping the original source safe. What-if previews the plan without changing storage.</p>
+<pre><code class="language-text">MOVE @LAB:/COPY @LAB:/MOVED --recursive --whatif
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-27.png" alt="Actual C64 display after step 27"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">WOULD MOVE DIR alpha
+WOULD MOVE DIR beta
+WOULD MOVE readme.seq
+WOULD MOVE alpha/one.seq
+WOULD MOVE alpha/two.seq
+WOULD MOVE DIR beta/deep
+WOULD MOVE beta/four.seq
+WOULD MOVE beta/deep/three.seq
+WHATIF: NO FILES CHANGED
+
+
+
+
+
+
+
+
+
+
+
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<p>Earlier preview page:</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/preview-27-page-01.png" alt="Actual preview page"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">e.seq
+VERIFY: IDENTICAL
+COPIED three.seq: 13 BYTES
+BATCH DONE 8/8 FAIL 0
+RF&gt; TREE @LAB:/COPY
+/alpha
+/beta
+ readme.seq
+ alpha/one.seq
+ alpha/two.seq
+/beta/deep
+ beta/four.seq
+ beta/deep/three.seq
+TREE DONE F5 D3
+RF&gt; MKDIR @LAB:/MOVED
+DIRECTORY CREATED
+RF&gt; MOVE @LAB:/COPY @LAB:/MOVED --RECURS
+IVE --WHATIF
+RECURSIVE PLAN F8 SELECTED 8
+PLAN W8 D8 M0; DONE W0 D0 M0
+FROM U:/USB1/READYFS.TEST/READYFS-202610
+13-013111-90069/COPY
+TO   U:/USB1/READYFS.TEST/READYFS-202610
+13-013111-90069/MOVED
+-- MORE --
+</code></pre></details>
+<h3 id="step-28">Step 28</h3>
+<p>Move nested folders with the short command and option forms.</p>
+<pre><code class="language-text">MV @LAB:/COPY @LAB:/MOVED -R -NV
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-28.png" alt="Actual C64 display after step 28"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">VERIFY: SKIPPED
+COPIED readme.seq: 38 BYTES
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/COPY/alpha/one.seq
+VERIFY: SKIPPED
+COPIED one.seq: 10 BYTES
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/COPY/alpha/two.seq
+VERIFY: SKIPPED
+COPIED two.seq: 10 BYTES
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/COPY/beta/four.seq
+VERIFY: SKIPPED
+COPIED four.seq: 10 BYTES
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/COPY/beta/deep/three.
+seq
+VERIFY: SKIPPED
+COPIED three.seq: 13 BYTES
+BATCH DONE 11/11 FAIL 0
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-29">Step 29</h3>
+<p>Show the folder structure and nested files.</p>
+<pre><code class="language-text">TREE @LAB:/MOVED
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-29.png" alt="Actual C64 display after step 29"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/COPY/beta/four.seq
+VERIFY: SKIPPED
+COPIED four.seq: 10 BYTES
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61013-013111-90069/COPY/beta/deep/three.
+seq
+VERIFY: SKIPPED
+COPIED three.seq: 13 BYTES
+BATCH DONE 11/11 FAIL 0
+RF&gt; TREE @LAB:/MOVED
+/alpha
+/beta
+ readme.seq
+ alpha/one.seq
+ alpha/two.seq
+/beta/deep
+ beta/four.seq
+ beta/deep/three.seq
+TREE DONE F5 D3
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h2 id="08-delete-test-copies">08 · Delete test copies</h2>
+<p>Preview deletion; keep the original source.</p>
+<h3 id="step-30">Step 30</h3>
+<p>Command help also accepts short command names.</p>
+<pre><code class="language-text">H RM
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-30.png" alt="Actual C64 display after step 30"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">/beta
+ readme.seq
+ alpha/one.seq
+ alpha/two.seq
+/beta/deep
+ beta/four.seq
+ beta/deep/three.seq
+TREE DONE F5 D3
+RF&gt; H RM
+DELETE PATH .OPTIONS. / DL / RM
+REMOVE FILES AND FOLDERS WITH -R.
+RM @LAB:/MOVED -R -W PREVIEWS ONLY.
+ROOT REMAINS; RMDIR REMOVES EMPTY ROOT.
+EXAMPLES:
+DELETE @LAB:/OLD.SEQ -W
+RM @LAB:/MOVED -R -W
+-R --RECURSIVE  -W --WHATIF/--DRY-RUN
+-I --INCLUDE p  -X --EXCLUDE p
+-F --FORCE OVERWRITE; -Y --YES DELETE
+WHATIF MAKES NO CHANGES; INSPECT FIRST.
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-31">Step 31</h3>
+<p>Preview removal of the copied test data. What-if previews the plan without changing storage.</p>
+<pre><code class="language-text">DELETE @LAB:/MOVED --recursive --whatif
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-31.png" alt="Actual C64 display after step 31"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">WOULD DELETE DIR alpha
+WOULD DELETE DIR beta
+WOULD DELETE readme.seq
+WOULD DELETE alpha/one.seq
+WOULD DELETE alpha/two.seq
+WOULD DELETE DIR beta/deep
+WOULD DELETE beta/four.seq
+WOULD DELETE beta/deep/three.seq
+WHATIF: NO FILES CHANGED
+
+
+
+
+
+
+
+
+
+
+
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<p>Earlier preview page:</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/preview-31-page-01.png" alt="Actual preview page"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text"> alpha/one.seq
+ alpha/two.seq
+/beta/deep
+ beta/four.seq
+ beta/deep/three.seq
+TREE DONE F5 D3
+RF&gt; H RM
+DELETE PATH .OPTIONS. / DL / RM
+REMOVE FILES AND FOLDERS WITH -R.
+RM @LAB:/MOVED -R -W PREVIEWS ONLY.
+ROOT REMAINS; RMDIR REMOVES EMPTY ROOT.
+EXAMPLES:
+DELETE @LAB:/OLD.SEQ -W
+RM @LAB:/MOVED -R -W
+-R --RECURSIVE  -W --WHATIF/--DRY-RUN
+-I --INCLUDE p  -X --EXCLUDE p
+-F --FORCE OVERWRITE; -Y --YES DELETE
+WHATIF MAKES NO CHANGES; INSPECT FIRST.
+RF&gt; DELETE @LAB:/MOVED --RECURSIVE --WHA
+TIF
+RECURSIVE PLAN F8 SELECTED 8
+PLAN W0 D8 M0; DONE W0 D0 M0
+FROM U:/USB1/READYFS.TEST/READYFS-202610
+13-013111-90069/MOVED
+-- MORE --
+</code></pre></details>
+<h3 id="step-32">Step 32</h3>
+<p>Delete only the owned demonstration descendants.</p>
+<pre><code class="language-text">RM @LAB:/MOVED -R -Y
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-32.png" alt="Actual C64 display after step 32"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">WOULD DELETE alpha/one.seq
+WOULD DELETE alpha/two.seq
+WOULD DELETE DIR beta/deep
+WOULD DELETE beta/four.seq
+WOULD DELETE beta/deep/three.seq
+WHATIF: NO FILES CHANGED
+
+
+
+
+
+
+
+
+
+
+
+RF&gt; RM @LAB:/MOVED -R -Y
+RECURSIVE PLAN F8 SELECTED 8
+BATCH DONE 8/8 FAIL 0
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-33">Step 33</h3>
+<p>Remove an empty test directory.</p>
+<pre><code class="language-text">RD @LAB:/MOVED -Y
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-33.png" alt="Actual C64 display after step 33"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">WOULD DELETE DIR beta/deep
+WOULD DELETE beta/four.seq
+WOULD DELETE beta/deep/three.seq
+WHATIF: NO FILES CHANGED
+
+
+
+
+
+
+
+
+
+
+
+RF&gt; RM @LAB:/MOVED -R -Y
+RECURSIVE PLAN F8 SELECTED 8
+BATCH DONE 8/8 FAIL 0
+RF&gt; RD @LAB:/MOVED -Y
+DIRECTORY REMOVED
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-34">Step 34</h3>
+<p>Remove the remaining empty copy root.</p>
+<pre><code class="language-text">RMDIR @LAB:/COPY --yes
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-34.png" alt="Actual C64 display after step 34"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">WOULD DELETE beta/deep/three.seq
+WHATIF: NO FILES CHANGED
+
+
+
+
+
+
+
+
+
+
+
+RF&gt; RM @LAB:/MOVED -R -Y
+RECURSIVE PLAN F8 SELECTED 8
+BATCH DONE 8/8 FAIL 0
+RF&gt; RD @LAB:/MOVED -Y
+DIRECTORY REMOVED
+RF&gt; RMDIR @LAB:/COPY --YES
+DIRECTORY REMOVED
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-35">Step 35</h3>
+<p>Change the current location so relative paths have a clear base.</p>
+<pre><code class="language-text">CD @LAB:/SOURCE
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-35.png" alt="Actual C64 display after step 35"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">WHATIF: NO FILES CHANGED
+
+
+
+
+
+
+
+
+
+
+
+RF&gt; RM @LAB:/MOVED -R -Y
+RECURSIVE PLAN F8 SELECTED 8
+BATCH DONE 8/8 FAIL 0
+RF&gt; RD @LAB:/MOVED -Y
+DIRECTORY REMOVED
+RF&gt; RMDIR @LAB:/COPY --YES
+DIRECTORY REMOVED
+RF&gt; CD @LAB:/SOURCE
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-36">Step 36</h3>
+<p>List the current directory; disk files use classic names, types and block counts.</p>
+<pre><code class="language-text">DIR
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-36.png" alt="Actual C64 display after step 36"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+
+
+
+
+
+
+
+RF&gt; RM @LAB:/MOVED -R -Y
+RECURSIVE PLAN F8 SELECTED 8
+BATCH DONE 8/8 FAIL 0
+RF&gt; RD @LAB:/MOVED -Y
+DIRECTORY REMOVED
+RF&gt; RMDIR @LAB:/COPY --YES
+DIRECTORY REMOVED
+RF&gt; CD @LAB:/SOURCE
+RF&gt; DIR
+?    &quot;alpha&quot;            DIR
+?    &quot;beta&quot;             DIR
+?    &quot;readme.seq&quot;       ---
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-37">Step 37</h3>
+<p>Show the folder structure and nested files.</p>
+<pre><code class="language-text">TREE .
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/step-37.png" alt="Actual C64 display after step 37"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">BATCH DONE 8/8 FAIL 0
+RF&gt; RD @LAB:/MOVED -Y
+DIRECTORY REMOVED
+RF&gt; RMDIR @LAB:/COPY --YES
+DIRECTORY REMOVED
+RF&gt; CD @LAB:/SOURCE
+RF&gt; DIR
+?    &quot;alpha&quot;            DIR
+?    &quot;beta&quot;             DIR
+?    &quot;readme.seq&quot;       ---
+RF&gt; TREE .
+/alpha
+/beta
+ readme.seq
+ alpha/one.seq
+ alpha/two.seq
+/beta/deep
+ beta/four.seq
+ beta/deep/three.seq
+TREE DONE F5 D3
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h2 id="09-checks-complete">09 · Checks complete</h2>
+<p>62 checks passed; original settings restored.</p>
+<h2 id="10-parameterized-batch-backup">10 · Parameterized batch backup</h2>
+<p>Read one script, preview it, then verify a backup.</p>
+<p>This appended chapter uses a new owned host folder and the current DOS-style scripting build. LAB is assigned during omitted setup:</p>
+<pre><code class="language-text">ALIAS LAB u:/USB1/READYFS_TEST/readyfs-20261014-045212-78988
+</code></pre>
+<p><a href="../examples/BACKUP.SEQ">Download the exact BACKUP.SEQ</a>. TYPE displays its real contents before execution.</p>
+<h3 id="step-38">Step 38</h3>
+<p>A named session variable counts successful backups across runs.</p>
+<pre><code class="language-text">SET BACKUPS=0
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/batch-step-01.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RF&gt; SET BACKUPS=0
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-39">Step 39</h3>
+<p>Read the actual script: arguments, conditions, labels, a local CALL and a counter.</p>
+<pre><code class="language-text">TYPE @LAB:/BACKUP.SEQ
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/batch-step-02.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">EXIT /B 0
+:COPYONE
+COPY &quot;%SRC%&quot; &quot;%DST%&quot;
+COMPARE &quot;%SRC%&quot; &quot;%DST%&quot;
+ECHO BACKUP VERIFIED
+EXIT /B 0
+:PREVIEW
+COPY &quot;%SRC%&quot; &quot;%DST%&quot; --WHATIF
+EXIT /B
+:EXISTS
+ECHO DEST EXISTS - CHOOSE NEW NAME
+EXIT /B 6
+:MISSING
+ECHO SOURCE NOT FOUND: &quot;%SRC%&quot;
+EXIT /B 5
+:USAGE
+ECHO RUN BACKUP SOURCE DEST PREVIEW
+ECHO RUN BACKUP SOURCE DEST APPLY
+EXIT /B 4
+READ 703 BYTES
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<p>Script page 1:</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/batch-page-02-01.png" alt="Actual C64 script page"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">IF NOT DEFINED BACKUPS SET BACKUPS=0
+SET /A BACKUPS=BACKUPS+1
+ECHO BACKUPS THIS SESSION: %BACKUPS%
+EXIT /B 0
+:COPYONE
+COPY &quot;%SRC%&quot; &quot;%DST%&quot;
+COMPARE &quot;%SRC%&quot; &quot;%DST%&quot;
+ECHO BACKUP VERIFIED
+EXIT /B 0
+:PREVIEW
+COPY &quot;%SRC%&quot; &quot;%DST%&quot; --WHATIF
+EXIT /B
+:EXISTS
+ECHO DEST EXISTS - CHOOSE NEW NAME
+EXIT /B 6
+:MISSING
+ECHO SOURCE NOT FOUND: &quot;%SRC%&quot;
+EXIT /B 5
+:USAGE
+ECHO RUN BACKUP SOURCE DEST PREVIEW
+ECHO RUN BACKUP SOURCE DEST APPLY
+EXIT /B 4
+READ 703 BYTES
+
+OUTPUT: F1 OLDER F3 NEWER STOP LIVE
+</code></pre></details>
+<p>Script page 2:</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/batch-page-02-02.png" alt="Actual C64 script page"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">REU: 256 BANKS
+OVERLAY: CMDPATH: READY
+PLANNER: READY
+JOURNAL: READY BACKEND: READY
+BATCH: READY
+RF&gt; ALIAS LAB U:/USB1/READYFS.TEST/READY
+FS-20261014-045212-78988
+ALIAS SET
+RF&gt; CLEAR
+RF&gt; SET BACKUPS=0
+RF&gt; CLEAR
+RF&gt; TYPE @LAB:/BACKUP.SEQ
+REM BACKUP SOURCE DEST PREVIEW OR APPLY
+ONERROR STOP
+SET &quot;SRC=%1&quot;
+SET &quot;DST=%2&quot;
+IF &quot;%SRC%&quot;==&quot;&quot; GOTO USAGE
+IF &quot;%DST%&quot;==&quot;&quot; GOTO USAGE
+IF NOT EXIST &quot;%SRC%&quot; GOTO MISSING
+IF &quot;%3&quot;==&quot;PREVIEW&quot; GOTO PREVIEW
+IF NOT &quot;%3&quot;==&quot;APPLY&quot; GOTO USAGE
+IF EXIST &quot;%DST%&quot; GOTO EXISTS
+CALL :COPYONE
+
+OUTPUT: F1 OLDER F3 NEWER STOP LIVE
+</code></pre></details>
+<h3 id="step-40">Step 40</h3>
+<p>Pass source, destination and PREVIEW as %1, %2 and %3; no file is written.</p>
+<pre><code class="language-text">RUN @LAB:/BACKUP.SEQ @LAB:/SOURCE/README.SEQ @LAB:/SAVED.SEQ PREVIEW
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/batch-step-03.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+
+
+
+
+
+
+
+
+
+
+
+
+RF&gt; RUN @LAB:/BACKUP.SEQ @LAB:/SOURCE/RE
+ADME.SEQ @LAB:/SAVED.SEQ PREVIEW
+BATCH&gt; COPY
+WOULD COPY @LAB:/SOURCE/README.SEQ @LAB:
+/SAVED.SEQ
+PLAN W1 D0 M0; DONE W0 D0 M0
+RUN DONE LINES 11 COMMANDS 1 RC 0
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-41">Step 41</h3>
+<p>Pass APPLY to copy and compare; CALL shares SRC/DST and arithmetic increments BACKUPS.</p>
+<pre><code class="language-text">RUN @LAB:/BACKUP.SEQ @LAB:/SOURCE/README.SEQ @LAB:/SAVED.SEQ APPLY
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/batch-step-04.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+
+
+
+
+
+
+
+RF&gt; RUN @LAB:/BACKUP.SEQ @LAB:/SOURCE/RE
+ADME.SEQ @LAB:/SAVED.SEQ APPLY
+BATCH&gt; COPY
+COPYING U:/USB1/READYFS.TEST/READYFS-202
+61014-045212-78988/SOURCE/README.SEQ
+VERIFY: IDENTICAL
+COPIED README.SEQ: 38 BYTES
+BATCH&gt; COMPARE
+VERIFY: IDENTICAL
+BACKUP VERIFIED
+BACKUPS THIS SESSION: 1
+RUN DONE LINES 20 COMMANDS 2 RC 0
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-42">Step 42</h3>
+<p>An existing destination takes the refusal branch, returns 6 and leaves the counter unchanged.</p>
+<pre><code class="language-text">RUN @LAB:/BACKUP.SEQ @LAB:/SOURCE/README.SEQ @LAB:/SAVED.SEQ APPLY
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/batch-step-05.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RF&gt; RUN @LAB:/BACKUP.SEQ @LAB:/SOURCE/RE
+ADME.SEQ @LAB:/SAVED.SEQ APPLY
+DEST EXISTS - CHOOSE NEW NAME
+RUN DONE LINES 13 COMMANDS 0 RC 6
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-43">Step 43</h3>
+<p>Read the copied file and see the original fixture text.</p>
+<pre><code class="language-text">TYPE @LAB:/SAVED.SEQ
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/batch-step-06.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RF&gt; TYPE @LAB:/SAVED.SEQ
+READYFS NESTED DEMO
+SOURCE STAYS SAFE
+READ 38 BYTES
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+<h3 id="step-44">Step 44</h3>
+<p>Script changes to named variables remain available at the interactive prompt.</p>
+<pre><code class="language-text">ECHO COMPLETED BACKUPS: %BACKUPS%
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="editor/batch-step-07.png" alt="Actual C64 result"></p><details class="screen-text"><summary>Read the screen text</summary><pre><code class="language-text">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RF&gt; ECHO COMPLETED BACKUPS: %BACKUPS%
+COMPLETED BACKUPS: 1
+RF&gt;
+..&gt;
+..&gt;
+..&gt;
+UP/DN HIST  F1/F3 PAGE
+</code></pre></details>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../../README.html">Build and publishing</a></footer></body></html>

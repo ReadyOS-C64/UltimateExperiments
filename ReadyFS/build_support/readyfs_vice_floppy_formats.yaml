@@ -1,0 +1,88 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_floppy_formats
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 90, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-empty.d71"
+    disk9: "artifacts/readyfs/readyfs-empty.d64"
+    autostart_prg: "artifacts/readyfs/readyfs.prg"
+    drive8_type: 1571
+    drive9_type: 1541
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: ready
+    type: screen.wait_contains
+    params: { text: "PLANNER: READY", wait_timeout_s: 30 }
+  - id: d64_dir_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,57,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: d64_dir_free
+    type: screen.wait_contains
+    params: { text: "FREE: 664 C64 BLOCKS", wait_timeout_s: 20, capture_label: rf_ui_29_d64_directory }
+  - id: d64_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 1.0 }
+  - id: d64_volume_input
+    type: input.sequence
+    params: { keys: [86,79,76,85,77,69,32,57,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: d64_volume_title
+    type: screen.wait_contains
+    params: { text: "VOLUME: READYFS D64", wait_timeout_s: 20 }
+  - id: d64_volume_free
+    type: screen.wait_contains
+    params: { text: "FREE: 664 C64 BLOCKS", wait_timeout_s: 20, capture_label: rf_ui_29_d64_volume }
+  - id: d71_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 1.0 }
+  - id: d71_dir_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,56,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: d71_dir_free_16bit
+    type: screen.wait_contains
+    params: { text: "FREE: 1148 C64 BLOCKS", wait_timeout_s: 20, capture_label: rf_ui_30_d71_directory }
+  - id: d71_volume_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 1.0 }
+  - id: d71_volume_input
+    type: input.sequence
+    params: { keys: [86,79,76,85,77,69,32,56,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: d71_volume_title
+    type: screen.wait_contains
+    params: { text: "VOLUME: READYFS D71", wait_timeout_s: 20 }
+  - id: d71_volume_free_16bit
+    type: screen.wait_contains
+    params: { text: "FREE: 1148 C64 BLOCKS", wait_timeout_s: 20, capture_label: rf_ui_30_d71_volume_16bit }
+  - id: drive_scan_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 1.0 }
+  - id: drive_scan_input
+    type: input.sequence
+    params: { keys: [68,82,73,86,69,83,32,83,67,65,78,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: drive_scan_bound
+    type: screen.wait_contains
+    params: { text: "IEC SCAN 8-30", wait_timeout_s: 60 }
+  - id: drive_scan_eight
+    type: screen.wait_contains
+    params: { text: "8: PRESENT", wait_timeout_s: 60 }
+  - id: drive_scan_nine
+    type: screen.wait_contains
+    params: { text: "9: PRESENT", wait_timeout_s: 60 }
+  - id: drive_scan_tape
+    type: screen.wait_contains
+    params: { text: "T: SEQUENTIAL TAPE", wait_timeout_s: 20 }
+  - id: drive_scan_prompt
+    type: screen.wait_contains
+    params: { text: "RF>", wait_timeout_s: 20, capture_label: rf_ui_28_drive_scan_8_30 }

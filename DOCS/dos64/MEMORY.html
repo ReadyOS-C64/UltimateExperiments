@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Memory, paging, and coherence · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Memory, paging, and coherence"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#guest-address-space">Guest address space</a></li><li><a href="#c64-host-map-64-kib-fully-accounted-for">C64 host map: 64 KiB fully accounted for</a></li><li><a href="#reu-arena-4-mib-minimum-profile">REU arena: 4 MiB minimum profile</a></li><li><a href="#guest-page-cache">Guest page cache</a></li><li><a href="#coherence-invariants">Coherence invariants</a></li><li><a href="#current-bios-and-storage-ownership">Current BIOS and storage ownership</a></li><li><a href="#resident-device-code-and-contiguous-prg-layout">Resident device code and contiguous PRG layout</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="MEMORY.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="memory-paging-and-coherence">Memory, paging, and coherence</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p>These are full-system budgets; current measured subsets are recorded in MEMORY_BUDGET (local development record, not distributed) and <a href="MEMORY_IMPLEMENTATION.html">MEMORY_IMPLEMENTATION</a>. The 512-byte coherent byte cache and bytewise coherent guest/REU range transfers are implemented and functionally tested; page size and future optimizations remain candidates. All ranges below are inclusive unless a length is explicitly given.</p>
+<h2 id="guest-address-space">Guest address space</h2>
+<table>
+<thead>
+<tr>
+<th>Guest physical range</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>00000–9FFFF</code></td>
+<td>640 KiB conventional RAM, including writable IVT/BDA</td>
+</tr>
+<tr>
+<td><code>A0000–B7FFF</code></td>
+<td>Uninstalled video/RAM for this CGA profile; deterministic reads, writes ignored/logged as specified</td>
+</tr>
+<tr>
+<td><code>B8000–BBFFF</code></td>
+<td>16 KiB CGA VRAM; text pages and graphics share backing</td>
+</tr>
+<tr>
+<td><code>BC000–EFFFF</code></td>
+<td>Reserved/uninstalled space; add aliases or option-ROM data only when the profile requires it</td>
+</tr>
+<tr>
+<td><code>F0000–FFFFF</code></td>
+<td>Synthetic BIOS ROM and tables; guest writes do not change ROM</td>
+</tr>
+</tbody></table>
+<p>Reserve a full 1 MiB REU backing arena for straightforward physical indexing, but enforce this bus map; do not accidentally make holes writable RAM. CPU-only conformance tests use a separate all-RAM bus mode because their vectors assume 1 MiB writable RAM.</p>
+<p>Compute an effective offset with 16-bit arithmetic; then <code>physical = ((segment &lt;&lt; 4) + offset) &amp; 0xFFFFF</code>. Segment aliases must reach the same cache entry. Instruction IP, stack SP, and string SI/DI updates wrap as 16-bit registers. <strong>Do not conflate those rules with the second byte of every multi-byte memory transfer.</strong> Freeze word/far-pointer boundary behavior at offsets FFFF/FFFE from original-CPU vectors/reference code, including odd-address behavior, before enabling a shared <code>read16</code> fast path. Test physical FFFFF→00000 separately. Avoid importing modern protected-mode segment-limit behavior.</p>
+<h2 id="c64-host-map-64-kib-fully-accounted-for">C64 host map: 64 KiB fully accounted for</h2>
+<table>
+<thead>
+<tr>
+<th>Host range</th>
+<th align="right">Bytes</th>
+<th>Current allocation / remaining budget</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>0000–01FF</code></td>
+<td align="right">512</td>
+<td>6510 port, allocated ZP, hardware stack</td>
+</tr>
+<tr>
+<td><code>0200–07FF</code></td>
+<td align="right">1,536</td>
+<td>KERNAL-compatible work areas, bootstrap, host input/buffers</td>
+</tr>
+<tr>
+<td><code>0800–3FFF</code></td>
+<td align="right">14,336</td>
+<td>CPU, hot memory routines, native BIOS/control code</td>
+</tr>
+<tr>
+<td><code>4000–43FF</code></td>
+<td align="right">1,024</td>
+<td>VIC bitmap color matrix / text screen</td>
+</tr>
+<tr>
+<td><code>4400–47FF</code></td>
+<td align="right">1,024</td>
+<td>Packed 4×8 CP437 font source</td>
+</tr>
+<tr>
+<td><code>4800–4FFF</code></td>
+<td align="right">2,048</td>
+<td>8×8 CP437 font source / aligned character generator</td>
+</tr>
+<tr>
+<td><code>5000–5FFF</code></td>
+<td align="right">4,096</td>
+<td>Resident DEVICECODE, current 4,074 bytes plus 22-byte tail</td>
+</tr>
+<tr>
+<td><code>6000–7FFF</code></td>
+<td align="right">8,192</td>
+<td>VIC bitmap reservation (8,000 displayed bytes)</td>
+</tr>
+<tr>
+<td><code>8000–BFFF</code></td>
+<td align="right">16,384</td>
+<td>Guest cache frames; includes RAM under BASIC</td>
+</tr>
+<tr>
+<td><code>C000–C0FF</code></td>
+<td align="right">256</td>
+<td>Coherent range staging buffer; linker-enforced reservation</td>
+</tr>
+<tr>
+<td><code>C100–C8FF</code></td>
+<td align="right">2,048</td>
+<td>Linked UCIBUFFER: command/data/status transport storage</td>
+</tr>
+<tr>
+<td><code>C900–CFFF</code></td>
+<td align="right">1,792</td>
+<td>Exclusive FILE/TEXT/INPUT/PIT/GFX/HD/DISK overlay window</td>
+</tr>
+<tr>
+<td><code>D000–DFFF</code></td>
+<td align="right">4,096</td>
+<td>I/O visible: VIC, SID, color RAM, CIA, REU/UCI</td>
+</tr>
+<tr>
+<td><code>E000–EFFF</code></td>
+<td align="right">4,096</td>
+<td>State, page map, descriptors, dirty maps, bounce buffers</td>
+</tr>
+<tr>
+<td><code>F000–FDFF</code></td>
+<td align="right">3,584</td>
+<td>Copied HD/scroll code: 2,144 bytes plus 1,440-byte zero tail</td>
+</tr>
+<tr>
+<td><code>FE00–FFFF</code></td>
+<td align="right">512</td>
+<td>Excluded vector/gateway reserve</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td align="right"><strong>65,536</strong></td>
+<td>Executable windows total 23,808 bytes; C900 is shared, not seven simultaneous allocations</td>
+</tr>
+</tbody></table>
+<p>The VIC bank is <code>4000–7FFF</code>: the matrix at 4000 and bitmap at 6000 are in the <strong>same</strong> 16 KiB bank. This must be asserted, not inferred from total free bytes. Font alignment and VIC character-ROM visibility must also be checked. Color RAM is at D800 and is already inside the I/O reservation, not another 1 KiB of ordinary RAM.</p>
+<p>Host normal mapping exposes RAM under BASIC/KERNAL while leaving I/O visible. KERNAL calls use a resident gateway outside hidden memory; save/restore <code>$00/$01</code>, needed ZP, IRQ state, stack, return registers, and channel state. Guest frames under BASIC and metadata under KERNAL remain protected from accidental CPU access during that mapping. REU staging buffers stay in known visible RAM. Initially avoid DMA into I/O and avoid using RAM under I/O altogether. IRQ/NMI vectors and handlers must remain valid across all maps; test RESTORE/NMI and error exits.</p>
+<p>The seven current managed overlay variants have resident wrappers, exclusive ownership and explicit load/release failure paths. Resident CPU/pager and guest interrupt routing remain callable; FILE/HD cannot nest leases. Startup sources and copied code must be committed before the cache reuses31 populated startup frames across the32-frame cache span (frame23 is the explicit zero gap). Record separate CODE/RODATA/BSS boundaries; do not execute embedded constants or overwrite persistent state with an overlay. See <a href="HD_IMPLEMENTATION.html">HD and copied-code contract</a>.</p>
+<h2 id="reu-arena-4-mib-minimum-profile">REU arena: 4 MiB minimum profile</h2>
+<table>
+<thead>
+<tr>
+<th>REU range</th>
+<th align="right">Capacity</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>000000–0FFFFF</code></td>
+<td align="right">1 MiB</td>
+<td>Guest physical backing arena</td>
+</tr>
+<tr>
+<td><code>100000–17FFFF</code></td>
+<td align="right">512 KiB</td>
+<td>Full360KiB rotating floppy arena0; descriptor chooses A/B/spare ownership</td>
+</tr>
+<tr>
+<td><code>180000–1FFFFF</code></td>
+<td align="right">512 KiB</td>
+<td>Full360KiB rotating floppy arena1</td>
+</tr>
+<tr>
+<td><code>200000–2FFFFF</code></td>
+<td align="right">1 MiB</td>
+<td>Hard-disk extent cache, independent of guest RAM cache</td>
+</tr>
+<tr>
+<td><code>300000–33FFFF</code></td>
+<td align="right">256 KiB</td>
+<td>Cold assembly payloads / fonts / immutable assets</td>
+</tr>
+<tr>
+<td><code>340000–37FFFF</code></td>
+<td align="right">256 KiB</td>
+<td>Eight physical immutable slots340000–343FFF (seven managed variants plus special SAVER); authoritative sector350000; handoff352000; remaining transfer reserve</td>
+</tr>
+<tr>
+<td><code>380000–3D9FFF</code></td>
+<td align="right">360 KiB</td>
+<td>Full rotating floppy arena2, initially free incoming-media staging; replaces optional trace scratch</td>
+</tr>
+<tr>
+<td><code>3DA000–3DFFFF</code></td>
+<td align="right">24 KiB</td>
+<td>Unallocated gap</td>
+</tr>
+<tr>
+<td><code>3E0000–3EFFFF</code></td>
+<td align="right">64 KiB</td>
+<td>Reserved installer main-PRG staging bank</td>
+</tr>
+<tr>
+<td><code>3F0000–3FEFFF</code></td>
+<td align="right">60 KiB</td>
+<td>Unallocated reserve</td>
+</tr>
+<tr>
+<td><code>3FF000–3FFFFF</code></td>
+<td align="right">4 KiB</td>
+<td>Reserved versioned installer/handoff anchor</td>
+</tr>
+</tbody></table>
+<p>User clarification 2026-10-14: assume <strong>4 MiB or larger</strong>, including room for overlays. This supersedes the initial 16 MiB minimum proposal. The supplied360KiB disks fit all three arenas. User direction2026-10-16 favors more REU for speed; do not reduce buffering to conserve capacity when it slows execution. Above4MiB allocations must remain explicit and bounded. Larger REUs can expand the HD cache and floppy slots through a capacity-aware allocator; 720 KiB and larger floppy support requires that expanded profile, never truncation. No runtime feature may require memory above the 4 MiB baseline. REU is volatile: arena allocation is not persistence. A 20 MiB hard disk remains file-backed.</p>
+<p>Expanded REC DMA counters may wrap within 512 KiB without carrying into the upper bank latch. The implemented low-level routine accepts only a nonzero, single-64-KiB-bank chunk and rejects crossing ranges; implemented range operations split and explicitly reload the bank. This is conservative for differing firmware and keeps page transfers safe. See <a href="REU_IMPLEMENTATION.html">implemented REU contract</a> and <a href="RANGE_IMPLEMENTATION.html">coherent range contract</a>.</p>
+<h2 id="guest-page-cache">Guest page cache</h2>
+<p>Start with <strong>512-byte pages, 32 frames in 16 KiB</strong>, solely as a benchmark candidate. Sweep 256/512/1024/2048 bytes with the same total cache budget. Use physical-page tags and a direct page→frame table where practical: 1 MiB/512 = 2,048 byte entries, with FF meaning absent. A 256-byte global table needs 4,096 entries before descriptors; either use a sparse/two-level table or charge the extra storage against cache/working RAM. Do not compare page sizes while ignoring metadata cost.</p>
+<p>Per-frame state: physical tag, valid/dirty, pin/reference count, replacement reference bit, generation. A simple clock replacement policy is the baseline; measure alternatives. CS fetch, current stack, and recent data may receive preference, but do not permanently pin whole segments. Eviction must always be possible. Acquire two-frame word operands in a deterministic order or use a safe scratch copy so a small cache cannot deadlock or invalidate the first byte&#39;s pointer.</p>
+<p>Fast fetch stores a host pointer, physical tag, valid span, and generation. The span ends at page, instruction-IP, and address-space boundaries. Segment changes, taken control transfers, eviction, and overlapping writes invalidate relevant cached pointers. Avoid a 32-entry linear tag scan for every byte. Measure full translation cost as well as warm register-only dispatch.</p>
+<h2 id="coherence-invariants">Coherence invariants</h2>
+<ol>
+<li>A physical guest page has at most one authoritative dirty host frame. REU is current only when no newer dirty frame exists.</li>
+<li>Every writer, including BIOS disk reads, native text helpers, debugger injection, REP fast paths, and memory initialization, uses the memory API or a range-acquire/commit API with equivalent semantics.</li>
+<li>Before a disk <strong>write</strong> reads a guest range, include its dirty resident bytes. Before a disk <strong>read</strong> replaces guest bytes, preserve untouched dirty bytes and merge/update or invalidate the destination frames. Flushing after overwriting REU can restore stale data and is forbidden.</li>
+<li>Renderers see dirty host VRAM frames, not stale REU copies. All VRAM changes mark display regions; palette/start-address/mode changes can invalidate the entire visible image without changing VRAM.</li>
+<li>Any guest write to executable bytes invalidates decoded/fetch state for all segment aliases. A predecode cache added later keys by physical bytes/generations, not just CS:IP.</li>
+<li>REU-to-REU copies use a host bounce buffer. Ordinary REU registers do not provide a direct REU-to-REU copy command.</li>
+<li>REP acceleration preserves the actual forward/backward sequence. Overlapping MOVS is not automatically <code>memmove</code>: forward overlap can deliberately replicate bytes. Split at segment/index/page/physical-wrap boundaries and event checkpoints; preserve CX/SI/DI/flags at interruption.</li>
+<li>Reads/writes crossing RAM/ROM/video boundaries dispatch each affected byte/part under the bus contract. An optimization may not bypass ROM protection or dirty-video notification.</li>
+</ol>
+<p>Tests include alias writes, eviction during instruction fetch, dirty code replacement, BIOS DMA into partial cached pages, dirty video reads, zero-length bulk operations, 64 KiB count encoding, pin exhaustion, forced minimum-frame tests, and fault injection before/after each ownership transition.</p>
+<h2 id="current-bios-and-storage-ownership">Current BIOS and storage ownership</h2>
+<p>The BIOS initializer owns guest IVT/BDA 00000–004FF and ROM F0000–FFFFF. It uses the coherent bus under a temporary all-RAM initialization mode and restores the prior mode; normal guest writes cannot change ROM. Conventional RAM outside IVT/BDA and configured media remain caller-owned. INT 11h/12h ordinary ROM code reads mutable BDA through the CPU bus, including dirty resident bytes.</p>
+<p>Legacy cold floppy A begins at REU100000 and remains explicitly unloaded until its import completes. Native paused mount/swap uses PREPARE/COMMIT and rotates three complete360KiB arenas100000/180000/380000, so later A/B bases come from their independent descriptors. The incoming loader can write only the returned free arena and must provide whole-file/CRC/known-close proof before publication. Dirty, readonly, mount/content/clean generation pairs and binding cookies are per drive; CLEAN acknowledges an independently verified complete save and cannot clear newer dirty data. Cold initialization resets this session state. Disk reads/writes use <a href="RANGE_IMPLEMENTATION.html">range copying</a>, so partial cached-page neighbors and dirty export bytes retain their authority. C000–C0FF is a separate 256-byte host bounce buffer, unavailable to resident code. It is not embedded in the PRG. The linked UCI transport buffer occupies C100–C8FF, leaving C900–CFFF (1,792 bytes) for additional resident code; the full inclusive host map above still totals 65,536. These 2,048 bytes are measured reservations, not reclaimable code space while the transport is linked.</p>
+<p>A range is linear physical guest memory with 20-bit wrap, unlike CPU segmented word helpers that wrap a 16-bit offset. The disk BIOS checks the translated physical 64 KiB DMA boundary independently from ES:BX wrapping. REU ranges must be outside guest backing and within the minimum 4 MiB arena; range length zero means no bytes, whereas the low-level DMA primitive rejects zero.</p>
+<h2 id="resident-device-code-and-contiguous-prg-layout">Resident device code and contiguous PRG layout</h2>
+<p>The runtime/unit linker configuration <code>cfg/dos64-runtime.cfg</code> places hot CODE/RODATA in MAIN at 0801–3FFF and DEVICECODE at 5000–5FFF. Logical video occupies 1,696 DEVICECODE bytes, 5000–569F. Other code may not spill into the 4000–4FFF screen/font reservation, the 6000–7FFF bitmap, cache frames or staging. Device scratch uses DEVICESTATE at EA00–EEFF; CACHEMETA is separately bounded to E900–E9FF, and EF00–EFFF stays reserved for future gateways/vectors. Code placement and static ownership are asserted independently from PRG length.</p>
+<p>The PRG is contiguous because the loader writes sequential addresses. MAIN is zero-padded through 3FFF; 4000–4FFF contains explicit startup zero initialization for screen/font RAM, then DEVICECODE begins at 5000. Padding and startup zeros are file bytes, not linked CODE/RODATA or free-standing executable allocations. Loading the program initializes this display reservation but supplies no font or renderer. Runtime and unit PRGs can therefore have the same file length while their linked CODE/test payload differs. Standalone hardware probes/helpers retain <code>cfg/dos64.cfg</code> and their prior byte identity.</p>
+<p>The historical video/adjust map is retained in slice evidence (local development record, not distributed), while the ledger (local development record, not distributed) records later linked modules. At that checkpoint runtime linked usage was 16,758 bytes; its 20,129-byte PRG additionally contains 2,072 MAIN padding bytes and 4,096 display startup zeros. Its unit linked usage was 17,746 with 1,096 MAIN padding bytes and the same 4,096 startup zeros, producing the same 20,129-byte PRG. UCIBUFFER at C100–C8FF is now linked and measured. It adds 2,048 writable bytes independently from the PRG file and its padding. Current clock/keyboard/UCI/native-clock maps supersede the historical video/adjust totals in the ledger.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

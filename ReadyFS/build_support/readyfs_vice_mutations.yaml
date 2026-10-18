@@ -1,0 +1,97 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_iec_mutations
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 120, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-lab.d81"
+    disk9: null
+    autostart_prg: "artifacts/readyfs/readyfs.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch_readyfs
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: wait_readyfs
+    type: screen.wait_contains
+    params: { text: "READYFS LAB", wait_timeout_s: 30 }
+  - id: rf_ui_35_new_input
+    type: input.sequence
+    params: { keys: [78,69,87,32,56,58,47,69,77,80,84,89,32,45,45,84,89,80,69,32,83,69,81,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: rf_ui_35_new
+    type: screen.wait_contains
+    params: { text: "CREATED", wait_timeout_s: 30, capture_label: rf_ui_35_new }
+  - id: rf_ui_35_existing_input
+    type: input.sequence
+    params: { keys: [78,69,87,32,56,58,47,69,77,80,84,89,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: rf_ui_35_existing
+    type: screen.wait_contains
+    params: { text: "DESTINATION EXISTS", wait_timeout_s: 30 }
+  - id: rf_ui_36_write_input
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,72,69,76,76,79,32,34,65,76,80,72,65,32,66,69,84,65,34,32,45,45,76,73,78,69,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: rf_ui_36_write_verify
+    type: screen.wait_contains
+    params: { text: "VERIFY: IDENTICAL", wait_timeout_s: 45 }
+  - id: rf_ui_36_write_complete
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 10, capture_label: rf_ui_36_write }
+  - id: rf_ui_46_replace_no_input
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,72,69,76,76,79,32,34,82,69,80,76,65,67,69,68,34,13,78], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: rf_ui_46_replace_no_dir_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,56,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: rf_ui_46_replace_no
+    type: screen.wait_contains
+    params: { text: "HELLO", wait_timeout_s: 30 }
+  - id: clear_before_replace_force
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: rf_ui_36_replace_force_input
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,72,69,76,76,79,32,34,82,69,80,76,65,67,69,68,34,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: capture_rf_ui_36_replace_force
+    type: screen.capture
+    params: { label: rf_ui_36_replace_force_before_assert }
+  - id: rf_ui_36_replace_force
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 45 }
+  - id: clear_before_delete_prompt
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: rf_ui_46_delete_no_input
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,56,58,47,72,69,76,76,79,13,78], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: rf_ui_46_delete_no_dir_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,56,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: rf_ui_46_delete_no
+    type: screen.wait_contains
+    params: { text: "HELLO", wait_timeout_s: 30, capture_label: rf_ui_46_delete_no }
+  - id: rf_ui_46_delete_force_input
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,56,58,47,72,69,76,76,79,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: rf_ui_46_delete_force
+    type: screen.wait_contains
+    params: { text: "DELETED", wait_timeout_s: 30 }
+  - id: rf_ui_49_new_dry_run_input
+    type: input.sequence
+    params: { keys: [78,69,87,32,56,58,47,68,82,89,32,45,45,68,82,89,45,82,85,78,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: rf_ui_49_new_dry_run
+    type: screen.wait_contains
+    params: { text: "DONE W0 D0 M0", wait_timeout_s: 10, capture_label: rf_ui_49_new_dry_run }
+  - id: capture_mutations_final
+    type: screen.capture
+    params: { label: readyfs_iec_mutations_final }

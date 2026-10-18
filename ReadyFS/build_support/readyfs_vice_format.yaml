@@ -1,0 +1,121 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_safe_format
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 90, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-overlay-lab.d81"
+    disk9: "artifacts/readyfs/readyfs-format-disposable.d81"
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: ready
+    type: screen.wait_contains
+    params: { text: "CMDPATH: READY", wait_timeout_s: 30 }
+  - id: probe_9
+    type: input.sequence
+    params: { keys: [80,82,79,66,69,32,73,69,67,32,57,58,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: profile_ready
+    type: screen.wait_contains
+    params: { text: "PROFILE: LEGACY", wait_timeout_s: 20, capture_label: readyfs_format_profile }
+  - id: clear_initial
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: initial_volume
+    type: input.sequence
+    params: { keys: [86,79,76,85,77,69,32,57,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: initial_title
+    type: screen.wait_contains
+    params: { text: "VOLUME: FORMAT SOURCE", wait_timeout_s: 20, capture_label: readyfs_format_initial_volume }
+  - id: dry_run
+    type: input.sequence
+    params: { keys: [70,79,82,77,65,84,32,57,58,32,45,45,76,65,66,69,76,32,68,82,89,82,85,78,32,45,45,73,68,32,68,82,32,45,45,68,73,83,80,79,83,65,66,76,69,32,45,45,87,72,65,84,73,70,13], inter_key_delay_s: 0.025, post_delay_s: 0.4 }
+  - id: dry_would
+    type: screen.wait_contains
+    params: { text: "WOULD FORMAT 9:", wait_timeout_s: 20 }
+  - id: dry_plan
+    type: screen.wait_contains
+    params: { text: "PLAN W0 D0 M1; DONE W0 D0 M0", wait_timeout_s: 20, capture_label: readyfs_format_whatif }
+  - id: clear_missing_disposable
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: missing_disposable
+    type: input.sequence
+    params: { keys: [70,79,82,77,65,84,32,57,58,32,45,45,76,65,66,69,76,32,78,79,80,69,32,45,45,73,68,32,78,80,32,45,45,89,69,83,13], inter_key_delay_s: 0.025, post_delay_s: 0.4 }
+  - id: missing_disposable_rejected
+    type: screen.wait_contains
+    params: { text: "FORMAT REJECTED", wait_timeout_s: 20, capture_label: readyfs_format_missing_disposable }
+  - id: clear_unprobed
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: unprobed
+    type: input.sequence
+    params: { keys: [70,79,82,77,65,84,32,49,48,58,32,45,45,76,65,66,69,76,32,78,79,80,69,32,45,45,73,68,32,78,80,32,45,45,68,73,83,80,79,83,65,66,76,69,32,45,45,89,69,83,13], inter_key_delay_s: 0.025, post_delay_s: 0.4 }
+  - id: unprobed_rejected
+    type: screen.wait_contains
+    params: { text: "UNPROBED", wait_timeout_s: 20, capture_label: readyfs_format_unprobed }
+  - id: clear_long_label
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: long_label
+    type: input.sequence
+    params: { keys: [70,79,82,77,65,84,32,57,58,32,45,45,76,65,66,69,76,32,83,69,86,69,78,84,69,69,78,76,69,84,84,69,82,83,88,32,45,45,73,68,32,82,70,32,45,45,68,73,83,80,79,83,65,66,76,69,32,45,45,89,69,83,13], inter_key_delay_s: 0.025, post_delay_s: 0.4 }
+  - id: long_label_rejected
+    type: screen.wait_contains
+    params: { text: "FORMAT REJECTED", wait_timeout_s: 20, capture_label: readyfs_format_long_label }
+  - id: clear_bad_id
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: bad_id
+    type: input.sequence
+    params: { keys: [70,79,82,77,65,84,32,57,58,32,45,45,76,65,66,69,76,32,66,65,68,73,68,32,45,45,73,68,32,88,89,90,32,45,45,68,73,83,80,79,83,65,66,76,69,32,45,45,89,69,83,13], inter_key_delay_s: 0.025, post_delay_s: 0.4 }
+  - id: bad_id_rejected
+    type: screen.wait_contains
+    params: { text: "FORMAT REJECTED", wait_timeout_s: 20, capture_label: readyfs_format_bad_id }
+  - id: clear_missing_yes
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: missing_yes
+    type: input.sequence
+    params: { keys: [70,79,82,77,65,84,32,57,58,32,45,45,76,65,66,69,76,32,78,79,89,69,83,32,45,45,73,68,32,78,89,32,45,45,68,73,83,80,79,83,65,66,76,69,13], inter_key_delay_s: 0.025, post_delay_s: 0.4 }
+  - id: missing_yes_rejected
+    type: screen.wait_contains
+    params: { text: "FORMAT REJECTED", wait_timeout_s: 20, capture_label: readyfs_format_missing_yes }
+  - id: clear_execute
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.2 }
+  - id: execute
+    type: input.sequence
+    params: { keys: [70,79,82,77,65,84,32,57,58,32,45,45,76,65,66,69,76,32,76,65,66,32,45,45,73,68,32,82,70,32,45,45,68,73,83,80,79,83,65,66,76,69,32,45,45,89,69,83,13], inter_key_delay_s: 0.025, post_delay_s: 1.0 }
+  - id: confirmed
+    type: screen.wait_contains
+    params: { text: "FORMAT CONFIRMED", wait_timeout_s: 30 }
+  - id: completed
+    type: screen.wait_contains
+    params: { text: "OK", wait_timeout_s: 30, capture_label: readyfs_format_completed }
+  - id: clear_final
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: final_dir
+    type: input.sequence
+    params: { keys: [68,73,82,32,57,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: final_title
+    type: screen.wait_contains
+    params: { text: "LAB", wait_timeout_s: 30 }
+  - id: final_free
+    type: screen.wait_contains
+    params: { text: "FREE: 3160 C64 BLOCKS", wait_timeout_s: 30, capture_label: readyfs_format_final_directory }

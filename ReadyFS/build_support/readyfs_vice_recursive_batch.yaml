@@ -1,0 +1,208 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_recursive_batch
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 120, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-overlay-lab.d81"
+    disk9: "artifacts/readyfs/readyfs-recursive-target.d81"
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: ready
+    type: screen.wait_contains
+    params: { text: "BACKEND: READY", wait_timeout_s: 30 }
+  - id: write_a
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,90,65,32,65,76,80,72,65,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: write_a_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: write_b
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,90,66,32,66,69,84,65,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: write_b_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: write_move
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,90,77,86,32,77,79,86,69,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: write_move_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: write_delete
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,90,68,69,76,32,68,69,76,69,84,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: write_delete_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: dry_run_copy
+    type: input.sequence
+    params: { keys: [67,79,80,89,32,56,58,47,32,57,58,47,32,45,45,82,69,67,85,82,83,73,86,69,32,45,45,68,82,89,45,82,85,78,32,45,45,73,78,67,76,85,68,69,32,82,70,90,63,13], inter_key_delay_s: 0.02, post_delay_s: 0.5 }
+  - id: dry_run_selected
+    type: screen.wait_contains
+    params: { text: "SELECTED 2", wait_timeout_s: 30 }
+  - id: dry_run_plan
+    type: screen.wait_contains
+    params: { text: "PLAN W2 D0 M0; DONE W0 D0 M0", wait_timeout_s: 10, capture_label: rf_ui_recursive_batch_whatif }
+  - id: copy_batch
+    type: input.sequence
+    params: { keys: [67,79,80,89,32,56,58,47,32,57,58,47,32,45,45,82,69,67,85,82,83,73,86,69,32,45,45,73,78,67,76,85,68,69,32,82,70,90,63,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.02, post_delay_s: 0.5 }
+  - id: copy_batch_debug
+    type: screen.capture
+    params: { label: readyfs_recursive_copy_debug }
+  - id: copy_batch_done
+    type: screen.wait_contains
+    params: { text: "BATCH DONE 2/2 FAIL 0", wait_timeout_s: 90, capture_label: rf_ui_recursive_batch_copy }
+  - id: dump_copy_journal
+    type: dump.reu
+    params: { stage_tag: readyfs_recursive_batch_copy, mode: full }
+  - id: compare_copy
+    type: input.sequence
+    params: { keys: [67,79,77,80,65,82,69,32,56,58,47,82,70,90,65,32,57,58,47,82,70,90,65,13], pre_delay_s: 0.8, inter_key_delay_s: 0.03, post_delay_s: 0.4 }
+  - id: compare_copy_debug
+    type: screen.capture
+    params: { label: readyfs_recursive_compare_debug }
+  - id: compare_copy_done
+    type: screen.wait_contains
+    params: { text: "VERIFY: IDENTICAL", wait_timeout_s: 30, capture_label: rf_ui_recursive_batch_compare }
+  - id: move_batch
+    type: input.sequence
+    params: { keys: [77,79,86,69,32,56,58,47,32,57,58,47,32,45,45,82,69,67,85,82,83,73,86,69,32,45,45,73,78,67,76,85,68,69,32,82,70,90,77,86,32,45,45,70,79,82,67,69,13], pre_delay_s: 0.8, inter_key_delay_s: 0.02, post_delay_s: 0.5 }
+  - id: move_batch_done
+    type: screen.wait_contains
+    params: { text: "BATCH DONE 1/1 FAIL 0", wait_timeout_s: 90, capture_label: rf_ui_recursive_batch_move }
+  - id: stat_old_move
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,56,58,47,82,70,90,77,86,13], pre_delay_s: 0.8, inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: old_move_absent
+    type: screen.wait_contains
+    params: { text: "NOT FOUND", wait_timeout_s: 30 }
+  - id: stat_new_move
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,57,58,47,82,70,90,77,86,13], pre_delay_s: 0.8, inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: new_move_present
+    type: screen.wait_contains
+    params: { text: "DISPLAY: RFZMV", wait_timeout_s: 30, capture_label: rf_ui_recursive_batch_move_state }
+  - id: delete_batch
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,57,58,47,32,45,45,82,69,67,85,82,83,73,86,69,32,45,45,73,78,67,76,85,68,69,32,82,70,90,66,32,45,45,70,79,82,67,69,13], pre_delay_s: 0.8, inter_key_delay_s: 0.02, post_delay_s: 0.5 }
+  - id: delete_batch_done
+    type: screen.wait_contains
+    params: { text: "BATCH DONE 1/1 FAIL 0", wait_timeout_s: 60, capture_label: rf_ui_recursive_batch_delete }
+  - id: stat_deleted
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,57,58,47,82,70,90,66,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: deleted_absent
+    type: screen.wait_contains
+    params: { text: "NOT FOUND", wait_timeout_s: 30 }
+  - id: stat_survivor
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,57,58,47,82,70,90,65,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: survivor_present
+    type: screen.wait_contains
+    params: { text: "DISPLAY: RFZA", wait_timeout_s: 30, capture_label: rf_ui_recursive_batch_final }
+  - id: stop_source_a
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,83,65,32,83,65,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: stop_source_a_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: stop_source_b
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,83,66,32,83,66,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: stop_source_b_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: stop_conflict
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,57,58,47,82,70,83,65,32,79,76,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: stop_conflict_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: stop_batch
+    type: input.sequence
+    params: { keys: [67,79,80,89,32,56,58,47,32,57,58,47,32,45,45,82,69,67,85,82,83,73,86,69,32,45,45,73,78,67,76,85,68,69,32,82,70,83,63,13], inter_key_delay_s: 0.02, post_delay_s: 0.4 }
+  - id: stop_prompt
+    type: screen.wait_contains
+    params: { text: "DESTINATION EXISTS", wait_timeout_s: 30 }
+  - id: stop_answer_no
+    type: input.sequence
+    params: { keys: [78], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: stop_result_debug
+    type: screen.capture
+    params: { label: readyfs_recursive_stop_result_debug }
+  - id: stop_result
+    type: screen.wait_contains
+    params: { text: "BATCH DONE 0/1 FAIL 1", wait_timeout_s: 30, capture_label: rf_ui_recursive_batch_stop }
+  - id: stop_capability_memory
+    type: dump.memory_ranges
+    params:
+      ranges:
+        - { label: readyfs_session_flags, start: 0xB227, end: 0xB228 }
+        - { label: readyfs_overlay_flags, start: 0xB59C, end: 0xB5A2 }
+  - id: stop_second_stat
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,57,58,47,82,70,83,66,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: stop_second_absent
+    type: screen.wait_contains
+    params: { text: "NOT FOUND", wait_timeout_s: 30 }
+  - id: clear_before_continue
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.4 }
+  - id: continue_source_a
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,67,65,32,67,65,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: continue_source_a_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: continue_source_b
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,67,66,32,67,66,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: continue_source_b_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: continue_conflict
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,57,58,47,82,70,67,65,32,79,76,68,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: continue_conflict_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: continue_batch
+    type: input.sequence
+    params: { keys: [67,79,80,89,32,56,58,47,32,57,58,47,32,45,45,82,69,67,85,82,83,73,86,69,32,45,45,73,78,67,76,85,68,69,32,82,70,67,63,32,45,45,67,79,78,84,73,78,85,69,13], inter_key_delay_s: 0.02, post_delay_s: 0.4 }
+  - id: continue_prompt_debug
+    type: screen.capture
+    params: { label: readyfs_recursive_continue_prompt_debug }
+  - id: continue_prompt
+    type: screen.wait_contains
+    params: { text: "DESTINATION EXISTS", wait_timeout_s: 30 }
+  - id: continue_answer_no
+    type: input.sequence
+    params: { keys: [78], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: continue_result
+    type: screen.wait_contains
+    params: { text: "BATCH DONE 1/2 FAIL 1", wait_timeout_s: 60, capture_label: rf_ui_recursive_batch_continue }
+  - id: continue_second_stat
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,57,58,47,82,70,67,66,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: continue_second_present
+    type: screen.wait_contains
+    params: { text: "DISPLAY: RFCB", wait_timeout_s: 30, capture_label: rf_ui_recursive_batch_continue_state }
+  - id: dump_continue_journal
+    type: dump.reu
+    params: { stage_tag: readyfs_recursive_batch_continue, mode: full }

@@ -1,0 +1,67 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_replacement_rollback
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 180, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-rollback-source.d71"
+    disk9: "artifacts/readyfs/readyfs-rollback-target.d64"
+    autostart_prg: "artifacts/readyfs/readyfs.prg"
+    drive8_type: 1571
+    drive9_type: 1541
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: ready
+    type: screen.wait_contains
+    params: { text: "PLANNER: READY", wait_timeout_s: 30 }
+  - id: baseline_compare_input
+    type: input.sequence
+    params: { keys: [67,79,77,80,65,82,69,32,56,58,47,82,70,77,65,84,67,72,32,57,58,47,79,76,68,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: baseline_identical
+    type: screen.wait_contains
+    params: { text: "VERIFY: IDENTICAL", wait_timeout_s: 30, capture_label: rf_ui_45_original_before_failure }
+  - id: clear_before_failure
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 1.0 }
+  - id: forced_replacement_input
+    type: input.sequence
+    params: { keys: [67,79,80,89,32,56,58,47,82,69,65,68,89,70,83,32,57,58,47,79,76,68,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.04, post_delay_s: 1.0 }
+  - id: disk_full_copy_failure
+    type: screen.wait_contains
+    params: { text: "COPY FAILED AFTER", wait_timeout_s: 120, capture_label: rf_ui_45_disk_full_failure }
+  - id: failure_prompt
+    type: screen.wait_contains
+    params: { text: "RF>", wait_timeout_s: 20 }
+  - id: clear_before_postcheck
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 1.0 }
+  - id: post_failure_compare_input
+    type: input.sequence
+    params: { keys: [67,79,77,80,65,82,69,32,56,58,47,82,70,77,65,84,67,72,32,57,58,47,79,76,68,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: original_preserved
+    type: screen.wait_contains
+    params: { text: "VERIFY: IDENTICAL", wait_timeout_s: 30, capture_label: rf_ui_45_original_preserved }
+  - id: clear_before_directory
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 1.0 }
+  - id: target_directory_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,57,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: no_stage_entry
+    type: screen.wait_contains
+    params: { text: "ENTRIES: 5", wait_timeout_s: 30 }
+  - id: partial_space_reclaimed
+    type: screen.wait_contains
+    params: { text: "FREE:", wait_timeout_s: 30, capture_label: rf_ui_45_no_stage_artifact }

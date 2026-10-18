@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>User requirement coverage · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: User requirement coverage"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav></aside><main id="content"><div class="page-actions"><a href="REQUIREMENTS.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="user-requirement-coverage">User requirement coverage</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requirement</th>
+<th>Design / milestone</th>
+<th>Evidence required</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R01</td>
+<td>Planning now; review before implementation with 6.1 Sol</td>
+<td>README, PLAN, NEXT_SLICE</td>
+<td>User authorized implementation2026-10-14; local verified commits, no pushes</td>
+</tr>
+<tr>
+<td>R02</td>
+<td>Project isolated under 8088DOS64ultimate</td>
+<td>AGENTS, local ignore rules</td>
+<td>All new files/records in this directory</td>
+</tr>
+<tr>
+<td>R03</td>
+<td>8086 emulator, real DOS 3.3 supplied images</td>
+<td>ARCHITECTURE M3–M5</td>
+<td>Actual image boot and DOS-owned INT 21h/process/file logic</td>
+</tr>
+<tr>
+<td>R04</td>
+<td>64 MHz C64U, 640 KiB guest RAM via REU</td>
+<td>MEMORY, PERFORMANCE M1–M4</td>
+<td>Real hardware timing, INT 12h and memory/paging tests</td>
+</tr>
+<tr>
+<td>R05</td>
+<td>Target 6502 assembly (user clarification)</td>
+<td>AGENTS, architecture, D03</td>
+<td>Assembler output is the runtime under test</td>
+</tr>
+<tr>
+<td>R06</td>
+<td>ZeroPage-style Peddle and Zig assertions</td>
+<td>TESTING M0 onward</td>
+<td>Zig runs linked assembly and asserts guest/host/device outcomes</td>
+</tr>
+<tr>
+<td>R07</td>
+<td>Unit, integration, end-user tests</td>
+<td>TESTING all lanes</td>
+<td>Machine assertions plus DOS scripts and physical UI evidence</td>
+</tr>
+<tr>
+<td>R08</td>
+<td>Mock REU and Ultimate DOS load/save</td>
+<td>TESTING M2/M6</td>
+<td>Register-level transfer/protocol tests and injected failures</td>
+</tr>
+<tr>
+<td>R09</td>
+<td>Whole floppy image in REU, load/save as file</td>
+<td>STORAGE M5/M6</td>
+<td>Complete image hash/length and restart persistence</td>
+</tr>
+<tr>
+<td>R10</td>
+<td>HD parts cached in REU; around 2 MiB then up to 20 MiB</td>
+<td>STORAGE M8/M9</td>
+<td>Forced eviction, guest FDISK/FORMAT/SYS, offsets beyond 16 MiB</td>
+</tr>
+<tr>
+<td>R11</td>
+<td>Real C64U testing, slower cadence</td>
+<td>TESTING/PERFORMANCE M1/M6+</td>
+<td>Firmware/configured physical runs and saved-image verification</td>
+</tr>
+<tr>
+<td>R12</td>
+<td>Optional real IEC/D81 with VICE traps/warp</td>
+<td>STORAGE/TESTING M6</td>
+<td>Binary IMG in SEQ, trap lane, smaller true-drive lane, extraction</td>
+</tr>
+<tr>
+<td>R13</td>
+<td>Keyboard and text/graphics; no extra peripheral scope</td>
+<td>DISPLAY_INPUT, architecture</td>
+<td>Keyboard/editor use; absence behavior for unsupported devices</td>
+</tr>
+<tr>
+<td>R14</td>
+<td>Both 40 and 80 characters with custom rendering</td>
+<td>DISPLAY_INPUT M7</td>
+<td>Mode switches, CP437, readable font, documented color compromise</td>
+</tr>
+<tr>
+<td>R15</td>
+<td>Only manageable CGA graphics</td>
+<td>DISPLAY_INPUT M10</td>
+<td>Modes 4/5/6 guest pixel tests and C64 conversion evidence</td>
+</tr>
+<tr>
+<td>R16</td>
+<td>Strategy aiming near original 8088 performance</td>
+<td>PERFORMANCE M1/M11</td>
+<td>Disclosed baseline, per-workload ratios, cache/CPU/render breakdown</td>
+</tr>
+<tr>
+<td>R17</td>
+<td>DOS included commands before third-party apps</td>
+<td>TESTING M5–M10</td>
+<td>Explicit required/conditional/excluded utility manifest</td>
+</tr>
+<tr>
+<td>R18</td>
+<td>Long-horizon context, decisions, lessons</td>
+<td>agentworking records</td>
+<td>Updated STATUS/NEXT_SLICE/DECISIONS/LESSONS/TEST_LOG each slice</td>
+</tr>
+<tr>
+<td>R19</td>
+<td>Deep research, consider DOSBox comparisons</td>
+<td>RESEARCH, TESTING M0</td>
+<td>Source register; installed DOSBox-X recorded; actual DOSBox-X reference boot recorded</td>
+</tr>
+<tr>
+<td>R20</td>
+<td>Native installer/configuration and path-aware launcher</td>
+<td>V1-01/02/10, NATIVE_SETUP_INSTALLER/CONFIG</td>
+<td>Physical clean install/reconfigure/launch from same-home INI; coherent user release</td>
+</tr>
+<tr>
+<td>R21</td>
+<td>User floppy Save/Discard/Swap with C online and durable bindings</td>
+<td>V1-03/04/05/09, FLOPPY_MEDIA_DESIGN</td>
+<td>A/B generation-bound saves, C preserved, CFG refreshed and restart persistence</td>
+</tr>
+<tr>
+<td>R22</td>
+<td>Turbo Pascal as a V1 acceptance workload</td>
+<td>V1-07, TURBO_PASCAL</td>
+<td>Physical IDE edit/save/compile-to-disk/run/exit and fresh-launch persistence</td>
+</tr>
+<tr>
+<td>R23</td>
+<td>Defer further speed improvement until after V1</td>
+<td>V1_ENDPOINT, PERFORMANCE</td>
+<td>No new optimization/compiled-code activation blocks V1; retain truthful baseline and post-V1 targets</td>
+</tr>
+</tbody></table>
+<p>Planning coverage means each request has an implementation/test destination. It does not mean those implementation tests have passed.</p>
+<p>2026-10-15 accepted scope: R03/R11 now have realC64U Manual64MHz native UCIboot/COMMAND.COM/VER/DIR proof, with exact35entries/9216free/returnedprompt and complete4MiB/configuration recovery. R09 native wholefloppy loading is physically accepted; save/reopen remains pending. R14 physical80column bitmap/matrix bytes match independent oracle, but human readability/keyboard/40column remain pending. R10/12/15/16 persistence/HD/IEC/nativephysicalCGA/XTperformance are not complete. Physical evidence (local development record, not distributed).</p>
+<p>2026-10-15 six-overlay checkpoint: R10 now has source-complete32KiB cached extents, actual DOS2/20MiB boot/eviction/read-only/write-uncertainty/32-bit-offset/reopen model evidence and root focusedHD gates. GenuineFDISK/FORMAT/SYS/CHKDSK fixture creation is separately accepted in DOSBox-X. Physical HDpersistence is still required. R14 has actual suppliedMODE CO40/CO80 andcomplete bitmap/matrix Peddleproof; externalreadability/humanmatrix remainopen. R16 now has an instrumentedrealDOScostprofile; no nearXTclaim ortranslatorimplementation follows. HD (local development record, not distributed),profile (local development record, not distributed).</p>
+<p>2026-10-16 current coverage: R09 includes physical complete-floppy SAVE/CLOSE/reopen/all-byte verification on d883c678, with independent complete-image retrieval and full4MiB recovery (evidence (local development record, not distributed)). Native Save/Discard UI remains unfinished. R10/R11 now include real20MiB C-drive DOS/BASIC/originalTPC/COPY/CHKDSK, native CLOSE/reopen/readback/EOF and independent whole-image FAT/payload inspection, with complete original4MiB restoration on4589/a827 (evidence (local development record, not distributed)); physical end-region writes and user-session lifecycle remain open. C contains allDOSfloppies, GW-BASIC/Hangman and originalTP7.01. R13 has physical older-build interactive use and model keyboard/editor coverage; the new Fn/queue successor and directcursor are still under independent review, then require composed physical acceptance. R14 has physical40/80 MODE and DIR|MORE captures; human readability remains open. R15 remains model-proven, physical graphics pending. R16 has b3/b995 independently reviewed model reductions5.90%micro/1.98%DOS (evidence (local development record, not distributed)); historical physical2.65%/3.96%kernel ratios do not establish currentwholeDOS speed, and50%/85% goals remain unmet. R12 standaloneVICE/D81 import passes, completeproductionIEC persistence remains open.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

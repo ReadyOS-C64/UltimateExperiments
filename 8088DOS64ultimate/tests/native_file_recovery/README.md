@@ -1,0 +1,11 @@
+# Opt-in whole-file recovery tests
+
+`make test-native-file-recovery` builds both standalone helpers entirely from tracked sources and runs27 no-network host tests. This directory sits outside default tests/tooling discovery so the separate development backend never changes the default delta workflow or requires an unbuilt binary during the ordinary test suite.
+
+`make check-native-file-recovery-test-build` compiles the seven actual-assembly Zig/Peddle tests without running their four full4MiB executions. `make test-native-file-recovery-peddle` explicitly executes them. Neither is a dependency of default build/test. Historical local logs are not distributed. Run the opt-in lane to produce fresh evidence for the exact source-built PRG. The adapted test changes only artifact paths and equivalent exported UCI operand symbol names.
+
+The isolated fixture is the complete frozen project bridge plus REU/UCI/file/CIA/VIC-input models used for that original proof. Optional devices remain disabled unless enabled explicitly. Its source fixture accepts4194305bytes for the extra-byte EOF negative case; the source model supplies bytes/status and never reads restore-engine state or changes target RAM/REU. Native assembly performs every REU DMA. Copying this fixture avoids changing the normal shared bridge's360KiB importer scope.
+
+The CPU is compiled from the existing tracked third_party/peddle/Peddle sources at commit c23e34a7e6516b284750b8c7caaa8c41948a407a. No CPU binary is required. All used CPU source files were checked byte-for-byte against the original proof. Complete upstream MIT text is preserved in fixture/PEDDLE_LICENSE and third_party/peddle/LICENSE; third_party/peddle/UPSTREAM.json retains upstream archive/file identities. PROVENANCE.json pins this fixture, upstream source reuse, original proof manifests and independent review. Project REU/UCI/FILES/clock adapters are independently implemented; firmware references are documentation, not copied firmware code.
+
+Peddle CPU microcycles exclude physical DMA bus stalls and UCI latency. Host mocks are orchestration assertions, not implementations of the native algorithm. Successful full4MiB native engine calls plus actual short-source ENTRY are the retained proof; physical whole-file recovery and throughput are not accepted by these tests.

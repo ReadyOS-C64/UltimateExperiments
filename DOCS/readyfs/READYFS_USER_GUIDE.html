@@ -1,0 +1,1930 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS user guide · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS user guide"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs" open><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="READYFS_USER_GUIDE.html" aria-current="page">Illustrated user guide</a></li><li><a href="READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="tours/editor.html">Editor screenshot tour</a></li><li><a href="tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="READYFS_SAFETY.html">Safety</a></li><li><a href="READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#contents">Contents</a></li><li><a href="#1-start-here">1. Start here</a></li><li><a href="#2-the-path-system">2. The path system</a></li><li><a href="#3-commands-arguments-and-options">3. Commands, arguments, and options</a></li><li><a href="#4-patterns-and-selection">4. Patterns and selection</a></li><li><a href="#5-editing-and-the-two-histories">5. Editing and the two histories</a></li><li><a href="#6-inspect-files-before-changing-them">6. Inspect files before changing them</a></li><li><a href="#7-worked-example-copy-move-and-delete-a-nested-tree">7. Worked example: copy, move, and delete a nested tree</a></li><li><a href="#8-create-text-compare-files-and-save-a-session">8. Create text, compare files, and save a session</a></li><li><a href="#9-devices-images-and-advanced-operations">9. Devices, images, and advanced operations</a></li><li><a href="#10-complete-command-reference">10. Complete command reference</a></li><li><a href="#11-limits-troubleshooting-and-evidence">11. Limits, troubleshooting, and evidence</a></li><li><a href="#native-iec-configuration-and-sd2iec-support">Native IEC configuration and SD2IEC support</a></li><li><a href="#12-sd2iec-folders-batches-and-disk-images">12. SD2IEC: folders, batches, and disk images</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="READYFS_USER_GUIDE.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs-user-guide">ReadyFS user guide</h1>
+<p><strong>Paths, commands, and a complete folder workflow</strong> · Guide updated 13 October 2026 · Core screenshots: 9 October · SD2IEC screenshots: 13 October 2026</p>
+<p>ReadyFS aims to provide a full set of command-line tools and a coherent way to work with Ultimate DOS drives, mounted disk images or real C64 drives, SOFTIEC, and SD2IEC. That includes mounting disk images and accessing disk images on the Ultimate <strong>without mounting them</strong>, as if they were folders. Its central idea is simple: <strong>say where a file lives, then say what you want to do with it</strong>. The same command language also addresses sequential tape. Storage endpoints retain their own capabilities and limits; the command references below describe the implemented behavior.</p>
+<p>This guide starts with that model, explains command arguments and options, then follows the real nested-folder demonstration. Screenshots are frames from a physical C64 Ultimate running at 1 MHz; they show actual results. Other examples are identified as recipes or syntax examples. The complete <a href="https://readyfs-editor-demo.klumsy.chatgpt.site/">video walkthrough</a> remains available alongside this guide.</p>
+<h2 id="contents">Contents</h2>
+<ol>
+<li><a href="#1-start-here">Start here</a></li>
+<li><a href="#2-the-path-system">The path system</a></li>
+<li><a href="#3-commands-arguments-and-options">Commands, arguments, and options</a></li>
+<li><a href="#4-patterns-and-selection">Patterns and selection</a></li>
+<li><a href="#5-editing-and-the-two-histories">Editing and the two histories</a></li>
+<li><a href="#6-inspect-files-before-changing-them">Inspect files before changing them</a></li>
+<li><a href="#7-worked-example-copy-move-and-delete-a-nested-tree">Worked example: copy, move, and delete a nested tree</a></li>
+<li><a href="#8-create-text-compare-files-and-save-a-session">Create text, compare files, and save a session</a></li>
+<li><a href="#9-devices-images-and-advanced-operations">Devices, images, and advanced operations</a></li>
+<li><a href="#10-complete-command-reference">Complete command reference</a></li>
+<li><a href="#11-limits-troubleshooting-and-evidence">Limits, troubleshooting, and evidence</a></li>
+<li><a href="#12-sd2iec-folders-batches-and-disk-images">SD2IEC: folders, batches, and disk images</a></li>
+</ol>
+<h2 id="1-start-here">1. Start here</h2>
+<h3 id="use-the-full-application">Use the full application</h3>
+<p>Use <strong><code>readyfs-overlay.prg</code></strong> with <strong><code>readyfs-overlay-lab.d81</code></strong> on IEC device 8. The disk contains the 28 sidecars that startup caches in the REU. This build needs a detected REU of at least <strong>1 MiB</strong>. Keep the sidecars available during startup; loading them can take time on the C64. The smaller <code>readyfs.prg</code> is a diagnostic version and does not provide the complete editor and command-help experience described here.</p>
+<p>From BASIC, with the lab image mounted on drive 8:</p>
+<pre><code class="language-text">LOAD&quot;READYFS-OVERLAY&quot;,8,1
+RUN
+</code></pre>
+<p>Wait for the <code>rf&gt;</code> prompt and the editor legend before typing.</p>
+<h3 id="three-useful-first-commands">Three useful first commands</h3>
+<pre><code class="language-text">HELP
+HELP DIR
+PWD
+</code></pre>
+<p><code>HELP</code> lists the command families. <code>HELP DIR</code> explains one command. <code>PWD</code> prints the shell&#39;s current location. You can also use the exact short names: <code>H DIR</code>, <code>H CP</code>, and <code>PW</code>.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/01-help.png" alt="HELP DIR on the real C64, showing cyan command echoes and white help output."></p>
+<p><em>Figure 1. Cyan identifies submitted commands; white identifies results. The four input rows and gray legend belong to the live editor.</em></p>
+<h3 id="read-the-screen">Read the screen</h3>
+<table>
+<thead>
+<tr>
+<th>What you see</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>rf&gt;</code></td>
+<td>Start of the editable command. Do not type the prompt itself.</td>
+</tr>
+<tr>
+<td><code>..&gt;</code></td>
+<td>Another visible row of the same command, or a continuation.</td>
+</tr>
+<tr>
+<td><code>ov&gt;</code></td>
+<td>Overwrite mode is active. Insert toggles it.</td>
+</tr>
+<tr>
+<td>Cyan command text</td>
+<td>Your input and submitted command echoes.</td>
+</tr>
+<tr>
+<td>White text</td>
+<td>Ordinary command output, listings, and help.</td>
+</tr>
+<tr>
+<td>Yellow text</td>
+<td>Completion and plan summaries, plus the <code>-- more --</code> prompt.</td>
+</tr>
+<tr>
+<td>Red text</td>
+<td>Errors and failed operations in the 12 October source build.</td>
+</tr>
+<tr>
+<td>Gray legend</td>
+<td>Available editor or output-history keys.</td>
+</tr>
+<tr>
+<td><code>-- more --</code></td>
+<td>A listing or recursive preview is waiting for a key. Read the page, then continue.</td>
+</tr>
+</tbody></table>
+<p>The 12 October source build adds these summary/error colors and two or more examples per command-help topic. These changes passed host and VICE checks; the latest physical tour also verifies cyan input, white help, yellow paging and red errors. The sixteen retained screenshots in this guide were recorded on 9 October and retain their original output colors, footer and shorter help. They have not been recolored. Two additional transfer screenshots from 12 October show the named preview and explicit skip-readback result. The companion site’s recorded script provides the latest capture evidence alongside the video.</p>
+<p>The shell is a filesystem laboratory. It can address real storage. The recorded test runner restricted its writes to a fresh, marker-owned test folder; <strong>manual shell commands do not automatically inherit that external ownership check</strong>. An alias is a convenient path shortcut, not a general write-protection mechanism.</p>
+<h2 id="2-the-path-system">2. The path system</h2>
+<h3 id="a-path-has-an-endpoint-and-a-location">A path has an endpoint and a location</h3>
+<pre><code class="language-text">u: /usb1/READYFS_TEST/my-run/source/readme.seq
+│  └──────────────── location ──────────────┘
+└─ endpoint
+</code></pre>
+<p>The text before <code>:</code> selects the storage endpoint. The slash-separated part after it selects a location on that endpoint. <code>/</code> is the hierarchy separator; it is not a Windows backslash.</p>
+<p><img loading="lazy" decoding="async" width="1000" height="410" src="guide-assets/path-system.svg" alt="ReadyFS path anatomy and resolution diagram."></p>
+<p><em>Diagram 1. Different user spellings resolve to a canonical path. The driver then checks whether it can perform the requested operation.</em></p>
+<h3 id="endpoint-vocabulary">Endpoint vocabulary</h3>
+<table>
+<thead>
+<tr>
+<th>Example</th>
+<th>Read it as</th>
+<th>Current meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>8:/README</code></td>
+<td>Device 8, root, file README</td>
+<td>A normal IEC device, often a floppy or an emulated floppy.</td>
+</tr>
+<tr>
+<td><code>9:/PROGRAM</code></td>
+<td>Device 9, root, file PROGRAM</td>
+<td>The same syntax for another IEC unit. Supported units are 8–30.</td>
+</tr>
+<tr>
+<td><code>11.3:/games/HELLO</code></td>
+<td>Device 11, partition 3, folder games</td>
+<td>A partitioned IEC path. Folder and partition operations require a suitable probed driver.</td>
+</tr>
+<tr>
+<td><code>u:/usb1/music/theme.sid</code></td>
+<td>Ultimate host storage, USB1</td>
+<td>Direct UltimateDOS access to a host filesystem. USB and SD roots depend on the hardware.</td>
+</tr>
+<tr>
+<td><code>s3:/games/HELLO</code></td>
+<td>SoftwareIEC logical partition 3</td>
+<td>A mapped SoftwareIEC root, reached through its discovered IEC bus. It is not IEC device 3.</td>
+</tr>
+<tr>
+<td><code>t:/NOTES</code></td>
+<td>Sequential tape, name NOTES</td>
+<td>Tape has sequential read/write behavior, not a browsable folder tree.</td>
+</tr>
+<tr>
+<td><code>@lab:/source/readme.seq</code></td>
+<td>Alias lab, then this suffix</td>
+<td>Expand the saved alias root and append the suffix.</td>
+</tr>
+<tr>
+<td><code>u:/usb1/demo.d81!/HELLO</code></td>
+<td>Host image, then contained file</td>
+<td><code>!/</code> explicitly marks an image boundary. Parsing it does not mean direct contained-file access is implemented.</td>
+</tr>
+</tbody></table>
+<p><strong>One syntax does not imply identical devices.</strong> A floppy has C64 block counts and short names. Ultimate host storage has folders and host names. Tape cannot rename, delete, or recurse. SoftwareIEC behavior depends on firmware and the mapping. Use <code>CAPABILITIES path</code>, <code>PROBE IEC 8:</code>, and <code>PROFILE IEC 8:</code> to inspect the relevant model and detected profile; capability summaries are not guarantees for every path shape.</p>
+<h3 id="softwareiec-logical-partitions-and-mappings">SoftwareIEC logical partitions and mappings</h3>
+<p>SoftwareIEC is the Ultimate&#39;s software IEC filesystem. <code>s0:/games/HELLO</code> selects SoftwareIEC logical partition 0 and a location within its mapped root. <code>s3:/games/HELLO</code> selects logical partition 3. These are not IEC device addresses or native SD2IEC partitions. ReadyFS discovers the SoftwareIEC IEC bus through the Ultimate Command Interface.</p>
+<pre><code class="language-text">PROBE SOFTIEC
+DIR s0:/
+ALIAS SOFT s0:/demo
+DIR @soft:/
+</code></pre>
+<p>Use the mapping and folder names that exist in your setup. Mapping creation/removal and folder capabilities depend on the Ultimate firmware. The dedicated <a href="READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC guide</a> covers its commands, limits and a separate interoperability section.</p>
+<h3 id="native-sd2iec-device-and-partition-numbers">Native SD2IEC device and partition numbers</h3>
+<p><strong><code>10.1:/games/HELLO</code> means IEC device 10, partition 1, then the path <code>/games/HELLO</code>.</strong> <code>10.2:/games/HELLO</code> reaches partition 2 on the same SD2IEC, if it exists. ReadyFS is not restricted to the partition 1 used in the walkthrough. Explicit native partitions are 1–254 where the detected driver supports them; inspect the actual partition list rather than assuming that every number exists.</p>
+<pre><code class="language-text">IEC 10: PARTITIONS
+IEC 10: PARTITION
+IEC 10: PARTITION 2
+DIR 10.2:/
+</code></pre>
+<p>The last two commands assume partition 2 is present. The first lists partitions, the second queries the current one, and the third queries partition 2 without selecting it. Explicit <code>10.2:/...</code> paths qualify the operation directly and do not change the current selection. <code>10:/...</code> uses the current partition, queried and pinned for each operation. To change that default deliberately, use <code>IEC 10: PARTITION 2 --SELECT</code>; this also clears the SD2IEC autoswap list.</p>
+<p>Path suffixes and command arguments are decimal: a partition listed as <code>$0A</code> is addressed as <code>10.10:/</code>. <code>IEC 10: PARTITION 0</code> is the separate SYSTEM query, not an ordinary data-partition path. <code>s0:/</code> names a SoftwareIEC logical partition, not native partition 0 of device 10.</p>
+<p>A partition and a mounted image are also different things. Mounting an SD image changes what the chosen partition exposes; it does not create another partition. Mount/unmount can close channels on other partitions of the same device, so finish transfers first. See <a href="SD2IEC_NATIVE.html">native SD2IEC support</a> for the complete rules.</p>
+<h3 id="absolute-relative-and-endpoint-root-paths">Absolute, relative, and endpoint-root paths</h3>
+<p>Suppose <code>PWD</code> prints:</p>
+<pre><code class="language-text">u:/usb1/READYFS_TEST/my-run/source
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Input path</th>
+<th>Resolved location</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>readme.seq</code></td>
+<td><code>u:/usb1/READYFS_TEST/my-run/source/readme.seq</code></td>
+</tr>
+<tr>
+<td><code>beta/deep/three.seq</code></td>
+<td><code>u:/usb1/READYFS_TEST/my-run/source/beta/deep/three.seq</code></td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td>The current source folder.</td>
+</tr>
+<tr>
+<td><code>..</code></td>
+<td><code>u:/usb1/READYFS_TEST/my-run</code></td>
+</tr>
+<tr>
+<td><code>/usb1</code></td>
+<td><code>u:/usb1</code> — the root of the current endpoint, then usb1.</td>
+</tr>
+<tr>
+<td><code>8:/README</code></td>
+<td>Device 8; the current <code>u:</code> location does not affect it.</td>
+</tr>
+</tbody></table>
+<p><code>/</code> alone means the root of the current <strong>endpoint</strong>, not the root of your alias or current test folder. Prefer a full endpoint path when crossing devices. Use explicit absolute endpoint forms such as <code>8:/...</code>; endpoint-relative forms such as <code>8:README</code> are not the ordinary file-operation contract.</p>
+<p><code>CD path</code> changes ReadyFS&#39;s current location. <code>CD</code> without a path prints it. <code>PWD</code> prints it too. A successful <code>CD</code> resolves and stores a path; it is <strong>not proof that the directory exists or is readable</strong>. Follow it with <code>DIR</code> or <code>TREE .</code> when you need to check access.</p>
+<pre><code class="language-text">CD @lab:/source
+PWD
+DIR
+TREE .
+CD ..
+</code></pre>
+<h3 id="aliases-shorten-long-paths">Aliases shorten long paths</h3>
+<p>An alias is an exact-place bookmark. In this syntax example, substitute your own fresh test root:</p>
+<pre><code class="language-text">ALIAS LAB u:/usb1/READYFS_TEST/YOUR_FRESH_RUN
+ALIAS
+HEAD @lab:/source/readme.seq 2
+</code></pre>
+<p>The first command stores the bookmark. The second lists saved bookmarks. The third expands <code>@lab:/</code> to that root. <code>AL LAB ...</code> is equivalent to <code>ALIAS LAB ...</code>; <code>UA LAB</code> removes it.</p>
+<p>Aliases have up to eight slots and names up to sixteen bytes. They live in the current REU session unless saved with <code>CONFIG SAVE</code>. Alias expansion does not chain aliases. Its suffix rejects <code>..</code> components, so <code>@lab:/../outside</code> is invalid. Ordinary relative <code>..</code> navigation is allowed within the endpoint root; it is not confined to an alias&#39;s subtree.</p>
+<p>Paths are normalized: redundant slashes and <code>.</code> components are simplified; <code>..</code> cannot climb above the endpoint or image root. Both typed commands and expanded canonical paths have a 255-byte ceiling. A short alias can still expand into a path that exceeds that limit.</p>
+<h3 id="host-files-displayed-names-and-images">Host files, displayed names, and images</h3>
+<p>UltimateDOS can expose an access spelling with bracketed hex bytes or an added C64 file-type annotation. ReadyFS keeps the actual access identity separate from the readable name used in selection. The current lookup accepts both an actual host spelling such as <code>work.seq</code> and its decoded logical spelling where applicable. Use the exact host filename when you know it; <code>STAT</code> can show display, access, and host identities.</p>
+<p><code>demo.d81</code> is a <strong>host file</strong>. A contained file can be addressed through an UltimateDOS slash path such as <code>u:/usb1/demo.d81/HELLO.prg</code>, or through a mounted IEC drive such as <code>8:/HELLO</code>. The explicit <code>!/</code> spelling remains a modeled boundary that current file operations reject; use ordinary <code>/</code> for UltimateDOS contained-file access. Mounting changes drive media; it is separate from changing <code>CD</code>. Do not access a container through UltimateDOS while it is also mounted on an IEC drive.</p>
+<h3 id="boundaries-and-possibilities-what-are-you-copying">Boundaries and possibilities: what are you copying?</h3>
+<p><strong>Start by deciding whether the path names a host file, a contained disk file, or a mounted device.</strong> The same image can appear in two roles: <code>u:/usb1/readyos.d81</code> is one host file; with that image mounted on device 8, <code>8:/SHEET2</code> is one file inside its Commodore filesystem. Copying one does not mean copying the other.</p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>What it addresses</th>
+<th>Possibilities and boundaries</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>u:/usb1/folder/file.seq</code></td>
+<td>An ordinary Ultimate host file</td>
+<td>Host files and nested folders. Recursive copy, move, and delete are demonstrated in this guide. Host names and C64 file types are separate concerns.</td>
+</tr>
+<tr>
+<td><code>8:/SHEET2</code></td>
+<td>A file on device 8&#39;s current media</td>
+<td>Stream a supported file to/from another endpoint. A plain mounted D81 has a flat directory; adding slashes does not create host-style folders. Other IEC drivers may offer partitions or folders.</td>
+</tr>
+<tr>
+<td><code>u:/usb1/readyos.d81</code></td>
+<td>The entire image as one host file</td>
+<td>Copy or back up the image as a whole. Its contained directory, allocation data, and file structures remain within the image. This does not extract any individual file.</td>
+</tr>
+<tr>
+<td><code>u:/usb1/work.d64/HELLO.prg</code></td>
+<td>Direct access to a contained file</td>
+<td>The current overlay build supports SEQ/PRG/USR through ordinary slash paths. The physical contained-image matrix used D64; mounted IEC tests also used D81. Explicit <code>!/</code> remains rejected.</td>
+</tr>
+<tr>
+<td><code>s3:/games/HELLO</code></td>
+<td>A logical SoftwareIEC mapping</td>
+<td>Access depends on the discovered bus, firmware, mapped root, and driver. <code>s3:</code> is not device 3. SoftwareIEC is not required to copy a file from an already mounted drive 8.</td>
+</tr>
+<tr>
+<td><code>@disk:/SHEET2</code></td>
+<td>An alias expanded to an underlying path</td>
+<td>Same operations and limits as that underlying path. An alias adds neither image access nor write protection.</td>
+</tr>
+<tr>
+<td><code>t:/NOTES</code></td>
+<td>A named sequential tape stream</td>
+<td>Sequential read/write, not a folder filesystem. No directory tree, rename, delete, or move.</td>
+</tr>
+</tbody></table>
+<h4 id="1-extract-a-file-from-the-image-already-mounted-on-drive-8">1. Extract a file from the image already mounted on drive 8</h4>
+<p>With <code>readyos.d81</code> already mounted on device 8:</p>
+<pre><code class="language-text">DIR 8:/
+COPY 8:/SHEET2 u:/usb1/SHEET2 --whatif
+COPY 8:/SHEET2 u:/usb1/SHEET2
+COMPARE 8:/SHEET2 u:/usb1/SHEET2
+</code></pre>
+<p>The source is <strong><code>8:/SHEET2</code></strong>, with the slash. <code>8:SHEET2</code> is an endpoint-relative spelling outside the current COPY contract and can report <code>unsupported</code>. For a single-file copy, name the destination file explicitly: <code>u:/usb1/SHEET2</code>. Do not use only <code>u:/usb1</code> and assume the shell will append the source name. This recipe writes the USB destination when executed; use an unused name if you want to retain an existing file.</p>
+<p>These are syntax recipes, not a claim that your particular <code>SHEET2</code> was copied or tested. A preview shows intent; it does not establish that the later device I/O will succeed.</p>
+<h4 id="2-use-aliases-and-shorter-commands-for-the-same-transfer">2. Use aliases and shorter commands for the same transfer</h4>
+<pre><code class="language-text">ALIAS DISK 8:/
+AL USB u:/usb1
+CP @disk:/SHEET2 @usb:/SHEET2 -w
+CP @disk:/SHEET2 @usb:/SHEET2
+COMPARE @disk:/SHEET2 @usb:/SHEET2
+</code></pre>
+<p><code>AL</code> is <code>ALIAS</code>; <code>CP</code> is <code>COPY</code>; <code>-w</code> is <code>--whatif</code>. Here <code>@disk:/SHEET2</code> expands to <code>8:/SHEET2</code>. An alias to <code>u:/usb1/readyos.d81</code> would instead identify the host image file; it would not turn that file into a working browsable directory.</p>
+<h4 id="3-back-up-the-whole-image-instead">3. Back up the whole image instead</h4>
+<p>Assuming <code>backups</code> already exists and the new destination name is unused:</p>
+<pre><code class="language-text">COPY u:/usb1/readyos.d81 u:/usb1/backups/readyos-copy.d81 --whatif
+COPY u:/usb1/readyos.d81 u:/usb1/backups/readyos-copy.d81
+COMPARE u:/usb1/readyos.d81 u:/usb1/backups/readyos-copy.d81
+</code></pre>
+<p>This transfers the entire image, not just <code>SHEET2</code>. Use an image that is not actively being written by a mounted drive so the backup has a stable source. An ordinary contained-file copy does not preserve every disk-level feature; a whole-image copy retains the image&#39;s stored structures.</p>
+<h4 id="4-put-a-host-file-into-a-mounted-disk">4. Put a host file into a mounted disk</h4>
+<p>For this recipe, device 9 must already contain a <strong>writable disposable test disk</strong>, with enough space and no existing file named <code>DEMO</code>:</p>
+<pre><code class="language-text">COPY u:/usb1/demo.prg 9:/DEMO --whatif
+COPY u:/usb1/demo.prg 9:/DEMO
+COMPARE u:/usb1/demo.prg 9:/DEMO
+</code></pre>
+<p>The destination is a Commodore directory entry. Its name, type, and size must fit the destination filesystem. COPY does not convert a SID, MP3, WAV, or document into an executable C64 program. Byte equality from COMPARE is useful evidence of file data, not proof of REL record structure, copy-protection data, or every item of disk metadata.</p>
+<h4 id="5-direct-image-paths-in-both-directions">5. Direct image paths in both directions</h4>
+<p>The current 28-sidecar overlay build supports contained SEQ, PRG, and USR files through <strong>ordinary slash paths</strong>. Use a writable, unmounted image you own, an existing output folder, and unused destination names:</p>
+<pre><code class="language-text">COPY u:/usb1/work.d64/HELLO.prg u:/usb1/out/HELLO.prg --whatif
+COPY u:/usb1/work.d64/HELLO.prg u:/usb1/out/HELLO.prg
+COPY u:/usb1/out/HELLO.prg u:/usb1/work.d64/HELLO2.prg
+COMPARE u:/usb1/out/HELLO.prg u:/usb1/work.d64/HELLO2.prg
+</code></pre>
+<p><strong>Name the destination file explicitly.</strong> A trailing <code>/</code> does not yet mean “keep the source filename.” A bare contained destination inherits the source type; an explicit <code>.prg</code>, <code>.seq</code>, or <code>.usr</code> must agree with it. Names are limited to 16 decoded CBM bytes. REL streams remain unsupported. Staging, replacement backups and renames preserve types; equivalent names for the same entry are rejected for self-copy/move/rename.</p>
+<p>The hardware matrix passed COPY/MOVE in both directions between an SD2IEC-mounted image and a separate Ultimate-contained D64, including all three types, replacement/rename checks and independent saved-image bytes/types. This does not establish every disk format or firmware combination. Do not use this route while the same container is mounted on an IEC drive. Native SD image mounting and same-device folder/image transfers have separate rules; see <a href="SD2IEC_NATIVE.html">native SD2IEC support</a>.</p>
+<h3 id="why-a-path-can-parse-but-an-operation-can-fail">Why a path can parse but an operation can fail</h3>
+<p>Path resolution, driver support, and successful I/O are separate steps. A valid path can still encounter an unsupported operation, read-only media, a missing file, a name/type restriction, or insufficient space. <code>--force</code> does not add capabilities. <code>--whatif</code> does not prove read/write access. An alias does not bypass these boundaries.</p>
+<p>Use <code>CAPABILITIES path</code> for the endpoint model, then <code>PROBE IEC 8:</code> and <code>PROFILE IEC 8:</code> for an IEC device. Use <code>DIR</code>, <code>STAT</code>, and a disposable test file to establish the behavior you actually need. For cross-endpoint transfers, ordinary PRG/SEQ/USR byte streams are the intended scope; REL and special disk structures require separate support rather than an assumption that every file is interchangeable.</p>
+<h3 id="can-we-tell-which-image-is-mounted-on-device-8-or-9">Can we tell which image is mounted on device 8 or 9?</h3>
+<p><strong>ReadyFS remembers mounts it makes itself, during the current session.</strong> The normal REU-backed overlay build shows this context in <code>DRIVES</code> / <code>DV</code>, before a classic <code>DIR</code> listing, and in <code>STAT</code> and <code>VOLUME</code> for an IEC device. No network, REST connection, Mac relay, or saved disk registry is used by this feature.</p>
+<pre><code class="language-text">MOUNT u:/usb1/lab/demo.d81 9:
+DRIVES
+DIR 9:/
+STAT 9:/HELLO
+VOLUME 9:/
+</code></pre>
+<p>After an accepted native mount, the context looks like:</p>
+<pre><code class="language-text">9: last mounted by readyfs
+u:/usb1/lab/demo.d81
+may have changed elsewhere
+</code></pre>
+<p><strong>This is a historical hint, not a live check.</strong> Changing the disk through the Ultimate menu, a disk-swap button, another application, or another client can make the remembered path out of date. The warning appears alongside the path each time. Mounts made before ReadyFS started, and mounts made elsewhere, show <code>image path unknown</code>. Unknown does not mean the drive has no disk.</p>
+<p>Aliases are resolved before the path is remembered: <code>AL DISK u:/usb1/lab</code> then <code>MO @disk:/demo.d81 9:</code> remembers the absolute host path. <code>DISMOUNT</code> and <code>SWAP</code> invalidate the affected unit&#39;s hint when the real native operation is attempted. A mount attempt invalidates the old hint before issuing the native request and records the new path only after an OK response. <code>--whatif</code> does not change any hints. All hints clear when ReadyFS restarts. Remembering a path does not give permission to overwrite a disk or prove that writes will reach that host image; writable, read-only, and unlinked media remain separate concerns.</p>
+<p><strong>Why not query the Ultimate directly?</strong> The native UCI drive-information command (<code>0x29</code>) reports drive type, IEC bus number, and power state, but not the mounted image path. Native DOS <code>GET_PATH</code> returns that DOS target&#39;s current working directory, not the image mounted on device 8 or 9. The firmware&#39;s network API has more information, but ReadyFS deliberately does not use it. A firmware extension to expose mounted-image identity through native UCI would allow live discovery later. See the <a href="https://github.com/GideonZ/1541ultimate/blob/master/software/io/command_interface/control_target.cc">native drive-information implementation</a> and <a href="https://github.com/GideonZ/1541ultimate/blob/master/software/filemanager/dos.cc">native DOS implementation</a>.</p>
+<p>The compact monolithic diagnostic build retains the earlier drive listing; these remembered-path displays belong to the normal overlay build. Firmware acknowledgement is the signal available to ReadyFS: the checked firmware&#39;s native mount handler does not propagate every internal mount-action error, so an OK response is still not proof of current media. A directory&#39;s title and ID identify disk contents, not the host <code>.d81</code> filename.</p>
+<h2 id="3-commands-arguments-and-options">3. Commands, arguments, and options</h2>
+<h3 id="read-a-command-from-left-to-right">Read a command from left to right</h3>
+<pre><code class="language-text">COPY @lab:/source @lab:/copy --recursive --whatif
+│    │            │          │           │
+│    source       destination│           preview only
+command                      include descendants
+</code></pre>
+<p>The <strong>command</strong> chooses the action. <strong>Positional arguments</strong> supply required values in order. <strong>Options</strong> modify that action; some take a following value. Put options after the command&#39;s required positional arguments.</p>
+<p>These spellings have the same meaning:</p>
+<pre><code class="language-text">COPY @lab:/source @lab:/copy --recursive --whatif
+CP   @lab:/source @lab:/copy -r -w
+</code></pre>
+<p>Command names and their registered aliases match whole tokens, case-insensitively. <code>CP</code> works because it is registered; <code>CO</code> is not an inferred abbreviation. Options are command-specific: recognizing an option token does not mean every command implements it.</p>
+<h3 id="quotes-and-command-limits">Quotes and command limits</h3>
+<p>Use double quotes around a complete argument containing spaces:</p>
+<pre><code class="language-text">WRITE &quot;@lab:/field notes.seq&quot; &quot;First observation&quot; --line --whatif
+HEAD &quot;@lab:/field notes.seq&quot; 3
+</code></pre>
+<p>The quoted text is one argument. Quotes group arguments; they are not stored as part of the filename or text. The parser is deliberately small: at most <strong>twelve tokens including the command</strong>, inside a <strong>255-byte logical line</strong>. It is not a Unix shell: do not assume pipes, redirection, semicolon command lists, or general backslash escapes. DOS-style %NAME% variables and %1–%9 script arguments are supported; see the RUN reference below.</p>
+<p>An open double quote or a trailing backslash followed by Return continues the same command by joining with a space. F7 or Shift+Return also joins. This does not insert a newline into file data. Use <code>--line</code> on WRITE or APPEND for a trailing carriage return.</p>
+<h3 id="options-at-a-glance">Options at a glance</h3>
+<table>
+<thead>
+<tr>
+<th>Long form</th>
+<th>Short form</th>
+<th>Purpose and scope</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--whatif</code> or <code>--dry-run</code></td>
+<td><code>-w</code></td>
+<td>Preview a supported mutation. Remove the preview option to execute an ordinary operation.</td>
+</tr>
+<tr>
+<td><code>--no-verify</code></td>
+<td><code>-nv</code></td>
+<td>Skip destination readback for COPY/MOVE, including recursive transfers. Verification is on by default.</td>
+</tr>
+<tr>
+<td><code>--recursive</code></td>
+<td><code>-r</code></td>
+<td>Select a tree for COPY, MOVE, or DELETE; ordinary single-file operations do not need it.</td>
+</tr>
+<tr>
+<td><code>--include PATTERN</code></td>
+<td><code>-i PATTERN</code></td>
+<td>Select matching relative names for commands with filtering support.</td>
+</tr>
+<tr>
+<td><code>--exclude PATTERN</code></td>
+<td><code>-x PATTERN</code></td>
+<td>Exclude matching relative names after inclusion.</td>
+</tr>
+<tr>
+<td><code>--force</code></td>
+<td><code>-f</code></td>
+<td>Bypass a replacement/confirmation prompt where supported. It does not add driver capabilities.</td>
+</tr>
+<tr>
+<td><code>--yes</code></td>
+<td><code>-y</code></td>
+<td>Explicit confirmation. Current confirmation lookup also accepts it where force is tested; use it carefully.</td>
+</tr>
+<tr>
+<td><code>--line</code></td>
+<td><code>-l</code></td>
+<td>Append a carriage return after WRITE or APPEND text.</td>
+</tr>
+<tr>
+<td><code>--type seq</code></td>
+<td><code>-t seq</code></td>
+<td>File creation type: SEQ, PRG, or USR. Default is SEQ. REL creation/transfer is not a general supported path.</td>
+</tr>
+<tr>
+<td><code>--continue</code></td>
+<td><code>-c</code></td>
+<td>Let a recursive execution attempt later actions after a failure; default is stop on error.</td>
+</tr>
+<tr>
+<td><code>--native-pattern</code></td>
+<td><code>-np</code></td>
+<td>Ask a supported IEC backend to enumerate its own pattern syntax. See section 9.</td>
+</tr>
+<tr>
+<td><code>--apply</code></td>
+<td><code>-a</code></td>
+<td>Explicit execution opt-in for native-pattern mutations and formatting; not required for ordinary recursive COPY/MOVE/DELETE.</td>
+</tr>
+<tr>
+<td><code>--name NAME</code></td>
+<td><code>-n NAME</code></td>
+<td>SoftwareIEC mapping identifier.</td>
+</tr>
+<tr>
+<td><code>--label LABEL</code></td>
+<td><code>-lb LABEL</code></td>
+<td>Format label on supported disposable media.</td>
+</tr>
+<tr>
+<td><code>--id ID</code></td>
+<td><code>-id ID</code></td>
+<td>Format disk ID on supported disposable media.</td>
+</tr>
+<tr>
+<td><code>--disposable</code></td>
+<td><code>-ds</code></td>
+<td>Required disposable-media assertion for the format workflow.</td>
+</tr>
+</tbody></table>
+<p>Recursive COPY, MOVE and DELETE previews print the source root, destination root when applicable, and each selected relative filename or folder. <code>would copy alpha/one.seq</code> means that exact file below the printed source root. A <code>dir</code> label identifies a folder. Unselected entries are omitted. Longer lists pause at the yellow <code>-- more --</code>; press a key after reading each page. The final <code>whatif: no files changed</code> confirms that the preview did not execute the plan.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/17-named-preview-2026-10-12.png" alt="Current copy preview names all selected files and folders."></p>
+<p><em>Current capture A · 12 October. Eight selected entries are individually named. Source and destination roots appear on the preceding preview page, available in the companion video and recorded script.</em></p>
+<p><strong>Preview does not queue an operation for later.</strong> A what-if prints a plan and returns. To execute, enter another command with the same source/destination and selection options, but without <code>-w</code> / <code>--whatif</code> / <code>--dry-run</code>. A preview is not a guarantee that the later operation can complete: conflicts, device support, and I/O still matter.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/04-help-copy.png" alt="HELP CP explains copy syntax, recursive selection, preview, filters, and confirmation options."></p>
+<p><em>Figure 2. Per-command help accepts short names. <code>HELP CP</code> and <code>HELP COPY</code> select the same help topic.</em></p>
+<h2 id="4-patterns-and-selection">4. Patterns and selection</h2>
+<p>ReadyFS&#39;s normal matcher operates on a <strong>complete relative stem</strong>, not merely the last filename. A nested file might have the stem <code>beta/deep/three.seq</code> relative to the selected source root.</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>*</code></td>
+<td>Zero or more characters within a component; does not cross <code>/</code> or <code>!</code>.</td>
+<td><code>*.seq</code> matches a root-level SEQ name.</td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td>One character, excluding hierarchy/image separators.</td>
+<td><code>one.?eq</code> matches <code>one.seq</code>.</td>
+</tr>
+<tr>
+<td><code>**</code></td>
+<td>Zero or more characters, including separators.</td>
+<td><code>beta/**</code> reaches descendants below beta.</td>
+</tr>
+<tr>
+<td><code>**/</code></td>
+<td>Zero or more complete directory prefixes.</td>
+<td><code>**/*.seq</code> includes root-level and nested SEQ names.</td>
+</tr>
+</tbody></table>
+<p>Test a pattern without touching storage:</p>
+<pre><code class="language-text">MATCH &quot;*.seq&quot; &quot;alpha/one.seq&quot;
+MATCH &quot;**/*.seq&quot; &quot;alpha/one.seq&quot;
+</code></pre>
+<p>The first is no; the second is yes. Matching is case-folded. The matcher does not provide a general regular-expression or bracket-character-class language. Quote patterns when useful for clarity; ordinary path arguments are not automatically wildcard-expanded.</p>
+<p>For a read-only tree search:</p>
+<pre><code class="language-text">TREE @lab:/source
+FIND @lab:/source --include &quot;beta/**&quot;
+FI @lab:/source -i &quot;**/*.seq&quot; -x &quot;alpha/**&quot;
+</code></pre>
+<p>An Ultimate directory entry may carry an extra type annotation. Selection normalizes that representation and retains the access name separately. Inspect the actual TREE/FIND results before applying a filter to mutations. A suffix in host storage is not itself a universal C64 type guarantee.</p>
+<p>For filtered copying, preview the selection first:</p>
+<pre><code class="language-text">COPY @lab:/source @lab:/subset -r -i &quot;beta/**&quot; -w
+</code></pre>
+<p>Do not interpret a small selected count as proof that a filter is correct. It is a count of the plan&#39;s selected entries; directories can be entries too. The worked example deliberately uses an unfiltered tree to make every folder and file easy to account for.</p>
+<h2 id="5-editing-and-the-two-histories">5. Editing and the two histories</h2>
+<p>The <code>-- more --</code> prompt is yellow: press a key to continue a paged listing. The next page returns to ordinary white output.</p>
+<h3 id="one-logical-command-four-visible-rows">One logical command, four visible rows</h3>
+<p>The editor holds 255 bytes but displays four rows of 36 command characters. The view follows the cursor through longer input. Wrapping changes the view, not the command. Ordinary typing updates the changed cells, rather than repainting the entire display on every key.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Left / Right</td>
+<td>Move within the command.</td>
+</tr>
+<tr>
+<td>Home / Shift+Home</td>
+<td>Go to its beginning / end.</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td>Delete the character before the cursor.</td>
+</tr>
+<tr>
+<td>Insert</td>
+<td>Toggle insert and overwrite; <code>ov&gt;</code> marks overwrite mode.</td>
+</tr>
+<tr>
+<td>Return</td>
+<td>Execute a complete command.</td>
+</tr>
+<tr>
+<td>F7 / Shift+Return</td>
+<td>Join another part with a space. This shortcut remains active but is omitted from the bottom legend.</td>
+</tr>
+<tr>
+<td>Run/Stop at live input</td>
+<td>Cancel the draft.</td>
+</tr>
+</tbody></table>
+<p>In the demonstration, <code>HED @lab:/source/readme.seq 2</code> is corrected by moving to the beginning, moving right twice, and inserting <code>A</code>. The resulting <code>HEAD</code> reads two lines. This is an edit to the command before execution, not a rename of the file.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/05-head.png" alt="A corrected HEAD command reads the two source lines."></p>
+<p><em>Figure 3. HEAD displays the beginning of the file. The source text says “source stays safe.”</em></p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/06-long-line.png" alt="The long quoted WRITE preview occupies the editor&#39;s moving four-row window."></p>
+<p><em>Figure 4. A 255-byte command still fits the logical buffer even when only its end is visible. The recorded WRITE uses what-if and creates no file.</em></p>
+<h3 id="command-recall-versus-output-paging">Command recall versus output paging</h3>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Keys</th>
+<th>What is preserved</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Recall a command to edit or run again</td>
+<td>Up / Down</td>
+<td>Your unfinished draft, cursor, and insert mode return when you go Down past the newest command.</td>
+</tr>
+<tr>
+<td>Read earlier results</td>
+<td>F1 older / F3 newer</td>
+<td>The live screen, colors, and unfinished input are restored on return.</td>
+</tr>
+<tr>
+<td>Leave output history immediately</td>
+<td>Run/Stop or Return</td>
+<td>Return to the live editor; this Return does not execute its draft.</td>
+</tr>
+</tbody></table>
+<p>Commodore+Up/Down also provide output paging. F1 enters the recent output page and continues older. F3 at the newest page returns to live input; F3 while already live leaves the draft alone. Command recall stores 32 entries. Output history stores 800 physical screen rows and their colors, with up to 23 rows per page. Oldest rows are replaced when full. <code>CLEAR</code> clears the live display while retaining scrollback. History is a session feature, not a permanent audit log.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/07-output-history.png" alt="The output browser shows an older page with its own F1/F3 legend."></p>
+<p><em>Figure 5. This is output history, not command recall. The gray <code>output:</code> legend distinguishes the mode. Cyan command echoes keep their color.</em></p>
+<h2 id="6-inspect-files-before-changing-them">6. Inspect files before changing them</h2>
+<h3 id="dir-one-directory-in-familiar-c64-form">DIR: one directory, in familiar C64 form</h3>
+<pre><code class="language-text">DIR 8:/
+LS @lab:/source
+</code></pre>
+<p>IEC disk listings show a quoted reverse-video disk header, a block count, a quoted name, and a type such as PRG, SEQ, USR, REL, or DIR. The final <code>BLOCKS FREE.</code> count is also in C64 blocks, not bytes. A long listing pauses at <code>-- more --</code>; continue only when you have read it.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/02-directory-header.png" alt="Classic IEC directory header, quoted names, file types, block counts, and the more prompt."></p>
+<p><em>Figure 6. A real lab D81 listing. The numbers on the left are blocks; the names and types retain the familiar C64 directory layout.</em></p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/03-directory-free.png" alt="The end of the IEC directory lists 2749 blocks free."></p>
+<p><em>Figure 7. The free-space line is real device output. It will differ on other media.</em></p>
+<p>Ultimate host DIR uses the same quoted-name presentation, but shows <code>?</code> when the listing stream supplies no size. Host directories show DIR; an unknown file type can show <code>---</code>. It would be misleading to invent block counts for those entries. <code>STAT file</code> can retrieve more metadata, including exact byte size on a supported Ultimate host file.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/15-host-directory.png" alt="The source host folder shows quoted names, DIR entries, and question marks for unavailable sizes."></p>
+<p><em>Figure 8. <code>CD @lab:/source</code>, then <code>DIR</code>, uses the shell&#39;s current directory. A <code>?</code> is missing size metadata, not a zero-byte file.</em></p>
+<h3 id="tree-and-find-see-the-descendants">TREE and FIND: see the descendants</h3>
+<p><code>DIR</code> shows one level. <code>TREE path</code> traverses a supported tree. <code>FIND path [pattern]</code> uses the same walker with selection; <code>--include</code> and <code>--exclude</code> make the selection explicit. A regular floppy root can be listed, but does not gain nested folders merely because TREE exists.</p>
+<h3 id="type-head-tail-and-crc32">TYPE, HEAD, TAIL, and CRC32</h3>
+<pre><code class="language-text">TYPE @lab:/source/readme.seq
+HEAD @lab:/source/readme.seq 2
+TL @lab:/source/readme.seq 1
+CRC32 @lab:/source/readme.seq
+</code></pre>
+<p>TYPE prints text; bytes outside its printable range appear as dots. HEAD and TAIL default to ten lines and accept counts from 1 to 255. HEAD can stop after enough lines. TAIL reads the input and retains a small ring of trailing content, so very long lines or a large requested tail can be truncated; read the report. These are bounded C64 views, not a desktop text editor. CRC32 reads a file and prints a checksum. COMPARE reads two files to check equality; unlike a matching directory block count, that is a content check.</p>
+<h2 id="7-worked-example-copy-move-and-delete-a-nested-tree">7. Worked example: copy, move, and delete a nested tree</h2>
+<h3 id="prepare-a-disposable-workspace">Prepare a disposable workspace</h3>
+<p>The recorded run used a newly created folder under <code>/usb1/READYFS_TEST/</code>, an exact ownership marker checked externally, and this source tree:</p>
+<pre><code class="language-text">source/
+├── readme.seq                 38 bytes
+├── alpha/
+│   ├── one.seq                10 bytes
+│   └── two.seq                10 bytes
+└── beta/
+    ├── four.seq               10 bytes
+    └── deep/
+        └── three.seq          13 bytes
+</code></pre>
+<p>Five files, three child folders, and 81 source bytes make the results easy to verify. The exact recorded root names in screenshots are historical evidence. <strong>Do not reuse or clean up those roots.</strong> For your own exercise, prepare a different empty, disposable folder and point LAB there. If an agent runs it on the physical C64U, it must also create and validate the matching ownership marker before mutations, as required by the repo&#39;s AGENTS rules.</p>
+<p>A manual setup recipe, after LAB has been pointed at your fresh workspace, is:</p>
+<pre><code class="language-text">MKDIR @lab:/source
+MKDIR @lab:/source/alpha
+MKDIR @lab:/source/beta
+MKDIR @lab:/source/beta/deep
+WRITE @lab:/source/readme.seq &quot;READYFS NESTED DEMO&quot; -l
+APPEND @lab:/source/readme.seq &quot;SOURCE STAYS SAFE&quot; -l
+WRITE @lab:/source/alpha/one.seq &quot;ALPHA ONE&quot; -l
+WRITE @lab:/source/alpha/two.seq &quot;ALPHA TWO&quot; -l
+WRITE @lab:/source/beta/four.seq &quot;BETA FOUR&quot; -l
+WRITE @lab:/source/beta/deep/three.seq &quot;THREE LEVELS&quot; -l
+TREE @lab:/source
+</code></pre>
+<p>This is a recipe, not another executed hardware test. Enter one command at a time and wait for the prompt. Confirm the names and source contents before proceeding.</p>
+<p><img loading="lazy" decoding="async" width="1000" height="420" src="guide-assets/folder-workflow.svg" alt="Copy, move, and delete workflow with the source preserved throughout."></p>
+<p><em>Diagram 2. Copy duplicates descendants into COPY. Move transfers those descendants into MOVED. Delete removes the demonstration descendants and then their empty roots. SOURCE remains throughout.</em></p>
+<h3 id="step-a-preview-the-copy">Step A: preview the copy</h3>
+<pre><code class="language-text">CP @lab:/source @lab:/copy -r -w
+</code></pre>
+<p><code>-r</code> selects descendants. <code>-w</code> plans only. The recorded display reports eight selected entries: five files plus three directories. The historical capture’s <code>DONE W0 D0 M0</code> line says no writes, deletes, or metadata actions were completed. The current build additionally lists all eight selected relative paths and ends with <code>whatif: no files changed</code>; the new companion video shows the complete pages. Independent before/after snapshots also matched; the display alone was not the test&#39;s only evidence.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/08-copy-preview.png" alt="Copy what-if selects eight entries and reports zero completed changes."></p>
+<p><em>Figure 9. A preview can enumerate and read. It does not create the COPY destination or write its files.</em></p>
+<h3 id="step-b-create-the-destination-then-copy">Step B: create the destination, then copy</h3>
+<pre><code class="language-text">MD @lab:/copy
+COPY @lab:/source @lab:/copy --recursive
+TREE @lab:/copy
+</code></pre>
+<p>For this workflow, the destination is a <strong>container you create first</strong>. ReadyFS copies the source&#39;s descendants into that container, so the result is <code>copy/alpha/one.seq</code>, not <code>copy/source/alpha/one.seq</code>. A single-file COPY is different: its destination argument names the destination file; do not assume desktop-style implicit directory handling.</p>
+<p>By default, COPY stages a file, rereads that staged destination to check its signature, then commits the replacement. The current display names the full source path before transfer and prints the filename with its byte count afterward, for example <code>copied one.seq: 10 bytes</code>. Verification status is explicit: <code>verify: identical</code> or <code>verify: skipped</code>. A recursive transfer concludes with <code>BATCH DONE 8/8 FAIL 0</code>. That eight is the batch&#39;s action count here, not “eight files.”</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/09-copy-complete.png" alt="The real recursive copy reports each verified file and batch done 8/8 fail 0."></p>
+<p><em>Figure 10. Five verified file transfers plus directory actions complete the eight-entry copy plan. Independent hashes and directory-shape checks matched the source.</em></p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/10-copied-tree.png" alt="TREE of COPY shows alpha, beta, beta/deep, and all five source files."></p>
+<p><em>Figure 11. The copied tree has five files and three child directories. SOURCE is still present and unchanged.</em></p>
+<h3 id="step-c-preview-and-execute-the-move">Step C: preview and execute the move</h3>
+<pre><code class="language-text">MKDIR @lab:/moved
+MOVE @lab:/copy @lab:/moved --recursive --whatif
+MV @lab:/copy @lab:/moved -r
+TREE @lab:/moved
+</code></pre>
+<p>MOVE normally means copy and verify, then remove the source entries. With <code>--no-verify</code> / <code>-nv</code>, it copies and commits successfully before removing each source, but skips the destination integrity readback. It can take longer than COPY. It is not a claim of an atomic filesystem rename, and a failure can leave partial progress that should be inspected.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/11-move-preview.png" alt="MOVE what-if reports planned writes and deletes with zero completed changes."></p>
+<p><em>Figure 12. The preview shows both sides of the move. The independent snapshot stayed unchanged.</em></p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/12-move-complete.png" alt="The real move verifies files and reports batch done 11/11 fail 0."></p>
+<p><em>Figure 13. The move&#39;s 11 actions include source-directory cleanup. The completed action total can differ from the eight selected entries. Checks confirmed the MOVED subtree matched SOURCE and COPY had no remaining descendants.</em></p>
+<h3 id="optional-readback-choose-when-to-check">Optional readback: choose when to check</h3>
+<p>Verification remains enabled for every ordinary COPY/MOVE unless that command includes <code>--no-verify</code> or <code>-nv</code>. The setting is per command, including all files in a recursive batch; it is not a sticky session preference. Remove the switch for the next verified transfer.</p>
+<pre><code class="language-text">COPY @lab:/source/readme.seq @lab:/checked.seq
+CP @lab:/source/readme.seq @lab:/fast.seq --no-verify
+COMPARE @lab:/source/readme.seq @lab:/fast.seq
+COPY @lab:/source @lab:/copy -r -nv
+MV @lab:/copy @lab:/moved -r --no-verify
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/18-named-copy-skip-2026-10-12.png" alt="A named copy reports skipped verification and the file’s 38-byte count."></p>
+<p><em>Current capture B · 12 October. The disk-to-host copy above was verified by default. The next host-to-disk copy explicitly skips readback; the following recorded COMPARE checks it independently.</em></p>
+<p>These are alternatives to use with fresh, inspected disposable destinations, not an extra sequence to repeat over the worked example. <code>COMPARE</code> (aliases <code>CM</code> and <code>VERIFY</code>) explicitly reads both files later. For a MOVE, the moved source is gone, so compare against a separate preserved original when available, such as <code>COMPARE @lab:/source/alpha/one.seq @lab:/moved/alpha/one.seq</code>.</p>
+<p>Skipping readback saves an extra destination read. It retains source opening, checked writes, staging, replacement/rollback handling and normal move-source cleanup, but <strong>cannot detect a silently corrupted completed write before committing or removing the moved source</strong>. Source-byte accounting/signature accumulation remains in the transfer loop. Tape destinations already cannot provide immediate readback and report that limitation; the switch does not make tape verifiable. WRITE, APPEND, RENAME and explicit COMPARE keep their own checking behavior.</p>
+<p>The COPY root itself remains empty. The workflow removes that root explicitly later. The original SOURCE was never the move input.</p>
+<h3 id="step-d-preview-deletion-then-remove-only-the-demonstration-copies">Step D: preview deletion, then remove only the demonstration copies</h3>
+<pre><code class="language-text">H RM
+DELETE @lab:/moved --recursive --whatif
+RM @lab:/moved -r -y
+RD @lab:/moved -y
+RMDIR @lab:/copy --yes
+</code></pre>
+<p>The first DELETE plans the descendants. The real recursive DELETE removes files and child directories, then leaves the selected root. <code>RMDIR</code> removes an empty root; it is not a second spelling of recursive DELETE. <code>-y</code> provides explicit confirmation for these deliberate, disposable targets.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/13-delete-preview.png" alt="Delete help and recursive delete preview show zero completed writes and deletes."></p>
+<p><em>Figure 14. The selected target is MOVED. SOURCE and the outer run root are not deletion targets.</em></p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/14-delete-complete.png" alt="Recursive deletion and explicit empty-root removals complete successfully."></p>
+<p><em>Figure 15. The real delete reports completion, then RD/RMDIR remove the empty MOVED and COPY roots. Nothing outside this run&#39;s designated copies was a cleanup target.</em></p>
+<h3 id="step-e-check-the-survivors">Step E: check the survivors</h3>
+<pre><code class="language-text">CD @lab:/source
+DIR
+TREE .
+HEAD readme.seq 2
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/16-source-survives.png" alt="The surviving source tree still contains five files and three nested directories."></p>
+<p><em>Figure 16. The final source tree is intact. Independent snapshots checked names, directory shape, file sizes, and SHA-256 for all five files; the ownership marker was checked separately.</em></p>
+<h3 id="understand-the-reports">Understand the reports</h3>
+<table>
+<thead>
+<tr>
+<th>Report</th>
+<th>Read it as</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>RECURSIVE PLAN F8 SELECTED 8</code></td>
+<td>Eight serialized entries, including directories. Do not read the letter F here as a five-versus-eight file census.</td>
+</tr>
+<tr>
+<td><code>PLAN W8 D0 M0; DONE W0 D0 M0</code></td>
+<td>Planned writes/deletes/metadata actions; completed counts remain zero in what-if.</td>
+</tr>
+<tr>
+<td><code>VERIFY: IDENTICAL</code></td>
+<td>The staged file passed the transfer verification step.</td>
+</tr>
+<tr>
+<td><code>COPIED README.SEQ: 38 BYTES</code></td>
+<td>The transferred source filename and byte count, not disk blocks. Historical captures show the shorter byte-only form.</td>
+</tr>
+<tr>
+<td><code>VERIFY: SKIPPED</code></td>
+<td>This COPY/MOVE explicitly omitted destination readback. It is not an integrity check.</td>
+</tr>
+<tr>
+<td><code>WOULD COPY ALPHA/ONE.SEQ</code></td>
+<td>A selected relative file under the printed roots; a preview only.</td>
+</tr>
+<tr>
+<td><code>BATCH DONE 11/11 FAIL 0</code></td>
+<td>Completed/attempted execution actions and failures. Actions can include folder cleanup.</td>
+</tr>
+<tr>
+<td><code>TREE DONE F5 D3</code></td>
+<td>The walk saw five files and three directories.</td>
+</tr>
+</tbody></table>
+<p>If a move reports <code>COPY OK; DELETE FAIL</code>, treat it as partial progress: inspect both paths before retrying. Do not assume the source was removed. If a batch fails, preserve evidence and inspect what completed; a script or <code>--continue</code> setting is not a transaction-wide undo facility.</p>
+<h2 id="8-create-text-compare-files-and-save-a-session">8. Create text, compare files, and save a session</h2>
+<p>These are <strong>syntax recipes</strong>, not additional screenshot-backed execution claims. Keep write examples inside your own disposable LAB root.</p>
+<h3 id="new-write-and-append-do-different-jobs">NEW, WRITE, and APPEND do different jobs</h3>
+<pre><code class="language-text">NEW @lab:/empty.seq --type seq
+WRITE &quot;@lab:/notes with spaces.seq&quot; &quot;First line&quot; --line --whatif
+WRITE &quot;@lab:/notes with spaces.seq&quot; &quot;First line&quot; --line
+APPEND &quot;@lab:/notes with spaces.seq&quot; &quot;Second line&quot; -l
+HEAD &quot;@lab:/notes with spaces.seq&quot; 2
+</code></pre>
+<p>NEW creates an empty file and refuses an existing destination. WRITE writes the supplied text; replacing a file can prompt. APPEND adds to an existing file and follows the supported append/staging path. Use <code>--type seq</code>, <code>--type prg</code>, or <code>--type usr</code> where creation types are supported; the implementation reads the <strong>option</strong>. Marking text as PRG does not make it executable program code.</p>
+<p><code>--line</code> adds one carriage return after the text. Without it, repeated text operations can concatenate on one line. Text arguments are not a mechanism for pasting arbitrary binary data. <code>-f</code> / <code>--force</code> bypasses supported replacement prompts; it does not verify that you chose the right file.</p>
+<h3 id="single-file-copy-move-rename-and-compare">Single-file copy, move, rename, and compare</h3>
+<pre><code class="language-text">CP @lab:/source/readme.seq @lab:/readme-copy.seq -w
+CP @lab:/source/readme.seq @lab:/readme-copy.seq
+COMPARE @lab:/source/readme.seq @lab:/readme-copy.seq
+MV @lab:/readme-copy.seq @lab:/readme-moved.seq
+RENAME @lab:/readme-moved.seq @lab:/readme-final.seq
+</code></pre>
+<p>COPY keeps the source. MOVE removes its source after the supported copy commits; verification is included unless explicitly skipped. RENAME is a supported same-endpoint rename; it is not a substitute for moving across devices. Ordinary Ultimate host rename currently requires the same parent folder. IEC rename rules depend on the driver. COMPARE / VERIFY checks two file contents; CRC32 provides a checksum you can record separately. Staged transfer verification uses its own bounded signature policy; do not confuse it with the CRC32 command or the external SHA-256 checks used for the filmed demo.</p>
+<h3 id="save-aliases-and-profiles">Save aliases and profiles</h3>
+<pre><code class="language-text">CONFIG SAVE @lab:/readyfs.cfg
+CONFIG LOAD @lab:/readyfs.cfg
+ALIAS
+</code></pre>
+<p>Configuration saves/restores the current directory, aliases and variables marked <code>/P</code>; it does not save command/output history or the contents of your files. With no explicit path, CONFIG uses <code>8:/readyfs.cfg</code>. Saving is a filesystem write and replacement can require confirmation. Loading restores configuration state; it is not a no-change query.</p>
+<h3 id="run-scripts-parameters-previews-and-reliable-execution">RUN scripts: parameters, previews and reliable execution</h3>
+<p><code>RUN script-path [arg1 ... arg9]</code> (short form <code>RU</code>) executes a text script of ReadyFS commands in the <strong>overlay application with working REU and sidecars</strong>. It reads and stages the whole file, closes its input stream, then dispatches commands one at a time. This is ReadyFS command scripting; it does not load and start a C64 PRG or BASIC program.</p>
+<h4 id="what-parameters-belong-where">What parameters belong where?</h4>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RUN invocation</td>
+<td><code>RUN @lab:/INSPECT.SEQ</code></td>
+<td>Script path, optionally followed by up to nine arguments.</td>
+</tr>
+<tr>
+<td>Short invocation</td>
+<td><code>RU 8:/INSPECT</code></td>
+<td>Same command; use the actual disk directory name. IEC names do not automatically gain <code>.SEQ</code>.</td>
+</tr>
+<tr>
+<td>Quoted script path</td>
+<td><code>RUN &quot;@lab:/INSPECT NOTES.SEQ&quot;</code></td>
+<td>One path containing spaces.</td>
+</tr>
+<tr>
+<td>Inside the script</td>
+<td><code>COPY @src:/README.SEQ @dst:/README.SEQ --whatif</code></td>
+<td>COPY receives its source, destination and options.</td>
+</tr>
+<tr>
+<td>Session setup</td>
+<td><code>ALIAS SRC u:/usb1/READYFS_TEST/YOUR_FRESH_RUN/source</code></td>
+<td>An alias supplies a reusable location to script commands.</td>
+</tr>
+</tbody></table>
+<h4 id="dos-style-variables-and-flow-control">DOS-style variables and flow control</h4>
+<p>The current overlay build supports session variables, saved variables, script arguments, branches, counted loops and label subroutines. Type <code>HELP BATCH</code> or <code>HELP SET</code> on the C64 for the compact reference.</p>
+<table>
+<thead>
+<tr>
+<th>Command or expansion</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SET NAME=value</code></td>
+<td>Set a session variable. A plain SET changes an existing saved variable to session-only.</td>
+</tr>
+<tr>
+<td><code>SET /P NAME=value</code></td>
+<td>Mark this variable for the next <code>CONFIG SAVE</code>. <code>/P</code> means persistent in ReadyFS.</td>
+</tr>
+<tr>
+<td><code>SET NAME=</code></td>
+<td>Delete a variable, including its persistent flag.</td>
+</tr>
+<tr>
+<td><code>SET</code> / <code>SET NAME</code></td>
+<td>List variables with <code>/P</code> markers, or show one value.</td>
+</tr>
+<tr>
+<td><code>%NAME%</code> / <code>%ERRORLEVEL%</code></td>
+<td>Expand a variable or the preceding command result. Undefined variables expand to empty text. Names are case-insensitive. ERRORLEVEL is read-only.</td>
+</tr>
+<tr>
+<td><code>%0</code>, <code>%1</code> … <code>%9</code></td>
+<td>Script path and up to nine RUN arguments. Missing arguments expand to empty text.</td>
+</tr>
+<tr>
+<td><code>%%</code></td>
+<td>Insert a literal percent sign.</td>
+</tr>
+<tr>
+<td><code>SET /A N=N+1</code></td>
+<td>Evaluate an unsigned 16-bit integer, or one addition/subtraction. Operands are decimal literals or variable names; undefined operands are zero. Results wrap at 65536. Use <code>SET /P /A</code> to retain the persistent flag.</td>
+</tr>
+<tr>
+<td><code>ECHO text</code> / <code>REM comment</code></td>
+<td>Print text or ignore the whole line. Whole-line <code>#</code> comments also work.</td>
+</tr>
+<tr>
+<td><code>:LABEL</code> / <code>GOTO LABEL</code></td>
+<td>Declare a label or jump to it. Labels are case-insensitive, up to 16 bytes; the first matching label wins.</td>
+</tr>
+<tr>
+<td><code>CALL :LABEL</code></td>
+<td>Run a label subroutine in the same staged script, sharing variables and arguments. Maximum nesting: eight.</td>
+</tr>
+<tr>
+<td><code>EXIT /B [code]</code> / <code>GOTO :EOF</code></td>
+<td>Return from a subroutine, or finish the top-level script. EXIT /B can set a result from 0 to 255. Reaching the physical end of a subroutine also returns.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] ERRORLEVEL n command</code></td>
+<td>Run the command when the preceding result is <strong>greater than or equal to</strong> n, optionally negated.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] DEFINED name command</code></td>
+<td>Test whether a variable exists.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] EXIST path command</code></td>
+<td>Test the filesystem through ReadyFS&#39;s normal path and backend handling. A lookup failure stops the script with result 8.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] &quot;a&quot;==&quot;b&quot; command</code></td>
+<td>Compare exact, case-sensitive strings. A spaced <code>a == b</code> comparison also works.</td>
+</tr>
+<tr>
+<td><code>IF [NOT] n EQU|NEQ|LSS|LEQ|GTR|GEQ n command</code></td>
+<td>Compare unsigned integers from 0 to 65535. Expand variables explicitly, for example <code>IF %N% LSS 3 GOTO LOOP</code>.</td>
+</tr>
+</tbody></table>
+<p>For example, save this with real line breaks and run <code>RUN 8:/COUNT WORLD</code>:</p>
+<pre><code class="language-text">REM ARGUMENTS AND A COUNTED LOOP
+SET WHO=%1
+SET /A N=0
+:LOOP
+SET /A N=N+1
+ECHO HELLO &quot;%WHO%&quot; %N%
+IF %N% LSS 3 GOTO LOOP
+CALL :FINISH
+EXIT /B 0
+:FINISH
+ECHO DONE
+EXIT /B
+</code></pre>
+<p>Expansion happens once before tokenization on each executed line. Quote an expanded value when it must remain one argument: <code>COPY &quot;%SOURCE%&quot; &quot;%TARGET%&quot;</code>. Values are not expanded recursively. To write literal variable references into a script from the interactive prompt, double their percent signs, for example <code>WRITE 8:/SHOW &quot;ECHO %%NAME%%&quot; --line</code>. RUN arguments such as <code>--yes</code> are ordinary <code>%1</code>/<code>%2</code> values; they do not become global confirmation or preview options. Put those options on the intended operation inside the script.</p>
+<p>There are 16 variable slots, with names up to 16 bytes and values up to 127 bytes. Names use letters, underscores and digits after the first character. Variables can be used interactively and inside scripts. <code>CONFIG SAVE</code> writes only variables marked <code>/P</code>, alongside the current directory and aliases, in the new RFC2 format. <code>CONFIG LOAD</code> validates the complete file before applying it, replaces the saved-variable set, and preserves unrelated session variables. A loaded saved variable takes precedence over a session variable with the same name. If the merged table would exceed 16 slots, loading fails without changing the session. Legacy RFC1 configs still load their directory and aliases and leave variables alone. Loading config is explicit after startup.</p>
+<p>RUN remains bounded to a 16 KiB staged script and 255 bytes per expanded line, with at most 12 tokens. Tabs and spaces separate arguments; balanced double quotes can occur within an argument. Excess tokens, unmatched quotes and invalid expansion produce result 4 before command dispatch. Scripts stop after 10,000 executed lines to bound accidental loops; RUN/STOP cancels execution between interpreted lines with result 3. Filesystem operations retain their existing cancellation behavior. ONERROR STOP remains the default; use ONERROR CONTINUE before a command whose failure you intend to inspect with IF ERRORLEVEL. Comments, labels and false IF branches preserve the preceding result; SET and ECHO produce their own result.</p>
+<p>This is a bounded DOS-style language. Loops use labels, arithmetic and conditional GOTO; CALL targets labels in the same file. Nested RUN, external-script CALL, FOR, SETLOCAL, pipes and redirection are not implemented. Scripts share aliases and the current directory, and relative paths resolve against that directory rather than the directory containing the script.</p>
+<h4 id="parameters-arguments-environment-and-local-subroutines">Parameters: arguments, environment and local subroutines</h4>
+<p><code>RUN</code> supplies a new set of up to nine positional arguments for that top-level run. <code>%0</code> is the script path; <code>%1</code> through <code>%9</code> are its inputs. Missing arguments become empty text. Use quotes to keep a path or value containing spaces together:</p>
+<pre><code class="language-text">SET SOURCE=@lab:/source/readme.seq
+SET TARGET=@lab:/saved notes.seq
+RUN @lab:/BACKUP.SEQ &quot;%SOURCE%&quot; &quot;%TARGET%&quot; PREVIEW
+</code></pre>
+<p>Inside BACKUP.SEQ, <code>%1</code> is the source, <code>%2</code> the destination, and <code>%3</code> the mode. The outer quotes group an argument and are not part of its value; quote it again when expanding it into a command. <code>$1</code>, <code>%*</code>, SHIFT and <code>%~1</code> modifiers are not implemented. RUN options are not special: <code>RUN file.seq --yes</code> passes the ordinary string <code>--yes</code> as <code>%1</code>; confirmation must be on the intended filesystem command.</p>
+<p>Named variables are session-wide. A script can read variables set at the prompt, and its changes remain after it returns. Aliases and the current directory also remain shared. There are no local scopes or automatic save/restore of working variables.</p>
+<p><code>CALL :LABEL</code> runs a subroutine in the <strong>same file</strong>. It accepts only the label: <code>CALL :COPYONE source destination</code> is not implemented. The routine sees the original RUN arguments and the shared named environment. Pass different inputs by setting named variables before each call:</p>
+<pre><code class="language-text">SET WHO=ALPHA
+CALL :GREET
+SET WHO=BETA
+CALL :GREET
+EXIT /B 0
+:GREET
+ECHO HELLO %WHO%
+GOTO :EOF
+</code></pre>
+<p>The two calls print ALPHA and BETA. <code>GOTO :EOF</code> returns to the caller; <code>EXIT /B code</code> also supplies a result. At top level both end the script. Calls can nest eight levels deep, but each level still shares named variables and the original RUN arguments. Keep the top-level <code>EXIT /B</code> before routine definitions to prevent execution from falling through into a routine.</p>
+<p><strong>Separate script files cannot call each other yet.</strong> Nested RUN and external-script CALL are unavailable. Two scripts run sequentially from the interactive prompt can exchange named variables. This differs from DOS 6.2, where <code>CALL OTHER.BAT %1 %2</code> calls a separate file with its own positional arguments and returns when that file ends.</p>
+<h4 id="worked-example-preview-and-verify-a-single-file-backup">Worked example: preview and verify a single-file backup</h4>
+<p>This is the one downloadable example used in the appended physical C64 Ultimate video chapter. It takes source, destination and PREVIEW/APPLY arguments, refuses an existing destination on APPLY, calls a local copy/compare routine, and increments a session counter only after success. It deliberately does not replace an existing file. Create the destination&#39;s parent folder first.</p>
+<p><a href="examples/BACKUP.SEQ">Download BACKUP.SEQ</a>. The download contains uppercase ASCII command and option bytes and real CR line endings, matching the physical recording fixture. Host-created script options must also use uppercase bytes (for example --WHATIF); do not rely on lowercase ASCII option spelling being normalized like interactive keyboard input.</p>
+<pre><code class="language-text">REM BACKUP SOURCE DEST PREVIEW OR APPLY
+ONERROR STOP
+SET &quot;SRC=%1&quot;
+SET &quot;DST=%2&quot;
+IF &quot;%SRC%&quot;==&quot;&quot; GOTO USAGE
+IF &quot;%DST%&quot;==&quot;&quot; GOTO USAGE
+IF NOT EXIST &quot;%SRC%&quot; GOTO MISSING
+IF &quot;%3&quot;==&quot;PREVIEW&quot; GOTO PREVIEW
+IF NOT &quot;%3&quot;==&quot;APPLY&quot; GOTO USAGE
+IF EXIST &quot;%DST%&quot; GOTO EXISTS
+CALL :COPYONE
+IF NOT DEFINED BACKUPS SET BACKUPS=0
+SET /A BACKUPS=BACKUPS+1
+ECHO BACKUPS THIS SESSION: %BACKUPS%
+EXIT /B 0
+:COPYONE
+COPY &quot;%SRC%&quot; &quot;%DST%&quot;
+COMPARE &quot;%SRC%&quot; &quot;%DST%&quot;
+ECHO BACKUP VERIFIED
+EXIT /B 0
+:PREVIEW
+COPY &quot;%SRC%&quot; &quot;%DST%&quot; --WHATIF
+EXIT /B
+:EXISTS
+ECHO DEST EXISTS - CHOOSE NEW NAME
+EXIT /B 6
+:MISSING
+ECHO SOURCE NOT FOUND: &quot;%SRC%&quot;
+EXIT /B 5
+:USAGE
+ECHO RUN BACKUP SOURCE DEST PREVIEW
+ECHO RUN BACKUP SOURCE DEST APPLY
+EXIT /B 4
+</code></pre>
+<p>With LAB pointing at your own fresh test folder containing <code>source/readme.seq</code> and the downloaded script:</p>
+<pre><code class="language-text">SET BACKUPS=0
+TYPE @lab:/BACKUP.SEQ
+RUN @lab:/BACKUP.SEQ @lab:/source/readme.seq @lab:/saved.seq PREVIEW
+RUN @lab:/BACKUP.SEQ @lab:/source/readme.seq @lab:/saved.seq APPLY
+TYPE @lab:/saved.seq
+ECHO COMPLETED BACKUPS: %BACKUPS%
+</code></pre>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/batch-script.png" alt="The actual BACKUP.SEQ argument checks and local CALL, read through C64 output history"></p>
+<p><em>Physical C64 Ultimate: TYPE reads the real file; F1 reveals the earlier lines after streaming.</em></p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/batch-backup-result.png" alt="Parameterized APPLY copies and compares the backup, then reports count one and result zero"></p>
+<p><em>The actual APPLY run reports both verification checks, the shared counter and RUN result 0.</em></p>
+<p>TYPE streams the file onto the display. Use F1 to enter output history and move to earlier lines, F3 for newer lines, and RUN/STOP to return to live input. The video reads both halves this way.</p>
+<p>The preview writes nothing and does not increment BACKUPS. APPLY copies and compares, then reports <code>BACKUPS THIS SESSION: 1</code> and result 0. Running APPLY again with the same destination prints <code>DEST EXISTS - CHOOSE NEW NAME</code>, returns 6 and leaves the count at 1. Missing source returns 5; absent arguments or a mode other than uppercase PREVIEW/APPLY return 4. An empty destination is checked before any write. The script uses three named variable slots: SRC, DST and BACKUPS.</p>
+<p>STOP is deliberate: a failed copy or comparison terminates the whole run, including from inside CALL. Read the filesystem reports as well as the final RC; legacy result mapping is not complete and COPY/COMPARE are not a transaction. The preview is not a queued operation or proof of later write capability. BACKUPS counts successful script runs, not every copy ever made, and its arithmetic wraps after 65535. Avoid reusing these working variable names for unrelated session values.</p>
+<h4 id="more-examples-conditions-loops-results-and-persistence">More examples: conditions, loops, results and persistence</h4>
+<p>These short examples supplement the recorded backup script. They are reference recipes, not claims that every branch is demonstrated in the video.</p>
+<p><strong>Comments, missing parameters and literal percent signs</strong></p>
+<pre><code class="language-text">REM FULL-LINE DOS-STYLE COMMENT
+## ANOTHER FULL-LINE COMMENT
+ECHO SCRIPT: %0
+IF &quot;%1&quot;==&quot;&quot; GOTO USAGE
+ECHO FIRST ARGUMENT: &quot;%1&quot;
+ECHO LITERAL PERCENT: 100%%
+EXIT /B 0
+:USAGE
+ECHO PLEASE SUPPLY ONE ARGUMENT
+EXIT /B 4
+</code></pre>
+<p><strong>String, defined-variable and existence conditions</strong></p>
+<pre><code class="language-text">IF NOT DEFINED MODE SET MODE=PREVIEW
+IF &quot;%MODE%&quot;==&quot;PREVIEW&quot; ECHO PREVIEW SELECTED
+IF NOT &quot;%MODE%&quot;==&quot;APPLY&quot; ECHO WRITES DISABLED
+IF EXIST &quot;@lab:/source/readme.seq&quot; ECHO SOURCE PRESENT
+IF NOT EXIST &quot;@lab:/missing.seq&quot; ECHO NO SUCH FILE
+IF DEFINED MODE IF NOT &quot;%MODE%&quot;==&quot;APPLY&quot; ECHO NO WRITE MODE
+</code></pre>
+<p>The last line combines two tests by nesting IF. OR-style decisions need separate branches. Each IF executes a single command, which can itself be IF, GOTO, CALL or EXIT. There are no ELSE blocks. String comparisons are case-sensitive. IF EXIST performs a normal path lookup; an I/O lookup error stops the run with 8 rather than being treated as an absent file.</p>
+<p><strong>A counted loop and every numeric comparison</strong></p>
+<pre><code class="language-text">SET /A N=0
+:LOOP
+SET /A N=N+1
+ECHO PASS %N%
+IF %N% LSS 3 GOTO LOOP
+IF %N% EQU 3 ECHO EQUAL TO THREE
+IF %N% NEQ 0 ECHO NOT ZERO
+IF %N% LEQ 3 ECHO AT MOST THREE
+IF %N% GTR 2 ECHO GREATER THAN TWO
+IF %N% GEQ 3 ECHO AT LEAST THREE
+IF NOT %N% EQU 4 ECHO NOT FOUR
+SET /A N=N-1
+ECHO AFTER SUBTRACTION: %N%
+EXIT /B 0
+</code></pre>
+<p>Numeric IF operands must be unsigned decimal values from 0 to 65535; expand variables explicitly. Arithmetic can assign a literal or variable, or perform one addition/subtraction; an undefined arithmetic variable is zero. There is no multiplication, division, signed arithmetic or expression precedence. An invalid numeric value causes result 4, not a false test. For example, <code>IF %MAXTRIES% LSS 1</code> cannot validate that MAXTRIES is numeric before checking its range. Every revisited line counts toward the 10,000-line execution limit.</p>
+<p><strong>Inspect and preserve a failure result</strong></p>
+<pre><code class="language-text">ONERROR CONTINUE
+NOTACOMMAND
+EXPECT RC 1
+SET LAST=%ERRORLEVEL%
+ECHO SAVED RESULT: %LAST%
+IF %LAST% EQU 1 ECHO EXPECTED UNKNOWN COMMAND
+IF %LAST% NEQ 1 EXIT /B 9
+ONERROR STOP
+EXIT /B 0
+</code></pre>
+<p>NOTACOMMAND deliberately returns 1. Successful EXPECT leaves that result available for capture. SET captures the preceding result before replacing it with SET&#39;s own result; subsequent ECHO cannot change LAST. <code>IF ERRORLEVEL 1</code> means result &gt;= 1, not equality; <code>IF NOT ERRORLEVEL 1</code> means result 0. Test it immediately after the operation, or capture <code>%ERRORLEVEL%</code> before another command changes it. STOP is the default and must be changed <strong>before</strong> an expected failure. EXPECT accepts only one-digit codes 0–9; EXIT /B can return 0–255.</p>
+<p><strong>Save only selected variables, then load them explicitly</strong></p>
+<pre><code class="language-text">SET PRIVATE=THIS SESSION
+SET /P SAVED=KEEP ME
+SET /P /A TOTAL=TOTAL+1
+CONFIG SAVE @lab:/batch-config.seq
+SET SAVED=CHANGED
+CONFIG LOAD @lab:/batch-config.seq
+ECHO RESTORED: %SAVED%
+ECHO SESSION: %PRIVATE%
+SET SAVED
+SET
+SET PRIVATE=
+</code></pre>
+<p>Use a new config filename for the save. SAVED and TOTAL are marked persistent; PRIVATE is not. Loading restores saved values and preserves unrelated session variables. Plain <code>SET SAVED=CHANGED</code> clears its persistent flag until LOAD restores the saved record. <code>SET PRIVATE=</code> deletes that variable. CONFIG does not load automatically after launch. The table has only 16 slots, so a load whose merged variables would overflow it fails without changing the environment.</p>
+<h4 id="compared-with-ms-dos-62-622">Compared with MS-DOS 6.2 / 6.22</h4>
+<p>The target here is classic COMMAND.COM batch, not Windows cmd.exe. Both languages offer <code>%1</code>–<code>%9</code>, <code>%NAME%</code>, SET, REM, ECHO, labels/GOTO, NOT, IF EXIST, case-sensitive string equality and threshold IF ERRORLEVEL.</p>
+<table>
+<thead>
+<tr>
+<th>Classic DOS facility</th>
+<th>ReadyFS boundary</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>CALL OTHER.BAT arguments</code></td>
+<td>No external-file calls. ReadyFS instead adds same-file <code>CALL :LABEL</code> with shared inputs.</td>
+</tr>
+<tr>
+<td><code>SHIFT</code></td>
+<td>No parameter shifting and no access to arguments beyond nine.</td>
+</tr>
+<tr>
+<td><code>FOR %%F IN (*.SEQ) DO command</code></td>
+<td>No iteration over filename selections or literal lists. Counter loops use IF/GOTO.</td>
+</tr>
+<tr>
+<td>CHOICE / PAUSE</td>
+<td>No batch menu/keypress command or pause command.</td>
+</tr>
+<tr>
+<td>Pipes and input/output redirection</td>
+<td>No `</td>
+</tr>
+<tr>
+<td><code>@ECHO OFF</code>, <code>@command</code>, <code>ECHO.</code></td>
+<td>No DOS command-echo control syntax; ECHO prints text (bare ECHO prints a blank line).</td>
+</tr>
+</tbody></table>
+<p>ELSE/parenthesized command blocks, IF /I, SETLOCAL, <code>%*</code>, <code>%~</code> modifiers, delayed expansion, FOR /F and SET /A were <strong>not standard DOS 6.2 batch features</strong>. Their absence is not a gap against this target. ReadyFS already adds numeric IF comparisons, IF DEFINED, simple SET /A arithmetic, local label calls, EXIT /B result codes and explicitly saved variables.</p>
+<p>For historical syntax, see Microsoft&#39;s archived <a href="https://www.infania.net/misc/dos622help/call.html">DOS CALL</a>, <a href="https://www.infania.net/misc/dos622help/shift.html">SHIFT</a>, <a href="https://www.infania.net/misc/dos622help/for.html">FOR</a>, <a href="https://www.infania.net/misc/dos622help/if.html">IF</a> and <a href="https://www.infania.net/misc/dos622help/set.html">SET</a> help.</p>
+<p>The five original recipes below remain reference examples. The parameterized backup example above is the one demonstrated in the appended batch video chapter; the other recipes are not additional recorded steps. Set <code>@lab</code>, <code>@src</code> and <code>@dst</code> to your own intended locations before use. Mutation examples belong in a fresh disposable test folder.</p>
+<h4 id="example-1-a-small-read-only-script">Example 1 — a small read-only script</h4>
+<p>Save this as <code>INSPECT.SEQ</code>, with real line breaks:</p>
+<pre><code class="language-text">## READ-ONLY INSPECTION
+ONERROR STOP
+PWD
+EXPECT RC 0
+MATCH &quot;*&quot; &quot;ABC&quot;
+EXPECT RC 0
+HEAD @src:/README.SEQ 2
+EXPECT RC 0
+</code></pre>
+<p>Set its source location and run it:</p>
+<pre><code class="language-text">ALIAS LAB u:/usb1/READYFS_TEST/YOUR_FRESH_RUN
+ALIAS SRC @lab:/source
+RUN @lab:/INSPECT.SEQ
+</code></pre>
+<p><code>HEAD</code> receives two parameters: a filename and the number of lines to display. <code>MATCH</code> receives a pattern and a candidate string. Successful assertions print <code>EXPECT RC OK</code>. A complete successful run ends with a <code>RUN DONE ... RC 0</code> summary. The line/command totals depend on comments, directives and line endings; ordinary commands count separately from <code>ONERROR</code> and <code>EXPECT</code>.</p>
+<p>You can create a tiny script directly in ReadyFS, using a new filename:</p>
+<pre><code class="language-text">WRITE @lab:/CHECK.SEQ &quot;ONERROR STOP&quot; --LINE
+APPEND @lab:/CHECK.SEQ &quot;PWD&quot; --LINE
+APPEND @lab:/CHECK.SEQ &quot;EXPECT RC 0&quot; --LINE
+HEAD @lab:/CHECK.SEQ 10
+RUN @lab:/CHECK.SEQ
+</code></pre>
+<p>Each <code>--line</code> writes a real carriage return. Typing <code>\n</code> in a quoted string does not create a new script line. Existing-file replacement may prompt; use a fresh name unless replacement is intentional.</p>
+<h4 id="example-2-reuse-one-script-with-different-locations">Example 2 — reuse one script with different locations</h4>
+<p>Save this as <code>PREVIEW.SEQ</code>:</p>
+<pre><code class="language-text">ONERROR STOP
+COPY @src:/README.SEQ @dst:/README.SEQ --WHATIF
+EXPECT RC 0
+COPY @src:/ALPHA/ONE.SEQ @dst:/ONE.SEQ --WHATIF
+EXPECT RC 0
+</code></pre>
+<p>First location pair:</p>
+<pre><code class="language-text">ALIAS SRC @lab:/source
+ALIAS DST @lab:/first-copy
+RUN @lab:/PREVIEW.SEQ
+</code></pre>
+<p>Second location pair, same script:</p>
+<pre><code class="language-text">AL DST @lab:/second-copy
+RU @lab:/PREVIEW.SEQ
+</code></pre>
+<p>The script resolves the aliases when each command runs. These previews do not create destination folders or prove that source files exist, that media is writable, or that the backend supports the eventual copy. Inspect the paths separately before executing real writes. For a single-file COPY, the destination names a <strong>file</strong>; a recursive COPY uses an existing destination <strong>container</strong>.</p>
+<h4 id="example-3-preview-a-tree-then-execute-a-separate-copy-script">Example 3 — preview a tree, then execute a separate copy script</h4>
+<p>First create <code>PLAN.SEQ</code>:</p>
+<pre><code class="language-text">ONERROR STOP
+COPY @src:/ @dst:/ --RECURSIVE --WHATIF
+EXPECT RC 0
+</code></pre>
+<p>Set <code>@src</code> to the source directory and <code>@dst</code> to an intended new container, then run <code>RUN @lab:/PLAN.SEQ</code>. Read the named selection. A preview performs no mutation and is not a queued job.</p>
+<p>For the real operation, prepare <code>COPYTREE.SEQ</code> separately:</p>
+<pre><code class="language-text">ONERROR STOP
+MKDIR @dst:/
+EXPECT RC 0
+COPY @src:/ @dst:/ --RECURSIVE
+EXPECT RC 0
+TREE @dst:/
+EXPECT RC 0
+</code></pre>
+<p>Then execute it with <code>RUN @lab:/COPYTREE.SEQ</code>. The destination must be new for this recipe; MKDIR failing on an existing folder is a reason to stop and inspect it. Copy includes verification by default. <code>ONERROR STOP</code> stops after a nonzero command result; it does not roll back an earlier successful MKDIR or partially completed copy. Check the COPY reports, batch failure count and resulting tree as well as the script RC.</p>
+<p>For a deliberately chosen copy without destination readback, change the COPY line to:</p>
+<pre><code class="language-text">CP @src:/ @dst:/ -r -nv
+</code></pre>
+<p><code>--no-verify</code> / <code>-nv</code> is a COPY/MOVE option, not a RUN option. You can later run <code>COMPARE @src:/README.SEQ @dst:/README.SEQ</code> for a specific file. One comparison does not verify an entire tree.</p>
+<h4 id="example-4-supply-explicit-confirmation-inside-the-script">Example 4 — supply explicit confirmation inside the script</h4>
+<p>RUN cannot answer interactive confirmation prompts. An operation that would ask returns <code>BATCH NEEDS --YES</code> and script result 3 instead.</p>
+<table>
+<thead>
+<tr>
+<th>Intended script operation</th>
+<th>Parameters on that script line</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Preview deletion</td>
+<td><code>DELETE @lab:/scratch --recursive --whatif</code></td>
+</tr>
+<tr>
+<td>Delete only approved disposable descendants</td>
+<td><code>DELETE @lab:/scratch --recursive --yes</code></td>
+</tr>
+<tr>
+<td>Remove the resulting empty root</td>
+<td><code>RMDIR @lab:/scratch --yes</code></td>
+</tr>
+<tr>
+<td>Intentionally replace one destination file</td>
+<td><code>COPY @src:/README.SEQ @dst:/README.SEQ --force</code></td>
+</tr>
+<tr>
+<td>Ordinary fresh copy</td>
+<td><code>COPY @src:/README.SEQ @dst:/README.SEQ</code> — no replacement approval is needed if it is genuinely new.</td>
+</tr>
+</tbody></table>
+<p>Inspect each target before adding confirmation. <code>--force</code> authorizes supported replacement; it does not add a missing backend capability. Current confirmation lookup also accepts <code>--yes</code> where force is checked, so it can authorize replacement too. Use the option that expresses your intention rather than adding both to every line. Native-pattern mutations additionally require <code>--apply</code> on that command; formatting has separate disposable-media requirements. There is no universal “make this script succeed” switch.</p>
+<h4 id="example-5-expect-an-error-deliberately-then-continue">Example 5 — expect an error deliberately, then continue</h4>
+<pre><code class="language-text">ONERROR CONTINUE
+BOGUS
+EXPECT RC 1
+ONERROR STOP
+PWD
+EXPECT RC 0
+</code></pre>
+<p>This intentionally dispatches an unknown command, checks its code, then restores normal stopping. <code>ONERROR CONTINUE</code> must appear <strong>before</strong> a command whose nonzero result you want to examine; with STOP, execution ends before the following EXPECT can run.</p>
+<p>A mismatched EXPECT sets result 3. Under CONTINUE, the next ordinary command may overwrite that result, so a final <code>RC 0</code> does <strong>not</strong> prove every earlier command/assertion passed. Read all mismatch/error lines. An EXPECT that successfully checks a nonzero code does not reset that code to zero. RUN&#39;s printed RC is its latest stored result, not an accumulated error count. That final result is also available to STATUS and <code>%ERRORLEVEL%</code> after RUN.</p>
+<h4 id="result-codes-and-current-limits">Result codes and current limits</h4>
+<table>
+<thead>
+<tr>
+<th align="right">RC</th>
+<th>Meaning</th>
+<th align="right">RC</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0</td>
+<td>OK</td>
+<td align="right">6</td>
+<td>Destination conflict</td>
+</tr>
+<tr>
+<td align="right">1</td>
+<td>Unknown command</td>
+<td align="right">7</td>
+<td>Unsupported operation</td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td>Unavailable feature</td>
+<td align="right">8</td>
+<td>I/O failure</td>
+</tr>
+<tr>
+<td align="right">3</td>
+<td>Interaction denied / script assertion error</td>
+<td align="right">9</td>
+<td>Verification failure</td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td>Usage error</td>
+<td align="right">10</td>
+<td>Partial operation</td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td>Not found</td>
+<td align="right">11</td>
+<td>Internal failure</td>
+</tr>
+</tbody></table>
+<p><code>EXPECT RC N</code> currently accepts <strong>one digit, 0–9 only</strong>, even though result codes 10 and 11 exist. It checks the most recent command result, including SET/ECHO, and needs a preceding result; blank lines, comments and policy directives do not supply a new command result. Typed-result conversion is still incomplete across legacy handlers, so code 0 alone is not proof of all filesystem postconditions.</p>
+<p>Use plain C64/PETSCII-compatible text, uppercase command fixtures and real CR or LF line breaks. Avoid smart quotes, a UTF-8 BOM and host lowercase ASCII command files. CRLF is readable but its two terminators can increase reported line totals. The line total counts executed lines, including revisits in loops; the command total counts commands dispatched to the filesystem shell rather than interpreter builtins.</p>
+<h4 id="if-the-script-did-not-do-what-you-expected">If the script did not do what you expected</h4>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check or action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>RUN FILE [ARGS]</code> usage text</td>
+<td>Supply a script path and at most nine arguments; quote paths/arguments with spaces. Put operation options inside the script.</td>
+</tr>
+<tr>
+<td>File not found</td>
+<td>Use the actual directory entry: <code>DIR 8:/</code> then <code>RUN 8:/INSPECT</code> if the IEC name is INSPECT. Check aliases and the current directory.</td>
+</tr>
+<tr>
+<td><code>RUN NEEDS OVERLAY</code>, <code>BATCH OFF</code>, or REU trouble</td>
+<td>Use the overlay application with its matching sidecars and working REU.</td>
+</tr>
+<tr>
+<td><code>SCRIPT TOO LARGE</code> or <code>LINE TOO LONG</code></td>
+<td>Split into separate top-level runs or shorten lines. RUN cannot call another RUN.</td>
+</tr>
+<tr>
+<td>Several commands appear on one line</td>
+<td>Create real CR/LF separators; WRITE/APPEND <code>--line</code> adds CR.</td>
+</tr>
+<tr>
+<td>Unknown command from a host-created file</td>
+<td>Check C64-compatible text encoding, uppercase command bytes, BOM, smart quotes and tabs.</td>
+</tr>
+<tr>
+<td><code>BATCH NEEDS --YES</code> / RC 3</td>
+<td>Identify the specific operation that needs approval; put its explicit confirmation on that line.</td>
+</tr>
+<tr>
+<td>Only a plan appears</td>
+<td>Remove <code>--whatif</code> / <code>--dry-run</code> / <code>-w</code> from the intended operation in a separately reviewed execution script.</td>
+</tr>
+<tr>
+<td><code>EXPECT RC MISMATCH</code></td>
+<td>Read the preceding command&#39;s output and use the expected typed code; do not hide it with CONTINUE.</td>
+</tr>
+<tr>
+<td><code>BATCH FLOW ERROR</code> / RC 4</td>
+<td>Check label spelling, CALL depth, IF syntax and EXIT /B result range.</td>
+</tr>
+<tr>
+<td><code>BATCH STEP LIMIT</code> / RC 3</td>
+<td>Inspect loop termination; execution exceeded 10,000 lines.</td>
+</tr>
+<tr>
+<td>Script stops early</td>
+<td>STOP is the default. Inspect its first failure, complete arguments, device capability and destination state.</td>
+</tr>
+<tr>
+<td>Final RC 0 but earlier errors</td>
+<td>CONTINUE may have allowed a later success to replace an earlier error; inspect the entire output and filesystem results.</td>
+</tr>
+</tbody></table>
+<h2 id="9-devices-images-and-advanced-operations">9. Devices, images, and advanced operations</h2>
+<h3 id="learn-what-the-endpoint-can-do">Learn what the endpoint can do</h3>
+<pre><code class="language-text">DRIVES
+PROBE UCI
+PROBE UDOS
+PROBE SOFTIEC
+PROBE IEC 8:
+PROFILE IEC 8:
+CAPABILITIES u:/usb1
+</code></pre>
+<p>DRIVES discovers responding IEC units and reports Ultimate/SoftwareIEC/tape endpoints. PROBE checks an interface or detects a specific IEC driver&#39;s identity. PROFILE queries the saved detected profile, optionally for an operation such as <code>PROFILE IEC 11: MOUNT</code>. CAPABILITIES prints the endpoint model, size units, path/leaf limits, and whether support is provisional. A broad <code>images</code> capability does not remove the current direct <code>!/</code> access limitation.</p>
+<h3 id="native-translation-and-native-patterns">Native translation and native patterns</h3>
+<p>NATIVE is a <strong>translation diagnostic</strong>. For example:</p>
+<pre><code class="language-text">NATIVE OPEN 11.3:/games/HELLO.PRG
+NATIVE RENAME 11.3:/games/OLD.SEQ 11.3:/games/NEW.SEQ
+</code></pre>
+<p>It shows the backend command spelling; it does not perform the named write or rename. Its operation words are OPEN, DIR, SCRATCH, MKDIR, RMDIR, RENAME, MOUNT, and UNMOUNT. This is useful for understanding why a parsed path may need a particular driver.</p>
+<p><code>--native-pattern</code> is separate from normal shell filtering. It permits a supported IEC backend to enumerate a native pattern as a read-only directory query. It must never become a wildcard scratch/write command. The execution plan freezes the exact returned names.</p>
+<pre><code class="language-text">DIR 8:/RF* --native-pattern
+COPY 8:/RF* 9:/ --native-pattern --whatif
+</code></pre>
+<p>The second example is a <strong>preview syntax example</strong>, not permission to modify any mounted media. A real native-pattern mutation needs explicit <code>--apply</code>, plus ordinary conflict/confirmation checks and disposable targets. Native multi-file IEC destinations must use the supported flat-root form. Unsupported directory or REL selections can reject the entire plan. Ordinary recursive host COPY does not require <code>--apply</code>; this extra gate is specific to native-pattern execution.</p>
+<h3 id="mounted-iec-images-and-disk-swap">Mounted IEC images and disk swap</h3>
+<pre><code class="language-text">MOUNT u:/usb1/images/example.d81 8: --whatif
+DISMOUNT 8: --whatif
+SWAP 8: --whatif
+</code></pre>
+<p>These are preview examples for an Ultimate image mounted on an IEC drive. Executing MOUNT changes its media; DISMOUNT detaches that media. SoftwareIEC folder mappings have a separate section below. <strong>SWAP currently takes only <code>DRIVE:</code> and advances the firmware disk-swap list</strong>; it does not take an image path. Do not replace the lab disk on device 8 casually while using the application.</p>
+<h3 id="softwareiec-folder-mappings">SoftwareIEC folder mappings</h3>
+<p>These preview commands describe a host-folder mapping to SoftwareIEC logical partition 3, followed by removal of that mapping:</p>
+<pre><code class="language-text">MOUNT u:/usb1/READYFS_TEST/YOUR_FRESH_RUN s3: --name LAB --whatif
+DISMOUNT s3: --whatif
+</code></pre>
+<p>Execution requires firmware support for map/unmap; the tested Ultimate firmware 3.14 lacks those commands. Existing mappings can still be used for the verified file transfers. SoftwareIEC is provisional and firmware-sensitive. Some firmware versions have incomplete directory enumeration, folder-operation restrictions, or limits when a parent contains many host entries. Prefer dedicated shallow test roots. See the <a href="READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC guide</a>.</p>
+<h3 id="native-sd2iec-configuration-and-image-views">Native SD2IEC configuration and image views</h3>
+<p>Use <code>PROBE IEC 10:</code> for a native SD2IEC and <code>IEC 10: PARTITIONS</code> to discover its partitions. <code>10.1:/</code> is the native device/partition path. Native image MOUNT changes that partition&#39;s media view; it is different from the SoftwareIEC host-folder mapping above. The <a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a> and <a href="READYFS_IEC_CONFIGURATION.html">native configuration reference</a> cover these operations and their limits.</p>
+<h3 id="sequential-tape">Sequential tape</h3>
+<p>Tape uses <code>t:/NAME</code> with names up to sixteen bytes and sequential SEQ read/write behavior; do not expect directory browsing, deletion, rename, append, or move.</p>
+<h3 id="formatting-is-a-separate-deliberate-operation">Formatting is a separate, deliberate operation</h3>
+<p>FORMAT is exposed as <code>FORMAT path --label LABEL --id ID</code> with a supported backend. Real formatting additionally requires <code>--disposable</code> and <code>--apply</code>; <code>--whatif</code> is the preview path. It destroys media contents and belongs only in the dedicated disposable-media workflow. This guide does not execute formatting or ask you to format the lab disk. Check <code>HELP FORMAT</code> and the repo safety documentation before planning that separate task.</p>
+<h2 id="10-complete-command-reference">10. Complete command reference</h2>
+<p>Square brackets mean optional input in this reference; do not type the brackets. <code>PATH</code>, <code>SOURCE</code>, <code>DEST</code>, and uppercase placeholders describe values you supply. Shell commands below have exact registered names; short names have the same validation and behavior. The separate scripting table lists interpreter builtins. <code>PRG</code>, <code>SEQ</code>, and <code>USR</code> are type words, not additional executable shell commands.</p>
+<h3 id="orientation-and-session">Orientation and session</h3>
+<table>
+<thead>
+<tr>
+<th>Command and aliases</th>
+<th>Syntax / example</th>
+<th>Use and detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>HELP</strong> · H</td>
+<td><code>HELP [command]</code> · <code>H RM</code></td>
+<td>List families or show a command topic; aliases work as topics.</td>
+</tr>
+<tr>
+<td><strong>EXIT</strong> · Q, QUIT</td>
+<td><code>EXIT</code></td>
+<td>Leave ReadyFS for BASIC.</td>
+</tr>
+<tr>
+<td><strong>PWD</strong> · PW</td>
+<td><code>PWD</code></td>
+<td>Print the canonical current location.</td>
+</tr>
+<tr>
+<td><strong>CD</strong></td>
+<td><code>CD [path]</code> · <code>CD ..</code></td>
+<td>Store a resolved current path; without an argument, print it. Verify access separately.</td>
+</tr>
+<tr>
+<td><strong>HISTORY</strong> · HI</td>
+<td><code>HISTORY</code></td>
+<td>List the session&#39;s recalled commands; Up/Down performs interactive recall.</td>
+</tr>
+<tr>
+<td><strong>CLEAR</strong> · CL, CLS</td>
+<td><code>CLEAR</code></td>
+<td>Clear the live screen while retaining output scrollback.</td>
+</tr>
+<tr>
+<td><strong>STATUS</strong> · SS</td>
+<td><code>STATUS</code></td>
+<td>Show the previous typed result and session information; read operation output too.</td>
+</tr>
+<tr>
+<td><strong>ALIAS</strong> · AL</td>
+<td><code>ALIAS [name path]</code> · <code>AL LAB u:/usb1/test</code></td>
+<td>List bookmarks or set an absolute root. Does not create the folder.</td>
+</tr>
+<tr>
+<td><strong>UNALIAS</strong> · UA</td>
+<td><code>UNALIAS LAB</code></td>
+<td>Remove one saved bookmark. Does not delete its folder.</td>
+</tr>
+<tr>
+<td><strong>CONFIG</strong> · CF</td>
+<td><code>CONFIG SAVE [path]</code> / <code>CONFIG LOAD [path]</code></td>
+<td>Save/restore directory, aliases and persistent variables; default path is <code>8:/readyfs.cfg</code>.</td>
+</tr>
+<tr>
+<td><strong>RUN</strong> · RU</td>
+<td><code>RUN @lab:/inspect.seq</code></td>
+<td>One script path plus up to nine arguments; <code>%NAME%</code>, SET, IF/GOTO and CALL provide bounded scripting. HELP BATCH lists syntax. No nested RUN or batch prompts.</td>
+</tr>
+<tr>
+<td><strong>TEST</strong> · TS</td>
+<td><code>TEST</code></td>
+<td>Run built-in core self-tests; not a destructive storage test suite.</td>
+</tr>
+</tbody></table>
+<h3 id="scripting-builtins">Scripting builtins</h3>
+<p>The complete examples and expansion rules are in the RUN section. SET and ECHO also work at the interactive prompt; flow commands and ONERROR/EXPECT belong inside RUN scripts.</p>
+<table>
+<thead>
+<tr>
+<th>Builtin</th>
+<th>Syntax / example</th>
+<th>Use and detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SET</strong></td>
+<td><code>SET NAME=value</code> / <code>SET NAME=</code> / <code>SET [NAME]</code></td>
+<td>Set, delete, show one variable, or list variables.</td>
+</tr>
+<tr>
+<td><strong>SET /P</strong></td>
+<td><code>SET /P NAME=value</code></td>
+<td>Include this value in CONFIG SAVE. Persistence, not keyboard input.</td>
+</tr>
+<tr>
+<td><strong>SET /A</strong></td>
+<td><code>SET /A N=N+1</code> / <code>SET /P /A N=N+1</code></td>
+<td>Unsigned 16-bit assignment or one addition/subtraction.</td>
+</tr>
+<tr>
+<td><strong>ECHO</strong></td>
+<td><code>ECHO HELLO %1 %NAME%</code></td>
+<td>Print expanded text; bare ECHO prints a blank line.</td>
+</tr>
+<tr>
+<td><strong>REM / #</strong></td>
+<td><code>REM COMMENT</code> / <code># COMMENT</code></td>
+<td>Whole-line comments, with no variable expansion.</td>
+</tr>
+<tr>
+<td><strong>IF</strong></td>
+<td><code>IF [NOT] condition command</code></td>
+<td>ERRORLEVEL threshold, DEFINED, EXIST, string equality or unsigned numeric comparison.</td>
+</tr>
+<tr>
+<td><strong>GOTO</strong></td>
+<td><code>GOTO LABEL</code> / <code>GOTO :EOF</code></td>
+<td>Jump to a label, or return/end the script.</td>
+</tr>
+<tr>
+<td><strong>CALL</strong></td>
+<td><code>CALL :LABEL</code></td>
+<td>Same-file subroutine; shared variables and original RUN arguments; no CALL arguments.</td>
+</tr>
+<tr>
+<td><strong>EXIT /B</strong></td>
+<td><code>EXIT /B [code]</code></td>
+<td>Return from a routine or finish the top-level script; code 0–255. Plain EXIT inside a script stops the script.</td>
+</tr>
+<tr>
+<td><strong>ONERROR</strong></td>
+<td><code>ONERROR STOP</code> / <code>ONERROR CONTINUE</code></td>
+<td>Select failure policy; STOP is the default.</td>
+</tr>
+<tr>
+<td><strong>EXPECT</strong></td>
+<td><code>EXPECT RC 0</code></td>
+<td>Assert the latest result; accepts only one digit, 0–9.</td>
+</tr>
+</tbody></table>
+<h3 id="inspect-search-and-verify">Inspect, search, and verify</h3>
+<table>
+<thead>
+<tr>
+<th>Command and aliases</th>
+<th>Syntax / example</th>
+<th>Use and detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DIR</strong> · D, LS</td>
+<td><code>DIR [path]</code> · <code>DIR 8:/</code></td>
+<td>One directory; default is current location. IEC sizes are blocks; host listing sizes can be <code>?</code>.</td>
+</tr>
+<tr>
+<td><strong>TREE</strong> · TR</td>
+<td><code>TREE path [-i pattern] [-x pattern]</code></td>
+<td>Traverse a supported tree and report files/directories.</td>
+</tr>
+<tr>
+<td><strong>FIND</strong> · FI</td>
+<td><code>FIND path [pattern]</code> · <code>FI @lab:/source -i &quot;beta/**&quot;</code></td>
+<td>Search with the tree walker and shell filters.</td>
+</tr>
+<tr>
+<td><strong>STAT</strong> · ST</td>
+<td><code>STAT @lab:/source/readme.seq</code></td>
+<td>Inspect file metadata/identities; Ultimate host exact-byte size when available.</td>
+</tr>
+<tr>
+<td><strong>VOLUME</strong> · VL, FREE</td>
+<td><code>VOLUME [path]</code> · <code>FREE 8:/</code></td>
+<td>Space or mapping information when supported; not all endpoints expose free bytes.</td>
+</tr>
+<tr>
+<td><strong>MATCH</strong> · MT</td>
+<td><code>MATCH pattern text</code> · <code>MT &quot;**/*.seq&quot; &quot;a/b.seq&quot;</code></td>
+<td>Test the pure matcher without filesystem writes.</td>
+</tr>
+<tr>
+<td><strong>TYPE</strong> · TY, CAT</td>
+<td><code>TYPE path</code></td>
+<td>Read printable text; nonprintable bytes appear as dots.</td>
+</tr>
+<tr>
+<td><strong>HEAD</strong> · HD</td>
+<td><code>HEAD path [lines]</code> · <code>HD readme.seq 2</code></td>
+<td>First lines, default ten; count 1–255.</td>
+</tr>
+<tr>
+<td><strong>TAIL</strong> · TL</td>
+<td><code>TAIL path [lines]</code></td>
+<td>Bounded trailing content; long tails can truncate.</td>
+</tr>
+<tr>
+<td><strong>CRC32</strong> · CR</td>
+<td><code>CRC32 path</code></td>
+<td>Read the file and calculate its CRC32.</td>
+</tr>
+<tr>
+<td><strong>COMPARE</strong> · CM, VERIFY</td>
+<td><code>COMPARE source dest</code></td>
+<td>Compare two file contents; does not synchronize them.</td>
+</tr>
+</tbody></table>
+<h3 id="change-files-and-folders">Change files and folders</h3>
+<table>
+<thead>
+<tr>
+<th>Command and aliases</th>
+<th>Syntax / example</th>
+<th>Use and detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>NEW</strong> · NW</td>
+<td><code>NEW path [--type seq]</code></td>
+<td>Create an empty new file; existing destination is a conflict.</td>
+</tr>
+<tr>
+<td><strong>WRITE</strong> · WR</td>
+<td><code>WRITE path text [--line] [--type seq]</code></td>
+<td>Write supplied text; replacement can prompt. <code>--whatif</code> previews.</td>
+</tr>
+<tr>
+<td><strong>APPEND</strong> · AP</td>
+<td><code>APPEND path text [--line]</code></td>
+<td>Add text to an existing file on a supported endpoint.</td>
+</tr>
+<tr>
+<td><strong>COPY</strong> · CP</td>
+<td><code>COPY source dest [-r] [-w] [-nv]</code></td>
+<td>Keep source; single-file dest is a filename, recursive dest is the prepared container.</td>
+</tr>
+<tr>
+<td><strong>MOVE</strong> · MV</td>
+<td><code>MOVE source dest [-r] [-w] [-nv]</code></td>
+<td>Copy, normally verify, then source cleanup; <code>-nv</code> skips readback. Inspect partial failures.</td>
+</tr>
+<tr>
+<td><strong>RENAME</strong> · RN, REN</td>
+<td><code>RENAME source dest</code></td>
+<td>Supported same-endpoint rename; ordinary host path requires the same parent.</td>
+</tr>
+<tr>
+<td><strong>DELETE</strong> · DL, RM</td>
+<td><code>DELETE path [-r] [-y] [-w]</code></td>
+<td>Delete one file or selected tree descendants; recursive root remains.</td>
+</tr>
+<tr>
+<td><strong>MKDIR</strong> · MD</td>
+<td><code>MKDIR path</code></td>
+<td>Create one directory, not an implicit chain of missing parents.</td>
+</tr>
+<tr>
+<td><strong>RMDIR</strong> · RD</td>
+<td><code>RMDIR path [-y]</code></td>
+<td>Remove an empty directory. Use DELETE -r for descendants first.</td>
+</tr>
+</tbody></table>
+<h3 id="device-and-advanced-commands">Device and advanced commands</h3>
+<table>
+<thead>
+<tr>
+<th>Command and aliases</th>
+<th>Syntax / example</th>
+<th>Use and detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DRIVES</strong> · DV</td>
+<td><code>DRIVES</code></td>
+<td>Discover responding IEC devices and report other endpoints.</td>
+</tr>
+<tr>
+<td><strong>PROBE</strong> · PB</td>
+<td><code>PROBE [ALL|UCI|UDOS|SOFTIEC|RECOVER]</code> / <code>PROBE IEC 8:</code></td>
+<td>Inspect interface/driver state; RECOVER services the UCI recovery path.</td>
+</tr>
+<tr>
+<td><strong>PROFILE</strong> · PF</td>
+<td><code>PROFILE IEC 8: [operation]</code></td>
+<td>Query the saved detected driver/capability record.</td>
+</tr>
+<tr>
+<td><strong>CAPABILITIES</strong> · CA</td>
+<td><code>CAPABILITIES [path]</code></td>
+<td>Report endpoint model and limits; default is current location.</td>
+</tr>
+<tr>
+<td><strong>NATIVE</strong> · NT</td>
+<td><code>NATIVE operation path [dest]</code></td>
+<td>Display translated backend syntax; does not execute that native mutation.</td>
+</tr>
+<tr>
+<td><strong>MOUNT</strong> · MO</td>
+<td><code>MOUNT image drive:</code> / <code>MOUNT folder s3: --name NAME</code></td>
+<td>Mount media or add a SoftwareIEC mapping. Preview with <code>--whatif</code>.</td>
+</tr>
+<tr>
+<td><strong>DISMOUNT</strong> · UM, UNMOUNT</td>
+<td><code>DISMOUNT drive:</code> · <code>UM s3:</code></td>
+<td>Detach media / remove a mapping when supported.</td>
+</tr>
+<tr>
+<td><strong>SWAP</strong> · SW</td>
+<td><code>SWAP 8:</code></td>
+<td>Advance the existing firmware disk-swap list on that drive.</td>
+</tr>
+<tr>
+<td><strong>FORMAT</strong> · FM</td>
+<td><code>FORMAT path --label LABEL --id ID</code></td>
+<td>Supported disposable-media formatting; real execution also requires <code>--disposable --apply</code>.</td>
+</tr>
+</tbody></table>
+<h2 id="11-limits-troubleshooting-and-evidence">11. Limits, troubleshooting, and evidence</h2>
+<h3 id="practical-boundaries">Practical boundaries</h3>
+<table>
+<thead>
+<tr>
+<th>Boundary</th>
+<th>Current value or rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Command / canonical path</td>
+<td>255 bytes each; alias expansion must also fit.</td>
+</tr>
+<tr>
+<td>Parsed tokens</td>
+<td>Twelve including the command.</td>
+</tr>
+<tr>
+<td>Visible input</td>
+<td>Four rows × 36 command characters.</td>
+</tr>
+<tr>
+<td>Command recall</td>
+<td>32 entries, session only.</td>
+</tr>
+<tr>
+<td>Output history</td>
+<td>800 physical rows with colors; oldest rows are replaced.</td>
+</tr>
+<tr>
+<td>Aliases</td>
+<td>Eight, names up to sixteen bytes.</td>
+</tr>
+<tr>
+<td>Directory/tree work</td>
+<td>Bounded at 512 entries and tree depth 32; serialized queue/plan byte capacity can limit it earlier.</td>
+</tr>
+<tr>
+<td>Script staging</td>
+<td>Up to 16 KiB; line and token limits still apply.</td>
+</tr>
+<tr>
+<td>Legacy IEC / tape names</td>
+<td>Typically sixteen bytes; driver-specific translation may impose additional limits.</td>
+</tr>
+<tr>
+<td>Image-contained <code>!/</code> I/O</td>
+<td>Modeled by syntax, not general direct-access support in this build.</td>
+</tr>
+<tr>
+<td>Cross-tree mutation</td>
+<td>Can have partial progress; no promise of a global undo/atomic transaction.</td>
+</tr>
+</tbody></table>
+<h3 id="if-something-is-unexpected">If something is unexpected</h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Next useful check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A name with spaces is split</td>
+<td>Quote the entire argument, beginning with <code>&quot;</code>.</td>
+</tr>
+<tr>
+<td>A short command is unknown</td>
+<td>Use the registered aliases in section 10; prefixes are not abbreviations.</td>
+</tr>
+<tr>
+<td><code>CD</code> succeeds but listing fails</td>
+<td>CD stores a resolved location; check existence/access with DIR, and confirm the endpoint.</td>
+</tr>
+<tr>
+<td><code>?</code> in DIR</td>
+<td>Host directory metadata does not include size; use STAT on a supported file.</td>
+</tr>
+<tr>
+<td>Filter misses nested names</td>
+<td>Test with MATCH; use <code>**/</code> when a pattern must cross folders. Inspect normalized TREE/FIND stems.</td>
+</tr>
+<tr>
+<td>Alias path rejects <code>..</code></td>
+<td>Alias suffixes prohibit parent components. Navigate with ordinary relative paths if appropriate.</td>
+</tr>
+<tr>
+<td>Input seems to stop accepting text</td>
+<td>Check the 255-byte limit; shorten it or remove text with Delete.</td>
+</tr>
+<tr>
+<td>What-if reports a plan but nothing changed</td>
+<td>That is expected; remove the preview option for a separately authorized real run.</td>
+</tr>
+<tr>
+<td>COPY/MOVE sees an existing destination</td>
+<td>Inspect it before choosing replacement; do not add force blindly.</td>
+</tr>
+<tr>
+<td>RMDIR cannot remove a folder</td>
+<td>Confirm it is empty, or preview a descendant DELETE inside the intended disposable scope.</td>
+</tr>
+<tr>
+<td><code>COPY OK; DELETE FAIL</code></td>
+<td>Inspect source and destination. The destination may be valid while the source still exists.</td>
+</tr>
+<tr>
+<td>An image or partition operation is unsupported</td>
+<td>Check driver/profile/path shape. Parsed syntax alone does not enable a backend.</td>
+</tr>
+<tr>
+<td>A batch failed or STATUS looks optimistic</td>
+<td>Read the command&#39;s reports and inspect postconditions; typed-result coverage is still evolving.</td>
+</tr>
+<tr>
+<td>SoftwareIEC can see only some host entries</td>
+<td>Consider firmware enumeration limits and a dedicated shallow mapping; preserve failed evidence.</td>
+</tr>
+</tbody></table>
+<h3 id="what-the-screenshots-prove">What the screenshots prove</h3>
+<p>The sixteen retained guide screenshots come from the earlier 10:20 demonstration, recorded from the physical VIC video stream at 1 MHz. That historical video joins passing editor chapters from one take to the passing folder workflow from a fresh take. It has 31,100 frames, no missing source frames, and no speed changes within the selected demonstrations. It records 37 passing checks. Those historical images were reused without extra storage mutations. The two new transfer images come from the current marker-owned hardware test tour.</p>
+<p>The nested workflow&#39;s source had five files and three child directories. External checks compared directory shape, byte counts, and SHA-256 hashes, checked moved-source absence and deleted-copy absence, and verified unchanged what-if snapshots. The source and ownership marker were preserved. The hardware&#39;s original CPU and drive settings were restored. Other command-reference examples explain the implementation; they are not all claims of fresh physical execution on every device.</p>
+<p>The updated 12 October companion tour uses the same passing physical take, edited to about 8:06. Repeated command entry, directory pages and per-file transfer waits are condensed with edit notices above the picture. Complete commands, meaningful editing actions and named file outcomes remain; the first named-file preview receives extra reading time. Input typing and editing retain the 1.4× presentation speed. Concise descriptions appear in a separate band above the C64 picture; the navigation track contains chapter titles only. It includes native session mount hints, device 8/9 context, alias-based disk-to-host and host-to-disk copies, the yellow pager and a red unsupported error, plus the named COPY/MOVE/DELETE preview pages and optional readback. Its 9 chapters and 37 recorded steps have fresh screenshots and actual console snapshots in the site’s <a href="https://readyfs-editor-demo.klumsy.chatgpt.site/#script-tour">complete recorded script</a>. All 62 recording checks passed with no missing source frames. Separate saved-evidence checks confirm all five files and three directories are named in each recursive preview, skipped verification works for a single file and a recursive move, and default verification returns on the next ordinary copy. The exported disk image independently contains the 38-byte host file as SEQ; the 84-byte disk-to-host copy matches its source. Original drive and CPU settings were restored. The earlier 55-check tour remains preserved. The two current transfer screenshots in this guide supplement its sixteen historical stills.</p>
+<p>The 13 October update appends chapter 10, <strong>Parameterized batch backup</strong>, to that retained tour. The original nine chapters and 37 steps remain; seven new recorded steps show SET, TYPE with F1 output history, parameterized PREVIEW/APPLY runs, refusal of an existing destination, reading the backup and the shared counter. The full tour now has 10 chapters and 44 steps. This is a separate physical C64 Ultimate take on the current DOS-style build in a new owned USB1 root. The appended example is <a href="examples/BACKUP.SEQ">BACKUP.SEQ</a>; its logic and all other scripting features are explained in the RUN reference. The SD2IEC tour remains a separate recording.</p>
+<h3 id="source-map-and-keeping-this-guide-current">Source map and keeping this guide current</h3>
+<ul>
+<li>Command names and aliases: <code>src/apps/readyfs/readyfs_commands.c</code>.</li>
+<li>Command dispatch, I/O, and device boundaries: <code>src/apps/readyfs/readyfs.c</code>.</li>
+<li>Path parsing, normalization, and matching: <code>readyfs_path.c</code>, <code>readyfs_match.c</code>.</li>
+<li>Editor, option shorthand, and help: <code>readyfs_ui.c</code>, <code>readyfs_present.c</code>.</li>
+<li>Scripts and bounded text views: <code>readyfs_batch.c</code>, <code>readyfs_content.c</code>.</li>
+<li>Further notes: <a href="READYFS_INTERACTIVE_UI.html">Interactive editor</a>, <a href="READYFS_PATH_RESEARCH.html">path research</a>, <a href="READYFS_SAFETY.html">safety rules</a>, and the project <code>AGENTS.md</code>.</li>
+<li>Historical screenshot times and source-video hash: <a href="guide-assets/screenshots.json">guide-assets/screenshots.json</a>. New transfer capture provenance: <a href="guide-assets/transfer-screenshots-2026-10-12.json">guide-assets/transfer-screenshots-2026-10-12.json</a>.</li>
+<li>Printable/offline edition: <a href="portable-guide.html">READYFS_USER_GUIDE.html</a>.</li>
+</ul>
+<p>This guide follows the current overlay implementation. On-device HELP is compact but now includes varied examples; NEW documents <code>--type</code> and SWAP documents <code>drive:</code>. The retained screenshots show the older help. When behavior changes, update this Markdown source, its evidence captions, and regenerate the HTML rather than letting the editions drift.</p>
+<h2 id="native-iec-configuration-and-sd2iec-support">Native IEC configuration and SD2IEC support</h2>
+<p>The current build provides <code>iec 10: status</code>, <code>iec 10: config</code>, partition
+queries and explicit configuration setters. See the <a href="READYFS_IEC_CONFIGURATION.html">configuration reference</a>
+for commands, examples and the distinction between running and saved settings.
+Configuration inspection/temporary restoration and native reads passed physical
+checks at 1/16/64 MHz. Native recursive folder, full image COPY/MOVE, and final
+four-endpoint regression suites passed with restoration. Native destination
+SEQ/PRG/USR types were also checked. The new SD2IEC walkthrough demonstrates these storage paths; the original editor tour remains available. See
+<a href="SD2IEC_NATIVE.html">native SD2IEC support</a> for current evidence and limitations.</p>
+<h2 id="12-sd2iec-folders-batches-and-disk-images">12. SD2IEC: folders, batches, and disk images</h2>
+<p>Updated 13 October 2026. Companion to the new <a href="https://readyfs-editor-demo.klumsy.chatgpt.site/sd2iec.html">physical SD2IEC walkthrough</a>. The examples below use short, readable locations; the recording uses uniquely named, marker-checked test folders. Substitute folders and images you own, with unused destination names.</p>
+<p>This guide is about the <strong>native SD2IEC device</strong>, addressed with paths such as <code>10.1:/</code>. Ultimate SoftwareIEC has its own <a href="READYFS_SOFTWAREIEC_GUIDE.html">separate guide</a>; the SoftwareIEC material below is explicitly about transfers between the two systems.</p>
+<h3 id="the-short-answer">The short answer</h3>
+<p><strong>Yes, you can copy more than one file, preserve nested SD folders, and work on files inside an image stored on SD2IEC.</strong> The important difference is how you enter the image:</p>
+<ul>
+<li><strong>SD2IEC folders:</strong> <code>10.1:/demo/tree/alpha/one</code> is a native path on device 10, partition 1. Use <code>COPY … --recursive</code> for a whole supported folder tree.</li>
+<li><strong>SD2IEC image contents:</strong> first <code>MOUNT 10.1:/demo/work.d64 --force</code>, then use <code>10.1:/FILE</code>. Mounting changes what partition 1 exposes. Use <code>DISMOUNT 10.1:/ --force</code> to return to SD folders.</li>
+<li><strong>UltimateDOS image contents:</strong> <code>u:/usb1/work.d64/FILE.prg</code> accesses an entry inside an unmounted host image directly. It does not change SD2IEC&#39;s media view.</li>
+</ul>
+<p>Automatic native paths such as <code>10.1:/demo/work.d64/FILE</code> or <code>10.1:/demo/work.d64!/FILE</code> are <strong>not implemented</strong>. An alias cannot add that capability. Image-listing mode <code>dirs</code> or <code>both</code> changes the directory presentation; it does not make automatic traversal work on the tested SD2IEC firmware.</p>
+<p><img loading="lazy" decoding="async" width="1000" height="480" src="guide-assets/sd2iec-boundaries.svg" alt="SD folders and mounted image contents are two views of one partition; UltimateDOS can directly address a separate unmounted image."></p>
+<p><em>SD mount/unmount is an explicit media transition. Keep the intermediate host folder accessible while the SD partition changes views.</em></p>
+<h3 id="1-inspect-the-device-and-choose-your-roots">1. Inspect the device and choose your roots</h3>
+<pre><code class="language-text">PROBE IEC 10:
+IEC 10: CONFIG
+IEC 10: PARTITIONS
+IEC 10: PARTITION 1
+ALIAS LAB u:/usb1/mydemo
+ALIAS CARD 10.1:/mydemo
+</code></pre>
+<h4 id="more-than-one-partition-on-the-same-device">More than one partition on the same device</h4>
+<p><strong><code>10.1:</code> means device 10, partition 1.</strong> The <code>.1</code> is not another device number or an image slot. ReadyFS can also address <code>10.2:/games</code> for partition 2, or another existing native partition on that same device. The examples use partition 1 because that is the recorded setup, not because ReadyFS is limited to it.</p>
+<p>Run <code>IEC 10: PARTITIONS</code> to see what the device offers. If partition 2 exists, <code>IEC 10: PARTITION 2</code> inspects it and <code>DIR 10.2:/</code> lists its root. These queries do not change the current selection. Explicit paths qualify their own operation; <code>10:/</code> instead uses the device&#39;s current partition, which ReadyFS queries and pins for that operation. <code>IEC 10: PARTITION 2 --SELECT</code> deliberately changes the current selection; it is not needed before an explicit <code>10.2:/...</code> path.</p>
+<p>Partition arguments and path suffixes are decimal, while <code>$</code>-prefixed numbers in the listing are hexadecimal. Available partitions depend on the card, device and firmware; naming one does not create it. An alias such as <code>ALIAS ARCHIVE 10.2:/backups</code> can bookmark a folder on an existing second partition. See the <a href="SD2IEC_NATIVE.html">native partition reference</a>.</p>
+<p>The media type is a separate question. A <code>G-P</code> type of FAT OR DNP is ambiguous between those two hierarchical formats; type <code>$02</code> identifies the D64 view used in the recording. Mounting an image changes the view of its selected partition, and mount/unmount may close buffers on other partitions of that device too. Finish open transfers before changing media.</p>
+<p>Create the example roots separately before using these aliases. <code>CONFIG</code> is an inspection command. ReadyFS does not change extension modes just because you probe or copy. <code>save-config</code> explicitly saves firmware-supported extended settings together, including the address; it does not save your folder or mounted image. See the <a href="READYFS_IEC_CONFIGURATION.html">configuration reference</a>.</p>
+<h3 id="2-copy-a-whole-nested-folder-to-sd2iec">2. Copy a whole nested folder to SD2IEC</h3>
+<p>Assume <code>@lab:/source</code> contains this tree:</p>
+<pre><code class="language-text">source/
+  readme.seq
+  alpha/
+    one.seq
+    two.seq
+  beta/
+    four.seq
+    deep/
+      three.seq
+</code></pre>
+<pre><code class="language-text">TREE @lab:/source
+MKDIR @card:/tree
+COPY @lab:/source @card:/tree --recursive --whatif
+COPY @lab:/source @card:/tree --recursive
+TREE @card:/tree
+</code></pre>
+<p>The destination is an <strong>existing container</strong>. This copies the contents under <code>tree</code>, preserving the relative folder layout; it does not insert an extra <code>source</code> directory. <code>-R</code> is the short form of <code>--recursive</code>, and <code>-W</code> previews the plan. Ordinary path arguments do not expand shell wildcards: use the recursive selector and its <code>--include</code> / <code>--exclude</code> options when filtering.</p>
+<p>The preview lists selected entries without writing. Actual COPY verifies each destination by default. Read the final <code>FAIL 0</code> as well as the individual completions; the batch count includes directory actions, so it is not necessarily the number of files. A failed batch can leave completed earlier files in place; it is not an all-or-nothing transaction.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/sd2iec-tree.png" alt="Five files in a nested source tree on the physical C64."></p>
+<p><em>The source includes three subdirectories and five files. The recorded workflow keeps the original source intact.</em></p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/sd2iec-copy.png" alt="The completed recursive copy from UltimateDOS host storage to SD2IEC."></p>
+<p><em>One COPY command handles the tree. The walkthrough separately verifies every native destination against its source.</em></p>
+<h4 id="why-some-names-lose-seq">Why some names lose <code>.seq</code></h4>
+<p>Ultimate host names and CBM logical names are different. In the tested SD extension configuration, <code>one.seq</code> is exposed on SD as the logical SEQ name <code>ONE</code>. ReadyFS preserves the file type; this is not data loss. Inspect <code>DIR</code>, <code>STAT</code> and <code>IEC 10: CONFIG</code> instead of guessing an outer FAT filename from the logical name. Native components are limited to 16 bytes in this implementation.</p>
+<h3 id="3-copy-the-tree-back-or-move-an-owned-copy">3. Copy the tree back, or move an owned copy</h3>
+<pre><code class="language-text">MKDIR @lab:/returned
+CP @card:/tree @lab:/returned -R
+TREE @lab:/returned
+COMPARE @card:/tree/alpha/one @lab:/returned/alpha/one
+</code></pre>
+<p>The returned host tree uses the names enumerated by the SD directory. In this configuration those logical names omit the <code>.seq</code> suffix. The recording independently checks all five returned files, not just the example COMPARE above.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/sd2iec-return.png" alt="The nested SD tree copied back into a separate Ultimate host folder."></p>
+<p><em>The return copy exercises SD directory traversal and host directory creation, then checks the resulting bytes independently.</em></p>
+<p>MOVE uses the same selector but removes each source after its successful verified copy. For a disposable SD copy, prepare the destination first:</p>
+<pre><code class="language-text">MKDIR @card:/moved
+MOVE @card:/tree @card:/moved -R -W
+MOVE @card:/tree @card:/moved -R
+</code></pre>
+<p>This recipe changes the <code>tree</code> used above; run it only when finished with the copy examples. A partially completed MOVE is not a rollback transaction. The earlier hardware acceptance covers this recursive move and nested cleanup; the new recording concentrates on copying and image boundaries.</p>
+<h3 id="4-copy-several-files-to-other-iec-endpoints">4. Copy several files to other IEC endpoints</h3>
+<p>A mounted D64/D71/D81 is flat. A nested SD tree does not acquire a valid flat destination layout automatically. Choose the files and give them distinct short names:</p>
+<pre><code class="language-text">COPY @card:/tree/alpha/one 9:/DEMO-ONE
+COPY @card:/tree/alpha/two 9:/DEMO-TWO
+</code></pre>
+<p>Use your own mounted test image on device 9. The recording uses an owned image, not the user&#39;s existing mounted disk. Both entries are independently extracted after unmounting and checked for bytes and SEQ type.</p>
+<h4 id="interoperability-native-sd2iec-and-softwareiec">Interoperability: native SD2IEC and SoftwareIEC</h4>
+<p>SoftwareIEC is a distinct Ultimate backend, addressed with <code>s0:/...</code>; SD2IEC retains its native <code>10.1:/...</code> paths. For SoftwareIEC setup and standalone use, see its <a href="READYFS_SOFTWAREIEC_GUIDE.html">own guide</a>. For this cross-backend transfer, first identify its logical partition and mapping. <code>s0:</code> is <strong>not</strong> IEC device 0. If its root exposes <code>/USB1</code>, and the destination folder already exists:</p>
+<pre><code class="language-text">ALIAS SOFT s0:/mydemo
+CP @card:/tree/alpha/one @soft:/DEMO-ONE
+CP @card:/tree/alpha/two @soft:/DEMO-TWO
+</code></pre>
+<p>SoftwareIEC filename translation and folder operations depend on its firmware and mapping. The recording verifies these two files independently. It does not claim that recursive trees work on every SoftwareIEC implementation.</p>
+<p>To bring those file sets back, choose unused SD destination names:</p>
+<pre><code class="language-text">COPY 9:/DEMO-ONE @card:/from9-one
+COPY 9:/DEMO-TWO @card:/from9-two
+CP @soft:/DEMO-ONE @card:/froms-one
+CP @soft:/DEMO-TWO @card:/froms-two
+</code></pre>
+<p>These reverse recipes use the same ordinary file operations verified by the full four-endpoint acceptance matrix. The new video shows representative selected-file transfers plus the complete nested-folder round trip. Use COMPARE to check any returned file against its retained source.</p>
+<p>For a repeatable multi-file job, the same explicit COPY commands can go in a ReadyFS text script with <code>ONERROR STOP</code>, executed using <code>RUN @lab:/COPYSET.SEQ</code>. <code>RUN script-path [arg1 ... arg9]</code> accepts up to nine arguments, available as <code>%1</code>–<code>%9</code> inside the commands. Named variables and local label subroutines are also supported; external-file CALL and nested RUN are not. See the <a href="READYFS_RUN_GUIDE.html">RUN guide</a> for the parameterized BACKUP.SEQ example and the complete batch reference. Inspect the individual results as well as the final result code. This is a scripting recipe, separate from the newly recorded interactive examples.</p>
+<h3 id="5-work-inside-an-image-stored-on-sd2iec">5. Work inside an image stored on SD2IEC</h3>
+<pre><code class="language-text">MOUNT 10.1:/mydemo/work.d64 --force
+IEC 10: PARTITION 1
+DIR 10.1:/
+COPY @lab:/returned/alpha/one 10.1:/DEMO-ONE
+COPY @lab:/returned/alpha/two 10.1:/DEMO-TWO
+COPY 10.1:/DEMO-ONE @lab:/image-one.seq
+DISMOUNT 10.1:/ --force
+</code></pre>
+<p>The example assumes <code>work.d64</code> already exists as a valid mountable image. Copying an entire image file onto SD is a separate operation: some SD extension modes create X00 wrappers. A logical byte comparison alone does not prove that such a host file can be mounted. Use the explicit raw-image procedure in the <a href="SD2IEC_NATIVE.html">native support reference</a>, including restoration of the previous extension mode and hiding flag.</p>
+<p><strong>While the image is mounted, <code>10.1:/</code> is its directory.</strong> The earlier SD FAT path <code>10.1:/mydemo/tree/...</code> is no longer the same accessible view. This is why the example reads from the host return copy rather than simultaneously reading an SD FAT folder.</p>
+<p>The implementation supports ordinary COPY, COMPARE, MOVE, same-filesystem RENAME and DELETE for supported files inside the mounted image. SEQ, PRG and USR are supported byte streams; REL is not. Use explicit filenames and preserve file types. A normal flat disk image does not support arbitrary nested folders.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/sd2iec-image.png" alt="The real directory of an owned D64 mounted on SD2IEC."></p>
+<p><em>DIR operates inside the mounted SD image. The mount hint is session information, not a guarantee against changes made by another program.</em></p>
+<h3 id="6-copy-between-sd-image-contents-and-an-ultimate-image">6. Copy between SD image contents and an Ultimate image</h3>
+<p>Use a separate, writable Ultimate image that is <strong>not also mounted on an IEC drive</strong>:</p>
+<pre><code class="language-text">MOUNT 10.1:/mydemo/work.d64 --force
+COPY 10.1:/DEMO-ONE u:/usb1/other.d64/ONE.seq
+COPY 10.1:/DEMO-TWO u:/usb1/other.d64/TWO.seq
+COPY u:/usb1/other.d64/HELLO.prg 10.1:/DEMO-PRG
+STAT 10.1:/DEMO-PRG
+</code></pre>
+<p>Here the SD side uses a mounted media view, while the Ultimate side uses direct slash paths. The destination filename must be explicit; a trailing slash does not yet mean “keep the source filename.” A typed suffix on an Ultimate-contained destination must agree with the source type. The physical typed contained-image matrix covered D64; mounted IEC tests also covered D81. This is not evidence for every image format or firmware combination.</p>
+<p><img loading="lazy" decoding="async" width="768" height="544" src="guide-assets/sd2iec-prg.png" alt="A PRG copied from an Ultimate-contained image into the SD-mounted image retains PRG type."></p>
+<p><em>STAT reports the native type as <code>$11</code> (PRG). Independent byte checks and type checks answer different questions.</em></p>
+<h3 id="7-move-data-between-sd-folders-and-an-image-on-that-same-sd2iec">7. Move data between SD folders and an image on that same SD2IEC</h3>
+<p>Use host storage as an intermediate. Every command completes and closes its channels before the mount changes:</p>
+<pre><code class="language-text">COPY 10.1:/DEMO-PRG @lab:/fromimg.prg
+DISMOUNT 10.1:/ --force
+COPY @lab:/fromimg.prg @card:/fromimg.prg
+COMPARE @card:/fromimg.prg @lab:/fromimg.prg
+</code></pre>
+<p>For the opposite direction, copy the SD-folder files into an existing host staging folder first, mount the SD image, and copy the selected staging files into its root. A folder tree cannot be preserved inside a flat D64; explicitly choose names and avoid collisions. Keep the staging copy until verification finishes.</p>
+<p>This uses the C64&#39;s native filesystem commands. The intermediate is storage reached by ReadyFS, not a Mac relay or runtime network service.</p>
+<h3 id="boundaries-at-a-glance">Boundaries at a glance</h3>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Multiple-file approach</th>
+<th>Image or folder boundary</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ultimate host folders ↔ SD folders</td>
+<td>Recursive COPY; nested five-file round trip recorded and independently checked</td>
+<td>Prepare the destination container; 16-byte native components</td>
+</tr>
+<tr>
+<td>SD folders → mounted IEC disk</td>
+<td>Explicit chosen files, or a reviewed command script</td>
+<td>Flat disk: no automatic flattening of a tree</td>
+</tr>
+<tr>
+<td>SD folders → SoftwareIEC</td>
+<td>Explicit chosen files in the verified mapping</td>
+<td>Firmware/mapping-dependent; no blanket recursive guarantee</td>
+</tr>
+<tr>
+<td>SD image contents ↔ Ultimate host or another IEC endpoint</td>
+<td>Mount SD image, then ordinary file operations</td>
+<td>Device path refers to the mounted image</td>
+</tr>
+<tr>
+<td>SD image contents ↔ Ultimate image contents</td>
+<td>Mounted SD paths on one side; ordinary Ultimate slash paths on the other</td>
+<td>Ultimate image must be separate and unmounted</td>
+</tr>
+<tr>
+<td>SD folders ↔ an image on the same SD device</td>
+<td>Intermediate host files plus explicit mount/unmount</td>
+<td>The partition cannot expose both views to one simultaneous stream</td>
+</tr>
+<tr>
+<td><code>10.1:/disk.d64/FILE</code> or <code>!/FILE</code></td>
+<td>Not automatic in this build</td>
+<td>Mount explicitly first</td>
+</tr>
+</tbody></table>
+<p>The <a href="SD2IEC_NATIVE.html">native support reference</a> and <a href="READYFS_IEC_CONFIGURATION.html">IEC configuration reference</a> document firmware caveats. Existing test roots and images are retained as evidence. No user files were deleted to make the demonstrations.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

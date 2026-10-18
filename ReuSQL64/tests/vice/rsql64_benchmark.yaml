@@ -1,0 +1,108 @@
+version: 1
+kind: vice_task_plan
+plan_id: reusql64_real_world_benchmark
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6918
+  monitor_port_span: 40
+  retry_policy:
+    max_attempts: 1
+    backoff_ms: 250
+    jitter: false
+  timeouts:
+    launch_s: 45
+    step_s: 1800
+    read_s: 5
+  artifact_policy:
+    capture_screen: true
+    capture_state: true
+    capture_dump: false
+  vice:
+    autostart_prg: "build/rsql64_benchmark.d81"
+    disk8: "build/rsql64_benchmark.d81"
+    drive8_enabled: true
+    drive8_type: 1581
+    true_drive: false
+    drive9_enabled: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch
+    type: vice.launch
+    params:
+      kill_stale: true
+  - id: wait_sales_summary
+    type: assert.memory
+    retry:
+      max_attempts: 1800
+      backoff_ms: 500
+      jitter: false
+    params:
+      start: 53235
+      end: 53235
+      equals_hex: "b2"
+  - id: dump_sales_summary_timing
+    type: dump.memory_ranges
+    params:
+      ranges:
+        - label: sales_summary_timing
+          start: 53235
+          end: 53238
+  - id: save_benchmark_database
+    type: dump.reu
+    params:
+      mode: full
+      stage_tag: benchmark_database
+  - id: continue_to_correlated_query
+    type: memory.write
+    params:
+      start: 53247
+      bytes_hex: "01"
+  - id: wait_eligible_sales
+    type: assert.memory
+    retry:
+      max_attempts: 1800
+      backoff_ms: 500
+      jitter: false
+    params:
+      start: 53235
+      end: 53235
+      equals_hex: "c2"
+  - id: dump_eligible_sales_timing
+    type: dump.memory_ranges
+    params:
+      ranges:
+        - label: eligible_sales_timing
+          start: 53235
+          end: 53238
+  - id: continue_to_success
+    type: memory.write
+    params:
+      start: 53247
+      bytes_hex: "02"
+  - id: assert_success_sentinel
+    type: assert.memory
+    retry:
+      max_attempts: 60
+      backoff_ms: 500
+      jitter: false
+    params:
+      start: 53232
+      end: 53232
+      equals_hex: "a5"
+  - id: assert_green_border
+    type: assert.memory
+    params:
+      start: 53280
+      end: 53280
+      equals_hex: "f5"
+  - id: capture_success
+    type: screen.capture
+    params:
+      label: benchmark_success
+  - id: state_success
+    type: state.capture
+    params:
+      label: benchmark_success

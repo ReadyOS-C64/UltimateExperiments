@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Native IEC and SD2IEC configuration · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Native IEC and SD2IEC configuration"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs" open><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="READYFS_IEC_CONFIGURATION.html" aria-current="page">IEC configuration</a></li><li><a href="SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="tours/editor.html">Editor screenshot tour</a></li><li><a href="tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="READYFS_SAFETY.html">Safety</a></li><li><a href="READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#read-first-change-explicitly">Read first, change explicitly</a></li><li><a href="#device-address-versus-partition-number">Device address versus partition number</a></li><li><a href="#change-the-running-settings">Change the running settings</a></li><li><a href="#address-and-reset">Address and reset</a></li><li><a href="#explicit-dos-commands">Explicit DOS commands</a></li><li><a href="#implementation-and-test-boundaries">Implementation and test boundaries</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="READYFS_IEC_CONFIGURATION.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="native-iec-and-sd2iec-configuration">Native IEC and SD2IEC configuration</h1>
+<p>Implementation status: the commands below are built into the overlay version,
+with host protocol tests and a physical C64U/SD2IEC acceptance run on 2026-10-13.
+Version/status/config, partition listing and queries, raw long-version query,
+invalid-argument handling, and temporary extension/image settings passed.
+Original running settings were restored exactly; native reads also passed at
+1, 16, and 64 MHz. Address/reset/save commands have host protocol coverage;
+the separate native address-repair probe verified device 10 persisted after a
+restart. This is not full physical coverage of every CLI setting.
+The monolithic diagnostic retains its earlier command set.
+The existing <code>native</code> translation preview is unchanged.</p>
+<p>This reference configures <strong>native IEC/SD2IEC devices</strong>, such as device 10. SoftwareIEC is the Ultimate&#39;s separate mapped filesystem; see its <a href="READYFS_SOFTWAREIEC_GUIDE.html">own guide</a> for <code>sN:</code> paths and mapping behavior. These native configuration commands do not configure SoftwareIEC.</p>
+<h2 id="read-first-change-explicitly">Read first, change explicitly</h2>
+<p>These commands run directly on the C64 using its IEC bus. They need no network,
+REST service or Mac relay. They run as standalone commands with no transfer
+channels open. Use a device designator such as <code>10:</code>, without a file path.</p>
+<pre><code class="language-text">iec 10: status
+iec 10: version
+iec 10: config
+iec 10: partitions
+iec 10: partition
+iec 10: partition 1
+</code></pre>
+<p><code>status</code> reads the current DOS status without first issuing a reset or version
+command. Reading consumes that status. <code>version</code> sends UI; its effect depends
+on the drive firmware. On SD2IEC it reports the version. The SD2IEC-specific
+commands identify SD2IEC/uIEC before sending their device-specific operation.</p>
+<p><code>config</code> sends X, a query. Bare XE and XI are not queries and are never used
+for inspection. <code>partitions</code> reads the native partition directory; the numbers
+shown with <code>$</code> are hexadecimal. <code>partition</code> queries the selected partition;
+<code>partition 0</code> queries SYSTEM, while <code>partition 1</code> queries partition 1. G-P type
+1 can mean FAT or a mounted DNP, so ReadyFS labels that ambiguity. A missing
+partition is an error. These queries do not select partitions or change images.</p>
+<h2 id="device-address-versus-partition-number">Device address versus partition number</h2>
+<p>In the file path <strong><code>10.1:/games/HELLO</code></strong>, <code>10</code> is the IEC device address and <code>.1</code> is partition 1. A second existing partition uses <code>10.2:/games/HELLO</code>; the IEC address is still 10. <code>10:/games/HELLO</code> instead uses the current partition, queried and pinned by ReadyFS for each operation.</p>
+<p><code>IEC 10: PARTITIONS</code> lists what the device offers. <code>IEC 10: PARTITION 2</code> inspects partition 2; adding <code>--SELECT</code> changes the device&#39;s current selection to it. An explicit <code>10.2:/...</code> file path does not need that selection step and does not change the default. File-path partitions are 1–254 where the detected driver supports them; nonexistent partitions fail. <code>PARTITION 0</code> is the SYSTEM query, not the usual data partition.</p>
+<p>Use decimal partition numbers in paths and command arguments. A partition listed as <code>$0A</code> is decimal 10: use <code>10.10:/</code>. See <a href="SD2IEC_NATIVE.html">native partition behavior</a> for the distinction between explicit paths, the current partition, SoftwareIEC and mounted-image views.</p>
+<h2 id="change-the-running-settings">Change the running settings</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>iec 10: partition 1 --select</code></td>
+<td>Select partition 1; SD2IEC also clears its autoswap list.</td>
+</tr>
+<tr>
+<td><code>iec 10: extensions 0</code></td>
+<td>Raw files for names representable directly in FAT; unrepresentable names can still require X00.</td>
+</tr>
+<tr>
+<td><code>iec 10: extensions 1</code></td>
+<td>x00 headers for non-PRG files; raw PRG.</td>
+</tr>
+<tr>
+<td><code>iec 10: extensions 2</code></td>
+<td>x00 headers for all supported types.</td>
+</tr>
+<tr>
+<td><code>iec 10: extensions 3</code></td>
+<td>Typed filename extensions for non-PRG files.</td>
+</tr>
+<tr>
+<td><code>iec 10: extensions 4</code></td>
+<td>Typed filename extensions for all types.</td>
+</tr>
+<tr>
+<td><code>iec 10: hide-extensions on</code></td>
+<td>Hide typed extensions in the logical directory view.</td>
+</tr>
+<tr>
+<td><code>iec 10: hide-extensions off</code></td>
+<td>Show typed extensions.</td>
+</tr>
+<tr>
+<td><code>iec 10: images files</code></td>
+<td>Present images as files.</td>
+</tr>
+<tr>
+<td><code>iec 10: images dirs</code></td>
+<td>Present images as directories.</td>
+</tr>
+<tr>
+<td><code>iec 10: images both</code></td>
+<td>Present both views.</td>
+</tr>
+<tr>
+<td><code>iec 10: wildcard 1541</code></td>
+<td>1541 wildcard suffix matching.</td>
+</tr>
+<tr>
+<td><code>iec 10: wildcard 1581</code></td>
+<td>1581 wildcard suffix matching.</td>
+</tr>
+</tbody></table>
+<p>Modes 3 and 4 also enable extension hiding in the firmware. Returning to mode
+0, 1 or 2 does not automatically turn hiding off. ReadyFS does not normalize
+these settings on probe or copy. Settings can affect the host filename, CBM
+logical name and file format seen by future operations.</p>
+<pre><code class="language-text">iec 10: config
+iec 10: extensions 2
+iec 10: config
+iec 10: save-config
+</code></pre>
+<p><code>save-config</code> sends XW and saves the firmware-supported extended settings
+together, including the address, rather than only the last setting changed.
+It does not save the current folder, selected partition, or mounted image.
+Setters do not save automatically. Hardware address jumpers can override the
+saved address when their setting changes.</p>
+<h2 id="address-and-reset">Address and reset</h2>
+<pre><code class="language-text">iec 10: address 13
+iec 13: status
+iec 13: address 10 --save
+iec 10: initialize
+iec 10: reset soft
+iec 10: reset hard
+</code></pre>
+<p>Address changes accept 8 through 30, reject occupied/ambiguous listener checks,
+and verify SD2IEC at the new address. <code>--save</code> sends XW only after verification.
+It still saves the other supported extended settings too. Address 13 is sent as a binary byte with
+an extra command terminator, preserving it through the firmware CR handling.</p>
+<p>Initialize cleans device buffers. Soft reset sends UJ; on SD2IEC it preserves
+cwd, mounted image and autoswap state. Hard reset sends U plus binary $CA;
+saved settings, including the saved address, then apply. ReadyFS reports that
+the restart was sent, rather than claiming that the device has returned at the
+old address. These commands invalidate ReadyFS cached profile/mount hints for
+the affected address, and an address change also invalidates its destination.</p>
+<h2 id="explicit-dos-commands">Explicit DOS commands</h2>
+<pre><code class="language-text">iec 10: dos &quot;x?&quot;
+iec 10: dos --hex &quot;55 CA&quot;
+</code></pre>
+<p>The text form transmits its quoted command. The hex form accepts separated,
+complete byte pairs, including zero bytes. Both forms are limited to 119 bytes.
+These are real commands, not previews; their meaning and side effects come from
+the device firmware. Raw commands invalidate all cached IEC profile/mount hints
+because their effect cannot be inferred. DOS status 09 is accepted as SD2IEC&#39;s
+long-version information, alongside success/information codes 00–03 and 73.
+Other DOS errors are red and set the shell&#39;s typed error result.</p>
+<h2 id="implementation-and-test-boundaries">Implementation and test boundaries</h2>
+<p>Policy lives in cached overlay 17; native standalone I/O and media reporting
+live in overlay 18. Stream preparation retains overlay 16 for filesystem policy.
+The resident gateway enters them sequentially. Neither
+loads a sidecar from disk at runtime. All returned data stays in resident
+buffers, and existing file transfer loops keep their current implementation.</p>
+<p>On SD2IEC, <strong>CLOSE 15 closes all user data channels on that device</strong>. The new
+standalone configuration transaction must not be reused for status checks
+inside a copy. The native filesystem transfer path reads status through the
+existing command channel without closing15, preserving live source/destination
+channels. These two transaction lifetimes are deliberately separate.</p>
+<p>Host tests exercise exact binary commands, current versus SYSTEM partition,
+partition/address 13, occupied-address refusal, verify-before-save sequencing,
+short writes, unavailable partitions, the special partition-directory EOF,
+operation-specific status codes, bounded raw commands and cache invalidation.
+They do not prove physical timing or persistent-device behavior.</p>
+<p><code>build_support/readyfs_iec_6502_test.py</code> additionally executes the linked native
+sidecar and resident cc65 runtime using py65. It verifies the actual partition
+parser against a captured native directory and catches compiler segment-layout
+crashes that host C tests cannot see. KERNAL I/O is mocked in this test; physical
+acceptance remains a separate gate.</p>
+<p>Protocol reference: <a href="https://www.sd2iec.de/nightlies/sd2iec-1.0.0atentdead0-36-g7e7be29.tar.gz">official source for the attached -36 firmware</a>,
+particularly <code>src/doscmd.c</code>, <code>src/iec.c</code> and <code>src/fileops.c</code>.</p>
+<p>For file and image workflows, current acceptance evidence, and limitations, see
+<a href="SD2IEC_NATIVE.html">Native SD2IEC and IEC support</a>.</p>
+<p>The <a href="READYFS_SD2IEC_TUTORIAL.html">illustrated SD2IEC walkthrough</a> places configuration inspection beside multi-file and mounted-image workflows.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

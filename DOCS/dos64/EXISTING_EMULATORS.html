@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Existing emulator references · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Existing emulator references"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#closest-host-cpu-match-nes86">Closest host-CPU match: NES86</a></li><li><a href="#other-useful-references">Other useful references</a></li><li><a href="#historical-6502-hosted-cpm-work">Historical 6502-hosted CP/M work</a></li><li><a href="#implementation-policy">Implementation policy</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="EXISTING_EMULATORS.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="existing-emulator-references">Existing emulator references</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p>Inspected 2026-10-14. The user clarified that the target is the <strong>original 8088 / IBM PC XT</strong>, implemented on the C64U&#39;s 6502/6510. References inform techniques; their capabilities never narrow the project&#39;s requirements. No code from the projects below has been incorporated into the runtime.</p>
+<h2 id="closest-host-cpu-match-nes86">Closest host-CPU match: NES86</h2>
+<p><a href="https://github.com/decrazyo/nes86/tree/d72debaa0a5daed533d994e087fa2963e1793820">NES86</a> implements an 8086 on the NES in 6502 assembly, built with ca65/ld65. This is a real example of the direction we need: 6502 <strong>executing an x86 interpreter</strong>. It is not a C emulator of both processors, nor an emulator running on an 8088. Pin: <code>d72debaa0a5daed533d994e087fa2963e1793820</code>. Repository LICENSE is GPLv3; any source adaptation must retain notices and meet that license, rather than being treated as newly authored code.</p>
+<p>Inspected modules provide these concrete references:</p>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Useful technique</th>
+<th>Adaptation boundary</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/decrazyo/nes86/blob/d72debaa0a5daed533d994e087fa2963e1793820/src/x86.s">x86.s</a></td>
+<td>Separate fetch/decode/execute/write stages and explicit single-step entry</td>
+<td>Benchmark stage overhead; preserve our test ABI and bounded scheduler</td>
+</tr>
+<tr>
+<td><a href="https://github.com/decrazyo/nes86/blob/d72debaa0a5daed533d994e087fa2963e1793820/src/x86/decode.s">decode.s</a></td>
+<td>Shared operand forms, opcode-indexed tables and split low/high dispatch tables</td>
+<td>Preserve original-8088 opcode profile and prefix semantics</td>
+</tr>
+<tr>
+<td><a href="https://github.com/decrazyo/nes86/blob/d72debaa0a5daed533d994e087fa2963e1793820/src/x86/reg.s">reg.s</a></td>
+<td>Byte/word register maps and ModR/M register maps in zero page</td>
+<td>Account for our limited ZP ownership and existing register layout</td>
+</tr>
+<tr>
+<td><a href="https://github.com/decrazyo/nes86/blob/d72debaa0a5daed533d994e087fa2963e1793820/src/x86/alu.s">alu.s</a>, <a href="https://github.com/decrazyo/nes86/blob/d72debaa0a5daed533d994e087fa2963e1793820/src/x86/execute.s">execute.s</a></td>
+<td>8/16-bit arithmetic on an 8-bit host; separate flag computation</td>
+<td>Verify independently against hardware-generated 8088 cases, especially shifts, divide and decimal-adjust</td>
+</tr>
+<tr>
+<td><a href="https://github.com/decrazyo/nes86/blob/d72debaa0a5daed533d994e087fa2963e1793820/src/x86/mem.s">mem.s</a></td>
+<td>Segmented-address interface separates operands from host memory mapping</td>
+<td>MMC5 maps cartridge RAM directly; REU requires DMA and coherent cached host pages. Replace mapping, do not port its mapper assumptions</td>
+</tr>
+</tbody></table>
+<p>The <a href="https://github.com/decrazyo/nes86/blob/d72debaa0a5daed533d994e087fa2963e1793820/conf/ld.cfg">linker layout</a> allocates 128 KiB guest RAM and cartridge ROM. The <a href="https://github.com/decrazyo/nes86/blob/d72debaa0a5daed533d994e087fa2963e1793820/data/bios/src/bios.asm">BIOS</a> is tailored to ELKS and a serial console; it is not a DOS disk/CGA BIOS to drop in. Neither the project&#39;s advertised operation nor source inspection proves original-8088 conformance or our performance goal. Do not import reset defaults, segment-edge behavior, instruction timing, or undocumented-opcode behavior without tests. On the 6510, explicitly keep host decimal mode clear during binary arithmetic; NES code runs on a CPU whose decimal behavior differs.</p>
+<p>Searches also returned Appler, PCjs and multi-CPU desktop emulators. Appler runs a 6502 emulator <strong>on an 8088</strong>, the opposite direction. The searches did not establish a separate, explicitly 8088/XT-focused 6502/6510 core. This is a search result, not proof that none exists.</p>
+<h2 id="other-useful-references">Other useful references</h2>
+<table>
+<thead>
+<tr>
+<th>Project and inspected pin</th>
+<th>License evidence</th>
+<th>Intended use and limits</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/adriancable/8086tiny/tree/c79ca2a34d96931d55ef724c815b289d0767ae3a">8086tiny</a>, <code>c79ca2a34d96931d55ef724c815b289d0767ae3a</code></td>
+<td>MIT in <code>license.txt</code> and BIOS source header</td>
+<td>Compact C interpreter and NASM BIOS. Useful BIOS contracts, boot/INT 13h flow and decoder structure. C implementation is not our target runtime or a hardware oracle</td>
+</tr>
+<tr>
+<td><a href="https://github.com/mikechambers84/XTulator/tree/211791d9b41871fb18079e37e696f6b95d2c3f88">XTulator</a>, <code>211791d9b41871fb18079e37e696f6b95d2c3f88</code></td>
+<td>CPU source header: GPLv2 or later</td>
+<td>Readable C flags/ModR/M/peripheral reference. Includes 80186 extensions; filter those out. GitHub&#39;s missing license metadata does not supersede the source header</td>
+</tr>
+<tr>
+<td><a href="https://github.com/dmsc/emu2/tree/9d8698d06e67359bc8b230c2d19d5b1503e60819">emu2</a>, <code>9d8698d06e67359bc8b230c2d19d5b1503e60819</code></td>
+<td>GPLv2 LICENSE</td>
+<td>CPU/console reference; native DOS API emulation is a different architecture from our real DOS boot</td>
+</tr>
+<tr>
+<td><a href="https://github.com/dbalsom/martypc">MartyPC</a> and <a href="https://github.com/SingleStepTests/8088">SingleStepTests/8088</a></td>
+<td>Pin and audit exact corpus/license when importing</td>
+<td>Prefer original-CPU evidence for correctness; desktop emulator performance does not predict C64U performance</td>
+</tr>
+</tbody></table>
+<p>8086tiny&#39;s <a href="https://github.com/adriancable/8086tiny/blob/c79ca2a34d96931d55ef724c815b289d0767ae3a/bios_source/bios.asm">BIOS source</a> uses private <code>0F 00</code> through <code>0F 03</code> services and carries decoder lookup tables. Its BIOS/emulator coupling and memory layout differ from ours. If BIOS code is adapted later, record exact source ranges, modifications and MIT notices; do not adopt private instructions as generally executable guest opcodes. Our proposed native BIOS entry callbacks must still allow guest interrupt-vector hooks.</p>
+<h2 id="historical-6502-hosted-cpm-work">Historical 6502-hosted CP/M work</h2>
+<p>Dann McCreary&#39;s original <a href="https://www.pagetable.com/docs/8080sim/An%208080%20Simulator%20for%20the%206502,%20KIM-1%20Version.pdf">8080 Simulator for the 6502, KIM-1 Version</a> and <a href="https://www.pagetable.com/docs/8080sim/8080%20Simulation%20with%20a%206502.pdf">1979 design article</a> are author-provided scans. They illustrate compact opcode grouping and register simulation. Publication of scans does not establish a reusable open-source license; treat them as historical design reading.</p>
+<p>Michael Steil&#39;s <a href="https://www.pagetable.com/213">source-level examination of Roßmöller&#39;s C64 CP/M emulator</a> traces it to McCreary&#39;s size-focused 8080 simulator. Its extra address translation and wrapper overhead are useful cautionary examples for a fast interpreter. It is not a full Z80 or x86 core, and its licensing history makes it unsuitable for unexamined copying. <a href="https://github.com/davidgiven/cpm65">CP/M-65</a> is instead a native 6502 OS port, not execution of 8080 programs.</p>
+<h2 id="implementation-policy">Implementation policy</h2>
+<ol>
+<li>Implement the required original-8088 behavior, genuine DOS 3.3 boot and our PC device subset whether or not a reference provides it. The latest user clarification explicitly confirms this priority.</li>
+<li>Keep our CPU-state ABI, REU/cache/storage interfaces and Zig/Peddle behavior tests. Inspect useful routines before designing the next slice; do not make progress depend on finding reusable code.</li>
+<li>Use hardware-generated original-8088 cases and independently calculated defined flags as acceptance evidence. Comparing two emulators is supplementary evidence; they can share a bug.</li>
+<li>Before substantial code reuse, pin it, preserve its license/attribution, identify modifications and measure linked code/ZP/stack costs. No blanket project license choice is made by this research document.</li>
+<li>Keep downloads in project-local ignored scratch. The inspected NES86 file hashes are retained in the inspection record (local development record, not distributed); no upstream source is vendored by this research pass.</li>
+</ol>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

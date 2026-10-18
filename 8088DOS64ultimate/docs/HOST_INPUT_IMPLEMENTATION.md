@@ -1,0 +1,12 @@
+# Native C64 keyboard input
+
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+The882-byte INPUT overlay and34 resident state bytes scan the CIA1 electrical matrix, translate observed edges and call the actual XT keyboard enqueue backend. Caller must own CIA1 ports/KERNAL scanning and NMI handling, disable PB6/PB7 timer output, and keep joysticks released. The scanner never accesses CIA timers/ICR/TOD. Public wrappers hold INPUT throughout every call; native registers/P except carry and observable banking/port configuration are restored. Hidden input latch bits cannot be saved by reading pins.
+
+The shift keys update XT shift bits, CTRL maps CTRL and Commodore maps Alt. BDA0417 high toggle bits survive but do not change translation. Shift-lock is the physical left-shift key. Ordinary ASCII, CTRL+C, cursors, DEL/backspace, shiftedDEL/delete, RUNSTOP/Escape, left-arrow/Tab, HOME/End and F1–F8 are supported. F9/F10, Pause, Insert, toggle keys, Alt-keypad and Ctrl-Alt-Del reset are not implemented. No IRQ1, typematic or time-based debounce exists; caller chooses scan cadence.
+
+The full BIOS queue retains exactly one pending translated word until accepted, including release before retry. Other brief presses while blocked are not guaranteed capture. Ambiguous ghost rectangles are conservatively rejected, including some real three-key chords. Cache failures preserve explicit retry/status contracts.
+
+Eleven actual-assembly tests exercise all64 positions,60 shifted mappings,2016 two-key cases,784 rectangles, modifiers, a14-key burst, full-ring retry, failures and native flag/banking preservation. The independently modeled electrical network is default-off. Root global integration passes326 tests. No physical matrix acceptance or native runtime polling is claimed yet. Evidence (local development record, not distributed).

@@ -1,0 +1,71 @@
+{
+  "source_video": "ReadyFS/logs/readyfs_c64u/demo-v2-final-20261009/readyfs-demo.mp4",
+  "source_sha256": "fccaa313df863e5119d8c3ca79c8fc1a9d50c793571c035c974e6e2cf83ecc1a",
+  "hardware": "C64 Ultimate, 1 MHz, physical VIC stream",
+  "screenshots": [
+    {
+      "file": "01-help.png",
+      "seconds": 13
+    },
+    {
+      "file": "02-directory-header.png",
+      "seconds": 22
+    },
+    {
+      "file": "03-directory-free.png",
+      "seconds": 28.5
+    },
+    {
+      "file": "04-help-copy.png",
+      "seconds": 36
+    },
+    {
+      "file": "05-head.png",
+      "seconds": 89
+    },
+    {
+      "file": "06-long-line.png",
+      "seconds": 155
+    },
+    {
+      "file": "07-output-history.png",
+      "seconds": 208
+    },
+    {
+      "file": "08-copy-preview.png",
+      "seconds": 274
+    },
+    {
+      "file": "09-copy-complete.png",
+      "seconds": 351
+    },
+    {
+      "file": "10-copied-tree.png",
+      "seconds": 365.7
+    },
+    {
+      "file": "11-move-preview.png",
+      "seconds": 404
+    },
+    {
+      "file": "12-move-complete.png",
+      "seconds": 488
+    },
+    {
+      "file": "13-delete-preview.png",
+      "seconds": 536
+    },
+    {
+      "file": "14-delete-complete.png",
+      "seconds": 585
+    },
+    {
+      "file": "15-host-directory.png",
+      "seconds": 602
+    },
+    {
+      "file": "16-source-survives.png",
+      "seconds": 614
+    }
+  ]
+}

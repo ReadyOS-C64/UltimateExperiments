@@ -1,0 +1,45 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_dos_config_fresh
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 90, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-dos-test.d81"
+    disk9: null
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - {"id": "launch", "type": "vice.launch", "params": {"kill_stale": true}}
+  - {"id": "ready", "type": "screen.wait_contains", "params": {"text": "UP/DN HIST", "wait_timeout_s": 90}}
+  - {"id": "input_clear_initial", "type": "input.sequence", "params": {"keys": [67, 76, 69, 65, 82, 13], "inter_key_delay_s": 0.025, "post_delay_s": 0.35}}
+  - {"id": "input_initial_empty", "type": "input.sequence", "params": {"keys": [69, 67, 72, 79, 32, 73, 78, 73, 84, 73, 65, 76, 32, 91, 37, 83, 65, 86, 69, 68, 37, 93, 32, 91, 37, 80, 82, 73, 86, 65, 84, 69, 37, 93, 13], "inter_key_delay_s": 0.025, "post_delay_s": 0.35}}
+  - {"id": "initial_empty", "type": "screen.wait_contains", "params": {"text": "INITIAL [] []", "wait_timeout_s": 30, "capture_label": "initial_empty"}}
+  - {"id": "input_clear_load", "type": "input.sequence", "params": {"keys": [67, 76, 69, 65, 82, 13], "inter_key_delay_s": 0.025, "post_delay_s": 0.35}}
+  - {"id": "input_load_fresh", "type": "input.sequence", "params": {"keys": [67, 79, 78, 70, 73, 71, 32, 76, 79, 65, 68, 32, 56, 58, 47, 82, 70, 66, 69, 78, 86, 13], "inter_key_delay_s": 0.025, "post_delay_s": 0.35}}
+  - {"id": "fresh_loaded", "type": "screen.wait_contains", "params": {"text": "CONFIG LOADED", "wait_timeout_s": 90, "capture_label": "fresh_loaded"}}
+  - {"id": "input_clear_values", "type": "input.sequence", "params": {"keys": [67, 76, 69, 65, 82, 13], "inter_key_delay_s": 0.025, "post_delay_s": 0.35}}
+  - {"id": "input_echo_fresh", "type": "input.sequence", "params": {"keys": [69, 67, 72, 79, 32, 70, 82, 69, 83, 72, 32, 37, 83, 65, 86, 69, 68, 37, 32, 91, 37, 80, 82, 73, 86, 65, 84, 69, 37, 93, 13], "inter_key_delay_s": 0.025, "post_delay_s": 0.35}}
+  - {"id": "fresh_values", "type": "screen.wait_contains", "params": {"text": "FRESH ORIGINAL []", "wait_timeout_s": 30, "capture_label": "fresh_values"}}
+  - {"id": "input_clear_help", "type": "input.sequence", "params": {"keys": [67, 76, 69, 65, 82, 13], "inter_key_delay_s": 0.025, "post_delay_s": 0.35}}
+  - {"id": "input_help_batch", "type": "input.sequence", "params": {"keys": [72, 69, 76, 80, 32, 66, 65, 84, 67, 72, 13], "inter_key_delay_s": 0.025, "post_delay_s": 0.35}}
+  - {"id": "help_debug", "type": "screen.capture", "params": {"label": "help_debug"}}
+  - {"id": "help_batch", "type": "screen.wait_contains", "params": {"text": "SET /P NAME=VALUE", "wait_timeout_s": 30, "capture_label": "help_batch"}}
+  - {"id": "help_flow", "type": "screen.wait_contains", "params": {"text": "CALL :LABEL", "wait_timeout_s": 30, "capture_label": "help_flow"}}
+  - {"id": "status_alias", "type": "input.sequence", "params": {"keys": [65, 76, 32, 84, 69, 83, 84, 32, 56, 58, 47, 13], "inter_key_delay_s": 0.025, "post_delay_s": 0.35}}
+  - {"id": "status_clear", "type": "input.sequence", "params": {"keys": [67, 76, 69, 65, 82, 13], "inter_key_delay_s": 0.025, "post_delay_s": 0.35}}
+  - {"id": "status_unknown", "type": "input.sequence", "params": {"keys": [85, 78, 75, 78, 79, 87, 78, 67, 77, 68, 13], "inter_key_delay_s": 0.025, "post_delay_s": 0.35}}
+  - {"id": "status_query", "type": "input.sequence", "params": {"keys": [83, 84, 65, 84, 85, 83, 13], "inter_key_delay_s": 0.025, "post_delay_s": 0.35}}
+  - {"id": "status_alias_count", "type": "screen.wait_contains", "params": {"text": "ALIASES 1", "wait_timeout_s": 30, "capture_label": "status_alias_count"}}
+  - {"id": "status_previous_result", "type": "screen.wait_contains", "params": {"text": "LAST RESULT: 1", "wait_timeout_s": 30, "capture_label": "status_previous_result"}}
+  - {"id": "status_admission", "type": "screen.wait_contains", "params": {"text": "READY: REU OVERLAY PLAN JOURNAL BACKEND", "wait_timeout_s": 30, "capture_label": "status_admission"}}

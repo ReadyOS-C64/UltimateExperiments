@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>DOS disk inspection and fixture creation · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: DOS disk inspection and fixture creation"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#manifest-interface">Manifest interface</a></li><li><a href="#host-verification">Host verification</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="DISK_TOOLS.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="dos-disk-inspection-and-fixture-creation">DOS disk inspection and fixture creation</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p><code>build_support/dos_disk_inspect.py</code> reads FAT12/FAT16 volumes and single-primary-partition raw HD images without writing or repairing them. It checks both FAT copies, BPB/volume bounds, reserved FAT entries, full file and directory chains, dot/parent entries, cross-links, lost allocations, exact lengths and MBR/CHS agreement. Bad clusters are reported separately. It can extract a file to standard output after validating the complete filesystem.</p>
+<pre><code class="language-sh">python3 build_support/dos_disk_inspect.py &#39;reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img&#39;
+python3 build_support/dos_disk_inspect.py agentworking/runs/my-large-fixture/disk.raw.img --geometry 640,4,16
+python3 build_support/dos_disk_inspect.py agentworking/runs/my-large-fixture/disk.raw.img --geometry 640,4,16 --extract BOOTVER.TXT
+</code></pre>
+<p>Scope is DOS 3.x: 512-byte sectors, two FAT copies, 16-bit BPB sector counts, short names and FAT12/FAT16. FAT32, long names, extended/multiple partitions and repair are unsupported. Width classification uses cluster counts and the HD partition type must agree; accepted fixtures stay far from historical width-boundary ambiguities. Directory recursion has an explicit depth bound of 64.</p>
+<p><code>build_support/dos_hd_fixture.py</code> creates each fixture in a new owned directory inside this project&#39;s <code>agentworking/runs/</code>. Existing outputs and paths outside that tree are rejected. It requires optional DOSBox-X and NASM tools; neither is needed by the inspector or its unit tests. Tool paths can be supplied through <code>--dosbox</code>, <code>--nasm</code>, <code>DOS64_DOSBOX</code> and <code>DOS64_NASM</code>. Python 3.9 or later is required.</p>
+<pre><code class="language-sh">python3 build_support/dos_hd_fixture.py --profile small --output agentworking/runs/my-small-fixture
+python3 build_support/dos_hd_fixture.py --profile large --cross16 --output agentworking/runs/my-large-fixture
+</code></pre>
+<p>Profiles have fixed original-BIOS geometry:</p>
+<table>
+<thead>
+<tr>
+<th>Profile</th>
+<th align="right">Cylinders/heads/sectors</th>
+<th align="right">Raw bytes</th>
+<th>Partition</th>
+<th>FAT</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>small</td>
+<td align="right">128/2/16</td>
+<td align="right">2,097,152</td>
+<td>active, start LBA 16, length 4,080</td>
+<td>FAT12, type 01h</td>
+</tr>
+<tr>
+<td>large</td>
+<td align="right">640/4/16</td>
+<td align="right">20,971,520</td>
+<td>active, start LBA 16, length 40,944</td>
+<td>FAT16, type 04h</td>
+</tr>
+</tbody></table>
+<p>Creation verifies all three supplied source-image hashes, clones disk 1, and runs its unchanged genuine DOS 3.3 FDISK, FORMAT /S, SYS and CHKDSK. The formatted disk then boots alone in a fresh DOSBox-X process; guest VER and completion files must appear, system file contents must match the source, CHKDSK total allocation must match the independent inspector, and all FAT allocations must be valid. No host-mounted drive survives guest boot. Only disposable clones receive CONFIG/AUTOEXEC changes and temporary evidence files.</p>
+<p>The FDISK console feeder is a tiny <code>cpu 8086</code> TSR in <code>dos_fixture_assets/keyfeed.asm</code>. It supplies FDISK&#39;s flushed AH=0Ch/AH=08h input and records raw text screens. It does not replace disk/boot/filesystem services. The TSR is absent from the resulting HD. <code>cross16.asm</code> is a separate original-8086 guest test using genuine DOS handle calls, not a host-created data file.</p>
+<p>The tested DOSBox-X 2026.01.02 classifies raw images no larger than 2,880 KiB as floppies. The small profile therefore uses a temporary <strong>3 MiB zero file with exact advertised 128/2/16 geometry</strong>. After guest execution, every byte in the extra 1 MiB must still be zero before the exact first 2 MiB is extracted. No boot, partition or FAT fields are patched. To reference-boot that 2 MiB raw image with this DOSBox-X version, use a fresh 3 MiB padded copy with the same advertised geometry. Target tests consume the exact 2 MiB image.</p>
+<p><code>--cross16</code> is large-only. DOS writes 4,097 blocks of 4,096 bytes to <code>CROSS16.BIN</code>, closes, reopens, reads and compares every word, verifies EOF, closes and writes a closed completion marker. Word <code>j</code> of block <code>i</code> is <code>0xA55A XOR i XOR j</code>. The host independently compares every file byte and maps its contiguous chain across raw byte <code>0x01000000</code>; seam hashes and 32-bit offsets are retained. No raw HD images are bundled in source control.</p>
+<p>Each guest stage has a finite <code>--timeout</code> (default 90 seconds; allowed 1–180). Version/assembly tool calls have ten-second bounds. Processes stop after closed guest evidence files or bounded failure. These tests establish reference media contents and semantics; they do not establish power-failure durability, physical C64U storage behavior, 6510 backend correctness or XT performance.</p>
+<h2 id="manifest-interface">Manifest interface</h2>
+<p>Each run keeps <code>manifest.json</code> even after failure. Require <strong>all</strong> of <code>complete</code>, <code>original_images_unchanged</code> and <code>source_system_files_identical</code> to be true before consuming an accepted fixture. Verify the actual raw file against <code>raw_image.bytes</code> and <code>raw_image.sha256</code>.</p>
+<p>The interface is <code>schema_version: 1</code>, <code>kind: &quot;dos64-genuine-dos-hd-fixture&quot;</code>, <code>profile: &quot;small&quot; | &quot;large&quot;</code>, and:</p>
+<pre><code class="language-json">{
+  &quot;raw_image&quot;: {&quot;path&quot;: &quot;disk.raw.img&quot;, &quot;bytes&quot;: 20971520, &quot;sha256&quot;: &quot;actual run hash&quot;},
+  &quot;geometry&quot;: {&quot;cylinders&quot;: 640, &quot;heads&quot;: 4, &quot;sectors_per_track&quot;: 16, &quot;bytes_per_sector&quot;: 512}
+}
+</code></pre>
+<p>Resolve relative <code>raw_image.path</code> against the manifest&#39;s parent directory. The manifest also records original image identities, actual tool/source hashes, stage commands/configuration hashes, guest transcripts, independent complete inspection and limitations. Optional <code>cross16</code> identifies <code>name</code>, <code>file_bytes</code>, <code>sha256</code>, <code>raw_start</code>, <code>raw_end_exclusive</code>, <code>contiguous</code>, seam hashes, and both <code>guest_write_close_reopen_read_compare_eof_close</code> and <code>host_compared_all_generated_bytes</code>. Long HD acceptance may explicitly require those fields and the <code>CROSS16.BIN</code> inspection entry.</p>
+<p>Timestamps are set by the guest clock, so re-created images need not have the same whole-image hash. Always pin the actual run&#39;s identities. The root image output contains redirected boot logs in AUTOEXEC; booting a disposable writable clone legitimately updates those logs.</p>
+<h2 id="host-verification">Host verification</h2>
+<p>The default tests need only Python and the supplied reference images:</p>
+<pre><code class="language-sh">python3 -m unittest discover -s tests/tooling -p &#39;test_dos_disk_inspect.py&#39; -v
+python3 -m unittest discover -s tests/tooling -p &#39;test_dos_hd_fixture.py&#39; -v
+</code></pre>
+<p>Synthetic structural unit images are deliberately nonbootable and are never offered as genuine DOS fixtures. Actual generated HD fixture runs remain opt-in. This tooling does not modify the emulator, inject INT 21h implementations, or provide an alternate native application loader.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

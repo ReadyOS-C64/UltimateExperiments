@@ -1,0 +1,30 @@
+.ifndef DOS64_ABI_INC
+DOS64_ABI_INC = 1
+.setcpu "6502"
+
+DOS64_ABI_VERSION = 1
+G_AX = 0
+G_CX = 2
+G_DX = 4
+G_BX = 6
+G_SP = 8
+G_BP = 10
+G_SI = 12
+G_DI = 14
+G_ES = 16
+G_CS = 18
+G_SS = 20
+G_DS = 22
+G_IP = 24
+G_FLAGS = 26
+G_SIZE = 28
+
+MB_VERSION = 0
+MB_STATUS = 1
+MB_CASE = 2
+MB_ERROR = 4
+MB_SIZE = 8
+STATUS_READY = $01
+STATUS_PASS = $A5
+STATUS_FAIL = $E1
+.endif

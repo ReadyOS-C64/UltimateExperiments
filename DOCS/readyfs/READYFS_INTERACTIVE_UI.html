@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS interactive editor and REU output history · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS interactive editor and REU output history"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs" open><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="READYFS_INTERACTIVE_UI.html" aria-current="page">Editor and history</a></li><li><a href="READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="tours/editor.html">Editor screenshot tour</a></li><li><a href="tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="READYFS_SAFETY.html">Safety</a></li><li><a href="READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#batch-scripts">Batch scripts</a></li><li><a href="#editing">Editing</a></li><li><a href="#output-history">Output history</a></li><li><a href="#screen-work">Screen work</a></li><li><a href="#exact-short-names">Exact short names</a></li><li><a href="#layout-and-verification">Layout and verification</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="READYFS_INTERACTIVE_UI.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs-interactive-editor-and-reu-output-history">ReadyFS interactive editor and REU output history</h1>
+<p>The full interactive application is <strong>readyfs-overlay.prg</strong>, with
+<strong>readyfs-overlay-lab.d81</strong> mounted on IEC device 8. Keep all 28 sidecars
+on that disk; startup caches them in the REU. <code>readyfs.prg</code> is the smaller
+monolithic diagnostic variant and retains its basic input reader. Use the
+overlay application for this editor, option shorthand, scripts, and scrollback.</p>
+<p>For a concepts-first walkthrough with screenshots and a full command reference,
+see the <a href="READYFS_USER_GUIDE.html">illustrated user guide</a> or its
+<a href="portable-guide.html">standalone print edition</a>.</p>
+<h2 id="batch-scripts">Batch scripts</h2>
+<p>Use <code>RUN script-path [arg1 ... arg9]</code> or <code>RU</code>. The <a href="READYFS_RUN_GUIDE.html">RUN reference</a> documents session/persistent variables, <code>%0</code>–<code>%9</code>, conditions, counter loops, same-file CALL and shared subroutine inputs, result handling and all limits. Its BACKUP.SEQ example is demonstrated in the appended physical video chapter. Separate-file CALL, nested RUN, SHIFT and FOR are not supported. TYPE streams the script; use F1/F3 output history to read earlier lines.</p>
+<h2 id="editing">Editing</h2>
+<p>The logical command can contain <strong>255 bytes</strong>. Four visible input rows each
+hold 36 command characters, following <code>rf&gt; </code> or <code>..&gt; </code>. The window follows the
+cursor through longer commands. Wrapping changes presentation; it does not
+insert bytes into the command. Paths and text containing spaces still need
+quotes, and the existing parser has a twelve-token limit.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Left / Right</td>
+<td>Move within the command</td>
+</tr>
+<tr>
+<td>Home / Shift+Home</td>
+<td>Beginning / end of the command</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td>Delete the character before the cursor</td>
+</tr>
+<tr>
+<td>Insert</td>
+<td>Toggle insert / overwrite (<code>ov&gt;</code>); initially insert</td>
+</tr>
+<tr>
+<td>Up / Down</td>
+<td>Older / newer executed command; Down past newest restores the draft</td>
+</tr>
+<tr>
+<td>Return</td>
+<td>Execute the logical command</td>
+</tr>
+<tr>
+<td>Trailing backslash + Return</td>
+<td>Replace the backslash with a space and continue</td>
+</tr>
+<tr>
+<td>Return with an open double quote</td>
+<td>Continue the quoted command with a space</td>
+</tr>
+<tr>
+<td>Shift+Return or F7</td>
+<td>Insert a joining space and continue</td>
+</tr>
+<tr>
+<td>Run/Stop</td>
+<td>Cancel the draft</td>
+</tr>
+</tbody></table>
+<p>Continuation joins parts of one command. It does not execute a batch of
+commands and does not add a newline to a file&#39;s contents. The same 255-byte
+limit applies to the joined command. Closing a quote and pressing Return runs
+it. At the limit, further printable characters are ignored; Delete frees room.</p>
+<p>Command history uses 32 REU records of 256 bytes. Up/Down recall remains
+editable. The unfinished draft, cursor position, and insert mode are preserved
+in separate REU storage while walking history. History does not persist across
+application restart.</p>
+<h2 id="output-history">Output history</h2>
+<p>At the prompt, <strong>F1</strong> enters the most recent output page and then moves older.
+<strong>F3</strong> moves newer and, at the newest page, returns to the live editor.
+Commodore+Up/Down provide the same paging actions. Run/Stop or Return returns
+to live output immediately. F3 at the live prompt leaves the editor alone.</p>
+<p>The output ring stores <strong>800 physical rows</strong>, with both 40 screen characters
+and 40 color bytes per row: 64,000 bytes in a separate REU bank. It captures
+completed rows continuously, including wrapped output and command echoes.
+<code>clear</code> clears the live screen while retaining scrollback. Once full, the ring
+replaces its oldest row. Pages contain up to 23 output rows. The live 1,000-byte
+screen and 1,000-byte color map are preserved in REU and restored exactly when
+leaving history, including the current draft.</p>
+<p>The editor and history-browser legends are excluded from the output ring.
+Paging is available from the command prompt; existing <code>-- more --</code> directory
+prompts still wait for a key before continuing enumeration.</p>
+<h2 id="screen-work">Screen work</h2>
+<p>Ordinary editing does not clear or repaint the screen:</p>
+<ul>
+<li>Append or overwrite: one character cell.</li>
+<li>Delete at the end: one blank cell.</li>
+<li>Insert/delete within text: only the changed suffix, clipped to visible rows.</li>
+<li>Cursor movement: no editor text writes, except when the visible window changes.</li>
+<li>Reaching the oldest history entry, or paging past an output boundary: no repaint.</li>
+<li>Legend: only when continuation state changes.</li>
+<li>History recall or viewport movement: redraw the four input rows; output above
+them remains untouched.</li>
+<li>Output paging: REU DMA restores the requested characters and colors.</li>
+</ul>
+<p>The C64&#39;s ordinary input-cursor blink still operates. The host screen-write
+oracle counts application drawing separately from the cursor.</p>
+<h2 id="exact-short-names">Exact short names</h2>
+<p>Names match complete tokens, case-insensitively. Prefix abbreviations are not
+accepted, so adding future commands cannot silently change the meaning of an
+existing short name.</p>
+<table>
+<thead>
+<tr>
+<th>Short</th>
+<th>Command</th>
+<th>Short</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>q</td>
+<td>exit</td>
+<td>h</td>
+<td>help</td>
+</tr>
+<tr>
+<td>pb</td>
+<td>probe</td>
+<td>pf</td>
+<td>profile</td>
+</tr>
+<tr>
+<td>nt</td>
+<td>native</td>
+<td>dv</td>
+<td>drives</td>
+</tr>
+<tr>
+<td>pw</td>
+<td>pwd</td>
+<td>hi</td>
+<td>history</td>
+</tr>
+<tr>
+<td>cl</td>
+<td>clear</td>
+<td>cd</td>
+<td>cd</td>
+</tr>
+<tr>
+<td>al</td>
+<td>alias</td>
+<td>ua</td>
+<td>unalias</td>
+</tr>
+<tr>
+<td>cf</td>
+<td>config</td>
+<td>d / ls</td>
+<td>dir</td>
+</tr>
+<tr>
+<td>tr</td>
+<td>tree</td>
+<td>st</td>
+<td>stat</td>
+</tr>
+<tr>
+<td>vl</td>
+<td>volume</td>
+<td>mt</td>
+<td>match</td>
+</tr>
+<tr>
+<td>ty / cat</td>
+<td>type</td>
+<td>cp</td>
+<td>copy</td>
+</tr>
+<tr>
+<td>mv</td>
+<td>move</td>
+<td>rn / ren</td>
+<td>rename</td>
+</tr>
+<tr>
+<td>dl / rm</td>
+<td>delete</td>
+<td>cm / verify</td>
+<td>compare</td>
+</tr>
+<tr>
+<td>nw</td>
+<td>new</td>
+<td>wr</td>
+<td>write</td>
+</tr>
+<tr>
+<td>ap</td>
+<td>append</td>
+<td>md</td>
+<td>mkdir</td>
+</tr>
+<tr>
+<td>rd</td>
+<td>rmdir</td>
+<td>mo</td>
+<td>mount</td>
+</tr>
+<tr>
+<td>um</td>
+<td>dismount</td>
+<td>sw</td>
+<td>swap</td>
+</tr>
+<tr>
+<td>ca</td>
+<td>capabilities</td>
+<td>ss</td>
+<td>status</td>
+</tr>
+<tr>
+<td>fi</td>
+<td>find</td>
+<td>hd</td>
+<td>head</td>
+</tr>
+<tr>
+<td>tl</td>
+<td>tail</td>
+<td>cr</td>
+<td>crc32</td>
+</tr>
+<tr>
+<td>ts</td>
+<td>test</td>
+<td>ru</td>
+<td>run</td>
+</tr>
+<tr>
+<td>fm</td>
+<td>format</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Short option</th>
+<th>Long option</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-r</td>
+<td>--recursive</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>--dry-run (same preview effect as --whatif)</td>
+</tr>
+<tr>
+<td>-x VALUE</td>
+<td>--exclude VALUE</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>--force</td>
+</tr>
+<tr>
+<td>-i VALUE</td>
+<td>--include VALUE</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>--line</td>
+</tr>
+<tr>
+<td>-n VALUE</td>
+<td>--name VALUE</td>
+</tr>
+<tr>
+<td>-np</td>
+<td>--native-pattern</td>
+</tr>
+<tr>
+<td>-t VALUE</td>
+<td>--type VALUE</td>
+</tr>
+<tr>
+<td>-y</td>
+<td>--yes</td>
+</tr>
+<tr>
+<td>-a</td>
+<td>--apply</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>--continue</td>
+</tr>
+<tr>
+<td>-lb VALUE</td>
+<td>--label VALUE</td>
+</tr>
+<tr>
+<td>-id VALUE</td>
+<td>--id VALUE</td>
+</tr>
+<tr>
+<td>-ds</td>
+<td>--disposable</td>
+</tr>
+</tbody></table>
+<p>Options are expanded only after mandatory positional arguments. Values of
+exclude/include/name/type/label/id remain literal, even when they look like an
+option. Short names preserve the existing command&#39;s validation, confirmations,
+and ownership requirements; they do not bypass them.</p>
+<p>Examples:</p>
+<pre><code>hd 8:/rfview 2
+cp u:/SOURCE u:/DEST -r -w -x &quot;*.bak&quot;
+fi 8:/ -i &quot;*.prg&quot;
+</code></pre>
+<h2 id="layout-and-verification">Layout and verification</h2>
+<p>REU banks are reserved relative to the detected size:</p>
+<ul>
+<li>Last bank: 32 commands at <code>$0000–$1FFF</code>, session region based at <code>$2000</code>.</li>
+<li>Last minus one: existing overlay cache, tree queue, and recursive sidecar.</li>
+<li>Last minus two: batch/tape cache plus UI cache <code>$6100–$70FF</code>, live screen
+<code>$7100–$74E7</code>, live colors <code>$7500–$78E7</code>, draft <code>$7900–$79FF</code>.</li>
+<li>Last minus three: output ring <code>$0000–$F9FF</code>.</li>
+</ul>
+<p>The old whole-page scrollback reservation remains unused in the session bank
+so existing configuration/action regions retain their addresses.</p>
+<p><code>make readyfs</code> checks host behavior, UCI contracts, flat assembly DMA calls,
+sidecar size limits, resident/KERNAL scratch separation, and REU disjointness.
+<code>readyfs_ui_test.c</code> exercises minimal screen writes, insertion/deletion,
+255-byte bounds, viewport changes, editable history with draft restoration,
+continuation, and literal-valued option aliases. VICE checks the actual C64
+buffer and screen. <code>start_readyfs_c64u_editor_terminal.sh</code> runs the read-only
+physical suite at 1/16/64 MHz and restores the saved CPU settings and empty
+Drive A. It refuses occupied or differently configured Drive A.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

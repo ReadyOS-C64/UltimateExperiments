@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Interactive Shell · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Interactive Shell"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql" open><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="performance.html">Performance and staged queries</a></li><li><a href="shell.html" aria-current="page">Interactive shell</a></li><li><a href="sql-language.html">SQL language</a></li><li><a href="tested-queries.html">Tested SQL examples</a></li><li><a href="architecture.html">Architecture</a></li><li><a href="memory-map.html">Memory map</a></li><li><a href="public-api.html">Public API</a></li><li><a href="storage-format.html">Storage format</a></li><li><a href="export-format.html">Export format</a></li><li><a href="dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#loading-and-input">Loading and input</a></li><li><a href="#query-output-and-display-types">Query output and display types</a></li><li><a href="#dot-commands">Dot commands</a></li><li><a href="#inspection-export-and-checkpoint">Inspection, export and checkpoint</a></li><li><a href="#petscii-display-boundary">PETSCII display boundary</a></li><li><a href="#test-coverage">Test coverage</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="shell.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="interactive-shell">Interactive Shell</h1>
+<p>The shell is a small client of the public engine API. It is useful for short interactive
+statements and inspection; long benchmark queries are submitted by their test clients
+through the API.</p>
+<blockquote class="performance-callout" aria-label="Query performance"><p><strong>Performance: some advanced queries are very slow right now.</strong></p>
+<p>Joins, correlated subqueries, grouping, sorting and duplicate elimination can walk the same relationships repeatedly. For demanding work, it is often faster to filter/project into TEMP tables, index the useful intermediate columns, and run the next query against that smaller result. The tested seven-step sales pipeline took <strong>425.88 seconds PAL</strong>, compared with <strong>2,300.2 seconds</strong> for the original grouped join—about <strong>5.4× faster</strong>, including its intermediate table and index builds. These are measurements of this fixture, not a guarantee for every query.</p>
+<p><a href="performance.html">Why this happens and how to stage a query</a>.</p>
+</blockquote>
+<h2 id="loading-and-input">Loading and input</h2>
+<p><code>build/rsql64_shell.d81</code> boots the thin ReuSQL64 client shell from device 8. It
+initializes the REU database, keeps the engine&#39;s eight execution images and
+administrative image in their existing caches, and reads one 160-byte logical line at a
+time.</p>
+<h2 id="query-output-and-display-types">Query output and display types</h2>
+<p>Ordinary SQL is entered without a terminator. Mutation statements report the
+affected-row count. SELECT streams each row through the public cursor ABI, prints
+columns separated by comma and space, and finishes with its row count.</p>
+<p>NULL, booleans, signed 8/16/32/64-bit integers, enums, Q8.8 fixed point, CHAR, and TEXT
+have readable representations. BLOB prints <code>&lt;BLOB length&gt;</code> so binary control bytes do
+not reach the screen. FLOAT currently prints its exact five-byte physical representation
+as <code>FLOAT($xxxxxxxxxx)</code>; decimal FLOAT formatting is a presentation enhancement, not a
+query-engine limitation.</p>
+<h2 id="dot-commands">Dot commands</h2>
+<p>The shell accepts all SQL supported by the public API and these aliases:</p>
+<pre><code class="language-text">.HELP
+.DATABASE
+.TABLES
+.SCHEMA table
+.INDEXES
+.TYPES
+.MEMBERS type
+.CHECKPOINT
+.EXPORT filename SELECT ...
+.QUIT
+</code></pre>
+<h2 id="inspection-export-and-checkpoint">Inspection, export and checkpoint</h2>
+<p>The inspection aliases map to <code>SHOW DATABASE</code>, <code>SHOW TABLES</code>, <code>SHOW COLUMNS FROM</code>, <code>SHOW INDEXES</code>, <code>SHOW TYPES</code>, and <code>SHOW MEMBERS FROM</code>. <code>.EXPORT</code> writes the selected query in
+version-1 RSQLX framing to a sequential file on the configured D81 device. It is
+intentionally for bounded selected data.</p>
+<p>A full database can be much larger than a D81 and is saved as an exact raw REU image by
+VICE after <code>.CHECKPOINT</code>; C64 Ultimate UCI support remains out of scope.</p>
+<h2 id="petscii-display-boundary">PETSCII display boundary</h2>
+<p>The display callback translates shifted uppercase PETSCII emitted by cc65 string
+literals into the equivalent unshifted screen characters. This happens only at CHROUT.
+SQL strings, CHAR/TEXT values, KERNAL filenames, and RSQLX payloads retain their
+original C64 bytes.</p>
+<h2 id="test-coverage">Test coverage</h2>
+<p>The shell is tested as compiled 6510 in Peddle at 512KB and 16MB, including GETIN
+editing and captured CHROUT, and by the .NET VICE keyboard automation on a writable D81.
+The VICE gate also extracts and byte-compares its export.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

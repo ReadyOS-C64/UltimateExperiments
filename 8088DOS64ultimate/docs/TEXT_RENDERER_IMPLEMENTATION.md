@@ -1,0 +1,16 @@
+# Native text presentation
+
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+Current TEXT payload is963bytes(renderer718+VIC245). Reapplying TEXT after graphics retains the original saved VIC owner. The five-overlay runtime shares the window with GFX and commits all startup assets before cache use. [Graphics contract](CGA_RENDERER_IMPLEMENTATION.md). Physical80column bitmap/matrix matched an independent oracle for the earlier three-overlay target; external display/readability and actual matrix keyboard remain open.
+
+The current TEXT overlay is one canonical 963-byte linked image: 718 bytes of coherent row renderer immediately followed by 245 bytes of VIC setup/restore. All headers, linker assertions, packaging and DMA lengths cover both members. The resident wrappers hold TEXT busy for the complete call and reject display calls until cold_open is zero. Configured runtime startup establishes TEXT and schedules rows after cold release.
+
+The renderer reads mutable dirty BDA/VRAM through the guest cache. Modes0/1 draw40 columns with full eight-pixel glyphs from4800; modes2/3 draw80 columns with an independent four-pixel font from4400. Two characters share one VIC color cell, using the left attribute for approximate foreground/background; blink visibility remains per character. Guest attributes and VRAM are never rewritten to fit the host display. Bitmap is6000–7FFF, matrix4000–43E7 and guard43E8–43FF.
+
+The initialized2KiB full font is a pinned CC0 Unscii8-to-CP437 mapping. The1KiB packed narrow font contains original95 ASCII glyphs,16 CP437 line/block glyphs and NUL; other extended characters use disclosed compressed fallbacks. Source, license, mapping, transformations and hashes are in `assets/native-text`. Offline `--check` regenerates and compares without writing. These are explicit non-executable PRG data, separate from code overlays and startup zeros.
+
+Setup saves relevant VIC registers and CIA2 bank pins, selects bank1/bitmap6000/matrix4000 and disables sprites. Restore uses saved readable state. Neither routine accesses CIA timers, ICR or TOD. D011 bit7 is a raster-compare write field, not readable prior state; callers must own raster IRQ/NMI policy. Hidden CIA input latches cannot be reconstructed. The functional default-off model checks only used VIC/bank readback; it is not a raster or scanout model.
+
+Fourteen focused actual-assembly tests pass, including600 mode/page/row combinations,256 attributes, real font bytes, arbitrary banking, dirty cache/fault retry, cold-phase rejection and post-release cold RAM filled with BRK traps. Renderer row maxima are48463/48472/93873/93915 CPU cycles for modes0..3, excluding DMA stalls. Separate VICE40/80 component captures verify complete bitmap/font/matrix/code bytes. Root inspected the narrow80 screenshot and confirmed improved legibility; physical output remains unverified. Cursor is hidden, scrolling follows guest VRAM and uncommon compressed glyphs remain approximate. CGA graphics presentation is still unlinked. Current evidence (local development record, not distributed).

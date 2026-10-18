@@ -1,0 +1,16 @@
+*.d81 binary
+*.png binary
+*.jpg binary
+*.bin binary
+*.64c binary
+# C64 scripts intentionally retain CR/PETSCII bytes without text conversion.
+*.seq binary
+*.SEQ binary
+
+# Preserve DOS data and the examples' intentional line endings.
+*.IMG binary
+*.img binary
+*.EXE binary
+*.BAS -text whitespace=cr-at-eol
+DOCS/dos64/examples/README.TXT -text whitespace=cr-at-eol
+DOCS/dos64/examples/RIPPLE.PAS -text

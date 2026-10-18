@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Technical documentation · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Technical documentation"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html" aria-current="page">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav></aside><main id="content"><div class="page-actions"><a href="TECHNICAL.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="technical-documentation">Technical documentation</h1>
+<p>Start with <a href="STATUS.html">current status</a>, <a href="INSTALL.html">prebuilt installation</a>, <a href="BUILD.html">building and tests</a>, <a href="SCREENSHOTS.html">screenshots</a>, and <a href="AUDIT.html">publication audit</a>.</p>
+<p>The following are implementation/design notes. They describe individual slices, historical measurements or acceptance targets; current qualification is summarized in STATUS.md. Local working records and logs are not distributed.</p>
+<ul>
+<li><a href="ARCHITECTURE.html">Architecture contract</a></li>
+<li><a href="BIOS_IMPLEMENTATION.html">Synthetic BIOS implementation</a></li>
+<li><a href="BOUNDARY_PERFORMANCE_20261015.html">Clock and interrupt boundary optimization</a></li>
+<li><a href="CGA_CURSOR.html">Canonical CGA cursor presentation</a></li>
+<li><a href="CGA_RENDERER_IMPLEMENTATION.html">Native CGA presentation</a></li>
+<li><a href="CLOCK_IMPLEMENTATION.html">Original XT guest clock BIOS</a></li>
+<li><a href="CPU_IMPLEMENTATION.html">Original-8088 execution checkpoint</a></li>
+<li><a href="DISK_IMPLEMENTATION.html">REU floppy sector implementation</a></li>
+<li><a href="DISK_TOOLS.html">DOS disk inspection and fixture creation</a></li>
+<li><a href="DISPLAY_INPUT.html">Text, CGA, and keyboard</a></li>
+<li><a href="EXISTING_EMULATORS.html">Existing emulator references</a></li>
+<li><a href="FILES_IMPLEMENTATION.html">Native Ultimate file commands</a></li>
+<li><a href="FLOPPY_CORE.html">Independent A/B floppy core</a></li>
+<li><a href="FLOPPY_EXPORT_PROTOTYPE.html">Standalone native floppy export fixture</a></li>
+<li><a href="FLOPPY_MEDIA_DESIGN.html">User floppy media, save and swap — implementation boundaries2026-10-17</a></li>
+<li><a href="GENUINE_CGA_WORKFLOW.html">Genuine DOS CGA application gate</a></li>
+<li><a href="GWBASIC_HANGMAN_DEMO.html">Genuine GW-BASIC ASCII hangman</a></li>
+<li><a href="HARDWARE_AC_WORKFLOW.html">A+C development workflow</a></li>
+<li><a href="HARDWARE_RECOVERY_IMPLEMENTATION.html">Development recovery and fixture preparation</a></li>
+<li><a href="HARDWARE_TESTING.html">Physical C64U cache verification</a></li>
+<li><a href="HARDWARE_TIMER_RESEARCH_20261015.html">Native alarm hints: research only</a></li>
+<li><a href="HD_FAILURE_EVIDENCE.html">Retaining HD failure evidence</a></li>
+<li><a href="HD_IMPLEMENTATION.html">Hard-disk implementation and copied code</a></li>
+<li><a href="HOST_INPUT_IMPLEMENTATION.html">Native C64 keyboard input</a></li>
+<li><a href="IEC_STANDALONE_IMPLEMENTATION.html">Standalone IEC / D81 development helper</a></li>
+<li><a href="IMAGE_IMPORT_IMPLEMENTATION.html">Cold whole-floppy import</a></li>
+<li><a href="KEYBOARD_IMPLEMENTATION.html">Original XT keyboard BIOS and bounded waiting</a></li>
+<li><a href="MEMORY.html">Memory, paging, and coherence</a></li>
+<li><a href="MEMORY_BUDGET.html"></a></li>
+<li><a href="MEMORY_IMPLEMENTATION.html">Guest memory implementation checkpoint</a></li>
+<li><a href="MODAL_MEDIA_ARCHITECTURE.html">V1 native disk controls: measured integration checkpoint</a></li>
+<li><a href="MODE_HARDWARE_WORKFLOW.html">Genuine MODE hardware workflow</a></li>
+<li><a href="NATIVE_CLOCK_IMPLEMENTATION.html">Native CIA2 elapsed clock</a></li>
+<li><a href="NATIVE_FILE_RECOVERY.html">Opt-in native whole-file REU recovery</a></li>
+<li><a href="NATIVE_INI_BUNDLE.html">Matched INI release build</a></li>
+<li><a href="NATIVE_INSTALLER_DESIGN.html">Native Ultimate installer and folder launcher — research proposal</a></li>
+<li><a href="NATIVE_LAUNCH_DIAGNOSIS.html">Native startup interface diagnosis</a></li>
+<li><a href="NATIVE_MEDIA_TESTS.html">Optional native media tests</a></li>
+<li><a href="NATIVE_RUNTIME_IMPLEMENTATION.html">Configured native startup and runtime</a></li>
+<li><a href="NATIVE_SAVE_IMPLEMENTATION.html">Current update,2026-10-15: production SAVE issues two256-byte WRITE requests for every512-byte sector, advances the far pointer after each successful half, and advances the logical sector after the second half.720 sectors require1440 writes; reopen/content comparison still reads512-byte sectors. Failure-half0/1 is meaningful only for WRITE phase2/3. The actual paired hardware test proved512 corruption versus exact2x256; whole-disk physical verification remains pending. ROOT d883c678/88669999 passes428+298+73 fresh checks; standalone exporter4001 bytes/f4c7cadb, twelve other helpers unchanged. Historical validation below identifies the previous union; latest evidence is agentworking/evidence/split-save-current-root-20261015.json.</a></li>
+<li><a href="NATIVE_SETUP_CONFIG.html">Native SETUP configuration codec</a></li>
+<li><a href="NATIVE_SETUP_INSTALLER.html">Native SETUP build and current scope</a></li>
+<li><a href="NATIVE_START_HANDOFF.html">Native START / main handoff ABI 1</a></li>
+<li><a href="NATIVE_WRITE_DIAGNOSIS.html">Physical native SAVE write investigation</a></li>
+<li><a href="OVERLAYS_IMPLEMENTATION.html">Native FILE/TEXT/INPUT/PIT/GFX code overlays</a></li>
+<li><a href="PERFORMANCE.html">&gt; V1 steering, 2026-10-17: further performance work is deferred until after the <a href="V1_ENDPOINT.html">V1 endpoint</a>. The 50%/85% targets below remain post-V1 objectives, not V1 release gates. Existing measurements and correctness constraints are retained.</a></li>
+<li><a href="PERFORMANCE_ASSESSMENT_20261015.html">XT performance assessment — 2026-10-15</a></li>
+<li><a href="PERFORMANCE_RESEARCH_20261015.html">Next performance architecture: measured feasibility, not implementation approval</a></li>
+<li><a href="PLAN.html">Implementation plan for review</a></li>
+<li><a href="PORTS_IMPLEMENTATION.html">PC port implementation</a></li>
+<li><a href="PROGRESS_SITE.html">Documentation websites</a></li>
+<li><a href="RANGE_IMPLEMENTATION.html">Coherent guest and REU range transfers</a></li>
+<li><a href="REQUIREMENTS.html">User requirement coverage</a></li>
+<li><a href="RESEARCH.html">Research record and source register</a></li>
+<li><a href="REU_ALLOCATION_POLICY.html">REU allocation and performance</a></li>
+<li><a href="REU_IMPLEMENTATION.html">REU transfer slice</a></li>
+<li><a href="STORAGE.html">Sector storage and persistence</a></li>
+<li><a href="TESTING.html">Behavior tests and end-user acceptance</a></li>
+<li><a href="TEXT_RENDERER_IMPLEMENTATION.html">Native text presentation</a></li>
+<li><a href="TIMER_IRQ_IMPLEMENTATION.html">Native elapsed time, PIT and original-8088 IRQ delivery</a></li>
+<li><a href="TURBO_PASCAL.html">Turbo Pascal</a></li>
+<li><a href="UCI_IMPLEMENTATION.html">Bounded asynchronous Ultimate transport</a></li>
+<li><a href="UPSTREAM_HARDWARE_TOOLS.html">Optional hardware automation</a></li>
+<li><a href="V1_CANDIDATE.html">Source-built development candidate</a></li>
+<li><a href="V1_ENDPOINT.html">V1 endpoint: install, use and keep your work</a></li>
+<li><a href="V1_HUMAN_CHECKLIST.html">V1 human acceptance checklist</a></li>
+</ul>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

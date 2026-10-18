@@ -1,0 +1,10 @@
+# Local working records and user-supplied vendor images are never published.
+/agentworking/
+/reference/
+/build/
+/.zig-cache/
+/zig-out/
+/logs/
+__pycache__/
+*.py[cod]
+.DS_Store

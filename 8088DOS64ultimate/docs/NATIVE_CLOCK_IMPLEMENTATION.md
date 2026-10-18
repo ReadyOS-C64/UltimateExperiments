@@ -1,0 +1,36 @@
+# Native CIA2 elapsed clock
+
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+Updated 2026-10-15. `src/host_clock.s` supplies bounded reads of a chained CIA2 A/B counter. The corrected standalone probe now passes physical Manual 1/16/64 MHz on firmware 3.14/FPGA 121/core 1.47, validating raw PAL CIA ticks against raster frames and observed turbo independence. The API reports raw CIA phi2 ticks, not microseconds or turbo 6510 cycles. It is separate from [guest INT 1Ah/ticks](CLOCK_IMPLEMENTATION.md) and now supplies shifted4096-phi2 elapsed units to configured native startup/UCI deadlines and text/input scheduling. Guest PIT/IRQ pacing remains unfinished; see [native runtime](NATIVE_RUNTIME_IMPLEMENTATION.md).
+
+Initialization requires explicit `dos64_host_clock_claim=HC_OWNED` (A5h). The caller owns both CIA2 timers, serial/timer-control fields, timer interrupt masks and NMI policy, and must disable A/B interrupt masks before claiming. The routines never read/write ICR, TOD, CIA ports/DDRs or NMI vectors. They do not save/restore previous timer state: write-only latches/masks cannot be reconstructed. Runtime takeover is destructive and is not NMI-safe or reentrant.
+
+Init stops timers, preserves TOD control bits, installs FFFFh latches and starts A from phi2 with B counting A underflows. Read validates ownership/readiness/control fields, then samples B high/low/high, A high/low/high and B again. It rejects A high=FFh to exclude startup/reload and delayed-cascade ambiguity, and retries at most eight times. Success atomically publishes the complement of B:A as a little-endian modulo-2^32 count. Failure preserves the previous four published bytes. Caller subtraction uses intervals below 2^31 ticks and must not miss a full wrap; the startup pipeline epoch is unspecified.
+
+Both calls preserve A/X/Y/native P except carry and restore observable DDR/$01 banking output state. Hidden output-latch bits configured as inputs cannot be read back by a 6510. State is 12 DEVICESTATE bytes and code 333 DEVICECODE bytes; no new runtime zero page or pre-map BSS. Rejected samples require a later scheduling retry, not an unbounded loop.
+
+Functional tests execute actual assembly with a separate CIA model: ownership, stopped-latch setup/cascade, independent phi2 progress, all byte seams, delayed cascade/reload rejection, full wrap, control damage, atomic publication, arbitrary DDR/banking, native write guards and optional-model isolation. These do not prove hardware clock-domain behavior.
+
+A standalone probe records 100 complete raster frames, physical raster height, start/end modulo counters, raw delta and retry diagnostics at host 6000. Independent tooling checks every record field, captured executable identity and the bounded endpoint window; a successful mailbox alone is insufficient. The candidate PAL expectation is 100×312×63 = 1,965,600 phi2 ticks, with a conservative endpoint-error bound of 1,008 ticks (16 PAL raster lines). This derives from pinned VICE PAL constants and observed raster geometry; REST duration and CPU clocks are excluded. The updated standalone probe passes six Peddle VIC scripting tests and 15 tooling checks, including failure-capture diagnostics; these prove record/control-flow bounds rather than physics. `src/host_clock.s` is unchanged.
+
+The historical first physical matrix failed on its first Manual **1 MHz** attempt, mailbox `01e1000003000000`, error **3**. It did not reach 16/64 MHz calibration. Machine/turbo/media configuration was restored and reset/resume completed; raw run `agentworking/runs/c64u-clock-20261015-030029`. The first error-3 subreason is unknown because its detailed record was not captured before cleanup. The corrected runner now captures full RAM, mailbox and the 40-byte DCK1 record before finally resetting on failure; the endpoint window is now 16 PAL lines. The corrected physical rerun described below now passes, while this first run remains rejected and its exact cause unproved. No CIA clock-domain calibration or turbo independence is accepted from that rejected run. Physical failure evidence (local development record, not distributed) and current slice evidence (local development record, not distributed) retain the rejected run alongside functional results.
+
+The runner takes timer/NMI ownership and captures RAM for recovery evidence; reset/resume does not restore prior timer/NMI/CPU execution state. No REU, UCI or persistent file operation is involved. The probe does not benchmark the 8088 interpreter, REU throughput or XT speed. Native deadlines still require explicit, tested conversion from raw CIA ticks; the physical domain validation below does not wire that integration.
+
+
+## Accepted corrected physical matrix
+
+Run `agentworking/runs/c64u-clock-20261015-031712` passed Manual **1/16/64 MHz**. The **100-frame** deltas are respectively **1,965,627**, **1,965,599** and **1,965,600** raw ticks, errors **+27**, **−1** and **0** versus **1,965,600 ±1,008**. Every capture reports zero sample retries; total cross-speed spread is **28 ticks**. Captured executable/record validation and configuration restoration/reset-resume are retained in physical evidence (local development record, not distributed).
+
+This validates the observed PAL raw CIA/raster clock domain and its turbo independence on the tested firmware/core. It does not measure external absolute wall-clock accuracy, native CPU/REU throughput or original-XT speed. The 1 MHz post-read raster endpoints are 8/8, which makes the former eight-line rejection window a plausible explanation for the first failure; absent its old RAM record, that cause remains unproven. `src/host_clock.s` is unchanged. Runtime scheduler/UCI deadline conversion and pacing remain unfinished.
+
+## Linked elapsed adapter
+
+The88-byte resident adapter publishes exactly low16(raw32CIAcounter>>12), with two resident state bytes and no ZP. A unit is4096 raw phi2 ticks, not a millisecond or turboCPUcycle. Consumers require durations1..32767 and polling gaps below32768 units. It establishes RAM+I/O before reading resident clock output, restores banking/P except carry and preservesX/Y. Clock-read failure leaves the previous elapsed value unchanged. Three actual-assembly tests cover2048 seeded values, raw/unit wrap seams, ownership/readiness/control faults and all256 native statuses across16 DDR/port combinations. It is linked but not yet consumed by startup or scheduling. Current evidence (local development record, not distributed).
+
+
+## Owned PIT entry, 2026-10-15
+
+The normal target now links a separately assembled internal owned entry for PIT boundary calls. It uses the same coherent CIA sampling/control/read ordering and errors, but relies on already established ownership, RAM+I/O mapping and copied-shadow readiness. Internal raw/elapsed entries save73/111 modeled CPU cycles; public banking-safe APIs and all standalone helper bytes remain unchanged. This adds217 shadow-code bytes, no resident state/ZP. Wrong banking is unsupported for the internal entry; public entries remain tested under all eight mappings. [Combined evidence and limits](BOUNDARY_PERFORMANCE_20261015.md).

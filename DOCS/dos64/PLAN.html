@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Implementation plan for review · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Implementation plan for review"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#outcome-and-boundaries">Outcome and boundaries</a></li><li><a href="#work-sequence-and-gates">Work sequence and gates</a></li><li><a href="#early-stop-and-reconsider-gates">Early stop-and-reconsider gates</a></li><li><a href="#deliverable-layout-for-implementation">Deliverable layout for implementation</a></li><li><a href="#review-points">Review points</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="PLAN.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="implementation-plan-for-review">Implementation plan for review</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p><strong>2026-10-17 release steering:</strong> <a href="V1_ENDPOINT.html">V1_ENDPOINT.md</a> now defines the V1 exit gates and current work order. Installer/configuration, floppy/HD persistence and the full Turbo Pascal workflow are the priority. Further performance improvement and the 50%/85% speed objectives move to post-V1; the historical milestones below remain the broader backlog.</p>
+<p>Original planning date: 2026-10-14, America/Los_Angeles. The milestone deliverables and exit criteria below remain the scope contract. Current implementation status is recorded separately from complete acceptance.</p>
+<p>Implementation update 2026-10-15: genuine DOS 3.3 boots on the physical C64U, with actual 40/80-column VER, TYPE and DIR captures. CPU, REU memory, BIOS, text, HD and CGA have substantial tested implementations. Persistence integration, full utility coverage, physical HD/graphics/input acceptance and performance remain unfinished. Roughly 60% functional progress is a subjective scope estimate excluding performance, not a prediction of remaining effort. Exact current evidence and limitations are in <code>agentworking/STATUS.md</code> and <code>agentworking/TEST_LOG.md</code>.</p>
+<h2 id="outcome-and-boundaries">Outcome and boundaries</h2>
+<p>A standalone PRG boots the supplied MS-DOS 3.3 in an emulated PC with 640 KiB conventional RAM, two floppy drives, keyboard, 40/80-column text, and limited CGA graphics. Guest execution uses the C64U&#39;s 64 MHz 6510; the REU stores guest memory, whole floppy images, and cached hard-disk extents. Native Ultimate DOS loads/saves image bytes. A KERNAL IEC backend supports development in VICE using D81 containers.</p>
+<p>The first end-user workload is the supplied DOS command set. Full PC hardware fidelity, EGA/VGA, 8087, protected mode, sound, serial/parallel output, mouse, networking, and arbitrary third-party software are outside v1. Some minimal timer, interrupt, and port behavior remains necessary even without those peripherals.</p>
+<p>The CPU profile is functionally 8086/8088, with original 8088 behavior chosen for edge cases and PC compatibility. Exact prefetch/bus timing is deferred. If later software depends on those details, record the incompatibility rather than quietly claiming complete IBM PC emulation.</p>
+<h2 id="work-sequence-and-gates">Work sequence and gates</h2>
+<table>
+<thead>
+<tr>
+<th>Milestone</th>
+<th>Bounded deliverable</th>
+<th>Exit evidence / dependency</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>M0 — reproducible foundation</td>
+<td>Pin ca65/ld65, Zig 0.16.0, Peddle; assembly PRG/raw-test targets; Zig assertions run linked routines; map checker; fixture manager</td>
+<td>An intentional assertion failure fails CI; a minimal routine passes and returns within budget; input images retain hashes; DOSBox-X boots a disposable disk-1 copy and confirms actual version/config behavior</td>
+</tr>
+<tr>
+<td>M1 — hardware feasibility</td>
+<td>Small assembly probes for ALU, dispatch, address translation, cache hit/miss, REU DMA, bitmap rendering, and UCI image transfer</td>
+<td>Peddle CPU counts plus real C64U 1/16/64 MHz elapsed times and configuration; first page-size trade study; no extrapolated hardware speed claim from VICE</td>
+</tr>
+<tr>
+<td>M2 — memory and devices</td>
+<td>One guest memory API, REU driver/model, 20-bit addressing, page cache, dirty write-back, bounded bulk copy, UCI state machine/file mock</td>
+<td>Zig property tests + real assembly Peddle tests; same REU test vectors in VICE/hardware; cache/IO ownership invariants; all ranges verified</td>
+</tr>
+<tr>
+<td>M3 — CPU foundation</td>
+<td>Register state; instruction fetch; prefixes; ModR/M; MOV/ALU/flags/branches/stack; synthetic x86 test programs</td>
+<td>Defined SingleStepTests subsets and independent arithmetic oracle; every addressing form; aliases, cross-page operations, branch targets, stack edges</td>
+</tr>
+<tr>
+<td>M4 — CPU completion for boot</td>
+<td>Remaining documented 8086 instructions; strings/REP; MUL/DIV; interrupt entry/IRET; TF/IF shadows; IN/OUT/HLT</td>
+<td>All declared documented instruction groups covered; original-CPU edge cases; interruptible REP and code modification; no unrecorded skips</td>
+</tr>
+<tr>
+<td>M5 — native BIOS and first DOS boot</td>
+<td>Reset/IVT/BDA; disk INT 13h; video/keyboard/time/equipment/memory services; whole-image A:/B:; initial 40-column renderer</td>
+<td>Original disk-1 boot result recorded, minimal-config copy reaches prompt, <code>VER</code>, <code>DIR</code>, <code>TYPE</code>, command execution and keyboard work; show INT 21h executes DOS code</td>
+</tr>
+<tr>
+<td>M6 — persistent floppy and VICE development</td>
+<td>Save/reload floppy image; Ultimate and IEC adapters; D81 packaging; error recovery</td>
+<td>Identical guest sector results in Peddle/UCI and VICE/IEC; saved image independently extracted and compared; full restart proves persistence; real C64U load/edit/save/reboot</td>
+</tr>
+<tr>
+<td>M7 — usable text and DOS suite</td>
+<td>80-column 4×8 renderer, colors policy, keyboard mapping, ANSI.SYS; internal commands and applicable included tools</td>
+<td>DOS acceptance matrix passes at 40/80 where meaningful; readable EDLIN/DEBUG interaction; paging/input/cursor/scroll tests and screenshots; error/abort paths</td>
+</tr>
+<tr>
+<td>M8 — small hard disk</td>
+<td>Approximately 2 MiB raw disk, MBR/partition/CHS, file-offset adapter, bounded REU extent cache</td>
+<td>Guest FDISK → FORMAT → SYS → boot C:; cache forced smaller than disk; independent FAT/files check; data survives clean close/reopen and eviction</td>
+</tr>
+<tr>
+<td>M9 — 20 MiB hard disk</td>
+<td>Same backend with larger offsets and image</td>
+<td>Accesses below/above 16 MiB, final sector, cache churn, disk-full/errors, flush/restart and utilities pass; no 24-bit file-offset truncation</td>
+</tr>
+<tr>
+<td>M10 — CGA</td>
+<td>Guest modes 4/5/6, direct VRAM and BIOS pixel services, deterministic conversion</td>
+<td>Synthetic test cards and GW-BASIC from supplied disk 3 used as a later included-program test; reference pixels checked before downsampling; C64U visual approval</td>
+</tr>
+<tr>
+<td>M11 — optimization and release</td>
+<td>Trace-driven hot paths, coherent fetch cache, safe REP acceleration, optional lazy flags</td>
+<td>All functional lanes remain green; memory map fits; measured performance report for every workload; documented limitations and reproducible user guide</td>
+</tr>
+</tbody></table>
+<h3 id="current-milestone-status-2026-10-15">Current milestone status — 2026-10-15</h3>
+<table>
+<thead>
+<tr>
+<th>Milestone</th>
+<th>Current status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>M0</td>
+<td>Foundation and DOSBox-X reference boot verified.</td>
+</tr>
+<tr>
+<td>M1</td>
+<td>Hardware clock, REU, UCI and renderer evidence retained; matched performance baseline remains outstanding.</td>
+</tr>
+<tr>
+<td>M2</td>
+<td>Memory/cache/ownership and native UCI core implemented and tested; transport acceptance continues.</td>
+</tr>
+<tr>
+<td>M3</td>
+<td>CPU foundation implemented and tested.</td>
+</tr>
+<tr>
+<td>M4</td>
+<td>Documented CPU groups and original-8088 edge cases implemented/tested; exact corpus proofs remain tied to their executable/source identities.</td>
+</tr>
+<tr>
+<td>M5</td>
+<td>Core boot milestone achieved on physical C64U: genuine DOS/COMMAND.COM, VER, DIR, TYPE and MODE. Full B: and physical keyboard coverage remain.</td>
+</tr>
+<tr>
+<td>M6</td>
+<td>Native floppy SAVE/reopen passes actual assembly tests; standalone IEC/D81 import passes VICE. Production integration and physical save/reboot remain.</td>
+</tr>
+<tr>
+<td>M7</td>
+<td>Actual 40/80-column text and several DOS workflows pass. Full supplied-utility matrix, interactive editors/debugger, physical keyboard and readability acceptance remain.</td>
+</tr>
+<tr>
+<td>M8</td>
+<td>2 MiB backend/BIOS and genuine DOS model workflows tested. Physical guest-write/persistence acceptance remains.</td>
+</tr>
+<tr>
+<td>M9</td>
+<td>20 MiB addressing/cache boundary support tested. Physical scale, persistence/restart and utility acceptance remain.</td>
+</tr>
+<tr>
+<td>M10</td>
+<td>CGA4/5/6 and genuine DOS-loaded graphics probe verified in Peddle. Physical CGA and later GW-BASIC acceptance remain.</td>
+</tr>
+<tr>
+<td>M11</td>
+<td>Initial measured optimizations completed; near-XT speed has not been achieved. Matched benchmarks, further optimization and release work remain.</td>
+</tr>
+</tbody></table>
+<p>Current screenshot work follows the user&#39;s request for genuine <code>DIR | MORE</code> first-page captures in both modes. Native and physical pipeline/pagination, temporary-file cleanup, paired captures and full REU restoration pass. Earlier <code>DIR /W</code> pairs and complete REU restoration passed. See <a href="screenshots/README.html">screenshots</a> and <a href="PERFORMANCE_ASSESSMENT_20261015.html">performance assessment</a>.</p>
+<p>M1 can begin after the minimal M0 runner, before the entire reference-boot tooling is polished. M2&#39;s plain memory API should precede CPU work; aggressive paging optimization can follow CPU correctness. Do not make the full instruction suite wait for a beautiful UI. Ship bounded working boot slices, but do not mark CPU completion solely because DOS boots.</p>
+<p>M10 follows the DOS text/utility acceptance priority. Graphics test-card research may happen earlier to validate the display budget. Do not pursue third-party applications before the applicable supplied DOS utilities are accounted for.</p>
+<h2 id="early-stop-and-reconsider-gates">Early stop-and-reconsider gates</h2>
+<ul>
+<li><strong>RAM fit:</strong> the working host layout budgets 22 KiB for hot/resident executable code and 16 KiB for guest frames. If linked code cannot fit, measure cold overlays or trade cache capacity explicitly. No invisible spill into screen, stack, or I/O space.</li>
+<li><strong>Performance:</strong> use the M1/M3 measured cycles and miss rates to forecast realistic workloads. If representative CPU-bound tests are far below target, preserve the working emulator and report the gap; consider specialized handlers/predecode before a translator. Do not change the project into a DOS-call shim.</li>
+<li><strong>BIOS completeness:</strong> trace actual disk-1 boot and tools. Additional ports/BIOS calls get explicit requirements and tests. Full FDC or XT hard-disk-controller emulation is not assumed necessary; a demonstrated direct-controller dependency can change that decision.</li>
+<li><strong>Disk integrity:</strong> a successful screen message is insufficient. Verify saved bytes independently after a fresh process/session and keep originals immutable.</li>
+<li><strong>80-column usability:</strong> color fidelity is constrained by VIC-II cells. Validate font legibility and the documented approximation on the actual display early enough to change the renderer.</li>
+</ul>
+<h2 id="deliverable-layout-for-implementation">Deliverable layout for implementation</h2>
+<pre><code class="language-text">src/                 6502 assembly: cpu, memory, bios, devices, video, storage
+include/             assembly ABI, structures, constants
+cfg/                 linker layouts and memory contracts
+tests/host/          Zig runners, assertions, property tests, fixture parsing
+tests/guest/         small NASM 8086 programs; source + deterministic fixtures
+tests/vice/          VICE integration plans and image extraction checks
+tests/ultimate/      physical C64U plans and ownership/configuration checks
+tests/acceptance/    DOS scripts, expected semantics, disk transformations
+third_party/         pinned Peddle core/license; test-corpus manifests
+build_support/       artifact, fixture and map tooling
+docs/                durable contracts and user documentation
+agentworking/        state, decisions, lessons, research; ignored runs/scratch
+</code></pre>
+<p>Proposed command contract, not yet implemented: <code>make build</code>, <code>make test</code>, <code>make test-cpu-full</code>, <code>make test-vice</code>, <code>make test-ultimate</code>, <code>make benchmark</code>, <code>make verify-memory</code>. The standard fast test invokes Zig and Peddle, with deterministic seeds and no physical device. Hardware/reference tools are separate named lanes; unavailable lanes report <strong>not run</strong>, never pass.</p>
+<h2 id="review-points">Review points</h2>
+<p>Current defaults: native BIOS with real DOS, <strong>4 MiB minimum REU</strong> (user clarification supersedes the 16 MiB proposal), assembly via ca65/ld65, 16 KiB guest cache, measured page-size selection, explicit image-save behavior for floppies, read-through/write-through hard-disk caching initially, and approximate CGA rendering. Larger REUs can expand caches and overlay storage.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

@@ -1,0 +1,23 @@
+C77 CYBERPUNK 77 READYOS VICE GALLERY
+
+00_loader.png <- <local-capture-path>
+01_launcher.png <- <local-capture-path>
+02_editor.png <- <local-capture-path>
+03_readyshell.png <- <local-capture-path>
+04_simplefiles.png <- <local-capture-path>
+05_clipmgr.png <- <local-capture-path>
+06_readybasic.png <- <local-capture-path>
+07_cal26.png <- <local-capture-path>
+08_tasklist.png <- <local-capture-path>
+09_reuviewer.png <- <local-capture-path>
+10_sysinfo.png <- <local-capture-path>
+11_quicknotes.png <- <local-capture-path>
+12_calcplus.png <- <local-capture-path>
+13_hexview.png <- <local-capture-path>
+14_simplecells.png <- <local-capture-path>
+15_game2048.png <- <local-capture-path>
+16_deminer.png <- <local-capture-path>
+17_dizzy.png <- <local-capture-path>
+18_readyirc.png <- <local-capture-path>
+19_ucitest.png <- <local-capture-path>
+20_readme.png <- <local-capture-path>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>REU transfer slice · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: REU transfer slice"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#assembly-contract">Assembly contract</a></li><li><a href="#mock-and-semantics">Mock and semantics</a></li><li><a href="#evidence">Evidence</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="REU_IMPLEMENTATION.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="reu-transfer-slice">REU transfer slice</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p>Implemented 2026-10-14. This documents the current bounded primitive and mock, not the completed paging/storage system. Baseline capacity is <strong>4 MiB</strong>; the allocation is in <a href="MEMORY.html">MEMORY.md</a>.</p>
+<h2 id="assembly-contract">Assembly contract</h2>
+<p><code>dos64_reu_transfer</code> consumes the exported ten-byte <code>dos64_reu_request</code> defined in <code>include/reu.inc</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0–1</td>
+<td>host</td>
+<td>Little-endian C64 RAM address</td>
+</tr>
+<tr>
+<td>2–4</td>
+<td>REU</td>
+<td>Little-endian 24-bit REU address</td>
+</tr>
+<tr>
+<td>5–6</td>
+<td>length</td>
+<td>Nonzero byte count</td>
+</tr>
+<tr>
+<td>7</td>
+<td>direction</td>
+<td>0 stores host to REU; 1 loads REU to host</td>
+</tr>
+<tr>
+<td>8</td>
+<td>status</td>
+<td>Captured REU status on completion; zero before command</td>
+</tr>
+<tr>
+<td>9</td>
+<td>error</td>
+<td>0 success, 1 range, 2 direction, 3 zero count, 4 device status</td>
+</tr>
+</tbody></table>
+<p>The primitive rejects host ranges outside <code>[0200,D000)</code> and requests that cross an REU 64 KiB bank. Ending exactly at a boundary is valid. The caller owns the buffer, request and REU allocation and must check capacity; this internal primitive does not enforce allocator ownership or probe expansion size. Larger range operations must split and explicitly reload the bank.</p>
+<p>It preserves Y, processor flags except returned carry, and the 6510 DDR/port output bits; it clobbers A/X and ZP <code>20–23</code>. Carry clear indicates success. It saves P, disables interrupts and decimal arithmetic, enables RAM plus I/O <strong>before reading its descriptor under KERNAL ROM</strong>, clears stale status, disables REU IRQ/autoload/fixed addressing, programs DF02–DF08 and executes immediate command 90/91. Completion checks end-of-block and absence of verify error before restoring mapping. Exclusive REU ownership is required; prior REU register configuration is not preserved. NMI policy remains a system integration responsibility.</p>
+<p>The current low-level host range is only a hardware guard: a caller could still overwrite resident code within it. Cache/storage ownership checks are required before exposing higher-level operations. A zero software count is rejected even though zero in the hardware count encodes 65,536 bytes.</p>
+<h2 id="mock-and-semantics">Mock and semantics</h2>
+<p>The independently authored C++ model is driven through the Peddle bus, while Zig calls <strong>actual assembled routines</strong>. Its reference is <a href="https://github.com/VICE-Team/svn-mirror/blob/fa7f1e1ec4f1b97d00c5b8117e12a592992f7262/vice/src/c64/cart/reu.c">VICE REU implementation at fa7f1e1</a>. No VICE source was copied into the model.</p>
+<p>Supported semantics are immediate store/load, fixed address controls, autoload restoration, address increments, hardware zero count, count-one postcondition, command execute-bit clearing and status clear-on-read. Expanded REC address increments wrap the low 19-bit counter while preserving upper bank latches; splitting on 64 KiB boundaries avoids relying on cross-wrap behavior. Capacity models cover 4, 8 and 16 MiB; addresses alias to physical capacity as an expanded REU does.</p>
+<p>Swap, compare, deferred FF00 execution and REU interrupts explicitly report unsupported access. No DMA bus stalls, VIC contention or physical timing is simulated. The C64 bus models relevant DDR/port banking with ROM sentinels, writes to RAM under ROM, and selected I/O. It is not executable C64 ROM or a complete CIA/VIC model; unknown device access fails rather than behaving like RAM.</p>
+<h2 id="evidence">Evidence</h2>
+<p><code>make test</code> passed 26 Zig/Peddle tests plus four linker-contract tests after the 4 MiB baseline change. Transfer vectors cover eight sizes from one byte to 4 KiB, unaligned buffers, separated banks, last-address access at 4/8/16 MiB, rejected ranges, flags/banking preservation and model postconditions. The same assembly integrity probe stores 4 KiB from 6000 to REU 180003, clears RAM, reloads and checks every byte, producing mailbox A5/error 00.</p>
+<p>The standalone probe passed the established .NET VICE harness on run <code>vice_auto_20261014_222223</code>. Independent extraction verified all 4,096 returned bytes against <code>low_byte(index) XOR A7</code>, not only the success mailbox. See compact evidence (local development record, not distributed). The harness uses a 16 MiB REU and warp; this proves that configuration&#39;s functional round trip at an address below 4 MiB, not a physical 4 MiB configuration or 64 MHz speed. <code>make probe</code> prepares the image/plan; <code>make test-vice</code> runs the slower lane and verifies its captured bytes.</p>
+<p>Still required: capacity/allocator enforcement above the primitive, coherent guest page cache, UCI bulk file operations, IEC backend, timer-based transfer measurements, and physical C64U execution. In particular, Ultimate bulk UCI capacity assumptions and the actual firmware must be checked; no larger-than-baseline range may be submitted merely because the wire address has 24 bits.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

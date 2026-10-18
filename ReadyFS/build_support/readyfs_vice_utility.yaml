@@ -1,0 +1,379 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_utility_history
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 90, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-overlay-lab.d81"
+    disk9: null
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch_readyfs_overlay
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: wait_readyfs
+    type: screen.wait_contains
+    params: { text: "READYFS LAB", wait_timeout_s: 30 }
+  - id: utility_sidecar_booted
+    type: screen.wait_contains
+    params: { text: "CMDPATH: READY", wait_timeout_s: 10 }
+  - id: history_seed_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: history_seed_pwd
+    type: input.sequence
+    params: { keys: [80,87,68,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: history_list_input
+    type: input.sequence
+    params: { keys: [72,73,83,84,79,82,89,13], inter_key_delay_s: 0.04, post_delay_s: 0.35 }
+  - id: history_oldest
+    type: screen.wait_contains
+    params: { text: "1: CLEAR", wait_timeout_s: 10 }
+  - id: history_middle
+    type: screen.wait_contains
+    params: { text: "2: PWD", wait_timeout_s: 10 }
+  - id: history_newest
+    type: screen.wait_contains
+    params: { text: "3: HISTORY", wait_timeout_s: 10, capture_label: readyfs_utility_history }
+  - id: preview_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: preview_new_input
+    type: input.sequence
+    params: { keys: [78,69,87,32,56,58,47,68,82,89,32,45,45,87,72,65,84,73,70,13], inter_key_delay_s: 0.04, post_delay_s: 0.35 }
+  - id: preview_new_text
+    type: screen.wait_contains
+    params: { text: "WOULD NEW 8:/DRY", wait_timeout_s: 10 }
+  - id: preview_new_summary
+    type: screen.wait_contains
+    params: { text: "PLAN W1 D0 M0; DONE W0 D0 M0", wait_timeout_s: 10, capture_label: readyfs_utility_preview_new }
+  - id: preview_move_input
+    type: input.sequence
+    params: { keys: [77,79,86,69,32,56,58,47,65,32,56,58,47,66,32,45,45,87,72,65,84,73,70,13], inter_key_delay_s: 0.04, post_delay_s: 0.35 }
+  - id: preview_move_summary
+    type: screen.wait_contains
+    params: { text: "PLAN W1 D1 M0; DONE W0 D0 M0", wait_timeout_s: 10, capture_label: readyfs_utility_preview_move }
+  - id: preview_mount_input
+    type: input.sequence
+    params: { keys: [77,79,85,78,84,32,85,58,47,88,46,68,56,49,32,56,58,32,45,45,87,72,65,84,73,70,13], inter_key_delay_s: 0.04, post_delay_s: 0.35 }
+  - id: preview_mount_summary
+    type: screen.wait_contains
+    params: { text: "PLAN W0 D0 M1; DONE W0 D0 M0", wait_timeout_s: 10, capture_label: readyfs_utility_preview_mount }
+  - id: uci_recovery_absent_input
+    type: input.sequence
+    params: { keys: [80,82,79,66,69,32,82,69,67,79,86,69,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.35 }
+  - id: uci_recovery_absent
+    type: screen.wait_contains
+    params: { text: "UCI RECOVER: OFF", wait_timeout_s: 10, capture_label: readyfs_uci_recovery_absent }
+  - id: tree_uci_absent_input
+    type: input.sequence
+    params: { keys: [84,82,69,69,32,85,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: tree_uci_absent_debug
+    type: screen.capture
+    params: { label: readyfs_tree_uci_absent_debug }
+  - id: tree_uci_absent
+    type: screen.wait_contains
+    params: { text: "TREE FAILED F0 D0", wait_timeout_s: 10, capture_label: readyfs_tree_uci_absent }
+  - id: drives_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: drives_input
+    type: input.sequence
+    params: { keys: [68,82,73,86,69,83,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: drives_scan
+    type: screen.wait_contains
+    params: { text: "IEC SCAN 8-30", wait_timeout_s: 15 }
+  - id: drives_tape
+    type: screen.wait_contains
+    params: { text: "T: SEQUENTIAL TAPE", wait_timeout_s: 10, capture_label: readyfs_utility_drives }
+  - id: dir_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: dir_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,56,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: dir_page_advance
+    type: input.sequence
+    params: { keys: [32,32], inter_key_delay_s: 0.3, post_delay_s: 0.35 }
+  - id: dir_formatted_free
+    type: screen.wait_contains
+    params: { text: "BLOCKS FREE.", wait_timeout_s: 15, capture_label: readyfs_utility_formatted_directory }
+  - id: iec_tree_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: iec_tree_input
+    type: input.sequence
+    params: { keys: [84,82,69,69,32,56,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.6 }
+  - id: iec_tree_done
+    type: screen.wait_contains
+    params: { text: "TREE DONE F44 D0", wait_timeout_s: 20, capture_label: readyfs_tree_iec_flat }
+  - id: softiec_tree_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: softiec_tree_input
+    type: input.sequence
+    params: { keys: [84,82,69,69,32,83,51,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: softiec_tree_absent_debug
+    type: screen.capture
+    params: { label: readyfs_tree_softiec_absent_debug }
+  - id: softiec_tree_absent
+    type: screen.wait_contains
+    params: { text: "TREE FAILED F0 D0", wait_timeout_s: 10, capture_label: readyfs_tree_softiec_absent }
+  - id: capabilities_iec_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: capabilities_iec_input
+    type: input.sequence
+    params: { keys: [67,65,80,65,66,73,76,73,84,73,69,83,32,56,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: capabilities_iec_endpoint
+    type: screen.wait_contains
+    params: { text: "EP IEC 8 P0", wait_timeout_s: 10 }
+  - id: capabilities_iec_limits
+    type: screen.wait_contains
+    params: { text: "MAX PATH 255 LEAF 16", wait_timeout_s: 10 }
+  - id: capabilities_iec_flags
+    type: screen.wait_contains
+    params: { text: "CAPS: READ WRITE DELETE RENAME FREE", wait_timeout_s: 10, capture_label: readyfs_capabilities_iec }
+  - id: capabilities_ultimate_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: capabilities_ultimate_input
+    type: input.sequence
+    params: { keys: [67,65,80,65,66,73,76,73,84,73,69,83,32,85,58,47,85,83,66,49,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: capabilities_ultimate_endpoint
+    type: screen.wait_contains
+    params: { text: "EP ULTIMATE DOS", wait_timeout_s: 10 }
+  - id: capabilities_ultimate_size
+    type: screen.wait_contains
+    params: { text: "SIZE: BYTES", wait_timeout_s: 10 }
+  - id: capabilities_ultimate_flags
+    type: screen.wait_contains
+    params: { text: "RECURSE IMAGES MOUNT", wait_timeout_s: 10, capture_label: readyfs_capabilities_ultimate }
+  - id: capabilities_softiec_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: capabilities_softiec_input
+    type: input.sequence
+    params: { keys: [67,65,80,65,66,73,76,73,84,73,69,83,32,83,50,53,53,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: capabilities_softiec_endpoint
+    type: screen.wait_contains
+    params: { text: "EP SOFTIEC 255", wait_timeout_s: 10 }
+  - id: capabilities_softiec_provisional
+    type: screen.wait_contains
+    params: { text: "PROV YES", wait_timeout_s: 10, capture_label: readyfs_capabilities_softiec }
+  - id: capabilities_tape_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: capabilities_tape_input
+    type: input.sequence
+    params: { keys: [67,65,80,65,66,73,76,73,84,73,69,83,32,84,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: capabilities_tape_endpoint
+    type: screen.wait_contains
+    params: { text: "EP TAPE SEQ", wait_timeout_s: 10 }
+  - id: capabilities_tape_flags
+    type: screen.wait_contains
+    params: { text: "CAPS: READ WRITE SEQ", wait_timeout_s: 10, capture_label: readyfs_capabilities_tape }
+  - id: tape_dir_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: tape_dir_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,84,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.35 }
+  - id: tape_dir_refused
+    type: screen.wait_contains
+    params: { text: "UNSUPPORTED", wait_timeout_s: 10, capture_label: readyfs_tape_dir_refused }
+  - id: tape_append_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: tape_append_input
+    type: input.sequence
+    params: { keys: [65,80,80,69,78,68,32,84,58,47,88,32,84,69,88,84,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: tape_append_refused
+    type: screen.wait_contains
+    params: { text: "TAPE APPEND OFF", wait_timeout_s: 10, capture_label: readyfs_tape_append_refused }
+  - id: tape_delete_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: tape_delete_input
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,84,58,47,88,32,45,45,89,69,83,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: tape_delete_refused
+    type: screen.wait_contains
+    params: { text: "TAPE DELETE OFF", wait_timeout_s: 10, capture_label: readyfs_tape_delete_refused }
+  - id: tape_tree_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: tape_tree_input
+    type: input.sequence
+    params: { keys: [84,82,69,69,32,84,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.35 }
+  - id: tape_tree_refused
+    type: screen.wait_contains
+    params: { text: "UNSUPPORTED", wait_timeout_s: 10, capture_label: readyfs_tape_tree_refused }
+  - id: find_filtered_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: find_filtered_input
+    type: input.sequence
+    params: { keys: [70,73,78,68,32,56,58,47,32,45,45,73,78,67,76,85,68,69,32,82,70,85,42,13], inter_key_delay_s: 0.04, post_delay_s: 0.6 }
+  - id: find_filtered_entry
+    type: screen.wait_contains
+    params: { text: "RFUTIL", wait_timeout_s: 15 }
+  - id: find_filtered_summary
+    type: screen.wait_contains
+    params: { text: "FIND DONE N6 F44 D0", wait_timeout_s: 15, capture_label: readyfs_find_filtered }
+  - id: head_view_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: head_view_input
+    type: input.sequence
+    params: { keys: [72,69,65,68,32,56,58,47,82,70,86,73,69,87,32,51,13], inter_key_delay_s: 0.04, post_delay_s: 0.6 }
+  - id: head_view_first
+    type: screen.wait_contains
+    params: { text: "VIEW01", wait_timeout_s: 15 }
+  - id: head_view_third
+    type: screen.wait_contains
+    params: { text: "VIEW03", wait_timeout_s: 15 }
+  - id: head_view_summary
+    type: screen.wait_contains
+    params: { text: "HEAD; READ 32 BYTES", wait_timeout_s: 15, capture_label: readyfs_head_three_lines }
+  - id: tail_view_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: tail_view_input
+    type: input.sequence
+    params: { keys: [84,65,73,76,32,56,58,47,82,70,86,73,69,87,32,50,13], inter_key_delay_s: 0.04, post_delay_s: 0.8 }
+  - id: tail_view_eleventh
+    type: screen.wait_contains
+    params: { text: "VIEW11", wait_timeout_s: 15 }
+  - id: tail_view_twelfth
+    type: screen.wait_contains
+    params: { text: "VIEW12", wait_timeout_s: 15 }
+  - id: tail_view_summary
+    type: screen.wait_contains
+    params: { text: "TAIL; READ 84 BYTES", wait_timeout_s: 15, capture_label: readyfs_tail_two_lines }
+  - id: tail_long_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: tail_long_input
+    type: input.sequence
+    params: { keys: [84,65,73,76,32,56,58,47,82,70,76,79,78,71,32,50,13], inter_key_delay_s: 0.04, post_delay_s: 1.0 }
+  - id: tail_long_nineteenth
+    type: screen.wait_contains
+    params: { text: "LONG19-ABCDEFGHIJ", wait_timeout_s: 15 }
+  - id: tail_long_twentieth
+    type: screen.wait_contains
+    params: { text: "LONG20-ABCDEFGHIJ", wait_timeout_s: 15 }
+  - id: tail_long_truncated
+    type: screen.wait_contains
+    params: { text: "TAIL TRUNCATED", wait_timeout_s: 15 }
+  - id: tail_long_summary
+    type: screen.wait_contains
+    params: { text: "TAIL; READ 360 BYTES", wait_timeout_s: 15, capture_label: readyfs_tail_bounded_truncation }
+  - id: head_bad_count_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: head_bad_count_input
+    type: input.sequence
+    params: { keys: [72,69,65,68,32,56,58,47,82,70,86,73,69,87,32,48,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: head_bad_count_usage
+    type: screen.wait_contains
+    params: { text: "HEAD PATH [LINES]", wait_timeout_s: 10, capture_label: readyfs_head_invalid_count }
+  - id: crc32_view_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: crc32_view_input
+    type: input.sequence
+    params: { keys: [67,82,67,51,50,32,56,58,47,82,70,86,73,69,87,13], inter_key_delay_s: 0.04, post_delay_s: 0.4 }
+  - id: crc32_view_result
+    type: screen.wait_contains
+    params: { text: "CRC32 $6126E7F6", wait_timeout_s: 15, capture_label: readyfs_crc32_stream }
+  - id: help_capabilities_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: help_capabilities_input
+    type: input.sequence
+    params: { keys: [72,69,76,80,13], inter_key_delay_s: 0.04, post_delay_s: 0.35 }
+  - id: help_capabilities_result
+    type: screen.wait_contains
+    params: { text: "ALIAS UNALIAS CONFIG CAPABILITIES", wait_timeout_s: 10, capture_label: readyfs_help_capabilities }
+  - id: typed_unavailable_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: typed_unavailable_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,83,48,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: typed_unavailable_text
+    type: screen.wait_contains
+    params: { text: "SOFTIEC OFF", wait_timeout_s: 10 }
+  - id: typed_unavailable_status_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,85,83,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: typed_unavailable_status
+    type: screen.wait_contains
+    params: { text: "LAST RESULT: 2", wait_timeout_s: 10, capture_label: readyfs_status_unavailable }
+  - id: typed_unsupported_clear
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.04, post_delay_s: 0.25 }
+  - id: typed_unsupported_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,84,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: typed_unsupported_text
+    type: screen.wait_contains
+    params: { text: "UNSUPPORTED", wait_timeout_s: 10 }
+  - id: typed_unsupported_status_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,85,83,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: typed_unsupported_status
+    type: screen.wait_contains
+    params: { text: "LAST RESULT: 7", wait_timeout_s: 10, capture_label: readyfs_status_unsupported }
+  - id: unknown_dispatch_input
+    type: input.sequence
+    params: { keys: [66,79,71,85,83,13], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: unknown_dispatch_result
+    type: screen.wait_contains
+    params: { text: "UNKNOWN; TYPE HELP", wait_timeout_s: 10, capture_label: readyfs_command_id_unknown }
+  - id: status_after_unknown_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,85,83,13], inter_key_delay_s: 0.04, post_delay_s: 0.35 }
+  - id: status_cwd
+    type: screen.wait_contains
+    params: { text: "CWD 8:/", wait_timeout_s: 10 }
+  - id: status_aliases_empty
+    type: screen.wait_contains
+    params: { text: "ALIASES 0", wait_timeout_s: 10 }
+  - id: status_ready
+    type: screen.wait_contains
+    params: { text: "READY: REU OVERLAY PLAN JOURNAL BACKEND", wait_timeout_s: 10 }
+  - id: status_last_unknown
+    type: screen.wait_contains
+    params: { text: "LAST RESULT: 1", wait_timeout_s: 10, capture_label: readyfs_status_unknown }
+  - id: status_alias_set_input
+    type: input.sequence
+    params: { keys: [65,76,73,65,83,32,68,69,77,79,32,56,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.35 }
+  - id: status_alias_set_done
+    type: screen.wait_contains
+    params: { text: "ALIAS SET", wait_timeout_s: 10 }
+  - id: status_alias_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,85,83,13], inter_key_delay_s: 0.04, post_delay_s: 0.35 }
+  - id: status_aliases_one
+    type: screen.wait_contains
+    params: { text: "ALIASES 1", wait_timeout_s: 10 }
+  - id: status_last_known
+    type: screen.wait_contains
+    params: { text: "LAST RESULT: 0", wait_timeout_s: 10, capture_label: readyfs_status_known }
+  - id: capture_utility_final
+    type: screen.capture
+    params: { label: readyfs_utility_final }

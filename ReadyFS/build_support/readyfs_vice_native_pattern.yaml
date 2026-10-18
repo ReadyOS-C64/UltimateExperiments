@@ -1,0 +1,208 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_native_pattern
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 90, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-overlay-lab.d81"
+    disk9: "artifacts/readyfs/readyfs-native-target.d81"
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch_readyfs_overlay
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: cmdpath_ready
+    type: screen.wait_contains
+    params: { text: "CMDPATH: READY", wait_timeout_s: 30 }
+  - id: rf_ui_24_unflagged_pattern_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,56,58,47,82,70,42,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: rf_ui_24_unflagged_pattern_rejected
+    type: screen.wait_contains
+    params: { text: "UNSUPPORTED", wait_timeout_s: 10, capture_label: rf_ui_24_unflagged_pattern_rejected }
+  - id: clear_before_native_pattern
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_24_native_pattern_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,56,58,47,82,70,42,32,45,45,78,65,84,73,86,69,45,80,65,84,84,69,82,78,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: rf_ui_24_native_pattern_entry
+    type: screen.wait_contains
+    params: { text: "RFMATCH", wait_timeout_s: 15, capture_label: rf_ui_24_native_pattern }
+  - id: rf_ui_24_native_pattern_page
+    type: input.sequence
+    params: { keys: [32], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: rf_ui_24_native_pattern_count
+    type: screen.wait_contains
+    params: { text: "ENTRIES: 22", wait_timeout_s: 15 }
+  - id: clear_before_invalid_native_pattern
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_24_invalid_native_pattern_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,56,58,47,82,70,32,45,45,78,65,84,73,86,69,45,80,65,84,84,69,82,78,13], inter_key_delay_s: 0.03, post_delay_s: 0.3 }
+  - id: rf_ui_24_invalid_native_pattern
+    type: screen.wait_contains
+    params: { text: "XLATE ERR", wait_timeout_s: 10, capture_label: rf_ui_24_native_pattern_reject }
+  - id: clear_before_native_copy_whatif
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_native_bad_dest_input
+    type: input.sequence
+    params: { keys: [67,79,80,89,32,56,58,47,82,70,42,32,57,58,47,79,85,84,32,45,45,78,65,84,73,86,69,45,80,65,84,84,69,82,78,32,45,45,87,72,65,84,73,70,13], inter_key_delay_s: 0.03, post_delay_s: 0.4 }
+  - id: rf_ui_native_bad_dest
+    type: screen.wait_contains
+    params: { text: "BAD DEST", wait_timeout_s: 15, capture_label: rf_ui_native_bad_dest }
+  - id: clear_before_native_copy_whatif_valid
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_native_copy_whatif_input
+    type: input.sequence
+    params: { keys: [67,79,80,89,32,56,58,47,82,70,42,32,57,58,47,32,45,45,78,65,84,73,86,69,45,80,65,84,84,69,82,78,32,45,45,87,72,65,84,73,70,13], inter_key_delay_s: 0.03, post_delay_s: 0.5 }
+  - id: capture_native_copy_whatif
+    type: screen.capture
+    params: { label: rf_ui_native_copy_whatif }
+  - id: rf_ui_native_copy_target
+    type: screen.wait_contains
+    params: { text: "TARGET RFMATCH TYPE $11", wait_timeout_s: 15 }
+  - id: rf_ui_native_copy_count
+    type: screen.wait_contains
+    params: { text: "RECURSIVE PLAN F21 SELECTED 21", wait_timeout_s: 10 }
+  - id: rf_ui_native_copy_zero_mutation
+    type: screen.wait_contains
+    params: { text: "PLAN W21 D0 M0; DONE W0 D0 M0", wait_timeout_s: 10 }
+  - id: clear_before_native_filter_whatif
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_native_filter_whatif_input
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,56,58,47,82,70,42,32,45,45,78,65,84,73,86,69,45,80,65,84,84,69,82,78,32,45,45,68,82,89,45,82,85,78,32,45,45,73,78,67,76,85,68,69,32,82,70,68,82,73,86,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.5 }
+  - id: rf_ui_native_filter_target
+    type: screen.wait_contains
+    params: { text: "TARGET RFDRIVE TYPE $11", wait_timeout_s: 15, capture_label: rf_ui_native_filter_whatif }
+  - id: rf_ui_native_filter_count
+    type: screen.wait_contains
+    params: { text: "RECURSIVE PLAN F21 SELECTED 1", wait_timeout_s: 10 }
+  - id: rf_ui_native_filter_zero_mutation
+    type: screen.wait_contains
+    params: { text: "PLAN W0 D1 M0; DONE W0 D0 M0", wait_timeout_s: 10 }
+  - id: clear_before_native_mutation_denial
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_native_mutation_denial_input
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,56,58,47,82,70,42,32,45,45,78,65,84,73,86,69,45,80,65,84,84,69,82,78,32,45,45,70,79,82,67,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.4 }
+  - id: rf_ui_native_mutation_denied
+    type: screen.wait_contains
+    params: { text: "NEED --APPLY", wait_timeout_s: 10, capture_label: rf_ui_native_mutation_denied }
+  - id: rf_ui_native_mutation_postcheck_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,56,58,47,82,70,68,82,73,86,69,13], inter_key_delay_s: 0.03, post_delay_s: 0.4 }
+  - id: rf_ui_native_mutation_postcheck
+    type: screen.wait_contains
+    params: { text: "DISPLAY: RFDRIVE", wait_timeout_s: 10, capture_label: rf_ui_native_mutation_postcheck }
+  - id: seed_native_apply_input
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,78,88,49,32,65,80,80,76,89,13], inter_key_delay_s: 0.03, post_delay_s: 0.5 }
+  - id: seed_native_apply_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: clear_before_native_apply
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_native_apply_input
+    type: input.sequence
+    params: { keys: [68,69,76,69,84,69,32,56,58,47,82,70,78,88,42,32,45,45,78,65,84,73,86,69,45,80,65,84,84,69,82,78,32,45,45,65,80,80,76,89,32,45,45,89,69,83,13], inter_key_delay_s: 0.03, post_delay_s: 0.7 }
+  - id: rf_ui_native_apply_target
+    type: screen.wait_contains
+    params: { text: "TARGET RFNX1", wait_timeout_s: 30, capture_label: rf_ui_native_apply_target }
+  - id: rf_ui_native_apply_frozen_count
+    type: screen.wait_contains
+    params: { text: "RECURSIVE PLAN F1 SELECTED 1", wait_timeout_s: 30 }
+  - id: rf_ui_native_apply_done
+    type: screen.wait_contains
+    params: { text: "BATCH DONE 1/1 FAIL 0", wait_timeout_s: 60, capture_label: rf_ui_native_apply_done }
+  - id: rf_ui_native_apply_postcheck_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,56,58,47,82,70,78,88,49,13], inter_key_delay_s: 0.03, post_delay_s: 0.5 }
+  - id: rf_ui_native_apply_postcheck
+    type: screen.wait_contains
+    params: { text: "NOT FOUND", wait_timeout_s: 30, capture_label: rf_ui_native_apply_postcheck }
+  - id: seed_native_copy_a_input
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,78,67,49,32,67,79,80,89,65,13], inter_key_delay_s: 0.03, post_delay_s: 0.4 }
+  - id: seed_native_copy_a_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: seed_native_copy_b_input
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,78,67,50,32,67,79,80,89,66,13], inter_key_delay_s: 0.03, post_delay_s: 0.4 }
+  - id: seed_native_copy_b_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: clear_before_native_copy_apply
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_native_copy_apply_input
+    type: input.sequence
+    params: { keys: [67,79,80,89,32,56,58,47,82,70,78,67,42,32,57,58,47,32,45,45,78,65,84,73,86,69,45,80,65,84,84,69,82,78,32,45,45,65,80,80,76,89,32,45,45,89,69,83,13], inter_key_delay_s: 0.025, post_delay_s: 0.7 }
+  - id: rf_ui_native_copy_apply_count
+    type: screen.wait_contains
+    params: { text: "RECURSIVE PLAN F2 SELECTED 2", wait_timeout_s: 30, capture_label: rf_ui_native_copy_apply_targets }
+  - id: rf_ui_native_copy_apply_done
+    type: screen.wait_contains
+    params: { text: "BATCH DONE 2/2 FAIL 0", wait_timeout_s: 90, capture_label: rf_ui_native_copy_apply_done }
+  - id: dump_native_copy_journal
+    type: dump.reu
+    params: { stage_tag: readyfs_native_copy_apply, mode: full }
+  - id: rf_ui_native_copy_compare_input
+    type: input.sequence
+    params: { keys: [67,79,77,80,65,82,69,32,56,58,47,82,70,78,67,49,32,57,58,47,82,70,78,67,49,13], inter_key_delay_s: 0.03, post_delay_s: 0.5 }
+  - id: rf_ui_native_copy_compare
+    type: screen.wait_contains
+    params: { text: "VERIFY: IDENTICAL", wait_timeout_s: 30, capture_label: rf_ui_native_copy_apply_compare }
+  - id: seed_native_move_input
+    type: input.sequence
+    params: { keys: [87,82,73,84,69,32,56,58,47,82,70,78,77,49,32,77,79,86,69,65,13], inter_key_delay_s: 0.03, post_delay_s: 0.4 }
+  - id: seed_native_move_done
+    type: screen.wait_contains
+    params: { text: "WRITE COMPLETE", wait_timeout_s: 30 }
+  - id: clear_before_native_move_apply
+    type: input.sequence
+    params: { keys: [67,76,69,65,82,13], inter_key_delay_s: 0.03, post_delay_s: 0.2 }
+  - id: rf_ui_native_move_apply_input
+    type: input.sequence
+    params: { keys: [77,79,86,69,32,56,58,47,82,70,78,77,42,32,57,58,47,32,45,45,78,65,84,73,86,69,45,80,65,84,84,69,82,78,32,45,45,65,80,80,76,89,32,45,45,89,69,83,13], inter_key_delay_s: 0.025, post_delay_s: 0.7 }
+  - id: rf_ui_native_move_apply_count
+    type: screen.wait_contains
+    params: { text: "RECURSIVE PLAN F1 SELECTED 1", wait_timeout_s: 30, capture_label: rf_ui_native_move_apply_target }
+  - id: rf_ui_native_move_apply_done
+    type: screen.wait_contains
+    params: { text: "BATCH DONE 1/1 FAIL 0", wait_timeout_s: 90, capture_label: rf_ui_native_move_apply_done }
+  - id: dump_native_move_journal
+    type: dump.reu
+    params: { stage_tag: readyfs_native_move_apply, mode: full }
+  - id: rf_ui_native_move_source_postcheck_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,56,58,47,82,70,78,77,49,13], inter_key_delay_s: 0.03, post_delay_s: 0.4 }
+  - id: rf_ui_native_move_source_absent
+    type: screen.wait_contains
+    params: { text: "NOT FOUND", wait_timeout_s: 30 }
+  - id: rf_ui_native_move_dest_postcheck_input
+    type: input.sequence
+    params: { keys: [83,84,65,84,32,57,58,47,82,70,78,77,49,13], inter_key_delay_s: 0.03, post_delay_s: 0.4 }
+  - id: rf_ui_native_move_dest_present
+    type: screen.wait_contains
+    params: { text: "DISPLAY: RFNM1", wait_timeout_s: 30, capture_label: rf_ui_native_move_apply_postcheck }

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS Original-Scope Audit · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS Original-Scope Audit"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs" open><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="tours/editor.html">Editor screenshot tour</a></li><li><a href="tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="READYFS_SAFETY.html">Safety</a></li><li><a href="READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#commands-currently-dispatched">Commands currently dispatched</a></li><li><a href="#original-commands-not-yet-dispatched">Original commands not yet dispatched</a></li><li><a href="#functional-gaps-that-are-not-just-commands">Functional gaps that are not just commands</a></li><li><a href="#completion-rule">Completion rule</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="READYFS_SCOPE_AUDIT.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs-original-scope-audit">ReadyFS Original-Scope Audit</h1>
+<blockquote>
+<p>Current status: the <a href="READYFS_ACCEPTANCE.html">acceptance summary</a> supersedes older SD2IEC and overlay milestones below. Native folder/image acceptance completed on the attached device; the build now has 28 sidecars. Remaining broader backend and typed-result gaps are still substantive.</p>
+</blockquote>
+<p>Status: active implementation checklist. This is deliberately broader than
+the 60-case UI matrix; a green matrix is not permission to call the original
+application scope complete.</p>
+<h2 id="commands-currently-dispatched">Commands currently dispatched</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Commands</th>
+<th>Current state</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>discovery</td>
+<td><code>probe</code>, <code>drives</code>, <code>profile</code>, <code>native</code>, <code>capabilities</code></td>
+<td>endpoint capabilities and limits are dispatched; physical backend coverage incomplete</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><code>pwd</code>, <code>cd</code>, <code>dir</code>/<code>ls</code>, <code>stat</code>, <code>volume</code>/<code>free</code></td>
+<td>flat IEC plus physically proven nested UltimateDOS/SoftwareIEC paths; lowercase Ultimate host/access, exact byte size, contained D81 volume identity, C64 blocks, and unavailable SoftIEC capacity are physically proven</td>
+</tr>
+<tr>
+<td>shell</td>
+<td><code>help</code>, <code>history</code>, <code>status</code>, <code>clear</code>/<code>cls</code>, <code>alias</code>, <code>unalias</code>, <code>config</code>, <code>test</code>, <code>run</code></td>
+<td>implemented slices; <code>run</code> stages a bounded SEQ in a dedicated REU bank, closes the source, then cooperatively dispatches comments/commands with SET/persistent variables, <code>%0</code>–<code>%9</code>, IF/GOTO, arithmetic, local CALL, <code>onerror</code> and <code>expect rc</code>; external-file CALL, SHIFT and FOR are absent; prompts are forbidden in batch mode; status reports the stable typed result of the previous command while conversion of legacy handlers remains incomplete</td>
+</tr>
+<tr>
+<td>matching</td>
+<td><code>match</code>, <code>--include</code>, <code>--exclude</code>, <code>--native-pattern</code></td>
+<td>component, relative-stem, and exact-name native plan behavior proven</td>
+</tr>
+<tr>
+<td>content</td>
+<td><code>type</code>/<code>cat</code>, <code>head</code>, <code>tail</code>, <code>crc32</code>, <code>compare</code>/<code>verify</code></td>
+<td>resident-owned streaming I/O with slot-9 rendering; bounded line views, explicit tail truncation, and a backend-neutral CRC-32 stream checksum</td>
+</tr>
+<tr>
+<td>nested discovery</td>
+<td><code>tree</code>, <code>find</code></td>
+<td>bounded breadth-first controller with resident UltimateDOS, SoftIEC, flat regular-IEC, and profile-gated CMD/SD2IEC adapters dispatched; <code>find</code> caches and applies positional or <code>--include</code>/<code>--exclude</code> patterns to complete relative stems; VICE proves CMD/SD2IEC root translation and resident handoff, while real nested device enumeration remains incomplete</td>
+</tr>
+<tr>
+<td>mutation</td>
+<td><code>copy</code>/<code>cp</code>, <code>move</code>/<code>mv</code>, <code>rename</code>/<code>ren</code>, <code>delete</code>/<code>rm</code>, <code>new</code>, <code>write</code>, <code>append</code>, <code>mkdir</code>/<code>md</code>, <code>rmdir</code>/<code>rd</code></td>
+<td>flat/local slices proven; nested and cross-backend matrix incomplete</td>
+</tr>
+<tr>
+<td>media</td>
+<td><code>mount</code>, <code>dismount</code>/<code>unmount</code>, <code>swap</code>, <code>format</code></td>
+<td>disposable IEC format plus physical Ultimate mount/swap/dismount and exact Drive A restoration are proven; SoftIEC map/unmap is future-firmware provisional because firmware 3.14 target 5 lacks <code>$20/$21</code>; the SD2IEC-compatible capability/routing path is VICE-emulated, but physical SD2IEC success remains incomplete</td>
+</tr>
+</tbody></table>
+<p>Every current mutator recognizes <code>--dry-run</code> and exact alias <code>--whatif</code> at
+admission. Native-pattern execution also requires <code>--apply</code> and consumes only
+the frozen exact-name plan.</p>
+<h2 id="original-commands-not-yet-dispatched">Original commands not yet dispatched</h2>
+<p>None. Every command token in the original command contract is now routed. This
+does not make the original application scope complete: the backend matrices and
+typed-result gaps below remain substantive completion work.</p>
+<h2 id="functional-gaps-that-are-not-just-commands">Functional gaps that are not just commands</h2>
+<ul>
+<li>The common cooperative nested enumerator now feeds the existing
+plan/executor for UltimateDOS and SoftwareIEC. SoftwareIEC 3.14
+component-wise <code>CD:</code> command generation runs in utility slot 7, resident
+code checks every command-channel reply, and the global-root-to-<code>USB1</code>
+bridge is physically proven. Folder-capable CMD/SD2IEC paths now enter the
+same tree controller through the shared drive-profile/path translator, with
+resident IEC enumeration. VICE proves admission, translation, and bounded
+failure on its deliberately ordinary 1581; successful nested physical-device
+enumeration remains incomplete. SoftwareIEC mutation still uses
+ordinary checked OPEN/CLOSE rather than unproven <code>MD:</code>/<code>R:</code> commands.</li>
+<li>Flat IEC↔UltimateDOS copy is physically proven with a 4069-byte PRG, type
+preservation, independent length/CRC comparison, and exact Drive A
+restoration. Recursive UltimateDOS→SoftwareIEC folder copy is also
+physically proven for two flat files plus one nested file, including
+translated IEC names, independent byte comparison, marker gates, and exact
+Drive A restoration. Physical read-only
+<code>softwrite-noftp-whatif-filter-casefold-180400</code> also proves a nested
+<code>**/inside</code> filter selects exactly one leaf while all source/destination
+directory snapshots, source CRCs, owner markers, and Drive A remain exact.
+The reverse SoftwareIEC→UltimateDOS tree source is implemented and passes
+host/VICE contracts, including component-wise SoftwareIEC <code>CD:</code> and runtime
+IEC-bus binding, but current physical attempts were blocked by C64U
+program/sidecar launch stalls before a successful owner-gated copy. It is
+therefore not promoted as physical proof. Cross-backend recursive
+move/delete is also not complete.</li>
+<li>Image/volume metadata is now physically proven by
+<code>softwrite-noftp-metadata-lowercase5-20260817-2004</code>: <code>stat</code> reports the
+canonical display path, exact lowercase UltimateDOS access spelling,
+decoded lowercase host filename, type <code>$10</code>, and 819200 host bytes, while
+the mounted image independently reports volume <code>RFMEDIA1</code> and 3160 C64
+blocks. SoftwareIEC partition 0 reports target <code>$01</code> and <code>FREE UNAVAILABLE</code>
+rather than inventing host capacity. USB1/SD owner gates pass before,
+around, and after mount/dismount, and Drive A restores byte-for-byte.</li>
+<li>Physical Ultimate mount/dismount/swap and exact media restoration are
+proven by marker-gated <code>softwrite-noftp-media-145816</code>. Current official
+firmware 3.14 target-5 source has no <code>$20/$21</code> SoftIEC partition handlers.
+Physical attempts <code>softwrite-noftp-20260817-155612</code> and
+<code>softwrite-noftp-20260817-160912</code> therefore returned target status <code>$01</code>
+cleanly, added no partition, left partition 0 unchanged, restored Drive A
+exactly, and mutated no files. Map/unmap stays capability-honest provisional
+until supporting firmware/device exists. This is not a UCI transport fault:
+ReadyIRC-derived UCI abort/recovery is proven at 1/16/64 MHz.</li>
+<li>VICE <code>vice_auto_20260817_230948</code> emulates the ReadyFS cached SD2IEC
+capability record, not the device. It proves the transition from legacy
+denial to <code>SD2IEC P1 F1 I1</code>, translated partition directory/tree/mkdir/image
+dispatch, bounded non-SD2IEC device results, clean failed-action journaling,
+and a byte-identical D81 fixture. <code>TREE FAILED F0 D0</code> is routing evidence,
+not a claim that VICE&#39;s 1581 enumerated SD2IEC folders. Physical SD2IEC
+support stays provisional
+until a real device completes the same sequence successfully. Tape now has
+dedicated disposable-TAP evidence: named sequential write/read, disk-to-tape,
+REU-spooled tape-to-disk with staged verification, metadata, WhatIf, and
+explicit rejection of unsupported random-access/tree mutations all pass.</li>
+<li><code>tail</code> currently retains the final 243 bytes in its 256-byte controller
+workspace. It reports <code>TAIL TRUNCATED</code> whenever older input was discarded;
+a future REU-backed ring can increase retention without changing the path or
+command scheme.</li>
+<li><code>status</code> and batch <code>expect rc</code> now carry stable typed codes for the proven
+usage/not-found/conflict cases, with reserved interaction, unsupported, I/O,
+verify, partial, and internal values. Unsupported and unavailable outcomes
+now set 7 and 2 across the resident command surface. Conversion is still
+intentionally incomplete: several legacy I/O/verify/partial/internal paths
+leave the default result, and batch literals currently accept one digit only.</li>
+</ul>
+<h2 id="completion-rule">Completion rule</h2>
+<p>The original scope is complete only when every item above is implemented and
+evidenced, or explicitly retained as capability-honest provisional behavior
+because the corresponding hardware is unavailable. The generated 60-case
+report is one evidence view, not the scope boundary.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

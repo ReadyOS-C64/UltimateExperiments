@@ -1,0 +1,20 @@
+name: Check documentation
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build:docs
+      - run: npm run check:docs
+      - run: python3 tools/audit_public.py
+      - name: Check committed documentation is current
+        run: git diff --exit-code -- DOCS

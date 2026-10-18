@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Query performance and staged SQL · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Query performance and staged SQL"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql" open><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="performance.html" aria-current="page">Performance and staged queries</a></li><li><a href="shell.html">Interactive shell</a></li><li><a href="sql-language.html">SQL language</a></li><li><a href="tested-queries.html">Tested SQL examples</a></li><li><a href="architecture.html">Architecture</a></li><li><a href="memory-map.html">Memory map</a></li><li><a href="public-api.html">Public API</a></li><li><a href="storage-format.html">Storage format</a></li><li><a href="export-format.html">Export format</a></li><li><a href="dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#why-relationships-may-be-walked-repeatedly">Why relationships may be walked repeatedly</a></li><li><a href="#materialize-useful-boundaries-explicitly">Materialize useful boundaries explicitly</a></li><li><a href="#the-tested-seven-step-pipeline">The tested seven-step pipeline</a></li><li><a href="#what-the-benchmark-measured">What the benchmark measured</a></li><li><a href="#could-a-future-query-planner-help">Could a future query planner help?</a></li><li><a href="#reproduce-or-investigate">Reproduce or investigate</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="performance.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="query-performance-and-staged-sql">Query performance and staged SQL</h1>
+<p>ReuSQL64 makes advanced SQL possible with a small, fixed amount of C64 RAM. The cost is repeated work: a query may revisit the same rows, joined relationships, values or groups many times. This guide explains the current execution model and the tested way to make a demanding analytical query cheaper.</p>
+<blockquote class="performance-callout" aria-label="Query performance"><p><strong>Performance: some advanced queries are very slow right now.</strong></p>
+<p>For advanced queries, it is often best for speed to project the useful rows and columns into TEMP tables, add appropriate explicit indexes, and run subsequent queries on those intermediate results. The current engine does not choose those stages for you.</p>
+</blockquote>
+<h2 id="why-relationships-may-be-walked-repeatedly">Why relationships may be walked repeatedly</h2>
+<h3 id="nested-loops-revisit-related-tables">Nested loops revisit related tables</h3>
+<p>A join walks a source and then its related source. A correlated subquery may rescan its inner table for each outer row or joined pair. With three live sources, that work can compound. An explicit USING INDEX supplies a named leaf-chain access path; it does not turn the whole statement into an optimized join strategy.</p>
+<h3 id="order-by-distinct-and-grouping-can-replay-the-producer">ORDER BY, DISTINCT and grouping can replay the producer</h3>
+<p>The engine keeps row IDs, joined pairs or triples instead of holding a complete joined table or sorted result in C64 RAM. Bounded selection may restart the producer to choose each next ordered result. Exact DISTINCT compares a candidate with earlier qualifying rows or groups; grouped aggregates may rescan a group&#39;s members to recompute a value.</p>
+<p>Those restarts can repeat ON/WHERE evaluation, correlated predicates, streamed value reads and relationship walks. This is why a statement with a small final result can still be expensive. “Bounded” describes memory use, not a promise of low runtime.</p>
+<p><img loading="lazy" decoding="async" width="760" height="680" src="diagrams/query-flow.svg" alt="The resident engine coordinates phases and may replay a row producer"></p>
+<p><em>Source identities keep RAM use predictable. Replaying those identities trades time for memory.</em></p>
+<h2 id="materialize-useful-boundaries-explicitly">Materialize useful boundaries explicitly</h2>
+<p>A useful starting strategy is:</p>
+<ol>
+<li><strong>Filter early.</strong> Keep only the rows needed for the next stage.</li>
+<li><strong>Project narrowly.</strong> Carry the join keys and output values you still need, rather than wide unused columns.</li>
+<li><strong>Create a TEMP table.</strong> <code>CREATE TEMP TABLE ... AS SELECT</code> stores that intermediate result in REU-backed pages.</li>
+<li><strong>Index the next access path.</strong> Create a supported fixed-width index on the useful intermediate keys and select it with USING INDEX.</li>
+<li><strong>Continue with a smaller query.</strong> Join, group, order or deduplicate the intermediate data.</li>
+</ol>
+<p>Materialization has its own row, payload, index-build and REU-space costs. A simple scan or small query may be cheaper without it. TEMP tables are reclaimed by shutdown/checkpoint or the next initialization; they are session workspaces, not a durable replacement for the base tables.</p>
+<p><img loading="lazy" decoding="async" width="760" height="740" src="diagrams/staged-query.svg" alt="The seven timed stages of the indexed TEMP-table sales pipeline"></p>
+<p><em>Three CTAS steps and three intermediate index builds precede one grouped SELECT. The fixture creates the customer/product indexes separately.</em></p>
+<h2 id="the-tested-seven-step-pipeline">The tested seven-step pipeline</h2>
+<p>This is the exact staged workload from <code>src/pipeline_benchmark_main.c</code>, with whitespace added for reading. It assumes SALES_ORDERS, CUSTOMERS and PRODUCTS, plus CUSTOMER_ID_REGION and PRODUCT_ID_CATEGORY, have already been created by the benchmark fixture.</p>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> FILTERED_ORDERS <span class="hljs-keyword">AS</span>
+<span class="hljs-keyword">SELECT</span> ORDER_ID,CUSTOMER_ID,PRODUCT_ID,ORDER_TOTAL,ITEM_COUNT
+<span class="hljs-keyword">FROM</span> SALES_ORDERS
+<span class="hljs-keyword">WHERE</span> ORDER_TOTAL<span class="hljs-operator">&gt;=</span><span class="hljs-number">1000</span> <span class="hljs-keyword">AND</span> ITEM_COUNT<span class="hljs-operator">&gt;=</span><span class="hljs-number">2</span> <span class="hljs-keyword">AND</span> DETAILS <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;A%&#x27;</span>;
+
+<span class="hljs-keyword">CREATE</span> INDEX FILTERED_BUYER_PRODUCT <span class="hljs-keyword">ON</span> FILTERED_ORDERS(C2,C3);
+
+<span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> CUSTOMER_SALES <span class="hljs-keyword">AS</span>
+<span class="hljs-keyword">SELECT</span> O.C1,O.C3,O.C4,O.C5,C.REGION
+<span class="hljs-keyword">FROM</span> FILTERED_ORDERS <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">USING</span> INDEX FILTERED_BUYER_PRODUCT
+<span class="hljs-keyword">JOIN</span> CUSTOMERS <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">USING</span> INDEX CUSTOMER_ID_REGION
+  <span class="hljs-keyword">ON</span> C.CUSTOMER_ID<span class="hljs-operator">=</span>O.C2
+<span class="hljs-keyword">WHERE</span> C.ACTIVE<span class="hljs-operator">=</span><span class="hljs-literal">TRUE</span>;
+
+<span class="hljs-keyword">CREATE</span> INDEX CUSTOMER_PRODUCT_REGION <span class="hljs-keyword">ON</span> CUSTOMER_SALES(C2,C5);
+
+<span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> READY_SALES <span class="hljs-keyword">AS</span>
+<span class="hljs-keyword">SELECT</span> S.C3,S.C4,S.C5,P.CATEGORY_ID
+<span class="hljs-keyword">FROM</span> CUSTOMER_SALES <span class="hljs-keyword">AS</span> S <span class="hljs-keyword">USING</span> INDEX CUSTOMER_PRODUCT_REGION
+<span class="hljs-keyword">JOIN</span> PRODUCTS <span class="hljs-keyword">AS</span> P <span class="hljs-keyword">USING</span> INDEX PRODUCT_ID_CATEGORY
+  <span class="hljs-keyword">ON</span> P.PRODUCT_ID<span class="hljs-operator">=</span>S.C2
+<span class="hljs-keyword">WHERE</span> P.ACTIVE<span class="hljs-operator">=</span><span class="hljs-literal">TRUE</span>;
+
+<span class="hljs-keyword">CREATE</span> INDEX READY_REGION_CATEGORY <span class="hljs-keyword">ON</span> READY_SALES(C3,C4);
+
+<span class="hljs-keyword">SELECT</span> C3,C4,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>),<span class="hljs-built_in">SUM</span>(C1),<span class="hljs-built_in">AVG</span>(C2),<span class="hljs-built_in">MIN</span>(C1),<span class="hljs-built_in">MAX</span>(C1)
+<span class="hljs-keyword">FROM</span> READY_SALES <span class="hljs-keyword">USING</span> INDEX READY_REGION_CATEGORY
+<span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> C3,C4 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> C3,C4;</code></pre>
+<h3 id="read-the-generated-column-names">Read the generated column names</h3>
+<p>CTAS derives C1..Cn from projection order. The same name can mean something different at the next boundary:</p>
+<table>
+<thead>
+<tr>
+<th>TEMP table</th>
+<th>C1</th>
+<th>C2</th>
+<th>C3</th>
+<th>C4</th>
+<th>C5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FILTERED_ORDERS</td>
+<td>Order ID</td>
+<td>Customer ID</td>
+<td>Product ID</td>
+<td>Order total</td>
+<td>Item count</td>
+</tr>
+<tr>
+<td>CUSTOMER_SALES</td>
+<td>Order ID</td>
+<td>Product ID</td>
+<td>Order total</td>
+<td>Item count</td>
+<td>Region</td>
+</tr>
+<tr>
+<td>READY_SALES</td>
+<td>Order total</td>
+<td>Item count</td>
+<td>Region</td>
+<td>Category</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p>Each intermediate table has 33 rows in this fixture. The <a href="tested-queries.html#opt-in-staged-temp-table-benchmark">full benchmark evidence</a> retains the original query, expected results, page counts and instruction counts.</p>
+<h2 id="what-the-benchmark-measured">What the benchmark measured</h2>
+<table>
+<thead>
+<tr>
+<th>Execution</th>
+<th align="right">VICE jiffies</th>
+<th align="right">PAL at 50 Hz</th>
+<th align="right">NTSC at 60 Hz</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Original three-table grouped SELECT</td>
+<td align="right">115,010</td>
+<td align="right">2,300.2 seconds</td>
+<td align="right">1,916.833 seconds</td>
+</tr>
+<tr>
+<td>Full staged pipeline, including three CTAS and three index builds</td>
+<td align="right">21,294</td>
+<td align="right">425.88 seconds</td>
+<td align="right">354.90 seconds</td>
+</tr>
+<tr>
+<td>Repeat only the final grouped SELECT on READY_SALES</td>
+<td align="right">6,015</td>
+<td align="right">120.30 seconds</td>
+<td align="right">100.25 seconds</td>
+</tr>
+</tbody></table>
+<p>The complete staged pipeline is about <strong>5.4× faster</strong> than the original query in these recorded runs. The 120.30-second number is only the repeated final query; it excludes preparation and must not be presented as the full pipeline cost.</p>
+<p>The original fixture contains 2,054 rows across five tables, but the hot sales table has <strong>128 rows</strong>. The archive is not part of the joined hot workload. The original query&#39;s timing excludes D81 loading, schema/fixture creation and initial indexes. The staged timer includes its intermediate table and index work. These are target execution measurements from the opt-in benchmark lanes, not new timings taken for this editorial revision or a scaling guarantee.</p>
+<p>Peddle reports 504,420,468 instructions for the original grouped join, 81,867,885 for the staged pipeline, and 26,600,681 for the repeated final query. See the evidence catalog for the independently measured correlated EXISTS query and all storage totals.</p>
+<h2 id="could-a-future-query-planner-help">Could a future query planner help?</h2>
+<p>A future planner could help if it chooses more effective source order, access paths or intermediate materialization and avoids unnecessary rescans. Those execution changes—not merely recording a plan—would be what saves time. They would need new design and target measurements.</p>
+<p>The present engine deliberately has <strong>no optimizer or stored execution plan</strong>. Source order and explicit USING INDEX clauses control access. TEMP staging is an explicit strategy you can use now; automatic planning remains a possible future design direction rather than an implemented feature or a promised fix.</p>
+<h2 id="reproduce-or-investigate">Reproduce or investigate</h2>
+<p>The long benchmarks are opt-in:</p>
+<pre><code class="language-sh">make emu-benchmark-test
+make vice-benchmark-test
+make emu-pipeline-benchmark-test
+make vice-pipeline-benchmark-test
+</code></pre>
+<p>Ordinary <code>make test</code> and <code>make vice-test</code> exclude both benchmark lanes. Benchmark clients use the engine API; the formatted statements above exceed the shell&#39;s 160-byte input line. Tests use Peddle and VICE, with no physical C64 Ultimate automation.</p>
+<p><a href="architecture.html#result-shaping-through-bounded-replay">Architecture and replay ownership</a> · <a href="sql-language.html#materialize-query-results-with-ctas">SQL materialization rules</a> · <a href="tested-queries.html">Full tested-query catalog</a></p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

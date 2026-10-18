@@ -1,0 +1,5 @@
+*.IMG binary
+*.EXE binary
+examples/*.BAS -text whitespace=cr-at-eol
+examples/README.TXT -text whitespace=cr-at-eol
+examples/RIPPLE.PAS -text

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Next performance architecture: measured feasibility, not implementation approval · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Next performance architecture: measured feasibility, not implementation approval"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#recommendation">Recommendation</a></li><li><a href="#one-new-actual-native-dos-profiling-pass">One new actual native DOS profiling pass</a></li><li><a href="#what-a-small-translator-would-cover">What a small translator would cover</a></li><li><a href="#timer-boundary-is-a-separate-architectural-problem">Timer boundary is a separate architectural problem</a></li><li><a href="#concrete-generic-runtime-block-experiment">Concrete generic runtime block experiment</a></li><li><a href="#larger-gain-follow-on-after-measurement">Larger-gain follow-on after measurement</a></li><li><a href="#retained-artifacts-and-provenance">Retained artifacts and provenance</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="PERFORMANCE_RESEARCH_20261015.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="next-performance-architecture-measured-feasibility-not-implementation-approval">Next performance architecture: measured feasibility, not implementation approval</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p>Retained research cohort: <code>agentworking/scratch/translation-feasibility/</code>; artifact names below refer to that directory. Root independently checked exact normal-report equality, both complete native-PC histogram sums and all601936 trace-record lengths. Evidence (local development record, not distributed).</p>
+<p>Prepared 2026-10-15. Private research only; no production edit, new ISA implementation, hardware, network control, commit, or extra subagent. The actual six-overlay target is frozen at runtime <code>98fcd115338c43c8976d35f24feea468a040897f11ee143f8c52c9b477d07ff7</code>, unit <code>6eba1ee7bf6c872fcb7f4a059cc64f4572243511efa37302026d8ced82b244f8</code>. The later two-byte empty-PIC fast path is a separate proposal and is not silently included in this profile.</p>
+<h2 id="recommendation">Recommendation</h2>
+<p>Do not commit to a broad 8088-to-6510 translator yet. First measure and reduce the exact interrupt-boundary path, then make a disabled, generic runtime block experiment whose purpose is to prove semantics and measure admission costs. A register-only translator cannot deliver the requested near-XT performance on its own. The new real-DOS measurements below show why. Large improvement will require the boundary path <strong>and</strong> coherent guest memory/fetch/word/string paths; a new compiler alone does not remove those costs.</p>
+<p>Keep the interpreter as the complete fallback and oracle. No DOS kernel patch, host DOS service, offline DOS precompiler, native COM/EXE loader, application recognition, or interrupt-21 replacement is proposed. Runtime translation must accept ordinary guest bytes regardless of which program loaded them.</p>
+<h2 id="one-new-actual-native-dos-profiling-pass">One new actual native DOS profiling pass</h2>
+<p>The unchanged accepted unit PRG ran native ENTRY, asynchronous real-image import, BIOS/DOS/COMMAND.COM, the empty date/time replies, VER, DIR /P, pagination, and the returned prompt. All ordinary assertions remained active. Host-only counters were added to a private Peddle bridge, at native instruction boundaries; no modeled target instruction or cycle was added. This is profiling of real assembled emulator execution, not replay of an abstract 8088 model.</p>
+<p>The instrumented result is <strong>exactly equal in every JSON field</strong> to the frozen uninstrumented six-overlay <code>native-dos-boot.json</code>: all observations, keys, names/sizes, timing/counters, 640 KiB guest SHA and CGA SHA. The new exclusive native-PC histogram independently sums to the same whole-call clock count. The frozen target and supplied disk bytes stayed exact.</p>
+<table>
+<thead>
+<tr>
+<th>Measured quantity</th>
+<th align="right">Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Completed guest instructions</td>
+<td align="right">598,702</td>
+</tr>
+<tr>
+<td>Actual CPU-step calls, including continuations</td>
+<td align="right">601,936</td>
+</tr>
+<tr>
+<td>CPU-step inclusive clocks</td>
+<td align="right">1,169,895,754</td>
+</tr>
+<tr>
+<td>All native call clocks in the harness</td>
+<td align="right">2,869,345,809</td>
+</tr>
+<tr>
+<td>Timer callbacks, ordinary and REP element boundaries</td>
+<td align="right">658,267</td>
+</tr>
+<tr>
+<td>Timer callback inclusive clocks</td>
+<td align="right">873,806,129</td>
+</tr>
+<tr>
+<td>CPU-step calls that perform guest writes</td>
+<td align="right">152,061</td>
+</tr>
+<tr>
+<td>Guest byte-write epoch increments within CPU calls</td>
+<td align="right">649,260</td>
+</tr>
+<tr>
+<td>Native runtime ticks</td>
+<td align="right">39,903</td>
+</tr>
+<tr>
+<td>Test result</td>
+<td align="right">1/1, 40 seconds execution after compilation</td>
+</tr>
+</tbody></table>
+<p><strong>Do not add CPU-step and timer clocks:</strong> REP timer callbacks are already inside CPU-step time. The all-native total additionally includes import, runtime presentation, diagnostic SNAPSHOT/read commands and other support. Its distribution is specific to this diagnostic workload, not an unattended emulator session. Peddle clocks exclude REU stalls and physical MMIO/VIC waits. There is no new C64U or XT elapsed measurement.</p>
+<p>Exclusive native-PC ownership within CPU calls:</p>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th align="right">Clocks</th>
+<th align="right">Share of CPU-step clocks</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Coherent memory/cache</td>
+<td align="right">318,317,022</td>
+<td align="right">27.21%</td>
+</tr>
+<tr>
+<td>Instruction fetch</td>
+<td align="right">257,644,879</td>
+<td align="right">22.02%</td>
+</tr>
+<tr>
+<td>CPU decode/handlers/completion</td>
+<td align="right">207,256,621</td>
+<td align="right">17.72%</td>
+</tr>
+<tr>
+<td>Segment:offset translation</td>
+<td align="right">129,677,582</td>
+<td align="right">11.08%</td>
+</tr>
+<tr>
+<td>ModR/M operand helpers</td>
+<td align="right">42,840,176</td>
+<td align="right">3.66%</td>
+</tr>
+<tr>
+<td>Stack helpers</td>
+<td align="right">36,747,562</td>
+<td align="right">3.14%</td>
+</tr>
+<tr>
+<td>ALU</td>
+<td align="right">34,219,610</td>
+<td align="right">2.93%</td>
+</tr>
+</tbody></table>
+<p>Memory, fetch and physical-address calculation together own <strong>60.32%</strong> of CPU-step time. Attribution is instruction-PC ownership, not inclusive call time. C900–CFFF is explicitly classified as one shared overlay window; a static address cannot distinguish whichever variant was loaded at that moment.</p>
+<p>Highest inclusive opcode call costs: OUT imm8 E6 86,856,298; MOVSW A5 80,731,838; MOVSB A4 59,407,337; CALL E8 50,774,564; LDS C5 37,031,929; RET C3 36,001,676; INT CD 35,081,482; immediate group83 34,052,122. OUT includes BIOS callbacks. REP rows include multiple calls per retired instruction. These rows cannot be interpreted as bare 8088 opcode timings.</p>
+<h2 id="what-a-small-translator-would-cover">What a small translator would cover</h2>
+<p>Coverage counts only completed, unprefixed instructions. Immediate/register operands are observed passively from authoritative cache bytes; no extra modeled bus access is made. The last actual decoder opcode is authoritative for continuation calls. These sets describe possible experiments; none is implemented here.</p>
+<table>
+<thead>
+<tr>
+<th>Cumulative admitted set</th>
+<th align="right">Calls</th>
+<th align="right">CPU clocks currently consumed</th>
+<th align="right">CPU share</th>
+<th align="right">All-native harness share</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NOP and MOV register, immediate</td>
+<td align="right">21,205</td>
+<td align="right">16,757,336</td>
+<td align="right">1.43%</td>
+<td align="right">0.58%</td>
+</tr>
+<tr>
+<td>Also INC/DEC register, Jcc and LOOP family</td>
+<td align="right">128,327</td>
+<td align="right">101,088,025</td>
+<td align="right">8.64%</td>
+<td align="right">3.52%</td>
+</tr>
+<tr>
+<td>Also selected register-only ModR/M ALU/MOV/TEST/XCHG</td>
+<td align="right">209,310</td>
+<td align="right">213,977,617</td>
+<td align="right">18.29%</td>
+<td align="right">7.46%</td>
+</tr>
+</tbody></table>
+<p>Even replacing the last set with <strong>zero-cost execution</strong> would improve this all-native diagnostic harness by at most 1.081×, before translation, admission, lookup, cache-capacity, and invalidation costs. This is an optimistic Amdahl calculation for this exact script, not a hardware speed forecast. The CPU-only ceiling for removing that set is 1.224×. Other applications may have a different mix.</p>
+<p>An ideal trace partition into same-page runs, ending at branches or unsupported instructions and capped at16 instructions, yields mean run lengths <strong>1.28 / 1.04 / 1.48</strong> for the three sets. This model ignores source invalidation, intervening IRQ writes, compile time and byte storage. For the broadest set, ideal16/32/64-entry block LRU hits are49.49%/64.11%/75.86%. These are optimistic locality estimates, not a decoded-cache benchmark. They warn against assuming that a small register translator will usually amortize checks over16 instructions.</p>
+<p>There is one useful generic memory loop: physical0D47C/0D47D/0D47F/0D482 repeatedly executes LODSW, ADD DX,AX, ADC DX,imm8 and LOOP. Its four addresses each execute15,972 times and consume85,498,633 CPU clocks. That is7.31% of CPU-step clocks and2.98% of all harness clocks. A memory-capable translator or span-specialized interpreter could help it. Recognizing its DOS address/signature or replacing the whole routine is not proposed.</p>
+<h2 id="timer-boundary-is-a-separate-architectural-problem">Timer boundary is a separate architectural problem</h2>
+<p>The reviewed <code>cpu-timer-performance</code> research measured a genuine sequential warm NOP at429 CPU-step clocks; redirecting IP to the same byte costs796 because it really refills the fetch span. With its proposed empty-PIC return, an IF=1, no-request, unchanged-raw-time callback still costs1,021 clocks. The32 sequential native-NOP case costs46,752 clocks, or1,461 per guest instruction. These are explicitly scripted functional-clock cases.</p>
+<p>In that measured regime, eliminating the entire429-clock interpreter body still leaves about1,032 clocks per boundary, including wrapper overhead:16.125 microseconds at an ideal64MHz before any physical waits. This is a lower bound <strong>for retaining that measured callback implementation in that regime</strong>, not a universal minimum for all implementations or IF states.</p>
+<p>At nominal XT clock52,500,000/11Hz, a host budget is approximately13.41 native clocks per XT clock, or17.88 at the provisional0.75× acceptance threshold. Intel&#39;s1979 table gives NOP3 and MOV-register-immediate4 execution clocks, but explicitly assumes prefetched instructions and warns that instruction-queue/bus effects can extend execution. Thus those table entries are analytic illustrations only: they cannot be used as the elapsed timing of an8088 NOP/MOV stream. <a href="https://bitsavers.org/components/intel/8086/9800722-03_The_8086_Family_Users_Manual_Oct79.pdf">Intel primary manual, sections2.7/2.8 and table2-21, pages2-50/2-61/2-62</a>.</p>
+<p>A calibrated XT or cycle-accurate reference must run the same source-controlled workloads. Physical C64U timing must include boundary MMIO, display and REU stalls. A fast generated MOV body cannot establish a workload ratio while this boundary remains expensive.</p>
+<h3 id="first-bounded-performance-slice-owned-internal-clock-abi">First bounded performance slice: owned internal clock ABI</h3>
+<p>Add a private internal clock/sample gateway that requires already-owned CIA2, RAM+I/O mapping, CLD and non-reentrancy. Preserve the public bank-safe, A/X/Y-preserving API unchanged. The internal gateway may clobber A/X/Y and avoid redundant nested banking/register preservation, but must retain the <strong>same control validation, coherent sample register sequence, bounded retry count, reload exclusion, success/error publication and elapsed/PIT outputs</strong>. Keep every ordinary/HLT and eligible REP-element callback; do not change event cadence or coalesce reads across guest instructions.</p>
+<p>This is a small, reviewable optimization with a real path to remove repeated work. No savings number is asserted before assembled measurement. Even a100–200-clock reduction would not close the current gap; it is a prerequisite for learning how much remains, not the final answer.</p>
+<p>Measure the internal gateway on Peddle with an independent sampler and every existing tear/reload/control/owner case, then physically at Manual64 with MMIO counts and actual elapsed time. If MMIO remains the dominant floor, a hardware deadline latch or a changed virtual-PC-clock policy requires a separate decision and proof. A CIA timer cannot simply be programmed with a rounded18.2Hz period and called equivalent: fractional phase, reload latency, missed/coalesced edges, pause rebasing, competing CIA ownership and early/late IRQ boundaries all matter. Replacing per-boundary physical sampling with occasional polling is <strong>not</strong> approved by this proposal.</p>
+<h2 id="concrete-generic-runtime-block-experiment">Concrete generic runtime block experiment</h2>
+<p>After the boundary measurement, add an explicit disabled experiment with the following restrictive admission policy. Its initial purpose is correctness and admission-cost measurement, not a shipping speed claim.</p>
+<ol>
+<li>Runtime6502 code reads ordinary guest bytes through the coherent memory API. Initially accept only NOP and MOV register,immediate, no prefixes, no segment writes, no memory operands, no trap-mode entry, and no current REP/prefix continuation. Keep1–8 instructions wholly within one512-byte physical source page and a nonwrapping16-bit IP interval. First instructions crossing a source-page/IP/20-bit boundary take the interpreter path unchanged. Later register ALU and branches require their own acceptance slices.</li>
+<li>Acquire/pin the source page before inspection. Only bytes already available in that pinned page may be inspected ahead. Never resolve a future page or raise an unsupported/future-instruction error during compilation. Stop before the first inadmissible instruction. Release compiler overlay ownership before executing generated code. No C900 lease survives into a guest boundary or scheduler return.</li>
+<li>Emit6510 bytes at runtime into a separately owned host execution cache. The host never translates DOS files. Emit per-instruction commit points: full materialized guest state/IP, exact32-bit instruction counter, strict original8088 shadow decrement, then the next normal timer/IRQ boundary. Preserve public host P except C at the outer entry/return. A/X/Y remain clobbered as already allowed.</li>
+<li>Before every admitted guest instruction, invoke the actual native timer/IRQ path. Accepted IRQ immediately exits the translated block without executing its next instruction. Mutable IVT, stack/frame failure, IF and incoming shadows remain owned by the existing callback. Recheck CPU status/result; carry/fatal faults are terminal and preserve already-committed guest work. There is no direct chaining past this boundary.</li>
+<li>A block is valid only after a <strong>fresh byte-for-byte source comparison</strong> against its saved guest-byte snapshot under the newly acquired page pin. Include CS/IP, physical source interval, memory mode and source-byte count in its descriptor. A generation check may reject cheaply but must not establish validity by itself. This handles physical aliases, evict/reload, init resets and16-bit generation ABA without a new persistent version array.</li>
+<li>Retain the source pin only within a bounded block invocation, never over a scheduler return. Since the initial admitted instructions cannot write guest memory and an accepted IRQ exits immediately, an empty callback cannot modify source/cache authority. Release the pin on success, fallback and terminal exits under the existing cache failure contract. Host/debug writes, BIOS DMA and code mutation between invocations are seen by the next fresh comparison.</li>
+<li>Bound compilation by source bytes/instruction count and execution by the existing host quantum. Unsupported, expired, unready, mismatched or unallocatable optimizer state falls back before guest mutations. A real memory fault retains the scalar interpreter&#39;s first-failure/partial-commit semantics; it is not swallowed as a cache miss.</li>
+</ol>
+<p>This byte-comparison design deliberately avoids assuming that the global32-bit write epoch is a collision-proof translation version. Global invalidation would also discard useful blocks on stack/data/BDA writes;152,061 CPU calls in this trace perform writes, and ordinary IRQ writes are additional. Existing per-frame16-bit generations can wrap or repeat after init/eviction. A later cheap page-watch scheme needs explicit invalidation hooks in every scalar/range/BIOS/REP writer plus saturation/flush-before-wrap rules; it cannot be inferred from the current generation counters.</p>
+<p>QEMU&#39;s primary translator documentation supplies useful design precedents: translation keys include execution state, self-modifying code requires explicit invalidation, interrupt-unmasking state changes require exits, and precise exceptions require guest-state restoration points. Its design and source are <strong>not</strong> adopted as6510 code or as proof of our behavior. <a href="https://www.qemu.org/docs/master/devel/tcg.html">QEMU Translator Internals, version11.1.50</a>.</p>
+<h3 id="fully-charged-minimum-memory-experiment">Fully charged minimum-memory experiment</h3>
+<p>Actual accepted baseline: MAIN115 bytes free(runtime)/114(unit); DEVICE22; host F000–FDFF shadow2144/3584, leaving1440 bytes; DEVICESTATE659; BSS223; ZP18/30. Cold1093/118 bytes are not resident space. Current23 startup-overlapped cache frames must be committed before use.</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Proposed experimental allocation</th>
+<th>Consequence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HostB000–BFFF</td>
+<td>4096-byte generated-code/descriptor/guest-byte cache</td>
+<td>cache_limit24, leaving12KiB guest frames8000–AFFF;25% less guest cache</td>
+</tr>
+<tr>
+<td>HostF860–FDFF</td>
+<td>up to1440 bytes resident entry, guard, dispatcher and exit support</td>
+<td>existing F000–F85F HD/scroll code stays; FE00–FFFF vectors remain reserved</td>
+</tr>
+<tr>
+<td>C900–CFFF</td>
+<td>new compiler overlay, at most1792 bytes</td>
+<td>compile only; release before execution/IRQ; never a second active window</td>
+</tr>
+<tr>
+<td>HostB000–B7FF during startup</td>
+<td>one additional2048-byte compiler asset slot</td>
+<td>after bootstrap it becomes part of the execution cache;27 startup-overlapped cache frames instead of23</td>
+</tr>
+<tr>
+<td>REU343000–3437FF</td>
+<td>2048-byte immutable compiler slot</td>
+<td>within current4MiB staging/asset arena; exact header, packing and ownership extensions required</td>
+</tr>
+<tr>
+<td>HostEC93–EEFF</td>
+<td>at most621 available bytes, explicit state budget required</td>
+<td>EF00–EFFF stays reserved; descriptors preferably live in charged B000 cache</td>
+</tr>
+<tr>
+<td>REU3C0000–3FFFFF</td>
+<td>optional256KiB backing code cache, <strong>not initially allocated</strong></td>
+<td>ordinary execution still needs host RAM/DMA; no speed benefit assumed</td>
+</tr>
+<tr>
+<td>ZP</td>
+<td>provisional2-byte emitter pointer, only after linker proof</td>
+<td>never assume undeclared spare ZP is usable</td>
+</tr>
+</tbody></table>
+<p>This is a proposed ledger, not linked evidence. If the compiler/support cannot fit these bounds, reduce the experiment&#39;s admitted set or reject it. Do not quietly borrow bitmap/font/UCI/cache/HD/vector storage. Loading a seventh startup asset must precede cache initialization; source B000 must not be executed before its asset is committed.</p>
+<p>Benchmark cache_limit24 against32 <strong>before</strong> implementing translation. A4KiB execution cache can lose more through guest-cache misses than it wins through decode. Do not add an REU code cache until physical DMA/load costs and measured block reuse justify it. REU is storage, not an executable address space.</p>
+<h3 id="required-prototype-acceptance">Required prototype acceptance</h3>
+<p>The first actual prototype must generate code with runtime6510 instructions, then execute that generated code in Peddle. Host oracles may assemble inputs and calculate expected results but must not emit target code or bypass the runtime compiler. Compare all28 guest register/flag bytes, CPU status/opcode/count/shadows/pending/REP state, PIC/PIT state, source authority/pins and the full1MiB guest image with independently expected results. Test every register, boundary immediate, all256 native entry P values, counter carries, all admitted lengths, and fallback without mutation.</p>
+<p>Inject an IRQ at every translated instruction boundary, incoming shadows0/1/2, IF0/1, mutable IRQ vectors, timer tear/transient/fatal/control failure, overlay-load failure, page acquire/pin overflow/fault, alias self-modification, eviction/reload and explicit cold/cache reinit. Compare fault prefixes at the first byte/first instruction before any broadened memory form. Existing REP element16/final-element and original IP−2 restart behavior must remain exact on interpreter fallback. A new memory/ALU/branch translation slice requires the full5701 CPU corpus plus focused differential tests and real-DOS regression.</p>
+<p><strong>No translated-block prototype was built or timed in this research.</strong> The measured work is the exact real-target DOS profiling pass. A trivial straight-line emitter without these interrupt, invalidation and failure checks would give an attractive but unusable cycle count; the task explicitly made that prototype conditional on independent full-state/failure validation. The narrow coverage and timer floor make the owned-boundary experiment the better next concrete implementation slice.</p>
+<h2 id="larger-gain-follow-on-after-measurement">Larger-gain follow-on after measurement</h2>
+<p>The profile favors coherent internal operand/word/string span paths over a NOP/MOV-only translator. Investigate an internal RAM-hit ABI with public wrappers intact, cached segment bases keyed by the actual current segment value, and same-page word transfers that avoid a second full segment translation while preserving offsetFFFF, physicalFFFFF, holes/ROM/CGA and low-byte failure prefixes. Reuse the proven coherent scroll span discipline for REP only after preserving read/write order, overlap replication, per-byte metadata and every per-element interrupt checkpoint. These are generic CPU/memory improvements, not BIOS/DOS recognition.</p>
+<p>A broad translator may eventually combine these paths with decoded operands and native branching. It must then solve stores into its own source, runtime segment changes, precise faults and bounded REP using the same semantic contracts. There is no credible measured near-XT estimate for that larger design yet.</p>
+<h2 id="retained-artifacts-and-provenance">Retained artifacts and provenance</h2>
+<ul>
+<li><code>profile-summary.json</code>: complete opcode/module/coverage/locality results.</li>
+<li><code>work/build/native-dos-boot.json</code>: actual successful native DOS report, exactly equal to the frozen uninstrumented counterpart.</li>
+<li><code>work/build/native-profile-records.bin</code>:601,936 packed24-byte records, schema <code>&lt;IIIIHHBBBB</code>: physical, cycles, completed, epoch_delta, CS, IP, actual final opcode, passive following byte, passive prefix count, script phase.</li>
+<li><code>work/build/{native,cpu}-pc-cycles.bin</code>:65536 little-endian64-bit native-PC counters; independent exact summation assertions in <code>analyze.py</code>.</li>
+<li><code>instrument.py</code>: reproducible private host instrumentation; <code>analyze.py</code>: deterministic calculations; <code>frozen-input-manifest.json</code>: pre-instrumentation source/target hashes; <code>manifest.json</code>: final source/output identities and equality proof.</li>
+<li><code>instrumented-native-dos.log</code>: actual1/1 pass, no full5701 repetition.</li>
+<li>First wrong-directory <code>zig build</code> failed before any build because the enclosing repository has no build.zig; its log was moved immediately into this scratch directory. It did not modify shared source or targets. Intel PDF direct fetch returned403 and local <code>pdftotext</code> was unavailable; no manual binary was retained. Source facts above use the search-indexed primary Intel scan and accessible primary QEMU documentation. No third-party source code or license-bearing implementation was copied into a proposed target change.</li>
+</ul>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

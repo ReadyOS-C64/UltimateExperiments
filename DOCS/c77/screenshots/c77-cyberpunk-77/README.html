@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyOS C77 Cyberpunk 77 preview · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyOS C77 Cyberpunk 77 preview"><link rel="stylesheet" href="../../../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../../../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../../../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../../readyfs/index.html">Overview and downloads</a></li><li><a href="../../../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../../../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../../../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../../../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../../../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../../../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../../../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../../../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../../../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../../../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../../../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../../../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../../../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../../dos64/index.html">Overview and downloads</a></li><li><a href="../../../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../../../dos64/BUILD.html">Build and tests</a></li><li><a href="../../../dos64/STATUS.html">Current status and limits</a></li><li><a href="../../../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../../../dos64/examples/index.html">Example applications</a></li><li><a href="../../../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../../../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../../reusql/index.html">Overview and downloads</a></li><li><a href="../../../reusql/performance.html">Performance and staged queries</a></li><li><a href="../../../reusql/shell.html">Interactive shell</a></li><li><a href="../../../reusql/sql-language.html">SQL language</a></li><li><a href="../../../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../../../reusql/architecture.html">Architecture</a></li><li><a href="../../../reusql/memory-map.html">Memory map</a></li><li><a href="../../../reusql/public-api.html">Public API</a></li><li><a href="../../../reusql/storage-format.html">Storage format</a></li><li><a href="../../../reusql/export-format.html">Export format</a></li><li><a href="../../../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77" open><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../index.html">Overview and downloads</a></li><li><a href="../c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="README.html" aria-current="page">Earlier palette gallery</a></li></ul></details></nav></aside><main id="content"><div class="page-actions"><a href="README.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyos-c77-cyberpunk-77-preview">ReadyOS C77 Cyberpunk 77 preview</h1>
+<p>These captures use:</p>
+<ul>
+<li>ReadyOS <code>precog-d81</code> 0.5 full D81</li>
+<li>VICE 3.10 with 1581 fast traps and warp mode</li>
+<li><code>c77-photo-reconstruction-v2-chargen.bin</code></li>
+<li><code>C77CYBER.VPL</code> with VIC-II saturation set to 80% to avoid CRT-transform clipping</li>
+</ul>
+<p>The VPL preserves ReadyOS&#39;s semantic color-number roles:</p>
+<table>
+<thead>
+<tr>
+<th align="right">C64 index</th>
+<th>ReadyOS use</th>
+<th>Cyberpunk 77 color</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0</td>
+<td>black</td>
+<td>near-black <code>#020205</code></td>
+</tr>
+<tr>
+<td align="right">1</td>
+<td>normal foreground</td>
+<td>C77 yellow <code>#FCEE09</code></td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td>error</td>
+<td>neon red <code>#FF2A68</code></td>
+</tr>
+<tr>
+<td align="right">3</td>
+<td>selection/highlight</td>
+<td>neon blue <code>#35C8FF</code></td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td>purple accent</td>
+<td>neon violet <code>#B64DFF</code></td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td>green-role accent</td>
+<td>electric blue <code>#5E8AFF</code></td>
+</tr>
+<tr>
+<td align="right">6</td>
+<td>TUI background</td>
+<td>blue-black <code>#080B18</code></td>
+</tr>
+<tr>
+<td align="right">7</td>
+<td>title</td>
+<td>pale yellow <code>#FFF368</code></td>
+</tr>
+<tr>
+<td align="right">8</td>
+<td>orange-role accent</td>
+<td>amber yellow <code>#FFB800</code></td>
+</tr>
+<tr>
+<td align="right">9</td>
+<td>brown-role accent</td>
+<td>dark ochre <code>#7A6118</code></td>
+</tr>
+<tr>
+<td align="right">10</td>
+<td>light-error accent</td>
+<td>neon pink <code>#FF62B0</code></td>
+</tr>
+<tr>
+<td align="right">11</td>
+<td>darkest gray</td>
+<td>charcoal <code>#20242D</code></td>
+</tr>
+<tr>
+<td align="right">12</td>
+<td>disabled/subdued</td>
+<td>dark silver <code>#555D6A</code></td>
+</tr>
+<tr>
+<td align="right">13</td>
+<td>success</td>
+<td>acid yellow <code>#D7FF4C</code></td>
+</tr>
+<tr>
+<td align="right">14</td>
+<td>border</td>
+<td>neon periwinkle <code>#7082FF</code></td>
+</tr>
+<tr>
+<td align="right">15</td>
+<td>status/help</td>
+<td>silver <code>#B8C0CC</code></td>
+</tr>
+</tbody></table>
+<p><code>00-complete-gallery-index.png</code> shows all 21 screens. The <code>3x</code> directory
+contains nearest-neighbor enlargements, and <code>contact-sheets</code> contains readable
+four-screen pages.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../../../README.html">Build and publishing</a></footer></body></html>

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Native SETUP configuration codec · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Native SETUP configuration codec"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#same-folder-emulator-options">Same-folder emulator options</a></li><li><a href="#native-reconfiguration-model-proof">Native reconfiguration model proof</a></li><li><a href="#building-and-using-standalone-config">Building and using standalone CONFIG</a></li><li><a href="#optional-moved-folder-and-full-error-profile">Optional moved-folder and full-error profile</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="NATIVE_SETUP_CONFIG.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="native-setup-configuration-codec">Native SETUP configuration codec</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p><code>tools/setup/install_config.c</code> is actual cc65 C for the native installer and launcher. <code>make setup-config-tests</code> compiles it to 6510 code and runs Zig assertions through the existing Peddle bridge. It is an optional component, separate from the emulator build. The generated test PRG is a callable fixture, not a user-facing SETUP or START program.</p>
+<p>The configuration is a 576-byte binary record with explicitly defined byte offsets and little-endian integers. C structures are not serialized. Paths contain canonical absolute host ASCII with zero padding, including the terminator; each field is 128 bytes. Uppercase PETSCII is not silently treated as host ASCII. The frontend must make the necessary character conversion before invoking this codec.</p>
+<table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>Length</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>4</td>
+<td>ASCII <code>D64C</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>1</td>
+<td>Format version 1</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2</td>
+<td>Record length, 576</td>
+</tr>
+<tr>
+<td>7</td>
+<td>1</td>
+<td>Reserved zero</td>
+</tr>
+<tr>
+<td>8</td>
+<td>128</td>
+<td>Installation home, <code>/</code> permitted</td>
+</tr>
+<tr>
+<td>136</td>
+<td>128</td>
+<td>A image filename, required</td>
+</tr>
+<tr>
+<td>264</td>
+<td>128</td>
+<td>B image filename, or all zero when absent</td>
+</tr>
+<tr>
+<td>392</td>
+<td>128</td>
+<td>C image filename, or all zero when absent</td>
+</tr>
+<tr>
+<td>520</td>
+<td>4</td>
+<td>A/B profile zero, C profile 0 for 2 MiB or 1 for 20 MiB, reserved zero</td>
+</tr>
+<tr>
+<td>524</td>
+<td>1</td>
+<td>Read-only bits A=1, B=2, C=4; only present drives</td>
+</tr>
+<tr>
+<td>525</td>
+<td>1</td>
+<td>Present bits A=1, B=2, C=4; A required</td>
+</tr>
+<tr>
+<td>526</td>
+<td>2</td>
+<td>Reserved zero</td>
+</tr>
+<tr>
+<td>528</td>
+<td>4</td>
+<td>A image CRC32</td>
+</tr>
+<tr>
+<td>532</td>
+<td>4</td>
+<td>B image CRC32, zero when B absent</td>
+</tr>
+<tr>
+<td>536</td>
+<td>2</td>
+<td>Bootstrap ABI 1</td>
+</tr>
+<tr>
+<td>538</td>
+<td>4</td>
+<td>Explicit configured REU capacity, 4–16 MiB in 64 KiB banks</td>
+</tr>
+<tr>
+<td>542</td>
+<td>30</td>
+<td>Reserved zero</td>
+</tr>
+<tr>
+<td>572</td>
+<td>4</td>
+<td>CRC32 of bytes 0–571, reflected polynomial EDB88320, initial/final XOR FFFFFFFF</td>
+</tr>
+</tbody></table>
+<p>The configured capacity supports larger memory budgets. It is not capacity detection: frontend, allocator and transport must still establish a safe hardware configuration and check each transfer against owned ranges. No larger cache or new runtime arena is activated by the codec itself.</p>
+<p>The globals and callable entry points are declared in <code>tools/setup/install_config.h</code>. <code>d64_config_make</code> validates semantic fields from the input, creates canonical header/reserved/checksum bytes, and publishes the output only after success. <code>d64_config_validate</code> checks header, reserved bytes, CRC and fields before publishing. Both return 1 on success or 0 on failure; the input and previous output survive a failure. Error codes are 1 for header/bootstrap ABI, 2 for CRC, 3 for path, 4 for flags, 5 for disk profile and 6 for capacity.</p>
+<p><code>d64_path_join</code> combines an absolute home and relative pathname; <code>d64_path_parent</code> navigates toward <code>/</code>. Both enforce a 127-character total bound and reject empty components, dot/dot-dot components, trailing slashes, backslashes, colons, control characters and non-ASCII bytes. FatFs-forbidden filename characters (quote, asterisk, angle brackets, question mark and pipe) and component endings with spaces/dots are also rejected. Internal spaces, parentheses, leading spaces and embedded consecutive dots remain valid. This matches the pinned Ultimate FatFs <code>create_name</code> behavior, which strips trailing spaces/dots and rejects its forbidden character set. A drive filename cannot be <code>/</code>. A failed operation preserves previous output and both inputs.</p>
+<p>Actual target tests compare serialization/CRC against an independent host oracle, reject a changed bit at every one of 576 record bytes, reject correctly re-signed malformed fields, cover absent drives and capacity bounds, and exercise navigation/path length failures. Each call has a CPU-cycle budget and verifies software-stack restoration, hardware-stack bounds and all target writes. Passing these tests establishes the codec behavior only; file publication, safe REU handoff, bootstrap DMA/NMI behavior and the end-user installer remain separate integration work.</p>
+<h2 id="same-folder-emulator-options">Same-folder emulator options</h2>
+<p>The options-enabled launcher reads <code>DOS64.INI</code> from its embedded installation home on every cold launch, parses it before DOS boots, and passes validated settings through REU. The emulator copies the initial display setting into resident state. Editing INI takes effect on the next launch without reinstalling or regenerating START. Surviving REU contents never substitute for rereading the file.</p>
+<p>For example, a launcher configured for <code>/usb1/DOS64</code> reads <code>/usb1/DOS64/DOS64.INI</code>, regardless of the Ultimate browser&#39;s current folder. The same home locates <code>DOS64.CFG</code>, <code>DOS64.PRG</code> and <code>START.INO</code>; the disk-image paths in CFG can point elsewhere. Future options should follow this prelaunch parsing and validated binary handoff pattern, with frequently used values copied into resident state. Only the initial column setting is implemented today.</p>
+<p>Build the complete matched release with <code>make start-ini-bundle</code>; use all five files from the bundle named by <code>build/start-ini-bundle/RESULT.json</code>. The default <code>make start-template</code> remains the legacy launcher, which ignores INI. Do not mix the two launchers or their release assets. See <a href="NATIVE_SETUP_INSTALLER.html">installation</a> and <a href="NATIVE_START_HANDOFF.html#options-enabled-launcher">the options handoff</a>.</p>
+<p>Binary <code>DOS64.CFG</code> and its ABI1 reserved-zero rules stay intact. INI currently supports the initial 40/80-column display setting only; it does not enable timing or compiled-code experiments. A native SETUP preferences editor is still pending.</p>
+<p>Missing optional INI selects 80 columns. Only the exact qualified file-not-found response with successful recovery and known closure permits that default; inaccessible paths and other I/O errors stop startup. A present malformed or unsupported setting also stops startup. Reads have bounded lengths, exact EOF and known closure; cancellation retains the first failure. No INI file access or text parsing occurs in the emulator execution loop.</p>
+<p>The options launcher verifies and installs the 6,798-byte <code>START.INO</code> prelaunch overlay at $6000. That code is retired by the final emulator payload DMA; no C frame survives that handoff. This fits without enlarging the 18,432-byte START template.</p>
+<p>A separate 32-byte D64O record at REU $3FF500 carries the validated setting, checksum and current CFG/main binding. START invalidates readiness before work, verifies the body by readback, and publishes readiness last after closing files. The main validates and consumes readiness, proves consumption by independent readback, then applies BIOS text mode 1 (40 columns) or 3 (80 columns). Legacy entry ignores this record and starts in mode 3. D64R and D64C ABI1 are unchanged; options-enabled START requires the matching D64L version 2 descriptor.</p>
+<p>The parser accepts <code>[emulator]</code>, optional <code>schema=1</code>, and <code>initial_columns=40|80</code> with default 80. Names are case insensitive; ASCII spaces/tabs, CR/LF and <code>;</code> or <code>#</code> comments are supported. Files are limited to 1,024 bytes and lines to 128 bytes, read in chunks of at most 64 bytes. Unknown sections/keys, duplicate keys, unsupported values and non-ASCII input are rejected.</p>
+<p>Place this ordinary ASCII file alongside <code>START.PRG</code> and <code>DOS64.CFG</code>:</p>
+<pre><code class="language-ini">[emulator]
+schema=1
+initial_columns=40
+</code></pre>
+<p>The initial setting does not prevent DOS <code>MODE CO40</code> or <code>MODE CO80</code> from changing modes later. Actual 6510/Peddle tests cover parser/I/O, stale and corrupt records, readback failures, cancellation and both generated START-to-DOS modes. Physical qualification of this new launcher/main pair remains pending.</p>
+<h2 id="native-reconfiguration-model-proof">Native reconfiguration model proof</h2>
+<p>The separate native CONFIG development program now runs from its actual BASIC SYS entry through keyboard selection, existing configuration inspection, disk-image checks and creation of a new launch folder. The default profile keeps the original absolute A/B/C image paths and readonly settings, refreshes the floppy checksums, and creates <code>DOS64.PRG</code>, <code>DOS64.REL</code>, <code>START.INO</code>, <code>START.PRG</code>, <code>DOS64.INI</code>, then <code>DOS64.CFG</code> last. Each file uses create-new semantics and full readback; partial files after a failure are not a completed installation. The destination folder must already exist and must differ from the old installation and release-source folders.</p>
+<p>The preference is an explicit <strong>new</strong> 40/80 setting, initially 80. CONFIG currently leaves the old INI unread and unchanged. Old and new launchers share the existing images; reverting a launcher does not undo writes to those images. CONFIG runs independently of a running emulator.</p>
+<p>Both actual output sets boot genuine DOS 3.3 in Peddle and pass VER and complete paged A:/C:\DOS listings. The START/CFG/main/overlay/descriptor bytes are identical between modes; only the INI column digit changes. Source-closed evidence is in the integration receipt (local development record, not distributed). Physical CONFIG qualification remains pending; this proof does not turn the current SETUP into an options editor.</p>
+<h2 id="building-and-using-standalone-config">Building and using standalone CONFIG</h2>
+<p><code>make config</code> builds the native C/6502 application and binds it to the complete matching INI release. It requires Python and the cc65 tools/library. If no coupled release exists, it also uses make to build that release; Zig and the host C++ compiler are needed only for the optional tests. Existing compiler include-path overrides are cleared so the recorded source inputs identify the build.</p>
+<p>The successful <code>build/config/RESULT.json</code> names the immutable <code>products.CONFIG.PRG.path</code> to copy to the Ultimate. The matching five release assets are in the bundle named by <code>build/start-ini-bundle/RESULT.json</code>: <code>DOS64.PRG</code>, <code>DOS64.REL</code>, <code>START.INO</code>, <code>START.TPL</code> and <code>START.REL</code>. Keep that set together. A failed build preserves the previous successful RESULT and its products; diagnostics belong to the new failed run.</p>
+<p>On the Ultimate, use PAL, Manual 64 MHz, enabled Ultimate DOS/UCI and at least 4 MiB REU. CONFIG runs separately from the emulator. Launch CONFIG, then:</p>
+<ol>
+<li>Browse to the existing installation folder containing <code>DOS64.CFG</code>; press F1 to use it.</li>
+<li>Choose the new initial column setting and press Return.</li>
+<li>Choose the folder containing the five matching release assets.</li>
+<li>Choose an already-created new launch folder, different from both previous folders, and confirm the review screen.</li>
+<li>After CONFIG reports completion, run <code>START.PRG</code> from the new folder.</li>
+</ol>
+<p>Return opens a folder, Delete goes to its parent, and F1 selects the current folder. F3/F5 change directory pages; left/right scroll a long path. The new folder&#39;s absolute path must be 2–117 characters. Existing output filenames cause failure rather than replacement; partial files may remain after a failed publication. The old configuration and original INI stay unchanged, while the old and new launchers share the same disk images.</p>
+<p><code>make config-tests</code> builds the same application and executes four actual BASIC SYS/keyboard/firmware model groups plus two Zig assertions against assembled code in Peddle. Its default media are synthetic; it is not a genuine DOS boot test or a physical Ultimate test. The genuine DOS integration receipt above covers the separately executed actual generated-file consumers in both display modes.</p>
+<h2 id="optional-moved-folder-and-full-error-profile">Optional moved-folder and full-error profile</h2>
+<p>The source-only builder supports <code>--relocation</code> for CONFIG. Combine it with
+<code>--all-file-diagnostics --startup-diagnostics</code> for the reviewed V1 profile.
+Runtime-media releases also use <code>--start20k --cold-inventory --mnu56k</code> and an
+explicit matching cold <code>--bundle-result</code>. These options are not enabled by the
+unchanged default CONFIG build. The twelve-file runtime-media candidate enables these profiles; physical
+qualification remains separate.</p>
+<p>If an installation folder was moved, choose its <strong>current</strong> folder in CONFIG.
+CONFIG reads the original <code>DOS64.CFG</code> without changing it, then shows its saved
+folder and the selected folder. Press <strong>Y</strong> to confirm the move; Return does not
+confirm it. Run/Stop cancels. Left/right scroll both folder paths. CONFIG rebases
+A/B/C paths only when they are children of the saved folder, comparing ASCII
+letters without case and requiring a slash boundary. Paths elsewhere stay
+unchanged. It never falls back to an image at the old address.</p>
+<p>After confirmation, choose the new 40/80 setting, matching release folder, and
+an already-created new launch folder as usual. CONFIG verifies the resolved
+media, then creates a new generation with CFG last. Launch the generated
+<code>START.PRG</code>. The original CFG/START/INI and media remain unchanged; the moved
+original START may still point at its old home. This workflow creates the
+replacement launcher rather than modifying that original START in place.
+Shared images remain shared, so later DOS writes affect every launcher using
+them. Existing filenames and partial outputs are never silently replaced.</p>
+<p>The qualified saved and selected homes are canonical, nonroot absolute paths.
+The new launch folder is limited to 2–117 characters and each resulting media
+path to 127 characters. Invalid, aliased, overlong or inaccessible paths stop
+publication. Error panes retain the first file path and operation; an unknown
+CLOSE explicitly requires restarting the machine. The fallback display does
+not retry file commands or authorize continuing an interrupted publication.
+The current proof uses actual 6510/Peddle execution and modeled CIA keys; it is
+not a claim of physical keyboard or Ultimate acceptance.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

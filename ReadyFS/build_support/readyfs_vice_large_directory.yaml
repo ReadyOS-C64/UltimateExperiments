@@ -1,0 +1,85 @@
+version: 1
+kind: vice_task_plan
+plan_id: readyfs_large_directory
+run_mode: gui_vice
+global_defaults:
+  monitor_host: 127.0.0.1
+  monitor_port_start: 6502
+  monitor_port_span: 40
+  retry_policy: { max_attempts: 1, backoff_ms: 250, jitter: false }
+  timeouts: { launch_s: 45, step_s: 120, read_s: 2 }
+  artifact_policy: { capture_screen: true, capture_state: true, capture_dump: false }
+  vice:
+    disk8: "artifacts/readyfs/readyfs-large-directory.d81"
+    disk9: null
+    autostart_prg: "artifacts/readyfs/readyfs-overlay.prg"
+    drive8_type: 1581
+    drive9_type: 1581
+    true_drive: false
+    close_vice: true
+    headless: true
+    speed_percent: 100
+steps:
+  - id: launch
+    type: vice.launch
+    params: { kill_stale: true }
+  - id: ready
+    type: screen.wait_contains
+    params: { text: "RF>", wait_timeout_s: 30 }
+  - id: directory_input
+    type: input.sequence
+    params: { keys: [68,73,82,32,56,58,47,13], inter_key_delay_s: 0.04, post_delay_s: 0.5 }
+  - id: directory_echo
+    type: screen.wait_contains
+    params: { text: "DIR 8:/", wait_timeout_s: 20, capture_label: rf_ui_31_large_dir_command }
+  - id: first_page
+    type: screen.wait_contains
+    params: { text: "RFBSTOP", wait_timeout_s: 30, capture_label: rf_ui_31_large_dir_page_1 }
+  - id: first_page_continue
+    type: input.sequence
+    params: { keys: [32], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: second_page
+    type: screen.wait_contains
+    params: { text: "F13", wait_timeout_s: 30, capture_label: rf_ui_31_large_dir_page_2 }
+  - id: second_page_continue
+    type: input.sequence
+    params: { keys: [32], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: third_page
+    type: screen.wait_contains
+    params: { text: "F31", wait_timeout_s: 30, capture_label: rf_ui_31_large_dir_page_3 }
+  - id: third_page_continue
+    type: input.sequence
+    params: { keys: [32], inter_key_delay_s: 0.04, post_delay_s: 0.3 }
+  - id: post_thirty_visible
+    type: screen.wait_contains
+    params: { text: "F40", wait_timeout_s: 60, capture_label: rf_ui_31_post_thirty_visible }
+  - id: exact_entry_count
+    type: screen.wait_contains
+    params: { text: "ENTRIES: 63", wait_timeout_s: 20 }
+  - id: terminal_free_blocks
+    type: screen.wait_contains
+    params: { text: "FREE:", wait_timeout_s: 20, capture_label: rf_ui_31_large_d81_directory }
+  - id: page_up_latest_input
+    type: input.sequence
+    params: { keys: [133], inter_key_delay_s: 0.05, post_delay_s: 0.3 }
+  - id: page_up_latest
+    type: screen.wait_contains
+    params: { text: "F28", wait_timeout_s: 10, capture_label: rf_ui_31_large_dir_page_up_latest }
+  - id: page_up_older_input
+    type: input.sequence
+    params: { keys: [133], inter_key_delay_s: 0.05, post_delay_s: 0.3 }
+  - id: page_up_older
+    type: screen.wait_contains
+    params: { text: "F01", wait_timeout_s: 10, capture_label: rf_ui_31_large_dir_page_up_older }
+  - id: page_down_latest_input
+    type: input.sequence
+    params: { keys: [134], inter_key_delay_s: 0.05, post_delay_s: 0.3 }
+  - id: page_down_latest
+    type: screen.wait_contains
+    params: { text: "F28", wait_timeout_s: 10 }
+  - id: page_down_live_input
+    type: input.sequence
+    params: { keys: [134], inter_key_delay_s: 0.05, post_delay_s: 0.3 }
+  - id: page_down_live
+    type: screen.wait_contains
+    params: { text: "ENTRIES: 63", wait_timeout_s: 10, capture_label: rf_ui_31_large_dir_page_down_live }

@@ -1,0 +1,51 @@
+"""Capture tool, input, dependency, and output identity for reproducible tests."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import subprocess
+
+parser = argparse.ArgumentParser()
+for tool in ("zig", "ca65", "ld65"):
+    parser.add_argument("--"+tool, required=True)
+args = parser.parse_args()
+report = {"schema": 1, "tools": {}, "files": {}}
+for pattern in ("build_setup_tests.zig", "tools/setup/*"):
+    for path in sorted(Path().glob(pattern)):
+        if path.is_file():
+            report["files"][str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
+for name, command in vars(args).items():
+    path = Path(shutil.which(command) or command).resolve()
+    version = subprocess.run([str(path), "version" if name == "zig" else "--version"],
+                             capture_output=True, check=True, text=True)
+    report["tools"][name] = {"path": str(path), "version": (version.stdout+version.stderr).strip(),
+                             "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+for pattern in ("Makefile", "build.zig", "build_support/*.py", "build_support/*.mk", "build_ac_helper_tests.zig", "build_support/ac_development/*.py", "build_support/ac_development/*.json", "build_support/ac_development/support/*", "build_support/ac_development/support/dos_fixture_assets/*", "tools/hd_close_reopen/*", "tests/hd_close_reopen/*.zig", "tests/hd_close_reopen/model/*", "tests/tooling/ac_development/*.py", "build/hd_close_reopen/*.prg", "build/hd_close_reopen/*.labels", "build/hd_close_reopen/*.map", "build/hd_close_reopen/source-manifest.json", "tests/floppy_export/*", "src/*.s", "include/*.inc", "cfg/*.cfg", "tests/host/*", "tests/fixtures/*", "tests/tooling/*.py", "reference/*.img", "assets/native-text/*", "build/*.prg", "build/*overlay*.bin", "build/*overlay*.json", "build/*resident.prg*.bin", "build/*.map", "build/*.labels", "build/*.memory.json", "build/*-hd-identity-plan.json"):
+    for path in sorted(Path().glob(pattern)):
+        if path.is_file():
+            report["files"][str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
+for variant in ("dos64", "dos64-tests"):
+    memory_path=Path("build")/(variant+".memory.json")
+    if memory_path.exists():
+        memory=json.loads(memory_path.read_text())
+        if not memory["passed"]:
+            raise SystemExit(f"Unverified packaged memory contract: {variant}")
+        report.setdefault("packaged_layout", {})[variant]=memory["load"]
+pin = json.loads(Path("third_party/peddle/UPSTREAM.json").read_text())
+for entry in pin["files"]:
+    path = Path("third_party/peddle")/entry["path"]
+    if hashlib.sha256(path.read_bytes()).hexdigest() != entry["sha256"]:
+        raise SystemExit(f"Vendored Peddle changed: {path}")
+report["peddle_commit"] = pin["commit"]
+corpus_pin=Path("third_party/sst8088/UPSTREAM.json")
+if corpus_pin.exists():
+    corpus=json.loads(corpus_pin.read_text())
+    fixture=Path(corpus["fixture"])
+    if hashlib.sha256(fixture.read_bytes()).hexdigest()!=corpus["fixture_sha256"]:
+        raise SystemExit("Pinned 8088 fixture changed; regenerate from the declared upstream pin")
+    license_hash=next(f["sha256"] for f in corpus["source_files"] if f["path"]=="LICENSE")
+    if hashlib.sha256(Path("third_party/sst8088/LICENSE").read_bytes()).hexdigest()!=license_hash:
+        raise SystemExit("Pinned 8088 license changed")
+    report["8088_corpus_commit"]=corpus["commit"]
+Path("build/manifest.json").write_text(json.dumps(report, indent=2)+"\n")

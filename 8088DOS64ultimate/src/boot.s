@@ -1,0 +1,117 @@
+.include "abi.inc"
+.ifndef DOS64_PROBE
+.ifndef DOS64_SNAPSHOT
+.ifndef DOS64_CACHE_PROBE
+.ifndef DOS64_RANGE_PROBE
+DOS64_CORE_BOOT = 1
+.import dos64_cpu_init
+.import dos64_overlay_init, dos64_overlay_bootstrap, dos64_overlay_reu_mib, dos64_overlay_error
+.endif
+.endif
+.endif
+.endif
+.import dos64_guest, dos64_mailbox, dos64_cpu_reset
+.ifdef DOS64_PROBE
+.import dos64_reu_probe
+.endif
+.if .defined(DOS64_SNAPSHOT)
+.import dos64_reu_backup, dos64_reu_restore
+.endif
+.ifndef DOS64_PROBE
+.ifndef DOS64_SNAPSHOT
+.import dos64_cache_init, dos64_cache_limit
+.endif
+.endif
+.ifdef DOS64_CACHE_PROBE
+.import dos64_cache_probe
+.endif
+.ifdef DOS64_RANGE_PROBE
+.import dos64_range_probe
+.endif
+.export dos64_entry, dos64_idle
+
+.segment "LOADADDR"
+    .word $0801
+.segment "BASIC"
+    .word $080B, 10
+    .byte $9E
+    .asciiz "2061"
+    .word 0
+
+.segment "CODE"
+.ifdef DOS64_CORE_BOOT
+.import dos64_native_entry
+dos64_entry:
+    jmp dos64_native_entry
+dos64_idle:
+    jmp dos64_idle
+.else
+dos64_entry:
+    sei
+    cld
+    ldx #$FF
+    txs
+    lda #$2F
+    sta $00
+    lda #$35
+    sta $01
+.ifdef DOS64_CORE_BOOT
+    jsr dos64_cpu_init
+.else
+    jsr dos64_cpu_reset
+.endif
+.ifndef DOS64_PROBE
+.ifndef DOS64_SNAPSHOT
+    lda #32
+    sta dos64_cache_limit
+    jsr dos64_cache_init
+.endif
+.endif
+    lda #0
+    ldx #MB_SIZE-1
+@clear:
+    sta dos64_mailbox,x
+    dex
+    bpl @clear
+    lda #DOS64_ABI_VERSION
+    sta dos64_mailbox+MB_VERSION
+    lda #STATUS_READY
+    sta dos64_mailbox+MB_STATUS
+.ifdef DOS64_CORE_BOOT
+    ; Cold phase: commit startup assets before any live bitmap owner may use
+    ; 6000-6FFF. Four MiB is the binding minimum, not a REC auto-detection.
+    jsr dos64_overlay_init
+    lda #4
+    sta dos64_overlay_reu_mib
+    jsr dos64_overlay_bootstrap
+    bcc :+
+    lda #STATUS_FAIL
+    sta dos64_mailbox+MB_STATUS
+    lda dos64_overlay_error
+    sta dos64_mailbox+MB_ERROR
+    lda #2
+    sta $D020
+    jmp dos64_idle
+:
+.endif
+    lda #5
+    sta $D020
+.ifdef DOS64_PROBE
+    jsr dos64_reu_probe
+.endif
+.ifdef DOS64_CACHE_PROBE
+    jsr dos64_cache_probe
+.endif
+.ifdef DOS64_RANGE_PROBE
+    jsr dos64_range_probe
+.endif
+.ifdef DOS64_SNAPSHOT
+.ifdef DOS64_RESTORE
+    jsr dos64_reu_restore
+.else
+    jsr dos64_reu_backup
+.endif
+.endif
+dos64_idle:
+    jmp dos64_idle
+.endif

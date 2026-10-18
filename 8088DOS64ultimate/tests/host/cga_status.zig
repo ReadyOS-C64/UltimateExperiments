@@ -1,0 +1,41 @@
+const std=@import("std");const h=@import("machine.zig");const F=h.Fixture;const c=h.c;const util=@import("cga_crtc.zig");
+fn setTime(f:*F,q:u64,frac:u32)!void{util.word(f,try f.symbol("dos64_pit_phase"),@truncate(q));const t=try f.symbol("dos64_pit_total");for(0..4)|i|f.poke(t+@as(u16,@intCast(i)),@truncate(q>>@as(u6,@intCast(16+i*8))));const r=try f.symbol("dos64_pit_fraction");for(0..3)|i|f.poke(r+@as(u16,@intCast(i)),@truncate(frac>>@as(u5,@intCast(i*8))));f.poke(try f.symbol("dos64_pit_ready"),1);f.poke(try f.symbol("dos64_pit_error"),0);f.poke(try f.symbol("dos64_pit_poll_error"),0);}
+fn expected(q:u64,frac:u32)u8{const frame=q%19912;const line=frame%76;return 4|@as(u8,if(frame>=17024 and frame<18240)8 else 0)|@as(u8,if(frame>=15200 or line>53 or (line==53 and frac>=150524))1 else 0);}
+fn read(f:*F,q:u64,frac:u32)!void{try setTime(f,q,frac);const first=try f.symbol("dos64_pit_state_start");const end=try f.symbol("dos64_pit_state_end");var before:[128]u8=undefined;try std.testing.expect(end-first<=before.len);for(0..end-first)|i|before[i]=f.peek(first+@as(u16,@intCast(i)));for(0..3)|_|{try std.testing.expectEqual(@as(u16,0xa500)|expected(q,frac),try util.io(f,true,0x3da,0,0xa55a,true));try std.testing.expectEqual(@as(u8,0),f.peek(try f.symbol("dos64_overlay_busy")));for(0..end-first)|i|try std.testing.expectEqual(before[i],f.peek(first+@as(u16,@intCast(i))));}}
+
+test "CGA status follows standard beam fractional boundaries verticalsync full48bit time and unchanged repeated reads"{
+ var f=try util.init();defer f.deinit();try util.video(&f,3,0,0,0);for([_]u64{0,1,52,53,54,75,76,15199,15200,17023,17024,18239,18240,19911,19912,65535,65536,0xfffffffffffe,0xffffffffffff})|q|{for([_]u32{0,150523,150524,451571})|frac|try read(&f,q,frac);}
+ var rng:u64=0x8e917fa53374;for(0..1000)|_|{rng=rng*%6364136223846793005+%1442695040888963407;const q=rng&0xffffffffffff;try read(&f,q,@intCast((rng>>32)%451572));}
+}
+test "all original BIOS modes share raster and malformed timing latch clock errors width aliases refuse without mutation"{
+ var f=try util.init();defer f.deinit();for(0..7)|mode|{try util.video(&f,@intCast(mode),0,0,0);try read(&f,53,150524);try read(&f,17024,0);}
+ try util.video(&f,3,0,0,0);try setTime(&f,54,0);const rr=try f.symbol("dos64_cga_registers");for(0..10)|n|{const at=rr+@as(u16,@intCast(n));const old=f.peek(at);f.poke(at,old^1);_=try util.io(&f,true,0x3da,0,0x7251,false);f.poke(at,old);}
+ for([_]u16{0x3d9,0x3db,0x13da})|port|_=try util.io(&f,true,port,0,0x7291,false);_=try util.io(&f,true,0x3da,1,0x7291,false);_=try util.io(&f,false,0x3da,0,0x7291,false);
+ f.poke(try f.symbol("dos64_pit_ready"),0);_=try util.io(&f,true,0x3da,0,0x7291,false);f.poke(try f.symbol("dos64_pit_ready"),1);f.poke(try f.symbol("dos64_pit_error"),1);_=try util.io(&f,true,0x3da,0,0x7291,false);f.poke(try f.symbol("dos64_pit_error"),0);f.poke(try f.symbol("dos64_cpu_status"),3);f.poke(try f.symbol("dos64_irq_result"),4);
+ for([_]u8{1,2,3,0x81})|err|{f.poke(try f.symbol("dos64_pit_poll_error"),err);_=try util.io(&f,true,0x3da,0,0x7291,false);try std.testing.expectEqual(@as(u8,3),f.peek(try f.symbol("dos64_cpu_status")));try std.testing.expectEqual(@as(u8,4),f.peek(try f.symbol("dos64_irq_result")));try std.testing.expectEqual(err,f.peek(try f.symbol("dos64_pit_poll_error")));}
+ f.poke(try f.symbol("dos64_pit_poll_error"),4);try std.testing.expectEqual(@as(u16,0xa505),try util.io(&f,true,0x3da,0,0xa500,true));
+}
+test "CGA status exclusive FILE arithmetic lease preserves FILE state rejects busy missing owner and transferfailure"{
+ var f=try util.init();defer f.deinit();try util.video(&f,3,0,0,0);try setTime(&f,17024,0);const s=try f.symbol("dos64_files_state");const old=f.peek(s);f.poke(s,2);try std.testing.expectEqual(@as(u16,0xab0d),try util.io(&f,true,0x3da,0,0xab55,true));try std.testing.expectEqual(@as(u8,2),f.peek(s));f.poke(s,old);
+ try util.acquire(&f,4);_=try util.io(&f,true,0x3da,0,0x7251,false);try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_overlay_busy")));try util.release(&f);f.poke(try f.symbol("hdb_extension_ready"),0);_=try util.io(&f,true,0x3da,0,0x7251,false);f.poke(try f.symbol("hdb_extension_ready"),0xa5);
+ f.poke(try f.symbol("dos64_overlay_current"),4);c.dos64_reu_fail_after(f.machine,0,0);_=try util.io(&f,true,0x3da,0,0x7251,false);try std.testing.expectEqual(@as(u8,0),f.peek(try f.symbol("dos64_overlay_busy")));try std.testing.expectEqual(@as(u8,1),f.peek(try f.symbol("dos64_pit_ready")));
+}
+fn put32(f:*F,n:[]const u8,v:u32)!void{const at=try f.symbol(n);for(0..4)|i|f.poke(at+@as(u16,@intCast(i)),@truncate(v>>@as(u5,@intCast(i*8))));}
+
+test "actual rational PIT advance clocksCGA across fractional and native32bit wrap without portread driven progress"{
+ var f=try util.init();defer f.deinit();try util.video(&f,3,0,0,0);try put32(&f,"dos64_pit_now",0xfffff000);try util.acquire(&f,4);try std.testing.expectEqual(@as(u8,0),(try f.call("dos64_pit_init",100000)).p&1);try util.release(&f);
+ for([_]u32{0xfffff000,0xfffff02c,0xfffff02d,0xfffffffe,0xffffffff,0,1,100,20000,100000})|now|{try put32(&f,"dos64_pit_now",now);try util.acquire(&f,4);try std.testing.expectEqual(@as(u8,0),(try f.call("dos64_pit_advance",2000000)).p&1);try util.release(&f);const delta=@as(u64,now-%@as(u32,0xfffff000));const product=delta*546875;const q=product/451572;const frac: u32=@intCast(product%451572);try std.testing.expectEqual(@as(u16,@truncate(q)),f.word(try f.symbol("dos64_pit_phase")));try std.testing.expectEqual(@as(u16,0x4d00)|expected(q,frac),try util.io(&f,true,0x3da,0,0x4da7,true));}
+}
+test "actual TURBO polling loop waits for time then crosses safe interval with CLI and no syntheticread progress"{
+ var f=try util.init();defer f.deinit();try util.video(&f,3,0,0,0);const g=try f.symbol("dos64_guest");util.word(&f,g+18,0x100);util.word(&f,g+24,0x200);util.word(&f,g+4,0x3da);util.word(&f,g+26,0xf202);const bytes=[_]u8{0xec,0xa8,1,0x75,0xfb,0xfa,0xec,0xa8,1,0x74,0xfb,0xfb,0x90};for(bytes,0..)|v,i|c.dos64_reu_poke(f.machine,0x1200+@as(u32,@intCast(i)),v);
+ try setTime(&f,54,0);for(0..30)|_|try std.testing.expectEqual(@as(u8,0),(try f.call("dos64_cpu_step",100000)).p&1);try std.testing.expectEqual(@as(u16,0x200),f.word(g+24));try setTime(&f,0,0);for(0..4)|_|try std.testing.expectEqual(@as(u8,0),(try f.call("dos64_cpu_step",100000)).p&1);try std.testing.expectEqual(@as(u16,0x206),f.word(g+24));try std.testing.expectEqual(@as(u16,0),f.word(g+26)&0x200);
+ for(0..30)|_|try std.testing.expectEqual(@as(u8,0),(try f.call("dos64_cpu_step",100000)).p&1);try std.testing.expectEqual(@as(u16,0x206),f.word(g+24));try setTime(&f,54,0);for(0..4)|_|try std.testing.expectEqual(@as(u8,0),(try f.call("dos64_cpu_step",100000)).p&1);try std.testing.expectEqual(@as(u16,0x20c),f.word(g+24));try std.testing.expectEqual(@as(u16,0x200),f.word(g+26)&0x200);
+}
+test "CGA status rejects originalcaller in replacedoverlay before lease even with nativeouterreturn in HDBIOS"{
+ var f=try util.init();defer f.deinit();try util.video(&f,3,0,0,0);try setTime(&f,0,0);try util.acquire(&f,4);try util.release(&f);const entry=try f.symbol("dos64_pit_init");try std.testing.expect(entry>=0xc900 and entry<0xd000);const io=try f.symbol("dos64_io_read");f.poke(entry,0x20);f.poke(entry+1,@truncate(io));f.poke(entry+2,@truncate(io>>8));f.poke(entry+3,0x60);util.word(&f,try f.symbol("dos64_io_port"),0x3da);util.word(&f,try f.symbol("dos64_io_value"),0x1234);f.poke(try f.symbol("dos64_io_width"),0);const result=try f.call("dos64_pit_init",100000);try std.testing.expectEqual(@as(u8,1),result.p&1);try std.testing.expectEqual(@as(u8,0x20),f.peek(entry));try std.testing.expectEqual(@as(u8,4),f.peek(try f.symbol("dos64_overlay_current")));try std.testing.expectEqual(@as(u16,0x1234),f.word(try f.symbol("dos64_io_value")));
+}
+
+test "status rejects nonnormalized rational publication and preserves all caller nativeFLAGS"{
+ var f=try util.init();defer f.deinit();try util.video(&f,3,0,0,0);for([_]u32{451572,451573,0xffffff})|frac|{try setTime(&f,53,frac);_=try util.io(&f,true,0x3da,0,0x875a,false);}
+ try setTime(&f,53,150524);for(0..256)|flags|{f.initial_status=@intCast(flags);try std.testing.expectEqual(@as(u16,0xa505),try util.io(&f,true,0x3da,0,0xa5ff,true));}
+}

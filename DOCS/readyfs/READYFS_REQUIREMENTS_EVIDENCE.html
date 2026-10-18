@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>ReadyFS Requirements and Evidence Ledger · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: ReadyFS Requirements and Evidence Ledger"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs" open><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="tours/editor.html">Editor screenshot tour</a></li><li><a href="tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="READYFS_SAFETY.html">Safety</a></li><li><a href="READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#batch-documentation-and-recorded-example-13-october-2026">Batch documentation and recorded example — 13 October 2026</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="READYFS_REQUIREMENTS_EVIDENCE.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="readyfs-requirements-and-evidence-ledger">ReadyFS Requirements and Evidence Ledger</h1>
+<blockquote>
+<p>Current status: the <a href="READYFS_ACCEPTANCE.html">acceptance summary</a> supersedes older SD2IEC and overlay milestones below. Native folder/image acceptance completed on the attached device; the build now has 28 sidecars. Remaining broader backend and typed-result gaps are still substantive.</p>
+</blockquote>
+<p>Legend: <code>PROVEN</code>, <code>PARTIAL</code>, <code>MISSING</code>, <code>PROVISIONAL</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Status</th>
+<th>Current evidence</th>
+<th>Completion evidence required</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Standalone PRG and boot D81</td>
+<td>PROVEN</td>
+<td><code>make readyfs</code>; artifacts exist</td>
+<td>Keep build green</td>
+</tr>
+<tr>
+<td>Not in ReadyOS launcher/catalog</td>
+<td>PROVEN</td>
+<td>Make target remains outside <code>PROGRAMS</code></td>
+<td>Audit profiles/catalog</td>
+</tr>
+<tr>
+<td>Canonical endpoint parser</td>
+<td>PARTIAL</td>
+<td>Host path tests plus VICE endpoint bounds/normalization and <code>090349</code> callable C64 outputs for open, dir, scratch, mkdir, rmdir, rename, mount, and unmount with conservative 16-byte/234-byte limits</td>
+<td>connect translated results to a detected driver and prove stateful image transactions</td>
+</tr>
+<tr>
+<td>Explicit <code>!</code> image boundaries</td>
+<td>PARTIAL</td>
+<td>Parser and Ultimate directory navigation</td>
+<td>file operations and nested-image tests</td>
+</tr>
+<tr>
+<td>IEC devices 8–30</td>
+<td>PARTIAL</td>
+<td><code>145814</code> proves a bounded <code>LISTEN</code>/status/<code>UNLISTEN</code> scan covers 8–30, finds units 8/9, retains tape capability, and returns to the prompt; <code>142523</code> proves D71 on unit 8 and D64 on unit 9, while D81 <code>141948</code> proves all 48 entries through bounded paging including F40</td>
+<td>physical UI/device matrix across additional units and explicit bus-failure report</td>
+</tr>
+<tr>
+<td>UltimateDOS driver</td>
+<td>PARTIAL</td>
+<td>identify, 106-entry stream, guarded mutations at 1/16/64 MHz, metadata, 64 MHz recursive dry-run, and physical recursive UltimateDOS→SoftwareIEC tree copy in <code>rr5-final3</code> pass</td>
+<td>reverse nested tree, image-boundary, and mount suites</td>
+</tr>
+<tr>
+<td>SoftIEC driver</td>
+<td>PARTIAL</td>
+<td>64 MHz target identify and the <code>/</code>→<code>USB1</code> bridge are physical. Production uses component <code>CD:</code>, exact LFN2/LFN6 target closes, one status-bearing command transaction, and a serialized target-5 worker barrier. <code>rr5-final3</code> performs a real directory-plus-three-file recursive UltimateDOS→SoftwareIEC copy with inline byte verification and <code>rr5-verify</code> independently proves the preserved logical/raw tree and post-owner gates. Firmware 3.14 still cannot enter newly appended children of the crowded owned root, while the same new child under uncrowded <code>rf091800</code> works. Current official target-5 source implements only <code>$01</code> and <code>$10</code>–<code>$16</code>, not speculative partition-map commands <code>$20/$21</code>; two clean physical attempts returned target status <code>$01</code> without adding partition 1 or changing partition 0</td>
+<td>reverse recursive direction and broad-directory/refresh policy; retain map/unmap as future-firmware provisional until a device exposes <code>$20/$21</code>; keep <code>MD:</code>/<code>R:</code> and REL existence probing forbidden</td>
+</tr>
+<tr>
+<td>SD2IEC-compatible driver</td>
+<td>PARTIAL</td>
+<td>host suite proves translations/rejections and capability matrix. VICE <code>vice_auto_20260817_230948</code> first proves cached legacy <code>P0 F0 I0</code> denial, then injects only the ReadyFS REU capability record and proves <code>SD2IEC P1 F1 I1</code> admission plus translated partition directory, cooperative-tree root handoff, mkdir, and image-mount dispatch through resident IEC I/O. The non-SD2IEC VICE drive returns explicit bounded results, mkdir completes its action journal cleanly, and the wrapper proves the D81 fixture byte-identical</td>
+<td>run the already-emulated path successfully on real SD2IEC hardware, including nested folder enumeration, image mount/root/unmount, and folder mutation/listing</td>
+</tr>
+<tr>
+<td>Tape capability driver</td>
+<td>PROVEN</td>
+<td><code>readyfs_tape_test</code>, focused KERNAL oracle <code>vice_auto_20260817_235139</code>, command suite <code>vice_auto_20260818_025149</code>, fresh-session REU-spooled tape-to-D64 round trip <code>vice_auto_20260818_025218</code>, and same-session disk/tape/disk transition <code>vice_auto_20260818_025055</code>; <code>t:/NAME</code> is named sequential-only, reports no meaningful free space, and explicitly refuses unsupported append/delete/move/rename/directory/tree operations</td>
+<td>keep disposable-TAP recording/readback and KERNAL-status boundary regressions green; random-access tape operations remain intentionally impossible</td>
+</tr>
+<tr>
+<td>Copy/move/delete/new/append/rename</td>
+<td>PARTIAL</td>
+<td>monolithic/overlay VICE covers flat operations, exact-name native batches, REL rejection, and rollback. Physical <code>cross-owned-20260817-iec-udos-roundtrip-k</code> proves the 4069-byte IEC↔UltimateDOS PRG round trip. Physical <code>rr5-final3</code> proves recursive UltimateDOS→SoftwareIEC copy of one directory and three files, with inline 10/11/7-byte verification and separate <code>rr5-verify</code> readback</td>
+<td>journal new/append/rename and prove reverse recursive direction plus recursive move/delete on owned fixtures</td>
+</tr>
+<tr>
+<td>Recursive trees and stem filters</td>
+<td>PARTIAL</td>
+<td>VICE proves stackless filtered WhatIf/copy/move/delete, stop/continue, default-No deletion, REU state, and RFJ1. Physical <code>rr5-final3</code> imports the Ultimate tree, selects four records, preserves normal C64 names, and finishes <code>BATCH DONE 4/4 FAIL 0</code>; independent <code>rr5-verify</code> proves the complete preserved tree. Physical read-only <code>softwrite-noftp-whatif-filter-casefold-180400</code> filters the same nested source to only <code>NESTED/inside</code>, reports <code>F4 SELECTED 1</code>, plans one write but executes <code>W0 D0 M0</code>, and proves exact unchanged directory/CRC/owner/Drive-A oracles</td>
+<td>extend physical matrices to reverse direction, move/delete, deeper trees, and limit failures</td>
+</tr>
+<tr>
+<td>Native C64-DOS pattern forwarding</td>
+<td>PARTIAL</td>
+<td>overlay-backed <code>dir 8:/RF* --native-pattern</code> performs real resident IEC listing; <code>165721</code> proves typed/filtering WhatIf and zero mutation; <code>171906</code> retains bare-action denial, rejects a non-root regular-IEC collection destination, then requires <code>--apply</code>, prints/freezes exact names, executes singleton delete plus IEC8→IEC9 copy/move, verifies bytes and postconditions, and parses exact finished RFJ1; <code>171852</code> rejects matched REL <code>$13</code> before a batch and proves destination absence; no raw wildcard mutator exists</td>
+<td>nested native fixtures, Ultimate/SoftIEC destination-directory validation, then owned physical execution</td>
+</tr>
+<tr>
+<td>Dry-run/whatif for all mutations</td>
+<td>PARTIAL</td>
+<td>VICE delete/new/copy/move dry-runs pass with stat postconditions; native-pattern copy/delete WhatIf enumerates exact typed targets and proves zero mutation in <code>165721</code>/<code>171906</code>. Physical <code>softwrite-noftp-whatif-filter-casefold-180400</code> proves a nested UltimateDOS→SoftIEC filtered preview selects exactly one leaf while source/destination listings, CRCs, owners, and drive state remain exact</td>
+<td>remaining mutators and reverse/deeper recursive previews</td>
+</tr>
+<tr>
+<td>Mount/dismount/swap/maps</td>
+<td>PARTIAL</td>
+<td><code>softwrite-noftp-media-145816</code> physically creates two preserved marker-owned D81s, mounts <code>DISK1</code> on drive 8, swaps to <code>DISK2</code>, dismounts, independently checks every REST drive transition, rechecks both owners, and restores Drive A exactly. <code>softwrite-noftp-20260817-155612</code> and <code>softwrite-noftp-20260817-160912</code> prove marker-gated SoftIEC <code>$20</code> fails cleanly with target status <code>$01</code> on firmware 3.14: no partition 1, unchanged partition 0, exact Drive A restoration, and no filesystem mutation</td>
+<td>firmware/device exposing <code>$20/$21</code>, then successful marker-gated map/unmap with exact partition/config restoration</td>
+</tr>
+<tr>
+<td>Volume/free/block units/raw names</td>
+<td>PROVEN</td>
+<td>physical <code>softwrite-noftp-metadata-lowercase5-20260817-2004</code> separates canonical display, exact lowercase UltimateDOS access, decoded host name, 819200 host bytes, contained volume <code>RFMEDIA1</code>, 3160 C64 blocks, and honest SoftwareIEC <code>FREE UNAVAILABLE</code>; <code>150616</code> retains IEC raw/type/estimated-block evidence and <code>142523</code> proves D64/D71 full-width blocks</td>
+<td>keep cross-firmware raw/bracket-name and unit regressions green; do not invent unavailable SoftIEC capacity</td>
+</tr>
+<tr>
+<td>DOS-style batch variables and flow</td>
+<td>PROVEN</td>
+<td><code>make readyfs</code> and 25,636 scripting checks (also under AddressSanitizer/UndefinedBehaviorSanitizer) cover expansion, arguments, arithmetic, IF/GOTO, bounded CALL, limits, and config staging/merge. VICE <code>111807</code>/<code>111830</code> prove the new interpreter and fresh-session config with a 1 MiB REU; <code>112232</code> adds status/alias checks; <code>111955</code>, <code>112246</code>, and <code>115657</code> retain batch, legacy-config, and utility regressions. Physical <code>demo-v3-20261013-112913</code> passes 35 cases: UltimateDOS copy/byte oracles and persistent-only config at 1/16/64 MHz, truncated-config rejection, expansion before mutation, fresh C64 relaunch, and RFC1 compatibility. Exact current PRG hashes match the hardware snapshot; drive A, drive B and CPU settings are restored.</td>
+<td>keep these bounded-language matrices green; the 16-variable/16 KiB-script/8-call/10,000-step limits are intentional</td>
+</tr>
+<tr>
+<td>Aliases to exact places</td>
+<td>PROVEN</td>
+<td>VICE create/list/use/remove/escape/quoted-root tests, normalized parent traversal, REU session mirror, and versioned config save/load round-trip</td>
+<td>keep regressions green</td>
+</tr>
+<tr>
+<td>255-byte editor/history editing</td>
+<td>PROVEN</td>
+<td><code>161744</code> proves the unique horizontal tail onscreen, an exact 256-byte monitor oracle (255 input bytes plus NUL), parser return, and all prior left/right insertion, overwrite, Home/Shift+Home End, delete, and REU Up/Down recall/edit cases; overlay run <code>173129</code> proves explicit <code>history</code> lists the REU ring oldest-to-newest</td>
+<td>keep regression suite green</td>
+</tr>
+<tr>
+<td>Page Up/Down scrollback</td>
+<td>PROVEN</td>
+<td>F1/F3 stock-key fallback traverses REU-backed 24-page history in <code>210843</code>/<code>213116</code>; <code>141948</code> proves two automatic directory pages are retained and live-page return works</td>
+<td>add optional keyboard-specific Page Up/Page Down mapping when detectable</td>
+</tr>
+<tr>
+<td>Explicit config persistence</td>
+<td>PROVEN</td>
+<td>RFC1 config, CRC-verified staged save/backup/rollback and validate-before-commit load pass <code>vice_auto_20260815_205815</code> and <code>212933</code></td>
+<td>keep regressions green</td>
+</tr>
+<tr>
+<td>REU temp data/debug journal</td>
+<td>PARTIAL</td>
+<td>session bank holds history, scrollback, config staging, plan arena, disjoint RFJ1, single-action state/report, recursive checkpoint, and two immutable roots; <code>171947</code> proves exact successful/mixed RFJ1 batches while traversal survives resident IEC I/O; <code>171906</code> parses finished native copy/move journals with exact stems and offsets</td>
+<td>journal new/append/rename/media</td>
+</tr>
+<tr>
+<td>Overlay architecture</td>
+<td>PROVEN (twelve sidecars)</td>
+<td>eleven main-bank slices through the recursive controller plus dedicated-bank <code>rfbatch</code> and <code>rftape</code>; strict resident end is <code>$B5A3</code> (8 bytes before <code>$B5AC</code>), monolithic <code>$C4EB</code>, tape payload <code>$F47</code>, stack top <code>$D000</code>; all sidecar and REU-disjointness checks pass. Tape replay uses a dedicated REU cache and resident KERNAL I/O; SoftIEC command generation remains slot 7 while IEC/UCI I/O and the ReadyIRC-derived barrier remain resident</td>
+<td>keep device I/O resident and all cache/state regions disjoint</td>
+</tr>
+<tr>
+<td>ReadyIRC-derived resilient UCI</td>
+<td>PROVEN</td>
+<td>verifier passes; identify, multi-block directory, file read/write, rename, and delete use the adjacent accept-transition helper. <code>readyfs_uci_test</code> deterministically proves delayed PUSH observation, BUSY, one ABORT_P-aware recovery, queue drain, DATA_ACC, quiet idle, and subsequent identify. Physical <code>speed-matrix-20260817-uci-recover-only</code> proves interrupted IDENTIFY/recovery/re-identify and exact configuration restoration at 1/16/64 MHz</td>
+<td>keep source verifier, host oracle, and recovery-only physical matrix green</td>
+</tr>
+<tr>
+<td>Batch suites and analysis</td>
+<td>PARTIAL</td>
+<td>current generated inventory is 36/36 with 414 assertions; tape recording, fresh-session readback, post-tape IEC writing, and the current 61-step recursive regression are included. <code>002532</code> covers cooperative script success, stop/continue, <code>expect rc</code>, mismatch, nested-run rejection, prompt-free safety, and unchanged overwrite guard; <code>002551</code> covers RFJ1 plus sidecar readiness and <code>002634</code> covers rollback. Physical <code>softwrite-noftp-forced-restore-put-16-183320</code> deliberately exits 73 only after speed/owner admission, then proves complete config/drive recovery</td>
+<td>convert remaining legacy I/O/verify/partial/internal paths from default OK to specific results, then combine generated VICE and fresh physical evidence inventories</td>
+</tr>
+<tr>
+<td>25–100 UI cases</td>
+<td>PROVEN (lower bound)</td>
+<td>generated 60-case report records 58 proven, 2 partial, and 0 missing cases with named evidence; 36/36 current UI suites pass with 414 assertions</td>
+<td>complete physical SD2IEC execution and future-firmware SoftIEC map/unmap evidence</td>
+</tr>
+<tr>
+<td>Regular screenshots</td>
+<td>PARTIAL</td>
+<td>UI report links backend gateway/DMA, recursive confirmation/plans, partition refusal, journals, filters, config/history/mutations, bounded drive discovery, IEC stat metadata, D64/D71, REL/rollback, and all three 48-entry D81 pages</td>
+<td>curated milestone gallery plus physical captures</td>
+</tr>
+<tr>
+<td>Owned USB1/SD safety</td>
+<td>PROVEN</td>
+<td>IEC↔Ultimate and SoftIEC↔Ultimate physical suites reread both exact 116-byte markers before every mutation, use fresh preserved USB1 subfolders, perform no deletes, and finish with read-only post-tree dual-marker proof. Forced-failure authority <code>softwrite-noftp-forced-restore-put-16-183320</code> reads both markers twice before exit 73 and again from the live EXIT trap before restoration</td>
+<td>never delete or mutate outside the two exact marker-owned roots; preserve every failed/partial artifact</td>
+</tr>
+<tr>
+<td>Independent Terminal C64U runs</td>
+<td>PARTIAL</td>
+<td>true Terminal-owned UCI recovery passes at 1/16/64 MHz; marker-gated IEC↔Ultimate and production SoftIEC↔Ultimate/nested runs use independent Terminal sessions, no FTP dependency, exact config checks, and preserved artifacts. <code>rr5-final3</code>/<code>rr5-verify</code> prove recursive tree behavior, <code>softwrite-noftp-whatif-filter-casefold-180400</code> proves a nested filtered zero-mutation preview, <code>softwrite-noftp-media-145816</code> proves mount/swap/dismount, and <code>softwrite-noftp-metadata-lowercase5-20260817-2004</code> proves lowercase raw/access/volume/unit identity with exact owner and Drive A restoration. <code>softwrite-noftp-forced-restore-put-16-183320</code> proves deliberate post-config failure restores the complete U64 settings object and Drive A exactly while owners survive</td>
+<td>reverse recursive direction; map/unmap remains capability-honest provisional pending supporting firmware/device</td>
+</tr>
+<tr>
+<td>Full requirement audit</td>
+<td>PARTIAL</td>
+<td><code>READYFS_SCOPE_AUDIT.md</code> now reconciles implemented dispatch with every original command and records non-command gaps</td>
+<td>implement/evidence each gap; every row proven or explicitly provisional</td>
+</tr>
+</tbody></table>
+<p>Superseding SoftwareIEC evidence (2026-08-17): the virtual-root/media bridge
+is now read-only proven by <code>softpath-readonly-20260817-softpath-source-e</code> as
+<code>/</code> → <code>USB1</code> → <code>READYFS_TEST</code> → the exact owned run, with status <code>00</code> after
+every component. Typed underscore <code>$A4</code> must be translated to the firmware&#39;s
+host-underscore spelling <code>$5F</code> only at the SoftwareIEC boundary. Flat and
+recursive interoperability remain unproven because firmware 3.14 can omit the
+terminal directory record for an empty host folder. Marker-gated run
+<code>softiec-owned-20260817-061009</code> created only preserved <code>rf061009</code>, then stopped
+before any file was created; read-only <code>source-i</code> records OPEN result 0 plus
+DOS <code>62</code> for the absent leaf. Cases 42/43 remain <code>MISSING</code> until a compact,
+collision-safe resident OPEN/status existence primitive is implemented.</p>
+<p>Current build/report authority: resident <code>$B587</code> (36 safe bytes), monolithic
+<code>$C4E7</code>, utility <code>$FE7</code>, batch <code>$FD7</code>; VICE reports are 31/31 successful and
+the numbered split remains 49 proven / 9 partial / 2 missing.</p>
+<p>Final superseding authority (2026-08-17): <code>rr5-final3</code> is a true
+independent-Terminal recursive UltimateDOS-to-SoftwareIEC mutation run. It
+imports one directory and three files, reports <code>RECURSIVE PLAN F4 SELECTED 4</code>,
+inline-verifies 10/11/7 bytes, and finishes <code>BATCH DONE 4/4 FAIL 0</code> with normal
+<code>sfa</code>, <code>fromu</code>, and <code>nested/inside</code> logical names. Fresh read-only process
+<code>rr5-verify</code> independently proves the preserved logical/raw tree, compare,
+both exact owners, and exact Drive A restoration. Case 43 is now PROVEN;
+generated counts are 51 proven, 9 partial, and 0 missing; current VICE
+inventory is 32/32 suites with 374 assertions. The strict build ends at
+resident <code>$B5A0</code>, monolithic <code>$C491</code>, and recursive sidecar <code>$F67</code>.</p>
+<h2 id="batch-documentation-and-recorded-example-13-october-2026">Batch documentation and recorded example — 13 October 2026</h2>
+<p>The standalone RUN reference and illustrated Markdown/HTML guides now cover every scripting builtin, shared environment and positional arguments, same-file CALL inputs, all numeric conditions, counter loops, result handling, config persistence and the actual MS-DOS 6.2 boundary. BACKUP.SEQ is the single downloadable worked example. Host-created option bytes in this fixture are uppercase; a retained failed take exposed lowercase ASCII option recognition differing from interactive input.</p>
+<p>Physical <code>logs/readyfs_c64u/batch-demo-20261013b</code> passes 11 checks at 1 MHz with zero missing source frames: TYPE/output-history inspection, PREVIEW with identical before/after snapshots, APPLY with an independent 38-byte source/backup comparison, existing-destination refusal with unchanged storage, shared count one and source preservation. Original drive A, drive B and CPU settings are restored. The appended chapter uses a separate test root from the original tour.</p>
+<p><code>append_readyfs_batch_demo.py</code> retains all 37 original step records, appends seven steps/chapter 10, and compares every decoded frame of the original MP4 prefix. Its evidence and original assets are retained under <code>logs/readyfs_c64u/demo-v8-batch-appended-20261013</code>. This is physical Ultimate proof of the demonstrated paths; the additional reference recipes are reviewed examples, not additional recorded hardware cases. <code>make readyfs</code> passed, including 25,636 scripting checks and the existing host/protocol/overlay checks.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

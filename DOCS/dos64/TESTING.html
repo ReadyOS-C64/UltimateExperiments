@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Behavior tests and end-user acceptance · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Behavior tests and end-user acceptance"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#the-zeropage-pattern-to-retain">The ZeroPage pattern to retain</a></li><li><a href="#test-layers">Test layers</a></li><li><a href="#strengthen-the-mocks-before-trusting-them">Strengthen the mocks before trusting them</a></li><li><a href="#cpu-and-memory-suite">CPU and memory suite</a></li><li><a href="#supplied-image-reference-baseline">Supplied-image reference baseline</a></li><li><a href="#dos-first-acceptance-matrix">DOS-first acceptance matrix</a></li><li><a href="#physical-acceptance-and-evidence">Physical acceptance and evidence</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="TESTING.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="behavior-tests-and-end-user-acceptance">Behavior tests and end-user acceptance</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p>This document retains the original test design and utility matrix; individual planned cases are not completion claims. Current executed evidence is in TEST_LOG (local development record, not distributed) and STATUS (local development record, not distributed). The <a href="V1_ENDPOINT.html">V1 endpoint</a> defines the final matched-release acceptance run, including edited Turbo Pascal source, compilation to disk and restart persistence. Further speed improvement is post-V1.</p>
+<h2 id="the-zeropage-pattern-to-retain">The ZeroPage pattern to retain</h2>
+<p>The user specifically wants both Peddle execution and <strong>Zig tests/assertions of behavior</strong>, like ZeroPage. Reuse that separation:</p>
+<pre><code class="language-text">Zig test case and assertions
+    → fixture registers/memory + scheduled device events
+    → small C ABI → Peddle MOS_6510
+    → actual ca65/ld65 output + project device models
+    → bounded completion / first failure
+    → compare guest state, writes, device transcript, and persistent bytes
+</code></pre>
+<p>Inspect <code>../../zig64/src/emu_test_runner.zig</code>, its <code>Labels</code>/test hooks, fixture discovery, KERNAL LOAD tests, and <code>std.testing.expectEqual</code> assertions. Inspect <code>../../zig64/third_party/peddle/zeropage_peddle.{h,cpp}</code> and <code>../ReuSQL64/build.zig</code>, <code>tests/host/runner.zig</code>, and local Peddle shim. The C++ bridge exposes reset/load/step/registers/memory/clock operations; Zig owns cases, expected values, scheduling, assertions, reports, and corpus parsing. Pin Peddle commit <code>c23e34a7e6516b284750b8c7caaa8c41948a407a</code>, preserving its MIT license.</p>
+<p>Use exported linker symbols rather than invented fixed addresses for test entry, guest state, and completion. A stable test mailbox carries ABI version, case ID, completion/error, and guest instruction count. The runner stops at a return sentinel or explicit yield; reaching a cycle limit is failure. Unit-test entry points call the <strong>same assembly routines</strong> shipped in the runtime; end-to-end cases start its actual entry point.</p>
+<p>Illustrative Zig test shape (API to be implemented, not runnable now):</p>
+<pre><code class="language-zig">test &quot;ADD AL sets carry, zero, parity, auxiliary carry without overflow&quot; {
+    var machine = try Fixture.loadAssembledRuntime();
+    defer machine.deinit();
+    try machine.seedGuest(.{ .ax = 0x12ff, .flags = 0x0002 });
+    try machine.writeGuestCode(&amp;.{ 0x04, 0x01 }); // ADD AL,1
+    try machine.stepGuestWithinBudget(1, 100_000);
+    const state = try machine.readGuestState();
+    try std.testing.expectEqual(@as(u16, 0x1200), state.ax);
+    try std.testing.expectEqual(@as(u16, 0x0055), state.flags &amp; 0x08d5);
+    try machine.expectOnlyAllowedWrites();
+}
+</code></pre>
+<p>Also test assembly register preservation, stack depth, <code>$01</code> restoration, and prohibited writes. Do not make tests simply echo implementation tables. Independent expected arithmetic, hardware vectors, reference disks, and post-save extraction provide stronger evidence.</p>
+<h2 id="test-layers">Test layers</h2>
+<table>
+<thead>
+<tr>
+<th>Lane</th>
+<th>System under test</th>
+<th>Main proof</th>
+<th>Does not prove</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Host Zig unit/property</td>
+<td>Fixture parsers, independent arithmetic/address models, image metadata, schedulers</td>
+<td>Oracle/model correctness, malformed-input handling, deterministic seeds</td>
+<td>Target assembly correctness</td>
+</tr>
+<tr>
+<td>Peddle assembly unit</td>
+<td>Linked 6510 routines</td>
+<td>Flags/registers/bytes/ABI, exact modeled device operations, CPU-cycle counts</td>
+<td>VIC raster quality, real turbo/DMA/UCI wall time</td>
+</tr>
+<tr>
+<td>Peddle integration</td>
+<td>Whole emulator in modeled C64 bus</td>
+<td>CPU↔paging↔BIOS↔image↔devices; genuine DOS boot and commands</td>
+<td>Physical bus behavior or ultimate persistence</td>
+</tr>
+<tr>
+<td>PC reference</td>
+<td>Supplied DOS image in DOSBox-X, selected original-CPU tests/MartyPC</td>
+<td>Expected DOS behavior, output/files; CPU semantics from suitable sources</td>
+<td>DOSBox built-in shell is not DOS 3.3; DOSBox cycles are not XT speed</td>
+</tr>
+<tr>
+<td>VICE accelerated</td>
+<td>Actual PRG, REU, KERNAL IEC, D81; traps/warp</td>
+<td>C64 bank/screen/input/REU and disk integration</td>
+<td>C64U 64 MHz timing or UCI</td>
+</tr>
+<tr>
+<td>VICE serial</td>
+<td>Small true-drive 1581 scenarios</td>
+<td>IEC path without virtual traps</td>
+<td>Ultimate firmware behavior</td>
+</tr>
+<tr>
+<td>Physical C64U</td>
+<td>Same PRG and owned image copies</td>
+<td>REU/UCI, speed-dependent bugs, persistence, visual usability, elapsed performance</td>
+<td>Arbitrary PC hardware compatibility</td>
+</tr>
+</tbody></table>
+<p>Fast/default runs are deterministic subsets; scheduled/manual full CPU sweeps and larger DOS matrices report separate totals. A feature is not “tested” solely because its mock passed. Every lane emits pass/fail/skipped/not-run plus reason, test count, first failure, build/fixture hashes, seed, and configuration.</p>
+<h2 id="strengthen-the-mocks-before-trusting-them">Strengthen the mocks before trusting them</h2>
+<p>The existing ZeroPage/ReuSQL64 shims immediately execute a simplified REU transfer on a command write. They cover useful DMA modes and a zero count interpreted as 65,536, but inspection does not show complete autoload/post-transfer register handling, deferred <code>$FF00</code> triggering, DMA clock stalls, bus banking, or IRQ timing. One shim truncates at its REU end; the other wraps modulo configured capacity. These are different contracts, not interchangeable proof of hardware.</p>
+<p>Build a project-owned mock with a versioned supported-register contract. Implement all semantics the runtime uses and explicitly reject unsupported model paths. For the used subset verify command bits, fixed addresses, auto-increment/reload, clear-on-read status, completion, wrapping, bank masks, host address wrap, and transfer direction. Test unused modes independently only if they are implemented. Separate CPU cycles from a configurable DMA cost model; calibrate that model with physical measurements. Model <code>$00/$01</code> RAM/ROM/I/O selection and IRQ/NMI gates needed by the program; keep CPU-only all-RAM mode distinct.</p>
+<p>The UCI mock must sit at the actual register interface so target assembly performs the real handshake. It owns two target contexts, files, offsets, lengths, REU bytes, output queues, and states. Script delayed BUSY, immediate post-PUSH IDLE, MORE/LAST transitions, partial data, long status, empty reply, bad seek, short read/write, missing file, read-only file, full storage, abort pending, timeout, and uncertain close. Test serialization of simultaneous logical requests. For faster pure storage tests a high-level fake is acceptable, but it cannot replace this register-level integration lane.</p>
+<p>Device models must have tests of their own, plus shared test vectors replayed in VICE/hardware. Never alter a mock to satisfy broken target code without evidence that the new behavior matches the device.</p>
+<h2 id="cpu-and-memory-suite">CPU and memory suite</h2>
+<ul>
+<li>Hardware-generated <a href="https://github.com/SingleStepTests/8088">SingleStepTests/8088</a> is the primary functional corpus; <a href="https://github.com/SingleStepTests/8086">8086</a> helps investigate shared/different semantics. Pin release/commit/hash and record imported opcode groups.</li>
+<li>Initialize registers/RAM exactly, execute one guest instruction or defined REP unit, reconstruct sparse expected final state, compare all unchanged and changed registers and touched memory. Apply only per-instruction undefined-flag masks from corpus metadata.</li>
+<li>Do not assert bus-cycle/prefetch equivalence for this functional interpreter. Corpus docs permit ignoring queue fields for functional validation; explicitly exclude/track cases whose semantics actually depend on stale prefetched bytes. IF/TF/HLT/WAIT/LOCK gaps need additional hand-authored event tests rather than a misleading “full corpus means full CPU” claim.</li>
+<li>Exhaust 8-bit ADD/SUB and carry-in variants (all input pairs), test 16-bit boundaries/random values, and independently compute parity/auxiliary carry. Test all ModR/M and segment-default forms. Keep random seeds and minimize failures into stable regressions.</li>
+<li>Run identical cases with a flat host-memory reference and the target pager, warm/cold cache, varied page sizes, aliases, forced eviction, and one-/two-byte boundary splits. Compare CPU state and memory changes, not eviction order unless testing the pager itself.</li>
+<li>Additional assembly fixtures cover flag materialization, IRET and interrupt shadows, divide return IP, PUSH SP, high shift counts, REP overlap/interrupt restart, ROM protection, B800 writes, code invalidation, and BIOS disk transfer coherence.</li>
+<li>Test repeated cold boot, warm reboot, cancellation, media swaps, interrupted save, and recovery. First failure captures recent guest instructions, host PC/registers, cache tags, REU registers, UCI transcript, dirty ranges, and relevant disk sectors; tracing is bounded and optional in release builds.</li>
+</ul>
+<h2 id="supplied-image-reference-baseline">Supplied-image reference baseline</h2>
+<p>DOSBox-X 2026.01.02 SDL2 exists at <code>/opt/homebrew/bin/dosbox-x</code>; NASM, x64sc and c1541 are also present. Use a project-local configuration with CGA, an appropriate real-mode CPU setting, fixed comparison settings, and <strong>BOOT from a copied raw disk</strong>. Merely selecting a reported DOS version or running commands in the DOSBox Z: shell is not a reference boot.</p>
+<p>First observe unmodified disk 1: its CONFIG.SYS refers to <code>C:\DOS\ANSI.SYS</code> and includes an invalid-looking <code>c:</code> line. Record actual diagnostics. Create a separate minimal-config variant for early boot, a driver-enabled variant with corrected paths, and a writable work disk. Record exact transformations/hashes; originals stay unchanged. Disk 2 lacks system files and is a utility data disk. Disk 3 contains matching DOS binaries but a nonstandard OEM boot field and different config; do not infer corruption or a DOS version from that field alone. Use its GWBASIC file under the established disk-1 OS before treating disk 3 as an alternate boot baseline.</p>
+<p>Capture boot output, <code>VER</code>, disk directories, free space, command results, and independent output-file hashes. Record prompts and OEM-specific differences. Boot/version remains <strong>unverified at planning completion</strong>.</p>
+<h2 id="dos-first-acceptance-matrix">DOS-first acceptance matrix</h2>
+<p>“Required” below means required by the relevant milestone, not already passed. Resolve exact command syntax/prompts against the supplied binaries; use the <a href="https://msarchive.pcjs.org/mspl13/msdos/encyclopedia/section3/">Microsoft command reference</a> and observed reference behavior. Do not introduce DOS 5/6-only commands such as EDIT or MEM into baseline scripts.</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Commands / binaries</th>
+<th>Acceptance</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Boot/shell — required M5/M7</td>
+<td>COMMAND.COM, VER, DIR, TYPE, CLS, DATE, TIME, VOL</td>
+<td>Actual DOS version, valid prompt, stable clock/date semantics, directories/files and 40/80 presentation</td>
+</tr>
+<tr>
+<td>Files/directories — required M7</td>
+<td>COPY, REN, DEL/ERASE, MD, CD/CHDIR, RD</td>
+<td>Empty/binary/text files, nested paths, wildcards, names, read-only/full disk errors, persistence</td>
+</tr>
+<tr>
+<td>Batch/control — required M7</td>
+<td>ECHO, SET, PATH, PROMPT, IF, FOR, GOTO, CALL, SHIFT, PAUSE, REM, BREAK, VERIFY, EXIT, command <code>/C</code>, redirection/pipes, CTTY CON</td>
+<td>Deterministic output and ERRORLEVEL behavior; nested scripts and temporary-file cleanup; keyboard/cancellation; no serial CTTY endpoint</td>
+</tr>
+<tr>
+<td>Text/filter — required M7</td>
+<td>FIND.EXE, SORT.EXE, MORE.COM, EDLIN.COM</td>
+<td>Compare text content; EDLIN insert/edit/write/reopen; MORE keyboard/paging; input/output redirection</td>
+</tr>
+<tr>
+<td>Filesystem utilities — required M7/M8</td>
+<td>CHKDSK.COM, ATTRIB.EXE, TREE.COM, COMP.COM, FC.EXE, LABEL.COM, XCOPY.EXE, REPLACE.EXE</td>
+<td>Expected listing/comparison/attributes, cluster/free-space checks, copy results; CHKDSK repairs only disposable corruption fixtures</td>
+</tr>
+<tr>
+<td>Media — required M6/M8/M9</td>
+<td>DISKCOPY.COM, DISKCOMP.COM, FORMAT.COM, SYS.COM, FDISK.COM</td>
+<td>Two-drive and swap flows, BIOS format/verify calls, bootable outputs, MBR/partition checks, clean restart and independent bytes</td>
+</tr>
+<tr>
+<td>CPU/debug — required M7</td>
+<td>DEBUG.COM</td>
+<td>Assemble/run/trace tiny 8086 programs, inspect registers/memory, INT 3/TF behavior, read/write scratch files</td>
+</tr>
+<tr>
+<td>Console/config — required subset M7</td>
+<td>MODE.COM CO40/CO80, ANSI.SYS</td>
+<td>Width switches, cursor movement, clear/color, keyboard editing; MODE serial/printer modes excluded</td>
+</tr>
+<tr>
+<td>Memory/process helpers — staged M7/M9</td>
+<td>ASSIGN.COM, SUBST.EXE, APPEND.EXE, JOIN.EXE, SHARE.EXE, FASTOPEN.EXE</td>
+<td>Path/drive semantics, resident installation and hooked vectors, reopen behavior; promote each after basic shell/media stability</td>
+</tr>
+<tr>
+<td>Backup — staged M9</td>
+<td>BACKUP.COM, RESTORE.COM</td>
+<td>Owned multi-disk backups/restores with prompts, independent restored data; no real-media source</td>
+</tr>
+<tr>
+<td>Development — staged M7/M9</td>
+<td>EXE2BIN.EXE, LINK.EXE</td>
+<td>Small source-controlled object/executable fixtures, output hashes/semantics and error paths</td>
+</tr>
+<tr>
+<td>Locale/drivers — conditional</td>
+<td>KEYB.COM, KEYBOARD.SYS, NLSFUNC.EXE, COUNTRY.SYS, DISPLAY.SYS, DRIVER.SYS, RAMDRIVE.SYS</td>
+<td>Add only configurations compatible with declared CGA/640 KiB/no EMS/XMS profile; US keyboard baseline first; record unsupported configuration explicitly</td>
+</tr>
+<tr>
+<td>CGA/included BASIC — M10</td>
+<td>GRAFTABL.COM, GWBASIC.EXE</td>
+<td>Font/pixel behavior and small generated BASIC graphics programs; no third-party apps needed</td>
+</tr>
+<tr>
+<td>Excluded peripheral/OEM operations</td>
+<td>PRINT.COM, GRAPHICS.COM printing, PRINTER.SYS, 4201/5202.CPI, EGA.CPI/LCD.CPI-only display features, HDFORM.EXE, HDPARK.EXE, SELECT.COM OEM install flow</td>
+<td>Printer/EGA/LCD and hardware-specific setup/parking outside v1; do not claim pass; ordinary guest absence/error handling may be tested</td>
+</tr>
+<tr>
+<td>Repair — staged M9</td>
+<td>RECOVER.COM</td>
+<td>Separately specified disposable damaged-image experiment with reference results and independent extraction; never original media</td>
+</tr>
+</tbody></table>
+<p>Each binary receives a manifest status: required/planned, conditional, excluded with reason, or verified with evidence. An excluded peripheral operation does not exclude the relevant supported part of a multi-purpose utility. Long-tail helpers may expose missing BIOS/ports; they are traced and triaged before any third-party-app compatibility work.</p>
+<h2 id="physical-acceptance-and-evidence">Physical acceptance and evidence</h2>
+<p>Use the existing .NET Ultimate harness and the repository&#39;s proven Terminal-owned network wrappers as development controls. Determine the actual device/configuration at test time, capture its firmware/turbo/REU/PAL-NTSC/drive state, create only owned test roots, and restore prior settings/media afterwards. Do not use a stale device address from another project&#39;s sample file.</p>
+<p>Required physical checks: actual 640 KiB report/use across segments; keyboard at 40/80; scrolling/editor readability; A/B copy and save/reload after restart; UCI failures/recovery; small-HD creation/boot; 20 MiB extent eviction/offsets; CGA test cards; stopwatch/host-clock measurements with display active at 64 MHz. Also repeat the transport and REU probes at 1/16 MHz to catch timeouts that only fail when turbo changes.</p>
+<p>Acceptance has two kinds of output: machine assertions (registers, sectors, hashes, error codes) and human-visible evidence (screens/video, font readability, useful keyboard mapping). Capture both. Screenshots alone cannot establish data integrity; passing CPU vectors cannot establish usability.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

@@ -1,0 +1,93 @@
+#ifndef RSQL_STORAGE_LAYOUT_H
+#define RSQL_STORAGE_LAYOUT_H
+
+#include "rsql_types.h"
+
+#define RSQL_STORAGE_VERSION 4u
+#define RSQL_PAGE_CHECKSUM_OFFSET 255u
+
+#define RSQL_ROOT_TABLE_COUNT 6u
+#define RSQL_ROOT_ENUM_COUNT 7u
+#define RSQL_ROOT_FIRST_TABLE 8u
+#define RSQL_ROOT_FIRST_BLOB_DIRECTORY 10u
+#define RSQL_ROOT_NEXT_BLOB_HANDLE 12u
+#define RSQL_ROOT_FIRST_ENUM 16u
+#define RSQL_ROOT_NEXT_ENUM_ID 18u
+#define RSQL_ROOT_FIRST_INDEX 20u
+
+#define RSQL_INDEX_FLAGS 5u
+#define RSQL_INDEX_FLAG_DROPPING 0x01u
+#define RSQL_INDEX_NEXT 6u
+#define RSQL_INDEX_TABLE 8u
+#define RSQL_INDEX_LEAF_HEAD 10u
+#define RSQL_INDEX_LEAF_TAIL 12u
+#define RSQL_INDEX_ENTRY_COUNT 14u
+#define RSQL_INDEX_KEY_WIDTH 18u
+#define RSQL_INDEX_COLUMN_COUNT 19u
+#define RSQL_INDEX_NAME_LENGTH 20u
+#define RSQL_INDEX_NAME 21u
+#define RSQL_INDEX_COLUMNS 45u
+
+#define RSQL_ENUM_FLAGS 39u
+#define RSQL_ENUM_FLAG_DROPPING 0x01u
+
+#define RSQL_ENUM_WIDTH 5u
+#define RSQL_ENUM_ID 6u
+#define RSQL_ENUM_NEXT 8u
+#define RSQL_ENUM_FIRST_MEMBERS 10u
+#define RSQL_ENUM_MEMBER_COUNT 12u
+#define RSQL_ENUM_NAME_LENGTH 14u
+#define RSQL_ENUM_NAME 15u
+
+#define RSQL_ENUM_MEMBER_PAGE_COUNT 5u
+#define RSQL_ENUM_MEMBER_PAGE_NEXT 6u
+#define RSQL_ENUM_MEMBER_PAGE_ENTRIES 8u
+#define RSQL_ENUM_MEMBER_ENTRY_BYTES 18u
+#define RSQL_ENUM_MEMBER_VALUE 0u
+#define RSQL_ENUM_MEMBER_NAME_LENGTH 2u
+#define RSQL_ENUM_MEMBER_NAME 3u
+
+#define RSQL_INDEX_LEAF_CAPACITY 5u
+#define RSQL_INDEX_LEAF_NEXT 6u
+#define RSQL_INDEX_LEAF_PREVIOUS 8u
+#define RSQL_INDEX_LEAF_COUNT 10u
+#define RSQL_INDEX_LEAF_KEY_WIDTH 11u
+#define RSQL_INDEX_LEAF_DATA 12u
+
+#define RSQL_TABLE_NEXT 6u
+#define RSQL_TABLE_FLAGS 5u
+#define RSQL_TABLE_ROW_HEAD 8u
+#define RSQL_TABLE_ROW_TAIL 10u
+#define RSQL_TABLE_ROW_COUNT 12u
+#define RSQL_TABLE_ROW_WIDTH 16u
+#define RSQL_TABLE_COLUMN_COUNT 18u
+#define RSQL_TABLE_NAME_LENGTH 19u
+#define RSQL_TABLE_NAME 20u
+#define RSQL_TABLE_COLUMNS 44u
+#define RSQL_COLUMN_BYTES 24u
+
+#define RSQL_COLUMN_TYPE 0u
+#define RSQL_COLUMN_FLAGS 1u
+#define RSQL_COLUMN_WIDTH 2u
+#define RSQL_COLUMN_OFFSET 4u
+#define RSQL_COLUMN_AUXILIARY 6u
+#define RSQL_COLUMN_NAME_LENGTH 8u
+#define RSQL_COLUMN_NAME 9u
+
+#define RSQL_ROW_CAPACITY 5u
+#define RSQL_ROW_WIDTH 6u
+#define RSQL_ROW_NEXT 8u
+#define RSQL_ROW_PREVIOUS 10u
+#define RSQL_ROW_BITMAP 12u
+#define RSQL_ROW_BITMAP_BYTES 4u
+#define RSQL_ROW_DATA 16u
+
+rsql_u16 rsql_get_u16(const rsql_u8* bytes);
+void rsql_put_u16(rsql_u8* bytes, rsql_u16 value);
+unsigned long rsql_get_u32(const rsql_u8* bytes);
+void rsql_put_u32(rsql_u8* bytes, unsigned long value);
+void rsql_increment_u32(rsql_u8* bytes);
+void rsql_decrement_u32(rsql_u8* bytes);
+rsql_u8 rsql_page_checksum(const rsql_u8* page);
+
+#endif

@@ -1,0 +1,47 @@
+[
+  {
+    "chapter": "GW-BASIC hangman autoplay",
+    "seconds": 83.38059700001031,
+    "monotonic_ns": 120880195363000
+  },
+  {
+    "chapter": "GW-BASIC WIN",
+    "seconds": 305.8964490000071,
+    "monotonic_ns": 121102711215000
+  },
+  {
+    "chapter": "GW-BASIC LIST",
+    "seconds": 307.90539600000193,
+    "monotonic_ns": 121104720162000
+  },
+  {
+    "chapter": "GW-BASIC LIST page1",
+    "seconds": 350.53173800000513,
+    "monotonic_ns": 121147346504000
+  },
+  {
+    "chapter": "GW-BASIC LIST page2",
+    "seconds": 389.9369250000018,
+    "monotonic_ns": 121186751691000
+  },
+  {
+    "chapter": "GW-BASIC LIST page3",
+    "seconds": 421.04557000000204,
+    "monotonic_ns": 121217860336000
+  },
+  {
+    "chapter": "GW-BASIC LIST page4",
+    "seconds": 452.1089590000047,
+    "monotonic_ns": 121248923725000
+  },
+  {
+    "chapter": "DOS DIR",
+    "seconds": 461.58520000000135,
+    "monotonic_ns": 121258399966000
+  },
+  {
+    "chapter": "DOS DIR complete",
+    "seconds": 501.36156499999925,
+    "monotonic_ns": 121298176331000
+  }
+]
