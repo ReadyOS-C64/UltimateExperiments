@@ -4,7 +4,7 @@
 
 The native development package needs Python 3.9 or newer, Make and the cc65 toolchain: `cc65`, `ca65`, `ld65` and the toolchain's `none.lib`. The audited build used cc65/ca65/ld65 2.18. These tools must be on PATH or configured through the documented DOS64 tool variables. Package building needs no DOS images, Turbo Pascal, Zig, Peddle, device access or private working notes.
 
-For emulator assertions install **Zig 0.16.0** with its standard libraries. Peddle's C++ sources are included under `third_party/peddle`, including their license. Python assertions use the standard library. Screenshot comparison/composition additionally needs Pillow. Optional guest fixtures need DOSBox-X and NASM; VICE/IEC and physical .NET automation are separate development lanes, not runtime dependencies.
+The normal `make build` target records Zig provenance, and assertions compile with Zig: install **Zig 0.16.0** with its standard libraries for these targets. The separate native-package command above does not need Zig. Peddle's C++ sources are included under `third_party/peddle`, including their license. Python assertions use the standard library. Screenshot comparison/composition additionally needs Pillow. Optional guest fixtures need DOSBox-X and NASM; VICE/IEC and physical .NET automation are separate development lanes, not runtime dependencies.
 
 ## Native package
 
@@ -22,7 +22,7 @@ The public download is `downloads/DOS64-development.zip`. It contains no configu
 ## Emulator and tests
 
 ```sh
-make build
+make build DOS64_ZIG=/path/to/zig
 make test DOS64_ZIG=/path/to/zig
 make v1-package-tests DOS64_V1_CANDIDATE_ARGS='--runtime-media'
 ```
