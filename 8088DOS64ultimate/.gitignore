@@ -1,8 +1,6 @@
-# Keep this project's long-horizon records despite the parent ignore rule.
-!/agentworking/
-!/agentworking/**
-/agentworking/scratch/
-/agentworking/runs/
+# Local working records and user-supplied vendor images are never published.
+/agentworking/
+/reference/
 /build/
 /.zig-cache/
 /zig-out/

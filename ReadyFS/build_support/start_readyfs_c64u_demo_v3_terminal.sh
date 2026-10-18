@@ -21,7 +21,7 @@ launch_script="$out_dir/terminal-run.sh"
   printf 'export READYFS_DEMO_OUT=%q\n' "$out_dir"
   printf 'export C64U_HOST=%q\n' "${C64U_HOST:-10.0.0.79}"
   printf 'exec %q %q >> %q 2>&1\n' \
-    '/Users/karlprosserpp/dev/c64projects/skyleapgame/c64/.venv/bin/python' \
+    "${READYFS_PYTHON:-python3}" \
     "$readyfs_root/build_support/run_readyfs_c64u_demo_v3.py" "$out_dir/terminal-launch.txt"
 } > "$launch_script"
 /usr/bin/osascript - "$launch_script" <<'APPLESCRIPT'

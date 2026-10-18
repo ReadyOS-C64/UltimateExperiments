@@ -1,6 +1,9 @@
 # Next performance architecture: measured feasibility, not implementation approval
 
-Retained research cohort: `agentworking/scratch/translation-feasibility/`; artifact names below refer to that directory. Root independently checked exact normal-report equality, both complete native-PC histogram sums and all601936 trace-record lengths. [Evidence](../agentworking/evidence/dos-performance-profile-20261015.json).
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+Retained research cohort: `agentworking/scratch/translation-feasibility/`; artifact names below refer to that directory. Root independently checked exact normal-report equality, both complete native-PC histogram sums and all601936 trace-record lengths. Evidence (local development record, not distributed).
 
 Prepared 2026-10-15. Private research only; no production edit, new ISA implementation, hardware, network control, commit, or extra subagent. The actual six-overlay target is frozen at runtime `98fcd115338c43c8976d35f24feea468a040897f11ee143f8c52c9b477d07ff7`, unit `6eba1ee7bf6c872fcb7f4a059cc64f4572243511efa37302026d8ced82b244f8`. The later two-byte empty-PIC fast path is a separate proposal and is not silently included in this profile.
 

@@ -1,5 +1,8 @@
 # Sector storage and persistence
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 ## Contracts
 
 PC software sees BIOS disk devices A:/B: and later drive 80h. DOS itself interprets FAT and partitions. Each backend implements bounded byte-range access to a raw image, exact read/write counts, close, and explicit save/export semantics. Device descriptors carry image identity/generation, sector size/count, CHS geometry, read-only flag, backing-file offset, and persistence state.
@@ -51,7 +54,7 @@ Port ReadyFS's proven protocol contract, with attribution and this project's tes
 
 Store the **PC IMG as binary contents of a CBM SEQ file** inside a D81, not as a replacement D81 filesystem. A 360 KiB image needs `ceil(368640/254) = 1452` CBM data blocks. Two copies need 2904 blocks before bootstrap/program files, leaving limited headroom in a 3160-free-block D81. Prefer separate boot/source and output D81s for verified-save scenarios. Do not assume a PRG LOAD/SAVE can transfer a 360 KiB file through one 64 KiB C64 buffer.
 
-Planning proof: c1541 successfully placed disk 1 into a fresh 819,200-byte D81 as a 1452-block SEQ file, leaving 1708 blocks free, and extracted all 368,640 bytes identically. [Evidence](../agentworking/research/d81-container-proof.json). This proves container capacity and byte preservation only; it does not prove the future target's IEC stream code.
+Planning proof: c1541 successfully placed disk 1 into a fresh 819,200-byte D81 as a 1452-block SEQ file, leaving 1708 blocks free, and extracted all 368,640 bytes identically. Evidence (local development record, not distributed). This proves container capacity and byte preservation only; it does not prove the future target's IEC stream code.
 
 Use KERNAL OPEN/CHKIN/CHRIN/READST streaming through small RAM buffers and REU DMA; save with CHKOUT/CHROUT/CLOSE, preserving binary 00/1A/FF bytes and final-byte/EOF handling. Stream whole floppies once, then guest sector access is REU-local. This deliberately avoids random-seek support for ordinary CBM sequential files. The IEC lane initially covers floppy persistence only; HD extent I/O stays in mocked/Ultimate lanes until a separately tested chunk-file/random-access adapter is justified.
 
@@ -60,4 +63,4 @@ Run VICE with a 1581 image, REU, virtual-device traps, true-drive emulation disa
 
 ## Current implemented HD checkpoint
 
-The normal six-overlay build now implements the two listed geometries, 32 KiB REU extents (up to32 slots), checked32-bit offsets and explicit write/readback uncertainty. HD remains default-disabled. Actual native Peddle2MiBHD-only and20MiBfloppy-first DOS boots, complete guest-write attribution and a deliberate above16MiB close/reopen probe pass in the reviewed cohort. Root focused cache/BIOS/cold tests pass; physical persistence remains open. [Implementation/ownership](HD_IMPLEMENTATION.md),[evidence](../agentworking/evidence/hd-production-20261015.json). The earlier extent-size suggestions are planning history, not current linked values.
+The normal six-overlay build now implements the two listed geometries, 32 KiB REU extents (up to32 slots), checked32-bit offsets and explicit write/readback uncertainty. HD remains default-disabled. Actual native Peddle2MiBHD-only and20MiBfloppy-first DOS boots, complete guest-write attribution and a deliberate above16MiB close/reopen probe pass in the reviewed cohort. Root focused cache/BIOS/cold tests pass; physical persistence remains open. [Implementation/ownership](HD_IMPLEMENTATION.md),evidence (local development record, not distributed). The earlier extent-size suggestions are planning history, not current linked values.

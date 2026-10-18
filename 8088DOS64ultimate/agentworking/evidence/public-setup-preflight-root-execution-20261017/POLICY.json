@@ -1,5 +1,0 @@
-{
-  "scope": "PUBLIC optional preflight native8/host11 + candidate host13 + discovery exclusion; no hardware; no broad main suite",
-  "cwd": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate",
-  "source_records": 321
-}

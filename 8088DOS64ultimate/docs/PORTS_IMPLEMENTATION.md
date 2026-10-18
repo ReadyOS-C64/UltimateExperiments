@@ -1,5 +1,8 @@
 # PC port implementation
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 The current public V1 candidate supports the bounded original-XT port set below. The timing source remains fixed PIT channel 0; direct peripheral programming does not imply a complete PC chipset or physical bus timing. See [timer](TIMER_IRQ_IMPLEMENTATION.md), [BIOS](BIOS_IMPLEMENTATION.md), and the [V1 release gates](V1_ENDPOINT.md).
 
 | Port | Implemented behavior |
@@ -17,7 +20,7 @@ The current public V1 candidate supports the bounded original-XT port set below.
 
 No generic unknown-port success fallback exists. CGA services require the checked HDBIOS extension and retain their documented overlay/caller ownership gates. Direct CGA register writes do not rewrite BDA software shadows.
 
-The unmerged speaker test candidateaa18 accepts byte OUT43h=B6h and byte OUT42h divisor data silently, retaining the independent61h latch. It preserves channel0/PIC state and does not supply counter reads or audio. Eleven ports groups,508 base groups and25 package controls pass; genuine FDISK continuation and final composition remain pending. [Test candidate evidence](../agentworking/evidence/v1-silent-speaker-private-root-20261017.json).
+The unmerged speaker test candidateaa18 accepts byte OUT43h=B6h and byte OUT42h divisor data silently, retaining the independent61h latch. It preserves channel0/PIC state and does not supply counter reads or audio. Eleven ports groups,508 base groups and25 package controls pass; genuine FDISK continuation and final composition remain pending. Test candidate evidence (local development record, not distributed).
 
 The linked original 8088 CPU handles immediate-port and DX-port IN/OUT forms, byte and word (E4–E7, EC–EF). Reads update AL or AX; writes preserve guest registers. Guest FLAGS are unchanged. Immediate ports are zero-extended; DX ports retain 16 bits. Prefixes do not introduce repeated I/O. Failed or unsupported operations latch the CPU diagnostic and restore the instruction's starting IP. Fetch/cache failures remain terminal host errors.
 
@@ -31,13 +34,13 @@ DEVICESTATE begins at EA00 and is constrained through EEFF, preserving EF00–EF
 
 ## Historical PIC introduction
 
-The accepted PIC checkpoint passes 172 Zig/Peddle tests, 47 tooling checks and all 2,555 previously selected hardware CPU cases. The PIC's independent suite covers all 256 masks, all ICW lengths and 2,048 EOI priority combinations; adapter tests cover all eight instruction forms, preserved registers/FLAGS, unsupported width/port without partial effects, IP wrap and prefixes. IN/OUT hardware-generated vectors are not yet imported. [Source pins, tests, maps and DOS trace](../agentworking/evidence/pic-io-20261015.json).
+The accepted PIC checkpoint passes 172 Zig/Peddle tests, 47 tooling checks and all 2,555 previously selected hardware CPU cases. The PIC's independent suite covers all 256 masks, all ICW lengths and 2,048 EOI priority combinations; adapter tests cover all eight instruction forms, preserved registers/FLAGS, unsupported width/port without partial effects, IP wrap and prefixes. IN/OUT hardware-generated vectors are not yet imported. Source pins, tests, maps and DOS trace (local development record, not distributed).
 
-At that historical checkpoint real IO.SYS progresses past OUT 20h and reaches absent serial BIOS INT 14h after 2,347 completed instructions. COMMAND.COM prompt is not accepted. No asynchronous IRQ/INTA delivery, PIC poll, hardware timing, PIT/keyboard/CGA ports or serial hardware is claimed. The later verified BIOS/video/adjust slice passes 205 tests, 57 tooling checks and all 5,701 hardware cases, and reaches absent INT 1Ah after 2,542 instructions. [Combined evidence](../agentworking/evidence/video-adjust-bios-20261015.json). PIC event-delivery and other port limitations remain unchanged.
+At that historical checkpoint real IO.SYS progresses past OUT 20h and reaches absent serial BIOS INT 14h after 2,347 completed instructions. COMMAND.COM prompt is not accepted. No asynchronous IRQ/INTA delivery, PIC poll, hardware timing, PIT/keyboard/CGA ports or serial hardware is claimed. The later verified BIOS/video/adjust slice passes 205 tests, 57 tooling checks and all 5,701 hardware cases, and reaches absent INT 1Ah after 2,542 instructions. Combined evidence (local development record, not distributed). PIC event-delivery and other port limitations remain unchanged.
 
 
 ## DOS 3.30 shared-interrupt rearm broadcasts
 
 The generic port adapter now accepts arbitrary byte writes to exactly 02F2h–02F7h as DOS GLOBAL REARM broadcasts for shared IRQ levels 2–7. The XT profile has no attached shared-interrupt boards, so these writes preserve PIC/device state, guest registers and FLAGS. Reads, word forms, neighboring/unrelated ports remain explicitly unsupported; this is not a blanket unknown-port success policy or a new interrupt controller.
 
-The genuine stop at 9DFD:0A53 was original relocated SYSINIT code, not evidence of a fetch failure. The [pinned primary-source and binary audit](../agentworking/research/dos-trace-audit-20261015.md) identifies the inherited DOS 3.30 six-port sequence and arbitrary-byte meaning. Microsoft v4 source documents the purpose, while the supplied 3.3 binary remains authoritative. Independent tests cover all six ports/byte values, preserved flags/state and rejected reads/words/adjacent ports. This narrow addition lets genuine DOS continue to COMMAND.COM; asynchronous shared-IRQ delivery remains unimplemented.
+The genuine stop at 9DFD:0A53 was original relocated SYSINIT code, not evidence of a fetch failure. The pinned primary-source and binary audit (local development record, not distributed) identifies the inherited DOS 3.30 six-port sequence and arbitrary-byte meaning. Microsoft v4 source documents the purpose, while the supplied 3.3 binary remains authoritative. Independent tests cover all six ports/byte values, preserved flags/state and rejected reads/words/adjacent ports. This narrow addition lets genuine DOS continue to COMMAND.COM; asynchronous shared-IRQ delivery remains unimplemented.

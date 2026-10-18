@@ -1,8 +1,11 @@
 # Architecture contract
 
-This is the full-system architecture and remaining integration contract. The actual assembly CPU, coherent memory/disk services, synthetic logical BIOS, functional PIC, original clock/keyboard backend, generic asynchronous UCI transport and native CIA clock are implemented. In Peddle, genuine reset and unchanged DOS 3.3 binaries reach COMMAND.COM and execute verified VER/DIR through normal guest INT 21h and the assembled keyboard queue. [Current functional evidence](../agentworking/evidence/dos-command-builtins-20261015.json).
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
 
-The corrected physical CIA clock matrix validates the raw PAL CIA/raster domain at 1/16/64 MHz, independently of emulator throughput. Native FILE/TEXT commands/row rendering now share a tested REU overlay window; startup copies assets then idles. Real file import/persistence, native C64 font/VIC/input, scheduler/IRQ delivery and HD remain unfinished. The diagram combines implemented functional boundaries with the native system still to integrate; it does not claim that the complete program runs DOS on physical C64U. See [current state](../agentworking/STATUS.md) and [overlay contract](OVERLAYS_IMPLEMENTATION.md).
+
+This is the full-system architecture and remaining integration contract. The actual assembly CPU, coherent memory/disk services, synthetic logical BIOS, functional PIC, original clock/keyboard backend, generic asynchronous UCI transport and native CIA clock are implemented. In Peddle, genuine reset and unchanged DOS 3.3 binaries reach COMMAND.COM and execute verified VER/DIR through normal guest INT 21h and the assembled keyboard queue. Current functional evidence (local development record, not distributed).
+
+The corrected physical CIA clock matrix validates the raw PAL CIA/raster domain at 1/16/64 MHz, independently of emulator throughput. Native FILE/TEXT commands/row rendering now share a tested REU overlay window; startup copies assets then idles. Real file import/persistence, native C64 font/VIC/input, scheduler/IRQ delivery and HD remain unfinished. The diagram combines implemented functional boundaries with the native system still to integrate; it does not claim that the complete program runs DOS on physical C64U. See current state (local development record, not distributed) and [overlay contract](OVERLAYS_IMPLEMENTATION.md).
 
 ```mermaid
 flowchart TD

@@ -1,6 +1,6 @@
 # Project working instructions
 
-Scope is this directory. Read README.md, agentworking/STATUS.md, agentworking/NEXT_SLICE.md, and agentworking/DECISIONS.md before continuing.
+Scope is this directory. Read README.md and docs/STATUS.md. If local ignored agentworking continuity records exist, read STATUS.md, NEXT_SLICE.md and DECISIONS.md there before controlling hardware. Those records are not public build inputs.
 
 ## Phase and implementation
 
@@ -17,7 +17,7 @@ Scope is this directory. Read README.md, agentworking/STATUS.md, agentworking/NE
 
 ## Evidence and continuity
 
-- Keep all scratch, downloads, runs, and context in this project's `agentworking/`; keep build products in `build/`.
+- Keep local scratch, downloads, runs and context in ignored `agentworking/`; keep build products in ignored `build/`. Never force-add working records, logs, vendor images or personal paths. Public qualification belongs in docs/STATUS.md.
 - Update STATUS.md and NEXT_SLICE.md after each verified slice, including incomplete work and first failure.
 - Append exact commands, versions, result paths, and limitations to TEST_LOG.md. Never call a test passed because its expected output was written down.
 - Add durable decisions and supersessions to DECISIONS.md; update RISKS.md as measurements resolve uncertainty.

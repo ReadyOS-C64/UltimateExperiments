@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>V1 native disk controls: measured integration checkpoint · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: V1 native disk controls: measured integration checkpoint"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#components-actually-executed">Components actually executed</a></li><li><a href="#actual-linked-ownership">Actual linked ownership</a></li><li><a href="#full-save-as-controller-checkpoint">Full Save As controller checkpoint</a></li><li><a href="#actual-menu-save-as-bridge-checkpoint">Actual menu Save As bridge checkpoint</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="MODAL_MEDIA_ARCHITECTURE.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="v1-native-disk-controls-measured-integration-checkpoint">V1 native disk controls: measured integration checkpoint</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p>This is the current implementation boundary, not a released menu. The default
+emulator remains <code>666089b5</code>; the optional selected Save As profile is <code>46fa2e54</code>.
+Neither currently provides the complete interactive disk workflow. V1 acceptance
+remains defined by <a href="V1_ENDPOINT.html">V1_ENDPOINT.md</a>.</p>
+<h2 id="components-actually-executed">Components actually executed</h2>
+<p>The native C frontend displays independent A/B status and collects Save, Save As,
+Insert, Eject, Write Protect, Resume and Finish intentions. Dirty media gets
+Save/Discard/Cancel choices. Its private ticket and pending intention, rather
+than the public display/event buffers, determine which reply it will consume.
+The backend must still validate and perform every operation.</p>
+<p>The frontend executes as real cc65/6510 code under Peddle with physical CIA1
+matrix input. Fifteen component groups cover keys, modifiers, cancellation,
+both dirty-drive decisions, stale/forged observations, bounded path editing,
+and all 255 nonzero filename bytes. Ambiguous glyphs are shown as <code>%XX</code>; event
+paths retain their original bytes. No FILES, REU or clock initializer is enabled
+in those isolated frontend tests.</p>
+<p>A separate assembly broker admits only an already coherent paused guest, after
+cold ownership has been released, with all 32 cache frames unpinned and the
+transport, overlays and C context quiescent. It flushes dirty guest memory,
+invalidates cache tags and all published map entries, and sets cache limit zero
+before any menu/worker can replace cache RAM. It retains exact FILES, HD and
+HD-BIOS snapshots and checks them again before releasing memory.</p>
+<p>Eight actual broker groups cover all 32 dirty frames, guest refills after
+release, both C targets with a warm cache, 22 rejected admissions, 208 altered
+context bytes/fields, clock failure/defer, repeated sessions and write guards.
+Two additional composition groups execute the actual C frontend through this
+broker: 48 frontend calls across three machines, real CIA selection/path/cancel
+input, Resume, and a deliberately failed Save As intention. Whole 4 MiB REU,
+C handle/position, and timer-control writes remain unchanged. These are model
+component tests, not a successful end-user save or physical screen acceptance.</p>
+<h2 id="actual-linked-ownership">Actual linked ownership</h2>
+<table>
+<thead>
+<tr>
+<th>Range</th>
+<th>Current private component</th>
+<th>Measured use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>7000..76FF</code></td>
+<td>Broker instructions and private snapshots</td>
+<td>1,612 bytes through <code>764B</code> in the hotkey/runtime successor</td>
+</tr>
+<tr>
+<td><code>7700..77FF</code></td>
+<td>Broker state</td>
+<td>221 bytes through <code>77DC</code></td>
+</tr>
+<tr>
+<td><code>7800..7C98</code></td>
+<td>Frontend state</td>
+<td>1,177 bytes</td>
+</tr>
+<tr>
+<td><code>8000..9CFC</code></td>
+<td>Frontend code, constants and initialized data</td>
+<td>7,421 bytes; PRG is 7,423 bytes</td>
+</tr>
+<tr>
+<td><code>80..99</code></td>
+<td>Frontend zero page</td>
+<td>26 bytes</td>
+</tr>
+<tr>
+<td><code>B800..BFFF</code></td>
+<td>Declared frontend software-stack region</td>
+<td>Observed lowest write <code>BFE6</code>; compare-buffer overlap is guarded</td>
+</tr>
+</tbody></table>
+<p>The broker exchanges the frontend&#39;s reserved high zero-page range <code>80..DF</code>
+around C calls. The current normal native map uses <code>20..43</code>, so these ranges
+do not currently alias; the explicit exchange also establishes which context
+may call resident assembly. The hardware stack is shared normally. No C frame,
+software-stack pointer into a worker, or worker instruction may survive phase
+replacement.</p>
+<p>The broker selects 40-column native text with the lower/upper ROM charset
+(<code>D018=16</code>) and preserves observable VIC/CIA2 bank settings. It does not call
+standalone <code>ps_init</code>, reset CIA timers, read ICR/TOD, or replace NMI handlers.
+An incoherent clock sample defers; a real ownership/control failure blocks
+Resume. The caller must continue sampling the existing elapsed clock while
+the guest is paused.</p>
+<p>Broker assets now have separately linked unit and runtime roles; their cold_open aliases differ. Cold START verifies the role-specific whole-file CRC as well as the common cohort header. The complete Save As controller below currently proves the unit role; its final cold container/runtime/menu combination remains to be coupled. These private files are not installable release assets.</p>
+<h2 id="full-save-as-controller-checkpoint">Full Save As controller checkpoint</h2>
+<p>The private controller now performs one complete Save As operation in one actual native entry: acquire the old configuration, save and verify the selected image, build the new configuration/journal, publish the durable transaction, bind the live configuration/launch records, then mark the selected disk clean. It loads each matching worker itself from REU and validates its CRC; every worker frame returns before replacement. The test host does not swap phases or manufacture completed worker facts.</p>
+<p>Seven actual Peddle groups pass: B in arena38 with C target1, A in arena18 with C target2, four corrupt phase assets, and an existing output-file collision. They check the full image/configuration, original files, C state and position, caller high zero page/flags and complete4MiB guards. A reproduced postcommit failure originally denied Resume only in its result buffer while native release still succeeded. The fix leaves native stageE1 whenever private commit/closure/clock rules deny Resume; actual release rejection is now tested. Restored C does not clear a terminal error.</p>
+<p>Controller code/data/BSS uses8000..8FE3, preserving CUI state7800..7C98. Its separate software stack is9E00..9FFF and nested PLAN/BIND workers useBFFF. The first24KiB asset source gap remains3DA000..3DFFFF; the private40KiB cold loader also maps retired installer storage3F0000..3F3FFF for controller/BIND. The third complete floppy is preserved. The cold loader proof and worker-controller proof are separate: the current worker fixture has blank broker/UI slots and is not the final cold container.</p>
+<p>The next step connects the frontend&#39;s private intent/ticket through a resident load/return/reload bridge, couples actual runtime-role assets to START/main, and completes normal Save, Insert/Eject, write protection, Finish and explicit startup-journal recovery. Existing startup validation blocks pending journals before normal configuration acquisition; recovery mutations and their user controls remain private work. SETUP preflight/package updates and final physical installer/media/Turbo/restart/human acceptance remain required. No speed improvement blocks V1.</p>
+<p>Full controller evidence (local development record, not distributed), cold40KiB loader (local development record, not distributed), startup journal gate (local development record, not distributed).</p>
+<p>Evidence: public Save As graph (local development record, not distributed),
+broker component (local development record, not distributed).
+The composition and frontend source/product identities are retained in the
+project-local <code>agentworking/scratch/live-media-composition-root-20261017</code> and
+<code>live-media-panel-display-successor-20261017</code> cohorts.</p>
+<p>The private terminal-error successor adds six ROOT-replayed actual native controls. Owned/cache0 presentation can show a terminal stage E1 error; backend polling, release and Resume remain stage8-only. The controller must call <code>mu_block</code> with the first failure and never reinitialize a failed session. Public observations cannot clear the private block or pending ticket. Terminal-error evidence (local development record, not distributed).</p>
+<h2 id="actual-menu-save-as-bridge-checkpoint">Actual menu Save As bridge checkpoint</h2>
+<p>Private UNIT4fb6 now captures the private delivered WAIT intent into6E01 once before retiring CUI code, executes the complete native controller and reloads/verifies CUI before consuming the original ticket.9 actual groups and8 independent checks pass; see evidence (local development record, not distributed). All actions including Resume route through capture; public event/result never authorizes work. Partial controller/UI loading uses native fallback and denies Resume. Idle SAMPLE4 is bounded256. BSS7800..7C99 survives controller code8000; broker state6D00 and bridge6E00 are disjoint. Runtime-role workers, cold container provenance, unused sequence allocation and remaining media/Finish actions are separate gates.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

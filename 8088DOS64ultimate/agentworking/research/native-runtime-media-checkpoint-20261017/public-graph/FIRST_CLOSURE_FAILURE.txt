@@ -1,1 +1,0 @@
-Final exact raw comparison to the earlier smoke correctly failed at work/build/dos64.prg: removing unused src probes from staged source inventory changes source-derived tag. Actual opcodes/addresses remain exact after normalizing tag; final graph requires actual smoke at new tag, not inherited earlier result. New sibling model-smoke-final executes the final graph.

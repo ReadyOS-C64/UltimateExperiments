@@ -1,5 +1,8 @@
 # Existing emulator references
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 Inspected 2026-10-14. The user clarified that the target is the **original 8088 / IBM PC XT**, implemented on the C64U's 6502/6510. References inform techniques; their capabilities never narrow the project's requirements. No code from the projects below has been incorporated into the runtime.
 
 ## Closest host-CPU match: NES86
@@ -43,4 +46,4 @@ Michael Steil's [source-level examination of Roßmöller's C64 CP/M emulator](ht
 2. Keep our CPU-state ABI, REU/cache/storage interfaces and Zig/Peddle behavior tests. Inspect useful routines before designing the next slice; do not make progress depend on finding reusable code.
 3. Use hardware-generated original-8088 cases and independently calculated defined flags as acceptance evidence. Comparing two emulators is supplementary evidence; they can share a bug.
 4. Before substantial code reuse, pin it, preserve its license/attribution, identify modifications and measure linked code/ZP/stack costs. No blanket project license choice is made by this research document.
-5. Keep downloads in project-local ignored scratch. The inspected NES86 file hashes are retained in [the inspection record](../agentworking/research/nes86-inspection.json); no upstream source is vendored by this research pass.
+5. Keep downloads in project-local ignored scratch. The inspected NES86 file hashes are retained in the inspection record (local development record, not distributed); no upstream source is vendored by this research pass.

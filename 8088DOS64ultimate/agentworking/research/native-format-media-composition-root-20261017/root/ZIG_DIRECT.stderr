@@ -1,3 +1,0 @@
-1/2 format_actual.test.actual FORMAT1 runtime has native bounded track writes and returns original native flags...OK
-2/2 format_actual.test.actual FORMAT1 malformed sector ID and immutable nested byte corruption refuse...OK
-All 2 tests passed.

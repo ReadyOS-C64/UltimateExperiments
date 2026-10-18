@@ -1,5 +1,8 @@
 # Text, CGA, and keyboard
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 ## Rendering contract
 
 Keep PC VRAM, text characters/attributes, cursor, mode, active page, and palette exact in the guest model. Rendering is a lossy view of that state; reading guest memory or BIOS pixels must never return the lossy C64 picture. CP437 byte values remain CP437, not PETSCII. Asset provenance/license and font hashes belong in the build manifest.

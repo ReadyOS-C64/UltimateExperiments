@@ -1,6 +1,9 @@
 # Memory, paging, and coherence
 
-These are full-system budgets; current measured subsets are recorded in [MEMORY_BUDGET](../agentworking/MEMORY_BUDGET.md) and [MEMORY_IMPLEMENTATION](MEMORY_IMPLEMENTATION.md). The 512-byte coherent byte cache and bytewise coherent guest/REU range transfers are implemented and functionally tested; page size and future optimizations remain candidates. All ranges below are inclusive unless a length is explicitly given.
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+These are full-system budgets; current measured subsets are recorded in MEMORY_BUDGET (local development record, not distributed) and [MEMORY_IMPLEMENTATION](MEMORY_IMPLEMENTATION.md). The 512-byte coherent byte cache and bytewise coherent guest/REU range transfers are implemented and functionally tested; page size and future optimizations remain candidates. All ranges below are inclusive unless a length is explicitly given.
 
 ## Guest address space
 
@@ -99,4 +102,4 @@ The runtime/unit linker configuration `cfg/dos64-runtime.cfg` places hot CODE/RO
 
 The PRG is contiguous because the loader writes sequential addresses. MAIN is zero-padded through 3FFF; 4000–4FFF contains explicit startup zero initialization for screen/font RAM, then DEVICECODE begins at 5000. Padding and startup zeros are file bytes, not linked CODE/RODATA or free-standing executable allocations. Loading the program initializes this display reservation but supplies no font or renderer. Runtime and unit PRGs can therefore have the same file length while their linked CODE/test payload differs. Standalone hardware probes/helpers retain `cfg/dos64.cfg` and their prior byte identity.
 
-The historical video/adjust map is retained in [slice evidence](../agentworking/evidence/video-adjust-bios-20261015.json), while [the ledger](../agentworking/MEMORY_BUDGET.md) records later linked modules. At that checkpoint runtime linked usage was 16,758 bytes; its 20,129-byte PRG additionally contains 2,072 MAIN padding bytes and 4,096 display startup zeros. Its unit linked usage was 17,746 with 1,096 MAIN padding bytes and the same 4,096 startup zeros, producing the same 20,129-byte PRG. UCIBUFFER at C100–C8FF is now linked and measured. It adds 2,048 writable bytes independently from the PRG file and its padding. Current clock/keyboard/UCI/native-clock maps supersede the historical video/adjust totals in the ledger.
+The historical video/adjust map is retained in slice evidence (local development record, not distributed), while the ledger (local development record, not distributed) records later linked modules. At that checkpoint runtime linked usage was 16,758 bytes; its 20,129-byte PRG additionally contains 2,072 MAIN padding bytes and 4,096 display startup zeros. Its unit linked usage was 17,746 with 1,096 MAIN padding bytes and the same 4,096 startup zeros, producing the same 20,129-byte PRG. UCIBUFFER at C100–C8FF is now linked and measured. It adds 2,048 writable bytes independently from the PRG file and its padding. Current clock/keyboard/UCI/native-clock maps supersede the historical video/adjust totals in the ledger.

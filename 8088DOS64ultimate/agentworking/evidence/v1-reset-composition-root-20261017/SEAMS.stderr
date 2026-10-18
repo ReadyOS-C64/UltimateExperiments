@@ -1,6 +1,0 @@
-1/4 final_reset_seams.test_0...OK
-2/4 native_timer_startup.test.bounded native cold timer seam seeds fresh raw epoch before enabling and TEXT activation releases PIT...OK
-3/4 native_timer_startup.test.cold timer sampling retry remains bounded and never enables PIT on stopped CIA...OK
-4/4 dos_boot.test.unchanged DOS boot sector loads FAT12 IO.SYS through real BIOS and reaches kernel entry...Genuine DOS IO.SYS handoff 70:0: 403 instructions, 11471038 native cycles, 51 raw sectors (44 IO.SYS rounded sectors)
-OK
-All 4 tests passed.

@@ -1,5 +1,8 @@
 # Original XT guest clock BIOS
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 Updated 2026-10-15. `src/clock.s` implements original XT INT 1Ah guest-state behavior and explicit virtual tick advancement. This is separate from the [native CIA clock](NATIVE_CLOCK_IMPLEMENTATION.md), PIT/IRQ scheduling and physical elapsed-time calibration.
 
 `dos64_clock_service` reads guest AH. AH=00 returns the coherent 32-bit BDA tick word at 046C–046F in CX:DX, returns the full overflow byte at 0470 in AL, then clears that byte. AH=01 writes CX:DX without normalizing it and clears overflow, preserving AL/CX/DX. Every nonzero function decrements AH, including unsupported later RTC probes: AH=02 returns AH=01, without pretending an AT RTC exists. Guest saved FLAGS and other registers remain unchanged. The owned F000:0190 `OUT F7h,AL; IRET` gate performs normal guest-frame routing, not interrupt-number interception. Cache failure is a distinct terminal host error.

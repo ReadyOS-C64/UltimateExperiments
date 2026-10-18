@@ -1,5 +1,8 @@
 # Native SETUP configuration codec
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 `tools/setup/install_config.c` is actual cc65 C for the native installer and launcher. `make setup-config-tests` compiles it to 6510 code and runs Zig assertions through the existing Peddle bridge. It is an optional component, separate from the emulator build. The generated test PRG is a callable fixture, not a user-facing SETUP or START program.
 
 The configuration is a 576-byte binary record with explicitly defined byte offsets and little-endian integers. C structures are not serialized. Paths contain canonical absolute host ASCII with zero padding, including the terminator; each field is 128 bytes. Uppercase PETSCII is not silently treated as host ASCII. The frontend must make the necessary character conversion before invoking this codec.
@@ -67,7 +70,7 @@ The separate native CONFIG development program now runs from its actual BASIC SY
 
 The preference is an explicit **new** 40/80 setting, initially 80. CONFIG currently leaves the old INI unread and unchanged. Old and new launchers share the existing images; reverting a launcher does not undo writes to those images. CONFIG runs independently of a running emulator.
 
-Both actual output sets boot genuine DOS 3.3 in Peddle and pass VER and complete paged A:/C:\\DOS listings. The START/CFG/main/overlay/descriptor bytes are identical between modes; only the INI column digit changes. Source-closed evidence is in [the integration receipt](../agentworking/evidence/native-config-generated-dos-root-20261017.json). Physical CONFIG qualification remains pending; this proof does not turn the current SETUP into an options editor.
+Both actual output sets boot genuine DOS 3.3 in Peddle and pass VER and complete paged A:/C:\\DOS listings. The START/CFG/main/overlay/descriptor bytes are identical between modes; only the INI column digit changes. Source-closed evidence is in the integration receipt (local development record, not distributed). Physical CONFIG qualification remains pending; this proof does not turn the current SETUP into an options editor.
 
 ## Building and using standalone CONFIG
 

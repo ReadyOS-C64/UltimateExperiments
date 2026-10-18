@@ -1,5 +1,8 @@
 # Genuine MODE hardware workflow
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 The optional production runner executes the supplied DOS MODE.COM through DOS's normal loader and BIOS keyboard ring. The default VER/DIR runner is unchanged. The current accepted runtime/unit pair is98fc/6eba. Physical MODE CO40/CO80 passed in run092257 with configuredab50; that evidence remains specific to this target pair.
 
 ## Required immutable inputs
@@ -20,9 +23,9 @@ Failures retain raw evidence before recovery overwrites the application. Success
 
 KEY tests the genuine BIOS ring, not the physical matrix. RAM checks do not establish external HDMI readability, monitor scaling or RGB calibration. No video/debug stream is started without separately known ownership/prior state. Graphics, HD persistence, upper REU bytes and XT speed remain separate scopes.
 
-[Host evidence](../agentworking/evidence/mode-host-production-20261015.json),[current physical DOS](../agentworking/evidence/c64u-native-six-20261015.json),[display implementation](DISPLAY_INPUT.md),[recovery contract](NATIVE_FILE_RECOVERY.md).
+Host evidence (local development record, not distributed),current physical DOS (local development record, not distributed),[display implementation](DISPLAY_INPUT.md),[recovery contract](NATIVE_FILE_RECOVERY.md).
 
 
 ## Accepted physical run
 
-Run092257 executes genuine CO40 then CO80, returns both prompts, and independently checks all8,000 bitmap bytes and1,000 matrix bytes per mode. Application and evidence take112.328seconds. Recovery attempt one fails before DMA with a retained protocol/unknown-handle error; attempt two restores and independently compares all4MiB. Observed restoration across both attempts is272.930seconds; the600-second configured phase is per attempt. Independent audit1,443 checks and349 immutable input copies preserve the exact scope. [Physical evidence](../agentworking/evidence/c64u-native-mode-20261015.json).
+Run092257 executes genuine CO40 then CO80, returns both prompts, and independently checks all8,000 bitmap bytes and1,000 matrix bytes per mode. Application and evidence take112.328seconds. Recovery attempt one fails before DMA with a retained protocol/unknown-handle error; attempt two restores and independently compares all4MiB. Observed restoration across both attempts is272.930seconds; the600-second configured phase is per attempt. Independent audit1,443 checks and349 immutable input copies preserve the exact scope. Physical evidence (local development record, not distributed).

@@ -1,1 +1,0 @@
-DOS64_ZIG="../../zeropage-tooling/bin/zig" python3 -B build_support/config_generation.py --test 

@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-media-insert-commit-20261017/check_default.py", line 8, in <module>
-    for f,old in [('wire.prg','phase/transaction-wire.prg'),('bind.prg','binding/binding.prg')]:assert(d/f).read_bytes()==(base/old).read_bytes(),(name,f,sha(d/f),sha(base/old))
-                                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: ('undefined', 'wire.prg', 'f9eb83e065c4c6727bf5302f4ef9a5dc6111845b45014788f8e59db19f08aef5', '79eea8a3f826a4f399038a88c45cb5bd2e4cac20722085a606ef2d3068149661')

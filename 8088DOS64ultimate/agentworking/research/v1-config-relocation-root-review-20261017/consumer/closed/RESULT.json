@@ -1,9 +1,0 @@
-{
-  "passed": true,
-  "exit": 0,
-  "seconds": 26.810379292,
-  "inputs": 75,
-  "all_before_copies_after_exact": true,
-  "model_borrowed_qualified_215568e7": true,
-  "scope": "unmodified actual native relocated CONFIG 9files +moved original media \u2192 genuineSTART/RCV/INI/currentc7/DOS VER pagedDIR80, no physical"
-}

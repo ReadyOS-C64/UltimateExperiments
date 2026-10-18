@@ -1,5 +1,8 @@
 # Native Ultimate installer and folder launcher — research proposal
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 User direction2026-10-16: no dummy launcher D81; require Ultimate DOS/UCI, use a native C setup program with REU, create images on the Ultimate, and never run installation copying through the8088 emulator. Users supply the three supported DOS floppy images themselves; do not bundle DOS images or binaries. A verified archive.org source link remains a packaging requirement. This document is research/design, not an implemented installer or physical benchmark.
 
 ## What exists today
@@ -52,8 +55,8 @@ Installation timing is unmeasured. Write20MiB+readback20MiB is40MiB I/O: at256Ki
 
 ## Research handoffs
 
-- [Firmware findings](../agentworking/research/native-installer-firmware-20261016/HANDOFF.md), manifest4b5db009: source-version comparison, seek/allocation behavior, DOS21/22 directREU path, configured-capacity limits and physicalprobe checklist.
-- [Bootstrap findings](../agentworking/research/native-installer-bootstrap-20261016/BOOTSTRAP.md), manifestbd9cd7ca: exact staging/anchor fit, self-contained firststage, UZIP versus older browser bounds, CRC/count checks and CPUhandoff tests.
-- [Native FAT research](../agentworking/research/native-installer-fat-20261016/README.md), actualprofile/metadata/sourcecapacity analysis and testplan.
+- Firmware findings (local development record, not distributed), manifest4b5db009: source-version comparison, seek/allocation behavior, DOS21/22 directREU path, configured-capacity limits and physicalprobe checklist.
+- Bootstrap findings (local development record, not distributed), manifestbd9cd7ca: exact staging/anchor fit, self-contained firststage, UZIP versus older browser bounds, CRC/count checks and CPUhandoff tests.
+- Native FAT research (local development record, not distributed), actualprofile/metadata/sourcecapacity analysis and testplan.
 
 No production code, media, firmware or hardware state changed during this research. No installer speed is measured.

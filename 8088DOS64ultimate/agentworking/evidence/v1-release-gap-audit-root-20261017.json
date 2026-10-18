@@ -1,8 +1,0 @@
-{
-  "status": "ROOT_VERIFIED_READONLY_AUDIT_NOT_RELEASE_ACCEPTANCE",
-  "manifest_sha256": "628bf78733f4f7d81afe3a0766f5dfd685e2061fe0117e6bec29878bb5f78d04",
-  "pins": 39,
-  "checklist": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/research/v1-release-gap-ux-audit-20261017/AUDIT.md",
-  "FORMAT": "required/open; native probe/fix delegated",
-  "performance": "post-V1"
-}

@@ -1,3 +1,0 @@
-# First 40KiB loader test failures
-
-Initial actual5 had two failures because `_modal_copy` shares a numeric address with unrelated executing RCV code. The raw breakpoint stopped during recovery, before MNU staging. It also invalidated the first apparent STORE-failure check; that earlier success is not accepted coverage of the new slot. No native defect was demonstrated. The corrected harness accepts the breakpoint only when resident observed phase12 agrees and every normalINO code byte is installed, stepping other genuine instructions normally. Both source phases are unchanged. All5 are rerun against the same successfully linked native products; no timeout is increased.

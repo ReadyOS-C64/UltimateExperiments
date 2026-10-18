@@ -1,6 +1,9 @@
 # Native elapsed time, PIT and original-8088 IRQ delivery
 
-Accepted in the five-overlay Peddle target on 2026-10-15. [Evidence](../agentworking/evidence/timer-graphics-integration-20261015.json) pins sources, binaries and checks. Physical acceptance still belongs to the earlier three-overlay target.
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+Accepted in the five-overlay Peddle target on 2026-10-15. Evidence (local development record, not distributed) pins sources, binaries and checks. Physical acceptance still belongs to the earlier three-overlay target.
 
 The native scheduler samples the exclusively owned chained CIA2 clock before ordinary guest execution and while HLT is waiting. PIT channel 0 models binary mode 3 with fixed divisor 65,536. The exact nominal PAL conversion ratio is 546875/451572; state retains the raw epoch, rational remainder, oscillator phase, period total and next-edge countdown. The fast no-edge path and frozen full converter have independent actual-assembly differential tests. Byte zero writes to40h can rewrite the same low/high fixed divisor without restarting the oscillator; reads, word access, changed divisors and channel0 control programming remain unsupported. The unmerged speaker test candidate separately accepts write-only42h data and43h=B6h without changing channel0. Neither profile supplies general programmable PIT counters or oscillator-level bus timing. See [the current port contract](PORTS_IMPLEMENTATION.md).
 

@@ -1,6 +1,0 @@
-test_standalone_hardware_helper_remains_accepted (actual_memory_contract.OverlayMemoryContract) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.003s
-
-OK

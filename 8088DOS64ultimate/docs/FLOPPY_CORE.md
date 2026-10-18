@@ -1,5 +1,8 @@
 # Independent A/B floppy core
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 The emulator now provides two installed 360 KiB XT floppy drives with independent mounted images. BIOS DL=0 selects A and DL=1 selects B; an empty installed drive reports not-ready. Reset and last-status services are shared, and BIOS publishes the shared diskette status at guest BDA 0441. Equipment and the supported late-XT geometry query report two drives. This does not add an AT media-change line or implement unsupported format commands.
 
 Actual linked-code tests cover independent reads/writes/verify, readonly failures, full preservation of the other disk, partial-write errors, BIOS interrupt-frame return/status, repeated swaps and stale save acknowledgements. The current combined build passes genuine DOS boot, VER and DIR in Peddle. Physical A/B use, startup configuration, native Save/Discard controls and the disk browser are separate integration work.

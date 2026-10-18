@@ -1,5 +1,8 @@
 # V1 human acceptance checklist
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 Use a fresh test installation and disposable working images. Record the package hash, Ultimate firmware, PAL/Manual64 settings, REU size and display used. Automated model results do not check these boxes. Keep a screenshot or short note for each failure.
 
 ## Install and configure

@@ -1,9 +1,0 @@
-{
-  "status": "passed",
-  "scope": "real_native_SETUP_driven_by_dotnet_standard_keyboard_buffer",
-  "home": "/usb1/DOS64_TEST/v1-dotnet-hex-20261017",
-  "physical_CIA_input": false,
-  "complete_caption": true,
-  "keys": 42,
-  "screens": 1439
-}

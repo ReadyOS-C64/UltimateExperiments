@@ -1,5 +1,8 @@
 # Matched INI release build
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 `make start-ini-bundle` builds fresh source copies of the real 6502 main and the existing native START code with the explicit options profile. It produces exactly five coupled release assets in a new `build/start-ini-bundle/run-*/bundle` directory:
 
 * `START.TPL`:18432-byte disabled, unconfigured native launcher template.

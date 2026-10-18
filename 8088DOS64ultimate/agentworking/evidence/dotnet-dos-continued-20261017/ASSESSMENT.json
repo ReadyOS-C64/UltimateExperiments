@@ -1,7 +1,0 @@
-{
-  "functional_status": "passed",
-  "source_gate": "Full resident BASIC/CODE/RODATA/DEVICECODE normalized only two bounded source-defined UCI operands; RUN/native vector agree",
-  "native_generated_START_predecessor": "dotnet-generated-start-first-20261017 retains exact cold readback and bootstrapRUN; first overall failed prompt oracle retained",
-  "display_first_oracle": "Old cursor-less oracle differs by2 underline bytes on cursor-visible frames. No captured CRTC/field cache, so no whole-display acceptance from this attempt. Keep mismatch; next focused capture adds exact cursor metadata and uses existing cursor-aware oracle.",
-  "V1_release": false
-}

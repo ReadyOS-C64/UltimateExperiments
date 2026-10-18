@@ -1,2 +1,0 @@
-python3 -B build_support/cold_start.py --runtime-result "agentworking/scratch/native-cold-public-promotion-root-20261017/runtime/RESULT.json" --out build/cold-start
-/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/cold-start/run-oh0yxvb4

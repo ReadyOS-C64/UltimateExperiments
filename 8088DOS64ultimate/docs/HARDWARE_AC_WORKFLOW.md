@@ -1,6 +1,9 @@
 # A+C development workflow
 
-The ordinary A drive boots genuine DOS3.3. The complete20MiB C image contains all three supplied DOS floppy collections, convenient DOS commands, GW-BASIC/Hangman and original English Turbo Pascal7.01 real-mode TURBO/TPC. DOS itself loads and executes these programs. See [installation](TURBO_PASCAL.md) and [physical acceptance](../agentworking/evidence/c64u-ac-development-20261016.json).
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+The ordinary A drive boots genuine DOS3.3. The complete20MiB C image contains all three supplied DOS floppy collections, convenient DOS commands, GW-BASIC/Hangman and original English Turbo Pascal7.01 real-mode TURBO/TPC. DOS itself loads and executes these programs. See [installation](TURBO_PASCAL.md) and physical acceptance (local development record, not distributed).
 
 ## Build and offline checks
 

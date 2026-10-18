@@ -1,5 +1,8 @@
 # REU floppy sector implementation
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 Updated 2026-10-15. `src/disk.s` provides an actual 6510 assembly INT 13h sector primitive behind the [owned BIOS ROM gate](BIOS_IMPLEMENTATION.md). The primitive moves raw sectors through the [coherent range API](RANGE_IMPLEMENTATION.md). Ultimate/IEC file import, persistent saves, floppy B and hard disks remain unfinished; the complete scope is in [storage design](STORAGE.md).
 
 ## Configuration and public behavior

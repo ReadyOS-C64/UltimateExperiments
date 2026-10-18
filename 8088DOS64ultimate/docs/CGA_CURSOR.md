@@ -1,5 +1,8 @@
 # Canonical CGA cursor presentation
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 The presenter adds foreground cursor scanlines to40/80-column text, with full14-bit absolute cursor address and80-column half-cell preservation. Direct CRTC writes leave DOS/BIOS BDA cursor shadows and guest VRAM unchanged. Hardware display start must match the presented BDA page; arbitrary direct start scrolling and visible inverted shapes explicitly refuse. Hidden cursors, clipped scanlines and offpage/high-address nonaliases are covered.
 
 [Motorola MC6845](https://www.bitsavers.org/components/motorola/_dataSheets/6845.pdf), pages15–16, defines shape/address and internal16/32-field ON intervals. [IBM CGA logic](https://www.minuszerodegrees.net/oa/OA%20-%20IBM%20Color%20Graphics%20Monitor%20Adapter%20%28CGA%29.pdf), sheets1/3, supplies foreground cursor combination and external16-field full-period gating. Independent review corrects the candidate document's component name: **U12LS393 is the divider; U63LS02 is its reset gate.** The code's fieldbit3 external gate and fieldbits4/5 internal gates are unchanged. Virtual phase0 visibility is a functional model choice, not a physical reset-phase or analog claim.

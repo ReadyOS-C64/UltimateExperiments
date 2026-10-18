@@ -1,5 +1,8 @@
 # REU transfer slice
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 Implemented 2026-10-14. This documents the current bounded primitive and mock, not the completed paging/storage system. Baseline capacity is **4 MiB**; the allocation is in [MEMORY.md](MEMORY.md).
 
 ## Assembly contract
@@ -33,6 +36,6 @@ Swap, compare, deferred FF00 execution and REU interrupts explicitly report unsu
 
 `make test` passed 26 Zig/Peddle tests plus four linker-contract tests after the 4 MiB baseline change. Transfer vectors cover eight sizes from one byte to 4 KiB, unaligned buffers, separated banks, last-address access at 4/8/16 MiB, rejected ranges, flags/banking preservation and model postconditions. The same assembly integrity probe stores 4 KiB from 6000 to REU 180003, clears RAM, reloads and checks every byte, producing mailbox A5/error 00.
 
-The standalone probe passed the established .NET VICE harness on run `vice_auto_20261014_222223`. Independent extraction verified all 4,096 returned bytes against `low_byte(index) XOR A7`, not only the success mailbox. See [compact evidence](../agentworking/evidence/reu-vice-20261014.json). The harness uses a 16 MiB REU and warp; this proves that configuration's functional round trip at an address below 4 MiB, not a physical 4 MiB configuration or 64 MHz speed. `make probe` prepares the image/plan; `make test-vice` runs the slower lane and verifies its captured bytes.
+The standalone probe passed the established .NET VICE harness on run `vice_auto_20261014_222223`. Independent extraction verified all 4,096 returned bytes against `low_byte(index) XOR A7`, not only the success mailbox. See compact evidence (local development record, not distributed). The harness uses a 16 MiB REU and warp; this proves that configuration's functional round trip at an address below 4 MiB, not a physical 4 MiB configuration or 64 MHz speed. `make probe` prepares the image/plan; `make test-vice` runs the slower lane and verifies its captured bytes.
 
 Still required: capacity/allocator enforcement above the primitive, coherent guest page cache, UCI bulk file operations, IEC backend, timer-based transfer measurements, and physical C64U execution. In particular, Ultimate bulk UCI capacity assumptions and the actual firmware must be checked; no larger-than-baseline range may be submitted merely because the wire address has 24 bits.

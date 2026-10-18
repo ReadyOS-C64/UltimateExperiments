@@ -12,6 +12,14 @@ ReadyFS aims to provide a full set of command-line tools and a coherent way to w
 
 [Explore ReadyFS](readyfs/index.md) · [Illustrated guide](readyfs/READYFS_USER_GUIDE.md) · [Screenshot walkthrough](readyfs/tours/editor.md)
 
+## DOS64 Ultimate
+
+An 8088 PC/XT emulator written in 6502/6510 assembly for a C64 Ultimate at 64 MHz, with 640 KiB of guest RAM backed by REU. It boots genuine DOS 3.3 and demonstrates 40/80-column text, GW-BASIC and original Turbo Pascal. **Development preview:** 2 MiB native installation passes; 20 MiB native creation and final disk-management qualification remain open.
+
+![DOS prompt, directory, Turbo Pascal source and colour picture on the physical Ultimate](dos64/screenshots/overview.png)
+
+[Explore DOS64](dos64/index.md) · [Install the prebuilt preview](dos64/INSTALL.md) · [Build and tests](dos64/BUILD.md) · [Examples](dos64/examples/index.md)
+
 ## ReuSQL64
 
 ReuSQL64 explores a SQL-like database engine that keeps its data in a 512 KB–16 MB REU. Create tables, query and join rows, group and aggregate results, and use explicit indexes through a C64 shell or a reusable engine API.

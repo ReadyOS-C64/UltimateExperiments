@@ -1,6 +1,9 @@
 # Native FILE/TEXT/INPUT/PIT/GFX code overlays
 
-Current five-overlay target is accepted in Peddle. [Evidence](../agentworking/evidence/timer-graphics-integration-20261015.json). Physical DOS acceptance applies separately to the earlier three-overlay runtime.
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+Current five-overlay target is accepted in Peddle. Evidence (local development record, not distributed). Physical DOS acceptance applies separately to the earlier three-overlay runtime.
 
 | Payload | Bytes | Startup source | Immutable REU slot |
 |---|---:|---|---|
@@ -16,4 +19,4 @@ Resident wrappers own the busy lock for their entire bounded callback. No overla
 
 Cold importer/init/config occupies7000–7A4F,2640 bytes. Initialized cold_openA5 clears irreversibly before bitmap ownership; only loading a fresh PRG reopens it. Resident gateways reject late calls before touching discarded memory. Unit-only helpers occupy7A50–7E1E,975 bytes; the one-byte fixture return sentinel stays resident. The host fixture rejects before stack/register/evidence mutation after any native attempt, committed bootstrap or cold release. No init API reopens the lifetime. All seven standalone physical helper PRGs rebuild byte-identically.
 
-Runtime/unit MAIN free217/216, DEVICE54; ZP18/30, BSS222, DEVICESTATE345. Both PRGs36865 load0801–97FF. These are measured per-window limits, not interchangeable spare RAM. [Memory ledger](../agentworking/MEMORY_BUDGET.md). PIT and GFX contracts are in [timer/IRQ](TIMER_IRQ_IMPLEMENTATION.md) and [graphics](CGA_RENDERER_IMPLEMENTATION.md). RAM+I/O, decimal clear and exclusive ownership remain callable preconditions.
+Runtime/unit MAIN free217/216, DEVICE54; ZP18/30, BSS222, DEVICESTATE345. Both PRGs36865 load0801–97FF. These are measured per-window limits, not interchangeable spare RAM. Memory ledger (local development record, not distributed). PIT and GFX contracts are in [timer/IRQ](TIMER_IRQ_IMPLEMENTATION.md) and [graphics](CGA_RENDERER_IMPLEMENTATION.md). RAM+I/O, decimal clear and exclusive ownership remain callable preconditions.

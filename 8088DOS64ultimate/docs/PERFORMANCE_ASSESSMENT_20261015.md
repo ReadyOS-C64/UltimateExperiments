@@ -1,8 +1,11 @@
 # XT performance assessment — 2026-10-15
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 The emulator has not achieved the intended near-4 MHz 8088 performance. Its current model evidence shows a substantial simple-instruction overhead, but does not establish a measured whole-DOS slowdown factor. The most recent optimization reduced modeled CPU cost of the retained DOS workflow by **8.827%**. For the same modeled work that corresponds to **1.0968×** throughput, not an 8.827% whole-machine speed comparison against an XT.
 
-This assessment concerns runtime22f8209108fca953f783116c0a6cf5bd0c788e08b586421e30406f6129be0369 and unit8a84329ce41850fa42d89c0ee5f42d4e6f77a000a2c0a9abce8cae9c0092d94f. No benchmark, build, hardware action or shared-file edit was executed here. [assessment evidence](../agentworking/evidence/xt-performance-assessment-20261015.json) pins the exact evidence read and all arithmetic.
+This assessment concerns runtime22f8209108fca953f783116c0a6cf5bd0c788e08b586421e30406f6129be0369 and unit8a84329ce41850fa42d89c0ee5f42d4e6f77a000a2c0a9abce8cae9c0092d94f. No benchmark, build, hardware action or shared-file edit was executed here. assessment evidence (local development record, not distributed) pins the exact evidence read and all arithmetic.
 
 ## What the actual retained model measures
 

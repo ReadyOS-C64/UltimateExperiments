@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Example applications · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Example applications"><link rel="stylesheet" href="../../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../readyfs/index.html">Overview and downloads</a></li><li><a href="../../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../index.html">Overview and downloads</a></li><li><a href="../INSTALL.html">Install the prebuilt preview</a></li><li><a href="../BUILD.html">Build and tests</a></li><li><a href="../STATUS.html">Current status and limits</a></li><li><a href="../SCREENSHOTS.html">Physical screenshots</a></li><li><a href="index.html" aria-current="page">Example applications</a></li><li><a href="../TECHNICAL.html">Technical documentation</a></li><li><a href="../AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../reusql/index.html">Overview and downloads</a></li><li><a href="../../reusql/performance.html">Performance and staged queries</a></li><li><a href="../../reusql/shell.html">Interactive shell</a></li><li><a href="../../reusql/sql-language.html">SQL language</a></li><li><a href="../../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../../reusql/architecture.html">Architecture</a></li><li><a href="../../reusql/memory-map.html">Memory map</a></li><li><a href="../../reusql/public-api.html">Public API</a></li><li><a href="../../reusql/storage-format.html">Storage format</a></li><li><a href="../../reusql/export-format.html">Export format</a></li><li><a href="../../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../../c77/index.html">Overview and downloads</a></li><li><a href="../../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#ripple-source">RIPPLE source</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="example-applications">Example applications</h1>
+<p><a href="../../downloads/DOS64-examples.img">Download EXAMPLES.IMG</a>, a reproducible 360 KiB FAT12 <strong>data</strong> disk containing only these four files:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RIPPLE.EXE</td>
+<td>Run directly from DOS; press a key to return to 80-column DOS</td>
+</tr>
+<tr>
+<td>RIPPLE.PAS</td>
+<td>The 18-line 8088-compatible Turbo Pascal source</td>
+</tr>
+<tr>
+<td>HANGMAN.BAS</td>
+<td>ASCII GW-BASIC hangman with autoplay</td>
+</tr>
+<tr>
+<td>README.TXT</td>
+<td>Commands and dependencies</td>
+</tr>
+</tbody></table>
+<p>Boot your own DOS disk first, then insert this image as B. Run <code>B:\RIPPLE.EXE</code>. From a folder containing GWBASIC.EXE, run <code>GWBASIC B:\HANGMAN.BAS /F:1</code>; <code>LIST</code> shows the program and <code>SYSTEM</code> returns to DOS. To keep a copy, use DOS COPY from B to C. Floppy writes require explicit native Save. <a href="../INSTALL.html">Installation and disk controls</a>.</p>
+<p>DOS, GW-BASIC and Turbo Pascal binaries are not on this image. Get the three original DOS/GW-BASIC images from <a href="https://archive.org/details/ms-dos-version-3.3-with-gw-basic-3.2-microsoft-1988">Internet Archive</a>. Obtain Turbo Pascal separately if you want to recompile the source. The supplied RIPPLE.EXE was built from this source with original TPC 7.01 in a host reference environment; that exact EXE has not had a separate physical identity test. The same source was independently compiled and run in Turbo on the physical Ultimate, as shown in the screenshots.</p>
+<p>RIPPLE selects BIOS mode 1, draws 960 full-block characters in eight selected RGBI colours using integer arithmetic and standard System/Dos units, then waits in BIOS for a key before restoring mode 3. <code>{$G-}</code> keeps code generation compatible with the 8088. Each 40-column character has its own C64 colour pair; 80-column neighbours share one. This is colour text art, not 16-colour CGA graphics.</p>
+<p><a href="../SCREENSHOTS.html">Source and finished-picture screenshots</a>. <code>build_support/example_disk.py</code> recreates the image without vendor media, and <code>tests/tooling/test_example_disk.py</code> checks its exact allowlist, payloads, reproducibility and FAT corruption rejection. <code>ripple_picture_check.py</code> compares every captured guest cell; <code>physical_gallery.py</code> separately checks the native bitmap/matrix and VIC stream pixels.</p>
+<h2 id="ripple-source">RIPPLE source</h2>
+<pre class="pascal-code" aria-label="pascal example"><code class="language-pascal hljs"><span class="hljs-keyword">program</span> Ripple;
+<span class="hljs-meta">{$G-}</span>
+<span class="hljs-keyword">uses</span> Dos;
+<span class="hljs-keyword">const</span> p:<span class="hljs-keyword">array</span>[<span class="hljs-number">0</span>..<span class="hljs-number">7</span>] <span class="hljs-keyword">of</span> byte=(<span class="hljs-number">1</span>,<span class="hljs-number">5</span>,<span class="hljs-number">4</span>,<span class="hljs-number">12</span>,<span class="hljs-number">14</span>,<span class="hljs-number">15</span>,<span class="hljs-number">11</span>,<span class="hljs-number">9</span>);
+<span class="hljs-keyword">var</span> x,y,d,e:integer; r:Registers;
+<span class="hljs-keyword">begin</span>
+  r.ax:=<span class="hljs-number">1</span>; Intr(<span class="hljs-number">$10</span>,r);
+  <span class="hljs-keyword">for</span> y:=<span class="hljs-number">1</span> <span class="hljs-keyword">to</span> <span class="hljs-number">24</span> <span class="hljs-keyword">do</span>
+    <span class="hljs-keyword">for</span> x:=<span class="hljs-number">0</span> <span class="hljs-keyword">to</span> <span class="hljs-number">39</span> <span class="hljs-keyword">do</span> <span class="hljs-keyword">begin</span>
+      d:=((x-<span class="hljs-number">11</span>)*(x-<span class="hljs-number">11</span>)+(y-<span class="hljs-number">12</span>)*(y-<span class="hljs-number">12</span>)) <span class="hljs-keyword">div</span> <span class="hljs-number">6</span>;
+      e:=((x-<span class="hljs-number">28</span>)*(x-<span class="hljs-number">28</span>)+(y-<span class="hljs-number">12</span>)*(y-<span class="hljs-number">12</span>)) <span class="hljs-keyword">div</span> <span class="hljs-number">6</span>;
+      Mem[<span class="hljs-number">$B800</span>:<span class="hljs-number">2</span>*(y*<span class="hljs-number">40</span>+x)]:=<span class="hljs-number">219</span>;
+      Mem[<span class="hljs-number">$B800</span>:<span class="hljs-number">2</span>*(y*<span class="hljs-number">40</span>+x)+<span class="hljs-number">1</span>]:=p[(d xor e) <span class="hljs-keyword">mod</span> <span class="hljs-number">8</span>];
+    <span class="hljs-keyword">end</span>;
+  <span class="hljs-keyword">Write</span>(<span class="hljs-string">&#x27;RIPPLE - press a key&#x27;</span>);
+  r.ax:=<span class="hljs-number">0</span>; Intr(<span class="hljs-number">$16</span>,r);
+  r.ax:=<span class="hljs-number">3</span>; Intr(<span class="hljs-number">$10</span>,r)
+<span class="hljs-keyword">end</span>.</code></pre>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../../README.html">Build and publishing</a></footer></body></html>

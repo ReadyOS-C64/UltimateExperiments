@@ -22,6 +22,6 @@ checks. MANIFEST.json records the original PNG hashes.
 The runtime still uses the explicitly host-prepared 20 MiB development fixture.
 Native 20 MiB installer acceptance and CONFIG/floppy swap/Save/Finish/human
 qualification remain open. This task did not repeat whole-image close or cold
-persistence testing. The machine is left running on the finished picture, with
-the native C backing channel open; do not reset it before native Finish or
-proven closure. All detached controllers have exited.
+persistence testing. At the end of this capture session the machine was left on the picture with
+the native C backing channel open. This is a historical observation, not the
+current state of another user's machine.

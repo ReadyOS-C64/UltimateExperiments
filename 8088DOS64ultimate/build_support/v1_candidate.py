@@ -49,9 +49,11 @@ startup option, copy DOS64.INI.example to DOS64.INI and edit 40 or 80. A
 missing DOS64.INI defaults to 80 columns. Moving a folder requires regenerating
 its launcher. Do not replace an existing installation with this package.
 
-The full Turbo Pascal IDE edit/save/disk-compile/run/fresh-boot reopen chain
-has model evidence. Final physical keyboard/display and installer/media
-acceptance remain open. No performance target is claimed by this package.
+The Turbo Pascal IDE edit/save/disk-compile/run/fresh-boot reopen chain
+has model and physical development-fixture evidence. Native 2 MiB installation
+passes physical testing; native 20 MiB creation currently times out at WRITE_NEW
+with UCI error 03. Choose 2 MiB for installation; 20 MiB is experimental.
+CONFIG, floppy swap/Save/Finish and human acceptance remain open. No performance target is claimed by this package.
 See the project's docs/V1_ENDPOINT.md for the release gates and current scope.
 
 SHA256SUMS checks transport/copy integrity. BUILD.json describes the matched
@@ -99,11 +101,18 @@ Restart only after the native screen reports that it is safe. Finish ends
 the guest session; it does not resume DOS. Errors or unknown file ownership
 must not be treated as a completed save or permission to restart normally.
 
-Model workflows and source builds do not establish physical keyboard,
-display, power-loss or Turbo Pascal acceptance for this exact package.
+Physical development-fixture tests demonstrate DOS, both text widths and
+Turbo Pascal edit/save/compile/run/restart. Native 2 MiB installation passed;
+native 20 MiB creation currently times out at WRITE_NEW with UCI error 03.
+Choose 2 MiB. CONFIG, floppy swap/Save/Finish and human qualification remain
+open; those earlier tests do not qualify this exact rebuilt package.
 No performance target is claimed. See docs/V1_ENDPOINT.md in the project.
 SHA256SUMS checks copy integrity, not authenticity or release qualification.
 """
+
+
+README += '\nInstall guide: https://readyos-c64.github.io/UltimateExperiments/dos64/INSTALL.html\nDOS/GW-BASIC images: https://archive.org/details/ms-dos-version-3.3-with-gw-basic-3.2-microsoft-1988\n'
+RUNTIME_README += '\nInstall guide: https://readyos-c64.github.io/UltimateExperiments/dos64/INSTALL.html\nDOS/GW-BASIC images: https://archive.org/details/ms-dos-version-3.3-with-gw-basic-3.2-microsoft-1988\n'
 
 
 def digest(path):

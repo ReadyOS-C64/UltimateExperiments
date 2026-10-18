@@ -1,5 +1,8 @@
 # Bounded asynchronous Ultimate transport
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 Updated 2026-10-15. `src/uci.s` is the linked generic Ultimate Command Interface streaming transport. It is not yet an image-file command layer or native runtime loader. No real Ultimate file command or persistence result is implied by functional transport tests.
 
 The public calls are `dos64_uci_init/start/poll/accept/abort`. They preserve A/X/Y and native P except carry; carry rejects an invalid call, while asynchronous result/state/error fields describe an accepted transaction. Initialization is startup-only and must not reset an active transfer. Supported register bases are DF1C, DE1C and DFFC. Start validates the base/device/descriptor, synchronizes stale state and uploads at most 16 command bytes per poll before PUSH. No second command can start while active.

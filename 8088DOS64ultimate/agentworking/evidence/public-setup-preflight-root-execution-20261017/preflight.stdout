@@ -1,2 +1,0 @@
-python3 -B build_support/setup_preflight_tests.py --bundle-result "build/start-ini-bundle/RESULT.json" 
-PASS native8 + host11: /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/setup-preflight-tests/run-fl_j5x73

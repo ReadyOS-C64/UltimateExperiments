@@ -1,5 +1,8 @@
 # Clock and interrupt boundary optimization
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 The reviewed combined target retains every existing guest interrupt sampling boundary, including HLT and eligible REP elements. It reduces work at those boundaries through an internal owned-clock entry and an early return when the fully validated PIC has no eligible request.
 
 The internal clock entry is called only by the existing PIT path, with exclusive CIA2 ownership, RAM+I/O mapping, initialized copied shadow and synchronous non-reentrant execution. It preserves native status except returned carry; A/X/Y are caller-clobbered. Public clock and elapsed entries retain their banking-safe contracts and work with an uninitialized or poisoned shadow. Normal target linking selects separate owned objects; standalone helpers retain their original bytes.
@@ -21,4 +24,4 @@ Root private gates421 default/597 quick/238 tooling,49 IRQ/PIT,3 startup and act
 
 The older full5701-case whole-PRG corpus proof remains tied to98fc/6eba. CPU ISA sources have not changed; no new full-corpus claim is made. Existing physical DOS/MODE acceptance also remains specific to98fc. New physical evidence is required before claiming performance or acceptance for this target. Peddle excludes real DMA/MMIO/VIC stalls, and the near4.77MHz XT objective remains unproved.
 
-[Evidence](../agentworking/evidence/boundary-performance-20261015.json), [memory budget](../agentworking/MEMORY_BUDGET.md), [guest timer](TIMER_IRQ_IMPLEMENTATION.md), [native clock](NATIVE_CLOCK_IMPLEMENTATION.md).
+Evidence (local development record, not distributed), memory budget (local development record, not distributed), [guest timer](TIMER_IRQ_IMPLEMENTATION.md), [native clock](NATIVE_CLOCK_IMPLEMENTATION.md).

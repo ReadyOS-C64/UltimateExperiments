@@ -1,5 +1,8 @@
 # Guest memory implementation checkpoint
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 Implemented 2026-10-14. Target assembly now provides 20-bit address calculation, a coherent byte-oriented guest bus and a 512-byte-page cache. This is a correctness baseline. It is not the full CPU, BIOS loader, disk backend or optimized instruction-fetch path.
 
 ## Address and API contracts
@@ -37,10 +40,10 @@ In PC mode the [guest bus map](MEMORY.md) is enforced: conventional RAM and B800
 
 `make test` passes 41 Zig/Peddle tests and ten tooling tests. Added cases exercise 4,103 segment/offset pairs, every physical page at both ends, seeded random writes/reads against an independent RAM oracle with two frames, aliasing, neighbor preservation, pin exhaustion/overflow, ROM/holes/CGA, rejected inputs, host write ownership and partial DMA failures. Seeds are in the test source and the build manifest pins actual files.
 
-The shared cache probe uses two frames and 1,536 bytes at guest 07FD00–0802FF, forcing dirty eviction across the REC seam. It flushes, cold-initializes, rereads and exports all bytes at host 6000–65FF. Peddle additionally checks untouched bytes in the enclosing partial pages. VICE run `vice_auto_20261014_225535` passed; independent capture verification checks all exported bytes and executable identity. [Compact VICE evidence](../agentworking/evidence/cache-vice-20261014.json) is retained. VICE has 16 MiB REU and warp; no physical timing follows from it.
+The shared cache probe uses two frames and 1,536 bytes at guest 07FD00–0802FF, forcing dirty eviction across the REC seam. It flushes, cold-initializes, rereads and exports all bytes at host 6000–65FF. Peddle additionally checks untouched bytes in the enclosing partial pages. VICE run `vice_auto_20261014_225535` passed; independent capture verification checks all exported bytes and executable identity. Compact VICE evidence (local development record, not distributed) is retained. VICE has 16 MiB REU and warp; no physical timing follows from it.
 
 The first measured warm byte read costs **221 host CPU cycles** in ALL_RAM mode, with 32 active frames and no DMA. It includes the public helper's checks/flag preservation and excludes caller address calculation, instruction decoding, DMA stalls, rendering and hardware effects. This is too much overhead to treat as a finished fast-fetch path. Span-based fetch and measured hot-path optimization remain required; no near-XT speed is established.
 
-Physical read-only discovery succeeded: C64 Ultimate firmware 3.14, FPGA 121, core 1.47, PAL, REU 16 MB enabled, configured CPU speed 64 with turbo controlled by C64U registers and badline timing disabled. [Inventory evidence](../agentworking/evidence/c64u-inventory-20261014.json) records the observation. Configured speed is not measured effective speed. No physical probe was executed. Before that run preserve the overwritten guest REU page envelope 07FC00–0803FF and prior machine/media configuration; restore and verify the REU bytes afterward. The probe resets/uses volatile C64 RAM, so a RAM capture is recovery evidence, not proof of resuming an interrupted program's execution.
+Physical read-only discovery succeeded: C64 Ultimate firmware 3.14, FPGA 121, core 1.47, PAL, REU 16 MB enabled, configured CPU speed 64 with turbo controlled by C64U registers and badline timing disabled. Inventory evidence (local development record, not distributed) records the observation. Configured speed is not measured effective speed. No physical probe was executed. Before that run preserve the overwritten guest REU page envelope 07FC00–0803FF and prior machine/media configuration; restore and verify the REU bytes afterward. The probe resets/uses volatile C64 RAM, so a RAM capture is recovery evidence, not proof of resuming an interrupted program's execution.
 
 Still required: original-8088 word/interrupt semantics, coherent bulk/range interfaces for BIOS storage and rendering, synthetic ROM initialization, CPU fetch/decode/execute, UCI/IEC, physical integrity/timing and page-size experiments. The 512-byte policy remains a candidate, not a measured optimum.

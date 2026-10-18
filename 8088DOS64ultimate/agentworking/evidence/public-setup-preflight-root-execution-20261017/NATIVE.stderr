@@ -1,7 +1,0 @@
-test_01_true_SYS_CIA_eight_sources_before_FAT_or_CREATE (__main__.Final) ... ok
-test_02_actual_missing_main_terminal_caption_zero_CREATE (__main__.Final) ... ok
-
-----------------------------------------------------------------------
-Ran 2 tests in 81.317s
-
-OK

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Performance hypothesis and experiments · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Performance hypothesis and experiments"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#physical-fixed-work-baseline-2026-10-15">Physical fixed-work baseline, 2026-10-15</a></li><li><a href="#cost-model">Cost model</a></li><li><a href="#m1-measurements">M1 measurements</a></li><li><a href="#reference-and-workload-suite">Reference and workload suite</a></li><li><a href="#optimization-order-and-proof">Optimization order and proof</a></li><li><a href="#measured-interpreter-baseline-2026-10-15">Measured interpreter baseline — 2026-10-15</a></li><li><a href="#integrated-fetch-comparison">Integrated fetch comparison</a></li><li><a href="#resident-videoadjustbios-profile-checkpoint">Resident video/adjust/BIOS profile checkpoint</a></li><li><a href="#clockkeyboarduci-slice-and-long-dos-cost">Clock/keyboard/UCI slice and long DOS cost</a></li><li><a href="#integrated-overlays-and-dispatch-table">Integrated overlays and dispatch table</a></li><li><a href="#address-and-warm-memory-optimization-2026-10-16">Address and warm-memory optimization — 2026-10-16</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="PERFORMANCE.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><blockquote>
+<p>V1 steering, 2026-10-17: further performance work is deferred until after the <a href="V1_ENDPOINT.html">V1 endpoint</a>. The 50%/85% targets below remain post-V1 objectives, not V1 release gates. Existing measurements and correctness constraints are retained.</p>
+</blockquote>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<h2 id="physical-fixed-work-baseline-2026-10-15">Physical fixed-work baseline, 2026-10-15</h2>
+<p>The frozen b29 interpreter ran on the C64 Ultimate at verified PAL/Manual64, firmware3.14/FPGA121/core1.47. Source, quiet timing, full REU authority and restoration passed. Physical evidence (local development record, not distributed).</p>
+<table>
+<thead>
+<tr>
+<th>Exact work</th>
+<th align="right">Ultimate measured</th>
+<th align="right">Modeled8088 at4MHz</th>
+<th align="right">Speed versus model</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4096NOP/JMP retirements</td>
+<td align="right">171.321ms</td>
+<td align="right">4.542–4.545ms</td>
+<td align="right">2.65%</td>
+</tr>
+<tr>
+<td>5120ADD/XOR/INC/DEC/LOOP retirements</td>
+<td align="right">271.146ms</td>
+<td align="right">10.748–10.751ms</td>
+<td align="right">3.96%</td>
+</tr>
+</tbody></table>
+<p>The reference uses the pinned original8088 core in <a href="https://github.com/dbalsom/martypc/tree/05c0d088e84ad6bbfac9b3f0d051e7eadefd9f44">MartyPC</a>, with zero wait/refresh, actual initial queues0..4 and exact final-state/count assertions. Its final RNI/next-opcode preload and the C64 native driver overhead are included. There is one physical sample per workload. These figures describe these two warmed historical kernels; they do not establish wholeDOS/currentSAVE speed, a certified silicon upper, or an exhaustive BIU phase range. The50% target remains unmet. Compiled-block and timing prototypes require further integration and physical proof.</p>
+<h1 id="performance-hypothesis-and-experiments">Performance hypothesis and experiments</h1>
+<p><strong>Near-XT speed is unproven.</strong> The user&#39;s comparison target is a declared 4 MHz 8088 workload baseline. Report a 4.77 MHz XT comparison separately if available; keep the reference clock explicit and unchanged between compared runs. A ratio of CPU MHz or DOSBox cycle settings is insufficient. The 64 MHz host has 16 nominal host cycles per 4 MHz reference cycle (about 13.4 per 4.77 MHz cycle), before display/bus/DMA effects. This is a budget, not an instruction-throughput prediction.</p>
+<p>The user&#39;s current objective is <strong>at least 50% of the 8088 reference performance, with 85% as the stretch target</strong>, on a declared representative CPU/utility set. This supersedes the original provisional 75% planning threshold. Report each workload&#39;s speed ratio; retain the separate planning aim of interactive input/presentation normally within 100 ms. Never hide a poor working-set result behind a fast disk-copy average. Raw CPU throughput and end-to-end utility latency are separate results.</p>
+<h2 id="cost-model">Cost model</h2>
+<pre><code class="language-text">elapsed ≈ executed_host_CPU_cycles / measured_effective_host_rate
+        + REU_transfer_time + UCI_or_IEC_wait_time
+        + rendering_and_host_service_time_not_already_counted
+</code></pre>
+<p>Avoid double counting if a hardware elapsed measurement already includes DMA/rendering. Peddle clock reports CPU instruction cost; model DMA separately until calibrated. A CPU-cycle count divided by 64,000,000 is only a first estimate for RAM-resident code. VIC contention and I/O accesses do not necessarily run at that rate. <a href="https://1541u-documentation.readthedocs.io/en/latest/config/turbo_mode.html">Ultimate turbo documentation</a>.</p>
+<p>The pasted chat&#39;s 4 MB/s REU figure is <strong>not verified</strong>. If that were the effective transfer rate, one-way minimum costs would be:</p>
+<table>
+<thead>
+<tr>
+<th align="right">Page bytes</th>
+<th align="right">Transfer at 4,000,000 bytes/s</th>
+<th align="right">Nominal 64 MHz cycles lost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">256</td>
+<td align="right">64 µs</td>
+<td align="right">4,096</td>
+</tr>
+<tr>
+<td align="right">512</td>
+<td align="right">128 µs</td>
+<td align="right">8,192</td>
+</tr>
+<tr>
+<td align="right">1,024</td>
+<td align="right">256 µs</td>
+<td align="right">16,384</td>
+</tr>
+<tr>
+<td align="right">2,048</td>
+<td align="right">512 µs</td>
+<td align="right">32,768</td>
+</tr>
+</tbody></table>
+<p>These exclude setup, and dirty eviction adds write-back. At a hypothetical average 12 XT clocks per instruction, matching XT allows roughly 161 host cycles. If the hit path already costs 120, only 41 remain: an 8,192-cycle 512-byte miss could occur roughly once per 200 guest instructions before using that headroom, even before dirty writes/rendering. Those input values are illustrative, not measurements; the calculation explains why cache locality deserves an early experiment.</p>
+<h2 id="m1-measurements">M1 measurements</h2>
+<ol>
+<li><strong>Host baseline:</strong> identical assembly loops in RAM, under BASIC/KERNAL RAM, and with I/O; 1/16/64 MHz; display active/blank and badline settings recorded. Use elapsed hardware timers/host observations with calibrated units, not turbo-scaled delay loops.</li>
+<li><strong>REU:</strong> setup overhead and transfers of 1, 16, 64, 256, 512, 1024, 2048, 4096 bytes in both directions; aligned/unaligned/cross-bank; one clean miss and dirty write-back+load; repeated warm runs. Report median, p95, bytes/s and configuration.</li>
+<li><strong>Interpreter:</strong> representative assembly handlers plus real dispatch/fetch/address/flags: register MOV, ADD/ADC/CMP, taken/not-taken branches, memory MOV, stack CALL/RET, segment changes, REP, MUL/DIV. Measure realistic sequences, not isolated helper bodies alone.</li>
+<li><strong>Paging:</strong> fixed host capacity including metadata, page size sweep, warm/cold starts, tight loop, sequential scan, two-stream copy, random and strided access, aliased segments, working set above cache, repeated code/data eviction. Count misses per guest instruction and per access, dirty evictions, transfer bytes, effective cycles.</li>
+<li><strong>Presentation:</strong> full 40/80 redraw, one-cell edit, scroll, palette changes, direct VRAM streams, mode 4/6 conversion; guest CPU share and input latency with display active.</li>
+<li><strong>Storage:</strong> whole 360 KiB import/export and small/large HD extent operations, UCI vs IEC, short/failing transfers. Separate underlying file latency from guest BIOS/CPU cost.</li>
+</ol>
+<h2 id="reference-and-workload-suite">Reference and workload suite</h2>
+<p>Use an original 4.77 MHz XT measurement when available, or a carefully configured cycle-accurate PC/XT reference such as <a href="https://github.com/dbalsom/martypc">MartyPC</a>, recording machine/ROM/CPU version and whether results are measured or simulated. DOSBox-X is convenient for DOS functional comparisons, but its configurable <code>cycles</code> value is not a calibrated original-PC clock.</p>
+<p>Start with source-controlled guest microbenchmarks; add actual boot-to-prompt, DIR on known layouts, TYPE/redirect, SORT on fixed data, COMP/FC, CHKDSK, DISKCOPY, and scripted EDLIN/DEBUG workloads as supported. Compare identical images, inputs, warm/cold conditions and stopping criteria. Where host storage deliberately outperforms historical floppies, label that benefit separately from CPU emulation speed.</p>
+<h2 id="optimization-order-and-proof">Optimization order and proof</h2>
+<ol>
+<li>Optimize common dispatch and register paths; reserve suitable ZP pairs.</li>
+<li>Fast contiguous instruction fetch and cached segment bases, with generation/boundary checks.</li>
+<li>Select page size/replacement from observed DOS traces, not a synthetic sequential-copy winner.</li>
+<li>Specialize common ModR/M paths and stack accesses without duplicating semantic bugs.</li>
+<li>Bound/coalesce display work, then safe block transfers for REP and BIOS I/O with coherence.</li>
+<li>Evaluate lazy flags with PUSHF/LAHF/interrupt tests and full corpus coverage.</li>
+<li>Consider compact predecode only after measuring its RAM cost and invalidation overhead. Dynamic translation is a separate later decision, not a v1 assumption.</li>
+</ol>
+<p>For each change save baseline artifact/hash, cycles, elapsed times, linked bytes, cache hit/miss profile, and functional results. Reject optimizations that win a microbenchmark while regressing representative DOS work or persistence correctness. A compiler change is not a substitute for measuring the assembly actually executed.</p>
+<h2 id="measured-interpreter-baseline-2026-10-15">Measured interpreter baseline — 2026-10-15</h2>
+<p><code>make profile-cpu</code> executes six real linked 6510 workloads in cold and warm cache states, producing 12 samples in <code>build/cpu-profile.json</code>, retained as profile evidence (local development record, not distributed). Workloads are a register/branch loop, dirty ModR/M copy, stack calls, 256-byte REP, 20 KiB REP and multiply/divide. The harness validates exact final registers and all 1 MiB RAM against independently constructed expectations, records source/binary identities and bounds each call/sample. All profile state checks passed. This is the pre-optimization baseline; unlinked fetch/PC-port/video work is excluded from accepted performance claims.</p>
+<table>
+<thead>
+<tr>
+<th>Warm sample</th>
+<th align="right">Measured cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Register/branch loop</td>
+<td align="right">1,762.55 host CPU cycles per guest instruction</td>
+</tr>
+<tr>
+<td>Dirty memory copy</td>
+<td align="right">2,192.84 host CPU cycles per guest instruction; 5,492.82 per copied byte</td>
+</tr>
+<tr>
+<td>Stack calls</td>
+<td align="right">1,802.78 host CPU cycles per guest instruction</td>
+</tr>
+<tr>
+<td>256-byte REP copy</td>
+<td align="right">1,127.23 host CPU cycles per copied byte</td>
+</tr>
+<tr>
+<td>20 KiB REP copy, larger than cache</td>
+<td align="right">1,081.19 host CPU cycles per copied byte</td>
+</tr>
+<tr>
+<td>Multiply/divide loop</td>
+<td align="right">2,169.74 host CPU cycles per guest instruction</td>
+</tr>
+</tbody></table>
+<p>Each interval starts at the assembly step entry and includes RTS. It excludes the synthetic caller&#39;s six-cycle JSR, initialization, final validation flush, REU DMA stalls, VIC contention, rendering, UCI/IEC waits and physical elapsed time. REP instruction count alone gives a misleading per-instruction ratio, so copied bytes and scheduling calls are reported too. Warm means the same fixture/cache after its previous workload and validation flush, with guest state reset; a working set larger than the cache does not become fully resident by that definition.</p>
+<p>The warm register result exceeds the illustrative 161-cycle instruction allowance above by about eleven times before missing physical costs. This identifies substantial optimization work; it is not a calibrated XT ratio, since no corresponding guest workload timing on an XT is measured. The earlier 221-cycle public warm byte read remains a helper measurement. Host test-runner speedups reduce validation time without reducing these target costs.</p>
+<p>The genuine reset-to-IO.SYS handoff separately reports 392 completed guest instructions and 12,019,126 native step cycles, excluding 20,835,495 setup cycles. Bulk BIOS work and REP make that aggregate unsuitable as a register-dispatch benchmark. Complete boot-to-prompt latency, physical timer/DMA calibration and representative DOS utility ratios remain open.</p>
+<p>Final frozen-baseline profile rerun passed 1/1 in 3.27 host seconds: 10,314 guest instructions, 12,902 scheduling calls, 65,680,572 host CPU cycles, 19,297,856 native instructions, 223 DMA operations and 114,176 DMA bytes. All state checks passed. Ordered source identity is <code>95fd4e36c3744e01fd0ddd61f5bbd2bafdd993c489f2bb70029a00e919df1f02</code>; final linked unit PRG SHA-256 is <code>c035afe39e8c25239a7b17664b36c9688186e29b6adbef6ff01d3f3a2c01e6ab</code>. The table uses this final rerun. Counter totals are not physical timing; the instruction-weighted aggregate combines very different workloads and does not replace their individual costs.</p>
+<h2 id="integrated-fetch-comparison">Integrated fetch comparison</h2>
+<p>Against source-pinned baseline <code>49ac73f</code>, the same 12 workloads and all final-state checks pass after the fetch change. Warm cycles per guest instruction: register loop <strong>1,383.78</strong> (21.49% reduction), dirty memory <strong>1,744.48</strong> (20.45%), stack/calls <strong>1,616.05</strong> (10.36%), multiply/divide <strong>1,774.18</strong> (18.23%). The 20 KiB REP workload increases about 0.08%; its DMA counts are unchanged. Aggregate CPU cycles fall 65,680,572→61,735,896, but this weighted total is not an XT ratio. The same exclusions and lack of calibrated physical timing apply. Source identities, complete samples and baseline comparison (local development record, not distributed).</p>
+<h2 id="resident-videoadjustbios-profile-checkpoint">Resident video/adjust/BIOS profile checkpoint</h2>
+<p>The combined verified slice passes 1/1 profiling in 3.28 host seconds, with all 12 exact-register/full-RAM samples accepted. Ordered identity <code>9f596825c60881eb349a04b9ca26feccdba29d12eb12f0c4f785ceac8f766a9c</code> and current slice evidence (local development record, not distributed) retain linked/source identities and configuration. Total work is unchanged at 10,314 guest instructions, 12,902 scheduling calls, 223 DMA operations and 114,176 bytes; measured CPU cycles are 62,013,116 and native instructions 18,258,732. This profile superseded earlier costs at that checkpoint; each table remains a pinned historical comparison as later modules are integrated.</p>
+<table>
+<thead>
+<tr>
+<th>Video/adjust checkpoint warm sample</th>
+<th align="right">Measured host CPU cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Register/branch loop</td>
+<td align="right">1,410.56 cycles per guest instruction</td>
+</tr>
+<tr>
+<td>Dirty memory copy</td>
+<td align="right">1,770.94 cycles per guest instruction; 4,436.00 per copied byte</td>
+</tr>
+<tr>
+<td>Stack calls</td>
+<td align="right">1,643.29 cycles per guest instruction</td>
+</tr>
+<tr>
+<td>256-byte REP copy</td>
+<td align="right">1,114.48 cycles per copied byte</td>
+</tr>
+<tr>
+<td>20 KiB REP copy</td>
+<td align="right">1,082.04 cycles per copied byte</td>
+</tr>
+<tr>
+<td>Multiply/divide loop</td>
+<td align="right">1,802.75 cycles per guest instruction</td>
+</tr>
+</tbody></table>
+<p>The same step-entry→RTS interval, caller/setup/validation exclusions and unmodeled physical DMA/VIC/UCI/rendering costs apply. Adding linked modules changes address placement and cycle details; do not attribute every difference to a new algorithm. Genuine IO.SYS continuation separately reports 26,023,384 step cycles through missing INT 1Ah after 2,542 instructions, plus 26,360,254 setup cycles; handoff itself is 392 instructions/11,860,775 step cycles. This is still short of boot-to-prompt and is not calibrated physical elapsed time or an XT ratio.</p>
+<h2 id="clockkeyboarduci-slice-and-long-dos-cost">Clock/keyboard/UCI slice and long DOS cost</h2>
+<p>The final 12-sample profile passes 1/1 with exact registers/full 1 MiB RAM: source identity <code>87eab9545143199ee360ca7831af65876e61792424090f891a72300d89927770</code>, <strong>61,959,008</strong> CPU cycles, <strong>18,258,732</strong> native instructions and unchanged <strong>10,314</strong> guest instructions/<strong>12,902</strong> calls/<strong>223</strong> DMA operations/<strong>114,176</strong> bytes. Current slice evidence (local development record, not distributed) pins the measured binary and source. Warm register/dirty-memory/stack/multiply-divide costs are respectively <strong>1,409.40 / 1,770.23 / 1,642.62 / 1,797.97</strong> cycles per guest instruction. Warm 256-byte/20 KiB REP costs are <strong>1,113.45 / 1,081.04</strong> cycles per copied byte. Earlier tables remain source-pinned historical comparisons.</p>
+<p>The explicit real-DOS command lane passes in <strong>18.83 host wall seconds</strong> (16 test seconds), reaching the first prompt at <strong>193,673</strong> guest instructions and finishing VER/exact DIR/returned prompt at <strong>588,937</strong>. It uses <strong>1,269,694,142 CPU-step cycles</strong>, <strong>9,698,220 support cycles</strong> for coherent screen observations/assembly key enqueue and <strong>26,364,820 setup cycles</strong>, reported separately. CPU cycles exclude caller JSR and DMA stalls; host test duration is not C64U elapsed boot latency. Built-ins evidence (local development record, not distributed) records stopping criteria and identities.</p>
+<p>The historical first native CIA/VIC attempt failed at Manual 1 MHz, error 3 (<code>01e1000003000000</code>); configuration restoration/reset-resume succeeded and 16/64 MHz calibration was not reached. That rejected run accepted no elapsed-clock/turbo-independence calibration or XT-throughput conclusion. The corrected raw-domain validation below supersedes the physical clock uncertainty; native deadline conversion remains a separate integration. The genuine Peddle prompt does not measure native runtime, rendering, storage or keyboard latency.</p>
+<p>The genuine DOS workload research (local development record, not distributed) independently instruments the frozen baseline without adding modeled target instructions. Its native-PC histogram sums exactly to the reported step clocks; DIR accounts for 62.40% of this script&#39;s step work. This identifies real workload costs beyond the six microbenchmarks. A private optimization experiment in that report measured an 8.276% gain at a net 103 MAIN bytes, which was private at the 1fb3fe7 checkpoint. The integrated combined measurement below supersedes that status; neither measurement establishes physical speed.</p>
+<p>The corrected physical clock matrix (local development record, not distributed) now passes Manual 1/16/64 MHz on firmware 3.14/FPGA 121/core 1.47. Across 100 PAL raster frames, CIA deltas are <strong>1,965,627 / 1,965,599 / 1,965,600</strong>, all within <strong>1,965,600 ±1,008</strong>, with zero retries and <strong>28 ticks</strong> total cross-speed spread. This accepts raw CIA-versus-raster domain/turbo validation. It does not calibrate interpreter/REU throughput, external absolute time or an XT ratio, and is not yet wired into the native scheduler/UCI deadline conversion. The rejected first attempt remains historical evidence; its exact cause is unproved.</p>
+<h2 id="integrated-overlays-and-dispatch-table">Integrated overlays and dispatch table</h2>
+<p>Combined full verification passes 298 tests/all 5,701 hardware cases, 89 tooling checks, long DOS 1/1 and profile 1/1. The DOS workload exactly matches all 939 observations, registers, keyboard history, 640 KiB RAM and 16 KiB CGA from 1fb3fe7. CPU-step clocks fall 1,269,694,142→1,163,755,874 (<strong>8.3436%</strong>); support 9,698,220, setup 26,364,823. The slightly different gain from the private 8.276% prototype includes the final combined link layout. Long host test wall 14.88 seconds is not a physical duration.</p>
+<p>The 12-sample profile source identity is 56266a5d8f3237dac8af2e0dba675b9bedc86da1e74fd550c3cac64149f5816c: 59,844,100 CPU cycles, 17,428,500 native instructions, 10,314 guest/12,902 calls, 223 DMA/114,176 bytes. All register/full 1 MiB RAM checks pass. Warm register/dirty-memory/stack/multiply-divide costs are 1,225.72/1508.62/1519.80/1701.98 cycles per guest instruction; 20 KiB REP 1,080.90 cycles per copied byte. DMA stalls, physical display/device waits and XT comparison remain excluded. Measured identities and complete samples (local development record, not distributed).</p>
+<p>The <a href="PERFORMANCE_RESEARCH_20261015.html">2026-10-15 actual DOS cost profile and translation feasibility</a> measures the current six-overlay target. It prioritizes interrupt-boundary and coherent-memory costs; a runtime translator remains an unimplemented experiment.</p>
+<h2 id="address-and-warm-memory-optimization-2026-10-16">Address and warm-memory optimization — 2026-10-16</h2>
+<p>ROOT b3d17d02/b995c5e1 computes the20-bit segmented address directly from nibbles and inlines the hot cache pointer construction. It preserves native registers/flags/banking/wrap, cache/DMA/dirty metadata and every IRQ/REP/clock observation boundary. Translation falls122→98 modeled6510cycles; warmread221→205 includes a one-cycle branch-layout difference. Twelve weighted profiles fall60,385,339→56,821,841cycles (5.90%); a genuine DOS run with598,702 identical guestinstructions and matching16KiB CGA falls2,399,222,761→2,351,731,345cycles (1.98%).</p>
+<p>Independent review covers2,097,152addresspairs, all256nativeP values, page/bank/cache seams and1280additional error-state cases with mutation controls. ROOT460Peddle/304tooling and bothmemoryverifiers pass. Source-bound evidence (local development record, not distributed) identifies exact source/products and limitations. These are CPU-model measurements excluding physical REU/DMA/VIC stalls; they do not establish a current physical XT ratio or meet the50%minimum/85%stretch objective.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

@@ -1,7 +1,0 @@
-ca65 -g -D DOS64_FLOPPY_FORMAT=0 -D DOS64_RANGE_PROBE=1 -I include -o build/range_probe_boot.o src/boot.s
-ca65 -g -D DOS64_FLOPPY_FORMAT=0 -I include -o build/reu.o src/reu.s
-ca65 -g -D DOS64_FLOPPY_FORMAT=0 -I include -o build/range_probe.o src/range_probe.s
-ld65 -C cfg/dos64.cfg -o build/dos64-range-probe.prg -m build/dos64-range-probe.map -Ln build/dos64-range-probe.labels build/range_probe_boot.o build/cpu_state.o build/reu.o build/address.o build/memory.o build/range.o build/range_probe.o
-python3 build_support/verify_memory.py build/dos64-range-probe.map build/dos64-range-probe.labels
-Memory verified: build/dos64-range-probe.map (4577 linked bytes, 0 PRG padding bytes)
-python3 build_support/vice_probe.py --kind range --prepare

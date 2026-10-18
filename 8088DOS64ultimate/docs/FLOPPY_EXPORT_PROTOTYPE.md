@@ -1,5 +1,8 @@
 # Standalone native floppy export fixture
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 `python3 build_support/build_floppy_export.py` builds the disabled-entry source-complete fixture; `zig build floppy-export --summary all` runs its actual6502 Peddle tests. Root registration reuses its single resolved target through `@import("tests/floppy_export/build.zig").add(b,target)`. `build_support/floppy_export.mk` exposes optional build/test commands. The standalone entry loops without storage operations; tests explicitly call linked native routines.
 
 The FILE_INFO successor creates only a fresh owned path with mode6 (WRITE2|CREATE_NEW4), writes720sectors from REU, CLOSE/reopens READ1, requires exact successful FILE_INFO declared LE32size0005A000h, compares all368640bytes, probes one-byte EOF and requires known final CLOSE. It preserves original REU authority on failure and retains uncertain output/path. It never overwrites, truncates, deletes or renames output. Verification is logical metadata/content/closure evidence; it does not mark native media clean, establish power-loss durability or exclude external mutation.

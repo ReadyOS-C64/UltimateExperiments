@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>PC port implementation · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: PC port implementation"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#historical-pic-introduction">Historical PIC introduction</a></li><li><a href="#dos-330-shared-interrupt-rearm-broadcasts">DOS 3.30 shared-interrupt rearm broadcasts</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="PORTS_IMPLEMENTATION.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="pc-port-implementation">PC port implementation</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p>The current public V1 candidate supports the bounded original-XT port set below. The timing source remains fixed PIT channel 0; direct peripheral programming does not imply a complete PC chipset or physical bus timing. See <a href="TIMER_IRQ_IMPLEMENTATION.html">timer</a>, <a href="BIOS_IMPLEMENTATION.html">BIOS</a>, and the <a href="V1_ENDPOINT.html">V1 release gates</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Implemented behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>20h/21h</td>
+<td>Functional 8259 PIC state and IRQ0 acceptance, masking and EOI; unsupported commands still refuse.</td>
+</tr>
+<tr>
+<td>40h</td>
+<td>Byte zero writes only, tracking the existing low/high divisor-write phase. Rewriting the fixed zero/65,536 divisor preserves the oscillator and IRQ state. Reads, words and other divisors refuse.</td>
+</tr>
+<tr>
+<td>41h–43h</td>
+<td>Unsupported in public runtime0bfa. The test candidate below adds only bounded silent-speaker writes.</td>
+</tr>
+<tr>
+<td>61h</td>
+<td>Byte read/write of the XT 8255 output latch, initially48h. No AT-style timer/status inputs or audible waveform.</td>
+</tr>
+<tr>
+<td>201h</td>
+<td>Byte input FFh for the absent game adapter. Other access forms refuse.</td>
+</tr>
+<tr>
+<td>2F2h–2F7h</td>
+<td>DOS shared-interrupt rearm byte broadcasts to absent boards; no PIC mutation.</td>
+</tr>
+<tr>
+<td>3B4h/3B5h</td>
+<td>Explicit absent-MDA profile: byte input FFh, byte writes ignored.</td>
+</tr>
+<tr>
+<td>3D0h–3D7h</td>
+<td>Four mirrored CGA CRTC index/data pairs, with significant register masks. R14–17 can be read through a data port; other register reads refuse. Byte writes and preflighted word writes through3D6h are supported.</td>
+</tr>
+<tr>
+<td>3D8h</td>
+<td>Bounded write-only CGA mode latch within the BIOS-selected geometry; unsupported geometry changes/word access refuse.</td>
+</tr>
+<tr>
+<td>3DAh</td>
+<td>Byte canonical-CGA beam status derived from the virtual PIT publication, independent of read count and the C64 VIC beam.</td>
+</tr>
+</tbody></table>
+<p>No generic unknown-port success fallback exists. CGA services require the checked HDBIOS extension and retain their documented overlay/caller ownership gates. Direct CGA register writes do not rewrite BDA software shadows.</p>
+<p>The unmerged speaker test candidateaa18 accepts byte OUT43h=B6h and byte OUT42h divisor data silently, retaining the independent61h latch. It preserves channel0/PIC state and does not supply counter reads or audio. Eleven ports groups,508 base groups and25 package controls pass; genuine FDISK continuation and final composition remain pending. Test candidate evidence (local development record, not distributed).</p>
+<p>The linked original 8088 CPU handles immediate-port and DX-port IN/OUT forms, byte and word (E4–E7, EC–EF). Reads update AL or AX; writes preserve guest registers. Guest FLAGS are unchanged. Immediate ports are zero-extended; DX ports retain 16 bits. Prefixes do not introduce repeated I/O. Failed or unsupported operations latch the CPU diagnostic and restore the instruction&#39;s starting IP. Fetch/cache failures remain terminal host errors.</p>
+<p><code>src/ports.s</code> supplies a bounded functional 8259A PIC at 20h/21h. It supports all ICW sequence lengths, interrupt masks, IRR/ISR read selection, specific/nonspecific EOI, priority rotation and special-mask programming. Defaults follow the original IBM XT BIOS: ICW1=13h, base 08h, ICW4=09h and mask FCh. BIOS cold initialization resets this state. IRR/ISR remain explicit latches; the current event dispatcher accepts eligible requests through the guest IVT.</p>
+<p>The descriptor is <code>dos64_io_port</code>/<code>dos64_io_value</code> as little-endian words, and <code>dos64_io_width</code> (0 byte, 1 word). <code>dos64_io_read/write</code> preserve guest registers and native P except returned carry. Carry reports an unsupported port/width/command. Word I/O preflights both consecutive ports. The resident PIC supports a word at20h; the checked CGA extension also handles its bounded CRTC word writes. An unsupported second port cannot cause a partial first-port side effect. Byte reads preserve the descriptor&#39;s high byte.</p>
+<p>Private BIOS OUT callbacks retain their exact initialized synthetic-ROM address whitelist. Arbitrary guest OUT F1/F2 is not privileged. The PIC fallback applies only when the private callback did not handle the operation and reported no fatal host error.</p>
+<p>DEVICESTATE begins at EA00 and is constrained through EEFF, preserving EF00–EFFF for future vectors/gateways. Frame metadata is separately constrained to E900–E9FF. PIC state occupies 20 bytes; other device modules share the explicitly bounded DEVICESTATE allocation. Tests reject metadata growth into devices and device placement in the vector reservation.</p>
+<h2 id="historical-pic-introduction">Historical PIC introduction</h2>
+<p>The accepted PIC checkpoint passes 172 Zig/Peddle tests, 47 tooling checks and all 2,555 previously selected hardware CPU cases. The PIC&#39;s independent suite covers all 256 masks, all ICW lengths and 2,048 EOI priority combinations; adapter tests cover all eight instruction forms, preserved registers/FLAGS, unsupported width/port without partial effects, IP wrap and prefixes. IN/OUT hardware-generated vectors are not yet imported. Source pins, tests, maps and DOS trace (local development record, not distributed).</p>
+<p>At that historical checkpoint real IO.SYS progresses past OUT 20h and reaches absent serial BIOS INT 14h after 2,347 completed instructions. COMMAND.COM prompt is not accepted. No asynchronous IRQ/INTA delivery, PIC poll, hardware timing, PIT/keyboard/CGA ports or serial hardware is claimed. The later verified BIOS/video/adjust slice passes 205 tests, 57 tooling checks and all 5,701 hardware cases, and reaches absent INT 1Ah after 2,542 instructions. Combined evidence (local development record, not distributed). PIC event-delivery and other port limitations remain unchanged.</p>
+<h2 id="dos-330-shared-interrupt-rearm-broadcasts">DOS 3.30 shared-interrupt rearm broadcasts</h2>
+<p>The generic port adapter now accepts arbitrary byte writes to exactly 02F2h–02F7h as DOS GLOBAL REARM broadcasts for shared IRQ levels 2–7. The XT profile has no attached shared-interrupt boards, so these writes preserve PIC/device state, guest registers and FLAGS. Reads, word forms, neighboring/unrelated ports remain explicitly unsupported; this is not a blanket unknown-port success policy or a new interrupt controller.</p>
+<p>The genuine stop at 9DFD:0A53 was original relocated SYSINIT code, not evidence of a fetch failure. The pinned primary-source and binary audit (local development record, not distributed) identifies the inherited DOS 3.30 six-port sequence and arbitrary-byte meaning. Microsoft v4 source documents the purpose, while the supplied 3.3 binary remains authoritative. Independent tests cover all six ports/byte values, preserved flags/state and rejected reads/words/adjacent ports. This narrow addition lets genuine DOS continue to COMMAND.COM; asynchronous shared-IRQ delivery remains unimplemented.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

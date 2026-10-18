@@ -1,5 +1,8 @@
 # Implementation plan for review
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 **2026-10-17 release steering:** [V1_ENDPOINT.md](V1_ENDPOINT.md) now defines the V1 exit gates and current work order. Installer/configuration, floppy/HD persistence and the full Turbo Pascal workflow are the priority. Further performance improvement and the 50%/85% speed objectives move to post-V1; the historical milestones below remain the broader backlog.
 
 Original planning date: 2026-10-14, America/Los_Angeles. The milestone deliverables and exit criteria below remain the scope contract. Current implementation status is recorded separately from complete acceptance.

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Architecture contract · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Architecture contract"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#ownership-and-execution">Ownership and execution</a></li><li><a href="#boot-and-bios-interception">Boot and BIOS interception</a></li><li><a href="#cpu-semantics-and-coverage">CPU semantics and coverage</a></li><li><a href="#minimal-machine-timing-and-ports">Minimal machine timing and ports</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="ARCHITECTURE.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="architecture-contract">Architecture contract</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p>This is the full-system architecture and remaining integration contract. The actual assembly CPU, coherent memory/disk services, synthetic logical BIOS, functional PIC, original clock/keyboard backend, generic asynchronous UCI transport and native CIA clock are implemented. In Peddle, genuine reset and unchanged DOS 3.3 binaries reach COMMAND.COM and execute verified VER/DIR through normal guest INT 21h and the assembled keyboard queue. Current functional evidence (local development record, not distributed).</p>
+<p>The corrected physical CIA clock matrix validates the raw PAL CIA/raster domain at 1/16/64 MHz, independently of emulator throughput. Native FILE/TEXT commands/row rendering now share a tested REU overlay window; startup copies assets then idles. Real file import/persistence, native C64 font/VIC/input, scheduler/IRQ delivery and HD remain unfinished. The diagram combines implemented functional boundaries with the native system still to integrate; it does not claim that the complete program runs DOS on physical C64U. See current state (local development record, not distributed) and <a href="OVERLAYS_IMPLEMENTATION.html">overlay contract</a>.</p>
+<pre><code class="language-mermaid">flowchart TD
+    DOS[Real DOS 3.3 and its commands] --&gt; CPU[8086/8088 interpreter — 6502 assembly]
+    CPU --&gt; MEM[Guest physical memory and coherent cache]
+    CPU --&gt; PORT[Minimal PC ports and interrupt scheduler]
+    CPU --&gt; ROM[Synthetic BIOS ROM entry stubs]
+    ROM --&gt; BIOS[Native BIOS services]
+    BIOS --&gt; MEM
+    BIOS --&gt; DISK[Guest sector devices]
+    MEM --&gt; REU[REU: guest backing and image/cache regions]
+    DISK --&gt; REU
+    DISK --&gt; FILE[Image-file backend]
+    FILE --&gt; UCI[Ultimate DOS on C64U]
+    FILE --&gt; IEC[KERNAL IEC / D81 in VICE]
+    MEM --&gt; VIDEO[Dirty CGA/text conversion to VIC-II]
+    KEY[C64 keyboard] --&gt; PORT
+</code></pre>
+<h2 id="ownership-and-execution">Ownership and execution</h2>
+<p>The host is a standalone C64 program. Target code is 6510 assembly, assembled with ca65 and linked with ld65. It owns a declared zero-page allocation, hardware-stack budget, IRQ/NMI gateways, C64 memory map, and REU arena. Host Zig tests use a small C ABI to Peddle&#39;s C++ CPU; that host boundary is not the target ABI.</p>
+<p>DOS is not reimplemented. Its INT 21h handler, FCBs, file handles, FAT12/FAT16 code, PSP creation, process execution, MZ relocation, internal commands, and resident drivers run as guest instructions. Ultimate DOS sees raw image files, not individual guest DOS filenames. Its two target instances therefore need only an image-handle scheduler, not a DOS handle virtualization layer.</p>
+<p>Logical module boundaries (assembly routines and shared structures, not necessarily dynamic modules):</p>
+<table>
+<thead>
+<tr>
+<th>Boundary</th>
+<th>Responsibility / rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>cpu_step</code> / <code>cpu_run_budget</code></td>
+<td>Advance defined guest state; report traps/halt/events and counters</td>
+</tr>
+<tr>
+<td><code>guest_read/write8/16</code>, <code>guest_copy</code></td>
+<td>Sole authority for memory semantics, cache ownership, ROM/video writes, code invalidation</td>
+</tr>
+<tr>
+<td><code>bios_entry</code></td>
+<td>Service only recognized synthetic ROM entry points; preserve normal guest interrupt routing</td>
+</tr>
+<tr>
+<td><code>disk_read/write/verify/format</code></td>
+<td>Translate BIOS CHS to bounded guest sectors, return BIOS status, never parse guest filenames</td>
+</tr>
+<tr>
+<td><code>image_read/write_at</code>, <code>image_close</code>, <code>image_export</code></td>
+<td>File offsets, exact transferred counts, media identity, errors</td>
+</tr>
+<tr>
+<td><code>reu_transfer</code></td>
+<td>Explicit host and 24-bit REU addresses, length, mode, bank-safe critical section</td>
+</tr>
+<tr>
+<td><code>devices_tick</code>, <code>port_in/out</code></td>
+<td>PIC/PIT/keyboard/CGA minimum and deterministic unsupported behavior</td>
+</tr>
+<tr>
+<td><code>video_present</code>, <code>keyboard_poll</code></td>
+<td>Bounded host work outside the innermost CPU loop</td>
+</tr>
+</tbody></table>
+<p>Use little-endian byte/word structures with generated or checked offsets. Every assembly routine states input/output registers, clobbers, scratch ownership, bank state, and whether it may yield or evict frames. Keep hot guest registers/direct pointers in a reserved ZP subset; keep canonical full state in resident RAM. Shared scratch must not be used reentrantly by host IRQs. Host arithmetic runs with decimal mode clear; guest BCD instructions are implemented explicitly.</p>
+<h2 id="boot-and-bios-interception">Boot and BIOS interception</h2>
+<ol>
+<li>Initialize host screen, keyboard, REU, memory tags, and storage. Probe required capabilities without destroying fixture contents; reject insufficient configuration clearly.</li>
+<li>Populate a project-owned synthetic BIOS ROM, IVT, BIOS Data Area, equipment flags, 640 KiB memory report, disk parameter tables, CGA state, and timer/keyboard defaults. Supply required ROM identification/table data consistently with the selected PC profile.</li>
+<li>Reset guest at the original reset location (<code>FFFF:0000</code>), enter the synthetic bootstrap, and load boot sector to physical <code>0000:7C00</code> with correct boot drive <code>DL</code>. Initialize only documented/project-defined BIOS state; do not depend on arbitrary initial register values.</li>
+<li>Boot code loads the real DOS system files through BIOS disk services. DOS installs its own vectors and starts COMMAND.COM.</li>
+</ol>
+<p><strong>Never intercept solely by interrupt number.</strong> <code>INT n</code> pushes the guest flags/CS/IP, clears the required flags, and follows the writable guest IVT. A hook may chain by far jump or by <code>PUSHF; CALL FAR</code>. Native service entry is recognized only at reserved ROM stubs (for example a private hypercall port instruction inside those stubs). Callbacks return through the correct guest frame/IRET path and update saved return flags such as CF/ZF when the BIOS contract requires it. Tests must cover replaced vectors, far-call chains, recursive guest handlers, and stack wrapping. Arbitrary guest code cannot invoke the callback just by matching an opcode outside the allowed ROM entry.</p>
+<p>The first BIOS contract covers INT 10h video, 11h equipment, 12h memory, 13h disk, 16h keyboard, 19h bootstrap, and 1Ah clock; IRQ0/INT 08h, IRQ1/INT 09h, INT 1Ch chaining, and BIOS data tables/vectors required by the actual DOS build. INT 14h/17h return consistent absent-device status; INT 18h ends boot with a controlled diagnostic. Add INT 15h or other services only from a documented profile requirement or an observed probe. Do not claim AT/RTC/EGA features that are not present. Microsoft BIOS reference: <a href="https://msarchive.pcjs.org/mspl13/msdos/encyclopedia/appendix-o/">Appendix O</a>.</p>
+<h2 id="cpu-semantics-and-coverage">CPU semantics and coverage</h2>
+<p>Implement documented 8086/8088 instructions and their ModR/M forms: data movement, arithmetic/logical/BCD, shifts/rotates, control flow, stack, string operations, flags, interrupt/IRET, and I/O. Decode signed immediates/displacements, default SS for BP-based addressing, segment overrides, and implicit operands correctly. No 80186/286 extensions are silently accepted as such.</p>
+<p>Mandatory edge tests: CF/OF/AF/PF/SF/ZF; flags preserved by INC/DEC/logical/rotate variants; ADC/SBB carry chains; count zero and counts &gt;31; PUSH SP original-CPU result; divide overflow/zero and saved return IP; flags reserved bits and PUSHF/POPF/LAHF/SAHF; POP/MOV SS and STI interrupt inhibition; TF trap timing; HLT wakeup; far calls/returns; prefix lifetime; REP zero count/direction/restart; overlapping strings; self-modifying code and segment aliases. Use defined-flag masks and original-CPU references, not modern x86 behavior by assumption. <a href="https://msarchive.pcjs.org/mspl13/msdos/encyclopedia/appendix-m/">Microsoft compatibility notes</a> and <a href="https://github.com/SingleStepTests/8088">hardware-generated tests</a>.</p>
+<p>Begin with eager flags and a simple interpreter. Add lazy flags, fast dispatch, cached fetch pointers, and instruction-specific hot paths only behind differential tests. A full host x86 emulator is not a prerequisite: use small independent Zig semantic oracles and hardware test vectors. A minimal host machine model may later help trace boot, but must not become a second product delaying target tests.</p>
+<p>There is no architectural invalid-opcode exception on an original 8088. Unsupported/undefined encodings initially cause an emulator diagnostic with CS:IP and bytes, not a fabricated guest 286-style INT 6. Keep a coverage manifest for undocumented encodings actually needed. Model ESC/WAIT consistently with no 8087 and test probes; no floating-point coprocessor emulation is promised. Prefix-only loops need a host cancellation/budget path without inventing a modern 15-byte instruction limit.</p>
+<h2 id="minimal-machine-timing-and-ports">Minimal machine timing and ports</h2>
+<p>Keep guest simulated time separate from host execution time. Deterministic tests drive guest events from an explicit virtual clock. Interactive mode derives pending timer ticks and keyboard work from elapsed host time with bounded servicing. PC timer frequency is based on the PC PIT, not one tick per PAL/NTSC frame. Pause/reset semantics are explicit. Avoid catch-up storms after blocking storage; retain and deliver pending events according to the chosen device model.</p>
+<p>Implement the required subset of 8259 IRQ masking/EOI and 8253 channel-0 programming/latching, keyboard ports 60h/61h and BIOS ring-buffer state, CGA 3D4h/3D5h/3D8h/3D9h/3DAh. A toggling CGA status input must use virtual time so polling loops progress; it is not proof of cycle-accurate retrace. Identify any 8255/equipment-switch reads from boot traces. Guest IF=0 must not stop the host from collecting keyboard events or presenting its display.</p>
+<p>Do not implement a floppy controller/8237 DMA or hard-disk controller initially: BIOS sector services bypass them. Log unsupported ports with bounded counters, return documented profile defaults, and fail development acceptance on unexpected required accesses. FORMAT/FDISK may require more BIOS calls or direct I/O; trace and implement the applicable behavior rather than fake success.</p>
+<p>No guest networking, sound output, printer, or serial endpoint. Minimal register reads needed for programs to detect absent hardware are part of compatibility, not an expansion of peripheral scope.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

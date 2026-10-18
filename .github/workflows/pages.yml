@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'DOCS/**'
+      - '8088DOS64ultimate/**'
       - 'ReadyFS/**'
       - 'ReuSQL64/**'
       - 'C77Cyberpunk77/**'
@@ -28,6 +29,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build:docs
       - run: npm run check:docs
+      - run: python3 tools/audit_public.py
       - run: git diff --exit-code -- DOCS
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

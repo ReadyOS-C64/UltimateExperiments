@@ -57,7 +57,7 @@ class DosImageTests(unittest.TestCase):
         self.assertEqual(code, caught.exception.code)
 
     def test_actual_images_and_all_file_hashes_match_preexisting_inventory(self):
-        record = json.loads((PROJECT / "agentworking/research/reference-images.json").read_text())
+        record = json.loads((PROJECT / "tests/fixtures/dos33-inventory.json").read_text())
         for original in record["images"]:
             with self.subTest(original["path"]):
                 data = (PROJECT / original["path"]).read_bytes()

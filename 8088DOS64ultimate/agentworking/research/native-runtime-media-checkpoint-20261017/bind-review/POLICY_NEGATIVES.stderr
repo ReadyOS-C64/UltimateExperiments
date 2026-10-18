@@ -1,7 +1,0 @@
-test08_PLAN_policy_and_nestedCFG_residue_refuse_before_CREATE (test_insert_commit.Tests.test08_PLAN_policy_and_nestedCFG_residue_refuse_before_CREATE) ... ok
-test09_BIND_independently_refuses_resigned_wrong_private_policy (test_insert_commit.Tests.test09_BIND_independently_refuses_resigned_wrong_private_policy) ... ok
-
-----------------------------------------------------------------------
-Ran 2 tests in 8.902s
-
-OK

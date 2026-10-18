@@ -1,9 +1,0 @@
-{
-  "terminal": "1639",
-  "command": "DOS64_TERMINAL_WINDOW=1639 /bin/zsh /Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-copy20m-splitread-purpose-20261017/work/dispatch-owned.sh",
-  "osascript_exit": 0,
-  "stdout": "tab 1 of window id 1639\n",
-  "stderr": "",
-  "wall_time": 1792265164.1648488,
-  "single_use_wrapper": true
-}

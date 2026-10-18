@@ -1,1 +1,0 @@
-The first public runtime build stopped during staging before native execution: the newly included cold_start.mk was absent from the explicit runtime source inventory. The include is now declared in both runtime and test/native inventories. Original stdout/stderr and failed run are retained. No missing input check was relaxed.

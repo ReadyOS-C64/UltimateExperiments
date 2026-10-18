@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Research record and source register · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Research record and source register"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#local-observations">Local observations</a></li><li><a href="#sources-actually-consulted">Sources actually consulted</a></li><li><a href="#corrections-to-the-pasted-discussion">Corrections to the pasted discussion</a></li><li><a href="#open-research-to-close-during-implementation">Open research to close during implementation</a></li><li><a href="#implementation-follow-up-cpu-boundaries-and-hardware-corpus">Implementation follow-up: CPU boundaries and hardware corpus</a></li><li><a href="#math-bios-and-real-kernel-observations-2026-10-15">Math, BIOS and real-kernel observations — 2026-10-15</a></li><li><a href="#fetchpic-and-candidate-biosadjust-follow-up">Fetch/PIC and candidate BIOS/adjust follow-up</a></li><li><a href="#genuine-sysinit-shared-rearm-and-command-built-ins">Genuine SYSINIT shared-rearm and COMMAND built-ins</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="RESEARCH.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="research-record-and-source-register">Research record and source register</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p>Inspected 2026-10-14 (America/Los_Angeles). Distinguish <strong>local observation</strong>, <strong>source-backed fact</strong>, <strong>proposed design</strong>, and <strong>unmeasured hypothesis</strong>. The user&#39;s pasted ChatGPT discussion is useful background, not a specification or evidence of hardware performance.</p>
+<h2 id="local-observations">Local observations</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Observed evidence</th>
+<th>Planning consequence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Project contents</td>
+<td>Three <code>.img</code> files in <code>reference/</code>; no emulator implementation</td>
+<td>No existing project architecture to preserve</td>
+</tr>
+<tr>
+<td>Disk size/BPB</td>
+<td>All 368,640 bytes, FAT12, 512-byte sectors, 2 sectors/cluster, 720 sectors, 9 sectors/track, 2 heads; 55AA boot trailer</td>
+<td>First storage profile is 360 KiB, 40-cylinder floppy; fits inside D81 SEQ file</td>
+</tr>
+<tr>
+<td>Disk 1</td>
+<td>IO.SYS, MSDOS.SYS, COMMAND.COM, DOS tools and CONFIG.SYS; subsequent cloned DOSBox boot reports MS-DOS 3.30</td>
+<td>Primary boot fixture; retain original CONFIG behavior</td>
+</tr>
+<tr>
+<td>Disk 2</td>
+<td>Utility files, no IO.SYS/MSDOS.SYS/COMMAND.COM</td>
+<td>Data/utility disk, not independently bootable from these files</td>
+</tr>
+<tr>
+<td>Disk 3</td>
+<td>DOS system binaries hash-identical to disk 1, GWBASIC.EXE, HDFORM/HDPARK; different boot sector/OEM bytes</td>
+<td>Later BASIC/CGA fixture; do not infer version/validity from OEM string</td>
+</tr>
+<tr>
+<td>Configuration</td>
+<td>Disk 1 contains <code>c:</code> and <code>device=c:\dos\ansi.sys</code>; disk 3 includes <code>config.sys</code> and <code>control-c</code> lines</td>
+<td>Observe original diagnostics; use separately hashed minimal/driver test copies</td>
+</tr>
+<tr>
+<td>ZeroPage</td>
+<td><code>../../zig64</code> README/testing/ABI/memory docs, runner, C++ shim, fixtures</td>
+<td>Copy testing architecture, not compiler/runtime as target</td>
+</tr>
+<tr>
+<td>Zig test idiom</td>
+<td>Fixture discovery, linker label hooks, C imports, <code>std.testing.expectEqual</code>, KERNAL return/memory assertions</td>
+<td>Host Zig behavior tests around assembled target routines</td>
+</tr>
+<tr>
+<td>ReuSQL64</td>
+<td>ca65/cc65 builds, configurable REU shim, Zig runner, .NET VICE plans, independent c1541 extraction</td>
+<td>Good model for assembly artifact tests and disk persistence evidence</td>
+</tr>
+<tr>
+<td>ReadyFS</td>
+<td>Asynchronous UCI code and failure tests; prior protocol/ASCII/banking lessons</td>
+<td>Port protocol semantics with tests; do not copy its whole application</td>
+</tr>
+<tr>
+<td>Local tools</td>
+<td>Zig 0.16.0, DOSBox-X 2026.01.02 SDL2; NASM, x64sc, c1541, cc65 toolchain paths found</td>
+<td>No need to install DOSBox now; pin tool versions/binaries in M0</td>
+</tr>
+<tr>
+<td>Sibling compiler state</td>
+<td>HEAD <code>82f16cf8afea90a43a8f8560692b869d55d34dd7</code>; 1668 status entries during inspection</td>
+<td>Working tree differs substantially from HEAD; use content hashes if copying references</td>
+</tr>
+<tr>
+<td>Repository state</td>
+<td>Pre-existing ReadyFS modifications; project initially untracked; parent ignores working-record directories</td>
+<td>Stay inside project; local ignore override makes planning records trackable</td>
+</tr>
+<tr>
+<td>D81 container proof</td>
+<td>c1541 stored disk 1 as 1452-block SEQ and extracted identical bytes; 1708 blocks remained</td>
+<td>Proposed development container is feasible; target IEC runtime remains untested</td>
+</tr>
+</tbody></table>
+<p>Exact image and per-file hashes are in reference-images.json (local development record, not distributed), produced by the retained read-only inventory script (local development record, not distributed). That script is research tooling, not emulator implementation. Its limitations are recorded in the JSON. During that read-only inventory, originals were not mounted writable, modified, or executed. Later reference/target boot observations are recorded separately below.</p>
+<p>Local tool/source evidence (local development record, not distributed) records exact observed versions and hashes of the inspected local integration sources. ca65/ld65 report V2.18 even though the package directory names cc65 2.19; pin reported tool identity rather than infer it from a folder. The user-supplied prior conversation (local development record, not distributed) is retained verbatim as non-authoritative background.</p>
+<h2 id="sources-actually-consulted">Sources actually consulted</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Primary source / implementation</th>
+<th>What it supports; limitations</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S01</td>
+<td><a href="https://1541u-documentation.readthedocs.io/en/latest/config/turbo_mode.html">Ultimate turbo settings</a></td>
+<td>U64 vs Elite-II speed tables, register availability modes, VIC/external-bus caveats. Exact user&#39;s hardware/firmware remains to be inventoried</td>
+</tr>
+<tr>
+<td>S02</td>
+<td><a href="https://1541u-documentation.readthedocs.io/en/master/uci/ultimate_dos_target.html">Ultimate DOS target</a></td>
+<td>File targets, seek, bulk REU transfer commands and replies; not a latency measurement</td>
+</tr>
+<tr>
+<td>S03</td>
+<td><a href="https://github.com/GideonZ/1541ultimate/blob/125da1fec3e3b50d31f6409ec217d80693ed674d/software/filemanager/dos.cc">Ultimate dos.cc at 125da1f</a></td>
+<td>Actual seek/read/write code and transferred counts. Address mask 24 bits; length mask 25 bits differs from prose docs. Does not establish installed firmware behavior</td>
+</tr>
+<tr>
+<td>S04</td>
+<td><a href="https://1541u-documentation.readthedocs.io/en/latest/uci/core_uci_architecture.html">UCI architecture</a></td>
+<td>Asynchronous state/queue/abort handshake; combine with ReadyFS regression experience</td>
+</tr>
+<tr>
+<td>S05</td>
+<td><a href="https://github.com/SingleStepTests/8088">SingleStepTests 8088</a></td>
+<td>Hardware-generated instruction tests, sparse expected states, flags metadata and exclusions. Not complete interrupt/system behavior coverage</td>
+</tr>
+<tr>
+<td>S06</td>
+<td><a href="https://github.com/SingleStepTests/8086">SingleStepTests 8086</a></td>
+<td>Companion corpus for boundary/difference investigation; choose one declared original-CPU profile</td>
+</tr>
+<tr>
+<td>S07</td>
+<td><a href="https://msarchive.pcjs.org/mspl13/msdos/encyclopedia/appendix-m/">Microsoft Encyclopedia, Appendix M</a></td>
+<td>Original 8086/8088 vs later CPUs: divide return IP, PUSH SP, shift counts and prefix limits</td>
+</tr>
+<tr>
+<td>S08</td>
+<td><a href="https://msarchive.pcjs.org/mspl13/msdos/encyclopedia/appendix-o/">Microsoft Encyclopedia, Appendix O</a></td>
+<td>BIOS call contracts and text-page sizes; choose the PC/CGA subset rather than every later adapter function</td>
+</tr>
+<tr>
+<td>S09</td>
+<td><a href="https://msarchive.pcjs.org/mspl13/msdos/encyclopedia/appendix-a/">Microsoft Encyclopedia, Appendix A</a></td>
+<td>DOS 3.3 changes and command/service context; actual supplied binaries remain acceptance fixtures</td>
+</tr>
+<tr>
+<td>S10</td>
+<td><a href="https://github.com/cc65/cc65/blob/a6530f46914232c085c281c4bf84e87bd136596f/libsrc/c64/soft80_cputc.s">cc65 Soft-80 drawing</a></td>
+<td>Established 80-column drawing, two-character color conflict and restoration strategy</td>
+</tr>
+<tr>
+<td>S11</td>
+<td><a href="https://github.com/cc65/cc65/blob/a6530f46914232c085c281c4bf84e87bd136596f/libsrc/c64/soft80_color.s">cc65 Soft-80 color</a>, <a href="https://github.com/cc65/cc65/blob/a6530f46914232c085c281c4bf84e87bd136596f/libsrc/c64/soft80.inc">layout</a></td>
+<td>Source-level display reference. Any reuse requires its license/attribution, and PC-specific glyph/attribute handling</td>
+</tr>
+<tr>
+<td>S12</td>
+<td><a href="https://vice-emu.sourceforge.io/vice_5.html">VICE quick setup</a>, <a href="https://vice-emu.sourceforge.io/vice_6.html">resource reference</a>, <a href="https://vice-emu.sourceforge.io/vice_7.html">machine features</a></td>
+<td>Virtual traps, REU options and warp configuration; installed build help is the final command-line authority</td>
+</tr>
+<tr>
+<td>S13</td>
+<td><a href="https://dosbox-x.com/wiki/Guide:Installing-DOS-2.x-3.x">DOSBox-X DOS 2.x/3.x installation</a>, <a href="https://dosbox-x.com/wiki/Guide%3AManaging-image-files-in-DOSBox%E2%80%90X">image management</a></td>
+<td>Real-image BOOT workflow and old DOS partition-format pitfalls. Its broad historical statements are not used as architectural evidence</td>
+</tr>
+<tr>
+<td>S14</td>
+<td><a href="https://github.com/dbalsom/martypc">MartyPC</a></td>
+<td>Candidate original-PC timing/behavior reference; not installed/configured or benchmarked in this planning pass</td>
+</tr>
+<tr>
+<td>S15</td>
+<td><a href="https://www.pcjs.org/software/pcx86/dev/rom/ibm/5160/">IBM XT BIOS listing archive</a></td>
+<td>Locates original IBM BIOS material and revisions; a synthetic BIOS will be project-owned rather than bundling an IBM ROM</td>
+</tr>
+<tr>
+<td>S16</td>
+<td><a href="https://github.com/dirkwhoffmann/Peddle">Peddle</a> and local pinned source/license</td>
+<td>Host MOS_6510 engine. Local integration/source inspected; emulator timing/device claims limited to the actual shim</td>
+</tr>
+</tbody></table>
+<p>Additional authoritative references identified for detailed implementation: <a href="https://bitsavers.org/components/intel/8086/9800722-03_The_8086_Family_Users_Manual_Oct79.pdf">Intel 8086 Family User&#39;s Manual, October 1979</a> and <a href="https://files.commodore.software/reference-material/manuals/commodore-64-manuals/hardware-manuals/1764-ram-expansion-module-users-guide.pdf">Commodore 1764 user&#39;s guide</a>. These were located, not fully audited page by page. Their detailed bus/REU edge semantics must be checked during M1/M2. An attempted IBM XT PDF fetch was unavailable; use the accessible listing archive/reference instead of claiming that PDF was read.</p>
+<h2 id="corrections-to-the-pasted-discussion">Corrections to the pasted discussion</h2>
+<table>
+<thead>
+<tr>
+<th>Earlier suggestion</th>
+<th>Planning conclusion</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Prefer a native DOS API layer and add actual DOS later</td>
+<td>Conflicts with this user&#39;s objective. Execute the real DOS kernel from the outset; native BIOS is the acceleration boundary</td>
+</tr>
+<tr>
+<td>Map guest file handles to Ultimate DOS handles</td>
+<td>Unnecessary here: DOS manages guest handles inside disk images; host handles are for images</td>
+</tr>
+<tr>
+<td>Illustrative 26 KiB guest cache</td>
+<td>Too optimistic to assume before layout. Budget 16 KiB with visible display/metadata/code allocations, then measure</td>
+</tr>
+<tr>
+<td>Roughly 4 MB/s REU</td>
+<td>Unverified scenario, not a specification; measure each direction/size at the actual firmware/turbo/display settings</td>
+</tr>
+<tr>
+<td>64 MHz might exceed XT generally</td>
+<td>Workload-dependent hypothesis. Fast bulk storage does not prove CPU or memory-heavy performance</td>
+</tr>
+<tr>
+<td>80-column color is straightforward</td>
+<td>Width is feasible; two arbitrary colored characters in one VIC hires cell cannot always be represented faithfully</td>
+</tr>
+<tr>
+<td>Skip most PC I/O</td>
+<td>Minimal PIC/PIT/keyboard/CGA port behavior is still needed for DOS/drivers and polling loops</td>
+</tr>
+<tr>
+<td>“Zig” target</td>
+<td>User clarified assembly; host Zig provides tests, generators and assertions. ZeroPage remains the example testing workflow</td>
+</tr>
+</tbody></table>
+<h2 id="open-research-to-close-during-implementation">Open research to close during implementation</h2>
+<p>Follow-up source inspection is recorded in <a href="EXISTING_EMULATORS.html">existing emulator references</a>. NES86 is a verified 6502-assembly 8086 interpreter and the closest inspected host-CPU match. 8086tiny supplies an MIT-licensed C core and BIOS; XTulator supplies a readable GPL CPU reference. Our target remains original 8088/XT, and none of these sources has been incorporated into the target. <a href="REU_IMPLEMENTATION.html">REU_IMPLEMENTATION.md</a> records the subsequently implemented primitive, mock and functional VICE evidence.</p>
+<ul>
+<li>Exact original-CPU multi-byte behavior at segment/physical boundaries; interrupt/prefix corner cases absent from public single-step vectors.</li>
+<li>Actual DOS version/OEM boot dependencies, observed INT/port trace, FDISK small/large geometry and FORMAT BIOS requirements.</li>
+<li>C64U firmware, REU transfer latency/stalls, turbo switching and I/O behavior; source/documentation discrepancies must be tested on that firmware.</li>
+<li>Final 80-column font quality, palette policy, graphics reduction and keyboard chords on the user&#39;s screen/keyboard.</li>
+<li>Corpus/download/toolchain pinning and source licenses for anything copied into the project. No downloaded DOS replacement is needed.</li>
+</ul>
+<h2 id="implementation-follow-up-cpu-boundaries-and-hardware-corpus">Implementation follow-up: CPU boundaries and hardware corpus</h2>
+<p>Original-8088 word policy follows <a href="https://github.com/dbalsom/martypc/blob/05c0d088e84ad6bbfac9b3f0d051e7eadefd9f44/crates/lib/marty_core/src/cpu_808x/biu.rs">MartyPC byte-bus implementation at 05c0d088</a>: wrap the offset for the second byte, then translate. No source copied. The <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/8088DOS64ultimate/third_party/sst8088/UPSTREAM.json">pinned hardware projection</a> retains 2,555 functional cases as of the 2026-10-15 math/indirect checkpoint and the MIT license. Audited A1/A3 originals have no word beginning at FFFF; A3 index 9570 covers FFFE. Independent corner tests supplement the source reference; they are not direct physical-8088 evidence. <a href="CPU_IMPLEMENTATION.html">CPU implementation</a> lists actual opcode coverage and exclusions.</p>
+<p>Original shifts also consult <a href="https://github.com/dbalsom/martypc/blob/05c0d088e84ad6bbfac9b3f0d051e7eadefd9f44/crates/lib/marty_core/src/cpu_808x/common_alu.rs">MartyPC common ALU at 05c0d088</a> and the pinned hardware vectors. Original D0/D1 /6 is SETMO; D2/D3 /6 is SETMOC, not the later SHL alias. CL counts use all eight bits. The <a href="https://github.com/dbalsom/martypc/blob/05c0d088e84ad6bbfac9b3f0d051e7eadefd9f44/crates/lib/marty_core/src/cpu_808x/interrupt.rs">interrupt routine</a> reads IVT words before stacking FLAGS/CS/IP; the current functional policy follows that order. No reference code copied; hardware projections cover functional state, not asynchronous event timing.</p>
+<p><a href="https://bitsavers.org/components/intel/8086/210912-001_iAPX_86_88_186_188_Users_Manual_1985.pdf">Intel iAPX86/88/186/188 manual (1985)</a>, §1.7.8 printed1-122 /PDFpage138, distinguishes per-iteration guest interrupt restart from uninterrupted REP. Multiple-prefix restart quirks and precise segment-register interrupt inhibition still need direct original-hardware event evidence. Our host REP yields preserve all decoded prefixes and are explicitly not guest interrupts.</p>
+<h2 id="math-bios-and-real-kernel-observations-2026-10-15">Math, BIOS and real-kernel observations — 2026-10-15</h2>
+<p>The expanded <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/8088DOS64ultimate/third_party/sst8088/UPSTREAM.json">hardware selection</a> pins original F6/F7 divide-error, REP IDIV, signed-minimum-quotient and FF PUSH SP alias rows. F6/F7 MUL/IMUL/unsigned DIV input files have no REP prefixes at this pin; independent tests/source-derived policy must not be called direct hardware coverage. FE /2–7 input files are absent and 8F input contains only /0; unaudited forms remain explicit diagnostics. Original signed division rejects magnitude 80h/8000h even for a negative quotient, and divide errors retain original post-instruction saved IP. These distinctions were verified by the pinned original hardware projection rather than inferred from a modern x86 host.</p>
+<p>The BIOS implementation&#39;s source comments pin the IBM 5160 XTBIOS/POST listings used for status/DMA interface facts, unsupported INT 15h AH=86h/CF=1, and disk-parameter table fields. Local archived listings and inspection notes are retained under ignored <code>agentworking/scratch/</code>; the synthetic code/table bytes are independently authored, and no IBM ROM is bundled. The configured 360 KiB profile uses nine sectors/track rather than treating a listing&#39;s compatibility default as the actual fixture geometry. The current <a href="BIOS_IMPLEMENTATION.html">BIOS contract</a> distinguishes ordinary guest ROM handlers from whitelisted native disk/bootstrap gates.</p>
+<p>The unchanged supplied bootloader actually reads 51 raw sectors starting at its IO.SYS extent; IO.SYS itself is 22,398 bytes and rounds to 44 sectors. An independent FAT12 fixture oracle records the full raw extent, padding and overread rather than assuming the file length describes every loaded byte. Actual target execution reaches 0070:0000 in 392 guest instructions, then continues to unsupported PIC OUT 20h at 0070:2BFB after 2,335 instructions. INT 11h/12h read mutable BDA and INT 15h returns XT unsupported status on this path. This is observed kernel entry, not evidence that COMMAND.COM, the original CONFIG.SYS or a DOS command prompt has completed.</p>
+<p>Host disk-image tooling validates BPB/FAT/root/chain bounds and immutable source identity, and creates exclusive disposable clones/extractions for tests. It is a fixture/oracle aid, not a native DOS loader. Guest BIOS storage remains raw sectors through the actual assembly cache/range implementation. Native UCI/IEC import/persistence, hard-disk geometry/format behavior, display/input and event timing remain research/implementation gaps.</p>
+<h2 id="fetchpic-and-candidate-biosadjust-follow-up">Fetch/PIC and candidate BIOS/adjust follow-up</h2>
+<p>The accepted fetch comparison (local development record, not distributed) uses the previous actual assembly helper as a differential reference, including one-frame operand eviction, generation changes, redirects and self-modification. Its target-cycle gains are workload-specific; large REP behavior is nearly unchanged. PIC integration (local development record, not distributed) adds all eight IN/OUT forms and software-visible 8259A programming, without asynchronous IRQ/INTA or imported IN/OUT hardware vectors. Genuine IO.SYS now passes OUT 20h and reaches INT 14h after 2,347 instructions at that accepted checkpoint.</p>
+<p>Private adjust research pins the same SingleStepTests source revision and records 3,146 selected rows from eight additional files in <code>agentworking/scratch/adjust/hardware-sources.json</code>. Original BCD hardware distinguishes AF-sensitive DAA/DAS thresholds, DAS borrow and independent AAA/AAS byte corrections from later x86 assumptions. An initial AAM-zero expectation incorrectly preserved SZP; actual hardware rows showed the zero SZP result before INT 0, and the target/test were corrected. The source files contain no REP adjust cases; <a href="https://www.righto.com/2023/07/undocumented-8086-instructions.html">microcode analysis</a> supplies that policy, with pinned MartyPC source as a cross-check. No implementation source was copied. Selected target execution, exhaustive offline oracle comparison and global corpus integration are distinct evidence lanes.</p>
+<p>Private logical video tests consult Microsoft Appendix O, original XT listing facts and RBIL pixel/XOR/page behavior; exact citations and source identities are retained in <code>include/video.inc</code> and <code>agentworking/scratch/video/evidence.json</code>. The independently authored implementation preserves logical guest BDA/VRAM and exposes no host renderer/font/readability claim. Absent serial/printer calls follow the original XT listing&#39;s zero-base check before AH dispatch, preserving AX and unchecked wrapping DX index behavior; absence is not a timeout. Combined global quick/full/profile acceptance now passed; retained evidence (local development record, not distributed) pins sources, exact maps, private research and the real DOS continuation.</p>
+<p>The normal imported projection now contains <strong>5,701 selected hardware cases</strong>: all prior <strong>2,555</strong> retained unchanged plus the <strong>3,146</strong> adjust rows. Fixture SHA-256 <code>aba315edeb9bf6517e9c0eb0f5a887d97589c1604b74ff7f83e1dd2a64bf2f8e</code>; all 47 AAM-zero saved-FLAGS frames compare exact RAM with no new masks. The earlier 205-test quick gate executed its 581-row projection; the expanded fixture designates 597 quick rows, covered by the final full 5,701-case execution rather than a separate quick rerun. Original source-file populations and offline 10,000-row model audits remain distinct from selected target execution.</p>
+<p>Logical mode-3 initialization and absent serial/printer services advance genuine IO.SYS to missing INT 1Ah after 2,542 instructions. Clock/native-clock, keyboard and UCI candidate modules are not linked. The new resident layout zero-pads MAIN and explicitly initializes 4000–4FFF display RAM before DEVICECODE at 5000; neither padding nor startup zeros are linked executable allocations. The full runtime binary is untested physically, while four isolated prior hardware probe PRGs remain byte-identical.</p>
+<h2 id="genuine-sysinit-shared-rearm-and-command-built-ins">Genuine SYSINIT shared-rearm and COMMAND built-ins</h2>
+<p>The retained primary audit (local development record, not distributed) pins Microsoft SYSINIT1.ASM at repository revision <code>2d04cacc5322951f187bb17e017c12920ac8ebe2</code>, the original supplied binaries and the observed relocated SYSINIT span. The stop at 9DFD:0A53 with DX=02F2h was a legitimate DOS 3.30 GLOBAL REARM broadcast to shared IRQ levels 2–7. Microsoft v4 comments identify its inherited 3.30 purpose and arbitrary write value; they are not claimed to be the exact source build of this supplied binary. The actual six-port sequence and XT model check remain binary-authoritative. Only byte writes to 02F2h–02F7h are recognized for absent boards, without PIC side effects.</p>
+<p>A retained differential execution (local development record, not distributed) compared the retained slow fetch with fast fetch through all 55,583 scheduling calls/53,861 guest instructions to that stop, every 14-word register state and complete coherent 640 KiB RAM plus 16 KiB CGA. It found identical results. This excludes a regression relative to the previous fetch path; it does not independently establish every CPU behavior. The original CONFIG.SYS <code>c:</code> line explains the observed unrecognized-command diagnostic; no source image repair was made.</p>
+<p>After implementing that narrow port behavior and clock/keyboard BIOS, the opt-in long assembly/Peddle lane reaches real COMMAND.COM. Date/time Enter, VER and DIR use ten words through the actual assembly enqueue routine. The independent read-only FAT12 oracle requires all 35 visible names/exact sizes, the 35-file total and 9,216 free bytes; output observations also require MS-DOS Version 3.30 and the returned <code>A&gt;</code> prompt. The original/in-REU floppy remains unchanged. Built-ins evidence (local development record, not distributed) retains selected screens and exact raw schema-2 report identity; 939 changed-screen observations remain in the raw run.</p>
+<p>This is a Peddle functional milestone. Default tests stop at IO.SYS handoff, while <code>make test-dos-boot</code> owns the long scripted command proof. Linked generic UCI transport does not yet open/import runtime images. Native file-command/render/overlay components remain private/unlinked; physical keyboard scanning, C64 presentation, asynchronous events and HD persistence remain ahead.</p>
+<p>The first physical native-clock matrix failed at Manual 1 MHz and is explicitly rejected as timing validation. Failure evidence (local development record, not distributed) pins the probe/tool/firmware identity and configuration-restoration result. The first error-3 subreason remains unknown. Failure capture now retains RAM/mailbox/40-byte DCK1 before reset, and the probe uses a 16-line endpoint window with ±1,008-tick bounds; no successful physical rerun or 16/64 MHz calibration follows from these functional corrections alone.</p>
+<p>The corrected physical CIA/raster matrix (local development record, not distributed) passes Manual 1/16/64 MHz: 100-frame deltas 1,965,627/1,965,599/1,965,600 versus 1,965,600±1,008, zero retries, 28-tick spread and restored configuration/reset-resume. This establishes the observed PAL clock domain and turbo independence for the pinned firmware/core; it does not establish CPU/REU throughput or wire native time conversion. The corrected 1 MHz raster endpoints of 8/8 suggest the old narrow window as a possible first-failure cause, but the missing old record prevents confirmation.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

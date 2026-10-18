@@ -1,8 +1,11 @@
 # Physical C64U cache verification
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 Verified 2026-10-14 on C64 Ultimate firmware 3.14, FPGA 121, core 1.47, PAL, enabled 16 MB REU. The native cache probe passed under **Manual turbo settings 1, 16 and 64 MHz**. Each readback contained all 1,536 expected bytes; captured executable bytes matched the uploaded PRG. This proves integrity at those settings, not calibrated throughput or target DOS boot.
 
-[Compact evidence](../agentworking/evidence/c64u-cache-20261014.json) pins binaries, device, firmware speed options, byte hashes and restoration results. Raw Terminal-owned run: `agentworking/runs/c64u-cache-20261014-231652`.
+Compact evidence (local development record, not distributed) pins binaries, device, firmware speed options, byte hashes and restoration results. Raw Terminal-owned run: `agentworking/runs/c64u-cache-20261014-231652`.
 
 ## Procedure and recovery scope
 
@@ -21,39 +24,39 @@ The physical REU is 16 MiB; test addresses stay below the 4 MiB baseline. Peddle
 
 ## Native DOS3.3 physical milestone —2026-10-15
 
-The frozen three-overlay647eca target passed actual native UCI360KiB import, genuineDOS/COMMAND.COM, VER and exactDIR /P atManual64MHz.35 names/sizes,9216free,14 BIOS-enqueued keys,1pagination and returnedA> are verified over108 coherent observations. Code/source/floppy/CGA identities pass. All first4MiB were backed, exhaustively delta-scanned/restored and independently reread; root byte comparison, priorconfiguration/media equality andreset/resume pass. [Evidence](../agentworking/evidence/c64u-native-dos-20261015.json).
+The frozen three-overlay647eca target passed actual native UCI360KiB import, genuineDOS/COMMAND.COM, VER and exactDIR /P atManual64MHz.35 names/sizes,9216free,14 BIOS-enqueued keys,1pagination and returnedA> are verified over108 coherent observations. Code/source/floppy/CGA identities pass. All first4MiB were backed, exhaustively delta-scanned/restored and independently reread; root byte comparison, priorconfiguration/media equality andreset/resume pass. Evidence (local development record, not distributed).
 
 This accepts scripted native DOS execution and physical bitmap bytes, not human matrix keyboard,40column/graphics presentation, external HDMI readability, persistent saves/HD/IEC or XT-speed ratio. The newer five-overlay timer/CGA target remains a distinct Peddle proof and has not run physically. Native bitmap reconstruction uses capturedRAM and an illustrativepalette, not a screenshot. The earlier pre-load RESTattachment failure remains retained.
 
 
 ## Physical native-file recovery and retained new-target failure
 
-Run080121 restores the freshfirst4MiB exactly onattempt1,withnativeCRC/8192sectors/knownCLOSE/strictcodeandoriginalservicefullreadback. Complete stage231.923seconds,configuration/media/resetpass. The same run's five-overlayDOSapplication failsits180secondobservationboundbeforeVER/DIRcomplete; it is not a passedDOSrun. Finalfailurecapturehas READackA5/command0,so generictimeouttextdoesnotproveanative12secondhang. [Evidence](../agentworking/evidence/c64u-native-file-recovery-20261015.json). Old064456three-overlayDOSacceptance remainsseparate. Optional boundedobservercadence/budget nowpreserves olddefaults andreportstimeoutscope. RawREST0000/0001cannotbeusedasaliveCPUbankproof; copiedHDBIOSidentitymustcompareimmutablePRGsourceA000–ADFFtoactualF000–FDFF,withseparatebank-evidencescope.
+Run080121 restores the freshfirst4MiB exactly onattempt1,withnativeCRC/8192sectors/knownCLOSE/strictcodeandoriginalservicefullreadback. Complete stage231.923seconds,configuration/media/resetpass. The same run's five-overlayDOSapplication failsits180secondobservationboundbeforeVER/DIRcomplete; it is not a passedDOSrun. Finalfailurecapturehas READackA5/command0,so generictimeouttextdoesnotproveanative12secondhang. Evidence (local development record, not distributed). Old064456three-overlayDOSacceptance remainsseparate. Optional boundedobservercadence/budget nowpreserves olddefaults andreportstimeoutscope. RawREST0000/0001cannotbeusedasaliveCPUbankproof; copiedHDBIOSidentitymustcompareimmutablePRGsourceA000–ADFFtoactualF000–FDFF,withseparatebank-evidencescope.
 
 
 ## Current six-overlay floppy-only acceptance
 
-Terminal run085647 passes runtime98fc/configured1ff1 atManual64/PAL/firmware3.14. HDdisabled. GenuineDOS/VER/DIR /P exact35entries/9216free/returnedprompt andall3584copiedshadowbytes/A5guard pass. Completebitmap/matrix matchindependentlicensedfontoracle. Freshfull4MiBbackup/nativefile restore/allbytecompare/configmediareset pass,222.093srestore/436.493swhole. [Evidence](../agentworking/evidence/c64u-native-six-20261015.json). Explicit2s/360sobserverfunctionaloptions wereused; oldfailedfive180srun staysfailed. No externalHDMI/physicalmatrix/MODE/CGAgraphics/HDpersist/upper12MiB/XTacceptance follows.
+Terminal run085647 passes runtime98fc/configured1ff1 atManual64/PAL/firmware3.14. HDdisabled. GenuineDOS/VER/DIR /P exact35entries/9216free/returnedprompt andall3584copiedshadowbytes/A5guard pass. Completebitmap/matrix matchindependentlicensedfontoracle. Freshfull4MiBbackup/nativefile restore/allbytecompare/configmediareset pass,222.093srestore/436.493swhole. Evidence (local development record, not distributed). Explicit2s/360sobserverfunctionaloptions wereused; oldfailedfive180srun staysfailed. No externalHDMI/physicalmatrix/MODE/CGAgraphics/HDpersist/upper12MiB/XTacceptance follows.
 
-The opt-in [MODE runner](../build_support/c64u_native_display_runner.py) requires explicitactualunitproof SHA,pinnedpairedruntime/source/bitmap inputs,rolespecificshadowmetadata,freshownedfloppy/PRGs andcompleteREUrecovery. Localvalidate andindependentpreflight precedeTerminalexecution. [Hostevidence](../agentworking/evidence/mode-host-production-20261015.json).
+The opt-in [MODE runner](../build_support/c64u_native_display_runner.py) requires explicitactualunitproof SHA,pinnedpairedruntime/source/bitmap inputs,rolespecificshadowmetadata,freshownedfloppy/PRGs andcompleteREUrecovery. Localvalidate andindependentpreflight precedeTerminalexecution. Hostevidence (local development record, not distributed).
 
 
 ## Physical MODE acceptance
 
-Terminal MODE run092257 passes on98fc/configuredab50 with HDdisabled. Genuine CO40 and CO80 return prompts and pass complete bitmap/matrix/font/coherent state/code checks;22 BIOS keys/25 observations. Independent preflight741 and audit1,443 checks pass. First recovery fails before DMA, retains protocol/unknown-handle diagnostics; second restores all4MiB. Observed total restoration272.930seconds, whole461.177seconds;600seconds is configured per attempt. Fresh owned floppy/PRGs and final settings/media/reset pass. [Evidence](../agentworking/evidence/c64u-native-mode-20261015.json). This does not accept physical matrix input or external readability.
+Terminal MODE run092257 passes on98fc/configuredab50 with HDdisabled. Genuine CO40 and CO80 return prompts and pass complete bitmap/matrix/font/coherent state/code checks;22 BIOS keys/25 observations. Independent preflight741 and audit1,443 checks pass. First recovery fails before DMA, retains protocol/unknown-handle diagnostics; second restores all4MiB. Observed total restoration272.930seconds, whole461.177seconds;600seconds is configured per attempt. Fresh owned floppy/PRGs and final settings/media/reset pass. Evidence (local development record, not distributed). This does not accept physical matrix input or external readability.
 
 
 ## Current combined clock/PIC native DOS acceptance
 
-Run102259 passes22f82091/configuredea93 onPAL/Manual64/firmware3.14 withHDdisabled.33observations/14BIOSkeys/all35DIRentries/9216free/returnedprompt; all3584shadowbytes/code2361/tail1223/A5 andfullfont/bitmap/matrix match. Fresh4MiBbackup andfirstnative-file restore/allbytecompare/configmediareset pass,226.434srestore/430.775swhole. Independentrawaudit1524checks. Preflightcompleted745checks; provisional1105claimretractedwithoriginals preserved. [Evidence](../agentworking/evidence/c64u-native-performance-20261015.json).
+Run102259 passes22f82091/configuredea93 onPAL/Manual64/firmware3.14 withHDdisabled.33observations/14BIOSkeys/all35DIRentries/9216free/returnedprompt; all3584shadowbytes/code2361/tail1223/A5 andfullfont/bitmap/matrix match. Fresh4MiBbackup andfirstnative-file restore/allbytecompare/configmediareset pass,226.434srestore/430.775swhole. Independentrawaudit1524checks. Preflightcompleted745checks; provisional1105claimretractedwithoriginals preserved. Evidence (local development record, not distributed).
 
 Finalscreen107.320s/app+evidence127.714s versusprevious98fc118.151/138.700s areobservedone-runcomparisons, notisolatedspeedup/XTbenchmarks. No newtargetMODE40/80/graphics/humanmatrix/externalHDMI/persistentHD/IEC/floppy-save/upper12MiB acceptance follows.
 
 
 ## Background execution and recovery coordinator
 
-All Ultimate FTP/API/test jobs run in fully detached owned background shells, with stdin from `/dev/null`, logs and PID/exit records. One worker owns the device. See [execution policy](../agentworking/HARDWARE_BACKGROUND_EXECUTION.md). The user also permits REST resets/reboots when needed; verify the relevant state afterward.
+All Ultimate FTP/API/test jobs run in fully detached owned background shells, with stdin from `/dev/null`, logs and PID/exit records. One worker owns the device. See execution policy (local development record, not distributed). The user also permits REST resets/reboots when needed; verify the relevant state afterward.
 
 `build_support/c64u_full_recovery.py` provides an opt-in coordinator around the unchanged REU service/data algorithms. It completes bounded restoration, settings/media checks and reset/resume before re-raising the first exception, with its report attached as `dos64_recovery_report`. A retention hook may expose its caught first exception in optional `interruption`; the coordinator captures that object before report serialization or restoration. Failed reports without an exception remain failed reports. The original default coordinator is unchanged. Ten host tests use an in-memory device oracle; they do not establish physical recovery.
 
-The active-FTP whole-file recovery on2026-10-16 separately passed native3880 CRC/known-close, original40fe comparison of all4MiB, complete FTP readback and settings/media/reset. ROOT compared every restored byte to the original backup. [Evidence](../agentworking/evidence/native-bulk-active-wholefile-recovery-root-20261016.json). The earlier2MiB campaign remains failed.
+The active-FTP whole-file recovery on2026-10-16 separately passed native3880 CRC/known-close, original40fe comparison of all4MiB, complete FTP readback and settings/media/reset. ROOT compared every restored byte to the original backup. Evidence (local development record, not distributed). The earlier2MiB campaign remains failed.

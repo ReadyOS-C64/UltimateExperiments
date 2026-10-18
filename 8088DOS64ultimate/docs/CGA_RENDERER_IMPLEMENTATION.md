@@ -1,6 +1,9 @@
 # Native CGA presentation
 
-Accepted in the five-overlay Peddle target on 2026-10-15. `src/render_graphics.s` is a real 6510 renderer loaded through GFX, not a host image substitute. [Evidence](../agentworking/evidence/timer-graphics-integration-20261015.json) pins the target. No physical graphics acceptance is claimed.
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+Accepted in the five-overlay Peddle target on 2026-10-15. `src/render_graphics.s` is a real 6510 renderer loaded through GFX, not a host image substitute. Evidence (local development record, not distributed) pins the target. No physical graphics acceptance is claimed.
 
 Coherent BIOS/BDA modes 4/5/6 select graphics presentation. Guest CGA storage is read through cache authority and remains exact. Modes 4/5 reduce 320 pixels to 160 by foreground-preserving adjacent pairs; mode 6 reduces 640 to 320 by pair OR. C64 cell color and palette restrictions cause documented approximations. Direct CGA 3D8h/3D9h/CRTC programming remains unsupported.
 

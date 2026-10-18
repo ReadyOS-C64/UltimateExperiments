@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Target-Tested SQL Examples · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Target-Tested SQL Examples"><link rel="stylesheet" href="../style.css"></head>
-<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="reusql" open><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="performance.html">Performance and staged queries</a></li><li><a href="shell.html">Interactive shell</a></li><li><a href="sql-language.html">SQL language</a></li><li><a href="tested-queries.html" aria-current="page">Tested SQL examples</a></li><li><a href="architecture.html">Architecture</a></li><li><a href="memory-map.html">Memory map</a></li><li><a href="public-api.html">Public API</a></li><li><a href="storage-format.html">Storage format</a></li><li><a href="export-format.html">Export format</a></li><li><a href="dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#how-to-use-this-evidence-catalog">How to use this evidence catalog</a></li><li><a href="#schemas-values-and-basic-queries">Schemas, values and basic queries</a></li><li><a href="#transactions-and-indexed-access">Transactions and indexed access</a></li><li><a href="#joins-subqueries-and-result-shaping">Joins, subqueries and result shaping</a></li><li><a href="#validation-and-schema-lifecycles">Validation and schema lifecycles</a></li><li><a href="#numeric-and-streamed-value-aggregation">Numeric and streamed-value aggregation</a></li><li><a href="#persistence-export-and-shell">Persistence, export and shell</a></li><li><a href="#three-source-and-nested-query-composition">Three-source and nested query composition</a></li><li><a href="#benchmarks-and-performance">Benchmarks and performance</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="tested-queries.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="target-tested-sql-examples">Target-Tested SQL Examples</h1>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql" open><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="performance.html">Performance and staged queries</a></li><li><a href="shell.html">Interactive shell</a></li><li><a href="sql-language.html">SQL language</a></li><li><a href="tested-queries.html" aria-current="page">Tested SQL examples</a></li><li><a href="architecture.html">Architecture</a></li><li><a href="memory-map.html">Memory map</a></li><li><a href="public-api.html">Public API</a></li><li><a href="storage-format.html">Storage format</a></li><li><a href="export-format.html">Export format</a></li><li><a href="dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#how-to-use-this-evidence-catalog">How to use this evidence catalog</a></li><li><a href="#schemas-values-and-basic-queries">Schemas, values and basic queries</a></li><li><a href="#transactions-and-indexed-access">Transactions and indexed access</a></li><li><a href="#joins-subqueries-and-result-shaping">Joins, subqueries and result shaping</a></li><li><a href="#validation-and-schema-lifecycles">Validation and schema lifecycles</a></li><li><a href="#numeric-and-streamed-value-aggregation">Numeric and streamed-value aggregation</a></li><li><a href="#persistence-export-and-shell">Persistence, export and shell</a></li><li><a href="#three-source-and-nested-query-composition">Three-source and nested query composition</a></li><li><a href="#benchmarks-and-performance">Benchmarks and performance</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="tested-queries.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="target-tested-sql-examples">Target-Tested SQL Examples</h1>
 <p>These statements are executed by the compiled 6510 test program in both
 Peddle REU sizes and by the automated VICE D81/1581 lane. This is an evidence list,
 not a claim that the rest of the planned dialect is already implemented.</p>
@@ -13,7 +13,7 @@ not a claim that the rest of the planned dialect is already implemented.</p>
 <p><a href="performance.html">Why this happens and how to stage a query</a>.</p>
 </blockquote>
 <h3 id="schema-and-physical-types">Schema and physical types</h3>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">create table</span> sqltypes (
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">create table</span> sqltypes (
   flag <span class="hljs-type">boolean</span> <span class="hljs-keyword">not null</span>,
   tiny i8,
   small i16 <span class="hljs-keyword">null</span>,
@@ -25,32 +25,32 @@ not a claim that the rest of the planned dialect is already implemented.</p>
 );</code></pre>
 <p>The test reopens the catalog and checks all eight columns, the 33-byte physical
 row width (including its null bitmap), the nullable <code>I16</code>, and <code>CHAR(9)</code>.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> SQLVAR (BODY TEXT <span class="hljs-keyword">NULL</span>, RAW <span class="hljs-type">BLOB</span>)</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> SQLVAR (BODY TEXT <span class="hljs-keyword">NULL</span>, RAW <span class="hljs-type">BLOB</span>)</code></pre>
 <p>This verifies variable-value columns occupy stable four-byte handles in the
 fixed row.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">INSERT INTO</span> SQLVAR <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;C64 &#x27;&#x27;TEXT&#x27;&#x27;&#x27;</span>, X<span class="hljs-string">&#x27;00FF104142&#x27;</span>);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">INSERT INTO</span> SQLVAR <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;C64 &#x27;&#x27;TEXT&#x27;&#x27;&#x27;</span>, X<span class="hljs-string">&#x27;00FF104142&#x27;</span>);
 <span class="hljs-keyword">INSERT INTO</span> SQLVAR <span class="hljs-keyword">VALUES</span> (<span class="hljs-keyword">NULL</span>, X<span class="hljs-string">&#x27;&#x27;</span>);</code></pre>
 <p>The first statement verifies escaped TEXT plus a binary literal containing a
 zero byte. The second verifies nullable TEXT and a zero-length BLOB. The target
 checks handle placement, heap kind and length, exact payload bytes, and row
 counts.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> SQLDML (
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> SQLDML (
   ID I16,
   NAME <span class="hljs-type">CHAR</span>(<span class="hljs-number">8</span>),
   ACTIVE <span class="hljs-type">BOOLEAN</span>,
   SCORE I32 <span class="hljs-keyword">NULL</span>
 )</code></pre>
 <h3 id="inserts-and-literal-encoding">Inserts and literal encoding</h3>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">INSERT INTO</span> SQLDML <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">42</span>, <span class="hljs-string">&#x27;ADA&#x27;</span>, <span class="hljs-literal">TRUE</span>, <span class="hljs-keyword">NULL</span>)</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">INSERT INTO</span> SQLDML <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">42</span>, <span class="hljs-string">&#x27;ADA&#x27;</span>, <span class="hljs-literal">TRUE</span>, <span class="hljs-keyword">NULL</span>)</code></pre>
 <p>The test scans the stored row, checks the null bit for <code>SCORE</code>, little-endian
 <code>I16</code>, space padding for <code>CHAR(8)</code>, and the boolean byte.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">insert into</span> sqldml <span class="hljs-keyword">values</span> (<span class="hljs-number">-7</span>, <span class="hljs-string">&#x27;O&#x27;&#x27;NEIL&#x27;</span>, <span class="hljs-literal">false</span>, <span class="hljs-number">123456</span>);</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">insert into</span> sqldml <span class="hljs-keyword">values</span> (<span class="hljs-number">-7</span>, <span class="hljs-string">&#x27;O&#x27;&#x27;NEIL&#x27;</span>, <span class="hljs-literal">false</span>, <span class="hljs-number">123456</span>);</code></pre>
 <p>This covers case-insensitive keywords/names, a negative integer, doubled-quote
 escaping, false, a four-byte integer, and an optional trailing semicolon. The
 row iterator must return both inserts in deterministic physical order and then
 <code>RSQL_ERR_NOT_FOUND</code>.</p>
 <h3 id="named-enumerations">Named enumerations</h3>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TYPE MOOD <span class="hljs-keyword">AS</span> ENUM8 (SAD <span class="hljs-operator">=</span> <span class="hljs-number">1</span>, OK <span class="hljs-operator">=</span> <span class="hljs-number">2</span>, HAPPY <span class="hljs-operator">=</span> <span class="hljs-number">7</span>);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TYPE MOOD <span class="hljs-keyword">AS</span> ENUM8 (SAD <span class="hljs-operator">=</span> <span class="hljs-number">1</span>, OK <span class="hljs-operator">=</span> <span class="hljs-number">2</span>, HAPPY <span class="hljs-operator">=</span> <span class="hljs-number">7</span>);
 <span class="hljs-keyword">CREATE</span> TYPE BIGCODE <span class="hljs-keyword">AS</span> ENUM16 (LOW <span class="hljs-operator">=</span> <span class="hljs-number">1</span>, HIGH <span class="hljs-operator">=</span> <span class="hljs-number">300</span>);
 <span class="hljs-keyword">CREATE TABLE</span> EDATA (ID I16, STATE MOOD, CODE BIGCODE <span class="hljs-keyword">NULL</span>);
 
@@ -68,48 +68,48 @@ unknown named column type, duplicate enum values, an ENUM8 member above 255,
 missing members, a qualifier for the wrong enum, an enum literal assigned to a
 non-enum column, and numeric values outside ENUM8/ENUM16 unsigned ranges.</p>
 <h3 id="select-and-cursor-results">SELECT and cursor results</h3>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> BODY, RAW <span class="hljs-keyword">FROM</span> SQLVAR;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> BODY, RAW <span class="hljs-keyword">FROM</span> SQLVAR;
 <span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(BODY) <span class="hljs-keyword">FROM</span> SQLVAR;</code></pre>
 <p>The cursor reports logical TEXT/BLOB payload lengths rather than the four-byte
 physical handle width. <code>rsql_value_read()</code> streams the full TEXT and a BLOB
 slice, including zero bytes. The second row returns NULL TEXT and a non-NULL,
 zero-length BLOB; <code>COUNT(BODY)</code> returns one.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> SQLDML</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> SQLDML</code></pre>
 <p>Opened through the query/cursor ABI. It returns one non-NULL <code>I64</code> value equal
 to two, then reaches end-of-cursor. Closing it makes a later <code>next</code> call return
 <code>RSQL_ERR_CURSOR_STATE</code>.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">select</span> name, score, id <span class="hljs-keyword">from</span> sqldml;</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">select</span> name, score, id <span class="hljs-keyword">from</span> sqldml;</code></pre>
 <p>The cursor returns both rows in physical order. Tests check projection order,
 the first row&#39;s NULL <code>SCORE</code>, the second row&#39;s <code>123456</code>, both IDs, and streamed
 eight-byte CHAR values through <code>rsql_value_read()</code>.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> SQLDML <span class="hljs-keyword">WHERE</span> SCORE <span class="hljs-keyword">IS</span> <span class="hljs-keyword">NOT NULL</span></code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> SQLDML <span class="hljs-keyword">WHERE</span> SCORE <span class="hljs-keyword">IS</span> <span class="hljs-keyword">NOT NULL</span></code></pre>
 <p>This verifies NULL-aware filtering happens before aggregation: only the second
 row contributes, so the result is one.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SQLDML <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">&lt;</span> <span class="hljs-number">0</span></code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SQLDML <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">&lt;</span> <span class="hljs-number">0</span></code></pre>
 <p>This exercises signed, width-aware integer comparison. It returns only <code>-7</code>
 and then end-of-cursor.</p>
 <h3 id="compound-predicates-and-like">Compound predicates and LIKE</h3>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> SQLDML
 <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">&lt;</span> <span class="hljs-number">0</span> <span class="hljs-keyword">OR</span> ACTIVE <span class="hljs-operator">=</span> <span class="hljs-literal">TRUE</span> <span class="hljs-keyword">AND</span> SCORE <span class="hljs-keyword">IS</span> <span class="hljs-keyword">NULL</span></code></pre>
 <p>Returns two and proves <code>AND</code> binds more tightly than <code>OR</code>.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> SQLDML
 <span class="hljs-keyword">WHERE</span> (ID <span class="hljs-operator">&lt;</span> <span class="hljs-number">0</span> <span class="hljs-keyword">OR</span> ACTIVE <span class="hljs-operator">=</span> <span class="hljs-literal">TRUE</span>) <span class="hljs-keyword">AND</span> SCORE <span class="hljs-keyword">IS</span> <span class="hljs-keyword">NULL</span></code></pre>
 <p>Returns one, proving parentheses override precedence.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> SQLDML
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">NOT</span> (SCORE <span class="hljs-operator">=</span> <span class="hljs-keyword">NULL</span>) <span class="hljs-keyword">OR</span> ID <span class="hljs-operator">&lt;</span> <span class="hljs-number">0</span></code></pre>
 <p>Returns one. Comparisons with NULL produce UNKNOWN, NOT preserves UNKNOWN, and
 <code>UNKNOWN OR TRUE</code> becomes TRUE only for the negative-ID row.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> SQLDML
 <span class="hljs-keyword">WHERE</span> NAME <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;a_a%&#x27;</span> <span class="hljs-keyword">OR</span> NAME <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;%NEIL&#x27;</span></code></pre>
 <p>Returns two and covers folded matching, <code>_</code>, <code>%</code>, suffix matching, and trimming
 of fixed-CHAR padding for LIKE.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> SQLDML <span class="hljs-keyword">WHERE</span> NAME <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;%NEIL&#x27;</span></code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> SQLDML <span class="hljs-keyword">WHERE</span> NAME <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;%NEIL&#x27;</span></code></pre>
 <p>Returns one and verifies the standard infix <code>NOT LIKE</code> spelling.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> SQLDML
 <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">&gt;=</span> <span class="hljs-number">-7</span> <span class="hljs-keyword">AND</span> ID <span class="hljs-operator">&lt;=</span> <span class="hljs-number">42</span> <span class="hljs-keyword">AND</span> ID <span class="hljs-operator">!=</span> <span class="hljs-number">0</span>
   <span class="hljs-keyword">AND</span> ID <span class="hljs-operator">&lt;&gt;</span> <span class="hljs-number">99</span> <span class="hljs-keyword">AND</span> ID <span class="hljs-operator">&gt;</span> <span class="hljs-number">-8</span> <span class="hljs-keyword">AND</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">42</span></code></pre>
@@ -118,20 +118,20 @@ postfix predicate program.</p>
 <h3 id="grouping-and-aggregates">Grouping and aggregates</h3>
 <p>The aggregate lane creates a data set with duplicate keys, negative values,
 and NULL-only groups:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> AGGDATA (REGION <span class="hljs-type">CHAR</span>(<span class="hljs-number">4</span>), AMOUNT I16 <span class="hljs-keyword">NULL</span>);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> AGGDATA (REGION <span class="hljs-type">CHAR</span>(<span class="hljs-number">4</span>), AMOUNT I16 <span class="hljs-keyword">NULL</span>);
 <span class="hljs-keyword">INSERT INTO</span> AGGDATA <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;N&#x27;</span>, <span class="hljs-number">10</span>);
 <span class="hljs-keyword">INSERT INTO</span> AGGDATA <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;N&#x27;</span>, <span class="hljs-number">20</span>);
 <span class="hljs-keyword">INSERT INTO</span> AGGDATA <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;S&#x27;</span>, <span class="hljs-number">-5</span>);
 <span class="hljs-keyword">INSERT INTO</span> AGGDATA <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;S&#x27;</span>, <span class="hljs-keyword">NULL</span>);
 <span class="hljs-keyword">INSERT INTO</span> AGGDATA <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;E&#x27;</span>, <span class="hljs-keyword">NULL</span>);
 <span class="hljs-keyword">INSERT INTO</span> AGGDATA <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;N&#x27;</span>, <span class="hljs-number">10</span>);</code></pre>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">COUNT</span>(AMOUNT), <span class="hljs-built_in">SUM</span>(AMOUNT), <span class="hljs-built_in">AVG</span>(AMOUNT),
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">COUNT</span>(AMOUNT), <span class="hljs-built_in">SUM</span>(AMOUNT), <span class="hljs-built_in">AVG</span>(AMOUNT),
        <span class="hljs-built_in">MIN</span>(AMOUNT), <span class="hljs-built_in">MAX</span>(AMOUNT)
 <span class="hljs-keyword">FROM</span> AGGDATA
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">3</span> <span class="hljs-keyword">DESC</span></code></pre>
 <p>The result is <code>6, 4, 35, 8, -5, 20</code>. <code>COUNT(AMOUNT)</code> ignores NULL and the
 current integer <code>AVG</code> truncates toward zero into <code>I64</code>.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> REGION, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">COUNT</span>(AMOUNT), <span class="hljs-built_in">SUM</span>(AMOUNT), <span class="hljs-built_in">AVG</span>(AMOUNT),
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> REGION, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">COUNT</span>(AMOUNT), <span class="hljs-built_in">SUM</span>(AMOUNT), <span class="hljs-built_in">AVG</span>(AMOUNT),
        <span class="hljs-built_in">MIN</span>(AMOUNT), <span class="hljs-built_in">MAX</span>(AMOUNT)
 <span class="hljs-keyword">FROM</span> AGGDATA
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> REGION
@@ -139,24 +139,24 @@ current integer <code>AVG</code> truncates toward zero into <code>I64</code>.</p
 <p>The target checks all three groups. <code>N</code> gives <code>3, 3, 40, 13, 10, 20</code>; <code>S</code>
 gives <code>2, 1, -5, -5, -5, -5</code>; and NULL-only <code>E</code> returns NULL for SUM, AVG,
 MIN, and MAX.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> REGION, <span class="hljs-built_in">SUM</span>(AMOUNT)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> REGION, <span class="hljs-built_in">SUM</span>(AMOUNT)
 <span class="hljs-keyword">FROM</span> AGGDATA
 <span class="hljs-keyword">WHERE</span> AMOUNT <span class="hljs-keyword">IS</span> <span class="hljs-keyword">NOT NULL</span>
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> REGION
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> REGION <span class="hljs-keyword">DESC</span></code></pre>
 <p>This proves WHERE is applied before grouping, excludes the NULL-only <code>E</code>
 group, and orders named group keys directly; results are <code>S</code> then <code>N</code>.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> REGION, AMOUNT, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> REGION, AMOUNT, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> AGGDATA
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> REGION, AMOUNT</code></pre>
 <p>This verifies compound grouping keys, NULL key equality, and duplicate
 <code>(&#39;N&#39;, 10)</code> collapse.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">COUNT</span>(AMOUNT), <span class="hljs-built_in">SUM</span>(AMOUNT), <span class="hljs-built_in">AVG</span>(AMOUNT),
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">COUNT</span>(AMOUNT), <span class="hljs-built_in">SUM</span>(AMOUNT), <span class="hljs-built_in">AVG</span>(AMOUNT),
        <span class="hljs-built_in">MIN</span>(AMOUNT), <span class="hljs-built_in">MAX</span>(AMOUNT)
 <span class="hljs-keyword">FROM</span> EMPTYDATA</code></pre>
 <p>The empty-table result is one row containing <code>0, 0, NULL, NULL, NULL, NULL</code>.</p>
 <h3 id="commodore-float">Commodore FLOAT</h3>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> FLOATDATA (REGION <span class="hljs-type">CHAR</span>(<span class="hljs-number">2</span>), <span class="hljs-keyword">VALUE</span> <span class="hljs-type">FLOAT</span> <span class="hljs-keyword">NULL</span>);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> FLOATDATA (REGION <span class="hljs-type">CHAR</span>(<span class="hljs-number">2</span>), <span class="hljs-keyword">VALUE</span> <span class="hljs-type">FLOAT</span> <span class="hljs-keyword">NULL</span>);
 <span class="hljs-keyword">INSERT INTO</span> FLOATDATA <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;A&#x27;</span>, <span class="hljs-number">1.5</span>);
 <span class="hljs-keyword">INSERT INTO</span> FLOATDATA <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;A&#x27;</span>, <span class="hljs-number">2.25</span>);
 <span class="hljs-keyword">INSERT INTO</span> FLOATDATA <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;B&#x27;</span>, <span class="hljs-number">-0.75</span>);
@@ -181,7 +181,7 @@ integer-coerced, updated, and aggregate values. The ungrouped row is
 <code>1.5</code>, max <code>2.25</code>; group <code>B</code> ignores its NULL and returns <code>-0.75</code> for sum, min,
 and max. <code>rsql_value_read()</code> and inline cursor bytes must agree exactly.</p>
 <p>Aggregate/grouped shaping is also combined with pagination:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> REGION, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> REGION, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> AGGDATA
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> REGION
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">2</span> <span class="hljs-keyword">DESC</span>
@@ -190,18 +190,18 @@ LIMIT <span class="hljs-number">1</span> <span class="hljs-keyword">OFFSET</span
 Ungrouped <code>DISTINCT</code> is a one-row proof; grouped <code>DISTINCT</code> is optimized away
 when every group key is projected. Exact projected-tuple elimination is tested
 when a key is omitted:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> REGION
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> REGION
 <span class="hljs-keyword">FROM</span> AGGDATA
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> REGION, AMOUNT;</code></pre>
 <p>The compound groups are <code>(N,10)</code>, <code>(N,20)</code>, <code>(S,-5)</code>, <code>(S,NULL)</code>, and
 <code>(E,NULL)</code>, but the projected result is exactly <code>N</code>, <code>S</code>, <code>E</code>. This proves
 deduplication across different group identities without a materialized set.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">UPDATE</span> AGGDATA <span class="hljs-keyword">SET</span> AMOUNT <span class="hljs-operator">=</span> <span class="hljs-number">1.5</span> <span class="hljs-keyword">WHERE</span> REGION <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;N&#x27;</span>;</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">UPDATE</span> AGGDATA <span class="hljs-keyword">SET</span> AMOUNT <span class="hljs-operator">=</span> <span class="hljs-number">1.5</span> <span class="hljs-keyword">WHERE</span> REGION <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;N&#x27;</span>;</code></pre>
 <p>Rejected with <code>RSQL_ERR_TYPE_MISMATCH</code>: a decimal FLOAT literal is not silently
 narrowed into I16.</p>
 <h2 id="transactions-and-indexed-access">Transactions and indexed access</h2>
 <h3 id="atomic-mutation-failure-injection">Atomic mutation failure injection</h3>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> JFAIL (ID I16)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> JFAIL (ID I16)
 <span class="hljs-keyword">INSERT INTO</span> JFAIL <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>)
 <span class="hljs-keyword">INSERT INTO</span> JFAIL <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">2</span>)
 <span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> JFAIL</code></pre>
@@ -214,7 +214,7 @@ the committed transaction&#39;s measured write count to inject failure at every
 write boundary, proving that payload pages, directory entries, handle counters,
 the row, and allocation bitmap roll back together.</p>
 <h3 id="delete">DELETE</h3>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> JFAIL <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> JFAIL <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
 <span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> JFAIL <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">&gt;</span> <span class="hljs-number">100</span>;
 <span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> JFAIL <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">2</span> <span class="hljs-keyword">OR</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">99</span>;
 <span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> JFAIL;</code></pre>
@@ -223,7 +223,7 @@ COUNT(*) after each statement. Failure is injected before both writes of a
 single-row delete and all four writes of a two-row delete; every failure leaves
 both rows and the allocation state intact before a successful retry.</p>
 <p>Variable ownership is exercised separately:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> VDEL <span class="hljs-keyword">WHERE</span> BODY <span class="hljs-keyword">IS</span> <span class="hljs-keyword">NULL</span>;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> VDEL <span class="hljs-keyword">WHERE</span> BODY <span class="hljs-keyword">IS</span> <span class="hljs-keyword">NULL</span>;
 <span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> VDEL;
 <span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> VFAIL;</code></pre>
 <p>The filtered statement tombstones the empty BLOB handle but leaves the other
@@ -233,7 +233,7 @@ statement owns four nonempty handles; failure injection at every measured write
 boundary restores both rows and all four active directory entries. The commit
 tombstones all four and compaction reclaims four pages.</p>
 <h3 id="update">UPDATE</h3>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">UPDATE</span> UDATA
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">UPDATE</span> UDATA
 <span class="hljs-keyword">SET</span> NAME <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;Z&#x27;</span>, SCORE <span class="hljs-operator">=</span> <span class="hljs-number">99</span>
 <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">&gt;=</span> <span class="hljs-number">2</span> <span class="hljs-keyword">AND</span> ID <span class="hljs-operator">&lt;</span> <span class="hljs-number">3</span>;
 
@@ -248,7 +248,7 @@ queries verify the updated predicates. A two-row UPDATE is replayed with
 failure before each row-page write; both rows retain their old values and the
 allocation state until the successful retry.</p>
 <p>Variable ownership is covered in a fifth target lane:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">UPDATE</span> VUP
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">UPDATE</span> VUP
 <span class="hljs-keyword">SET</span> BODY <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;REPLACED&#x27;</span>, RAW <span class="hljs-operator">=</span> X<span class="hljs-string">&#x27;AA00&#x27;</span>, NAME <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;Z&#x27;</span>
 <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
 
@@ -266,14 +266,14 @@ handles, predicates, and the first-free page. The committed retry tombstones
 four old handles, and compaction reclaims exactly four payload pages.</p>
 <h3 id="persistent-named-indexes">Persistent named indexes</h3>
 <p>The storage lane builds both compound and single-column indexes:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> IDXT (ID I16, NAME <span class="hljs-type">CHAR</span>(<span class="hljs-number">64</span>), NOTE TEXT <span class="hljs-keyword">NULL</span>);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> IDXT (ID I16, NAME <span class="hljs-type">CHAR</span>(<span class="hljs-number">64</span>), NOTE TEXT <span class="hljs-keyword">NULL</span>);
 <span class="hljs-keyword">INSERT INTO</span> IDXT <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">42</span>, <span class="hljs-string">&#x27;ADA&#x27;</span>, <span class="hljs-keyword">NULL</span>);
 <span class="hljs-keyword">INSERT INTO</span> IDXT <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">-7</span>, <span class="hljs-string">&#x27;O&#x27;&#x27;NEIL&#x27;</span>, <span class="hljs-string">&#x27;TEXT&#x27;</span>);
 
 <span class="hljs-keyword">CREATE</span> INDEX IDX_NAME_ID <span class="hljs-keyword">ON</span> IDXT (NAME, ID);
 <span class="hljs-keyword">CREATE</span> INDEX IDX_ID <span class="hljs-keyword">ON</span> IDXT (ID);</code></pre>
 <p>Queries opt in by index name and still apply the complete WHERE predicate:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID
 <span class="hljs-keyword">FROM</span> IDXT <span class="hljs-keyword">USING</span> INDEX IDX_NAME_ID
 <span class="hljs-keyword">WHERE</span> NAME <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;O&#x27;&#x27;NEIL&#x27;</span>;
 
@@ -282,7 +282,7 @@ four old handles, and compaction reclaims exactly four payload pages.</p>
 <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">42</span>;</code></pre>
 <p>The target checks the persisted descriptor and first leaf, then exercises
 index maintenance through all three DML operations:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">UPDATE</span> IDXT <span class="hljs-keyword">SET</span> NAME <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;GRACE&#x27;</span> <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">42</span>;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">UPDATE</span> IDXT <span class="hljs-keyword">SET</span> NAME <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;GRACE&#x27;</span> <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">42</span>;
 <span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> IDXT <span class="hljs-keyword">USING</span> INDEX IDX_NAME_ID <span class="hljs-keyword">WHERE</span> NAME <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;GRACE&#x27;</span>;
 
 <span class="hljs-keyword">INSERT INTO</span> IDXT <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">5</span>, <span class="hljs-string">&#x27;BOB&#x27;</span>, <span class="hljs-keyword">NULL</span>);
@@ -297,7 +297,7 @@ shutdown/reinitialize between insertion and deletion proves index persistence.
 The UPDATE is replayed with failure at every measured journal write; every
 failure restores both the row and both indexes, while the successful retry
 makes only the new key visible.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> INDEX IDX_NOTE <span class="hljs-keyword">ON</span> IDXT (NOTE);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> INDEX IDX_NOTE <span class="hljs-keyword">ON</span> IDXT (NOTE);
 <span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> IDXT <span class="hljs-keyword">USING</span> INDEX NO_SUCH_INDEX;
 <span class="hljs-keyword">SELECT</span> NAME <span class="hljs-keyword">FROM</span> PEOPLE <span class="hljs-keyword">USING</span> INDEX IDX_NAME_ID;</code></pre>
 <p>These respectively reject a variable-width key, a missing name, and an index
@@ -306,7 +306,7 @@ owned by a different table. Creating <code>IDX_NAME_ID</code> twice is also reje
 <h3 id="two-source-joins">Two-source joins</h3>
 <p>The join lane creates customers and orders with duplicate matches, unmatched
 rows, a NULL foreign key, signed values, TEXT, and a shared named enum:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TYPE STATE <span class="hljs-keyword">AS</span> ENUM8 (ACTIVE<span class="hljs-operator">=</span><span class="hljs-number">1</span>, INACTIVE<span class="hljs-operator">=</span><span class="hljs-number">2</span>);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TYPE STATE <span class="hljs-keyword">AS</span> ENUM8 (ACTIVE<span class="hljs-operator">=</span><span class="hljs-number">1</span>, INACTIVE<span class="hljs-operator">=</span><span class="hljs-number">2</span>);
 <span class="hljs-keyword">CREATE TABLE</span> CUST (
     ID I16, NAME <span class="hljs-type">CHAR</span>(<span class="hljs-number">8</span>), STATE STATE, LIMITV FIXED8_8
 );
@@ -316,7 +316,7 @@ rows, a NULL foreign key, signed values, TEXT, and a shared named enum:</p>
 );</code></pre>
 <p>An INNER JOIN exercises cross-width signed equality, compound post-join WHERE,
 LIKE, duplicate inner matches, and TEXT streaming:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.NAME, O.ID, O.NOTE
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.NAME, O.ID, O.NOTE
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">INNER</span> <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID <span class="hljs-operator">=</span> O.CID
 <span class="hljs-keyword">WHERE</span> O.TOTAL <span class="hljs-operator">&gt;=</span> <span class="hljs-number">50</span> <span class="hljs-keyword">AND</span> C.NAME <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;A%&#x27;</span>;</code></pre>
@@ -324,7 +324,7 @@ LIKE, duplicate inner matches, and TEXT streaming:</p>
 outer/inner physical order and reads <code>FIRST</code> through <code>rsql_value_read()</code>.</p>
 <p>LEFT JOIN verifies both NULL extension and the distinction between ON and
 WHERE:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID, O.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID, O.ID
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID <span class="hljs-operator">=</span> O.CID;
 
@@ -342,14 +342,14 @@ returns only customer 3. In the third, customer 2 is NULL-extended because its
 only order fails ON, while customer 3 remains unmatched; the result has four
 rows.</p>
 <p>CROSS JOIN applies column references and literals in WHERE:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID, O.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID, O.ID
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O
 <span class="hljs-keyword">WHERE</span> C.ID <span class="hljs-operator">=</span> O.CID;</code></pre>
 <p>It returns three matching pairs. A separate CROSS query checks literal filters,
 and empty-inner tests prove LEFT returns all three outer rows while CROSS
 returns none.</p>
 <p>CHAR and enum column references are first-class:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID, O.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID, O.ID
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.NAME <span class="hljs-operator">=</span> O.LABEL;
 
 <span class="hljs-keyword">SELECT</span> C.ID, O.ID
@@ -361,7 +361,7 @@ and a self-join without distinct aliases.</p>
 <p>FIXED8_8 uses its native two-byte representation for column references and
 scales an integer literal before comparison. The same predicate now forces
 exact joined scalar DISTINCT across different inner row identities:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> LENGTH(C.NAME)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> LENGTH(C.NAME)
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.LIMITV <span class="hljs-operator">=</span> O.AMOUNT
 <span class="hljs-keyword">WHERE</span> O.AMOUNT <span class="hljs-operator">&gt;=</span> <span class="hljs-number">2</span>;</code></pre>
 <p>Four joined pairs qualify: two expose <code>ADA</code> and two expose <code>CY</code>, so the virtual
@@ -370,20 +370,20 @@ proving fixed-point predicate comparison and scalar duplicate elimination
 across different joined pairs.</p>
 <p>Joined ORDER BY remains a bounded nested-loop producer rather than a
 materialized result:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> O.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> O.ID
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID <span class="hljs-operator">=</span> O.CID
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> O.TOTAL <span class="hljs-keyword">ASC</span>, O.ID <span class="hljs-keyword">DESC</span>;</code></pre>
 <p>The target returns order IDs <code>12, 10, 11</code>, proving inner-source keys,
 multi-key direction, and deterministic selection. Pagination composes with the
 ordered stream:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> O.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> O.ID
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID <span class="hljs-operator">=</span> O.CID
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> O.TOTAL <span class="hljs-keyword">ASC</span>, O.ID <span class="hljs-keyword">DESC</span>
 LIMIT <span class="hljs-number">2</span> <span class="hljs-keyword">OFFSET</span> <span class="hljs-number">1</span>;</code></pre>
 <p>This returns <code>10, 11</code>. LEFT-null ordering is checked independently:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID <span class="hljs-operator">=</span> O.CID
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> O.ID <span class="hljs-keyword">DESC</span>;</code></pre>
@@ -391,7 +391,7 @@ LIMIT <span class="hljs-number">2</span> <span class="hljs-keyword">OFFSET</span
 DESC. These cases retain only outer/inner row IDs and a NULL-extension flag.
 They do not allocate joined rows or an execution plan.</p>
 <p>Joined fixed scalar projections also drive the selection comparator directly:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(C.NAME), SUBSTR(O.LABEL,<span class="hljs-number">2</span>,<span class="hljs-number">2</span>), C.NAME<span class="hljs-operator">||</span>O.LABEL
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(C.NAME), SUBSTR(O.LABEL,<span class="hljs-number">2</span>,<span class="hljs-number">2</span>), C.NAME<span class="hljs-operator">||</span>O.LABEL
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID<span class="hljs-operator">=</span>O.CID
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">3</span>;</code></pre>
@@ -403,7 +403,7 @@ ordinal, and repeated target-row reads without a scalar result buffer.</p>
 <p>The dedicated joined-aggregate lane widens the order fixture with signed I8,
 I32, I64, nullable FLOAT, and an empty inner table. It first verifies complete
 ungrouped accumulation over an INNER producer:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">COUNT</span>(O.TOTAL), <span class="hljs-built_in">SUM</span>(O.TOTAL), <span class="hljs-built_in">AVG</span>(O.TOTAL),
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">COUNT</span>(O.TOTAL), <span class="hljs-built_in">SUM</span>(O.TOTAL), <span class="hljs-built_in">AVG</span>(O.TOTAL),
        <span class="hljs-built_in">MIN</span>(O.TOTAL), <span class="hljs-built_in">MAX</span>(O.TOTAL), <span class="hljs-built_in">SUM</span>(C.ID)
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID <span class="hljs-operator">=</span> O.CID;</code></pre>
@@ -412,7 +412,7 @@ ungrouped accumulation over an INNER producer:</p>
 <code>4294967296</code>, and exact Commodore FLOAT values <code>1.5,2.25,-0.75</code>. The I64 sum is
 <code>4294967300</code>; FLOAT sum/average/min/max are <code>3,1,-0.75,2.25</code>.</p>
 <p>LEFT and empty-input semantics are explicit:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">COUNT</span>(O.ID), <span class="hljs-built_in">SUM</span>(O.TOTAL)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">COUNT</span>(O.ID), <span class="hljs-built_in">SUM</span>(O.TOTAL)
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID <span class="hljs-operator">=</span> O.CID
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> C.ID;
 
@@ -423,7 +423,7 @@ the required single row <code>0,NULL</code>. WHERE-before-grouping is checked wi
 <code>O.TOTAL &gt;= 0</code>.</p>
 <p>Nullable inner and compound outer/inner keys are discovered through bounded
 first-pair rescans:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> O.CID, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> O.CID, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> O.CID;
 
@@ -435,7 +435,7 @@ LIMIT <span class="hljs-number">1</span> <span class="hljs-keyword">OFFSET</span
 second proves compound grouping and pagination with <code>(2,2,1)</code>.</p>
 <p>Joined grouped shaping covers named inner keys, aggregate ordinals, FLOAT,
 exact DISTINCT, two-key ordering, and pagination:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(O.TOTAL)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(O.TOTAL)
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID <span class="hljs-operator">=</span> O.CID
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> C.ID <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">3</span> <span class="hljs-keyword">DESC</span>;
 
@@ -459,7 +459,7 @@ one-row results.</p>
 <h3 id="correlated-scalar-in-and-exists-subqueries">Correlated scalar, IN, and EXISTS subqueries</h3>
 <p>The join lane also exercises the complex-query sidecar as a correlated
 subquery executor. EXISTS and NOT EXISTS use both accepted projection forms:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span> (
   <span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">WHERE</span> O.CID<span class="hljs-operator">=</span>C.ID
 );
@@ -472,7 +472,7 @@ subquery executor. EXISTS and NOT EXISTS use both accepted projection forms:</p>
 distinct <code>C</code> and <code>X</code> aliases returns all three customers; reusing the same
 alias is rejected.</p>
 <p>The outer correlated producer also supports bounded ordering:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span> (
   <span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">WHERE</span> O.CID<span class="hljs-operator">=</span>C.ID
 )
@@ -489,7 +489,7 @@ projection ordinal, a named qualified outer key, descending selection, and
 ordered pagination without materializing the correlated result.</p>
 <p>Exact correlated DISTINCT uses an empty inner table to make all outer rows
 eligible while projecting a duplicate virtual scalar:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> LENGTH(NAME)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> LENGTH(NAME)
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">EXISTS</span> (
   <span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> EMPTYJ <span class="hljs-keyword">AS</span> E <span class="hljs-keyword">WHERE</span> E.ID<span class="hljs-operator">=</span>C.ID
@@ -498,7 +498,7 @@ eligible while projecting a duplicate virtual scalar:</p>
 verifies complete fixed scalar comparison across prior matching correlated
 results.</p>
 <p>The same correlated producer orders multiple fixed scalar forms:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> LENGTH(<span class="hljs-string">&#x27;ABC&#x27;</span>), SUBSTR(<span class="hljs-string">&#x27;WXYZ&#x27;</span>,<span class="hljs-number">2</span>,<span class="hljs-number">2</span>), C.NAME<span class="hljs-operator">||</span><span class="hljs-string">&#x27;X&#x27;</span>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> LENGTH(<span class="hljs-string">&#x27;ABC&#x27;</span>), SUBSTR(<span class="hljs-string">&#x27;WXYZ&#x27;</span>,<span class="hljs-number">2</span>,<span class="hljs-number">2</span>), C.NAME<span class="hljs-operator">||</span><span class="hljs-string">&#x27;X&#x27;</span>
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span> (
   <span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> ORDR <span class="hljs-keyword">AS</span> O
@@ -510,7 +510,7 @@ substring <code>XY</code>, and concatenation <code>ADAX</code>. Three inner pred
 the normal parsed value slots, proving the independently packed projection
 literals survive every ORDER and exact DISTINCT replay.</p>
 <p>The inner WHERE owns a separate postfix Boolean program:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span> (
   <span class="hljs-keyword">SELECT</span> O.ID <span class="hljs-keyword">FROM</span> ORDR <span class="hljs-keyword">AS</span> O
   <span class="hljs-keyword">WHERE</span> O.CID<span class="hljs-operator">=</span>C.ID
@@ -520,7 +520,7 @@ literals survive every ORDER and exact DISTINCT replay.</p>
 <p>It returns customers 1 and 2. Outer predicates compose normally with the
 subquery term, including CHAR LIKE and named enum member predicates.</p>
 <p>IN, NOT IN, CHAR, enum, and fixed-point cases are target-tested:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">WHERE</span> C.ID <span class="hljs-keyword">IN</span> (
   <span class="hljs-keyword">SELECT</span> O.CID <span class="hljs-keyword">FROM</span> ORDR <span class="hljs-keyword">AS</span> O
   <span class="hljs-keyword">WHERE</span> O.CID<span class="hljs-operator">=</span>C.ID <span class="hljs-keyword">AND</span> O.TOTAL<span class="hljs-operator">&gt;=</span><span class="hljs-number">0</span>
@@ -544,7 +544,7 @@ subquery term, including CHAR LIKE and named enum member predicates.</p>
 no row. NOT IN over a set containing NULL also produces no false-positive row.</p>
 <p>The combined three-schema enum case uses a joined outer producer and resolves
 the member against the correlated third source:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID<span class="hljs-operator">=</span>O.CID
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span> (
   <span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> ORDR <span class="hljs-keyword">AS</span> X
@@ -554,7 +554,7 @@ the member against the correlated third source:</p>
 result is customer <code>1</code>. This exact query runs in both Peddle REU sizes and the
 join VICE lane.</p>
 <p>Scalar subqueries distinguish zero, one, and multiple rows:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">WHERE</span> C.ID <span class="hljs-operator">=</span> (
   <span class="hljs-keyword">SELECT</span> O.CID <span class="hljs-keyword">FROM</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">WHERE</span> O.ID<span class="hljs-operator">=</span><span class="hljs-number">10</span>
 );
@@ -572,7 +572,7 @@ are rejected during binding.</p>
 CHAR values, duplicate numeric values, signed I8 extremes, NULLs, enum values,
 and Commodore FLOATs. These queries verify ordinary ascending and descending
 order:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ID;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ID;
 <span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ID <span class="hljs-keyword">DESC</span>;
 <span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> CODE;
 <span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> NAME <span class="hljs-keyword">ASC</span>, ID <span class="hljs-keyword">ASC</span>;
@@ -582,12 +582,12 @@ order:</p>
 <code>(1,3,4,5,2)</code> for folded CHAR ordering, and <code>(5,1,4,2,3)</code> for FLOAT with
 NULL first in ASC order.</p>
 <p>Compound keys and NULL direction are covered explicitly:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> SCORE <span class="hljs-keyword">ASC</span>, ID <span class="hljs-keyword">DESC</span>;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> SCORE <span class="hljs-keyword">ASC</span>, ID <span class="hljs-keyword">DESC</span>;
 <span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> SCORE <span class="hljs-keyword">DESC</span>, ID <span class="hljs-keyword">ASC</span>;</code></pre>
 <p>These return <code>(4,5,3,2,1)</code> and <code>(1,2,3,5,4)</code>. ASC places NULL first; DESC
 places it last; the ID key deterministically orders equal SCORE values.</p>
 <p>Filtering, qualification, and both LIMIT/OFFSET spellings compose with order:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT
 <span class="hljs-keyword">WHERE</span> ACTIVE<span class="hljs-operator">=</span><span class="hljs-literal">TRUE</span> <span class="hljs-keyword">AND</span> NAME <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;G%&#x27;</span>
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ID <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">2</span> <span class="hljs-keyword">OFFSET</span> <span class="hljs-number">1</span>;
 
@@ -599,7 +599,7 @@ places it last; the ID key deterministically orders equal SCORE values.</p>
 <p>The corresponding results are <code>(4,3)</code>, <code>(2,3)</code>, <code>(3,4)</code>, no rows, <code>(2,5)</code>
 in physical scan order, and <code>(5)</code>.</p>
 <p>DISTINCT is tested across CHAR, BOOLEAN, ENUM16, and nullable I32 values:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> NAME <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> NAME;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> NAME <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> NAME;
 <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> ACTIVE <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ACTIVE <span class="hljs-keyword">DESC</span>;
 <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> KIND <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> KIND <span class="hljs-keyword">DESC</span>;
 <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> SCORE <span class="hljs-keyword">FROM</span> SRT
@@ -610,7 +610,7 @@ TRUE then FALSE; ENUM16 returns <code>60000</code> then <code>1</code>; the shap
 only <code>20</code>.</p>
 <p>Fixed scalar projections are compared as computed values. Positive ORDER BY
 ordinals select expressions from the projection list:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> SUBSTR(REGION,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>) <span class="hljs-keyword">FROM</span> AGGDATA <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">1</span>;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> SUBSTR(REGION,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>) <span class="hljs-keyword">FROM</span> AGGDATA <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">1</span>;
 
 <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> REGION <span class="hljs-operator">||</span> <span class="hljs-string">&#x27;!&#x27;</span>
 <span class="hljs-keyword">FROM</span> AGGDATA
@@ -620,13 +620,13 @@ that substring and concatenation values, rather than their source columns, are
 used by ordering and duplicate elimination.</p>
 <p>The variable-update lane separately proves numeric scalar ordering while the
 source column itself is streamed TEXT:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(V) <span class="hljs-keyword">FROM</span> SL <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">1</span> <span class="hljs-keyword">DESC</span>;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(V) <span class="hljs-keyword">FROM</span> SL <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">1</span> <span class="hljs-keyword">DESC</span>;
 <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> LENGTH(V) <span class="hljs-keyword">FROM</span> SL <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">1</span>;</code></pre>
 <p>For <code>V</code> values <code>A</code>, <code>CCC</code>, and <code>BB</code>, the results are <code>(3,2,1)</code> and <code>(1,2,3)</code>.
 The I32 LENGTH result and streamed TEXT scalar results both participate in
 shaping; the latter coverage is listed in the scalar-string section below.</p>
 <p>LIMIT/OFFSET also exercises every non-materialized cursor producer:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> REGION, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> AGGDATA
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> REGION, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> AGGDATA
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> REGION <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">2</span> <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">1</span> <span class="hljs-keyword">OFFSET</span> <span class="hljs-number">1</span>;
 
 <span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> AGGDATA LIMIT <span class="hljs-number">0</span>;
@@ -641,7 +641,7 @@ shaping; the latter coverage is listed in the scalar-string section below.</p>
 
 <span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> IDXT <span class="hljs-keyword">USING</span> INDEX IDX_NAME_ID LIMIT <span class="hljs-number">1</span> <span class="hljs-keyword">OFFSET</span> <span class="hljs-number">1</span>;</code></pre>
 <p>Explicit indexes also feed ORDER BY and DISTINCT shaping directly:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> IDXT <span class="hljs-keyword">USING</span> INDEX IDX_NAME_ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> IDXT <span class="hljs-keyword">USING</span> INDEX IDX_NAME_ID
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ID <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">1</span>;
 
 <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> LENGTH(NAME) <span class="hljs-keyword">FROM</span> IDXT <span class="hljs-keyword">USING</span> INDEX IDX_NAME_ID
@@ -654,13 +654,13 @@ validates and rescans the index leaves rather than falling back to a table
 producer.</p>
 <p>Rejection coverage retains duplicate ORDER keys, missing columns, and invalid
 ordinals:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ID, ID;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ID, ID;
 <span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SRT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> MISSING;
 <span class="hljs-keyword">SELECT</span> REGION <span class="hljs-keyword">FROM</span> AGGDATA <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">0</span>;</code></pre>
 <p>Raw streamed TEXT/BLOB keys now participate in ordinary shaping. With rows
 <code>(&#39;payload&#39;,X&#39;02FF&#39;)</code>, <code>(NULL,NULL)</code>, and <code>(&#39;PAYLOAD&#39;,X&#39;02FF&#39;)</code>, the result lane
 executes:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> BODY,RAW
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> BODY,RAW
 <span class="hljs-keyword">FROM</span> T
 <span class="hljs-keyword">WHERE</span> BODY <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;p%&#x27;</span> <span class="hljs-keyword">AND</span> RAW<span class="hljs-operator">=</span>X<span class="hljs-string">&#x27;02FF&#x27;</span>
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> RAW,BODY
@@ -672,7 +672,7 @@ result buffer. Joined/correlated variable keys, variable scalar expressions,
 and explicit-index variable grouping are covered below.</p>
 <h3 id="scalar-string-projections">Scalar string projections</h3>
 <p>The result lane exercises all eight projection slots in one CHAR/literal query:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(NAME),
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(NAME),
        SUBSTR(NAME,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>),
        <span class="hljs-built_in">SUBSTRING</span>(NAME,<span class="hljs-number">5</span>),
        NAME <span class="hljs-operator">||</span> <span class="hljs-string">&#x27;!&#x27;</span>,
@@ -690,7 +690,7 @@ width, logical length, the first eight inline bytes, a complete
 concatenation boundary. A nullable CHAR row proves NULL propagation through
 length, substring, and concatenation.</p>
 <p>The same expression representation is exercised over every cursor producer:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(NAME)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(NAME)
 <span class="hljs-keyword">FROM</span> IDXT <span class="hljs-keyword">USING</span> INDEX IDX_NAME_ID
 <span class="hljs-keyword">WHERE</span> NAME<span class="hljs-operator">=</span><span class="hljs-string">&#x27;ADA&#x27;</span>;
 
@@ -714,7 +714,7 @@ length, substring, and concatenation.</p>
 from the LEFT extension; and the correlated sequence ordered by
 <code>ADAADA,BOBBOB</code>, respectively.</p>
 <p>TEXT uses stable-handle metadata and direct range streaming:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(BODY),
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(BODY),
        SUBSTR(BODY,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>),
        <span class="hljs-built_in">SUBSTRING</span>(BODY,<span class="hljs-number">5</span>),
        SUBSTR(BODY,<span class="hljs-number">20</span>,<span class="hljs-number">3</span>),
@@ -725,7 +725,7 @@ TEXT. A second NULL row makes all five expressions NULL. The test reads every
 nonempty substring through the cursor streaming ABI; no full TEXT value is
 copied into an engine buffer.</p>
 <p>The variable-value lane streams every two-part TEXT concatenation class:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> BODY <span class="hljs-operator">||</span> <span class="hljs-string">&#x27;X&#x27;</span>, CONCAT(<span class="hljs-string">&#x27;&lt;&#x27;</span>, BODY), BODY <span class="hljs-operator">||</span> BODY,
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> BODY <span class="hljs-operator">||</span> <span class="hljs-string">&#x27;X&#x27;</span>, CONCAT(<span class="hljs-string">&#x27;&lt;&#x27;</span>, BODY), BODY <span class="hljs-operator">||</span> BODY,
        BODY <span class="hljs-operator">||</span> TAG, TAG <span class="hljs-operator">||</span> BODY
 <span class="hljs-keyword">FROM</span> VDEL;</code></pre>
 <p>For <code>BODY=&#39;ALPHA&#39;</code> and <code>TAG=&#39;Z&#39;</code>, the values are TEXT <code>ALPHAX</code>, <code>&lt;ALPHA</code>,
@@ -736,12 +736,12 @@ NULL. Each stable handle is resolved sequentially and no combined heap or C64
 RAM value is allocated.</p>
 <p>Rejections cover non-string operands, zero starts, incompatible concatenation,
 and aggregate composition:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(ID) <span class="hljs-keyword">FROM</span> SRT;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(ID) <span class="hljs-keyword">FROM</span> SRT;
 <span class="hljs-keyword">SELECT</span> SUBSTR(NAME,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>) <span class="hljs-keyword">FROM</span> SRT;
 <span class="hljs-keyword">SELECT</span> NAME <span class="hljs-operator">||</span> ID <span class="hljs-keyword">FROM</span> SRT;
 <span class="hljs-keyword">SELECT</span> LENGTH(NAME), <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> SRT;</code></pre>
 <p>Streamed scalar shaping is tested without materializing a TEXT result:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> LENGTH(BODY), SUBSTR(BODY,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>),
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> LENGTH(BODY), SUBSTR(BODY,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>),
        BODY <span class="hljs-operator">||</span> <span class="hljs-string">&#x27;!&#x27;</span>, BODY <span class="hljs-operator">||</span> BODY, <span class="hljs-string">&#x27;&lt;&#x27;</span> <span class="hljs-operator">||</span> BODY
 <span class="hljs-keyword">FROM</span> T
 <span class="hljs-keyword">WHERE</span> BODY <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;p%&#x27;</span>
@@ -766,13 +766,13 @@ DISTINCT scalar evaluation over joined and correlated producers.</p>
 <h3 id="single-table-aggregate-producers-with-correlated-subqueries">Single-table aggregate producers with correlated subqueries</h3>
 <p>These query-lane cases prove that the correlated outer scan feeds slot 6
 directly, without pretending to be a join.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> SQLDML <span class="hljs-keyword">AS</span> D
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span> (
   <span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> SQLDML <span class="hljs-keyword">AS</span> X <span class="hljs-keyword">WHERE</span> X.ID<span class="hljs-operator">=</span>D.ID
 );</code></pre>
 <p>For the two rows <code>(42,TRUE)</code> and <code>(-7,FALSE)</code>, the result is <code>2</code>.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(D.ID)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(D.ID)
 <span class="hljs-keyword">FROM</span> SQLDML <span class="hljs-keyword">AS</span> D
 <span class="hljs-keyword">WHERE</span> D.ID <span class="hljs-keyword">IN</span> (
   <span class="hljs-keyword">SELECT</span> X.ID <span class="hljs-keyword">FROM</span> SQLDML <span class="hljs-keyword">AS</span> X <span class="hljs-keyword">WHERE</span> X.ID<span class="hljs-operator">=</span>D.ID
@@ -783,7 +783,7 @@ LIMIT <span class="hljs-number">1</span> <span class="hljs-keyword">OFFSET</span
 <p>The Boolean groups are <code>(1,-7)</code> and <code>(1,42)</code>. Exact projected-tuple DISTINCT
 remains active because the group key is omitted; aggregate ordinal ordering,
 OFFSET, and LIMIT return <code>(1,42)</code>.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> SQLDML <span class="hljs-keyword">AS</span> D
 <span class="hljs-keyword">WHERE</span> D.ID<span class="hljs-operator">=</span>(<span class="hljs-keyword">SELECT</span> X.ID <span class="hljs-keyword">FROM</span> SQLDML <span class="hljs-keyword">AS</span> X);</code></pre>
 <p>The cursor opens successfully, then its first <code>rsql_cursor_next()</code> returns
@@ -795,7 +795,7 @@ VICE D81/1581 lane.</p>
 <h3 id="joined-aggregate-producers-with-correlated-subqueries">Joined aggregate producers with correlated subqueries</h3>
 <p>These queries exercise a joined pair as the outer row context while a third
 table scan evaluates the correlated predicate before aggregation.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(O.TOTAL)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(O.TOTAL)
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID<span class="hljs-operator">=</span>O.CID
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span> (
   <span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> ORDR <span class="hljs-keyword">AS</span> X
@@ -803,7 +803,7 @@ table scan evaluates the correlated predicate before aggregation.</p>
 );</code></pre>
 <p>The result is <code>(3,120)</code>. The inner program references both joined sources, and
 all three matching joined pairs enter the ungrouped aggregate.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(O.TOTAL)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(O.TOTAL)
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID<span class="hljs-operator">=</span>O.CID
 <span class="hljs-keyword">WHERE</span> O.ID <span class="hljs-keyword">IN</span> (
   <span class="hljs-keyword">SELECT</span> X.ID <span class="hljs-keyword">FROM</span> ORDR <span class="hljs-keyword">AS</span> X <span class="hljs-keyword">WHERE</span> X.TOTAL<span class="hljs-operator">&gt;=</span>O.TOTAL
@@ -814,7 +814,7 @@ LIMIT <span class="hljs-number">1</span>;</code></pre>
 <p>Every joined order finds itself in the correlated set. Grouping yields
 customers <code>(1,2,125)</code> and <code>(2,1,-5)</code>; aggregate ordering and LIMIT return the
 first tuple.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> C.ID, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> C.ID, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID<span class="hljs-operator">=</span>O.CID
 <span class="hljs-keyword">WHERE</span> O.CID<span class="hljs-operator">=</span>(
   <span class="hljs-keyword">SELECT</span> X.CID <span class="hljs-keyword">FROM</span> ORDR <span class="hljs-keyword">AS</span> X <span class="hljs-keyword">WHERE</span> X.ID<span class="hljs-operator">=</span>O.ID
@@ -829,37 +829,37 @@ All three run as compiled 6510 in Peddle at 512KB and 16MB and in the joined-
 aggregate VICE D81/1581 lane.</p>
 <h2 id="validation-and-schema-lifecycles">Validation and schema lifecycles</h2>
 <h3 id="rejection-tests">Rejection tests</h3>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">INSERT INTO</span> SQLDML <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">40000</span>, <span class="hljs-string">&#x27;X&#x27;</span>, <span class="hljs-literal">TRUE</span>, <span class="hljs-keyword">NULL</span>)</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">INSERT INTO</span> SQLDML <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">40000</span>, <span class="hljs-string">&#x27;X&#x27;</span>, <span class="hljs-literal">TRUE</span>, <span class="hljs-keyword">NULL</span>)</code></pre>
 <p>Rejected with <code>RSQL_ERR_TYPE_MISMATCH</code> because <code>40000</code> does not fit signed
 <code>I16</code>.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">INSERT INTO</span> SQLVAR <span class="hljs-keyword">VALUES</span> (X<span class="hljs-string">&#x27;41&#x27;</span>, X<span class="hljs-string">&#x27;00&#x27;</span>);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">INSERT INTO</span> SQLVAR <span class="hljs-keyword">VALUES</span> (X<span class="hljs-string">&#x27;41&#x27;</span>, X<span class="hljs-string">&#x27;00&#x27;</span>);
 <span class="hljs-keyword">INSERT INTO</span> SQLVAR <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;OK&#x27;</span>, <span class="hljs-string">&#x27;NOT BINARY&#x27;</span>);
 <span class="hljs-keyword">INSERT INTO</span> SQLVAR <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;OK&#x27;</span>, X<span class="hljs-string">&#x27;0&#x27;</span>);</code></pre>
 <p>The first two reject TEXT/BLOB literal-kind mismatches. The odd-length hex
 literal is a syntax error.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">UPDATE</span> UDATA <span class="hljs-keyword">SET</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">40000</span> <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">UPDATE</span> UDATA <span class="hljs-keyword">SET</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">40000</span> <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
 <span class="hljs-keyword">UPDATE</span> UDATA <span class="hljs-keyword">SET</span> NAME <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;A&#x27;</span>, NAME <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;B&#x27;</span> <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
 <span class="hljs-keyword">UPDATE</span> VUP <span class="hljs-keyword">SET</span> BODY <span class="hljs-operator">=</span> X<span class="hljs-string">&#x27;41&#x27;</span> <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
 <span class="hljs-keyword">UPDATE</span> VUP <span class="hljs-keyword">SET</span> RAW <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;NO&#x27;</span> <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;</code></pre>
 <p>These reject an out-of-range I16, a duplicate SET target, and TEXT/BLOB
 literal-kind mismatches respectively.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> BROKEN (ID <span class="hljs-type">CHAR</span>())</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> BROKEN (ID <span class="hljs-type">CHAR</span>())</code></pre>
 <p>Rejected with <code>RSQL_ERR_SYNTAX</code>; <code>rsql_last_error()</code> must contain a nonzero byte
 offset.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> SQLTYPES</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> SQLTYPES</code></pre>
 <p>This exact call is passed to the non-result <code>rsql_exec()</code> entry and must return
 <code>RSQL_ERR_UNSUPPORTED_SQL</code>; result-producing SELECT statements use
 <code>rsql_query_open()</code> and the cursor ABI.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> REGION, <span class="hljs-built_in">SUM</span>(AMOUNT) <span class="hljs-keyword">FROM</span> AGGDATA</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> REGION, <span class="hljs-built_in">SUM</span>(AMOUNT) <span class="hljs-keyword">FROM</span> AGGDATA</code></pre>
 <p>Rejected because an ungrouped result column cannot be mixed with aggregates.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> REGION, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> REGION, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> AGGDATA
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> REGION
 <span class="hljs-keyword">HAVING</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-operator">&gt;</span> <span class="hljs-number">1</span></code></pre>
 <p>Rejected with <code>RSQL_ERR_SYNTAX</code>; <code>HAVING</code> is intentionally outside the
 dialect.</p>
 <h3 id="materialized-result-tables">Materialized result tables</h3>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> UR <span class="hljs-keyword">AS</span>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> UR <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">SELECT</span> ID, NAME, SCORE
 <span class="hljs-keyword">FROM</span> UDATA
 <span class="hljs-keyword">WHERE</span> ID <span class="hljs-operator">&gt;=</span> <span class="hljs-number">2</span>
@@ -872,7 +872,7 @@ types, affected-row counts, and immediate querying of persistent/TEMP result
 tables.</p>
 <p>The dedicated CTAS lane crosses blob-page boundaries and composes streamed
 scalar output:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> VCOPY <span class="hljs-keyword">AS</span>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> VCOPY <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">SELECT</span> BODY,
        RAW,
        SUBSTR(BODY, <span class="hljs-number">240</span>, <span class="hljs-number">17</span>),
@@ -885,14 +885,14 @@ lengths 17 and 259, and NULL propagation. All destination values remain valid
 after every source handle is tombstoned and its four payload pages compacted.</p>
 <p>Staged CTAS rollback targets descriptor creation, owned-row creation, every
 write position of a mid-chain payload append, and final publication using:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> RFAIL <span class="hljs-keyword">AS</span>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> RFAIL <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">SELECT</span> ID, BODY, BODY <span class="hljs-operator">||</span> <span class="hljs-string">&#x27;!&#x27;</span> <span class="hljs-keyword">FROM</span> RSRC;</code></pre>
 <p>After each forced I/O failure, <code>RFAIL</code> is absent, the first free REU page is
 unchanged, and <code>SELECT COUNT(*) FROM RSRC</code> still returns two. The final retry
 commits two rows.</p>
 <p>Large-result coverage deliberately exceeds the sixteen-page journal in both
 physical shapes:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> BIGCOPY <span class="hljs-keyword">AS</span> <span class="hljs-keyword">SELECT</span> BODY <span class="hljs-keyword">FROM</span> BIGTEMP;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> BIGCOPY <span class="hljs-keyword">AS</span> <span class="hljs-keyword">SELECT</span> BODY <span class="hljs-keyword">FROM</span> BIGTEMP;
 
 <span class="hljs-keyword">CREATE TABLE</span> WIDE (BODY <span class="hljs-type">CHAR</span>(<span class="hljs-number">119</span>));
 <span class="hljs-keyword">CREATE TABLE</span> WIDECOPY <span class="hljs-keyword">AS</span> <span class="hljs-keyword">SELECT</span> BODY <span class="hljs-keyword">FROM</span> WIDE;
@@ -908,7 +908,7 @@ and fully reclaimed by the next <code>rsql_init</code>.</p>
 <h3 id="temp-lifecycle-and-explicit-drop-table">TEMP lifecycle and explicit DROP TABLE</h3>
 <p>The lifecycle lane creates a persistent table with an index and a 4096-byte
 TEXT value, whose payload occupies seventeen REU pages:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> BIGTEMP (ID I16, BODY TEXT);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> BIGTEMP (ID I16, BODY TEXT);
 <span class="hljs-keyword">CREATE</span> INDEX BIGIDX <span class="hljs-keyword">ON</span> BIGTEMP (ID);
 <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> BIGTEMP;</code></pre>
 <p><code>DROP TABLE</code> reports zero affected rows, hides the descriptor first, and then
@@ -922,7 +922,7 @@ of resumable bounded mutations. Repeating the DROP returns
 <code>rsql_shutdown()</code>. A <code>STALE</code> TEMP descriptor is then marked <code>DROPPING</code> to model
 an interruption immediately after the durable visibility transition;
 <code>rsql_init()</code> completes its row and descriptor reclamation. Finally:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> TROLL (ID I16);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> TROLL (ID I16);
 <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> TROLL;</code></pre>
 <p>Failure injection on the DROP&#39;s first persistent write leaves <code>TROLL</code> visible
 and allocated. Retrying the same statement succeeds, makes the name absent,
@@ -931,7 +931,7 @@ visibility marker from the deliberately incremental cleanup that follows it.</p>
 <h3 id="drop-index-and-drop-type">DROP INDEX and DROP TYPE</h3>
 <p>The variable-update/schema lifecycle lane verifies standalone index removal
 without changing its table:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TYPE DTYPE <span class="hljs-keyword">AS</span> ENUM8(OFF, <span class="hljs-keyword">ON</span>);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TYPE DTYPE <span class="hljs-keyword">AS</span> ENUM8(OFF, <span class="hljs-keyword">ON</span>);
 <span class="hljs-keyword">CREATE TABLE</span> DROW (ID I16, STATE DTYPE);
 <span class="hljs-keyword">INSERT INTO</span> DROW <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>, DTYPE.ON);
 <span class="hljs-keyword">CREATE</span> INDEX DIDX <span class="hljs-keyword">ON</span> DROW (ID);
@@ -945,7 +945,7 @@ ID. Failure injection at the index visibility write leaves <code>DIDX</code> usa
 retry returns zero affected rows, frees its leaf and descriptor, and makes
 <code>USING INDEX DIDX</code> return <code>RSQL_ERR_NOT_FOUND</code>. A repeated DROP also returns
 NOT_FOUND while an ordinary table scan still sees the row.</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> DROW;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> DROW;
 <span class="hljs-keyword">DROP</span> TYPE DTYPE;</code></pre>
 <p>After the table is gone, failure injection at the type visibility write leaves
 <code>DTYPE</code> resolvable. Retry reclaims its member page and descriptor. The test
@@ -961,7 +961,7 @@ table restores the exact first-free page.</p>
 <h3 id="fixed88-grouping-and-aggregates">FIXED8_8 grouping and aggregates</h3>
 <p>The dedicated fixed-point lane stores Q8.8 values <code>1</code>, <code>2</code>, <code>-2</code>, NULL, and
 three copies of <code>127</code>. Its ordinary aggregate query is:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">COUNT</span>(V), <span class="hljs-built_in">SUM</span>(V), <span class="hljs-built_in">AVG</span>(V), <span class="hljs-built_in">MIN</span>(V), <span class="hljs-built_in">MAX</span>(V)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">COUNT</span>(V), <span class="hljs-built_in">SUM</span>(V), <span class="hljs-built_in">AVG</span>(V), <span class="hljs-built_in">MIN</span>(V), <span class="hljs-built_in">MAX</span>(V)
 <span class="hljs-keyword">FROM</span> F
 <span class="hljs-keyword">WHERE</span> R <span class="hljs-operator">&lt;</span> <span class="hljs-number">3</span>;</code></pre>
 <p>It returns <code>(4, 3, 1, 0.33203125, -2, 2)</code>. The average is raw Q8.8 <code>$0055</code>
@@ -970,31 +970,31 @@ All four numeric results retain the two-byte <code>RSQL_TYPE_FIXED8_8</code> tag
 also verified through <code>rsql_value_read()</code>.</p>
 <p>Grouped accumulation, aggregate ordering, exact DISTINCT, NULL exclusion, and
 the original fixed-width key type are exercised together:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> R, <span class="hljs-built_in">COUNT</span>(V), <span class="hljs-built_in">SUM</span>(V), <span class="hljs-built_in">AVG</span>(V), <span class="hljs-built_in">MIN</span>(V), <span class="hljs-built_in">MAX</span>(V)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> R, <span class="hljs-built_in">COUNT</span>(V), <span class="hljs-built_in">SUM</span>(V), <span class="hljs-built_in">AVG</span>(V), <span class="hljs-built_in">MIN</span>(V), <span class="hljs-built_in">MAX</span>(V)
 <span class="hljs-keyword">FROM</span> F
 <span class="hljs-keyword">WHERE</span> R <span class="hljs-operator">&lt;</span> <span class="hljs-number">3</span>
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> R
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">3</span> <span class="hljs-keyword">DESC</span>;</code></pre>
 <p>The rows are <code>(1,2,3,1.5,1,2)</code> followed by <code>(2,1,-2,-2,-2,-2)</code>.</p>
 <p>The joined producer uses the same accumulator after pair production:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(Y.V), <span class="hljs-built_in">AVG</span>(Y.V), <span class="hljs-built_in">MIN</span>(Y.V), <span class="hljs-built_in">MAX</span>(Y.V)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(Y.V), <span class="hljs-built_in">AVG</span>(Y.V), <span class="hljs-built_in">MIN</span>(Y.V), <span class="hljs-built_in">MAX</span>(Y.V)
 <span class="hljs-keyword">FROM</span> K <span class="hljs-keyword">AS</span> X <span class="hljs-keyword">JOIN</span> F <span class="hljs-keyword">AS</span> Y <span class="hljs-keyword">ON</span> X.R <span class="hljs-operator">=</span> Y.R;</code></pre>
 <p>It returns <code>(4,1,0.33203125,-2,2)</code>. A correlated ordinary producer is covered
 independently:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">SUM</span>(O.V), <span class="hljs-built_in">AVG</span>(O.V)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">SUM</span>(O.V), <span class="hljs-built_in">AVG</span>(O.V)
 <span class="hljs-keyword">FROM</span> F <span class="hljs-keyword">AS</span> O
 <span class="hljs-keyword">WHERE</span> O.R <span class="hljs-operator">&lt;</span> <span class="hljs-number">3</span>
   <span class="hljs-keyword">AND</span> <span class="hljs-keyword">EXISTS</span> (<span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> K <span class="hljs-keyword">AS</span> X <span class="hljs-keyword">WHERE</span> X.R <span class="hljs-operator">=</span> O.R);</code></pre>
 <p>It returns <code>(1,0.33203125)</code>. Empty input preserves SQL aggregate NULL rules:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">SUM</span>(V), <span class="hljs-built_in">AVG</span>(V), <span class="hljs-built_in">MIN</span>(V), <span class="hljs-built_in">MAX</span>(V) <span class="hljs-keyword">FROM</span> F <span class="hljs-keyword">WHERE</span> R <span class="hljs-operator">=</span> <span class="hljs-number">9</span>;</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">SUM</span>(V), <span class="hljs-built_in">AVG</span>(V), <span class="hljs-built_in">MIN</span>(V), <span class="hljs-built_in">MAX</span>(V) <span class="hljs-keyword">FROM</span> F <span class="hljs-keyword">WHERE</span> R <span class="hljs-operator">=</span> <span class="hljs-number">9</span>;</code></pre>
 <p>All four values are NULL. The widened raw accumulator must not silently wrap
 when converted back to the public two-byte type:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">SUM</span>(V) <span class="hljs-keyword">FROM</span> F <span class="hljs-keyword">WHERE</span> R <span class="hljs-operator">=</span> <span class="hljs-number">3</span>;</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">SUM</span>(V) <span class="hljs-keyword">FROM</span> F <span class="hljs-keyword">WHERE</span> R <span class="hljs-operator">=</span> <span class="hljs-number">3</span>;</code></pre>
 <p>The mathematical sum is 381, outside signed Q8.8. Both
 <code>rsql_cursor_column()</code> and <code>rsql_value_read()</code> return
 <code>RSQL_ERR_NUMERIC_OVERFLOW</code>.</p>
 <p>Finally, CTAS preserves the result type and exact raw values:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> Z <span class="hljs-keyword">AS</span>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> Z <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">SUM</span>(V), <span class="hljs-built_in">AVG</span>(V), <span class="hljs-built_in">MIN</span>(V), <span class="hljs-built_in">MAX</span>(V) <span class="hljs-keyword">FROM</span> F <span class="hljs-keyword">WHERE</span> R <span class="hljs-operator">&lt;</span> <span class="hljs-number">3</span>;
 <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> Z;</code></pre>
 <p><code>Z</code> contains <code>(1,0.33203125,-2,2)</code>, with all four columns physically
@@ -1002,7 +1002,7 @@ when converted back to the public two-byte type:</p>
 <h3 id="streamed-textblob-group-by">Streamed TEXT/BLOB GROUP BY</h3>
 <p>The same lane creates five rows whose equal logical values have independent
 stable handles:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> G (T TEXT <span class="hljs-keyword">NULL</span>, B <span class="hljs-type">BLOB</span> <span class="hljs-keyword">NULL</span>, V I8);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> G (T TEXT <span class="hljs-keyword">NULL</span>, B <span class="hljs-type">BLOB</span> <span class="hljs-keyword">NULL</span>, V I8);
 <span class="hljs-keyword">INSERT INTO</span> G <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;a&#x27;</span>, X<span class="hljs-string">&#x27;0102&#x27;</span>, <span class="hljs-number">1</span>);
 <span class="hljs-keyword">INSERT INTO</span> G <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;A&#x27;</span>, X<span class="hljs-string">&#x27;0102&#x27;</span>, <span class="hljs-number">2</span>);
 <span class="hljs-keyword">INSERT INTO</span> G <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;b&#x27;</span>, X<span class="hljs-string">&#x27;01FF&#x27;</span>, <span class="hljs-number">3</span>);
@@ -1010,7 +1010,7 @@ stable handles:</p>
 <span class="hljs-keyword">INSERT INTO</span> G <span class="hljs-keyword">VALUES</span> (<span class="hljs-keyword">NULL</span>, <span class="hljs-keyword">NULL</span>, <span class="hljs-number">5</span>);</code></pre>
 <p>Compound variable grouping is exercised with aggregates through an explicitly
 named fixed-width index:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> INDEX I <span class="hljs-keyword">ON</span> G (V);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> INDEX I <span class="hljs-keyword">ON</span> G (V);
 <span class="hljs-keyword">SELECT</span> T, B, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(V)
 <span class="hljs-keyword">FROM</span> G <span class="hljs-keyword">USING</span> INDEX I
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> T, B;</code></pre>
@@ -1022,7 +1022,7 @@ logical content. Both <code>X&#39;0102&#39;</code> handles merge by exact binary
 and BLOB representatives are verified through <code>rsql_cursor_column()</code> and
 <code>rsql_value_read()</code>.</p>
 <p>Streamed predicate evaluation and pagination compose with grouping:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> T, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(V)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> T, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(V)
 <span class="hljs-keyword">FROM</span> G
 <span class="hljs-keyword">WHERE</span> T <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;a%&#x27;</span>
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> T
@@ -1033,7 +1033,7 @@ group key without materializing either payload in C64 RAM.</p>
 <p>Variable group ordering covers case-folded TEXT, binary BLOB, NULL placement,
 and exact DISTINCT when an omitted compound key would otherwise duplicate the
 projection:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> T, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(V)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> T, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(V)
 <span class="hljs-keyword">FROM</span> G <span class="hljs-keyword">USING</span> INDEX I <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> T <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> T <span class="hljs-keyword">DESC</span>;
 <span class="hljs-keyword">SELECT</span> B, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> G <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> B <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> B;
 <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> T <span class="hljs-keyword">FROM</span> H <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> T, B;</code></pre>
@@ -1043,7 +1043,7 @@ groups have different BLOB keys, but exact projected-tuple DISTINCT merges
 their case-folded TEXT results and returns only <code>a</code>, <code>b</code>.</p>
 <p>Joined and correlated aggregate producers exercise variable keys from either
 side of a pair and from a correlated outer row:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> X.T, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(X.V)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> X.T, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">SUM</span>(X.V)
 <span class="hljs-keyword">FROM</span> G <span class="hljs-keyword">AS</span> X <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> K <span class="hljs-keyword">AS</span> Y
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> X.T <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">1</span> <span class="hljs-keyword">DESC</span>;
 
@@ -1058,7 +1058,7 @@ side of a pair and from a correlated outer row:</p>
 <p>These verify outer and inner TEXT ownership, independently allocated equal
 handles, aggregate rescans, NULL groups, ordinal variable ordering, and the
 correlated producer replay. Raw joined shaping is covered separately:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> O.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> O.ID
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">JOIN</span> ORDR <span class="hljs-keyword">AS</span> O <span class="hljs-keyword">ON</span> C.ID <span class="hljs-operator">=</span> O.CID
 <span class="hljs-keyword">WHERE</span> O.NOTE <span class="hljs-operator">&gt;</span> <span class="hljs-string">&#x27;E&#x27;</span>
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> SUBSTR(O.NOTE,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>), O.ID <span class="hljs-keyword">DESC</span>;
@@ -1073,18 +1073,18 @@ run in slot 6, restore slot 4, and continue the ORDER/DISTINCT rescan.</p>
 <h2 id="persistence-export-and-shell">Persistence, export and shell</h2>
 <h3 id="whole-reu-checkpoint-and-restore">Whole-REU checkpoint and restore</h3>
 <p>The eleventh target lane establishes durable and temporary state:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> CP (ID I16, NOTE TEXT);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> CP (ID I16, NOTE TEXT);
 <span class="hljs-keyword">INSERT INTO</span> CP <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;ALPHA&#x27;</span>);
 <span class="hljs-keyword">INSERT INTO</span> CP <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">2</span>,<span class="hljs-string">&#x27;BETA&#x27;</span>);
 <span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> SCRATCH (ID I16);</code></pre>
 <p>It calls <code>rsql_checkpoint()</code>, after which <code>SCRATCH</code> must already be absent
 because checkpoint is a quiescing lifecycle boundary. The client then proves
 the live database can diverge:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> CP;</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> CP;</code></pre>
 <p>The affected-row count is exactly two. The host replaces the complete REU with
 the captured bytes, and the client calls <code>rsql_restore()</code> with formatting
 disabled. These observations verify restored catalog, rows, and variable heap:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID, NOTE <span class="hljs-keyword">FROM</span> CP <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ID;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID, NOTE <span class="hljs-keyword">FROM</span> CP <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ID;
 <span class="hljs-keyword">SELECT</span> ID <span class="hljs-keyword">FROM</span> SCRATCH;</code></pre>
 <p>The first query streams <code>(1,&#39;ALPHA&#39;)</code> and <code>(2,&#39;BETA&#39;)</code>; the second returns
 <code>RSQL_ERR_NOT_FOUND</code>. Peddle performs a literal full-REU byte copy at 512KB and
@@ -1093,13 +1093,13 @@ REU image when its binary monitor does not enumerate REU banks; the verified
 16MB artifact is exactly 16,777,216 bytes.</p>
 <h3 id="schema-size-and-selected-query-export">Schema, size, and selected-query export</h3>
 <p>The checkpoint lane now adds a named type and index:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TYPE STATE <span class="hljs-keyword">AS</span> ENUM8(<span class="hljs-keyword">NEW</span><span class="hljs-operator">=</span><span class="hljs-number">1</span>,DONE<span class="hljs-operator">=</span><span class="hljs-number">2</span>);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TYPE STATE <span class="hljs-keyword">AS</span> ENUM8(<span class="hljs-keyword">NEW</span><span class="hljs-operator">=</span><span class="hljs-number">1</span>,DONE<span class="hljs-operator">=</span><span class="hljs-number">2</span>);
 <span class="hljs-keyword">CREATE TABLE</span> CP(ID I16, NOTE TEXT <span class="hljs-keyword">NULL</span>, STATUS STATE);
 <span class="hljs-keyword">INSERT INTO</span> CP <span class="hljs-keyword">VALUES</span>(<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;ALPHA&#x27;</span>,STATE.NEW);
 <span class="hljs-keyword">INSERT INTO</span> CP <span class="hljs-keyword">VALUES</span>(<span class="hljs-number">2</span>,<span class="hljs-string">&#x27;BETA&#x27;</span>,STATE.DONE);
 <span class="hljs-keyword">CREATE</span> INDEX CP_ID <span class="hljs-keyword">ON</span> CP(ID);</code></pre>
 <p>It executes every introspection form through <code>rsql_exec()</code>:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SHOW</span> DATABASE;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SHOW</span> DATABASE;
 <span class="hljs-keyword">SHOW</span> TABLES;
 <span class="hljs-keyword">SHOW</span> COLUMNS <span class="hljs-keyword">FROM</span> CP;
 <span class="hljs-keyword">SHOW</span> INDEXES;
@@ -1112,7 +1112,7 @@ a nonempty leaf chain; enum type <code>STATE</code>; and paginated member ordina
 (<code>DONE=2</code>). The TEMP table created before checkpoint is absent from the
 restored visible schema.</p>
 <p>The selected export query is:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID, NOTE, STATUS <span class="hljs-keyword">FROM</span> CP <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ID;</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> ID, NOTE, STATUS <span class="hljs-keyword">FROM</span> CP <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ID;</code></pre>
 <p><code>rsql_export_d81()</code> writes it as <code>cpexport</code> on device 8. Peddle models the
 KERNAL sequential-file calls and compares all 52 emitted bytes, including both
 row markers, type/null/length headers, streamed PETSCII TEXT bytes, ENUM8
@@ -1125,7 +1125,7 @@ with <code>RSQL_ERR_CORRUPT_STORAGE</code>.</p>
 <p>The twelfth lane drives the real GETIN/CHROUT loop rather than calling the
 engine directly. Peddle injects the same commands at 512KB and 16MB; VICE types
 them into the shell booted from a D81 on a virtual 1581:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TYPE STATE <span class="hljs-keyword">AS</span> ENUM8(<span class="hljs-keyword">NEW</span><span class="hljs-operator">=</span><span class="hljs-number">1</span>,DONE<span class="hljs-operator">=</span><span class="hljs-number">2</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TYPE STATE <span class="hljs-keyword">AS</span> ENUM8(<span class="hljs-keyword">NEW</span><span class="hljs-operator">=</span><span class="hljs-number">1</span>,DONE<span class="hljs-operator">=</span><span class="hljs-number">2</span>)
 <span class="hljs-keyword">CREATE TABLE</span> NOTE(ID I16, BODY TEXT, STATUS STATE)
 <span class="hljs-keyword">INSERT INTO</span> NOTE <span class="hljs-keyword">VALUES</span>(<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;LONG NOTE&#x27;</span>,STATE.NEW)
 <span class="hljs-keyword">SELECT</span> ID, BODY, STATUS <span class="hljs-keyword">FROM</span> NOTE <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ID</code></pre>
@@ -1147,7 +1147,7 @@ compares the same RSQLX header, typed row, streamed TEXT bytes, and footer.</p>
 <h3 id="depth-2-correlated-exists">Depth-2 correlated EXISTS</h3>
 <p>The join/subquery lane composes its existing one-level query at runtime with a
 second EXISTS so the full client image does not duplicate the common prefix:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.ID
 <span class="hljs-keyword">FROM</span> CUST <span class="hljs-keyword">AS</span> C
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span> (
   <span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> ORDR <span class="hljs-keyword">AS</span> O
@@ -1166,7 +1166,7 @@ VICE/1581 plan passes without degradation.</p>
 <h3 id="depth-2-scalar-in-null-and-aggregate-queries">Depth-2 scalar, IN, NULL, and aggregate queries</h3>
 <p>The dedicated nested lane uses three nullable fixed-width tables and executes
 the following depth-2 forms at both 512KB and 16MB:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> A.ID <span class="hljs-keyword">FROM</span> A
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> A.ID <span class="hljs-keyword">FROM</span> A
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span> (
   <span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> B
   <span class="hljs-keyword">WHERE</span> B.AID<span class="hljs-operator">=</span>A.ID
@@ -1193,7 +1193,7 @@ left value and selected set exercise SQL UNKNOWN; a separate empty-set
 returns ID <code>1</code>, while a version selecting both rows for <code>B.ID=30</code> returns
 <code>RSQL_ERR_SUBQUERY_ROWS</code>.</p>
 <p>Nested predicates also feed aggregate and grouped producers:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>),<span class="hljs-built_in">SUM</span>(A.ID) <span class="hljs-keyword">FROM</span> A
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>),<span class="hljs-built_in">SUM</span>(A.ID) <span class="hljs-keyword">FROM</span> A
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span> (
   <span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> B
   <span class="hljs-keyword">WHERE</span> B.AID<span class="hljs-operator">=</span>A.ID
@@ -1220,7 +1220,7 @@ returns ID <code>1</code>, while a version selecting both rows for <code>B.ID=30
 <code>RSQL_ERR_SUBQUERY_ROWS</code> rather than silently completing accumulation. The
 same client boots from an 819,200-byte D81 on VICE&#39;s virtual 1581.</p>
 <h3 id="three-output-source-fixed-scans">Three-output-source fixed scans</h3>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> A.ID,B.ID,C.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> A.ID,B.ID,C.ID
 <span class="hljs-keyword">FROM</span> WA <span class="hljs-keyword">AS</span> A
 <span class="hljs-keyword">JOIN</span> WB <span class="hljs-keyword">AS</span> B <span class="hljs-keyword">ON</span> B.AID<span class="hljs-operator">=</span>A.ID
 <span class="hljs-keyword">JOIN</span> WC <span class="hljs-keyword">AS</span> C
@@ -1236,13 +1236,13 @@ LIMIT <span class="hljs-number">2</span> <span class="hljs-keyword">OFFSET</span
 <p>The dedicated lane also rejects ambiguous unqualified projection, duplicate
 aliases, a fourth JOIN, and invalid aggregate/group forms with focused error
 codes. The fixed wide SELECT below is also materialized and read back:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> WOUT <span class="hljs-keyword">AS</span>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> WOUT <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">SELECT</span> A.ID,B.ID,C.ID
 <span class="hljs-keyword">FROM</span> WA <span class="hljs-keyword">AS</span> A
 <span class="hljs-keyword">JOIN</span> WB <span class="hljs-keyword">AS</span> B <span class="hljs-keyword">ON</span> B.AID<span class="hljs-operator">=</span>A.ID
 <span class="hljs-keyword">JOIN</span> WC <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">ON</span> C.BID<span class="hljs-operator">=</span>B.ID <span class="hljs-keyword">AND</span> C.AID<span class="hljs-operator">=</span>A.ID <span class="hljs-keyword">AND</span> C.K<span class="hljs-operator">=</span>B.K;</code></pre>
 <p>The same lane now executes direct three-source aggregation:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>),<span class="hljs-built_in">SUM</span>(C.ID),<span class="hljs-built_in">AVG</span>(B.ID),<span class="hljs-built_in">MIN</span>(A.ID),<span class="hljs-built_in">MAX</span>(C.ID)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>),<span class="hljs-built_in">SUM</span>(C.ID),<span class="hljs-built_in">AVG</span>(B.ID),<span class="hljs-built_in">MIN</span>(A.ID),<span class="hljs-built_in">MAX</span>(C.ID)
 <span class="hljs-keyword">FROM</span> WA <span class="hljs-keyword">AS</span> A
 <span class="hljs-keyword">JOIN</span> WB <span class="hljs-keyword">AS</span> B <span class="hljs-keyword">ON</span> B.AID<span class="hljs-operator">=</span>A.ID
 <span class="hljs-keyword">JOIN</span> WC <span class="hljs-keyword">AS</span> C <span class="hljs-keyword">ON</span> C.BID<span class="hljs-operator">=</span>B.ID <span class="hljs-keyword">AND</span> C.AID<span class="hljs-operator">=</span>A.ID <span class="hljs-keyword">AND</span> C.K<span class="hljs-operator">=</span>B.K
@@ -1267,7 +1267,7 @@ The lane also rejects a projected nongroup key and <code>SUM(CHAR)</code> with f
 errors.</p>
 <p>The current wide lane additionally executes these result-shaping and streaming
 queries against tables <code>A</code>, <code>B</code>, and <code>C</code>:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> A.ID,B.ID,C.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> A.ID,B.ID,C.ID
 <span class="hljs-keyword">FROM</span> A <span class="hljs-keyword">JOIN</span> B <span class="hljs-keyword">ON</span> B.AID<span class="hljs-operator">=</span>A.ID <span class="hljs-keyword">JOIN</span> C <span class="hljs-keyword">ON</span> C.BID<span class="hljs-operator">=</span>B.ID
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> C.ID <span class="hljs-keyword">DESC</span>,B.ID;
 
@@ -1310,7 +1310,7 @@ queries against tables <code>A</code>, <code>B</code>, and <code>C</code>:</p>
 aggregate-key ordering, pagination, streamed third-source TEXT reads, and
 ordered null extension at both LEFT edges. A dedicated fourteenth target adds
 fixed scalar projection and shaping:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(C.K),SUBSTR(C.K,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>),A.K<span class="hljs-operator">||</span>C.K,CONCAT(<span class="hljs-string">&#x27;Q&#x27;</span>,B.K)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(C.K),SUBSTR(C.K,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>),A.K<span class="hljs-operator">||</span>C.K,CONCAT(<span class="hljs-string">&#x27;Q&#x27;</span>,B.K)
 <span class="hljs-keyword">FROM</span> A <span class="hljs-keyword">JOIN</span> B <span class="hljs-keyword">ON</span> B.AID<span class="hljs-operator">=</span>A.ID
 <span class="hljs-keyword">JOIN</span> C <span class="hljs-keyword">ON</span> C.BID<span class="hljs-operator">=</span>B.ID
 <span class="hljs-keyword">WHERE</span> C.ID<span class="hljs-operator">=</span><span class="hljs-number">100</span>;
@@ -1336,7 +1336,7 @@ fixed scalar projection and shaping:</p>
 case-folded comparison, positive ordinal ordering, exact computed-value
 DISTINCT, and pagination without materializing a result set. The same lane now
 also executes:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.T,C.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.T,C.ID
 <span class="hljs-keyword">FROM</span> A <span class="hljs-keyword">JOIN</span> B <span class="hljs-keyword">ON</span> B.AID<span class="hljs-operator">=</span>A.ID <span class="hljs-keyword">JOIN</span> C <span class="hljs-keyword">ON</span> C.BID<span class="hljs-operator">=</span>B.ID
 <span class="hljs-keyword">WHERE</span> C.ID<span class="hljs-operator">&lt;</span><span class="hljs-number">400</span> <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> C.T <span class="hljs-keyword">DESC</span>,C.ID;
 
@@ -1355,7 +1355,7 @@ also executes:</p>
 duplicate handles with equal payloads, stable secondary keys, and streamed
 literal predicates sourced from every wide row. The same compiled client now
 tests streamed TEXT scalar projection and shaping:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(C.T),SUBSTR(C.T,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>),A.T<span class="hljs-operator">||</span>C.K,CONCAT(B.K,C.T)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(C.T),SUBSTR(C.T,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>),A.T<span class="hljs-operator">||</span>C.K,CONCAT(B.K,C.T)
 <span class="hljs-keyword">FROM</span> A <span class="hljs-keyword">JOIN</span> B <span class="hljs-keyword">ON</span> B.AID<span class="hljs-operator">=</span>A.ID <span class="hljs-keyword">JOIN</span> C <span class="hljs-keyword">ON</span> C.BID<span class="hljs-operator">=</span>B.ID
 <span class="hljs-keyword">WHERE</span> C.ID<span class="hljs-operator">=</span><span class="hljs-number">100</span>;
 
@@ -1377,11 +1377,11 @@ collapses <code>OUTER-ONEALPHA</code> with <code>OUTER-ONEalpha</code>, leaving 
 <code>OUTER-ONEALPHA</code>.</p>
 <h3 id="independent-wide-source-indexes">Independent wide source indexes</h3>
 <p>The same target creates one single-column and two compound indexes:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> INDEX IA <span class="hljs-keyword">ON</span> A(ID);
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> INDEX IA <span class="hljs-keyword">ON</span> A(ID);
 <span class="hljs-keyword">CREATE</span> INDEX IB <span class="hljs-keyword">ON</span> B(AID,ID);
 <span class="hljs-keyword">CREATE</span> INDEX IC <span class="hljs-keyword">ON</span> C(BID,ID);</code></pre>
 <p>It then drives all three nested-loop levels explicitly:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> A.ID,B.ID,C.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> A.ID,B.ID,C.ID
 <span class="hljs-keyword">FROM</span> A <span class="hljs-keyword">USING</span> INDEX ia
 <span class="hljs-keyword">JOIN</span> B <span class="hljs-keyword">USING</span> INDEX IB <span class="hljs-keyword">ON</span> B.AID<span class="hljs-operator">=</span>A.ID
 <span class="hljs-keyword">JOIN</span> C <span class="hljs-keyword">USING</span> INDEX IC <span class="hljs-keyword">ON</span> C.BID<span class="hljs-operator">=</span>B.ID;
@@ -1403,7 +1403,7 @@ that the wide raw stream reproduces the existing engine leaf order. Explicit
 <h3 id="direct-three-source-ctas">Direct three-source CTAS</h3>
 <p>The fixed-width materializer retains the triple identity while it builds each
 destination row:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> WOUT <span class="hljs-keyword">AS</span>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> WOUT <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">SELECT</span> A.ID,B.ID,C.ID
 <span class="hljs-keyword">FROM</span> A <span class="hljs-keyword">JOIN</span> B <span class="hljs-keyword">ON</span> B.AID<span class="hljs-operator">=</span>A.ID
 <span class="hljs-keyword">JOIN</span> C <span class="hljs-keyword">ON</span> C.BID<span class="hljs-operator">=</span>B.ID;
@@ -1411,7 +1411,7 @@ destination row:</p>
 <span class="hljs-keyword">SELECT</span> C1,C2,C3 <span class="hljs-keyword">FROM</span> WOUT <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> C3;</code></pre>
 <p>Variable and scalar values are copied into independent destination handles and
 retain explicit source-local access paths and semantic ordering:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> WTEXT <span class="hljs-keyword">AS</span>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> WTEXT <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">SELECT</span> A.ID,C.T,A.T<span class="hljs-operator">||</span>C.T,LENGTH(C.T)
 <span class="hljs-keyword">FROM</span> A <span class="hljs-keyword">USING</span> INDEX IA
 <span class="hljs-keyword">JOIN</span> B <span class="hljs-keyword">USING</span> INDEX IB <span class="hljs-keyword">ON</span> B.AID<span class="hljs-operator">=</span>A.ID
@@ -1424,7 +1424,7 @@ retain explicit source-local access paths and semantic ordering:</p>
 <code>(2,&#39;BETA&#39;,&#39;OTHERBETA&#39;,4)</code>, and <code>(1,&#39;alpha&#39;,&#39;OUTER-ONEalpha&#39;,5)</code>. The length
 column is physically I32.</p>
 <p>Grouped wide output is also materializable:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> WAGG <span class="hljs-keyword">AS</span>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE TABLE</span> WAGG <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">SELECT</span> A.ID,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>),<span class="hljs-built_in">SUM</span>(C.ID)
 <span class="hljs-keyword">FROM</span> A <span class="hljs-keyword">USING</span> INDEX IA
 <span class="hljs-keyword">JOIN</span> B <span class="hljs-keyword">USING</span> INDEX IB <span class="hljs-keyword">ON</span> B.AID<span class="hljs-operator">=</span>A.ID
@@ -1438,7 +1438,7 @@ are evaluated by the wide producer before bounded destination staging.</p>
 <p>The ordinary two-source scan path now consumes one validated leaf iterator per
 source while retaining scalar projection, LIKE, semantic ORDER BY, and joined
 predicate behavior:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> A.T<span class="hljs-operator">||</span><span class="hljs-string">&#x27;!&#x27;</span>,B.ID
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> A.T<span class="hljs-operator">||</span><span class="hljs-string">&#x27;!&#x27;</span>,B.ID
 <span class="hljs-keyword">FROM</span> A <span class="hljs-keyword">USING</span> INDEX IA
 <span class="hljs-keyword">JOIN</span> B <span class="hljs-keyword">USING</span> INDEX IB <span class="hljs-keyword">ON</span> B.AID<span class="hljs-operator">=</span>A.ID
 <span class="hljs-keyword">WHERE</span> A.T <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;OUT%&#x27;</span>
@@ -1449,7 +1449,7 @@ respectively; neither silently falls back to a heap scan.</p>
 <h3 id="scalar-expressions-in-grouped-aggregate-results">Scalar expressions in grouped aggregate results</h3>
 <p>The ordinary producer combines packed literal metadata, grouped keys, scalar
 evaluation, and an aggregate in one cursor:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(K),SUBSTR(K,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>),K<span class="hljs-operator">||</span><span class="hljs-string">&#x27;!&#x27;</span>,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(K),SUBSTR(K,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>),K<span class="hljs-operator">||</span><span class="hljs-string">&#x27;!&#x27;</span>,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> D
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> K;</code></pre>
 <p>For <code>D = (&#39;BY&#39;),(&#39;BY&#39;),(&#39;Z&#39;)</code>, the rows are
@@ -1458,7 +1458,7 @@ literal-bearing scalar with GROUP BY so the shared descending parser pool is
 exercised.</p>
 <p>Two-source and direct three-source aggregate producers exercise source-to-
 source concatenation:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(X.K),X.K<span class="hljs-operator">||</span>Y.K,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(X.K),X.K<span class="hljs-operator">||</span>Y.K,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> D <span class="hljs-keyword">AS</span> X <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> E <span class="hljs-keyword">AS</span> Y
 <span class="hljs-keyword">WHERE</span> X.K<span class="hljs-operator">=</span><span class="hljs-string">&#x27;BY&#x27;</span>
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> X.K,Y.K;
@@ -1470,18 +1470,18 @@ source concatenation:</p>
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> A0.K,Z.K;</code></pre>
 <p>The first returns <code>BYAX/4</code> and <code>BYLM/2</code>; the second returns <code>BYBY/4</code> and
 <code>ZBY/2</code>. An ungrouped literal is also valid:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-string">&#x27;G&#x27;</span>,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> D;</code></pre>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-string">&#x27;G&#x27;</span>,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> D;</code></pre>
 <p>It returns <code>(&#39;G&#39;,3)</code>. In contrast,
 <code>SELECT LENGTH(K),COUNT(*) FROM D</code> is rejected because <code>K</code> is neither grouped
 nor aggregated.</p>
 <p>The ordinary grouped comparator orders and deduplicates computed scalar
 values rather than their source columns:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> K<span class="hljs-operator">||</span><span class="hljs-string">&#x27;!&#x27;</span>,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> D <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> K <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">1</span> <span class="hljs-keyword">DESC</span>;
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> K<span class="hljs-operator">||</span><span class="hljs-string">&#x27;!&#x27;</span>,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> D <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> K <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">1</span> <span class="hljs-keyword">DESC</span>;
 <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> <span class="hljs-string">&#x27;G&#x27;</span> <span class="hljs-keyword">FROM</span> D <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> K;</code></pre>
 <p>The first returns <code>(&#39;Z!&#39;,1)</code> then <code>(&#39;BY!&#39;,2)</code>. The second sees two physical
 groups but emits one logical row, <code>(&#39;G&#39;)</code>. Direct three-source aggregate replay
 also orders a composed projection:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(A0.K),A0.K<span class="hljs-operator">||</span>Z.K,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> LENGTH(A0.K),A0.K<span class="hljs-operator">||</span>Z.K,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> D <span class="hljs-keyword">AS</span> A0
 <span class="hljs-keyword">JOIN</span> E <span class="hljs-keyword">AS</span> Y <span class="hljs-keyword">ON</span> Y.K<span class="hljs-operator">=</span><span class="hljs-string">&#x27;AX&#x27;</span>
 <span class="hljs-keyword">JOIN</span> F <span class="hljs-keyword">AS</span> Z <span class="hljs-keyword">ON</span> Z.BID<span class="hljs-operator">=</span>Y.ID
@@ -1490,20 +1490,20 @@ also orders a composed projection:</p>
 <p>It returns <code>(&#39;ZBY&#39;)</code> before <code>(&#39;BYBY&#39;)</code>. Two-source joined pair replay is tested
 with a source-to-source concatenation whose second operand used to collide
 with aggregate ORDER scratch:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> X.K<span class="hljs-operator">||</span>Y.K,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> X.K<span class="hljs-operator">||</span>Y.K,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>)
 <span class="hljs-keyword">FROM</span> D <span class="hljs-keyword">AS</span> X <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> E <span class="hljs-keyword">AS</span> Y
 <span class="hljs-keyword">WHERE</span> X.K<span class="hljs-operator">=</span><span class="hljs-string">&#x27;BY&#x27;</span>
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> X.K,Y.K
 <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">1</span> <span class="hljs-keyword">DESC</span>;</code></pre>
 <p>It returns <code>(&#39;BYLM&#39;,2)</code> then <code>(&#39;BYAX&#39;,4)</code>. Exact DISTINCT over multiple joined
 groups is independently checked by:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> LENGTH(X.K)
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> LENGTH(X.K)
 <span class="hljs-keyword">FROM</span> D <span class="hljs-keyword">AS</span> X <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> E <span class="hljs-keyword">AS</span> Y
 <span class="hljs-keyword">WHERE</span> X.K<span class="hljs-operator">=</span><span class="hljs-string">&#x27;BY&#x27;</span>
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> X.K,Y.K;</code></pre>
 <p>Both groups evaluate to <code>2</code>, so exactly one row is emitted. Correlated
 aggregate scalar replay is covered for both shaping operations:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> <span class="hljs-string">&#x27;G&#x27;</span>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> <span class="hljs-string">&#x27;G&#x27;</span>
 <span class="hljs-keyword">FROM</span> D <span class="hljs-keyword">AS</span> X
 <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">EXISTS</span>(<span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> F <span class="hljs-keyword">AS</span> Y <span class="hljs-keyword">WHERE</span> Y.K<span class="hljs-operator">=</span>X.K)
 <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> X.K;
@@ -1516,7 +1516,7 @@ aggregate scalar replay is covered for both shaping operations:</p>
 <p>The DISTINCT form emits one <code>G</code> across the qualifying <code>BY</code> and <code>Z</code> groups;
 the ordered form emits <code>(&#39;Z!&#39;,1)</code> then <code>(&#39;BY!&#39;,2)</code>.</p>
 <p>Finally, grouped scalar output is materialized and read back through CTAS:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> GS <span class="hljs-keyword">AS</span>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> GS <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">SELECT</span> LENGTH(K),K<span class="hljs-operator">||</span>K,<span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> D <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> K;
 
 <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> GS <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> C1 <span class="hljs-keyword">DESC</span>;</code></pre>
@@ -1583,7 +1583,7 @@ tables. It deliberately bounds the hot query to 128 sales while retaining a
 <p><code>SALES_ORDERS.DETAILS</code>, <code>ORDER_ARCHIVE.DETAILS</code>, and <code>CUSTOMERS.NAME</code> are
 physical <code>CHAR(80)</code> columns. Thus 2,048 rows carry an 80-character value.</p>
 <p>The most demanding query is:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.REGION,
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> C.REGION,
        P.CATEGORY_ID,
        <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>),
        <span class="hljs-built_in">SUM</span>(O.ORDER_TOTAL),
@@ -1638,7 +1638,7 @@ physical <code>CHAR(80)</code> columns. Thus 2,048 rows carry an 80-character va
 </tbody></table>
 <p>Correlated EXISTS is independently exercised without introducing another
 join:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> O.ORDER_ID, O.CUSTOMER_ID, O.ORDER_TOTAL
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> O.ORDER_ID, O.CUSTOMER_ID, O.ORDER_TOTAL
 <span class="hljs-keyword">FROM</span> SALES_ORDERS <span class="hljs-keyword">AS</span> O
 <span class="hljs-keyword">WHERE</span> O.ORDER_TOTAL <span class="hljs-operator">&gt;=</span> <span class="hljs-number">900</span>
   <span class="hljs-keyword">AND</span> <span class="hljs-keyword">EXISTS</span> (
@@ -1691,7 +1691,7 @@ index pages above plus the catalog root. The VICE whole-REU export is
 <h3 id="opt-in-staged-temp-table-benchmark">Opt-in staged TEMP-table benchmark</h3>
 <p>The alternative benchmark keeps the original test and materializes the same
 hot analytical workload in explicit, timed stages:</p>
-<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> FILTERED_ORDERS <span class="hljs-keyword">AS</span>
+<pre class="sql-code" aria-label="sql example"><code class="language-sql hljs"><span class="hljs-keyword">CREATE</span> TEMP <span class="hljs-keyword">TABLE</span> FILTERED_ORDERS <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">SELECT</span> ORDER_ID,CUSTOMER_ID,PRODUCT_ID,ORDER_TOTAL,ITEM_COUNT
 <span class="hljs-keyword">FROM</span> SALES_ORDERS
 <span class="hljs-keyword">WHERE</span> ORDER_TOTAL<span class="hljs-operator">&gt;=</span><span class="hljs-number">1000</span> <span class="hljs-keyword">AND</span> ITEM_COUNT<span class="hljs-operator">&gt;=</span><span class="hljs-number">2</span> <span class="hljs-keyword">AND</span> DETAILS <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;A%&#x27;</span>;

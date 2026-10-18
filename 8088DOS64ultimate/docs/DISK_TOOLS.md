@@ -1,5 +1,8 @@
 # DOS disk inspection and fixture creation
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 `build_support/dos_disk_inspect.py` reads FAT12/FAT16 volumes and single-primary-partition raw HD images without writing or repairing them. It checks both FAT copies, BPB/volume bounds, reserved FAT entries, full file and directory chains, dot/parent entries, cross-links, lost allocations, exact lengths and MBR/CHS agreement. Bad clusters are reported separately. It can extract a file to standard output after validating the complete filesystem.
 
 ```sh

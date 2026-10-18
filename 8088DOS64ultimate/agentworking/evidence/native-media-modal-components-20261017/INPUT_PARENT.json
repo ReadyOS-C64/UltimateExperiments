@@ -1,8 +1,0 @@
-{
-  "broker_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-broker-root-20261017/MANIFEST.json",
-  "broker_sha256": "8b683d63ba2b25e46c255b595dc6b53b63b9508ac37b712250c028ca5cfd49f9",
-  "broker_pins": 769,
-  "panel_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-panel-display-successor-20261017/MANIFEST.json",
-  "panel_sha256": "cd878ccb509491f24f1c9d4484d584819f4d484d283b4583b5ae2d395521c6a9",
-  "panel_pins": 1287
-}

@@ -1,5 +1,8 @@
 Current update,2026-10-15: production SAVE issues two256-byte WRITE requests for every512-byte sector, advances the far pointer after each successful half, and advances the logical sector after the second half.720 sectors require1440 writes; reopen/content comparison still reads512-byte sectors. Failure-half0/1 is meaningful only for WRITE phase2/3. The actual paired hardware test proved512 corruption versus exact2x256; whole-disk physical verification remains pending. ROOT d883c678/88669999 passes428+298+73 fresh checks; standalone exporter4001 bytes/f4c7cadb, twelve other helpers unchanged. Historical validation below identifies the previous union; latest evidence is agentworking/evidence/split-save-current-root-20261015.json.
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 # Paused native floppy SAVE on the current runtime
 
 This implementation adds development command7 SAVE and command9 CANCEL to the real 6502 runtime. From coherent PAUSED5, SAVE accepts a fresh owned output path, writes all720 sectors from the mounted360KiB REU floppy using CREATE_NEW, CLOSE/reopens READ-only, requires successful FILE_INFO declaring exactly368640 bytes, compares every byte, probes EOF and requires known final CLOSE. Genuine DOS continues to own INT21h, FAT and application loading. The mailbox interface is a development control surface; an end-user save/discard UI and media-generation binding remain open.

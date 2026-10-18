@@ -1,6 +1,9 @@
 # Behavior tests and end-user acceptance
 
-This document retains the original test design and utility matrix; individual planned cases are not completion claims. Current executed evidence is in [TEST_LOG](../agentworking/TEST_LOG.md) and [STATUS](../agentworking/STATUS.md). The [V1 endpoint](V1_ENDPOINT.md) defines the final matched-release acceptance run, including edited Turbo Pascal source, compilation to disk and restart persistence. Further speed improvement is post-V1.
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+This document retains the original test design and utility matrix; individual planned cases are not completion claims. Current executed evidence is in TEST_LOG (local development record, not distributed) and STATUS (local development record, not distributed). The [V1 endpoint](V1_ENDPOINT.md) defines the final matched-release acceptance run, including edited Turbo Pascal source, compilation to disk and restart persistence. Further speed improvement is post-V1.
 
 ## The ZeroPage pattern to retain
 

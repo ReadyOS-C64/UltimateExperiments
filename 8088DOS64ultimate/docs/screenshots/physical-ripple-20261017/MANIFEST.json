@@ -3,24 +3,21 @@
   "source_file": "examples/RIPPLE.PAS",
   "source_sha256": "087a758c89b97a9bb4fb69886021006beddf8ed0c8d0f38176638b11898240c8",
   "display": "40-column colour text; 8 selected RGBI colours; 960 full blocks",
-  "actual_machine": "C64 Ultimate 10.0.0.79, PAL Manual64 MHz",
+  "actual_machine": "C64 Ultimate PAL Manual64 MHz",
   "native_runtime_sha256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
   "screenshots": [
     {
       "file": "editor.png",
-      "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-ripple-picture-20261017/dotnet-turbo/001-01-Ripple-editor-before-compile-VIC.png",
       "sha256": "3ea455116ec2f5e2b3562d6c124ccbb4ae1e2f0e16ab88b2f5b67dca72a46000",
       "actual_unaltered_VIC_stream": true
     },
     {
       "file": "compiled.png",
-      "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-ripple-picture-20261017/dotnet-turbo/004-04-Ripple-compiled-successfully-VIC.png",
       "sha256": "b77955f1d654d8fb9a9cda4a82a6605c3bbedc59a3ccee67c26dac41ecc6b7ac",
       "actual_unaltered_VIC_stream": true
     },
     {
       "file": "picture.png",
-      "original": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-ripple-picture-20261017/dotnet-turbo/006-06-Ripple-finished-drawing-VIC.png",
       "sha256": "1faed134551fcede5250421e5f2f60542ef53b0c88911cbd1710a22fd09de194",
       "actual_unaltered_VIC_stream": true
     }
@@ -29,6 +26,5 @@
   "all_18_editor_source_lines_exact": true,
   "all_1000_guest_cells_exact": true,
   "host_prepared_20MiB_runtime_fixture_not_native_installer_acceptance": true,
-  "current_C_backing_file_OPEN": true,
   "RIPPLE_cold_persistence_not_tested": true
 }

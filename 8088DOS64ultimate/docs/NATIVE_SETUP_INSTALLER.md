@@ -1,5 +1,11 @@
 # Native SETUP build and current scope
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+**Current physical qualification:** fresh native 2 MiB installation and its generated START reach DOS. Native 20 MiB creation fails at WRITE_NEW/UCI03 after 65,536 produced bytes. Use [INSTALL.md](INSTALL.md) for the preview; CONFIG/media/Finish and complete human acceptance remain open. Turbo IDE/save/compile/run/restart works on a separate host-prepared 20 MiB development fixture. This does not qualify the installer. Versioned sizes/hashes below identify historical builds.
+
+
 The current disk-menu candidate is `make v1-candidate DOS64_V1_CANDIDATE_ARGS="--runtime-media"`: twelve matched SETUP/CONFIG/runtime/cold assets, including startup diagnostics and the tested FAT/PUB/INO failure details. See [current candidate instructions](V1_CANDIDATE.md). This source-built package passes host packaging controls; final physical installation and the remaining file-specific error messages are still open. The nine-file descriptions below apply to the default INI-only profile.
 
 `make v1-candidate` builds SETUP and its two overlays, CONFIG, and the five coupled INI launcher/emulator assets from fresh public sources. It validates their receipts, shared source identities, descriptors and both SETUP's and CONFIG's exact release binding before writing one zip. The archive contains nine native files, a short installation guide, an INI example and checksums; it contains no DOS/vendor images, configured launcher, CFG or blank HD. Its path is recorded in `build/v1-candidate/RESULT.json`.

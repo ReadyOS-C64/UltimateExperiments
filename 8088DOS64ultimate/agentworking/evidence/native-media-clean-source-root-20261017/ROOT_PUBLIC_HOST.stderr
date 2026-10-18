@@ -1,8 +1,0 @@
-test_15_native_inventory_covers_linked_asm_without_private_text_probes (tests.native_media.test_builder.Tests) ... ok
-test_14_staged_native_graph_contains_every_make_include (tests.native_media.test_builder.Tests) ... ok
-test_11_native_inventory_has_no_vendor_media_or_private_paths (tests.native_media.test_builder.Tests) ... ok
-
-----------------------------------------------------------------------
-Ran 3 tests in 0.093s
-
-OK

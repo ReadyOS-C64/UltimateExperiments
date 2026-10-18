@@ -1,5 +1,8 @@
 # Retaining HD failure evidence
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 The optional host collector retains newly authoritative HD data before the outer workflow restores its pre-run REU backup. Restoring that old backup alone would destroy evidence of an uncertain new write. This is a development foundation; the physical HD runner and complete guest-write trace are still unfinished.
 
 `HdEvidenceCollector` is passed explicitly as `pre_restore_evidence` to `run_with_recovery`. With no hook, the existing recovery path is unchanged. The native-file runner still allows two fresh restoration attempts, with a separate600-second phase per attempt.
@@ -16,4 +19,4 @@ A physical HD caller must retain and hash-bind the original application RAM capt
 
 Before physical HD execution, finish the owned-image stager/runner and an actual guest AH03 write-history trace, preserve each intent/payload/commit and uncertain write, and compare the entire final image/FAT/files against that history. The present last-sector/handoff snapshots cannot establish every write. Readback, CLOSE and reopen do not establish power-loss durability. Restoring REU does not restore the remote image or prior CPU execution.
 
-[Foundation evidence](../agentworking/evidence/hd-failure-evidence-foundation-20261015.json), [HD implementation](HD_IMPLEMENTATION.md), [physical testing](HARDWARE_TESTING.md).
+Foundation evidence (local development record, not distributed), [HD implementation](HD_IMPLEMENTATION.md), [physical testing](HARDWARE_TESTING.md).

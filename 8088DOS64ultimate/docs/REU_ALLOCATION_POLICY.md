@@ -1,5 +1,8 @@
 # REU allocation and performance
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 The user explicitly authorized additional REU use on 2026-10-16 whenever saving that memory would make the emulator slower. Speed takes priority over a small REU footprint. The supported minimum remains 4 MiB; larger configured REUs may enable larger caches or additional resident assets. This permission changes the allocation policy, not the installed hardware size or any measured performance result.
 
 Every allocation must name its owner, lifetime, bounds, and overlap rules. Use the configured, validated capacity for all DMA and Ultimate DOS direct transfers. The firmware's 16 MiB address limit does not prove that 16 MiB is installed or enabled. Do not probe capacity destructively while guest memory or user media occupies REU.

@@ -1,5 +1,8 @@
 # Genuine DOS CGA application gate
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 `CGAPROBE.COM` is an independently authored 127-byte original-8088 program. Genuine DOS 3.3 reads its FAT12 directory/cluster and loads it through COMMAND.COM. There is no native COM loader or replacement INT21. This is an application probe, separate from the accepted DOS builtins.
 
 The program selects BIOS modes 4, 5, then 6. Each fills all 16 KiB at B800:0000 with a deterministic pattern, writes a mode-specific ready marker in the unused tail, then blocks in BIOS INT16/AH00. Only after a coherent complete snapshot and comparison does the harness send Enter. After mode6 it selects mode3, prints a completion line with ordinary DOS AH09, and terminates with DOS AH4C. The shell must return A> with the complete 80-column text bitmap matching the font oracle.

@@ -1,2 +1,0 @@
-python3 -B build_support/v1_candidate.py --runtime-media --out agentworking/scratch/v1-runtime-candidate-public-root-20261017/build
-/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-runtime-candidate-public-root-20261017/build/run-w91ztpd4/DOS64-candidate.zip

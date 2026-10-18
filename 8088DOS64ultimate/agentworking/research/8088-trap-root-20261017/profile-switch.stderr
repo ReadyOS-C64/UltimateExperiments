@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/8088-trap-root-20261017/profile_switch.py", line 14, in <module>
-    one=run('one',1);assert one['dos64.prg']!=zero['dos64.prg']
-AssertionError

@@ -1,5 +1,8 @@
 # V1 native disk controls: measured integration checkpoint
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 This is the current implementation boundary, not a released menu. The default
 emulator remains `666089b5`; the optional selected Save As profile is `46fa2e54`.
 Neither currently provides the complete interactive disk workflow. V1 acceptance
@@ -73,16 +76,16 @@ Controller code/data/BSS uses8000..8FE3, preserving CUI state7800..7C98. Its sep
 
 The next step connects the frontend's private intent/ticket through a resident load/return/reload bridge, couples actual runtime-role assets to START/main, and completes normal Save, Insert/Eject, write protection, Finish and explicit startup-journal recovery. Existing startup validation blocks pending journals before normal configuration acquisition; recovery mutations and their user controls remain private work. SETUP preflight/package updates and final physical installer/media/Turbo/restart/human acceptance remain required. No speed improvement blocks V1.
 
-[Full controller evidence](../agentworking/evidence/native-media-action-controller-root-20261017.json), [cold40KiB loader](../agentworking/evidence/native-start-40k-root-20261017.json), [startup journal gate](../agentworking/evidence/native-start-journal-root-20261017.json).
+Full controller evidence (local development record, not distributed), cold40KiB loader (local development record, not distributed), startup journal gate (local development record, not distributed).
 
-Evidence: [public Save As graph](../agentworking/evidence/native-media-public-root-20261017.json),
-[broker component](../agentworking/evidence/native-media-broker-component-root-20261017.json).
+Evidence: public Save As graph (local development record, not distributed),
+broker component (local development record, not distributed).
 The composition and frontend source/product identities are retained in the
 project-local `agentworking/scratch/live-media-composition-root-20261017` and
 `live-media-panel-display-successor-20261017` cohorts.
 
-The private terminal-error successor adds six ROOT-replayed actual native controls. Owned/cache0 presentation can show a terminal stage E1 error; backend polling, release and Resume remain stage8-only. The controller must call `mu_block` with the first failure and never reinitialize a failed session. Public observations cannot clear the private block or pending ticket. [Terminal-error evidence](../agentworking/evidence/native-media-terminal-fault-root-20261017.json).
+The private terminal-error successor adds six ROOT-replayed actual native controls. Owned/cache0 presentation can show a terminal stage E1 error; backend polling, release and Resume remain stage8-only. The controller must call `mu_block` with the first failure and never reinitialize a failed session. Public observations cannot clear the private block or pending ticket. Terminal-error evidence (local development record, not distributed).
 
 ## Actual menu Save As bridge checkpoint
 
-Private UNIT4fb6 now captures the private delivered WAIT intent into6E01 once before retiring CUI code, executes the complete native controller and reloads/verifies CUI before consuming the original ticket.9 actual groups and8 independent checks pass; see [evidence](../agentworking/evidence/native-media-ui-saveas-root-20261017.json). All actions including Resume route through capture; public event/result never authorizes work. Partial controller/UI loading uses native fallback and denies Resume. Idle SAMPLE4 is bounded256. BSS7800..7C99 survives controller code8000; broker state6D00 and bridge6E00 are disjoint. Runtime-role workers, cold container provenance, unused sequence allocation and remaining media/Finish actions are separate gates.
+Private UNIT4fb6 now captures the private delivered WAIT intent into6E01 once before retiring CUI code, executes the complete native controller and reloads/verifies CUI before consuming the original ticket.9 actual groups and8 independent checks pass; see evidence (local development record, not distributed). All actions including Resume route through capture; public event/result never authorizes work. Partial controller/UI loading uses native fallback and denies Resume. Idle SAMPLE4 is bounded256. BSS7800..7C99 survives controller code8000; broker state6D00 and bridge6E00 are disjoint. Runtime-role workers, cold container provenance, unused sequence allocation and remaining media/Finish actions are separate gates.

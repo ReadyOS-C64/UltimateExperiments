@@ -1,0 +1,511 @@
+{
+  "schema": 1,
+  "method": "Read-only BPB/root/FAT12 chain parsing and SHA-256",
+  "images": [
+    {
+      "path": "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img",
+      "bytes": 368640,
+      "sha256": "bca98992b476dfee95667b1edc9a71c255858e588c03edece04ad7237ca6ffdb",
+      "root_files": [
+        {
+          "name": "IO.SYS",
+          "attributes": 39,
+          "first_cluster": 2,
+          "size": 22398,
+          "sha256": "b0bbdb145bd201c025b7921542cc3ee5244b47cdbc06be849f0d9ce8ba46a9c4",
+          "chain_clusters": 22
+        },
+        {
+          "name": "MSDOS.SYS",
+          "attributes": 39,
+          "first_cluster": 24,
+          "size": 30128,
+          "sha256": "312f79cbc91f8aeb497e70f73be29cf2fb209c73f661350ee51259247037d65f",
+          "chain_clusters": 30
+        },
+        {
+          "name": "4201.CPI",
+          "attributes": 32,
+          "first_cluster": 54,
+          "size": 17089,
+          "sha256": "d95878a3f8999d6088981be4c1a58ca4928a0a4b83a65c596df80d09053ff18c",
+          "chain_clusters": 17
+        },
+        {
+          "name": "5202.CPI",
+          "attributes": 32,
+          "first_cluster": 71,
+          "size": 459,
+          "sha256": "26859c1a5942e72348a08cb13039adcf2b52be66f192de08f4ef4e8ef87f985d",
+          "chain_clusters": 1
+        },
+        {
+          "name": "ANSI.SYS",
+          "attributes": 32,
+          "first_cluster": 72,
+          "size": 1647,
+          "sha256": "1e92b6074e1c1d749faaac2b49a0603c5f8f75e398a58f5314af76bbb0f32f9e",
+          "chain_clusters": 2
+        },
+        {
+          "name": "APPEND.EXE",
+          "attributes": 32,
+          "first_cluster": 74,
+          "size": 5794,
+          "sha256": "c26850d63f079e0c95325cb9721534b61ebad4a9f1a6b21191489cdf582b8041",
+          "chain_clusters": 6
+        },
+        {
+          "name": "ASSIGN.COM",
+          "attributes": 32,
+          "first_cluster": 80,
+          "size": 1530,
+          "sha256": "e39407d4ebf9ee0c98bb565fb3b0430e572a019e04d0e2ebbc6e0cd858e4f10c",
+          "chain_clusters": 2
+        },
+        {
+          "name": "ATTRIB.EXE",
+          "attributes": 32,
+          "first_cluster": 82,
+          "size": 10656,
+          "sha256": "5733d357b6f904fba0c105c2fda83252049f818761604fab28c003facb942dd5",
+          "chain_clusters": 11
+        },
+        {
+          "name": "CHKDSK.COM",
+          "attributes": 32,
+          "first_cluster": 93,
+          "size": 9819,
+          "sha256": "e792fc0125287710d635cc372914aaf1040f94521aab627d221e9ef0b2ed8c0b",
+          "chain_clusters": 10
+        },
+        {
+          "name": "COMMAND.COM",
+          "attributes": 32,
+          "first_cluster": 103,
+          "size": 25308,
+          "sha256": "1619d4e38e14ca649818a7be9c15d181964ff8d59693cb5a7d98ffde9a1811a7",
+          "chain_clusters": 25
+        },
+        {
+          "name": "COMP.COM",
+          "attributes": 32,
+          "first_cluster": 128,
+          "size": 4183,
+          "sha256": "2be826edb674c748d2dc01363d11158e5633dd6c162b9ba4bd143bdc9507040a",
+          "chain_clusters": 5
+        },
+        {
+          "name": "COUNTRY.SYS",
+          "attributes": 32,
+          "first_cluster": 133,
+          "size": 11254,
+          "sha256": "35453a228c7adaa409b6da0dbd0e95609bc16ceccfa606ed3045e27d48d336c4",
+          "chain_clusters": 11
+        },
+        {
+          "name": "DISKCOMP.COM",
+          "attributes": 32,
+          "first_cluster": 144,
+          "size": 5848,
+          "sha256": "72b23a5c89274c4b12ff32e7c218ad859e0325551fffc364733482741b594f8e",
+          "chain_clusters": 6
+        },
+        {
+          "name": "DISKCOPY.COM",
+          "attributes": 32,
+          "first_cluster": 150,
+          "size": 6264,
+          "sha256": "5342418cabf6dd573f33bd463720bb9e5d1c51ae60aecc6b80ba54ce1e0baefb",
+          "chain_clusters": 7
+        },
+        {
+          "name": "DISPLAY.SYS",
+          "attributes": 32,
+          "first_cluster": 157,
+          "size": 11259,
+          "sha256": "4c3144b4eec67ecb135d09512f9097d223fae43898e5d4956858b2618cd9d706",
+          "chain_clusters": 11
+        },
+        {
+          "name": "DRIVER.SYS",
+          "attributes": 32,
+          "first_cluster": 168,
+          "size": 1165,
+          "sha256": "f430b02f4105b9ee1718cba81412dc00c638ff12a277a0d5eb3e4aee96083d8b",
+          "chain_clusters": 2
+        },
+        {
+          "name": "EDLIN.COM",
+          "attributes": 32,
+          "first_cluster": 170,
+          "size": 7495,
+          "sha256": "5eae29f6a76db87f1e15a2fe8bfb30a69d7a9aa2da49eb8d57f32968066438cb",
+          "chain_clusters": 8
+        },
+        {
+          "name": "EXE2BIN.EXE",
+          "attributes": 32,
+          "first_cluster": 178,
+          "size": 3050,
+          "sha256": "875800e3b2c2b1ef6839d9986976704193250dc9665eb8cc9c0a6b8f2561a94f",
+          "chain_clusters": 3
+        },
+        {
+          "name": "FASTOPEN.EXE",
+          "attributes": 32,
+          "first_cluster": 181,
+          "size": 3888,
+          "sha256": "460eddf9877a53aa1dcf36583cf5a7c9a043aa8cf8b7110182cbf7beb0db205c",
+          "chain_clusters": 4
+        },
+        {
+          "name": "FDISK.COM",
+          "attributes": 32,
+          "first_cluster": 185,
+          "size": 48983,
+          "sha256": "7dec413ba8ffa5d7c8e825f481d5fcc3cdc8160011b072ed7c2834471a891a35",
+          "chain_clusters": 48
+        },
+        {
+          "name": "FIND.EXE",
+          "attributes": 32,
+          "first_cluster": 233,
+          "size": 6403,
+          "sha256": "513f58937c7713572d8f204ce3f8a769c93d35c5e66c008f21b4fa54af5ccfa4",
+          "chain_clusters": 7
+        },
+        {
+          "name": "FORMAT.COM",
+          "attributes": 32,
+          "first_cluster": 240,
+          "size": 11671,
+          "sha256": "e6d9eb66b88f13664d2ab06357931420b7485ce0dae8a12552d4ee58db93bc85",
+          "chain_clusters": 12
+        },
+        {
+          "name": "GRAFTABL.COM",
+          "attributes": 32,
+          "first_cluster": 252,
+          "size": 6136,
+          "sha256": "4eddd1150e99e2b3d94c92af6f7e37b1e9da18d86668280c3f806d2c8cd65a2f",
+          "chain_clusters": 6
+        },
+        {
+          "name": "GRAPHICS.COM",
+          "attributes": 32,
+          "first_cluster": 258,
+          "size": 13943,
+          "sha256": "229263d921f0e7e84699ad2e2203c877cc4be8e8b28332c1ffcc7aa3394fd814",
+          "chain_clusters": 14
+        },
+        {
+          "name": "JOIN.EXE",
+          "attributes": 32,
+          "first_cluster": 272,
+          "size": 9612,
+          "sha256": "bbb99d4ae1029d3da55982e560aac11ab38d97fc1ebfe5580c6590653b070741",
+          "chain_clusters": 10
+        },
+        {
+          "name": "CONFIG.SYS",
+          "attributes": 32,
+          "first_cluster": 282,
+          "size": 50,
+          "sha256": "25923f876c309f5db74b6ce834ff1a65614cdbe5e868e9fdeae0d2088de33896",
+          "chain_clusters": 1,
+          "text_cp437": "c:\r\ndevice=c:\\dos\\ansi.sys\r\nfiles=25\r\nbuffers=25\r\n"
+        },
+        {
+          "name": "LABEL.COM",
+          "attributes": 32,
+          "first_cluster": 291,
+          "size": 2346,
+          "sha256": "27dc88d5678308ce8bad53efa88e1577e77dde0a5fad025b3ed406d45a688016",
+          "chain_clusters": 3
+        },
+        {
+          "name": "MODE.COM",
+          "attributes": 32,
+          "first_cluster": 294,
+          "size": 15440,
+          "sha256": "1b8c477ba69232fd0228db919ac4cadcfde7dc19049d0ed5d0699792c13eee51",
+          "chain_clusters": 16
+        },
+        {
+          "name": "MORE.COM",
+          "attributes": 32,
+          "first_cluster": 310,
+          "size": 282,
+          "sha256": "9a71219dbcc0ebe9b082a1ee8450ca4ed7150ce069dfdd7dcdc15a641465bb06",
+          "chain_clusters": 1
+        },
+        {
+          "name": "NLSFUNC.EXE",
+          "attributes": 32,
+          "first_cluster": 311,
+          "size": 3029,
+          "sha256": "0d6ad276cf6b2bd705b7f38d697124b5fe3ec48150b129b39245afdb16d39685",
+          "chain_clusters": 3
+        },
+        {
+          "name": "PRINT.COM",
+          "attributes": 32,
+          "first_cluster": 314,
+          "size": 9011,
+          "sha256": "018de9547a8f539786017a4f0eae065c8970cfed261f9f938ae2aab4fe7c6bd0",
+          "chain_clusters": 9
+        },
+        {
+          "name": "RECOVER.COM",
+          "attributes": 32,
+          "first_cluster": 323,
+          "size": 4268,
+          "sha256": "a2a98e3348d72f2e4913407eea9a6f07e46fa0dfcefac9271e1ba06d979172b8",
+          "chain_clusters": 5
+        },
+        {
+          "name": "SELECT.COM",
+          "attributes": 32,
+          "first_cluster": 328,
+          "size": 4132,
+          "sha256": "ca33d54cbc3d7cd5f7b1b782b895881d62e3bc43b9e80da4237ab3cf0dd9e4d4",
+          "chain_clusters": 5
+        },
+        {
+          "name": "SORT.EXE",
+          "attributes": 32,
+          "first_cluster": 333,
+          "size": 1946,
+          "sha256": "af20bdbc7b2a7b4d070156e1cc4e83fd16048c7820aa849bba1067363e2621f4",
+          "chain_clusters": 2
+        },
+        {
+          "name": "SUBST.EXE",
+          "attributes": 32,
+          "first_cluster": 335,
+          "size": 10552,
+          "sha256": "4a547f118c4d5db31d1818cf3a2d1b81d4a7c3b3ff82b356528a08747b1d9679",
+          "chain_clusters": 11
+        },
+        {
+          "name": "SYS.COM",
+          "attributes": 32,
+          "first_cluster": 346,
+          "size": 4725,
+          "sha256": "e74e28ad2fb2006beccf6f40ec1201db5e1efa858b2c6943a114c2d209bda820",
+          "chain_clusters": 5
+        },
+        {
+          "name": "TREE.COM",
+          "attributes": 32,
+          "first_cluster": 351,
+          "size": 3540,
+          "sha256": "bc0bdcd13d0dd85ef752d4552b2b3a7e7bea3fd044933b0487ebd26167145cfd",
+          "chain_clusters": 4
+        },
+        {
+          "name": "MS330APP.01",
+          "attributes": 40,
+          "first_cluster": 0,
+          "size": 0
+        }
+      ]
+    },
+    {
+      "path": "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 2 of 3.img",
+      "bytes": 368640,
+      "sha256": "91a624fc448c1c423d159ae21f51cc416393d8e19a73d3858afc3af92af041c2",
+      "root_files": [
+        {
+          "name": "BACKUP.COM",
+          "attributes": 32,
+          "first_cluster": 2,
+          "size": 30280,
+          "sha256": "b4b61752ccc60b06e860f0140b3de54bb9392f9591ba7abb0835c7f0525deb8b",
+          "chain_clusters": 30
+        },
+        {
+          "name": "DEBUG.COM",
+          "attributes": 32,
+          "first_cluster": 32,
+          "size": 15866,
+          "sha256": "ff782cc3178962324dbb562731c2f6ae76e053eb9850ce65990d650c0cf816ef",
+          "chain_clusters": 16
+        },
+        {
+          "name": "EGA.CPI",
+          "attributes": 32,
+          "first_cluster": 48,
+          "size": 49065,
+          "sha256": "5421345ad0ad1728eca92c000c4f22477a99e328c0aac9b63f2f2998cbcff2b3",
+          "chain_clusters": 48
+        },
+        {
+          "name": "FC.EXE",
+          "attributes": 32,
+          "first_cluster": 96,
+          "size": 15974,
+          "sha256": "d836f4237ac02cb0b2eba1b6dbd5cbf7f6a42740e3e68ee227d7d6220509b7e6",
+          "chain_clusters": 16
+        },
+        {
+          "name": "KEYB.COM",
+          "attributes": 32,
+          "first_cluster": 112,
+          "size": 9041,
+          "sha256": "4281738a843096385e6d77fdb310486e52456f1b83b4ffb515864a02303f5497",
+          "chain_clusters": 9
+        },
+        {
+          "name": "KEYBOARD.SYS",
+          "attributes": 32,
+          "first_cluster": 191,
+          "size": 19735,
+          "sha256": "8ea4a23f470a391b41be6c1c1263f134310d081c22f6db20e897d8431b14fb79",
+          "chain_clusters": 20
+        },
+        {
+          "name": "LCD.CPI",
+          "attributes": 32,
+          "first_cluster": 211,
+          "size": 10752,
+          "sha256": "94ff1827196198f88440166ade1d70a84bf95a987525c06b52a7105b47c2ece1",
+          "chain_clusters": 11
+        },
+        {
+          "name": "LINK.EXE",
+          "attributes": 32,
+          "first_cluster": 222,
+          "size": 43988,
+          "sha256": "8bd6d1144ee8acf4dc13a48e46070c642e962bb3822edacbe5a76a95e7a692b1",
+          "chain_clusters": 43
+        },
+        {
+          "name": "PRINTER.SYS",
+          "attributes": 32,
+          "first_cluster": 265,
+          "size": 13559,
+          "sha256": "028d08232fda2dc42c69fb1343041ac12bf5455e3ef67166c224d94bc2f86c64",
+          "chain_clusters": 14
+        },
+        {
+          "name": "RAMDRIVE.SYS",
+          "attributes": 32,
+          "first_cluster": 279,
+          "size": 8225,
+          "sha256": "21e7b4a5cb354531e7f9df2295896b9a2181748f7c682b18a718edd69e058ac9",
+          "chain_clusters": 9
+        },
+        {
+          "name": "REPLACE.EXE",
+          "attributes": 32,
+          "first_cluster": 288,
+          "size": 13234,
+          "sha256": "c8ac233a3a56ec8ad4eb71871997d4a24cf21bfc1f6b933ef369a1bae305aaa6",
+          "chain_clusters": 13
+        },
+        {
+          "name": "RESTORE.COM",
+          "attributes": 32,
+          "first_cluster": 301,
+          "size": 35650,
+          "sha256": "16dd38b1107c54cd9ab636cae85032a4265ce26fbe48b3c865ac64df267ee794",
+          "chain_clusters": 35
+        },
+        {
+          "name": "SHARE.EXE",
+          "attributes": 32,
+          "first_cluster": 336,
+          "size": 8608,
+          "sha256": "b4687e17fd998c4276a404305949d7c83f62420c7606c2cb7f7eec02b7d5c7e5",
+          "chain_clusters": 9
+        },
+        {
+          "name": "XCOPY.EXE",
+          "attributes": 32,
+          "first_cluster": 345,
+          "size": 11216,
+          "sha256": "c4c694e1c1625e8d22bf1cfa658eb814ba1e1259400deef0fa4a9a1ee2bb8e31",
+          "chain_clusters": 11
+        },
+        {
+          "name": "MS330APP.02",
+          "attributes": 40,
+          "first_cluster": 0,
+          "size": 0
+        }
+      ]
+    },
+    {
+      "path": "reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 3 of 3.img",
+      "bytes": 368640,
+      "sha256": "c69238c738bab18db840b5ae72b2470c0d594832d91103573a6d8273dce300e9",
+      "root_files": [
+        {
+          "name": "IO.SYS",
+          "attributes": 39,
+          "first_cluster": 2,
+          "size": 22398,
+          "sha256": "b0bbdb145bd201c025b7921542cc3ee5244b47cdbc06be849f0d9ce8ba46a9c4",
+          "chain_clusters": 22
+        },
+        {
+          "name": "MSDOS.SYS",
+          "attributes": 39,
+          "first_cluster": 24,
+          "size": 30128,
+          "sha256": "312f79cbc91f8aeb497e70f73be29cf2fb209c73f661350ee51259247037d65f",
+          "chain_clusters": 30
+        },
+        {
+          "name": "COMMAND.COM",
+          "attributes": 32,
+          "first_cluster": 54,
+          "size": 25308,
+          "sha256": "1619d4e38e14ca649818a7be9c15d181964ff8d59693cb5a7d98ffde9a1811a7",
+          "chain_clusters": 25
+        },
+        {
+          "name": "GWBASIC.EXE",
+          "attributes": 32,
+          "first_cluster": 79,
+          "size": 80608,
+          "sha256": "360f50b431712f2b19c08671acf425926ac09ea9fb0674b49aac8268b2c47ab0",
+          "chain_clusters": 79
+        },
+        {
+          "name": "HDFORM.EXE",
+          "attributes": 32,
+          "first_cluster": 158,
+          "size": 21106,
+          "sha256": "fa343cabd709582b0be24504d961e23ad22f261b0cb90da5308fb88379a053d9",
+          "chain_clusters": 21
+        },
+        {
+          "name": "HDPARK.EXE",
+          "attributes": 32,
+          "first_cluster": 179,
+          "size": 1510,
+          "sha256": "6332b99bee260478e1882db3a52d648adbbff644993da5279cc8b5378b9c7c95",
+          "chain_clusters": 2
+        },
+        {
+          "name": "CONFIG.SYS",
+          "attributes": 32,
+          "first_cluster": 181,
+          "size": 34,
+          "sha256": "d8777d1f9180577d3a00ec62c13fe28079b0e3785802484b8e52e7c29556c957",
+          "chain_clusters": 1,
+          "text_cp437": "config.sys\r\nfiles=20\r\ncontrol-c\r\n\u001a"
+        },
+        {
+          "name": "GWBasic_.Uty",
+          "attributes": 8,
+          "first_cluster": 0,
+          "size": 0
+        }
+      ]
+    }
+  ]
+}

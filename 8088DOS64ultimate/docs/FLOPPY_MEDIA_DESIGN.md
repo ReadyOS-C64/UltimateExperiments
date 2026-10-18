@@ -1,5 +1,8 @@
 # User floppy media, save and swap — implementation boundaries2026-10-17
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 A conventional raw360KiB IMG is the persistent PC floppy representation. It contains the DOS boot/FAT/root/data sectors and needs no D81, otherCBM container, or sidecar to interpret its sectors. Config/optionalrecovery journals are separate application metadata. Arbitrary compressed/flux formats and largergeometries are outside the initial supported profile. The complete mounted image resides in its assigned REUslot; REU is working storage, not persistence.
 
 ## Current actual behavior
@@ -35,4 +38,4 @@ Actualassembly/Peddle: independentA/B routing/geometry/readonly, partial-write d
 
 ## Private V1 progress2026-10-17
 
-The private native menu now has source-closed model proofs for SaveAs, ordinary versioned Save, explicit Finish and session-only Eject/Write Protect. Save-before-Eject waits for verified durable save; failure retains the mounted working disk. Eject preserves saved startup configuration and its cookie, so saving the other drive still works; fresh launch uses saved configuration. The menu states the session-only policy. The actual incoming-file loader/durable Insert transaction, matched public package and physical V1 acceptance remain open. [Control evidence](../agentworking/evidence/native-runtime-controls-root-20261017.json).
+The private native menu now has source-closed model proofs for SaveAs, ordinary versioned Save, explicit Finish and session-only Eject/Write Protect. Save-before-Eject waits for verified durable save; failure retains the mounted working disk. Eject preserves saved startup configuration and its cookie, so saving the other drive still works; fresh launch uses saved configuration. The menu states the session-only policy. The actual incoming-file loader/durable Insert transaction, matched public package and physical V1 acceptance remain open. Control evidence (local development record, not distributed).

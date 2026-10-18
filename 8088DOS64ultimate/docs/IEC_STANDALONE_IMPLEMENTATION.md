@@ -1,5 +1,8 @@
 # Standalone IEC / D81 development helper
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 This explicit opt-in helper imports a PC floppy from a CBM SEQ file in an owned D81. It is separate from the emulator's default build and runtime. It does not implement a production IEC FILE profile, start DOS, replace INT21, save media or contact a physical C64U.
 
 `make iec-standalone` builds full and small helpers. `make test-iec-standalone` executes actual linked 6502 assembly in Peddle and the isolated tooling checks. `make vice-iec-standalone` explicitly launches an owned local VICE instance for the original 360 KiB image with serial traps. `make vice-iec-standalone-serial` runs a deterministic 512-byte fixture through a true-drive 1581 with traps disabled. None of these targets is a dependency of `all`, normal `test`, or the native runtime. The standalone program starts only when explicitly loaded/run; it has no D64N startup configuration and must never be registered as the native DOS runtime.
@@ -58,4 +61,4 @@ The two independent packaging review findings are repaired in a separate additiv
 
 Root promoted16 exact additive files plus minimal Make/Zig registration. `make test-iec-standalone` passes3Zig tests/13actualassembly scenarios and29tooling tests. All25dependencies and337predecessor files match; both main emulator PRGs remain22f82091/8a84329c.
 
-Fresh `make vice-iec-standalone` passes the complete360KiB original case in16.549seconds with owned childPID/acceptedESTABLISHED four-tuple proof. All720DMA chunks, complete4MiB expected image/guards, executable/F000 guards, CRC and knownclosure pass. This is a standalone PAL/warp/traps development run, not production DOS-over-IEC, physical64MHz serial or persistence acceptance. [Evidence](../agentworking/evidence/iec-standalone-20261015.json).
+Fresh `make vice-iec-standalone` passes the complete360KiB original case in16.549seconds with owned childPID/acceptedESTABLISHED four-tuple proof. All720DMA chunks, complete4MiB expected image/guards, executable/F000 guards, CRC and knownclosure pass. This is a standalone PAL/warp/traps development run, not production DOS-over-IEC, physical64MHz serial or persistence acceptance. Evidence (local development record, not distributed).

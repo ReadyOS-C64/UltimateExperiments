@@ -6,12 +6,19 @@ import {Marked} from 'marked';
 import {execFileSync} from 'node:child_process';
 import hljs from 'highlight.js/lib/core';
 import sql from 'highlight.js/lib/languages/sql';
+import delphi from 'highlight.js/lib/languages/delphi';
 hljs.registerLanguage('sql',sql);
+hljs.registerLanguage('pascal',delphi);
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const out=path.join(root,'DOCS');
 execFileSync(process.execPath,[path.join(root,'ReadyFS/build_support/build_readyfs_user_guide.mjs')],{stdio:'inherit'});
 const sources=new Map();
-const register=(src,dst)=>sources.set(path.join(root,src),path.join(out,dst));
+const destinations=new Map();
+const register=(src,dst)=>{
+ const key=dst.toLowerCase();
+ if(destinations.has(key) && destinations.get(key)!==src)throw new Error('Case-colliding documentation destination: '+dst);
+ destinations.set(key,src);sources.set(path.join(root,src),path.join(out,dst));
+};
 function tree(src,dst,accept=()=>true){
  for(const entry of fs.readdirSync(path.join(root,src),{withFileTypes:true})){
   if(entry.name.startsWith('.') || entry.name==='__pycache__')continue;
@@ -25,6 +32,12 @@ register('ReadyFS/PROJECT_INVENTORY.md','readyfs/PROJECT_INVENTORY.md');
 register('ReadyFS/AGENTS.md','readyfs/AGENTS.md');
 tree('ReadyFS/docs','readyfs',p=>!p.endsWith('.html'));
 register('ReadyFS/docs/READYFS_USER_GUIDE.html','readyfs/portable-guide.html');
+register('8088DOS64ultimate/README.md','dos64/index.md');
+tree('8088DOS64ultimate/docs','dos64',p=>!p.includes('/videos/') && !p.endsWith('.html'));
+register('8088DOS64ultimate/examples/README.md','dos64/examples/index.md');
+for(const name of ['README.TXT','RIPPLE.PAS','RIPPLE.EXE','HANGMAN.BAS'])register('8088DOS64ultimate/examples/'+name,'dos64/examples/'+name);
+register('8088DOS64ultimate/downloads/DOS64-development.zip','downloads/DOS64-development.zip');
+register('8088DOS64ultimate/examples/EXAMPLES.IMG','downloads/DOS64-examples.img');
 register('ReuSQL64/README.md','reusql/index.md');
 register('ReuSQL64/third_party/README.md','reusql/dependencies.md');
 tree('ReuSQL64/docs','reusql');
@@ -46,7 +59,7 @@ function localLink(url,src,dst){
  let mapped=sources.get(abs);
  if(abs===path.join(root,'README.md'))mapped=path.join(out,'index.md');
  if(abs.startsWith(out+path.sep))mapped=abs;
- if(!mapped)return url;
+ if(!mapped){if(abs.startsWith(root+path.sep) && fs.existsSync(abs))return 'https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/'+path.relative(root,abs).split(path.sep).map(encodeURIComponent).join('/')+(fragment?'#'+fragment:'');return url;}
  return relative(dst,mapped)+(fragment?'#'+fragment:'');
 }
 for(const [src,dst] of sources){
@@ -74,6 +87,15 @@ const experiments=[
   ['Acceptance and limits','READYFS_ACCEPTANCE.html'],
   ['Design plan','READYFS_MASTER_PLAN.html'],
   ['Path research','READYFS_PATH_RESEARCH.html']
+ ]},
+ {label:'DOS64 Ultimate',directory:'dos64',children:[
+  ['Install the prebuilt preview','INSTALL.html'],
+  ['Build and tests','BUILD.html'],
+  ['Current status and limits','STATUS.html'],
+  ['Physical screenshots','SCREENSHOTS.html'],
+  ['Example applications','examples/index.html'],
+  ['Technical documentation','TECHNICAL.html'],
+  ['Publication audit','AUDIT.html']
  ]},
  {label:'ReuSQL64',directory:'reusql',children:[
   ['Performance and staged queries','performance.html'],
@@ -111,9 +133,10 @@ for(const file of files(out)){
  const page=file.slice(0,-3)+'.html',toc=[],seen=new Map();
  const renderer={
  code(token){
-  if(token.lang?.toLowerCase()!=='sql')return false;
-  const highlighted=hljs.highlight(token.text,{language:'sql',ignoreIllegals:true}).value;
-  return `<pre class="sql-code" aria-label="SQL example"><code class="language-sql hljs">${highlighted}</code></pre>\n`;
+  const language=token.lang?.toLowerCase();
+  if(!['sql','pascal'].includes(language))return false;
+  const highlighted=hljs.highlight(token.text,{language,ignoreIllegals:true}).value;
+  return `<pre class="${language}-code" aria-label="${language} example"><code class="language-${language} hljs">${highlighted}</code></pre>\n`;
  },
  blockquote(token){
   if(!token.text.startsWith('**Performance:'))return false;
@@ -156,4 +179,4 @@ for(const file of files(out)){
  fs.writeFileSync(page,html);count++;
 }
 fs.writeFileSync(path.join(out,'.nojekyll'),'');
-console.log(`Built ${count} Markdown/HTML pages; screenshots and 3 main D81 downloads copied.`);
+console.log(`Built ${count} Markdown/HTML pages; screenshots and experiment downloads copied.`);

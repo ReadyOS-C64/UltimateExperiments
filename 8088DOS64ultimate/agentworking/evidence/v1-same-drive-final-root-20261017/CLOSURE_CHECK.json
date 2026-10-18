@@ -1,8 +1,0 @@
-{
-  "status": "PASS_SOURCE_PROVIDER_PRODUCT_CLOSURE",
-  "unique_input_records": 1583,
-  "immutable_content_copies": 748,
-  "all_required_source_provider_products_before_after_copies_exact": true,
-  "excluded_generated_output_log": "run.stderr, earlier pre-VM syntax diagnostic overwritten by successful runner redirection; see CLOSURE_FIRST_FAILURE.json",
-  "content_copy_metadata_limitation": "No chflags/permissions reproduction claimed; exact bytes verified."
-}

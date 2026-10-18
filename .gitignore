@@ -22,4 +22,9 @@ __pycache__/
 /C77Cyberpunk77/build/
 
 # Documentation tooling dependencies.
-/node_modules/
+/node_modules
+
+# Execution logs remain local.
+*.log
+*.stdout
+*.stderr

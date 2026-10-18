@@ -1,5 +1,8 @@
 # Original XT keyboard BIOS and bounded waiting
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 Updated 2026-10-15. `src/keyboard.s` implements the original-sized BDA keyboard ring and INT 16h services, with an independently callable enqueue routine. It consumes already translated XT ASCII/scancode words; native C64 scanning and key translation remain unfinished.
 
 The fixed ring is 041E–043D, 16 word slots with 15 usable. Head/tail at 041A/041C must be even, in range and have zero high bytes. Later BIOS relocatable ring fields at 0480/0482 and AT extended functions are unsupported. `dos64_keyboard_enqueue` reads the caller's key word, stores both bytes coherently, then publishes tail. A full queue leaves keys/pointers unchanged. Malformed state is rejected explicitly. Dirty guest BDA bytes remain authoritative.

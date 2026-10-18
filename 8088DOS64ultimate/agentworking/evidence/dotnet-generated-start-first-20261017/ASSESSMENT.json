@@ -1,9 +1,0 @@
-{
-  "overall": "failed",
-  "native_RUN_observed": true,
-  "screen": "C>",
-  "cause": "Host prompt oracle only accepted path-style prompt; actual OEM default is C>. No VER sent. Correct oracle and continue same running instance; do not reset an open C backing channel.",
-  "sources_retained": true,
-  "reset_after_failure": false,
-  "V1_acceptance": false
-}

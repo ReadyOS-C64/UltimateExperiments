@@ -1,7 +1,0 @@
-{
-  "status": "PASS6_HOST_ADMISSION_GROUPS_ONLY",
-  "source_inputs": 9,
-  "device_calls": 0,
-  "live_controller_implemented": false,
-  "native_close_evidence": "../closed-actual/RESULT.json"
-}

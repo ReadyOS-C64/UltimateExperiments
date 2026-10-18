@@ -1,6 +1,9 @@
 # Physical native SAVE write investigation
 
-The current ab2d/06a4 target boots DOS and completes a real COPY on the Ultimate, but its first physical whole-floppy SAVE failed verification. All720 output sectors contain the same unexpected512-byte block. Independent FTP retrieval confirms the failure; the authoritative changed floppy is intact. All original4MiB REU bytes, settings, media and reset were recovered. See [retained evidence](../agentworking/evidence/c64u-native-save-failure-20261015.json).
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+The current ab2d/06a4 target boots DOS and completes a real COPY on the Ultimate, but its first physical whole-floppy SAVE failed verification. All720 output sectors contain the same unexpected512-byte block. Independent FTP retrieval confirms the failure; the authoritative changed floppy is intact. All original4MiB REU bytes, settings, media and reset were recovered. See retained evidence (local development record, not distributed).
 
 The failure is after successful write acknowledgements, CLOSE, reopen and exact FILE_INFO length368640, at first content comparison. The native compare staging contains the correct DOS boot sector. Its read buffer matches the independently retrieved wrong file. Thus this is a real write-path failure, rather than an erroneous comparison or a read-only problem. The installed cause remains unconfirmed.
 

@@ -1,1 +1,0 @@
-Driver integration was initially invoked from owned start/ rather than owned project directory and found no run_current.py. No native VM execution. Model compile was independently in the correct start directory. Integration helper moved to project root and rerun.

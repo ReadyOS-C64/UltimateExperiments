@@ -1,8 +1,0 @@
-test_actual_wrapper_detaches_real_child_with_immutable_args_and_no_second_dispatch (test_detached.Tests) ... ok
-test_real_wrapper_arguments_and_only_intended_supervisor_schema_delta (test_detached.Tests) ... ok
-test_wrong_schema_output_or_hash_refuses_before_child (test_detached.Tests) ... ok
-
-----------------------------------------------------------------------
-Ran 3 tests in 0.418s
-
-OK

@@ -1,5 +1,8 @@
 # Native startup interface diagnosis
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 On2026-10-15 the current split256 SAVE target d883c678, configured69cdc2b6, failed its first native ID read atDF1D withFF/UCI_ERR_ID. It had executed zero guest instructions, uploaded zero command bytes, imported no disk and never attempted COPY or SAVE. Complete original4MiB/settings/media/reset/source and five independent post-recovery input/OWNER files passed. This is distinct from the earlier completed512-byte SAVE corruption.
 
 The retained177-byte UCF2 record binds that actual rawFF to the original native ID LDA. It does not record live DDR/port at that boundary. REST underlying RAM0000/0001 cannot supply that missing authority.

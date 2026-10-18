@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-control-core-root-20261017/build_ui_bridge.py", line 60, in <module>
-    run([tools['ca65'],'-g','bridge.s','-o','bridge.o'],P/'bridge');run([tools['ld65'],'-C','bridge.cfg','-o','bridge.prg','-m','bridge.map','-Ln','bridge.labels','bridge.o'],P/'bridge');bridge=(P/'bridge/bridge.prg').read_bytes()[2:];assert len(bridge)<=0xd00
-  File "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/live-media-control-core-root-20261017/build_ui_bridge.py", line 9, in run
-    a=list(map(str,a));i=len(commands);r=subprocess.run(a,cwd=d,env=env,capture_output=True);(P/f'UIBUILD{i:02d}.stdout').write_bytes(r.stdout);(P/f'UIBUILD{i:02d}.stderr').write_bytes(r.stderr);commands.append({'argv':a,'cwd':str(d),'exit':r.returncode});(P/'UI_BUILD_COMMANDS.json').write_text(json.dumps(commands,indent=2)+'\n');assert not r.returncode,(i,a,r.stderr.decode())
-AssertionError: (32, ['/opt/homebrew/Cellar/cc65/2.19/bin/ca65', '-g', 'bridge.s', '-o', 'bridge.o'], 'bridge.s(368): Error: Range error (133 not in [-128..127])\n')

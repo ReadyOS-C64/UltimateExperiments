@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>V1 endpoint: install, use and keep your work · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: V1 endpoint: install, use and keep your work"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64" open><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="INSTALL.html">Install the prebuilt preview</a></li><li><a href="BUILD.html">Build and tests</a></li><li><a href="STATUS.html">Current status and limits</a></li><li><a href="SCREENSHOTS.html">Physical screenshots</a></li><li><a href="examples/index.html">Example applications</a></li><li><a href="TECHNICAL.html">Technical documentation</a></li><li><a href="AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#supported-v1-system">Supported V1 system</a></li><li><a href="#installation-and-everyday-use">Installation and everyday use</a></li><li><a href="#release-gates">Release gates</a></li><li><a href="#turbo-pascal-acceptance-scenario">Turbo Pascal acceptance scenario</a></li><li><a href="#current-evidence-and-remaining-work">Current evidence and remaining work</a></li><li><a href="#physical-runtime-follow-up-2026-10-17">Physical runtime follow-up — 2026-10-17</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="V1_ENDPOINT.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="v1-endpoint-install-use-and-keep-your-work">V1 endpoint: install, use and keep your work</h1>
+<blockquote>
+<p>Development note: see <a href="STATUS.html">current status</a>, <a href="BUILD.html">build instructions</a> and <a href="INSTALL.html">installation</a> for present qualification. Historical measurements below apply to their stated slice, not every current build.</p>
+</blockquote>
+<p>User direction, 2026-10-17: prioritize a dependable installer, configuration and floppy/hard-drive experience. Turbo Pascal is the main application acceptance test. Further performance improvement and compiled-code activation move to after V1. The earlier 50% minimum / 85% stretch speed targets do not block this release.</p>
+<p><strong>V1 is ready when a user can install from their own DOS images on a C64 Ultimate, work in DOS and Turbo Pascal, save to A/B/C, finish safely, and recover that work after restarting.</strong> The same final release must pass the model and actual Ultimate tests below. A component test or an older successful build does not close a final-release gate.</p>
+<h2 id="supported-v1-system">Supported V1 system</h2>
+<ul>
+<li>Original 8088 / IBM PC XT compatibility, genuine DOS 3.3, 640 KiB guest memory and the 6502/6510 assembly interpreter.</li>
+<li>C64 Ultimate, documented PAL / Manual64 configuration, at least 4 MiB REU. Ultimate DOS/UCI is required for installation and normal file access.</li>
+<li>40/80-column text, keyboard/cursor/navigation, and the existing supported CGA modes 4/5/6 with documented display compromises.</li>
+<li>Raw floppy images loaded into REU, independent A and B controls, and cached 2 or 20 MiB C images. SETUP creates C directly; users need no large blank hard-drive download or dummy launch D81.</li>
+<li>A self-contained emulator release with SETUP, CONFIG, matching runtime/launcher assets, checksums and a concise guide. Users supply DOS and application files separately. A development computer, REST service and host build tools are not runtime dependencies.</li>
+</ul>
+<h2 id="installation-and-everyday-use">Installation and everyday use</h2>
+<p>Copy the release and separately obtained DOS images into a folder. Run SETUP, browse to the three images, choose the destination and C-drive size, and let native code prepare A/B/C and copy the DOS files. Launch the generated START to reach DOS.</p>
+<p>CONFIG must clearly show current and new settings, preserve existing media, and create a replacement launcher. After moving an installation, it must ask before rebasing image paths below the old home; external/shared paths stay unchanged. Use the newly generated START. Supported startup options live in a documented same-folder INI, read on each launch.</p>
+<p>In the native disk controls, users must see which drive and image they are changing, whether it is writable and whether it needs saving. Changing a modified disk offers Save, Discard or Cancel. Incoming-image failure retains the mounted disk. Successful saves name their destination and survive a fresh launch. Floppy operations preserve C and its file/cache state. Finish reports safe-to-restart only after a known successful flush and close.</p>
+<p>Errors must name the file and operation, preserve the first cause, distinguish partial outputs from success, and explain the next safe action. Existing files are not silently overwritten. Unknown file ownership must block unsafe continuation. V1 makes no unsupported atomic-write or power-loss-recovery promise.</p>
+<h2 id="release-gates">Release gates</h2>
+<table>
+<thead>
+<tr>
+<th>Gate</th>
+<th>Required final-release proof</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>V1-01 Install</td>
+<td>Actual SETUP → generated START → genuine DOS on the Ultimate, using separately supplied originals. Native preparation of independent A/B and 2/20 MiB C; originals unchanged and complete output/FAT inspection.</td>
+</tr>
+<tr>
+<td>V1-02 Configure</td>
+<td>Real 40/80 launches, same-folder INI defaults/errors, paths with spaces, moved-folder confirmation and launcher regeneration, preserved external/shared media. Advertise only implemented options.</td>
+</tr>
+<tr>
+<td>V1-03 Change floppies</td>
+<td>Both BIOS drives and all three rotating REU arenas; insert/change/eject, readonly state, DOS disk-change revalidation and retained old mount after a failed incoming image.</td>
+</tr>
+<tr>
+<td>V1-04 Save floppies</td>
+<td>Save/Save As and Save/Discard/Cancel while C is mounted; complete close/reopen/all-byte/EOF verification, stable drive/content generation, durable path/CFG update, fresh-launch persistence and failure that keeps the working image authoritative.</td>
+</tr>
+<tr>
+<td>V1-05 Trust C</td>
+<td>File creation/copy/deletion, cache eviction and page boundaries, offsets above 16 MiB and the final sector; CHKDSK plus independent FAT/payload checks, known close and fresh launch after reset.</td>
+</tr>
+<tr>
+<td>V1-06 DOS tools</td>
+<td>Resolve the applicable matrix in TESTING.md, including directory/file commands, batch/pipes/MORE, MODE, CHKDSK, DEBUG and disposable-image FORMAT/SYS/media workflows. Conditional/excluded utilities remain explicit.</td>
+</tr>
+<tr>
+<td>V1-07 Turbo Pascal</td>
+<td>Complete original IDE edit/save/compile-to-disk/IDE-run/DOS-run/Finish/restart/reopen workflow below, on the final build in Peddle and on the Ultimate.</td>
+</tr>
+<tr>
+<td>V1-08 Display/input</td>
+<td>Physical 40/80 captures and human readability/keyboard acceptance, including modifiers/function keys, navigation and scrolling. Supported CGA pixel references and physical test cards.</td>
+</tr>
+<tr>
+<td>V1-09 Recover/finish</td>
+<td>Cancellation, failed/short I/O, failed CLOSE, full disk, invalid images/config and filename collisions; honest partial-output reporting and no unsafe resume after uncertain ownership.</td>
+</tr>
+<tr>
+<td>V1-10 Deliver</td>
+<td>One matched downloadable package, hashes and guide covering install, adding applications/files, image swapping/saving, finish/restart, troubleshooting and visible limits. No development scratch paths or vendor media in the release.</td>
+</tr>
+</tbody></table>
+<p>Release with no known reproducible data-loss or blocking installer/media/Turbo Pascal defect in the supported workflows, and a completed human install/use checklist. Correctness fixes found by these tests remain V1 work even when they involve CPU, BIOS or timing. All ten gates remain open until their final-release evidence is checked.</p>
+<p>The optional VICE/D81/IEC development lane retains its separately tested scope. It does not substitute for Ultimate DOS persistence or physical acceptance.</p>
+<h2 id="turbo-pascal-acceptance-scenario">Turbo Pascal acceptance scenario</h2>
+<p>Use the selected original real-mode Turbo Pascal 7.01 installation on a disposable 20 MiB C drive. The complete DOS/GW-BASIC/TP collection exceeds the separate minimal-DOS 2 MiB profile.</p>
+<ol>
+<li>Boot through installed START. Confirm VER and A/B/C listings; create a work directory on C.</li>
+<li>Open TURBO.EXE in 80 columns. Create/edit V1CHECK.PAS using real menus, including a correction and cursor/navigation operation.</li>
+<li>Save source and compile an EXE <strong>to disk</strong>. Run it inside the IDE, inspect output, return to the editor and exit to DOS.</li>
+<li>TYPE the source/output and run the EXE from DOS. Copy/save through A and B while C remains mounted, then use C again.</li>
+<li>Finish safely, reset and relaunch START. Reopen the saved source in the IDE, run the EXE and verify its output.</li>
+<li>Independently inspect the complete saved image: expected source/EXE/output, legitimate IDE support-file changes, preserved original files, valid FAT chains and free-space accounting. Retain screens, commands and exact release identities. Record automated XT injection separately from physical human input.</li>
+</ol>
+<pre class="pascal-code" aria-label="pascal example"><code class="language-pascal hljs"><span class="hljs-keyword">program</span> V1Check;
+<span class="hljs-keyword">var</span> F: Text;
+<span class="hljs-keyword">begin</span>
+  Assign(F, <span class="hljs-string">&#x27;V1TEST.TXT&#x27;</span>);
+  Rewrite(F);
+  Writeln(F, <span class="hljs-string">&#x27;C64U DOS V1&#x27;</span>);
+  Close(F);
+  Writeln(<span class="hljs-string">&#x27;Saved V1TEST.TXT&#x27;</span>);
+<span class="hljs-keyword">end</span>.</code></pre>
+<h2 id="current-evidence-and-remaining-work">Current evidence and remaining work</h2>
+<p>The public twelve-file development candidate builds coherently and has model evidence for actual SETUP → CONFIG in both column modes → generated START → DOS → media controls/Finish. The same final runtime passes the full original Turbo Pascal IDE/save/disk-EXE/run/fresh-launch model workflow. These are valuable scoped results; final matched-candidate and Ultimate/human acceptance remain required. Functional review (local development record, not distributed), DOS commands/CHKDSK (local development record, not distributed), <a href="V1_CANDIDATE.html">candidate guide</a>.</p>
+<p>The current source build includes moved-folder confirmation and complete file-error screens. The final matched installer now passes actual SETUP → unchanged generated START → genuine DOS → native Finish in the model. Relocation and diagnostics (local development record, not distributed), SETUP errors (local development record, not distributed), final installer proof (local development record, not distributed).</p>
+<p>The integrated original-8088 trap correctness fix passes 18 focused and 507 base Zig/Peddle tests, including the pinned 5,701-case CPU corpus. Its disk-menu/FORMAT runtime now passes genuine DOS DEBUG tracing, breakpoints, native Finish and fresh-launch persistence in the model. This is required correctness, not renewed performance tuning. CPU proof (local development record, not distributed), DEBUG persistence (local development record, not distributed).</p>
+<p>The public source-built twelve-file package matches the reviewed candidate byte for byte and passes 25 packaging controls. It remains a development candidate. Package review (local development record, not distributed).</p>
+<p>The final CONFIG passes nine native and two Zig checks using actual SETUP-produced media. Original Turbo Pascal passes edit/save/compile-to-disk/IDE-run/DOS-run, native Finish, fresh 40-column execution and fresh 80-column source reopening on the final runtime; a native diagnostic then reads back the entire 20 MiB image. These model tests bypass physical keyboard input. CONFIG proof (local development record, not distributed), final Turbo Pascal proof (local development record, not distributed).</p>
+<p>The file/text utility lane also proves genuine XCOPY, FC, REPLACE, SORT, FIND, COMP, TREE, LABEL and VOL outputs, plus EDLIN editing and fresh-launch persistence. A real LABEL result exposed a host inspection bug; its narrow repair has eleven focused tests and retains duplicate-file and malformed-label rejection. Utility and parser review (local development record, not distributed).</p>
+<p>Genuine FORMAT B:, DISKCOPY A:B and DISKCOMP also pass on the current runtime, followed by native Save As, C-drive use, Finish and a fresh launch of the saved B image. All 720 sectors and 37 files match the source. This covers two-drive operation; same-drive swaps and physical persistence remain separate. Disk-copy review (local development record, not distributed).</p>
+<p>A separate restart-history test now preserves the complete set of active files, saved images and backup/journal archives across a fresh machine. A second native save allocates version 2 and leaves every version-1 artifact intact. This tests a clean mounted B image; dirty guest edits and physical behavior retain their separate acceptance requirements. Restart-history proof (local development record, not distributed).</p>
+<p>The current development source accepts FDISK&#39;s speaker writes silently, handles ANSI.SYS&#39;s bounded text clear, and restores finalized interrupt vectors through guest ROM instructions on a warm reset. The newly source-built package1506210a reproduces the reviewed matching assets and passes all518 base tests plus25 packaging and15 native-media builder controls. Genuine FDISK partition/restart/FORMAT/SYS/COPY/persistence and the full Turbo Pascal workflow have passed in the model; their sealed reviews preserve source/media identities and first failures. FDISK workflow (local development record, not distributed), Turbo Pascal workflow (local development record, not distributed). Final Ultimate and human release gates remain open. Current public build (local development record, not distributed).</p>
+<p>The final same-drive DISKCOPY A:A → native Insert blank → Save As → C use → Finish → fresh launch workflow now passes the model with all720sectors and original media checked. Its retained host-input/oracle failures are qualified. Same-drive proof (local development record, not distributed).</p>
+<p>Actual .NET-driven native SETUP now creates2MiB C/all58 original DOS payloads, bootable A, separate empty B and the folder-aware START on the Ultimate. Generated START cold readback/bootstrap and continued genuineDOS VER/DIR C/MODE40/80 pass atPAL/Manual64.32 complete cursor-aware guest/native RAM display comparisons pass. This is partial physical install/display evidence;20MiB installer, physical CONFIG/media/Turbo/persistence/human gates remain open. Current aggregate (local development record, not distributed).</p>
+<p>Next: complete physical CONFIG/media/Turbo Pascal/restart and human checks. All agents finished; main thread owns remaining work. The Ultimate remains at80-column DOS C&gt; with native C backing channel open and no host worker. Native Finish/proven closure precedes any reset or baseline restoration. ACTIVE state (local development record, not distributed).</p>
+<p>Historical scope notes and superseded progress snapshots are preserved in the endpoint history (local development record, not distributed). Detailed continuity remains in STATUS (local development record, not distributed) and NEXT_SLICE (local development record, not distributed). Historical speed measurements remain workload-specific; V1 does not imply XT speed parity.</p>
+<h2 id="physical-runtime-follow-up-2026-10-17">Physical runtime follow-up — 2026-10-17</h2>
+<p>Original Turbo7.01 now passes real IDE edit/backspace/save/DestinationDisk/compile/run, DOS execution and a cold restart with40-column source/EXE use and80-column source reopening. The actual native CLOSE/full20MiB readback preserves302 baseline payloads plus exactly the source66B/EXE2208B/output17B; all three are byte-for-byte equal to independent Peddle results.46 actual VIC captures pass complete native memory/cursor/pixel checks. Evidence (local development record, not distributed), <a href="screenshots/physical-20261017/README.html">screenshots</a>.</p>
+<p>This is scoped runtime evidence using host-prepared CFG/START and earlier native-generated A/B. It does not close V1-07&#39;s actual native UI Finish or final-release composition requirements. Native20MiB SETUP still fails WRITE_NEW/UCI03 after65536 produced bytes; preserve its partial output and investigate the measured path. CONFIG/media/human acceptance and all final release gates remain open. The machine is left RUNNING at80-column C&gt; with native C open; no reset before proven closure.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

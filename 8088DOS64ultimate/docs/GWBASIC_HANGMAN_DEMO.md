@@ -1,5 +1,8 @@
 # Genuine GW-BASIC ASCII hangman
 
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
 HANGMAN.BAS runs the supplied GW-BASIC3.20 through genuine DOS3.30's normal EXE loader. It plays ten guesses: three misses(ZXQ), then ULTIMAE, revealing both Ts and winning ULTIMATE. ASCII gallows, word, misses and history fit40 columns. TIMER pacing is bounded to200 iterations; rendering/interpreter speed also affects the visible pace. No host BASIC, INT21 replacement or native EXE loader is involved.
 
 The disposable disk1 copy removes only FDISK.COM,4201.CPI,GRAPHICS.COM. It preserves the exact boot sector and all34 retained payloads, including IO.SYS,MSDOS.SYS,COMMAND.COM,MODE.COM,MORE.COM and CONFIG.SYS. It adds byte-exact80,608-byte GWBASIC.EXE from supplied disk3 and1,329-byte ASCII/CRLF BAS. Independent strict FAT12 inspection checks both mirrors, allocation chains, complete payload set and every retained file. Free space is7,168 bytes. All original images remain unchanged.

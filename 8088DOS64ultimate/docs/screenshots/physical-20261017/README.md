@@ -1,6 +1,6 @@
 # Physical Ultimate screenshots — 2026-10-17
 
-These PNGs are unaltered captures of the physical Ultimate VIC stream, taken through the .NET automation harness at PAL/Manual64. MANIFEST.json records original evidence paths and exact hashes. The DOS/BASIC/Turbo frames have independent guest/native memory, font, cursor and full active-pixel checks; detailed results remain in agentworking.
+These PNGs are unaltered captures of the physical Ultimate VIC stream, taken through the .NET automation harness at PAL/Manual64. MANIFEST.json records filenames and exact hashes without personal paths. The DOS/BASIC/Turbo frames have independent guest/native memory, font, cursor and full active-pixel checks; detailed development run records are not distributed.
 
 The Turbo test uses an explicitly host-prepared runtime CFG/START and previous native-generated A/B. It proves real DOS3.30 and original Turbo7.01 editor/backspace/save/compile-to-disk/run, actual DOS execution of the saved EXE, and whole-drive persistence. Source66B, EXE2208B and output17B exactly equal independently produced Peddle files. No vendor disk images or application binaries are included here.
 

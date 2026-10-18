@@ -18,7 +18,7 @@ if Path(sys.pycache_prefix).exists():raise RuntimeError('Source-only shadow test
 sys.path.insert(0,str(ROOT/'build_support'))
 import c64u_native_application as app
 import c64u_native_shadow_identity as shadow
-PROJECT=next(p for p in Path(__file__).resolve().parents if (p/'reference').is_dir())
+PROJECT=ROOT  # Never select an unrelated ancestor's private build.
 # Optional private frozen inputs; default normal build remains the production gate.
 BUILD=Path(os.environ.get('DOS64_SHADOW_TEST_BUILD',str(PROJECT/'build')))
 SOURCE=PROJECT/'reference/MS-DOS Version 3.3 with GW-BASIC 3.2 (Microsoft) (1988) - 1 of 3.img'

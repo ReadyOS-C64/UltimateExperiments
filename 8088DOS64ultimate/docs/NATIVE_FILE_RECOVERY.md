@@ -1,6 +1,9 @@
 # Opt-in native whole-file REU recovery
 
-This development backend restores the complete first4MiB of an enabled REU from an immutable verified backup through one native read-only UCI file stream. The ordinary DeltaService remains the default. The native helper and host integration have been independently reviewed; its first physical whole-file restoration is accepted independently of a failed DOS application. [Physical evidence](../agentworking/evidence/c64u-native-file-recovery-20261015.json) records complete4MiB byte equality/configuration/media/reset and a231.923-second restore stage. This does not accept the failed application or establish XT performance. REST/FTP are development control and evidence paths, not guest/runtime networking.
+> Development note: see [current status](STATUS.md), [build instructions](BUILD.md) and [installation](INSTALL.md) for present qualification. Historical measurements below apply to their stated slice, not every current build.
+
+
+This development backend restores the complete first4MiB of an enabled REU from an immutable verified backup through one native read-only UCI file stream. The ordinary DeltaService remains the default. The native helper and host integration have been independently reviewed; its first physical whole-file restoration is accepted independently of a failed DOS application. Physical evidence (local development record, not distributed) records complete4MiB byte equality/configuration/media/reset and a231.923-second restore stage. This does not accept the failed application or establish XT performance. REST/FTP are development control and evidence paths, not guest/runtime networking.
 
 Build from a clean checkout with `make native-file-recovery`. The standard-library Python builder and ca65/ld65 compile tracked native_file_restore_boot.s/native_file_restore.s with shared REU, UCI, FILES, host_clock and elapsed sources. FILES exports an owned-target alias without emitting extra bytes. There are no code overlays. It produces:
 

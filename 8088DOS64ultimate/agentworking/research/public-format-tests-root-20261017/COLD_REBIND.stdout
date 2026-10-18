@@ -1,2 +1,0 @@
-python3 -B build_support/cold_start.py --runtime-result "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/public-format-tests-root-20261017/build/run-hz7pgeey/runtime/RESULT.json" --out build/cold-start
-/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/build/cold-start/run-9e2ui9bk

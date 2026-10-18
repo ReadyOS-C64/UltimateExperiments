@@ -1,9 +1,0 @@
-{
-  "author_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/native-installer-home-preflight-20261017/MANIFEST.json",
-  "sha256": "1fc36ff642b22b2f26f5e1839ae77af1fef1400b9f51edf504d6cb25a465b3f9",
-  "all_author_pins_checked": 466,
-  "unchanged": true,
-  "peer_manifest": "agentworking/scratch/native-installer-home-preflight-independent-review-20261017/MANIFEST.json",
-  "peer_sha256": "a264870256d1fb217d961d4f041a8e5b6bd7963acc5b033f4c3491a929834fad",
-  "post_seal_read_only_check": true
-}

@@ -1,2 +1,5 @@
-# Preserve retained raw test logs byte-for-byte, including trailing blank lines.
-tests/native_file_recovery/evidence/*.log -whitespace
+*.IMG binary
+*.EXE binary
+examples/*.BAS -text whitespace=cr-at-eol
+examples/README.TXT -text whitespace=cr-at-eol
+examples/RIPPLE.PAS -text

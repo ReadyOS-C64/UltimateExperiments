@@ -1,6 +1,6 @@
 # Documentation build and GitHub Pages
 
-`DOCS/` is the publishable static documentation tree for Ultimate Experiments. It includes full Markdown and HTML references, ReadyFS screenshot walkthroughs, C77 galleries, and copies of the three committed main D81s. It excludes video, log directories, agent working notes, firmware checkouts and external website source repositories.
+`DOCS/` is the publishable static documentation tree for Ultimate Experiments. It includes full Markdown and HTML references, ReadyFS screenshot walkthroughs, C77 galleries, copies of the three committed main D81s, and DOS64 preview/example downloads. It excludes video, log directories, agent working notes, firmware checkouts and external website source repositories.
 
 ## Build and validate
 
@@ -12,9 +12,9 @@ npm run build:docs
 npm run check:docs
 ```
 
-The builder reads the project READMEs, `ReadyFS/docs/`, `ReuSQL64/docs/`, C77 screenshots/assets, and the retained walkthrough Markdown/screenshots under `DOCS/readyfs/tours/`. It does not need the ignored external demo-site checkout. Update a reference in its project source and rebuild rather than editing its generated copy. The two walkthroughs are maintained directly in `DOCS/readyfs/tours/`.
+The builder reads the project READMEs, `ReadyFS/docs/`, `ReuSQL64/docs/`, C77 screenshots/assets, DOS64 public docs/screenshots/examples, and the retained walkthrough Markdown/screenshots under `DOCS/readyfs/tours/`. It does not need the ignored external demo-site checkout. Update a reference in its project source and rebuild rather than editing its generated copy. The two walkthroughs are maintained directly in `DOCS/readyfs/tours/`.
 
-Both generated HTML and copied Markdown are committed so a checkout already contains a readable site. The renderer rewrites local document links for HTML, gives headings stable anchors, and adds common navigation. SQL code blocks are syntax-highlighted at build time with the pinned highlight.js dependency, so the published site needs no runtime highlighter or CDN. Performance notes use a dedicated callout style, and ReuSQL64 diagrams are local SVG assets. `npm run check:docs` checks local destinations and anchors, rejects video/media dependencies and personal home paths, and verifies the D81 downloads match their project originals.
+Both generated HTML and copied Markdown are committed so a checkout already contains a readable site. The renderer rewrites local document links for HTML, gives headings stable anchors, and adds common navigation. SQL code blocks are syntax-highlighted at build time with the pinned highlight.js dependency, so the published site needs no runtime highlighter or CDN. Performance notes use a dedicated callout style, and ReuSQL64 diagrams are local SVG assets. `npm run check:docs` checks local destinations and anchors, rejects video/media dependencies and personal home paths, and verifies downloads match their project originals. `python3 tools/audit_public.py` checks the tracked publication surface, package allowlists, personal paths and excluded vendor/working files.
 
 To preview over HTTP:
 

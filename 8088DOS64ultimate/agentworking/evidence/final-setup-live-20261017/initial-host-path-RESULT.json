@@ -1,8 +1,0 @@
-{
-  "status": "failed",
-  "REU_writes": 0,
-  "native_FILES": false,
-  "user_full_reboot_current_baseline": true,
-  "first_error": "FileNotFoundError(2, 'No such file or directory')",
-  "traceback": "Traceback (most recent call last):\n  File \"/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/scratch/v1-hardware-session-20261017/worker.py\", line 7, in <module>\n    assert sha(ACTIVE.read_bytes())==m['predecessor_sha256'];a=json.loads(ACTIVE.read_text());assert not a['current_host_job_live']and a['known_FILES_quiet'];save(R/'ACTIVE-predecessor.json',a)\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py\", line 1249, in read_bytes\n    with self.open(mode='rb') as f:\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py\", line 1242, in open\n    return io.open(self, mode, buffering, encoding, errors, newline,\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py\", line 1110, in _opener\n    return self._accessor.open(self, flags, mode)\nFileNotFoundError: [Errno 2] No such file or directory: '/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/agentworking/ACTIVE_HARDWARE_SESSION.json'\n"
-}

@@ -1,6 +1,0 @@
-{
-  "passed": true,
-  "groups": 12,
-  "runtime": "806eaab6f76ca49e6d68ba73a78bbc4a491b364eb0d3e71fd802acfe82cf8e73",
-  "scope": "actual optional FORMAT1 runtime; full UNIT1 overflow retained, not claimed"
-}
