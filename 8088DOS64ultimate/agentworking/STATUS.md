@@ -1,3 +1,11 @@
+# Latest physical result — complete Turbo runtime and restart checks
+
+Actual Turbo7.01 now edits a program, performs the tested backspace correction, saves to C, compiles to Disk, runs, returns to DOS, and executes the saved EXE with verified output. Native CLOSE/full20MiB readback preserves all302 baseline payloads plus exactly PAS66B/EXE2208B/TXT17B; all three files are byte-for-byte equal to independent Peddle output. A cold restart then passes source/EXE use in40columns, saved-source reopen in80-column Turbo, and exit to DOS.46 actual VIC frames pass complete source-font/cursor/nativeRAM and active-pixel comparisons. Representative images are posted inline and exported to docs/screenshots/physical-20261017.
+
+All owned workers ended; last exit0/no watchdog. The Ultimate is RUNNING at80-column C> with the native C backing channel OPEN. Manual64/PAL remains deliberate; no original CPU/RAM/application/finalREU restoration is claimed. [Controller and scope](CURRENT_GALLERY_CAMPAIGN_20261017.md).
+
+Runtime CFG/START are explicitly HOST-prepared fixtures, with prior native-generated A/B. Native20MiB SETUP remains failed at WRITE_NEW/UCI03 after65536 produced bytes. Native CONFIG/media/Finish/human acceptance and V1 release remain open. [Aggregate evidence](evidence/physical-screenshot-campaign-root-20261017.json).
+
 # Physical screenshot campaign in progress — 2026-10-17
 
 Actual .NET automation now captures the Ultimate VIC stream at DOS40/80, paged DIR, A/B listings, C file write/read and GW-BASIC LIST/RUN/SYSTEM.18 physical PNGs are retained across four lanes; early observer failures and corrected continuations are preserved. Images are being posted inline in chat at the user's request. A native disk-busy SNAPSHOT refusal now has narrow bounded source-defined handling; KEY and ambiguous acknowledgements are never retried.

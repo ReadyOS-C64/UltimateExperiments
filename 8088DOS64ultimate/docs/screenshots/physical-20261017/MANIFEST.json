@@ -1,0 +1,115 @@
+{
+  "physical": true,
+  "runtime_sha256": "1506210a336fb034c1164cf6463ae17d4c335c586e561dc996d79212afcb9a39",
+  "host_fixture_for_Turbo": true,
+  "native20M_installer_remains_failed": true,
+  "images": [
+    {
+      "file": "dos-40.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-dos-continue-20261017/dotnet-dos/004-08-dos-version-40-VIC.png",
+      "sha256": "7fa085bdcd58e752bc3eec1af0395ebd4e172659a586b746a48e71fdf6270e9f",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "physical_runtime_capture"
+    },
+    {
+      "file": "dir-more-80.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-dos-20261017/dotnet-dos/004-04-dir-pipe-more-page1-VIC.png",
+      "sha256": "a80d3cd0a6bd45e8c08e7e68a3cebaca7639bea039fd0ceb9a0005a432be72b3",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "physical_runtime_capture"
+    },
+    {
+      "file": "gwbasic-source.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-basic-busy-20261017/dotnet-dos/004-14-gwbasic-source-VIC.png",
+      "sha256": "9a37410d02b28890be0028269d7f590f32d571c3d28669607474184b4e3852af",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "physical_runtime_capture"
+    },
+    {
+      "file": "gwbasic-output.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-basic-busy-20261017/dotnet-dos/005-15-gwbasic-output-VIC.png",
+      "sha256": "fa12bf4addb8c58ea36f73e241dcb9cd15f77a5ebe62ff5895a28fcb67039802",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "physical_runtime_capture"
+    },
+    {
+      "file": "turbo-source-80.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-turbo-input-retained-20261017/dotnet-turbo/004-05-Pascal-edited-source-VIC.png",
+      "sha256": "59b2ba5110415f796a766514745069b7492e125e64317b69acd87e5a8e1ccb6a",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "physical_runtime_capture"
+    },
+    {
+      "file": "turbo-compile-success.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-turbo-input-retained-20261017/dotnet-turbo/010-11-Pascal-compile-success-VIC.png",
+      "sha256": "c6e944676ea7091852480d036dd7f8bf8dbc48d78d627fe5e2715865fc21e986",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "physical_runtime_capture"
+    },
+    {
+      "file": "turbo-program-output.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-turbo-output-settled-20261017/dotnet-turbo/002-12-Pascal-program-output-VIC.png",
+      "sha256": "78e8d5640c2ffd7c09d0815fe32725d81ea431b00f2245c9324a5283109123ef",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "physical_runtime_capture"
+    },
+    {
+      "file": "dos-compiled-exe-output.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-turbo-output-settled-20261017/dotnet-turbo/007-17-DOS-compiled-EXE-output-VIC.png",
+      "sha256": "6bf86a040755d9739e19d3cbae0b7aff838d7189138c5a207fb8b2baabb92eda",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "physical_runtime_capture"
+    },
+    {
+      "file": "restart-source-40.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-tp-fresh-20261017/dotnet-fresh/003-03-fresh40-persisted-Pascal-source-VIC.png",
+      "sha256": "d8fd94a8f6e34bb497980a144a56679cf44a06609cbf9559c140f90bcc4e2801",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "physical_runtime_capture"
+    },
+    {
+      "file": "restart-exe-40.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-tp-fresh-20261017/dotnet-fresh/005-05-fresh40-persistent-EXE-output-VIC.png",
+      "sha256": "37e6af71b327f1fb41951bd384ba75451c959a53f5ff374a991f5c3fb1076066",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "physical_runtime_capture"
+    },
+    {
+      "file": "installer-write-timeout.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-install-tp-clean-20261017/dotnet-install/011-first-setup-error-VIC.png",
+      "sha256": "7976fbe5cd43614337dce56a69ceca8068e57151ab20a6012d76b5a887aae0cf",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "native_installer_failure"
+    },
+    {
+      "file": "restart-turbo-source-80.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-tp-fresh-20261017/dotnet-fresh/007-07-fresh80-Turbo-persistent-source-VIC.png",
+      "sha256": "37f6c7da3d28d4f9c5f4cd142c09c63e98f1860214c7d4b445fe55ebbfe8a5fa",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "physical_cold_restart_runtime_capture"
+    },
+    {
+      "file": "final-dos-prompt.png",
+      "source": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-physical-gallery-tp-fresh-20261017/dotnet-fresh/008-08-fresh-return-to-DOS-VIC.png",
+      "sha256": "15d1608ddd416cad14f2c07d67508e5af046790aa4b57d269a5f64c9dbe1beb7",
+      "kind": "actual_Ultimate_VIC_stream",
+      "edited": false,
+      "scope": "physical_cold_restart_runtime_capture"
+    }
+  ],
+  "all46_runtime_frames_independently_verified": true,
+  "verification_manifest": "/Users/karlprosserpp/dev/c64projects/UltimateExperiments/8088DOS64ultimate/agentworking/runs/c64u-gallery-verified-final-20261017/GALLERY.json",
+  "fresh_Turbo_reopen_and_DOS_return": "passed"
+}

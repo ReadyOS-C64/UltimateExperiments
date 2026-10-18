@@ -91,3 +91,9 @@ Actual .NET-driven native SETUP now creates2MiB C/all58 original DOS payloads, b
 Next: complete physical CONFIG/media/Turbo Pascal/restart and human checks. All agents finished; main thread owns remaining work. The Ultimate remains at80-column DOS C> with native C backing channel open and no host worker. Native Finish/proven closure precedes any reset or baseline restoration. [ACTIVE state](../agentworking/ACTIVE_HARDWARE_SESSION.json).
 
 Historical scope notes and superseded progress snapshots are preserved in [the endpoint history](../agentworking/research/v1-endpoint-history-20261017.md). Detailed continuity remains in [STATUS](../agentworking/STATUS.md) and [NEXT_SLICE](../agentworking/NEXT_SLICE.md). Historical speed measurements remain workload-specific; V1 does not imply XT speed parity.
+
+## Physical runtime follow-up — 2026-10-17
+
+Original Turbo7.01 now passes real IDE edit/backspace/save/DestinationDisk/compile/run, DOS execution and a cold restart with40-column source/EXE use and80-column source reopening. The actual native CLOSE/full20MiB readback preserves302 baseline payloads plus exactly the source66B/EXE2208B/output17B; all three are byte-for-byte equal to independent Peddle results.46 actual VIC captures pass complete native memory/cursor/pixel checks. [Evidence](../agentworking/evidence/physical-screenshot-campaign-root-20261017.json), [screenshots](screenshots/physical-20261017/README.md).
+
+This is scoped runtime evidence using host-prepared CFG/START and earlier native-generated A/B. It does not close V1-07's actual native UI Finish or final-release composition requirements. Native20MiB SETUP still fails WRITE_NEW/UCI03 after65536 produced bytes; preserve its partial output and investigate the measured path. CONFIG/media/human acceptance and all final release gates remain open. The machine is left RUNNING at80-column C> with native C open; no reset before proven closure.
