@@ -449,3 +449,17 @@ The narrow readonly recovery completed CLOSE successfully, then its host passed 
 2026-10-17: A rendered Turbo editor or dialog title can precede readiness to consume input. Preserve accepted BIOS groups, inspect the last accepted word, retained queue and visible prefix, and send only the untouched suffix. A30s observer can fail with valid queued keys during slow physical initialization. Explicit input bounds and completed-group logs help without changing defaults. `program V1Edit;` has15characters; its first14 end in T. An input-timeout path may already have resumed native RUN4; admit actual state rather than assuming PAUSED5.
 
 2026-10-17: A short wall-clock settle after CtrlF9 does not prove the child finished. Preserve an early AltF5 observer failure. A later NEW view request after confirmed editor return can retrieve output without rerunning the program or treating an ambiguous key as retryable. GUI output, direct DOS execution and whole-drive persistence are separate checks. Check preparation exit status before freezing or dispatching hardware. Archive executed binaries before any build: an unchanged sample rebuild can pick up existing dirty dependency changes.
+
+
+## 2026-10-17 — Pascal picture and actual editor admission
+
+A filename plus source text can match DOS COPY CON/TYPE echo before Turbo opens.
+Require the actual editor footer, source and filename, and reject DOS copy output.
+Keep the initial falsely classified capture/result and explicit qualification.
+Verify every source line against the actual guest text, then compare full native
+RAM and VIC pixels. Long Turbo startup/exit waits can still be progressing; the
+RIPPLE IDE exit passed its original bound without repeating Alt-X or recompiling.
+Do not interpret observation-heavy wall time as pure guest performance.40-column
+full-block text provides one independent C64 foreground/background pair per cell;
+80-column neighbours share a pair. Static art can use this without pretending
+that CGA supports16-colour graphics.

@@ -1,3 +1,9 @@
+# Latest physical result — RIPPLE Pascal colour picture
+
+Original Turbo7.01 on the Ultimate compiled the new18-line examples/RIPPLE.PAS to Disk; genuine DOS ran C:\RIPPLE.EXE and displayed the completed40-column colour picture. All18 source lines, all1000 guest cells/960 picture blocks, and all6 frames’ native bitmap/matrix/VIC pixels pass independent checks. Three unaltered PNGs are in docs/screenshots/physical-ripple-20261017. The completion wait to PNG took23.6 wall seconds including guest load/draw and paused observer/capture overhead; this is not an XT performance measurement. [Evidence](evidence/physical-ripple-root-20261017.json).
+
+All workers exited0/no watchdog. Machine is RUNNING on the finished picture, BIOS waiting for a key; C backing channel OPEN, PALManual64. A key restores80-column mode and returns to DOS. No reset or new REU restoration; no new whole-image close/cold persistence test. Native20MiB installer and CONFIG/floppy swap/Save/Finish/human qualification remain open. Root alone continues; no agents or push. See ACTIVE and [picture notes](RIPPLE_DEMO_20261017.md).
+
 # Latest physical result — complete Turbo runtime and restart checks
 
 Actual Turbo7.01 now edits a program, performs the tested backspace correction, saves to C, compiles to Disk, runs, returns to DOS, and executes the saved EXE with verified output. Native CLOSE/full20MiB readback preserves all302 baseline payloads plus exactly PAS66B/EXE2208B/TXT17B; all three files are byte-for-byte equal to independent Peddle output. A cold restart then passes source/EXE use in40columns, saved-source reopen in80-column Turbo, and exit to DOS.46 actual VIC frames pass complete source-font/cursor/nativeRAM and active-pixel comparisons. Representative images are posted inline and exported to docs/screenshots/physical-20261017.

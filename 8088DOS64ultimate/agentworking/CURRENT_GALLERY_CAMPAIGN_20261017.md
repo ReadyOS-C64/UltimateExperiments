@@ -1,10 +1,12 @@
 # Physical screenshot campaign — 2026-10-17
 
-Root is the sole hardware owner. No more agents. The user wants screenshots inline in chat; representative DOS40/80, DIR|MORE, GW-BASIC, Turbo editor/save/compile/output and DOS executable captures have been posted.
+Root is the sole hardware owner. No more agents. The user wants screenshots inline in chat; representative DOS40/80, DIR|MORE, GW-BASIC, Turbo editor/save/compile/output and DOS executable captures have been posted. The new RIPPLE source/editor and completed colour picture have also been posted.
 
 ## Final hardware state
 
-Terminal1685 completed with exit0 and no watchdog. No host controller remains. The Ultimate is at the80-column DOS C> prompt with guest RUNNING and native C backing file OPEN. Manual64/PAL remains deliberate. Do not reset before actual native Finish or proven closure. `c64u-physical-gallery-tp-fresh-20261017` passed exact cold START/runtime admission, persisted source and EXE in40columns, saved-source reopen in80-column Turbo and AltX return to DOS. Its frozen inputs still match; executed source/DLLs are archived.
+Terminal1688 completed with exit0/no watchdog; no host controller remains. The Ultimate is RUNNING on the completed40-column RIPPLE picture, waiting in BIOS for a key, with C backing file OPEN. A key restores80-column mode and returns to DOS. Manual64/PAL remains deliberate. Do not reset before actual native Finish or proven closure. Actual Turbo7.01 Disk compile and DOS EXE run passed; all18 editor source lines, all1000 guest cells and all6 frames' native RAM/VIC pixels are exact. All25 frozen inputs match and executed driver copies are archived. See [RIPPLE evidence](evidence/physical-ripple-root-20261017.json). No new close/cold-persistence test of RIPPLE was performed.
+
+Preceding Terminal1685 passed exact cold START/runtime admission, persisted V1EDIT source and EXE in40columns, saved-source reopen in80-column Turbo and AltX return to DOS. Those frozen inputs and archived driver remain historical evidence.
 
 ## Verified results
 
