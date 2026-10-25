@@ -43,6 +43,11 @@ checked pixel/row packets; GEOS layout reuses completed inline styles and incomi
 parser state. Performance and final standalone hardening remain unfinished.
 The full standalone goal is not complete. The ReadyOS 1024-byte reservation remains untouched.
 
+The next architecture work is [configurable parsing and retained REU document
+data](docs/REU_CACHE_REDESIGN.md): a genuine plain-source parsing bypass, separate
+semantic/layout caches and fewer overlay transitions per job. These controls
+are planned; they are not available in the current D81.
+
 F7 `fold` toggles the innermost visible region; `fold all` and `unfold all`
 operate on the document. Block/F, Block/L and Block/E reach the same commands.
 A collapsed opener keeps its text and shows an inverse `+` in its newline cell.
@@ -66,6 +71,16 @@ unpartitioned1581/D81 disks; filename syntax characters and PETSCII shifted-spac
 are refused. Native uppercase/lowercase and graphics are preserved.
 
 Build from this directory:
+
+The build needs Python 3.11+, the cc65 assembler/linker and VICE's `c1541`.
+Font extraction uses the local sibling `GEOS20/reference/geos` sources and
+`GEOS20/media` collection, plus a C64 character ROM (`C64_CHARGEN` can override
+its local path). Generated font binaries and external media are intentionally
+not committed. Native tests additionally use .NET 8 and the existing harness
+selected by `VICE_TASKS_ROOT`; CPU tests use the Peddle source selected by
+`PEDDLE_ROOT`. Historical private probes may reference local frozen fixtures;
+those execution artifacts are also intentionally excluded from the source
+checkpoint.
 
 ```sh
 make
