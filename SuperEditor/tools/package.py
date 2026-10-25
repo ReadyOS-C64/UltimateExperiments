@@ -32,7 +32,7 @@ command = [args.c1541, '-format', 'supereditor,se', 'd81', str(disk),
            '-write', str(root/'build/local-probe.prg'), 'localprobe',
            '-write', str(root/'build/range-probe.prg'), 'rangeprobe',
            '-write', str(root/'build/history-probe.prg'), 'historyprobe']
-for name in ['rone','rtwo','cone','rnest','hedit','hplay','eedit','eplay','window','text40','menu40','engine','navigate','search','block','layout','fileio','aux','styler','viewsource','lexical','gridedit','grid80','grid60','foldparse','foldfinish','foldcore','foldctl','rangeio','foldxform','geosline','geospage','geosrow','geospaint','geosnav','geossema','geoslex','geosinln','popups','geospreview','geosfontrow','geosfontin','geosfold','geostail','geoscaret','lifectrl','lifecopy','geosdelta','gfont','gtype','code','clex','type','grid']:
+for name in ['rone','rtwo','cone','rnest','hedit','hplay','eedit','eplay','window','text40','menu40','engine','navigate','search','block','layout','fileio','aux','styler','viewsource','lexical','gridedit','grid80','grid60','foldparse','foldfinish','foldcore','foldctl','rangeio','foldxform','geosline','geospage','geosrow','geospaint','geosnav','geossema','geoslex','geosinln','popups','geospreview','geosfontrow','geosfontin','geosfold','geostail','geoscaret','lifectrl','lifecopy','geosdelta','gfont','gtype','code','clex','type','grid','hotcold']:
     command += ['-write',str(root/f'build/overlays/{name}.seo'),name+',s']
 command += ['-write',str(root/'build/geos-font-catalog/font-pack.bin'),'geosfonts,s']
 resident=json.loads((root/'build/overlay-probe-report.json').read_text())

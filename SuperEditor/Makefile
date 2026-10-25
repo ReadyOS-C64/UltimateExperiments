@@ -379,8 +379,8 @@ EDITOR_MEMORY_OBJ = build/editor-memory/provider.o build/editor-memory/dma.o
 build/editor-memory/provider.o: src/reu/provider.s
 	mkdir -p $(dir $@)
 	$(CA65) -g -D EDITOR_MANAGED_CODE=1 -D SE_EDITOR_COLD_PROVIDER_INIT=1 -I src -o $@ -l $(@:.o=.lst) $<
-build/editor.prg: $(EDITOR_OBJ) $(EDITOR_COMMON_OBJ) $(EDITOR_MEMORY_OBJ) $(EDITOR_OBJECT_OBJ) $(EDITOR_DOCUMENT_OBJ) build/engine-state/range.o $(EDITOR_HISTORY_OBJ) $(EDITOR_OVERLAY_OBJ) $(EDITOR_HOT_OBJ) build/engine/trampoline.o build/search/dispatch.o build/search/state.o build/clipboard/state.o build/editor/clip-copy.o build/clipboard/editor_dispatch.o build/block/state.o build/block/selection.o build/block/controller.o build/render/state.o build/layout/state.o build/layout/dispatch.o $(DIAGNOSTICS_RESIDENT_OBJ) $(EDITOR_FILE_RESIDENT_OBJ) $(STYLE_RESIDENT_OBJ) $(GRID_RESIDENT_OBJ) $(FOLD_RESIDENT_OBJ) cfg/standalone.cfg tools/bindings.py tools/check_build.py
-	$(LD65) -C cfg/standalone.cfg -o $@ -m build/editor.map -Ln build/editor.lbl $(EDITOR_OBJ) $(EDITOR_COMMON_OBJ) $(EDITOR_MEMORY_OBJ) $(EDITOR_OBJECT_OBJ) $(EDITOR_DOCUMENT_OBJ) build/engine-state/range.o $(EDITOR_HISTORY_OBJ) $(EDITOR_OVERLAY_OBJ) $(EDITOR_HOT_OBJ) build/engine/trampoline.o build/search/dispatch.o build/search/state.o build/clipboard/state.o build/editor/clip-copy.o build/clipboard/editor_dispatch.o build/block/state.o build/block/selection.o build/block/controller.o build/render/state.o build/layout/state.o build/layout/dispatch.o $(DIAGNOSTICS_RESIDENT_OBJ) $(EDITOR_FILE_RESIDENT_OBJ) $(STYLE_RESIDENT_OBJ) $(GRID_RESIDENT_OBJ) $(FOLD_RESIDENT_OBJ)
+build/editor.prg: $(EDITOR_OBJ) $(EDITOR_COMMON_OBJ) $(EDITOR_MEMORY_OBJ) $(EDITOR_OBJECT_OBJ) $(EDITOR_DOCUMENT_OBJ) build/engine-state/range.o $(EDITOR_HISTORY_OBJ) $(EDITOR_OVERLAY_OBJ) $(EDITOR_HOT_OBJ) build/engine/trampoline.o build/search/dispatch.o build/search/state.o build/clipboard/state.o build/editor/clip-copy.o build/clipboard/editor_dispatch.o build/block/state.o build/block/selection.o build/block/controller.o build/render/state.o build/layout/state.o build/layout/dispatch.o $(DIAGNOSTICS_RESIDENT_OBJ) $(EDITOR_FILE_RESIDENT_OBJ) $(STYLE_RESIDENT_OBJ) $(GRID_RESIDENT_OBJ) $(FOLD_RESIDENT_OBJ) build/cache/state.o cfg/standalone.cfg tools/bindings.py tools/check_build.py
+	$(LD65) -C cfg/standalone.cfg -o $@ -m build/editor.map -Ln build/editor.lbl $(EDITOR_OBJ) $(EDITOR_COMMON_OBJ) $(EDITOR_MEMORY_OBJ) $(EDITOR_OBJECT_OBJ) $(EDITOR_DOCUMENT_OBJ) build/engine-state/range.o $(EDITOR_HISTORY_OBJ) $(EDITOR_OVERLAY_OBJ) $(EDITOR_HOT_OBJ) build/engine/trampoline.o build/search/dispatch.o build/search/state.o build/clipboard/state.o build/editor/clip-copy.o build/clipboard/editor_dispatch.o build/block/state.o build/block/selection.o build/block/controller.o build/render/state.o build/layout/state.o build/layout/dispatch.o $(DIAGNOSTICS_RESIDENT_OBJ) $(EDITOR_FILE_RESIDENT_OBJ) $(STYLE_RESIDENT_OBJ) $(GRID_RESIDENT_OBJ) $(FOLD_RESIDENT_OBJ) build/cache/state.o
 	$(PYTHON) tools/bindings.py --stem editor
 	$(PYTHON) tools/check_build.py --stem editor
 build/editor-api.inc: build/editor.prg tools/overlay_api.py
@@ -1185,3 +1185,27 @@ build/overlays/popups.o build/overlays/text40.o build/grid-prod/editor.o build/o
 build/fold-prod/coordinator.o: src/render/presentation.inc
 build/geos-prod/semantic-lex.o build/geos-prod/preview.o: src/render/presentation.inc
 build/geos-prod/page.o build/geos-prod/navigation.o: src/render/geos/plain-context.inc src/render/presentation.inc
+
+# Append derived-cache state last; preserve all existing object/doc offsets.
+build/cache/state.o: src/cache/state.s src/cache/api.inc
+	mkdir -p $(dir $@)
+	$(CA65) -g -I src -o $@ -l $(@:.o=.lst) $<
+
+# Cold window operations leave C6 resident for direct hot mutation producers.
+build/hot-cold/worker.o: src/hot/cold/worker.s src/hot/api.inc build/editor-api.inc
+	mkdir -p $(dir $@)
+	$(CA65) -g -I src -I build -o $@ -l $(@:.o=.lst) $<
+build/overlays/hotcold.bin: build/hot-cold/worker.o cfg/overlay-r.cfg
+	$(LD65) -C cfg/overlay-r.cfg -o $@ -m $(@:.bin=.map) -Ln $(@:.bin=.lbl) $<
+build/overlays/hotcold.seo: build/overlays/hotcold.bin tools/overlays.py build/editor-report.json
+	$(PYTHON) tools/overlays.py $< $@ --slot 0 --id 32 --resident-report build/editor-report.json
+EDITOR_ASSETS += build/overlays/hotcold.seo
+editor build/supereditor.d81: build/overlays/hotcold.seo
+
+build/overlays/window.o build/overlays/hot-window.o build/hot-cold/worker.o: src/hot/validate.s src/hot/cold/load.s src/hot/cold/prepare.s
+# Retained-cache producer bodies are consumers of the same sealed editor ABI.
+build/overlays/window.o: src/cache/api.inc src/cache/observer/ring.inc src/cache/observer/hot.inc src/cache/observer/flush_commit.inc
+build/engine-code/splice_build.o: src/cache/api.inc src/cache/observer/ring.inc src/cache/observer/splice.inc src/render/api.inc src/hot/api.inc src/history/api.inc
+build/overlays/eedit.o: src/cache/api.inc
+
+build/hot-cold/worker.o: src/cache/api.inc src/cache/observer/ring.inc src/cache/observer/flush.inc

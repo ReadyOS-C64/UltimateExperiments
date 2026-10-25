@@ -89,7 +89,7 @@ step:
 .else
     jsr invoke
 .endif
-    bcs return
+    bcs failed
     lda #H_FEED
     bne history
 @advance:

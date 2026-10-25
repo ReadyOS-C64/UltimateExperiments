@@ -114,6 +114,9 @@ allocate:
     jsr se_object_resize
     jcs return
 new_context:
+.ifdef EDITOR_BINDINGS
+    jsr bc_new_context
+.endif
     ldx #4
 @context:
     lda se_doc_original,x
@@ -763,4 +766,31 @@ H_HEADER_WRITER=1
 
 .ifdef EDITOR_BINDINGS
 .include "history/hot_packet.inc"
+.endif
+
+.ifdef EDITOR_BINDINGS
+.include "cache/api.inc"
+; H_INIT has validated/adopted the new source. Retain the arena token solely
+; for checked reclamation; no old root or queued event may certify this source.
+bc_new_context:
+    lda #BC_LOST
+    sta se_bc_flags
+    lda #0
+    sta se_bc_head
+    sta se_bc_tail
+    sta se_bc_count
+    ldx #3
+@ticket:
+    sta se_bc_ticket,x
+    dex
+    bpl @ticket
+    inc se_bc_incarnation
+    bne @done
+    inc se_bc_incarnation+1
+    bne @done
+    inc se_bc_incarnation+2
+    bne @done
+    inc se_bc_incarnation+3
+@done:
+    rts
 .endif

@@ -157,22 +157,21 @@ resident code/constants end at `$3EFD`, with two bytes before the CRC table;
 resident BSS uses 1,534 bytes, with two before the ReadyOS reservation. A new
 resident/phase map is required; additional hot storage cannot be assumed.
 
-The existing linker regions have separately verified capacity: OBJECTS occupies
-437 of 512 bytes and DOCSTATE 901 of 1,024 bytes. These are candidate locations
-for a small cache descriptor and edit producer queue, subject to final ordering,
-alias and lifecycle checks. Their unused capacity is separate from ordinary
-BSS. The existing clear routine covers `$9A00–$9FFF`, and the lifecycle adapter
-copies that range. A tentative 17-byte descriptor and three 32-byte journal
-entries fit those capacities; no such allocation has been implemented.
+The [implemented observer foundation](REU_CACHE_OBSERVER.md) appends a 17-byte
+descriptor and three 32-byte records to existing work segments. OBJECTS now
+occupies 454 of 512 bytes and DOCSTATE 997 of 1,024 bytes. Existing data fields
+retain their addresses; ordinary BSS and zero page do not grow. The existing
+clear routine covers `$9A00–$9FFF`, and the lifecycle adapter copies that range.
+Cache query revocation on restoration remains an integration requirement.
 
-An alternative is to find one optional typed arena among the eight object
-slots and append edit records directly from the already loaded mutation
-overlays. This avoids a new resident ring, at the cost of bounded checked DMA
-on edits. Allocation failure must only invalidate disposable cache data.
-Neither option can use `se_r_revision` alone as a universal edit ticket: current
-hot edits advance it, while history/splice publication can advance document
-generation instead. Audit every publication and representation-only flush
-before choosing the observer ABI.
+The chosen producer records edits in RAM inside the already loaded mutation
+images; it performs no REU DMA on warm local edits. A separate edit ticket
+observes hot edits and R2 byte/reference publication, with REKEY for already
+visible flushes and incarnation revocation on successful new H_INIT. It does
+not redefine `se_r_revision`. Typed arena transport and sequential semantic
+production are separately tested components; renderer reuse and lifecycle
+integration remain open. Allocation failure must only invalidate disposable
+cache data.
 
 Checks belong at ownership/transaction entry, actual yield/resume boundaries,
 resource changes and publication. Work under a still-valid, non-yielding lease
