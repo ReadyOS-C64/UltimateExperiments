@@ -9,6 +9,7 @@
 .import se_r_revision,se_hot_ready,se_hot_pending,se_hot_phase,se_hot_owned,se_hot_fault
 .import se_hot_epoch,se_hot_generation,se_hot_original,se_hot_append,se_hot_base
 .import se_hot_old_length,se_hot_length,se_hot_left,se_hot_right,se_doc_read_locks
+.import se_doc_busy,se_h_phase,se_b_phase,se_clip_busy,se_snapshot_busy
 .import se_crc_init,se_crc_byte,se_crc_value
 .import bca_owner,bca_guard,bca_validate,bca_transfer,bca_crc_root,bca_root_check,bca_pending,bca_done,bca_bad,bca_stale,bca_corrupt
 .export se_bc_write_begin,se_bc_write_append,se_bc_write_final,se_bc_write_step,se_bc_write_cancel
@@ -33,8 +34,9 @@
  EQ source,BSC_READER+27+off,n
 .endmacro
 .segment "CODE"
-; Caller has just completed an actual R14 guard. Still compare all59 source
-; identity bytes to live fields at EVERY boundary; no guessed revision witness.
+; Actual R14 created the checked reader under this exclusive foreground job.
+; Recheck its full live identity, busy exclusions and source graphs ourselves;
+; another R14 exchange here would overwrite the held output in shared IO.
 bw_guard:
  jsr bca_guard
  jcs @return
@@ -81,6 +83,12 @@ bw_guard:
  ; provider failure). Authenticate all three live source capabilities too.
  jsr se_doc_validate
  jcs @return
+ lda se_doc_busy
+ ora se_h_phase
+ ora se_b_phase
+ ora se_clip_busy
+ ora se_snapshot_busy
+ jne bca_stale
  CP se_doc_meta,se_object_id,5
  jsr se_object_validate
  jcs @return

@@ -107,7 +107,7 @@ containing both the full read-page validator and writer exceeds4KiB; do not
 link that combination into a deployed image. The measured R33 **writer** profile
 links `core.s`, `open.s`, `writer.s`, and `control.s` assembled with
 `BCA_WRITER_PROFILE=1`, plus the caller's sealed16B binding/entry. It omits
-`page.s`. The executable test's8-op wrapper yields4038B,58B spare. The separate
+`page.s`. The executable test's8-op wrapper yields4058B,38B spare. The separate
 read consumer profile remains2257B. No additional supervisor, asset, BSS or ZP
 was introduced by these modules. The caller supplies the actual existing17B
 persistent state. The generic read-profile bytes remain unchanged.
@@ -156,10 +156,15 @@ Every service boundary checks the full13B token/incarnation/ticket against both
 live state and the producer's frozen header, all59 actual FS identity fields
 against live source/hot state, merged length, document validity, and all three
 actual typed source capability graphs. Source guard calls restore the arena
-request before DMA. The caller's source producer must run its actual R14 guard
-immediately before calling the service; no intervening foreground mutation is
-allowed. Across publication slices the writer repeats the above checks itself.
-It never trusts arbitrary zero reader data or a revision counter alone.
+request before DMA and rejects active document/history/block/clipboard/snapshot
+transactions. The producer must acquire its actual checked R14 reader under
+this exclusive owner-4 foreground job and keep its source lease until real
+completion/cancellation. No foreground source mutation may interleave. The
+writer repeats the live identity, busy exclusions and capability checks itself
+at every service boundary, including publication after the producer's guarded
+EOF and lease release. It does not issue an extra R14 call over held output:
+that exchange would overwrite shared IO. It never trusts arbitrary zero reader
+data or a revision counter alone.
 
 FINAL requires actual producer EOF1, cursor equal to the frozen merged length,
 producer line count equal to persisted CR count, no pending inline events,

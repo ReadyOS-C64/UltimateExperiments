@@ -425,11 +425,11 @@ abort:jmp se_bc_write_cancel
   token=pending_output(b'First\rSecond\rThird\r',queued=True);wc(5);drain();r,_=f.cc('se_bsc_cancel');assert not r.p&1;before=f.reu();wc(6,error=0xc0);assert f.reu()==before and not f.m.read(seam['se_bc_flags'])&1 and f.read(seam['se_bc_head'],3)==b'\0\0\3';wc(7);assert f.read(seam['se_bc_head'],3)==b'\0\0\3';faults.append('partial-producer-CANCEL-cannot-FINAL-arm')
   # Every real source field and every13B captured authority byte is guarded.
   token=pending_output(semantic.geos.native_text('One **pair**\rTail.'))
-  for at in [*range(F+8,F+21),*range(F+66,F+79),s['se_r_revision'],s['se_doc_generation'],s['se_hot_left']]:
+  for at in [*range(F+8,F+21),*range(F+66,F+79),s['se_r_revision'],s['se_doc_generation'],s['se_hot_left'],*(s[n] for n in ('se_doc_busy','se_h_phase','se_b_phase','se_clip_busy','se_snapshot_busy'))]:
    old=f.m.read(at);f.m.write(at,old^1);before=f.reu();wc(5,error=0xc1);assert f.reu()==before;f.m.write(at,old)
   # A copied snapshot alone cannot authorize a stale source object's mapping.
   original=f.read(s['se_doc_original'],5);logical=f.m.read(s['object_extents']+original[0]*16);physical=f.m.read(s['se_reu_map']+logical);old=f.m.read(s['se_reu_physical_owner']+physical);f.m.write(s['se_reu_physical_owner']+physical,0x77);before=f.reu();wc(5,error=0x34);assert f.reu()==before;f.m.write(s['se_reu_physical_owner']+physical,old)
-  r,_=f.cc('se_bsc_cancel');assert not r.p&1;wc(7);faults.append('13+13authority/live-source/actualphysical-source-ownership-refuse-readonly')
+  r,_=f.cc('se_bsc_cancel');assert not r.p&1;wc(7);faults.append('13+13authority/live-source/all-five-busy-exclusions/actualphysical-source-ownership-refuse-readonly')
   # CRC-invalid actual producer CR does not persist. Only producer-ownedCR is
   # altered here as an explicit malformed-output fault, then restored.
   token=pending_output(b'One\rTail.')
