@@ -1,3 +1,4 @@
+.include "render/presentation.inc"
 ; R1 logical-line renderer. C11 supplies all22 starts and the bottom anchor;
 ; hidden long-line bytes are never traversed inside this synchronous painter.
 nowrap_draw:
@@ -69,7 +70,7 @@ nowrap_bounds:
     lda se_v_rows+2,x
     sta se_r_first+2
     jsr read_next
-    lda se_ef_valid
+    jsr se_ef_visible
     beq :+
     ldy #0
 @paint_end:

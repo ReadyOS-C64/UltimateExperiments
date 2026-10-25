@@ -1,4 +1,7 @@
 ; C8-only logical line and view controls. Source positions remain24-bit.
+.include "render/geos/edit-certificate.inc"
+.include "render/geos/typing/certificate.inc"
+.global se_gc_width
 logical_up:
     lda se_n_line
     ora se_n_line+1
@@ -43,6 +46,12 @@ layout_command:
 @set:
     sta se_l_mode
     lda #0
+    ; This public layout publication changes geometry without source revision.
+    ; Both whole-page and typing authorities must miss in either direction.
+    sta se_gc_width
+    sta GCC_VALID
+    sta GEC_VALID
+    sta GTC_VALID ;C8 entry has already proved phaseowner0
     sta se_l_valid
     sta se_r_valid
     sta se_n_preferred_valid

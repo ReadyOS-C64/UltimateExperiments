@@ -6,6 +6,9 @@
 # Existing heading inversion/lexical palette remain separate semantic rendering rules.
 schema = 1
 
+[editor]
+source_preset = "full" # plain, markdown, full; session changes never write here
+
 [body]
 font = "bsw"
 size = 9

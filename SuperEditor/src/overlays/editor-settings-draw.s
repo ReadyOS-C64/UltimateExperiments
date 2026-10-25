@@ -28,7 +28,25 @@ settings_popup:
     PRINT_AT sp_keys1,15,3
     PRINT_AT sp_keys2,17,3
     PRINT_AT sp_keys3,19,3
+    PRINT_AT sp_syntax,20,3
     PRINT_AT sp_session,21,3
+    lda se_render_caps
+    beq @plain
+    cmp #1
+    beq @markdown
+    cmp #3
+    bne @bad_preset
+    PRINT_AT sp_full,20,17
+    jmp @preset_done
+@plain:
+    PRINT_AT sp_plain,20,17
+    jmp @preset_done
+@markdown:
+    PRINT_AT sp_markdown,20,17
+    jmp @preset_done
+@bad_preset:
+    PRINT_AT sp_bad_preset,20,17
+@preset_done:
     lda se_e_item
     and #7
     tax
@@ -216,6 +234,11 @@ sp_keys1: .asciiz "F font  S size  C ink  G paper"
 sp_keys2: .asciiz "B/I/U toggle; arrows/1-8 profile"
 sp_keys3: .asciiz "R reset defaults; Return closes"
 sp_session: .asciiz "Session only / no disk writes"
+sp_syntax: .asciiz "H source mode:"
+sp_plain: .asciiz "Plain"
+sp_markdown: .asciiz "Markdown"
+sp_full: .asciiz "Full"
+sp_bad_preset: .asciiz "Invalid"
 sp_offsets: .byte SES_BODY,SES_HEADING1,SES_HEADING2,SES_HEADING3,SES_HEADING4,SES_HEADING5,SES_HEADING6,SES_CODE
 sp_masks: .byte SES_BOLD,SES_ITALIC,SES_UNDERLINE
 sp_letters: .byte 'b'-64,'i'-64,'u'-64

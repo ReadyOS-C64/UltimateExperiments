@@ -1,3 +1,4 @@
+.include "render/presentation.inc"
 ; R1-private cache operations. Every hit validates full source ownership,
 ; generation and viewport. Uncertain contexts fall back to a complete paint.
 cache_plan:
@@ -6,7 +7,7 @@ cache_plan:
     sta se_r_rows
     sta se_r_cells
     sta se_r_cells+1
-    lda se_ef_valid
+    jsr se_ef_visible
     jne @full ;folded maps are painted from their published canonical anchors
     lda se_st_valid
     cmp se_st_cache_valid

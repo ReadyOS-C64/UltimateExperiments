@@ -10,6 +10,7 @@ from datetime import datetime,timezone
 from dataclasses import replace
 import argparse,hashlib,json,shutil,zipfile
 import test_geos_editor as geos
+import test_geos_preview_editor as preview
 import editor_settings as settings
 import font_fixture
 from redraw_model import screen_code,native_text
@@ -45,7 +46,7 @@ def cycle(table,profile,which,catalog):
     raise AssertionError('catalog cycle could not preserve a valid face')
 
 
-class CheckedFixture(geos.Fixture):
+class CheckedFixture(preview.Fixture):
     def document(self):
         result=bytearray()
         for offset in range(0,self.get('se_doc_length'),1024):
@@ -81,6 +82,9 @@ def popup_model(f,data,table,catalog):
             elif x in (0,37):glyph=0x5D
             matrix[at]=glyph;colors[at]=14 if border else 1
     for value,row,col in [('Session text settings',4,3),('1 Body',6,3),('2 H1',7,3),('3 H2',8,3),('4 H3',9,3),('5 H4',10,3),('6 H5',11,3),('7 H6',12,3),('8 Code',13,3),('Font',6,16),('Size $',8,16),('Ink  $',9,16),('Paper$',10,16),('B / I / U',12,16),('F font  S size  C ink  G paper',15,3),('B/I/U toggle; arrows/1-8 profile',17,3),('R reset defaults; Return closes',19,3),('Session only / no disk writes',21,3)]:text(value,row,col)
+    if 'se_render_caps' in f.s:
+        text('H source mode:',20,3)
+        text({0:'Plain',1:'Markdown',3:'Full'}.get(f.get('se_render_caps',1),'Invalid'),20,17)
     selected=f.get('se_e_item',1)&7
     for col in range(3,11):
         at=(selected+6)*40+col;matrix[at]^=128;colors[at]=3
@@ -198,15 +202,15 @@ def run(out,previous,smoke=False):
             assert f.get('se_mode',1)==mode and actual()==expected
             assert f.canonical()==before and f.merged()==data
         reu_before=f.reu();f.typed(native_text('preview'));f.render()
-        readonly_reu(reu_before,f.reu());preview_intervals+=1
+        preview.guard_preview_reu(f,reu_before,f.reu(),'frontend-preview');preview_intervals+=1
         assert f.get('se_r_presentation',1)==1 and f.get('se_e_ui',1)==4 and actual()==expected
         assert f.canonical()==before and f.merged()==data
         for word in ('paste','undo','delete'):
             reu_before=f.reu();f.typed(native_text(word));f.render()
-            readonly_reu(reu_before,f.reu());preview_intervals+=1
+            preview.guard_preview_reu(f,reu_before,f.reu(),'frontend-preview');preview_intervals+=1
             assert f.canonical()==before and f.merged()==data and f.get('se_e_ui',1)==4,('preview readonly F7',word)
         reu_before=f.reu();f.key(0x85);key('e');key('d');f.render()
-        readonly_reu(reu_before,f.reu());preview_intervals+=1
+        preview.guard_preview_reu(f,reu_before,f.reu(),'frontend-preview');preview_intervals+=1
         assert f.canonical()==before and f.merged()==data and f.get('se_e_ui',1)==4,'preview Edit/Delete must not mutate'
         key(13);f.render();assert f.get('se_r_presentation',1)==0 and f.get('se_e_ui',1)==0
         assert f.canonical()==before and actual()==expected
@@ -222,12 +226,15 @@ def run(out,previous,smoke=False):
             assert f.get('se_hot_pending',1)==1 and f.get('se_e_ui',1)==4
         f.key(0x85);key('e');key('d');f.render()
         assert f.canonical()==pending_before and f.get('se_hot_pending',1)==1 and f.merged()==data
+        preview.guard_preview_reu(f,pending_reu,f.reu(),'frontend-pending-preview');preview_intervals+=1
+        source_before=f.reu()
         f.typed(native_text('source'));f.render()
         assert f.canonical()==pending_before and f.merged()==data and actual()==expected
         assert f.get('se_hot_pending',1)==1 and f.get('se_e_ui',1)==0
-        readonly_reu(pending_reu,f.reu(),FE());preview_intervals+=1
+        import test_geos_convergent_line as source_gate
+        source_gate.outside(f,source_before,'frontend-reedit-source')
         print('PENDING_PREVIEW_READONLY_HISTORY_GAP_PASS',flush=True)
-        result=dict(status='passed',identity=identity,UI_frames=len(frames),UI_cells=len(frames)*1000,UI_colors=len(frames)*1000,whole16MiB_intervals=intervals,mode_FEonly_intervals=mode_intervals,preview_wholeREU_intervals=preview_intervals,pending_preserved=True,nondefault_session_preserved=True,admitted_fonts=44,table_bytes=64,actual_public_F7_C16_C7_R22=True,preview_readonly_aliases=True,mode80_GE0S_session_preserved=True,frames=frames,scope='Actual packaged frontend/settings and readonlypreview CPU; no preview glyph pixel/native/timing claim.')
+        result=dict(status='passed',identity=identity,UI_frames=len(frames),UI_cells=len(frames)*1000,UI_colors=len(frames)*1000,whole16MiB_intervals=intervals,mode_FEonly_intervals=mode_intervals,preview_exact_cache_intervals=preview_intervals,pending_preserved=True,nondefault_session_preserved=True,admitted_fonts=44,table_bytes=64,actual_public_F7_C16_C7_R22=True,preview_readonly_aliases=True,mode80_GE0S_session_preserved=True,frames=frames,scope='Actual packaged frontend/settings and readonlypreview CPU; no preview glyph pixel/native/timing claim.')
         (out/'result.json').write_text(json.dumps(result,indent=2)+'\n');return result
     except BaseException as exc:
         (out/'failure.json').write_text(json.dumps(dict(error=repr(exc),debug=f.debug()),indent=2)+'\n')

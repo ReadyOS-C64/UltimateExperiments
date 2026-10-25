@@ -2,6 +2,12 @@
 .setcpu "6502"
 .macpack longbranch
 .include "editor-api.inc"
+.include "render/presentation.inc"
+.include "render/geos/plain-context.inc"
+.include "render/geos/edit-certificate.inc"
+.include "render/geos/typing/certificate.inc"
+.global se_render_caps,se_ef_visible
+.global se_gc_width
 .include "seed-witness.inc"
 .include "render/geos/editor.inc"
 .include "render/geos/source-line.inc"
@@ -23,7 +29,9 @@
  bpl *-7
 .endmacro
 
-; Equality-only byte comparison: dead A/X/NZ; carry not consumed by callers.
+; Unsigned24-bit comparison: C/Z exactly match CMP24; A/X are dead.
+; Unequal branches preserve the decisive CMP; all-equal LDA0 restores Z
+; without changing C=1. N is also equivalent; every use treats X as dead.
 ; Fixed branches avoid injecting labels into the caller's cheap-label scope.
 .macro NAV_EQUAL24 source,target
  ldx #2
@@ -127,7 +135,7 @@ begin:
  ; A committed cut/replay can request E_POSITION before the next redraw's
  ; retention safe point. Retire only its stale projection before claiming
  ; GEOS state; the journal retains the old map hints for ordered rebuilding.
- lda se_ef_valid
+ jsr se_ef_visible
  beq @admit
  jsr se_ef_key_match
  bcc @admit
@@ -153,7 +161,7 @@ begin:
  sta GN_CACHE_INDEX
  sta GN_CACHE_COUNT
  sta GSEM_FRAME+GSEM_CP_VALID
- lda se_ef_valid
+ jsr se_ef_visible
  sta GN_FOLD_VALID
  ldx #1
 @fold_generation:
@@ -201,6 +209,8 @@ begin:
  lda GN_COMMAND
  cmp #74
  bcc :+
+ lda se_render_caps
+ beq cold ;raw PAN must discover logical START with real C20 CR scans
  lda #0
  sta GN_PASS
  NAV_COPY24 GN_QUERY,GN_SCAN
@@ -234,6 +244,8 @@ cold:
  ; E_POSITION only: a validated incoming parser context at the unchanged
  ; viewport can replace the global scan. PAGE's global pixel origin is not
  ; inferred from a local row. Folded reveal keeps its existing full route.
+ lda se_render_caps
+ jeq local_seed_miss
  lda GN_COMMAND
  cmp #47
  jne local_seed_miss
@@ -247,7 +259,7 @@ cold:
  jcs local_seed_miss
  lda #0
  sta GSC_SELECTOR
- CMP24 GN_QUERY,GN_TOP
+ NAV_EQUAL24 GN_QUERY,GN_TOP
  bcs @current
  inc GSC_SELECTOR ;actual predecessor is independently bound to old GCC TOP
  NAV_COPY24 GN_QUERY,GSEM_FRAME+GSEM_QUERY
@@ -274,7 +286,7 @@ local_seed_ready:
  jmp @accept
 @previous:
  ; Accepted predecessor must not lie after the requested canonical caret.
- CMP24 GSC_INCOMING,GN_QUERY
+ NAV_EQUAL24 GSC_INCOMING,GN_QUERY
  bcc @accept
  bne local_seed_miss
 @accept:
@@ -319,9 +331,9 @@ cache_query:
  jcs cold
  jsr prefix
  jcs return
- CMP24 GN_QUERY,GP_RECORD+GPR_START
+ NAV_EQUAL24 GN_QUERY,GP_RECORD+GPR_START
  jcc cold
- CMP24 GN_QUERY,GP_RECORD+GPR_END
+ NAV_EQUAL24 GN_QUERY,GP_RECORD+GPR_END
  bcc @found
  bne @next
  lda GP_RECORD+GPR_REASON
@@ -494,6 +506,11 @@ prefix:
  sta GP_IO_LENGTH+1
  jmp se_gp_cache_read
 line_begin:
+ lda se_render_caps
+ bne @parsed_context
+ GS_SET_RAW_CONTEXT
+ jmp metric_ready
+@parsed_context:
  lda GN_FLAGS
  and #2
  beq @query
@@ -571,7 +588,7 @@ metric_ready:
  lda GN_COMMAND
  cmp #38
  bne @mark_top
- CMP24 GN_ORDINAL,GN_TARGET_ROW
+ NAV_EQUAL24 GN_ORDINAL,GN_TARGET_ROW
  bcc @mark_top
  beq @mark_top
  NAV_COPY24 GN_CACHE_ROW,GN_SCAN
@@ -670,7 +687,11 @@ stream:
 @complete:
  lda GN_COMMAND
  cmp #74
- jcs pan_complete
+ bcc :+
+ lda L+GL_CARET_VALID
+ jeq advance ;raw PAN may start before the queried logical line
+ jmp pan_complete
+:
  lda GN_PASS
  and #1
  jne target_line
@@ -731,7 +752,7 @@ stream:
 :
  lda #1
  sta GN_PASS
- CMP24 GN_TARGET_ROW,GN_ORDINAL
+ NAV_EQUAL24 GN_TARGET_ROW,GN_ORDINAL
  jeq target_line
  lda #0
  sta GN_SCAN
@@ -796,7 +817,7 @@ advance:
  lda GN_COMMAND
  cmp #47
  beq @plain
- lda se_ef_valid
+ jsr se_ef_visible
  beq @plain
  lda L+GL_REASON
  cmp #GL_CR
@@ -880,7 +901,7 @@ pan_complete:
  sta GN_TARGET_ROW+2
  bcs @use_maximum
 @clamp:
- CMP24 GN_TARGET_ROW,GN_TEMP
+ NAV_EQUAL24 GN_TARGET_ROW,GN_TEMP
  bcc @publish
 @use_maximum:
  NAV_COPY24 GN_TEMP,GN_TARGET_ROW
@@ -892,6 +913,10 @@ pan_complete:
  sta se_l_mode
  sta se_l_need_wrap
  lda #0
+ sta se_gc_width
+ sta GCC_VALID
+ sta GEC_VALID
+ sta GTC_VALID ;owner4; target/PAN inputs have already been fully consumed
  sta se_f_owner
  sta se_l_valid
  sta se_r_valid
@@ -902,12 +927,12 @@ target_line:
  lda GN_PASS
  cmp #1
  bne @hit
- CMP24 GN_ORDINAL,GN_TARGET_ROW
+ NAV_EQUAL24 GN_ORDINAL,GN_TARGET_ROW
  beq @hit
  lda GN_COMMAND
  cmp #39
  bne @reason
- CMP24 GN_ORDINAL,GN_TARGET_ROW
+ NAV_EQUAL24 GN_ORDINAL,GN_TARGET_ROW
  bcs @hit
 @reason:
  lda L+GL_REASON
@@ -952,7 +977,7 @@ hit_done:
  lda L+GL_REASON
  cmp #GL_EOF+1
  bcc @publish
- CMP24 L+GL_HIT_SOURCE,L+GL_END
+ NAV_EQUAL24 L+GL_HIT_SOURCE,L+GL_END
  bcc @publish
  NAV_COPY24 L+GL_END,L+GL_HIT_SOURCE
  sec
@@ -976,7 +1001,7 @@ publish:
  bne @keep_top
  lda GN_TOP_VALID
  beq @new_top
- CMP24 GN_ORDINAL,GN_TOP_ROW
+ NAV_EQUAL24 GN_ORDINAL,GN_TOP_ROW
  bcc @new_top
  SUB24 GN_ORDINAL,GN_TOP_ROW,GN_TEMP
  lda GN_TEMP+2
@@ -1053,7 +1078,7 @@ return:
 reveal_pan:
  lda GN_MODE
  jeq @done
- CMP24 L+GL_CARET_X,GN_PAN
+ NAV_EQUAL24 L+GL_CARET_X,GN_PAN
  bcc @left
  SUB24 L+GL_CARET_X,GN_PAN,GN_TEMP
  lda GN_TEMP+2
@@ -1083,7 +1108,7 @@ reveal_pan:
 @done:
  rts
 guard:
- lda se_ef_valid
+ jsr se_ef_visible
  cmp GN_FOLD_VALID
  jne changed
  ldx #1

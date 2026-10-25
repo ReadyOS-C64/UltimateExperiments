@@ -54,6 +54,8 @@ class EditorFixture:
   self.put('se_e_job',1,1);self.settle()
  def source(self,data,banks=2,physical=256):
   self.call('se_clear_state');self.put('se_reu_banks',physical,2)
+  # This helper deliberately resets the app; initialize its session preset too.
+  if 'se_render_caps' in self.s:self.put('se_render_caps',self.s['se_presentation_default'],1)
   for name,a in [('se_reu_provider_init',0),('se_object_init',0),('se_overlay_init',0),('se_doc_init',banks)]:
    regs=self.call(name,a);assert not regs.p&1,(name,hex(regs.a))
   token=self.read(self.s['se_doc_original'],5)

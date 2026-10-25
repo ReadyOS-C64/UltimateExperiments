@@ -1,3 +1,4 @@
+.include "render/presentation.inc"
 ; C33 retained-input narrow caret transaction. No resident/ZP state.
 .setcpu "6502"
 .macpack longbranch
@@ -236,7 +237,7 @@ admit:
  jsr se_object_validate
  jcs invalid
  .endrepeat
- lda se_ef_valid
+ jsr se_ef_visible
  beq @font
  ldx #4
 @fold_token:
@@ -398,7 +399,7 @@ fields:
  FIELD se_gc_valid,N_VALID,3
  FIELD se_gc_previous_ui,N_PREVUI,1
  FIELD se_gc_current_ui,N_CURUI,1
- lda se_ef_valid
+ jsr se_ef_visible
  beq @done
  ldx #27
 @fold_source:
@@ -618,7 +619,7 @@ bounds:
 @copy:
  lda H+N_ROWS,x
  sta POS,y
- lda se_ef_valid
+ jsr se_ef_visible
  beq @plain
  lda se_ef_paint_ends,x
  jmp @next

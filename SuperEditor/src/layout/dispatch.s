@@ -1,3 +1,4 @@
+.include "render/presentation.inc"
 .setcpu "6502"
 .macpack longbranch
 .include "layout/api.inc"
@@ -25,7 +26,7 @@ se_layout_prepare:
     tax ;se_ef_prepare returns only0ready/1queued
     bne @queued
     ; Keep the common source40/wrapped-ready predicate resident: no C load.
-    lda se_ef_valid
+    jsr se_ef_visible
     bne @folded
     lda se_l_mode
     bne @no_wrap

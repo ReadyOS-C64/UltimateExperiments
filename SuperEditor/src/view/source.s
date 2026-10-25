@@ -9,27 +9,37 @@
 .segment "CODE"
 ; Derive visible length and cache bounds. Pending data are never read through
 ; committed roots. Shared document IO is refreshed on every independent call.
+return:
+    rts
+changed:
+    lda #$74
+    sec
+    rts
+state:
+    lda #$70
+    sec
+    rts
 se_view_init:
     jsr se_doc_validate
-    jcs return
+    bcs return
     lda se_hot_ready
-    jeq state
+    beq state
     ldx #4
 @context:
     lda se_hot_original,x
     cmp se_doc_original,x
-    jne changed
+    bne changed
     lda se_hot_append,x
     cmp se_doc_append,x
-    jne changed
+    bne changed
     dex
     bpl @context
     lda se_hot_generation
     cmp se_doc_generation
-    jne changed
+    bne changed
     lda se_hot_generation+1
     cmp se_doc_generation+1
-    jne changed
+    bne changed
     lda se_hot_length
     sta se_v_span
     lda se_hot_length+1
@@ -48,15 +58,6 @@ se_view_init:
     ADD24 se_hot_base,se_v_span,se_v_hot_end
     lda #0
     clc
-return:
-    rts
-changed:
-    lda #$74
-    sec
-    rts
-state:
-    lda #$70
-    sec
     rts
 ; Peek one source byte, preserving position. A native byte/Cclear. Caller checks
 ; visible EOF first.128-byte committed cache is bounded even on long lines.

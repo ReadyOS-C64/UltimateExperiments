@@ -3,6 +3,7 @@
 .macpack longbranch
 .include "editor-api.inc"
 .include "render/geos/semantic-lex.inc"
+.include "render/presentation.inc"
 .include "supermark/api.inc"
 .include "document/math24.inc"
 .import se_f_owner,se_fs_state,se_fs_owned,se_fs_end,se_fs_state_size
@@ -142,9 +143,6 @@ begin:
  bcc @valid
  jne range
 @valid:
- lda GLEX_LANG
- jsr se_sl_init
- COPY24 GLEX_BODY,se_sl_pos
  ldx GLEX_COUNT
  jeq complete
  lda #4
@@ -152,6 +150,12 @@ begin:
  dex
  sta GLEX_ROLES,x
  bne @base ;STA preserves DEX Z for count up to160
+ lda se_render_caps
+ and #RENDER_CODE_COLOR
+ jeq complete ;uniform code roles; no lexical init, feed or finish
+ lda GLEX_LANG
+ jsr se_sl_init
+ COPY24 GLEX_BODY,se_sl_pos
  lda #1
  sta GLEX_ACTIVE
  sta GLEX_SOURCE_ACTIVE

@@ -2,6 +2,7 @@
 .macpack longbranch
 EF_CONTROLLER_IMPLEMENTATION=1
 .include "editor_fold/controller.inc"
+.include "render/presentation.inc"
 .include "editor_fold/journal.inc"
 .include "fold/editor-leaves/api.inc"
 .include "fold/locate.inc"
@@ -17,6 +18,8 @@ EC_TRANSFORM=4
 se_ef_begin:
     lda se_f_owner
     jne ec_busy
+    lda se_render_caps
+    jeq ec_bad ;Plain has no automatic or explicit semantic fold projection
     lda se_ef_active
     jne ec_busy
     lda se_overlay_frame+1

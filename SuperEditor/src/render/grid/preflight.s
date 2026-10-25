@@ -1,3 +1,4 @@
+.include "render/presentation.inc"
 ; No leaf admission or pixel write precedes the complete map/caret preflight.
 grid_width:
     lda se_mode
@@ -41,17 +42,17 @@ grid_preflight:
     jsr se_view_init
     jcs @return
     lda se_l_valid
-    jeq grid_stale
+    beq grid_stale
     lda se_v_nav_busy
-    jne grid_stale
+    bne grid_stale
     lda se_n_view_columns
     cmp g_width
-    jne grid_stale
+    bne grid_stale
     ldx #9
 @tokens:
     lda se_doc_original,x
     cmp se_l_original,x
-    jne grid_stale
+    bne grid_stale
     dex
     bpl @tokens
     ldx #1
@@ -152,9 +153,16 @@ grid_preflight:
     cmp #$FF
     jeq grid_stale
     lda se_l_mode
-    jeq @ready
+    bne @nowrap
+@ready:
+    lda #0
+    sta se_l_need_wrap
+    clc
+@return:
+    rts
+@nowrap:
     lda se_l_manual
-    jne @ready
+    bne @ready
     CMP24 g_column,se_l_pan
     bcc @left
     SUB24 g_column,se_l_pan,g_delta
@@ -183,12 +191,7 @@ grid_preflight:
     jmp @ready
 @left:
     COPY24 g_column,se_l_pan
-@ready:
-    lda #0
-    sta se_l_need_wrap
-    clc
-@return:
-    rts
+    jmp @ready
 ; Read canonical row start/next without writing the shared row map.
 grid_bounds:
     lda g_row
@@ -201,7 +204,7 @@ grid_bounds:
 @copy:
     lda se_v_rows,x
     sta g_start,y
-    lda se_ef_valid
+    jsr se_ef_visible
     beq @unfolded
     lda se_ef_paint_ends,x
     jmp @next
@@ -216,7 +219,7 @@ grid_bounds:
     lda g_row
     cmp #21
     bne @ready
-    lda se_ef_valid
+    jsr se_ef_visible
     bne @ready
     COPY24 se_v_bottom,g_next
 @ready:

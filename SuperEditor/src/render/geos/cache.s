@@ -1,3 +1,4 @@
+.include "render/presentation.inc"
 .setcpu "6502"
 .macpack longbranch
 GP_CACHE_IMPLEMENTATION=1
@@ -85,7 +86,7 @@ se_gp_cache_open:
  lda #GP_CACHE_VERSION
  sta GP_HEADER+GPH_VERSION
  KEY_FIELDS CAPTURE
- lda se_ef_valid
+ jsr se_ef_visible
  sta GP_HEADER+GPH_FOLD_VALID
  ldx #1
 @fold:
@@ -133,7 +134,7 @@ se_gp_cache_guard:
  cmp #GP_MAX_LINES+1
  jcs changed
  KEY_FIELDS COMPARE
- lda se_ef_valid
+ jsr se_ef_visible
  cmp GP_HEADER+GPH_FOLD_VALID
  jne changed
  ldx #1

@@ -3,6 +3,7 @@
 .macpack longbranch
 GP_CACHE_IMPLEMENTATION=1
 .include "editor-api.inc"
+.include "render/presentation.inc"
 .include "render/geos/code-typing/worker.inc"
 .include "stage-constants.inc"
 .include "document/math24.inc"
@@ -21,6 +22,9 @@ entry:
  lda se_overlay_frame
  cmp #3
  jne bad
+ lda se_render_caps
+ cmp #RENDER_FULL
+ jne root_miss ;Markdown must never invoke the staged token lexer
  lda se_f_owner
  jne root_miss
  lda #4

@@ -1,4 +1,13 @@
-Current checkpoint D81dbc4ecf968ab, resident2d87e75e,
+Parsing-preset update: one session capability byte is now linked into ordinary
+BSS, which ends at `$C5FD` (1,534 bytes; two spare). Code/constants end `$3EFD`
+and cold startup ends `$0EFC`; `$C600–$C9FF` remains untouched. The SES64 font
+table is unchanged. Plain exposes expanded source through `se_ef_visible`
+without discarding the stored fold map. The internal raw context kind9 is a
+layout input, never a claimed SuperMark parser result. Preview metadata's
+previously reserved byte3 now carries the preset and is covered by its CRC.
+
+The following checkpoint notes describe the preceding Full-render baseline.
+D81dbc4ecf968ab, resident2d87e75e,
 bindingbc032951a4ff040b1cd687f8eb175884. Core/RODATA3EF9 (6bytes free),
 cold0EFE (1free), BSS1533/ZP24,48assets/threebanks, C600..C9FF untouched.
 C144089/R144095/C334096/R254095/C204096/C213741/R194028/R283749.
@@ -285,7 +294,7 @@ Aliased phase segments are alternatives, not additive allocations.
 | `$9E00–$9FB4` |437 occupied bytes of checked object metadata; capacity 512 |
 | `$A000–$AFFF` |4096-byte R executable slot |
 | `$B000–$BFFF` |4096-byte C executable slot |
-| `$C000–$C5FC` |1533-byte resident BSS; 3 bytes remain before `$C600` |
+| `$C000–$C5FD` |1534-byte resident BSS; 2 bytes remain before `$C600` |
 | **`$C600–$C9FF`** |**ReadyOS's reserved 1 KiB: no editor fill, BSS, loaders or DMA** |
 | `$CA00–$CB7F` |64-entry overlay catalog, 384 bytes |
 | `$CB80–$CBBF` |64-byte session settings table |
@@ -293,7 +302,7 @@ Aliased phase segments are alternatives, not additive allocations.
 | `$CC00–$CFFF` |1024-byte preview/caret-cache workspace |
 
 VIEWSTATE occupies `$8C00–$8CD9` inclusive; the descriptor starts `$8CDA`.
-The code/core/constants end at `$3EF0`, leaving 15 bytes before the aligned CRC
+The code/core/constants end at `$3EFD`, leaving 2 bytes before the aligned CRC
 table. This alignment slack is not a general allocation pool. BSS, VIEW and
 individual overlays must each respect their own limits.
 

@@ -43,10 +43,13 @@ checked pixel/row packets; GEOS layout reuses completed inline styles and incomi
 parser state. Performance and final standalone hardening remain unfinished.
 The full standalone goal is not complete. The ReadyOS 1024-byte reservation remains untouched.
 
-The next architecture work is [configurable parsing and retained REU document
-data](docs/REU_CACHE_REDESIGN.md): a genuine plain-source parsing bypass, separate
-semantic/layout caches and fewer overlay transitions per job. These controls
-are planned; they are not available in the current D81.
+F7 `syntax plain` skips automatic structure, inline and language parsing in all
+four source views. `syntax markdown` retains formatting with uniform code colors;
+`syntax full` restores BASIC/assembler token colors. Settings H cycles these
+presets; the build default is `[editor] source_preset` in the TOML above. These
+are session settings. Formatted preview still formats the document explicitly;
+its code-token colors follow the same switch. See
+[preset behavior and remaining REU redesign](docs/REU_CACHE_REDESIGN.md).
 
 F7 `fold` toggles the innermost visible region; `fold all` and `unfold all`
 operate on the document. Block/F, Block/L and Block/E reach the same commands.

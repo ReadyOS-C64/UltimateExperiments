@@ -84,7 +84,9 @@ target:
     sta se_f_owner
     pla
     plp
-    jcs done
+    bcc :+
+    rts
+:
     jmp publish
 @narrow:
     lda backends,x
@@ -94,7 +96,9 @@ target:
     lda g_backend
     ldx #0
     jsr se_overlay_call
-    jcs done ;old mode, layout, VIC and source remain untouched
+    bcc :+
+    rts ;old mode, layout, VIC and source remain untouched
+:
 publish:
     lda g_width
     bne bitmap
@@ -106,7 +110,7 @@ publish:
     plp
     jmp settings
 bitmap:
-    lda g_width
+    ; A still holds the nonzero requested width from publish.
     cmp #3
     bne :+
     php
@@ -231,7 +235,7 @@ presentation:
 preview:
     lda se_mode
     cmp #3
-    jne unavailable
+    bne unavailable
     lda #1
 set_presentation:
     sta se_r_presentation

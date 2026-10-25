@@ -470,23 +470,28 @@ pc_header_crc:
 pc_validate:
  lda PPC_META
  cmp #'P'
- jne pc_changed
+ bne pc_changed
  lda PPC_META+1
  cmp #'V'
- jne pc_changed
+ bne pc_changed
  lda PPC_META+2
  cmp #1
- jne pc_changed
+ bne pc_changed
  lda PPC_META+5
  cmp #1
- jne pc_changed
+ bne pc_changed
  jsr pc_header_crc
  lda se_crc_value
  cmp PPC_META+PPC_META_CRC
- jne pc_changed
+ bne pc_changed
  lda se_crc_value+1
  cmp PPC_META+PPC_META_CRC+1
- bne pc_changed
+ beq :+
+pc_changed:
+ lda #$74
+ sec
+ rts
+:
  lda PPC_META+PPC_ROWS
  cmp #23
  bcs pc_changed
@@ -542,10 +547,6 @@ pc_validate:
 @done:
  clc
  rts
-pc_changed:
- lda #$74
- sec
- rts
 pc_seed:
  lda #0
  ldx #PPC_SIZE-1
@@ -560,6 +561,8 @@ pc_seed:
  sta PPC_META+1
  lda #1
  sta PPC_META+2
+ lda se_render_caps
+ sta PPC_META+PPC_CAPS
  ldx #58
 @source:
  lda se_fs_identity,x
@@ -608,6 +611,9 @@ pc_seed:
  bpl @font
  rts
 pc_context:
+ lda se_render_caps
+ cmp PPC_META+PPC_CAPS
+ jne pc_changed
  ldx #58
 @source:
  lda se_fs_identity,x

@@ -1,10 +1,11 @@
 # Configurable parsing and retained document data
 
-Design direction recorded on 2026-10-25, before implementation. These controls
-and cache services are **not implemented yet**. The current editor remains the
-qualified `dbc4ecf968ab` D81. Source checkpoint: `dad569e` on the local branch
-`supereditor/reu-cache-redesign`. Generated media, build outputs, logs, external
-font extracts and local working records are excluded from Git.
+Design direction recorded on 2026-10-25. The first implementation provides the
+three parsing presets below; the persistent document-cache service and new
+residency schedule remain proposed. Source checkpoint before implementation:
+`dad569e` on the local branch `supereditor/reu-cache-redesign`. Generated media,
+build outputs, logs, external font extracts and local working records are
+excluded from Git.
 
 The user's requirements are configurable highlighting with a real parsing
 bypass, reuse of unchanged document analysis and layout, efficient REU use,
@@ -23,7 +24,7 @@ path need attention; retaining syntax results alone is insufficient.
 Provide session controls and host build defaults, as with the existing font
 settings. Do not add disk configuration persistence in this phase.
 
-| Proposed source preset | Structure and inline formatting | BASIC/assembler token coloring | Raw-source behavior |
+| Source preset | Structure and inline formatting | BASIC/assembler token coloring | Raw-source behavior |
 | --- | --- | --- | --- |
 | Plain | Disabled | Disabled | Literal bytes, uniform body font/pitch and colors; normal wrapping, navigation, selection and editing |
 | Markdown | Enabled | Disabled | Headers, emphasis and code-block layout; code has a single configured color |
@@ -35,14 +36,30 @@ Turning off only code-token coloring skips the lexical pass. Plain source
 skips automatic block, inline and lexical parsing altogether: no speculative
 background cache fill and no formatting-driven bold/italic metrics or code
 font substitution. A low-color screen that still runs the parser is not this
-bypass. These presets are proposed UI names, not existing commands.
+bypass.
+
+F7 accepts `syntax plain` (also `syntax off`), `syntax markdown`, and `syntax
+full` (also `syntax on`). Settings H cycles Plain → Markdown → Full. R restores
+both the font settings and the configured preset. Host defaults use a separate
+`[editor] source_preset = "full"` field in `config/editor-defaults.toml`; the
+existing 64-byte font settings format is unchanged. Configurations that omit
+the editor section retain Full. Nothing is saved to disk by these controls.
+
+Plain keeps literal markers visible, uses the ordinary fixed grid font in
+40/60/80 views and unstyled BSW/9 throughout editable GEOS source. Code fences
+therefore do not select native8 pitch in Plain. The separate body/heading/code
+font choices remain formatted-preview settings, as before. Switching presets
+invalidates the derived viewport/style caches before publishing the new preset.
 
 Preview is an explicit consumer of document structure and inline formatting.
 Code-token coloring can still be disabled in preview. Plain source does not
-promise active semantic folding without structural analysis: selecting folding
-or formatted preview must make that dependency visible instead of silently
-charging the Plain editing path. Preserve stored fold choices separately from
-their current projection; the precise interaction belongs in the UI design.
+promise active semantic folding without structural analysis: it presents the
+expanded literal document and rejects explicit fold operations. Stored fold
+choices are retained for returning to Markdown or Full. Formatted preview is
+an explicit formatting operation even when the source preset is Plain; it
+retains its selected fonts and bold/italic/underline. Preview code is uniform
+in Plain/Markdown and token-colored in Full. Its retained bitmap key includes
+the preset, preventing reuse of colors from a previous setting.
 
 ## Cache semantic blocks independently of the viewport
 
@@ -135,9 +152,27 @@ micro-operation a runtime overlay boundary.
 
 Do not append another supervisor layer to the current graph without measuring
 the result. Budget a replacement hot path and compare overlay loads, DMA bytes,
-parsing feeds and total cycles on the same documents. Current code has only six
-free resident code bytes: the new resident/phase map is a design deliverable,
-not something that can be assumed to fit.
+parsing feeds and total cycles on the same documents. After adding the presets,
+resident code/constants end at `$3EFD`, with two bytes before the CRC table;
+resident BSS uses 1,534 bytes, with two before the ReadyOS reservation. A new
+resident/phase map is required; additional hot storage cannot be assumed.
+
+The existing linker regions have separately verified capacity: OBJECTS occupies
+437 of 512 bytes and DOCSTATE 901 of 1,024 bytes. These are candidate locations
+for a small cache descriptor and edit producer queue, subject to final ordering,
+alias and lifecycle checks. Their unused capacity is separate from ordinary
+BSS. The existing clear routine covers `$9A00–$9FFF`, and the lifecycle adapter
+copies that range. A tentative 17-byte descriptor and three 32-byte journal
+entries fit those capacities; no such allocation has been implemented.
+
+An alternative is to find one optional typed arena among the eight object
+slots and append edit records directly from the already loaded mutation
+overlays. This avoids a new resident ring, at the cost of bounded checked DMA
+on edits. Allocation failure must only invalidate disposable cache data.
+Neither option can use `se_r_revision` alone as a universal edit ticket: current
+hot edits advance it, while history/splice publication can advance document
+generation instead. Audit every publication and representation-only flush
+before choosing the observer ABI.
 
 Checks belong at ownership/transaction entry, actual yield/resume boundaries,
 resource changes and publication. Work under a still-valid, non-yielding lease

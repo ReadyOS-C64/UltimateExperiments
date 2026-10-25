@@ -4,6 +4,7 @@
 .setcpu "6502"
 .macpack longbranch
 .include "style/api.inc"
+.include "render/presentation.inc"
 .include "supermark/api.inc"
 .include "document/math24.inc"
 .include "tui/theme.inc"
@@ -243,6 +244,9 @@ block_event:
 .ifdef SE_STYLE_LEXICAL
     cpx #SM_CODE_LINE
     bne :+
+    lda se_render_caps
+    and #RENDER_CODE_COLOR
+    beq :+
     lda #6
     sta st_resume
 :

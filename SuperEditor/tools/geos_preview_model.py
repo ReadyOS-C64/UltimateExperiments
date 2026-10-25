@@ -153,10 +153,11 @@ def _events(data):
     return events
 
 
-def _inline(data,event):
+def _inline(data,event,*,code_coloring=True):
     a,b,body=(event[k] for k in ('start','end','body'))
     hidden=set();styles={};roles={};exclusive=set()
     if event['kind']==5:
+        if not code_coloring:return hidden,styles,roles
         for start,end,role in lex(data[a:b],event['language'],start=a):
             for at in range(start,end):roles[at]=role
         return hidden,styles,roles
@@ -186,7 +187,7 @@ def with_chrome(bitmap,attrs,matrix,colors,native):
     return bytes(bits),bytes(attributes)
 
 
-def render(data,settings,*,catalog=None,native=None,top=0,keep_list_prefix=True,chrome=None):
+def render(data,settings,*,catalog=None,native=None,top=0,keep_list_prefix=True,chrome=None,code_coloring=True):
     """Character-wrap320, aligned bands16..192, exact canonical bottom/anchors.
 
     Heading/region title prefixes and closed inline markers disappear. List
@@ -222,7 +223,7 @@ def render(data,settings,*,catalog=None,native=None,top=0,keep_list_prefix=True,
             cf=fonts.get(ps[7]);baseline=max(baseline,cf.baseline);descent=max(descent,cf.height-cf.baseline)
         height=(baseline+descent+7)//8*8
         if not start_row(position,height,baseline,pindex):full=True;break
-        x=0;claimed=set();hidden,styles,roles=_inline(data,event)
+        x=0;claimed=set();hidden,styles,roles=_inline(data,event,code_coloring=code_coloring)
         if kind==3 and keep_list_prefix:visible_start=position
         else:visible_start=max(position,body)
         position=visible_start

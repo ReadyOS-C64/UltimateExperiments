@@ -1,3 +1,4 @@
+.include "render/presentation.inc"
 .import se_e_target,se_e_command
 ; C33 retained-input narrow caret transaction. No resident/ZP state.
 .setcpu "6502"
@@ -753,7 +754,7 @@ bits:.byte 1,2,4,8,16,32,64,128
 ; Pure source-grid layout admission, moved verbatim from resident preflight.
 ; Called only after resident se_ef_prepare; no buffer/phase/C nesting.
 se_grid_plan:
- lda se_ef_valid
+ jsr se_ef_visible
  beq @ordinary
  lda se_l_valid
  beq @start

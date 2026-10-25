@@ -1,3 +1,4 @@
+.include "render/presentation.inc"
 ; C11-only fold projection. Persistent ends/bits publish with se_l_valid;
 ; foundation remains in owner3 phase until normal scoped navigation cleanup.
 ; se_l_index:0plain,1claim,2topquery,3CRquery,4scan,5CRready.
@@ -13,13 +14,13 @@ layout_fold_init:
     sta se_ef_projection_generation,x
     dex
     bpl @bind
-    lda se_ef_valid
+    jsr se_ef_visible
     jeq layout_fold_ready
     inc se_l_index
 layout_fold_claim:
     lda se_f_owner
     jne layout_fold_pending ;never inspect or overwrite a foreign phase
-    lda se_ef_valid
+    jsr se_ef_visible
     jeq changed
     jsr se_ef_key_match
     jcs return
@@ -88,7 +89,7 @@ layout_fold_resume:
     lda se_f_owner
     cmp #3
     jne changed
-    lda se_ef_valid
+    jsr se_ef_visible
     jeq changed
     ldx #1
 @generation:

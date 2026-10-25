@@ -1,3 +1,4 @@
+.include "render/presentation.inc"
 ; Resident published-row summary query shared by R1 and C16. No overlay call.
 .setcpu "6502"
 .macpack longbranch
@@ -13,7 +14,7 @@ se_ef_summary:
     cmp #22
     jcs ordinary
     tax
-    lda se_ef_valid
+    jsr se_ef_visible
     jeq ordinary
     txa
     and #7

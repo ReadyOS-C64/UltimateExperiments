@@ -319,11 +319,13 @@ hot-test: $(HOT_ASSETS)
 SETTINGS_PYTHON ?= $(if $(wildcard /opt/homebrew/bin/python3),/opt/homebrew/bin/python3,$(PYTHON))
 build/editor-settings/editor-font-catalog.bin: build/editor-settings/editor-defaults.bin
 	@test -f $@
-build/editor-settings/editor-defaults.bin: build/geos-font-catalog/catalog.json config/editor-defaults.toml tools/editor_settings.py src/render/geos/settings.inc assets/fonts/generated/bsw9-widths.bin assets/fonts/generated/native8.bin
+build/editor-settings/editor-defaults.bin: build/geos-font-catalog/catalog.json config/editor-defaults.toml tools/editor_settings.py tools/presentation_defaults.py src/render/geos/settings.inc assets/fonts/generated/bsw9-widths.bin assets/fonts/generated/native8.bin
 	$(SETTINGS_PYTHON) tools/editor_settings.py --out-dir build/editor-settings
-build/editor/startup.o: build/editor-settings/editor-defaults.bin src/render/geos/settings.inc
+build/editor-settings/presentation-defaults.inc: config/editor-defaults.toml tools/presentation_defaults.py tools/editor_settings.py src/render/presentation.inc build/geos-font-catalog/catalog.json assets/fonts/generated/bsw9-widths.bin assets/fonts/generated/native8.bin
+	$(SETTINGS_PYTHON) tools/presentation_defaults.py --out-dir build/editor-settings
+build/editor/startup.o: build/editor-settings/editor-defaults.bin src/render/geos/settings.inc src/render/presentation.inc build/editor-settings/presentation-defaults.inc
 
-EDITOR_OBJ = build/editor/main.o build/editor/state.o build/editor/startup.o build/editor/commands.o build/view/source.o build/nav/state.o build/nav/dispatch.o build/nav/invalidate.o build/editor_fold/dispatch.o build/geos-resident/dispatch.o
+EDITOR_OBJ = build/editor/main.o build/editor/state.o build/editor/startup.o build/editor/commands.o build/view/source.o build/nav/state.o build/nav/dispatch.o build/nav/invalidate.o build/editor_fold/dispatch.o build/geos-resident/dispatch.o build/editor/presentation.o
 DIAGNOSTICS_RESIDENT_OBJ = build/diagnostics-editor/state.o build/diagnostics-editor/cancel.o build/diagnostics-editor/dispatch.o
 DIAGNOSTICS_OVERLAY_OBJ = build/diagnostics-editor/snapshot.o build/diagnostics-editor/context.o build/diagnostics-editor/scan.o
 STYLE_RESIDENT_OBJ = build/style-prod/state.o build/style-prod/source-state.o build/style-prod/block-state.o build/style-prod/inline-state.o build/style-prod/lexer-state.o build/style-prod/lexical-state.o build/style-prod/display-state.o build/style-prod/render-state.o build/style-prod/source-cleanup.o build/style-prod/dispatch.o
@@ -392,7 +394,7 @@ build/overlays/window.o: src/overlays/hot-window.s src/render/api.inc src/overla
 build/overlays/text40.o: src/overlays/editor40.s src/overlays/render-nowrap.s src/overlays/render-visibility.s src/layout/api.inc src/render/api.inc src/editor/geometry.inc src/overlays/render-cache.s src/overlays/render-style.s src/editor/geometry.inc src/editor/api.inc src/editor/menu-data.inc build/editor-api.inc
 	$(CA65) -g -I src -I build -o $@ -l $(@:.o=.lst) $<
 build/overlays/menu40.o: src/overlays/editor-menu.s src/overlays/editor-settings-control.s build/editor-settings/editor-defaults.bin build/editor-settings/editor-font-catalog.bin src/overlays/editor-ui-draw.s src/diagnostics/ui.s src/diagnostics/api.inc src/editor/geometry.inc src/editor/api.inc src/editor/menu-data.inc build/editor-api.inc
-	$(CA65) -g -I src -I build -o $@ -l $(@:.o=.lst) $<
+	$(CA65) -g -I src -I build -I build/editor-settings -o $@ -l $(@:.o=.lst) $<
 build/overlays/eedit.bin build/overlays/eplay.bin: build/overlays/%.bin: build/overlays/%.o cfg/overlay-c.cfg cfg/overlay-r.cfg
 	$(LD65) -C $(if $(filter text40,$*),cfg/overlay-r.cfg,cfg/overlay-c.cfg) -o $@ -m $(@:.bin=.map) -Ln $(@:.bin=.lbl) $<
 build/overlays/eedit.seo: build/overlays/eedit.bin tools/overlays.py
@@ -1076,7 +1078,7 @@ build/geos-prod/typing/%.o: src/render/geos/typing/%.s build/geos-prod/editor-ap
 	mkdir -p $(dir $@)
 	$(CA65) -g -I build/geos-prod -I src -o $@ -l $(@:.o=.lst) $<
 # R30 is a compact supervisor; C32 owns the bounded plain/styled transaction.
-STYLE_TYPING_SRC=$(wildcard src/render/geos/style-typing/* src/render/geos/typing/*.inc) assets/fonts/generated/bsw9-widths.bin src/render/geos/editor.inc src/render/geos/font-store.inc src/render/geos/typing/transfer.s src/render/geos/typing/status-normal.s src/render/geos/typing/status-raster.s src/render/geos/typing/guard.inc src/render/geos/typing/certificate.inc
+STYLE_TYPING_SRC=$(wildcard src/render/geos/style-typing/* src/render/geos/typing/*.inc) src/render/presentation.inc assets/fonts/generated/bsw9-widths.bin src/render/geos/editor.inc src/render/geos/font-store.inc src/render/geos/typing/transfer.s src/render/geos/typing/status-normal.s src/render/geos/typing/status-raster.s src/render/geos/typing/guard.inc src/render/geos/typing/certificate.inc
 build/geos-prod/style-typing/worker.seo: $(STYLE_TYPING_SRC) build/editor.prg build/editor-report.json build/editor.lbl tools/module_bindings.py tools/bindings.py tools/overlays.py
 	$(PYTHON) src/render/geos/style-typing/build.py build/geos-prod/style-typing .
 build/geos-prod/style-typing/stage.seo: build/geos-prod/style-typing/worker.seo
@@ -1101,7 +1103,7 @@ build/geos-prod/semantic.o: src/render/geos/preview-prepare.inc src/render/geos/
 
 # R31 code typing uses a separately sealed C31 data capsule. The code payload
 # is linked to run at5000; only R31's checked primer may execute that window.
-CODE_TYPING_SRC=$(wildcard src/render/geos/code-typing/*) src/supermark/lexer.s src/supermark/api.inc src/render/geos/typing/status-normal.s src/render/geos/typing/status-raster.s
+CODE_TYPING_SRC=$(wildcard src/render/geos/code-typing/*) src/render/presentation.inc src/supermark/lexer.s src/supermark/api.inc src/render/geos/typing/status-normal.s src/render/geos/typing/status-raster.s
 build/geos-prod/code-typing/worker.seo: $(CODE_TYPING_SRC) build/editor.prg build/editor-report.json build/editor.lbl tools/module_bindings.py tools/bindings.py tools/overlays.py
 	mkdir -p build/geos-prod/code-typing
 	$(PYTHON) src/render/geos/code-typing/build-worker.py build/geos-prod/code-typing .
@@ -1176,3 +1178,10 @@ build/geos-prod/checkpoint-outgoing.o: src/render/geos/checkpoint/outgoing.s src
 	mkdir -p $(dir $@)
 	$(CA65) -g -I build/geos-prod -I src -o $@ $<
 build/geos-prod/source-line.o: src/render/geos/source-certificate.inc src/render/geos/source-certificate.s src/render/geos/certificate-consumer.s src/render/geos/style-window.s
+
+# Runtime parsing capabilities are independent of the SES64 font ABI.
+build/overlays/menu40.o: build/editor-settings/presentation-defaults.inc src/render/presentation.inc
+build/overlays/popups.o build/overlays/text40.o build/grid-prod/editor.o build/overlays/layout.o build/layout/dispatch.o build/editor_fold/summary.o build/editor_fold/dispatch.o build/editor/presentation.o build/style-prod/dispatch.o build/style-prod/plan.o build/geos-prod/cache.o build/geos-prod/cache-warm.o build/geos-prod/cache-paint.o: src/render/presentation.inc
+build/fold-prod/coordinator.o: src/render/presentation.inc
+build/geos-prod/semantic-lex.o build/geos-prod/preview.o: src/render/presentation.inc
+build/geos-prod/page.o build/geos-prod/navigation.o: src/render/geos/plain-context.inc src/render/presentation.inc

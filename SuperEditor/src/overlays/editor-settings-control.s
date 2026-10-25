@@ -50,6 +50,8 @@ settings_key:
     jsr fold_key
     cmp #'r'
     jeq settings_reset
+    cmp #'h'
+    jeq settings_presentation_cycle
     cmp #'s'
     beq @copy
     cmp #'f'
@@ -202,6 +204,10 @@ settings_reset:
     sta SC,x
     dex
     bpl @copy
+    jsr settings_validate
+    jcs settings_reject
+    lda #SE_PRESENTATION_DEFAULT
+    jsr settings_presentation
 settings_publish:
     jsr settings_validate
     jcs settings_reject
@@ -218,6 +224,53 @@ settings_publish:
     sta se_st_request
     sta se_gc_valid
     lda #1
+    sta se_e_redraw
+    clc
+    rts
+; No FILE/build/GEOS phase may be interpreted here. Public input already
+; cancels owner2 via se_style_input before entering C7; direct foreign calls
+; refuse without touching any phase/certificate bytes.
+settings_presentation_cycle:
+    lda se_render_caps
+    beq @markdown
+    cmp #1
+    beq @full
+    lda #0
+    beq settings_presentation
+@markdown:
+    lda #1
+    bne settings_presentation
+@full:
+    lda #3
+settings_presentation:
+    ldx se_f_owner
+    jne settings_reject
+    cmp #2
+    beq settings_reject
+    cmp #4
+    bcs settings_reject
+    pha
+    jsr se_style_input
+    lda #0
+    sta se_l_valid
+    sta se_r_valid
+    sta se_st_valid
+    sta se_st_request
+    sta se_st_cp_valid
+    sta se_ef_fold_rows
+    sta se_ef_fold_rows+1
+    sta se_ef_fold_rows+2
+    sta se_gc_width
+    sta se_gc_valid
+    sta se_gc_valid+1
+    sta se_gc_valid+2
+    sta GCC_VALID
+    sta GEC_VALID
+    sta GTC_VALID
+    pla
+    sta se_render_caps ;all old derived authorities revoked before publication
+    lda #1
+    sta se_l_need_wrap
     sta se_e_redraw
     clc
     rts

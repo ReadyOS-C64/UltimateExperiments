@@ -2,6 +2,7 @@
 .setcpu "6502"
 .macpack longbranch
 .include "editor/api.inc"
+.include "render/presentation.inc"
 .import se_overlay_frame,se_overlay_call,se_ef_active,se_ef_operation
 .import se_ec_result,se_ec_carry,se_ef_emergency
 .import se_ef_valid,se_ef_key_match
@@ -48,6 +49,11 @@ failed:
 ; projection displays the unchanged canonical bytes as ordinary source rows.
 ; This guard is safe while a modal dialog owns the shared phase workspace.
 se_ef_prepare:
+    lda se_render_caps
+    bne :+
+    clc ;retain stored choices; Plain does no automatic parse/rebuild
+    rts
+:
     jsr se_ef_modal
     bcs failed
     lda se_f_owner

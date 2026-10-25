@@ -1,3 +1,4 @@
+.include "render/presentation.inc"
 grid_source:
     jsr grid_preflight
     jcs grid_return
@@ -235,7 +236,7 @@ grid_return:
 ; A folded opener keeps every source glyph. Its CR/EOF blank carries the
 ; inverse '+' summary marker; selection/caret flags are applied by the caller.
 grid_fold_marker:
-    lda se_ef_valid
+    jsr se_ef_visible
     beq @done
     CMP24 g_pos,g_end
     bne @done

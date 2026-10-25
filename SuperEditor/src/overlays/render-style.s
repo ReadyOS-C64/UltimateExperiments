@@ -1,3 +1,4 @@
+.include "render/presentation.inc"
 ; R1-private source-color plan consumer. No phase-union or source-buffer reads.
 ; All capability/context comparisons precede cache admission and pixel writes.
 .macro ST_COMPARE source,offset,count
@@ -14,6 +15,8 @@ same:
     bpl loop
 .endmacro
 style_context:
+    lda se_render_caps
+    beq @raw
     jsr style_damage
     jsr style_matches
     bcc @same
@@ -30,6 +33,10 @@ style_context:
     lda #1
     sta se_st_request
 @done:
+    rts
+@raw:
+    sta se_st_valid
+    sta se_st_request
     rts
 style_matches:
     ldy #0

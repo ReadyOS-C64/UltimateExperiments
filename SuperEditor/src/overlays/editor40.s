@@ -1,3 +1,4 @@
+.include "render/presentation.inc"
 .setcpu "6502"
 .macpack longbranch
 .include "editor-api.inc"
@@ -88,7 +89,7 @@ row:
     tax
     ; Next anchor is separate at the final visible row.
     jsr read_next
-    lda se_ef_valid
+    jsr se_ef_visible
     bne @fold_anchor
     ADD24 se_r_next,se_r_delta,se_r_next
 @fold_anchor:
@@ -144,7 +145,7 @@ pad:
     cmp #40
     bcc pad
 next_row:
-    lda se_ef_valid
+    jsr se_ef_visible
     beq :+
     COPY24 se_r_next,se_v_pos ;the next canonical anchor can skip hidden bytes
 :

@@ -6,6 +6,10 @@
 .include "search/api.inc"
 .include "document/math24.inc"
 .include "render/geos/settings.inc"
+.include "render/presentation.inc"
+.include "render/geos/edit-certificate.inc"
+.include "render/geos/typing/certificate.inc"
+.include "presentation-defaults.inc"
 .ifndef U_SETTINGS
 U_SETTINGS=8
 .endif
@@ -375,6 +379,12 @@ parse:
     rts
 @match:
     ldx se_v_menu_index
+    cpx #syntax_first
+    bcc @ordinary
+    lda syntax_caps-syntax_first,x
+    jsr settings_presentation
+    jmp close
+@ordinary:
     lda word_command,x
     sta se_e_command
     jmp close
@@ -481,9 +491,11 @@ find_text: .byte $46,$49,$4E,$44,$20
 goto_text: .byte $47,$4F,$54,$4F,$20
 heading_keys: .byte 'f','e','v','n','b','h'
 .include "editor/menu-data.inc"
-word_low: .byte <w0,<w1,<w2,<w3,<w4,<w5,<w6,<w7,<w8,<w9,<w10,<w11,<w12,<w13,<w14,<w15,<w16,<w17,<w18,<w19,<w20,<w21,<w22,<w23,<w24,<w25,<w26,<w27,<w28,<w29,<w30,<w31,<w32,<w33,<w34,<w35,<w36,<w37,<w38,<w39,<w40,<w41,<w42
-word_high: .byte >w0,>w1,>w2,>w3,>w4,>w5,>w6,>w7,>w8,>w9,>w10,>w11,>w12,>w13,>w14,>w15,>w16,>w17,>w18,>w19,>w20,>w21,>w22,>w23,>w24,>w25,>w26,>w27,>w28,>w29,>w30,>w31,>w32,>w33,>w34,>w35,>w36,>w37,>w38,>w39,>w40,>w41,>w42
-word_count=43
+word_low: .byte <w0,<w1,<w2,<w3,<w4,<w5,<w6,<w7,<w8,<w9,<w10,<w11,<w12,<w13,<w14,<w15,<w16,<w17,<w18,<w19,<w20,<w21,<w22,<w23,<w24,<w25,<w26,<w27,<w28,<w29,<w30,<w31,<w32,<w33,<w34,<w35,<w36,<w37,<w38,<w39,<w40,<w41,<w42,<w43,<w44,<w45,<w46,<w47
+word_high: .byte >w0,>w1,>w2,>w3,>w4,>w5,>w6,>w7,>w8,>w9,>w10,>w11,>w12,>w13,>w14,>w15,>w16,>w17,>w18,>w19,>w20,>w21,>w22,>w23,>w24,>w25,>w26,>w27,>w28,>w29,>w30,>w31,>w32,>w33,>w34,>w35,>w36,>w37,>w38,>w39,>w40,>w41,>w42,>w43,>w44,>w45,>w46,>w47
+syntax_first=43
+word_count=48
+syntax_caps: .byte 0,0,1,3,3
 word_command: .byte E_UNDO,E_REDO,E_HOME,E_END,E_TOP,E_BOTTOM,E_JBACK,E_JFORWARD,E_DELETE,E_HELP,E_MODE40,E_MODE60,E_MODE80,E_HIRES,E_OPEN,E_SAVE,E_SAVEAS,E_COPY,E_PASTE,E_UP,E_DOWN,E_PAGEUP,E_PAGEDOWN,E_WORDLEFT,E_WORDRIGHT,E_FINDNEXT,E_FINDPROMPT,E_GOTOPROMPT,E_MARK,E_CUT,E_CLEARUNDO,E_WRAP,E_WRAP_ON,E_WRAP_OFF,E_PANLEFT,E_PANRIGHT,E_DIAG,E_FOLD,E_COLLAPSEALL,E_EXPANDALL,E_SETTINGS,102,67
 w0: .asciiz "undo"
 w1: .asciiz "redo"
@@ -535,6 +547,11 @@ w39: .asciiz "unfold all"
 w40: .asciiz "settings"
 w41: .asciiz "preview"
 w42: .asciiz "source"
+w43: .asciiz "syntax plain"
+w44: .asciiz "syntax off"
+w45: .asciiz "syntax markdown"
+w46: .asciiz "syntax full"
+w47: .asciiz "syntax on"
 
 .include "overlays/editor-settings-control.s"
 

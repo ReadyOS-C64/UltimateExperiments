@@ -3,6 +3,7 @@
 .setcpu "6502"
 .macpack longbranch
 .include "editor-api.inc"
+.include "render/presentation.inc"
 .include "render/geos/preview.inc"
 .include "render/geos/preview-cache.inc"
 .include "render/geos/semantic.inc"
@@ -22,7 +23,7 @@ F=PP_GLYPH
 .export entry
 entry:
  lda se_overlay_frame
- jeq begin
+ beq begin
  lda se_f_owner
  cmp #4
  jne busy

@@ -69,4 +69,6 @@ def run(out,project,smoke=False):
  except BaseException:(out/'failure-ram.bin').write_bytes(f.read(0,65536));(out/'failure-reu.bin').write_bytes(f.reu());raise
  finally:f.close();g.close();h.close()
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--project',type=Path,default=DEFAULT);p.add_argument('--smoke',action='store_true');a=p.parse_args();out=ROOT/'build/geos-convergent-line-editor'/datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');out.mkdir(parents=True);print('RUN',out,flush=True);r=run(out,a.project.resolve(),a.smoke);print('RESULT',r['status'],len(r['cases']))
+ p=argparse.ArgumentParser();p.add_argument('--project',type=Path,default=DEFAULT);p.add_argument('--baseline',type=Path,help='compatible immutable comparison fixture; resident bindings must match');p.add_argument('--smoke',action='store_true');a=p.parse_args()
+ if a.baseline:BASE=a.baseline.resolve()
+ out=ROOT/'build/geos-convergent-line-editor'/datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');out.mkdir(parents=True);print('RUN',out,flush=True);r=run(out,a.project.resolve(),a.smoke);print('RESULT',r['status'],len(r['cases']))

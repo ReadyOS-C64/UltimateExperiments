@@ -1,6 +1,9 @@
 .setcpu "6502"
 .macpack longbranch
 .include "editor-api.inc"
+.include "render/presentation.inc"
+.include "render/geos/plain-context.inc"
+.global se_render_caps,se_ef_visible
 .include "render/geos/checkpoint/codec.inc"
 .include "render/geos/editor.inc"
 .include "render/geos/source-line.inc"
@@ -132,7 +135,7 @@ begin:
     sta ANCHOR,x
     dex
     bpl @anchor
-    lda se_ef_valid
+    jsr se_ef_visible
     beq begin_page
     COPY24 ANCHOR,GFQ_QUERY
     lda #0
@@ -174,6 +177,8 @@ caret_step:
     sta FAST_PAINT
     jmp finish
 edit_attempt:
+    lda se_render_caps
+    beq full_page ;raw source has no parser certificate for R28
     lda #GEX_ADMIT
     jsr edit_call
     jcs failed
@@ -231,6 +236,13 @@ next_line:
     sta GP_RECORD,x
     dex
     bpl @clear
+    lda se_render_caps
+    bne @parsed_context
+    GS_SET_RAW_CONTEXT
+    lda #0
+    sta FOLD_PENDING ;C23 uses the same phase suffix; no fold query ran here
+    jmp prepare_line
+@parsed_context:
     lda FAST_PAINT
     cmp #2
     jne @classify
@@ -311,7 +323,7 @@ classified:
     jsr gsc_publish
     lda #0
     sta FOLD_PENDING
-    lda se_ef_valid
+    jsr se_ef_visible
     beq prepare_line
     COPY24 GSEM_FRAME+GSEM_END,GFQ_QUERY
     CMP24 GFQ_QUERY,se_v_length
@@ -583,6 +595,9 @@ bytes:
     jcs failed
     lda GP_RECORD+GPR_KIND
     beq @roles
+    lda se_render_caps
+    and #RENDER_CODE_COLOR
+    beq @plain_roles
     COPY24 GP_RECORD+GPR_FIRST,GSEM_FRAME+GSEM_QUERY
     lda GSEM_FRAME+GSEM_LANG
     sta GSEM_FRAME+GSEM_LANGUAGE

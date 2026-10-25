@@ -7,6 +7,10 @@
 .include "history/api.inc"
 .include "hot/api.inc"
 .include "render/geos/settings.inc"
+.include "render/presentation.inc"
+.include "../../build/editor-settings/presentation-defaults.inc"
+.export se_presentation_default
+se_presentation_default=SE_PRESENTATION_DEFAULT
 .import se_overlay_call,se_overlay_frame
 .import se_clip_init
 .import se_reu_provider_init,se_overlay_init,se_overlay_read,se_overlay_import,se_reu_banks,se_print
@@ -32,6 +36,8 @@ se_editor_startup:
     sta $CFE8
 .endif
 
+    lda #SE_PRESENTATION_DEFAULT
+    sta se_render_caps
     ; Session settings initialize from host build defaults, never a disk config.
     ldx #SES_SIZE-1
 @settings:
@@ -238,7 +244,7 @@ sample:
     .byte "      rts",13
     .byte ":::",13,13
     .byte "F1 menus   F7 typed commands",13
-    .byte "Try undo, redo, home, end, top, bottom.",13
+    .byte "Try syntax plain or syntax full.",13
     .byte "Source view. F1 File opens and saves.",13
 sample_end:
 .ifdef EDITOR_MANAGED_CODE

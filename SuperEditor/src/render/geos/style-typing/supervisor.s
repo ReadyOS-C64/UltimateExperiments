@@ -1,6 +1,7 @@
 ; Strictstage borrower and stable helperjump ABI. No newresident state.
 .setcpu "6502"
 .include "editor-api.inc"
+.include "render/presentation.inc"
 .include "render/geos/edit-certificate.inc"
 .include "render/geos/typing/certificate.inc"
 .import se_tcb_two_check
@@ -27,6 +28,8 @@ root:
  lda se_overlay_frame
  cmp #3
  bne bad
+ lda se_render_caps
+ beq miss ;Plain has no semantic/style certificate for the staged transaction
  lda se_f_owner
  bne miss
  lda GEC_VALID

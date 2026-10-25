@@ -38,6 +38,13 @@ Folding never removes source bytes or changes the saved file format.
 
 ## Session settings
 
+F7 `syntax plain`, `syntax markdown`, and `syntax full` choose the source parsing
+preset. Settings H cycles the same choices. Plain source uses literal BSW/9
+without semantic parsing; formatted preview remains an explicit formatting
+consumer. Preview code-token coloring is enabled only in Full. Stored fold
+choices survive switching to expanded Plain source. See
+[parsing presets](REU_CACHE_REDESIGN.md).
+
 F7 `settings` opens the dialog in any display mode. Changes affect formatted
 preview; editable GEOS source continues to use its established BSW/9 and native8
 presentation. Source text, selection, undo and saved files do not contain settings.

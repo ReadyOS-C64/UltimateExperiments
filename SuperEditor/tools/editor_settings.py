@@ -143,8 +143,12 @@ def validate(settings,catalog=None):
 
 def from_mapping(mapping,catalog=None):
     faces,keys,names=_catalog(catalog)
-    if type(mapping) is not dict or set(mapping)!={'schema',*PROFILES}:
-        raise SettingsError('TOML needs schema and all8 named profiles, with no unknown keys')
+    if type(mapping) is not dict or set(mapping)-{'editor'}!={'schema',*PROFILES}:
+        raise SettingsError('TOML needs schema, all8 named profiles and optional editor settings, with no unknown keys')
+    if 'editor' in mapping:
+        from presentation_defaults import validate_editor
+        try:validate_editor(mapping['editor'])
+        except ValueError as exc:raise SettingsError(str(exc)) from exc
     if type(mapping['schema']) is not int or mapping['schema']!=VERSION:
         raise SettingsError('unsupported settings schema')
     result=[]
