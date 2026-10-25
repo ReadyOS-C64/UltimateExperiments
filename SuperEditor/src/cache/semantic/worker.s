@@ -50,13 +50,21 @@
  bpl *-9
  lda #0
 .endmacro
+.macro BSC_OWNER
+.ifndef BSC_SELECTOR_OWNS_OWNER
+ jsr owner
+ jcs return
+.endif
+.endmacro
 .segment "BSC_CODE"
+.ifndef BSC_SELECTOR_OWNS_OWNER
 owner:
  lda se_f_owner
  cmp #4
  bne busy
  clc
  rts
+.endif
 busy:lda #BSC_BUSY
  sec
  rts
@@ -92,28 +100,27 @@ authority:
 @allowed:
  CP BSC_AUTH,se_object_id,5
  jsr se_object_validate
- jcs return
+ bcs return
  lda object_owner,x
  cmp #BC_OBJECT_TYPE
- jne changed
+ bne changed
  clc
 return:rts
 full_guard:
  jsr authority
- jcs return
+ bcs return
  lda #1
  jmp reader
 se_bsc_begin:
- jsr owner
- jcs return
+ BSC_OWNER
  lda BSC_F+BCF_ABI
  cmp #BSC_ABI
- jne bad
+ bne bad
  lda BSC_F+BCF_STATE
  ora BSC_F+BCF_FLAGS
- jne busy
+ bne busy
  lda BSC_F+BCF_CAPS
- jeq miss
+ beq miss
  cmp #1
  beq :+
  cmp #3
@@ -129,16 +136,15 @@ se_bsc_begin:
  sta BSC_F+BCF_ERROR
  CP BSC_F+BCF_ARENA,BSC_AUTH,13
  jsr authority
- jcs return
+ bcs return
  lda #0
  ldx #85
 @reader:
  sta BSC_READER,x
  dex
  bpl @reader
- lda #0
  jsr reader
- jcs return
+ bcs return
  lda #BSC_READER_LIVE
  sta BSC_F+BCF_FLAGS
  CP BSC_READER+10,BSC_LENGTH,3
@@ -153,8 +159,7 @@ miss:lda #2
  clc
  rts
 se_bsc_cancel:
- jsr owner
- jcs return
+ BSC_OWNER
  lda BSC_F+BCF_ABI
  cmp #BSC_ABI
  jne bad
@@ -162,7 +167,6 @@ se_bsc_cancel:
  cmp #BSC_READER_LIVE+1
  jcs bad
  jsr release
- lda #0
  sta BSC_F+BCF_ERROR
  clc
  rts
@@ -187,8 +191,7 @@ failed:
  sec
  rts
 se_bsc_ack:
- jsr owner
- jcs return
+ BSC_OWNER
  lda BSC_F+BCF_ABI
  cmp #BSC_ABI
  jne bad
@@ -196,15 +199,14 @@ se_bsc_ack:
  cmp #BSC_READER_LIVE
  jne bad
  lda BSC_F+BCF_READY
- jeq state_error
+ beq state_error
  jsr full_guard
- jcs failed
+ bcs failed
  lda #0
  sta BSC_F+BCF_READY
  jmp pending
 se_bsc_step:
- jsr owner
- jcs return
+ BSC_OWNER
  lda BSC_F+BCF_ABI
  cmp #BSC_ABI
  jne bad
@@ -212,17 +214,17 @@ se_bsc_step:
  cmp #BSC_READER_LIVE
  jne bad
  lda BSC_F+BCF_STATE
- jeq state_error
+ beq state_error
  jsr authority
- jcs failed
+ bcs failed
  ; The caller owns a pending IO packet until ACK. No R14/arena IO reuse.
  lda BSC_F+BCF_READY
  jne pending
  jsr full_guard
- jcs failed
+ bcs failed
  lda BSC_F+BCF_STATE
  cmp #BSC_BLOCK
- jeq block
+ beq block
  cmp #BSC_BODY
  jeq body
  cmp #BSC_FINISH
@@ -288,7 +290,7 @@ block:
  sta BSC_AT_EOF
  jsr se_sm_finish
  lda se_sm_ready
- jne record
+ bne record
  ; Explicit layout EOF sentinel, never an invented actual parser event.
  lda #1
  sta BSC_TERMINAL
@@ -300,8 +302,13 @@ block:
  CP BSC_LINES,BSC_CR+4,3
  lda #8|2
  sta BSC_CR+2
- CP BSC_CARRY,BSC_CR+28,6
- CP BSC_CARRY,BSC_CR+34,6
+ ldx #5
+@carry:
+ lda BSC_CARRY,x
+ sta BSC_CR+28,x
+ sta BSC_CR+34,x
+ dex
+ bpl @carry
  jmp record_complete
 clear_record:
  lda #0
@@ -317,11 +324,12 @@ clear_record:
  sta BSC_CR+63
  sta BSC_CR+65
  sta BSC_CR+67
- CP BSC_F+BCF_TICKET,BSC_CR+12,4
- CP BSC_F+BCF_TICKET,BSC_CR+59,4
- lda #$FF
  ldx #3
 @nil:
+ lda BSC_F+BCF_TICKET,x
+ sta BSC_CR+12,x
+ sta BSC_CR+59,x
+ lda #$FF
  sta BSC_CR+40,x
  sta BSC_CR+47,x
  sta BSC_CR+54,x
@@ -405,15 +413,15 @@ record:
  jmp pending
 body:
  C24 BSC_CURSOR,BSC_END
- jeq inline_finish
- jcs changed_error
+ beq inline_finish
+ bcs changed_error
  lda BSC_INDEX
  cmp BSC_USED
  bcc @feed
  jsr read
  jcs failed
  lda BSC_USED
- jeq changed_error
+ beq changed_error
 @feed:
  ldx BSC_INDEX
  lda BSC_PACKET,x
@@ -422,9 +430,9 @@ body:
  INC24 BSC_CURSOR
  inc BSC_INDEX
  lda se_si_ready
- jne inline_event
+ bne inline_event
  C24 BSC_CURSOR,BSC_END
- jeq inline_finish
+ beq inline_finish
  lda BSC_INDEX
  cmp BSC_USED
  bne @feed
@@ -434,7 +442,7 @@ inline_finish:
  sta BSC_F+BCF_STATE
  jsr se_si_finish
  lda se_si_ready
- jne inline_event
+ bne inline_event
  jmp record_complete
 changed_error:
  lda #BSC_CHANGED
@@ -581,7 +589,6 @@ next_line:
  jmp pending
 done:
  jsr release
- lda #0
  clc
  rts
 authority_offsets:
