@@ -1,0 +1,172 @@
+--- a/src/render/geos/literal-byte/row.s
++++ b/src/render/geos/literal-byte/row.s
+@@ -40,6 +40,7 @@
+ covtail=P+35
+ fragment=P+36
+ subtotal=P+37
++attrbase=P+30 ;validation ending is dead before resolve
+ .segment "CODE"
+ se_geos_row:
+     cpx #<F
+@@ -517,7 +518,118 @@
+ @done:
+     rts
+ .include "render/geos/row-validate.s"
+-.include "render/geos/row-resolve.s"
++resolve:
++    lda F+GR_TOP
++    cmp F+GR_BOTTOM
++    jeq complete
++    ; Derive the one attribute-row base from the already certified bitmap
++    ; rowbase: $4000 + (($6000 + row*320 - $6000) >> 3).
++    lda rowbase
++    sta attrbase
++    lda rowbase+1
++    and #$1F
++    sta attrbase+1
++    ldx #3
++@attribute_shift:
++    lsr attrbase+1
++    ror attrbase
++    dex
++    bne @attribute_shift
++    lda attrbase+1
++    ora #$40
++    sta attrbase+1
++    lda #0
++    sta tile
++@tile:
++    lda tile
++    asl
++    asl
++    asl
++    sta pixel
++    lda tile
++    lsr
++    lsr
++    lsr
++    lsr
++    lsr
++    sta pixel+1
++    jsr clipped_right
++    jcs @next
++    clc
++    lda pixel
++    adc #8
++    sta pixel
++    bcc :+
++    inc pixel+1
++:
++    jsr clipped_left
++    jcc @next
++    jeq @next
++    lda #0
++    sta role
++    sta best
++    sta weight
++    sta rank
++    jsr histogram_address
++    ldy #0
++@role:
++    lda (se_gg_context),y
++    cmp weight
++    bcc @skip
++    bne @choose
++    cmp #0
++    beq @skip
++    lda priorities,y
++    cmp rank
++    bcc @skip
++    beq @skip
++@choose:
++    lda (se_gg_context),y
++    sta weight
++    lda priorities,y
++    sta rank
++    sty best
++@skip:
++    iny
++    cpy #14
++    bcc @role
++    lda F+GR_PALETTE
++    sta se_gg_pointer
++    lda F+GR_PALETTE+1
++    sta se_gg_pointer+1
++    ldy best
++    lda (se_gg_pointer),y
++    asl
++    asl
++    asl
++    asl
++    ora F+GR_BACKGROUND
++    pha
++    lda attrbase
++    clc
++    adc tile
++    sta se_gg_pointer
++    lda attrbase+1
++    adc #0
++    sta se_gg_pointer+1
++    pla
++    ldy #0
++    sta (se_gg_pointer),y
++@next:
++    inc tile
++    lda tile
++    cmp #40
++    jcc @tile
++complete:
++    lda #1
++    sta F+GR_VALID
++    lda #0
++    clc
++    rts
++.segment "RODATA"
++priorities: .byte 0,6,7,8,0,0,0,5,3,4,1,5,2,0
++.segment "CODE"
++
+ .segment "RODATA"
+ popcount: .byte 0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4
+ masks: .byte $80,$40,$20,$10,8,4,2,1
+--- a/src/render/geos/literal-byte/glyph.s
++++ b/src/render/geos/literal-byte/glyph.s
+@@ -2,6 +2,9 @@
+ .setcpu "6502"
+ .macpack longbranch
+ .include "render/geos/api.inc"
++.include "render/geos/row.inc"
++; Private R21 only: do not raster glyph rows outside this physical strip.
++STRIP_ORIGIN=GEOS_ROW_FRAME+GR_PRIVATE+3
+ .import gg_pointer,gg_save_pointer,gg_format
+ .export se_geos_glyph
+ .segment "CODE"
+@@ -136,6 +139,21 @@
+     ldy #GG_ROW
+     sta (se_gg_context),y
+ next_row:
++    ldy #GG_ROW
++    lda STRIP_ORIGIN
++    clc
++    adc (se_gg_context),y
++    ldx STRIP_ORIGIN
++    bpl @positive
++    bcc @skip_invisible
++@positive:
++    cmp GEOS_ROW_FRAME+GR_TOP
++    bcc @skip_invisible
++    cmp GEOS_ROW_FRAME+GR_BOTTOM
++    bcc @visible
++@skip_invisible:
++    jmp advance_row
++@visible:
+     lda #0
+     ldy #GG_WORD_HI
+     sta (se_gg_context),y
+@@ -285,6 +303,7 @@
+     lda (se_gg_context),y
+     ldy #1
+     sta (se_gg_pointer),y
++advance_row:
+     ldy #GG_KIND
+     lda (se_gg_context),y
+     bne @native_advance

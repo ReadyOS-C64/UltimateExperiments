@@ -1,0 +1,133 @@
+--- a/src/render/geos/style-typing/transaction.s
++++ b/src/render/geos/style-typing/transaction.s
+@@ -637,33 +637,114 @@
+  ora #$40
+  sta screen_ptr
+  inc screen_ptr+1
+-: ldx #40
+- ldy #0
+-@byte:
++:
+  lda COPY
+- bne @scatter
++ jne @scatter
++ ldx #5
++@gather_block:
++ ldy #0
+  lda (screen_ptr),y
+- sta (text_ptr),y
+- jmp @advance
+-@scatter:
+- lda (text_ptr),y
+- sta (screen_ptr),y
+-@advance:
+- inc text_ptr
+- bne :+
++ ldy #0
++ sta (text_ptr),y
++ ldy #8
++ lda (screen_ptr),y
++ ldy #1
++ sta (text_ptr),y
++ ldy #16
++ lda (screen_ptr),y
++ ldy #2
++ sta (text_ptr),y
++ ldy #24
++ lda (screen_ptr),y
++ ldy #3
++ sta (text_ptr),y
++ ldy #32
++ lda (screen_ptr),y
++ ldy #4
++ sta (text_ptr),y
++ ldy #40
++ lda (screen_ptr),y
++ ldy #5
++ sta (text_ptr),y
++ ldy #48
++ lda (screen_ptr),y
++ ldy #6
++ sta (text_ptr),y
++ ldy #56
++ lda (screen_ptr),y
++ ldy #7
++ sta (text_ptr),y
++ clc
++ lda text_ptr
++ adc #8
++ sta text_ptr
++ bcc :+
+  inc text_ptr+1
+ : clc
+  lda screen_ptr
+- adc #8
++ adc #64
+  sta screen_ptr
+  bcc :+
+  inc screen_ptr+1
+-: dex
+- bne @byte
++:
++ dex
++ bne @gather_block
++ jmp @next_line
++@scatter:
++ ldx #5
++@scatter_block:
++ ldy #0
++ lda (text_ptr),y
++ ldy #0
++ sta (screen_ptr),y
++ ldy #1
++ lda (text_ptr),y
++ ldy #8
++ sta (screen_ptr),y
++ ldy #2
++ lda (text_ptr),y
++ ldy #16
++ sta (screen_ptr),y
++ ldy #3
++ lda (text_ptr),y
++ ldy #24
++ sta (screen_ptr),y
++ ldy #4
++ lda (text_ptr),y
++ ldy #32
++ sta (screen_ptr),y
++ ldy #5
++ lda (text_ptr),y
++ ldy #40
++ sta (screen_ptr),y
++ ldy #6
++ lda (text_ptr),y
++ ldy #48
++ sta (screen_ptr),y
++ ldy #7
++ lda (text_ptr),y
++ ldy #56
++ sta (screen_ptr),y
++ clc
++ lda text_ptr
++ adc #8
++ sta text_ptr
++ bcc :+
++ inc text_ptr+1
++: clc
++ lda screen_ptr
++ adc #64
++ sta screen_ptr
++ bcc :+
++ inc screen_ptr+1
++:
++ dex
++ bne @scatter_block
++@next_line:
+  inc LINE
+  lda LINE
+  cmp #9
+- bcc @line
++ jcc @line
+  rts
+ .segment "RODATA"
+ GTF_INCLUDE_GLYPH_CRC=1

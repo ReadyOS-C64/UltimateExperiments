@@ -1,0 +1,13 @@
+"""Measure alternate same-imageR30 placement, without changing any runtime caller."""
+from pathlib import Path
+import sys,importlib.util,subprocess,json
+ROOT=Path(__file__).resolve().parents[4];D=Path(__file__).resolve().parent
+
+def build(out,base):
+ spec=importlib.util.spec_from_file_location('production_style_build',ROOT/'src/render/geos/style-typing/build.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);images,budget=m.build(out/'control',base);o=out/'control';assert images['worker']==(base/'build/overlays/gtype.seo').read_bytes(),'exactimmutablecontrolR30';s=(ROOT/'src/render/geos/style-typing/supervisor.s').read_text();s=s.replace('.import se_f_owner,se_gct_stage','.import se_tcb_check\n.import se_f_owner,se_gct_stage');s=s.replace(' jmp se_gcc_status\nroot:',' jmp se_gcc_status\n jmp se_tcb_check ;NEW privatevectorA032, oldsixvectorsunchanged\nroot:');(out/'supervisor.s').write_text(s)
+ def run(a):subprocess.run(list(map(str,a)),cwd=ROOT,check=True)
+ for name,path in [('supervisor',out/'supervisor.s'),('bound',D/'bound.s')]:run(['ca65','-g','-I',o,'-I',D,'-I',ROOT/'src','-o',out/(name+'.o'),path])
+ objects=[out/'supervisor.o']+[o/(n+'.o')for n in ['stage-guard','guard','transfer','status-normal','status-raster']]+[out/'bound.o'];run([sys.executable,ROOT/'tools/module_bindings.py','--report',base/'build/editor-report.json','--output',out/'aliases.s',*objects]);run(['ca65','-g','-o',out/'aliases.o',out/'aliases.s']);run(['ld65','-C',ROOT/'src/render/geos/style-typing/supervisor.cfg','-o',out/'worker.bin','-Ln',out/'worker.lbl',*objects,out/'aliases.o']);payload=(out/'worker.bin').read_bytes();assert all(payload[v]==0x4c for v in range(0x20,0x35,3)),'sixoldJMPaddresses+newvector';assert payload[0x32]==0x4c
+ sp=importlib.util.spec_from_file_location('bound_component',D/'build.py');c=importlib.util.module_from_spec(sp);sp.loader.exec_module(c);_,_,component_budget=c.build(out/'component',base)
+ result=dict(status='assembled-only-placement',original_R30=budget['R30'],R30_with_bound_and_new_vector=len(payload),new_vector=0xa032,existing_six_vector_addresses_unchanged=True,C32_original_raw=budget['stage_raw'],C32_with_provisional_no_glue=budget['stage_raw']+component_budget['provisional_with_publisher']-component_budget['canonical_wide'],newBSS=0,newZP=0,scope='ActualR30placementfits; NO C32caller/C6deferguard/transactionreorder implemented or runtime-tested. Conservativeproofstillrefusesallnaturalparagraphvectors.');(out/'result.json').write_text(json.dumps(result,indent=2)+'\n');return result
+if __name__=='__main__':print(build(Path(sys.argv[1]).resolve(),Path(sys.argv[2]).resolve()))

@@ -1,0 +1,168 @@
+--- a/src/render/geos/literal-byte/row.s
++++ b/src/render/geos/literal-byte/row.s
+@@ -60,11 +60,19 @@
+     sta G+GG_FLAGS
+     jsr glyph
+     jcs return
+-    ldx F+GR_ROW
+-    lda rowlo,x
++    ; Validated row0..24: high=$60+row+floor(row/4), low=row*64.
++    lda F+GR_ROW
++    lsr
++    lsr
++    clc
++    adc F+GR_ROW
++    adc #$60
++    sta rowbase+1
++    lda F+GR_ROW
++    .repeat 6
++        asl
++    .endrepeat
+     sta rowbase
+-    lda rowhi,x
+-    sta rowbase+1
+     lda F+GR_RESET
+     beq begin_runs
+     lda #<H
+@@ -89,11 +97,10 @@
+     ; Reclaim thirteen bytes of former padding for incremental tile setup.
+     ; CODE remains1719B: immutable packed font and width addresses stay fixed.
+ clear_slot:
+-    .assert clear_slot-se_geos_row=$66,error,"GEOS clear call slot moved"
++    .assert clear_slot-se_geos_row=$71,error,"GEOS clear call slot moved"
+     jsr row_clear
+     jmp begin_runs
+-    .res $A-(*-clear_slot),$EA
+-    .assert *-clear_slot=$A,error,"candidate fixed font padding budget changed"
++    .assert *-clear_slot=6,error,"candidate clear slot changed"
+ begin_runs:
+     lda #0
+     sta run
+@@ -170,7 +177,33 @@
+     cmp #65
+     bcs @slow
+ @fast:
++    ; The validation work word is dead until the next entry. Keep the
++    ; aligned first bitmap-byte base; sy0..7 is added by OR, without carry.
++    lda #0
++    sta sy
++    jsr pixel_address
++    lda se_gg_pointer
++    sta work
++    lda se_gg_pointer+1
++    sta work+1
+     inc byte_ok
++    ; Horizontal cell coverage is identical for every scanline of this glyph.
++    lda #0
++    sta covtail
++    lda G+GG_CELL_HI
++    sta covhi
++    lda G+GG_CELL_LO
++    sta covlo
++    lda xpos
++    and #7
++    tax
++    beq @slow
++@coverage_shift:
++    lsr covhi
++    ror covlo
++    ror covtail
++    dex
++    bne @coverage_shift
+ @slow:
+     lda #0
+     sta gy
+@@ -208,13 +241,26 @@
+     inc gx
+     lda gx
+     cmp G+GG_ADVANCE
+-    bcs @skip_y
++    jcs @skip_y
+     jsr next_pixel
+     jmp @left
+ @visible:
++    lda byte_ok
++    beq @slow_address
++    lda work
++    ora sy
++    sta se_gg_pointer
++    lda work+1
++    sta se_gg_pointer+1
++    lda xpos
++    and #7
++    tax
++    jmp @address_ready
++@slow_address:
+     jsr clipped_right
+     bcs @skip_y
+     jsr pixel_address
++@address_ready:
+     jsr histogram_address
+     lda byte_ok
+     beq @glyph_x
+@@ -453,21 +499,13 @@
+ byte_row:
+     lda #0
+     sta base
+-    sta covtail
+     sta fragment
+-    lda G+GG_CELL_HI
+-    sta covhi
+-    lda G+GG_CELL_LO
+-    sta covlo
+     cpx #0
+     beq @fragment
+ @shift:
+     lsr inkhi
+     ror inklo
+     ror base
+-    lsr covhi
+-    ror covlo
+-    ror covtail
+     dex
+     bne @shift
+ @fragment:
+@@ -633,14 +671,6 @@
+ .segment "RODATA"
+ popcount: .byte 0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4
+ masks: .byte $80,$40,$20,$10,8,4,2,1
+-rowlo:
+-.repeat 25,I
+-.byte <($6000+I*320)
+-.endrepeat
+-rowhi:
+-.repeat 25,I
+-.byte >($6000+I*320)
+-.endrepeat
+ histlo:
+ .repeat 40,I
+ .byte <(H+I*14)
+--- a/src/render/geos/literal-byte/glyph.s
++++ b/src/render/geos/literal-byte/glyph.s
+@@ -336,7 +336,7 @@
+     rts
+ .segment "RODATA"
+ prefix_hi:
+-.repeat 17,I
++.repeat 12,I
+  .if I=0
+     .byte 0
+  .else
+@@ -344,7 +344,7 @@
+  .endif
+ .endrepeat
+ prefix_lo:
+-.repeat 17,I
++.repeat 12,I
+  .if I=0
+     .byte 0
+  .else
+--- a/src/render/geos/literal-byte/measure.s
++++ b/src/render/geos/literal-byte/measure.s
+@@ -154,5 +154,5 @@
+     lda se_gg_pointer+1
+     sta (se_gg_context),y
+     rts
+-.segment "RODATA"
++.segment "GEOS_ROW_FAST"
+ header: .byte 6,60,0,9,8,0,204,0

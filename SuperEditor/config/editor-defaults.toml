@@ -1,0 +1,79 @@
+# Host-editable build defaults. Runtime settings/reset are session-only; never save here.
+# Fonts: bsw/9, native/8, or genuine GEOS family names and exact sizes.
+# Example heading1: font="roma",size=18,bold=true,underline=true.
+# Code admits native/8 or commodore/10 (measured fixed width).
+# Colors are real C64 values0..15; renderer must enforce8x8 color-cell/band policy.
+# Existing heading inversion/lexical palette remain separate semantic rendering rules.
+schema = 1
+
+[body]
+font = "bsw"
+size = 9
+foreground = 1
+background = 6
+bold = false
+italic = false
+underline = false
+
+[heading1]
+font = "bsw"
+size = 9
+foreground = 7
+background = 6
+bold = false
+italic = false
+underline = false
+
+[heading2]
+font = "bsw"
+size = 9
+foreground = 7
+background = 6
+bold = false
+italic = false
+underline = false
+
+[heading3]
+font = "bsw"
+size = 9
+foreground = 7
+background = 6
+bold = false
+italic = false
+underline = false
+
+[heading4]
+font = "bsw"
+size = 9
+foreground = 7
+background = 6
+bold = false
+italic = false
+underline = false
+
+[heading5]
+font = "bsw"
+size = 9
+foreground = 7
+background = 6
+bold = false
+italic = false
+underline = false
+
+[heading6]
+font = "bsw"
+size = 9
+foreground = 7
+background = 6
+bold = false
+italic = false
+underline = false
+
+[code]
+font = "native"
+size = 8
+foreground = 14
+background = 6
+bold = false
+italic = false
+underline = false

@@ -1,0 +1,30 @@
+"""Private exact C33/R25 factoring; no canonical source/build mutation."""
+from pathlib import Path
+import sys,json,subprocess,re,hashlib
+ROOT=Path(__file__).resolve().parents[4];D=Path(__file__).resolve().parent
+sys.path.insert(0,str(ROOT/'tools'))
+from bindings import verify
+from overlays import wrap
+HELPERS=['admit','fields','header_crc','store_header','fetch_header','fetch_row','row_request','packet_crc','verify_row','bounds','retreat','row_bit']
+def build(out,base):
+ out.mkdir(parents=True,exist_ok=True);s=json.loads((base/'build/editor-report.json').read_text())['symbols'];seal=verify(base/'build/editor.prg',base/'build/editor.lbl');digest=seal['digest']
+ (out/'editor-api.inc').write_text('.import se_overlay_frame,se_overlay_call\n.macro OVL_BINDING\n.byte '+','.join('$'+digest[i:i+2]for i in range(0,32,2))+'\n.endmacro\n')
+ import shutil
+ for name in ['caret.s','helper.s']:
+  shutil.copy2(D/'released'/name,out/name)
+ results={};seos={}
+ for name,paths,slot,ident in [('geostail',[out/'helper.s'],0,25),('grid',[out/'caret.s',ROOT/'src/render/geos/typing/status-normal.s'],1,33)]:
+  objs=[]
+  for j,path in enumerate(paths):
+   o=out/(name+str(j)+'.o');subprocess.run(['ca65','-g','-I',out,'-I',ROOT/'src/render/grid/caret','-I',ROOT/'src','-o',o,path],check=True);objs.append(o)
+  subprocess.run([sys.executable,ROOT/'tools/module_bindings.py','--report',base/'build/editor-report.json','--output',out/(name+'-aliases.s'),*objs],check=True)
+  a=out/(name+'-aliases.o');subprocess.run(['ca65','-o',a,out/(name+'-aliases.s')],check=True);objs.append(a)
+  cfg=out/(name+'.cfg');cfg.write_text('MEMORY {IMAGE:file=%O,start=$'+('B000'if slot else'A000')+',size=$1000,type=ro;} SEGMENTS {CODE:load=IMAGE,type=ro;RODATA:load=IMAGE,type=ro;}')
+  subprocess.run(['ld65','-C',cfg,'-o',out/(name+'.bin'),'-Ln',out/(name+'.lbl'),'-m',out/(name+'.map'),*objs],check=True)
+  raw=(out/(name+'.bin')).read_bytes();
+  if name=='geostail':
+   import binascii
+   (out/'helper-witness.inc').write_text('HELPER_SIZE='+str(len(raw))+'\nHELPER_CRC='+str(binascii.crc_hqx(raw,65535))+'\n')
+  seo=wrap(raw,slot,ident,api=(s['se_overlay_call'],s['se_overlay_frame']),binding_digest=bytes.fromhex(digest));(out/(name+'.seo')).write_bytes(seo);seos[name]=seo;results[name]=dict(payload=len(raw),sha256=hashlib.sha256(seo).hexdigest())
+ (out/'budget.json').write_text(json.dumps(results,indent=2)+'\n');return seos,results
+if __name__=='__main__':print(build(Path(sys.argv[1]),Path(sys.argv[2]))[1])

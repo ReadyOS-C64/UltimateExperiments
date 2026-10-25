@@ -1,0 +1,26 @@
+--- src/render/geos/style-typing/wide.s
++++ src/render/geos/style-typing/wide.s
+@@ -113,6 +113,23 @@
+     sta carrybyte
+     lda (gt_base),y
+     ldx F+GT_ADVANCE
++    cpx #8
++    bcc @left_bits
++    ; After exactly eight original triple-byte shifts A is oldnext1.
++    ; The remaining0..3 shifts need only oldnext1 and oldnext2. Both
++    ; were fetched from the immutable source before any tail is cleared.
++    txa
++    and #7
++    tax
++    lda carrybyte
++    cpx #0
++    beq @shifted
++@left_wide_bits:
++    asl carry2
++    rol
++    dex
++    bne @left_wide_bits
++    beq @shifted
+ @left_bits:
+     asl carry2
+     rol carrybyte

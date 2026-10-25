@@ -1,0 +1,20 @@
+--- src/style/reader-dispatch.s
++++ src/style/reader-dispatch.s
+@@ -16,3 +16,17 @@
+     lda #14
+     ldx #0
+     jmp se_overlay_call
++
++.import se_mode
++.export se_sc_begin,se_sc_event,se_sc_finish
++se_sc_begin: lda #3
++ bne certificate
++se_sc_event: lda #4
++ bne certificate
++se_sc_finish: lda #5
++certificate:
++ ldx se_mode
++ bne invoke
++ lda #0
++ clc
++ rts

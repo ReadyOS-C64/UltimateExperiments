@@ -1,0 +1,919 @@
+--- a/src/editor/main.s
++++ b/src/editor/main.s
+@@ -1,4 +1,5 @@
+ .setcpu "6502"
++.include "render/geos/edit-certificate.inc"
+ .macpack longbranch
+ .include "platform.inc"
+ .include "editor/api.inc"
+@@ -254,9 +255,21 @@
+     ldx se_mode
+     beq @done
+     cpx #3
+-    bcs @done
++    bcc @narrow
++    bne @done ;invalid mode>=4 retains the original no-overlay behavior
++    lda GEC_SEQUENCE
++    clc
++    adc #1
++    cmp se_e_draw_sequence
++    bne @done ;cheap necessary test only; fullauthority remains inside AUX
++    lda #6
++    sta se_overlay_frame
++    lda #13
++    bne @invoke
++@narrow:
+     sta se_overlay_frame
+     lda #33
++@invoke:
+     ldx #1
+     jsr se_overlay_call
+ @done:
+--- a/src/editor/commands.s
++++ b/src/editor/commands.s
+@@ -418,7 +418,12 @@
+ block_error:
+     jmp se_editor_error
+ history:
+-    COPY24 se_hot_caret,se_e_target
++    ldx #2
++@refresh_copy_history:
++    lda se_hot_caret,x
++    sta se_e_target,x
++    dex
++    bpl @refresh_copy_history
+     lda se_e_command
+     sec
+     sbc #E_UNDO-H_UNDO
+@@ -488,7 +493,12 @@
+     rts
+ reload:
+ se_editor_reload:
+-    COPY24 se_e_target,se_hot_position
++    ldx #2
++@refresh_copy_reload:
++    lda se_e_target,x
++    sta se_hot_position,x
++    dex
++    bpl @refresh_copy_reload
+     lda #W_LOAD
+     jsr se_hot_call
+     bcs navigation_error
+@@ -727,7 +737,12 @@
+     jsr se_index_changed
+     lda se_h_applied
+     beq @target
+-    COPY24 se_h_caret,se_e_target
++    ldx #2
++@refresh_copy_history_done:
++    lda se_h_caret,x
++    sta se_e_target,x
++    dex
++    bpl @refresh_copy_history_done
+ @target:
+     jmp reload
+ @flush:
+@@ -743,7 +758,12 @@
+     sta se_e_job
+     lda se_e_after_load
+     beq @execute
+-    COPY24 se_hot_caret,se_e_target
++    ldx #2
++@refresh_copy_flushed:
++    lda se_hot_caret,x
++    sta se_e_target,x
++    dex
++    bpl @refresh_copy_flushed
+     jmp reload
+ @execute:
+     jmp execute
+--- a/src/overlays/aux.s
++++ b/src/overlays/aux.s
+@@ -6,6 +6,8 @@
+     OVL_BINDING
+ entry:
+     lda se_overlay_frame
++    cmp #6
++    jeq se_gsr_refresh
+     cmp #A_LAYOUT_CONTEXT
+     jeq se_aux_layout_context
+     cmp #A_FILE_ABORT
+@@ -19,3 +21,5 @@
+     lda #$70
+     sec
+     rts
++
++.import se_gsr_refresh
+--- /dev/null
++++ b/src/render/geos/checkpoint/rekey.s
+@@ -0,0 +1,445 @@
++; Private post-publication pair refresh. No parser inference/anchor rebasing.
++.setcpu "6502"
++.macpack longbranch
++.include "editor-api.inc"
++.include "render/geos/caret-cache.inc"
++.include "render/geos/edit-certificate.inc"
++.include "document/math24.inc"
++.import se_f_owner,se_mode,se_e_ui,se_r_presentation,se_ef_valid,se_l_mode,se_l_pan
++.import se_e_draw_sequence,se_i_ready,se_i_count,se_n_cache_count
++.ifndef GSR_AUX
++.import se_fs_begin
++.endif
++.import se_fs_end,se_fs_active,se_fs_owned,se_fs_length
++.import se_doc_meta,se_doc_generation,se_doc_epoch,se_r_revision,se_v_top
++.import se_hot_pending,se_reu_epoch,se_reu_retired,se_gc_handle,se_gc_epoch,se_gc_width
++.import se_reu_map,se_reu_logical_owner,se_reu_physical_owner
++.import se_reu_logical,se_reu_offset,se_reu_c64,se_reu_length,se_reu_copy
++.import se_crc_init,se_crc_byte,se_crc_value
++.importzp text_ptr
++.export se_gsr_refresh
++R=$8880 ;two64B records; closed GEOS painter/FS source context only
++OLD=$8900 ;28B expected oldkey
++T=$891C ;4 arithmetic bytes
++SLOT=$8920 ;0current/64previous
++COUNT=$8921 ;1atBOF/2otherwise
++.assert R>=$8880 .and COUNT+1<=$8B40,error,"refresh scratch must remain phaseowned"
++.ifdef GSR_AUX
++.segment "CODE"
++.else
++.segment "FOLD_SOURCE_CODE"
++.endif
++se_gsr_refresh:
++ lda se_f_owner
++ jne miss
++ lda se_mode
++ cmp #3
++ jne miss
++ lda se_e_ui
++ ora se_r_presentation
++ ora se_ef_valid
++ ora se_l_mode
++ ora se_l_pan
++ ora se_l_pan+1
++ ora se_l_pan+2
++ ora $912C
++ ora $912D
++ ora GEC_VALID
++ jne miss
++ lda se_hot_pending
++ cmp #1
++ jne miss
++ lda GCC_VALID
++ cmp #1
++ jne miss
++ ldx #1
++@sequence:
++ lda GCC_SEQUENCE,x
++ cmp se_e_draw_sequence,x
++ jne miss
++ dex
++ bpl @sequence
++ clc
++ lda GEC_SEQUENCE
++ adc #1
++ sta T
++ lda GEC_SEQUENCE+1
++ adc #0
++ jcs miss
++ cmp se_e_draw_sequence+1
++ jne miss
++ lda T
++ cmp se_e_draw_sequence
++ jne miss
++ lda #4
++ sta se_f_owner
++ lda #0
++ sta se_fs_active
++ sta se_fs_owned
++ sta se_i_ready
++ sta se_i_count
++ sta se_n_cache_count
++.ifdef GSR_AUX
++ lda #0
++ sta se_overlay_frame
++ lda #14
++ ldx #0
++ jsr se_overlay_call
++.else
++ jsr se_fs_begin
++.endif
++ jcs cleanup
++ ; Exact actual current fullkey, using the realchecked FS source snapshot.
++ ldx #14
++@tokens:
++ lda se_doc_meta,x
++ cmp GCC_KEY,x
++ jne cleanup
++ dex
++ bpl @tokens
++ ldx #1
++@epochs:
++ lda se_doc_generation,x
++ cmp GCC_KEY+15,x
++ jne cleanup
++ lda se_doc_epoch,x
++ cmp GCC_KEY+26,x
++ jne cleanup
++ lda se_reu_epoch,x
++ cmp GCC_KEY+24,x
++ jne cleanup
++ cmp GEC_REU_EPOCH,x
++ jne cleanup
++ cmp se_gc_epoch,x
++ jne cleanup
++ cmp GCC_EPOCH,x
++ jne cleanup
++ lda se_doc_epoch,x
++ cmp GEC_DOC_EPOCH,x
++ jne cleanup
++ dex
++ bpl @epochs
++ ldx #3
++@revision:
++ lda se_r_revision,x
++ cmp GCC_KEY+17,x
++ jne cleanup
++ dex
++ bpl @revision
++ ldx #2
++@length:
++ lda se_fs_length,x
++ cmp GCC_KEY+21,x
++ jne cleanup
++ lda se_v_top,x
++ cmp GCC_KEY+28,x
++ jne cleanup
++ dex
++ bpl @length
++ ; Construct exact old key and prove one nonwrapping observer edit.
++ ldx #27
++@key:
++ lda GCC_KEY,x
++ sta OLD,x
++ dex
++ bpl @key
++ clc
++ .repeat 4,I
++ lda GEC_REVISION+I
++ sta OLD+17+I
++ .if I=0
++ adc #1
++ .else
++ adc #0
++ .endif
++ sta T+I
++ .endrepeat
++ jcs cleanup
++ ldx #3
++@newrev:
++ lda T,x
++ cmp GCC_KEY+17,x
++ jne cleanup
++ dex
++ bpl @newrev
++ ldx #2
++@oldlen:
++ lda GEC_LENGTH,x
++ sta OLD+21,x
++ sta T,x
++ dex
++ bpl @oldlen
++ lda GEC_OP
++ beq @insert
++ cmp #1
++ jne cleanup
++ lda GEC_NEW
++ jne cleanup
++ sec
++ lda T
++ sbc #1
++ sta T
++ lda T+1
++ sbc #0
++ sta T+1
++ lda T+2
++ sbc #0
++ sta T+2
++ jcc cleanup
++ jmp @newlen
++@insert:
++ lda GEC_OLD
++ jne cleanup
++ inc T
++ bne @newlen
++ inc T+1
++ bne @newlen
++ inc T+2
++ jeq cleanup
++@newlen:
++ CMP24 T,se_fs_length
++ jne cleanup
++ CMP24 GEC_POSITION,GEC_LENGTH
++ jcc @bounds
++ jne cleanup
++ lda GEC_OP
++ jne cleanup
++@bounds:
++ CMP24 GEC_POSITION,se_v_top
++ jcc cleanup
++ ; Exact typed FE capability before any backing read/write.
++ lda se_gc_width
++ cmp #$FF
++ jne cleanup
++ lda se_reu_retired
++ jne cleanup
++ lda se_reu_epoch
++ ora se_reu_epoch+1
++ jeq cleanup
++ ldx se_gc_handle
++ jeq cleanup
++ cpx GCC_HANDLE
++ jne cleanup
++ lda se_reu_logical_owner,x
++ cmp #$FE
++ jne cleanup
++ ldy se_reu_map,x
++ jeq cleanup
++ cpy GCC_PHYSICAL
++ jne cleanup
++ lda se_reu_physical_owner,y
++ cmp #$FE
++ jne cleanup
++ stx se_reu_logical
++ lda #0
++ sta se_reu_offset
++ sta se_reu_length+1
++ lda #6
++ sta se_reu_offset+1
++ lda #<R
++ sta se_reu_c64
++ lda #>R
++ sta se_reu_c64+1
++ lda #128
++ sta se_reu_length
++ lda #1
++ jsr se_reu_copy
++ jcs cleanup
++ lda #1
++ sta COUNT
++ lda se_v_top
++ ora se_v_top+1
++ ora se_v_top+2
++ beq :+
++ inc COUNT
++: lda #0
++ sta SLOT
++@validate:
++ jsr pointer
++ jsr record
++ jcs cleanup
++ lda SLOT
++ bne @validated
++ lda COUNT
++ cmp #2
++ bne @validated
++ lda #64
++ sta SLOT
++ bne @validate
++@validated:
++ lda #0
++ sta SLOT
++@publish:
++ jsr pointer
++ ldy #24
++ ldx #17
++@visible:
++ lda GCC_KEY,x
++ sta (text_ptr),y
++ inx
++ iny
++ cpy #31
++ bcc @visible
++ jsr checksum
++ ldy #62
++ lda se_crc_value
++ sta (text_ptr),y
++ iny
++ lda se_crc_value+1
++ sta (text_ptr),y
++ ldy #3
++ lda #0
++ sta (text_ptr),y
++ lda SLOT
++ sta se_reu_offset
++ lda text_ptr
++ sta se_reu_c64
++ lda #64
++ sta se_reu_length
++ lda #0
++ jsr se_reu_copy
++ jcs cleanup
++ ; Trust is published only by the final single VALID1 byte.
++ jsr pointer
++ ldy #3
++ lda #1
++ sta (text_ptr),y
++ lda SLOT
++ clc
++ adc #3
++ sta se_reu_offset
++ lda text_ptr
++ clc
++ adc #3
++ sta se_reu_c64
++ lda #1
++ sta se_reu_length
++ lda #0
++ jsr se_reu_copy
++ jcs cleanup
++ lda SLOT
++ bne success
++ lda COUNT
++ cmp #2
++ bne success
++ lda #64
++ sta SLOT
++ bne @publish
++success:
++ jsr se_fs_end
++ lda #0
++ sta se_f_owner
++ lda #1
++ clc
++ rts
++cleanup:
++ jsr se_fs_end
++ lda #0
++ sta se_f_owner
++miss:
++ lda #0
++ clc
++ rts
++pointer:
++ lda SLOT
++ clc
++ adc #<R
++ sta text_ptr
++ lda #>R
++ sta text_ptr+1
++ rts
++checksum:
++ jsr se_crc_init
++ ldy #0
++@byte:
++ lda (text_ptr),y
++ jsr se_crc_byte
++ iny
++ cpy #62
++ bcc @byte
++ rts
++record:
++ ldy #0
++@header:
++ lda (text_ptr),y
++ cmp header,y
++ jne bad
++ iny
++ cpy #4
++ bcc @header
++ jsr checksum
++ ldy #62
++ lda (text_ptr),y
++ cmp se_crc_value
++ jne bad
++ iny
++ lda (text_ptr),y
++ cmp se_crc_value+1
++ jne bad
++ ; Each fullkey must be exactly OLD or NEW, never an unproved revision gap.
++ ldy #7
++ ldx #0
++@old:
++ lda (text_ptr),y
++ cmp OLD,x
++ bne @newstart
++ iny
++ inx
++ cpx #28
++ bcc @old
++ beq @TOP
++@newstart:
++ ldy #7
++ ldx #0
++@new:
++ lda (text_ptr),y
++ cmp GCC_KEY,x
++ jne bad
++ iny
++ inx
++ cpx #28
++ bcc @new
++@TOP:
++ ldy #41
++ ldx #0
++@bound:
++ lda (text_ptr),y
++ cmp se_v_top,x
++ jne bad
++ iny
++ inx
++ cpx #3
++ bcc @bound
++ ldy #4
++ ldx #0
++@anchor:
++ lda (text_ptr),y
++ sta T,x
++ iny
++ inx
++ cpx #3
++ bcc @anchor
++ CMP24 T,se_v_top
++ lda SLOT ;LDA preserves carry from24bit comparison
++ beq @current
++ jcs bad
++ clc
++ rts
++@current:
++ ; Carry set plus zero means currentSTART exactlyTOP.
++ jcc bad
++ lda T
++ cmp se_v_top
++ jne bad
++ lda T+1
++ cmp se_v_top+1
++ jne bad
++ lda T+2
++ cmp se_v_top+2
++ jne bad
++ clc
++ rts
++bad:
++ sec
++ rts
++header:.byte $53,2,64,1
+--- a/src/render/geos/checkpoint/publish.inc
++++ b/src/render/geos/checkpoint/publish.inc
+@@ -46,6 +46,10 @@
+  jsr gsc_record_write
+  jmp @skip
+ @invalidate_previous:
++ lda se_v_top
++ ora se_v_top+1
++ ora se_v_top+2
++ bne @skip
+  lda #0
+  jsr gsc_valid_write
+ @skip:
+--- a/src/render/geos/source-line.s
++++ b/src/render/geos/source-line.s
+@@ -4,6 +4,9 @@
+ .include "render/geos/source-line.inc"
+ .ifdef SE_EDITOR_GEOS_INLINE
+ .include "render/geos/semantic.inc"
++.include "render/geos/inline.inc"
++.include "render/geos/editor.inc"
++.include "render/geos/source-certificate.inc"
+ .import se_st_request,se_st_cp_valid
+ INLINE_CONT=GSEM_FRAME+$A7
+ ; Reserve a full24bit sparse glyph-source ledger. A rendered boundary can
+@@ -45,6 +48,10 @@
+     cmp #GS_OWNER
+     jne busy
+     lda se_overlay_frame
++.ifdef SE_EDITOR_GEOS_INLINE
++    cmp #SC_CONSUME
++    jeq certificate
++.endif
+     cmp #GS_BEGIN
+     jeq begin
+     cmp #GS_STEP
+@@ -89,6 +96,7 @@
+     sta GS_READS
+ .ifdef SE_EDITOR_GEOS_INLINE
+     sta INLINE_CONT
++    sta SC_VALID
+ .endif
+     lda GS_ENCODING
+     beq :+
+@@ -212,12 +220,23 @@
+ return:
+     rts
+ complete:
++.ifdef SE_EDITOR_GEOS_INLINE
++    lda SC_VALID
++    cmp #1
++    bne :+
++    inc SC_VALID ;complete currentC20 output, consumed only after parentguard
++:
++.endif
+     jsr cleanup
+ zero:
+     lda #0
+     clc
+     rts
+ cancel:
++.ifdef SE_EDITOR_GEOS_INLINE
++    lda #0
++    sta SC_VALID
++.endif
+     lda GS_CONTEXT_VALID
+     beq zero
+     jsr cleanup
+@@ -225,10 +244,34 @@
+ fail:
+     sta GS_ERROR
+     pha
++.ifdef SE_EDITOR_GEOS_INLINE
++    lda #0
++    sta SC_VALID
++.endif
+     jsr cleanup
+     pla
+     sec
+     rts
++.ifdef SE_EDITOR_GEOS_INLINE
++certificate:
++    lda GS_ACTIVE
++    ora GS_CONTEXT_VALID
++    jne busy
++    jsr style_certificate
++    jcc zero
++    lda #GI_ID
++    sta $9135
++    lda #GI_BEGIN
++    ldx GSEM_FRAME+GSEM_COUNT
++    cpx #161
++    bne :+
++    lda #GI_BEGIN_WIDE
++:
++    sta $9136
++    lda #GS_PENDING
++    clc
++    rts
++.endif
+ argument:
+     lda #GL_ARGUMENT
+     sec
+@@ -298,4 +341,6 @@
+     rts
+ .ifdef SE_EDITOR_GEOS_INLINE
+ .include "render/geos/source-inline.s"
+-.endif
++.include "render/geos/source-certificate.s"
++.include "render/geos/certificate-consumer.s"
++.endif
+--- a/src/render/geos/source-inline.s
++++ b/src/render/geos/source-inline.s
+@@ -1,5 +1,5 @@
+ ; C20-only continuation bridge. Owner4 has invalidated the inactive source-grid
+-; plan; its1024 bytes4400..47FF hold a sparse source ledger and only the
++; plan; its1024 bytes4400..47FF hold the current-output certificate and the
+ ; live GL core/map,59B source identity and native packet32. Measure outputs are
+ ; scratch; the14 immutable glyph inputs are retained for the next measure call.
+ ; End the old lease before leaving C20: STOP during C26 has just one real lease.
+@@ -119,6 +119,7 @@
+     bne @changed
+     dex
+     bpl @identity
++    jsr style_remember
+     lda L+GL_PACKET_COUNT
+     jmp feed_line
+ @changed:
+--- /dev/null
++++ b/src/render/geos/source-certificate.inc
+@@ -0,0 +1,20 @@
++; Private prototype: literal current-line output certificate, never crossjob.
++.ifndef SOURCE_STYLE_CERTIFICATE
++SOURCE_STYLE_CERTIFICATE=1
++SC_CONSUME=7               ;editorC20 only; completehit orhandnormalC26toroot
++SC_VALID=$4400             ;0absent,1accumulating,2currentC20linecompleted
++SC_KEY=$4401               ;59B exact frozenFSidentity, same as actualC20map
++SC_START=$443C             ;3B GL_START
++SC_COUNT=$443F             ;contiguous0..161 source styles/roles
++SC_CONTEXT=$4440           ;10B GSEM START/END/BODY/ROLE
++SC_STYLES=$444A            ;161 literal canonical source styles
++SC_ROLES=$44EB             ;161 literal canonical source semantic roles
++SC_END=$458C
++SC_TEMP=GS_CONTROL+5       ;3B otherwiseunused9131..9133, belowparent9134
++.assert SC_ROLES+161=SC_END,error,"style certificate extent"
++.assert SC_END<=$45E6,error,"style certificate overlaps live continuation"
++.assert SC_TEMP+3=$9134,error,"style certificate aliases parent"
++.ifdef SE_EDITOR_GEOS_RENDERED
++.error "literal source certificate cannot replace rendered canonical ledger"
++.endif
++.endif
+--- /dev/null
++++ b/src/render/geos/source-certificate.s
+@@ -0,0 +1,84 @@
++; Accumulate outputs alreadycomputed by actualC26, only for currentC20job.
++; It neither prefetches nor skips a source guard/query. First161 canonical
++; sourcebytes cover normal wrapped rows; positivepan beyond it safelymisses.
++style_remember:
++    sec
++.repeat 3,I
++    lda L+GL_SCAN+I
++    sbc L+GL_START+I
++    sta SC_TEMP+I
++.endrepeat
++    jcc @invalid
++    lda SC_TEMP+1
++    ora SC_TEMP+2
++    bne @return
++    lda SC_TEMP
++    cmp #161
++    bcs @return
++    cmp SC_COUNT
++    bne @first
++    lda SC_VALID
++    cmp #1
++    bne @first
++    ldx #58
++@key:
++    lda GS_FS+27,x
++    cmp SC_KEY,x
++    bne @invalid
++    dex
++    bpl @key
++    ldx #9
++@context:
++    lda GSEM_FRAME+GSEM_START,x
++    cmp SC_CONTEXT,x
++    bne @invalid
++    dex
++    bpl @context
++    jmp @copy
++@first:
++    lda SC_TEMP
++    bne @invalid
++    lda SC_VALID
++    bne @invalid
++    ldx #58
++@save_key:
++    lda GS_FS+27,x
++    sta SC_KEY,x
++    dex
++    bpl @save_key
++    ldx #2
++@save_start:
++    lda L+GL_START,x
++    sta SC_START,x
++    dex
++    bpl @save_start
++    ldx #9
++@save_context:
++    lda GSEM_FRAME+GSEM_START,x
++    sta SC_CONTEXT,x
++    dex
++    bpl @save_context
++@copy:
++    ldy SC_TEMP
++    ldx #0
++@cell:
++    lda GI_OUTPUT_STYLES,x
++    sta SC_STYLES,y
++    lda GI_OUTPUT_ROLES,x
++    sta SC_ROLES,y
++    iny
++    inx
++    cpy #161
++    beq @publish
++    cpx L+GL_PACKET_COUNT
++    bcc @cell
++@publish:
++    sty SC_COUNT
++    lda #1
++    sta SC_VALID
++@return:
++    rts
++@invalid:
++    lda #0
++    sta SC_VALID
++    rts
+--- /dev/null
++++ b/src/render/geos/certificate-consumer.s
+@@ -0,0 +1,78 @@
++.import se_fs_owned
++; Parent fullsource/FE guard alreadyprotects the currentC20map. This certificate
++; is an additional output of that exactjob, not a reusable validity-bitcache.
++style_certificate:
++    lda GP_RECORD+GPR_COUNT
++    jeq @miss
++    cmp #162
++    jcs @miss
++    lda SC_VALID
++    cmp #2
++    jne @miss
++    lda GS_ACTIVE
++    ora GS_CONTEXT_VALID
++    jne @miss
++    ldx #58
++@key:
++    lda GS_FS+27,x
++    cmp SC_KEY,x
++    jne @miss
++    dex
++    bpl @key
++    ldx #9
++@context:
++    lda GSEM_FRAME+GSEM_START,x
++    cmp SC_CONTEXT,x
++    jne @miss
++    dex
++    bpl @context
++    ldx #2
++@start:
++    lda GP_RECORD+GPR_START,x
++    cmp SC_START,x
++    jne @miss
++    dex
++    bpl @start
++    sec
++.repeat 3,I
++    lda GP_RECORD+GPR_FIRST+I
++    sbc SC_START+I
++    sta SC_TEMP+I
++.endrepeat
++    jcc @miss
++    lda SC_TEMP+1
++    ora SC_TEMP+2
++    jne @miss
++    lda SC_TEMP
++    clc
++    adc GP_RECORD+GPR_COUNT
++    jcs @miss
++    cmp SC_COUNT
++    bcc @ready
++    jne @miss
++@ready:
++    ldy SC_TEMP
++    ldx #0
++@cell:
++    lda SC_STYLES,y
++    sta GI_OUTPUT_STYLES,x
++    lda SC_ROLES,y
++    cpx #160
++    bne @ordinary
++    sta GI_OUTPUT_ROLE_LAST
++    jmp @next
++@ordinary:
++    sta GI_OUTPUT_ROLES,x
++@next:
++    iny
++    inx
++    cpx GP_RECORD+GPR_COUNT
++    bcc @cell
++    lda #0
++    sta GI_ACTIVE ;GLmap alreadypublished; samephase as normalC26publication
++    sta se_fs_owned ;inactive GL/map aliases FS: leave C26-compatible empty owner
++    clc
++    rts
++@miss:
++    sec
++    rts
+--- a/src/render/geos/page.s
++++ b/src/render/geos/page.s
+@@ -4,6 +4,7 @@
+ .include "render/geos/checkpoint/codec.inc"
+ .include "render/geos/editor.inc"
+ .include "render/geos/source-line.inc"
++.include "render/geos/source-certificate.inc"
+ .include "render/geos/semantic-lex.inc"
+ .include "render/geos/inline.inc"
+ .include "render/geos/fold-query.inc"
+@@ -603,6 +604,13 @@
+     sta GSEM_FRAME+GSEM_COUNT
+     lda #8
+     sta PS
++    lda SC_VALID
++    cmp #2
++    bne :+
++    lda #GP_LAYOUT_ID
++    ldx #SC_CONSUME
++    jmp request
++:
+     lda #GI_ID
+     ldx #GI_BEGIN
+     ldy GP_RECORD+GPR_COUNT
+--- a/Makefile
++++ b/Makefile
+@@ -615,7 +615,7 @@
+ build/supereditor.d81: build/overlays/fileio.seo
+ 
+ # Rare control work remains operation-sized and shares one catalog entry.
+-AUX_CONTROL_OBJ = build/aux-control/layout-context.o build/aux-control/index.o build/aux-control/emergency.o build/editor-file-prod/dialog-draw.o build/editor/box40.o
++AUX_CONTROL_OBJ = build/aux-control/layout-context.o build/aux-control/index.o build/aux-control/emergency.o build/editor-file-prod/dialog-draw.o build/editor/box40.o build/aux-control/checkpoint-refresh.o
+ build/nav/invalidate.o: src/nav/invalidate.s src/aux/api.inc
+ 	mkdir -p $(dir $@)
+ 	$(CA65) -g -D SE_INDEX_DISPATCH=1 -I src -o $@ -l $(@:.o=.lst) $<
+@@ -1157,3 +1157,10 @@
+ build/geos-prod/page.o build/geos-prod/navigation.o: build/geos-prod/checkpoint-witness.stamp
+ build/geos-prod/page.o: src/render/geos/checkpoint/publish.inc src/render/geos/checkpoint/consumer.inc src/render/geos/checkpoint/codec.inc
+ build/geos-prod/semantic.o: src/render/geos/checkpoint/seed.inc src/render/geos/checkpoint/codec.inc
++
++# PRIVATE coherent publication refresh component, no canonical Make edits.
++build/aux-control/checkpoint-refresh.o: src/render/geos/checkpoint/rekey.s build/geos-prod/editor-api.inc
++	mkdir -p $(dir $@)
++	$(CA65) -g -D GSR_AUX=1 -I build/geos-prod -I src -o $@ $<
++build/geos-prod/page.o: src/render/geos/checkpoint/publish.inc src/render/geos/source-certificate.inc
++build/geos-prod/source-line.o: src/render/geos/source-certificate.inc src/render/geos/source-certificate.s src/render/geos/certificate-consumer.s

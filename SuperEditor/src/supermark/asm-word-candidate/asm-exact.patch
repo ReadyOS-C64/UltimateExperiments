@@ -1,0 +1,31 @@
+--- src/supermark/lexer.s
++++ src/supermark/lexer.s
+@@ -694,7 +694,7 @@
+ sl_ops: .byte "+-*/^=<>#:,()&|!~"
+ sl_ops_end:
+ ; Search tables are individually <256 bytes, so no zero-page pointer is needed.
+-.macro SL_TABLE_SEARCH routine, table, index
++.macro SL_TABLE_SEARCH routine, table, index, whole
+ routine:
+     lda #0
+     sta sl_prefix
+@@ -725,6 +725,10 @@
+         cmp sl_length
+         bcc @skip
+     .endif
++    .ifnblank whole
++        cmp sl_length
++        bne @skip
++    .endif
+     ldx #0
+ @compare:
+     lda table,y
+@@ -758,7 +762,7 @@
+ .endmacro
+ SL_TABLE_SEARCH sl_basic_table1, sl_basic_words1, sl_basic_index1
+ SL_TABLE_SEARCH sl_basic_table2, sl_basic_words2, sl_basic_index2
+-SL_TABLE_SEARCH sl_asm_table, sl_asm_words, sl_asm_index
++SL_TABLE_SEARCH sl_asm_table, sl_asm_words, sl_asm_index, 1
+ SL_TABLE_SEARCH sl_directive_table, sl_directive_words
+ 
+ sl_basic_words1:

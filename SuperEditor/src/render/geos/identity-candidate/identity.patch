@@ -1,0 +1,210 @@
+--- a/src/render/geos/page-paint.s
++++ b/src/render/geos/page-paint.s
+@@ -1,3 +1,4 @@
++; PRIVATE ABI2 comparison candidate; proposed ABI3 makes affinities non-live.
+ ; Bounded foreground GEOS page compositor. Cache reads and renderer calls are
+ ; deliberately separate steps; no C-slot service is entered from another C.
+ .setcpu "6502"
+@@ -418,24 +419,12 @@
+     jmp pending
+ ; Canonical maps are staged outside all R21 scratch. Flags survive each fetch.
+ read_right:
+-    lda #<GPR_RIGHT
+-    ldx #>GPR_RIGHT
+-    jsr canonical_request
+-    jcs fail
+     lda #0
+     sta index
+     sta scan
+ @flags:
+-    ldy scan
+-    ldx #0
+-@position:
+-    lda GP_CANONICAL,y
+-    sta source,x
+-    iny
+-    inx
+-    cpx #3
+-    bcc @position
+-    sty scan
++    jsr load_canonical
++    jcs fail
+     lda R+GPR_FLAGS
+     and #1
+     ldx index
+@@ -469,10 +458,6 @@
+     sta GPP_PHASE
+     jmp pending
+ read_left:
+-    lda #<GPR_LEFT
+-    ldx #>GPR_LEFT
+-    jsr canonical_request
+-    jcs fail
+     lda #0
+     sta index
+     sta scan
+@@ -482,6 +467,7 @@
+     and #8
+     beq @clear
+     jsr load_canonical
++    jcs fail
+     jsr at_or_before_caret
+     bcc @clear
+     ldx index
+@@ -736,26 +722,16 @@
+     inc GPP_LINE
+     jmp pending
+ tail_right:
+-    lda #<GPR_RIGHT
+-    ldx #>GPR_RIGHT
+-    jsr tail_request
+-    jcs fail
+-    lda #0
+-    sta scan
+-    jsr load_canonical
++    jsr load_tail
++    jcs fail
+     jsr at_or_after_caret
+     jcc selected_tail
+     lda #P_TAIL_LEFT
+     sta GPP_PHASE
+     jmp pending
+ tail_left:
+-    lda #<GPR_LEFT
+-    ldx #>GPR_LEFT
+-    jsr tail_request
+-    jcs fail
+-    lda #0
+-    sta scan
+-    jsr load_canonical
++    jsr load_tail
++    jcs fail
+     jsr at_or_before_caret
+     jcc selected_tail
+     lda tail_flags
+@@ -934,55 +910,6 @@
+     lda destination_lo-P_CHARS,y
+     sta host
+     lda GPP_COUNT
+-    sta amount
+-    lda #0
+-    sta amount+1
+-    jmp fetch
+-tail_request:
+-    sta field
+-    stx field+1
+-    lda extent
+-    jmp canonical_offset
+-canonical_request:
+-    sta field
+-    stx field+1
+-    lda GPP_OFFSET
+-canonical_offset:
+-    sta advance
+-    asl
+-    sta base
+-    lda #0
+-    rol
+-    sta base+1
+-    clc
+-    lda base
+-    adc advance
+-    sta base
+-    lda base+1
+-    adc #0
+-    sta base+1
+-    clc
+-    lda field
+-    adc base
+-    sta field
+-    lda field+1
+-    adc base+1
+-    sta field+1
+-    lda #<GP_CANONICAL
+-    sta host
+-    lda #>GP_CANONICAL
+-    sta host+1
+-    lda GPP_PHASE
+-    cmp #P_TAIL_RIGHT
+-    bcc @chunk
+-    lda #3
+-    bne @amount
+-@chunk:
+-    lda GPP_COUNT
+-    asl
+-    clc
+-    adc GPP_COUNT
+-@amount:
+     sta amount
+     lda #0
+     sta amount+1
+@@ -1112,16 +1039,60 @@
+     lda #0
+ @return:
+     rts
++; Literal identity source boundaries; X remains caller scratch. No affine
++; arrays are read. The old ABI2 arrays may be poisoned by the private test.
+ load_canonical:
+-    ldy scan
+-    ldx #0
+-@copy:
+-    lda GP_CANONICAL,y
+-    sta source,x
+-    iny
+-    inx
+-    cpx #3
+-    bcc @copy
++    clc
++    lda GPP_OFFSET
++    adc index
++    sta advance
++    lda GPP_OFFSET+1
++    adc #0
++    sta amount+1
++    bcs identity_bad
++    jmp identity_source
++load_tail:
++    lda extent
++    sta advance
++    lda extent+1
++    sta amount+1
++identity_source:
++    ; Bound the local canonical index before adding it to the full24bit FIRST.
++    lda amount+1
++    cmp extent+1
++    bcc @add
++    bne identity_bad
++    lda advance
++    cmp extent
++    bcc @add
++    bne identity_bad
++@add:
++    clc
++    lda R+GPR_FIRST
++    adc advance
++    sta source
++    lda R+GPR_FIRST+1
++    adc amount+1
++    sta source+1
++    lda R+GPR_FIRST+2
++    adc #0
++    sta source+2
++    bcs identity_bad
++    ; The complete logical row may extend beyond the clipped visible packet.
++    ldy #2
++@bound:
++    lda source,y
++    cmp R+GPR_END,y
++    bcc @okay
++    bne identity_bad
++    dey
++    bpl @bound
++@okay:
++    clc
++    rts
++identity_bad:
++    lda #$90
++    sec
+     rts
+ ; Cset source>=caret. Cset source<=caret respectively, including affinities.
+ at_or_after_caret:

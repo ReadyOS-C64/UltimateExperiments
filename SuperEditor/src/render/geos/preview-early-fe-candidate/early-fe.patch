@@ -1,0 +1,52 @@
+--- a/src/render/geos/preview-cache.s
++++ b/src/render/geos/preview-cache.s
+@@ -20,6 +20,19 @@
+  lda #1
+  rts ;pc_owned already clearedcarry
+ pc_miss:
++ lda se_gc_handle
++ bne @allocated
++ lda #$FE
++ jsr se_reu_alloc
++ bcs @allocated
++ sta se_gc_handle
++ lda #0
++ sta se_gc_valid
++ lda se_reu_epoch
++ sta se_gc_epoch
++ lda se_reu_epoch+1
++ sta se_gc_epoch+1
++@allocated:
+  jsr pc_seed
+  jsr pc_release
+  lda #1
+@@ -178,19 +191,6 @@
+  bcs @skip
+  jsr pc_context
+  bcs @release
+- lda se_gc_handle
+- bne @existing
+- lda #$FE
+- jsr se_reu_alloc
+- bcs @release
+- sta se_gc_handle
+- lda #0
+- sta se_gc_valid
+- lda se_reu_epoch
+- sta se_gc_epoch
+- lda se_reu_epoch+1
+- sta se_gc_epoch+1
+-@existing:
+  jsr pc_owned
+  bcs @release
+  lda se_gc_handle
+@@ -452,8 +452,7 @@
+  plp
+  rts
+ pc_release:
+- jsr se_fs_end
+- lda #0
++ jsr se_fs_end ;guaranteesA0/Cclear, includingidempotentEND
+  sta GS_ACTIVE
+  sta GS_CONTEXT_VALID
+  rts

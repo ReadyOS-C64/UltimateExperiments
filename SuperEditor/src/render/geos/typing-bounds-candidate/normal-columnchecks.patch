@@ -1,0 +1,49 @@
+--- a/src/render/geos/typing/patch-buffered.s
++++ b/src/render/geos/typing/patch-buffered.s
+@@ -45,6 +45,19 @@
+     sta column
+ @byte:
+     ldy column
++    ; Validation guarantees xb<=nb. Entire columns before xb are unchanged;
++    ; entire columns after nb are cleared even when old unused tail is dirty.
++    cpy xb
++    bcs @after_prefix
++    lda (gt_base),y
++    jmp @store
++@after_prefix:
++    cpy nb
++    bcc @needs_shift
++    beq @needs_shift
++    lda #0
++    jmp @store
++@needs_shift:
+     lda F+GT_OP
+     bne @left
+     tya
+@@ -87,14 +100,10 @@
+     sta value
+     ; Preserve only original pixels strictly before the edit.
+     cpy xb
+-    bcc @original
+     bne @no_prefix
+     lda (gt_base),y
+     and prefix
+     bcs @prefix_ready ;carry from CPY equality is stillset
+-@original:
+-    lda (gt_base),y
+-    jmp @prefix_ready
+ @no_prefix:
+     lda #0
+ @prefix_ready:
+@@ -116,11 +125,7 @@
+     lda work
+     cpy nb
+     bcc @store
+-    bne @empty
+     and endmask
+-    jmp @store
+-@empty:
+-    lda #0
+ @store:
+     sta GT_TEMP,y
+     inc column

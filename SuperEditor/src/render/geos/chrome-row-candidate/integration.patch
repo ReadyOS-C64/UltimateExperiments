@@ -1,0 +1,278 @@
+--- a/src/render/geos/caret-cache.s
++++ b/src/render/geos/caret-cache.s
+@@ -11,7 +11,7 @@
+ .import se_f_owner,se_hot_caret,se_sel_mark,se_sel_anchor
+ .import se_gc_handle,se_gc_epoch,se_reu_map,se_reu_c64,se_reu_offset
+ .import se_reu_logical,se_reu_length,se_reu_copy
+-.import se_gcc_status,se_gcc_cell
++.import se_gcc_status,se_gcc_cell,se_gcc_row
+ .import se_v_bottom,se_v_seen,se_v_caret_row,se_l_valid,se_l_need_wrap
+ .importzp screen_ptr
+ .export entry
+@@ -19,6 +19,8 @@
+  OVL_BINDING
+ entry:
+  lda se_overlay_frame
++ cmp #4
++ jeq chrome_row
+  cmp #3
+  beq root_try
+  lda se_f_owner
+@@ -100,6 +102,8 @@
+  sta GCC_PHASE
+  pla
+  jmp root_release
++chrome_row:
++ jmp se_gcc_row
+ cell:
+  jmp se_gcc_cell
+ owned:
+--- a/src/render/geos/caret-ui.s
++++ b/src/render/geos/caret-ui.s
+@@ -4,6 +4,7 @@
+ .include "editor-api.inc"
+ .include "render/geos/caret-ui.inc"
+ .import tui_editor_status40
++.export se_gcc_row
+ .ifndef se_f_owner
+ .import se_f_owner
+ .endif
+@@ -158,21 +159,81 @@
+     cmp #4
+     jne foreign
+     jsr tui_editor_status40
++    ldx #2
++    bne row_setup
++; Internal opcode4; owner0/1 and only physicalchrome rows0,1,24.
++se_gcc_row:
++    lda se_f_owner
++    cmp #2
++    jcs foreign
++    ldx se_overlay_frame+1
++    cpx #2
++    bcc row_setup
++    cpx #24
++    jne argument
++    ldx #2
++row_setup:
++    lda row_matrix_lo,x
++    sta GCC_UI_COLUMN+1
++    lda row_matrix_hi,x
++    sta GCC_UI_COLUMN+2
++    lda row_bitmap_lo,x
++    sta screen_ptr
++    lda row_bitmap_hi,x
++    sta screen_ptr+1
+     lda #0
+     sta GCC_UI_COLUMN
+-    sta screen_ptr
+-    lda #$7E
+-    sta screen_ptr+1
+ @cell:
++    ; Commonhotcaretstatus keeps its directabsolute accesses. Generalheader
++    ; rows share the exact glyph/inverse/pixels loop below.
++    lda GCC_UI_COLUMN+2
++    cmp #$43
++    bne @matrix_cell
+     ldx GCC_UI_COLUMN
+     lda $43C0,x
+     pha
+-    asl
+-    asl
+-    asl
+-    sta text_ptr
+-    pla
+-    pha
++    lda $DBC0,x
++    and #15
++    asl
++    asl
++    asl
++    asl
++    ora #6
++    sta $43C0,x
++    jmp @glyph
++@matrix_cell:
++    lda GCC_UI_COLUMN+1
++    sta text_ptr
++    lda GCC_UI_COLUMN+2
++    sta text_ptr+1
++    ldy GCC_UI_COLUMN
++    lda (text_ptr),y
++    pha
++    lda text_ptr+1
++    clc
++    adc #$98
++    sta text_ptr+1
++    lda (text_ptr),y
++    and #15
++    asl
++    asl
++    asl
++    asl
++    ora #6
++    tax
++    lda GCC_UI_COLUMN+2
++    sta text_ptr+1
++    txa
++    sta (text_ptr),y
++@glyph:
++    pla
++    tax
++    pha
++    asl
++    asl
++    asl
++    sta text_ptr
++    pla
+     lsr
+     lsr
+     lsr
+@@ -181,16 +242,6 @@
+     and #3
+     ora #$48
+     sta text_ptr+1
+-    lda $DBC0,x
+-    and #15
+-    asl
+-    asl
+-    asl
+-    asl
+-    ora #6
+-    sta $43C0,x
+-    pla
+-    tax
+     jsr pixels
+     clc
+     lda screen_ptr
+@@ -206,3 +257,8 @@
+     lda #0
+     clc
+     rts
++.segment "RODATA"
++row_matrix_lo: .byte $00,$28,$C0
++row_matrix_hi: .byte $40,$40,$43
++row_bitmap_lo: .byte $00,$40,$00
++row_bitmap_hi: .byte $60,$61,$7E
+--- a/src/render/grid/source.s
++++ b/src/render/grid/source.s
+@@ -204,7 +204,7 @@
+     sta G_NR+NR_ROW
+     lda #GRID_ROW
+     jsr grid_call
+-    jcs grid_return
++    bcs grid_return
+     lda g_row
+     clc
+     adc #2
+--- a/src/render/grid/preflight.s
++++ b/src/render/grid/preflight.s
+@@ -97,7 +97,7 @@
+     jne grid_stale
+ @length:
+     CMP24 g_next,se_v_length
+-    jcc @end
++    bcc @end
+     jne grid_stale
+ @end:
+     COPY24 g_next,g_end
+@@ -127,7 +127,7 @@
+     bcc @next
+     CMP24 se_hot_caret,g_end
+     bcc @found
+-    jne @next
++    bne @next
+     ; At a soft boundary, the caret belongs to the following row. A real
+     ; CR/EOF blank belongs here if there is room in this row.
+     lda se_l_mode
+@@ -135,7 +135,7 @@
+     SUB24 g_end,g_start,g_delta
+     lda g_delta+2
+     ora g_delta+1
+-    jne @next
++    bne @next
+     lda g_delta
+     cmp g_width
+     bcs @next
+@@ -176,9 +176,9 @@
+     sbc #0
+     sta se_l_pan+2
+     inc se_l_pan
+-    jne @ready
++    bne @ready
+     inc se_l_pan+1
+-    jne @ready
++    bne @ready
+     inc se_l_pan+2
+     jmp @ready
+ @left:
+@@ -215,7 +215,7 @@
+     bcc @copy
+     lda g_row
+     cmp #21
+-    jne @ready
++    bne @ready
+     lda se_ef_valid
+     bne @ready
+     COPY24 se_v_bottom,g_next
+--- a/src/render/grid/mode.s
++++ b/src/render/grid/mode.s
+@@ -224,7 +224,7 @@
+ presentation:
+     lda se_mode
+     cmp #3
+-    jne unavailable
++    bne unavailable
+     lda se_r_presentation
+     eor #1
+     jmp set_presentation
+--- a/src/render/grid/finalize.s
++++ b/src/render/grid/finalize.s
+@@ -81,12 +81,30 @@
+     adc g_row
+     sta G_BC+BC_ROW
+     tax
++    ; Geometry above remains shared with old cell path. Only GEOS fullchrome
++    ; rows batch; popup skip1 retains its exact original rectangle semantics.
++    lda g_backend
++    cmp #27
++    bne @cell_path
++    lda g_skip
++    bne @cell_path
++    txa
++    sta se_overlay_frame+1
++    lda #4
++    sta se_overlay_frame
++    lda #27
++    ldx #0
++    jsr se_overlay_call
++    bcc :+
++    rts
++:   jmp @next_row
++@cell_path:
+     lda g_skip
+     beq :+
+     cpx #2
+-    jcc @advance
++    bcc @advance
+     cpx #24
+-    jeq @advance
++    beq @advance
+ :
+     lda #$40
+     sta screen_ptr+1
+@@ -139,12 +157,13 @@
+     lda g_backend
+     ldx #0
+     jsr se_overlay_call
+-    jcs @return
++    bcs @return
+ @advance:
+     inc g_col
+     lda g_col
+     cmp g_w
+     jcc @cell
++@next_row:
+     inc g_row
+     lda g_row
+     cmp g_h

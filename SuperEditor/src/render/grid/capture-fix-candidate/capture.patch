@@ -1,0 +1,19 @@
+--- src/render/grid/caret/caret.s
++++ src/render/grid/caret/caret.s
+@@ -307,6 +307,7 @@
+  cmp #13
+  bne @packet
+  jsr row_bit
++ tax ;A survives resident overlay return; X does not
+  lda H+N_CR,x
+  ora BITMASK
+  sta H+N_CR,x
+@@ -326,7 +327,7 @@
+  inc ROW
+  lda ROW
+  cmp #22
+- jcc @row
++ bcc @row ;assembler proves relative range
+  jsr locate
+  jcs miss
+  lda NEWSEEN

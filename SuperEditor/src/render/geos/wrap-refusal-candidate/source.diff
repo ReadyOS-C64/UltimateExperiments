@@ -1,0 +1,82 @@
+--- released3928/edit-cache.s
++++ private4095/edit-cache.s
+@@ -12,6 +12,7 @@
+ .import se_r_revision,se_v_length,se_v_top,se_v_pos,se_view_init,se_view_peek
+ .import se_hot_caret,se_hot_pending,se_hot_phase,se_hot_ready,se_hot_command,se_hot_delete
+ .import se_object_id,se_object_validate
++.import se_petscii_screen
+ .importzp screen_ptr
+ .export entry
+ .segment "CODE"
+@@ -461,6 +462,9 @@
+  cmp #2
+  jeq miss
+ @row_semantics_ready:
++ jsr refuse_wrap
++ jcs fault
++ jne miss ;helperreturnsZset onlywhen originaladmission shouldcontinue
+  lda GEX_ROW
+  beq @first
+  sec
+@@ -1041,6 +1045,61 @@
+  clc
+ @return:
+  rts
++; Optional early refusal only. Existing actual parser/VERIFY remains authority.
++refuse_wrap:
++ lda GEX_CLASS
++ cmp #4
++ bne @done
++ lda GEX_OP
++ ora GP_RECORD+GPR_INLINE
++ bne @done
++ lda GEC_NEW
++ jsr se_petscii_screen
++ cmp #27
++ bcc @lower
++ cmp #$30
++ bcc @done
++ cmp #$3A
++ bcc @digit
++ cmp #$41
++ bcc @done
++ cmp #$5B
++ bcs @done
++ sec
++ sbc #$27 ;uppercase screen41..5A ->26..51
++ bne @width
++@digit:
++ adc #4 ;Cclear, digits30..39 ->52..61
++ bne @width
++@lower:
++ sbc #0 ;Cclearfrom CMP27: knownalnum screen1..26 ->0..25
++@width:
++ tax
++ lda advances,x
++ clc
++ adc GP_RECORD+GPR_TAIL_X
++ tax
++ lda GP_RECORD+GPR_TAIL_X+1
++ adc #0
++ cmp #1
++ bcc @done
++ bne @overflow
++ cpx #65 ;strictlygreaterthan320; equality still needs actualVERIFY
++ bcc @done
++@overflow:
++ lda #<GPR_STYLES
++ ldx #>GPR_STYLES
++ jsr zero_field
++ bcs @return
++ eor #2 ;checked zero_field: A0/allzero ->A2/refuse, A2/nonzero ->A0/continue
++ rts ;Cclear from reader; no originaladmission/VERIFY bypass
++@done:
++ lda #0
++ clc
++@return:
++ rts
++advances:
++ .byte 5,5,5,5,5,3,5,5,2,2,5,2,8,5,6,5,5,3,4,3,5,6,8,6,5,6,6,5,5,5,4,4,5,6,2,4,6,4,8,6,6,5,6,5,5,4,5,6,8,6,6,6,5,3,4,4,5,4,5,5,5,5
+ ; Signedonebyte delta, with24bit overflow/underflow refusal.
+ delta:
+  lda GEX_OP

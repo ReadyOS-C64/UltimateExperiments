@@ -1,0 +1,1 @@
+Append grid to tools/cpu_editor.py NAMES and tools/package.py SEO-name list. The private startup48 alias GRID already appears in resident.patch. Rebuild all48 against the new resident seal; preserve root newer C14span implementation. The CPU fixture is not a packaged D81.

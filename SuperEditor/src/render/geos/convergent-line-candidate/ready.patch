@@ -1,0 +1,931 @@
+--- a/src/render/geos/edit-cache.s
++++ b/src/render/geos/edit-cache.s
+@@ -4,6 +4,8 @@
+ .include "editor-api.inc"
+ .include "render/geos/edit-cache.inc"
+ .include "render/geos/edit-certificate.inc"
++.include "render/geos/semantic.inc"
++.import se_crc_init,se_crc_byte,se_crc_value
+ .include "document/math24.inc"
+ .import se_f_owner,se_mode,se_e_ui,se_e_draw_sequence,se_r_presentation
+ .import se_l_mode,se_l_pan,se_sel_mark,se_ef_valid,se_ef_generation
+@@ -101,7 +103,7 @@
+  lda GEC_OLD
+  jne miss
+  lda GEC_NEW
+- jsr ordinary
++ jsr printable
+  jcs miss
+  jmp @operation
+ @delete:
+@@ -113,7 +115,7 @@
+ : lda GEC_NEW
+  jne miss
+  lda GEC_OLD
+- jsr ordinary
++ jsr printable
+  jcs miss
+ @operation:
+  jsr capability
+@@ -277,11 +279,7 @@
+  CMP24 GEC_POSITION,GP_RECORD+GPR_END
+  bcc @found
+  bne @next
+- ; Equality is considered only for a heading; complete reason/caret-row proof
+- ; below still rejects softwrap and all other ambiguous end boundaries.
+- lda GP_RECORD+GPR_FLAGS
+- lsr
+- bcs @found
++ jmp @found ;complete reason/caret-row proof below disambiguates EOF/CR
+ @next:
+  inc GEX_ROW
+  jmp @scan
+@@ -289,60 +287,17 @@
+  lda GEX_ROW
+  cmp GEX_HEADER+GPH_CARET_ROW
+  jne miss
+- ; Every accepted START/interior branch assigns CLASS before use.
+- CMP24 GEC_POSITION,GP_RECORD+GPR_START
+- bne @interior
+- lda GEC_NEW
+- ldx GEX_OP
+- beq @alpha
+- lda se_hot_command
+- cmp #4
+- jne miss
+- lda GP_RECORD+GPR_INLINE
+- jne miss
+- lda GEC_OLD
+-@alpha:
+- and #$7F
+- cmp #$41
+- jcc miss
+- cmp #$5B
+- jcs miss
+- lda GP_RECORD+GPR_KIND
+- jne miss
+- txa
+- eor #1
+- cmp GP_RECORD+GPR_FLAGS
+- jne miss
+- txa
+- ora #2
++ lda #5
+  sta GEX_CLASS
+-@saved_geometry:
+- ; Resident saved-caret geometry witnesses the genuinely painted row.
+  lda GP_RECORD+GPR_TOP
+  cmp GCC_Y
+- bne @reason_bad
++ jne miss
+  lda GP_RECORD+GPR_HEIGHT
+  cmp GCC_HEIGHT
+- bne @reason_bad
+- beq @geometry
+-@interior:
+- ; Plain/code admission is retained; complete heading body gets class4.
++ jne miss
+  lda GP_RECORD+GPR_KIND
+  cmp #2
+- bcs @reason_bad
+- ora GP_RECORD+GPR_INLINE
+- beq :+
+- lda #1
+-: sta GEX_CLASS
+- lda GP_RECORD+GPR_FLAGS
+- beq @geometry
+- cmp #1
+- bne @reason_bad
+- lda GP_RECORD+GPR_KIND
+- bne @reason_bad
+- lda #4
+- sta GEX_CLASS
+- bne @saved_geometry
++ jcs miss
+ @geometry:
+  lda GP_RECORD+GPR_RASTER_X
+  ora GP_RECORD+GPR_RASTER_X+1
+@@ -424,47 +379,12 @@
+  CMP24 GEX_OLD_END,GEX_OLD_LENGTH
+  jne miss
+ @row_shape:
+- lda GEX_CLASS
+- beq @plain_semantics
+- cmp #1
+- beq @row_semantics_ready
+- lsr
+- bcc @heading_proof
+-@plain_semantics:
+- ; Plain old rows, including inverse heading BACK, prove allstyle/roles0.
+- lda #<GPR_STYLES
+- ldx #>GPR_STYLES
+- jsr zero_field
+- jcs fault
+- cmp #2
+- jeq miss
+- lda #<GPR_ROLES
+- ldx #>GPR_ROLES
+- jsr zero_field
+- jcs fault
+- cmp #2
+- jeq miss
+- lda GEX_CLASS
+- cmp #3
+- beq @prefix_proof
+- bne @row_semantics_ready
+-@heading_proof:
+- lda #<GPR_ROLES
+- ldx #>GPR_ROLES
+- ldy #2
+- jsr expected_field
+- jcs fault
+- cmp #2
+- jeq miss
+-@prefix_proof:
+- jsr heading_prefix
+- jcs fault
+- cmp #2
+- jeq miss
+-@row_semantics_ready:
+- jsr refuse_wrap
+- jcs fault
+- jne miss ;helperreturnsZset onlywhen originaladmission shouldcontinue
++ jsr cert_read
++ jcs fault
++ cmp #1
++ jne miss
++ CMP24 GEX_BUFFER+4,GEX_OLD_NEXT
++ jne miss
+  lda GEX_ROW
+  beq @first
+  sec
+@@ -498,20 +418,6 @@
+  cmp #13
+  jne miss
+ @first_char:
+- lda GEX_CLASS
+- cmp #2
+- bcs @byte_witness
+- lda GEX_HEIGHT
+- cmp #8
+- beq @byte_witness
+- COPY24 GEX_OLD_START,se_v_pos
+- jsr se_view_peek
+- jcs fault
+- and #$7F
+- cmp #$41
+- jcc miss
+- cmp #$5B
+- jcs miss
+ @byte_witness:
+  ; Deletionwitness mustmatchthe oldcached literalbyte atthatcanonicalposition.
+  lda GEX_OP
+@@ -629,11 +535,8 @@
+  adc #8
+  cmp GEX_HEIGHT
+  jne miss
+- lda GEX_CLASS
+- cmp #3
+- lda #0
+- rol
+- eor GP_RECORD+GPR_FLAGS
++ lda GP_RECORD+GPR_FLAGS
++ and #$FE
+  ora GP_RECORD+GPR_RASTER_X
+  ora GP_RECORD+GPR_RASTER_X+1
+  ora GP_RECORD+GPR_COUNT+1
+@@ -671,21 +574,42 @@
+  cmp GP_RECORD+GPR_COUNT
+  jne miss
+  sta GEX_BOUNDARIES
+- lda GEX_CLASS
+- bne @new_semantics_ready
+- lda #<GPR_STYLES
+- ldx #>GPR_STYLES
+- jsr zero_field
+- jcs fault
+- cmp #2
+- jeq miss
+- lda #<GPR_ROLES
+- ldx #>GPR_ROLES
+- jsr zero_field
+- jcs fault
+- cmp #2
+- jeq miss
+ @new_semantics_ready:
++ jsr cert_read
++ jcs fault
++ cmp #1
++ jne miss
++ lda GSEM_FRAME+GSEM_CP_VALID
++ cmp #1
++ jne miss
++ ldx #27
++@semantic_key:
++ lda GSEM_FRAME+GSEM_CP_KEY,x
++ cmp GP_HEADER+GPH_KEY,x
++ jne miss
++ dex
++ bpl @semantic_key
++ ldx #2
++@semantic_next:
++ lda GSEM_FRAME+GSEM_CP_NEXT,x
++ cmp GP_RECORD+GPR_NEXT,x
++ jne miss
++ lda GSEM_FRAME+GSEM_CP_STATE+76,x
++ cmp GEX_BUFFER+38,x
++ jne miss
++ dex
++ bpl @semantic_next
++ lda GSEM_FRAME+GSEM_CP_STATE+16
++ cmp GEX_BUFFER+35
++ jne miss
++ lda GSEM_FRAME+GSEM_CP_STATE+15
++ cmp GEX_BUFFER+36
++ jne miss
++ lda GSEM_FRAME+GSEM_CP_STATE+17
++ cmp GEX_BUFFER+37
++ jne miss
++ jsr cert_rekey
++ jcs fault
+  jsr current
+  jcs fault
+  lda GEX_PAGE_COUNT
+@@ -746,6 +670,13 @@
+  sta GP_IO_LENGTH+1
+  jsr se_gp_cache_write
+  jcs fault
++ jsr cert_read
++ jcs fault
++ cmp #1
++ bne :+
++ jsr cert_rekey
++ jcs fault
++:
+  ; ABI3 consumers derive affinities from FIRST; no absolute arrays to shift.
+  inc GEX_SCAN_ROW
+  jmp pending
+@@ -791,25 +722,14 @@
+  clc
+  rts
+ ; Helpers have noallocation/free/source mutation andnooverlay calls.
+-ordinary:
++printable:
+  cmp #32
+  bcc @bad
+  cmp #$80
+- bcc :+
++ bcc @yes
+  cmp #$A0
+  bcc @bad
+-: cmp #'*'
+- beq @bad
+- cmp #'@'
+- beq @bad
+- cmp #$5C
+- beq @bad
+- cmp #'#'
+- beq @bad
+- cmp #':'
+- beq @bad
+- cmp #'-'
+- beq @bad
++@yes:
+  clc
+  rts
+ @bad:
+@@ -912,194 +832,6 @@
+  lda #64
+  sta GP_IO_LENGTH
+  jmp se_gp_cache_write
+-heading_prefix:
+- lda #<GPR_CHARS
+- ldx #>GPR_CHARS
+- jsr field
+- lda #<GEX_BUFFER
+- sta GP_IO_POINTER
+- lda #>GEX_BUFFER
+- sta GP_IO_POINTER+1
+- lda GEX_BOUNDARIES
+- cmp #8
+- bcc :+
+- lda #8
+-: sta GP_IO_LENGTH
+- lda #0
+- sta GP_IO_LENGTH+1
+- jsr se_gp_cache_read
+- bcs @done
+- ldx #0
+- lda GEX_CLASS
+- cmp #3
+- bne :+
+- inx
+-: ldy #0
+-@hash:
+- lda GEX_BUFFER,x
+- cmp #'#'
+- bne @space
+- inx
+- iny
+- cpy #7
+- bcs @bad
+- cpx GEX_BOUNDARIES
+- bcs @bad
+- bne @hash
+-@space:
+- cmp #' '
+- bne @bad
+- tya
+- beq @bad
+- lda GEX_CLASS
+- cmp #4
+- bne @valid
+- ; The known contained <=161-byte row makes low-byte subtraction exact.
+- inx
+- stx GEX_PAIR
+- sec
+- lda GEC_POSITION
+- sbc GEX_OLD_START
+- cmp GEX_PAIR
+- bcc @bad
+- lda GEC_NEW
+- bne @character
+- lda se_hot_command
+- cmp #4
+- bne @bad
+- lda GEC_OLD
+-@character:
+- and #$7F
+- cmp #$30
+- bcc @bad
+- cmp #$3A
+- bcc @valid
+- cmp #$41
+- bcc @bad
+- cmp #$5B
+- bcs @bad
+-@valid:
+- lda #0
+- clc
+-@done:
+- rts
+-@bad:
+- lda #2
+- clc
+- rts
+-zero_field:
+- ldy #0
+-expected_field:
+- sty GEX_ARRAY
+- sta GEX_OFFSET
+- stx GEX_OFFSET+1
+- lda #0
+- sta GEX_PAIR
+-@next:
+- sec
+- lda GEX_BOUNDARIES
+- sbc GEX_PAIR
+- beq @zero
+- cmp #33
+- bcc :+
+- lda #32
+-: sta GEX_CHUNK
+- clc
+- lda GEX_OFFSET
+- adc GEX_PAIR
+- pha
+- lda GEX_OFFSET+1
+- adc #0
+- tax
+- pla
+- jsr field
+- lda #<GEX_BUFFER
+- sta GP_IO_POINTER
+- lda #>GEX_BUFFER
+- sta GP_IO_POINTER+1
+- lda GEX_CHUNK
+- sta GP_IO_LENGTH
+- lda #0
+- sta GP_IO_LENGTH+1
+- jsr se_gp_cache_read
+- bcs @return
+- ldx #0
+-@byte:
+- lda GEX_BUFFER,x
+- cmp GEX_ARRAY
+- bne @nonzero
+- inx
+- cpx GEX_CHUNK
+- bcc @byte
+- clc
+- lda GEX_PAIR
+- adc GEX_CHUNK
+- sta GEX_PAIR
+- jmp @next
+-@nonzero:
+- lda #2
+- clc
+- rts
+-@zero:
+- lda #0
+- clc
+-@return:
+- rts
+-; Optional early refusal only. Existing actual parser/VERIFY remains authority.
+-refuse_wrap:
+- lda GEX_CLASS
+- cmp #4
+- bne @done
+- lda GEX_OP
+- ora GP_RECORD+GPR_INLINE
+- bne @done
+- lda GEC_NEW
+- jsr se_petscii_screen
+- cmp #27
+- bcc @lower
+- cmp #$30
+- bcc @done
+- cmp #$3A
+- bcc @digit
+- cmp #$41
+- bcc @done
+- cmp #$5B
+- bcs @done
+- sec
+- sbc #$27 ;uppercase screen41..5A ->26..51
+- bne @width
+-@digit:
+- adc #4 ;Cclear, digits30..39 ->52..61
+- bne @width
+-@lower:
+- sbc #0 ;Cclearfrom CMP27: knownalnum screen1..26 ->0..25
+-@width:
+- tax
+- lda advances,x
+- clc
+- adc GP_RECORD+GPR_TAIL_X
+- tax
+- lda GP_RECORD+GPR_TAIL_X+1
+- adc #0
+- cmp #1
+- bcc @done
+- bne @overflow
+- cpx #65 ;strictlygreaterthan320; equality still needs actualVERIFY
+- bcc @done
+-@overflow:
+- lda #<GPR_STYLES
+- ldx #>GPR_STYLES
+- jsr zero_field
+- bcs @return
+- eor #2 ;checked zero_field: A0/allzero ->A2/refuse, A2/nonzero ->A0/continue
+- rts ;Cclear from reader; no originaladmission/VERIFY bypass
+-@done:
+- lda #0
+- clc
+-@return:
+- rts
+-advances:
+- .byte 5,5,5,5,5,3,5,5,2,2,5,2,8,5,6,5,5,3,4,3,5,6,8,6,5,6,6,5,5,5,4,4,5,6,2,4,6,4,8,6,6,5,6,5,5,4,5,6,8,6,6,6,5,3,4,4,5,4,5,5,5,5
+ ; Signedonebyte delta, with24bit overflow/underflow refusal.
+ delta:
+  lda GEX_OP
+@@ -1172,3 +904,110 @@
+  bcc :+
+  inc screen_ptr+1
+ : rts
++
++; Per-logical-line outgoing certificate: same64B checked schema at slot+0500.
++; COUNT/CR/EOF proof above ensures this is a complete logical row, not wrap.
++cert_request:
++ lda #0
++ ldx #5
++ jsr field
++ lda #<GEX_BUFFER
++ sta GP_IO_POINTER
++ lda #>GEX_BUFFER
++ sta GP_IO_POINTER+1
++ lda #64
++ sta GP_IO_LENGTH
++ lda #0
++ sta GP_IO_LENGTH+1
++ rts
++cert_read:
++ jsr cert_request
++ jsr se_gp_cache_read
++ bcs @return
++ lda GEX_BUFFER
++ cmp #$43
++ bne @miss
++ lda GEX_BUFFER+1
++ cmp #2
++ bne @miss
++ lda GEX_BUFFER+2
++ cmp #64
++ bne @miss
++ lda GEX_BUFFER+3
++ cmp #1
++ bne @miss
++ ldx #27
++@key:
++ lda GEX_BUFFER+7,x
++ cmp GCC_KEY,x
++ bne @miss
++ dex
++ bpl @key
++ ldx #2
++@top:
++ lda GEX_BUFFER+41,x
++ cmp GP_HEADER+GPH_TOP,x
++ bne @miss
++ dex
++ bpl @top
++ jsr cert_crc
++ lda se_crc_value
++ cmp GEX_BUFFER+62
++ bne @miss
++ lda se_crc_value+1
++ cmp GEX_BUFFER+63
++ bne @miss
++ lda #1
++ clc
++@return:
++ rts
++@miss:
++ lda #0
++ clc
++ rts
++cert_crc:
++ jsr se_crc_init
++ ldy #0
++@byte:
++ lda GEX_BUFFER,y
++ jsr se_crc_byte
++ iny
++ cpy #62
++ bcc @byte
++ rts
++cert_rekey:
++ COPY24 GEX_BUFFER+4,GEX_TEMP
++ jsr delta
++ bcs @return
++ COPY24 GEX_TEMP,GEX_BUFFER+4
++ ldx #27
++@key:
++ lda GP_HEADER+GPH_KEY,x
++ sta GEX_BUFFER+7,x
++ dex
++ bpl @key
++ jsr cert_crc
++ lda se_crc_value
++ sta GEX_BUFFER+62
++ lda se_crc_value+1
++ sta GEX_BUFFER+63
++ lda #0
++ sta GEX_BUFFER+3
++ jsr cert_request
++ jsr se_gp_cache_write
++ bcs @return
++ lda #1
++ sta GEX_BUFFER+3
++ clc
++ lda GP_IO_OFFSET
++ adc #3
++ sta GP_IO_OFFSET
++ bcc :+
++ inc GP_IO_OFFSET+1
++: lda #<(GEX_BUFFER+3)
++ sta GP_IO_POINTER
++ lda #1
++ sta GP_IO_LENGTH
++ jmp se_gp_cache_write
++@return:
++ rts
+--- a/src/render/geos/edit-cache.inc
++++ b/src/render/geos/edit-cache.inc
+@@ -41,7 +41,8 @@
+ GEX_HEADING_BODY_CLASS=4 ;alnum INSERT/BACK after unchanged complete hash+space prefix
+ GEX_END=GEX_STATE+47
+ GEX_OLD_HEADER=$D528 ;64B
+-GEX_EARLY_WRAP=1 ;optional strict overflow refusal before any header/row staging
++GEX_CONVERGENT_LINE=1
++GEX_EARLY_WRAP=0 ;optional strict overflow refusal before any header/row staging
+ GEX_ROW_BACKUPS=0 ;old/new row copies had no consumers; addresses stay reserved
+ GEX_OLD_ROW=$D568 ;2048B reserved, unused
+ GEX_NEW_ROW=$DD68 ;2048B reserved, unused
+--- a/src/render/geos/page.s
++++ b/src/render/geos/page.s
+@@ -1099,6 +1099,12 @@
+     ldx #0
+     jmp se_overlay_call
+ 
+-.include "render/geos/checkpoint/publish.inc"
++gsc_publish:
++ lda #7
++ sta se_overlay_frame
++ lda #19
++ ldx #0
++ jmp se_overlay_call
++
+ 
+ .include "render/geos/checkpoint/consumer.inc"
+--- a/src/engine/range-entry.s
++++ b/src/engine/range-entry.s
+@@ -9,6 +9,8 @@
+     OVL_BINDING
+ entry:
+     lda se_overlay_frame
++    cmp #7
++    jeq se_gcl_publish
+     cmp #RANGE_BEGIN
+     jeq se_range_begin
+     cmp #RANGE_STEP
+@@ -26,3 +28,5 @@
+     lda #$79
+     sec
+     rts
++
++.import se_gcl_publish
+--- /dev/null
++++ b/src/render/geos/convergent-line-candidate/publisher.s
+@@ -0,0 +1,256 @@
++; PrivateR19 coldpublisher relocation. Every entry owner4 before phase.
++.setcpu "6502"
++.macpack longbranch
++.include "editor-api.inc"
++.include "render/geos/editor.inc"
++.include "render/geos/checkpoint/codec.inc"
++.include "document/math24.inc"
++.import se_f_owner,se_v_top
++.import se_gp_cache_write,se_gp_cache_guard
++.export se_gcl_publish
++LINE=GP_CONTROL+3
++.segment "CODE"
++se_gcl_publish:
++ lda se_f_owner
++ cmp #4
++ bne @busy
++ jsr gsc_publish
++ jsr se_gp_cache_guard
++ bcs @done
++ jsr gsc_cap
++ bcs @done
++ lda GSEM_FRAME+GSEM_CP_VALID
++ cmp #1
++ bne @done
++ ldx #27
++@current_key:
++ lda GSC_CURRENT,x
++ cmp GP_HEADER+GPH_KEY,x
++ bne @done
++ dex
++ bpl @current_key
++ ldx #2
++@logical:
++ lda GP_CONTROL+5,x
++ cmp GSEM_FRAME+GSEM_START,x
++ bne @done
++ dex
++ bpl @logical
++ lda GP_CONTROL+20
++ cmp #2
++ beq @done ;never overwrite the old witness during an edit transaction
++ ldx #2
++@next:
++ lda GSEM_FRAME+GSEM_CP_NEXT,x
++ sta GSC_INCOMING,x
++ lda GSEM_FRAME+GSEM_CP_STATE+76,x
++ sta GSC_INCOMING+6,x
++ dex
++ bpl @next
++ lda GSEM_FRAME+GSEM_CP_STATE+16
++ sta GSC_INCOMING+3
++ lda GSEM_FRAME+GSEM_CP_STATE+15
++ sta GSC_INCOMING+4
++ lda GSEM_FRAME+GSEM_CP_STATE+17
++ sta GSC_INCOMING+5
++ lda LINE
++ asl
++ asl
++ asl
++ clc
++ adc #7
++ sta GSC_WRITE_OFFSET+1
++ lda #0
++ sta GSC_WRITE_OFFSET
++ jsr gsc_record_write
++@done:
++ lda #0
++ clc
++ rts
++@busy:
++ lda #$B2
++ sec
++ rts
++; C21-only producer. Call at classified/@ready before C20/C25 phase reuse.
++; Existing C21 STEP has just passed actual cache_guard (source graph + typedFE).
++; Only row0 with a real logical START==TOP publishes; softwrap TOP declines.
++.include "render/geos/checkpoint/codec.inc"
++.import se_crc_init,se_crc_byte,se_crc_value
++.segment "CODE"
++gsc_publish:
++ jsr gsc_cap
++ jcs @skip
++ lda LINE
++ jne @skip
++ lda GSC_CAPTURED
++ cmp #1
++ jne @skip
++ CMP24 GSC_INCOMING,se_v_top
++ jne @skip
++ ldx #27
++@identity:
++ lda GSC_CURRENT,x
++ cmp GP_HEADER+GPH_KEY,x
++ jne @skip
++ dex
++ bpl @identity
++ ; Save the9B predecessor before packing the current64B over9000.
++ ldx #9
++@save_previous:
++ lda GSC_PREVIOUS,x
++ sta GSC_PREVIOUS_COPY,x
++ dex
++ bpl @save_previous
++ lda #0
++ sta GSC_WRITE_OFFSET
++ lda #6
++ sta GSC_WRITE_OFFSET+1
++ jsr gsc_record_write
++ bcs @skip
++ lda #$40
++ sta GSC_WRITE_OFFSET
++ lda GSC_PREVIOUS_COPY+9
++ cmp #1
++ bne @invalidate_previous
++ ldx #8
++@restore_previous:
++ lda GSC_PREVIOUS_COPY,x
++ sta GSC_INCOMING,x
++ dex
++ bpl @restore_previous
++ jsr gsc_record_write
++ jmp @skip
++@invalidate_previous:
++ lda se_v_top
++ ora se_v_top+1
++ ora se_v_top+2
++ bne @skip
++ lda #0
++ jsr gsc_valid_write
++@skip:
++ lda #0
++ clc
++ rts
++gsc_record_write:
++ lda #0
++ ldx #63
++@zero:
++ sta GSC_RECORD,x
++ dex
++ bpl @zero
++ lda GSC_WRITE_OFFSET+1
++ cmp #6
++ bne :+
++ lda #$53
++ bne :++
++: lda #$43
++: sta GSC_RECORD
++ lda #2
++ sta GSC_RECORD+1
++ lda #1
++ sta GSC_RECORD+3
++ lda #64
++ sta GSC_RECORD+2
++ COPY24 GSC_INCOMING,GSC_RECORD+4
++ ldx #27
++@key:
++ lda GSC_CURRENT,x
++ sta GSC_RECORD+7,x
++ dex
++ bpl @key
++ ldx #5
++@carry:
++ lda GSC_INCOMING+3,x
++ sta GSC_RECORD+35,x
++ dex
++ bpl @carry
++ COPY24 se_v_top,GSC_RECORD+41
++ jsr se_crc_init
++ ldy #0
++@crc:
++ lda GSC_RECORD,y
++ jsr se_crc_byte
++ iny
++ cpy #62
++ bcc @crc
++ lda se_crc_value
++ sta GSC_RECORD+62
++ lda se_crc_value+1
++ sta GSC_RECORD+63
++ ; Commit VALID-last. A failed partial record can never be a cache hit.
++ lda #0
++ sta GSC_RECORD+3
++ jsr @request
++ jsr se_gp_cache_write
++ bcs @return
++ lda #1
++ jmp gsc_valid_write
++@return:
++ rts
++@request:
++ lda GSC_WRITE_OFFSET
++ sta GP_IO_OFFSET
++ lda #0
++ sta GP_IO_POINTER
++ sta GP_IO_LENGTH+1
++ lda GSC_WRITE_OFFSET+1
++ sta GP_IO_OFFSET+1
++ lda #>GSC_RECORD
++ sta GP_IO_POINTER+1
++ lda #64
++ sta GP_IO_LENGTH
++ rts
++gsc_valid_write:
++ sta GSC_RECORD+3
++ lda GSC_WRITE_OFFSET
++ clc
++ adc #3
++ sta GP_IO_OFFSET
++ lda GSC_WRITE_OFFSET+1
++ sta GP_IO_OFFSET+1
++ lda #0
++ sta GP_IO_LENGTH+1
++ lda #>GSC_RECORD
++ sta GP_IO_POINTER+1
++ lda #<(GSC_RECORD+3)
++ sta GP_IO_POINTER
++ lda #1
++ sta GP_IO_LENGTH
++ jmp se_gp_cache_write
++
++; Private first-classify optional source checkpoint consumption.
++.include "consumer-witness.inc"
++.import se_overlay_ids,se_overlay_capacity
++.import image_slot,image_size_lo,image_size_hi,image_crc_lo,image_crc_hi
++.segment "CODE"
++gsc_cap:
++ ldx #0
++@next:
++ lda se_overlay_ids,x
++ cmp #24
++ bne @advance
++ lda image_slot,x
++ and #$7F
++ cmp #1
++ bne @bad
++ lda image_size_lo,x
++ cmp #<GSC_SEED_SIZE
++ bne @bad
++ lda image_size_hi,x
++ cmp #>GSC_SEED_SIZE
++ bne @bad
++ lda image_crc_lo,x
++ cmp #<GSC_SEED_CRC
++ bne @bad
++ lda image_crc_hi,x
++ cmp #>GSC_SEED_CRC
++ bne @bad
++ clc
++ rts
++@advance:
++ inx
++ cpx #<se_overlay_capacity
++ bcc @next
++@bad:
++ sec
++ rts
+--- a/Makefile
++++ b/Makefile
+@@ -863,7 +863,7 @@
+ build/engine/range-entry.o: src/engine/range-entry.s src/engine/api.inc build/engine-api.inc
+ 	mkdir -p $(dir $@)
+ 	$(CA65) -g -I src -I build -o $@ $<
+-RANGE_CODE_OBJ = build/engine/range-entry.o build/engine-code/range.o build/editor_fold/journal-code.o
++RANGE_CODE_OBJ = build/engine/range-entry.o build/engine-code/range.o build/editor_fold/journal-code.o build/convergence/publisher.o build/geos-prod/cache-warm.o
+ build/range-bindings.s: $(RANGE_CODE_OBJ) build/editor.prg tools/module_bindings.py
+ 	$(PYTHON) tools/module_bindings.py --report build/editor-report.json --output $@ --require-export se_range_begin --require-export se_range_step $(RANGE_CODE_OBJ)
+ build/engine/range-bindings.o: build/range-bindings.s
+@@ -1167,3 +1167,7 @@
+ 	$(CA65) -g -D GSR_AUX=1 -I build/geos-prod -I src -o $@ $<
+ build/geos-prod/page.o: src/render/geos/source-certificate.inc
+ build/geos-prod/source-line.o: src/render/geos/source-certificate.inc src/render/geos/source-certificate.s src/render/geos/certificate-consumer.s
++
++build/convergence/publisher.o: src/render/geos/convergent-line-candidate/publisher.s build/geos-prod/editor-api.inc build/geos-prod/checkpoint-witness.stamp
++	mkdir -p $(dir $@)
++	$(CA65) -g -I build/geos-prod -I src -o $@ $<
+--- a/cfg/range-journal.cfg
++++ b/cfg/range-journal.cfg
+@@ -1,2 +1,2 @@
+ MEMORY { IMAGE: file=%O, start=$A000, size=$1000, type=rw; }
+-SEGMENTS { CODE: load=IMAGE, type=ro; RODATA: load=IMAGE, type=ro; FOLD_JOURNAL: load=IMAGE, type=ro; }
++SEGMENTS { CODE: load=IMAGE, type=ro; RODATA: load=IMAGE, type=ro; GEOS_PAGE: load=IMAGE, type=ro, optional=yes; FOLD_JOURNAL: load=IMAGE, type=ro; }

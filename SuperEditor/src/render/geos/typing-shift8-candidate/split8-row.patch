@@ -1,0 +1,101 @@
+--- src/render/geos/style-typing/wide.s
++++ src/render/geos/style-typing/wide.s
+@@ -57,6 +57,13 @@
+     bne @copy_prefix
+ @shift_begin:
+     sty column
++    ; Select wide deletion once per row; the original narrow/insert loop
++    ; retains its byte and bit paths without a per-byte width comparison.
++    lda F+GT_OP
++    beq @byte
++    lda F+GT_ADVANCE
++    cmp #8
++    jcs @wide_byte
+ @byte:
+     ldy column
+     lda F+GT_OP
+@@ -156,6 +163,7 @@
+     cmp np
+     jne @byte
+     ; Unused tail is zeroed explicitly, including dirty old input-tail bits.
++@zero_begin:
+     tay
+     cpy #40
+     bcs @tail_done
+@@ -286,6 +294,76 @@
+     lda #0
+     clc
+     rts
++@wide_byte:
++    ldy column
++    lda #0
++    sta carry2
++    cpy #38
++    bcs :+
++    iny
++    iny
++    lda (gt_base),y
++    sta carry2
++    dey
++    dey
++:   cpy #39
++    beq @wide_zero_next
++    iny
++    lda (gt_base),y
++    dey
++    jmp @wide_next
++@wide_zero_next:
++    lda #0
++@wide_next:
++    sta carrybyte
++    lda F+GT_ADVANCE
++    and #7
++    tax
++    lda carrybyte
++    cpx #0
++    beq @wide_shifted
++@wide_bits:
++    asl carry2
++    rol
++    dex
++    bne @wide_bits
++@wide_shifted:
++    sta value
++    ; Preserve only original pixels strictly before the edit.
++    cpy xb
++    bne @wide_no_prefix
++    lda (gt_base),y
++    and prefix
++    bcs @wide_prefix_ready ;carry from CPY equality is stillset
++@wide_no_prefix:
++    lda #0
++@wide_prefix_ready:
++    sta work
++    cpy bb
++    bcc @wide_merged
++    lda value
++    bne @wide_suffix_test
++    beq @wide_merged
++@wide_suffix_test:
++    cpy bb
++    bne @wide_whole_suffix
++    and suffix
++@wide_whole_suffix:
++    ora work
++    sta work
++@wide_merged:
++    ; Clear the vacated tail, independent of unused input-tail contents.
++    lda work
++    cpy nb
++    bcc @wide_store
++    and endmask
++@wide_store:
++    sta GT_TEMP,y
++    inc column
++    lda column
++    cmp np
++    jne @wide_byte
++    jmp @zero_begin
+ bad:
+     lda #$90
+     sec

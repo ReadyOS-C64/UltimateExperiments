@@ -1,0 +1,99 @@
+--- frozen-combined48/edit-cache.s
++++ private-row-backup/edit-cache.s
+@@ -544,7 +544,7 @@
+  cmp GEC_NEW
+  jne miss
+ @stage:
+- ; Headerandoldslotbackups arederiveddata inthissameownedFEbank.
++ ; Retain the checked old-header witness; row backups have no consumers.
+  lda #<GEX_OLD_HEADER
+  sta GP_IO_OFFSET
+  lda #>GEX_OLD_HEADER
+@@ -559,13 +559,6 @@
+  sta GP_IO_LENGTH+1
+  jsr se_gp_cache_write
+  jcs fault
+- lda GEX_ROW
+- jsr slot
+- jcs fault
+- lda #<GEX_OLD_ROW
+- ldx #>GEX_OLD_ROW
+- jsr copy_row
+- jcs fault
+  ; Refreshcurrentcheckedsource BEFOREconstructingthenewheader.
+  jsr source
+  jcs fault
+@@ -689,13 +682,6 @@
+  cmp #2
+  jeq miss
+ @new_semantics_ready:
+- lda GEX_ROW
+- jsr slot
+- jcs fault
+- lda #<GEX_NEW_ROW
+- ldx #>GEX_NEW_ROW
+- jsr copy_row
+- jcs fault
+  jsr current
+  jcs fault
+  lda GEX_PAGE_COUNT
+@@ -1055,59 +1041,6 @@
+  clc
+ @return:
+  rts
+-; Entire2KiBslotcopy through128B scratch; the64Bheldoldheader isnotclobbered.
+-copy_row:
+- sta GEX_COPY_TARGET
+- stx GEX_COPY_TARGET+1
+- lda #0
+- sta GEX_COPY_LEFT
+- lda #8
+- sta GEX_COPY_LEFT+1
+-@chunk:
+- lda GEX_BASE
+- sta GP_IO_OFFSET
+- lda GEX_BASE+1
+- sta GP_IO_OFFSET+1
+- lda #<GEX_BUFFER
+- sta GP_IO_POINTER
+- lda #>GEX_BUFFER
+- sta GP_IO_POINTER+1
+- lda #128
+- sta GP_IO_LENGTH
+- lda #0
+- sta GP_IO_LENGTH+1
+- jsr se_gp_cache_read
+- bcs @return
+- lda GEX_COPY_TARGET
+- sta GP_IO_OFFSET
+- lda GEX_COPY_TARGET+1
+- sta GP_IO_OFFSET+1
+- jsr se_gp_cache_write
+- bcs @return
+- clc
+- lda GEX_BASE
+- adc #128
+- sta GEX_BASE
+- bcc :+
+- inc GEX_BASE+1
+-: clc
+- lda GEX_COPY_TARGET
+- adc #128
+- sta GEX_COPY_TARGET
+- bcc :+
+- inc GEX_COPY_TARGET+1
+-: sec
+- lda GEX_COPY_LEFT
+- sbc #128
+- sta GEX_COPY_LEFT
+- lda GEX_COPY_LEFT+1
+- sbc #0
+- sta GEX_COPY_LEFT+1
+- ora GEX_COPY_LEFT
+- bne @chunk
+- clc ;successful final subtraction leavesCset, notatransport error
+-@return:
+- rts
+ ; Signedonebyte delta, with24bit overflow/underflow refusal.
+ delta:
+  lda GEX_OP
