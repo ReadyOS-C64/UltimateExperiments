@@ -110,3 +110,12 @@ bq_done:jsr bq_end
  lda #0
  clc
  rts
+
+.ifdef BCQ_CLASSIFY
+.export bq_baseline_miss
+bq_baseline_miss:
+ jsr bq_end
+ lda #2
+ clc
+ rts
+.endif

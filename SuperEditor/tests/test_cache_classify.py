@@ -101,6 +101,11 @@ def run(out,base,pipeline):
   assert {e['kind']for e in blocks(data)}==set(range(9))
   positions=sorted({0,len(data),*(e['start']for e in blocks(data)),*(e['end']for e in blocks(data))});check('allkinds/languages',data,positions)
   check('EOFempty',b'',[0]);check('CRsentinel',b'\r\r',[0,1,2]);check('far24bit',b'A'*66000+sem.geos.native_text('\r# Far\rTail.'),[65535,65536,66000,66001,66006,66012]);check('pending',b'Body **bold**',[0,5,13],True)
+  navigation=baseline(sem.geos.native_text('Body **bold**\rTail.'));r,_,_,_=classify(0);assert r.a==0
+  oldtoken=f.read(seam['se_bc_arena'],5);f.put('se_f_owner',0,1);f.position(1)
+  assert f.m.read(seam['se_bc_flags'])&1 and not f.m.read(seam['se_bc_count'])
+  r,got,hint,steps=classify(1);assert r.a==2 and not f.get('se_doc_read_locks',1) and f.read(seam['se_bc_arena'],5)==oldtoken
+  cases.append({'tag':'actualpublicW_LOADgeometryinapplicableMISS','queries':2,'source_bytes':len(navigation)})
   data=baseline(sem.geos.native_text('Body **bold** £*literal\rTail.'));stable=f.read(0,65536);reu=f.reu();faults=[]
   for owner in (0,1,2,3,5,255):
    for op in (0,1,2):

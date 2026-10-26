@@ -51,6 +51,7 @@ def run(out,base):
   before=gate.reu();canonical=gate.stable()
   counts=counted('cached-classification-full-repaint',full)
   assert counts['inln:entry']>0
+  cached_query_calls=counts['inln:entry']
   assert not any(v for k,v in counts.items()if k.startswith(('sema:','geossema:'))and(k.endswith(('_feed','_finish','_init'))or k.endswith(':entry')))
   assert gate.stable()==canonical
   # Only the existing derived pixel/page cache may change; semantic arena53
@@ -72,6 +73,13 @@ def run(out,base):
      changes.append(dict(physical=bank,owner=f.m.read(f.s['se_reu_physical_owner']+bank),changed=len(offsets),first=offsets[:32],last=offsets[-8:]))
    (out/'unexpected-reu-changes.json').write_text(json.dumps(dict(changes=changes,objects={n:f.read(f.s[n],8 if n!='object_extents'else 128).hex()for n in ('object_owner','object_banks','object_extents')}),indent=2)+'\n')
    raise
+  # Moving an unchanged hot window changes its representation snapshot. This
+  # is a normal cache miss, not a source/render error or a reason to rebuild.
+  f.position(1)
+  counts=counted('hot-window-cache-miss',full)
+  assert counts.get('sema:entry',0)==0 and 0<counts['inln:entry']<cached_query_calls
+  assert counts.get('geossema:se_sm_feed',0)>0 and f.get('se_bc_count',1)==0
+  f.position(0)
   f.key(observer.Q);f.render();changed=bytes([observer.Q])+data
   assert f.get('se_bc_count',1)>0
   counts=counted('observed-edit-safe-fallback',full,source=changed)

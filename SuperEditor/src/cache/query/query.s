@@ -28,6 +28,23 @@
  dey
  bpl :-
 .endmacro
+ ; Baseline inapplicability is optional onlybefore jobsource publication.
+.macro EQ_BASELINE source,target,count
+ ldy #count-1
+:
+ lda source,y
+ cmp target,y
+.ifdef BCQ_CLASSIFY
+ jne bq_baseline_miss
+.else
+ jne bq_changed
+.endif
+ dey
+ bpl :-
+.endmacro
+.ifdef BCQ_CLASSIFY
+.import bq_baseline_miss
+.endif
 .segment "CODE"
 se_bc_query_begin:
 .ifndef BCQ_SELECTOR_OWNS_OWNER
@@ -151,8 +168,8 @@ se_bc_query_step:
  ora #BC_ACTIVE
  sta se_bc_flags
 .endif
- EQ BQ_SOURCE,BQ_READER+27,59
- EQ BQ_LENGTH,BQ_READER+10,3
+ EQ_BASELINE BQ_SOURCE,BQ_READER+27,59
+ EQ_BASELINE BQ_LENGTH,BQ_READER+10,3
  ldy #2
 @position:lda BQ_POSITION,y
  cmp BQ_LENGTH,y

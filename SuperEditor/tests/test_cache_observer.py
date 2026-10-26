@@ -54,12 +54,14 @@ def runner(out):
     original = bypass.runner(out)
     path = out / 'runner.cpp'
     text = path.read_text()
-    old = '(lo!=0x46 && lo!=0xfe)'
+    # Match the shared owner predicate prefix; the parser gate may append its
+    # independently controlled typed53 initial-allocation exception.
+    old = '(lo!=0x46 && lo!=0xfe'
     assert text.count(old) == 1
     # Universal source transactions may legitimately stash metadata3,
     # source/append4, clipboard5 and journal6. Record exact checked DMA spans, never mask
     # those entire banks; independently verify all committed source bytes.
-    text = text.replace(old, '(lo!=3 && lo!=4 && lo!=5 && lo!=6 && lo!=0x46 && lo!=0xfe)')
+    text = text.replace(old, '(lo!=3 && lo!=4 && lo!=5 && lo!=6 && lo!=0x46 && lo!=0xfe')
     needle = 'static void step(ZeroPagePeddle*m){auto r=zeropage_peddle_regs(m);'
     assert text.count(needle) == 1
     observer = r'''

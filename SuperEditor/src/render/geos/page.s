@@ -304,12 +304,16 @@ next_line:
     jmp prepare_line
 @classify:
     COPY24 ANCHOR,GSEM_FRAME+GSEM_QUERY
+    ; An actual C24 checkpoint also latches an inapplicable-cache fallback for
+    ; this viewport. Do not retry the same immutable baseline on every row.
+    lda GSEM_FRAME+GSEM_CP_VALID
+    bne legacy_classify
     lda se_bc_flags
     and #(BC_ARMED|BC_LOST|BC_MUTATING|BC_ACTIVE)
     cmp #BC_ARMED
-    bne :+
+    bne legacy_classify
     lda se_bc_count
-    bne :+
+    bne legacy_classify
     lda #0
     sta GSEM_FRAME+GSEM_CP_VALID
     lda #14
@@ -317,7 +321,7 @@ next_line:
     lda #35
     ldx #0
     jmp request
-:
+legacy_classify:
     lda GSEM_FRAME+GSEM_CP_VALID
     bne gsc_classify_direct
     jsr gsc_cap
