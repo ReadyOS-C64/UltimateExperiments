@@ -10,9 +10,11 @@ def build(out,base):
  def run(args):subprocess.run(list(map(str,args)),cwd=ROOT,check=True)
  budgets={}
  for tag,slot,id_,files in [
- ('edit',1,45,[('cache/lexical/gateway.s',[])]),
- ('tail',0,36,[('cache/lexical/resolver.s',[]),*[(f'cache/arena/{n}.s',['BCA_READONLY_OPEN=1'])for n in('core','open','page')]]),
- ('lex',0,37,[('cache/lexical/roles.s',[]),('cache/arena/core.s',[]),('cache/arena/page.s',[])]),
+ ('edit',1,45,[('cache/lexical/gateway.s',['LX_BATCH_STEPS=4'])]),
+ # These exact R36/R37 entry guards authenticate the same-call inner work.
+ # Keep this definition local: other arena consumers still guard internally.
+ ('tail',0,36,[('cache/lexical/resolver.s',[]),*[(f'cache/arena/{n}.s',['BCA_READONLY_OPEN=1']+(['BCA_OUTER_VALIDATED=1']if n in('open','page')else[]))for n in('core','open','page')]]),
+ ('lex',0,37,[('cache/lexical/roles.s',[]),('cache/arena/core.s',[]),('cache/arena/page.s',['BCA_OUTER_VALIDATED=1'])]),
  ('ical',1,47,[('cache/lexical/worker.s',[]),('supermark/lexer.s',['SE_SM_CODE_ONLY=1']),('supermark/lexer.s',['SE_SM_STATE_ONLY=1'])]),
  ('ctrl',1,49,[('cache/lexical/linker.s',[]),*[(f'cache/arena/{n}.s',['BCA_READONLY_OPEN=1'])for n in('core','open','page')]])]:
   d=out/tag;d.mkdir(exist_ok=True);objects=[]

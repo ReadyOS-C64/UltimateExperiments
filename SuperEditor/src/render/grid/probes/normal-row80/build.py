@@ -42,7 +42,9 @@ def packaged(out,base=BASE):
  image=(out/'candidate/leaf.seo').read_bytes();(fixture/'build/overlays/grid80.seo').write_bytes(image)
  identity['assets']['grid80']=hashlib.sha256(image).hexdigest()
  (fixture/'freeze.json').write_text(json.dumps(identity,indent=2)+'\n')
- spec=importlib.util.spec_from_file_location('normal_row80_c33_builder',ROOT/'src/render/grid/caret/build.py');bridge=importlib.util.module_from_spec(spec);spec.loader.exec_module(bridge)
+ tree=out/'tree'
+ spec=importlib.util.spec_from_file_location('normal_row80_c33_builder',tree/'src/render/grid/caret/build.py');bridge=importlib.util.module_from_spec(spec);spec.loader.exec_module(bridge)
+ bridge.ROOT=tree;bridge.D=tree/'src/render/grid/caret'
  control,_,_=bridge.build(out/'control-c33',base)
  assert control==(base/'build/overlays/grid.seo').read_bytes(),'exact C33 reassembly before witness change'
  candidate,_,_=bridge.build(out/'candidate-c33',fixture)

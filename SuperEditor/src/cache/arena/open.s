@@ -5,6 +5,9 @@
 .import se_crc_value
 .import bca_owner,bca_guard,bca_validate,bca_transfer,bca_crc_root,bca_pending,bca_done,bca_bad,bca_stale,bca_corrupt
 .export se_bc_arena_open,bca_open_step,bca_root_check
+; BCA_OUTER_VALIDATED is a narrow R36 profile contract: link_guard has
+; completed in this same uninterrupted entry before bca_open_step. Do not
+; enable it for general arena consumers or substitute an across-yield bit.
 .segment "CODE"
 se_bc_arena_open:
  jsr bca_owner
@@ -111,8 +114,10 @@ bca_open_step:
  cmp #6
  jeq @commit
 .else
+.ifndef BCA_OUTER_VALIDATED
  jsr bca_guard
  jcs @return
+.endif
  lda BCA_PHASE
 .endif
  cmp #4

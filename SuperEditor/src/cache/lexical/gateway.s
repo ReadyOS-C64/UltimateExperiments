@@ -15,6 +15,11 @@ INDEX=CTX+22
 USED=CTX+23
 ERROR=CTX+26
 PARK=$8F40
+; Ephemeral per-entry budget, caller-owned spare after existing CTX+29.
+BATCH=CTX+30
+.ifdef LX_BATCH_STEPS
+.assert LX_BATCH_STEPS>=1 .and LX_BATCH_STEPS<=4,error,"bounded lexical batch"
+.endif
 .macro CP source,target,n
  ldx #n-1
 :
@@ -205,11 +210,24 @@ resolver:
  ldx #0
  jmp se_overlay_call
 resolve_step:
+.ifdef LX_BATCH_STEPS
+ lda #LX_BATCH_STEPS
+ sta BATCH
+@again:
+.endif
  lda #1
  jsr resolver
  jcs fallback
  cmp #1
+.ifdef LX_BATCH_STEPS
+ bne @ready
+ dec BATCH
+ bne @again
+ jmp pending
+@ready:
+.else
  jeq pending
+.endif
  cmp #4
  jeq construct
  cmp #0
@@ -334,11 +352,24 @@ roles:
  ldx #0
  jmp se_overlay_call
 consume_step:
+.ifdef LX_BATCH_STEPS
+ lda #LX_BATCH_STEPS
+ sta BATCH
+@again:
+.endif
  lda #1
  jsr roles
  jcs fallback
  cmp #1
+.ifdef LX_BATCH_STEPS
+ bne @ready
+ dec BATCH
+ bne @again
+ jmp pending
+@ready:
+.else
  jeq pending
+.endif
  cmp #0
  jne fallback
  lda LQ_READY

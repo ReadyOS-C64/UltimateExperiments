@@ -5,6 +5,9 @@
 .import se_crc_init,se_crc_byte,se_crc_value
 .import bca_owner,bca_guard,bca_transfer,bca_pending,bca_done,bca_bad,bca_stale,bca_corrupt
 .export se_bc_page_begin,bca_page_step,se_bc_arena_read
+; BCA_OUTER_VALIDATED may be enabled only for the R36/R37 lexical profiles:
+; link_guard/guard has just completed for this same uninterrupted entry.
+; Page request, range, directory/header/payload CRC and checked DMA stay live.
 .segment "CODE"
 ; Caller supplies PAGE/KIND/GENERATION. STEP validates directory,64B header,
 ; then at most128 payload bytes per call. No record exposed before fullCRC.
@@ -15,8 +18,10 @@ se_bc_page_begin:
  jne @busy
  lda #0
  sta BCA_PROOF
+.ifndef BCA_OUTER_VALIDATED
  jsr bca_guard
  jcs @done
+.endif
  lda BCA_PAGE
  jeq bca_bad
  ; page /16 < actual allocated bank count, handles 16-bank max safely.
@@ -49,8 +54,10 @@ se_bc_page_begin:
 bca_page_step:
  jsr page_request_guard
  jcs @done
+.ifndef BCA_OUTER_VALIDATED
  jsr bca_guard
  jcs @done
+.endif
  lda BCA_PHASE
  cmp #7
  jeq @directory
@@ -310,8 +317,10 @@ se_bc_arena_read:
  jne bca_bad
  jsr page_request_guard
  jcs @done
+.ifndef BCA_OUTER_VALIDATED
  jsr bca_guard
  jcs @done
+.endif
  ; Compute requested relative offset from page base without losing request.
  lda BCA_PAGE
  lsr
