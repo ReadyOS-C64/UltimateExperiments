@@ -1,10 +1,30 @@
 # Current performance
 
-Plain60/80 physical-row insertion/removal now improves43.9–57.5% in paired
+Plain60/80 Return splits and BACK merges now use one R29 transaction when the
+complete affected logical paragraph is visible. Eight paired nativePAL cases
+improve38.1–39.9% at60 and20.4–22.4% at80, with identical screenshots and overlay
+loads9→4. These cases take1.02–1.45million PAL cycles; broader responsiveness
+work remains open. Styled, selected, folded and unknown offscreen contexts
+retain the ordinary renderer. See the [newline transaction](../src/render/grid/cr/README.md).
+
+| PAL operation | Control cycles | Current cycles |
+| --- | ---: | ---: |
+|60 short split / merge|1,917,609 /1,862,580|1,187,255 /1,145,053|
+|60 wrapped split / merge|2,420,160 /2,391,957|1,453,920 /1,438,077|
+|80 short split / merge|1,375,897 /1,316,037|1,068,295 /1,022,135|
+|80 wrapped split / merge|1,506,726 /1,476,201|1,192,321 /1,174,858|
+
+These compare the committed944a3e7 control with the actual cold60-image
+registered product, using ROM File/Open, public`syntax plain` and the disclosed
+PC/SP/public-input-to-quiescent-scheduler stopwatch seam. They include IRQ/VIC/
+REU activity and do not measure physical keyboard latency. Every native VIC
+pixel, source, sealed catalog asset, settings, reserved1KiB and read-only D81
+passes the independent checks. CPU32paired cases separately improve29.4–38.1%
+at60/18.7–26.0%at80; instruction counts are distinct from these PAL cycles.
+
+Plain60/80 physical-row insertion/removal separately improves43.9–57.5% in paired
 nativePAL cases, with identical screenshots and nine overlay loads. The tested
-wrapped physical-row moves take about0.8–1.0seconds. Return-key split/merge
-remains on the slower fallback, at1.73–2.55million PAL cycles (about1.8–2.6seconds).
-See the
+wrapped physical-row moves take about0.8–1.0seconds. See the
 [geometry measurements and contract](../src/render/grid/geometry/README.md).
 
 Same-call lexical batching separately improves retained-code warm PAL repaint

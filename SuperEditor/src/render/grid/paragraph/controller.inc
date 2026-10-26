@@ -46,7 +46,7 @@ long_try:
  jne miss
  lda DELTA
  cmp W
- jne miss
+ jne cr_try
 @raw_index:
  lda EDIT
  cmp W
@@ -200,7 +200,7 @@ long_try:
  sta LS_NEW
  sta LS_CHAIN
  jsr long_alnum
- jcs miss
+ jcs cr_try
  jsr long_advance
  jmp @same
 @skip:
@@ -417,6 +417,7 @@ long_try:
  sta EDIT
  jmp @packets
 @finish:
+long_cr_finish = *
  ldx #2
 @valid:
  lda LS_GC,x

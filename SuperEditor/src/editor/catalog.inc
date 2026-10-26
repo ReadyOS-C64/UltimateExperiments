@@ -66,6 +66,7 @@ file_catalog:
  COLD_FILE file56,3
  COLD_FILE file57,4
  COLD_FILE file58,4
+ COLD_FILE file59,3
 file_catalog_end:
 COLD_FILE_COUNT=(file_catalog_end-file_catalog)/2
 .assert COLD_FILE_COUNT<=64,error,"cold catalogue exceeds fixed overlay capacity"

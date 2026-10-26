@@ -1059,3 +1059,19 @@ nr_defaults:
  .byte 0,0,0,0,6
  .word $6000,$4000,$A800,P,P+80,P+160,palette
 .assert *-nr_defaults=19,error,"complete native-row public input template"
+
+.segment "CODE"
+cr_try:
+ lda se_render_caps
+ jne miss
+ lda #6
+ sta se_overlay_frame
+ lda #29
+ ldx #0
+ jsr se_overlay_call
+ jcs miss
+ cmp #1
+ jne miss ;old preflight-only prototype returned0 and cannot publish
+ jsr status
+ jcs miss
+ jmp long_cr_finish

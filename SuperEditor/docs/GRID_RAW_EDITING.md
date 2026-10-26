@@ -112,7 +112,8 @@ Plain60/80 ordinary insertion/BACK can now move a validated body suffix when
 wrapping adds/removes an empty CR physical row. Existing R24 operations preserve
 source/header/packet/provider authority, complete packets/anchors/CRbits and
 final R25 publication. NativePAL cases improve43.9–57.5% with identical images.
-Return-key split/merge and unknown offscreen exposure still fall back. See the
+Unknown offscreen exposure still falls back. Return-key split/merge now has
+the separate checked R29 path described below. See the
 [geometry contract and measured limits](../src/render/grid/geometry/README.md).
 
 ## Return at a short line's end
@@ -121,7 +122,7 @@ The long-row validator now authenticates an inserted byte before testing the
 old row's terminal bound. Previously a Return exactly at that bound could be
 mistaken for the original CR: source bytes were correct, but the following rows
 stayed at their old screen positions. The terminal CR now reaches the existing
-structural-edit fallback; ordinary terminal glyphs still use the validated path.
+structural-edit admission; ordinary terminal glyphs still use the validated path.
 Deletion checks its old-byte bound before reading. No CRC, provider or source
 guard is removed. See the [isolated regression](../src/render/grid/probes/row-geometry-extend/cr/TERMINAL.md).
 
@@ -135,3 +136,13 @@ widths pass544 glyph/role/flag vectors (1088 calls) with zero versus nonzero
 scratch, identical independent pixels/attributes and instruction counts.
 Registered edit/fault, stack and native60/80 typing checks also pass. This is
 space recovery for further rendering work, not a structural-edit speed claim.
+
+## Plain Return splits and BACK merges
+
+R29 now validates the complete visible logical paragraph against the genuine
+pending source, stages candidate rows, and paints only rows whose full240-byte
+packets differ. It copies/authenticates the real narrow font once and uses a
+local role0 blitter, reducing loads9→4. R25 still performs the final source/
+revision/CRC VALID-last commit. Selected, folded, styled, panned and incomplete
+offscreen scopes retain the existing renderer. See the [phase, authority and
+build contract](../src/render/grid/cr/README.md) and [paired native timings](PERFORMANCE.md).

@@ -1171,6 +1171,17 @@ EDITOR_ASSETS += build/overlays/grid.seo
 editor: build/overlays/grid.seo
 build/supereditor.d81: build/overlays/grid.seo
 
+# Plain Return/BACK geometry: one authenticated R29 transaction, no row swaps.
+GRID_CR_OBJ=$(addprefix build/grid-cr/,$(addsuffix .o,entry owner core validate-bounded suffix font raw-row)) build/geos-prod/grid-geometry-authority.o
+build/grid-cr/font-crc.inc: build/overlays/grid80.seo build/overlays/grid60.seo assets/fonts/generated/narrow4.bin assets/fonts/generated/narrow5.bin tools/grid_cr_font_witness.py build/editor.prg
+	$(PYTHON) tools/grid_cr_font_witness.py --base $(CURDIR) --output $@
+$(filter-out build/geos-prod/grid-geometry-authority.o,$(GRID_CR_OBJ)): build/grid-cr/%.o: src/render/grid/cr/%.s src/render/grid/caret/api.inc src/render/grid/paragraph/long.inc src/fold/source.inc build/geos-prod/editor-api.inc build/grid-cr/font-crc.inc
+	mkdir -p $(dir $@)
+	$(CA65) -g -I build/grid-cr -I build/geos-prod -I src -o $@ -l $(@:.o=.lst) $<
+$(eval $(call GEOS_IMAGE,row,$(GRID_CR_OBJ),cfg/overlay-r.cfg,0,29))
+EDITOR_ASSETS += build/overlays/row.seo
+editor build/supereditor.d81: build/overlays/row.seo
+
 # C24 incoming-checkpoint ABI witnesses are generated from the linked worker.
 build/geos-prod/checkpoint-codec.o: src/render/geos/checkpoint/codec.s src/render/geos/checkpoint/codec.inc
 	mkdir -p $(dir $@)
