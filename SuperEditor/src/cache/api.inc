@@ -14,6 +14,7 @@ BC_ACTIVE=8
 ; Optional full-baseline admission was tried for this document incarnation.
 ; H_INIT revokes it with the incarnation; ordinary repaint must not rebuild.
 BC_REBUILD_TRIED=16
+BC_PAGE_PROOF=32
 BC_RING_LIMIT=3
 BC_EVENT_SIZE=32
 BC_EVENT_SPLICE=1

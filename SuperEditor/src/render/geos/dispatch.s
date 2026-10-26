@@ -182,9 +182,6 @@ done:
     rts
 failed:
     pha
-    lda se_bc_flags
-    ora #BC_REBUILD_TRIED
-    sta se_bc_flags
     jsr se_geos_cancel
     pla
     jsr se_editor_error

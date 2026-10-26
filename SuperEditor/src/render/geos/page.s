@@ -114,9 +114,11 @@ begin:
     lda se_render_caps
     beq :+
     lda se_bc_flags
-    and #(BC_ARMED|BC_LOST|BC_REBUILD_TRIED)
+    and #(BC_ARMED|BC_LOST|BC_REBUILD_TRIED|BC_ACTIVE|BC_MUTATING)
     cmp #BC_LOST
     bne :+
+    ora #BC_REBUILD_TRIED ;A retains the eligible masked value BC_LOST
+    sta se_bc_flags
     lda #7
     ldx #9
     jmp request

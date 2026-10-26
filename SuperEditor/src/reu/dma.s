@@ -2,6 +2,7 @@
 .macpack longbranch
 .import se_reu_map, se_reu_logical_owner, se_reu_physical_owner
 .ifdef EDITOR_MANAGED_CODE
+.include "cache/api.inc"
 .import se_overlay_unverify
 .endif
 .export se_reu_copy, se_reu_c64, se_reu_offset, se_reu_length, se_reu_logical
@@ -76,16 +77,28 @@ se_reu_copy:
 .endif
     ldy se_reu_map,x
     cmp se_reu_physical_owner,y
+.ifdef EDITOR_MANAGED_CODE
+    jne @handle
+.else
     bne @handle
+.endif
     sty dma_physical
 .ifdef EDITOR_MANAGED_CODE
     ldy dma_direction
-    bne :+
+    bne @managed_done
     sty $CC4D ;all checked CPU->REU writes revoke preview body verification
-    cmp #2
+    cmp #$53
     bne :+
-    jsr se_overlay_unverify
+    pha
+    lda se_bc_flags
+    and #($FF-BC_PAGE_PROOF) ;revoke before every checked type53 stash
+    sta se_bc_flags
+    pla
 :
+    cmp #2
+    bne @managed_done
+    jsr se_overlay_unverify
+@managed_done:
 .endif
     php
     sei
