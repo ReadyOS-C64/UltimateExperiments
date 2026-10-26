@@ -1,4 +1,22 @@
-Parsing-preset update: one session capability byte is now linked into ordinary
+The current 54-asset build packs each startup filename into a low address byte
+and one byte containing its high address nibble and length. Assembly/link checks
+require names below `$1000`, lengths1–15 and at most64 entries. The original raw
+DOS names, order, aliases and 325-byte tutorial stay byte-identical.
+
+This recovers47 cold bytes: COLD ends at `$0EC5`, leaving58 bytes before the
+REU-probe save area at `$0F00`. BSS remains1,534 bytes and zero page24; the
+entire `$C600–$C9FF` reservation remains untouched. Warm addresses stay fixed;
+warm code changes only the initial JSR operand for the relocated cold REU
+probe and its ABI seal. This is available headroom, not registration of the
+private lexical/edit-cache modules. The catalog still contains54 assets.
+
+The emitted-table audit checks every filename against the frozen three-table
+build and the exact file in the new D81. Fresh native startup imports all54,
+all11 presentation images remain identical, navigation56 and stack68 pass,
+and controlled same-process lifecycle6 restores48,152 bytes and reopens422.
+No new allocation or bank is introduced.
+
+Historical parsing-preset update: one session capability byte is linked into ordinary
 BSS, which ends at `$C5FD` (1,534 bytes; two spare). Code/constants end `$3EFD`
 and cold startup ends `$0EFC`; `$C600–$C9FF` remains untouched. The SES64 font
 table is unchanged. Plain exposes expanded source through `se_ef_visible`

@@ -1133,7 +1133,7 @@ build/editor/overlay-read.o: src/iec/overlay_read.s src/overlay/format.inc
 build/editor/history-dispatch.o: src/history/dispatch.s src/history/api.inc src/object/api.inc src/document/api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -D EDITOR_COLD_DISPATCH=1 -I src -o $@ -l $(@:.o=.lst) $<
-build/editor/startup.o: src/editor/startup.s
+build/editor/startup.o: src/editor/startup.s src/editor/catalog.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -D EDITOR_MANAGED_CODE=1 -I src -o $@ -l $(@:.o=.lst) src/editor/startup.s
 build/lifecycle-prod/resume.o: src/lifecycle/resume.s $(wildcard src/lifecycle/*.inc) build/geos-prod/editor-api.inc
