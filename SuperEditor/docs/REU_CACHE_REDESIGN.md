@@ -1,11 +1,27 @@
 # Configurable parsing and retained document data
 
-Design direction recorded on 2026-10-25. The first implementation provides the
-three parsing presets below; the persistent document-cache service and new
-residency schedule remain proposed. Source checkpoint before implementation:
+Design direction recorded on 2026-10-25. The three parsing presets and the
+initial GEOS block-cache path are implemented on the development branch.
+Source checkpoint before implementation:
 `dad569e` on the local branch `supereditor/reu-cache-redesign`. Generated media,
 build outputs, logs, external font extracts and local working records are
 excluded from Git.
+
+The `fbcc8f6` checkpoint connects bounded C7 admission, the R33 REU writer,
+a retained C34 semantic producer, and C35 cached block classification. A full
+GEOS repaint uses the stored classifications without block parser feeds;
+independent pixel, source, lease and native display checks pass. This is an
+initial baseline and classification implementation. Inline/lexical reuse,
+edit-chain rebasing and retained layout are still work in progress.
+
+Performance qualification remains open. Native Full GEOS redraw measures
+26.376 million PAL cycles versus 9.512 million before this path: repeated page
+CRC validation and source guards currently outweigh the saved parsing. A
+viewport-scoped proof with write invalidation is being investigated. The broad
+incremental-edit gate also exposed a lost dirty-heading optimization: the new
+classification does not fabricate the legacy parser checkpoint. Preserve that
+regression as an open requirement when replacing the checkpoint contract.
+Do not interpret zero parser feeds or fewer overlay loads as a speed result.
 
 The user's requirements are configurable highlighting with a real parsing
 bypass, reuse of unchanged document analysis and layout, efficient REU use,
