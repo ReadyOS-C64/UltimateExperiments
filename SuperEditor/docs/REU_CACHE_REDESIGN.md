@@ -10,17 +10,34 @@ excluded from Git.
 The current runtime implements Plain, Markdown and Full, retained block
 classification, and selective reuse of sparse inline events. Edit-aware
 semantic reuse, retained lexical colors and retained layout are unfinished.
-The native 4,102-byte styled-navigation control still costs 306,428,091 PAL
-cycles for bottom, including repaint, versus 14,247,606 in Plain. Its real
-dispatcher trace records thousands of repeated inline requests. See
+The native 4,102-byte styled-navigation Bottom command now takes 4,091,035 PAL
+cycles including repaint, versus 306,428,091 in its control. Its real dispatcher
+trace drops thousands of repeated inline requests. See
 [performance measurements](PERFORMANCE.md) for the exact scope and evidence.
 
 Cache admission must account for total guard, DMA and overlay costs. Private
 lexical measurements already show that a 25-byte code block is cheaper to
 parse directly, whereas a roughly 1 KiB block benefits from retained spans.
-Private navigation work likewise retains ordinary movement paths when the
-new lookup would add overhead. These experiments have not been promoted;
-selective admission is a requirement, not a claimed completed optimization.
+The promoted navigation path retains ordinary movement when the new lookup
+would add overhead. Lexical retention remains private; selective admission
+must be qualified before that component is integrated.
+
+The navigation implementation adds C26 operations6/7 and an exact generated
+size/CRC witness checked by C23 before using them. Only an uncached E47 reveal
+enters this selector. With no projected folds, a successful C35 query moves the
+scan to the target's authenticated logical start. Refusal restores the original
+query and any real parser checkpoint byte for byte. Subsequent metric windows
+can reuse the live page proof and actual block bounds; checked arena writes
+revoke that proof before DMA. No guessed carry or replacement source identity
+is introduced. Source changes and missing-worker errors keep ordinary cleanup.
+
+C23 links the existing readonly geometry micromodule, omitting unused OPEN and
+WRITE code, and fits3,899 bytes; C26 fits4,000. The resident changes one branch
+displacement so completed queries return to their actual navigation or paint
+caller. There is no new BSS, zero page, allocation or asset. Native14 and the
+packaged/public/fault gates are recorded in the integration checkpoint. This
+does not skip softwrapped metric work within the target block or finish general
+redraw and typing performance.
 
 The `fbcc8f6` checkpoint connects bounded C7 admission, the R33 REU writer,
 a retained C34 semantic producer, and C35 cached block classification. A full
