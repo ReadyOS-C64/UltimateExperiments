@@ -110,11 +110,11 @@ call_failed:
     ; Both remain loaded across bounded slices, just like semantic workers.
     cmp #34
     bcc ordinary_worker
-    cmp #38
+    cmp #40
     bcs ordinary_worker
     cpx #1
     bne cache_complete
-    ; Query workers own their continuation and may hand off to BEGIN0.
+    ; Odd query workers, including C39 SOURCE, own their continuation.
     ; The request was already popped; this one-byte loan cannot exceed the
     ; existing request-PHA/overlay-JSR stack depth earlier in this function.
     pha

@@ -110,7 +110,7 @@ se_editor_startup:
     tax
     bcs asset_failed
     inx
-    cpx #53
+    cpx #54
     bcc @asset
     jsr se_editor_fonts_import
     bcs failed
@@ -188,14 +188,15 @@ file44: .byte $43,$4F,$44,$45 ;CODE
 file45: .byte $43,$4C,$45,$58 ;CLEX
 file47=file15 ;GRID shares the existing GRIDEDIT prefix
 file46=file43+1 ;TYPE shares the suffix of GTYPE, saving cold filename bytes
-file_low: .byte <file0,<file1,<file2,<file3,<file4,<file5,<file6,<file7,<file8,<file9,<file10,<file11,<file12,<file13,<file14,<file15,<file16,<file17,<file18,<file19,<file20,<file21,<file22,<file23,<file24,<file25,<file26,<file27,<file28,<file29,<file30,<file31,<file32,<file33,<file34,<file35,<file36,<file37,<file38,<file39,<file40,<file41,<file42,<file43,<file44,<file45,<file46,<file47,<file48,<file49,<file50,<file51,<file52
-file_high: .byte >file0,>file1,>file2,>file3,>file4,>file5,>file6,>file7,>file8,>file9,>file10,>file11,>file12,>file13,>file14,>file15,>file16,>file17,>file18,>file19,>file20,>file21,>file22,>file23,>file24,>file25,>file26,>file27,>file28,>file29,>file30,>file31,>file32,>file33,>file34,>file35,>file36,>file37,>file38,>file39,>file40,>file41,>file42,>file43,>file44,>file45,>file46,>file47,>file48,>file49,>file50,>file51,>file52
+file_low: .byte <file0,<file1,<file2,<file3,<file4,<file5,<file6,<file7,<file8,<file9,<file10,<file11,<file12,<file13,<file14,<file15,<file16,<file17,<file18,<file19,<file20,<file21,<file22,<file23,<file24,<file25,<file26,<file27,<file28,<file29,<file30,<file31,<file32,<file33,<file34,<file35,<file36,<file37,<file38,<file39,<file40,<file41,<file42,<file43,<file44,<file45,<file46,<file47,<file48,<file49,<file50,<file51,<file52,<file53
+file_high: .byte >file0,>file1,>file2,>file3,>file4,>file5,>file6,>file7,>file8,>file9,>file10,>file11,>file12,>file13,>file14,>file15,>file16,>file17,>file18,>file19,>file20,>file21,>file22,>file23,>file24,>file25,>file26,>file27,>file28,>file29,>file30,>file31,>file32,>file33,>file34,>file35,>file36,>file37,>file38,>file39,>file40,>file41,>file42,>file43,>file44,>file45,>file46,>file47,>file48,>file49,>file50,>file51,>file52,>file53
 file49=file36+4 ;FOLD: R33 baseline transport
 file50=file29+4 ;SEMA: C34 automatic baseline producer
 file51=file31+4 ;INLN: C35 retained query
 file52=file25+4 ;PAGE: C37 forward page query
+file53=file24+4 ;LINE: C39 retained inline SOURCE consumer
 file48: .byte $48,$4F,$54,$43,$4F,$4C,$44 ;HOTCOLD (raw DOS bytes, not text charmap)
-file_length: .byte 5,5,6,6,6,6,8,6,5,6,6,3,6,10,7,8,6,6,9,10,8,7,7,9,8,8,7,9,7,8,7,8,6,11,11,10,8,8,9,8,8,9,5,5,4,4,4,4,7,4,4,4,4
+file_length: .byte 5,5,6,6,6,6,8,6,5,6,6,3,6,10,7,8,6,6,9,10,8,7,7,9,8,8,7,9,7,8,7,8,6,11,11,10,8,8,9,8,8,9,5,5,4,4,4,4,7,4,4,4,4,4
 file38: .byte $47,$45,$4F,$53,$43,$41,$52,$45,$54
 file36: .byte $47,$45,$4F,$53,$46,$4F,$4C,$44
 file37: .byte $47,$45,$4F,$53,$54,$41,$49,$4C
@@ -250,7 +251,7 @@ sample:
     .byte ":::",13,13
     .byte "F1 menus   F7 typed commands",13
     .byte "Try syntax plain or syntax full.",13
-    .byte "Source view. F1 File opens and saves.",13
+    .byte "F1 File opens and saves.",13
 sample_end:
 .ifdef EDITOR_MANAGED_CODE
 .assert (sample_end-sample)>256,error,"bounded sample copy requires a second page"

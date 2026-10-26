@@ -960,6 +960,9 @@ build/geos-prod/inline-parser.o: src/supermark/inline.s src/supermark/api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -o $@ $<
 GEOS_INLINE_OBJ = build/geos-prod/inline.o build/geos-prod/inline-parser.o
+build/geos-prod/inline.o: src/render/geos/inline.s src/render/geos/source-cache-api.inc src/render/geos/source-cache-gate.inc build/geos-prod/editor-api.inc
+	mkdir -p $(dir $@)
+	$(CA65) -g -D SE_EDITOR_CACHED_INLINE_SOURCE=1 -I build/geos-prod -I src -o $@ -l $(@:.o=.lst) $<
 define GEOS_IMAGE
 build/geos-prod/$(1)-bindings.s: $(2) build/editor.prg tools/module_bindings.py
 	$$(PYTHON) tools/module_bindings.py --report build/editor-report.json --output $$@ $(2)
@@ -1212,14 +1215,14 @@ build/hot-cold/worker.o: src/cache/api.inc src/cache/observer/ring.inc src/cache
 
 # Checked REU baseline transport and retained C-slot jobs. Their builder uses
 # the actual resident aliases and refuses any capsule over its4KiB slot.
-CACHE_JOB_INPUTS=$(wildcard src/cache/editor/* src/cache/arena/* src/cache/query/* src/cache/semantic/*) src/supermark/block.s src/supermark/inline.s src/supermark/api.inc tools/module_bindings.py tools/bindings.py tools/overlays.py
+CACHE_JOB_INPUTS=$(wildcard src/cache/editor/* src/cache/arena/* src/cache/query/* src/cache/semantic/* src/cache/inline/*.s src/cache/inline/*.inc) src/supermark/block.s src/supermark/inline.s src/supermark/api.inc tools/module_bindings.py tools/bindings.py tools/overlays.py
 build/cache-editor/jobs.stamp: build/editor.prg build/editor.lbl build/editor-report.json $(CACHE_JOB_INPUTS)
 	$(PYTHON) src/cache/editor/build.py build/cache-editor $(CURDIR)
 	touch $@
-build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo: build/cache-editor/jobs.stamp
+build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo build/overlays/line.seo: build/cache-editor/jobs.stamp
 	cp build/cache-editor/$(@F) $@
-EDITOR_ASSETS += build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo
-editor build/supereditor.d81: build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo
+EDITOR_ASSETS += build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo build/overlays/line.seo
+editor build/supereditor.d81: build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo build/overlays/line.seo
 build/editor/commands.o build/geos-resident/dispatch.o: src/cache/api.inc
 build/overlays/menu40.o: src/cache/editor/admit.inc src/cache/api.inc
 build/geos-prod/page.o: src/cache/api.inc

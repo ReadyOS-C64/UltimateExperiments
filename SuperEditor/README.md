@@ -51,7 +51,8 @@ are session settings. Formatted preview still formats the document explicitly;
 its code-token colors follow the same switch. See
 [preset behavior and remaining REU redesign](docs/REU_CACHE_REDESIGN.md).
 GEOS block classification now uses a checked REU baseline and forward page
-lookups. Inline and code-token parsing still use their existing workers;
+lookups. Long, sparsely formatted prose can also reuse retained inline events.
+Short or dense bodies and BASIC/assembler tokens use the existing parsers;
 edit rebasing and retained layout remain in progress. Current Full redraw is
 10.283 million PAL cycles after raster batching and the empty-inline shortcuts, so performance qualification
 is still open. Committed window moves retain block classifications. A measured

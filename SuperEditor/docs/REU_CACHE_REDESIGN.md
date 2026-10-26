@@ -62,13 +62,28 @@ remains byte-identical. The change removes198,000 inline-parser feeds and lowers
 the same-window navigation interval from92.066 to56.358 million instructions,
 including actual caret reveal. Pixels, source and foreign REU remain unchanged.
 These are CPU instruction measurements; initial baseline construction is separate.
-Nonempty inline and retained layout probes are not yet integrated.
+The long sparse inline path described below is now integrated; retained layout
+remains a private experiment.
 
 The enabled C35 shortcut passes actual editor, foreground handoff, parser-bypass,
 incremental, stack and native11 gates. Native Full redraw is10.283 million PAL
 cycles, Markdown9.762 million, with all11 screenshots unchanged. Full remains
 8.1% above the older path. Native overlay loads fall153→149 (Full) and147→143
 (Markdown); no overall responsiveness or completion claim follows.
+
+C39 now consumes completed inline events for eligible source continuations.
+C26 admits bodies of at least4,096 bytes only with a live checked viewport,
+no queued edits, and the existing source continuation. C39 verifies the cached
+record and accepts at most eight events; larger or unsuitable results return to
+C26 through an explicit fallback operation, without attempting C39 again.
+Short and dense bodies retain the parser path. The worker fits4,093 bytes,
+adds no resident state, and preserves the existing source-reader cleanup ABI.
+Actual public editor comparisons and fault cases check the complete dispatcher,
+source maps, pixels, history and exact REU boundaries. The54-asset native build
+also passes the eleven display captures and full startup import. The diverse
+short-document Full redraw remains10.283 million PAL cycles, so this does not
+close general performance qualification or slow styled navigation. The long-case
+instruction measurements include repaint, rather than initial baseline creation.
 
 C35 seeds an untrusted slot after final source validation. C37 validates the
 page certificate, current source/capability tuple and the selected record's CRC
