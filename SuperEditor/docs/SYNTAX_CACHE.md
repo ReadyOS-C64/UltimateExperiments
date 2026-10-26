@@ -72,3 +72,20 @@ Mapped edit roots and retained layout remain separate unfinished work.
 Reserved observer bit64 is not part of this lexical protocol. A future live
 reader-revocation protocol must explicitly couple all participating readers
 and writers before those implementations can be combined.
+
+## Same-call lexical work batching
+
+C45 services up to four existing resolver/retained-role work units per public
+STEP. Every helper entry still validates the full source identity and arena
+capability. R36/R37 alone omit immediately repeated inner guards after that
+same-call validation; no proof is retained across yields. Source verification
+remains bounded to32bytes per original step. Other arena profiles retain their
+original guards. No new flags, allocations, BSS or ZP are introduced.
+
+Paired native59 control/candidate measurements save6.25% BASIC and6.06% assembler
+warm PAL cycles, with identical pixels and unchanged286 overlay loads. C45 warm
+inclusive call peaks grow from about29k to64kcycles; whole scheduler-service
+peaks remain about80.5k/68.1k. This is a throughput improvement with a larger
+service-call budget; long-page responsiveness remains open. See the
+[exact paired qualification](../src/cache/lexical-batch-native-probe/README.md) and
+[same-call lifetime proof](../src/cache/lexical-warm-probe/README.md).

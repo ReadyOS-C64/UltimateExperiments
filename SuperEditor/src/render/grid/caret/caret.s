@@ -1069,3 +1069,10 @@ auth_crc_hi:.byte >HELPER_CRC,>PARAGRAPH_CODE_CRC,>PARAGRAPH_SOURCE_CRC,>PARAGRA
 
 .segment "CODE"
 .include "render/grid/paragraph/controller.inc"
+
+.segment "CODE"
+geometry:
+ sta se_overlay_frame
+ lda #24
+ ldx #0
+ jmp se_overlay_call

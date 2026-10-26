@@ -1,5 +1,16 @@
 # Current performance
 
+Plain60/80 physical-row insertion/removal now improves43.9–57.5% in paired
+nativePAL cases, with identical screenshots and nine overlay loads. Return-key
+split/merge remains on the slower fallback; these structural operations still
+take about0.8–1.0seconds in the tested cases. See the
+[geometry measurements and contract](../src/render/grid/geometry/README.md).
+
+Same-call lexical batching separately improves retained-code warm PAL repaint
+by6.25% BASIC/6.06% assembler. It preserves286 loads and increases per-call
+work; long-page responsiveness remains open. See the
+[exact paired scope](../src/cache/lexical-batch-native-probe/README.md).
+
 The latest qualified80-column raster skips ink counting and color arbitration
 when every effective role is normal. NativePAL short-row insertion improves
 255,925→226,807cycles (11.38%) and BACK255,319→226,366 (11.34%), with four overlay

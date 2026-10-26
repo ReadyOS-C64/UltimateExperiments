@@ -14,7 +14,9 @@ AC00. Both fonts and resident bytes are exact. The complete59 foreground graph
 retains its relative68-byte bound including one IRQ/NMI.
 
 `build.py` first reassembles the immutable946e7d3 control exactly, then builds
-the candidate. Its `--packaged` path also rebuilds the actual R25 and C33 native
+the candidate. C33/R25 helper sources also come from that immutable ZIP, so
+later canonical helper changes cannot contaminate this comparison. Its
+`--packaged` path also rebuilds the actual R25 and C33 native
 CRC witnesses. Changing R16 without those authentic witnesses must refuse;
 there is no CRC or verified-bit waiver. All84 D81 files are independently read;
 only GRID80, GEOSTAIL and GRID data change, with directory/sector links exact.

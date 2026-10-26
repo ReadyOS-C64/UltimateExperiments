@@ -1027,7 +1027,11 @@ editor: build/overlays/geospreview.seo build/overlays/geosfontrow.seo build/over
 build/supereditor.d81: build/overlays/geospreview.seo build/overlays/geosfontrow.seo build/overlays/geosfontin.seo build/geos-font-catalog/font-pack.bin
 
 # Shared GEOS folded projection query and virtual-cell policy micro modules.
-GEOS_FOLD_OBJ=build/geos-prod/fold-entry.o build/geos-prod/fold-query.o
+GRID_GEOMETRY_OBJ=$(addprefix build/geos-prod/grid-geometry-,kernel.o authority.o transaction.o)
+$(GRID_GEOMETRY_OBJ): build/geos-prod/grid-geometry-%.o: src/render/grid/geometry/%.s src/fold/source.inc src/render/grid/caret/api.inc src/render/grid/paragraph/long.inc build/geos-prod/editor-api.inc
+	mkdir -p $(dir $@)
+	$(CA65) -g -I src -I build/geos-prod -o $@ -l $(@:.o=.lst) $<
+GEOS_FOLD_OBJ=build/geos-prod/fold-entry.o build/geos-prod/fold-query.o $(GRID_GEOMETRY_OBJ)
 GEOS_TAIL_OBJ=build/geos-prod/tail-entry.o
 build/geos-prod/fold-query.o: src/render/geos/fold-query.s src/render/geos/fold-query.inc build/geos-prod/editor-api.inc
 build/geos-prod/fold-entry.o: src/render/geos/fold-entry.s src/render/geos/fold-query.inc build/geos-prod/editor-api.inc

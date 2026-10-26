@@ -105,3 +105,12 @@ NativePAL short insert/BACK improve about11.4% with identical pixels and the
 same four overlay loads; the separate wrapped shift route is unchanged.
 No resident/BSS/ZP/font growth occurs; R25/C33 are rebuilt against the actual
 new R16 CRC. See [the proof and limitations](../src/render/grid/probes/normal-row80/README.md).
+
+## Empty-CR physical-row insertion/removal
+
+Plain60/80 ordinary insertion/BACK can now move a validated body suffix when
+wrapping adds/removes an empty CR physical row. Existing R24 operations preserve
+source/header/packet/provider authority, complete packets/anchors/CRbits and
+final R25 publication. NativePAL cases improve43.9–57.5% with identical images.
+Return-key split/merge and unknown offscreen exposure still fall back. See the
+[geometry contract and measured limits](../src/render/grid/geometry/README.md).

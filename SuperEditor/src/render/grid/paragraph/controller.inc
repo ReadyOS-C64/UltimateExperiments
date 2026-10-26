@@ -6,6 +6,7 @@ EDIT=C+61
 SIGN=C+62
 .import se_i_ready,se_i_count,se_n_cache_count
 LS_EDIT=LS+20
+RG_GEOM=$8DFF
 long_try:
  lda se_render_caps
  bne @prepared_worker
@@ -55,6 +56,7 @@ long_try:
  sta se_i_ready
  sta se_i_count
  sta se_n_cache_count
+ sta RG_GEOM
  lda ROW
  sta LS_FIRST
  sta LS_ROW
@@ -130,11 +132,18 @@ long_try:
  clc
  adc #1
  cmp W
- jcs @bad1 ;no newly introduced physical row
+ jcs @geometry_boundary ;new boundary is admitted only by new R24
  jmp @packet
 @deleting:
  lda LS_COUNT
- jeq @bad1 ;no removal of an existing physical row
+ jeq @geometry_boundary
+ jmp @packet
+@geometry_boundary:
+ lda se_render_caps
+ jne @bad1
+ lda #5
+ jsr geometry
+ jcs @bad1
 @packet:
  lda #80
  sta screen_ptr
@@ -276,6 +285,12 @@ long_try:
  jsr se_overlay_call
  jcs miss
 @worker_ready:
+ lda RG_GEOM
+ beq :+
+ lda #3
+ jsr geometry
+ jcs miss
+:
  jsr se_doc_invalidate
  ldx #2
 @invalid:
@@ -341,6 +356,12 @@ long_try:
  inc ROW
  jmp @paint
 @paint_done:
+ lda RG_GEOM
+ beq :+
+ lda #4
+ jsr geometry
+ jcs miss
+:
  lda NEWROW
  sta ROW
  lda NEWCOL
