@@ -38,6 +38,10 @@ one CR page/one LEX page and complete source/observer identity are required.
 Deletion, Return, markup, edits before code and unsupported graphs retain the
 existing parser. Plain never schedules this worker; Markdown still performs no
 language-lexer feeds. This does not add general edit or layout retention.
+A valid baseline without lexical data also takes that fallback. The48-entry
+journal is bounded: if the next one or two queued observations do not fit, the
+worker preserves the selected graph and queue and requests the normal parser.
+It does not report a stale-state error merely because the journal is full.
 See the [registered rebase contract](../src/cache/edit-rebase-integration/README.md).
 
 ## What the measurements prove

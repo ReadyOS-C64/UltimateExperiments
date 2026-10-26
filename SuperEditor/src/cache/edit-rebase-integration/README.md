@@ -21,8 +21,10 @@ newly published graph again.
 The selected closure must contain one CR page with at most42 records and one
 LEX page. All INLINE references/counts must be empty; INDEX/RUN/NEXT chains are
 unsupported. Deletion, Return, markup, edits before retained code, missing
-observations, unsupported flags/shapes and insufficient resources retain the
-ordinary parser. Plain does not schedule the worker. This is a narrow semantic
+observations and insufficient resources retain the ordinary parser. A valid
+BASE-only root and a journal without room for the queued observations explicitly
+decline to C21, preserving the selected graph and unread queue. Source,
+provider, CRC and schema failures remain errors. Plain does not schedule the worker. This is a narrow semantic
 reuse path; it does not implement general edit rebasing or retained layout.
 
 R34 checks the live provider, allocation directory and complete selected
@@ -44,7 +46,7 @@ guard. The quota is reset on every call; authority never survives a foreground
 yield merely because a previous batch was valid. Source-proof transitions,
 parser/read32 work and final publication keep their original boundaries.
 
-C41 is4058 bytes (38 free), R34 is4095 (one free), C7 is3930, and C21 is4096.
+C41 is4068 bytes (28 free), R34 is4095 (one free), C7 is3930, and C21 is4096.
 The batch quota uses an already borrowed byte atBC_FRAME+79, outside the live
 79-byte SuperMark state. R34 and R14 complete sequentially through the existing
 overlay trampoline; there is no same-slot nesting or runtime cold-code call.
@@ -66,7 +68,20 @@ workers, cancellation, stale source/epoch and unsupported inputs. The registered
 CPU test separately checks the documented source/GTF temporary-bank regions;
 no entire semantic-cache bank is exempted.
 
-The native comparison opens REBASE8K through ROM File/Open and performs four
+The capacity regression uses a70,002-byte source with a70,000-byte logical line
+on16- and32-bank providers, across all four modes, an EOF insertion and Undo.
+The journal boundary regression builds its full48 entries through24 real
+insert/flush/publication transactions. Queued sums49 and50 take the normal
+parser without modifying the selected graph or observations. A genuine
+between-slice incarnation change still reports C1. These are correctness
+fallbacks; they do not compact the journal or refresh retained analysis.
+The native regression opens both documents through ROM File/Open and checks
+29 actual VIC captures: EOF edit/Undo,24 real journal publications, then the
+49/50 fallback cases. It retains source/history/fonts/all62 payloads and the
+old analysis-bank checks. Its public-routine PC/SP measurement seam is explicit;
+the CPU gates separately prove precise writes across the complete16 MiB.
+
+The earlier native comparison on d2ea9c1 opens REBASE8K through ROM File/Open and performs four
 repetitions. Its stopwatch explicitly enters public input/command routines with
 a disclosed PC/SP seam, then runs the real scheduler, IRQ/VIC/REU activity.
 It measures6.48–6.94 million PAL cycles versus9.84–10.04 million in committed
@@ -83,6 +98,10 @@ raw/label/map metadata, plus its matching source project:
 python3 tests/test_cache_rebase_registered.py --fixture FIXTURE --project PROJECT
 python3 tests/test_cache_rebase_presentation.py --fixture FIXTURE --project PROJECT
 python3 tests/test_cache_rebase_registered_stack.py --fixture FIXTURE --project PROJECT --out NEW_OUTPUT
+python3 tests/test_cache_rebase_capacity.py --fixture FIXTURE --project PROJECT --banks 16
+python3 tests/test_cache_rebase_capacity.py --fixture FIXTURE --project PROJECT --banks 32
+python3 tests/test_cache_rebase_refusal.py --fixture FIXTURE --project PROJECT
+python3 tests/test_cache_rebase_journal_refusal.py --fixture FIXTURE --project PROJECT --out NEW_OUTPUT
 python3 tests/test_cache_rebase_registered_vice.py --fixture FIXTURE --variant candidate
 ```
 

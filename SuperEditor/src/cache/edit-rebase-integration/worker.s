@@ -384,8 +384,21 @@ root_step:
  jmp pending
 @complete:
  CP BC_IO,S_ROOT,128
+ ; A checked BASE-only root is legitimate but outside this lexical profile.
+ ; Decline at this caller level so release/request returns to the dispatcher,
+ ; not to the root_check JSR continuation. All FLAGS5/error checks remain.
+ lda S_ROOT+31
+ cmp #1
+ jeq refuse
  jsr root_check
  jcs failed
+ ; All root capability/schema guards passed; a full bounded journal is an
+ ; applicability limit, not stale source. Decline at the outer dispatcher.
+ lda S_ROOT+30
+ clc
+ adc S_COUNT
+ cmp #49
+ jcs refuse
  lda #7
  sta S_STATE
  lda #7
@@ -395,11 +408,6 @@ root_check:
  lda S_ROOT+31
  cmp #5
  jne ebr_stale
- lda S_ROOT+30
- clc
- adc S_COUNT
- cmp #49
- jcs ebr_stale
  lda S_ROOT+32+30
  cmp #2
  jcs ebr_stale
