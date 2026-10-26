@@ -317,6 +317,53 @@ ec_bad_abort:
     lda #SF_BAD
 ec_abort:
     sta se_ec_error
+    cmp #FB_INCOMPLETE
+    bne ec_primary_error
+    ; Only an automatic edit-retention rebuild may decline unbalanced grammar.
+    ; B5 also means a stalled provider read in FB_PARSE: preserve that error.
+    lda se_ec_action
+    cmp #6
+    bne ec_restore_error
+    lda se_ec_phase
+    cmp #EC_BUILD
+    bne ec_restore_error
+    lda se_fb_error
+    cmp #FB_INCOMPLETE
+    bne ec_restore_error
+    lda se_fb_busy
+    bne ec_restore_error
+    lda se_fb_phase
+    cmp #FB_EOF
+    beq ec_incomplete_eof
+    cmp #FB_EVENT
+    bne ec_restore_error
+    lda se_sm_kind
+    cmp #SM_REGION_CLOSE
+    beq ec_unmatched_region
+    cmp #SM_CODE_CLOSE
+    bne ec_restore_error
+    lda se_fb_code
+    bne ec_restore_error
+    beq ec_grammar_fallback
+ ec_unmatched_region:
+    lda se_fb_regions
+    bne ec_restore_error
+    beq ec_grammar_fallback
+ ec_incomplete_eof:
+    lda se_fb_code
+    ora se_fb_regions
+    beq ec_restore_error
+ ec_grammar_fallback:
+    ; Real emergency cleanup revokes all derived projection and owned leases.
+    ; The unchanged target is the BEGIN caret; root completes ordinary redraw.
+    lda #FB_INCOMPLETE
+    jsr se_ef_emergency
+    lda #0
+    clc
+    rts
+ ec_restore_error:
+    lda se_ec_error
+ ec_primary_error:
     jmp se_ef_emergency
 ec_bad:
     lda #SF_BAD

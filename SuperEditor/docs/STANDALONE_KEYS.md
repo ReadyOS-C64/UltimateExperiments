@@ -72,6 +72,11 @@ selection, copy/cut and saved files still refer to the complete source. Direct
 GOTO/find into hidden text opens its ancestors. Arrow/page navigation skips
 collapsed bodies.
 
+While typing, an unfinished code fence or region marker can temporarily make a
+fold map impossible to rebuild. An automatic rebuild then shows the expanded
+source so editing can continue. Explicit `fold all` still reports malformed fold
+syntax; source-read failures also remain errors.
+
 F7 `settings` changes preview profiles: 1–8 choose Body, H1–H6, Code; F changes font,
 S size, C/G ink/paper, B/I/U bold/italic/underline, R restores defaults, Return
 closes. These settings last only for the session. See [GEOS preview and
