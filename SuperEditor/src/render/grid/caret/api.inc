@@ -47,8 +47,10 @@ N_VALID=204 ;all22cache-valid bits; additional witness, never sole proof
 N_PREVUI=207
 N_CURUI=208
 N_ROWCRC=209 ;22 CCITT-FALSE values over exact240B packets
+N_CAPS=253 ;exact presentation policy, CRC-covered and compared in every consumer
 N_CRC=254 ;CCITT-FALSE bytes0..253
-.assert N_ROWCRC+44<=N_CRC,error,"narrow witness exceeds256B"
+.assert N_ROWCRC+44<=N_CAPS,error,"row CRCs overlap presentation capability"
+.assert N_CAPS+1=N_CRC,error,"presentation capability must be covered by header CRC"
 .assert NC_SECOND+240<=$8C00,error,"narrow packet crossesVIEW"
 NC_PLAN=2 ;pure layout query: no phase/frame access
 .endif

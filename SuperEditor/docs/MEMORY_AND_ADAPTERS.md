@@ -1,9 +1,16 @@
-The current C19 fold allocator is 1,469 bytes (+99) and reclaims optional
+The current grid update changes only C33/R25/R14 relative to checkpoint69720da.
+It adds no resident, BSS, zero-page, allocation or catalogue entry. C33 remains
+4,096 bytes, R25 is4,057 and R14 is4,095. NC byte253 stores the exact parsing
+preset inside the existing256-byte CRC-covered header. Raw editing preserves
+SP2 and semantic descriptors. See [grid qualification](GRID_RAW_EDITING.md) for
+native costs, the physical-row correction and remaining capture overhead.
+
+The C19 fold allocator is 1,469 bytes (+99) and reclaims optional
 checked type53 analysis only after genuine resource exhaustion, then retries
 once. It borrows no fold phase bytes, BSS or zero page. Owner 3, full capability
 and extent checks, and no ACTIVE/MUTATING job are required. It preserves cache
 TRIED/ticket/incarnation/ring; C12 file retirement remains byte-identical.
-Runtime `69720da` changes only C19 versus `4c25480`; all 54 assets are present.
+Checkpoint `69720da` changes only C19 versus `4c25480`; all 54 assets are present.
 All 28 fold and five editor scenarios, the 68-byte stack bound and three
 native Copy/Cut/Undo frames pass.
 

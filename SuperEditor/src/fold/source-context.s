@@ -85,7 +85,7 @@ se_fs_shape:
     cmp #2
     jcs fs_bad_shape
     lda se_hot_ready
-    jne @hot
+    bne @hot
     lda se_hot_pending
     jne fs_bad_shape
     clc
@@ -117,18 +117,18 @@ se_fs_shape:
     jne fs_changed
     lda se_hot_right+1
     cmp #8
-    jcc @ordered
+    bcc @ordered
     jne fs_bad_shape
     lda se_hot_right
     jne fs_bad_shape
 @ordered:
     lda se_hot_left+1
     cmp se_hot_right+1
-    jcc @length
+    bcc @length
     jne fs_bad_shape
     lda se_hot_left
     cmp se_hot_right
-    jcc @length
+    bcc @length
     jne fs_bad_shape
 @length:
     sec

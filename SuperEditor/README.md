@@ -50,11 +50,14 @@ presets; the build default is `[editor] source_preset` in the TOML above. These
 are session settings. Formatted preview still formats the document explicitly;
 its code-token colors follow the same switch. See
 [preset behavior and remaining REU redesign](docs/REU_CACHE_REDESIGN.md).
+Plain 60/80-column caret and local typing now reuse checked grid packets without
+semantic parsing. Newline and physical-row changes still take a slower fallback;
+see the [measured costs and qualification](docs/GRID_RAW_EDITING.md).
 GEOS block classification now uses a checked REU baseline and forward page
 lookups. Long, sparsely formatted prose can also reuse retained inline events.
 Short or dense bodies and BASIC/assembler tokens use the existing parsers;
 edit rebasing and retained layout remain in progress. Current Full redraw is
-10.283 million PAL cycles after raster batching and the empty-inline shortcuts, so performance qualification
+10.151 million PAL cycles after raster batching and the empty-inline shortcuts, so performance qualification
 is still open. Committed window moves retain block classifications. A measured
 66-KiB navigation case improves after eliminating unnecessary first-block inline
 passes; the small navigation case still regresses. See the redesign document.

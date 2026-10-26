@@ -360,7 +360,9 @@ font_cap:
  ldy #offset
  ldx #size
  jsr field
- jcs invalid
+ bcc :+
+ rts
+:
 .endmacro
 fields:
  FIELD se_doc_meta,N_KEY,15
@@ -377,8 +379,8 @@ fields:
  FIELD se_v_top,N_TOP,3
  FIELD se_v_bottom,N_BOTTOM,3
  FIELD se_st_descriptor,N_STYLE,37
- FIELD se_sel_mark,N_MARK,1
- FIELD se_sel_anchor,N_ANCHOR,3
+ .assert se_sel_anchor=se_sel_mark+1,lderror,"selection fields adjacency"
+ FIELD se_sel_mark,N_MARK,4
  FIELD se_hot_ready,N_READY,1
  FIELD se_hot_pending,N_PENDING,1
  FIELD se_hot_base,N_HOTBASE,3
@@ -386,19 +388,20 @@ fields:
  FIELD se_hot_old_length,N_OLDLEN,2
  FIELD se_ef_valid,N_FOLD,1
  FIELD se_ef_generation,N_FOLDGEN,2
- FIELD se_ef_token,N_TOKEN,5
- FIELD se_ef_count,N_COUNT,2
- FIELD se_ef_fold_rows,N_BITS,3
- FIELD se_ef_projection_generation,N_PROJECTION,2
+ .assert se_ef_count=se_ef_token+5,lderror,"fold fields adjacency"
+ FIELD se_ef_token,N_TOKEN,7
+ .assert se_ef_projection_generation=se_ef_fold_rows+3,lderror,"projection fields adjacency"
+ FIELD se_ef_fold_rows,N_BITS,5
  jsr fold_crc
  FIELD FCRC,N_FOLDCRC,2
  FIELD FECAP,N_FE,4
  FIELD FCAP,N_FONT,8
  FIELD se_v_rows,N_ROWS,66
  FIELD se_v_bottom,N_ROWS+66,3
- FIELD se_gc_valid,N_VALID,3
- FIELD se_gc_previous_ui,N_PREVUI,1
- FIELD se_gc_current_ui,N_CURUI,1
+ .assert se_gc_previous_ui=se_gc_valid+3,lderror,"GC fields adjacency"
+ .assert se_gc_current_ui=se_gc_valid+4,lderror,"GC fields adjacency"
+ FIELD se_gc_valid,N_VALID,5
+ FIELD se_render_caps,N_CAPS,1
  jsr se_ef_visible
  beq @done
  ldx #27
@@ -721,11 +724,14 @@ type_admission:
  ora se_l_pan+2
  ora se_l_manual
  jne invalid
+ lda se_render_caps
+ beq @raw_style
  lda se_st_valid
  cmp #1
  jne invalid
  lda se_st_request
  jne invalid
+@raw_style:
  lda H+N_SEEN
  cmp #1
  jne invalid
@@ -848,8 +854,11 @@ type_admission:
  bpl @rev
  jsr bounds
  jcs invalid
+ lda se_render_caps
+ beq :+
  jsr sc_check
  jcs invalid
+:
  lda TYPING
  lsr
  bcs :+
@@ -861,14 +870,39 @@ type_admission:
  jne invalid
  lda DELTA
  sta TLEN
+ lda se_render_caps
+ beq @raw_length
+ lda TLEN
  clc
  adc #1
+ jmp @check_length
+@raw_length:
+ lda TLEN
+ cmp W
+ jcs invalid ;old full-width row may have a separate CR/EOF continuation
+ clc
+ adc SIGN
+@check_length:
  cmp W
  jcs invalid
+ lda se_render_caps
+ beq @raw_edit
  lda EDIT
  jeq invalid
  cmp TLEN
  jcs invalid
+ jmp @edit_ok
+@raw_edit:
+ lda EDIT
+ cmp TLEN
+ bcc @edit_ok
+ bne @edit_bad
+ lda SIGN
+ cmp #1
+ beq @edit_ok
+@edit_bad:
+ jmp invalid
+@edit_ok:
  lda TLEN
  clc
  adc SIGN
@@ -891,9 +925,12 @@ type_admission:
  jcs invalid
  jsr verify_row
  jcs invalid
+ lda se_render_caps
+ beq :+
  lda B
  jsr alpha
  jcs invalid
+:
  ldx #0
 @old:
  lda B+80,x
@@ -903,6 +940,8 @@ type_admission:
  jne invalid
  cpx TLEN
  bcs @oldnext
+ lda se_render_caps
+ beq @oldnext
  lda B,x
  cmp #'*'
  jeq invalid
@@ -919,7 +958,7 @@ type_admission:
  cmp #1
  beq @source
  lda B,x
- jsr alnum
+ jsr raw_char
  jcs invalid
 @source:
  ldx #0
@@ -946,7 +985,7 @@ type_admission:
  cmp #1
  bne @after
  lda P,x
- jsr alnum
+ jsr raw_char
  jcs invalid
  jmp @next
 @after:
@@ -1006,6 +1045,13 @@ type_admission:
  sta PTR
  lda #>P
  sta PTR+1
+ clc
+ rts
+raw_char:
+ ldx se_render_caps
+ bne alnum
+ cmp #13
+ beq type_bad
  clc
  rts
 alpha:
@@ -1120,13 +1166,20 @@ long_revision:
 @rev:
  lda se_r_revision,x
  sta se_l_revision,x
+ lda se_render_caps
+ beq :+
+ lda se_r_revision,x
  sta se_st_descriptor+17,x
+:
  dex
  bpl @rev
  ldx #2
 @length:
+ lda se_render_caps
+ beq :+
  lda se_v_length,x
  sta se_st_descriptor+21,x
+:
  lda se_hot_caret,x
  sta se_l_caret,x
  sta H+N_CARET,x
@@ -1137,8 +1190,11 @@ long_revision:
  sta OP
  jsr fields
  jcs invalid
+ lda se_render_caps
+ beq :+
  jsr sc_rekey
  jcs invalid
+:
  lda #1
  sta OP
  sta se_v_seen

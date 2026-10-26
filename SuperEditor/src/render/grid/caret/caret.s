@@ -93,8 +93,6 @@ ordinary_entry:
  sta OP
  lda #4
  sta se_f_owner
- jsr authenticate_helper
- jcs miss
  lda #0
  sta C+63
  lda OP
@@ -107,6 +105,8 @@ ordinary_entry:
  dex
  bpl @typed_revision
 :
+ jsr authenticate_helper
+ jcs miss
  jsr admit
  jcs miss
  lda OP
@@ -443,7 +443,11 @@ helper:
  ldx #0
  jmp se_overlay_call
 authenticate_helper:
+ ldy #0
+ beq authenticate_dependencies
+authenticate_paragraph:
  ldy #2
+authenticate_dependencies:
 @image:
  ldx #0
 @find:
@@ -473,8 +477,11 @@ authenticate_helper:
  lda image_crc_hi,x
  cmp auth_crc_hi,y
  bne @miss
+ cpy #3
+ beq @authenticated
  dey
  bpl @image
+@authenticated:
  clc
  rts
 @miss:
@@ -918,9 +925,17 @@ xor_cell:
 
 .segment "CODE"
 type_try:
+ ldy #2
+ lda se_render_caps
+ bne :+
+ ldy #0
+: jsr authenticate_dependencies
+ jcs miss
  lda #14
  jsr helper
- jcs long_try
+ bcc @prepared
+ jmp long_try
+@prepared:
  lda #2
  jsr leaf
  jcs miss
@@ -985,14 +1000,14 @@ local_native8:
 status_codes:.incbin "status-codes.bin"
 
 .segment "RODATA"
-auth_id:.byte 25,14,14
-auth_slot:.byte 0,$81,$80
-auth_mask:.byte 1,$FF,$FF
-.segment "TAIL"
-auth_size_lo:.byte <HELPER_SIZE,<PARAGRAPH_CODE_SIZE,<PARAGRAPH_SOURCE_SIZE
-auth_size_hi:.byte >HELPER_SIZE,>PARAGRAPH_CODE_SIZE,>PARAGRAPH_SOURCE_SIZE
-auth_crc_lo:.byte <HELPER_CRC,<PARAGRAPH_CODE_CRC,<PARAGRAPH_SOURCE_CRC
-auth_crc_hi:.byte >HELPER_CRC,>PARAGRAPH_CODE_CRC,>PARAGRAPH_SOURCE_CRC
+auth_id:.byte 25,14,14,14
+auth_slot:.byte 0,$81,$80,0
+auth_mask:.byte 1,$FF,$FF,1
+.segment "RODATA"
+auth_size_lo:.byte <HELPER_SIZE,<PARAGRAPH_CODE_SIZE,<PARAGRAPH_SOURCE_SIZE,<PARAGRAPH_SOURCE_SIZE
+auth_size_hi:.byte >HELPER_SIZE,>PARAGRAPH_CODE_SIZE,>PARAGRAPH_SOURCE_SIZE,>PARAGRAPH_SOURCE_SIZE
+auth_crc_lo:.byte <HELPER_CRC,<PARAGRAPH_CODE_CRC,<PARAGRAPH_SOURCE_CRC,<PARAGRAPH_SOURCE_CRC
+auth_crc_hi:.byte >HELPER_CRC,>PARAGRAPH_CODE_CRC,>PARAGRAPH_SOURCE_CRC,>PARAGRAPH_SOURCE_CRC
 
 .segment "CODE"
 .include "render/grid/paragraph/controller.inc"

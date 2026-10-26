@@ -26,7 +26,7 @@ long_packet:
  beq @last
  lda P,x
  sta P-1,x
- bne @left
+ jmp @left
 @last:
  lda TLEN
  sta P-1,x

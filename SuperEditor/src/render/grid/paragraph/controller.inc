@@ -7,15 +7,50 @@ SIGN=C+62
 .import se_i_ready,se_i_count,se_n_cache_count
 LS_EDIT=LS+20
 long_try:
+ lda se_render_caps
+ bne @prepared_worker
+ ldy #3
+ jsr authenticate_dependencies
+ jcs miss
+@prepared_worker:
  lda #16
  jsr helper
- bcs @bad1
+ jcs @bad1
+ lda se_render_caps
+ beq @raw_edit
  lda EDIT
- beq @bad1
+ jeq @bad1
  clc
  adc #1
  cmp W
- bcs @bad1
+ jcs @bad1
+ jmp @edit_ready
+@raw_edit:
+ lda SIGN
+ bpl @raw_index
+ lda OLDCOL
+ bne @raw_index
+ lda ROW
+ jeq miss
+ dec ROW
+ lda W
+ sec
+ sbc #1
+ sta EDIT
+ jsr bounds
+ jcs miss
+ SUB24 END,POS,DELTA
+ lda DELTA+1
+ ora DELTA+2
+ jne miss
+ lda DELTA
+ cmp W
+ jne miss
+@raw_index:
+ lda EDIT
+ cmp W
+ jcs miss
+@edit_ready:
  lda #0
  sta se_i_ready
  sta se_i_count
@@ -26,12 +61,32 @@ long_try:
  sta NEWROW
  lda EDIT
  sta LS_EDIT
+ lda se_render_caps
+ beq @raw_caret
  lda OLDCOL
  clc
  adc SIGN
  sta NEWCOL
  cmp W
- bcs @bad1
+ jcs @bad1
+ jmp @caret_ready
+@raw_caret:
+ lda EDIT
+ ldx SIGN
+ cpx #1
+ bne :+
+ clc
+ adc #1
+: sta NEWCOL
+ cmp W
+ bcc @caret_ready
+ lda #0
+ sta NEWCOL
+ inc NEWROW
+ lda NEWROW
+ cmp #22
+ jcs miss
+@caret_ready:
  lda #0
  sta LS_NOEND
  lda POS
@@ -44,12 +99,15 @@ long_try:
 @bad1:jmp miss
 @validate:
  jsr bounds
- bcs @bad1
+ jcs @bad1
+ lda se_render_caps
+ beq @raw_row
  jsr row_bit
  tax
  lda B+111,x
  and BITMASK
- beq @bad1
+ jeq @bad1
+@raw_row:
  SUB24 END,POS,DELTA
  lda DELTA+1
  ora DELTA+2
@@ -72,11 +130,11 @@ long_try:
  clc
  adc #1
  cmp W
- bcs @bad1 ;no newly introduced physical row
+ jcs @bad1 ;no newly introduced physical row
  jmp @packet
 @deleting:
  lda LS_COUNT
- beq @bad1 ;no removal of an existing physical row
+ jeq @bad1 ;no removal of an existing physical row
 @packet:
  lda #80
  sta screen_ptr
@@ -209,6 +267,15 @@ long_try:
  dex
  bpl @tail_copy
 @staged_glyph:
+ lda se_render_caps
+ bne @worker_ready
+ lda #6
+ sta se_overlay_frame
+ lda #14
+ ldx #0
+ jsr se_overlay_call
+ jcs miss
+@worker_ready:
  jsr se_doc_invalidate
  ldx #2
 @invalid:
@@ -380,6 +447,13 @@ long_next_ink:
 
 .segment "TAIL"
 long_alnum:
+ ldx se_render_caps
+ bne :+
+ cmp #13
+ beq @bad
+ clc
+ rts
+:
  cmp #'0'
  bcc @alpha
  cmp #'9'+1

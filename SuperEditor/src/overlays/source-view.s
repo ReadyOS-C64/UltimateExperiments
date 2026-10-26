@@ -22,11 +22,20 @@ entry:
     cmp #5
     beq sc_finish
     cmp #7
+    beq pixel_owner
+    cmp #6
     bne pixel_argument
-    lda se_f_owner
-    cmp #4
+pixel_owner:
+    ldx se_f_owner
+    cpx #4
     bne pixel_argument
+    cmp #6
+    beq pixel_prime
     jmp se_lp_shift_row
+pixel_prime:
+    lda #0
+    clc
+    rts
 pixel_argument:
     lda #$B0
     sec
