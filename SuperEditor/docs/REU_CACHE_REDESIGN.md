@@ -32,6 +32,13 @@ Full redraw to10.977 million PAL cycles and Markdown to10.456 million, with the
 same independently verified pixels. Full remains15.4% above the older path.
 This is an empty-result shortcut, not reuse of nonempty inline style events.
 
+Skipping decoded glyph scanlines with no ink and no rendering flags further
+reduces Full redraw to10.608 million PAL cycles and Markdown to10.087 million.
+Selection, caret and inverse flags retain the original rendering path. The
+4,094-byte renderer and fixed font addresses stay unchanged in size and placement;
+all11 native screenshots match. Full remains11.5% above the older path. This
+raster optimization does not reduce overlay loads or close the cache redesign.
+
 C35 seeds an untrusted slot after final source validation. C37 validates the
 page certificate, current source/capability tuple and the selected record's CRC
 and canonical START before using that slot. A bad slot, backward query or page
