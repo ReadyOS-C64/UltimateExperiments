@@ -31,7 +31,8 @@ GSEM_CP_STATE=61            ;79B actual parser state, survives intervening C20
 GSEM_CP_EVENT=140           ;16B last successful output5..20
 GSEM_CP_QUERY=156           ;24-bit last query; backwards requests restart0
 GSEM_READS=164              ;24-bit actual R14 READ count for this query
-GSEM_INLINE=169             ;exact last logical event contains '*' or '@'
+GSEM_INLINE=169             ;nonzero requests inline interpretation
+; C24 detects '*'/'@'; cached readers may skip only a proved empty result.
 GSEM_FRAME_END=$8C00
 GSEM_BLOCK_STATE=$8D00      ;79B pure actual block parser state
 GSEM_PENDING=1

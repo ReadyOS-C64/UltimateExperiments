@@ -25,6 +25,13 @@ Full redraw takes12.268 million PAL cycles; Markdown takes11.747 million. This
 still exceeds the old9.512-million-cycle Full path, so performance remains open.
 Initial root validation and repeated source-state exchange still cost work.
 
+C37 also skips inline interpretation only when its checked CR certifies a
+completed inline pass, zero events and a canonical null inline reference. Missing
+or inconsistent metadata keeps the conservative parser path. This reduces native
+Full redraw to10.977 million PAL cycles and Markdown to10.456 million, with the
+same independently verified pixels. Full remains15.4% above the older path.
+This is an empty-result shortcut, not reuse of nonempty inline style events.
+
 C35 seeds an untrusted slot after final source validation. C37 validates the
 page certificate, current source/capability tuple and the selected record's CRC
 and canonical START before using that slot. A bad slot, backward query or page

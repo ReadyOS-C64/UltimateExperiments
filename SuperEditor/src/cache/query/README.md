@@ -1,6 +1,6 @@
 # Immutable-baseline query capsule
 
-The editor uses a4081-byte C35 seed profile and3491-byte C37 forward profile
+The editor uses a4081-byte C35 seed profile and3528-byte C37 forward profile
 through C21, with the managed85-byte viewport proof. Actual foreground normal
 rendering and a corrupt-slot handoff are qualified, alongside native11. The
 original component profiles below remain separately buildable; the private
@@ -273,3 +273,20 @@ checked identical type53 writes during READ/heldCR, actual public W_LOAD snapsho
 inapplicability, cancel and prior classifier faults. WholeRAM and16MiB guards
 remain. This is component CPU performance evidence; no complete editor/native
 latency claim follows from it.
+
+## Optional completed-empty inline shortcut
+
+`BCQ_EMPTY_INLINE_HINT=1` adds37 bytes to C37 only (3528 total); the default
+3491-byte C37 profile remains byte-identical. For an eligible prose kind, hint0
+requires the already checked CR to contain completed-inline flag4, zero24-bit
+event count and the canonical four-byte FF reference. Every other case retains
+hint1 and the existing C26 parser. There is no INLINE page traversal or claim
+that nonempty events were reused. All other semantic fields and source/record
+validation remain unchanged. Source policy and repeated parser work are tracked
+in the public redesign document.
+
+`tests/test_cache_inline_hint.py` retains independent pixel/counter A/B cases,
+real PETSCII5C escape and A3-literal distinctions,256 events, source/record faults,
+foreign owners, and conservative valid-CRC malformed metadata cases. Actual
+editor5/foreground2/parser55/incremental15/stack68/native11 pass on the enabled
+product. Native Full10,976,686 PAL cycles is still above the older9,511,774 path.

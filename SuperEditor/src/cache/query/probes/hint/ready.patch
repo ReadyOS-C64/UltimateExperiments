@@ -1,0 +1,31 @@
+--- a/src/cache/query/fast-entry.s
++++ b/src/cache/query/fast-entry.s
+@@ -323,7 +323,28 @@
+  lda F+GSEM_KIND
+  cmp #4
+  bcs @not_inline
++.ifdef BCQ_EMPTY_INLINE_HINT
++ ; Only a completed, canonical empty INLINE certificate proves no work.
++ lda BQ_CR+2
++ and #4
++ beq @has_inline
++ lda BQ_CR+44
++ ora BQ_CR+45
++ ora BQ_CR+46
++ bne @has_inline
++ lda BQ_CR+40
++ and BQ_CR+41
++ and BQ_CR+42
++ and BQ_CR+43
++ cmp #$FF
++ beq @inline_done
++@has_inline:
++ inc F+GSEM_INLINE
++@inline_done:
++ lda F+GSEM_KIND
++.else
+  inc F+GSEM_INLINE           ;hint only, no INLINE grammar reuse certificate
++.endif
+ @not_inline:
+  cmp #5
+  bne :+
