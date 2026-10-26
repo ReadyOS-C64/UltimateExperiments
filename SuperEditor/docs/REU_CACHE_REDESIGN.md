@@ -14,14 +14,20 @@ independent pixel, source, lease and native display checks pass. This is an
 initial baseline and classification implementation. Inline/lexical reuse,
 edit-chain rebasing and retained layout are still work in progress.
 
-Performance qualification remains open. Native Full GEOS redraw measures
-26.376 million PAL cycles versus 9.512 million before this path: repeated page
-CRC validation and source guards currently outweigh the saved parsing. A
-viewport-scoped proof with write invalidation is being investigated. The broad
-incremental-edit gate also exposed a lost dirty-heading optimization: the new
-classification does not fabricate the legacy parser checkpoint. Preserve that
-regression as an open requirement when replacing the checkpoint contract.
-Do not interpret zero parser feeds or fewer overlay loads as a speed result.
+Performance qualification remains open. The first cached path took26.376 million
+PAL cycles versus9.512 million before it. Reusing a checked CR-page proof within
+a viewport reduces native Full GEOS redraw to18.448 million cycles in the first
+qualified integration. Each checked cache write revokes that proof before DMA;
+fresh viewports, parser fallback and the painter transition also revoke it.
+Root CRC, source-state exchange and record rescanning still repeat per query.
+A forward-query capsule is being investigated separately; it is not deployed.
+
+The dirty-heading incremental regression is fixed using an explicit cached
+outgoing-carry type. It consumes authenticated CR data and never fabricates a
+legacy parser checkpoint. All15 incremental editor cases pass, alongside the
+cached-paint, parser-bypass and stack checks. Inline/lexical and edit-rebase work
+remains open. Zero parser feeds or fewer overlay loads alone are not speed
+results; the native cycle measurement above remains slower than the earlier path.
 
 The user's requirements are configurable highlighting with a real parsing
 bypass, reuse of unchanged document analysis and layout, efficient REU use,

@@ -36,7 +36,7 @@ def arena_scope(n, images):
         assert 0<size<=banks*65536
         descriptor=dict(token=token.hex(),logical_banks=logical,physical_banks=physical,logical_size=size)
         payload=b''.join(images[ident][b*65536:(b+1)*65536] for b in physical)
-        flags=ram[s['se_bc_flags']];assert flags in (1,17),(ident,'arena must be settled ARMED; optional REBUILD_TRIED retained',flags)
+        flags=ram[s['se_bc_flags']];assert flags in (1,17,33,49),(ident,'settled ARMED; optional REBUILD_TRIED and checked PAGE_PROOF retained',flags)
         assert item['id']=='markdown-geos' or first is not None,(ident,'unexpected first arena publication')
         if first is None:first=(ident,descriptor,payload)
         assert descriptor==first[1] and payload==first[2],(ident,'retained arena changed after first ARMED Markdown')

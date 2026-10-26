@@ -1223,3 +1223,7 @@ editor build/supereditor.d81: build/overlays/fold.seo build/overlays/sema.seo bu
 build/editor/commands.o build/geos-resident/dispatch.o: src/cache/api.inc
 build/overlays/menu40.o: src/cache/editor/admit.inc src/cache/api.inc
 build/geos-prod/page.o: src/cache/api.inc
+
+# Viewport proof capture and explicit cached outgoing carry share no parser CP.
+build/geos-prod/page.o: src/cache/query/api.inc src/cache/query/proof-api.inc src/cache/query/proof.inc
+build/geos-prod/checkpoint-outgoing.o: src/render/geos/checkpoint/cache-outgoing.inc src/cache/query/proof-api.inc src/cache/api.inc

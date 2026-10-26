@@ -100,6 +100,7 @@ read_record:
  cmp #7
  jcs bq_corrupt
 @level_ok:
+.ifndef BCQ_PAGE_REUSE
  lda BQ_CR+3
  cmp #4
  bcs @no_inline
@@ -116,6 +117,7 @@ read_record:
  ora BQ_CR+46
  jne bq_corrupt
 @inline_flag:
+.endif
  ; ABI/proof/source ticket and all reserved bytes are semantic authority.
  lda BQ_CR+58
  cmp #1
@@ -231,6 +233,7 @@ read_record:
  sta BQ_STATE
  jmp bq_pending
 @found:
+.ifndef BCQ_PAGE_REUSE
  CP BQ_REF,BQ_RECORD_REF,4
  CP BQ_CR+44,BQ_EVENTS,3
  lda BQ_EVENTS+2
@@ -258,6 +261,7 @@ read_record:
  jne bq_corrupt
 @output:
  CP BQ_CR,BC_IO,96
+.endif
  lda #1
  sta BQ_READY
  jmp bq_pending

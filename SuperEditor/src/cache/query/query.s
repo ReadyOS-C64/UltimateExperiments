@@ -70,11 +70,27 @@ se_bc_query_begin:
  lda se_bc_count
  bne @miss
  CP se_bc_arena,BQ_AUTH,13
+.ifdef BCQ_PAGE_REUSE
+ ; Claim a writeguard for this query. A revoked oldexternalcert cannot be
+ ; resurrected merelybyarming a newjob; itskind remains0 untilC21capture.
+ lda se_bc_flags
+ and #BC_PAGE_PROOF
+ bne :+
+ lda #0
+ sta $8BA8
+:
+ lda se_bc_flags
+ ora #BC_PAGE_PROOF
+ sta se_bc_flags
+.endif
  lda #0
  sta BQ_READY
  sta BQ_ERROR
  sta BQ_LEX_CERT
  sta BQ_CACHE
+.ifdef BCQ_PAGE_REUSE
+ sta BQ_PROOF_VALID
+.endif
  ldy #85
 @clear:sta BQ_READER,y
  dey
@@ -199,6 +215,7 @@ se_bc_query_step:
  lda BQ_CLASS
  cmp BQ_CACHE+3
  bne @newpage
+@page_ready:
  lda #BQ_READ
  sta BQ_STATE
  jmp bq_pending
@@ -208,6 +225,10 @@ se_bc_query_step:
  lda BQ_CLASS
  sta BCA_KIND
  CP BQ_REF+2,BCA_GENERATION,2
+.ifdef BCQ_PAGE_REUSE
+ jsr bcq_restore_page
+ bcc @page_ready
+.endif
  jsr se_bc_page_begin
  jcs bq_fail
  lda #BQ_PAGE_STEP
@@ -399,3 +420,8 @@ se_bc_query_cancel:
 @return:rts
 .export payload_offset
 .import advance
+
+.ifdef BCQ_PAGE_REUSE
+BCQ_PROOF_RESTORE=1
+.include "cache/query/proof.inc"
+.endif

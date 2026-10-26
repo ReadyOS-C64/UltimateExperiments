@@ -1,5 +1,10 @@
 # Immutable-baseline query capsule
 
+The editor now uses the optional4075-byte viewport-proof classification profile
+through C21. The original component profiles below remain separately buildable.
+Actual integration and remaining performance limits are tracked in
+[REU_CACHE_REDESIGN](../../../docs/REU_CACHE_REDESIGN.md).
+
 This is a private callable C-slot component, not an editor cache-hit integration.
 It links shared arena `core.s`, `open.s -D BCA_READONLY_OPEN=1`, and `page.s`;
 query `query.s`, `source.s`, and `records.s`; and a small binding/owner/selector
@@ -112,7 +117,7 @@ profile and verifies its exact released payload hash.
 
 `classify-entry.s` is a separate private selector for C35, built with
 `BCQ_EDITOR_ACTIVE=1`, `BCQ_CLASSIFY=1`, and
-`BCQ_SELECTOR_OWNS_OWNER=1` consistently for the query modules. It is4018 bytes
+`BCQ_SELECTOR_OWNS_OWNER=1` consistently for the query modules. It is4025 bytes
 including binding. The selector checks owner4 before any frame access; its
 three operations are BEGIN0, STEP1, CANCEL2. The conditional body omission
 removes only redundant owner checks whose public selector has already admitted
@@ -127,7 +132,10 @@ the next STEP ACK runs actual final R14 GUARD, ends the owned source lease,
 then publishes GSEM fields5..20. It never invokes another C worker per record.
 Input query/language/count and parent page9134..9177 survive, except OP9136.
 
-GSEM_ERROR24 starts at2 and becomes0 only at final publication. A2/Cclear is an
+GSEM_ERROR24 starts at2 and becomes0 only at final publication. The initial exactFS59 or mergedlength mismatch after actualR14BEGIN also returns
+A2/Cclear: a valid baseline can be inapplicable after hotcursor movement. This
+ends only the owned source lease and publishes no semantic result. Midjob changes,
+CRC failures, and actual R14 errors remain errors. A2/Cclear is an
 optional MISS with ACTIVE0/ERROR2 and no classification publication; Cset stores
 the actual error and ends owned resources. GSEM_ACTIVE21 is1 while pending and0
 at completion/miss/cancel/error. CANCEL does not turn an incomplete result into
@@ -149,10 +157,56 @@ a C24 parser checkpoint, so CP_VALID is0.
 
 `python3 tests/test_cache_classify.py` builds this profile and byte-checks both
 older profiles, then runs real baseline producer→writer→classification services.
-The independent full-source model checks38 positions spanning all9 block kinds,
+The independent full-source model checks40 positions spanning all9 block kinds,
 BASIC/ASM, empty/CR terminal events, pending merged input and >64KiB anchors.
 Faults cover owner opacity, MISS/error handoff, held-CR source change, cancellation,
 competing BEGIN, corrupt CR payload and corrupt unrelated INLINE data. Runtime
 tracing allows only C35 plus R14 BEGIN/GUARD. No block/inline parser runs in the
 classification operation. This remains a private selector qualification, not a
 renderer integration, body cache hit, native performance or navigation-reuse claim.
+
+
+## Optional viewport CR-page proof
+
+The explicit `BCQ_PAGE_REUSE=1` classification profile fits4075 bytes. The
+normal corrected classifier4025 and original full-query4038/editor4061 profiles
+remain separately buildable; the latter two retain their released bytes. This
+profile reuses only an already verified CR page, not INLINE events or a lexical
+certificate. Each new query still performs readonly OPEN/root CRC, actual R14
+BEGIN, exactFS59/length comparison, and typedarena/source authority checks.
+
+`proof-api.inc` reserves85 bytes at GSEM+29..113: source59, authority13,
+page/generation/kind4, USED2, NEXT4, SLOTS1, CRC2. CRC covers bytes82..0 in
+descending order with the existing CCITT-FFFF primitive. C20/C25/C26 must preserve
+this area. A parent clears `BC_PAGE_PROOF` on a fresh viewport, legacy C24
+fallback, and painting. Every checked type53 CPU→REU write must clear the bit
+before DMA; other typed objects do not revoke this proof. The private verifier
+executes a cloned actual frozen DMA routine with that additional hook. The main
+resident hook and C21 wiring are parent-owned and are outside this component test.
+
+BEGIN arms the bit as an exclusive-job writeguard. If it was already clear,
+BEGIN first invalidates the old external certificate kind. Every subsequent
+STEP/ACK requires the bit, including CRC-in-progress and held-CR boundaries.
+Thus a type53 write cannot leave either local BCA_PROOF or a saved external
+certificate usable. Restore requires bit32, certificateCRC, exact59+13 authority,
+and matching CR page/generation/kind; a failure performs ordinary page validation.
+Used block geometry/schema and whole root/page/CR CRC checks remain. Unused INLINE
+count/ref completion checks are omitted only in this classification profile.
+
+The optional C21 capture helper is133 bytes. It requires bit32 on entry, clears
+it immediately, then verifies successful completed query state, owned-reader
+closure, saved proofA5, and CR kind. A skipped capture returns Cset and leaves
+bit32 clear; it never writes the certificate. Success copies85 bytes including
+CRC and sets bit32 last before returning Cclear. There is no DMA, yield, or
+foreground interleaving inside this CPU-only helper. C21 must not clear bit32
+before calling it, and must skip outgoing carry publication on Cset. This also
+rejects a type53 write between queryEND and capture. No fake C24 checkpoint is
+created; any outgoing carry adapter must consume actual authenticated CR carry.
+
+Run `python3 tests/test_cache_query_proof.py` for actual producer→writer→query
+control/reuse A/B, prospective capture, and executable typedwrite-hook tests.
+The suite checks multiple CR pages, all block kinds, pending/24-bit sources,
+all85 certificate byte corruptions, in-job writes at four distinct boundaries,
+post-END writes, false capture preconditions, and unrelated FE writes. Per-call
+wholeRAM and whole16MiB readonly guards remain. Timings reported here are CPU
+component instruction counts, not complete renderer/native latency.

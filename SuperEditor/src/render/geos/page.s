@@ -3,6 +3,11 @@
 .include "editor-api.inc"
 .include "render/presentation.inc"
 .include "cache/api.inc"
+BCQ_EDITOR_ACTIVE=1
+BCQ_PAGE_REUSE=1
+BCQ_PROOF_CAPTURE=1
+.include "cache/query/proof-api.inc"
+.import se_crc_init,se_crc_byte,se_crc_value
 .include "render/geos/plain-context.inc"
 .global se_render_caps,se_ef_visible
 .include "render/geos/checkpoint/codec.inc"
@@ -130,6 +135,11 @@ begin:
     sta GFQ_ACTIVE
     sta GS_CONTEXT_VALID
     sta GSEM_FRAME+GSEM_ACTIVE
+    sta GSC_CAPTURED
+    lda se_bc_flags
+    and #($FF-BCQ_PAGE_PROOF)
+    sta se_bc_flags
+    lda #0
     sta GSEM_FRAME+GSEM_CP_VALID
     sta $8B40 ;fresh caller-owned painter state may contain native power-on RAM
     sta $8B41
@@ -347,8 +357,33 @@ gsc_seed_done:
 cached_classified:
     lda GSEM_FRAME+GSEM_ERROR
     bne gsc_classify_direct
-    jmp classification_ready ;query has no fabricated C24 parser checkpoint
+    jsr bcq_capture_page
+    bcs classification_ready
+    lda se_bc_flags
+    and #BCQ_PAGE_PROOF
+    beq classification_ready
+    ldx #2
+@next:
+    lda BQ_NEXT,x
+    sta GSC_INCOMING,x
+    dex
+    bpl @next
+    ldx #5
+@carry:
+    lda BQ_CR+34,x
+    sta GSC_INCOMING+3,x
+    dex
+    bpl @carry
+    lda #2
+    sta GSC_CAPTURED
+    jsr gsc_publish
+    jmp classification_ready ;no fakeC24parser checkpoint
 gsc_classify_direct:
+    lda #0
+    sta GSC_CAPTURED
+    lda se_bc_flags
+    and #($FF-BCQ_PAGE_PROOF)
+    sta se_bc_flags
     lda #6
     sta PS
     lda #GSEM_ID
@@ -997,6 +1032,9 @@ paint_start:
     clc
     rts
 @visible:
+    lda se_bc_flags
+    and #($FF-BCQ_PAGE_PROOF)
+    sta se_bc_flags ;C22 aliases the85B queryproof
     lda #0
     sta GSEM_FRAME+GSEM_CP_VALID
     sta $8B40
@@ -1165,3 +1203,5 @@ gsc_publish:
 
 
 .include "render/geos/checkpoint/consumer.inc"
+
+.include "cache/query/proof.inc"

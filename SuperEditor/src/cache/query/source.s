@@ -22,6 +22,11 @@ bq_owner:
  rts
 .endif
 bq_authority:
+.ifdef BCQ_PAGE_REUSE
+ lda se_bc_flags
+ and #BC_PAGE_PROOF
+ jeq bq_changed
+.endif
  lda se_bc_flags
  and #BC_ARMED|BC_LOST|BC_MUTATING|BC_ACTIVE
 .ifdef BCQ_EDITOR_ACTIVE
@@ -65,6 +70,10 @@ bq_source:
  plp
  rts
 bq_end:
+.ifdef BCQ_PAGE_REUSE
+ lda #0
+ sta BQ_PROOF_VALID
+.endif
  lda BQ_STATE
  beq @clear
  lda #0
@@ -106,7 +115,16 @@ bq_fail:
 bq_pending:lda #1
  clc
  rts
-bq_done:jsr bq_end
+bq_done:
+.ifdef BCQ_PAGE_REUSE
+ lda BCA_PROOF
+ pha
+ jsr bq_end
+ pla
+ sta BQ_PROOF_VALID
+.else
+ jsr bq_end
+.endif
  lda #0
  clc
  rts

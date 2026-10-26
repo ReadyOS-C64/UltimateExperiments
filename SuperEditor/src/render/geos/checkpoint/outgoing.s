@@ -13,12 +13,27 @@ LINE=GP_CONTROL+3
 se_gcl_publish:
  lda se_f_owner
  cmp #4
- bne @busy
+ beq :+
+ lda #$B2
+ sec
+ rts
+:
+ jsr gsc_cap
+ jcs @done
+ lda GSC_CAPTURED
+ cmp #2
+ beq :+
  jsr gsc_publish
+:
  jsr se_gp_cache_guard
  bcs @done
- jsr gsc_cap
+ lda GSC_CAPTURED
+ cmp #2
+ bne :+
+ jsr gsc_cached_carry
  bcs @done
+ jmp @logical_start
+:
  lda GSEM_FRAME+GSEM_CP_VALID
  cmp #1
  bne @done
@@ -29,6 +44,7 @@ se_gcl_publish:
  bne @done
  dex
  bpl @current_key
+@logical_start:
  ldx #2
 @logical:
  lda GP_CONTROL+5,x
@@ -39,6 +55,9 @@ se_gcl_publish:
  lda GP_CONTROL+20
  cmp #2
  beq @done ;never overwrite the old witness during an edit transaction
+ lda GSC_CAPTURED
+ cmp #2
+ beq @emit
  ldx #2
 @next:
  lda GSEM_FRAME+GSEM_CP_NEXT,x
@@ -53,6 +72,7 @@ se_gcl_publish:
  sta GSC_INCOMING+4
  lda GSEM_FRAME+GSEM_CP_STATE+17
  sta GSC_INCOMING+5
+@emit:
  lda LINE
  asl
  asl
@@ -67,10 +87,7 @@ se_gcl_publish:
  lda #0
  clc
  rts
-@busy:
- lda #$B2
- sec
- rts
+
 ; C21-only producer. Call at classified/@ready before C20/C25 phase reuse.
 ; Existing C21 STEP has just passed actual cache_guard (source graph + typedFE).
 ; Only row0 with a real logical START==TOP publishes; softwrap TOP declines.
@@ -78,8 +95,6 @@ se_gcl_publish:
 .import se_crc_init,se_crc_byte,se_crc_value
 .segment "CODE"
 gsc_publish:
- jsr gsc_cap
- jcs @skip
  lda LINE
  jne @skip
  lda GSC_CAPTURED
@@ -138,13 +153,12 @@ gsc_record_write:
  sta GSC_RECORD,x
  dex
  bpl @zero
- lda GSC_WRITE_OFFSET+1
- cmp #6
- bne :+
- lda #$53
- bne :++
-: lda #$43
-: sta GSC_RECORD
+ lda GSC_WRITE_OFFSET+1 ;incoming6 iseven; everyoutgoing7+8*row isodd
+ lsr                      ;LDApreserves thisknownformat-bit carry
+ lda #$43
+ bcs :+
+ ora #$10
+:sta GSC_RECORD
  lda #2
  sta GSC_RECORD+1
  lda #1
@@ -154,7 +168,7 @@ gsc_record_write:
  COPY24 GSC_INCOMING,GSC_RECORD+4
  ldx #27
 @key:
- lda GSC_CURRENT,x
+ lda GP_HEADER+GPH_KEY,x
  sta GSC_RECORD+7,x
  dex
  bpl @key
@@ -180,14 +194,14 @@ gsc_record_write:
  ; Commit VALID-last. A failed partial record can never be a cache hit.
  lda #0
  sta GSC_RECORD+3
- jsr @request
+ jsr gsc_write_request
  jsr se_gp_cache_write
  bcs @return
  lda #1
  jmp gsc_valid_write
 @return:
  rts
-@request:
+gsc_write_request:
  lda GSC_WRITE_OFFSET
  sta GP_IO_OFFSET
  lda #0
@@ -202,16 +216,10 @@ gsc_record_write:
  rts
 gsc_valid_write:
  sta GSC_RECORD+3
+ jsr gsc_write_request
  lda GSC_WRITE_OFFSET
- clc
- adc #3
+ ora #3 ;internal writers use only0/40; VALID isoffset3 ineach64Brecord
  sta GP_IO_OFFSET
- lda GSC_WRITE_OFFSET+1
- sta GP_IO_OFFSET+1
- lda #0
- sta GP_IO_LENGTH+1
- lda #>GSC_RECORD
- sta GP_IO_POINTER+1
  lda #<(GSC_RECORD+3)
  sta GP_IO_POINTER
  lda #1
@@ -254,3 +262,5 @@ gsc_cap:
 @bad:
  sec
  rts
+
+.include "render/geos/checkpoint/cache-outgoing.inc"

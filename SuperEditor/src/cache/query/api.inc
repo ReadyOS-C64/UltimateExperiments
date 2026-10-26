@@ -46,6 +46,10 @@ BQ_LAST=BQ+298                   ; rootLASTref4
 BQ_RECORD_REF=BQ+310             ; actualfoundCRreference4
 BQ_TEMP=BQ+302                   ; arithmetic/CRC transient8
 .endif
+; Optional one-viewport CR payload proof. No default/profile storage changes.
+.ifdef BCQ_PAGE_REUSE
+BQ_PROOF_VALID=BQ+132
+.endif
 BQ_OPEN=1
 BQ_SOURCE_BEGIN=2
 BQ_PAGE=3
