@@ -137,6 +137,7 @@ bcq_restore_page:
  cmp BCQP_CRC+1
  bne @miss
  lda BCQP_CACHE+3
+ and #$7F
  cmp #1
  bne @miss
  ldy #12

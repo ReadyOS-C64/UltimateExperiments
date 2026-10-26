@@ -54,10 +54,10 @@ read_record:
  CP BC_IO,BQ_CR,96
  lda BQ_CR
  cmp #1
- jne bq_corrupt
+ bne @record_bad
  lda BQ_CR+1
  cmp #1
- jne bq_corrupt
+ bne @record_bad
  jsr se_crc_init
  ldy #1
 @crc:cpy #74
@@ -71,26 +71,35 @@ read_record:
  bne @crc
  lda se_crc_value
  cmp BQ_CR+74
- jne bq_corrupt
+ bne @record_bad
  lda se_crc_value+1
  cmp BQ_CR+75
- jne bq_corrupt
+ bne @record_bad
  lda BQ_CR+2
- and #$F0
- jne bq_corrupt              ; no lexical certificate in firstbaseline
+ and #$E0
+ bne @record_bad
+ lda BQ_CR+2
+ and #$10
+ beq @lex_ok
+ lda BQ_LEX_CERT
+ beq @record_bad
+@lex_ok:              ; no lexical certificate in firstbaseline
+ jmp @record_good
+@record_bad:jmp bq_corrupt
+@record_good:
  lda BQ_CR+3
  cmp #9
  bcc @ordinary_kind
  cmp #$FF
- jne bq_corrupt
+ bne @record_bad
  lda BQ_CR+2
  cmp #10
- jne bq_corrupt
+ bne @record_bad
  jmp @kind
 @ordinary_kind:
  lda BQ_CR+2
  and #8
- jne bq_corrupt
+ bne @record_bad
 @kind:
  lda BQ_CR+69
  cmp #3

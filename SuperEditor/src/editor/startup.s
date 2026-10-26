@@ -205,6 +205,12 @@ file50=file29+4 ;SEMA: C34 automatic baseline producer
 file51=file31+4 ;INLN: C35 retained query
 file52=file25+4 ;PAGE: C37 forward page query
 file53=file24+4 ;LINE: C39 retained inline SOURCE consumer
+file54=file15+4 ;EDIT: C45 lexical admission
+file55=file37+4 ;TAIL: R36 checked lexical resolver
+file56=file14   ;LEX: R37 page/roles
+file57=file14+3 ;ICAL: C47 producer
+file58=file39+4 ;CTRL: C49 COW linker
+; Future mapped aliases XFORM/PARSE/FINISH/ROW/PAINT remain unregistered.
 file48: .byte $48,$4F,$54,$43,$4F,$4C,$44 ;HOTCOLD (raw DOS bytes, not text charmap)
 file38: .byte $47,$45,$4F,$53,$43,$41,$52,$45,$54
 file36: .byte $47,$45,$4F,$53,$46,$4F,$4C,$44

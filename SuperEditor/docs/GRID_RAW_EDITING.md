@@ -2,8 +2,9 @@
 
 `syntax plain` now uses the checked grid packets for caret movement and local
 typing without first loading semantic parsers. This changes three existing
-capsules: C33 `grid`, R25 `geostail`, and R14 `viewsource`. The resident, 54-entry
-catalogue, allocations, zero page and ReadyOS reservation are unchanged.
+capsules: C33 `grid`, R25 `geostail`, and R14 `viewsource`. That checkpoint kept
+the resident, allocations, zero page and ReadyOS reservation unchanged. The
+subsequent lexical-cache registration brings the catalogue to59 entries.
 
 NC header byte253 records the exact presentation preset under the existing
 CCITT checksum. Every consumer compares it. Plain typing checks source objects,
@@ -51,10 +52,27 @@ paint is followed by the 22-packet capture:
 | 60-column CR insertion | 2,094,539 | 2,243,720 | 2,760,409 |
 | 80-column CR insertion | 1,538,007 | 1,691,286 | 2,205,244 |
 
-Those fallbacks use nine overlay loads. Eliminating redundant capture work and
-handling changed geometry efficiently remain open. Full GEOS source repaint is
-still 10,151,299 PAL cycles on the diverse fixture. This checkpoint does not meet
-the normal-C64 performance targets.
+The current capture implementation reduces the extra settled work from roughly
+0.52 million to0.30 million PAL cycles. It expands full CRC lookup tables once
+and reuses the already admitted R25 during one exclusive capture. Every helper
+still checks its actual owner/operation; no executable image is patched. Both
+pending redraw and drawbusy refuse before any borrowed scratch is initialized.
+
+The lookup tables alias retained line-index storage. Capture now revokes all
+three index/cache authority fields before writing there. The first native
+mode60→80/GOTO2 test exposed a `$7B` error when that invalidation was missing.
+Both mode directions, real File/Open, and GOTO above64KiB now pass.
+
+| Current fallback | First publication | Settled PAL cycles | Loads |
+|---|---:|---:|---:|
+| 60-column insertion adding a row | 1,524,117 | 1,828,709 |9|
+| 80-column insertion adding a row | 1,221,519 | 1,525,607 |9|
+| 60-column CR insertion | 2,243,693 | 2,546,706 |9|
+| 80-column CR insertion | 1,691,372 | 1,994,023 |9|
+
+Handling changed geometry efficiently remains open. Full GEOS source repaint is
+still10,155,510 PAL cycles on the diverse fixture. This does not meet the
+normal-C64 performance targets.
 
 ## Qualification
 
@@ -70,3 +88,11 @@ All53 were directly reviewed and independently checked against VIC pixels.
 All20 corrected typing screenshots are byte-identical to the previous control.
 Lifecycle testing includes resumed editing, Undo, SaveAs and reopen through the
 existing standalone adapter; it is not ReadyOS suspend/resume integration.
+
+The59-overlay integration repeats the20 typing,16 caret and11 presentation
+frames; all47 were inspected. The20 typing screenshots remain byte-identical to
+the earlier54-overlay control. Additional tests cover partially visible GEOS
+carets, native lexical reuse, the phase/index regression, all256 CRC table words,
+132 packet checks and a70,002-byte document on a1MiB REU. The unchanged68-byte
+stack bound includes the new finite lexical dispatch tables and admitted R25
+capture calls. None of these checks closes the remaining structural-edit cost.

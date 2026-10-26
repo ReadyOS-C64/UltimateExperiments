@@ -57,8 +57,8 @@ display-test: disk
 keyboard-test: disk
 	$(PYTHON) tests/test_keyboard.py
 
-build/supereditor.d81: tools/package.py tools/overlays.py build/supereditor.prg build/display-probe.prg build/memory-probe.prg
-	$(PYTHON) tools/package.py --c1541 "$(C1541)"
+build/supereditor.d81: cache-package-force tools/package.py tools/overlays.py build/supereditor.prg build/display-probe.prg build/memory-probe.prg
+	$(CACHE_JOB_GUARD) --package --c1541 "$(C1541)"
 
 disk: build/supereditor.d81
 
@@ -1228,11 +1228,14 @@ build/hot-cold/worker.o: src/cache/api.inc src/cache/observer/ring.inc src/cache
 # Checked REU baseline transport and retained C-slot jobs. Their builder uses
 # the actual resident aliases and refuses any capsule over its4KiB slot.
 CACHE_JOB_INPUTS=$(wildcard src/cache/editor/* src/cache/arena/* src/cache/query/* src/cache/semantic/* src/cache/inline/*.s src/cache/inline/*.inc) src/supermark/block.s src/supermark/inline.s src/supermark/api.inc tools/module_bindings.py tools/bindings.py tools/overlays.py
-build/cache-editor/jobs.stamp: build/editor.prg build/editor.lbl build/editor-report.json $(CACHE_JOB_INPUTS)
-	$(PYTHON) src/cache/editor/build.py build/cache-editor $(CURDIR)
-	touch $@
+.PHONY: cache-jobs-force cache-package-force
+cache-jobs-force:
+cache-package-force:
+CACHE_JOB_GUARD = $(PYTHON) tools/cache_job_build.py --project "$(CURDIR)" --base "$(CURDIR)" --out build/cache-editor --lexical-out build/lexical --publish build/overlays
+build/cache-editor/jobs.stamp: cache-jobs-force build/editor.prg build/editor.lbl build/editor-report.json $(CACHE_JOB_INPUTS) $(wildcard src/cache/lexical/*) src/supermark/lexer.s tools/cache_job_build.py
+	$(CACHE_JOB_GUARD)
 build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo build/overlays/line.seo: build/cache-editor/jobs.stamp
-	cp build/cache-editor/$(@F) $@
+	cmp -s build/cache-editor/$(@F) $@ || cp build/cache-editor/$(@F) $@
 EDITOR_ASSETS += build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo build/overlays/line.seo
 editor build/supereditor.d81: build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo build/overlays/line.seo
 build/editor/commands.o build/geos-resident/dispatch.o: src/cache/api.inc
@@ -1242,3 +1245,13 @@ build/geos-prod/page.o: src/cache/api.inc
 # Viewport proof capture and explicit cached outgoing carry share no parser CP.
 build/geos-prod/page.o: src/cache/query/api.inc src/cache/query/proof-api.inc src/cache/query/proof.inc
 build/geos-prod/checkpoint-outgoing.o: src/render/geos/checkpoint/cache-outgoing.inc src/cache/query/proof-api.inc src/cache/api.inc
+
+# Registered lexical capsules share the checked cache-job transaction.
+LEXICAL_ASSETS=$(addprefix build/overlays/,$(addsuffix .seo,edit tail lex ical ctrl))
+build/lexical/jobs.stamp: build/cache-editor/jobs.stamp build/editor.prg build/editor.lbl build/editor-report.json $(wildcard src/cache/lexical/*) $(wildcard src/cache/arena/*) src/supermark/lexer.s tools/module_bindings.py tools/bindings.py tools/overlays.py
+	@test -f $@
+$(LEXICAL_ASSETS): build/lexical/jobs.stamp
+	cmp -s build/lexical/$(@F) $@ || cp build/lexical/$(@F) $@
+EDITOR_ASSETS += $(LEXICAL_ASSETS)
+editor build/supereditor.d81: $(LEXICAL_ASSETS)
+build/cache-editor/jobs.stamp: src/cache/query/open-compact.s

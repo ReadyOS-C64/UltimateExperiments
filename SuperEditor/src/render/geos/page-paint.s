@@ -440,7 +440,7 @@ read_right:
     lda GPP_LINE
     cmp GP_HEADER+GPH_CARET_ROW
     bne @next
-    lda R+GPR_CARET_VALID
+    lda R+GPR_MEMBER
     beq @next
     jsr at_or_after_caret
     bcc @next
@@ -692,13 +692,10 @@ end_line:
     jcs fail
     jsr caret_line
     jcc selected_tail
-    lda R+GPR_CARET_X+1
-    cmp #1
-    bcc @tail
-    jne selected_tail
-    lda R+GPR_CARET_X
-    cmp #64
-    jcs selected_tail
+    ; A source boundary can be offscreen while its virtual cell intersects.
+    ; TAIL_VALID authenticates the signed/clipped cell, not a clamped point.
+    lda R+GPR_TAIL_VALID
+    jeq selected_tail
 @tail:
     lda #P_TAIL_RIGHT
     sta GPP_PHASE
@@ -1025,7 +1022,7 @@ caret_line:
     lda GPP_LINE
     cmp GP_HEADER+GPH_CARET_ROW
     bne @no
-    lda R+GPR_CARET_VALID
+    lda R+GPR_MEMBER
     beq @no
     sec
     rts

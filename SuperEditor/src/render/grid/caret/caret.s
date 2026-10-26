@@ -17,9 +17,12 @@
 .import se_gc_handle,se_gc_width,se_gc_epoch,se_gc_valid,se_gc_previous_ui,se_gc_current_ui
 .import se_ef_valid,se_ef_generation,se_ef_token,se_ef_count,se_ef_fold_rows,se_ef_projection_generation,se_ef_paint_ends,se_ef_summary,se_ef_key_match
 .import se_sel_mark,se_sel_anchor,se_sel_start,se_sel_end,se_selection_range
+.import se_overlay_active
 .import se_overlay_ids,image_slot,image_size_lo,image_size_hi,image_crc_lo,image_crc_hi,se_overlay_asset,asset_epoch
 .import se_reu_retired,se_reu_epoch,se_reu_map,se_reu_logical_owner,se_reu_physical_owner
 .import se_reu_logical,se_reu_offset,se_reu_c64,se_reu_length,se_reu_copy
+.import se_crc_table_low,se_crc_table_high
+.import se_i_ready,se_i_count,se_n_cache_count
 .import se_crc_init,se_crc_byte,se_crc_value,tui_editor_status40,se_doc_invalidate
 .importzp text_ptr,screen_ptr
 .export entry
@@ -95,6 +98,7 @@ ordinary_entry:
  sta se_f_owner
  lda #0
  sta C+63
+ sta C+62 ;capture-only retained R-slot catalogue index, zero before first admission
  lda OP
  beq :+
  ldx #3
@@ -294,6 +298,9 @@ capture:
  lda se_e_redraw
  ora se_e_draw_busy
  jne miss
+ lda se_overlay_active
+ sta C+62 ;checked R25; guard every refusal before borrowing the phase
+ jsr capture_tables
  lda #0
  tax
 @clear:
@@ -423,6 +430,24 @@ row_request:
  lda #8
  jmp helper
 packet_crc:
+ lda OP
+ bne @ordinary
+ jsr se_crc_init
+ ldy #0
+@byte:
+ lda P,y
+ eor se_crc_value+1
+ tax
+ lda se_crc_value
+ eor $8E00,x
+ sta se_crc_value+1
+ lda $8D00,x
+ sta se_crc_value
+ iny
+ cpy #240
+ bcc @byte
+ rts
+@ordinary:
  lda #9
  jmp helper
 verify_row:
@@ -439,9 +464,42 @@ row_bit:
  jmp helper
 helper:
  sta se_overlay_frame
+ ldx OP
+ bne @ordinary
+ ldx C+62
+ beq @ordinary
+ cpx se_overlay_active
+ bne @ordinary
+ ; Exclusive capture calls only resident source/CRC/DMA between helpers.
+ ; The actual real-loader-admitted R25 remains at its public fixed entry.
+ jmp $A010
+@ordinary:
  lda #25
  ldx #0
  jmp se_overlay_call
+; CAPTURE borrows the sparse line-index area. Revoke its retained authority
+; before the first table write, just as the GEOS page coordinator does.
+; Neither source peek nor R25 capture helpers use the inactive FS frame here.
+capture_tables:
+ .assert (se_crc_table_low & $FF)=0,lderror,"resident half-table alignment"
+ .assert se_crc_table_high=se_crc_table_low+128,lderror,"resident half-table layout"
+ lda #0
+ sta se_i_ready
+ sta se_i_count
+ sta se_n_cache_count
+ ldx #0
+@byte:
+ lda se_crc_table_low,x
+ sta $8D00,x
+ eor #$88
+ sta $8D80,x
+ lda se_crc_table_high,x
+ sta $8E00,x
+ eor #$91
+ sta $8E80,x
+ inx
+ bpl @byte
+ rts
 authenticate_helper:
  ldy #0
  beq authenticate_dependencies

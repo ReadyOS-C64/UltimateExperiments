@@ -25,7 +25,7 @@ def build(out,base):
   ('line',1,39,[(f'cache/inline/{n}.s',['BCQ_EDITOR_ACTIVE=1','BCQ_SELECTOR_OWNS_OWNER=1'])for n in ('source-entry','source-seed','query','source','records','source-core','source-page')])]:
   folder=out/tag;folder.mkdir(exist_ok=True);objects=[];segments={}
   for i,(name,defs)in enumerate(files+[('STATE',[])]):
-   path=out/'state.s'if name=='STATE'else ROOT/'src'/name
+   path=out/'state.s'if name=='STATE'else ROOT/'src'/('cache/query/open-compact.s'if tag=='inln'and name=='cache/arena/open.s'else name)
    obj=folder/(str(i)+'.o')
    run(['ca65','-g','-I',out,'-I',ROOT/'src',*[v for d in defs for v in ('-D',d)],'-o',obj,path])
    sizes=subprocess.check_output(['od65','--dump-segments',str(obj)],text=True)

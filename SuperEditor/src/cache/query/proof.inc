@@ -19,14 +19,15 @@ bcq_restore_page:
  bpl @crc
  lda se_crc_value
  cmp BCQP_CRC
- bne @miss
+ jne @miss
  lda se_crc_value+1
  cmp BCQP_CRC+1
- bne @miss
+ jne @miss
  lda BQ_CLASS
  cmp #1
  bne @miss
  lda BCQP_CACHE+3
+ and #$7F
  cmp #1
  bne @miss
  lda BQ_REF
@@ -70,6 +71,13 @@ bcq_restore_page:
  sta BQ_CACHE,y
  dey
  bpl @cache
+ lda BCQP_CACHE+3
+ asl a
+ lda #0
+ rol a
+ sta BQ_LEX_CERT
+ lda #1
+ sta BQ_CACHE+3
  lda #$A5
  sta BCA_PROOF
  clc
@@ -97,6 +105,7 @@ bcq_capture_page:
  cmp #$A5
  bne @miss
  lda BQ_CACHE+3
+ and #$7F
  cmp #1
  bne @miss
  ldy #58

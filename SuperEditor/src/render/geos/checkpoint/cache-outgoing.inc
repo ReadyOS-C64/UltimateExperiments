@@ -10,7 +10,7 @@
 gsc_cached_carry:
  lda se_bc_flags
  eor #(BC_ARMED|BCQ_PAGE_PROOF)
- and #($FF-BC_REBUILD_TRIED) ;onlydefined optionalTRIEDbit isignored
+ and #($FF-BC_REBUILD_TRIED-BC_LEX_ATTEMPT) ;onlydefined optionalTRIEDbit isignored
  ora se_bc_count
  bne @miss
  jsr se_crc_init

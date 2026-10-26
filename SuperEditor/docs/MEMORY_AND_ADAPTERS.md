@@ -1,4 +1,26 @@
-The current grid update changes only C33/R25/R14 relative to checkpoint69720da.
+The current build registers59 editor overlays in the existing64-entry catalogue
+and four checked REU code banks. Five lexical operations reuse existing filename
+strings; the ten new catalogue bytes leave COLD ending `$0ECF`, with48 bytes
+before `$0F00`. BSS remains1,534 bytes and zero page24. The entire ReadyOS
+reservation `$C600–$C9FF` remains untouched.
+
+C33 remains4,096 bytes and expands512 bytes of CRC lookup data only during its
+checked, non-yielding CAPTURE operation. The expansion borrows `$8D00–$8EFF`,
+which aliases retained sparse line-index storage. It clears `se_i_ready`,
+`se_i_count` and `se_n_cache_count` before the first write. Owner4 alone is not
+proof that cached index data is disposable. Pending redraw/drawbusy refusal
+happens before borrowing this area. A native60→80/GOTO regression exposed the
+missing invalidation; both directions and source positions above64KiB now pass.
+R25 stays4,057 bytes. C22's partially visible caret fix reduces it to4,056.
+The combined foreground stack bound remains68 bytes including one IRQ/NMI.
+
+Both five-capsule cache families now share a content-aware build transaction.
+Actual resident/source/include/tool identities and all ten outputs are checked;
+changed content reaches the real D81 even with second-resolution Make clocks.
+A no-op preserves output bytes and mtimes. `make editor disk` runs these checks.
+The following paragraphs retain their named earlier checkpoint scopes.
+
+The previous grid update changes only C33/R25/R14 relative to checkpoint69720da.
 It adds no resident, BSS, zero-page, allocation or catalogue entry. C33 remains
 4,096 bytes, R25 is4,057 and R14 is4,095. NC byte253 stores the exact parsing
 preset inside the existing256-byte CRC-covered header. Raw editing preserves

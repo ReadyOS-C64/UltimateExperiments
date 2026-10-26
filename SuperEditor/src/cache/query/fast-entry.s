@@ -326,6 +326,14 @@ result:
  sta F+GSEM_ERROR
  jmp @clear
 publish:
+ lda BQ_CR+2
+ and #$10
+ sta F+GSEM_USED
+ lda BQ_LEX_CERT
+ beq :+
+ lda #$81
+ sta BQ_CACHE+3
+:
  lda BQ_CR+3
  cmp #$FF
  bne @ordinary

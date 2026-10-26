@@ -156,7 +156,14 @@ se_bc_query_step:
  cmp #1
  jeq bq_pending
  lda BC_IO+31
+ and #$FB
  cmp #1
+ jne bq_corrupt
+ lda BC_IO+31
+ lsr a
+ lsr a
+ sta BQ_LEX_CERT
+ cmp BC_IO+98
  jne bq_corrupt
  EQ BC_IO+22,BQ_AUTH+5,4
  lda BC_IO+94
@@ -167,11 +174,9 @@ se_bc_query_step:
  jne bq_corrupt
  lda BC_IO+95
  ora BC_IO+97
- ora BC_IO+98
  ora BC_IO+99
  jne bq_corrupt
- CP BC_IO+32,BQ_SOURCE,59
- CP BC_IO+91,BQ_LENGTH,3
+ CP BC_IO+32,BQ_SOURCE,62
  CP BC_IO+104,BQ_REF,4
  CP BC_IO+108,BQ_LAST,4
  CP BC_IO+112,BQ_REMAIN,3
@@ -449,7 +454,6 @@ se_bc_query_ack:
  sta BQ_STATE
  jmp bq_pending
  .endif
-@return:rts
 se_bc_query_cancel:
 .ifndef BCQ_SELECTOR_OWNS_OWNER
  jsr bq_owner

@@ -8,8 +8,12 @@ build outputs, logs, external font extracts and local working records are
 excluded from Git.
 
 The current runtime implements Plain, Markdown and Full, retained block
-classification, and selective reuse of sparse inline events. Edit-aware
-semantic reuse, retained lexical colors and retained layout are unfinished.
+classification, selective reuse of sparse inline events, and retained lexical
+colors for the first eligible long code line per baseline. Edit-aware semantic
+reuse and retained layout remain unfinished. The paired native BASIC/assembler
+warm repaint uses about28% fewer PAL cycles with identical screenshots, although
+it still costs roughly17 million cycles. See [lexical cache scope](SYNTAX_CACHE.md)
+for admission, cancellation, source-identity limits and the complete measurements.
 The native 4,102-byte styled-navigation Bottom command now takes 4,087,703 PAL
 cycles including repaint, versus 306,428,091 in its control. Its real dispatcher
 trace drops thousands of repeated inline requests. See
@@ -34,8 +38,9 @@ Cache admission must account for total guard, DMA and overlay costs. Private
 lexical measurements already show that a 25-byte code block is cheaper to
 parse directly, whereas a roughly 1 KiB block benefits from retained spans.
 The promoted navigation path retains ordinary movement when the new lookup
-would add overhead. Lexical retention remains private; selective admission
-must be qualified before that component is integrated.
+would add overhead. The integrated lexical policy uses the long-line threshold
+and a single bounded attempt per baseline; short or inapplicable lines keep the
+existing parser path.
 
 The navigation implementation adds C26 operations6/7 and an exact generated
 size/CRC witness checked by C23 before using them. Only an uncached E47 reveal

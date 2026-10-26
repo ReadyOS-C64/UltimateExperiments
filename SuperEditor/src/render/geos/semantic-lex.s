@@ -6,7 +6,7 @@
 .include "render/presentation.inc"
 .include "supermark/api.inc"
 .include "document/math24.inc"
-.import se_f_owner,se_fs_state,se_fs_owned,se_fs_end,se_fs_state_size
+.import se_bc_flags,se_e_job,se_f_owner,se_fs_state,se_fs_owned,se_fs_end,se_fs_state_size
 .import se_fs_offset,se_fs_count,se_fs_buffer,se_fs_done,se_fs_length
 .import se_sl_init,se_sl_feed,se_sl_finish,se_sl_next,se_sl_count
 .import se_sl_pos,se_sl_start,se_sl_end,se_sl_style,se_sl_state,se_sl_state_size
@@ -23,6 +23,8 @@ entry:
  cmp #4
  jne busy
  lda se_overlay_frame
+ jeq choose
+ cmp #3
  jeq begin
  cmp #GLEX_CANCEL
  jeq cancel
@@ -85,6 +87,44 @@ scan:
  dec GLEX_BUDGET
  jne scan
  jmp pending
+choose:
+ ; Only real root job11 can own a child C continuation. Generic direct C25
+ ; callers retain their exact strict BEGIN/STEP protocol.
+ lda se_e_job
+ cmp #11
+ bne begin
+ lda se_render_caps
+ cmp #3
+ bne begin
+ ; Advisory only: actual gateway still authenticates the root/CR and source.
+ lda se_bc_flags
+ and #32
+ beq begin
+ lda se_bc_flags
+ bpl @may_build
+ lda F+GSEM_USED
+ and #$10
+ beq begin
+@may_build:
+ sec
+ lda F+GSEM_END
+ sbc F+GSEM_BODY
+ lda F+GSEM_END+1
+ sbc F+GSEM_BODY+1
+ tax
+ lda F+GSEM_END+2
+ sbc F+GSEM_BODY+2
+ bne @long
+ cpx #3
+ bcc begin
+@long:
+ lda #45
+ sta $9135
+ lda #0
+ sta $9136
+ lda #1
+ clc
+ rts
 begin:
  lda GLEX_SOURCE_ACTIVE
  ora GLEX_CONTEXT_VALID
@@ -110,10 +150,17 @@ begin:
  bpl @clear
  jsr reader ;A0 snapshot BEGIN
  jcs fail
- COPY24 se_fs_length,GLEX_LENGTH
- COPY24 F+GSEM_QUERY,GLEX_QUERY
- COPY24 F+GSEM_BODY,GLEX_BODY
- COPY24 F+GSEM_END,GLEX_END
+ ldx #2
+@copy:lda se_fs_length,x
+ sta GLEX_LENGTH,x
+ lda F+GSEM_QUERY,x
+ sta GLEX_QUERY,x
+ lda F+GSEM_BODY,x
+ sta GLEX_BODY,x
+ lda F+GSEM_END,x
+ sta GLEX_END,x
+ dex
+ bpl @copy
  lda F+GSEM_LANGUAGE
  sta GLEX_LANG
  lda F+GSEM_COUNT

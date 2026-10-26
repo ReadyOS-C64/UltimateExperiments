@@ -807,7 +807,7 @@ se_bc_write_step:
  sta se_bc_tail
  sta se_bc_count
  lda se_bc_flags
- and #($FF-BC_LOST-BC_ACTIVE)
+ and #($FF-BC_LOST-BC_ACTIVE-BC_LEX_ATTEMPT)
  ora #BC_ARMED
  sta se_bc_flags
  lda #0
