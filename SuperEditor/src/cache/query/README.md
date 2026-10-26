@@ -1,7 +1,10 @@
 # Immutable-baseline query capsule
 
-The editor now uses the optional4075-byte viewport-proof classification profile
-through C21. The original component profiles below remain separately buildable.
+The editor uses a4081-byte C35 seed profile and3491-byte C37 forward profile
+through C21, with the managed85-byte viewport proof. Actual foreground normal
+rendering and a corrupt-slot handoff are qualified, alongside native11. The
+original component profiles below remain separately buildable; the private
+probe section records its original component release scope.
 Actual integration and remaining performance limits are tracked in
 [REU_CACHE_REDESIGN](../../../docs/REU_CACHE_REDESIGN.md).
 
@@ -210,3 +213,63 @@ all85 certificate byte corruptions, in-job writes at four distinct boundaries,
 post-END writes, false capture preconditions, and unrelated FE writes. Per-call
 wholeRAM and whole16MiB readonly guards remain. Timings reported here are CPU
 component instruction counts, not complete renderer/native latency.
+
+## Private retained-forward classifier probe
+
+`fast-entry.s` is a separate C37 probe, not registered by this component. It
+links query/source/records with `BCQ_FORWARD_QUERY=1`, `BCQ_FORWARD_SEED=1`,
+`BCQ_PAGE_REUSE=1`, `BCQ_CLASSIFY=1`, `BCQ_EDITOR_ACTIVE=1`, and
+`BCQ_SELECTOR_OWNS_OWNER=1`; arena core/page are linked, readonly OPEN is not.
+The sealed image including binding is3491 bytes. No BSS, ZP, bank allocation,
+additional phase span, or resident instruction is added by the probe.
+
+The companion C35 seed profile adds only `BCQ_FORWARD_SEED=1` to the PAGE build
+and is4081 bytes. After actual final source GUARD/END and classification mapping,
+its publisher saves the matched CR slot to `BCQP_SLOT = GSEM+114`. Under this
+classification-only flag `BQ_RECORD_REF` aliases the still-current BQ_REF, so
+no extra reference staging is needed. The85-byte certificate remains unchanged.
+All four released profiles (4038/4061/4025/4075) retain their exact payloads when
+the new flags are absent. The slot is deliberately **not** trusted authority.
+
+C37 BEGIN first checks owner4 and competing jobs before resetting query576.
+It requires ARMED, an empty observer queue, the global managed-write proof bit,
+and a nonbackward query relative to the previous real GSEM_START. It captures
+current13-byte authority, checks the full typed object graph, verifies CRC85 and
+its full59/13/page/gen/kind binding, and checks page allocation, generation,
+SLOTS1..42 and USED=SLOTS*96. It then runs actual R14 BEGIN, claims ACTIVE only
+after acquiring its source lease, and compares the exact59 source snapshot.
+Actual merged length comes from that checked reader. No root or payload CRC is
+repeated on this path: the managed viewport certificate retains that proof.
+
+The first96-byte record must pass its own complete CRC/schema/range checks and
+its canonical START must equal the previous real GSEM_START. A corrupt slot
+therefore cannot select an unrelated classification: invalid slots and first
+START mismatch release only this query's lease and request actual C35 BEGIN.
+Within the page, START/NEXT continuity and exact checked membership remain;
+page-local remaining count bounds traversal. Every STEP and final ACK retains
+all source,13-byte tuple, typed graph, flags/queue, and write-revocation guards.
+There is no relaxed source-equivalence assumption or cached inline certificate.
+
+A successful result has the same GSEM fields/error/ACTIVE contract as C35 and
+publishes the new slot. Invalid/revoked certificate, backward input, or exhausting
+the page releases owned resources, sets GSEM_ACTIVE0, REQUEST=$9135=35 and
+OP=$9136=0, then returns A1/Cclear. The caller must invoke that requested worker
+on the next foreground slice; this is not a nested C call. C37 ordinary pending
+retains REQUEST37/OP1. Initial source geometry mismatch returns A2/ERROR2;
+midjob source/provider/record errors remain carry errors. X/Y are unspecified.
+
+The current resident dispatcher overwrites OP with1 on generic pending returns,
+so this private frontend test is **not resident integration qualification**.
+The parent owns a separate dispatch handoff fix and later actual editor gates.
+Do not deploy this profile by merely registering another asset.
+
+`python3 tests/test_cache_query_forward.py` runs real producer/writer, seededC35,
+and C37 through actual sealed outer-worker calls, following REQUEST/OP explicitly.
+Its101 positions include a complete60-CR+EOF sequential walk with exactly two
+C35 BEGINs (initial page and one page-boundary handoff). The independent model
+checks classification for all9 kinds, languages, pending and >64KiB input. Tests
+cover every256 slot values, all85 certificate byte flips, foreign owner opacity,
+checked identical type53 writes during READ/heldCR, actual public W_LOAD snapshot
+inapplicability, cancel and prior classifier faults. WholeRAM and16MiB guards
+remain. This is component CPU performance evidence; no complete editor/native
+latency claim follows from it.

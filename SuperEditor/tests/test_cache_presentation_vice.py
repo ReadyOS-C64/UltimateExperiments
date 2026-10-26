@@ -94,7 +94,7 @@ def evaluate(n):
         measured=next(x for x in result['measurements']if x['id']==ident)
         calls={(x['slot'],x['id'])for x in measured['cost_profile']['groups']}
         if item['caps']==0 and item['ui']!=4:
-            assert not calls&{(1,14),(1,15),(1,19),(1,24),(1,25),(1,26),(1,31),(0,31)},(ident,'Plain scheduled semantic worker',calls)
+            assert not calls&{(1,14),(1,15),(1,19),(1,24),(1,25),(1,26),(1,31),(0,31),(1,34),(1,35),(1,37)},(ident,'Plain scheduled semantic worker',calls)
             assert f.get('se_st_request',1)==f.get('se_st_valid',1)==0
         if item['caps']==1:assert not calls&{(1,15),(1,25),(1,31),(0,31)},(ident,'Markdown scheduled lexical worker')
     assert (n.e/'working.d81').read_bytes()==(n.e/'initial-fixtures.d81').read_bytes()

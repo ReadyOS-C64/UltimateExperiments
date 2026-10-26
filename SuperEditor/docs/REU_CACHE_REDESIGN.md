@@ -19,8 +19,20 @@ PAL cycles versus9.512 million before it. Reusing a checked CR-page proof within
 a viewport reduces native Full GEOS redraw to18.448 million cycles in the first
 qualified integration. Each checked cache write revokes that proof before DMA;
 fresh viewports, parser fallback and the painter transition also revoke it.
-Root CRC, source-state exchange and record rescanning still repeat per query.
-A forward-query capsule is being investigated separately; it is not deployed.
+The subsequent forward-query capsule retains the checked page cursor and starts
+one full query per page rather than one per logical line. Its integrated native
+Full redraw takes12.268 million PAL cycles; Markdown takes11.747 million. This
+still exceeds the old9.512-million-cycle Full path, so performance remains open.
+Initial root validation and repeated source-state exchange still cost work.
+
+C35 seeds an untrusted slot after final source validation. C37 validates the
+page certificate, current source/capability tuple and the selected record's CRC
+and canonical START before using that slot. A bad slot, backward query or page
+boundary hands off to C35 BEGIN on the next foreground slice. The resident
+preserves that operation0; no C-to-C call is introduced. Actual foreground
+rendering and a corrupted-slot handoff pass independent pixel/source/full16MiB
+checks. The53-asset build also passes observer42, parser55, incremental15,
+cleanup9, stack68 and native11 gates. Generated media and logs remain ignored.
 
 The dirty-heading incremental regression is fixed using an explicit cached
 outgoing-carry type. It consumes authenticated CR data and never fabricates a

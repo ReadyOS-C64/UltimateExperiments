@@ -11,5 +11,6 @@ BCQP_USED=BCQP+76
 BCQP_NEXT=BCQP+78
 BCQP_CRC=BCQP+83
 BCQP_SLOTS=BCQP+82
+BCQP_SLOT=GSEM_FRAME+114          ;untrusted until actualCRSTART witness matches
 .assert BCQP_SLOTS<GSEM_FRAME+169,error,"CRproof overlapsINLINEhint"
 .endif

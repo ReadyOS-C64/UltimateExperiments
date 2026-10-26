@@ -8,9 +8,15 @@
 .import bq_owner
 .endif
 .import bq_authority,bq_source,bq_end,bq_pending,bq_bad,bq_changed,bq_corrupt,bq_fail,bq_done
-.import bca_transfer,bca_guard,bca_open_step,bca_page_step
+.import bca_transfer,bca_guard,bca_page_step
+.ifndef BCQ_FORWARD_QUERY
+.import bca_open_step
+.endif
 .import read_record
-.export se_bc_query_begin,se_bc_query_step,se_bc_query_ack,se_bc_query_cancel
+.ifndef BCQ_FORWARD_QUERY
+.export se_bc_query_begin
+.endif
+.export se_bc_query_step,se_bc_query_ack,se_bc_query_cancel
 .macro CP source,target,count
  ldy #count-1
 :
@@ -46,6 +52,7 @@
 .import bq_baseline_miss
 .endif
 .segment "CODE"
+.ifndef BCQ_FORWARD_QUERY
 se_bc_query_begin:
 .ifndef BCQ_SELECTOR_OWNS_OWNER
  jsr bq_owner
@@ -108,6 +115,7 @@ se_bc_query_begin:
 @miss:lda #2
  clc
 @return:rts
+.endif
 se_bc_query_step:
 .ifndef BCQ_SELECTOR_OWNS_OWNER
  jsr bq_owner
@@ -120,23 +128,28 @@ se_bc_query_step:
  lda BQ_READY
  jne bq_pending ;preserveheldIO, authorityonly; ACK drains before sourceguard
  lda BQ_STATE
+.ifndef BCQ_FORWARD_QUERY
  cmp #BQ_OPEN
  jeq @open
  cmp #BQ_SOURCE_BEGIN
  jeq @source_begin
+.endif
  lda #1
  jsr bq_source
  jcs bq_fail
  lda BQ_STATE
  cmp #BQ_PAGE
  jeq @page
+.ifndef BCQ_FORWARD_QUERY
  cmp #BQ_PAGE_STEP
  jeq @page_step
  cmp #BQ_HEADER
  jeq @header
+.endif
  cmp #BQ_READ
  jeq read_record
  jmp bq_bad
+.ifndef BCQ_FORWARD_QUERY
 @open:
  jsr bca_open_step
  jcs bq_fail
@@ -206,7 +219,13 @@ se_bc_query_step:
  lda #BQ_PAGE
  sta BQ_STATE
  jmp bq_pending
+.endif
 @page:
+.ifdef BCQ_FORWARD_QUERY
+ lda #BQ_READ
+ sta BQ_STATE
+ jmp bq_pending
+.else
  ; Keep a proof only inside this exclusive, source-bound job and exactpage.
  lda BQ_REF
  cmp BQ_CACHE
@@ -264,6 +283,7 @@ se_bc_query_step:
  lda #BQ_READ
  sta BQ_STATE
  jmp bq_pending
+.endif
 @return:rts
 ; Checked payload address from reference; no caller-selectedhost pointer.
 page_base:

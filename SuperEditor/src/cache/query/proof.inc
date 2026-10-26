@@ -6,6 +6,7 @@
 .include "render/geos/semantic.inc"
 .include "cache/query/proof-api.inc"
 .ifdef BCQ_PROOF_RESTORE
+.export bcq_restore_page
 bcq_restore_page:
  lda se_bc_flags
  and #BCQ_PAGE_PROOF

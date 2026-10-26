@@ -330,7 +330,14 @@ next_line:
     sta GSEM_FRAME+GSEM_CP_VALID
     lda #14
     sta PS
+    lda se_bc_flags
+    and #BC_PAGE_PROOF
+    beq @cold_query
+    lda #37
+    bne @query
+@cold_query:
     lda #35
+@query:
     ldx #0
     jmp request
 legacy_classify:

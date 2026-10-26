@@ -5,6 +5,9 @@
 .import se_crc_init,se_crc_byte,se_crc_value
 .import bq_pending,bq_corrupt,bq_fail,bq_done
 .import payload_offset
+.ifdef BCQ_FORWARD_QUERY
+.import bq_forward_handoff
+.endif
 .export read_record
 .macro CP source,target,count
  ldy #count-1
@@ -149,7 +152,16 @@ read_record:
  dey
  bpl @ticket
  CMP24 BQ_CR+16,BQ_EXPECT
+.ifdef BCQ_FORWARD_QUERY
+ beq :+
+ lda BQ_SEED_PENDING
+ jne bq_forward_handoff
+ jmp bq_corrupt
+:lda #0
+ sta BQ_SEED_PENDING
+.else
  jne bq_corrupt
+.endif
  CMP24 BQ_CR+22,BQ_CR+19
  jcc @body_ok
  jne bq_corrupt
@@ -208,7 +220,9 @@ read_record:
  bpl @last
  lda BQ_CR+2
  and #2
+.ifndef BCQ_FORWARD_QUERY
  jeq bq_corrupt
+.endif
  jmp @member
 @not_last:
  lda BQ_CR+2
@@ -225,7 +239,11 @@ read_record:
 :dec BQ_REMAIN
  lda BQ_REMAIN
  ora BQ_REMAIN+1
+.ifdef BCQ_FORWARD_QUERY
+ jeq bq_forward_handoff
+.else
  jeq bq_corrupt
+.endif
  CP BQ_NEXT,BQ_EXPECT,3
  jsr advance
  jcs bq_fail

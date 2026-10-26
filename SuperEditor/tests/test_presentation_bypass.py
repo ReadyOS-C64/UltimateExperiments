@@ -50,14 +50,14 @@ def capture_labels(out, fixture):
         directory.mkdir()
         paths = {name: ROOT / 'build/overlays' / name for name in WORKERS}
         # Optional new52 assets; historical fixtures retain their original targets.
-        for name, asset in (('cachebuild', 'sema'), ('cachequery', 'inln')):
+        for name, asset in (('cachebuild', 'sema'), ('cachequery', 'inln'), ('cacheforward', 'page')):
             if (fixture / 'build/overlays' / (asset + '.seo')).exists():
                 paths[name] = ROOT / 'build/cache-editor' / asset
         paths.update(stage31=ROOT / 'build/geos-prod/code-typing/stage',
                      stage32=ROOT / 'build/geos-prod/style-typing/stage')
         records = {}
         for name, source in paths.items():
-            asset = {'stage31': 'clex', 'stage32': 'type', 'cachebuild': 'sema', 'cachequery': 'inln'}.get(name, name)
+            asset = {'stage31': 'clex', 'stage32': 'type', 'cachebuild': 'sema', 'cachequery': 'inln', 'cacheforward': 'page'}.get(name, name)
             raw = source.with_suffix('.bin').read_bytes()
             assert raw == (fixture / 'build/overlays' / (asset + '.seo')).read_bytes()[36:], (name, 'incoherent labels/binary')
             records[name] = dict(asset=asset, binary_sha256=hashlib.sha256(raw).hexdigest())

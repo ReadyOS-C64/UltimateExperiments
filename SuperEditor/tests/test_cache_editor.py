@@ -13,7 +13,7 @@ ROOT=observer.ROOT
 def run(out,base):
  gate=observer.Gate(out,base);f=gate.f;targets=[];cases=[]
  try:
-  for asset,stem in [('sema',ROOT/'build/cache-editor/sema'),('inln',ROOT/'build/cache-editor/inln'),
+  for asset,stem in [('sema',ROOT/'build/cache-editor/sema'),('inln',ROOT/'build/cache-editor/inln'),('page',ROOT/'build/cache-editor/page'),
                      ('geossema',ROOT/'build/overlays/geossema'),('geosinln',ROOT/'build/overlays/geosinln')]:
    raw=stem.with_suffix('.bin').read_bytes();assert raw==f.assets[asset][36:],(asset,'incoherent labels')
    shutil.copy2(stem.with_suffix('.lbl'),out/(asset+'.lbl'))
@@ -52,6 +52,7 @@ def run(out,base):
   counts=counted('cached-classification-full-repaint',full)
   assert counts['inln:entry']>0
   cached_query_calls=counts['inln:entry']
+  assert counts['page:entry']>0
   assert not any(v for k,v in counts.items()if k.startswith(('sema:','geossema:'))and(k.endswith(('_feed','_finish','_init'))or k.endswith(':entry')))
   assert gate.stable()==canonical
   # Only the existing derived pixel/page cache may change; semantic arena53
@@ -89,7 +90,7 @@ def run(out,base):
   counts=counted('plain-bypass',full,caps=0,source=changed)
   assert not any(counts.values()),counts
   result=dict(status='PASS',resident=f.report['sha256'],binding=f.report['resident_binding']['digest'],cases=cases,
-   scope='Actual C7/R33/C34/root/C21/C35 initial baseline and block classification cache. Inline C26 and code C25 fallback remain; no edit rebase/layout reuse/native latency claim.')
+   scope='Actual C7/R33/C34/root/C21/C35/C37 baseline and forward block classification cache. Inline C26 and code C25 fallback remain; no edit rebase/layout reuse/native latency claim.')
   (out/'result.json').write_text(json.dumps(result,indent=2)+'\n')
  finally:f.close()
 

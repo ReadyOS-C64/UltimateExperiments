@@ -1,5 +1,13 @@
 .ifndef SE_CACHE_QUERY_API
 SE_CACHE_QUERY_API=1
+.ifdef BCQ_FORWARD_SEED
+ .ifndef BCQ_CLASSIFY
+  .error "forward seed is classification-only"
+ .endif
+ .ifndef BCQ_PAGE_REUSE
+  .error "forward seed requires managedCRpage proof"
+ .endif
+.endif
 .include "cache/api.inc"
 BQ=BC_FRAME
 BQ_ABI=BQ+0
@@ -29,7 +37,12 @@ BQ_SLOTS=BQ+111
 BQ_CACHE=BQ+112
 BQ_LAST=BQ+116
 BQ_TEMP=BQ+120
+.ifdef BCQ_FORWARD_SEED
+; Classification-only seed publishes its still-current matchedCR reference.
+BQ_RECORD_REF=BQ_REF
+.else
 BQ_RECORD_REF=BQ+128
+.endif
 BQ_CR=BQ+259                     ; protected staged CR96
 .assert BQ_READER=$8DAD,error,"editor query reader cleanup ABI"
 .assert BQ_CR+96<=BQ+BCF_ARENA_CONTROL,error,"editor query/control overlap"
@@ -49,6 +62,9 @@ BQ_TEMP=BQ+302                   ; arithmetic/CRC transient8
 ; Optional one-viewport CR payload proof. No default/profile storage changes.
 .ifdef BCQ_PAGE_REUSE
 BQ_PROOF_VALID=BQ+132
+.ifdef BCQ_FORWARD_QUERY
+BQ_SEED_PENDING=BQ+133
+.endif
 .endif
 BQ_OPEN=1
 BQ_SOURCE_BEGIN=2

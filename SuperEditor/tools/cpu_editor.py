@@ -6,7 +6,7 @@ from overlays import HEADER
 ROOT=Path(__file__).resolve().parents[1]
 NAMES=['eedit','eplay','window','text40','menu40','engine','navigate','search','block','layout','fileio','aux','styler','viewsource','lexical','gridedit','grid80','grid60','foldparse','foldfinish','foldcore','foldctl','rangeio','foldxform','geosline','geospage','geosrow','geospaint','geosnav']
 NAMES += ['geossema','geoslex','geosinln','popups','geospreview','geosfontrow','geosfontin','geosfold','geostail','geoscaret','lifectrl','lifecopy','geosdelta','gfont','gtype','code','clex','type','grid','hotcold']
-NAMES += ['fold','sema','inln']
+NAMES += ['fold','sema','inln','page']
 
 def startup(m,s,assets,banks=256):
  m.load(0x801,(ROOT/'build/editor.prg').read_bytes()[2:]);m.call(s['se_clear_state'])

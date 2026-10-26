@@ -1216,10 +1216,10 @@ CACHE_JOB_INPUTS=$(wildcard src/cache/editor/* src/cache/arena/* src/cache/query
 build/cache-editor/jobs.stamp: build/editor.prg build/editor.lbl build/editor-report.json $(CACHE_JOB_INPUTS)
 	$(PYTHON) src/cache/editor/build.py build/cache-editor $(CURDIR)
 	touch $@
-build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo: build/cache-editor/jobs.stamp
+build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo: build/cache-editor/jobs.stamp
 	cp build/cache-editor/$(@F) $@
-EDITOR_ASSETS += build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo
-editor build/supereditor.d81: build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo
+EDITOR_ASSETS += build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo
+editor build/supereditor.d81: build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo
 build/editor/commands.o build/geos-resident/dispatch.o: src/cache/api.inc
 build/overlays/menu40.o: src/cache/editor/admit.inc src/cache/api.inc
 build/geos-prod/page.o: src/cache/api.inc

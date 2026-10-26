@@ -5,6 +5,9 @@
 .include "editor-api.inc"
 .include "cache/query/api.inc"
 .include "render/geos/semantic.inc"
+.ifdef BCQ_FORWARD_SEED
+.include "cache/query/proof-api.inc"
+.endif
 .ifndef BCQ_CLASSIFY
 .error "classification entry requires BCQ_CLASSIFY"
 .endif
@@ -192,7 +195,12 @@ publish:
  bne @done
 @code:lda #4
 @role:sta F+GSEM_ROLE
-@done:lda #0
+@done:
+.ifdef BCQ_FORWARD_SEED
+ lda BQ_RECORD_REF+1
+ sta BCQP_SLOT
+.endif
+ lda #0
  sta F+GSEM_ERROR
  sta F+GSEM_ACTIVE
  clc

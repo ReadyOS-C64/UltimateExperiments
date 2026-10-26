@@ -50,6 +50,10 @@ presets; the build default is `[editor] source_preset` in the TOML above. These
 are session settings. Formatted preview still formats the document explicitly;
 its code-token colors follow the same switch. See
 [preset behavior and remaining REU redesign](docs/REU_CACHE_REDESIGN.md).
+GEOS block classification now uses a checked REU baseline and forward page
+lookups. Inline and code-token parsing still use their existing workers;
+edit rebasing and retained layout remain in progress. Current Full redraw is
+12.268 million PAL cycles, so performance qualification is still open.
 
 F7 `fold` toggles the innermost visible region; `fold all` and `unfold all`
 operate on the document. Block/F, Block/L and Block/E reach the same commands.

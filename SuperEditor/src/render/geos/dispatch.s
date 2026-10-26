@@ -38,7 +38,7 @@ se_geos_render:
 :
     ldx #0
     jsr se_overlay_call
-    jcs failed
+    bcs call_failed
     cmp #2
     beq @full
     lda #0
@@ -67,9 +67,9 @@ se_geos_render:
 :
     ldx #1
     jsr se_overlay_call
-    jcs failed
+    bcs call_failed
     tax ;explicit A->Z test; X is dead before either path
-    beq painted
+    jeq painted
     lda #11
 set_job:
     sta se_e_job
@@ -81,7 +81,7 @@ se_geos_navigate:
     lda #GP_NAV_ID
     ldx #1
     jsr se_overlay_call
-    jcs failed
+    bcs call_failed
     lda #12
     bne set_job
 se_geos_service:
@@ -95,6 +95,7 @@ se_geos_service:
     pla
     bcc :+
     txa
+call_failed:
     jmp failed
 :
     cmp #GP_LAYOUT_ID
@@ -109,12 +110,21 @@ se_geos_service:
     ; Both remain loaded across bounded slices, just like semantic workers.
     cmp #34
     bcc ordinary_worker
-    cmp #36
+    cmp #38
     bcs ordinary_worker
     cpx #1
     bne cache_complete
-    stx OP ;new jobs enter with BEGIN0, then retain their STEP1 operation
-    beq done ;CPX equality survives STX
+    ; Query workers own their continuation and may hand off to BEGIN0.
+    ; The request was already popped; this one-byte loan cannot exceed the
+    ; existing request-PHA/overlay-JSR stack depth earlier in this function.
+    pha
+    lsr a
+    bcs :+ ;odd35/37 preserve their own operation, including handoff BEGIN0
+    stx OP ;even34/36 advance BEGIN0 to STEP1
+:
+    pla
+    cpx #1 ;restore exact legacy pending return flags/A/X/Y
+    beq done
 cache_complete:
     ;A2 MISS/A3 STREAM also return to the coordinator for fallback.
     and #1
