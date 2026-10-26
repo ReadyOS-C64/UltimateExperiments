@@ -70,7 +70,7 @@ long_try:
  adc SIGN
  sta NEWCOL
  cmp W
- jcs @bad1
+ bcs @bad1
  jmp @caret_ready
 @raw_caret:
  lda EDIT
@@ -101,14 +101,14 @@ long_try:
 @bad1:jmp miss
 @validate:
  jsr bounds
- jcs @bad1
+ bcs @bad1
  lda se_render_caps
  beq @raw_row
  jsr row_bit
  tax
  lda B+111,x
  and BITMASK
- jeq @bad1
+ beq @bad1
 @raw_row:
  SUB24 END,POS,DELTA
  lda DELTA+1
@@ -132,18 +132,18 @@ long_try:
  clc
  adc #1
  cmp W
- jcs @geometry_boundary ;new boundary is admitted only by new R24
+ bcs @geometry_boundary ;new boundary is admitted only by new R24
  jmp @packet
 @deleting:
  lda LS_COUNT
- jeq @geometry_boundary
+ beq @geometry_boundary
  jmp @packet
 @geometry_boundary:
  lda se_render_caps
- jne @bad1
+ bne @bad1
  lda #5
  jsr geometry
- jcs @bad1
+ bcs @bad1
 @packet:
  lda #80
  sta screen_ptr
@@ -188,8 +188,6 @@ long_try:
  sta LS_COL
 @compare:
  ldx LS_COL
- cpx LS_COUNT
- bcs @row_done
  lda ROW
  cmp LS_FIRST
  bne @same
@@ -206,11 +204,16 @@ long_try:
  jsr long_advance
  jmp @same
 @skip:
+ cpx LS_COUNT
+ bcs @row_done
  lda P,x
  jsr long_alnum
  jcs miss
  jmp @next
 @same:
+ ldx LS_COL
+ cpx LS_COUNT
+ bcs @row_done
  jsr se_view_peek
  jcs miss
  ldx LS_COL

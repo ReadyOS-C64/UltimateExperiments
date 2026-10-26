@@ -1,9 +1,10 @@
 # Current performance
 
 Plain60/80 physical-row insertion/removal now improves43.9–57.5% in paired
-nativePAL cases, with identical screenshots and nine overlay loads. Return-key
-split/merge remains on the slower fallback; these structural operations still
-take about0.8–1.0seconds in the tested cases. See the
+nativePAL cases, with identical screenshots and nine overlay loads. The tested
+wrapped physical-row moves take about0.8–1.0seconds. Return-key split/merge
+remains on the slower fallback, at1.73–2.55million PAL cycles (about1.8–2.6seconds).
+See the
 [geometry measurements and contract](../src/render/grid/geometry/README.md).
 
 Same-call lexical batching separately improves retained-code warm PAL repaint

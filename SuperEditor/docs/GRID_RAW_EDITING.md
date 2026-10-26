@@ -114,3 +114,13 @@ source/header/packet/provider authority, complete packets/anchors/CRbits and
 final R25 publication. NativePAL cases improve43.9–57.5% with identical images.
 Return-key split/merge and unknown offscreen exposure still fall back. See the
 [geometry contract and measured limits](../src/render/grid/geometry/README.md).
+
+## Return at a short line's end
+
+The long-row validator now authenticates an inserted byte before testing the
+old row's terminal bound. Previously a Return exactly at that bound could be
+mistaken for the original CR: source bytes were correct, but the following rows
+stayed at their old screen positions. The terminal CR now reaches the existing
+structural-edit fallback; ordinary terminal glyphs still use the validated path.
+Deletion checks its old-byte bound before reading. No CRC, provider or source
+guard is removed. See the [isolated regression](../src/render/grid/probes/row-geometry-extend/cr/TERMINAL.md).
