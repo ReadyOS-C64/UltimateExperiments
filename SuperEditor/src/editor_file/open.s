@@ -47,6 +47,9 @@ allocate:
     bne :+
     lda #1
 :   sta se_f_banks
+.ifdef SE_FILE_CACHE_RETIRE
+    jsr f_cache_retire
+.endif
     lda #3
     ldx #1
     jsr se_object_create
@@ -311,3 +314,6 @@ f_release_candidates:
     sta se_f_error
 @done:
     rts
+.ifdef SE_FILE_CACHE_RETIRE
+.include "cache/editor/file-retire.inc"
+.endif

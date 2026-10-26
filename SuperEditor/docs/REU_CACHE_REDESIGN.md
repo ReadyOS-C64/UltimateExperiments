@@ -72,18 +72,30 @@ cycles, Markdown9.762 million, with all11 screenshots unchanged. Full remains
 (Markdown); no overall responsiveness or completion claim follows.
 
 C39 now consumes completed inline events for eligible source continuations.
-C26 admits bodies of at least4,096 bytes only with a live checked viewport,
+C26 admits bodies of at least 4,096 bytes only with a live checked viewport,
 no queued edits, and the existing source continuation. C39 verifies the cached
 record and accepts at most eight events; larger or unsuitable results return to
 C26 through an explicit fallback operation, without attempting C39 again.
-Short and dense bodies retain the parser path. The worker fits4,093 bytes,
+Short and dense bodies retain the parser path. The worker fits 4,093 bytes,
 adds no resident state, and preserves the existing source-reader cleanup ABI.
 Actual public editor comparisons and fault cases check the complete dispatcher,
-source maps, pixels, history and exact REU boundaries. The54-asset native build
+source maps, pixels, history and exact REU boundaries. The 54-asset native build
 also passes the eleven display captures and full startup import. The diverse
-short-document Full redraw remains10.283 million PAL cycles, so this does not
+short-document Full redraw remains 10.283 million PAL cycles, so this does not
 close general performance qualification or slow styled navigation. The long-case
 instruction measurements include repaint, rather than initial baseline creation.
+
+File/Open now retires the optional semantic-cache object after successful file
+preflight and size validation, before reserving the two staging objects. The
+File phase uses the ordinary checked object service and verifies type `$53`; it
+never borrows the cache workspace while File owns that memory. Successful
+retirement drops the capability and cache proofs, preserving the observer ticket,
+incarnation and unread edit ring. Stale, foreign or active capabilities are
+refused. Source, history and clipboard remain intact. This fixes object-slot
+pressure even when physical REU banks are available. If physical banks are still
+exhausted, Open retains its existing safe refusal and cancellation behavior.
+An unsuccessful Open may therefore discard derived analysis while preserving
+the document. The new C12 image is 4,031 bytes, with no new BSS or zero page.
 
 C35 seeds an untrusted slot after final source validation. C37 validates the
 page certificate, current source/capability tuple and the selected record's CRC

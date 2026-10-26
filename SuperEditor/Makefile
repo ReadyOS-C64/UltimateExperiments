@@ -583,6 +583,9 @@ FILE_COORDINATOR_OBJ = $(addprefix build/editor-file-prod/,$(addsuffix .o,coordi
 build/editor-file-prod/%.o: src/editor_file/%.s src/editor_file/api.inc src/fileio/api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -I build -o $@ -l $(@:.o=.lst) $<
+build/editor-file-prod/open.o: src/editor_file/open.s src/cache/editor/file-retire.inc src/cache/api.inc src/editor_file/api.inc src/fileio/api.inc
+	mkdir -p $(dir $@)
+	$(CA65) -g -D SE_FILE_CACHE_RETIRE=1 -I src -I build -o $@ -l $(@:.o=.lst) $<
 build/editor-file-prod/provider-state.o: src/fileio/state.s
 	mkdir -p $(dir $@)
 	$(CA65) -g -D SE_FILE_UNION=1 -I src -o $@ $<
