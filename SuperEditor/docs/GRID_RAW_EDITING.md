@@ -124,3 +124,14 @@ stayed at their old screen positions. The terminal CR now reaches the existing
 structural-edit fallback; ordinary terminal glyphs still use the validated path.
 Deletion checks its old-byte bound before reading. No CRC, provider or source
 guard is removed. See the [isolated regression](../src/render/grid/probes/row-geometry-extend/cr/TERMINAL.md).
+
+## Native-row input setup
+
+C33 initializes the complete19-byte native-row input descriptor from a constant
+template, then sets the current width/count and physical row. It leaves the
+renderer-owned49-byte scratch area to the worker. This recovers40 code/data
+bytes without extra overlay calls or changing either native renderer. Both
+widths pass544 glyph/role/flag vectors (1088 calls) with zero versus nonzero
+scratch, identical independent pixels/attributes and instruction counts.
+Registered edit/fault, stack and native60/80 typing checks also pass. This is
+space recovery for further rendering work, not a structural-edit speed claim.

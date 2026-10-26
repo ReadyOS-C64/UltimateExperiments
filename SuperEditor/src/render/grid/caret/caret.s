@@ -997,12 +997,13 @@ type_try:
  lda #2
  jsr leaf
  jcs miss
- ldx #67
- lda #0
-@clear:
+ ; Every public NR input is initialized; remaining49 bytes are worker scratch.
+ ldx #18
+@descriptor:
+ lda nr_defaults,x
  sta NC_NR,x
  dex
- bpl @clear
+ bpl @descriptor
  lda W
  sta NC_NR
  sta NC_NR+2
@@ -1010,30 +1011,6 @@ type_try:
  clc
  adc #2
  sta NC_NR+1
- lda #6
- sta NC_NR+4
- lda #$60
- sta NC_NR+6
- lda #$40
- sta NC_NR+8
- lda #$A8
- sta NC_NR+10
- lda #<P
- sta NC_NR+11
- lda #>P
- sta NC_NR+12
- lda #<(P+80)
- sta NC_NR+13
- lda #>(P+80)
- sta NC_NR+14
- lda #<(P+160)
- sta NC_NR+15
- lda #>(P+160)
- sta NC_NR+16
- lda #<palette
- sta NC_NR+17
- lda #>palette
- sta NC_NR+18
  lda #<NC_NR
  sta se_overlay_frame+1
  lda #>NC_NR
@@ -1076,3 +1053,9 @@ geometry:
  lda #24
  ldx #0
  jmp se_overlay_call
+
+.segment "RODATA"
+nr_defaults:
+ .byte 0,0,0,0,6
+ .word $6000,$4000,$A800,P,P+80,P+160,palette
+.assert *-nr_defaults=19,error,"complete native-row public input template"
