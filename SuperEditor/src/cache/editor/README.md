@@ -1,7 +1,8 @@
 # Automatic semantic baseline pump
 
-This is a qualified component, not editor registration or a retained-cache
-consumer. C34 remains loaded while its selector drives the actual block/inline
+This operation-sized worker is registered by the editor's cache build script.
+The component qualification below is separate from editor integration.
+C34 remains loaded while its selector drives the actual block/inline
 producer, R14 checked source reader and R33 checked baseline writer. There is no
 host per-record APPEND/ACK supervisor and no extra R32 clear-record call.
 
@@ -35,6 +36,13 @@ publish OP9136=1 for the next service. C34 does not write that parent field.
 Calling BEGIN again is correctly busy, not continued work. The component test
 uses real opcode calls on an old immutable resident and therefore does not
 qualify the new resident service route. That route needs its own product test.
+
+The editor now implements that route. `tests/test_cache_editor.py` exercises
+the real C7→R33→C34→C21→C35 pipeline, including a complete baseline built across
+103 public services without host STEP injection. `tests/test_cache_dispatch.py`
+checks the actual resident saved-reader cleanup and key-preserving cancellation.
+Initial block reuse is verified; full redraw performance and edit rebasing
+remain open. See `docs/REU_CACHE_REDESIGN.md` for current limits.
 
 The binding/header and all resident imports must be regenerated for the target
 resident; the released proof uses immutable19fe/bf15's actual provider/loader
@@ -84,7 +92,7 @@ decremented. Producer private flags/state/output are discarded, not committed.
 This cannot clean up when **C34 itself cannot be admitted**. The real provider
 epoch fault test returns asset error18 in63 instructions before C34 entry;
 the complete576-byte phase and seven newly current leases stay unchanged. The
-eventual resident root must restore the owned saved86 into real FS, call the
+resident root must restore the owned saved86 into real FS, call the
 resident END while the stale epoch/graph is still visible, and revoke its own
 CPU job/owner. Do not restore the old epoch and then release foreign leases.
 Missing C34 and resume/provider rebind cleanup need that same explicit root
