@@ -1,0 +1,7 @@
+--- a/src/cache/inline/source-seed.s
++++ b/src/cache/inline/source-seed.s
+@@
+  lda BCQP_CACHE+3
++ and #$7F
+  cmp #1
+  bne @miss
