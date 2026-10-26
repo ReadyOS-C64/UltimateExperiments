@@ -49,11 +49,15 @@ def capture_labels(out, fixture):
     if not directory.exists():
         directory.mkdir()
         paths = {name: ROOT / 'build/overlays' / name for name in WORKERS}
+        # Optional new52 assets; historical fixtures retain their original targets.
+        for name, asset in (('cachebuild', 'sema'), ('cachequery', 'inln')):
+            if (fixture / 'build/overlays' / (asset + '.seo')).exists():
+                paths[name] = ROOT / 'build/cache-editor' / asset
         paths.update(stage31=ROOT / 'build/geos-prod/code-typing/stage',
                      stage32=ROOT / 'build/geos-prod/style-typing/stage')
         records = {}
         for name, source in paths.items():
-            asset = {'stage31': 'clex', 'stage32': 'type'}.get(name, name)
+            asset = {'stage31': 'clex', 'stage32': 'type', 'cachebuild': 'sema', 'cachequery': 'inln'}.get(name, name)
             raw = source.with_suffix('.bin').read_bytes()
             assert raw == (fixture / 'build/overlays' / (asset + '.seo')).read_bytes()[36:], (name, 'incoherent labels/binary')
             records[name] = dict(asset=asset, binary_sha256=hashlib.sha256(raw).hexdigest())
@@ -107,6 +111,18 @@ def runner(out):
     source = cpp.read_text()
     needle = 'static void step(ZeroPagePeddle*m){auto r=zeropage_peddle_regs(m);'
     assert source.count(needle) == 1
+    # New optional type53 baseline writes are authorized only for a counted
+    # initial GEOS baseline. Existing typed46/FE and exact observed-DMA masks
+    # remain unchanged; ordinary cached queries cannot write type53.
+    source = source.replace('static uint8_t audit_mask',
+        'static bool pb_allow_baseline=false;static uint32_t pb_arena_writes=0;\n'
+        'extern "C" void pb_arena_begin(bool allow){pb_allow_baseline=allow;pb_arena_writes=0;}\n'
+        'extern "C" uint32_t pb_arena_get(){return pb_arena_writes;}\nstatic uint8_t audit_mask')
+    guard='(lo!=0x46 && lo!=0xfe)'
+    assert source.count(guard)==1
+    source=source.replace(guard,'(lo!=0x46 && lo!=0xfe && !(lo==0x53 && pb_allow_baseline))')
+    source=source.replace('memset(audit_mask+uint32_t(bank)*65536+at,1,n);audit_writes++;',
+        'if(lo==0x53)pb_arena_writes++;memset(audit_mask+uint32_t(bank)*65536+at,1,n);audit_writes++;')
     extra = r'''
 static bool pb_on=false;static unsigned pb_n=0;static uint16_t pb_active,pb_pc[64];
 static uint8_t pb_kind[64],pb_tag[64],pb_sig[64][16];static uint64_t pb_count[64];
@@ -145,6 +161,8 @@ static void pb(ZeroPagePeddle*m,uint16_t pc){if(!pb_on)return;auto r=zeropage_pe
     dll.fr_mask.argtypes = [C.c_void_p]
     dll.fr_bad.restype = dll.fr_writes.restype = C.c_uint32
     dll.pb_config.argtypes = [C.c_uint16, C.c_uint] + [C.c_void_p] * 4
+    dll.pb_arena_begin.argtypes=[C.c_bool]
+    dll.pb_arena_get.restype=C.c_uint32
     dll.pb_get.argtypes = [C.c_uint]
     dll.pb_get.restype = C.c_uint64
     dll.pb_fault_get.argtypes = [C.c_uint, C.c_void_p]
@@ -199,6 +217,9 @@ def run(out, fixture, *, smoke=False, mode_only=None, fold_only=False):
     def counted(tag, caps, operation, *, readonly=False, warm=False, allowed_plain=()):
         canonical, catalog = f.canonical(), f.catalog()
         before = f.reu() if readonly else None
+        cache_before={n:f.get(n,w) for n,w in [('se_bc_flags',1),('se_bc_count',1)]} if 'se_bc_flags' in f.s else {}
+        initial_baseline=(caps!=0 and f.get('se_mode',1)==3 and cache_before.get('se_bc_flags',0)&0x1f==2)
+        dll.pb_arena_begin(initial_baseline)
         if readonly:
             f.audit_begin()
         dll.pb_begin()
@@ -227,13 +248,17 @@ def run(out, fixture, *, smoke=False, mode_only=None, fold_only=False):
         assert f.get('se_render_caps', 1) == caps
         assert f.catalog() == catalog and f.read(0xC600, 1024) == f.shim
         writes = f.audit_end(before, tag) if readonly else None
+        arena_writes=int(dll.pb_arena_get())
+        cache_after={n:f.get(n,w) for n,w in [('se_bc_flags',1),('se_bc_count',1)]} if cache_before else {}
+        if arena_writes:
+            assert initial_baseline and cache_after['se_bc_flags']&1 and cache_after['se_bc_count']==0,(tag,'unexpected type53 writes',cache_before,cache_after)
         if readonly:
             assert f.canonical() == canonical, (tag, 'canonical source/history/clipboard changed')
         assert not any(f.get(n, 1) for n in ('se_f_owner', 'se_doc_read_locks', 'se_e_job'))
         assert f.m.read(0x912D) == 0, (tag, 'GEOS owned-source continuation remains live')
         row = dict(tag=tag, caps=caps, mode=f.get('se_mode', 1),
                    source_sha256=hashlib.sha256(f.merged()).hexdigest(), counts=counts,
-                   derived_dma_writes=writes,
+                   derived_dma_writes=writes,typed53_dma_writes=arena_writes,cache_before=cache_before,cache_after=cache_after,
                    screen_sha256=hashlib.sha256(f.read(0x6000, 8000) + f.read(0x4000, 1000)).hexdigest())
         records.append(row)
         (out / 'progress.json').write_text(json.dumps(records, indent=2) + '\n')
@@ -259,9 +284,27 @@ def run(out, fixture, *, smoke=False, mode_only=None, fold_only=False):
                 feeds = sum(v for k, v in first.items() if k.endswith(':se_sm_feed'))
                 lex = sum(v for k, v in first.items() if k.endswith(':se_sl_feed'))
                 if caps:
-                    assert feeds > 0, (mode, preset, 'missing positive block-parser control')
+                    if mode==3 and 'cachequery:entry' in first and not feeds:
+                        # Count actual C35 execution, never an unchanged FE-only
+                        # repaint as a positive parser/cache control.
+                        assert first['cachequery:entry']>0,(mode,preset,'missing positive cached-query control',first)
+                        assert f.get('se_bc_flags',1)&0x0f==1 and f.get('se_bc_count',1)==0,(mode,preset,'query has no ARMED drained baseline')
+                        assert first.get('geossema:se_sm_feed',0)==first.get('cachebuild:se_sm_feed',0)==0
+                    else:
+                        assert feeds > 0, (mode, preset, 'missing positive block-parser control')
                 if caps == 3:
                     assert lex > 0, (mode, preset, 'missing positive lexer control')
+                if mode==3 and caps and 'cachequery:entry' in first:
+                    # A public wrap toggle invalidates page geometry while
+                    # retaining the actual certified semantic baseline. This
+                    # cannot pass on an unchanged FE repaint alone.
+                    def cached_geometry():
+                        f.command(73);drain(f)
+                    cached=counted(f'{mode}-{preset}-cached-query-rebuild',caps,cached_geometry,readonly=True)
+                    assert cached['cachequery:entry']>0,(preset,'no real C35 query')
+                    assert f.get('se_bc_flags',1)&0x0f==1 and f.get('se_bc_count',1)==0
+                    assert cached.get('geossema:se_sm_feed',0)==cached.get('cachebuild:se_sm_feed',0)==0,(preset,'cached rebuild parsed blocks',cached)
+                    f.command(76);drain(f) #restore wrapped geometry for legacy cases
                 counted(f'{mode}-{preset}-warm-idle', caps,
                         lambda: [f.tick() for _ in range(12)], readonly=True, warm=True)
                 def typing():
