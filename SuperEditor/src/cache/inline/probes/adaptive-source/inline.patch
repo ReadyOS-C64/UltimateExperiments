@@ -1,0 +1,37 @@
+--- a/src/render/geos/inline.s
++++ b/src/render/geos/inline.s
+@@ -5,8 +5,12 @@
+ .include "render/geos/semantic.inc"
+ .include "render/geos/source-line.inc"
+ .include "render/geos/inline.inc"
++.include "adaptive-api.inc"
+ .include "supermark/api.inc"
+ .include "fold/source.inc"
++.ifdef SE_EDITOR_CACHED_INLINE_SOURCE
++.import se_bc_flags,se_bc_count
++.endif
+ .import se_f_owner,se_fs_state,se_fs_owned,se_fs_end,se_fs_state_size
+ .import se_fs_offset,se_fs_count,se_fs_buffer,se_fs_done,se_fs_length
+ .import se_si_init,se_si_feed,se_si_finish,se_si_at_body,se_si_pos,se_si_ready
+@@ -27,6 +31,10 @@
+  lda se_overlay_frame
+  cmp #GI_BEGIN_WIDE
+  jeq begin_wide
++.ifdef SE_EDITOR_CACHED_INLINE_SOURCE
++ cmp #GI_SOURCE_FALLBACK ;never re-delegates
++ jeq source_legacy
++.endif
+  cmp #GI_SOURCE_BEGIN
+  jeq source_begin
+  cmp #GI_BEGIN
+@@ -112,6 +120,10 @@
+  ldx #0
+  beq begin_common
+ source_begin:
++.ifdef SE_EDITOR_CACHED_INLINE_SOURCE
++.include "gate.inc"
++source_legacy:
++.endif
+  ldx #1
+  bne begin_common
+ begin_wide:
