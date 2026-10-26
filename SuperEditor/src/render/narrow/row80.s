@@ -55,6 +55,10 @@ se_narrow_row80:
     lda #0
     iny
     sta (se_nr_context),y ;index
+    ; Effective normal roles share palette0 regardless of inverse/selection.
+    jsr detect_normal
+    ldy #NR_TILE
+    sta (se_nr_context),y
     ; Derive both row addresses, retaining them in caller scratch.
     ldy #NR_BITMAP
     jsr pointer
@@ -147,6 +151,9 @@ next_tile:
     cmp (se_nr_context),y
     jcs done
     jsr glyph
+    ldy #NR_TILE
+    lda (se_nr_context),y
+    jne normal_tile
     ; The first glyph occupies the high nibble. Cached base ink excludes the
     ; separate selection/caret union, so it cannot affect tile color choice.
     ldy #NR_ROLE
@@ -301,6 +308,7 @@ chosen:
     inc se_nr_pointer+1
 :   ldy #NR_ATTRIBUTE_PTR
     jsr save_pointer
+paint_bitmap:
     ldy #NR_BITMAP_PTR
     jsr pointer
     ; Bias output pointer so oneY indexes both the cache and destination.
@@ -339,6 +347,74 @@ argument:
     lda #NR_ARGUMENT
     sec
     rts
+
+; All-normal-role row specialization. Caller scratch only; no
+; color arbitration is needed because the precleared attributes are palette0.
+detect_normal:
+    ldy #NR_LIMIT
+    lda (se_nr_context),y
+    beq @normal
+    tax
+    ldy #NR_ROLES
+    jsr pointer
+    ldy #0
+@scan:
+    lda (se_nr_pointer),y
+    beq @next
+    cmp #14
+    bcc @mixed
+@next:
+    iny
+    dex
+    bne @scan
+@normal:
+    lda #1
+    rts
+@mixed:
+    lda #0
+    rts
+normal_mask:
+    ldy #NR_SELECT
+    lda (se_nr_context),y
+    beq :+
+    lda #$F0
+:   ldy #NR_REVERSE
+    eor (se_nr_context),y
+    tax
+    rts
+normal_tile:
+    jsr normal_mask
+    .repeat 8,I
+    ldy #NR_CACHE+I
+    txa
+    eor (se_nr_pointer),y
+    and #$F0
+    sta (se_nr_context),y
+    .endrepeat
+    jsr increment
+    ldy #NR_LIMIT
+    cmp (se_nr_context),y
+    jcs @paint
+    jsr glyph
+    jsr normal_mask
+    .repeat 8,I
+    ldy #NR_CACHE+I
+    txa
+    eor (se_nr_pointer),y
+    and #$F0
+    lsr
+    lsr
+    lsr
+    lsr
+    ora (se_nr_context),y
+    sta (se_nr_context),y
+    .endrepeat
+    jsr increment
+@paint:
+    lda #0
+    ldy #NR_PAINT
+    sta (se_nr_context),y
+    jmp paint_bitmap
 
 ; Consume one source cell and prepare a biased glyph pointer, role and flags.
 glyph:

@@ -96,3 +96,12 @@ carets, native lexical reuse, the phase/index regression, all256 CRC table words
 132 packet checks and a70,002-byte document on a1MiB REU. The unchanged68-byte
 stack bound includes the new finite lexical dispatch tables and admitted R25
 capture calls. None of these checks closes the remaining structural-edit cost.
+
+## Normal-role80-column raster
+
+R16 now proves an all-normal effective-role row before skipping tile color
+arbitration. Original glyph/flag conversion and mixed-role arbitration remain.
+NativePAL short insert/BACK improve about11.4% with identical pixels and the
+same four overlay loads; the separate wrapped shift route is unchanged.
+No resident/BSS/ZP/font growth occurs; R25/C33 are rebuilt against the actual
+new R16 CRC. See [the proof and limitations](../src/render/grid/probes/normal-row80/README.md).

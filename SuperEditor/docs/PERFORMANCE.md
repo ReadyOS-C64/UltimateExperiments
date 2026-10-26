@@ -1,6 +1,24 @@
 # Current performance
 
-The current cache-redesign runtime is `69720da`, with 54 assets, resident
+The latest qualified80-column raster skips ink counting and color arbitration
+when every effective role is normal. NativePAL short-row insertion improves
+255,925→226,807cycles (11.38%) and BACK255,319→226,366 (11.34%), with four overlay
+loads unchanged and identical screenshots. Wrapped-quote typing remains
+essentially unchanged at365,145/368,335cycles. This is an ordinary-row improvement;
+whole-editor responsiveness and large GEOS work remain open. See the
+[implementation and exact qualification](../src/render/grid/probes/normal-row80/README.md).
+
+These measurements compare the946e7d3 control with the same59-asset product plus
+R16 and its genuine R25/C33 CRC witnesses. They use public `syntax plain`, ROM
+File/Open and the documented PC/SP/input-entry stopwatch seam, not physical-key
+latency.934component rows plus17invalid inputs per variant,40 public comparison
+frames,20 wrapped frames,24 refusals, canonical editor/cache and complete68-byte
+relative stack checks retain their exact scopes. Normal componentrows use30.77%
+fewer instructions; mixed-role fallback costs1.36% more at that component level.
+
+## Earlier54-asset checkpoint
+
+The earlier cache-redesign runtime is `69720da`, with 54 assets, resident
 `a2578487c8a5` and D81 `2ffdb2fc95b1`. Its diverse-document full GEOS repaint
 was measured at 10,150,476 PAL cycles in Full and 9,629,277 in Markdown. All
 eleven native display captures match the reviewed images. Full still exceeds
