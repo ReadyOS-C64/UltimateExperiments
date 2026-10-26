@@ -4,6 +4,7 @@
 .include "render/geos/typing/guard.inc"
 .include "render/geos/style-typing/wide.inc"
 .include "transform-stage.inc"
+.include "render/presentation.inc"
 .import se_gst_transform
 .export se_gst_prepare
 P=GTT_PACKET
@@ -12,6 +13,22 @@ S=GST_FRAME
 STYLE=S+GST_STYLE
 .segment "CODE"
 se_gst_prepare:
+ ; RAW_SOURCE_KIND9 is internal C20 context, not GPR_KIND (encoding0/1).
+ ; Plain admits only an actual unstyled, non-inline packet; no parser state
+ ; is inferred. Existing independent source/key/font/X/role/seam guards remain.
+ lda se_render_caps
+ bne @existing
+ lda P+GPR_INLINE
+ jne bad
+ ldx P+GPR_COUNT
+ jeq bad
+@raw_styles:
+ dex
+ lda P+GPR_STYLES,x
+ jne bad
+ cpx #0
+ bne @raw_styles
+@existing:
  ldx P+GPR_COUNT
  jeq bad
  lda #0

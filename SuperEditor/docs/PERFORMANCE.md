@@ -1,5 +1,15 @@
 # Current performance
 
+Eligible ordinary GEOS Plain rows now use the existing certified local typing
+transaction. In paired nativePAL cases, INSERT improves2,264,434→512,064cycles
+(77.4%) and BACK2,254,299→180,750 (92.0%); overlay loads21/22→3/4. All four paired
+screenshots are exact. Same-input Full controls remain essentially unchanged.
+The46-frame/8-fault CPU matrix, all60-image stack analysis, eight native captures
+and precise REU/source/history/font guards pass. C6 and the resident are
+unchanged; R30/C32 grow6/34bytes. This optimizes eligible ordinary rows, with
+general GEOS reflow still open. See the [admission, timing scope and reproduction
+contract](../src/render/geos/style-typing/README.md).
+
 Plain60/80 Return splits and BACK merges now use one R29 transaction when the
 complete affected logical paragraph is visible. Eight paired nativePAL cases
 improve38.1–39.9% at60 and20.4–22.4% at80, with identical screenshots and overlay

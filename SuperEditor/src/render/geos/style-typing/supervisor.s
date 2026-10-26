@@ -29,7 +29,10 @@ root:
  cmp #3
  bne bad
  lda se_render_caps
- beq miss ;Plain has no semantic/style certificate for the staged transaction
+ cmp #2
+ beq miss
+ cmp #4
+ bcs miss ;Plain may use the independently certified literal BSW packet
  lda se_f_owner
  bne miss
  lda GEC_VALID
