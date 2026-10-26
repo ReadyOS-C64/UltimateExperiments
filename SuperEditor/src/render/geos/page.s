@@ -72,6 +72,9 @@ entry:
     jeq finish_caret
     cmp #1
     jne argument
+    lda PS
+    cmp #50
+    jeq resume_after_admission
     ; TOP normalization precedes allocation/admission of the derived page.
     ; Its pending R24 query authenticates the map and source itself.
     lda PS
@@ -117,24 +120,24 @@ begin:
     ; A new incarnation gets one optional initial baseline. Repaints and edits
     ; never repeatedly pay a whole-document rebuild after refusal/cancellation.
     lda se_render_caps
-    beq :+
+    beq @schedule
     lda se_bc_flags
     and #(BC_ARMED|BC_LOST|BC_REBUILD_TRIED|BC_ACTIVE|BC_MUTATING)
     cmp #BC_LOST
-    bne :+
+    bne @schedule
     ora #BC_REBUILD_TRIED ;A retains the eligible masked value BC_LOST
     sta se_bc_flags
-    lda #7
     ldx #9
+    bne @call
+@schedule:
+    ldx #10
+@call:
+    lda #7
     jmp request
-:
+resume_after_admission:
     lda GEC_VALID
     sta GSC_ALLOW_EDIT
     lda #0
-    sta GS_ACTIVE
-    sta GFQ_ACTIVE
-    sta GS_CONTEXT_VALID
-    sta GSEM_FRAME+GSEM_ACTIVE
     sta GSC_CAPTURED
     lda se_bc_flags
     and #($FF-BCQ_PAGE_PROOF)

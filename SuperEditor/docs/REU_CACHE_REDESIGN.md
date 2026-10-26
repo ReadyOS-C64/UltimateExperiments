@@ -9,8 +9,9 @@ excluded from Git.
 
 The current runtime implements Plain, Markdown and Full, retained block
 classification, selective reuse of sparse inline events, and retained lexical
-colors for the first eligible long code line per baseline. Edit-aware semantic
-reuse and retained layout remain unfinished. The paired native BASIC/assembler
+colors for the first eligible long code line per baseline. Narrow edit-aware semantic
+reuse is now registered through C41/R34; general edits and retained layout remain
+unfinished. See the [current rebase contract](../src/cache/edit-rebase-integration/README.md). The paired native BASIC/assembler
 warm repaint uses about28% fewer PAL cycles with identical screenshots, although
 it still costs roughly17 million cycles. See [lexical cache scope](SYNTAX_CACHE.md)
 for admission, cancellation, source-identity limits and the complete measurements.

@@ -20,6 +20,10 @@ E_SETTINGS=103
     OVL_BINDING
 entry:
     lda se_overlay_frame
+    cmp #10
+    jeq brg_schedule
+    cmp #11
+    jeq brg_source_proof
     cmp #9 ;internal optional cache admission; no new user-facing menu command
     jeq cache_admission
     cmp #U_DRAW
@@ -589,3 +593,5 @@ preview_mutations:
 preview_mutations_end:
 
 .include "cache/editor/admit.inc"
+
+.include "cache/edit-rebase-integration/menu.inc"

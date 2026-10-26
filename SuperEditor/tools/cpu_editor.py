@@ -41,3 +41,5 @@ def startup(m,s,assets,banks=256):
  assert not m.regs().p&1,(m.regs().a,imports)
  assert imports==NAMES
  return imports
+
+NAMES += ["parse","xform"]

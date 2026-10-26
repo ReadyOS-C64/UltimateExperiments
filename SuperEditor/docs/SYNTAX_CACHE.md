@@ -10,7 +10,7 @@ code BODY of at least 768 bytes in a baseline. It runs through the actual
 foreground dispatcher and five registered operation modules: C45 gateway,
 R36 resolver, R37 transport, C47 producer and C49 publisher. They reuse existing
 filename strings and fit their ordinary 4 KiB overlay slots. The complete disk
-has 59 editor overlays in four REU code banks; the catalogue still holds 64.
+has62 editor overlays in four REU code banks; the catalogue still holds 64.
 
 The producer lexes the BODY once, storing bounded spans. The publisher writes
 unused pages and a new root, validates the completed record, then publishes
@@ -25,6 +25,20 @@ leases while preserving the attempt flag. This prevents repeated construction
 when resources or the span budget are unavailable. Missing workers, malformed
 records, stale capabilities, pending changes and unsupported root formats keep
 the existing parser fallback.
+
+## Reusing a retained BODY after an insertion
+
+C41/R34 can preserve the checked flags5 code BODY when one ordinary character
+is inserted in a complete ordinary line after a retained BODY of at least4096
+bytes, optionally followed by the
+actual hot-window flush REKEY. The source threshold is4096 bytes; the dirty whole
+line is reparsed and its carry must converge. Repeated eligible edits alternate
+checked logical COW page pairs and publish VALID last. Empty INLINE references,
+one CR page/one LEX page and complete source/observer identity are required.
+Deletion, Return, markup, edits before code and unsupported graphs retain the
+existing parser. Plain never schedules this worker; Markdown still performs no
+language-lexer feeds. This does not add general edit or layout retention.
+See the [registered rebase contract](../src/cache/edit-rebase-integration/README.md).
 
 ## What the measurements prove
 

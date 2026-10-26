@@ -1,5 +1,27 @@
 # Current performance
 
+Repeated eligible semantic reuse now takes6.48–6.94million PAL cycles for four
+successive ordinary insertions and hot-window flushes after an8KB retained code
+BODY. The committed010fb03 control takes9.84–10.04million:30.9–34.1% fewer cycles,
+with all four paired screenshots exact. C41/R34 preserve the retained BODY and
+reparse only the changed ordinary line (23–26 actual SuperMark feeds). The
+source/observer guard is renewed at each yield; up to four typed R34 operations
+share a synchronous call. This removes98 loads compared with the initial
+unbatched candidate; the final80/81 loads still exceed the control36/37.
+
+| Native PAL repeated edit+flush+repaint | Control | Registered rebase |
+|---|---:|---:|
+|1|10,044,655|6,939,745|
+|2|9,838,779|6,484,229|
+|3|9,848,966|6,497,863|
+|4|9,863,435|6,512,032|
+
+These are real ROM File/Open/IRQ setup and the disclosed public-input/command
+PC/SP stopwatch seam, not physical-key timings. At1MHz the operation still takes
+several seconds. The path accepts a narrow flags5 graph and an insertion after
+unchanged retained code; general edits and layout retention remain open. See the
+[authority, bounded batching and qualification contract](../src/cache/edit-rebase-integration/README.md).
+
 Eligible ordinary GEOS Plain rows now use the existing certified local typing
 transaction. In paired nativePAL cases, INSERT improves2,264,434→512,064cycles
 (77.4%) and BACK2,254,299→180,750 (92.0%); overlay loads21/22→3/4. All four paired

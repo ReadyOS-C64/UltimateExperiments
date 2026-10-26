@@ -1270,3 +1270,16 @@ $(LEXICAL_ASSETS): build/lexical/jobs.stamp
 EDITOR_ASSETS += $(LEXICAL_ASSETS)
 editor build/supereditor.d81: $(LEXICAL_ASSETS)
 build/cache-editor/jobs.stamp: src/cache/query/open-compact.s
+
+# Current-schema rebase capsules, separate from the original cache families.
+.PHONY: cache-rebase-force
+cache-rebase-force:
+REBASE_ASSETS=build/overlays/parse.seo build/overlays/xform.seo
+build/cache-rebase/jobs.stamp: cache-rebase-force build/editor.prg build/editor.lbl build/editor-report.json $(wildcard src/cache/edit-rebase-integration/*) $(wildcard src/cache/arena/*) src/supermark/block.s tools/module_bindings.py tools/bindings.py tools/overlays.py
+	$(PYTHON) src/cache/edit-rebase-integration/build.py --out build/cache-rebase --base .
+$(REBASE_ASSETS): build/cache-rebase/jobs.stamp
+	cmp -s build/cache-rebase/$(@F) $@ || cp build/cache-rebase/$(@F) $@
+EDITOR_ASSETS += $(REBASE_ASSETS)
+editor build/supereditor.d81: $(REBASE_ASSETS)
+build/overlays/menu40.o: src/cache/edit-rebase-integration/menu.inc src/cache/edit-rebase-integration/api.inc
+build/editor/startup.o: src/editor/catalog.inc

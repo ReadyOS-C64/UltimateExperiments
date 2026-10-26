@@ -211,7 +211,9 @@ file56=file14   ;LEX: R37 page/roles
 file57=file14+3 ;ICAL: C47 producer
 file58=file39+4 ;CTRL: C49 COW linker
 file59=file26+4 ;ROW: R29 Plain CR geometry, shared GEOSROW suffix
-; Future mapped aliases XFORM/PARSE/FINISH/PAINT remain unregistered.
+file60=file18+4 ;PARSE: C41 current-schema rebase
+file61=file23+4 ;XFORM: R34 checked COW transport
+; PARSE/XFORM registered above; FINISH/PAINT remain unregistered.
 file48: .byte $48,$4F,$54,$43,$4F,$4C,$44 ;HOTCOLD (raw DOS bytes, not text charmap)
 file38: .byte $47,$45,$4F,$53,$43,$41,$52,$45,$54
 file36: .byte $47,$45,$4F,$53,$46,$4F,$4C,$44

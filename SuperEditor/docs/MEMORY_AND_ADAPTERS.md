@@ -1,8 +1,14 @@
-The current build registers59 editor overlays in the existing64-entry catalogue
-and four checked REU code banks. Five lexical operations reuse existing filename
-strings; the ten new catalogue bytes leave COLD ending `$0ECF`, with48 bytes
-before `$0F00`. BSS remains1,534 bytes and zero page24. The entire ReadyOS
-reservation `$C600–$C9FF` remains untouched.
+The current build registers62 editor overlays in the existing64-entry catalogue
+and four checked REU code banks. R29 ROW and C41 PARSE/R34 XFORM reuse existing
+filename suffixes. The packed catalog leaves COLD ending`$0ED5`, with42 bytes
+before`$0F00`. BSS remains1,534 bytes and zero page24. The entire ReadyOS
+reservation`$C600–$C9FF` remains untouched. C7 is3930bytes, C21 is4096, C41 is4058
+and R34 is4095. The rebase batch quota borrows BC_FRAME+79; its source reader is
+at+173 and live SuperMark state starts at+94. Up to four typed R34 microsteps
+share one synchronous source/observer guard, renewed after every yield. Final
+journal/root VALID-last publication retains its nonyielding boundary. No resident
+warm state, bank, object, BSS or zero page was added. See the
+[checked rebase contract](../src/cache/edit-rebase-integration/README.md).
 
 C33 remains4,096 bytes and expands512 bytes of CRC lookup data only during its
 checked, non-yielding CAPTURE operation. The expansion borrows `$8D00–$8EFF`,
