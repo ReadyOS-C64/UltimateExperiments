@@ -126,9 +126,10 @@ call_failed:
     cpx #1 ;restore exact legacy pending return flags/A/X/Y
     beq done
 cache_complete:
-    ;A2 MISS/A3 STREAM also return to the coordinator for fallback.
+    ; Odd queries return HIT/MISS/STREAM to their actual C21/C23 caller.
+    ; Even C34 completion restarts C21 through its fresh owner claim.
     and #1
-    bne :+
+    bne worker_complete
     sta se_f_owner ;C34 completion restarts C21 through its fresh claim
 :
     jmp set_page

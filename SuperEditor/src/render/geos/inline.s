@@ -29,6 +29,12 @@ entry:
  cmp #4
  jne busy
  lda se_overlay_frame
+.ifdef SE_EDITOR_INLINE_NAVIGATION
+ cmp #6
+ jeq nav_select
+ cmp #7
+ jeq nav_query_ready
+.endif
  cmp #GI_BEGIN_WIDE
  jeq begin_wide
 .ifdef SE_EDITOR_CACHED_INLINE_SOURCE
@@ -619,3 +625,7 @@ argument:
  rts
 
 .include "render/geos/preview-handoff.inc"
+
+.ifdef SE_EDITOR_INLINE_NAVIGATION
+.include "render/geos/navigation-cache.inc"
+.endif

@@ -9,6 +9,8 @@
 .global se_render_caps,se_ef_visible
 .global se_gc_width
 .include "seed-witness.inc"
+.include "nav-witness.inc"
+.include "cache/api.inc"
 .include "render/geos/editor.inc"
 .include "render/geos/source-line.inc"
 .include "render/geos/navigation.inc"
@@ -111,6 +113,10 @@ entry:
  jeq semantic_ready
  cmp #6
  jeq cache_page_step
+ cmp #9
+ jeq nav_query_ready
+ cmp #10
+ jeq metric_ready
  cmp #8
  jeq local_seed_ready
  jmp argument
@@ -296,25 +302,30 @@ local_seed_miss:
 ; Same resident binding alone does not establish C24's new operation3 ABI.
 ; The normal loader still authenticates the complete actual image on entry.
 local_seed_cap:
+ ldy #0
+ beq cap_common
+nav_selector_cap:
+ ldy #5
+cap_common:
  ldx #0
 @next:
  lda se_overlay_ids,x
- cmp #24
+ cmp cap_table,y
  bne @advance
  lda image_slot,x
  and #1
  beq @advance
  lda image_size_lo,x
- cmp #<SEED_SIZE
+ cmp cap_table+1,y
  bne @bad
  lda image_size_hi,x
- cmp #>SEED_SIZE
+ cmp cap_table+2,y
  bne @bad
  lda image_crc_lo,x
- cmp #<SEED_CRC
+ cmp cap_table+3,y
  bne @bad
  lda image_crc_hi,x
- cmp #>SEED_CRC
+ cmp cap_table+4,y
  bne @bad
  clc
  rts
@@ -323,6 +334,7 @@ local_seed_cap:
  cpx #<se_overlay_capacity
  bcc @next
 @bad:
+ lda #$90
  sec
  rts
 cache_query:
@@ -351,7 +363,7 @@ cache_query:
  sta GN_CACHE_TARGET
  lda GN_COMMAND
  cmp #47
- jeq cache_fast_ready
+ beq cache_fast_ready
  cmp #38
  jcs cache_page
  cmp #36
@@ -534,10 +546,30 @@ line_begin:
  jmp metric_ready
 @query:
  NAV_COPY24 GN_SCAN,GSEM_FRAME+GSEM_QUERY
+ lda GN_COMMAND
+ cmp #47
+ bne nav_legacy
+ lda GN_FLAGS
+ and #2
+ bne nav_legacy
+ jsr nav_selector_cap
+ bcc :+
+ rts
+:
+ lda #9
+ sta GN_STATE
+ lda #26
+ ldx #6
+ jmp request
+nav_legacy:
  lda #5
  sta GN_STATE
  lda #GSEM_ID
  ldx #GSEM_BEGIN
+ jmp request
+nav_query_ready:
+ lda #26
+ ldx #7
  jmp request
 semantic_ready:
  lda GSEM_FRAME+GSEM_ACTIVE
@@ -1077,7 +1109,7 @@ return:
 ; Delta avoids overflow from oldPan+320. Right edge is exclusive: x-319.
 reveal_pan:
  lda GN_MODE
- jeq @done
+ beq @done
  NAV_EQUAL24 L+GL_CARET_X,GN_PAN
  bcc @left
  SUB24 L+GL_CARET_X,GN_PAN,GN_TEMP
@@ -1123,19 +1155,19 @@ guard:
  FIELDS compare
  lda se_l_mode
  cmp GN_MODE
- jne changed
+ bne changed
  NAV_EQUAL24 se_l_pan,GN_PAN
- jne changed
+ bne changed
  lda GN_COMMAND
  cmp #47
  beq @target
  NAV_EQUAL24 se_hot_caret,GN_QUERY
- jne changed
+ bne changed
  clc
  rts
 @target:
  NAV_EQUAL24 se_e_target,GN_QUERY
- jne changed
+ bne changed
  clc
  rts
 own_pending:
@@ -1159,3 +1191,5 @@ argument:
  lda #$90
  sec
  rts
+
+cap_table:.byte 24,<SEED_SIZE,>SEED_SIZE,<SEED_CRC,>SEED_CRC,26,<NAV_SIZE,>NAV_SIZE,<NAV_CRC,>NAV_CRC

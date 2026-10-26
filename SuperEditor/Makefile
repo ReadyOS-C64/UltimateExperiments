@@ -948,7 +948,7 @@ build/geos-prod/literal-byte/%.o: src/render/geos/literal-byte/%.s $(wildcard sr
 	$(CA65) -g -I src -o $@ -l $(@:.o=.lst) $<
 GEOS_PAGE_OBJ = build/geos-prod/page.o build/geos-prod/cache.o
 GEOS_PAINT_OBJ = build/geos-prod/page-paint-entry.o build/geos-prod/page-paint.o build/geos-prod/native-pan.o build/geos-prod/cache-paint.o
-GEOS_NAV_OBJ = build/geos-prod/navigation.o build/geos-prod/cache.o
+GEOS_NAV_OBJ = build/geos-prod/navigation.o build/geos-prod/cache-paint.o
 GEOS_DELTA_OBJ = build/geos-prod/edit-cache.o build/geos-prod/cache-warm.o
 GEOS_CARET_OBJ = build/geos-prod/caret-cache.o build/geos-prod/cache-warm.o build/geos-prod/caret-ui.o build/geos-prod/chrome.o build/geos-prod/header.o
 build/geos-prod/block-parser.o: src/supermark/block.s src/supermark/api.inc
@@ -963,9 +963,9 @@ build/geos-prod/inline-parser.o: src/supermark/inline.s src/supermark/api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -o $@ $<
 GEOS_INLINE_OBJ = build/geos-prod/inline.o build/geos-prod/inline-parser.o
-build/geos-prod/inline.o: src/render/geos/inline.s src/render/geos/source-cache-api.inc src/render/geos/source-cache-gate.inc build/geos-prod/editor-api.inc
+build/geos-prod/inline.o: src/render/geos/inline.s src/render/geos/source-cache-api.inc src/render/geos/source-cache-gate.inc src/render/geos/navigation-cache.inc src/cache/query/proof.inc src/cache/query/proof-api.inc build/geos-prod/editor-api.inc
 	mkdir -p $(dir $@)
-	$(CA65) -g -D SE_EDITOR_CACHED_INLINE_SOURCE=1 -I build/geos-prod -I src -o $@ -l $(@:.o=.lst) $<
+	$(CA65) -g -D SE_EDITOR_CACHED_INLINE_SOURCE=1 -D SE_EDITOR_INLINE_NAVIGATION=1 -D SE_EDITOR_NAV_TARGETED=1 -D BCQ_EDITOR_ACTIVE=1 -D BCQ_PAGE_REUSE=1 -I build/geos-prod -I src -o $@ -l $(@:.o=.lst) $<
 define GEOS_IMAGE
 build/geos-prod/$(1)-bindings.s: $(2) build/editor.prg tools/module_bindings.py
 	$$(PYTHON) tools/module_bindings.py --report build/editor-report.json --output $$@ $(2)
@@ -1172,6 +1172,12 @@ build/geos-prod/checkpoint-witness.stamp: build/overlays/geossema.bin tools/chec
 	$(PYTHON) tools/checkpoint_witness.py $< build/geos-prod
 	touch $@
 build/geos-prod/page.o build/geos-prod/navigation.o: build/geos-prod/checkpoint-witness.stamp
+build/geos-prod/navigation-witness.stamp: build/overlays/geosinln.bin tools/checkpoint_witness.py
+	$(PYTHON) tools/checkpoint_witness.py $< build/geos-prod --profile navigation
+	touch $@
+build/geos-prod/navigation.o: build/geos-prod/navigation-witness.stamp src/cache/api.inc
+build/geos-prod/inline.o: src/cache/query/api.inc src/cache/arena/api.inc src/render/geos/navigation.inc
+build/geos-prod/navigation.o: src/render/geos/navigation.inc
 build/geos-prod/page.o: src/render/geos/checkpoint/publish.inc src/render/geos/checkpoint/consumer.inc src/render/geos/checkpoint/codec.inc
 build/geos-prod/semantic.o: src/render/geos/checkpoint/seed.inc src/render/geos/checkpoint/codec.inc
 
