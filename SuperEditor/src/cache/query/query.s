@@ -197,7 +197,9 @@ se_bc_query_step:
  ora #BC_ACTIVE
  sta se_bc_flags
 .endif
+.ifndef BCQ_COMMITTED_IDENTITY
  EQ_BASELINE BQ_SOURCE,BQ_READER+27,59
+.endif
  EQ_BASELINE BQ_LENGTH,BQ_READER+10,3
  ldy #2
 @position:lda BQ_POSITION,y
@@ -218,7 +220,26 @@ se_bc_query_step:
  sta BQ_WIDTH
  lda #BQ_PAGE
  sta BQ_STATE
+.ifdef BCQ_COMMITTED_IDENTITY
+ ; The real current lease is already acquired and query geometry initialized.
+ ; An initial representation mismatch is delegated, never normalized in-place.
+ ldy #58
+@content_compare:
+ lda BQ_SOURCE,y
+ cmp BQ_READER+27,y
+ jne @content_handoff
+ dey
+ bpl @content_compare
  jmp bq_pending
+@content_handoff:
+ lda #37
+ sta $9135
+ lda #3
+ sta $9136
+ jmp bq_pending
+.else
+ jmp bq_pending
+.endif
 .endif
 @page:
 .ifdef BCQ_FORWARD_QUERY

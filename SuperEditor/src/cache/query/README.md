@@ -258,10 +258,10 @@ on the next foreground slice; this is not a nested C call. C37 ordinary pending
 retains REQUEST37/OP1. Initial source geometry mismatch returns A2/ERROR2;
 midjob source/provider/record errors remain carry errors. X/Y are unspecified.
 
-The current resident dispatcher overwrites OP with1 on generic pending returns,
-so this private frontend test is **not resident integration qualification**.
-The parent owns a separate dispatch handoff fix and later actual editor gates.
-Do not deploy this profile by merely registering another asset.
+The integrated resident preserves odd query workers' pending operations.
+Actual foreground rendering and corrupt-slot C37→C35 BEGIN0 handoff are covered
+by `tests/test_cache_forward_editor.py`. The manual component frontend below
+still has the narrower scope stated by its verifier.
 
 `python3 tests/test_cache_query_forward.py` runs real producer/writer, seededC35,
 and C37 through actual sealed outer-worker calls, following REQUEST/OP explicitly.
@@ -290,3 +290,28 @@ real PETSCII5C escape and A3-literal distinctions,256 events, source/record faul
 foreign owners, and conservative valid-CRC malformed metadata cases. Actual
 editor5/foreground2/parser55/incremental15/stack68/native11 pass on the enabled
 product. Native Full10,976,686 PAL cycles is still above the older9,511,774 path.
+
+## Committed-only source admission
+
+`BCQ_COMMITTED_IDENTITY=1` adds a C35→C37 operation3→C35 operation1
+continuation when the immutable baseline's full source snapshot differs from
+the newly acquired real reader. Both pending flags must be zero and all29
+canonical prefix bytes identical; C35 has already checked merged length.
+C37 checks the current13-byte authority, flags/queue and real R14 GUARD before
+copying its actual current59-byte identity to the local query snapshot. All
+subsequent guards and published page certificates remain exact59.
+
+C354094/C373636 (including empty-inline hint) fit existing slots. No extra
+resident/catalog/BSS/ZP bytes are required. Inapplicable identity returns MISS2
+without output; source/authority faults close the owned lease and return an
+error. An old C37 certificate still refuses changed geometry: fresh C35
+admission is required. Pending edits, REKEY/SPLICE and observer rebasing are
+not authorized. Flag-off profiles compile byte-identically to their predecessors.
+
+The component gate covers102 modeled positions,20 fault groups and1362
+wholeRAM calls, including actual W_LOAD beyond64KiB. Actual public rendering,
+missing-C37 and queued-key cancellation/recovery, parser bypass, incremental
+edits, stack and native11 also pass. Performance remains open: the small
+navigation case regresses11.96%, the sparse66-KiB case19.75%. Its false-positive
+C35 inline hint induces198,000 C26 feeds despite eliminating132,013 C24 feeds;
+the seed hint needs its own qualified fix. See the public redesign document.

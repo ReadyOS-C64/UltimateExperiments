@@ -39,6 +39,27 @@ Selection, caret and inverse flags retain the original rendering path. The
 all11 native screenshots match. Full remains11.5% above the older path. This
 raster optimization does not reduce overlay loads or close the cache redesign.
 
+The next raster change computes the intersecting color-tile range once and
+unrolls the histogram reset, retaining the same4,094-byte payload and font
+addresses. Together with committed-only source admission, the verified native
+Full redraw is10.443 million PAL cycles (all11 screenshots unchanged). This
+remains above the older9.512-million-cycle path.
+
+A fresh block query can now accept a changed hot-window geometry only when
+both snapshots have no pending edits, their29-byte canonical source prefix and
+merged lengths agree, and the real current reader and typed cache authority
+pass validation. It copies the actual current59-byte identity into the local
+query; every subsequent reader guard stays exact. Pending edits, REKEY and
+SPLICE still use the existing safe fallback.
+
+This admission is correctness-qualified, with a measured performance regression:
+after a window move, the251-byte case takes1.958 million instructions versus
+1.749 million for the previous parser fallback. The66-KiB case takes92.111
+million versus76.921 million, including actual caret reveal. C35 still emits a
+conservative inline hint for the first block, causing three unnecessary66-KiB
+inline passes. Its compact completed-empty shortcut is being qualified
+separately. Nonempty inline and retained layout probes are not yet integrated.
+
 C35 seeds an untrusted slot after final source validation. C37 validates the
 page certificate, current source/capability tuple and the selected record's CRC
 and canonical START before using that slot. A bad slot, backward query or page

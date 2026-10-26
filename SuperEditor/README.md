@@ -53,8 +53,10 @@ its code-token colors follow the same switch. See
 GEOS block classification now uses a checked REU baseline and forward page
 lookups. Inline and code-token parsing still use their existing workers;
 edit rebasing and retained layout remain in progress. Current Full redraw is
-10.608 million PAL cycles after skipping blank glyph scanlines, so performance
-qualification is still open.
+10.443 million PAL cycles after raster batching, so performance qualification
+is still open. Committed window moves can retain block classifications, but
+the current query path regresses the measured small and large navigation cases;
+see the redesign document for the remaining first-block inline parsing issue.
 
 F7 `fold` toggles the innermost visible region; `fold all` and `unfold all`
 operate on the document. Block/F, Block/L and Block/E reach the same commands.

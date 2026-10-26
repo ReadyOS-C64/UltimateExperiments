@@ -18,6 +18,9 @@
 .include "cache/query/proof-api.inc"
 .import se_f_owner,se_overlay_frame,se_render_caps,se_crc_init,se_crc_byte,se_crc_value
 .import bq_source,bq_end,bq_pending,bq_fail,bq_baseline_miss,bca_guard,bcq_restore_page
+.ifdef BCQ_COMMITTED_IDENTITY
+.import bq_authority
+.endif
 .export se_bc_query_begin,bq_forward_handoff
 .ifndef BCQ_FORWARD_QUERY
 .error "fast-entry requires BCQ_FORWARD_QUERY"
@@ -49,6 +52,10 @@ entry:
  beq begin
  cmp #1
  jeq step
+.ifdef BCQ_COMMITTED_IDENTITY
+ cmp #3
+ jeq committed_identity
+.endif
  cmp #2
  bne argument
  jsr se_bc_query_cancel
@@ -105,6 +112,54 @@ begin:
  sta $9136                   ;root already requested C37; subsequent op1
 @handoff:clc
  rts
+.ifdef BCQ_COMMITTED_IDENTITY
+; Operation3 is entered only from C35's already-open SOURCE_BEGIN continuation.
+; It preserves that exact real lease; it never starts a different source reader.
+committed_identity:
+ lda F+GSEM_ACTIVE
+ cmp #1
+ jne argument
+ lda BQ_STATE
+ cmp #BQ_PAGE
+ jne argument
+ lda BQ_LIVE
+ cmp #1
+ jne argument
+ lda BQ_READY
+ jne argument
+ jsr bq_authority
+ bcs @failed
+ lda #1
+ jsr bq_source
+ bcs @failed
+ ; Both snapshots must be committed-only. The first29 canonical bytes include
+ ; full tokens/epochs/generation/length/rootcount/visible revision.
+ lda BQ_SOURCE+30
+ ora BQ_READER+27+30
+ bne @miss
+ ldy #28
+@compare:
+ lda BQ_SOURCE,y
+ cmp BQ_READER+27,y
+ bne @miss
+ dey
+ bpl @compare
+ ; Future bounded guards remain exact59 against the current real lease, not a
+ ; fabricated reader context. Capture will inherit these current59 bytes.
+ CP BQ_READER+27,BQ_SOURCE,59
+ lda #35
+ sta $9135
+ lda #1
+ sta $9136
+ jmp bq_pending
+@miss:
+ jsr bq_baseline_miss
+ jmp result
+@failed:
+ jsr bq_fail
+ jmp result
+.endif
+
 ; Exact exclusive-job guard remains in commonquerySTEP/ACK. BEGIN uses the
 ; previouslyauthenticated85B proof and currenttypedgraph before the firstread.
 se_bc_query_begin:

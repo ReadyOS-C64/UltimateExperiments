@@ -1,0 +1,90 @@
+--- a/src/render/geos/literal-byte/row.s
++++ b/src/render/geos/literal-byte/row.s
+@@ -91,8 +91,11 @@
+     ldy #0
+     lda #0
+ @page:
+-    sta (se_gg_pointer),y
+-    iny
++    ;512 bytes are two exact256-byte pages;Y starts0 for each page.
++    .repeat 8
++        sta (se_gg_pointer),y
++        iny
++    .endrepeat
+     bne @page
+     inc se_gg_pointer+1
+     dex
+@@ -105,7 +108,7 @@
+     ; Reclaim thirteen bytes of former padding for incremental tile setup.
+     ; CODE remains1719B: immutable packed font and width addresses stay fixed.
+ clear_slot:
+-    .assert clear_slot-se_geos_row=$7E,error,"GEOS clear call slot moved"
++    .assert clear_slot-se_geos_row=$93,error,"GEOS clear call slot moved"
+     jsr row_clear
+     jmp begin_runs
+     .assert *-clear_slot=6,error,"candidate clear slot changed"
+@@ -590,33 +593,30 @@
+     lda attrbase+1
+     ora #$40
+     sta attrbase+1
+-    lda #0
++    ; Convert clip bounds to intersecting VIC cells once, not per tile.
++    ; RIGHT+7<=327, so the certified0..320 bounds never overflow16bits.
++    lda F+GR_RIGHT
++    clc
++    adc #7
++    tax
++    lda F+GR_RIGHT+1
++    adc #0
++    lsr
++    txa
++    ror
++    lsr
++    lsr
++    sta pixel ;exclusive tile end; pixel scratch is dead during resolve
++    lda F+GR_LEFT+1
++    lsr
++    lda F+GR_LEFT
++    ror
++    lsr
++    lsr
+     sta tile
++    cmp pixel
++    jcs complete
+ @tile:
+-    lda tile
+-    asl
+-    asl
+-    asl
+-    sta pixel
+-    lda tile
+-    lsr
+-    lsr
+-    lsr
+-    lsr
+-    lsr
+-    sta pixel+1
+-    jsr clipped_right
+-    jcs @next
+-    clc
+-    lda pixel
+-    adc #8
+-    sta pixel
+-    bcc :+
+-    inc pixel+1
+-:
+-    jsr clipped_left
+-    jcc @next
+-    jeq @next
+     lda #0
+     sta best
+     lda roles_seen
+@@ -673,7 +673,7 @@
+ @next:
+     inc tile
+     lda tile
+-    cmp #40
++    cmp pixel
+     jcc @tile
+ complete:
+     lda #1

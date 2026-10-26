@@ -20,8 +20,8 @@ def build(out,base):
  for tag,slot,ident,files in [
   ('fold',0,33,[(f'cache/arena/{n}.s',['BCA_WRITER_PROFILE=1'])for n in ('entry','core','open','control','writer')]),
   ('sema',1,34,[('cache/editor/entry.s',[]),('cache/semantic/worker.s',['BSC_SELECTOR_OWNS_OWNER=1','BSC_AUTO_OWNS_CANCEL=1']),('cache/semantic/state.s',[]),('supermark/block.s',['SE_SM_CODE_ONLY=1']),('supermark/inline.s',['SE_SM_CODE_ONLY=1'])]),
-  ('inln',1,35,[(f'cache/query/{n}.s',['BCQ_EDITOR_ACTIVE=1','BCQ_CLASSIFY=1','BCQ_SELECTOR_OWNS_OWNER=1','BCQ_PAGE_REUSE=1','BCQ_FORWARD_SEED=1'])for n in ('classify-entry','query','source','records')]+[(f'cache/arena/{n}.s',['BCA_READONLY_OPEN=1'])for n in ('core','open','page')]),
-  ('page',1,37,[(f'cache/query/{n}.s',['BCQ_EDITOR_ACTIVE=1','BCQ_CLASSIFY=1','BCQ_SELECTOR_OWNS_OWNER=1','BCQ_PAGE_REUSE=1','BCQ_FORWARD_SEED=1','BCQ_FORWARD_QUERY=1','BCQ_EMPTY_INLINE_HINT=1'])for n in ('fast-entry','query','source','records')]+[(f'cache/arena/{n}.s',['BCA_READONLY_OPEN=1'])for n in ('core','page')])]:
+  ('inln',1,35,[(f'cache/query/{n}.s',['BCQ_EDITOR_ACTIVE=1','BCQ_CLASSIFY=1','BCQ_SELECTOR_OWNS_OWNER=1','BCQ_PAGE_REUSE=1','BCQ_FORWARD_SEED=1','BCQ_COMMITTED_IDENTITY=1'])for n in ('classify-entry','query','source','records')]+[(f'cache/arena/{n}.s',['BCA_READONLY_OPEN=1'])for n in ('core','open','page')]),
+  ('page',1,37,[(f'cache/query/{n}.s',['BCQ_EDITOR_ACTIVE=1','BCQ_CLASSIFY=1','BCQ_SELECTOR_OWNS_OWNER=1','BCQ_PAGE_REUSE=1','BCQ_FORWARD_SEED=1','BCQ_FORWARD_QUERY=1','BCQ_EMPTY_INLINE_HINT=1','BCQ_COMMITTED_IDENTITY=1'])for n in ('fast-entry','query','source','records')]+[(f'cache/arena/{n}.s',['BCA_READONLY_OPEN=1'])for n in ('core','page')])]:
   folder=out/tag;folder.mkdir(exist_ok=True);objects=[];segments={}
   for i,(name,defs)in enumerate(files+[('STATE',[])]):
    path=out/'state.s'if name=='STATE'else ROOT/'src'/name

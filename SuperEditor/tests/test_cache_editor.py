@@ -5,7 +5,7 @@ capsules exactly. Inline presentation still uses the real legacy C26 worker.
 """
 from pathlib import Path
 from datetime import datetime,timezone
-import argparse,ctypes as C,hashlib,json,re,shutil
+import argparse,ctypes as C,hashlib,json,re,shutil,zipfile
 import test_cache_observer as observer
 import test_plain_geos as plain
 ROOT=observer.ROOT
@@ -13,6 +13,8 @@ ROOT=observer.ROOT
 def run(out,base):
  gate=observer.Gate(out,base);f=gate.f;targets=[];cases=[]
  try:
+  with zipfile.ZipFile(gate.frozen/'product-sources.zip') as z:
+   committed_identity=b'BCQ_COMMITTED_IDENTITY=1' in z.read('src/cache/editor/build.py')
   for asset,stem in [('sema',ROOT/'build/cache-editor/sema'),('inln',ROOT/'build/cache-editor/inln'),('page',ROOT/'build/cache-editor/page'),
                      ('geossema',ROOT/'build/overlays/geossema'),('geosinln',ROOT/'build/overlays/geosinln')]:
    raw=stem.with_suffix('.bin').read_bytes();assert raw==f.assets[asset][36:],(asset,'incoherent labels')
@@ -74,12 +76,16 @@ def run(out,base):
      changes.append(dict(physical=bank,owner=f.m.read(f.s['se_reu_physical_owner']+bank),changed=len(offsets),first=offsets[:32],last=offsets[-8:]))
    (out/'unexpected-reu-changes.json').write_text(json.dumps(dict(changes=changes,objects={n:f.read(f.s[n],8 if n!='object_extents'else 128).hex()for n in ('object_owner','object_banks','object_extents')}),indent=2)+'\n')
    raise
-  # Moving an unchanged hot window changes its representation snapshot. This
-  # is a normal cache miss, not a source/render error or a reason to rebuild.
+  # A committed-only window move may reuse content classifications. The lease
+  # still captures and guards the actual current full source snapshot.
   f.position(1)
-  counts=counted('hot-window-cache-miss',full)
-  assert counts.get('sema:entry',0)==0 and 0<counts['inln:entry']<cached_query_calls
-  assert counts.get('geossema:se_sm_feed',0)>0 and f.get('se_bc_count',1)==0
+  counts=counted('hot-window-committed-reuse' if committed_identity else 'hot-window-cache-miss',full)
+  assert counts.get('sema:entry',0)==0 and f.get('se_bc_count',1)==0
+  if committed_identity:
+   assert counts['inln:entry']>=cached_query_calls and counts['page:entry']>0
+   assert not any(v for k,v in counts.items() if k.startswith('geossema:'))
+  else:
+   assert 0<counts['inln:entry']<cached_query_calls and counts.get('geossema:se_sm_feed',0)>0
   f.position(0)
   f.key(observer.Q);f.render();changed=bytes([observer.Q])+data
   assert f.get('se_bc_count',1)>0
