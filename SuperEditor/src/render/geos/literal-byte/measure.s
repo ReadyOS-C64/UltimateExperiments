@@ -87,15 +87,15 @@ se_geos_measure:
     sta se_gg_pointer+1
     ldy G+GG_SCREEN
     lda (se_gg_pointer),y
-    jeq gg_format
+    beq gg_format
     cmp #9
-    jcs gg_format
+    bcs gg_format
     sta G+GG_WIDTH
     tax
     lda G+GG_KIND
     beq :+
     cpx #8
-    jne gg_format
+    bne gg_format
 :   txa
     sta G+GG_ADVANCE
     lda G+GG_STYLE

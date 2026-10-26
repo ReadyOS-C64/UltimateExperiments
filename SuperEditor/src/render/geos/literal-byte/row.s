@@ -41,6 +41,8 @@ covtail=P+35
 fragment=P+36
 subtotal=P+37
 attrbase=P+30 ;validation ending is dead before resolve
+vertical_end=P+41
+.assert GR_PRIVATE+42<=GR_SIZE,error,"vertical scratch outside caller frame"
 roles_seen=P+39 ;bit7 forbids append shortcut, lowbits accumulate actualpaintroles
 .assert GR_PRIVATE+40<=GR_SIZE,error,"private role witness exceeds frame"
 .segment "CODE"
@@ -169,8 +171,7 @@ next_glyph:
     sta G+GG_FLAGS
     jsr glyph
     jcs return
-    lda #0
-    sta byte_ok
+    sta byte_ok ;actual glyph success returnsA0
     lda F+GR_LEFT
     ora F+GR_LEFT+1
     bne @slow
@@ -218,21 +219,30 @@ next_glyph:
     dex
     bne @coverage_shift
 @slow:
+    ; Certified origin-8..7 and top/bottom0..8 yield signed differences
+    ; -7..16. Intersect once, never index an ungenerated glyph raster row.
+    lda F+GR_TOP
+    sec
+    sbc origin
+    bpl :+
     lda #0
-    sta gy
-@glyph_y:
+:   sta gy
+    lda F+GR_BOTTOM
+    sec
+    sbc origin
+    bmi @advance_glyph
+    cmp #10
+    bcc :+
+    lda #9
+:   sta vertical_end
+    cmp gy
+    bcc @advance_glyph
+    beq @advance_glyph
     lda origin
     clc
     adc gy
-    ldx origin
-    bpl @positive
-    jcc @skip_y
-@positive:
-    cmp F+GR_TOP
-    jcc @skip_y
-    cmp F+GR_BOTTOM
-    jcs @skip_y
     sta sy
+@glyph_y:
     lda gy
     asl
     tay
@@ -244,10 +254,12 @@ next_glyph:
     ora flags ;only plain empty ink may skip coverage; inverse is conservative
     bne @draw_y
 @skip_y:
+    inc sy
     inc gy
     lda gy
-    cmp #9
-    jcc @glyph_y
+    cmp vertical_end
+    bcc @glyph_y
+@advance_glyph:
     clc
     lda xpos
     adc G+GG_ADVANCE
@@ -273,7 +285,7 @@ next_glyph:
     inc gx
     lda gx
     cmp G+GG_ADVANCE
-    jcs @skip_y
+    bcs @skip_y
     jsr next_pixel
     jmp @left
 @visible:
@@ -290,7 +302,7 @@ next_glyph:
     jmp @address_ready
 @slow_address:
     jsr clipped_right
-    jcs @skip_y
+    bcs @skip_y
     jsr pixel_address
 @address_ready:
     jsr histogram_address
@@ -530,12 +542,12 @@ byte_row:
     lda covhi,y
     beq @done
     lda inkhi,y
-    pha
+    tax
     and #15
-    tax
-    lda popcount,x
+    tay
+    lda popcount,y
     sta subtotal
-    pla
+    txa
     lsr
     lsr
     lsr
@@ -543,9 +555,8 @@ byte_row:
     tax
     lda popcount,x
     clc
-    adc subtotal
+    adc subtotal ;nibble sums<=8, therefore carry alreadyclear
     ldy #0
-    clc
     adc (se_gg_context),y
     bcc :+
     lda #255
@@ -615,7 +626,7 @@ resolve:
     lsr
     sta tile
     cmp pixel
-    jcs complete
+    bcs complete
 @tile:
     lda #0
     sta best
@@ -674,7 +685,7 @@ resolve:
     inc tile
     lda tile
     cmp pixel
-    jcc @tile
+    bcc @tile
 complete:
     lda #1
     sta F+GR_VALID

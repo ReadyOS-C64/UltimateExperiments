@@ -13,7 +13,7 @@ se_geos_glyph:
     bcc :+
     rts
 :   lda G+GG_KIND
-    jeq packed
+    beq packed
     lda #0
     sta se_gg_pointer+1
     lda G+GG_SCREEN
