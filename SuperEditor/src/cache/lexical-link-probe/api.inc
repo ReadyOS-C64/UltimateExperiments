@@ -1,0 +1,21 @@
+.include "cache/lexical-probe/page.inc"
+LL_STATE=LX+0
+LL_MODE=LX+7                 ;0 link,1 resolve
+LL_OLD=LX+8
+LL_FREE=LX+9
+LL_SLOT=LX+10
+LL_SLOTS=LX+11
+LL_FOUND=LX+12
+LL_SELECTED=LX+13
+LL_GENERATION=LX+14
+LL_RUN=LX+18
+LL_TARGET=LX+34
+LL_QUERY=LX+37
+LL_LEX=LX+54                 ;real producer-returned ref4 (slot0)
+LL_COUNT=LX+58               ;real lexer span count16
+LL_HEADER=LX+94              ;old page header64
+LL_ROOT=LX+259               ;captured root128
+LL_LEX_COMPLETE=$10
+LL_ROOT_FLAGS=5              ;semantic complete + perCR lexical capability
+LL_LEX_ABI=1                 ;private LXC1/span7 ABI, not generic run8
+LL_JUMP=LX+16
