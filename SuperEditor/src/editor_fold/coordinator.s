@@ -14,6 +14,7 @@ EF_CONTROLLER_IMPLEMENTATION=1
 .export ec_size_object,ec_publish
 EC_TRANSFORM=4
 .export se_ef_begin,se_ef_step,se_ef_cancel
+.import ec_create_fold
 .segment "CODE"
 se_ef_begin:
     lda se_f_owner
@@ -79,7 +80,7 @@ ec_build:
 ec_candidate:
     ldx se_ec_banks
     lda #SF_OBJECT_TYPE
-    jsr se_object_create
+    jsr ec_create_fold
     jcs ec_abort
     SF_COPY se_object_id,se_ec_candidate,5
     lda #1

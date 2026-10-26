@@ -2,8 +2,8 @@
 
 All legacy source, independent pixel/attribute, row-map, fold and history
 assertions remain intact. Only their obsolete FE-only REU allowance is replaced
-with the released checked-DMA observer plus an authenticated first type53
-allocation and immutable subsequent arena snapshots. No product substitutions.
+with the released checked-DMA observer, authenticated first type53 allocation,
+immutable retained arenas and checked optional retirement. No product substitutions.
 """
 from pathlib import Path
 from datetime import datetime, timezone
@@ -51,6 +51,8 @@ class CurrentAudit:
     def audit_begin(self):
         self.audit_before = self.reu()
         self.audit_arena_before = self.arena(reu=self.audit_before)
+        self.audit_cache_state = self.read(self.s['se_bc_arena'], 17)
+        self.audit_cache_ring = self.read(self.s['se_bc_ring'], 96)
         self.audit_baseline = (self.audit_arena_before is None and self.get('se_render_caps', 1) != 0
                                and self.get('se_mode', 1) == 3 and self.get('se_bc_flags', 1) & 31 == 2)
         self.dll.pb_arena_begin(self.audit_baseline)
@@ -64,8 +66,24 @@ class CurrentAudit:
         current = self.arena()
         arena_writes = int(self.dll.pb_arena_get())
         if self.audit_arena_before is not None:
-            assert current == self.audit_arena_before, (tag, 'existing complete type53 arena changed')
             assert arena_writes == 0, (tag, 'write to immutable arena')
+            if current is None:
+                # Required fold allocations may retire optional derived data.
+                # Preserve its observer incarnation/ticket/ring; permit neither
+                # unchecked DMA nor a stale capability surviving the release.
+                old = bytes.fromhex(self.audit_arena_before[0]['token'])
+                ident = old[0]
+                state = self.read(self.s['se_bc_arena'], 17)
+                assert state[:5] == bytes(5)
+                assert state[5:13] == self.audit_cache_state[5:13]
+                assert state[13] == (self.audit_cache_state[13] & ~33) | 2
+                assert state[14:] == self.audit_cache_state[14:]
+                assert self.read(self.s['se_bc_ring'], 96) == self.audit_cache_ring
+                assert self.m.read(self.s['object_owner'] + ident) in (0, 0x46)
+                generation = self.m.read(self.s['object_gen_lo'] + ident) + 256 * self.m.read(self.s['object_gen_hi'] + ident)
+                assert generation == (int.from_bytes(old[1:3], 'little') + 1) & 65535
+            else:
+                assert current == self.audit_arena_before, (tag, 'existing complete type53 arena changed')
         elif current is not None:
             assert self.audit_baseline and arena_writes, (tag, 'unexpected allocation')
             assert self.get('se_bc_flags', 1) & 15 == 1 and self.get('se_bc_count', 1) == 0
@@ -81,6 +99,7 @@ class CurrentAudit:
             assert arena_writes == 0
         self.audit_records.append(dict(tag=tag,checked_dma_writes=writes,typed53_writes=arena_writes,
                                        first_allocation=self.audit_arena_before is None and current is not None,
+                                       retired_optional_arena=self.audit_arena_before is not None and current is None,
                                        arena=None if current is None else current[0]))
         (self.audit_out/'dma-audits.json').write_text(json.dumps(self.audit_records,indent=2)+'\n')
         return writes
@@ -130,6 +149,8 @@ def run(out, fixture, suite):
         (out/'executed-adapter.py').write_text(source)
         exec(compile(source, str(Path(__file__)) + ':fold-current-DMA', 'exec'), ns)
         result = ns['run'](out, fixture)
+        if result is None:
+            result = json.loads((out/'result.json').read_text())
     (out/'executed-adapter.py').write_text(source)
     result['current_transport_adapter'] = dict(
         scope=__doc__, audits=records, frames=len(result['frames']),

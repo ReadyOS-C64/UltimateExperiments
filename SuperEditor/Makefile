@@ -858,7 +858,10 @@ build/fold-prod/key.o: src/editor_fold/key.s src/editor_fold/api.inc
 build/fold-prod/source-context.o: src/fold/source-context.s src/fold/source.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -o $@ $<
-FOLD_CONTROL_OBJ = build/fold-prod/control-entry.o build/fold-prod/coordinator.o build/fold-prod/retain.o build/fold-prod/reader-dispatch.o
+build/fold-prod/create.o: src/editor_fold/create.s src/cache/api.inc src/fold/api.inc src/editor_fold/controller.inc
+	mkdir -p $(dir $@)
+	$(CA65) -g -I src -o $@ $<
+FOLD_CONTROL_OBJ = build/fold-prod/control-entry.o build/fold-prod/coordinator.o build/fold-prod/retain.o build/fold-prod/reader-dispatch.o build/fold-prod/create.o
 build/fold-prod/control-bindings.s: $(FOLD_CONTROL_OBJ) build/editor.prg tools/module_bindings.py
 	$(PYTHON) tools/module_bindings.py --report build/editor-report.json --output $@ $(FOLD_CONTROL_OBJ)
 build/overlays/foldctl.bin: $(FOLD_CONTROL_OBJ) build/fold-prod/control-bindings.o cfg/fold-editor-control.cfg

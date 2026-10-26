@@ -11,6 +11,7 @@ EF_CONTROLLER_IMPLEMENTATION=1
 .import ec_size_object,ec_publish
 .export ec_retention_prepare,ec_transform_step,ec_retire_hint,ec_retire_old
 EC_TRANSFORM=4
+.import ec_create_fold
 .segment "CODE"
 ; Before KEY_CAPTURE: journal guard authenticates the old published graph/key
 ; and current visible witness. A0 unavailable -> parse expanded; A1 transformed
@@ -61,7 +62,7 @@ ec_retention_prepare:
     ; per edit. Capture hint ownership immediately after CREATE, before RESIZE.
     ldx se_ec_banks
     lda #SF_OBJECT_TYPE
-    jsr se_object_create
+    jsr ec_create_fold
     bcs @return
     SF_COPY se_object_id,se_fb_old_token,5
     SF_COPY se_object_id,se_ft_output,5
