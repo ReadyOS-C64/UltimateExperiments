@@ -98,12 +98,12 @@ se_geos_service:
 :
     cmp #GP_LAYOUT_ID
     beq resume
+    .assert GP_SEMLEX_ID=GP_SEMANTIC_ID+1 .and GP_INLINE_ID=GP_SEMANTIC_ID+2,error,"semantic worker range"
     cmp #GP_SEMANTIC_ID
-    beq resume
-    cmp #GP_SEMLEX_ID
-    beq resume
-    cmp #GP_INLINE_ID
-    beq resume
+    bcc :+
+    cmp #GP_INLINE_ID+1
+    bcc resume
+:
     cmp #GP_NAV_ID
     bne :+
     txa

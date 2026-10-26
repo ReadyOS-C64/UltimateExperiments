@@ -165,14 +165,13 @@ se_editor_command:
     jeq mark
     cmp #E_UNMARK
     jeq unmark
+    ; Exact contiguous COPY/CUT/PASTE/CLEARUNDO command range.
+    .assert E_CUT=E_COPY+1 .and E_PASTE=E_COPY+2 .and E_CLEARUNDO=E_COPY+3,error,"block command range"
     cmp #E_COPY
-    jeq flush_first
-    cmp #E_CUT
-    jeq flush_first
-    cmp #E_PASTE
-    beq flush_first
-    cmp #E_CLEARUNDO
-    beq flush_first
+    bcc :+
+    cmp #E_CLEARUNDO+1
+    bcc flush_first
+:
     cmp #E_OPEN
     bcc :+
     cmp #E_SAVEAS+1
@@ -186,7 +185,7 @@ se_editor_command:
     cmp #E_HELP
     beq help
     cmp #E_SOURCE
-    jeq display_mode
+    beq display_mode
     cmp #E_MODE40
     bcc :+
     cmp #E_NEXTPAGE+1
@@ -195,18 +194,18 @@ se_editor_command:
     cmp #E_FOLD
     bcc :+
     cmp #E_REVEAL+1
-    jcc flush_first
+    bcc flush_first
 :
-    cmp #E_INSERT
-    jeq local
+    .assert E_DELETE=E_BACK+1 .and E_INSERT=E_BACK+2,error,"local edit command range"
     cmp #E_BACK
-    jeq local
-    cmp #E_DELETE
-    jeq local
-    cmp #E_LEFT
-    beq flush_first
-    cmp #E_RIGHT
-    beq flush_first
+    bcc :+
+    cmp #E_INSERT+1
+    jcc local
+:
+    ; Command0 returned at entry; the only remaining values below3 are LEFT/RIGHT.
+    .assert E_LEFT=1 .and E_RIGHT=2,error,"local movement command range"
+    cmp #E_RIGHT+1
+    bcc flush_first
     cmp #E_UNDO
     beq flush_first
     cmp #E_REDO
@@ -249,9 +248,6 @@ wrap_dispatch:
 mark:
     jsr se_selection_toggle
     jmp redraw
-unmark:
-    jsr se_selection_clear
-    jmp redraw
 execute:
     lda #0
     sta se_h_open_group ;resident safe point, closes typing boundary without swap
@@ -273,10 +269,12 @@ execute:
     cmp #E_SAVEAS+1
     jcc file_begin
 :
+    .assert E_REDO=E_UNDO+1,error,"history command range"
     cmp #E_UNDO
-    jeq history
-    cmp #E_REDO
-    jeq history
+    bcc :+
+    cmp #E_REDO+1
+    jcc history
+:
     cmp #E_CLEARUNDO
     jeq clear_undo
     cmp #E_WRAP
@@ -358,6 +356,9 @@ se_editor_reveal:
 @committed:
     jmp flush_first
 
+; Identical selection-clear tail; fall through instead of a JMP.
+unmark:
+    jsr se_selection_clear
 redraw:
 .export se_editor_redraw
 se_editor_redraw = redraw
@@ -368,8 +369,7 @@ clear_undo:
     lda #H_CLEAR
     jsr se_history_call
     bcs undo_error
-    jsr se_selection_clear
-    jmp redraw
+    jmp unmark ;same selection-clear/redraw suffix
 undo_error:
     jmp se_editor_error
 diagnose:
@@ -465,8 +465,6 @@ navigate:
     lda #4
     sta se_e_job
     rts
-navigation_error:
-    jmp se_editor_error
 edge:
     ; Private synchronous C8 planner owns no lease. Direct entry avoids async
     ; navigation cleanup on admission failure; resident retains every safe point.
@@ -501,7 +499,7 @@ se_editor_reload:
     bpl @refresh_copy_reload
     lda #W_LOAD
     jsr se_hot_call
-    bcs navigation_error
+    bcs command_error
     lda #1
     sta se_e_job
     rts
