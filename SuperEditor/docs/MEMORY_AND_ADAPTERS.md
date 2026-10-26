@@ -1,3 +1,18 @@
+The current C19 fold allocator is 1,469 bytes (+99) and reclaims optional
+checked type53 analysis only after genuine resource exhaustion, then retries
+once. It borrows no fold phase bytes, BSS or zero page. Owner 3, full capability
+and extent checks, and no ACTIVE/MUTATING job are required. It preserves cache
+TRIED/ticket/incarnation/ring; C12 file retirement remains byte-identical.
+Runtime `69720da` changes only C19 versus `4c25480`; all 54 assets are present.
+All 28 fold and five editor scenarios, the 68-byte stack bound and three
+native Copy/Cut/Undo frames pass.
+
+R21 remains 4,094 bytes and uses one transient byte `$8B3B` inside its existing
+704-byte glyph frame for the precomputed vertical intersection. Font addresses
+`$ABF3`/`$AEDB` and compositor tail address `$AF5B` stay fixed; font bytes are
+identical. Tail jump operands may relocate with code, so a fixed tail address
+is not a claim that all tail bytes are unchanged. No new allocation is added.
+
 The current 54-asset build packs each startup filename into a low address byte
 and one byte containing its high address nibble and length. Assembly/link checks
 require names below `$1000`, lengths1–15 and at most64 entries. The original raw

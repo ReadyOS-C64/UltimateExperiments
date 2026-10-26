@@ -1,10 +1,12 @@
 # Current performance
 
-The current cache-redesign runtime is `c9db408`, with 54 assets, resident
-`62954d299f47` and D81 `48c2b89b1dcb`. Its diverse-document full GEOS repaint
-takes 10,286,102 PAL cycles in Full and 9,765,072 in Markdown. All eleven native
-display captures match the reviewed images. Full still exceeds the older
-9,511,774-cycle path by 8.1%; performance qualification remains open.
+The current cache-redesign runtime is `69720da`, with 54 assets, resident
+`a2578487c8a5` and D81 `2ffdb2fc95b1`. Its diverse-document full GEOS repaint
+was measured at 10,150,476 PAL cycles in Full and 9,629,277 in Markdown. All
+eleven native display captures match the reviewed images. Full still exceeds
+the older 9,511,774-cycle path by 6.7%; performance qualification remains open.
+These timings were captured on `4c25480`; the subsequent C19 pressure fix
+changes only fold allocation and is qualified separately below.
 
 A separate native control loads a 4,102-byte document through File/Open: a long
 bold span followed by a short paragraph. These public commands include actual
@@ -12,9 +14,9 @@ navigation and repaint, after the semantic baseline has been built:
 
 | PAL command | Control cycles | Current cycles | Loads, control → current |
 | --- | ---: | ---: | ---: |
-| Markdown bottom | 306,428,091 | 4,091,035 | 577 → 32 |
-| Plain bottom | 14,247,606 | 14,233,035 | 176 → 176 |
-| Markdown top | 28,352,606 | 23,096,048 | 243 → 249 |
+| Markdown bottom | 306,428,091 | 4,087,703 | 577 → 32 |
+| Plain bottom | 14,247,606 | 14,229,896 | 176 → 176 |
+| Markdown top | 28,352,606 | 22,550,943 | 243 → 249 |
 
 The actual dispatcher trace changes from 13,598 C26 requests and 223 C24
 requests during styled bottom to two C26 requests, fifteen bounded C35 steps,
@@ -23,14 +25,35 @@ starts measuring at that block's logical start. It skips preceding blocks;
 softwrapped rows inside the target block still require measurement. Ordinary
 UP/DOWN/PAGE/PAN and cached geometry retain their existing paths. All three
 current images match the control byte for byte. Bottom improves 98.7%; Top
-improves 18.5% despite more loads. Cache hits and parser-feed counts cannot
+improves 20.5% despite more loads. Cache hits and parser-feed counts cannot
 replace end-to-end timing.
 The measurements use the documented public-input PC/SP seam and include
 IRQ/VIC/REU activity; they do not measure physical keyboard latency. All three
 images, source/history/clipboard/settings, retained typed-cache bytes and the
 full REU outside checked renderer storage pass verification.
 
-Evidence: `agentsworking/cache-navigation-integration-checkpoint.json` and
+R21 now intersects the glyph's vertical clip interval once per strip rather
+than testing it on every scanline. The same packed-cold control improves from
+10,286,041 to 10,150,476 PAL cycles (1.3%) with identical pixels and 149 loads.
+The payload remains 4,094 bytes; fixed font data stays identical. Component
+coverage includes 2,570 vectors, 65 faults and 720 legal vertical intersections
+per side. This improves raster work without claiming to solve overlay traffic.
+
+The latest C19 fix adds 99 bytes and no resident state. Fold allocation retries
+once after retiring the optional checked type53 cache, only for actual object
+catalog or provider exhaustion. All 28 fold scenarios, 14 allocation and
+ownership cases, five editor scenarios and the 68-byte stack bound pass.
+A new native Copy/Cut/Undo gate checks three frames, 192,000 VIC pixels,
+exact source/clipboard/folds, all 54 assets and the 1 KiB reservation.
+TRIED remains set after retirement, so automatic
+cache rebuilding stays deferred; normal parsing continues.
+
+Current evidence: `agentsworking/cache-raster-vertical-checkpoint.json` and
+`agentsworking/cache-fold-pressure-integration-checkpoint.json`. The native
+pressure captures completed successfully; a host module-alias error was repaired
+offline against those same captures, with the failed log retained.
+
+Historical navigation integration evidence: `agentsworking/cache-navigation-integration-checkpoint.json` and
 `agentsworking/evidence/M8/20261026T045738645714Z-navigation-cache-integration`.
 The control archive retains an initial host-evaluator capture-name error and
 its repaired offline verification. The new production run passes directly.

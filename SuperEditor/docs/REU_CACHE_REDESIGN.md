@@ -10,10 +10,25 @@ excluded from Git.
 The current runtime implements Plain, Markdown and Full, retained block
 classification, and selective reuse of sparse inline events. Edit-aware
 semantic reuse, retained lexical colors and retained layout are unfinished.
-The native 4,102-byte styled-navigation Bottom command now takes 4,091,035 PAL
+The native 4,102-byte styled-navigation Bottom command now takes 4,087,703 PAL
 cycles including repaint, versus 306,428,091 in its control. Its real dispatcher
 trace drops thousands of repeated inline requests. See
 [performance measurements](PERFORMANCE.md) for the exact scope and evidence.
+
+Current runtime `69720da` also keeps required fold operations ahead of optional
+analysis. A real allocation failure may retire a fully checked type53 object
+and retry the type46 allocation once. This preserves document, history,
+clipboard, fold choices and the observer ticket/incarnation/ring. Cache TRIED
+remains set to prevent repeated allocation/reparse attempts under pressure;
+normal parsing continues until a later explicit baseline policy or document
+incarnation permits rebuilding. All 28 fold frames, 14 ownership/resource cases
+and native Copy/Cut/Undo pass. See the performance notes for scope and evidence.
+
+The cold filename catalog now uses two bytes per entry and frees 47 startup
+bytes without changing names, order or the tutorial. The catalog remains 54
+assets with 58 cold bytes free. R21 also computes vertical clipping once per
+strip; full diverse GEOS repaint is 10.150M PAL, still 6.7% above the older path.
+Neither change closes edit-aware cache, lexical retention or general speed work.
 
 Cache admission must account for total guard, DMA and overlay costs. Private
 lexical measurements already show that a 25-byte code block is cheaper to
