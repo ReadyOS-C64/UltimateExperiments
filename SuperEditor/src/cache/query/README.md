@@ -301,7 +301,7 @@ C37 checks the current13-byte authority, flags/queue and real R14 GUARD before
 copying its actual current59-byte identity to the local query snapshot. All
 subsequent guards and published page certificates remain exact59.
 
-C354094/C373636 (including empty-inline hint) fit existing slots. No extra
+C354090/C373636 (including empty-inline hint) fit existing slots. No extra
 resident/catalog/BSS/ZP bytes are required. Inapplicable identity returns MISS2
 without output; source/authority faults close the owned lease and return an
 error. An old C37 certificate still refuses changed geometry: fresh C35
@@ -312,6 +312,10 @@ The component gate covers102 modeled positions,20 fault groups and1362
 wholeRAM calls, including actual W_LOAD beyond64KiB. Actual public rendering,
 missing-C37 and queued-key cancellation/recovery, parser bypass, incremental
 edits, stack and native11 also pass. Performance remains open: the small
-navigation case regresses11.96%, the sparse66-KiB case19.75%. Its false-positive
-C35 inline hint induces198,000 C26 feeds despite eliminating132,013 C24 feeds;
-the seed hint needs its own qualified fix. See the public redesign document.
+navigation case regresses11.96%. The initial sparse66-KiB case regressed19.75%
+because its C35 seed induced198,000 unnecessary C26 feeds. The compact C35
+publisher now uses the same completed-empty check as C37, removing those feeds
+and reducing the same-source interval92.066M→56.358M instructions. Its direct
+publisher/result seam checks1,050 independently modeled fields/predicates and14
+A/P/SP cases;30 public frames, six fault groups and1,920 predicates also pass.
+No source/authority check was removed. See the public redesign document.

@@ -1,3 +1,4 @@
+; PRIVATE optional compact seed-empty profile; flag absent preserves exact C35.
 ; Classify only: no INLINE stream is consumed or certified. Legacy C26 may
 ; execute later for actual inline presentation when the conservative hint is1.
 .setcpu "6502"
@@ -97,9 +98,13 @@ result:
  php
  pha
  bcs @fault
+.ifdef BCQ_EMPTY_INLINE_HINT
+ cmp #1
+.else
  pla
  pha
  cmp #1
+.endif
  beq @pending
 @clear:
  lda #0
@@ -111,35 +116,68 @@ result:
  pla
  plp
  rts
+.ifdef BCQ_EMPTY_INLINE_HINT
+@fault:
+ sta F+GSEM_ERROR
+.else
 @fault:
  pla
  pha
  sta F+GSEM_ERROR
+.endif
  jmp @clear
 publish:
  lda BQ_CR+3
  cmp #$FF
  bne @ordinary
+.ifdef BCQ_EMPTY_INLINE_HINT
+ lda #0                     ;same four zero fields, no source semantic change
+ ldx #3
+@zero:sta F+GSEM_KIND,x
+ dex
+ bpl @zero
+.else
  lda #0                     ;terminal syntheticEOF is ordinary empty prose
  sta F+GSEM_KIND
  sta F+GSEM_LANG
  sta F+GSEM_LEVEL
  sta F+GSEM_MARKER
+.endif
+.ifdef BCQ_EMPTY_INLINE_HINT
+ jmp @anchors
+.else
  beq @anchors
+.endif
 @ordinary:
  sta F+GSEM_KIND
+.ifdef BCQ_EMPTY_INLINE_HINT
+ ldx #2
+@fields:lda BQ_CR+69,x
+ sta F+GSEM_LANG,x
+ dex
+ bpl @fields
+.else
  lda BQ_CR+69
  sta F+GSEM_LANG
  lda BQ_CR+70
  sta F+GSEM_LEVEL
  lda BQ_CR+71
  sta F+GSEM_MARKER
+.endif
 @anchors:
  ldx #2
 @start:lda BQ_CR+16,x
  sta F+GSEM_START,x
  dex
  bpl @start
+.ifdef BCQ_EMPTY_INLINE_HINT
+ ; BQ_END is the actualchecked absolute END, retained across GUARD/END.
+ ldx #2
+@end:lda BQ_END,x
+ sta F+GSEM_END,x
+ dex
+ bpl @end
+.else
  clc
  lda BQ_CR+16
  adc BQ_CR+19
@@ -150,6 +188,19 @@ publish:
  lda BQ_CR+18
  adc BQ_CR+21
  sta F+GSEM_END+2
+.endif
+.ifdef BCQ_EMPTY_INLINE_HINT
+ ; INX/DEY preserve carry between the three original ADC operations.
+ ldx #0
+ ldy #3
+ clc
+@body:lda BQ_CR+16,x
+ adc BQ_CR+22,x
+ sta F+GSEM_BODY,x
+ inx
+ dey
+ bne @body
+.else
  clc
  lda BQ_CR+16
  adc BQ_CR+22
@@ -160,6 +211,7 @@ publish:
  lda BQ_CR+18
  adc BQ_CR+24
  sta F+GSEM_BODY+2
+.endif
  lda #0
  sta F+GSEM_ROLE
  sta F+GSEM_REVERSE
@@ -169,7 +221,28 @@ publish:
  lda F+GSEM_KIND
  cmp #4
  bcs @not_inline
+.ifdef BCQ_EMPTY_INLINE_HINT
+ ; Only an authenticated completed empty stream proves no inline work.
+ lda BQ_CR+2
+ and #4
+ beq @has_inline
+ lda BQ_CR+44
+ ora BQ_CR+45
+ ora BQ_CR+46
+ bne @has_inline
+ lda BQ_CR+40
+ and BQ_CR+41
+ and BQ_CR+42
+ and BQ_CR+43
+ cmp #$FF
+ beq @inline_done
+@has_inline:
+ inc F+GSEM_INLINE
+@inline_done:
+ lda F+GSEM_KIND
+.else
  inc F+GSEM_INLINE           ;hint only, no INLINE grammar reuse certificate
+.endif
 @not_inline:
  cmp #5
  bne :+

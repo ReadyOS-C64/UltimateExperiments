@@ -52,13 +52,23 @@ pass validation. It copies the actual current59-byte identity into the local
 query; every subsequent reader guard stays exact. Pending edits, REKEY and
 SPLICE still use the existing safe fallback.
 
-This admission is correctness-qualified, with a measured performance regression:
+This admission is correctness-qualified, with a remaining small-case regression:
 after a window move, the251-byte case takes1.958 million instructions versus
-1.749 million for the previous parser fallback. The66-KiB case takes92.111
-million versus76.921 million, including actual caret reveal. C35 still emits a
-conservative inline hint for the first block, causing three unnecessary66-KiB
-inline passes. Its compact completed-empty shortcut is being qualified
-separately. Nonempty inline and retained layout probes are not yet integrated.
+1.749 million for the previous parser fallback. The first implementation also
+regressed the66-KiB case: its C35 seed still requested inline parsing for an
+empty result. C35 now uses the same checked completed-empty predicate as C37.
+Safe publisher compaction fits this into4,090 bytes while the disabled profile
+remains byte-identical. The change removes198,000 inline-parser feeds and lowers
+the same-window navigation interval from92.066 to56.358 million instructions,
+including actual caret reveal. Pixels, source and foreign REU remain unchanged.
+These are CPU instruction measurements; initial baseline construction is separate.
+Nonempty inline and retained layout probes are not yet integrated.
+
+The enabled C35 shortcut passes actual editor, foreground handoff, parser-bypass,
+incremental, stack and native11 gates. Native Full redraw is10.283 million PAL
+cycles, Markdown9.762 million, with all11 screenshots unchanged. Full remains
+8.1% above the older path. Native overlay loads fall153→149 (Full) and147→143
+(Markdown); no overall responsiveness or completion claim follows.
 
 C35 seeds an untrusted slot after final source validation. C37 validates the
 page certificate, current source/capability tuple and the selected record's CRC
