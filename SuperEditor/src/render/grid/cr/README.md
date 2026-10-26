@@ -44,3 +44,13 @@ edge/history, refusal/recovery and unchanged-route cases check independent
 pixels/packets/anchors, source/history and exact observed DMA/whole16MiB guards.
 Native timing and real IRQ qualification are recorded separately from CPU
 instruction counts and physical keyboard latency.
+
+`tests/test_grid_cr_registered_vice.py` compares eight native PAL split/merge
+cases against the committed59-image control; every paired screenshot is exact.
+The measured reductions are38.1–39.9% at60 and20.4–22.4% at80, loads9→4.
+`tests/test_grid_cr_irq_vice.py` separately exercises actual IRQ Return, Undo,
+Redo and immediate BACK in both widths, without a PC/SP substitution. All eight
+frames pass the complete source/history/settings/font/catalog/shim and native
+VIC oracle. The BACK is still a pending edit until flushed; a restored byte
+string alone does not imply a clean history state. Two real Undo commands
+return this scenario to its saved node before opening the next file.
