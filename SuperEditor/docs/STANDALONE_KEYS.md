@@ -67,6 +67,10 @@ read-only formatted view: F3/F5 or up/down change pages, Return or RUN/STOP retu
 to source. F7 `source` also returns. Menus/help remain available. Formatting
 controls are hidden only in preview; saved files retain the original source.
 
+The View menu provides these routes too: **F1,V,P** toggles GEOS preview/source;
+**F1,V,S** opens preview appearance settings. Preview requires GEOS mode. Closing
+Settings opened from preview returns to that preview.
+
 F7 `fold` toggles the region at the caret. Fold summaries show an inverse `+`;
 selection, copy/cut and saved files still refer to the complete source. Direct
 GOTO/find into hidden text opens its ancestors. Arrow/page navigation skips

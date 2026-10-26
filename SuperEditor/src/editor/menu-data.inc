@@ -1,7 +1,7 @@
 ; Same command/accelerator tables feed F1 and F7 paths. Text is renderer-only.
 .ifndef SE_MENU_COUNTS_DEFINED
 SE_MENU_COUNTS_DEFINED=1
-menu_counts: .byte 3,4,7,15,7,2
+menu_counts: .byte 3,4,9,15,7,2
 .endif
 .ifdef MENU_TEXT
 menu_labels: .word menu_file,menu_edit,menu_view,menu_nav,menu_block,menu_help
@@ -22,6 +22,8 @@ menu_view:
  .asciiz "W  Toggle soft wrap     F4"
  .asciiz "L  Pan left 20 columns"
  .asciiz "R  Pan right 20 columns"
+ .asciiz "P  Preview / source (GEOS)"
+ .asciiz "S  Preview settings..."
 menu_nav:
  .asciiz "U  Up / keep preferred column"
  .asciiz "D  Down / keep preferred column"
@@ -56,8 +58,8 @@ file_keys: .byte 'o','s','a'
 file_commands: .byte E_OPEN,E_SAVE,E_SAVEAS
 edit_keys: .byte 'u','r','d','c'
 edit_commands: .byte E_UNDO,E_REDO,E_DELETE,E_CLEARUNDO
-view_keys: .byte '4','6','8','h','w','l','r'
-view_commands: .byte E_MODE40,E_MODE60,E_MODE80,E_HIRES,E_WRAP,E_PANLEFT,E_PANRIGHT
+view_keys: .byte '4','6','8','h','w','l','r','p','s'
+view_commands: .byte E_MODE40,E_MODE60,E_MODE80,E_HIRES,E_WRAP,E_PANLEFT,E_PANRIGHT,E_SOURCE,E_SETTINGS
 nav_keys: .byte 'u','d','p','n','h','e','t','b','j','l','v','w','g','f','r'
 nav_commands: .byte E_UP,E_DOWN,E_PAGEUP,E_PAGEDOWN,E_HOME,E_END,E_TOP,E_BOTTOM,E_JBACK,E_JFORWARD,E_WORDLEFT,E_WORDRIGHT,E_GOTOPROMPT,E_FINDPROMPT,E_FINDNEXT
 block_keys: .byte 'm','c','x','p','f','l','e'
