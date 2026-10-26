@@ -7,6 +7,21 @@ Source checkpoint before implementation:
 build outputs, logs, external font extracts and local working records are
 excluded from Git.
 
+The current runtime implements Plain, Markdown and Full, retained block
+classification, and selective reuse of sparse inline events. Edit-aware
+semantic reuse, retained lexical colors and retained layout are unfinished.
+The native 4,102-byte styled-navigation control still costs 306,428,091 PAL
+cycles for bottom, including repaint, versus 14,247,606 in Plain. Its real
+dispatcher trace records thousands of repeated inline requests. See
+[performance measurements](PERFORMANCE.md) for the exact scope and evidence.
+
+Cache admission must account for total guard, DMA and overlay costs. Private
+lexical measurements already show that a 25-byte code block is cheaper to
+parse directly, whereas a roughly 1 KiB block benefits from retained spans.
+Private navigation work likewise retains ordinary movement paths when the
+new lookup would add overhead. These experiments have not been promoted;
+selective admission is a requirement, not a claimed completed optimization.
+
 The `fbcc8f6` checkpoint connects bounded C7 admission, the R33 REU writer,
 a retained C34 semantic producer, and C35 cached block classification. A full
 GEOS repaint uses the stored classifications without block parser feeds;

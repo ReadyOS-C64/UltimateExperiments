@@ -1,6 +1,40 @@
 # Current performance
 
-Current D81 `dbc4ecf968ab`, unchanged resident2d87e75e/48assets. geoWrite-style
+The current cache-redesign runtime is `e5e83de`, with 54 assets, resident
+`91de02aa943b` and D81 `c6706a5aaf8c`. Its diverse-document full GEOS repaint
+takes 10,283,505 PAL cycles in Full and 9,762,327 in Markdown. All eleven native
+display captures match the reviewed images. Full still exceeds the older
+9,511,774-cycle path by 8.1%; performance qualification remains open.
+
+A separate native control loads a 4,102-byte document through File/Open: a long
+bold span followed by a short paragraph. These public commands include actual
+navigation and repaint, after the semantic baseline has been built:
+
+| Current PAL command | Cycles | Overlay loads |
+| --- | ---: | ---: |
+| Markdown bottom | 306,428,091 | 577 |
+| Plain bottom | 14,247,606 | 176 |
+| Markdown top | 28,352,606 | 243 |
+
+The actual dispatcher trace records 13,598 C26 requests and 223 C24 requests
+during styled bottom, versus no semantic or inline workers in Plain. This
+demonstrates that navigation still repeats analysis despite retained paint
+data. Cache hits and parser-feed counts cannot replace end-to-end timing.
+The measurements use the documented public-input PC/SP seam and include
+IRQ/VIC/REU activity; they do not measure physical keyboard latency. All three
+images, source/history/clipboard/settings, retained typed-cache bytes and the
+full REU outside checked renderer storage pass verification.
+
+Evidence: `agentsworking/cache-navigation-native-control-checkpoint.json` and
+`agentsworking/evidence/M8/20261026T043118769833Z-cache-navigation-native`.
+The native run completed; an initial host-evaluator capture-name assumption was
+fixed and the retained captures passed offline verification. Both logs remain
+in the archive. Private navigation and lexical-cache experiments are not
+included in these production measurements.
+
+## Earlier 48-asset checkpoint
+
+D81 `dbc4ecf968ab`, unchanged resident2d87e75e/48assets. geoWrite-style
 complete logical-line convergence and source pixel batching are integrated.
 The goal remains active; these are incomplete performance improvements.
 
