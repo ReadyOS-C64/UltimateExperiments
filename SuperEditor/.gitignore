@@ -28,3 +28,6 @@
 /src/**/producer-short-branches.json
 /src/**/read-branch-island.json
 /src/**/width-source.json
+
+# Local post-promotion comparison receipts; qualified assembler source is kept.
+/src/render/geos/cache-outgoing-candidate/*.s.patch
