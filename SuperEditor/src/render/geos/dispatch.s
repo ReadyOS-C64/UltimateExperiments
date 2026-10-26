@@ -7,6 +7,7 @@
 .include "render/geos/editor.inc"
 .include "render/geos/edit-certificate.inc"
 .include "render/grid/api.inc"
+.include "cache/api.inc"
 .import se_mode,se_f_owner,se_fs_state,se_fs_end
 .import se_ef_prepare
 .import se_gc_valid
@@ -94,7 +95,7 @@ se_geos_service:
     pla
     bcc :+
     txa
-    bcs failed
+    jmp failed
 :
     cmp #GP_LAYOUT_ID
     beq resume
@@ -104,6 +105,24 @@ se_geos_service:
     cmp #GP_INLINE_ID+1
     bcc resume
 :
+    ; C34 builds a baseline and restarts C21; C35 resumes its query caller.
+    ; Both remain loaded across bounded slices, just like semantic workers.
+    cmp #34
+    bcc ordinary_worker
+    cmp #36
+    bcs ordinary_worker
+    cpx #1
+    bne cache_complete
+    stx OP ;new jobs enter with BEGIN0, then retain their STEP1 operation
+    beq done ;CPX equality survives STX
+cache_complete:
+    ;A2 MISS/A3 STREAM also return to the coordinator for fallback.
+    and #1
+    bne :+
+    sta se_f_owner ;C34 completion restarts C21 through its fresh claim
+:
+    jmp set_page
+ordinary_worker:
     cmp #GP_NAV_ID
     bne :+
     txa
@@ -163,6 +182,9 @@ done:
     rts
 failed:
     pha
+    lda se_bc_flags
+    ora #BC_REBUILD_TRIED
+    sta se_bc_flags
     jsr se_geos_cancel
     pla
     jsr se_editor_error
@@ -173,6 +195,21 @@ se_geos_cancel:
     lda se_f_owner
     cmp #4
     bne done
+    lda se_bc_flags
+    and #BC_ACTIVE
+    beq legacy_cancel
+    lda se_bc_flags
+    and #($FF-BC_ACTIVE)
+    ora #BC_REBUILD_TRIED
+    sta se_bc_flags
+    ldx #85
+cache_restore:
+    lda BC_FRAME+BCF_READER,x
+    sta se_fs_state,x
+    dex
+    bpl cache_restore
+    bmi source_end ;X=$FF; shared resident lease release, no overlay dependency
+legacy_cancel:
     lda SOURCE_CONTEXT
     beq clear
     ldx #85
@@ -181,6 +218,7 @@ restore:
     sta se_fs_state,x
     dex
     bpl restore
+source_end:
     jsr se_fs_end
 clear:
     lda #0

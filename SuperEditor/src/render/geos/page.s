@@ -2,6 +2,7 @@
 .macpack longbranch
 .include "editor-api.inc"
 .include "render/presentation.inc"
+.include "cache/api.inc"
 .include "render/geos/plain-context.inc"
 .global se_render_caps,se_ef_visible
 .include "render/geos/checkpoint/codec.inc"
@@ -88,6 +89,8 @@ entry:
     jeq cached_row
     cmp #13
     jeq gsc_seed_done
+    cmp #14
+    jeq cached_classified
     cmp #6
     jeq classified
     cmp #7
@@ -102,15 +105,29 @@ begin:
     jne busy
     lda #4
     sta se_f_owner
-    lda GEC_VALID
-    sta GSC_ALLOW_EDIT
     lda #0
     sta se_i_ready
     sta se_i_count
     sta se_n_cache_count
+    ; A new incarnation gets one optional initial baseline. Repaints and edits
+    ; never repeatedly pay a whole-document rebuild after refusal/cancellation.
+    lda se_render_caps
+    beq :+
+    lda se_bc_flags
+    and #(BC_ARMED|BC_LOST|BC_REBUILD_TRIED)
+    cmp #BC_LOST
+    bne :+
+    lda #7
+    ldx #9
+    jmp request
+:
+    lda GEC_VALID
+    sta GSC_ALLOW_EDIT
+    lda #0
     sta GS_ACTIVE
     sta GFQ_ACTIVE
     sta GS_CONTEXT_VALID
+    sta GSEM_FRAME+GSEM_ACTIVE
     sta GSEM_FRAME+GSEM_CP_VALID
     sta $8B40 ;fresh caller-owned painter state may contain native power-on RAM
     sta $8B41
@@ -287,6 +304,20 @@ next_line:
     jmp prepare_line
 @classify:
     COPY24 ANCHOR,GSEM_FRAME+GSEM_QUERY
+    lda se_bc_flags
+    and #(BC_ARMED|BC_LOST|BC_MUTATING|BC_ACTIVE)
+    cmp #BC_ARMED
+    bne :+
+    lda se_bc_count
+    bne :+
+    lda #0
+    sta GSEM_FRAME+GSEM_CP_VALID
+    lda #14
+    sta PS
+    lda #35
+    ldx #0
+    jmp request
+:
     lda GSEM_FRAME+GSEM_CP_VALID
     bne gsc_classify_direct
     jsr gsc_cap
@@ -307,6 +338,10 @@ gsc_seed_done:
     lda #GSEM_ID
     ldx #3
     jmp request
+cached_classified:
+    lda GSEM_FRAME+GSEM_ERROR
+    bne gsc_classify_direct
+    jmp classification_ready ;query has no fabricated C24 parser checkpoint
 gsc_classify_direct:
     lda #6
     sta PS
@@ -321,6 +356,7 @@ classified:
     jmp request
 @ready:
     jsr gsc_publish
+classification_ready:
     lda #0
     sta FOLD_PENDING
     jsr se_ef_visible

@@ -13,6 +13,7 @@
 .include "diagnostics/api.inc"
 .include "editor_file/api.inc"
 .include "aux/api.inc"
+.include "cache/api.inc"
 .import se_editor_file_call,se_editor_file_pump,se_style_input
 .import se_ef_dispatch,se_ef_motion_tick,se_ef_motion_ack
 .import se_overlay_call,se_overlay_frame,se_editor_error,se_editor_render_call
@@ -507,7 +508,9 @@ command_error:
     jmp se_editor_error
 se_editor_service:
     lda se_e_job
-    jeq @done
+    bne :+
+    rts
+:
     cmp #1
     jeq @load
     cmp #2
@@ -519,6 +522,10 @@ se_editor_service:
     ldx se_input_tail
     cpx se_input_head
     jeq @nav_step
+    ; Yield the optional derived-data job without consuming this queued key.
+    lda se_bc_flags
+    and #BC_ACTIVE
+    bne @cancel_geos
     lda se_input_chars,x
     cmp #3
     jne @nav_step
@@ -541,7 +548,6 @@ se_editor_service:
     sta se_e_draw_busy
     rts
 :
-    lda se_e_job
     cmp #10
     bne :+
     lda #2
@@ -549,7 +555,6 @@ se_editor_service:
     jcs se_editor_error
     jmp @cancel_done
 :
-    lda se_e_job
     cmp #9
     bne :+
     lda #F_CANCEL
@@ -557,13 +562,11 @@ se_editor_service:
     jcs command_error
     rts ;owned file cleanup continues as job9
 :
-    lda se_e_job
     cmp #8
     bne :+
     jsr se_diag_cancel
     jmp @cancel_done
 :
-    lda se_e_job
     cmp #6
     bne :+
     jsr se_block_cancel
@@ -593,7 +596,6 @@ se_editor_service:
 @geos_step:
     jmp se_geos_service
 :
-    lda se_e_job
     cmp #10
     bne :+
     lda #1
@@ -601,10 +603,8 @@ se_editor_service:
     jcs se_editor_error
     jmp fold_result
 :
-    lda se_e_job
     cmp #9
     jeq @file_step
-    lda se_e_job
     cmp #8
     bne :+
     lda #D_STEP
@@ -619,15 +619,12 @@ se_editor_service:
     sta se_e_menu
     jmp redraw
 :
-    lda se_e_job
     cmp #7
     bne :+
     jmp se_layout_service
 :
-    lda se_e_job
     cmp #6
     jeq @block_step
-    lda se_e_job
     cmp #5
     jeq @search_step
     lda se_v_nav_busy

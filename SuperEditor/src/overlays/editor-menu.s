@@ -20,6 +20,8 @@ E_SETTINGS=103
     OVL_BINDING
 entry:
     lda se_overlay_frame
+    cmp #9 ;internal optional cache admission; no new user-facing menu command
+    jeq cache_admission
     cmp #U_DRAW
     jeq se_ui_draw
     lda #0
@@ -91,6 +93,20 @@ entry:
 @item:
     sty se_e_item
     jmp choose
+cache_admission:
+    jsr se_bc_admit
+    cmp #BC_MISS
+    bne :+
+    ; Optional storage failure resumes the ordinary C21/parser route.
+    lda #0
+    sta se_f_owner
+    sta $9136
+    lda #21
+    sta $9135
+    lda #1
+:
+    clc
+    rts
 menu:
     lda se_e_ui
     cmp #1
@@ -571,3 +587,5 @@ se_ui_draw:
 preview_mutations:
  .byte E_INSERT,E_BACK,E_DELETE,E_UNDO,E_REDO,E_CUT,E_PASTE,E_CLEARUNDO
 preview_mutations_end:
+
+.include "cache/editor/admit.inc"

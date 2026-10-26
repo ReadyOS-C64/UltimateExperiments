@@ -19,7 +19,7 @@ def sha(raw):
 def stage_proof(out, base):
     frozen = json.loads((base / 'freeze.json').read_text())
     report = json.loads((base / 'build/editor-report.json').read_text())
-    expected_tail = {46:['code','clex'],47:['code','clex','type'],48:['code','clex','type','grid'],49:['code','clex','type','grid','hotcold']}
+    expected_tail = {46:['code','clex'],47:['code','clex','type'],48:['code','clex','type','grid'],49:['code','clex','type','grid','hotcold'],52:['code','clex','type','grid','hotcold','fold','sema','inln']}
     assert len(frozen['names']) in expected_tail
     assert frozen['names'][-len(expected_tail[len(frozen['names'])]):] == expected_tail[len(frozen['names'])]
     assert sha((base / 'build/editor.prg').read_bytes()) == frozen['prg_sha256'] == report['sha256']

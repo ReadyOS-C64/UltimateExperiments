@@ -13,7 +13,16 @@
 .import se_si_init,se_si_feed,se_si_finish,se_si_at_body
 .import se_si_pos,se_si_ready,se_si_kind,se_si_style,se_si_width,se_si_open,se_si_close
 .import se_crc_init,se_crc_byte,se_crc_value
-.export se_bsc_begin,se_bsc_step,se_bsc_ack,se_bsc_cancel
+.export se_bsc_begin,se_bsc_step,se_bsc_ack
+.ifdef BSC_AUTO_OWNS_CANCEL
+.ifndef BSC_SELECTOR_OWNS_OWNER
+.error "automatic pump must own the selector owner guard"
+.endif
+.export se_bsc_owned_release
+se_bsc_owned_release=release
+.else
+.export se_bsc_cancel
+.endif
 .macro CP source,target,count
  ldx #count-1
 :
@@ -158,6 +167,7 @@ pending:
 miss:lda #2
  clc
  rts
+.ifndef BSC_AUTO_OWNS_CANCEL
 se_bsc_cancel:
  BSC_OWNER
  lda BSC_F+BCF_ABI
@@ -170,10 +180,13 @@ se_bsc_cancel:
  sta BSC_F+BCF_ERROR
  clc
  rts
+.endif
 release:
+.ifndef BSC_AUTO_OWNS_CANCEL
  lda BSC_F+BCF_FLAGS
  and #BSC_READER_LIVE
  beq @clear
+.endif
  CP BSC_READER,se_fs_state,86
  jsr se_fs_end ;resident, epoch/token safe even if R14 is absent
  CP se_fs_state,BSC_READER,86
@@ -182,6 +195,9 @@ release:
  sta BSC_F+BCF_FLAGS
  sta BSC_F+BCF_READY
  sta BSC_F+BCF_STATE
+.ifdef BSC_AUTO_OWNS_CANCEL
+ clc
+.endif
  rts
 failed:
  pha
@@ -588,8 +604,12 @@ next_line:
  sta BSC_F+BCF_STATE
  jmp pending
 done:
+.ifdef BSC_AUTO_OWNS_CANCEL
+ jmp release
+.else
  jsr release
  clc
  rts
+.endif
 authority_offsets:
  .byte 0,1,2,3,4,9,10,11,12,5,6,7,8

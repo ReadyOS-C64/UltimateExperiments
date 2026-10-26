@@ -35,7 +35,11 @@ se_bc_arena_open:
  dey
  bpl @present
  cmp #0
+.ifdef BCA_READONLY_OPEN
+ beq @miss
+.else
  beq @create
+.endif
  ldy #4
 @capture:lda se_bc_arena,y
  sta BCA_BOUND,y
@@ -48,6 +52,7 @@ se_bc_arena_open:
  lda #2
  sta BCA_PHASE
  jmp bca_pending
+.ifndef BCA_READONLY_OPEN
 @create:
  ; Incarnation wrap refuses before allocation, never aliases an ancient root.
  ldx #0
@@ -80,10 +85,16 @@ se_bc_arena_open:
  jsr se_object_resize
  jcs @return                 ; candidate retained for explicit CANCEL cleanup
  jmp bca_pending
+.else
+@miss:lda #2
+ clc
+ rts
+.endif
 @return:rts
 ; Phases1 init one128B chunk, 2/3 inspect roots, 4refetch selected,
 ; 5write uncommitted empty root, 6VALID-last byte then CPU token publication.
 bca_open_step:
+.ifndef BCA_READONLY_OPEN
  lda BCA_PHASE
  cmp #1
  jeq @initialize
@@ -99,6 +110,11 @@ bca_open_step:
  jeq @write_root
  cmp #6
  jeq @commit
+.else
+ jsr bca_guard
+ jcs @return
+ lda BCA_PHASE
+.endif
  cmp #4
  jeq @selected
  lda BCA_PHASE
@@ -167,6 +183,7 @@ bca_open_step:
  lda #0
  sta BCA_PHASE
  jmp bca_done
+.ifndef BCA_READONLY_OPEN
 @initialize:
  jsr candidate_guard
  jcs @return
@@ -281,7 +298,9 @@ bca_open_step:
  sta BCA_PHASE
  ; Do not set ARMED, clear LOST, or claim zero source snapshot valid.
  jmp bca_done
+.endif
 @return:rts
+.ifndef BCA_READONLY_OPEN
 candidate_guard:
  jsr bca_owner
  bcs @done
@@ -306,6 +325,7 @@ candidate_guard:
  bpl @identity
  jmp bca_validate
 @done:rts
+.endif
 ; Root128 in IO; pure format/capability validity, no semantic certification.
 bca_root_check:
  ldy #3
