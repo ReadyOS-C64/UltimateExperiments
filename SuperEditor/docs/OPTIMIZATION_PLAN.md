@@ -65,6 +65,55 @@ disk or catalog rearrangement is not an optimization priority: subsequent work
 must remove material foreground edit, parse, layout or raster work and qualify the
 whole public operation.
 
+Commit `381c6a5` removes the repeated GEOS suffix-construction pipeline from
+ordinary Full edits. R28 now admits the edit once, C21 compares the complete
+842-byte following row while it is resident, exact convergence terminates the
+suffix, and at most one signed-anchor rebase remains. The C21/R28 pair shrinks
+7,406->7,288 linked bytes. The broad Full insert falls907,617->825,542 CPU
+instructions,383->310 DMA calls and168,061->166,782 DMA bytes, while all36
+code loads remain. This is a material reduction in repeated work, but it does
+not meet the stock1MHz interaction target.
+
+Exact-current PAL timing makes the remaining architectural deficit explicit.
+An ordinary Full prose insertion settles in825,542 CPU instructions and
+3,116,645 PAL cycles. A heading insertion takes8,192,899 cycles, an inline
+strong insertion9,137,454, and a line break7,968,166. A styled bottom-edge
+GEOS DOWN costs2,559,990 instructions,338 code loads,868 DMA calls and
+1,390,679 DMA bytes because21 authenticated visible rows are parsed and laid
+out again. C20, source staging, C24 semantic classification and C25 lexing alone
+repeat1,089,996 instructions on that scroll. These costs, rather than D81 file
+order or fixed REU slot placement, select the next work.
+
+The first selected replacement was an early native8 retained one-row scroll transaction.
+It must rotate the existing22-row FE page, retain the overlapping bitmap and
+attributes with two checked DMAs, and run the existing parser/layout/painter for
+only the exposed row. It may add no image, REU bank, allocation, BSS, zero-page
+byte, resident state or cache family, and the total linked payload of every
+changed consumer may not grow. The promotion target is at most300,000 CPU
+instructions and four code loads for the exact public scroll, with byte-exact
+pixels, attributes, anchors, source and fallback behavior. If the transaction
+cannot preserve the outgoing FE/GCC authority before allocation, it is rejected
+rather than weakened or moved into another overlay.
+
+The exact `381c6a5` retained-ring implementation fails that size gate before a
+runtime claim is possible. The strict authority bridge and ring infrastructure
+alone are28 linked bytes larger, overflowing C23 by19 bytes and C22 by13. An
+intentionally incomplete mechanical commit reaches+315 bytes, with C21 at4338
+bytes,242 beyond its slot, while still omitting mandatory prefix authority,
+caret/semantic refusal, rollback and cancellation. The representation is
+therefore rejected. The2.56M-instruction scroll remains a measured deficit, but
+the next candidate must replace a larger existing C22/R21 preparation/raster
+route instead of adding ring machinery beside it. Evidence:
+`build/retained-ring-scroll-probe-381c6a5/REPORT.md`.
+
+The current wide-mode test failure is separately classified. The final settled
+60-column renderer is byte-exact; the old harness sampled the intentional
+`ST_TX_WAIT` boundary before the real idle loop completed C14/C33. The live
+presentation issue is real: the VIC is switched to an empty bitmap for about
+1.65M instructions while that transaction finishes. Its fix is to retain the
+old publication or defer the display switch until the coherent frame is ready,
+without restoring a duplicate provisional full repaint.
+
 ## Product and machine constraints
 
 Design for a stock 1 MHz C64 first. Keep PETSCII/SuperMark, all 40/60/80-column
