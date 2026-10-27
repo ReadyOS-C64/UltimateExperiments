@@ -1147,10 +1147,11 @@ convergence_compare:
     jne @not_exact
     dex
     bpl @event_start
-    lda #0
-    sta screen_ptr
-    sta GEX_OFFSET
-    sta GEX_OFFSET+1
+    ; The completed descending event-start loop leaves X=$FF.
+    inx
+    stx screen_ptr
+    stx GEX_OFFSET
+    stx GEX_OFFSET+1
     lda #$80
     sta screen_ptr+1
     lda #<GPR_USED
@@ -1233,6 +1234,9 @@ convergence_compare:
 @not_exact:
     lda #0
     sta FAST_PAINT
+    ; Abandon the staged R28 transaction before the full-page continuation.
+    ; GEC/GCC were already consumed when R28 published phase 1.
+    sta GEX_PHASE
 @reload:
     lda LINE
     jsr slot

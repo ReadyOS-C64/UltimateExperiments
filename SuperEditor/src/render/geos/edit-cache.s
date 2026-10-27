@@ -203,17 +203,17 @@ admit:
  dex
  bpl @epochs
  ; Readthe oldpage without bypassing owner/physicalbinding/epoch checks.
- lda #0
- sta GP_IO_OFFSET
- sta GP_IO_OFFSET+1
+ ; The completed descending epoch loop leaves X=$FF.
+ inx
+ stx GP_IO_OFFSET
+ stx GP_IO_OFFSET+1
  lda #<GEX_HEADER
  sta GP_IO_POINTER
  lda #>GEX_HEADER
  sta GP_IO_POINTER+1
  lda #64
  sta GP_IO_LENGTH
- lda #0
- sta GP_IO_LENGTH+1
+ stx GP_IO_LENGTH+1
  jsr se_gp_cache_read
  jcs fault
  lda GEX_HEADER+GPH_VALID
@@ -268,8 +268,9 @@ admit:
  sta GEX_OLD_BOTTOM,x
  dex
  bpl @view
- lda #0
- sta GEX_ROW
+ ; The completed descending view loop also leaves X=$FF.
+ inx
+ stx GEX_ROW
 @scan:
  lda GEX_ROW
  cmp GEX_PAGE_COUNT
@@ -324,13 +325,8 @@ admit:
  bcs @reason_bad
  cmp #193
  bcs @reason_bad
- lda GEX_HEIGHT
- cmp #8
- bne :+
+ ; KIND0 above fixes HEIGHT=9, so the native8 alignment branch is dead.
  lda GEX_TOP
- and #7
- bne @reason_bad
-: lda GEX_TOP
  lsr
  lsr
  lsr
@@ -548,7 +544,6 @@ rebase:
 @prefix:
  jsr shift
  jcs miss
- jsr advance3
  dex
  bne @prefix
  lda GEX_SCAN_ROW
@@ -622,9 +617,9 @@ printable:
  cmp #$C1
  bcc @bad
  cmp #$DB
- bcs @bad
 @yes:
- clc
+ ; The high range returns CMP's carry directly; lower successful branches
+ ; arrive with carry clear.
  rts
 @bad:
  sec
@@ -741,7 +736,6 @@ delta:
  adc #0
  sta GEX_TEMP+2
  bcs @bad
- clc
  rts
 @delete:
  sec
@@ -785,20 +779,16 @@ shift:
  sta (screen_ptr),y
  dey
  bpl @store
- clc
- rts
-@bad:
- sec
- rts
-advance3:
+ ; The only caller starts at $8100 and shifts exactly four 3-byte anchors;
+ ; the low byte cannot cross, so advancing here needs no high-byte path.
  clc
  lda screen_ptr
  adc #3
  sta screen_ptr
- bcc :+
- inc screen_ptr+1
-: rts
-
+ rts
+@bad:
+ sec
+ rts
 ; Complete-event authority for the one-byte alphanumeric lane. The block prefix
 ; is unchanged (edit is in BODY); same-event exact packet convergence proves
 ; KIND/LANG/INLINE. Inline output can differ only if the edit splits/joins a
@@ -813,7 +803,7 @@ syntax_proof:
  lda GSEM_FRAME+GSEM_KIND
  beq @prose
  cmp #2
- bne @early_refuse
+ jne @early_refuse
  jmp @kind_ready
 @prose:
  COPY24 GSEM_FRAME+GSEM_START,se_v_pos
@@ -824,7 +814,18 @@ syntax_proof:
 @kind_ready:
  CMP24 GEC_POSITION,GSEM_FRAME+GSEM_START
  bcc @early_refuse
- beq @early_refuse
+ bne @after_start
+ lda GEX_OP
+ ora GSEM_FRAME+GSEM_INLINE
+ bne @front_bad
+ jsr se_view_advance
+ jsr se_view_peek
+ bcs @front_bad
+ cmp #'#'
+ jeq @safe
+@front_bad:
+ jmp @refuse
+@after_start:
  CMP24 GEC_POSITION,GSEM_FRAME+GSEM_BODY
  bcc @early_refuse
  CMP24 GEC_POSITION,GSEM_FRAME+GSEM_END
