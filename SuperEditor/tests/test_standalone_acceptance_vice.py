@@ -13,6 +13,7 @@ from test_geos_navigation_vice import object_bytes
 from d81_image import D81Image
 from png_pixels import read_png
 from overlay_catalog_policy import catalog_identity
+from cache_job_build import editor_pair_index
 import vice_plan
 ROOT=folds.ROOT;live=folds.live
 DEFAULT=ROOT/'build/geos-semantic-editor/20261025T071324227584Z/fixture'
@@ -88,7 +89,7 @@ def scenario(e,phase):
 def evaluate(e,phase):
  out=e/phase;s=json.loads((e/'editor-report.json').read_text())['symbols'];identity=json.loads((e/'freeze.json').read_text());cases=json.loads((out/'cases.json').read_text());images=live.grid.reu_images(out/'run')
  fonts={n:(e/n).read_bytes()for n in live.geos.GEOS_FONTS+('native8.bin',)};catalog=folds.previous.pack_catalog((e/'font-pack.bin').read_bytes(),fonts['native8.bin'])
- palette={};groups={};states={};intervals=0;observed=[];actual_catalog=None;derived={}
+ palette={};groups={};states={};intervals=0;observed=[];actual_catalog=None;derived={};derived_objects={}
  narrow_witness=False;preview_spans=[]
  with zipfile.ZipFile(e/'product-sources.zip')as z:
   if 'grid' in identity['catalog']:
@@ -103,14 +104,41 @@ def evaluate(e,phase):
    abi=z.read('src/render/geos/preview-glyph-cache.inc')
    assert b'PGC_BASE=$EB69' in abi and b'PGC_END=$FBA9' in abi
    preview_spans.append((0xeb69,0xfba9))
- # Authenticate only provider-owned derived banks; retain source/history/
- # clipboard/object data and unallocated tails in every read-only comparison.
+ def object_spans(ram,token,length,owner):
+  ident=token[0];assert ident<8 and token[3:5]==ram[s['se_object_epoch']:s['se_object_epoch']+2]
+  assert int.from_bytes(token[1:3],'little')==ram[s['object_gen_lo']+ident]+256*ram[s['object_gen_hi']+ident]
+  assert ram[s['object_owner']+ident]==owner and length<=ram[s['object_size_lo']+ident]+256*ram[s['object_size_mid']+ident]+65536*ram[s['object_size_hi']+ident]
+  spans=[]
+  for at in range(0,length,65536):
+   logical=ram[s['object_extents']+ident*16+(at>>16)];physical=ram[s['se_reu_map']+logical]
+   assert logical and physical and ram[s['se_reu_logical_owner']+logical]==ram[s['se_reu_physical_owner']+physical]==owner
+   spans.append((physical,0,min(65536,length-at),owner))
+  return spans
+ # Authenticate only provider-owned derived ranges; retain source/history/
+ # clipboard data and every unallocated/object tail in read-only comparisons.
  for c in cases:
   ram=(out/'captures'/(c['id']+'-ram.bin')).read_bytes()
   if c['group']:
    for i in range(256):
     owner=ram[s['se_reu_physical_owner']+i]
-    if owner in (0xfe,0x46):derived.setdefault(c['group'],{}).setdefault(owner,set()).add(i)
+    if owner==0xfe:derived.setdefault(c['group'],{}).setdefault(owner,set()).add(i)
+   reu=images[c['id']]
+   if ram[s['se_ef_valid']]:
+    tree=b''.join(decoded_fold(bytes.fromhex(x)).bytes()for x in c['folds']);token=ram[s['se_ef_token']:s['se_ef_token']+5]
+    spans=object_spans(ram,token,len(tree),0x46);assert b''.join(reu[b*65536+a:b*65536+z]for b,a,z,_ in spans)==tree
+    derived_objects.setdefault(c['group'],set()).update(spans)
+   # BODY-plan owner $53 is separate from the fold tree. Only its live,
+   # CRC-authenticated 34-byte records are derived; the rest of its bank stays
+   # under the whole-REU invariant.
+   plan=ram[s['se_bc_ring']:s['se_bc_ring']+96]
+   if phase=='fold' and plan[0]==0xa5:
+    origin=int.from_bytes(plan[60:63],'little');limit=int.from_bytes(plan[63:66],'little');assert origin<=limit<=origin+4096
+    length=((limit-origin+31)//32)*34;token=ram[s['se_bc_arena']:s['se_bc_arena']+5];spans=object_spans(ram,token,length,0x53)
+    raw=b''.join(reu[b*65536+a:b*65536+z]for b,a,z,_ in spans)
+    for at in range(0,length,34):
+     record=raw[at:at+34];assert binascii.crc_hqx(record[:32],0xffff)==int.from_bytes(record[32:],'little')
+     assert all((v&0x3c)<0x38 and (not(v&0x80)or(v&0xbf)==0x90)for v in record[:32])
+    derived_objects.setdefault(c['group'],set()).update(spans)
  for c in cases:
   ident=c['id'];ram=(out/'captures'/(ident+'-ram.bin')).read_bytes();colors=(out/'captures'/(ident+'-colors.bin')).read_bytes();reu=images[ident];f=Captured(s,ram,colors,e);f.colored=True;data=bytes.fromhex(c['source'])
   assert len(reu)==16*1024*1024 and f.get('se_reu_banks',2)==256
@@ -133,10 +161,11 @@ def evaluate(e,phase):
   for i,handle in enumerate(f.read(0xcbc1,2)):
    bank=ram[s['se_reu_map']+handle];assert handle and bank and ram[s['se_reu_logical_owner']+handle]==ram[s['se_reu_physical_owner']+bank]==0xfd
    part=pack[i*65536:(i+1)*65536];assert reu[bank*65536:bank*65536+len(part)]==part
-  for slot,name in enumerate(identity['catalog']):
+  for name in identity['catalog']:
+   image=(e/(name+'.seo')).read_bytes();slot=editor_pair_index(image[5],image[6])
    handle=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[slot>>4],1);bank=ram[s['se_reu_map']+handle]
    assert handle and bank and ram[s['se_reu_logical_owner']+handle]==ram[s['se_reu_physical_owner']+bank]==2
-   payload=(e/(name+'.seo')).read_bytes()[36:];at=bank*65536+(slot&15)*4096;assert reu[at:at+len(payload)]==payload
+   payload=image[36:];at=bank*65536+(slot&15)*4096;assert reu[at:at+len(payload)]==payload
   if c['clipboard'] is not None:assert object_bytes(f,reu,f.read(s['se_clip_token'],5),f.get('se_clip_length'))==bytes.fromhex(c['clipboard'])
   if c['journal']:
    raw=object_bytes(f,reu,f.read(s['se_h_token'],5),f.get('se_h_end',2));assert len(raw)==75 and raw[:5]==b'SEH1\1'
@@ -154,16 +183,24 @@ def evaluate(e,phase):
    for owner,banks in derived.get(c['group'],{}).items():
     for bank in banks:
      assert ram[s['se_reu_physical_owner']+bank] in (0,owner),(ident,'derivedbank replaced canonical data')
-     if owner==0x46:masked[bank*65536:(bank+1)*65536]=bytes(65536)
-     else:
-      spans=[(0,22*240)] if c['mode'] in (1,2) else [(0,64),(0x200,0xb200),(0xb200,0xd528)]
-      if narrow_witness and c['mode'] in (1,2):spans.append((0x1500,0x1600))
-      if c['mode']==3:spans+=preview_spans
-      for a,b in spans:masked[bank*65536+a:bank*65536+b]=bytes(b-a)
+     spans=[(0,22*240)] if c['mode'] in (1,2) else [(0,64),(0x200,0xb200),(0xb200,0xd528)]
+     if narrow_witness and c['mode'] in (1,2):spans.append((0x1500,0x1600))
+     if c['mode']==3:spans+=preview_spans
+     for a,b in spans:masked[bank*65536+a:bank*65536+b]=bytes(b-a)
+   for bank,a,b,owner in derived_objects.get(c['group'],()):
+    assert ram[s['se_reu_physical_owner']+bank] in (0,owner),(ident,'derived object replaced canonical data')
+    masked[bank*65536+a:bank*65536+b]=bytes(b-a)
    digest=hashlib.sha256(masked).hexdigest()
    if c['group'] in groups:intervals+=1
    assert digest==groups.setdefault(c['group'],digest),(ident,'whole16MiB outside declared derived spans')
-  bits,attrs=capacity.raster(e,c,f,fonts,catalog)
+  # An ordinary colored 60/80-column page consumes the projected semantic
+  # plan.  The fold oracle deliberately uses source-attached styles because
+  # collapsed rows have different canonical geometry.
+  if c['mode'] in (1,2) and not tree:
+   (bits,attrs),_,_,_=live.geos.grid.expected(f,data)
+   matrix,colors,popup=live.geos.grid.logical_ui(f,data)
+   bits,attrs=live.geos.with_chrome(bits,attrs,matrix,colors,fonts['native8.bin'],popup)
+  else:bits,attrs=capacity.raster(e,c,f,fonts,catalog)
   summary_count=0
   if c.get('require_summary'):
    if c['kind']=='preview':
