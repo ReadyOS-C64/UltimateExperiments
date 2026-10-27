@@ -1111,3 +1111,12 @@ The next candidate must stop C20/C24/C26 suffix construction through exact
 parser, carry, anchor and row-packet convergence, then reuse the unchanged
 suffix without adding a cache or per-row overlay reload. Report and rejected
 patch are in `build/r28-row-convergence-probe/`.
+
+The fixed-grid packet-CRC deletion is also rejected. It removes 142 linked
+bytes, 22 DMA calls and about 64,400 instructions from a full publication, but
+the existing header key, owner, map, epoch, width and VALID flag do not prove
+the contents of each active FE row packet. With those authorities intact, a
+single corrupted packet byte is refused by the control and accepted and
+republished by the deletion candidate. Keep the row digest until the producer
+can publish an equivalent integrity witness without a second packet pass.
+Evidence is in `build/fixed-grid-capture-tail/20261027T180000Z/RESULT.md`.
