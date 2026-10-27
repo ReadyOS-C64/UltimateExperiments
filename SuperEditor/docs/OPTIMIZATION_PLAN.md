@@ -475,3 +475,10 @@ separate 9x40 scatter pass and shrinks TYPE by 37 bytes. Complete steady edits
 remove 1,845 instructions and improve native PAL INSERT/BACK by 4.14–5.03%
 across Plain, Markdown, Full and styled text. No state, stack, overlay or steady
 DMA work is added; the full edit/fault and native pixel matrices pass.
+
+Resident input routing now releases style ownership once before dispatch and
+bypasses the public command cleanup wrapper on internal routes. Direct command
+callers keep the wrapper. This removes 25–28 cycles and one call frame from each
+accepted input command and deletes two resident CODE bytes. It is a small common
+path cleanup alongside the material edit/raster cuts; it does not change overlay
+or REU traffic and is not counted as a redraw solution.

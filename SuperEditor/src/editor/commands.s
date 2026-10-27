@@ -45,10 +45,10 @@ se_editor_input:
     bne ui
 mode_key:
     lda #E_MODENEXT
-    jmp se_editor_command
+    jmp command_ready
 help_key:
     lda #E_HELP
-    jmp se_editor_command
+    jmp command_ready
 menu:
     lda #U_MENU
     bne ui
@@ -61,7 +61,7 @@ ui:
     jsr se_overlay_call
     jcs se_editor_error
     lda se_e_command
-    bne se_editor_command
+    bne command_ready
     jmp redraw
 document_key:
     lda se_e_mods
@@ -71,12 +71,12 @@ document_key:
     cmp #$13 ;CTRL-S shares HOME's native byte
     bne :+
     lda #E_SAVE
-    jmp se_editor_command
+    bne command_ready
 :
     cmp #$0F
     bne @unmodified
     lda #E_OPEN
-    jmp se_editor_command
+    bne command_ready
 @unmodified:
     lda se_e_key
     cmp #3
@@ -85,10 +85,10 @@ document_key:
     and #4 ;KERNAL CTRL flag; RUN/STOP shares native byte03
     beq @stop
     lda #E_COPY
-    jmp se_editor_command
+    bne command_ready
 @stop:
     lda #E_UNMARK
-    jmp se_editor_command
+    bne command_ready
 @ordinary:
     lda se_e_key
     ldx #key_end-key_bytes-1
@@ -111,7 +111,7 @@ document_key:
 @insert:
     sta se_hot_byte
     lda #E_INSERT
-    bne se_editor_command
+    bne command_ready
 @command:
     lda se_e_key
     cmp #$94
@@ -121,10 +121,14 @@ document_key:
     sta se_e_key
 :
     lda key_commands,x
+    bne command_ready
 se_editor_command:
     pha
     jsr se_style_input
     pla
+; se_editor_input released style ownership before routing here. Keep the
+; public command entry's release for direct callers, then share its tail.
+command_ready:
     sta se_e_command
     jeq redraw
     cmp #E_INSERT+1
