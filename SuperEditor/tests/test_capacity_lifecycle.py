@@ -6,7 +6,7 @@ allocations released before an operation completes.
 """
 from pathlib import Path
 from datetime import datetime,timezone
-import argparse,ctypes as C,json,subprocess,sys,zipfile,inspect,textwrap
+import argparse,binascii,ctypes as C,hashlib,json,subprocess,sys,zipfile,inspect,textwrap
 import test_editor_soak as soak
 import test_lifecycle_extended as extended
 geos=extended.semantic.geos;ROOT=geos.ROOT
@@ -65,6 +65,21 @@ def run(out,base,physical):
    assert f.read(0xc600,1024)==f.shim
    assert not any(f.get(n,1)for n in ('se_e_job','se_f_owner','se_doc_read_locks','se_fs_owned')),(tag,f.debug())
    checks.append(dict(tag=tag,banks_peak=dll.ca_info(0),objects_peak=dll.ca_info(1),owner_stores=dll.ca_info(2),length=len(f.merged())));print('PASS',checks[-1],flush=True)
+  def history_state():
+   return f.read(f.s['se_h_state_start'],f.s['se_h_state_end']-f.s['se_h_state_start'])
+  def history_journal():
+   return f.object_bytes(f.read(f.s['se_h_token'],5),f.get('se_h_end',2))
+  def clip_identity():
+   return f.read(f.s['se_clip_token'],5)+f.read(f.s['se_clip_length'],3)
+  def clip_payload():
+   token=f.read(f.s['se_clip_token'],5);length=f.get('se_clip_length')
+   return f.object_bytes(token,length) if token[0] and length else b''
+  def name_binding():return f.read(f.s['se_f_current_name'],18)
+  def memory_contract():
+   return dict(source=f.merged(),canonical=f.canonical(),history=history_state(),name=name_binding(),clip=clip_identity(),canary=f.read(0xc600,1024))
+  def full_contract():
+   value=memory_contract();value.update(history_journal=history_journal(),clip_payload=clip_payload());return value
+  def digests(value):return {k:hashlib.sha256(v).hexdigest() for k,v in value.items()}
   f.position(0);f.command(68)
   for _ in range(5):f.command(2)
   f.command(69);f.key(3);assert f.get('se_clip_length')==5
@@ -82,39 +97,92 @@ def run(out,base,physical):
   f.command(96);f.position(5);f.key(geos.native_text('Q')[0]);data=data[:5]+geos.native_text('Q')+data[5:]
   f.start(operation='A');f.enter_name(b'CAPOUT');f.key(13);assert f.fs[b'CAPOUT']==data
   check('SAVE-with-FC-clipboard-fold-history')
-  f.fs[b'REOPEN']=data;f.start(operation='O');f.enter_name(b'REOPEN');f.key(13);assert f.merged()==data;check('staged-OPEN-with-FC')
-  # Consume remaining banks through the actual allocator, not table injection.
+  f.fs[b'REOPEN']=data
+  optional_before=[i for i in range(8) if f.m.read(f.s['object_owner']+i)==0x53]
+  open_before=full_contract();open_memory=memory_contract();open_reu=f.reu()
+  owners_before=f.read(f.s['se_reu_physical_owner'],physical)
+  objects_before=f.read(f.s['object_owner'],8)
+  dll.ca_config(f.s['se_reu_physical_owner'],f.s['object_owner']);dll.ca_baseline(f.m.handle)
+  f.start(operation='O');f.enter_name(b'REOPEN');f.key(13)
+  first_open_peak=dict(banks=dll.ca_info(0),objects=dll.ca_info(1),stores=dll.ca_info(2))
+  optional_after=[i for i in range(8) if f.m.read(f.s['object_owner']+i)==0x53]
+  fc_release=None;retry_peak=None;refusal=None
+  if physical==32:
+   assert not f.get('se_f_owner',1) and not f.get('se_f_error',1)
+   assert f.merged()==data and f.m.read(f.s['se_reu_physical_owner']+bank)==0xfc
+   assert f.reu()[bank*65536:(bank+1)*65536]==snapshot
+   check('staged-OPEN-with-FC')
+  else:
+   assert f.get('se_f_error',1)==0x99 and f.get('se_f_owner',1)==1 and f.get('se_e_ui',1)==3 and not f.get('se_fd_confirm',1)
+   assert memory_contract()==open_memory and f.reu()==open_reu
+   owners_after=f.read(f.s['se_reu_physical_owner'],physical)
+   objects_after=f.read(f.s['object_owner'],8)
+   owner_delta=[dict(bank=b,before=owners_before[b],after=owners_after[b]) for b in range(physical) if owners_before[b]!=owners_after[b]]
+   object_delta=[dict(slot=i,before=objects_before[i],after=objects_after[i]) for i in range(8) if objects_before[i]!=objects_after[i]]
+   if optional_before:
+    assert len(optional_before)==1 and len(owner_delta)==1 and owner_delta[0]['before']==0x53 and owner_delta[0]['after']==0
+    assert len(object_delta)==1 and object_delta[0]['slot']==optional_before[0] and object_delta[0]['before']==0x53 and object_delta[0]['after']==0
+   else:
+    assert not owner_delta and not object_delta
+   refusal=dict(error=f.get('se_f_error',1),owner=f.get('se_f_owner',1),ui=f.get('se_e_ui',1),confirm=f.get('se_fd_confirm',1),owner_delta=owner_delta,object_delta=object_delta,owners_before=owners_before.hex(),owners_after=owners_after.hex(),objects_before=objects_before.hex(),objects_after=objects_after.hex(),reu_sha256=hashlib.sha256(open_reu).hexdigest())
+   f.key(3);check('staged-OPEN-FC-pressure-refusal-cancelled')
+   assert full_contract()==open_before and f.reu()==open_reu
+
+   # Authenticate the retained lifecycle capability before checked release.
+   assert f.m.read(f.s['se_reu_map']+handle)==bank
+   assert f.m.read(f.s['se_reu_logical_owner']+handle)==0xfc
+   assert f.m.read(f.s['se_reu_physical_owner']+bank)==0xfc
+   header=snapshot[0xbc20:0xbc60];payload=snapshot[:0xbc18]
+   assert header[:8]==b'LCA1'+bytes((1,0xa5,3,0xfc)) and header[8:24]==digest
+   assert binascii.crc_hqx(payload,0xffff)==int.from_bytes(header[51:53],'little')
+   assert binascii.crc_hqx(header[:62],0xffff)==int.from_bytes(header[62:64],'little')
+   release_contract=full_contract();release_reu=f.reu()
+   r,n=f.fast_call(f.s['se_reu_free'],x=handle);assert not r.p&1
+   assert not f.m.read(f.s['se_reu_logical_owner']+handle) and not f.m.read(f.s['se_reu_physical_owner']+bank)
+   assert full_contract()==release_contract and f.reu()==release_reu
+   fc_release=dict(logical=handle,physical=bank,payload_crc=int.from_bytes(header[51:53],'little'),header_crc=int.from_bytes(header[62:64],'little'),binding=header[8:24].hex())
+
+   dll.ca_config(f.s['se_reu_physical_owner'],f.s['object_owner']);dll.ca_baseline(f.m.handle)
+   f.start(operation='O');f.enter_name(b'REOPEN');f.key(13)
+   retry_peak=dict(banks=dll.ca_info(0),objects=dll.ca_info(1),stores=dll.ca_info(2))
+   assert not f.get('se_f_owner',1) and not f.get('se_f_error',1) and f.merged()==data
+   check('staged-OPEN-after-checked-FC-release')
+  assert f.get('se_f_current_len',1)==6 and f.read(f.s['se_f_current_name'],6)==b'REOPEN'
+  assert clip_identity()==open_before['clip'] and clip_payload()==open_before['clip_payload'] and f.read(0xc600,1024)==open_before['canary']
+  opened=full_contract()
+  # Consume remaining banks through the real provider. This preserves the
+  # original COPY replacement refusal and observes every owner-table STA.
   hogs=[]
   while True:
    r,n=f.fast_call(f.s['se_reu_alloc'],a=0xa5)
    if r.p&1:break
    hogs.append(r.a)
   assert hogs and dll.ca_info(0)==physical-1
-  before=f.canonical();source=f.merged();prior=f.reu();clip=f.read(f.s['se_clip_token'],5)
+  exhausted_peak=dict(banks=dll.ca_info(0),objects=dll.ca_info(1),stores=dll.ca_info(2))
+  source=f.merged();prior=f.reu();clip=f.read(f.s['se_clip_token'],5)
   f.position(0);f.command(68);f.position(min(20,len(data)))
-  # COPY must fail cleanly when it needs a replacement clipboard bank.
   canonical=f.canonical()
   f.command(69,error=1)
-  error=f.get('se_e_error',1);assert error and f.merged()==source and f.read(f.s['se_clip_token'],5)==clip,(error,'COPY pressure')
+  copy_error=f.get('se_e_error',1);assert copy_error and f.merged()==source and f.read(f.s['se_clip_token'],5)==clip
   assert f.reu()==prior and f.canonical()==canonical and f.read(0xc600,1024)==f.shim
   f.key(3);f.key(0x8b);f.key(0x8b)
-  # Leave one bank free: staged OPEN reserves one object, then must roll back
-  # the next failed reservation without disturbing any previously owned bank.
-  h=hogs.pop();r,n=f.fast_call(f.s['se_reu_free'],x=h);assert not r.p&1
-  f.fs[b'NEW']=data+b'New bytes'
-  binding=f.read(f.s['se_f_current_name'],18)
-  f.start(operation='O');f.enter_name(b'NEW');stable=f.canonical();source=f.merged();owned=f.read(f.s['se_reu_physical_owner'],256);prior=f.reu()
-  f.key(13);assert f.get('se_f_error',1)==0x99 and f.get('se_f_owner',1)==1 and f.get('se_e_ui',1)==3,('OPEN-pressure',f.get('se_f_error',1),f.get('se_f_owner',1),f.get('se_e_ui',1),f.get('se_fd_confirm',1),f.read(f.s['se_reu_physical_owner'],physical).hex())
-  assert f.canonical()==stable and f.merged()==source and f.read(f.s['se_clip_token'],5)==clip and f.read(f.s['se_f_current_name'],18)==binding
-  now=f.reu()
-  for b,owner in enumerate(owned):
-   if 2<=owner<255:assert now[b*65536:(b+1)*65536]==prior[b*65536:(b+1)*65536],('OPEN rollback owned bank',b,owner)
-  f.key(3);check('staged-OPEN-reservation-failure-rollback')
+
+  # Release only A5 handles. File/Open never has authority over these foreign
+  # allocations.
   for h in reversed(hogs):
    r,n=f.fast_call(f.s['se_reu_free'],x=h);assert not r.p&1
-  assert f.reu()[bank*65536:(bank+1)*65536]==snapshot
-  f.key(3);f.position(5);f.key(geos.native_text('R')[0]);assert len(f.merged())==len(data)+1;check('bank-pressure-release-continued-edit')
-  result=dict(status='passed',identity=identity,physical_banks=physical,document_quota=65536,FC_retained=True,capture_steps=steps,checks=checks,peak_banks=dll.ca_info(0),peak_objects=dll.ca_info(1),owner_stores=dll.ca_info(2),allocation_failure=error,scope='Actual immutable editor commands/typed provider/C29 with modeled KERNAL files. Allocation peaks sampled after every absolute/indexed owner-table STA, including transient allocations; not native IEC or complete workload maxima.')
+  assert f.merged()==data and f.get('se_f_current_len',1)==6 and f.read(f.s['se_f_current_name'],6)==b'REOPEN'
+  assert clip_identity()==opened['clip'] and clip_payload()==opened['clip_payload'] and f.read(0xc600,1024)==opened['canary']
+  f.position(5);f.key(geos.native_text('R')[0]);assert f.merged()==data[:5]+geos.native_text('R')+data[5:]
+  edit_pending=f.get('se_hot_pending',1);edited_current=f.get('se_h_current',4)
+  f.command(16);assert f.merged()==data and f.get('se_h_current',4)==f.get('se_h_saved',4) and not f.get('se_h_dirty',1)
+  assert f.get('se_h_cursor',2)<f.get('se_h_end',2)
+  assert f.get('se_h_current',4)==f.get('se_h_saved',4)==1 and f.get('se_h_counter',4)==2 and not f.get('se_h_dirty',1)
+  assert len(history_journal())==f.get('se_h_end',2) and f.get('se_h_cursor',2)<f.get('se_h_end',2)
+  assert clip_identity()==opened['clip'] and clip_payload()==opened['clip_payload'] and f.read(0xc600,1024)==opened['canary'] and name_binding()==opened['name']
+  check('pressure-release-open-edit-undo')
+  proof=dict(optional53_before=optional_before,optional53_after_first_open=optional_after,refusal=refusal,exhausted_peak=exhausted_peak,first_open_peak=first_open_peak,retry_peak=retry_peak,fc_release=fc_release,before_open=digests(open_before),opened=digests(opened),edit=dict(pending=edit_pending,current=edited_current,source_bytes=len(data)+1),after_undo=dict(source_sha256=hashlib.sha256(f.merged()).hexdigest(),history_state_sha256=hashlib.sha256(history_state()).hexdigest(),history_journal_sha256=hashlib.sha256(history_journal()).hexdigest(),history_current=f.get('se_h_current',4),history_saved=f.get('se_h_saved',4),history_counter=f.get('se_h_counter',4),history_end=f.get('se_h_end',2),history_cursor=f.get('se_h_cursor',2),history_dirty=f.get('se_h_dirty',1),name=name_binding().hex(),clip=clip_identity().hex(),clip_payload_sha256=hashlib.sha256(clip_payload()).hexdigest(),canary_sha256=hashlib.sha256(f.read(0xc600,1024)).hexdigest()))
+  result=dict(status='passed',identity=identity,physical_banks=physical,document_quota=65536,FC_retained=(physical==32),FC_explicitly_released=(physical==16),capture_steps=steps,checks=checks,peak_banks=max(exhausted_peak['banks'],first_open_peak['banks'],retry_peak['banks'] if retry_peak else 0),peak_objects=max(exhausted_peak['objects'],first_open_peak['objects'],retry_peak['objects'] if retry_peak else 0),owner_stores=exhausted_peak['stores']+first_open_peak['stores']+(retry_peak['stores'] if retry_peak else 0),allocation_failure=0x99 if physical==16 else 0,lifecycle_proof=proof,scope='Exact packaged current51 CPU commands/typed provider/C29 with modeled KERNAL files; no native IEC/IRQ claim.')
   (out/'result.json').write_text(json.dumps(result,indent=2)+'\n')
  finally:f.close()
 if __name__=='__main__':
