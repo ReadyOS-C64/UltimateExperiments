@@ -14,6 +14,7 @@
 .import se_v_top,se_v_bottom,se_v_rows,se_v_seen,se_v_caret_row,se_v_caret_col,se_v_nav_busy
 .import se_l_valid,se_l_need_wrap,se_l_original,se_l_generation,se_l_revision,se_l_top,se_l_mode,se_l_manual,se_l_pan,se_n_view_columns
 .import se_st_descriptor,se_st_request,se_st_valid
+.import se_i_ready
 .import se_gc_handle,se_gc_width,se_gc_epoch,se_gc_valid,se_gc_previous_ui,se_gc_current_ui
 .import se_ef_valid,se_ef_generation,se_ef_token,se_ef_count,se_ef_fold_rows,se_ef_projection_generation,se_ef_paint_ends,se_ef_summary,se_ef_key_match
 .import se_sel_mark,se_sel_anchor

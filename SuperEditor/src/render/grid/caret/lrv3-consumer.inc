@@ -85,6 +85,9 @@ lrv_style_admit:
  cmp #3
  jcs lrv_bad
  tax
+ lda #0
+ sta se_i_ready              ;LRVT aliases INDEX_FIRST: revoke before first write
+ txa
  ora #$80
  sta LRVT+LT_FLAGS
  lda lrv_widths,x
@@ -345,8 +348,10 @@ lrv_plain_update:
  lda se_mode
  cmp #3
  jcs lrv_bad
- sta LRVT+LT_FLAGS
  tax
+ lda #0
+ sta se_i_ready              ;LRVT aliases INDEX_FIRST: revoke before first write
+ stx LRVT+LT_FLAGS
  lda lrv_widths,x
  sta LRVT+LT_WIDTH
  cpx #0
