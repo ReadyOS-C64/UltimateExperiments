@@ -890,3 +890,34 @@ and
 `agentsworking/evidence/M8/20261027T133313781696Z-display-timing-styled-grid-convergence-baseline`.
 The NTSC verifier now selects the native `(32,23)` 320x200 viewport for its
 384x247 capture instead of assuming PAL's `(32,35)` viewport.
+
+### Fuse row-transaction state updates
+
+The direct-row admission path now tests its existing retained-view marker before
+calling `se_view_init`; only callers that already proved and initialized that
+view take the bypass. The suffix-anchor loop also copies authenticated wide
+header rows while it applies the signed 24-bit edit delta. This removes a second
+walk, pointer setup and helper call instead of moving either operation elsewhere.
+
+The change deletes four linked executable bytes and adds no state, call, load,
+DMA, image, bank or catalog entry. Focused insert/delete falls to 7,011/6,825
+instructions at 40 columns, 46,360/44,064 at 60 and 32,754/31,948 at 80. That
+removes 298 instructions at 40 and 732 at 60/80 from the preceding strict-row
+checkpoint. The exact-current D81 is
+`a087050d3b8c1e02d513e4c2ae806dbf7dddbf8dd798954b3b897de540d87df2`;
+the 72-case matrix, corruption and cancellation gates pass at
+`build/styled-grid-carry-matrix/20261027T133521703834Z/result.json`, with the
+byte-exact header and row-relative gates at
+`build/lrv-header-direct/20261027T133509620060Z/result.json` and
+`build/lrv-row-relative/20261027T133518223753Z/result.json`.
+
+Normal-speed PAL settles in 200,984–202,405 cycles at 40 columns,
+371,372–376,571 at 60 and 314,955–317,806 at 80. Normal-speed NTSC settles in
+202,949–204,289, 374,369–379,714 and 317,679–320,531 cycles respectively. This
+is a further 0.41–0.81% complete-operation reduction over the strict 60-column
+checkpoint, with unchanged load/call/DMA counts, one publication and no parser
+or overlay work after publication. Both 12-case cohorts preserve the full exact
+oracle and screenshots at
+`agentsworking/evidence/M8/20261027T133548485400Z-display-timing-styled-grid-convergence-baseline`
+and
+`agentsworking/evidence/M8/20261027T133701134151Z-display-timing-styled-grid-convergence-baseline`.

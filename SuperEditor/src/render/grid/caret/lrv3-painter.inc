@@ -161,20 +161,42 @@ lrv_paint_entry:
 
 ; Pure resident-layout commit. R25 still owns the CRC-covered NC header write.
 lrv_finish_state:
+ ; Shift each later anchor and publish the authenticated wide-header byte in
+ ; one pass. In text40 H is private scratch, so the same straight-line loop
+ ; avoids a mode branch in every byte without changing any public authority.
  clc
  lda LRVT+LT_FIRST
  adc LRVT+LT_ROWS
  sta COL
-@row:
- lda COL
- cmp #22
- bcs @bottom
  asl
  adc COL
  tax
- jsr @rows
- inc COL
- bne @row
+@row:
+ cpx #66
+ bcs @bottom
+ clc
+ lda se_v_rows,x
+ adc LRVT+2
+ sta se_v_rows,x
+ sta H+N_ROWS,x
+ inx
+ lda LRVT+2
+ bmi :+
+ lda #0
+:
+ adc se_v_rows,x
+ sta se_v_rows,x
+ sta H+N_ROWS,x
+ inx
+ lda LRVT+2
+ bmi :+
+ lda #0
+:
+ adc se_v_rows,x
+ sta se_v_rows,x
+ sta H+N_ROWS,x
+ inx
+ jmp @row
 @bottom:
  lda #<se_v_bottom
  sta text_ptr
@@ -183,19 +205,6 @@ lrv_finish_state:
  jsr @add
  lda se_mode
  beq @header_done
- clc
- lda LRVT+LT_FIRST
- adc LRVT+LT_ROWS
- sta COL
- asl
- adc COL
- tax
-@header_rows:
- lda se_v_rows,x
- sta H+N_ROWS,x
- inx
- cpx #66
- bcc @header_rows
  ldx #2
 @header_bottom:
  lda se_v_bottom,x
@@ -229,17 +238,6 @@ lrv_finish_state:
  dex
  bpl @caret
  rts
-@rows:
- lda #<se_v_rows
- sta text_ptr
- lda #>se_v_rows
- sta text_ptr+1
- txa
- clc
- adc text_ptr
- sta text_ptr
- bcc @add
- inc text_ptr+1
 @add:
  ldy #0
  clc

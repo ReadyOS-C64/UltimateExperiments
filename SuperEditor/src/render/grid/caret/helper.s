@@ -198,17 +198,13 @@ admit:
  jne invalid
  jsr owned
  jcs invalid
+ ; Retained direct-row callers already initialized this exact view. Move the
+ ; existing C+63 revision bypass ahead of both operations so it also skips only
+ ; that duplicate initialization without adding code.
+ lda C+63
+ bne @view_ready
  jsr se_view_init
  jcs invalid
- ldx #9
-@layout_source:
- lda se_doc_original,x
- cmp se_l_original,x
- jne invalid
- dex
- bpl @layout_source
- lda C+63
- bne @revision_done
  ldx #3
 @revision:
  lda se_r_revision,x
@@ -216,7 +212,14 @@ admit:
  jne invalid
  dex
  bpl @revision
-@revision_done:
+@view_ready:
+ ldx #9
+@layout_source:
+ lda se_doc_original,x
+ cmp se_l_original,x
+ jne invalid
+ dex
+ bpl @layout_source
  ldx #1
 @generation:
  lda se_doc_generation,x
