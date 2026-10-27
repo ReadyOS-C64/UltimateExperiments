@@ -24,6 +24,14 @@ entry:
 return:
     rts
 draw:
+    lda $D011
+    and #$20
+    beq :+
+    php
+    sei
+    jsr se_display_init
+    plp
+:
     jsr se_view_init
     bcs return
     jsr se_selection_range

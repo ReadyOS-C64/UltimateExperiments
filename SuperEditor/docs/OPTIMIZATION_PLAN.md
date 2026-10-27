@@ -106,13 +106,68 @@ the next candidate must replace a larger existing C22/R21 preparation/raster
 route instead of adding ring machinery beside it. Evidence:
 `build/retained-ring-scroll-probe-381c6a5/REPORT.md`.
 
-The current wide-mode test failure is separately classified. The final settled
-60-column renderer is byte-exact; the old harness sampled the intentional
-`ST_TX_WAIT` boundary before the real idle loop completed C14/C33. The live
-presentation issue is real: the VIC is switched to an empty bitmap for about
-1.65M instructions while that transaction finishes. Its fix is to retain the
-old publication or defer the display switch until the coherent frame is ready,
-without restoring a duplicate provisional full repaint.
+The current-head C22/R21 audit then establishes that the presumed larger route
+has already been replaced: C22 remains resident while the complete logical-row
+R21 job rasterizes and polls. Replacing its remaining CPU packet copy with a
+checked FE-to-row DMA fits without new state and shrinks C22 by3 bytes, but saves
+only0.30-0.43% on complete Plain/Markdown/Full and long Full page builds. It
+passes48 clip/style/selection frames and3,077 observed C22 calls, yet is rejected
+at the material gate. Further work must attack a different measured instruction
+class rather than repeat the already integrated row-residency design. Evidence:
+`build/current-row-resident-prepare-381c6a5/REPORT.md`.
+
+The first owner-local checkpoint deletion is also sealed as a rejection. It
+fits as a50-image product, folds the cold font importer into AUX and removes
+1,068 linked payload bytes. Plain GEOS insert improves234,701->184,177
+instructions and3->1 loads. Full insert, however, regresses825,586->853,937
+instructions despite36->34 loads because the stale post-publication key forces
+one C21 VERIFY plus17 R28 REBASE calls and18 C21 continuations. The added
+31,454 R28 and683 C21 instructions exceed the deleted AUX/R14/resident work by
+28,351. The global worker cannot be removed safely until checkpoint maintenance
+is owned at the actual C21/R28 publication boundary; merely moving it before
+publication loses the key needed by the next Full edit. Evidence:
+`build/runtime-gap-audit-current/R30_C32_OWNING_PROBE_RESULT.md`.
+
+A second attempt moved the refresh into R28 at the apparent C21/R28 commit
+boundary. It deletes the AUX/R14 tail, saves583 linked bytes, and improves the
+measured Plain and Full inserts by52,221 and51,831 instructions with two fewer
+loads. It still fails the authority gate: the common Full fallback later
+publishes through C21/R19 and restores the old revision/length checkpoint
+`0/70` after the page has become`1/71`. R28 ADMIT and COMMIT placements therefore
+cannot own the final key. The candidate is rejected before broad gates or the
+optional font fold. Any successor must begin at the existing final R19
+checkpoint publisher and pass repeated-near-edit plus fallback exact-key tests
+before performance work. Evidence:
+`build/runtime-gap-audit-current/C21_R28_PUBLICATION_BOUNDARY_RESULT.md`.
+
+The managed resident overlay path now maps the sealed `(slot,ID)` pair directly
+to its dense51-entry catalog index instead of linearly scanning all imported
+images on every call. Import still publishes the exact index VALID-last, and
+every execution retains binding, provider owner/epoch, verified-backing CRC,
+active-slot and checked-DMA guards. The resident CODE segment shrinks2 bytes
+with no BSS, ZP, bank or image change. Clean Plain edits save1.84-2.02% of the
+complete operation; Full prose saves3.12-4.02%, and a forced-fresh diverse Full
+page saves8.58%. The claim is capped by the clean lookup-only comparison because
+some Full fixtures also take fewer calls and DMAs. Evidence:
+`build/resident-overlay-call-current-381c6a5/REPORT.md`.
+
+The wide-mode presentation fault is also fixed without another framebuffer or
+hidden RAM. A mode command now publishes only the logical target. Grid60/80
+select bitmap hardware after the successful final painter; a return to40 calls
+the existing ROM-font restore immediately before the first text-screen write.
+The measured40->60 all-zero interval falls from1,872,053 PAL cycles to zero and
+settle time remains neutral at7,232,112->7,231,485 cycles. The gridedit/text40
+pair shrinks one byte and adds no state. This is deliberately described as a
+non-atomic presentation fix: the one shared display image is progressively
+overwritten for roughly0.29M-4.56M cycles depending on the transition. Exact
+final pixels, attributes, color low nibbles, faults, input cancellation, menus,
+GEOS smoke and IRQ/NMI bounds pass. Evidence:
+`build/final-scope-audit-current/publication-deferral/QUALIFICATION.md`.
+On the combined linked product the dense lookup also cuts68,096-114,493 PAL
+cycles from the measured mode-change routes and3,144,321 CPU instructions from
+the aggregate96-frame styled grid suite, without changing its overlay transport
+counts or publication order. Evidence:
+`build/final-scope-audit-current/publication-deferral/COMBINED_DENSE_VALIDATION.md`.
 
 ## Product and machine constraints
 

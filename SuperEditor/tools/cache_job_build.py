@@ -121,10 +121,25 @@ def identity(project, base):
     }
 
 
+def editor_pair_index(slot, identity):
+    """Mirror the resident fixed catalog contract for packaged editor assets."""
+    if slot == 1 and 4 <= identity <= 33:
+        return identity + 17
+    if slot == 0:
+        if identity in (1, 2):
+            return identity - 1
+        if identity == 14:
+            return 2
+        if 16 <= identity <= 33:
+            return identity - 13
+    raise ValueError(f"editor pair outside fixed catalog: slot{slot}/id{identity}")
+
+
 def all_editor_capsules(project, record):
     digest = bytes.fromhex(record["binding"])
     result = {}
     identities = set()
+    indexes = set()
     for name in editor_names(project):
         path = project / "build/overlays" / (name + ".seo")
         data = path.read_bytes()
@@ -154,8 +169,14 @@ def all_editor_capsules(project, record):
         capsule_identity = (data[5], data[6])
         if data[5] not in (0, 1) or data[6] == 0 or capsule_identity in identities:
             raise ValueError("duplicate/invalid editor capsule identity " + name)
+        index = editor_pair_index(*capsule_identity)
+        if index in indexes:
+            raise ValueError("duplicate fixed editor catalog index " + name)
         identities.add(capsule_identity)
+        indexes.add(index)
         result[name] = sha(path)
+    if indexes != set(range(51)):
+        raise ValueError("incomplete fixed editor pair/index contract")
     return result
 
 

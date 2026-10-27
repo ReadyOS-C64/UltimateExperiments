@@ -101,32 +101,19 @@ target:
 :
 publish:
     lda g_width
-    bne bitmap
-    lda se_mode
-    beq settings
-    php
-    sei ;resident warm charset copier temporarily exposes character ROM
-    jsr se_display_init
-    plp
-    jmp settings
-bitmap:
-    ; A still holds the nonzero requested width from publish.
     cmp #3
-    bne :+
+    bne settings
+    ; GEOS retains its existing direct transition. Grid40/60/80 leave the old
+    ; VIC mode active until the first successful target painter completes.
     php
     sei
-    jsr se_display_init ;GEOS/native code needs its explicit restored4800 font
-    plp
-:
-    php
-    sei
+    jsr se_display_init
+    ; se_display_init has already set D016=$08 and disabled sprites. Only
+    ; bitmap select and bitmap memory differ for GEOS.
     lda #$08
     sta $D018
-    sta $D016
     lda #$3B
     sta $D011
-    lda #0
-    sta $D015
     plp
 settings:
     lda #0

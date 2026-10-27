@@ -23,9 +23,11 @@ grid_finalize:
     cmp #3
     beq @popup
     cmp #1
-    jne grid_zero
+    bne @finish
     lda se_e_menu
-    jeq grid_zero
+    bne @popup
+@finish:
+    jmp @done
 @popup:
     lda #1
     sta g_skip
@@ -64,6 +66,11 @@ grid_finalize:
     jsr grid_rect
     jcs grid_return
 @done:
+    lda #$08
+    sta $D018
+    sta $D016
+    lda #$3B
+    sta $D011
     jmp grid_zero
 grid_rect:
     lda #0

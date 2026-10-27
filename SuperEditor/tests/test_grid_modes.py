@@ -294,9 +294,12 @@ class Fixture(editor_fixture.EditorFixture):
         assert self.get('se_v_columns',1)==[0,60,80][target]
         assert not self.get('se_st_valid',1) and not self.get('se_st_request',1)
         assert self.cpu_port()==port
-        if target==0:
-            assert self.read(0x4800,2048)==self.fonts['chargen.bin'][2048:]
-            if old:assert self.dll.gm_rom_count()-copies==2048
+        if target==0 and old:
+            # The logical mode command now leaves the old bitmap frame live.
+            # The actual 40-column painter restores the character ROM image
+            # immediately before its first text-screen write.
+            assert self.m.read(0xD011)&0x20
+            assert self.dll.gm_rom_count()==copies
         assert self.canonical()==canonical and self.reu()==reu and self.catalog()==catalog,(route,'mode mutated source/group/REU/catalog')
 
     def remove(self,identity,slot):
@@ -457,6 +460,7 @@ def run(out,previous,colored=False):
         else:
             verify_screen(f.read(0x4000,1000),f.read(0xD800,1000),Screen(*wanted,anchors,seen),tag=tag)
             assert [f.m.read(a) for a in [0xD011,0xD016,0xD018]]==[0x1B,8,2]
+            assert f.read(0x4800,2048)==f.fonts['chargen.bin'][2048:]
         actual=tuple(int.from_bytes(f.read(f.s['se_v_rows']+i*3,3),'little') for i in range(22))+(f.get('se_v_bottom'),)
         assert actual==anchors,(tag,'23anchors',actual,anchors)
         assert f.get('se_v_seen',1)==int(seen is not None)

@@ -230,15 +230,20 @@ se_overlay_import:
     jne busy
     jsr se_overlay_validate
     jcs @return
+.ifdef EDITOR_MANAGED_CODE
+    lda se_overlay_header+6
+    ldx se_overlay_header+5
+    jsr catalog_index
+    jcs identity
+    lda se_overlay_ids,x
+    jne duplicate
+.else
     ldx #0
 @duplicate:
     lda se_overlay_ids,x
     cmp se_overlay_header+6
     bne @next
     lda image_slot,x
-.ifdef EDITOR_MANAGED_CODE
-    and #1
-.endif
     cmp se_overlay_header+5
     jeq duplicate
 @next:
@@ -252,9 +257,10 @@ se_overlay_import:
     inx
     cpx #OVL_LIMIT
     bcc @free
-    lda #$15 ; catalog full
+    lda #$15
     sec
     rts
+.endif
 @found:
     stx candidate
     jsr crc_stage
@@ -344,21 +350,18 @@ se_overlay_call:
     jne busy
 @admitted:
     jsr asset_valid
-    jcs @return
-    ldx #0
-@find:
+    bcc :+
+    rts
+:
+    lda call_id
+    ldx call_slot
+    jsr catalog_index
+    bcs @unknown
     lda se_overlay_ids,x
     cmp call_id
-    bne @next
-    lda image_slot,x
-    and #1
-    cmp call_slot
     beq @found
-@next:
-    inx
-    cpx #OVL_LIMIT
-    bcc @find
-    lda #$17 ; unknown ID in this slot
+@unknown:
+    lda #$17
     sec
     rts
 @found:
@@ -376,9 +379,13 @@ se_overlay_call:
     jsr request_stage
     lda #1
     jsr se_reu_copy
-    jcs @return
+    bcc :+
+    rts
+:
     jsr crc_stage
-    jcs @return
+    bcc :+
+    rts
+:
     ldx candidate
     lda image_slot,x
     ora #$80
@@ -387,7 +394,9 @@ se_overlay_call:
     jsr request_slot
     lda #1
     jsr se_reu_copy
-    jcs @return
+    bcc :+
+    rts
+:
     ; SuccessfulDMAchangedthe destination; rejectanybadbindingwithnoactiveclaim.
     ldx call_slot
     lda #0
@@ -404,11 +413,12 @@ se_overlay_call:
 .if EDITOR_FIXED_ENTRY
     lda #0
     sta ovl_ptr
-    ldx call_slot
     lda slot_high,x
     sta ovl_ptr+1
     jsr binding_at_pointer
-    jcs @return
+    bcc :+
+    rts
+:
     lda #OVL_BINDING_BYTES
     sta ovl_ptr
     lda candidate
@@ -425,7 +435,9 @@ se_overlay_call:
     adc slot_high,x
     sta ovl_ptr+1
 .endif
+.if !EDITOR_FIXED_ENTRY
     ldx call_slot
+.endif
     lda #1
     sta se_overlay_busy,x
     txa
@@ -573,6 +585,42 @@ jump_overlay:
     jmp (ovl_ptr)
 
 .endif
+.ifdef EDITOR_MANAGED_CODE
+; Fixed editor pair -> dense catalog index. C clear iff presentable pair.
+catalog_index:
+    cpx #1
+    bne @renderer
+    cmp #4
+    bcc @bad
+    adc #16 ;C set by CMP #4 for valid slot-1 IDs
+    tax
+    cpx #OVL_LIMIT
+    rts
+@renderer:
+    cmp #3
+    bcc @low
+    cmp #14
+    beq @fourteen
+    cmp #16
+    bcc @bad
+    sec
+    sbc #13
+    tax
+    cpx #21
+    rts
+@low:
+    tax
+    dex     ;carry is already clear from CMP #3 / BCC
+    rts
+@fourteen:
+    ldx #2
+    clc
+    rts
+@bad:
+    sec
+    rts
+.endif
+
 header_from_catalog:
     ldx candidate
     lda image_size_lo,x
