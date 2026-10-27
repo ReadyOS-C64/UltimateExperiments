@@ -213,7 +213,8 @@ file58=file39+4 ;CTRL: C49 COW linker
 file59=file26+4 ;ROW: R29 Plain CR geometry, shared GEOSROW suffix
 file60=file18+4 ;PARSE: C41 current-schema rebase
 file61=file23+4 ;XFORM: R34 checked COW transport
-; PARSE/XFORM registered above; FINISH/PAINT remain unregistered.
+file62=file27+4 ;PAINT: checked convergence R63, suffix of GEOSPAINT
+; FINISH remains unregistered.
 file48: .byte $48,$4F,$54,$43,$4F,$4C,$44 ;HOTCOLD (raw DOS bytes, not text charmap)
 file38: .byte $47,$45,$4F,$53,$43,$41,$52,$45,$54
 file36: .byte $47,$45,$4F,$53,$46,$4F,$4C,$44

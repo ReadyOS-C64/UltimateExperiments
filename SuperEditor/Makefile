@@ -1283,3 +1283,14 @@ EDITOR_ASSETS += $(REBASE_ASSETS)
 editor build/supereditor.d81: $(REBASE_ASSETS)
 build/overlays/menu40.o: src/cache/edit-rebase-integration/menu.inc src/cache/edit-rebase-integration/api.inc
 build/editor/startup.o: src/editor/catalog.inc
+
+# Checked paint convergence; actual cold catalogue registration.
+CONVERGENCE_OBJ=build/geos-prod/convergence.o build/geos-prod/cache-warm.o build/geos-prod/grid-geometry-authority.o
+build/geos-prod/page.o: src/render/geos/paint-convergence/api.inc
+build/geos-prod/convergence-witness.inc: build/overlays/geospage.bin tools/convergence_witness.py tools/cpu_editor.py
+	$(PYTHON) tools/convergence_witness.py
+build/geos-prod/convergence.o: src/render/geos/paint-convergence/service.s src/render/geos/paint-convergence/transaction.s src/render/geos/paint-convergence/api.inc build/geos-prod/convergence-witness.inc build/geos-prod/editor-api.inc
+	$(CA65) -g -I build/geos-prod -I src -I src/render/geos/paint-convergence -o $@ -l $(@:.o=.lst) $<
+$(eval $(call GEOS_IMAGE,paint,$(CONVERGENCE_OBJ),cfg/overlay-r.cfg,0,63))
+EDITOR_ASSETS += build/overlays/paint.seo
+editor build/supereditor.d81: build/overlays/paint.seo

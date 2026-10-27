@@ -1,5 +1,54 @@
 # Current performance
 
+The [optimization and simplification plan](OPTIMIZATION_PLAN.md) now governs
+remaining work. The63-image paint package described below is an uncommitted
+experiment, not the accepted runtime. Later structural regression tests found
+a CR-deletion phase alias defect (fixed in working source) and a live narrow-
+glyph shadow/outgoing-checkpoint overlap (still unresolved). Its earlier scoped
+timings remain valid measurements of those cases; they do not qualify general
+editing. Committed12bde7a is the verified62-image baseline. No automatic
+physical Ultimate deployments are part of optimization work.
+
+## Checked wrapped-page paint reuse
+
+The registered R63 collector compares authenticated old/new row paint inputs after
+normal layout and semantics have run. Eligible ordinary Full/Markdown edits in
+wrapped GEOS source paint only the changed strip union, including old/new carets.
+It does not remove general layout/parsing. Plain, selection, folds, preview and
+unsupported geometry retain their existing paths. Every resumed collector call
+renews source, provider, font and publication authority; row collection is bounded
+to four records per call.
+
+Fresh paired native PAL results on the ac7 raster cohort, before paged Help was
+combined, were:
+
+| Full source edit | Control cycles | Paint reuse cycles | Change |
+| --- | ---: | ---: | ---: |
+| Prose INSERT |8,911,706|6,008,661|-32.6%|
+| Prose BACK |8,354,393|5,447,900|-34.8%|
+| Styled INSERT |10,390,956|8,004,637|-23.0%|
+| Styled BACK |10,365,537|7,977,681|-23.0%|
+
+The earlier old-raster pair and this fresh current-raster pair both show the
+same23–35% range. All12 paired
+RGB images agree. CR refuses old-page reuse but still prepares the next checked
+publication: newlines are3.2–4.2% slower. Ordinary edits add three overlay loads;
+newlines add four. These costs and several-second general latency remain open,
+not hidden by the favorable ordinary cases. Measurements use real File/Open/IRQ
+setup with the disclosed public-service PC/SP stopwatch seam, not physical chords.
+
+The combined paged-Help+paint package separately passes CPU12 edit cases,
+17 authority/lifetime groups,14 per-key command transitions,29 Help/settings
+frames and the68-byte stack bound. Its actual2MiB native smoke checks all63
+images, fontpack and five source/preview/Help frames. It is not a new paired
+performance run of every combined view.
+
+Reproduce CPU product gates with `tests/test_geos_paint_registered.py --fixture
+FROZEN63 --out NEWOUTPUT`; paired native preparation/execution is in
+`tests/test_geos_paint_convergence_vice.py`. Retained layout and complete-row
+raster prototypes are independent experiments; their CPU percentages are not
+current production speed claims.
+
 Repeated eligible semantic reuse now takes6.48–6.94million PAL cycles for four
 successive ordinary insertions and hot-window flushes after an8KB retained code
 BODY. The committed010fb03 control takes9.84–10.04million:30.9–34.1% fewer cycles,

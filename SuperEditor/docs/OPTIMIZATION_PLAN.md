@@ -1,0 +1,368 @@
+# SuperEditor optimization and simplification plan
+
+Updated 2026-10-27. This is the execution priority for the remaining M8 work.
+It preserves the original product scope and supersedes any proposal to keep
+adding optimization layers to the present renderer. It is a plan, not a claim
+that the budgets below have been achieved.
+
+## Product and machine constraints
+
+Design for a stock 1 MHz C64 first. Keep PETSCII/SuperMark, all 40/60/80-column
+source views, GEOS-font source editing and formatted preview, session appearance
+settings, BASIC/assembler highlighting, folding, keyboard menus, one status
+line, file operations, selection, clipboard and undo/redo. Keep assembly
+micromodules, D81 development, logical REU allocation, the ReadyOS provider and
+suspend/resume boundary, and the untouched $C600–$C9FF reservation. JSON,
+UltimateDOS and actual ReadyOS application integration remain outside scope.
+
+The assessment's proposed smaller Core/Deluxe editions are not adopted: they
+would remove requested features. Remove unnecessary implementation machinery,
+duplicate representations and unrequested extensions instead. No new visible
+features are to be added during this work. A source micromodule need not be a
+separately swapped runtime image.
+
+The physical Ultimate is a user play session. Upload, mount, reset or load only
+after an explicit user request. Development verification stays in isolated VICE
+runs with warp/traps, plus CPU probes where useful. Measure emulated stock-speed
+cycles even when VICE runs faster than real time.
+
+## Inputs and verified diagnosis
+
+Read both complete discussions: **Assess Screen Refresh Optimization**
+(`01a17b30-b9e9-7f03-8ed2-5d53af23c291`) and **Assess Super Edit overlays and bloat**
+(`01a17b32-0554-7fa2-aa7f-10950c018c10`). Their user messages and final assessments
+are retained locally in
+`agentsworking/research/2026-10-27-optimization-thread-inputs.json`.
+Recommendations are inputs, not automatic requirements or established facts.
+
+The committed 12bde7a fixture was independently checked for this plan:
+
+| Item | Baseline |
+| --- | ---: |
+| Registered images |62:24 R-slot,38 C-slot|
+| Linked payload, including embedded data and padding |220,651 bytes|
+| Reserved fixed image slots |253,952 bytes in four REU banks|
+| Images at least3,500 bytes / at least4,000 bytes |46 /30|
+| Last16 images' payload |57,350 bytes|
+| Available R/C execution windows |Two4 KiB slots|
+| General BSS / limit before ReadyOS reserve |1,534 /1,536 bytes|
+
+Payload is not synonymous with executable instructions. The inventory must
+separate instructions, tables/fonts, padding and duplicated routines. Source
+line counts including probes, generated code and test tools are not product
+code size. Host evidence storage is also a separate problem.
+
+Measured problems already justify architectural work:
+
+- Warm local GEOS typing reloads C6→R30→AUX→R14, transferring14,809 code bytes
+  per key. The final checkpoint refresh evicts the next key's workers.
+- One long Full return-to-page operation uses117 loads,570 calls and467,056
+  bytes of overlay fetches. Repeated small jobs and mutually evicting workers
+  are more important than the nominal number of disk files.
+- That profile spends2.587M of4.047M CPU instructions in R21/C22. It enters
+  glyph/measurement1,768 times for862 characters. It performs7,952 invisible
+  scanline loop passes, although invisible bitmap decoding is already skipped.
+- C22 source/cache guards cost about1.75% of that complete operation. Removing
+  correctness checks cannot recover the main delay. Overlay CRC is likewise
+  not a universal explanation for every slow path.
+- Layout-only page memoization still rerasterizes. The private whole-row and
+  REU-atlas probes have real setup, lifetime and clipped-row costs; their narrow
+  speedups do not qualify a complete public replacement.
+- The private63rd paint image has two actual edit defects. The working alias
+  repair fixes CR deletion; live narrow-glyph shadow data still overlaps an
+  outgoing checkpoint. It must not be promoted as another permanent layer.
+
+Use [warm input attribution](../src/render/geos/warm-input-profile-probe/README.md),
+[raster attribution](../src/render/geos/raster-cost-probe/COST.md), the existing
+[cache redesign](REU_CACHE_REDESIGN.md), and the pinned geoWrite source study in
+`agentsworking/research/GEOWRITE_REFRESH.md`. Historical measurements are scoped
+baselines, not a new common-build benchmark or a measured geoWrite comparison.
+
+The three existing parallel probes were stopped at bounded checkpoints for this
+plan. Their results change what gets built next:
+
+| Experiment | Evidence and decision |
+| --- | --- |
+| Layout-only memo |Whole CPU A→B→A saves2.94–10.91% in Markdown/Full but still rerasterizes. Do not add it as another permanent cache family.|
+| Separate-bank page image |Two images fit one optional64 KiB data bank, but the incomplete transfer draft is4,724 bytes:628 over its code slot. Never executed. Treat its storage census as input to a replacement, not a fit claim.|
+| Corrected paint shadow mapping |C21 needs4,139 bytes and R63 needs4,152:43/56 over their slots. Never executed. Replace delayed comparison and shadow storage rather than growing the slots.|
+| Pre-shifted REU glyph atlas |Synthetic20-row cold CPU work falls3,624,625→3,239,586 instructions, including construction. Complete verification per row costs7,328,001. There are999 checked per-glyph reads. Reject this as a production per-glyph transport layer.|
+
+Source/result notes are under `src/render/geos/{layout-retention-probe,
+paint-shadow-probe,logical-row-job-probe/reu-atlas}/`. The measurements are
+different scoped experiments; none establishes public native1 MHz latency.
+
+## Rules for choosing work
+
+1. Eliminate unnecessary work before making that work faster. Never rebuild a
+   whole viewport merely because a local fast path refused an ordinary edit.
+2. Choose residency around an editing group, a logical row or a batch of rows.
+   Parser, layout and paint helpers must not evict one another per character.
+3. Every production addition names the code, state and path it replaces, its
+   deletion step, and the complete cost it removes. An isolated helper speedup
+   is insufficient. No additional registered image by default; temporary
+   migration images must have an explicit removal gate before release.
+4. Keep one clear fallback for each mode. An optimization miss must reach that
+   correct bounded path without another chain of speculative caches. Preserve
+   required representation differences between fixed and proportional text;
+   do not invent one giant generic renderer merely to reduce file count.
+5. Preserve source, ownership, extent, generation, font and publication checks
+   at real trust and yield boundaries. Hoist repeated checks only after proving
+   a closed lifetime. Do not treat standalone REU ownership as proof against
+   internal aliases, cancellation or stale derived state.
+6. Optional analysis and retained pages have bounded quotas and cheap eviction.
+   They may save time; they may not make an ordinary edit fail for cache space.
+7. No new allocator, cache supervisor, edition split, setting or abstraction
+   without a measured need. Keep the logical provider boundary. A replacement
+   linear allocator is not justified by the evidence presently available.
+8. Total cycles and input latency decide. Image count, zero parser feeds,
+   component percentages and smaller instruction counts are supporting metrics.
+   Never add gains from different probes as though they compose automatically.
+
+## Proposed engineering budgets
+
+These are initial targets to test at nominal1 MHz, not achieved results or new
+claims about hardware. PAL cycles and approximately equivalent milliseconds
+must be reported separately. Missed budgets remain visible; do not quietly increase
+them or conceal them with a narrower favorable case.
+
+| Interaction, settled current mode | Cycle target | Code-load target |
+| --- | ---: | ---: |
+| Warm 40-column caret |15,000|0|
+| Warm 60/80-column or GEOS caret |40,000|0|
+| Ordinary 40-column same-row edit |30,000|0–2|
+| Ordinary 60/80-column or GEOS same-row edit |100,000|0–2|
+| Visible paragraph Return/BACK split or merge |250,000|At most 4|
+| One-row viewport scroll with retained overlap |300,000|At most 4|
+| Unchanged A→B→A return, if retained |150,000|At most 2|
+| New diverse GEOS viewport, first coherent completion |500,000|At most 12|
+
+The original modest-document full-redraw goal remains approximately 0.5 s.
+A one-million-cycle new GEOS viewport is an intermediate improvement, not
+completion of that goal.
+
+Input must be serviced at safe boundaries within 50,000 cycles of foreground
+work. A completed obsolete frame is not a prerequisite for applying queued
+input. Measure first visible feedback, latest-state completion and cancellation
+delay independently. The keyboard ring is finite; prove backpressure/overflow
+behavior under repeat and bursts rather than promising unlimited type-ahead.
+
+The initial consolidation target is at most 48 registered images and 176 KiB
+linked payload, about 20% below the 62-image baseline. Phase 1 must check the
+actual section inventory before fixing the final release ceiling. Count and
+payload reductions cannot compensate for missed interaction budgets. More REU
+data can be sensible when it deletes CPU work and management code; count its
+construction, refresh, pressure and restore costs explicitly.
+
+## Ordered execution
+
+### 0. Freeze a safe baseline and contain the experiments
+
+Keep committed 12bde7a as the control. Record its exact sources, D81, fonts and
+settings. Preserve the uncommitted63 work and both structural regressions as
+evidence, without treating it as the accepted product. Stop opening additional
+probe variants until the present probes have a measured accept/reject result.
+Keep useful techniques from them, not their accumulated supervisor graph.
+
+Before large code changes, commit a clean, reviewable checkpoint of the actual
+source on the dedicated optimization branch. The existing
+`supereditor/reu-cache-redesign` branch is suitable; do not sweep unrelated
+changes or artifacts into it. Ignored logs, generated binaries and external
+GEOS assets stay out of Git. Do not commit a known-broken experiment as a
+qualified release. Preserve it separately as a clearly labeled checkpoint if
+needed. No worktrees.
+
+Exit: a reproducible control and a list of every retained or rejected probe,
+including known faults. No ambiguous mixture of committed and private claims.
+
+### 1. Produce one common-build cost and residency inventory
+
+Capture the same corpus and public operation sequence on the exact baseline:
+all four source views, preview, Plain/Markdown/Full, highlighting on/off,
+ordinary and styled text, BASIC/assembler, narrow glyphs at maximum row count,
+wrapping, selection, folds, and source positions above64 KiB.
+
+Include first/steady typing, caret immediately after typing, CR/BACK at the
+viewport bottom with scrolling, line/page navigation, A→B→A, popup open/close,
+first/reopened preview, undo/redo and repeated edits through flush. Measure
+complete source processing, first pixel and completed publication, overlay
+loads/calls/DMA, IRQ/input queue, parsing/layout/glyph counts and exact source
+identity. Keep cold setup, warm work and idle analysis separate. CPU profiles
+select work; normal-speed emulated PAL cycles qualify it. NTSC is a final gate.
+
+Generate a linked closure inventory and an ordered call graph per operation.
+Classify each image and shared state as hot, mode-specific, or cold. Identify
+duplicate source readers, copies, CRC loops, semantic stores and fallback
+controllers. Budget a new RAM/phase map with real lifetimes and IRQ access;
+recover space by deletion instead of squeezing more aliases into spare bytes.
+
+Exit: one concise table containing the current deficits, chosen replacement
+boundaries, byte budgets and exact code to retire. This replaces selecting the
+next optimization by whichever overlay happens to have a few bytes left.
+
+### 2. Keep the hot editing pair resident
+
+First remove the measured C6→R30→AUX→R14 eviction cycle. Move the small
+post-publication freshness update into the owning transaction or defer it with
+an explicit invalidation/rebuild contract. Preserve source checkpoint freshness
+and undo boundaries. Consolidate source access and common projection work into
+the active edit/mode job. Keep cold dialogs/settings/preview/lifecycle in cold
+overlays. Do not move an entire large worker into the already-full resident.
+
+Replace the executable$5000 staging arrangement with a budgeted residency map
+in which fonts/data cannot silently evict hot code. Source micromodules remain
+separate and link into operation-sized images. Removal of the stage stamp and
+re-prime paths follows only after the replacement covers their consumers and
+meets the complete-operation budget; a slower clean-looking map is not a win.
+
+Exit: ordinary repeated keys meet0–2 loads; no forced post-key eviction; the
+replacement deletes obsolete routing/staging code. Local/caret gains must
+survive switching modes, opening menus and coming back to typing.
+
+### 3. Replace fallback re-layout with retained lines and exact convergence
+
+Use one bounded retained logical-line/block model containing source anchors,
+incoming/outgoing parser and inline state, font/style/width, geometry, baseline,
+fold projection and paint inputs. Reuse existing valid records where possible;
+do not add a second semantic truth beside type53 and then maintain both.
+
+Restart at the affected logical boundary, including the previous line for CR
+deletion. Invalidate the affected complete inline BODY when a delimiter can
+change earlier styling. Propagate only until unchanged source and complete
+parser/font/style/geometry state converge. Fences can legitimately propagate
+to EOF; do that incrementally with cancellation, not in a blocking repaint.
+Retain an unaffected horizontal prefix where its pixels and attributes remain
+valid. Long lines require continuations rather than repeated scans from BOF.
+
+Retain visible and adjacent lines under one bounded replacement policy. Move
+overlapping bitmap rows/attributes and regenerate only newly exposed rows on
+scroll. View/caret/selection changes must not restart parsing. Palette changes
+retain semantic/layout data; metric changes retain parsing but invalidate
+dependent geometry. Highlighting disabled must execute no lexer feeds; an
+unchanged block must not be lexed again merely because the viewport changed.
+
+Compare each genuine newly completed row with its old packet at the row-ready
+boundary. A proven single842B old-row scratch plus accumulated dirty strips
+can replace 22 persistent shadows, their scattered addressing, the delayed
+comparison pass and duplicate publication certificates. This is a replacement
+design to prove, not an implemented fix: C20/source/parser leases must have
+ended before the scratch is borrowed, and source/font/provider/publication
+authority must survive the whole comparison and commit.
+
+Replace the semantic/lexical rebase chain and its duplicated routing as the
+new model proves coverage. A prototype page memo that saves10% but leaves the
+dominant raster work and adds another full supervisor is not the endpoint.
+Store a prior page image only if it fits the same bounded policy, cheaply
+reuses genuine caret-free geometry and deletes work/code overall. Handle cache
+pressure as a miss, with no extra bank assumed to be available.
+
+Exit: public ordinary/wrapped/CR/scroll operations stop at proven convergence;
+retained A→B→A skips both measurement and rasterization when its image is valid.
+Trace deletion of displaced semantic/lexical/paint paths, not just their bypass.
+
+### 4. Replace strip-by-strip glyph preparation with a whole-row compositor
+
+Compose each8/9px logical row once into its containing VIC bands. Bind the
+source/packet/font authority once per closed job, prepare glyph descriptors
+once, and carry the exact ink weights across shared8x8 color cells. Preserve
+bold, italic, underline, reverse, native fallback, selection/caret union,
+clipping and role priority/ties. Keep foreign font metrics correct.
+
+Batch enough work while the compositor remains loaded to avoid a helper swap
+per glyph or band. Prefer ordinary lookup tables and fixed shift chains where
+they remove real work. The present raw-bit decode already skips invisible
+rows: do not claim a50% gain from eliminating invisible loop passes alone.
+
+Judge the existing whole-row and REU-atlas probes on complete public rendering,
+including packet gathering, actual checked DMA, first-build/readback, styles,
+fault checks and every yield. A pre-shifted font cache that saves a synthetic
+steady job but doubles cost when revalidated per row is not ready to ship.
+Prefer a small per-font/per-job prepared representation to another permanent
+glyph cache manager. Reject variants whose setup or memory ownership cannot
+be amortized safely. Share source/preview primitives where their semantics
+actually agree; do not force formatted and literal layout into one state union.
+
+Replace C22/R21 preparation and the eligible old raster path together. If the
+new compositor subsumes paint convergence, delete the private R63 supervisor
+and its shadow/certificate copies. If it does not, no permanent R63 addition
+is justified until the net image/bytes/load budgets and correctness gates pass.
+
+Exit: one traversal per glyph per logical row, exact color-cell output, public
+cold/warm cycle wins, and retired old preparation/staging paths. Do not preserve
+every historical shortcut as another fallback beneath the new implementation.
+
+### 5. Make responsiveness independent of renderer throughput
+
+At safe yield boundaries, detect queued editing input, stop obsolete paint,
+apply a bounded batch and merge damage against the newest revision. Preserve
+command ordering, modifiers, physical key identity and undo grouping. A held
+key must neither starve all publication nor force every intermediate state to
+paint. Do not roll back an accepted edit when an optional derived job stops.
+
+Retain the existing visible publication until a correctly sourced replacement
+is ready; stage and commit bounded dirty regions using a proven memory map.
+Logical publication atomicity is not a claim of tear-free VIC frame timing.
+Menus restore their covered rectangle; help/status changes do not reparse the
+document. Test typing during worst-case reflow and scrolling at stock speed,
+including buffer saturation, not just injected keys after every idle state.
+
+Exit: bounded input service/cancellation latency, exact accepted text, no
+starvation, no stale result published after a newer edit, and no unnecessary
+full-page redraw on popup dismissal.
+
+### 6. Cut startup and distribution baggage
+
+Separate a lean runtime D81 from the existing diagnostic/fault-fixture D81.
+Remove test PRGs, malformed overlays and probe assets from the runtime disk;
+retain them in the development package. Keep all requested runtime features.
+
+Measure startup by disk open/read, CRC/import, code installation and font
+installation. Bring up40-column editing without eagerly loading proportional
+fonts, preview workers, lifecycle copy code and every other cold feature.
+Evaluate a simple sequential indexed overlay pack against many sidecar opens,
+using actual KERNAL/D81 capabilities; do not assume random seek or UltimateDOS.
+Retain per-image bounds/identity checks and meaningful missing-asset errors.
+Warm REU swaps remain distinct from disk first-use loads.
+
+Exit: no unrelated eager assets before first useful edit, at least80% less
+time-to-ready than the measured approximately11m32 hardware baseline on the
+same configuration, and separate measured first-use times. This is an initial
+reduction target, not acceptance of a multi-minute editor startup. First-use
+costs must be disclosed rather than hidden after the initial screen.
+
+### 7. Delete, qualify and publish one result
+
+After each replacement, delete its retired production images, state, build
+paths and dispatch branches. Keep historical probes outside the runtime closure.
+Use a short before/after table: bytes, images, actual loads and code DMA,
+cold/steady cycles, input delay, memory and remaining failure cases. If a
+candidate adds machinery without meeting a complete-operation budget, reject
+it or redesign the boundary; do not promote it because qualification took work.
+
+Require one common final source/settings/font cohort for all-mode editing,
+scroll/CR/selection/folds/menus/open-save/undo-redo/preview, PAL and NTSC, lower
+REU pressure and16 MiB, and the existing lifecycle seam. Keep independent pixels,
+exact source/history/clipboard, ReadyOS reserve, typed memory, ownership and
+fault/cancellation checks. Preserve the two new structural regressions.
+Update maps and stack analysis after actual call-graph changes.
+
+Run focused CPU/probe tests while choosing a design; run the affected native
+matrix when a candidate is credible; run the complete final cohort after
+integration. Do not recapture unchanged broad galleries or run huge evidence
+seals for every small rejected experiment. Retain representative raw evidence,
+source identities and failure records without duplicating large artifacts.
+
+## Parallel ownership and immediate next action
+
+Use at most three concurrent agents in this repository, without worktrees.
+Root owns production integration, shared builds, Git and native launches.
+Independent lanes own only their private sources/results: residency/code
+census; retained-line/scroll design; compositor measurements. Each closes with
+one accept/reject recommendation and a deletion list. Serialize overlapping
+memory-map decisions. Do not message the two assessment threads or deploy to
+hardware as part of adopting this plan.
+
+Immediate next action: finish the bounded current probes, preserve their
+findings, and produce Phase 1's common-build cost/residency table and replacement
+map. Then tackle the hot-key eviction loop and retained-line fallback. Do not
+continue filling the64-entry catalog with independent optimization supervisors.

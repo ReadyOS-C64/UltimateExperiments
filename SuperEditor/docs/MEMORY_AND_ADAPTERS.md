@@ -1,29 +1,30 @@
 # Memory and standalone adapters
 
-## Current runtime ac7b270
+## Current 63-image runtime
 
-The current linked package has62 registered images and four REU code banks.
-Its resident remains2924dd/binding39cea9. The ReadyOS reservation is the entire
+The current linked package has63 registered images and four REU code banks.
+Its resident is8525589d/binding6b2e9c. The ReadyOS reservation is the entire
 untouched `$C600–$C9FF` range. Current resource sizes are:
 
 | Resource | Linked bytes |
 | --- | ---: |
 | Zero page |24|
 | BSS |1534|
-| COLD |1737, ending `$0ED5` inclusive;42 bytes before `$0F00`|
-| C7 menu/control |3930|
+| COLD |1739, ending `$0ED7` inclusive;40 bytes before `$0F00`|
+| C7 menu/control |4001|
 | C21 page coordinator |4096|
 | R21 glyph rasterizer |4094|
-| R22 popup/settings |4003|
+| R22 popup/settings |4086|
 | R30 local typing |3662|
 | C32 typing stage |3856, raw3824;240 bytes before the stage stamp|
 | C41 rebase |4068|
 | R34 transform |4095|
+| R63 checked paint collector |4096|
 
-All62 images and staged code pass the computed68-byte relative foreground plus
+All63 images and staged code pass the computed68-byte relative foreground plus
 one interrupt bound. This retains its declared IRQ/ROM/frame contracts; it is
-not an exhaustive physical NMI/ROM stack guarantee. The private63 paint module
-and paged-help experiment are not registered in this package. The
+not an exhaustive physical NMI/ROM stack guarantee. R63 is cold-registered; paged Help uses the existing C7/R22 pair. Registration
+adds two COLD bytes and no BSS, zero-page or extra REU code bank. The
 [capacity and tested limits](CAPACITY.md) distinguish the bounded1MiB source
 engine proof, finite quotas, lower-memory configurations and D81 free space.
 

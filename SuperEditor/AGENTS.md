@@ -10,6 +10,13 @@ the full standalone editor using this plan. Work through the milestone gates
 and retain evidence. Do not change the user's model or schedule work on their
 behalf. The earlier planning-only phase boundary has been superseded.
 
+The user's latest direction is the optimization/simplification plan in
+`docs/OPTIMIZATION_PLAN.md`. Preserve the original feature scope; prioritize
+stock1MHz latency, fewer hot-path swaps and deletion of superseded machinery.
+Do not append another permanent optimization layer without its replacement
+and removal plan. Physical Ultimate uploads, mounts, resets and launches require
+an explicit user request; never deploy automatically after a build or milestone.
+
 Use up to three concurrent subagents when independent work is available. This
 is a concurrency limit, not a lifetime limit: reuse or replace finished agents
 with further safe assignments. All agents work in this repository without Git

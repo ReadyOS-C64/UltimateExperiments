@@ -1,5 +1,12 @@
 # Capacity and tested limits
 
+The current combined63-overlay package also passes a bounded native smoke with
+an actual2MiB REU:32 detected banks, exact2,097,152-byte dumps and14 occupied
+banks for the422-byte diverse document. All63 images and the complete fontpack,
+source40/80/GEOS, formatted preview and paged Help are checked. This proves that
+small-document workflow, not maximum source/append quota or all2MiB workloads.
+
+
 The full development configuration uses a 16 MiB REU. A bounded CPU test of the
 1612523 engine reaches exactly **1,048,576 source bytes**, with a separate
 16-bank append object. It verifies BOF/middle/EOF edits, Undo/Redo, copy/paste,

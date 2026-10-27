@@ -1,5 +1,10 @@
 # Configurable parsing and retained document data
 
+The current execution priority is the [optimization and simplification
+plan](OPTIMIZATION_PLAN.md). It preserves the feature scope while replacing
+the accumulated cache/overlay graph. The contracts below remain evidence and
+correctness inputs; they do not require retaining every implementation layer.
+
 Design direction recorded on 2026-10-25. The three parsing presets and the
 initial GEOS block-cache path are implemented on the development branch.
 Source checkpoint before implementation:

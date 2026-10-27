@@ -9,8 +9,9 @@ qualified three-page F6 guide.
 
 ## Start and open a file
 
-Attach the complete SuperEditor D81 as drive 8 and enable a REU. The full package
-uses a 16 MiB REU; its full font configuration does not start with 512 KiB.
+Attach the complete SuperEditor D81 as drive 8 and enable a REU. The complete
+font package works with 2 MiB for the tested small-document workflow; larger
+tests use 16 MiB. It does not start with 512 KiB. See [capacity](CAPACITY.md).
 
 ```text
 LOAD"SUPEREDITOR",8,1
