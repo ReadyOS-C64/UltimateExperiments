@@ -4,14 +4,12 @@
 .include "render/geos/api.inc"
 .include "render/geos/row.inc"
 G=GEOS_ROW_FRAME+GR_GLYPH
-.import se_petscii_screen,se_geos_packed
+.import se_petscii_screen,se_geos_packed,se_geos_widths
 HEADER_OK=GEOS_ROW_FRAME+GR_PRIVATE+38
-.export se_geos_measure,gg_pointer,gg_save_pointer,gg_format
+.export se_geos_measure,gg_format
 .segment "CODE"
 se_geos_measure:
-    lda G+GG_STYLE
-    cmp #4
-    jcs argument
+    ; R21 validate_inputs has already certified every style byte.
     lda HEADER_OK
     bne @header_ready
     lda G+GG_FONT
@@ -79,22 +77,12 @@ se_geos_measure:
     lda #1
 @kind:
     sta G+GG_KIND
-    lda G+GG_WIDTHS
-    sta se_gg_pointer
-    lda G+GG_WIDTHS+1
-    sta se_gg_pointer+1
+    ; The sealed R21 image owns the fixed validated 128-byte width table.
     ldy G+GG_SCREEN
-    lda (se_gg_pointer),y
-    beq gg_format
-    cmp #9
-    bcs gg_format
+    lda se_geos_widths,y
     sta G+GG_WIDTH
     tax
-    lda G+GG_KIND
-    beq :+
-    cpx #8
-    bne gg_format
-:   txa
+    txa
     sta G+GG_ADVANCE
     lda G+GG_STYLE
     lsr
@@ -109,27 +97,11 @@ se_geos_measure:
     lda #0
     clc
     rts
-argument:
-    lda #GG_ARGUMENT
-    sec
-    rts
+
 gg_format:
     lda #GG_FORMAT
     sec
     rts
-gg_pointer:
-    lda G,y
-    sta se_gg_pointer
-    iny
-    lda G,y
-    sta se_gg_pointer+1
-    rts
-gg_save_pointer:
-    lda se_gg_pointer
-    sta G,y
-    iny
-    lda se_gg_pointer+1
-    sta G,y
-    rts
+
 .segment "GEOS_ROW_FAST"
 header: .byte 6,60,0,9,8,0,204,0

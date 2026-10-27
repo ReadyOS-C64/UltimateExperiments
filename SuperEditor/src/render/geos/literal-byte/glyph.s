@@ -4,8 +4,8 @@
 .include "render/geos/api.inc"
 .include "render/geos/row.inc"
 G=GEOS_ROW_FRAME+GR_GLYPH
-STRIP_ORIGIN=GEOS_ROW_FRAME+GR_PRIVATE+3
-.import gg_pointer,gg_save_pointer,gg_format
+.import gg_format,se_geos_packed
+.importzp se_gg_context
 .export se_geos_glyph
 .segment "CODE"
 se_geos_glyph:
@@ -31,60 +31,19 @@ se_geos_glyph:
     lda G+GG_NATIVE+1
     adc se_gg_pointer+1
     sta se_gg_pointer+1
-    ldy #GG_ROW_POINTER
-    jsr gg_save_pointer
     lda #1
     sta G+GG_SHIFT
     jmp prepare_masks
 packed:
+    ; The admitted in-slot BSW9 index is immutable.  Fetch only the live
+    ; two-byte bit offset; GG_START/GG_END are private dead outputs.
     lda G+GG_INDEX
     asl
-    clc
-    adc #8
+    tax
+    lda se_geos_packed+8,x
     sta se_gg_pointer
-    lda #0
+    lda se_geos_packed+9,x
     sta se_gg_pointer+1
-    lda G+GG_FONT
-    clc
-    adc se_gg_pointer
-    sta se_gg_pointer
-    lda G+GG_FONT+1
-    adc se_gg_pointer+1
-    sta se_gg_pointer+1
-    lda se_gg_pointer
-    sec
-    sbc #GG_START
-    sta se_gg_pointer
-    bcs :+
-    dec se_gg_pointer+1
-:   ldy #GG_START
-@index:
-    lda (se_gg_pointer),y
-    sta G,y
-    iny
-    cpy #GG_END+2
-    bcc @index
-    lda G+GG_END+1
-    cmp #2
-    jcs gg_format
-    cmp #1
-    bne @range_ok
-    lda G+GG_END
-    cmp #$E1
-    jcs gg_format
-@range_ok:
-    ldy #GG_START
-    jsr gg_pointer
-    lda G+GG_END
-    sec
-    sbc se_gg_pointer
-    sta G+GG_TEMP
-    lda G+GG_END+1
-    sbc se_gg_pointer+1
-    jne gg_format
-    lda G+GG_WIDTH
-    cmp G+GG_TEMP
-    jne gg_format
     lda se_gg_pointer
     and #7
     sta G+GG_PHASE
@@ -105,11 +64,15 @@ packed:
     sta se_gg_pointer
     bcc :+
     inc se_gg_pointer+1
-:   ldy #GG_ROW_POINTER
-    jsr gg_save_pointer
-    lda #60
+:   lda #60
     sta G+GG_SHIFT
 prepare_masks:
+    ; Keep the row source in the other existing R21 zero-page pair.  The
+    ; compositor does not consume its histogram pointer until glyph returns.
+    lda se_gg_pointer
+    sta se_gg_context
+    lda se_gg_pointer+1
+    sta se_gg_context+1
     ldx G+GG_ADVANCE
     lda prefix_hi,x
     sta G+GG_CELL_HI
@@ -118,20 +81,7 @@ prepare_masks:
     lda #0
     sta G+GG_ROW
 next_row:
-    lda STRIP_ORIGIN
-    clc
-    adc G+GG_ROW
-    ldx STRIP_ORIGIN
-    bpl @positive
-    bcc @skip_invisible
-@positive:
-    cmp GEOS_ROW_FRAME+GR_TOP
-    bcc @skip_invisible
-    cmp GEOS_ROW_FRAME+GR_BOTTOM
-    bcc @visible
-@skip_invisible:
-    jmp advance_row
-@visible:
+    ; R21 fixes strip origin=0, top=0 and bottom=9 for this internal decoder.
     lda #0
     sta G+GG_WORD_HI
     sta G+GG_WORD_LO
@@ -140,17 +90,13 @@ next_row:
     lda G+GG_ROW
     cmp #8
     beq styles
-    ldy #GG_ROW_POINTER
-    jsr gg_pointer
     ldy #0
-    lda (se_gg_pointer),y
+    lda (se_gg_context),y
     sta G+GG_WORD_HI
     jmp styles
 @bsw:
-    ldy #GG_ROW_POINTER
-    jsr gg_pointer
     ldy #0
-    lda (se_gg_pointer),y
+    lda (se_gg_context),y
     sta G+GG_WORD_HI
     lda G+GG_PHASE
     clc
@@ -158,7 +104,7 @@ next_row:
     cmp #9
     bcc @one_byte
     ldy #1
-    lda (se_gg_pointer),y
+    lda (se_gg_context),y
     sta G+GG_WORD_LO
 @one_byte:
     ldx G+GG_PHASE
@@ -245,14 +191,19 @@ styles:
 advance_row:
     lda G+GG_SHIFT
     clc
-    adc G+GG_ROW_POINTER
-    sta G+GG_ROW_POINTER
+    adc se_gg_context
+    sta se_gg_context
     bcc :+
-    inc G+GG_ROW_POINTER+1
+    inc se_gg_context+1
 :   inc G+GG_ROW
     lda G+GG_ROW
     cmp #9
     jcc next_row
+    ; Preserve the former completed frame value exactly.
+    lda se_gg_context
+    sta G+GG_ROW_POINTER
+    lda se_gg_context+1
+    sta G+GG_ROW_POINTER+1
     lda #0
     clc
     rts

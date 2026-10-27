@@ -482,3 +482,10 @@ callers keep the wrapper. This removes 25–28 cycles and one call frame from ea
 accepted input command and deletes two resident CODE bytes. It is a small common
 path cleanup alongside the material edit/raster cuts; it does not change overlay
 or REU traffic and is not counted as a redraw solution.
+
+R21 glyph measure/decode now consumes the fixed BSW9 contract already certified
+at job admission. It deletes per-glyph style, pointer, width, start/end and
+vertical-visibility revalidation plus two private pointer helpers. This removes
+189 executable bytes and 9,647/9,240 helper calls, reducing native PAL LONG and
+WRAPPED by 6.10% and 8.45%. Job-level validation, malformed-job refusal, pixels,
+source, stack, overlays and DMA remain exact; no table, cache or REU path is added.
