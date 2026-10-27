@@ -51,7 +51,6 @@ miss:
  clc
  rts
 fault:
- sta GEX_ERROR
  pha
  lda #0
  sta GEX_PHASE
@@ -571,7 +570,6 @@ verify:
  jcs miss
  cmp GP_RECORD+GPR_COUNT
  jne miss
- sta GEX_BOUNDARIES
 @new_semantics_ready:
  jsr cert_read
  jcs fault
@@ -622,8 +620,6 @@ verify:
  clc
  adc #1
  sta GEX_SCAN_ROW
- lda #0
- sta GEX_ARRAY
  lda #2
  sta GEX_PHASE
  jmp pending

@@ -1070,9 +1070,10 @@ remove redundant work.
 The current production graph had no writer for edit class zero: canonical R28
 wrote literal class five on every successful admission. C21 nevertheless kept
 a 142-byte class-zero plain-context synthesizer, and R28 spent five bytes
-writing the unread class. Both are now deleted. C21 shrinks 3,815 to 3,673
-bytes and R28 shrinks 3,749 to 3,744, recovering 147 linked bytes without a new
-resource or relocation.
+writing the unread class. R28 also wrote an unread error shadow, a post-verify
+boundary byte and an array selector, costing another 11 bytes. All are now
+deleted. C21 shrinks 3,815 to 3,673 bytes and R28 shrinks 3,749 to 3,733,
+recovering 158 linked bytes without a new resource or relocation.
 
 The exact ten-case wrapped control is
 `build/current-geos-material-control-20261027T1445Z/result.json`; the deletion
@@ -1080,8 +1081,33 @@ candidate is `build/current-geos-material-dead-class-20261027T1500Z/result.json`
 All prose, styled, Full, Markdown, INSERT, BACK and CR pixels, attributes,
 packets, anchors, source/history, Undo and typed-DMA masks remain exact. The
 complete 24-case product profile passes at
-`build/cache-hotpath-profile/20261027T142539267284Z/result.json`. The deletion
+`build/cache-hotpath-profile/20261027T142908088409Z/result.json`; the final
+ten-case dead-state rerun is
+`build/current-geos-dead-state-20261027T1510Z/result.json`. The deletion
 saves 34--38 instructions on these fallback operations because the unreachable
 body's entry predicates are gone; this is a code-budget cleanup, not the
 material convergence result. The new exact D81 is
-`d97cb24d18074926795d47d24b5f9c9de593735bd8b5e3400822a67f650a2a29`.
+`40c59b6c09afc8db0207c74652dc0090e2b9a9f96c59f4cdfc2c571332316ddc`.
+
+### Rejected local GEOS loop and repaint candidates
+
+Two exact private candidates establish where further local tuning stops paying.
+The R21 compositor cleanup deletes 23 linked bytes, but saves only 17,917
+instructions (0.96%) on a fresh diverse page and 2,229 (0.25%) on a styled
+insert. A larger role-zero shortcut is invalid: it preserves bitmap pixels but
+changes 26 color cells because the ninth-band color election carries histogram
+votes from the preceding row. Do not promote either candidate and do not spend
+more time on R21 leaf-loop surgery. Evidence is in
+`build/r21-material-compositor/20261027T170000Z/current-project/build/r21-material-probe/RESULT.md`.
+
+The one-old-row C21/R28 convergence probe is exact in twelve prose/styled
+Full/Markdown insert, backspace and CR cases, adds no overlay loads, and shrinks
+the C21+R28 linked pair by 1,408 bytes against `ce96920`. It halves C22 calls,
+but saves only 319,574--344,403 instructions (18.23--21.26%) on qualifying
+edits and raises transferred bytes by 4,807--5,675. That misses the mandatory
+500,000-instruction gate, so the patch remains rejected. Its useful result is
+architectural: repaint convergence is safe, but repaint alone is insufficient.
+The next candidate must stop C20/C24/C26 suffix construction through exact
+parser, carry, anchor and row-packet convergence, then reuse the unchanged
+suffix without adding a cache or per-row overlay reload. Report and rejected
+patch are in `build/r28-row-convergence-probe/`.
