@@ -1,6 +1,6 @@
 # Capacity and tested limits
 
-The current combined63-overlay package also passes a bounded native smoke with
+A now-retired experimental63-overlay package passed a bounded native smoke with
 an actual2MiB REU:32 detected banks, exact2,097,152-byte dumps and14 occupied
 banks for the422-byte diverse document. All63 images and the complete fontpack,
 source40/80/GEOS, formatted preview and paged Help are checked. This proves that

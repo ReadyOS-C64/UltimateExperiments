@@ -1,16 +1,17 @@
 # Memory and standalone adapters
 
-## Current 63-image runtime
+## Current 62-image runtime
 
-The current linked package has63 registered images and four REU code banks.
-Its resident is8525589d/binding6b2e9c. The ReadyOS reservation is the entire
+The current linked package has62 registered images and four REU code banks.
+Its resident is2924ddbc/binding39cea9. The experimental63rd image was retired
+from the production build; its exact unqualified sources remain in6a280d8. The ReadyOS reservation is the entire
 untouched `$C600–$C9FF` range. Current resource sizes are:
 
 | Resource | Linked bytes |
 | --- | ---: |
 | Zero page |24|
 | BSS |1534|
-| COLD |1739, ending `$0ED7` inclusive;40 bytes before `$0F00`|
+| COLD |1737, ending `$0ED5` inclusive;42 bytes before `$0F00`|
 | C7 menu/control |4001|
 | C21 page coordinator |4096|
 | R21 glyph rasterizer |4094|
@@ -19,13 +20,14 @@ untouched `$C600–$C9FF` range. Current resource sizes are:
 | C32 typing stage |3856, raw3824;240 bytes before the stage stamp|
 | C41 rebase |4068|
 | R34 transform |4095|
-| R63 checked paint collector |4096|
 
-All63 images and staged code pass the computed68-byte relative foreground plus
-one interrupt bound. This retains its declared IRQ/ROM/frame contracts; it is
-not an exhaustive physical NMI/ROM stack guarantee. R63 is cold-registered; paged Help uses the existing C7/R22 pair. Registration
-adds two COLD bytes and no BSS, zero-page or extra REU code bank. The
-[capacity and tested limits](CAPACITY.md) distinguish the bounded1MiB source
+The restored resident, all62 images and the complete D81 reproduce the verified
+12bde7a fixture byte-for-byte. Its computed68-byte relative foreground plus one
+interrupt bound retains the declared IRQ/ROM/frame contracts; it is not an
+exhaustive physical NMI/ROM stack guarantee. Paged Help uses the existing C7/R22
+pair. The private paint supervisor and its live shadow overlap are outside the
+runtime. See the [optimization replacement plan](OPTIMIZATION_PLAN.md).
+The [capacity and tested limits](CAPACITY.md) distinguish the bounded1MiB source
 engine proof, finite quotas, lower-memory configurations and D81 free space.
 
 The following sections preserve earlier checkpoint descriptions. Their scoped

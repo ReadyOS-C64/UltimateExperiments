@@ -1,15 +1,15 @@
 # Current performance
 
 The [optimization and simplification plan](OPTIMIZATION_PLAN.md) now governs
-remaining work. The63-image paint package described below is an uncommitted
-experiment, not the accepted runtime. Later structural regression tests found
+remaining work. The63-image paint package described below is a retired
+experiment preserved in checkpoint6a280d8, not the accepted runtime. Later structural regression tests found
 a CR-deletion phase alias defect (fixed in working source) and a live narrow-
 glyph shadow/outgoing-checkpoint overlap (still unresolved). Its earlier scoped
 timings remain valid measurements of those cases; they do not qualify general
 editing. Committed12bde7a is the verified62-image baseline. No automatic
 physical Ultimate deployments are part of optimization work.
 
-## Checked wrapped-page paint reuse
+## Retired experimental wrapped-page paint reuse
 
 The registered R63 collector compares authenticated old/new row paint inputs after
 normal layout and semantics have run. Eligible ordinary Full/Markdown edits in

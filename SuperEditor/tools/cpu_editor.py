@@ -43,5 +43,3 @@ def startup(m,s,assets,banks=256):
  return imports
 
 NAMES += ["parse","xform"]
-
-NAMES += ['paint']

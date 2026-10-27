@@ -175,7 +175,9 @@ def ensure_disk(project,c1541='c1541'):
    generated={'build/overlays/'+n+'.seo'for n in('short','extra','badcrc','badhdr','binderr','payerr')}
    if before is not None:
     for name,value in before['files'].items():
-     if name not in generated and current['files'].get(name)!=value:raise RuntimeError('input changed during packaging: '+name)
+     # The old manifest can name an image deliberately retired by this build.
+     # Check that its bytes stayed stable, not that it remains on the new disk.
+     if name not in generated and sha(project/name)!=value:raise RuntimeError('input changed during packaging: '+name)
    spec=importlib.util.spec_from_file_location('_cache_disk_oracle',project/'tools/d81_image.py');mod=importlib.util.module_from_spec(spec);sys.modules[spec.name]=mod;spec.loader.exec_module(mod)
    image=mod.D81Image(disk.read_bytes())
    for name,native in current['members']:

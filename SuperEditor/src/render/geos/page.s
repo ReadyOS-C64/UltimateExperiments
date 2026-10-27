@@ -20,7 +20,7 @@ BCQ_PROOF_CAPTURE=1
 .include "render/geos/caret-cache.inc"
 .include "render/geos/edit-cache.inc"
 .include "document/math24.inc"
-.import se_v_length,se_doc_read_locks
+.import se_v_length
 .import se_ef_valid
 .import se_r_presentation
 .import se_f_owner,se_i_ready,se_i_count,se_n_cache_count
@@ -73,8 +73,6 @@ entry:
     cmp #1
     jne argument
     lda PS
-    cmp #15
-    jeq convergence_step
     cmp #50
     jeq resume_after_admission
     ; TOP normalization precedes allocation/admission of the derived page.
@@ -87,9 +85,7 @@ entry:
     cmp #12
     jeq edit_rebase
     jsr se_gp_cache_guard
-    bcc @carry_return_0
-    rts
-@carry_return_0:
+    jcs failed
     lda PS
     cmp #1
     jeq source
@@ -177,9 +173,7 @@ resume_after_admission:
     lda #0
     sta GFQ_MODE
     jsr fold_call
-    bcc @carry_return_1
-    rts
-@carry_return_1:
+    jcs failed
     cmp #0
     beq fold_top_done
     lda #9
@@ -188,9 +182,7 @@ resume_after_admission:
 fold_top_step:
     lda #1
     jsr fold_call
-    bcc @carry_return_2
-    rts
-@carry_return_2:
+    jcs failed
     cmp #0
     jne own_pending
 fold_top_done:
@@ -198,16 +190,8 @@ fold_top_done:
     COPY24 GFQ_RESULT,se_v_top
 begin_page:
     lda #0
-    jsr convergence_call
-    bcc @carry_return_3
-    rts
-@carry_return_3:
-    sta FAST_PAINT
-    lda #0
     jsr caret_call
-    bcc @carry_return_4
-    rts
-@carry_return_4:
+    jcs failed
     cmp #2
     beq edit_attempt
     lda #11
@@ -216,9 +200,7 @@ begin_page:
 caret_step:
     lda #1
     jsr caret_call
-    bcc @carry_return_5
-    rts
-@carry_return_5:
+    jcs failed
     cmp #2
     beq edit_attempt
     cmp #0
@@ -227,16 +209,11 @@ caret_step:
     sta FAST_PAINT
     jmp finish
 edit_attempt:
-    lda FAST_PAINT
-    cmp #3
-    jeq fresh_page
     lda se_render_caps
     beq full_page ;raw source has no parser certificate for R28
     lda #GEX_ADMIT
     jsr edit_call
-    bcc @carry_return_6
-    rts
-@carry_return_6:
+    jcs failed
     cmp #2
     beq full_page
     lda #2
@@ -277,22 +254,14 @@ cached_begin:
     lda #$FF
     sta GP_HEADER+GPH_CARET_ROW
     jsr header_write
-    bcc @carry_return_7
-    rts
-@carry_return_7:
+    jcs failed
     lda #5
     sta PS
     jmp own_pending
 fresh_page:
     jsr se_gp_cache_open
-    bcc @carry_return_8
-    rts
-@carry_return_8:
+    jcs failed
 next_line:
-    jsr convergence_snapshot
-    bcc @carry_return_9
-    rts
-@carry_return_9:
     lda #0
     ldx #31
 @clear:
@@ -310,7 +279,7 @@ next_line:
     cmp #2
     jne @classify
     lda GEX_CLASS
-    bne @classify
+    jne @classify
     ; R28 admitted a complete literal prose row with zero roles/styles,
     ; unchanged leading letter and a non-syntax single-byte edit. Its semantic
     ; class is already certified. C20 still measures the real new source and
@@ -456,9 +425,7 @@ classification_ready:
     sta GFQ_MODE
     lda #0
     jsr fold_call
-    bcc @carry_return_10
-    rts
-@carry_return_10:
+    jcs failed
     cmp #0
     beq fold_line_done
     lda #10
@@ -467,9 +434,7 @@ classification_ready:
 fold_line_step:
     lda #1
     jsr fold_call
-    bcc @carry_return_11
-    rts
-@carry_return_11:
+    jcs failed
     cmp #0
     jne own_pending
 fold_line_done:
@@ -647,9 +612,7 @@ source:
     rol
     sta GP_IO_LENGTH+1
     jsr se_gp_cache_write
-    bcc @carry_return_12
-    rts
-@carry_return_12:
+    jcs failed
     lda #0
     sta INDEX
     ldx #GP_MAX_GLYPHS-1
@@ -684,9 +647,7 @@ bytes:
     sta CHUNK
 @read:
     jsr se_view_peek
-    bcc @carry_return_13
-    rts
-@carry_return_13:
+    jcs failed
     ldx INDEX
     sta GP_SOURCE,x
     inc INDEX
@@ -710,9 +671,7 @@ bytes:
     lda #GPR_CHARS
     jsr field
     jsr se_gp_cache_write
-    bcc @carry_return_14
-    rts
-@carry_return_14:
+    jcs failed
     lda #<GP_ROLES
     sta GP_IO_POINTER
     lda #>GP_ROLES
@@ -720,9 +679,7 @@ bytes:
     lda #GPR_STYLES
     jsr field
     jsr se_gp_cache_write
-    bcc @carry_return_15
-    rts
-@carry_return_15:
+    jcs failed
     lda GP_RECORD+GPR_KIND
     beq @roles
     lda se_render_caps
@@ -773,9 +730,7 @@ bytes:
     cpx #$FF
     bne @fill
     jsr write_roles
-    bcc @carry_return_16
-    rts
-@carry_return_16:
+    jcs failed
 begin_maps:
     ; ABI3 literal source affinities are implicit FIRST+boundary index.
     lda #4
@@ -789,9 +744,7 @@ lexed:
     jmp request
 @ready:
     jsr write_roles
-    bcc @carry_return_17
-    rts
-@carry_return_17:
+    jcs failed
     jmp begin_maps
 inlined:
     lda GI_ACTIVE
@@ -811,9 +764,7 @@ inlined:
     lda #GPR_STYLES
     jsr field
     jsr se_gp_cache_write
-    bcc @carry_return_18
-    rts
-@carry_return_18:
+    jcs failed
     lda GP_RECORD+GPR_COUNT
     cmp #161
     bne :+
@@ -828,9 +779,7 @@ inlined:
     jsr field
     inc GP_IO_OFFSET+1
     jsr se_gp_cache_write
-    bcc @carry_return_19
-    rts
-@carry_return_19:
+    jcs failed
     lda GP_RECORD+GPR_COUNT
     cmp #161
     bne @complete
@@ -848,9 +797,7 @@ inlined:
     inc GP_IO_OFFSET+1
 :
     jsr se_gp_cache_write
-    bcc @carry_return_20
-    rts
-@carry_return_20:
+    jcs failed
 @complete:
     jmp begin_maps
 write_roles:
@@ -878,9 +825,7 @@ publish_row:
     lda LINE
     jsr slot
     jsr se_gp_cache_write
-    bcc @carry_return_21
-    rts
-@carry_return_21:
+    jcs failed
     lda FAST_PAINT
     cmp #2
     jeq edit_verify
@@ -934,34 +879,18 @@ publish_row:
     cmp #GP_MAX_LINES
     bcs complete_page
     jsr header_write
-    bcc @carry_return_22
-    rts
-@carry_return_22:
+    jcs failed
     jmp next_line
 complete_page:
     lda #1
     sta GP_HEADER+GPH_VALID
     jsr header_write
-    bcc @carry_return_23
-    rts
-@carry_return_23:
-convergence_step:
-    lda #3
-    jsr convergence_call
-    bcc @carry_return_24
-    rts
-@carry_return_24:
-    cmp #1
-    jne paint_start
-    lda #15
-    sta PS
-    jmp own_pending
+    jcs failed
+    jmp paint_start
 edit_verify:
     lda #GEX_VERIFYROW
     jsr edit_call
-    bcc @carry_return_25
-    rts
-@carry_return_25:
+    jcs failed
     cmp #2
     jeq full_page
     lda #12
@@ -970,9 +899,7 @@ edit_verify:
 edit_rebase:
     lda #GEX_REBASE
     jsr edit_call
-    bcc @carry_return_26
-    rts
-@carry_return_26:
+    jcs failed
     cmp #0
     jne own_pending
     ; Rebind every VIEW anchor and caret against the newly published packet
@@ -992,9 +919,7 @@ cached_row:
     lda #0
     sta GP_IO_LENGTH+1
     jsr se_gp_cache_read
-    bcc @carry_return_27
-    rts
-@carry_return_27:
+    jcs failed
     lda GP_RECORD+GPR_COUNT+1
     jne argument
     lda GP_RECORD+GPR_COUNT
@@ -1049,9 +974,7 @@ cached_row:
     lda #0
     sta GP_IO_LENGTH+1
     jsr se_gp_cache_read
-    bcc @carry_return_28
-    rts
-@carry_return_28:
+    jcs failed
     lda #1
     sta GP_RECORD+GPR_CARET_VALID
     sta GP_RECORD+GPR_MEMBER
@@ -1092,19 +1015,13 @@ cached_row:
     lda #0
     sta GP_IO_LENGTH+1
     jsr se_gp_cache_write
-    bcc @carry_return_29
-    rts
-@carry_return_29:
+    jcs failed
     jsr header_write
-    bcc @carry_return_30
-    rts
-@carry_return_30:
+    jcs failed
     inc LINE
     lda LINE
     cmp GP_HEADER+GPH_COUNT
     jcc own_pending
-    ; Cached immutable packets also need genuine op3 collection before op4.
-    jmp convergence_step
 paint_start:
     lda GP_HEADER+GPH_SEEN
     beq @reveal
@@ -1137,9 +1054,7 @@ paint_start:
     jmp request
 finish:
     jsr se_gp_cache_guard
-    bcc @carry_return_31
-    rts
-@carry_return_31:
+    jcs failed
     lda GP_HEADER+GPH_VALID
     jeq argument
     ldx #2
@@ -1164,19 +1079,10 @@ finish:
     jmp request
 finish_caret:
     jsr se_gp_cache_guard
-    bcc @carry_return_32
-    rts
-@carry_return_32:
+    jcs failed
     lda #2
     jsr caret_call
-    bcc @carry_return_33
-    rts
-@carry_return_33:
-    lda #4
-    jsr convergence_call
-    bcc @carry_return_34
-    rts
-@carry_return_34:
+    jcs failed
 finish_done:
     lda #0
     sta se_l_need_wrap
@@ -1308,68 +1214,4 @@ gsc_publish:
 
 .include "render/geos/checkpoint/consumer.inc"
 
-.include "cache/query/api.inc"
-bcq_capture_page:
-    lda #5
-    jmp convergence_real
-convergence_call:
-    ldy se_render_caps
-    bne convergence_real
-    lda #0
-    clc
-    rts
-convergence_real:
-    sta se_overlay_frame
-    lda #63
-    ldx #0
-    jmp se_overlay_call
-
-
-convergence_snapshot:
-    lda FAST_PAINT
-    cmp #3
-    bne @done
-    lda LINE
-    cmp GEX_CLASS
-    bcs @done
-    lda $912C
-    ora $912D
-    ora se_doc_read_locks
-    jne busy
-    lda #0
-    sta se_i_ready
-    sta se_i_count
-    sta se_n_cache_count
-    sta GP_IO_POINTER
-    lda #$8D
-    sta GP_IO_POINTER+1
-    lda #<842
-    sta GP_IO_LENGTH
-    lda #>842
-    sta GP_IO_LENGTH+1
-    lda LINE
-    jsr slot
-    jsr se_gp_cache_read
-    bcc @carry_return_35
-    rts
-@carry_return_35:
-    lda LINE
-    cmp #2
-    beq @special
-    lda #$80
-    sta GP_IO_OFFSET
-    clc
-    lda GP_IO_OFFSET+1
-    adc #4
-    sta GP_IO_OFFSET+1
-    jmp se_gp_cache_write
-@special:
-    lda #<$D568
-    sta GP_IO_OFFSET
-    lda #>$D568
-    sta GP_IO_OFFSET+1
-    jmp se_gp_cache_write
-@done:
-    lda #0
-    clc
-    rts
+.include "cache/query/proof.inc"

@@ -106,9 +106,7 @@ def logical_help(f,data,page):
 def run(out,base,reuse=None):
  out.mkdir(parents=True,exist_ok=True)
  private,budget=build(out/'link',base)if not reuse else reuse
- ident=json.loads((private/'freeze.json').read_text());assert len(ident['names'])in(62,63)
- assert ident['names']==json.loads((base/'freeze.json').read_text())['names']
- if len(ident['names'])==63:assert ident['names'][-1]=='paint'
+ ident=json.loads((private/'freeze.json').read_text());assert len(ident['names'])==62
  assert ident['prg_sha256']==sha((base/'build/editor.prg').read_bytes())
  for n in ident['names']:
   if n not in ('menu40','popups'):assert (private/f'build/overlays/{n}.seo').read_bytes()==(base/f'build/overlays/{n}.seo').read_bytes()
