@@ -629,6 +629,7 @@ rebase:
  jne miss
  jsr current
  jcs fault
+@sync_loop:
  lda GEX_SCAN_ROW
  cmp GEX_PAGE_COUNT
  jcs commit
@@ -673,7 +674,7 @@ rebase:
 :
  ; ABI3 consumers derive affinities from FIRST; no absolute arrays to shift.
  inc GEX_SCAN_ROW
- jmp pending
+ jmp @sync_loop
 commit:
  lda #1
  sta GP_HEADER+GPH_VALID
