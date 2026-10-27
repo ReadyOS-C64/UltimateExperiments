@@ -257,48 +257,6 @@ next_line:
     sta FOLD_PENDING ;C23 uses the same phase suffix; no fold query ran here
     jmp prepare_line
 @parsed_context:
-    lda FAST_PAINT
-    cmp #2
-    jne @classify
-    lda GEX_CLASS
-    jne @classify
-    ; R28 admitted a complete literal prose row with zero roles/styles,
-    ; unchanged leading letter and a non-syntax single-byte edit. Its semantic
-    ; class is already certified. C20 still measures the real new source and
-    ; VERIFY rejects wrap/height changes before any dirty paint is published.
-    lda #0
-    sta FOLD_PENDING
-    sta GSEM_FRAME+GSEM_LANG
-    sta GSEM_FRAME+GSEM_ROLE
-    sta GSEM_FRAME+GSEM_REVERSE
-    sta GSEM_FRAME+GSEM_INLINE
-    lda #1
-    sta GSEM_FRAME+GSEM_KIND
-    lda #9
-    sta GSEM_FRAME+GSEM_HEIGHT
-    COPY24 ANCHOR,GSEM_FRAME+GSEM_START
-    COPY24 ANCHOR,GSEM_FRAME+GSEM_BODY
-    COPY24 GEX_OLD_END,GSEM_FRAME+GSEM_END
-    lda GEX_OP
-    bne @shorter
-    inc GSEM_FRAME+GSEM_END
-    bne @plain_ready
-    inc GSEM_FRAME+GSEM_END+1
-    bne @plain_ready
-    inc GSEM_FRAME+GSEM_END+2
-    jmp @plain_ready
-@shorter:
-    lda GSEM_FRAME+GSEM_END
-    bne @decrement_low
-    lda GSEM_FRAME+GSEM_END+1
-    bne @decrement_mid
-    dec GSEM_FRAME+GSEM_END+2
-@decrement_mid:
-    dec GSEM_FRAME+GSEM_END+1
-@decrement_low:
-    dec GSEM_FRAME+GSEM_END
-@plain_ready:
-    jmp prepare_line
 @classify:
     COPY24 ANCHOR,GSEM_FRAME+GSEM_QUERY
 legacy_classify:

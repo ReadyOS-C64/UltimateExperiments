@@ -1020,13 +1020,17 @@ avoid 647,505–788,387 instructions, or 23.48–34.68% of the complete public
 operation, when a newly built row exactly rejoins the outgoing row stream.
 
 The production shape is one authenticated old 842-byte row in the existing
-dead phase loan. Put the convergence state machine in existing R28
-`render/geos/edit-cache.s`, extending or replacing `admit`, `verify`, `rebase`
-and `commit`; keep C21's `edit_attempt`, `publish_row` to `edit_verify`,
-`edit_rebase` and `cached_row` wiring and C22's existing dirty-strip admission.
+dead phase loan. R28 performs one-time authority admission, captures the first
+old row and publishes header VALID0. The synchronous old/new row comparator and
+next-row capture must remain in C21 while C20/C24/C26 and R21 run. Calling R28
+again at every `publish_row` would reload it after those R-slot workers and
+fails the zero-extra-load gate before benchmarking. Replace the strict
+`admit`, `verify`, `rebase` and `commit` route rather than layering another
+transaction over it. Keep C22's existing dirty-strip admission unchanged.
 `GEX_OLD_ROW=$D568` and `GEX_NEW_ROW=$DD68` already reserve two unused 842-byte
 FE spans; use one and retire the other reservation. C21 builds the changed row
-normally, then R28 compares canonical NEXT, geometry, paint fields and the live
+normally, then its resident comparator checks canonical NEXT, geometry, paint
+fields and the live
 CHARS/STYLES/ROLES/X planes. On exact convergence it bounds C22 to the union of
 old/new row strips and old/new caret strips. Only a later exact rebase proof may
 stop further C20/C24/C26 propagation. Existing publication and GCC authority
@@ -1034,12 +1038,14 @@ remain the only commit boundary.
 
 Promotion requires all of the following:
 
-- leave the already full C21/C22 images unchanged in size, keep R28 within its
-  current 4 KiB slot (3,497 bytes currently), and delete its superseded strict
-  verify/rebase branches so the complete linked change is no larger;
+- leave C22 byte-identical, keep C21 and R28 within their current 4 KiB slots,
+  and keep their combined linked payload no larger than the `c9bc852` control
+  (3,815 + 3,749 bytes). Delete the superseded strict verify/rebase branches;
 - save at least 500,000 actual-6510 instructions and 15% normal-speed PAL time
-  on ordinary wrapped edits, with no extra overlay loads and no more than one
-  842-byte old-row transfer per candidate row;
+  on ordinary wrapped edits, with no extra overlay loads and one logical
+  842-byte shadow capture per candidate row. FE cannot copy REU-to-REU, so the
+  exact checked DMA calls and bytes must be reported rather than hidden behind
+  the word "transfer";
 - preserve forced-full exact pixels, attributes and row packets for prose and
   styled insert/backspace, soft-wrap creation/removal, first/middle/last rows,
   the shared ninth-row VIC band, selection and caret unions;
@@ -1053,7 +1059,29 @@ Promotion requires all of the following:
 Start with an ignored R28/C21/C22 fork and one-row scratch covering four
 ordinary and four structural cases. Reject it immediately if it needs a new
 capsule, another persistent memo, extra loads, or cannot fund itself by
-deleting the superseded edit/full-page and delayed cached-row work. The C32
+deleting superseded edit work. Do not delete C21's `cached_row`: the independent
+source-identical caret/selection reuse route needs it. The C32
 canonical-row source check stays: it is the current defense against arbitrary
 FE CHARS corruption, and deleting it would weaken correctness rather than
 remove redundant work.
+
+### Dead GEOS edit-class path removed
+
+The current production graph had no writer for edit class zero: canonical R28
+wrote literal class five on every successful admission. C21 nevertheless kept
+a 142-byte class-zero plain-context synthesizer, and R28 spent five bytes
+writing the unread class. Both are now deleted. C21 shrinks 3,815 to 3,673
+bytes and R28 shrinks 3,749 to 3,744, recovering 147 linked bytes without a new
+resource or relocation.
+
+The exact ten-case wrapped control is
+`build/current-geos-material-control-20261027T1445Z/result.json`; the deletion
+candidate is `build/current-geos-material-dead-class-20261027T1500Z/result.json`.
+All prose, styled, Full, Markdown, INSERT, BACK and CR pixels, attributes,
+packets, anchors, source/history, Undo and typed-DMA masks remain exact. The
+complete 24-case product profile passes at
+`build/cache-hotpath-profile/20261027T142539267284Z/result.json`. The deletion
+saves 34--38 instructions on these fallback operations because the unreachable
+body's entry predicates are gone; this is a code-budget cleanup, not the
+material convergence result. The new exact D81 is
+`d97cb24d18074926795d47d24b5f9c9de593735bd8b5e3400822a67f650a2a29`.

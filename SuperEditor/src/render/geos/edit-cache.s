@@ -287,8 +287,6 @@ admit:
  lda GEX_ROW
  cmp GEX_HEADER+GPH_CARET_ROW
  jne miss
- lda #5
- sta GEX_CLASS
  lda GP_RECORD+GPR_TOP
  cmp GCC_Y
  jne miss
