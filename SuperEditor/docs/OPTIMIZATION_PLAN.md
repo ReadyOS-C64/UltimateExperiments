@@ -42,6 +42,15 @@ R21 remains the largest exact cost. Continue to remove work inside its existing
 job lifetime; do not revive the rejected per-glyph REU atlas or add another
 checked transport.
 
+Commit `4fc6f45` removes C20's generic measure object and keeps only its fixed
+BSW9 PETSCII/width/style path. The complete eight-byte font header is still
+checked for every glyph, including corruption between BEGIN and STEP. C20
+shrinks4,094→3,934 bytes; exact current LONG falls1.823% and WRAPPED0.164%,
+with unchanged pixels, geometry, loads, calls and parser work. Commit `d50545c`
+then deletes30 R21 bytes that wrote VALID/baseline/height fields with no linked
+reader, saving2,390–3,180 instructions per tested public TOP. Both changes add
+no state, cache, image, call edge or supervisor.
+
 ## Product and machine constraints
 
 Design for a stock 1 MHz C64 first. Keep PETSCII/SuperMark, all 40/60/80-column
