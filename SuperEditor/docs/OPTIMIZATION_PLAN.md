@@ -21,19 +21,26 @@ instructions and22,145→187 loads, with a real D81/FileOpen/IRQ PAL run at
 transport/window moves do not force reparsing; A/B/A falls1,299,975→694,204
 instructions. Neither change adds an image, bank, supervisor or resident state.
 
-The immediate correction is also measured precisely. WRAPPED TOP regressed
-9,713,018→11,285,120 PAL cycles because C26 crosses into R33 66 times for
-individual paint/hide events. Those crossings plus resident dispatch explain
-97.85% of the added CPU work and94 additional loads; source, pixels, row calls,
-parser feeds and navigation match the control. Move span accumulation into C26,
-flush completed/dirty34-byte records, and delete R33's event-level surface.
-This takes priority over page caching, disk ordering or another overlay.
+The `a5af575` PAL profile exposed 66 C26→R33 event crossings and an11,285,120
+cycle WRAPPED TOP, but that diagnosis must be read as the pre-`ade8326` state.
+The29-byte logical key keeps the completed plan valid across the warm
+BOTTOM→TOP/A→B→A path. Exact current CPU drops to2,431,845 instructions and24
+loads, so the proposed C26 batching becomes pure overhead: +33 instructions on
+warm TOP, +27–31K on edits/cold construction and +249 code bytes. Preserve its
+atomicity failure and corrected guard proof as rejected evidence; do not merge
+it. Exact current PAL confirms the composed fix: WRAPPED TOP is9,013,034
+cycles/24 loads, down2,272,086 cycles (20.13%) and94 loads from the pre-key
+state. Disk or capsule ordering cannot account for that runtime change.
 
-After that correction, the largest exact cost remains R21: about2.014 million
-instructions per tested TOP, including fixed-font decode/measure, raster,
-addressing, histogram and role election. Investigate fusion within the existing
-R21/C22 job lifetime. Do not revive the rejected per-glyph REU atlas or trade
-one repeated checked transport for another.
+This checkpoint integrates the first bounded R21 inner-loop refactor. It
+carries absolute-y, strip-y and band through the nine raster
+rows, hoists the packed/native row stride into existing scratch, and collapses
+the two style-bit tests. It adds no image, state, call edge or DMA and keeps R21
+at4,095 bytes. Exhaustive4,096-case component comparison is exact; public PAL
+falls13,060,967→12,854,325 cycles on LONG and9,013,044→8,822,966 on WRAPPED.
+R21 remains the largest exact cost. Continue to remove work inside its existing
+job lifetime; do not revive the rejected per-glyph REU atlas or add another
+checked transport.
 
 ## Product and machine constraints
 

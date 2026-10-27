@@ -347,26 +347,19 @@ raster_continue:
 @fast:
  inc fast
 @slow:
+ lda RJ+RJ_TOP
+ sta ay
+ and #7
+ sta sy
  lda #0
+ sta band
  sta gy
 @glyph_y:
- lda RJ+RJ_TOP
- clc
- adc gy
- sta ay
+ lda ay
  cmp RJ+RJ_CLIP_TOP
  jcc @next_y
  cmp RJ+RJ_CLIP_BOTTOM
  jcs @next_y
- and #7
- sta sy
- lda ay
- lsr
- lsr
- lsr
- sec
- sbc band0
- sta band
  lda gy
  asl
  tay
@@ -442,7 +435,15 @@ raster_continue:
  cmp G+GG_ADVANCE
  jcc @pixel
 @next_y:
- inc gy
+ inc ay
+ inc sy
+ lda sy
+ cmp #8
+ bcc :+
+ lda #0
+ sta sy
+ inc band
+: inc gy
  lda gy
  cmp #9
  jcc @glyph_y

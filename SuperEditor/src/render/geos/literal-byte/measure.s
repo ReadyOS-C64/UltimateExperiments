@@ -99,13 +99,12 @@ se_geos_measure:
 :   txa
     sta G+GG_ADVANCE
     lda G+GG_STYLE
-    and #GG_BOLD
-    beq @italic
+    lsr
+    bcc @italic
     inc G+GG_ADVANCE
 @italic:
-    lda G+GG_STYLE
-    and #GG_ITALIC
-    beq @metrics
+    lsr
+    bcc @metrics
     inc G+GG_ADVANCE
     inc G+GG_ADVANCE
 @metrics:

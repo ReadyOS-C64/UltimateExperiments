@@ -33,6 +33,8 @@ se_geos_glyph:
     sta se_gg_pointer+1
     ldy #GG_ROW_POINTER
     jsr gg_save_pointer
+    lda #1
+    sta G+GG_SHIFT
     jmp prepare_masks
 packed:
     lda G+GG_INDEX
@@ -105,6 +107,8 @@ packed:
     inc se_gg_pointer+1
 :   ldy #GG_ROW_POINTER
     jsr gg_save_pointer
+    lda #60
+    sta G+GG_SHIFT
 prepare_masks:
     ldx G+GG_ADVANCE
     lda prefix_hi,x
@@ -193,8 +197,8 @@ phase_width_mask:
     sta G+GG_WORD_LO
 styles:
     lda G+GG_STYLE
-    and #GG_BOLD
-    beq @italic
+    lsr
+    bcc @plain_or_italic
     lda G+GG_WORD_HI
     lsr
     sta se_gg_pointer
@@ -205,9 +209,9 @@ styles:
     lda se_gg_pointer
     ora G+GG_WORD_HI
     sta G+GG_WORD_HI
-@italic:
     lda G+GG_STYLE
-    and #GG_ITALIC
+    lsr
+@plain_or_italic:
     beq @inverse
     lda G+GG_ROW
     cmp #6
@@ -239,13 +243,7 @@ styles:
     lda G+GG_WORD_LO
     sta G+GG_INK+1,x
 advance_row:
-    lda G+GG_KIND
-    bne @native_advance
-    lda #60
-    bne @advance
-@native_advance:
-    lda #1
-@advance:
+    lda G+GG_SHIFT
     clc
     adc G+GG_ROW_POINTER
     sta G+GG_ROW_POINTER
