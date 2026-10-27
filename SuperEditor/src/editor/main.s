@@ -144,19 +144,14 @@ se_clear_state:
     bne @byte
 @view:
     .import se_editor_state_start,se_editor_state_end
-    ldx #0
+    .assert se_r_valid >= __BSS_RUN__ .and se_r_valid < __BSS_RUN__ + __BSS_SIZE__, lderror, "render valid flag outside cleared BSS"
+    .assert se_r_revision >= __BSS_RUN__ .and se_r_revision + 4 <= __BSS_RUN__ + __BSS_SIZE__, lderror, "render revision outside cleared BSS"
+    .assert se_r_damage_valid >= __BSS_RUN__ .and se_r_damage_valid < __BSS_RUN__ + __BSS_SIZE__, lderror, "render damage flag outside cleared BSS"
 @clear_view:
     sta se_editor_state_start,x
     inx
     bne @clear_view
     sta se_st_cp_valid
-    sta se_r_valid
-    sta se_r_damage_valid
-    ldx #3
-@render_revision:
-    sta se_r_revision,x
-    dex
-    bpl @render_revision
     ; Cold-only owned C64 metadata. A missing REU/asset can fail before each
     ; service initializer, so ready/phase fields must not retain power-on RAM.
     sta text_ptr

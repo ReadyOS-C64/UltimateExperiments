@@ -489,3 +489,9 @@ vertical-visibility revalidation plus two private pointer helpers. This removes
 189 executable bytes and 9,647/9,240 helper calls, reducing native PAL LONG and
 WRAPPED by 6.10% and 8.45%. Job-level validation, malformed-job refusal, pixels,
 source, stack, overlays and DMA remain exact; no table, cache or REU path is added.
+
+Cold state initialization now relies on its linker-bounded complete BSS clear
+instead of zeroing six render bytes again, and it reuses the loop's proven X=0.
+Zero-byte linker assertions keep those fields inside BSS. This removes 16 live
+COLD bytes and 51 startup cycles with identical dirty-RAM results. It is recorded
+as bloat cleanup only and carries no foreground performance claim.
