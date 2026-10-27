@@ -6,6 +6,7 @@ EDITOR_BINDINGS=1
 .include "document/api.inc"
 .include "object/api.inc"
 .include "document/math24.inc"
+.import se_range_r32_begin,se_range_r32_step
 .include "history/api.inc"
 ; R32 performs cold window loading and flush preparation. No R calls, no
 ; phase-union storage, no additional state/ZP. C6 stays loaded for hot edits.
@@ -14,6 +15,14 @@ EDITOR_BINDINGS=1
 .export entry
 entry:
  lda se_overlay_frame
+ beq range_begin_r32
+ cmp #1
+ bne @hot
+ lda se_snapshot_busy
+ cmp #2
+ jeq se_range_r32_step
+ lda se_overlay_frame
+@hot:
  sta se_hot_command
  cmp #W_LOAD
  jeq load
@@ -63,6 +72,8 @@ context:
  lda #$74
  sec
  rts
+range_begin_r32:
+ jmp se_range_r32_begin
 .include "hot/validate.s"
 .include "hot/cold/load.s"
 .include "hot/cold/prepare.s"

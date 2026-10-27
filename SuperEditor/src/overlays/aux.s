@@ -6,8 +6,6 @@
     OVL_BINDING
 entry:
     lda se_overlay_frame
-    cmp #6
-    jeq se_gsr_refresh
     cmp #A_LAYOUT_CONTEXT
     jeq se_aux_layout_context
     cmp #A_FILE_ABORT
@@ -21,5 +19,3 @@ entry:
     lda #$70
     sec
     rts
-
-.import se_gsr_refresh

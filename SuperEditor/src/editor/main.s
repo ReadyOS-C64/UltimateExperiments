@@ -267,20 +267,21 @@ se_er_published:
     cpx #3
     bcc @narrow
     bne @done ;invalid mode>=4 retains the original no-overlay behavior
-    lda GEC_SEQUENCE
-    clc
-    adc #1
-    cmp se_e_draw_sequence
-    bne @done ;cheap necessary test only; fullauthority remains inside AUX
-    lda #6
+    ldx GEC_SEQUENCE
+    inx
+    cpx se_e_draw_sequence
+    bne @done ;cheap necessary test only; full authority remains inside R19
+    lda #8
     sta se_overlay_frame
-    lda #13
-    bne @invoke
+    lda #19
+    ldx #0
+    beq @call
 @narrow:
     sta se_overlay_frame
     lda #33
 @invoke:
     ldx #1
+@call:
     jsr se_overlay_call
 @done:
     lda #0

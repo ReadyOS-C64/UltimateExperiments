@@ -5,18 +5,16 @@
 .include "render/geos/caret-cache.inc"
 .include "render/geos/edit-certificate.inc"
 .include "document/math24.inc"
+.ifndef GSR_C5
 .import se_f_owner,se_mode,se_e_ui,se_r_presentation,se_ef_valid,se_l_mode,se_l_pan
-.import se_e_draw_sequence,se_i_ready,se_i_count,se_n_cache_count
-.ifndef GSR_AUX
-.import se_fs_begin
-.endif
-.import se_fs_end,se_fs_active,se_fs_owned,se_fs_length
-.import se_doc_meta,se_doc_generation,se_doc_epoch,se_r_revision,se_v_top
+.import se_e_draw_sequence
+.import se_doc_meta,se_doc_generation,se_doc_epoch,se_r_revision,se_v_top,se_v_length
 .import se_hot_pending,se_reu_epoch,se_reu_retired,se_gc_handle,se_gc_epoch,se_gc_width
 .import se_reu_map,se_reu_logical_owner,se_reu_physical_owner
 .import se_reu_logical,se_reu_offset,se_reu_c64,se_reu_length,se_reu_copy
 .import se_crc_init,se_crc_byte,se_crc_value
 .importzp text_ptr
+.endif
 .export se_gsr_refresh
 R=$8880 ;two64B records; closed GEOS painter/FS source context only
 OLD=$8900 ;28B expected oldkey
@@ -24,13 +22,14 @@ T=$891C ;4 arithmetic bytes
 SLOT=$8920 ;0current/64previous
 COUNT=$8921 ;1atBOF/2otherwise
 .assert R>=$8880 .and COUNT+1<=$8B40,error,"refresh scratch must remain phaseowned"
-.ifdef GSR_AUX
+.ifdef GSR_C5
 .segment "CODE"
 .else
 .segment "FOLD_SOURCE_CODE"
 .endif
 se_gsr_refresh:
  lda se_f_owner
+ cmp #4
  jne miss
  lda se_mode
  cmp #3
@@ -71,25 +70,9 @@ se_gsr_refresh:
  lda T
  cmp se_e_draw_sequence
  jne miss
- lda #4
- sta se_f_owner
- lda #0
- sta se_fs_active
- sta se_fs_owned
- sta se_i_ready
- sta se_i_count
- sta se_n_cache_count
-.ifdef GSR_AUX
- lda #0
- sta se_overlay_frame
- lda #14
- ldx #0
- jsr se_overlay_call
-.else
- jsr se_fs_begin
-.endif
- jcs cleanup
- ; Exact actual current fullkey, using the realchecked FS source snapshot.
+ ; Exact current fullkey.  The successful page publication has already
+ ; refreshed the resident view; R19 owns this transaction and authenticates
+ ; every source token/epoch/revision/length against the retained page key.
  ldx #14
 @tokens:
  lda se_doc_meta,x
@@ -128,7 +111,7 @@ se_gsr_refresh:
  bpl @revision
  ldx #2
 @length:
- lda se_fs_length,x
+ lda se_v_length,x
  cmp GCC_KEY+21,x
  jne cleanup
  lda se_v_top,x
@@ -197,7 +180,7 @@ se_gsr_refresh:
  inc T+2
  jeq cleanup
 @newlen:
- CMP24 T,se_fs_length
+ CMP24 T,se_v_length
  jne cleanup
  CMP24 GEC_POSITION,GEC_LENGTH
  jcc @bounds
@@ -326,16 +309,7 @@ se_gsr_refresh:
  sta SLOT
  bne @publish
 success:
- jsr se_fs_end
- lda #0
- sta se_f_owner
- lda #1
- clc
- rts
 cleanup:
- jsr se_fs_end
- lda #0
- sta se_f_owner
 miss:
  lda #0
  clc
@@ -365,8 +339,17 @@ record:
  cmp header,y
  jne bad
  iny
- cpy #4
+ cpy #3
  bcc @header
+ ; A refused final VALID1 leaves a complete body whose stored CRC covers the
+ ; intended VALID value. Authenticate that pending record by hashing it as
+ ; VALID1 in phase-owned scratch. Other values are corrupt.
+ ldy #3
+ lda (text_ptr),y
+ cmp #2
+ jcs bad
+ lda #1
+ sta (text_ptr),y
  jsr checksum
  ldy #62
  lda (text_ptr),y

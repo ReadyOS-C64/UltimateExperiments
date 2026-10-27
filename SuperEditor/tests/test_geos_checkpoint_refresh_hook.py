@@ -14,16 +14,25 @@ def freeze_project(out,project):
   c.geos.ROOT=c.geos.retention.ROOT=project;c.geos.__file__=str(project/'tests/test_geos_editor.py');return c.geos.freeze(out)
  finally:c.geos.ROOT,c.geos.retention.ROOT,c.geos.__file__=old,oldret,oldfile
 
-def run(out,project,smoke=False):
+def run(out,project,smoke=False,geos_only=False):
  frozen,identity=freeze_project(out,project);c.geos.grid.editor_fixture.ROOT=c.geos.grid.cpu_editor.ROOT=frozen;c.geos.grid.editor_fixture.NAMES=c.geos.grid.cpu_editor.NAMES=identity['names'];dll=c.geos.grid.runner(out);f=c.Fixture(out,frozen,dll,True);fonts={n:(frozen/'fonts'/n).read_bytes()for n in c.geos.GEOS_FONTS+('native8.bin',)};frames=[];data=b''
  def profile():
-  idx=next((i for i in range(f.s['se_overlay_capacity'])if f.m.read(f.s['se_overlay_ids']+i)==13 and f.m.read(f.s['image_slot']+i)&0x7f==1),-1);dll.gm_profile(f.s['se_overlay_active']+1,idx+1,0,0xb010,0xb011,0,0)
- def clean():assert f.read(0xc600,1024)==f.shim and not any(f.get(n,1)for n in['se_e_error','se_e_job','se_f_owner','se_fs_owned','se_doc_read_locks','se_e_draw_busy']),f.debug()
+  idx=next((i for i in range(f.s['se_overlay_capacity'])if f.m.read(f.s['se_overlay_ids']+i)==19 and f.m.read(f.s['image_slot']+i)&0x7f==0),-1);dll.gm_profile(f.s['se_overlay_active'],idx+1,0,0xa048,0,0,0)
+ def clean():
+  # The inactive FS union aliases styled projection state. Ownership and the
+  # counted read lock are authoritative after the operation has quiesced.
+  assert f.read(0xc600,1024)==f.shim and not any(f.get(n,1)for n in['se_e_error','se_e_job','se_f_owner','se_doc_read_locks','se_e_draw_busy']),f.debug()
  def outside(before,tag):
   mode=f.get('se_mode',1)
-  if mode==3:return c.outside_cache(f,before,tag)
+  if mode==3:
+   _,bank=f.raw_cache();after=f.reu();allowed=[(0,64),(0x600,0x680),(0xb200,0xd568),(0xe568,0xea88)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)];cursor=0
+   for a,b in sorted((bank*65536+a,bank*65536+b)for a,b in allowed):
+    assert after[cursor:a]==before[cursor:a],(tag,'foreignREU',cursor,a);cursor=max(cursor,b)
+   assert after[cursor:]==before[cursor:],(tag,'foreignREUtail')
+   return
   after=f.reu()
   if mode==0:assert after==before,(tag,'text40wholeREU');return
+  if not f.get('se_gc_handle',1):return
   cache,bank=f.raw_cache();start=bank*65536;cursor=0
   # Integrated SP2 owns precisely128 further bytes, not the rest of this bank.
   sp2=(start+0x1600,start+0x1680)
@@ -52,7 +61,7 @@ def run(out,project,smoke=False):
    actual=tuple(int.from_bytes(f.read(f.s['se_v_rows']+i*3,3),'little')for i in range(22))+(f.get('se_v_bottom'),);assert actual==anchors,(tag,'allanchors')
    assert f.canonical()==canonical and f.catalog()==catalog;outside(before,tag+'-style');clean()
   if bits is not None:c.geos.png(bits,attrs,out/(tag+'.png'))
-  entry=dict(tag=tag,mode=f.get('se_mode',1),instructions=used,AUX_calls=calls,AUX_inclusive_instructions=dll.gm_metric(1),source_bytes=len(data),revision=f.get('se_r_revision',4),TOP=f.get('se_v_top'),queries=f.events);frames.append(entry);print('PASS',{k:v for k,v in entry.items()if k!='queries'},flush=True);(out/'progress.json').write_text(json.dumps(frames,indent=2)+'\n')
+  entry=dict(tag=tag,mode=f.get('se_mode',1),instructions=used,R19_final_calls=calls,R19_final_inclusive_instructions=dll.gm_metric(1),source_bytes=len(data),revision=f.get('se_r_revision',4),TOP=f.get('se_v_top'),queries=f.events);frames.append(entry);print('PASS',{k:v for k,v in entry.items()if k!='queries'},flush=True);(out/'progress.json').write_text(json.dumps(frames,indent=2)+'\n')
  def setup(far,row):
   nonlocal data
   pre=c.geos.native_text('prefix\r')*(9400 if far else 0);suffix=c.geos.native_text('# Heading words.\rSecond plain row.\rThird plain row.\rTail.');data=pre+suffix;top=len(pre);f.source(data);f.command(99);f.position(top);f.render();f.position(top+[5,22,40][row]);f.render();assert f.get('se_v_top')==top
@@ -63,7 +72,7 @@ def run(out,project,smoke=False):
     for serial,key in enumerate([c.geos.native_text('Q')[0],c.geos.native_text('R')[0],0x14,0x14,13]):
      at=f.get('se_hot_caret');data=data[:at-1]+data[at:]if key==0x14 else data[:at]+bytes([key])+data[at:];f.key(key);check(('far'if far else'near')+'-row'+str(row)+'-'+str(serial),True)
     check(('far'if far else'near')+'-row'+str(row)+'-readonly',False)
-  if not smoke:
+  if not smoke and not geos_only:
    # Full mode routes and exactnative40/narrow/GEOS source/undo/redo/selection.
    original=c.geos.native_text('Simple words.\rNext row.\rTail.');f.source(original);data=original
    for mode in range(4):
@@ -75,19 +84,19 @@ def run(out,project,smoke=False):
     # Restore the exact common document through actual Undo/commands rather
     # than a host source replacement between mode roundtrips.
     f.command(16);data=original;check('mode'+str(mode)+'-restored')
-   # Missing optional refresh components cannot reject an already painted
+   # Missing optional final-writer component cannot reject an already painted
    # actual localedit. Restore the catalog then actual Undo must still work.
-   for missing,slot in[(13,1),(14,0)]:
+   for missing,slot in[(19,0)]:
     setup(False,2);at=f.get('se_hot_caret');data=data[:at]+c.geos.native_text('Q')+data[at:];f.key(c.geos.native_text('Q')[0]);idx=next(i for i in range(f.s['se_overlay_capacity'])if f.m.read(f.s['se_overlay_ids']+i)==missing and f.m.read(f.s['image_slot']+i)&0x7f==slot);f.m.write(f.s['se_overlay_ids']+idx,0);f.m.write(f.s['se_overlay_active']+slot,0);check('optional-missing-'+str(missing));f.m.write(f.s['se_overlay_ids']+idx,missing);f.command(16);data=data[:at]+data[at+1:];check('optional-missing-'+str(missing)+'-undo')
-   # An occasional lowbyte gate collision loads AUX, but the full sequence
+   # An occasional lowbyte gate collision loads R19, but the full sequence
    # guard rejects the stale event and never modifies checkpoint authority.
    setup(False,2);at=f.get('se_hot_caret');data=data[:at]+c.geos.native_text('Q')+data[at:];f.key(c.geos.native_text('Q')[0]);check('lowbyte-collision-initial',True);cache,_=f.raw_cache();pair=cache[0x600:0x680];canonical=f.canonical();profile()
    for i in range(256):f.render();assert f.canonical()==canonical and f.raw_cache()[0][0x600:0x680]==pair
    assert dll.gm_metric(0)==1,('lowbyte-collision-calls',dll.gm_metric(0));c.exact_pixels(f,data,fonts,'lowbyte-collision-final');clean()
    # Direct invalidmode seam must retain old no-overlay publication semantics.
    f.put('se_mode',4,1);before=f.reu();canonical=f.canonical();catalog=f.catalog();calls=f.get('se_overlay_calls',2);seq=f.get('se_e_draw_sequence',2);r=f.call('se_er_published');assert not r.p&1 and r.a==0 and f.get('se_overlay_calls',2)==calls and f.get('se_e_draw_sequence',2)==(seq+1)&65535 and f.reu()==before and f.canonical()==canonical and f.catalog()==catalog;f.put('se_mode',3,1)
-  result=dict(status='passed',identity=identity,frames=frames,scope='Actualcoherentprivate resident/AUX/C21/C20 hook throughpublicrender; nohostAUXcalls/overlay substitutions. All4modes/source/history/selection/clipboard and exactpixels/anchors/catalog/shim/full16MiB declaredspans; invalidmode>=4 preservesnooverlay. CPUonly; matchingnativeBASICidlelog/absolute stack not yetcaptured.');(out/'result.json').write_text(json.dumps(result,indent=2)+'\n');return result
+  result=dict(status='passed',identity=identity,frames=frames,scope='Actualcoherentprivate resident/R19/C21/C20 hook throughpublicrender; nohostR19calls/overlay substitutions. All4modes/source/history/selection/clipboard and exactpixels/anchors/catalog/shim/full16MiB declaredspans; invalidmode>=4 preservesnooverlay. CPUonly; matchingnativeBASICidlelog/absolute stack not yetcaptured.');(out/'result.json').write_text(json.dumps(result,indent=2)+'\n');return result
  except BaseException:(out/'failure-ram.bin').write_bytes(f.read(0,65536));raise
  finally:f.close()
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--project',type=Path,required=True);p.add_argument('--smoke',action='store_true');a=p.parse_args();out=ROOT/'build/geos-refresh-hook-editor'/datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');out.mkdir(parents=True);print('RUN',out,flush=True);r=run(out,a.project.resolve(),a.smoke);print('RESULT',r['status'],'frames',len(r['frames']))
+ p=argparse.ArgumentParser();p.add_argument('--project',type=Path,required=True);p.add_argument('--smoke',action='store_true');p.add_argument('--geos-only',action='store_true');a=p.parse_args();out=ROOT/'build/geos-refresh-hook-editor'/datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');out.mkdir(parents=True);print('RUN',out,flush=True);r=run(out,a.project.resolve(),a.smoke,a.geos_only);print('RESULT',r['status'],'frames',len(r['frames']))

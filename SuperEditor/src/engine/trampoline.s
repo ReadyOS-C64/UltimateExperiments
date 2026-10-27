@@ -46,7 +46,7 @@ se_range_begin:
 se_range_step:
     lda #RANGE_STEP
 range_invoke:
-    ldy #RANGE_ID
+    ldy #32
     bne invoke_id
 se_doc_splice_cancel:
     lda #0
@@ -83,7 +83,8 @@ journal_observe:
     clc
     rts
 se_ef_journal_call:
-    jmp range_invoke
+    ldy #RANGE_ID
+    .byte $2C ;BIT abs skips the following LDY #20; flags are dead at invoke_id
 se_ef_transform_call:
     ldy #20
     jmp invoke_id

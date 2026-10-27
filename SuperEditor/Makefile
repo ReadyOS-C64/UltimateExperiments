@@ -620,7 +620,7 @@ editor: build/overlays/fileio.seo
 build/supereditor.d81: build/overlays/fileio.seo
 
 # Rare control work remains operation-sized and shares one catalog entry.
-AUX_CONTROL_OBJ = build/aux-control/layout-context.o build/aux-control/index.o build/aux-control/emergency.o build/editor-file-prod/dialog-draw.o build/editor/box40.o build/aux-control/checkpoint-refresh.o
+AUX_CONTROL_OBJ = build/aux-control/layout-context.o build/aux-control/index.o build/aux-control/emergency.o build/editor-file-prod/dialog-draw.o build/editor/box40.o
 build/nav/invalidate.o: src/nav/invalidate.s src/aux/api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -D SE_INDEX_DISPATCH=1 -I src -o $@ -l $(@:.o=.lst) $<
@@ -877,9 +877,12 @@ build/editor_fold/dispatch.o build/editor_fold/emergency.o build/editor_fold/pha
 build/engine/range-entry.o: src/engine/range-entry.s src/engine/api.inc build/engine-api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -I build -o $@ $<
-RANGE_CODE_OBJ = build/engine/range-entry.o build/engine-code/range.o build/editor_fold/journal-code.o build/geos-prod/checkpoint-outgoing.o build/geos-prod/cache-warm.o
+build/geos-prod/checkpoint-rekey.o: src/render/geos/checkpoint/rekey.s src/render/geos/checkpoint/codec.inc build/editor-api.inc
+	mkdir -p $(dir $@)
+	$(CA65) -g -D GSR_C5=1 -I build -I src -o $@ -l $(@:.o=.lst) $<
+RANGE_CODE_OBJ = build/engine/range-entry.o build/editor_fold/journal-code.o build/geos-prod/checkpoint-outgoing.o build/geos-prod/checkpoint-rekey.o build/geos-prod/cache-warm.o
 build/range-bindings.s: $(RANGE_CODE_OBJ) build/editor.prg tools/module_bindings.py
-	$(PYTHON) tools/module_bindings.py --report build/editor-report.json --output $@ --require-export se_range_begin --require-export se_range_step $(RANGE_CODE_OBJ)
+	$(PYTHON) tools/module_bindings.py --report build/editor-report.json --output $@ --require-export se_gcl_publish --require-export se_gsr_refresh $(RANGE_CODE_OBJ)
 build/engine/range-bindings.o: build/range-bindings.s
 	$(CA65) -g -o $@ $<
 build/overlays/rangeio.bin: $(RANGE_CODE_OBJ) build/engine/range-bindings.o cfg/range-journal.cfg
@@ -1225,8 +1228,16 @@ build/cache/state.o: src/cache/state.s src/cache/api.inc
 build/hot-cold/worker.o: src/hot/cold/worker.s src/hot/api.inc build/editor-api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -I build -o $@ -l $(@:.o=.lst) $<
-build/overlays/hotcold.bin: build/hot-cold/worker.o cfg/overlay-r.cfg
-	$(LD65) -C cfg/overlay-r.cfg -o $@ -m $(@:.bin=.map) -Ln $(@:.bin=.lbl) $<
+build/hot-cold/range.o: src/document/range-r32.s src/document/frames/range.inc src/document/api.inc src/document/splice.inc
+	mkdir -p $(dir $@)
+	$(CA65) -g -D ENGINE_CODE=1 -I src -o $@ -l $(@:.o=.lst) $<
+HOT_COLD_OBJ = build/hot-cold/worker.o build/hot-cold/range.o
+build/hot-cold/bindings.s: $(HOT_COLD_OBJ) build/editor.prg tools/module_bindings.py
+	$(PYTHON) tools/module_bindings.py --report build/editor-report.json --output $@ --require-export se_range_r32_begin --require-export se_range_r32_step $(HOT_COLD_OBJ)
+build/hot-cold/bindings.o: build/hot-cold/bindings.s
+	$(CA65) -g -o $@ $<
+build/overlays/hotcold.bin: $(HOT_COLD_OBJ) build/hot-cold/bindings.o cfg/overlay-r.cfg
+	$(LD65) -C cfg/overlay-r.cfg -o $@ -m $(@:.bin=.map) -Ln $(@:.bin=.lbl) $(HOT_COLD_OBJ) build/hot-cold/bindings.o
 build/overlays/hotcold.seo: build/overlays/hotcold.bin tools/overlays.py build/editor-report.json
 	$(PYTHON) tools/overlays.py $< $@ --slot 0 --id 32 --resident-report build/editor-report.json
 EDITOR_ASSETS += build/overlays/hotcold.seo
