@@ -521,17 +521,35 @@ se_editor_service:
     bne @cancel_nav
     ldx se_input_tail
     cpx se_input_head
-    jeq @nav_step
-    ; Yield the optional derived-data job without consuming this queued key.
-    lda se_bc_flags
-    and #BC_ACTIVE
-    bne @cancel_geos
+    bne @queued
+@nav_step:
+    lda se_e_job
+    cmp #11
+    beq @geos_step
+    cmp #12
+    bne :+
+@geos_step:
+    jmp se_geos_service
+:
+    jmp @other_job
+@queued:
+    ; Source page paint is derived work even when its optional cache is idle.
+    ; Preview must finish its bottom anchor before another page command.
+    ; Cancel source paint before another slice, retaining this queued event.
+    ; Job12 must complete its requested position even while its semantic helper
+    ; owns BC_ACTIVE. Only STOP/NMI may abandon that destination.
+    lda se_e_job
+    cmp #11
+    bne @queued_control
+    lda se_e_ui
+    beq @cancel_geos
+@queued_control:
     lda se_input_chars,x
     cmp #3
-    jne @nav_step
+    bne @nav_step
     lda se_input_mods,x
     and #4
-    jne @nav_step
+    bne @nav_step
 @cancel_nav:
     jsr se_input_get
     jsr se_editor_latch_event
@@ -587,15 +605,7 @@ se_editor_service:
     lda #0
     sta se_e_job
     jmp redraw
-@nav_step:
-    lda se_e_job
-    cmp #11
-    beq @geos_step
-    cmp #12
-    bne :+
-@geos_step:
-    jmp se_geos_service
-:
+@other_job:
     cmp #10
     bne :+
     lda #1

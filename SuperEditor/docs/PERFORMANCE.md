@@ -671,3 +671,42 @@ for byte, not merely its logical files. Native evidence:
 `build/vic-stride-probe/receipt.json`. General redraw and latency targets remain
 open. CPU instruction savings4.48–5.18% are deliberately separate from native
 cycle savings3.0–3.6%.
+
+
+## Queued input cancels an obsolete GEOS repaint
+
+The foreground scheduler now cancels source GEOS page job11 when an input event is
+already queued, using the existing lease/cancel path and leaving that event for
+normal input dispatch. Job12 still completes requested navigation before an
+ordinary queued edit. This replaces waiting for a required page paint to finish;
+there is no new overlay, state allocation or parser cache. Resident code shrinks
+one byte after moving the shared dispatch branches.
+
+A paired PAL VICE check starts with a genuine pendingC22 sourcePlain repaint
+of1890 bytes, enters Q through KERNAL/IRQ, and times from the stopped foreground
+boundary with that event queued until it is applied. Actual pending/queued/
+applied RAM states are asserted; neither PC/SP nor job/cache/source is seeded.
+The verified62 control takes9,290,657 cycles; the candidate takes8,237. Both
+produce identical final bitmap/color cells, independently checked source and
+64,000 native VIC pixels, with the1KiB ReadyOS reservation intact. This is
+queued-event service latency at a safe boundary, not physical key-to-photon or
+a bound on an already executing render slice. Warp/traps accelerate the host
+run; the measurement uses emulated PAL CPU cycles with IRQ/VIC/REU stalls.
+
+Ten candidate CPU checks and six paired repaint checks cover Plain/Markdown/Full pendingC20/C22, a16-event burst,
+requested-navigation ordering,STOP/NMI cleanup and subsequent40-column recovery.
+The six repaint cases reduce queued apply137,267–3,297,831 to1,279–2,131 CPU
+instructions with exact final pixels and Undo/Redo. These are instruction counts,
+not cycle estimates. Actual62 foreground+IRQ/NMI stack bound remains68 bytes.
+Targeted preview checks confirm that a queued second page command waits for
+the completed bottom anchor, with original STOP cleanup/recovery retained.
+Formatted job12 now also retains its destination while its semantic worker is
+active: the old global cache-cancel branch could insert at the old caret.
+The larger renderer simplification remains open; this does not close general
+1MHz responsiveness.
+
+Evidence: build/queued-repaint/final-v3.json,
+build/queued-repaint-supplement/v3-small-final/result.json,
+tests/test_geos_queued_repaint.py and tests/test_geos_queued_repaint_vice.py. Initial native v2 timing receipts are
+explicitly rejected: an asynchronous host playback script lacked its completion
+sentinel. The v3 comparisons assert every timing boundary from captured RAM.
