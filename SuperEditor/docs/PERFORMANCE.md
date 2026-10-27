@@ -714,38 +714,52 @@ sentinel. The v3 comparisons assert every timing boundary from captured RAM.
 
 ## Compose a logical GEOS row once
 
-R21/C22 now gather and compose a complete logical row instead of restarting
-its preparation for each8-pixel physical strip. Eight glyphs per continuation
-reduce repeated glyph/measurement work. The fixed font, color arbitration,
-selection, clipping and native code-row paths remain. Full array validation is
-once per exclusively owned packet; source/provider/header/selection guards
-remain at every public STEP. Existing phase storage is reused; no image or
-resident allocation is added. R21/C22 payload4057+4089 replaces4094+4056.
+R21/C22 gather and compose a complete logical row instead of restarting its
+preparation for each8-pixel physical strip. Existing fonts, color arbitration,
+selection, clipping and native code rows remain. The current pair is4095+4089
+bytes versus4094+4056:34 extra payload bytes, no new image or resident allocation.
+The private whole-row packet uses existing exclusive phase loans.
 
-A paired native PAL run uses actual File/Open, Bottom, then the public F7 Top
-command. The established stopwatch seam invokes final Return through public
-input with PC/SP setup; this is command-to-completion work, not physical input
-latency. Both final screenshots match independent bitmap/color/source models.
+The renderer polls the resident IRQ ring/NMI after initialization, at most four
+complete glyphs, and each40-tile resolver band. If no event is pending it
+continues within the same verified call. Pending input returns immediately
+without consuming it; the scheduler cancels obsolete source paint before
+applying the event. Source/provider/header/selection guards remain at actual
+public STEP boundaries. This avoids repeated scheduler/validation work just to
+resume a row with no input waiting.
 
-| Public Top command | Control cycles | New cycles | Largest service step, old→new |
+Paired native PAL File/Open→Bottom→F7 Top commands use the established final
+Return public-input stopwatch seam with PC/SP setup. They measure complete
+command work, not physical key latency. Independent source/bitmap/colors and
+actual native VIC pixels agree.
+
+| Public Top command | Original cycles | Current cycles | Reduction |
 | --- | ---: | ---: | ---: |
-|863-byte Full prose |15,422,210|13,732,977|482,564→113,544|
-|Wrapped Markdown prose |11,500,650|10,219,280|482,583→110,738|
+|863-byte Full prose |15,422,210|13,220,193|14.28%|
+|Wrapped Markdown prose |11,500,650|9,713,018|15.54%|
 
-Total time improves10.95%/11.14%; the largest service step improves76–77%.
-Code loads remain118/24. These completion times and service steps still miss
-the original1MHz budgets. Subsequent work must reduce parsing/transport and
-bound initialization/final color resolution. No general responsiveness closure.
+Loads remain118/24; total time is still far above the original1MHz goals.
+Without waiting input, full service invocations can now reach598,490/562,228
+cycles because work continues across internal polling points. This is not a
+bound on how long an arriving event waits.
 
-Private paired CPU12 checks show long warmed Full repaint−14.91%, diverse Full
-−3.31%, but diverse Plain+2.49%; this small regression is disclosed. Additional
-CPU clipping48, fault43, incremental15 and warmfold28 checks preserve independent
-pixels, canonical geometry/source/history/shim and precise whole-REU guards.
-The actual integrated scheduler queue10 and62-image stack bound68 also pass.
-Cold historical fold audit rejects initial type53 writes on both cohorts; the
-warmfold gate explicitly completes that real baseline first, without relaxing
-its evaluator. These scoped tests do not replace final integrated acceptance.
+A separate actual IRQ check starts the stopwatch immediately after the ring
+publishes Q while R21 is drawing. The saved ROM IRQ stack proves the interrupted
+PC is inside the active R21 image; no PC/SP/job/source is seeded. Publication to
+applied input falls51,447→21,026 PAL cycles versus the initial eight-glyph
+version. Final pixels/source/shim agree. This one arrival point is below50k;
+universal latency across every clip/font/IRQ phase remains unproven.
 
-Native evidence: build/material-native/row-native-comparison.json.
-Private source/CPU release: build/row-residency-probe/READY8.json.
-Current stack: build/row-job-stack-agent/run1/result.json.
+Private CPU12 cases all improve versus the old strip renderer: long warmed
+Full−20.65%, diverse Full−5.96%, diverse Plain−0.88%. Clipping48, faults49,
+asynchronous arrivals12, incremental15 and warmfold28 preserve independent
+pixels/source/history/shim and precise wholeREU guards. Actual integrated
+queue10 and62-image foreground+IRQ/NMI stack68 pass. Historical cold-fold audit
+still rejects initial type53 writes on both cohorts; warmfold explicitly
+completes that real baseline without relaxing its evaluator.
+
+Evidence: build/material-native/poll-qualified.json and
+build/row-residency-probe/READY-POLL4.json. Native recipes are
+ tests/test_geos_material_profile_vice.py and
+ tests/test_geos_queued_repaint_vice.py --inflight. This replaces the initial
+9bf262a unconditional eight-glyph continuation; full final acceptance stays open.

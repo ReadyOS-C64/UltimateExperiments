@@ -4,6 +4,7 @@
 .include "render/geos/api.inc"
 .include "render/geos/row.inc"
 .include "render/geos/row-job.inc"
+.import se_input_head,se_input_tail,se_input_nmi_pending
 .import se_overlay_frame
 .import se_f_owner,se_geos_glyph,se_geos_packed,se_geos_widths
 .importzp se_gg_context,se_gg_pointer
@@ -276,8 +277,9 @@ se_logical_row_job:
  lda RJ+RJ_X+1
  sta xpos+1
  jsr map
- lda #8
- sta row_budget
+ lda RJ+RJ_COUNT
+ jeq resolve
+ jmp pause_job
 raster_continue:
  ldx idx
  cpx RJ+RJ_COUNT
@@ -662,8 +664,15 @@ byte_row:
 @done:
  rts
 resolve:
+ lda #$80
+ sta RJ+RJ_DONE
  lda #0
  sta band
+ sta tile
+ jmp pause_job
+resolve_continue:
+ lda #40
+ sta row_budget
 @band:
  jsr y_begin
  lda ay
@@ -676,9 +685,10 @@ resolve:
  sbc band0
  cmp band
  jne @next_band
- lda #0
- sta tile
 @tile:
+ lda row_budget
+ jeq pause_job
+ dec row_budget
  lda tile
  asl
  asl
@@ -762,6 +772,8 @@ resolve:
  cmp #40
  jcc @tile
 @next_band:
+ lda #0
+ sta tile
  inc band
  lda band
  cmp #2
@@ -793,14 +805,31 @@ busy:
  sec
  rts
 
-; Per-publicSTEP bound is8 complete glyphs. No glyph, vote, map or band is
+; Poll every4 glyphs/40 tiles; with no queued input the same call continues.
+; No glyph, vote, map or band is
 ; reordered/restarted. C22 rechecks actual source/cache/selection beforeSTEP.
+.segment "ROW_JOB_POLL"
 pause_job:
+ lda se_input_nmi_pending
+ bne @yield
+ lda se_input_head
+ cmp se_input_tail
+ bne @yield
+ lda RJ+RJ_DONE
+ bmi @resolve
+ lda #4
+ sta row_budget
+ jmp raster_continue
+@resolve:
+ jmp resolve_continue
+@yield:
  lda #2
  sta RJ+RJ_VALID
  lda #1
  clc
  rts
+.segment "CODE"
+.segment "ROW_JOB_HELPERS"
 resume_job:
  lda se_overlay_frame+1
  cmp #<RJ
@@ -818,7 +847,9 @@ resume_job:
  jcs argument
  lda idx
  cmp RJ+RJ_COUNT
- jcs argument
+ bcc :+
+ jne argument
+:
  lda RJ+RJ_TOP
  cmp #16
  jcc argument
@@ -833,9 +864,26 @@ resume_job:
  cmp #16
  jcs argument
  jsr setup_addresses
- lda #8
+ lda RJ+RJ_DONE
+ cmp #$80
+ beq @resolver
+ cmp #0
+ jne argument
+ lda idx
+ cmp RJ+RJ_COUNT
+ jcs argument
+ lda #4
  sta row_budget
  jmp raster_continue
+@resolver:
+ lda band
+ cmp #2
+ jcs argument
+ lda tile
+ cmp #40
+ jcs argument
+ jmp resolve_continue
+.segment "CODE"
 ; Empty/native strip clear consumes no glyph/font metadata. Sealed module
 ; admission, owner4, exact frame and complete destination checks still apply.
 clear_job:

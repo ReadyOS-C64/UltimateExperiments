@@ -14,7 +14,7 @@ untouched `$C600–$C9FF` range. Current resource sizes are:
 | COLD |1737, ending `$0ED5` inclusive;42 bytes before `$0F00`|
 | C7 menu/control |4001|
 | C21 page coordinator |4096|
-| R21 bounded logical-row rasterizer |4057|
+| R21 polling logical-row rasterizer |4095|
 | C22 row painter |4089|
 | R22 popup/settings |4086|
 | R30 local typing |3662|
@@ -25,7 +25,7 @@ untouched `$C600–$C9FF` range. Current resource sizes are:
 The scheduler update5349d45 preserves62 images and reduces resident code one
 byte. The R21/C22 replacement removes per-strip row preparation, retains the
 same fonts, and adds no resident/REU allocation or registered image. Its combined
-payload is four bytes smaller; fixed font padding remains inside R21. All other
+payload is34 bytes larger; the polling helper reuses the fixed image tail. All other
 60 images are unchanged from the scheduler control. Actual62 CFG analysis still
 computes68 relative bytes for foreground plus one IRQ/NMI, subject to the
 declared ROM/frame contracts. This is not an exhaustive physical NMI guarantee.
@@ -47,8 +47,10 @@ build-before-paint sequencing supplies that proof. No source prefetch or parser
 may run while the row continuation is live. IRQ writes only input state; normal
 input cancels source paint before another phase. Every C22 STEP still checks
 source/provider/header/selection. R21 validates arrays at packet admission,
-then checks its scalar/frame/cursor bounds and reconstructs output addresses
-on continuation. C20's next BEGIN revokes its old certificates before reusing
+then checks its scalar/frame/cursor/stage bounds and reconstructs output
+addresses on continuation. Internal IRQ-ring/NMI polls continue within the same
+verified invocation when no input waits; they do not introduce another source
+trust boundary or allocate state. C20's next BEGIN revokes its old certificates before reusing
 the loaned bytes. Native-row transitions revoke row continuation first.
 
 Paged Help retains C7/R22. The retired paint supervisor and shadow overlap stay

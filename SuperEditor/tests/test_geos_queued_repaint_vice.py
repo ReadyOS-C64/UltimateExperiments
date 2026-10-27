@@ -29,7 +29,7 @@ class Plan(timing.Plan):
         p.write_text(p.read_text().replace('"REUsize" "16384"','"REUsize" "2048"'))
 
 
-def execute(base,out):
+def execute(base,out,inflight=False):
     assert not out.exists(),'fresh output required'
     e=timing.freeze(base,'pal');out.mkdir(parents=True)
     (out/'fixture.txt').write_text(str(e)+'\n')
@@ -46,17 +46,32 @@ def execute(base,out):
     # required paint. Neither parser/cache validity nor scheduler state is set.
     top=bytes([0x88])+timing.native.live.grid.native_text('top')+b'\r'
     pending=f'(@cpu:${s["se_e_ui"]:04x} == $00) && (@cpu:${s["se_input_head"]:04x} == @cpu:${s["se_input_tail"]:04x}) && (@cpu:$00c6 == $00) && (@cpu:${s["se_e_job"]:04x} == $0b) && (@cpu:$9135 == $16) && ((@cpu:${s["se_bc_flags"]:04x} & $08) == $00)'
+    pending_pc=queued_pc=s['se_idle']
+    if inflight:
+        labels={name:int(address,16)for address,name in re.findall(
+            r'al ([0-9a-fA-F]+) \.(\w+)',(base/'build/overlays/geosrow.lbl').read_text())}
+        pending_pc=labels['raster_continue']
+        tag=json.loads((base/'freeze.json').read_text())['names'].index('geosrow')+1
+        pending+=f' && (@cpu:${s["se_overlay_active"]:04x} == ${tag:02x}) && (@cpu:${s["se_overlay_busy"]:04x} == $01) && (@cpu:$9040 > $14)'
+        # Stop immediately after the real IRQ publishes the event. Reconstruct
+        # the interrupted PC from the ROM dispatcher stack to prove mid-R21.
+        prg=(e/'editor.prg').read_bytes();load=int.from_bytes(prg[:2],'little')
+        first,last=(s[k]-load+2 for k in ('se_input_irq','se_input_nmi'))
+        needle=bytes((0x8d,s['se_input_head']&255,s['se_input_head']>>8))
+        offsets=[i for i in range(first,last-2)if prg[i:i+3]==needle]
+        assert len(offsets)==1
+        queued_pc=load+offsets[0]-2+3
     queued=f'(@cpu:${s["se_input_head"]:04x} != @cpu:${s["se_input_tail"]:04x})'
     applied=f'(@cpu:${s["se_hot_pending"]:04x} == $01) && (@cpu:${s["se_hot_caret"]:04x} == $01) && (@cpu:${s["se_input_head"]:04x} == @cpu:${s["se_input_tail"]:04x})'
     log=n.out/'queued-stopwatch.log'
     n.raw('required_paint_then_IRQ_key_coherent',[
         'delete',f'> 0277 {top.hex(" ")}',f'> 00c6 {len(top):02x}',
-        f'break exec ${s["se_idle"]:04x} if {pending}','x','delete',
+        f'break exec ${pending_pc:04x} if {pending}','x','delete',
         f'bsave "{captures}/pending.bin" 0 $0000 $cfff',
         f'> 0277 {timing.native.live.grid.native_text("Q").hex(" ")}','> 00c6 01',
-        f'break exec ${s["se_idle"]:04x} if {queued}','x','delete',
+        f'break exec ${queued_pc:04x} if {queued}','x','delete',
         f'bsave "{captures}/queued.bin" 0 $0000 $cfff',
-        f'logname "{log}"','log on','stopwatch reset',
+        f'logname "{log}"','log on','registers','stopwatch reset',
         f'break exec ${s["se_idle"]:04x} if {applied}','x','stopwatch','registers','delete','log off',
         f'bsave "{captures}/applied.bin" 0 $0000 $cfff',
         f'bsave "{captures}/apply-colors.bin" 0 $d800 $dbe7'])
@@ -96,7 +111,8 @@ def execute(base,out):
             assert pixel==palette.setdefault(c,pixel)
     for phase in ('pending','queued','applied'):
         b=(captures/(phase+'.bin')).read_bytes()
-        assert b[s['se_e_ui']]==0 and b[198]==0
+        assert b[s['se_e_ui']]==0
+        assert b[198]==(1 if inflight and phase=='queued' else 0)
         if phase!='applied':
             assert b[s['se_e_job']]==11 and b[0x9135]==22
             assert int.from_bytes(b[s['se_hot_caret']:s['se_hot_caret']+3],'little')==0
@@ -104,12 +120,23 @@ def execute(base,out):
             assert b[s['se_hot_pending']]==1 and b[s['se_hot_caret']]==1
         assert (b[s['se_input_head']]!=b[s['se_input_tail']])==(phase=='queued')
     values=re.findall(r'Stopwatch:\s*(\d+)',log.read_text(encoding='utf-8-sig'));assert len(values)==1
+    interrupted=None
+    if inflight:
+        registers=re.findall(r'(?m)^\.;([0-9a-f]{4}) (?:[0-9a-f]{2} ){3}([0-9a-f]{2}) ',log.read_text(encoding='utf-8-sig'),re.I)
+        assert len(registers)==2 and int(registers[0][0],16)==queued_pc,registers
+        sp=int(registers[0][1],16);b=(captures/'queued.bin').read_bytes()
+        interrupted=b[0x100+((sp+5)&255)]|(b[0x100+((sp+6)&255)]<<8)
+        assert 0xa000<=interrupted<0xb000,('IRQ did not interrupt R21',hex(interrupted))
+        assert b[s['se_overlay_active']]==tag and b[s['se_overlay_busy']]==1
     receipt=dict(status='PASS',fixture=str(base),native=str(e),queued_apply_PAL_cycles=int(values[0]),
-        independent_pixels=64000,source_bytes=len(wanted),scope=__doc__)
+        independent_pixels=64000,source_bytes=len(wanted),inflight=inflight,
+        interrupted_PC=hex(interrupted)if interrupted is not None else None,
+        timing_boundary='IRQ event publication inside R21 to applied'if inflight else'queued safe foreground boundary to applied',scope=__doc__)
     (out/'result.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt),flush=True)
     return receipt
 
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--fixture',required=True,type=Path);p.add_argument('--out',required=True,type=Path)
-    a=p.parse_args();execute(a.fixture.resolve(),a.out.resolve())
+    p.add_argument('--inflight',action='store_true')
+    a=p.parse_args();execute(a.fixture.resolve(),a.out.resolve(),a.inflight)
