@@ -106,33 +106,8 @@ call_failed:
     cmp #GP_INLINE_ID+1
     bcc resume
 :
-    ; C34 builds a baseline and restarts C21; C35 resumes its query caller.
-    ; Both remain loaded across bounded slices, just like semantic workers.
-    cmp #34
-    bcc ordinary_worker
-    cmp #40
-    bcs ordinary_worker
-    cpx #1
-    bne cache_complete
-    ; Odd query workers, including C39 SOURCE, own their continuation.
-    ; The request was already popped; this one-byte loan cannot exceed the
-    ; existing request-PHA/overlay-JSR stack depth earlier in this function.
-    pha
-    lsr a
-    bcs :+ ;odd35/37 preserve their own operation, including handoff BEGIN0
-    stx OP ;even34/36 advance BEGIN0 to STEP1
-:
-    pla
-    cpx #1 ;restore exact legacy pending return flags/A/X/Y
-    beq done
-cache_complete:
-    ; Odd queries return HIT/MISS/STREAM to their actual C21/C23 caller.
-    ; Even C34 completion restarts C21 through its fresh owner claim.
-    and #1
-    bne worker_complete
-    sta se_f_owner ;C34 completion restarts C21 through its fresh claim
-:
-    jmp set_page
+    ; The registered product has no worker above ID33. Successful current
+    ; returns therefore continue directly through the ordinary worker route.
 ordinary_worker:
     cmp #GP_NAV_ID
     bne :+
