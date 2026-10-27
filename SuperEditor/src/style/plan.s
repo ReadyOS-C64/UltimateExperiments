@@ -345,7 +345,7 @@ start_paint:
     lda #2
     sta st_phase
     jsr paint_seek
-    jmp pending
+    jmp paint_step
 
 paint_step:
     CMP24 st_cell,st_to
@@ -483,7 +483,7 @@ inline_begin:
     sta st_used
     lda #4
     sta st_phase
-    jmp pending
+    jmp inline_step
 
 inline_step:
     CMP24 st_pos,st_end

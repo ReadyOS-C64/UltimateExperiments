@@ -921,3 +921,39 @@ oracle and screenshots at
 `agentsworking/evidence/M8/20261027T133548485400Z-display-timing-styled-grid-convergence-baseline`
 and
 `agentsworking/evidence/M8/20261027T133701134151Z-display-timing-styled-grid-convergence-baseline`.
+
+### Delete empty parser phase yields
+
+C14 and C15 now continue from parser initialization into scan/paint within the
+same existing bounded budget. A parsed byte and a painted cell both consume
+that budget; no slice becomes unbounded. R14 also omits its second source guard
+only for the private block step that C14 already guarded without an intervening
+yield. Public R14 frame 2 performs the guard before entering the same read leaf,
+so its authenticated API remains unchanged. The overlay dispatcher uses a
+shorter decrement chain to fund that public wrapper.
+
+This removes six linked executable bytes and no state, call frame, load, DMA,
+image, bank or catalog entry. The exact-current 72-case matrix passes at
+`build/styled-grid-carry-matrix/20261027T134952529642Z/result.json`. Admitted
+edits save 2,669–10,378 instructions, with a 4,012 median; unchanged-code cases
+save 4,011–4,013 at every width. Structural fallbacks save 9,048–41,383.
+Parser calls/feeds and final syntax output remain exact. All five corruption
+classes, queued edit and F6 cancellation pass; input injected at C14 reaches
+resident service within 5,781 instructions, and the registered stack bound
+remains 68 bytes. The broader style-editor suite also passes, including public
+reader faults and asset removal at a real 32-unit lexical paint boundary.
+
+Normal-speed PAL complete edits improve another 7.33–13.84% over the preceding
+transaction checkpoint: 173,158–174,678 cycles at 40 columns,
+343,108–348,978 at 60 and 286,879–290,063 at 80. NTSC improves 7.38–14.11%:
+174,323–175,736, 345,732–351,699 and 289,411–292,011 cycles. Each edit makes
+eight fewer overlay calls while retaining the same load count; the six-byte
+smaller R14 payload also removes six transferred DMA bytes. All 24 native cases
+preserve exact source, pixels, colors, anchors, history, catalog, payload,
+stack and shim, publish once, and do no parser or overlay work afterward.
+Evidence and screenshots are in
+`agentsworking/evidence/M8/20261027T135637948567Z-display-timing-styled-grid-convergence-baseline`
+and
+`agentsworking/evidence/M8/20261027T135726493122Z-display-timing-styled-grid-convergence-baseline`.
+The exact D81 is
+`47859cdb2579ecf983c1a6538e7b127d2a5460cebab50e6b6eb2d4761e49c3d0`.

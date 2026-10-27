@@ -404,7 +404,11 @@ def run(out, previous=None):
         finally:f.close()
 
         for phase,label in [(None,'missing-C15-initial'),(3,'missing-C15-duringpaint')]:
-            data=petscii(':::asm\nlabel: lda #$1234 ; comment\n:::\n');f=fixture(data)
+            # Keep enough visible comment cells to cross the real 32-unit
+            # lexical budget.  Short spans now scan and paint in one bounded
+            # call, so there is deliberately no foreground mutation boundary
+            # between those phases.
+            data=petscii(':::asm\n;'+('A'*80)+'\n:::\n');f=fixture(data)
             try:
                 f.begin_style()
                 if phase is not None:f.until_lexical(phase)

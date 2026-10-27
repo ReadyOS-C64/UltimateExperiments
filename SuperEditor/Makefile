@@ -697,6 +697,9 @@ build/overlays/styler.seo: build/overlays/styler.bin tools/overlays.py
 build/style-prod/source-%.o: src/fold/source-%.s src/fold/source.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -o $@ $<
+build/style-prod/source-read.o: src/fold/source-read.s src/fold/source.inc
+	mkdir -p $(dir $@)
+	$(CA65) -g -D SE_FS_TRUSTED_CALLER=1 -I src -o $@ $<
 build/style-prod/source-entry.o: src/overlays/source-view.s build/editor-api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -I build -o $@ $<

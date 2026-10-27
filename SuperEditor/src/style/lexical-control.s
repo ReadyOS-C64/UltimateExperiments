@@ -55,7 +55,7 @@ lex_init:
     sta st_resume ;finish not yet issued; C14 no longer needs this field
     lda #2
     sta st_lex_phase
-    jmp lex_pending
+    jmp lex_scan
 
 lex_scan:
     lda se_sl_count
@@ -106,7 +106,7 @@ lex_event:
     lda #3
     sta st_lex_phase
     jsr lex_seek
-    jmp lex_pending
+    jmp lex_paint
 
 ; Seek the first possible visible column in each row, rather than scanning880
 ; cells per token. st_kind holds row*3 only during this private phase.

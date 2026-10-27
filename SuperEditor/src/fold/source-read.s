@@ -4,8 +4,10 @@
 se_fs_read:
     lda #0
     sta se_fs_done
+.ifndef SE_FS_TRUSTED_CALLER
     jsr se_fs_guard
     jcs read_return
+.endif
     lda se_fs_count
     jeq read_bad
     cmp #129

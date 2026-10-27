@@ -7,15 +7,15 @@
 .segment "FOLD_SOURCE_CODE"
     OVL_BINDING
 entry:
-    lda se_overlay_frame
+    ldx se_overlay_frame
     beq begin
-    cmp #1
+    dex
     beq guard
-    cmp #2
+    dex
     beq read
-    cmp #3
+    dex
     beq block_init
-    cmp #4
+    dex
     beq block_step
 pixel_argument:
     lda #$B0
@@ -23,6 +23,12 @@ pixel_argument:
     rts
 begin:jmp se_fs_begin
 guard:jmp se_fs_guard
-read:jmp se_fs_read
+; Frame2 keeps the public authenticated-read contract.  se_sb_step enters the
+; private reader directly after C14 authenticated the same uninterrupted STEP.
+read:
+    jsr se_fs_guard
+    bcc :+
+    rts
+:   jmp se_fs_read
 block_init:jmp se_sb_init
 block_step:jmp se_sb_step
