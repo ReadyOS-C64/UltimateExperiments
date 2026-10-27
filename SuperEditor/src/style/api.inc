@@ -26,5 +26,5 @@ STYLE_DESC_BYTES=37
 .global se_st_key,se_st_rows,se_st_busy,se_st_error,se_st_state,se_st_state_size
 .global se_st_descriptor,se_st_generation,se_st_valid,se_st_request
 .global se_st_cache_generation,se_st_cache_valid
-.global se_st_cp_valid,se_st_cp_damage,se_st_cp_dirty,se_st_cp_anchor
+.global se_st_cp_valid,se_st_cp_rows,se_st_cp_anchor,se_st_cp_count
 .endif

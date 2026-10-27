@@ -626,3 +626,65 @@ for authenticated incoming/outgoing logical-line carries, stop at exact parser
 state convergence, skip lexical work for unchanged code lines, and delete the
 displaced orchestration in the same change. Overlay placement alone earns no
 credit.
+
+### Styled row transaction: selected replacement
+
+The first convergence prototype proves the useful part of the idea and also
+defines what must be deleted. On an admitted Markdown 80-column edit it stops
+the block and inline parsers at the changed logical-line boundary: 24 and 23
+feeds for the representative prose insertion, versus 129 and 52 on the
+structural CR fallback. The complete CPU operation is 337,407 instructions,
+versus 803,220 for that fallback, with exact source, pixels, attributes,
+anchors, caret, undo and redo. The prototype is not the production endpoint.
+`styler` plus `viewsource` grows from 6,373 to 7,456 linked bytes, an exact
+1,083-byte increase, and the accepted path still runs the old C11 layout and
+post-publication C33/R25 capture. Moving parser code between disk images is
+size-neutral and receives no optimization credit.
+
+The retained no-preclear cut is independently proven. Sixty poisoned cold jobs
+cover Full/Markdown, all three widths, empty/EOF/CR/wrapped/BASIC/assembler
+documents and two poison values. No unwritten plan byte is read. Removing the
+grid fill loop and its counter saves 63 C14 bytes and up to 1,760 stores per
+build. The former two-byte counter is currently inert
+reserved padding so sealed parser/source addresses do not move; linked BSS is
+unchanged. This deletion survives regardless of which styled transaction
+replaces the prototype.
+
+The selected boundary extends the existing R25/C33 local-row transaction. R25
+frame 18 validates the one-byte edit and writes a compact valid-last ticket; it
+does not publish geometry or pixels. C14/R14 restores the incoming block state,
+parses only the affected logical line, writes only its contiguous style rows and
+marks the ticket ready. C33 frame 1 then expands the ticket into its existing
+`$8D00` local transaction and reuses the established row packet, DMA, CRC,
+native painter, suffix-anchor, cache-header and caret commit. Publication stays
+last and increments the draw sequence once. Structural edits and any failed
+check use the existing cold renderer.
+
+This staging is required by the current memory map. `$8D00` is both LRVT and
+STYLE_STATE, so a transaction cannot remain there while owner 2 runs C14. The
+fixed `$4770` checkpoint window is the persistent handoff. Pack each row carry
+into five bytes: marker/fence/language, region depth and three overflow bytes.
+Twenty-two records plus the top anchor, valid and count use 115 of the existing
+144 bytes, leaving 29 bytes for a 16–20-byte ticket with no new BSS, zero page,
+REU object, image or supervisor.
+
+The refactor is a deletion project, not a new fast-path layer. Replace the
+520-byte R14 GEC/admission routine with a roughly 120–140-byte ticket check;
+retain the useful 166-byte fused scanner. Replace the 367-byte generic C14 span
+painter with a 100–120-byte contiguous affected-row writer. Co-locate outgoing
+convergence with the resident parser state and remove the current 598-byte C14
+carry/checkpoint region. Delete the temporary immediate geometry publisher and
+the later frame-0 capture rather than keeping parallel publication authorities.
+The detailed order and revert points are recorded in
+`agentsworking/STYLED_ROW_TRANSACTION_PLAN.md`.
+
+Acceptance is deliberately tighter than “it fits.” `styler` plus `viewsource`
+must be no larger than 6,630 bytes, only 257 bytes over the 6,373-byte committed
+baseline. An admitted edit must execute no C11 layout op 4/5, no C16 full-page
+render and no post-publication C33 frame-0 capture; it must paint only affected
+logical rows and publish once. Markdown and unchanged-code edits run no lexer;
+changed BASIC/assembler code is bounded to the changed line. Exact source,
+pixels, colors, anchors, caret, history, stack and REU results remain mandatory,
+and poisoned tickets/carries must refuse before geometry or pixel mutation.
+Complete normal-speed PAL cycles and code bytes decide promotion. Load, call,
+DMA and parser counts explain the result but cannot substitute for it.

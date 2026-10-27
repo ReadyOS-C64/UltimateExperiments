@@ -8,7 +8,6 @@ loop:
     lda source,x
     cmp se_st_descriptor+offset,x
     beq same
-    sta se_st_descriptor+offset,x
     iny ;at most 33 changed key bytes, so the mismatch count cannot wrap
 same:
     dex
@@ -49,7 +48,6 @@ style_matches:
     ora se_l_mode ;bit0 wrap policy, bits1/2 grid mode:40/60/80
     cmp se_st_descriptor+32
     beq :+
-    sta se_st_descriptor+32
     iny
 :   tya
     cmp #1 ;Y0 matching/Cclear; Y1..33 rebound current context/Cset
@@ -69,18 +67,8 @@ style_damage:
     rts
 @changed:
     lda se_r_damage_valid
-    bne @known
+    bne @done ;an exact one-edit certificate may still consume the old carry
     lsr se_st_cp_valid ;checkpoint-valid is a strict 0/1 flag
-    rts
-@known:
-    lda se_st_cp_dirty
-    beq @copy
-    CMP24 se_r_damage_from,se_st_cp_damage
-    bcs @done
-@copy:
-    COPY24 se_r_damage_from,se_st_cp_damage
-    lda #1
-    sta se_st_cp_dirty
 @done:
     rts
 

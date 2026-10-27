@@ -37,6 +37,7 @@ se_style_release:
     sta se_st_busy
     sta se_st_valid
     sta se_st_request
+    sta se_st_cp_valid       ;a cancelled builder never publishes partial carry
     sta se_f_owner
     sta st_lex_phase
 done:

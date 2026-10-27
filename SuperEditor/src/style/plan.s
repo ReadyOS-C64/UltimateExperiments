@@ -4,17 +4,29 @@
 .macpack longbranch
 .include "style/api.inc"
 .include "render/presentation.inc"
+.include "render/geos/edit-certificate.inc"
 .include "supermark/api.inc"
 .include "document/math24.inc"
 .include "tui/theme.inc"
-.import se_sm_init,se_sm_feed,se_sm_finish,se_sm_pos,se_sm_ready,se_sm_start
+.import se_sm_pos,se_sm_ready,se_sm_start
+.ifndef SE_STYLE_GRID
+.import se_sm_init,se_sm_feed,se_sm_finish
+.endif
 .import se_sm_end,se_sm_body,se_sm_kind,se_sm_state
+.import se_sm_fence,se_sm_language,se_sm_regions
 .import se_sm_state_size
 .import se_si_init,se_si_feed,se_si_finish,se_si_at_body,se_si_pos,se_si_ready
 .import se_si_kind,se_si_style,se_si_width,se_si_open,se_si_close
 .import se_fs_begin,se_fs_guard,se_fs_read,se_fs_end
+.ifdef SE_STYLE_GRID
+.import se_sb_init,se_sb_step
+.endif
 .import se_fs_offset,se_fs_count,se_fs_buffer,se_fs_done,se_fs_length
-.import se_st_cp_state,se_st_cp_key
+.import se_st_cp_rows
+.ifndef SE_STYLE_GRID
+.import se_st_cp_carry
+.endif
+.import se_e_draw_sequence
 .import st_phase,st_resume,st_budget,st_reads,st_index,st_used,st_buffer
 .import st_pos,st_next,st_end,st_from,st_to,st_paint,st_style,st_row,st_col,st_cell
 .import st_offset,st_finish,st_kind,st_base,st_owned,st_inline
@@ -22,7 +34,7 @@
 .import st_lex_phase
 .endif
 .ifdef SE_STYLE_GRID
-.import st_columns,st_plan_page,st_cells
+.import st_columns,st_plan_page
 .importzp text_ptr
 .endif
 .segment "STYLE_CODE"
@@ -48,24 +60,44 @@ se_style_begin:
     inc st_owned
     CMP24 se_fs_length,se_st_key+ST_KEY_LENGTH
     jne bad_argument
-    ldx #STYLE_KEY_BYTES-1
-@bind:
-    lda se_st_key,x
-    sta se_st_descriptor,x
-    dex
-    bpl @bind
+.ifdef SE_STYLE_GRID
+    jsr se_sb_init
+    jcs failure
+    cmp #1
+    bne @cold
+    lda #$80                ;fast job, EOF-finish remains bit0
+    sta st_finish
+    lda #1
+    sta st_phase
+    jmp @started
+@cold:
+.else
     jsr se_sm_init
+.endif
     jsr checkpoint_begin
+    jsr bind_descriptor
+    lda #0
+    sta se_st_cp_valid
+    sta se_st_cp_count
+    jsr carry_snapshot
     COPY24 se_sm_pos,st_pos
     lda #1
     sta se_st_busy
+.ifdef SE_STYLE_GRID
+    lda #1                  ;every live cell is overwritten by its base span
+.else
+    lda #0                  ;isolated fixed-size planner retains full fill ABI
+.endif
+    sta st_phase
     lda #0
-    sta st_phase ;clear plan in32-cell slices first
     sta st_index
     sta st_used
     sta st_finish
     sta st_paint
     sta st_paint+1
+@started:
+    lda #1
+    sta se_st_busy
     lda #ST_PENDING
     clc
     rts
@@ -76,6 +108,7 @@ bad_argument:
 se_style_cancel:
     lda #0
     sta se_st_valid
+    sta se_st_cp_valid
     sta se_st_busy
     sta se_st_error
     jmp release
@@ -88,6 +121,19 @@ se_style_step:
     rts
 :   jsr se_fs_guard
     jcs failure
+    lda st_finish
+    bpl @full_guard
+    ; Fast mode keeps the old revision/length descriptor until convergence,
+    ; but its viewport and presentation contract must remain unchanged.
+    ldx #8
+@fast_guard:
+    lda se_st_descriptor+ST_KEY_TOP,x
+    cmp se_st_key+ST_KEY_TOP,x
+    jne stale
+    dex
+    bpl @fast_guard
+    jmp @guarded
+@full_guard:
     ldx #STYLE_KEY_BYTES-1
 @guard:
     lda se_st_descriptor,x
@@ -95,12 +141,15 @@ se_style_step:
     jne stale
     dex
     bpl @guard
+@guarded:
     lda #32
     sta st_budget
     lda #0
     sta st_reads
     lda st_phase
+.ifndef SE_STYLE_GRID
     jeq clear_step
+.endif
     cmp #1
     jeq block_step
     cmp #2
@@ -120,6 +169,7 @@ failure:
     sta se_st_error
     lda #0
     sta se_st_valid
+    sta se_st_cp_valid
     sta se_st_busy
     jsr release
     lda se_st_error
@@ -140,6 +190,7 @@ pending:
     clc
     rts
 
+.ifndef SE_STYLE_GRID
 clear_step:
     lda #TUI_FG
     jsr put_plan
@@ -164,11 +215,22 @@ clear_step:
 :   dec st_budget
     bne clear_step
     jmp pending
+.endif
 
 block_step:
+.ifdef SE_STYLE_GRID
+    jsr se_sb_step
+    jcs failure
+    cmp #1
+    jeq block_event
+    cmp #2
+    jeq complete
+    jmp pending
+.else
     CMP24 st_pos,se_fs_length
     bcc @byte
     lda st_finish
+    and #1                  ;bit6 tracks captured top carry
     jne complete
     inc st_finish
     jsr se_sm_finish
@@ -185,15 +247,27 @@ block_step:
     bne block_step
     jmp pending
 @read_return:
-    cmp #0 ;internal yield; callback errors must be nonzero
+    cmp #0
     jeq pending
     jmp failure
+.endif
 
 block_event:
     COPY24 se_sm_pos,st_next
     COPY24 se_sm_end,st_end
     COPY24 se_sm_start,st_from
     COPY24 se_sm_end,st_to
+.ifdef SE_STYLE_GRID
+    lda st_finish
+    bpl @cold_event
+    jsr fast_converged
+    jcs se_st_fast_fallback
+    jsr bind_descriptor
+    jmp @classified
+@cold_event:
+.endif
+    jsr carry_publish_event
+@classified:
     lda se_sm_kind
     sta st_kind
     lda #TUI_FG
@@ -216,14 +290,6 @@ block_event:
     lda #TUI_STATUS
 :   sta st_style
     sta st_base
-    ; Only a CR-complete boundary can seed another block parser scan.
-    lda st_finish
-    bne @paint
-    CMP24 st_next,se_st_key+ST_KEY_TOP
-    bcc :+
-    bne @paint
-:   
-    jsr checkpoint_save
 @paint:
     CMP24 st_end,se_st_rows
     jcc next_line
@@ -470,9 +536,12 @@ inline_event:
     jmp start_paint
 
 next_line:
+    lda st_finish
+    bmi complete
     CMP24 st_next,se_st_rows+66
     jcs complete
     COPY24 st_next,st_pos
+    jsr carry_snapshot
     lda #0
     sta st_index
     sta st_used
@@ -484,6 +553,14 @@ complete:
     jsr se_fs_guard
     jcs failure
     jsr release
+    lda st_finish
+    bmi @publish_carry
+    and #$40                ;cold builder captured the top logical checkpoint
+    beq @carry_done
+@publish_carry:
+    lda #1
+    sta se_st_cp_valid
+@carry_done:
     inc se_st_generation
     bne :+
     inc se_st_generation+1
@@ -565,16 +642,10 @@ grid_plan_init:
     sta st_columns
     lda grid_pages,x
     sta st_plan_page
-    lda grid_cells_low,x
-    sta st_cells
-    lda grid_cells_high,x
-    sta st_cells+1
     rts
 .segment "RODATA"
 grid_columns:.byte 40,60,80
 grid_pages:.byte >STYLE_PLAN,$48,$48
-grid_cells_low:.byte <880,<1320,<1760
-grid_cells_high:.byte >880,>1320,>1760
 .segment "STYLE_CODE"
 .else
     ldx st_paint
@@ -636,20 +707,110 @@ inc_paint:
     inc st_paint+1
 :   rts
 
+.ifdef SE_STYLE_GRID
+.export se_st_fast_fallback
+; Compare the changed line's exact outgoing state and end boundary before the
+; existing painter is allowed to write any style-plan cell.
+fast_converged:
+    lda st_col
+    asl
+    sta st_style
+    clc
+    adc st_col
+    tax
+    lda se_sm_pos+2
+    cmp se_st_rows+2,x
+    bne @bad
+    lda se_sm_pos+1
+    cmp se_st_rows+1,x
+    bne @bad
+    lda se_sm_pos
+    cmp se_st_rows,x
+    jne @bad
+    lda st_col
+    asl
+    sta st_style
+    asl
+    clc
+    adc st_style
+    tax
+    lda se_sm_fence
+    cmp se_st_cp_rows,x
+    bne @bad
+    lda se_sm_fence
+    beq @text_language
+    lda se_sm_language
+    bne @language
+@text_language:
+    lda #0
+@language:
+    cmp se_st_cp_rows+1,x
+    bne @bad
+    lda se_st_cp_rows+2,x
+    and #$1f
+    cmp se_sm_regions
+    bne @bad
+    lda se_sm_state+76
+    cmp se_st_cp_rows+3,x
+    bne @bad
+    lda se_sm_state+77
+    cmp se_st_cp_rows+4,x
+    bne @bad
+    lda se_sm_state+78
+    cmp se_st_cp_rows+5,x
+    bne @bad
+    clc
+    rts
+@bad:
+    sec
+    rts
+
+; Convergence refusal restarts the old full builder before any plan write.
+se_st_fast_fallback:
+    lda #0
+    sta se_st_cp_valid
+    sta se_st_cp_count
+    jsr se_sb_init           ;invalid carry forces a clean cold parser
+    jsr bind_descriptor
+    lda #0
+    sta st_index
+    sta st_used
+    sta st_finish
+    sta st_paint
+    sta st_paint+1
+    sta st_pos
+    sta st_pos+1
+    sta st_pos+2
+    lda #1
+    sta st_phase
+    jsr carry_snapshot
+    jmp pending
+.endif
+
+bind_descriptor:
+    ldx #STYLE_KEY_BYTES-1
+@copy:
+    lda se_st_key,x
+    sta se_st_descriptor,x
+    dex
+    bpl @copy
+    rts
+
 checkpoint_begin:
     lda se_st_cp_valid
     beq @invalid
-    ; Immutable source capabilities + generation + provider must match.
+    ; The checkpoint is part of the last published descriptor.  It may seed a
+    ; same-source viewport rebuild, but never cross a source/revision change.
     ldx #16
 @immutable:
-    lda se_st_cp_key,x
+    lda se_st_descriptor,x
     cmp se_st_key,x
     bne @invalid
     dex
     bpl @immutable
     ldx #1
 @epoch:
-    lda se_st_cp_key+ST_KEY_EPOCH,x
+    lda se_st_descriptor+ST_KEY_EPOCH,x
     cmp se_st_key+ST_KEY_EPOCH,x
     bne @invalid
     dex
@@ -658,52 +819,193 @@ checkpoint_begin:
     bcc :+
     bne @invalid
 :
-    ldx #6 ;revision4+length3
+    ldx #6 ;revision4+length3 must be identical for ordinary checkpoint reuse
 @revision:
-    lda se_st_cp_key+17,x
+    lda se_st_descriptor+17,x
     cmp se_st_key+17,x
-    bne @dirty
+    bne @invalid
     dex
     bpl @revision
-    jmp @restore
-@dirty:
-    lda se_st_cp_dirty
-    beq @invalid
-    CMP24 se_st_cp_damage,se_st_cp_anchor
-    bcc @invalid
 @restore:
-    ldx #78
-@copy:
-    lda se_st_cp_state,x
-    sta se_sm_state,x
-    dex
-    bpl @copy
-    jsr checkpoint_key
+    jsr carry_restore_top
     rts
 @invalid:
     lda #0
     sta se_st_cp_valid
-    sta se_st_cp_dirty
     rts
+
 checkpoint_save:
-    ldx #78
-@copy:
-    lda se_sm_state,x
-    sta se_st_cp_state,x
-    dex
-    bpl @copy
-    COPY24 se_sm_pos,se_st_cp_anchor
-    lda #1
-    sta se_st_cp_valid
-checkpoint_key:
-    ldx #STYLE_KEY_BYTES-1
-@copy:
-    lda se_st_key,x
-    sta se_st_cp_key,x
-    dex
-    bpl @copy
+    COPY24 se_sm_start,se_st_cp_anchor
+.ifndef SE_STYLE_GRID
+    lda st_offset
+    sta se_st_cp_carry
+    lda st_offset+1
+    sta se_st_cp_carry+1
+    lda st_style
+    and #$1f
+    sta se_st_cp_carry+2
+    lda st_base
+    sta se_st_cp_carry+3
+    lda st_kind
+    sta se_st_cp_carry+4
+    lda st_inline
+    sta se_st_cp_carry+5
+.endif
+    rts
+
+; Save the exact semantic carry before any byte of a logical line is fed.
+; These six bytes alias fields unused until block_event consumes the snapshot.
+carry_snapshot:
+    lda se_sm_fence
+    sta st_offset
+    beq @plain_language
+    lda se_sm_language
+    bne @language
+@plain_language:
     lda #0
-    sta se_st_cp_dirty
+@language:
+    sta st_offset+1
+    lda se_sm_regions
+    sta st_style
+    lda se_sm_state+76
+    sta st_base
+    lda se_sm_state+77
+    sta st_kind
+    lda se_sm_state+78
+    sta st_inline
+    rts
+
+; Publish incoming carry for each physical row in this logical line.  Repeating
+; six bytes makes lookup constant-time.  Bit7 of regions marks a true logical
+; start; wrapped continuations retain the same low-five-bit region depth.
+carry_publish_event:
+@row:
+    lda se_st_cp_count
+    cmp #STYLE_ROWS
+    jcs @top
+    asl
+    clc
+    adc se_st_cp_count
+    tax
+    ; Rows are ordered and each is visited once.  Stop at the first anchor
+    ; outside this event; the following event resumes at that same row.
+    lda se_st_rows+2,x
+    cmp se_sm_pos+2
+    bcc @within
+    jne @top
+    lda se_st_rows+1,x
+    cmp se_sm_pos+1
+    bcc @within
+    bne @top
+    lda se_st_rows,x
+    cmp se_sm_pos
+    bcc @within
+    bcs @top
+@within:
+    lda se_st_cp_count
+    asl
+    sta st_col
+    asl
+    clc
+    adc st_col
+    tax
+    lda st_offset
+    sta se_st_cp_rows,x
+    lda st_offset+1
+    sta se_st_cp_rows+1,x
+    lda st_style
+    and #$1f
+    sta se_st_cp_rows+2,x
+    lda st_base
+    sta se_st_cp_rows+3,x
+    lda st_kind
+    sta se_st_cp_rows+4,x
+    lda st_inline
+    sta se_st_cp_rows+5,x
+    ; Mark exactly the row whose anchor is the logical start.
+    lda se_st_cp_count
+    asl
+    clc
+    adc se_st_cp_count
+    tax
+    lda se_st_rows,x
+    cmp se_sm_start
+    bne @advance
+    lda se_st_rows+1,x
+    cmp se_sm_start+1
+    bne @advance
+    lda se_st_rows+2,x
+    cmp se_sm_start+2
+    bne @advance
+    lda se_st_cp_count
+    asl
+    sta st_col
+    asl
+    clc
+    adc st_col
+    tax
+    lda se_st_cp_rows+2,x
+    ora #$80
+    sta se_st_cp_rows+2,x
+@advance:
+    inc se_st_cp_count
+    jmp @row
+@top:
+    ; The logical line containing TOP is the exact restart checkpoint.
+    lda st_finish
+    and #$40
+    bne @done
+    CMP24 se_st_key+ST_KEY_TOP,se_sm_pos
+    bcs @done
+    jsr checkpoint_save
+    lda st_finish
+    ora #$40
+    sta st_finish
+@done:
+    rts
+
+; Restore only the semantic state that can cross a CR boundary.  All prefix,
+; list and event fields remain the clean values produced by se_sm_init.
+carry_restore_top:
+    COPY24 se_st_cp_anchor,se_sm_pos
+    COPY24 se_st_cp_anchor,se_sm_state+20
+.ifdef SE_STYLE_GRID
+    lda se_st_cp_rows
+.else
+    lda se_st_cp_carry
+.endif
+    sta se_sm_fence
+.ifdef SE_STYLE_GRID
+    lda se_st_cp_rows+1
+.else
+    lda se_st_cp_carry+1
+.endif
+    sta se_sm_language
+.ifdef SE_STYLE_GRID
+    lda se_st_cp_rows+2
+.else
+    lda se_st_cp_carry+2
+.endif
+    and #$1f
+    sta se_sm_regions
+.ifdef SE_STYLE_GRID
+    lda se_st_cp_rows+3
+.else
+    lda se_st_cp_carry+3
+.endif
+    sta se_sm_state+76
+.ifdef SE_STYLE_GRID
+    lda se_st_cp_rows+4
+.else
+    lda se_st_cp_carry+4
+.endif
+    sta se_sm_state+77
+.ifdef SE_STYLE_GRID
+    lda se_st_cp_rows+5
+.else
+    lda se_st_cp_carry+5
+.endif
+    sta se_sm_state+78
     rts
 inline_colors:
     .byte TUI_FG,TUI_HIGHLIGHT,TUI_TITLE,TUI_ERROR,TUI_BORDER

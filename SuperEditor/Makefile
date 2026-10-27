@@ -685,7 +685,7 @@ build/style-prod/reader-dispatch.o: src/style/reader-dispatch.s build/editor-api
 build/style-prod/reader-grid-dispatch.o: src/style/reader-dispatch.s build/editor-api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -D SE_GRID_PRODUCER=1 -I src -I build -o $@ -l $(@:.o=.lst) $<
-STYLE_CODE_OBJ = build/style-prod/entry.o build/style-prod/plan.o build/style-prod/editor-control.o build/style-prod/reader-grid-dispatch.o build/style-prod/block-code.o build/style-prod/inline-code.o
+STYLE_CODE_OBJ = build/style-prod/entry.o build/style-prod/plan.o build/style-prod/editor-control.o build/style-prod/reader-grid-dispatch.o build/style-prod/inline-code.o
 build/style-prod/bindings.s: $(STYLE_CODE_OBJ) build/editor-report.json tools/module_bindings.py
 	$(PYTHON) tools/module_bindings.py --report build/editor-report.json --output $@ --require-export se_style_auto $(STYLE_CODE_OBJ)
 build/style-prod/bindings.o: build/style-prod/bindings.s
@@ -700,7 +700,7 @@ build/style-prod/source-%.o: src/fold/source-%.s src/fold/source.inc
 build/style-prod/source-entry.o: src/overlays/source-view.s build/editor-api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -I build -o $@ $<
-STYLE_SOURCE_OBJ = build/style-prod/source-entry.o build/style-prod/source-context.o build/style-prod/source-read.o
+STYLE_SOURCE_OBJ = build/style-prod/source-entry.o build/style-prod/source-context.o build/style-prod/source-read.o build/style-prod/block-source.o build/style-prod/block-code.o
 build/style-prod/source-bindings.s: $(STYLE_SOURCE_OBJ) build/editor-report.json tools/module_bindings.py
 	$(PYTHON) tools/module_bindings.py --report build/editor-report.json --output $@ --require-export se_fs_begin $(STYLE_SOURCE_OBJ)
 build/style-prod/source-bindings.o: build/style-prod/source-bindings.s

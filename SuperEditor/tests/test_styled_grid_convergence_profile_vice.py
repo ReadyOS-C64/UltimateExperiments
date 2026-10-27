@@ -32,10 +32,12 @@ ROOT = timing.ROOT
 MODES = ((0, 40), (1, 60), (2, 80))
 CAPABILITIES = (("full", 3), ("markdown", 1))
 PARSER_SYMBOLS = {
-    "styler": (
+    "viewsource": (
         "se_sm_init",
         "se_sm_feed",
         "se_sm_finish",
+    ),
+    "styler": (
         "se_si_init",
         "se_si_feed",
         "se_si_finish",
@@ -74,7 +76,8 @@ class Plan(timing.Plan):
             self.parser_assets[asset] = {"slot": image[5], "id": image[6]}
             exported = symbols(fixture / "profile-labels" / (asset + ".lbl"))
             points = {name: exported[name] for name in required}
-            assert all(0xB000 <= address < 0xC000 for address in points.values())
+            base = 0xA000 if image[5] == 0 else 0xB000
+            assert all(base <= address < base + 0x1000 for address in points.values())
             self.parser_points[asset] = points
             for name, address in points.items():
                 # The base timing parser tolerates extra scalar cost points and
@@ -556,7 +559,7 @@ def write_aggregate(fixture, evaluated):
     # checkpoint, so a retained-carry candidate must converge there.  No code
     # block changed, hence Full must not invoke the lexical parser at all.
     bounded_front_row = all(
-        parser_calls(case, "styler", "se_sm_feed") <= 31
+        parser_calls(case, "viewsource", "se_sm_feed") <= 31
         and parser_calls(case, "styler", "se_si_feed") <= 31
         and parser_calls(case, "lexical", "se_sl_feed") == 0
         for case in cases

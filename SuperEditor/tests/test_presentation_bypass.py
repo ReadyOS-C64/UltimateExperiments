@@ -21,7 +21,7 @@ import test_geos_fold_editor as fold
 import test_fold_retention as retention
 
 ROOT = geos.ROOT
-WORKERS = ('styler', 'lexical', 'foldparse', 'foldfinish', 'foldctl',
+WORKERS = ('viewsource', 'styler', 'lexical', 'foldparse', 'foldfinish', 'foldctl',
            'geossema', 'geoslex', 'geosinln')
 PRESETS = (('plain', 0), ('markdown', 1), ('full', 3))
 SOURCE = geos.native_text(
@@ -95,7 +95,7 @@ def capture_labels(out, fixture):
                                 tag=0 if staged else names.index(record['asset']) + 1,
                                 signature=signature.hex()))
     assert len(targets) <= 64
-    assert any(t['name'] == 'styler:se_sm_feed' for t in targets)
+    assert any(t['name'] == 'viewsource:se_sm_feed' for t in targets)
     assert any(t['name'] == 'geosinln:se_si_feed' for t in targets)
     assert any(t['name'] == 'stage31:se_sl_feed' for t in targets)
     return targets

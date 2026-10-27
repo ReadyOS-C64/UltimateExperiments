@@ -79,7 +79,7 @@ class Fixture:
   assert len(key)==33
   self.m.load(self.s['se_st_key'],key);self.m.load(self.s['se_st_rows'],b''.join(x.to_bytes(3,'little') for x in self.rows))
   self.put('se_fs_length',len(data),3);self.put('fixture_chunk',chunk);self.put('fixture_fail',0);self.put('fixture_begin_fail',0)
-  if not preserve:self.put('se_st_cp_valid',0);self.put('se_st_cp_dirty',0)
+  if not preserve:self.put('se_st_cp_valid',0)
  def step(self):
   before_reads=self.get('fixture_reads',2);phase=self.get('st_phase');pos=self.get('st_pos',3)
   r=self.call('se_style_step');n=(self.get('fixture_reads',2)-before_reads)&65535
@@ -133,9 +133,9 @@ def main():
   top=cpdata.index(b'#');f.seed(cpdata,top=top);f.check();assert f.get('se_st_cp_valid')
   anchor=f.get('se_st_cp_anchor',3);before=f.get('fixture_reads',2)
   f.seed(cpdata,top=top,preserve=True);f.check();assert (f.get('fixture_reads',2)-before)&65535<12
-  # Mutation proof after checkpoint is retained even after R1 consumed its damage.
+  # A changed revision rejects the old normalized checkpoint and rebuilds safely.
   edited=cpdata[:-2]+b'X'+cpdata[-2:]
-  f.seed(edited,top=top,revision=2,preserve=True);f.put('se_st_cp_dirty',1);f.put('se_st_cp_damage',len(cpdata)-2,3);f.check();assert f.get('se_st_cp_anchor',3)==anchor
+  f.seed(edited,top=top,revision=2,preserve=True);f.check();assert f.get('se_st_cp_anchor',3)==anchor
   fixtures+=3
   # Every cancellable phase, competingBEGIN, complete/repeatedCANCEL and foreignlease.
   for phase in range(6):
@@ -214,7 +214,7 @@ def editor_source_main():
   key=f.read(f.s['se_doc_meta'],15)+f.read(f.s['se_doc_generation'],2)+f.read(f.s['se_r_revision'],4)+len(data).to_bytes(3,'little')+top.to_bytes(3,'little')+pan.to_bytes(3,'little')+f.read(f.s['se_reu_epoch'],2)+bytes([mode])
   assert len(key)==33
   put('se_st_key',key);put('se_st_rows',b''.join(x.to_bytes(3,'little') for x in rowmap(data,mode,top)))
-  put('se_st_cp_valid',0);put('se_st_cp_dirty',0)
+  put('se_st_cp_valid',0)
   return rowmap(data,mode,top)
  def check(data,mode=0,pan=0,top=0):
   nonlocal steps
