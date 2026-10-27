@@ -838,10 +838,6 @@ status:
  lda #0
  clc
  rts
-.segment "RODATA"
-palette: .byte 1,3,7,10,14,1,1,7,13,5,15,7,3,1
-bits:.byte 1,2,4,8,16,32,64,128
-
 .segment "CODE"
 .import se_l_caret
 
@@ -1022,9 +1018,6 @@ local_native8:
 .assert *-local_native8=208,error,"C33 native font size"
 
 .segment "RODATA"
-status_codes:.incbin "status-codes.bin"
-
-.segment "RODATA"
 auth_id:.byte 25,14,14,14
 auth_slot:.byte 0,$81,$80,0
 auth_mask:.byte 1,$FF,$FF,1
@@ -1040,3 +1033,8 @@ nr_defaults:
  .byte 0,0,0,0,6
  .word $6000,$4000,$A800,P,P+80,P+160,palette
 .assert *-nr_defaults=19,error,"complete native-row public input template"
+
+.segment "TAIL"
+palette: .byte 1,3,7,10,14,1,1,7,13,5,15,7,3,1
+bits:.byte 1,2,4,8,16,32,64,128
+status_codes:.incbin "status-codes.bin"

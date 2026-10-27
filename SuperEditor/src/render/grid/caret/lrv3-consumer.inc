@@ -16,7 +16,6 @@ LT_LENGTH=12               ;2
 LT_ROW=14
 LT_CARET_ROW=15
 LT_CARET_COL=16
-LT_RECORD_FLAGS=17
 LT_CLIP=18                 ;2, visible logical-row offset
 LT_GC_VALID=25             ;3
 LT_COVER=34
@@ -26,7 +25,6 @@ LT_HOT_POS=37              ;3
 LT_HOT_NEXT=40             ;3
 LT_HOT_DELTA=43            ;2
 LT_HOT_REV=45              ;4, separate from the length/row scratch
-LRV_OLD_NC=$8500           ;old authenticated NC header
 
 ; Frame14 resumes the exact frame18 transaction. R25 remains resident across
 ; C6 -> resident -> C33; there is no persistent LRV object in this slice.
@@ -59,7 +57,6 @@ lrv_admit:
  sta LRVT+LT_REL
  sta LRVT+LT_CARET_ROW
  sta LRVT+LT_CARET_COL
- jsr se_selection_range
  jsr lrv_span_check
  rts
 
@@ -190,8 +187,6 @@ lrv_style_admit:
 @expanded:
  lda se_l_mode
  sta LRVT+LT_COVER
- lda #LRRF_VALID
- sta LRVT+LT_RECORD_FLAGS
  lda LRVT+LT_LENGTH
  ora LRVT+LT_LENGTH+1
  bne @nonempty
@@ -209,8 +204,6 @@ lrv_style_admit:
  jne lrv_bad
  jmp @record_ready
 @cr:
- lda #LRRF_VALID|LRRF_CR
- sta LRVT+LT_RECORD_FLAGS
  lda LRVT+LT_LENGTH
  bne :+
  dec LRVT+LT_LENGTH+1
@@ -228,7 +221,6 @@ lrv_style_admit:
  sta LRVT+LT_GC_VALID,x
  dex
  bpl @gc
- jsr se_selection_range
  jsr lrv_span_check
  rts
 
@@ -239,29 +231,50 @@ lrv_finish:
  jne lrv_bad
  lda se_mode
  jeq @success
- ldx #0
-@restore_nc:
- lda LRV_OLD_NC,x
- sta H,x
- inx
- bne @restore_nc
- lda #0
- sta OP
- jsr fields
- jcs lrv_bad
- lda #1
- sta OP
- sta H+N_SEEN
  lda LRVT+LT_CARET_ROW
  sta H+N_ROW
  lda LRVT+LT_CARET_COL
  sta H+N_COL
+ lda #1
+ sta H+N_SEEN
  ldx #2
-@hcaret:
+@header_valid:
+ lda LRVT+LT_GC_VALID,x
+ sta H+N_VALID,x
+ dex
+ bpl @header_valid
+ ldx #3
+@header_revision:
+ lda se_r_revision,x
+ sta H+N_KEY+17,x
+ bit LRVT+LT_FLAGS
+ bpl :+
+ sta H+N_STYLE+17,x
+: dex
+ bpl @header_revision
+ ldx #2
+@header_caret:
  lda se_hot_caret,x
  sta H+N_CARET,x
  dex
- bpl @hcaret
+ bpl @header_caret
+ lda se_hot_pending
+ sta H+N_PENDING
+ ldx #1
+@hotlen:
+ lda se_hot_length,x
+ sta H+N_HOTLEN,x
+ dex
+ bpl @hotlen
+ ldx #2
+@length:
+ lda se_v_length,x
+ sta H+N_KEY+21,x
+ bit LRVT+LT_FLAGS
+ bpl :+
+ sta H+N_STYLE+21,x
+: dex
+ bpl @length
  clc
  lda se_e_draw_sequence
  adc #1
@@ -271,18 +284,6 @@ lrv_finish:
  sta H+N_SEQUENCE+1
  lda LRVT+LT_FLAGS
  bpl @store
- ldx #3
-@header_revision:
- lda se_r_revision,x
- sta H+N_STYLE+17,x
- dex
- bpl @header_revision
- ldx #2
-@header_length:
- lda se_v_length,x
- sta H+N_STYLE+21,x
- dex
- bpl @header_length
  clc
  lda se_st_generation
  adc #1
@@ -501,8 +502,6 @@ lrv_plain_update:
  lda LRVT+LT_HOT_NEXT+2
  sbc LRVT+LT_HOT_POS+2
  jne lrv_bad
- lda #LRRF_VALID
- sta LRVT+LT_RECORD_FLAGS
  lda LRVT+LT_HOT_DELTA
  ora LRVT+LT_HOT_DELTA+1
  beq @empty
@@ -512,8 +511,6 @@ lrv_plain_update:
  jcs lrv_bad
  cmp #13
  bne @eof
- lda #LRRF_VALID|LRRF_CR
- sta LRVT+LT_RECORD_FLAGS
  sec
  lda LRVT+LT_HOT_DELTA
  sbc #1
@@ -654,12 +651,6 @@ lrv_save_header:
  lda H+3
  cmp #LRV_PUBLISHED
  bne @bad
- ldx #0
-@save:
- lda H,x
- sta LRV_OLD_NC,x
- inx
- bne @save
 @done:
  clc
 @return:

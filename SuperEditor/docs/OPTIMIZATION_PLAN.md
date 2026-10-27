@@ -752,3 +752,78 @@ the generic header rebuild while retaining both CRCs and valid-last publication.
 Dirty-span painting and dead graph removal remain candidates only if their
 complete-operation savings exceed their code cost. Moving the same work between
 disk members or overlays remains outside the optimization ledger.
+
+### Wide raster, header and dead-graph cuts
+
+The next three cuts remove more work from the same transaction. The native
+60/80-column leaf already clears all 320 bitmap bytes and 40 attributes before
+glyph painting. C33 now passes the authenticated live-cell count rather than the
+physical column width to the glyph loop, so blank padding is not converted and
+painted a second time. A poison oracle fills the entire old row and its
+attributes before insert and delete; exact output proves the unconditional clear
+still erases a longer old suffix. This costs three C33 bytes and removes
+30,023–32,409 instructions at 60 columns and 17,493–18,157 at 80. The
+40-column path is unchanged.
+
+The wide NC header is now updated in place after its existing authentication.
+The transaction writes changed row CRCs, suffix anchors, bottom, caret,
+revision, source/style lengths and publication fields directly into the live
+header, then retains the existing final header CRC, guarded DMA store and
+valid-last publication. It no longer copies 256 bytes to `$8500`, copies them
+back, and calls the generic full-header rebuild. Twelve styled transactions
+cover 60/80 columns, rows zero through two and insert/delete; all 256 final
+header bytes are byte-identical to the control, and independent checks recompute
+the header CRC and every changed packet CRC. Header corruption, forged magic
+with a recomputed CRC, and physical-owner/DMA faults refuse without publishing.
+
+An added Plain bottom-row oracle caught an inactive-descriptor mismatch that the
+styled cases could not expose: unconditional revision and length writes changed
+the inactive style key when `FIRST+ROWS==22`. The final code gates those style
+stores on the styled transaction bit while retaining unconditional source-key
+updates. All four 60/80 insert/delete bottom-boundary cases then match the full
+256-byte control header. This failure is why a byte-exact final-object oracle is
+required in addition to screen equivalence.
+
+Finally, four record-flag stores and their two reverse consumers are deleted:
+no current producer can set `LRRF_REVERSE`. Two `se_selection_range` calls are
+also gone because R25 already refuses marked selection before admission and C33
+no longer reads the computed range. This removes 49 linked executable bytes and
+147–193 instructions from each admitted edit without changing state, calls,
+DMA or resources.
+
+With all three cuts composed, the focused styled consumer uses
+7,327/7,141 instructions at 40 columns, 49,754/47,198 at 60 and
+33,529/32,723 at 80 for insert/delete. Relative to the row-relative checkpoint,
+that removes another 171/165, 34,276/36,656 and 21,766/22,424 instructions.
+Plain wide insert/delete falls to 46,353/44,111 at 60 and 30,783/30,065 at 80;
+warm caret routing is unchanged. `geostail` remains below its 4 KiB limit and
+the fixed C33 image retains 41 contiguous bytes before `$BF00`; there is no
+BSS, zero-page, resident, image, bank or catalog growth. Exact-current full
+matrix, stack and normal-speed PAL qualification are the final gates for this
+composed slice.
+
+Those gates now pass on D81
+`28e6041abecc16025e90c50d8cc525cac521b472b57dfed6923cf0c195ba185a`.
+The fresh 72-case matrix contains 48 admitted and 24 structural cases with zero
+failures, all five stale/corrupt classes and both cancellation cases pass, and
+the registered bound remains 52 foreground plus 16 IRQ/NMI bytes. Admitted
+operations use 6–10 loads and 22,065–91,396 instructions. Evidence is in
+`build/styled-grid-carry-matrix/20261027T130013415847Z/result.json` and
+`build/editor-registered-stack/20261027T125955250755Z/qualified-result.json`.
+
+Normal-speed PAL VICE passes Full/Markdown, insert/delete and all three widths
+with exact source, pixels, colors, anchors, history, catalog, payload, stack and
+shim witnesses. Every case publishes once and executes no parser or overlay call
+after publication. Settled 40-column time is 201,893–203,665 cycles, 60-column
+time is 394,267–400,529, and 80-column time is 317,301–320,254. This is about
+5% faster at 40, 23.0–23.9% at 60 and 20.9–21.3% at 80 than the preceding
+qualified transaction. The exact native artifact is
+`agentsworking/evidence/M8/20261027T125939500129Z-display-timing-styled-grid-convergence-baseline/normal-speed-pal-styled-transaction.json`.
+
+The matching normal-speed NTSC cohort also passes all 12 cases. Settled
+40-column time is 203,915–205,245 cycles, 60-column time is
+397,662–403,870, and 80-column time is 320,381–323,205. Publication is followed
+by a constant 104-cycle quiescence tail with no parser or overlay work. The
+complete oracle and screenshots are in
+`agentsworking/evidence/M8/20261027T130055318500Z-display-timing-styled-grid-convergence-baseline/normal-speed-ntsc-styled-transaction.json`
+and its sibling `ntsc-styled-transaction-contact-sheet.png`.

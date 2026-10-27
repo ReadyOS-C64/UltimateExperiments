@@ -3,7 +3,6 @@
 .include "render/grid/paragraph/lrv3.inc"
 .include "render/geos/edit-certificate.inc"
 LRVT=$8D00
-LRV_OLD_NC=$8500
 LT_WIDTH=1
 LT_FIRST=3
 LT_ROWS=4
@@ -13,7 +12,6 @@ LT_LENGTH=12
 LT_ROW=14
 LT_CARET_ROW=15
 LT_CARET_COL=16
-LT_RECORD_FLAGS=17
 LT_FLAGS=7
 LT_CLIP=18
 LT_SOURCE=20
@@ -174,7 +172,6 @@ lrv_finish_state:
  cmp #22
  bcs @bottom
  asl
- clc
  adc COL
  tax
  jsr @rows
@@ -186,6 +183,29 @@ lrv_finish_state:
  lda #>se_v_bottom
  sta text_ptr+1
  jsr @add
+ lda se_mode
+ beq @header_done
+ clc
+ lda LRVT+LT_FIRST
+ adc LRVT+LT_ROWS
+ sta COL
+ asl
+ adc COL
+ tax
+@header_rows:
+ lda se_v_rows,x
+ sta H+N_ROWS,x
+ inx
+ cpx #66
+ bcc @header_rows
+ ldx #2
+@header_bottom:
+ lda se_v_bottom,x
+ sta H+N_BOTTOM,x
+ sta H+N_ROWS+66,x
+ dex
+ bpl @header_bottom
+@header_done:
  lda LRVT+LT_CARET_ROW
  sta se_v_caret_row
  lda LRVT+LT_CARET_COL
@@ -387,22 +407,13 @@ lrv_build_packet:
  bne @read
  lsr LRVT+LT_END_PENDING
  bcc @next_cell
- lda LRVT+LT_RECORD_FLAGS
- and #LRRF_REVERSE
- beq :+
- inc P+160,x
-: inc LRVT+LT_LIVE
+ inc LRVT+LT_LIVE
  bne @next_cell
 @read:
  jsr se_view_peek
  jcs @bad
  ldx COL
  sta P,x
- lda LRVT+LT_RECORD_FLAGS
- and #LRRF_REVERSE
- beq :+
- inc P+160,x
-:
  lda LRVT+LT_FLAGS
  bpl @valid
  ldy COL
@@ -505,9 +516,9 @@ lrv_commit_row:
  asl
  tax
  lda se_crc_value
- sta LRV_OLD_NC+N_ROWCRC,x
+ sta H+N_ROWCRC,x
  lda se_crc_value+1
- sta LRV_OLD_NC+N_ROWCRC+1,x
+ sta H+N_ROWCRC+1,x
 @done:
  inc LRVT+LT_REL
  clc
@@ -526,6 +537,7 @@ lrv_native_row:
  bpl @descriptor
  lda LRVT+LT_WIDTH
  sta NC_NR
+ lda LRVT+LT_LIVE
  sta NC_NR+2
  lda LRVT+LT_ROW
  clc

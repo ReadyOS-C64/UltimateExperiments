@@ -16,7 +16,7 @@
 .import se_st_descriptor,se_st_request,se_st_valid
 .import se_gc_handle,se_gc_width,se_gc_epoch,se_gc_valid,se_gc_previous_ui,se_gc_current_ui
 .import se_ef_valid,se_ef_generation,se_ef_token,se_ef_count,se_ef_fold_rows,se_ef_projection_generation,se_ef_paint_ends,se_ef_summary,se_ef_key_match
-.import se_sel_mark,se_sel_anchor,se_sel_start,se_sel_end,se_selection_range
+.import se_sel_mark,se_sel_anchor
 .import se_overlay_ids,image_slot,image_size_lo,image_size_hi,image_crc_lo,image_crc_hi,se_overlay_asset,asset_epoch
 .import se_reu_retired,se_reu_epoch,se_reu_map,se_reu_logical_owner,se_reu_physical_owner
 .import se_reu_logical,se_reu_offset,se_reu_c64,se_reu_length,se_reu_copy

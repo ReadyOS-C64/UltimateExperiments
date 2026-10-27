@@ -110,6 +110,17 @@ def run(out, fixture=None):
                     source = admission.TEXT[:at - 1] + admission.TEXT[at:]
                 _, first, count, _ = make_ready(f, mode, source)
 
+                # NR_COUNT bounds glyph rasterization, but the native leaf
+                # must still clear the complete physical row before painting
+                # the shorter live prefix. Poison the whole destination here
+                # so insert/delete exactness proves stale suffix removal.
+                if mode:
+                    physical = first + 2
+                    f.m.load(0x6000 + physical * 320,
+                             bytes((0xA5,)) * 320)
+                    f.m.load(0x4000 + physical * 40,
+                             bytes((0xFE,)) * 40)
+
                 # Every packet flag byte must be produced by this transaction.
                 # Poisoning catches padding cells that skip the live/end paths
                 # and would otherwise inherit selection/reverse state.
