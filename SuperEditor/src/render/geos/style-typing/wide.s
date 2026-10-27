@@ -2,7 +2,7 @@
 .macpack longbranch
 .include "render/geos/style-typing/wide.inc"
 .importzp gt_base,gt_bitmap
-.export se_typing_patch,se_typing_validate,se_typing_dry,se_typing_color_patch,se_typing_color_validate
+.export se_typing_validate,se_typing_color_validate,se_typing_apply
 se_typing_validate:
  lda #0
  sta mode
@@ -38,20 +38,11 @@ carettail=P+23
 carry2=P+24
 mode=P+25 ;bit0 certifiedcolorentry,bit1 dry(noVIC)
 .segment "CODE"
-se_typing_patch:
-    lda #0
-    beq set_mode
-se_typing_dry:
-    lda #3
-    bne set_mode
-se_typing_color_patch:
-    lda #1
-set_mode:
+se_typing_apply:
+    ; Private transaction-only entry: A is mode0/1/3. The caller has just
+    ; executed the matching validator and does not yield before this call.
     sta mode
-    jsr validate
-    bcc :+
-    rts
-:
+apply:
     lda #0
     sta F+GT_VALID
     sta line

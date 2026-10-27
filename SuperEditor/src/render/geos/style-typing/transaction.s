@@ -7,8 +7,8 @@ GP_CACHE_IMPLEMENTATION=1
 .include "render/geos/style-typing/wide.inc"
 .include "render/geos/typing/font-cache.inc"
 .include "document/math24.inc"
-.import se_gtt_admit,se_gtt_current
-.import se_typing_validate,se_typing_patch,se_typing_color_validate,se_typing_color_patch,se_typing_dry,se_tcb_two_check,se_gcc_status
+.import se_gtt_admit
+.import se_typing_validate,se_typing_color_validate,se_typing_apply,se_tcb_two_check,se_gcc_status
 .import se_gp_cache_read,se_gp_cache_write,se_gp_cache_slot
 .import se_f_owner,se_hot_caret,se_sel_anchor,se_e_draw_sequence
 .import se_v_pos,se_view_peek,se_v_cache_count,se_v_length,se_v_rows
@@ -324,7 +324,8 @@ begin:
  jne miss
  jsr gather
  jcs failure
- jsr se_typing_dry
+ lda #3
+ jsr se_typing_apply
  jcs miss
  jsr color_check
  jcs failure
@@ -342,10 +343,8 @@ begin:
  sta GTT_PHASE
  jmp pending
 step:
- jsr se_gtt_current
- jcs failure
- cmp #2
- jeq miss
+ ; BEGIN and both private pending phases execute in one uninterrupted C32 call.
+ ; Admission already authenticated current context; no scheduler/user code runs here.
  lda GTT_PHASE
  cmp #1
  jne commit
@@ -402,9 +401,12 @@ validate_choice:
 patch_choice:
  lda GTT_LOCAL+44
  beq @strict
- jmp se_typing_color_patch
+ lda #1
+ bne @apply
 @strict:
- jmp se_typing_patch
+ lda #0
+@apply:
+ jmp se_typing_apply
 color_check:
  lda GTT_ROW
  sta $8A00

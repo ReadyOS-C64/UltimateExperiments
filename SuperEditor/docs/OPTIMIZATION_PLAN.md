@@ -447,3 +447,9 @@ specializes its production-only full-width contract and deletes generic clipping
 They must retain exact pixels, source and fault behavior after composition before
 promotion. Continue from whole-operation PAL attribution after those cuts; do not
 return to overlay-file rearrangement.
+
+The C32 cut qualifies independently: it removes 26 staged bytes, saves 2,111
+instructions on steady INSERT and 2,008 on steady BACK, and improves native PAL
+steady operations by 5.53% and 5.64%. The 46-frame public matrix, eight API fault
+cases, exact pixels/source/REU checks and the composed 51-capsule package pass.
+Caret work and overlay loads/calls remain unchanged.
