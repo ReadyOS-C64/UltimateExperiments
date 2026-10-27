@@ -363,10 +363,10 @@ build/editor/crc-half.o: src/overlay/crc_fast.s
 	$(CA65) -g -D EDITOR_HALF_CRC=1 -I src -o $@ -l $(@:.o=.lst) $<
 build/editor/overlay-cache.o: src/overlay/cache.s src/overlay/format.inc
 	mkdir -p $(dir $@)
-	$(CA65) -g -D EDITOR_MANAGED_CODE=1 -D FAST_EDITOR_CRC=1 -D EDITOR_HALF_CRC=1 -D EDITOR_CATALOG_TAIL=1 -D EDITOR_FIXED_ENTRY=1 -D OVL_LIMIT=64 -I src -o $@ -l $(@:.o=.lst) $<
+	$(CA65) -g -D EDITOR_MANAGED_CODE=1 -D FAST_EDITOR_CRC=1 -D EDITOR_HALF_CRC=1 -D EDITOR_CATALOG_TAIL=1 -D EDITOR_FIXED_ENTRY=1 -D OVL_LIMIT=51 -I src -o $@ -l $(@:.o=.lst) $<
 build/editor/overlay-header.o: src/overlay/header.s src/overlay/format.inc
 	mkdir -p $(dir $@)
-	$(CA65) -g -D EDITOR_CATALOG_TAIL=1 -D EDITOR_FIXED_ENTRY=1 -D OVL_LIMIT=64 -I src -o $@ -l $(@:.o=.lst) $<
+	$(CA65) -g -D EDITOR_CATALOG_TAIL=1 -D EDITOR_FIXED_ENTRY=1 -D OVL_LIMIT=51 -I src -o $@ -l $(@:.o=.lst) $<
 build/overlay/crc_fast.o: src/overlay/crc_tables.inc
 EDITOR_OVERLAY_OBJ := $(patsubst build/iec/overlay_read.o,build/editor/overlay-read.o,$(EDITOR_OVERLAY_OBJ))
 EDITOR_HISTORY_OBJ = $(patsubst build/history/dispatch.o,build/editor/history-dispatch.o,$(HISTORY_OBJ))

@@ -57,6 +57,14 @@ instructions on LONG. An attempted active-hit loader shortcut is rejected even
 though PAL improved0.52%/0.32%: raw owner or epoch corruption while active no
 longer returned stale, so it weakened a checked invariant without a replacement.
 
+The resident catalog now matches the exact51-image product rather than retaining
+thirteen unreachable rows. This deletes78 warm bytes and8,475 instructions across
+the complete51-image import sequence, with unchanged PRG/BSS/ZP, full16MiB REU,
+lifecycle and stack68 proofs. This closes the catalog-capacity cleanup. Further
+disk or catalog rearrangement is not an optimization priority: subsequent work
+must remove material foreground edit, parse, layout or raster work and qualify the
+whole public operation.
+
 ## Product and machine constraints
 
 Design for a stock 1 MHz C64 first. Keep PETSCII/SuperMark, all 40/60/80-column

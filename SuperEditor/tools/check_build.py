@@ -50,7 +50,10 @@ for line in (build / f'{args.stem}.map').read_text().splitlines():
             assert 0 < capacity <= (64 if fixed_entry else 24), 'overlay catalog exceeds asset bank capacity'
             if fixed_entry and capacity > 32:
                 assert start == 0xCA00 and stop <= 0xCB7F, 'editor catalog escaped second warm extent'
-                if capacity == 64:
+                if args.stem == 'editor':
+                    assert capacity == 51, 'editor catalog capacity must equal its 51 packaged assets'
+                    assert size == 306 and stop == 0xCB31, 'editor51 catalog must occupy exactly CA00..CB31'
+                elif capacity == 64:
                     assert size == 384 and stop == 0xCB7F, 'editor64 catalog must occupy CA00..CB7F'
                 assert symbols.get('se_overlay_stage') == 0x5000, 'editor runtime stage must preserve executable slots'
                 assert symbols.get('se_overlay_asset_count') == 4, 'editor64 catalog needs four logical asset handles'
