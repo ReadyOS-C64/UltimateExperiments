@@ -354,7 +354,6 @@ step:
  jcs failure
  lda #1
  sta COPY
- jsr scanlines
  jsr block
  jcs failure
  lda #2
@@ -717,8 +716,6 @@ scanlines:
  sta screen_ptr
  inc screen_ptr+1
 :
- lda COPY
- jne @scatter
  ldx #5
 @gather_block:
  ldy #0
@@ -769,56 +766,6 @@ scanlines:
  dex
  bne @gather_block
  jmp @next_line
-@scatter:
- ldx #5
-@scatter_block:
- ldy #0
- lda (text_ptr),y
- ldy #0
- sta (screen_ptr),y
- ldy #1
- lda (text_ptr),y
- ldy #8
- sta (screen_ptr),y
- ldy #2
- lda (text_ptr),y
- ldy #16
- sta (screen_ptr),y
- ldy #3
- lda (text_ptr),y
- ldy #24
- sta (screen_ptr),y
- ldy #4
- lda (text_ptr),y
- ldy #32
- sta (screen_ptr),y
- ldy #5
- lda (text_ptr),y
- ldy #40
- sta (screen_ptr),y
- ldy #6
- lda (text_ptr),y
- ldy #48
- sta (screen_ptr),y
- ldy #7
- lda (text_ptr),y
- ldy #56
- sta (screen_ptr),y
- clc
- lda text_ptr
- adc #8
- sta text_ptr
- bcc :+
- inc text_ptr+1
-: clc
- lda screen_ptr
- adc #64
- sta screen_ptr
- bcc :+
- inc screen_ptr+1
-:
- dex
- bne @scatter_block
 @next_line:
  inc LINE
  lda LINE

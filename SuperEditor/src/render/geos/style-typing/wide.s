@@ -224,12 +224,40 @@ apply:
     ora GT_TEMP,y
     sta GT_TEMP,y
 @caret:
+    ; Dry mode feeds two-color election from linear provisional base.
+    lda mode
+    and #2
+    beq @cache_block
     ldy #39
 @cache_base:
     lda GT_TEMP,y
     sta (gt_base),y
     dey
     bpl @cache_base
+    jmp @caret_pixels
+@cache_block:
+    ; Real publication writes the caret-free row directly into the existing
+    ; two-band cache block. Reuse the VIC tile-layout copy loop below.
+    lda F+GT_TOP
+    and #7
+    clc
+    adc line
+    cmp #8
+    bcc :+
+    sbc #8                  ;carry from CMP
+    ora #$40
+    sta gt_bitmap
+    lda #$81
+    bne @cache_address
+:
+    sta gt_bitmap
+    lda #$80
+@cache_address:
+    sta gt_bitmap+1
+    lda #2                  ;existing transient mode byte marks cache target
+    sta mode
+    jmp @copy
+@caret_pixels:
     ldy bb
     cpy #40
     bcs @bitmap
@@ -251,7 +279,7 @@ apply:
 @bitmap:
     lda mode
     and #2
-    bne @advance
+    jne @advance
     ; VIC hires tile layout, with only this nine-pixel logical band touched.
     lda F+GT_TOP
     clc
@@ -300,6 +328,12 @@ apply:
     tax
     cpx #40
     bcc @copy
+    lda mode
+    and #2
+    beq @advance
+    lda #0
+    sta mode
+    jmp @caret_pixels
 @advance:
     clc
     lda gt_base

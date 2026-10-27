@@ -468,3 +468,10 @@ instructions from LONG and WRAPPED, saving 99,052 and 99,398 native PAL cycles.
 It is one executable byte smaller, adds no state or calls, and keeps component,
 fault, stack, package, pixel, load and DMA checks exact. The histogram-pointer
 variant remains rejected because it added code for a weaker resume contract.
+
+C32 now writes each caret-free edited row directly into the existing two-band
+cache-block layout and reuses that copier for VIC publication. This deletes the
+separate 9x40 scatter pass and shrinks TYPE by 37 bytes. Complete steady edits
+remove 1,845 instructions and improve native PAL INSERT/BACK by 4.14–5.03%
+across Plain, Markdown, Full and styled text. No state, stack, overlay or steady
+DMA work is added; the full edit/fault and native pixel matrices pass.
