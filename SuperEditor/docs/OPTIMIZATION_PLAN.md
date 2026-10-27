@@ -453,3 +453,11 @@ instructions on steady INSERT and 2,008 on steady BACK, and improves native PAL
 steady operations by 5.53% and 5.64%. The 46-frame public matrix, eight API fault
 cases, exact pixels/source/REU checks and the composed 51-capsule package pass.
 Caret work and overlay loads/calls remain unchanged.
+
+The R21 cut also qualifies: C22's sole row setup always supplies LEFT=0 and
+RIGHT=320, so R21 now rejects any other pair and deletes the unused partial-width
+implementation. It removes 191 executable bytes and 1,200 pairs of horizontal
+resolver calls per full TOP operation. Public CPU work falls 2.34–3.73%; native
+PAL LONG and WRAPPED fall 1.68% and 2.40%. Exact pixels, attributes, source,
+fault-before-write behavior, stack, overlay traffic and DMA remain unchanged.
+The role-zero shortcut remains rejected because it regressed Markdown and Full.

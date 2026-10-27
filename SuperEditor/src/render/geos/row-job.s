@@ -160,15 +160,6 @@ se_logical_row_job:
  jeq @clear_next
 @reset_band:
  jsr clear_histogram
- lda RJ+RJ_LEFT
- ora RJ+RJ_LEFT+1
- bne @partial_clear
- lda RJ+RJ_RIGHT
- cmp #<320
- bne @partial_clear
- lda RJ+RJ_RIGHT+1
- cmp #>320
- bne @partial_clear
  lda band0
  clc
  adc band
@@ -203,14 +194,11 @@ se_logical_row_job:
  bpl @clear_tail
  jmp @clear_next
 @partial_clear:
- lda #0
- sta tile
-@clear_tile:
  jsr y_begin
 @clear_y:
  lda ay
  cmp RJ+RJ_CLIP_BOTTOM
- bcs @clear_tile_next
+ bcs @clear_next
  ldx band
  lda ay
  lsr
@@ -219,51 +207,31 @@ se_logical_row_job:
  sec
  sbc band0
  cmp band
- bne @clear_tile_next
+ bne @clear_next
  lda ay
  and #7
  sta sy
- lda tile
- asl
- asl
- asl
+ lda #0
+ sta tile
  sta pixel
- lda tile
- lsr
- lsr
- lsr
- lsr
- lsr
  sta pixel+1
- ldx #8
-@clear_bit:
- jsr clipped_left
- bcc @clear_skip
- jsr clipped_right
- bcs @clear_skip
- txa
- pha
+@clear_tile:
  jsr pixel_address
- lda rj_bits,x
- eor #$ff
+ lda #0
  ldy #0
- and (se_gg_pointer),y
  sta (se_gg_pointer),y
- pla
- tax
-@clear_skip:
- inc pixel
- bne :+
+ clc
+ lda pixel
+ adc #8
+ sta pixel
+ bcc :+
  inc pixel+1
-: dex
- bne @clear_bit
- inc ay
- jmp @clear_y
-@clear_tile_next:
- inc tile
+: inc tile
  lda tile
  cmp #40
  bcc @clear_tile
+ inc ay
+ jmp @clear_y
 @clear_next:
  inc band
  lda band
@@ -325,15 +293,6 @@ raster_continue:
  dex
  bne @coverage
 @coverage_done:
- lda RJ+RJ_LEFT
- ora RJ+RJ_LEFT+1
- bne @slow
- lda RJ+RJ_RIGHT
- cmp #<320
- bne @slow
- lda RJ+RJ_RIGHT+1
- cmp #>320
- bne @slow
  lda xpos+1
  beq @fast
  cmp #1
@@ -519,34 +478,28 @@ y_begin:
 clipped_left:
  lda pixel+1
  cmp #$ff
- bne @unsigned
- lda pixel
- cmp #$f1
- bcs @negative
- lda pixel+1
-@unsigned:
- cmp RJ+RJ_LEFT+1
- bne :+
- lda pixel
- cmp RJ+RJ_LEFT
-: rts
+ beq @negative
+ sec
+ rts
 @negative:
  clc
  rts
 clipped_right:
  lda pixel+1
  cmp #$ff
- bne @unsigned
+ beq @negative
+ cmp #>320
+ bcc @inside
+ bne @outside
  lda pixel
- cmp #$f1
- bcs @negative
- lda pixel+1
-@unsigned:
- cmp RJ+RJ_RIGHT+1
- bne :+
- lda pixel
- cmp RJ+RJ_RIGHT
-: rts
+ cmp #<320
+ rts
+@inside:
+ clc
+ rts
+@outside:
+ sec
+ rts
 @negative:
  clc
  rts
@@ -690,29 +643,6 @@ resolve_continue:
  lda row_budget
  jeq pause_job
  dec row_budget
- lda tile
- asl
- asl
- asl
- sta pixel
- lda tile
- lsr
- lsr
- lsr
- lsr
- lsr
- sta pixel+1
- jsr clipped_right
- jcs @next
- clc
- lda pixel
- adc #8
- sta pixel
- bcc :+
- inc pixel+1
-: jsr clipped_left
- jcc @next
- jeq @next
  lda #0
  sta role
  sta weight
@@ -992,27 +922,15 @@ validate_inputs:
  lda RJ+RJ_BACKGROUND
  cmp #16
  jcs argument
- lda RJ+RJ_LEFT+1
- cmp #2
- jcs argument
- cmp #1
- bne :+
  lda RJ+RJ_LEFT
- cmp #65
- jcs argument
-: lda RJ+RJ_RIGHT+1
- cmp #2
- jcs argument
- cmp #1
- bne :+
+ ora RJ+RJ_LEFT+1
+ jne argument
  lda RJ+RJ_RIGHT
- cmp #65
- jcs argument
-: lda RJ+RJ_RIGHT
- cmp RJ+RJ_LEFT
+ cmp #<320
+ jne argument
  lda RJ+RJ_RIGHT+1
- sbc RJ+RJ_LEFT+1
- jcc argument
+ cmp #>320
+ jne argument
  lda RJ+RJ_CLIP_TOP
  cmp #16
  jcc argument
