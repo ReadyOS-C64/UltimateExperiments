@@ -55,6 +55,7 @@ undo             redo             delete           clear undo
 open             save             save as
 fold             fold all         unfold all
 preview          source           settings         diag
+syntax plain     syntax markdown  syntax full
 ```
 
 `findi` ignores case. `pan left/right` enables the unwrapped view and moves 20
@@ -64,17 +65,29 @@ edit before changing the source or existing pending edit; Undo remains usable.
 
 Editable GEOS keeps source markers visible. F7 `preview` opens a separate,
 read-only formatted view: F3/F5 or up/down change pages, Return or RUN/STOP returns
-to source. F7 `source` also returns. Menus/help remain available. Formatting
+to source. F7 `source` toggles source/preview in GEOS, so it also returns when
+used from preview. Menus/help remain available. Formatting
 controls are hidden only in preview; saved files retain the original source.
 
 The View menu provides these routes too: **F1,V,P** toggles GEOS preview/source;
 **F1,V,S** opens preview appearance settings. Preview requires GEOS mode. Closing
-Settings opened from preview returns to that preview.
+Settings opened from preview returns to that preview. In Settings, **H** cycles
+Plain → Markdown → Full source processing. This is a different key context from
+View/H, which selects GEOS mode. Settings is available in every source mode.
+
+F7 `syntax plain` (also `syntax off`) disables source syntax parsing and code
+coloring. `syntax markdown` keeps structural/inline formatting without BASIC or
+assembler token colors; `syntax full` (also `syntax on`) enables both. Plain shows
+source expanded while preserving stored fold choices for the other presets.
+Formatted preview remains a separate view; these controls do not edit the file.
 
 F7 `fold` toggles the region at the caret. Fold summaries show an inverse `+`;
 selection, copy/cut and saved files still refer to the complete source. Direct
 GOTO/find into hidden text opens its ancestors. Arrow/page navigation skips
-collapsed bodies.
+collapsed bodies. To expand one region, use `fold` again; the parser has no
+standalone `unfold` alias. `unfold all` expands all regions. Fold summaries do not
+show a hidden-line count, and cut/delete does not add a confirmation prompt;
+check the selection before editing, and use Undo to restore it.
 
 While typing, an unfinished code fence or region marker can temporarily make a
 fold map impossible to rebuild. An automatic rebuild then shows the expanded
@@ -82,6 +95,8 @@ source so editing can continue. Explicit `fold all` still reports malformed fold
 syntax; source-read failures also remain errors.
 
 F7 `settings` changes preview profiles: 1–8 choose Body, H1–H6, Code; F changes font,
-S size, C/G ink/paper, B/I/U bold/italic/underline, R restores defaults, Return
-closes. These settings last only for the session. See [GEOS preview and
+S size, C/G ink/paper, B/I/U bold/italic/underline, H source processing, R restores
+the compiled appearance and source-processing defaults, Return closes, and
+RUN/STOP closes without reverting choices already applied. These settings last
+only for the session. See [GEOS preview and
 appearance](GEOS_PREVIEW.md) for the actual font catalog and C64 color constraints.
