@@ -107,6 +107,9 @@ se_idle:
     cmp #1
     bne se_idle
     jsr se_style_idle
+    ; Style idle returns A=$80 on either handled or transport failure.
+    bpl se_idle
+    inc se_e_redraw ;a later planner failure must publish the plain fallback once
     jmp se_idle
 .segment "CODE"
 se_editor_latch_event:
@@ -200,6 +203,8 @@ se_er_paint:
     lda #R_DRAW
     jsr se_editor_render_call
     bcs se_editor_render_failed
+    cmp #ST_PENDING
+    beq se_er_style_pending
     lda se_l_need_wrap
     beq se_editor_render_ui
     lda #0
@@ -207,6 +212,10 @@ se_er_paint:
     jsr se_layout_prepare
     bcs se_editor_render_failed
     rts ;C11 queued without publishing pixels or draw sequence
+se_er_style_pending:
+    lsr se_e_draw_busy ;strict 1 -> 0; carry is cleared below
+    clc
+    rts ;idle checks input again before running the first bounded style slice
 se_editor_render_ui:
     lda se_e_ui
     cmp #3

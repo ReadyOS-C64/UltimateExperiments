@@ -9,7 +9,7 @@ loop:
     cmp se_st_descriptor+offset,x
     beq same
     sta se_st_descriptor+offset,x
-    ldy #1
+    iny ;at most 33 changed key bytes, so the mismatch count cannot wrap
 same:
     dex
     bpl loop
@@ -20,18 +20,15 @@ style_context:
     jsr style_damage
     jsr style_matches
     bcc @same
-    lda #0
-    sta se_st_valid
+    lsr se_st_valid ;published-valid is a strict 0/1 flag
     lda #1
     sta se_st_request
     rts
 @same:
     lda se_st_valid
-    bne @done
-    lda se_st_request
-    bmi @done ;failed exact context stays plain, no endless retry
-    lda #1
-    sta se_st_request
+    ora se_st_request
+    bne @done ;valid, pending, or failed exact context needs no new request
+    inc se_st_request ;both flags are strict 0/1, with $80 the only failure
 @done:
     rts
 @raw:
@@ -53,8 +50,9 @@ style_matches:
     cmp se_st_descriptor+32
     beq :+
     sta se_st_descriptor+32
-    ldy #1
-:   cpy #1 ;Y0 matching/Cclear; Y1 rebound current context/Cset
+    iny
+:   tya
+    cmp #1 ;Y0 matching/Cclear; Y1..33 rebound current context/Cset
     rts
 
 ; Capture mutation proof before cache_save clears R1's damage. Compare against
@@ -72,8 +70,7 @@ style_damage:
 @changed:
     lda se_r_damage_valid
     bne @known
-    lda #0
-    sta se_st_cp_valid
+    lsr se_st_cp_valid ;checkpoint-valid is a strict 0/1 flag
     rts
 @known:
     lda se_st_cp_dirty

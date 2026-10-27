@@ -9,6 +9,15 @@ grid_source:
     jsr grid_call
     jcs grid_return
     jsr style_context
+    lda se_e_ui
+    bne @style_ready ;publish an already-requested UI frame before background work
+    lda se_st_request
+    cmp #1
+    bne @style_ready
+    lda #ST_PENDING
+    clc
+    rts ;plan first: no bitmap cell or cache publication has happened yet
+@style_ready:
     ldx #0
     lda se_e_ui
     cmp #3

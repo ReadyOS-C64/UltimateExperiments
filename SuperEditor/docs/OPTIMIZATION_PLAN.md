@@ -584,3 +584,45 @@ The original product scope remains unchanged. After the Plain slice finishes
 native qualification, the next work is whichever measured styled fixed-grid or
 GEOS parse/layout/raster boundary can delete the most live work without adding
 another parallel authority.
+
+### Styled wide-grid single-publication checkpoint
+
+Full and Markdown 60/80-column edits previously published an unstyled bitmap,
+then completed the one full style pass and published the same viewport again.
+The wide C16 producer now returns `ST_PENDING` after checked leaf admission and
+style-context binding but before any cell or cache write. Resident clears the
+strict draw-busy flag and returns to the normal idle loop, so queued input is
+checked before C14 receives its first bounded slice. Once the style plan is
+valid, C16 paints and finalizes once. Nonzero UI bypasses withholding, and an
+exact-context planner failure schedules one plain fallback redraw. The unsafe
+40-column variant was removed because R1 produces wrapped anchors during paint;
+prepaint styling there bound a valid plan to stale anchors.
+
+This is a scheduling deletion, not parser convergence. Full 60-column work falls
+from 2,649,645 to 1,000,409 instructions (62.24%); Full 80 falls from 1,805,177
+to 1,010,676 (44.01%). Loads fall 29 to 27 and DMA falls from 126 calls/135,025
+bytes to 76/116,181. C16 `GRID_FINALIZE` falls from two to one. The linked
+ledger is exactly neutral: resident +14 bytes, text40 -15 and gridedit +1; no
+BSS, zero-page, REU, image or catalog growth. Full pixels/attributes, Plain
+40/60/80, structural CR, UI/input interleaving, D81 and ReadyOS-reservation
+gates pass.
+
+Normal-speed PAL VICE confirms the whole-operation reduction. Full60 settles at
+3,996,868 cycles instead of 9,897,057 (59.61% lower); Full80 settles at
+4,043,622 instead of 6,813,027 (40.65% lower). Both preserve independent
+source/bitmap/attribute, catalog, stack and REU oracles and publish exactly
+once. Loads fall 29 to 27 and PAL DMA falls from 123 calls/134,123 bytes to
+75/115,759. The remaining roughly 310K-cycle tail is the existing post-frame
+C33 cache capture with nested R25 authentication, not syntax parsing; retaining
+that next-input authority is a separate replacement decision, not an overlay
+placement exercise. Evidence:
+`agentsworking/evidence/M8/20261027T101239594697Z-display-timing-full60-80-normal-pal-post-change/normal-speed-full60-80-result.json`.
+
+The remaining styled boundary is still material: C14/C15 continue a complete
+visible style pass before that single publication. Their current 7,864 linked
+bytes contain 4,837 bytes of parser cores and 3,027 bytes of replaceable
+orchestration. The next replacement must reuse the dormant checkpoint region
+for authenticated incoming/outgoing logical-line carries, stop at exact parser
+state convergence, skip lexical work for unchanged code lines, and delete the
+displaced orchestration in the same change. Overlay placement alone earns no
+credit.
