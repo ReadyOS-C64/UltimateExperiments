@@ -51,7 +51,10 @@ def execute(base,out,inflight=False):
         labels={name:int(address,16)for address,name in re.findall(
             r'al ([0-9a-fA-F]+) \.(\w+)',(base/'build/overlays/geosrow.lbl').read_text())}
         pending_pc=labels['raster_continue']
-        tag=json.loads((base/'freeze.json').read_text())['names'].index('geosrow')+1
+        image=(base/'build/overlays/geosrow.seo').read_bytes()
+        tag=(timing.editor_pair_index(image[5],image[6])
+             if 'catalog_index' in s else
+             json.loads((base/'freeze.json').read_text())['names'].index('geosrow'))+1
         pending+=f' && (@cpu:${s["se_overlay_active"]:04x} == ${tag:02x}) && (@cpu:${s["se_overlay_busy"]:04x} == $01) && (@cpu:$9040 > $14)'
         # Stop immediately after the real IRQ publishes the event. Reconstruct
         # the interrupted PC from the ROM dispatcher stack to prove mid-R21.
@@ -64,17 +67,28 @@ def execute(base,out,inflight=False):
     queued=f'(@cpu:${s["se_input_head"]:04x} != @cpu:${s["se_input_tail"]:04x})'
     applied=f'(@cpu:${s["se_hot_pending"]:04x} == $01) && (@cpu:${s["se_hot_caret"]:04x} == $01) && (@cpu:${s["se_input_head"]:04x} == @cpu:${s["se_input_tail"]:04x})'
     log=n.out/'queued-stopwatch.log'
-    n.raw('required_paint_then_IRQ_key_coherent',[
+    n.raw('required_paint_pending_coherent',[
         'delete',f'> 0277 {top.hex(" ")}',f'> 00c6 {len(top):02x}',
+        f'logname "{n.out / "pending-stop.log"}"','log on',
         f'break exec ${pending_pc:04x} if {pending}','x','delete',
         f'bsave "{captures}/pending.bin" 0 $0000 $cfff',
+        f'bsave "{captures}/pending-colors.bin" 0 $d800 $dbe7','log off']
+    )
+    applied_capture=[
+        'stopwatch','registers','delete',
+        f'bsave "{captures}/applied.bin" 0 $0000 $cfff',
+        f'bsave "{captures}/apply-colors.bin" 0 $d800 $dbe7','log off']
+    hit=n.out/'IRQ_key_applied_timed-hit.mon'
+    hit.write_text('\n'.join(applied_capture)+'\n')
+    n.raw('IRQ_key_queued_applied_coherent',[
         f'> 0277 {timing.native.live.grid.native_text("Q").hex(" ")}','> 00c6 01',
+        f'logname "{n.out / "queued-stop.log"}"','log on',
         f'break exec ${queued_pc:04x} if {queued}','x','delete',
         f'bsave "{captures}/queued.bin" 0 $0000 $cfff',
+        f'bsave "{captures}/queued-colors.bin" 0 $d800 $dbe7','log off',
         f'logname "{log}"','log on','registers','stopwatch reset',
-        f'break exec ${s["se_idle"]:04x} if {applied}','x','stopwatch','registers','delete','log off',
-        f'bsave "{captures}/applied.bin" 0 $0000 $cfff',
-        f'bsave "{captures}/apply-colors.bin" 0 $d800 $dbe7'])
+        f'break exec ${s["se_idle"]:04x} if {applied}',
+        f'command 1 "playback \\"{hit}\\""','x',*applied_capture])
     wanted=timing.native.live.grid.native_text('Q')+DATA
     n.snapshot('queued-final',wanted,3)
     plan=n.plan();(n.out/'cases.json').write_text(json.dumps(n.cases,indent=2)+'\n')

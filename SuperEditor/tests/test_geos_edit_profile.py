@@ -21,8 +21,8 @@ class Plan(timing.Plan):
         return super().condition(0 if self.literal_return and ui==2 else ui)
 
 
-def scenario(e):
-    n=Plan(e,json.loads((e/'editor-report.json').read_text()),1,0);n.cost_profile=True
+def scenario(e,standard,model):
+    n=Plan(e,json.loads((e/'editor-report.json').read_text()),standard,model);n.cost_profile=True
     data=timing.native.live.grid.fixture();q=timing.native.live.grid.native_text('Q')[0]
     prose=data.index(timing.native.live.grid.native_text('Mixed Case'))
     heading=2+len(timing.native.live.grid.native_text('Super'))
@@ -44,7 +44,7 @@ def scenario(e):
     return n
 
 
-def summary(n,result):
+def summary(n,result,standard_name):
     groups=[]
     for item in result['measurements']:
         cost=item['cost_profile'];by={(v['slot'],v['id']):v for v in cost['groups']}
@@ -56,21 +56,22 @@ def summary(n,result):
             window=own((1,6)),chrome=own((1,16),(0,16)),counters=item['counter_deltas'],
             service_peak=item['service_peak_cycles']))
     r=dict(status='passed',identity=result['identity'],cases=groups,
-        scope='ActualPAL CPUcycles inclIRQ/VIC/REU stalls. Payloadself excludesmeasuredchildoverlays, retainsreturnoverhead. Firstpaintis memorypublication notVICbeam/physicalkeylatency. Allnativepixels/source/catalog/shim guards mustpass first.')
+        scope=f'Actual{standard_name.upper()} CPUcycles inclIRQ/VIC/REU stalls. Payloadself excludesmeasuredchildoverlays, retainsreturnoverhead. Firstpaintis memorypublication notVICbeam/physicalkeylatency. Allnativepixels/source/catalog/shim guards mustpass first.')
     (n.out/'edit-profile.json').write_text(json.dumps(r,indent=2)+'\n');return r
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--run',action='store_true');p.add_argument('--fixture',type=Path,default=DEFAULT);a=p.parse_args()
-    if not a.run:print('Use --run --fixture IMMUTABLE. OneownedPAL VICE7900/text8000; no sharedbuild.');return
-    e=timing.freeze(a.fixture,'pal');n=scenario(e);plan=n.plan()
+    p=argparse.ArgumentParser();p.add_argument('--run',action='store_true');p.add_argument('--fixture',type=Path,default=DEFAULT);p.add_argument('--standard',choices=('pal','ntsc'),default='pal');a=p.parse_args()
+    if not a.run:print('Use --run --fixture IMMUTABLE [--standard pal|ntsc]. Oneowned VICE7900/text8000; no sharedbuild.');return
+    standard,model=(1,0) if a.standard=='pal' else (2,3)
+    e=timing.freeze(a.fixture,a.standard);n=scenario(e,standard,model);plan=n.plan()
     (n.out/'plan.yaml').write_text(json.dumps(plan,indent=2)+'\n');(n.out/'measurements.json').write_text(json.dumps(n.measurements,indent=2)+'\n')
     with zipfile.ZipFile(e/'edit-profile-verifier.zip','w',zipfile.ZIP_DEFLATED)as z:
         for path in [Path(__file__),ROOT/'tests/test_display_timing_vice.py']:z.write(path,path.relative_to(ROOT))
     print('PREPARED',n.out,len(n.steps),flush=True)
     project=timing.native.live.grid.synchronous_project(n.out);vice_plan.PROJECT=project
     proc=subprocess.run(['dotnet','build',str(project),'--nologo'],capture_output=True,text=True,timeout=120);(n.out/'dotnet-build.log').write_text(proc.stdout+proc.stderr);assert not proc.returncode
-    vice_plan.run_plan(plan,n.out);r=timing.evaluate(n);s=summary(n,r);print('EDITPROFILEPASS',n.out,flush=True)
+    vice_plan.run_plan(plan,n.out);r=timing.evaluate(n);s=summary(n,r,a.standard);print('EDITPROFILEPASS',n.out,flush=True)
     for item in s['cases']:print(json.dumps(item),flush=True)
 
 if __name__=='__main__':main()
