@@ -521,13 +521,14 @@ se_editor_service:
     jeq @flush
     cmp #3
     jeq @history
+    tay                         ;retain job across the queue sample
     lda se_input_nmi_pending
     bne @cancel_nav
     ldx se_input_tail
     cpx se_input_head
     bne @queued
 @nav_step:
-    lda se_e_job
+    tya
     cmp #11
     beq @geos_step
     cmp #12
@@ -537,23 +538,32 @@ se_editor_service:
 :
     jmp @other_job
 @queued:
-    ; Source page paint is derived work even when its optional cache is idle.
-    ; Preview must finish its bottom anchor before another page command.
-    ; Cancel source paint before another slice, retaining this queued event.
-    ; Job12 must complete its requested position even while its semantic helper
-    ; owns BC_ACTIVE. Only STOP/NMI may abandon that destination.
-    lda se_e_job
-    cmp #11
+    lda se_input_chars,x
+    cmp #3
+    bne @queued_input
+    lda se_input_mods,x
+    and #4
+    beq @cancel_nav
+@queued_input:
+    ; Public TOP/BOTTOM/GOTO first publish their exact target, then enter the
+    ; proportional reveal as E_POSITION. Transfer only that authenticated
+    ; phase; vertical/page targets are not yet known and must keep running.
+    cpy #11
+    beq @queued_geos
+    cpy #12
     bne @queued_control
+    lda se_e_command
+    cmp #E_POSITION
+    bne @queued_control
+    jsr se_geos_cancel
+    lda #0
+    sta se_e_job
+    jmp reload
+@queued_geos:
     lda se_e_ui
     beq @cancel_geos
 @queued_control:
-    lda se_input_chars,x
-    cmp #3
-    bne @nav_step
-    lda se_input_mods,x
-    and #4
-    bne @nav_step
+    jmp @nav_step
 @cancel_nav:
     jsr se_input_get
     jsr se_editor_latch_event
@@ -606,9 +616,7 @@ se_editor_service:
     sta se_e_redraw ;cancelled layout retains old pixels until another command
     rts
 :
-    lda #0
-    sta se_e_job
-    jmp redraw
+    jmp clear_job_redraw
 @other_job:
     cmp #10
     bne :+
@@ -653,9 +661,7 @@ se_editor_service:
     bne @nav_reload
     CMP24 se_hot_caret,se_e_target
     bne @nav_reload
-    lda #0
-    sta se_e_job
-    jmp redraw
+    jmp clear_job_redraw
 @nav_reload:
     lda se_mode
     cmp #3
@@ -726,9 +732,7 @@ se_editor_service:
     jne @done
     lda se_b_changed
     jne reload
-    lda #0
-    sta se_e_job
-    jmp redraw
+    jmp clear_job_redraw
 @history:
     lda se_h_phase
     beq @history_done
@@ -757,6 +761,7 @@ se_editor_service:
 @flush:
     lda se_hot_phase
     beq @flushed
+@hot_step:
     lda #W_STEP
     jsr se_hot_call
     jcs se_editor_error
@@ -778,11 +783,7 @@ se_editor_service:
     jmp execute
 @load:
     lda se_hot_phase
-    beq @loaded
-    lda #W_STEP
-    jsr se_hot_call
-    jcs se_editor_error
-    rts
+    bne @hot_step
 @loaded:
     lda #0
     sta se_e_job
@@ -824,6 +825,8 @@ fold_result:
     jsr se_ef_motion_ack
     CMP24 se_e_target,se_hot_caret
     jne reload ;the fold action's controlled caret move preserves motion serial
+    jmp clear_job_redraw
+clear_job_redraw:
     lda #0
     sta se_e_job
     jmp redraw
