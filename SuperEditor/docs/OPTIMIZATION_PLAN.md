@@ -51,6 +51,12 @@ then deletes30 R21 bytes that wrote VALID/baseline/height fields with no linked
 reader, saving2,390–3,180 instructions per tested public TOP. Both changes add
 no state, cache, image, call edge or supervisor.
 
+Commit `1d78734` follows the same proof through C20 and deletes34 more bytes of
+VALID/reverse/index/width/baseline/height stores with no reader, saving11,187
+instructions on LONG. An attempted active-hit loader shortcut is rejected even
+though PAL improved0.52%/0.32%: raw owner or epoch corruption while active no
+longer returned stale, so it weakened a checked invariant without a replacement.
+
 ## Product and machine constraints
 
 Design for a stock 1 MHz C64 first. Keep PETSCII/SuperMark, all 40/60/80-column
