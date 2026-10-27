@@ -92,9 +92,10 @@ done:rts
 success:lda #0
  clc
  rts
-; Caller source guard/lease is real, and source59 is compared before every IO.
+; Caller source guard/lease is real. The first29 identity bytes name logical content
+; through render revision; hot-window transport placement is not presentation input.
 source_match:
- ldx #58
+ ldx #28
 @key:lda GS_FS+27,x
  cmp VP_KEY,x
  bne @miss
@@ -173,7 +174,7 @@ prepare:
  jne miss ;normal preview/wide remains direct pure-parser fallback
  lda #0
  sta VP_VALID
- ldx #58
+ ldx #28
 @key:lda GS_FS+27,x
  sta VP_KEY,x
  dex

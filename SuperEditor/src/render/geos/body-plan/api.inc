@@ -8,7 +8,7 @@
 .import se_crc_init,se_crc_byte,se_crc_value
 VP=se_bc_ring
 VP_VALID=VP
-VP_KEY=VP+1                  ;59 exact source bytes
+VP_KEY=VP+1                  ;59B reserved; first29 are logical source identity
 VP_ORIGIN=VP+60              ;canonical24 current inline window start
 VP_LIMIT=VP+63               ;exclusive canonical bound (<=4096 entries)
 VP_BODY=VP+66

@@ -82,6 +82,22 @@ GN_FOLD_GENERATION=$CF81
  dex
  bpl :-
 .endmacro
+
+; A successful C8 Plain GEOS GOTO publishes this explicit source-keyed
+; handoff into the otherwise inactive C23 frame. Existing state values0..10
+; never equal these tags. Consumer checks full key/target/TOP and consumes it.
+GH_READY=$FF
+GH_CONSUMED=$FE
+.macro GH_FIELDS action
+ action se_doc_meta,0,15
+ action se_doc_generation,15,2
+ action se_r_revision,17,4
+ action se_v_length,21,3
+ action se_reu_epoch,24,2
+ action se_doc_epoch,26,2
+.endmacro
+
+.global se_hot_pending,se_n_line,se_crc_init,se_crc_byte,se_crc_value
 .segment "GEOS_NAVIGATION"
  OVL_BINDING
 entry:
@@ -150,6 +166,7 @@ begin:
  sec
  rts
 @admit:
+ jsr handoff_inputs
  lda #GN_OWNER
  sta se_f_owner
  lda #0
@@ -206,9 +223,24 @@ begin:
  bne :+
  inc GN_FLAGS
 :
+ lda GN_STATE
+ cmp #GH_CONSUMED
+ bne @fresh_view
+ jsr guard ;reuse the complete existing source28/mode/PAN/target/fold guard
+ bcc @capture
+ lda #0
+ sta GN_STATE
+@fresh_view:
  jsr se_view_init
  jcs return
+@capture:
  FIELDS capture
+ ldx #0
+ lda GN_STATE
+ cmp #GH_CONSUMED
+ bne :+
+ ldx #$80
+: stx GN_PASS
  lda GN_COMMAND
  cmp #74
  bcc :+
@@ -236,12 +268,20 @@ cold:
  lda GN_FLAGS
  and #1
  sta GN_FLAGS
+ ldy GN_PASS
  lda #0
  sta GN_PASS
  ldx #2
+@clear_ordinal:
+ sta GN_ORDINAL,x
+ dex
+ bpl @clear_ordinal
+ tya
+ jmi line_begin ;explicit handoff survived cached-prefix probes; E47 only
+ lda #0
+ ldx #2
 @clear:
  sta GN_SCAN,x
- sta GN_ORDINAL,x
  dex
  bpl @clear
  ; E_POSITION only: a validated incoming parser context at the unchanged
@@ -1166,3 +1206,54 @@ argument:
  rts
 
 cap_table:.byte 24,<SEED_SIZE,>SEED_SIZE,<SEED_CRC,>SEED_CRC
+
+; Source-only proof, not a layout checkpoint: C8 found a real CR logicalSTART
+; at/before its published TOP. C20 must still reconstruct actual BSW wraps.
+handoff_inputs:
+ lda GN_STATE
+ cmp #GH_READY
+ jne @reset
+ lda GN_COMMAND
+ cmp #44
+ jne @reset
+ lda se_e_command
+ cmp #47
+ jne @reset
+ lda se_render_caps
+ jne @reset
+ lda se_hot_pending
+ ora se_hot_phase
+ jne @reset
+ jsr se_crc_init
+ ldy #46
+@crc:
+ lda GN_COMMAND,y
+ jsr se_crc_byte
+ dey
+ bpl @crc
+ lda se_crc_value
+ cmp GN_TEMP
+ jne @reset
+ lda se_crc_value+1
+ cmp GN_TEMP+1
+ jne @reset
+ NAV_EQUAL24 GN_SCAN,se_n_line
+ jne @reset
+ NAV_EQUAL24 GN_QUERY,se_e_target
+ jne @reset
+ NAV_EQUAL24 GN_TOP,se_v_top
+ jne @reset
+ NAV_EQUAL24 GN_SCAN,GN_TOP
+ bcc :+
+ jne @reset
+: NAV_EQUAL24 GN_TOP,GN_QUERY
+ bcc @accept
+ jne @reset
+@accept:
+ lda #GH_CONSUMED
+ sta GN_STATE
+ rts
+@reset:
+ lda #0
+ sta GN_STATE
+ rts

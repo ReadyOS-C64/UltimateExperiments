@@ -10,6 +10,30 @@
 .include "layout/api.inc"
 .include "render/api.inc"
 .include "editor_file/api.inc"
+.include "render/geos/navigation.inc"
+.global se_mode,se_render_caps,se_doc_meta,se_r_revision,se_reu_epoch,se_crc_init,se_crc_byte,se_crc_value
+
+; A successful C8 Plain GEOS GOTO publishes this explicit source-keyed
+; handoff into the otherwise inactive C23 frame. Existing state values0..10
+; never equal these tags. Consumer checks full key/target/TOP and consumes it.
+GH_READY=$FF
+GH_CONSUMED=$FE
+.macro GH_FIELDS action
+ action se_doc_meta,0,15
+ action se_doc_generation,15,2
+ action se_r_revision,17,4
+ action se_v_length,21,3
+ action se_reu_epoch,24,2
+ action se_doc_epoch,26,2
+.endmacro
+
+.macro gh_capture source,offset,size
+ ldx #size-1
+: lda source,x
+ sta GN_KEY+offset,x
+ dex
+ bpl :-
+.endmacro
 .segment "CODE"
     OVL_BINDING
 entry:
@@ -718,6 +742,38 @@ reveal_done:
     sta se_n_reveal
 release:
     jsr se_navigation_cancel
+    lda se_mode
+    cmp #3
+    jne @handoff_done
+    lda se_render_caps
+    jne @handoff_done
+    lda se_e_command
+    cmp #E_GOTO
+    jne @handoff_done
+    lda #0
+    sta GN_STATE
+    GH_FIELDS gh_capture
+    COPY24 se_e_target,GN_QUERY
+    COPY24 se_v_top,GN_TOP
+    COPY24 se_n_line,GN_SCAN
+    lda #E_GOTO
+    sta GN_COMMAND
+    jsr se_crc_init
+    ldy #46
+@handoff_crc:
+    lda GN_COMMAND,y
+    jsr se_crc_byte
+    dey
+    bpl @handoff_crc
+    ldx #1
+@handoff_crc_copy:
+    lda se_crc_value,x
+    sta GN_TEMP,x
+    dex
+    bpl @handoff_crc_copy
+    lda #GH_READY
+    sta GN_STATE ;VALID-last, no yield/call between fields and publication
+@handoff_done:
     lda #0
     clc
     rts
