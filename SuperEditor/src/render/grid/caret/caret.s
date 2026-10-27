@@ -58,6 +58,15 @@ BITMASK=C+43
  OVL_BINDING
 entry:
  lda se_overlay_frame
+ cmp #4
+ jeq lrv_paint_entry
+ cmp #1
+ bne :+
+ lda $8D23                  ;LRVT+LT_PREPARED, private R25 transaction marker
+ cmp #$A5
+ jeq lrv_paint_entry
+ lda #1                    ;retain ordinary warm-caret frame semantics
+:
  cmp #3
  bne ordinary_entry
  ldx se_f_owner
@@ -983,47 +992,8 @@ xor_cell:
 
 .segment "CODE"
 type_try:
- ldy #2
- lda se_render_caps
- bne :+
- ldy #0
-: jsr authenticate_dependencies
- jcs miss
- lda #14
- jsr helper
- bcc @prepared
- jmp long_try
-@prepared:
- lda #2
- jsr leaf
- jcs miss
- ; Every public NR input is initialized; remaining49 bytes are worker scratch.
- ldx #18
-@descriptor:
- lda nr_defaults,x
- sta NC_NR,x
- dex
- bpl @descriptor
- lda W
- sta NC_NR
- sta NC_NR+2
- lda ROW
- clc
- adc #2
- sta NC_NR+1
- lda #<NC_NR
- sta se_overlay_frame+1
- lda #>NC_NR
- sta se_overlay_frame+2
- lda #0
- jsr leaf
- jcs miss
- jsr status
- jcs miss
- lda #15
- jsr helper
- jcs miss
- jmp success
+ jmp miss
+.include "lrv3-painter.inc"
 
 .segment "NATIVE"
 local_native8:
@@ -1044,34 +1014,9 @@ auth_size_hi:.byte >HELPER_SIZE,>PARAGRAPH_CODE_SIZE,>PARAGRAPH_SOURCE_SIZE,>PAR
 auth_crc_lo:.byte <HELPER_CRC,<PARAGRAPH_CODE_CRC,<PARAGRAPH_SOURCE_CRC,<PARAGRAPH_SOURCE_CRC
 auth_crc_hi:.byte >HELPER_CRC,>PARAGRAPH_CODE_CRC,>PARAGRAPH_SOURCE_CRC,>PARAGRAPH_SOURCE_CRC
 
-.segment "CODE"
-.include "render/grid/paragraph/controller.inc"
-
-.segment "CODE"
-geometry:
- sta se_overlay_frame
- lda #24
- ldx #0
- jmp se_overlay_call
 
 .segment "RODATA"
 nr_defaults:
  .byte 0,0,0,0,6
  .word $6000,$4000,$A800,P,P+80,P+160,palette
 .assert *-nr_defaults=19,error,"complete native-row public input template"
-
-.segment "CODE"
-cr_try:
- lda se_render_caps
- jne miss
- lda #6
- sta se_overlay_frame
- lda #29
- ldx #0
- jsr se_overlay_call
- jcs miss
- cmp #1
- jne miss ;old preflight-only prototype returned0 and cannot publish
- jsr status
- jcs miss
- jmp long_cr_finish

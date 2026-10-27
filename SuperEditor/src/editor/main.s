@@ -175,8 +175,6 @@ se_editor_render:
     bne :+
     jmp se_geos_render ;bounded page job, never the source-grid layout path
 :
-    tax
-    beq @ordinary
     lda #1
     sta se_overlay_frame
     lda #33

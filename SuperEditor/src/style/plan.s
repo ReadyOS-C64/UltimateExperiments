@@ -1,4 +1,3 @@
-.import se_sc_begin,se_sc_event,se_sc_finish
 ; Bounded source40 semantic plan. No source mutation, VIC writes, overlay calls,
 ; or new ZP. All markers remain visible. Root owns rendering and input priority.
 .setcpu "6502"
@@ -57,7 +56,6 @@ se_style_begin:
     bpl @bind
     jsr se_sm_init
     jsr checkpoint_begin
-    jsr se_sc_begin
     COPY24 se_sm_pos,st_pos
     lda #1
     sta se_st_busy
@@ -230,7 +228,6 @@ block_event:
     CMP24 st_end,se_st_rows
     jcc next_line
     jeq next_line
-    jsr se_sc_event
     lda #0
     sta st_inline
     lda #3
@@ -486,7 +483,6 @@ next_line:
 complete:
     jsr se_fs_guard
     jcs failure
-    jsr se_sc_finish
     jsr release
     inc se_st_generation
     bne :+

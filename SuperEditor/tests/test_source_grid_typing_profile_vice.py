@@ -15,7 +15,7 @@ def scenario(e):
  n=Plan(e,json.load(open(e/'editor-report.json')),1,0);n.cost_profile=True;n.boot();n.open('open_diverse',b'DIVERSE');data=timing.native.live.grid.fixture()
  for mode in [1,2]:
   n.mode_to(mode);n.typed('top'+str(mode),'top');n.measure('m'+str(mode)+'-front-heading',timing.native.live.grid.native_text('Q')+data,mode,key=timing.native.live.grid.native_text('Q')[0]);n.send('undo_front'+str(mode),b'\x1a')
- n.send('force_dirty_before_plain',b'X');n.open('open_plain',b'PLAIN',choice='D');data=PLAIN;at=data.index(timing.native.live.grid.native_text('having'))+2
+ n.send('force_dirty_before_plain',b'X');n.open('open_plain',b'PLAIN',choice='D');n.typed('plain_syntax','syntax plain');data=PLAIN;at=data.index(timing.native.live.grid.native_text('having'))+2
  for mode in [1,2]:
   n.mode_to(mode);n.typed('plain_goto'+str(mode),'goto 2');n.send('plain_column'+str(mode),b'\x1d'*(at-data.index(b'\r')-1));n.memory('plain_caret'+str(mode),'se_hot_caret',at,3)
   inserted=data[:at]+b'X'+data[at:];n.measure('m'+str(mode)+'-plain-insert',inserted,mode,key=ord('X'));n.measure('m'+str(mode)+'-plain-delete',data,mode,key=0x14)

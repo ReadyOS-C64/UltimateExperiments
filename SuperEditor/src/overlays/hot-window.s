@@ -212,7 +212,7 @@ insert:
     bne :+
     inc se_hot_length+1
 :
-    jmp caret
+    jmp edited
 backspace:
     lda se_hot_left
     ora se_hot_left+1
@@ -246,6 +246,10 @@ remove:
     dec se_hot_length+1
 :
     dec se_hot_length
+edited:
+.ifdef EDITOR_BINDINGS
+    jsr lrv_plain_edit
+.endif
     jmp caret
 left:
     lda se_hot_left
@@ -485,6 +489,111 @@ change_quota:
 .ifdef EDITOR_BINDINGS
 .include "overlays/render-damage.s"
 .include "render/geos/edit-certificate-body.inc"
+
+; C6 is already resident in the command slot after a local mutation, so the
+; Plain LRV3 update nests only the legal renderer-slot R25 call.  A miss simply
+; retires the one-edit witness and lets the existing redraw path rebuild cold.
+lrv_plain_edit:
+    lda GEC_VALID
+    cmp #1
+    bne @done
+    lda se_mode
+    cmp #3
+    bcs @done                  ;GEOS keeps its certificate for its own consumer
+    lda se_render_caps
+    bne @done                  ;styled fixed-grid stays on the established path
+    lda se_f_owner
+    bne @invalidate
+    jsr lrv_row_hint
+    bcs @invalidate
+    lda #4
+    sta se_f_owner
+    lda #18
+    sta se_overlay_frame
+    lda #25
+    ldx #0
+    jsr se_overlay_call
+    tax
+    lda #0
+    sta se_f_owner
+    bcs @invalidate
+    txa
+    beq @done
+@invalidate:
+    lda #0
+    sta GEC_VALID
+@done:
+    rts
+
+; Non-authoritative physical-row hint.  R25 rechecks the selected LRV record;
+; this only avoids making the constrained renderer image rediscover the row.
+lrv_row_hint:
+    lda #0
+    sta se_overlay_frame+1
+    ldx #0
+@row:
+    cpx #63                  ;row21 uses the separately stored bottom anchor
+    beq @bottom
+    lda se_v_rows+3,x
+    sta se_hot_tmp
+    lda se_v_rows+4,x
+    sta se_hot_tmp+1
+    lda se_v_rows+5,x
+    sta se_hot_tmp+2
+    jmp @compare
+@bottom:
+    lda se_v_bottom
+    sta se_hot_tmp
+    lda se_v_bottom+1
+    sta se_hot_tmp+1
+    lda se_v_bottom+2
+    sta se_hot_tmp+2
+@compare:
+    lda se_hot_tmp+2
+    cmp GEC_POSITION+2
+    bcc @advance
+    bne @selected
+    lda se_hot_tmp+1
+    cmp GEC_POSITION+1
+    bcc @advance
+    bne @selected
+    lda se_hot_tmp
+    cmp GEC_POSITION
+    bcc @advance
+    bne @selected
+    ; Equal next anchor: short CR/EOF rows own their end cell.  A wrapped row
+    ; exactly one width long advances to its terminal/continuation row.
+    lda se_l_mode
+    bne @selected
+    sec
+    lda GEC_POSITION
+    sbc se_v_rows,x
+    sta se_hot_tmp
+    lda GEC_POSITION+1
+    sbc se_v_rows+1,x
+    sta se_hot_tmp+1
+    lda GEC_POSITION+2
+    sbc se_v_rows+2,x
+    ora se_hot_tmp+1
+    bne @selected
+    lda se_hot_tmp
+    cmp se_v_columns
+    bne @selected
+@advance:
+    inc se_overlay_frame+1
+    lda se_overlay_frame+1
+    cmp #22
+    bcs @bad
+    inx
+    inx
+    inx
+    jmp @row
+@selected:
+    clc
+    rts
+@bad:
+    sec
+    rts
 .endif
 
 .ifdef EDITOR_BINDINGS

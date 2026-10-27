@@ -516,67 +516,71 @@ is the decisive lesson for the next work: crossing, load and DMA counts are
 diagnostics; only deleted live bytes and complete foreground PAL cycles qualify
 a production change.
 
-The active replacement is one visible retained logical-line model, `LRV3`, in
-the existing FE grid-cache bank. It is not another cache family. Its complete
-fixed map is only 2,432 bytes: a 96-byte header at `$1600..$165F`, twenty-four
-24-byte records at `$1660..$189F`, and a 1,760-byte fixed visible style canvas
-at `$18A0..$1F7F`. It adds no image, bank, BSS, zero-page byte or catalog entry.
-Twenty-two records cover the visible physical rows; the predecessor and
-successor supply exact boundary state. Folded projection and true capacity
-overflow remain cold misses in this first slice.
+### Implemented Plain direct-row slice
 
-Each record stores a 16-bit CR-exclusive line length and six-byte incoming and
-outgoing block continuations: fence, region depth, language and 24-bit overflow
-depth. Later starts are reconstructed from the header anchor by at most
-twenty-four checked prefix additions. This preserves lines through 65,535 bytes
-and means a one-byte edit changes no suffix record or suffix CRC. Packed
-kind/language and row-unit plan geometry keep the record at 24 bytes. Per-record
-and per-slice CRCs feed two 48-byte manifests, so hot publication hashes the
-changed slice, manifests and header rather than rescanning the whole object.
-The block parser is reconstructed with init, derived START and incoming carry.
-Inline and BASIC/assembler lexer state are line-local and drained at CR/EOF, so
-their 68- and 60-byte working states are not duplicated per line.
+The first replacement is intentionally smaller than the proposed retained LRV3
+object. The proposed persistent 96-byte header, 24-record directory, style
+canvas, parser carries and manifests had no next-edit reader: every Plain edit
+would have rebuilt and written them before consuming the same information once.
+That storage and its REU DMA/CRC work are deleted from the live design. Internal
+`lrv3` source names remain temporarily, but they describe a local transaction,
+not a persistent retained-line cache.
 
-The first admitted update is one insertion or backspace inside one retained
-CR/EOF logical line whose physical row count is unchanged. Plain uses the same
-replacement painter but bypasses C14/C15 grammar. Markdown parses that line once;
-Full invokes C15 once only for a colored BASIC/assembler code line. The edit is
-accepted only when terminator, row height and normalized outgoing continuation
-converge. `model_generation16 + ordinal8`, the full source/style key and
-document/REU epochs bind renderer references; wrap revokes all references before
-generation zero can be reused.
+C6 captures a one-edit certificate from the last completely published resident
+layout before mutation. After mutation it supplies only a physical-row hint.
+R25 frame 18 rechecks the certificate, Plain capabilities, width, post-edit
+length and revision, document/REU epochs, and the hinted `se_v_rows` start and
+following anchor. It derives that row's CR-exclusive length, proves its CR/EOF
+terminator and the edit position, and accepts only a row that remains shorter
+than the active 40/60/80-column width. The selected start, length, flags, row and
+caret inputs are stored in the existing `$8D00` phase union; `PREPARED` is
+written last. There is no syntax parse, styled carry, directory scan, REU LRV
+publication or manifest authentication on this Plain path.
 
-The first composed candidate must delete the complete current fixed-grid edit
-graph, not merely SP2 or its long-row tail. The exact gross boundary is 4,461
-linked bytes: R14 SP2 964, C14 SP2 dispatch/calls 42, R14 routing/read cleanup
-27, the complete C33 type/long family 1,438 and the complete R25 frames 14..18
-family 1,990. Replacement code is capped at 2,366 bytes across those existing
-images, giving at least 2,095 bytes of net deletion. The shared 120-byte style
-checkpoint, AUX refresh and resident GEOS hook remain until LRV3 covers GEOS;
-retiring them earlier would break a live consumer. That later all-mode boundary
-deletes another exact 1,518 linked bytes and reaches 5,979 cumulative.
+C33 frame 1 enters the direct painter only for a current prepared transaction;
+otherwise it preserves the ordinary warm-caret path. The painter rebuilds and
+publishes one row, commits the existing native row packet for 60/80 columns,
+shifts later resident row anchors and the bottom anchor by one byte, and retires
+the transaction. CR edits, wrap/row-count changes, selection, folds, styled
+content, stale witnesses and faults take the established cold fallback. This is
+a deliberately narrow first slice; Markdown, Full and GEOS retain their current
+correct renderers until a later replacement can delete their live work.
 
-Do not count the former twelve-capsule type-$53 cache/lex/rebase family as a
-future saving. Commit `a5af575` already removed that 44,410-byte payload family,
-its catalog rows and resident observer state from the current 51-image product.
-Its frozen 62-image deletion map remains useful as proof that partial removal
-would have stranded one shared schema, but those bytes cannot be claimed twice.
-The current R33 is the much smaller checked BODY presentation plan introduced by
-that replacement and remains live until LRV3 demonstrably covers the GEOS path.
+The obsolete fixed-grid graph is gone, including SP2, its C14/R14 dispatch and
+reader glue, the R14 paragraph shifter, and the displaced C33/R25 type/long
+families. Current linked sizes are resident `main.o` 271 bytes (three bytes
+smaller), C6 3,570, R25 3,231 and C33 3,784 bytes before its fixed native-font
+segment, leaving 56 bytes before `$BF00`. Against the exact 5,220-byte retired
+graph, additions are C33 1,348, R25 1,106 including 12 bytes of RODATA, and C6
+343; the resident saves three bytes. Replacement code is 2,794 bytes and the
+net deletion is 2,426 bytes. The change adds no BSS or zero-page state and no
+image, bank or catalog entry. Do not revive a persistent directory or styled
+publisher until it replaces a measured live consumer and remains a net deletion.
 
-Acceptance is measured on exact first and steady public insert/backspace cases
-in all fixed-grid widths. Current steady Full work is 734,992 instructions at
-40 columns, 2,743,354 at 60 and 1,898,955 at 80. The first production slice must
-beat 367,496, 1,371,677 and 949,478 respectively, while keeping source, history,
-pixels, rows, ownership, lifecycle, stack and the `$C600..$C9FF` ReadyOS reserve
-exact. Parser convergence without local repaint cannot pass the 60/80-column
-gates and is not eligible for promotion.
+Static actual-6510 probes pass 23 certificate cases and 12 row-hint boundary
+cases; a separate check proves stale `PREPARED` transactions are retired. The
+actual-product Peddle gate also passes exact source, pixels, attributes, row
+anchors and caret: insert/delete costs are 10,548/10,243 instructions at 40
+columns, 87,619/87,345 at 60, and 50,689/50,460 at 80. Those ordinary Plain
+operations meet the 30K narrow and 100K wide instruction targets. They use
+3/3, 6/6 and 6/6 overlay loads and 6/6, 8/8 and 8/8 calls respectively, so the
+wide-mode load target remains open. Warm caret is 5,179/33,698/34,859
+instructions. Correct cold fallback costs 317,297 for an 80-column CR insertion
+and 426,997 for the 60-column wrap-boundary refusal.
 
-The renderer consumes LRM1 through retained geometry packets rather than adding
-a pixel-cache manager. A geometry hit skips C24/C20 but still regenerates live
-selection and caret state in C22. A raster hit may keep existing bitmap bands
-only when source generation, ordinal, placement, selected interval, caret
-rectangle and shared-band damage all match. The current screen and grid packets
-remain the pixel authority. This second level is admitted only when it deletes
-the displaced measure/raster path and materially improves the same complete
-public operation.
+Native PAL VICE now confirms the wide Plain path with exact source and reviewed
+screenshots. At 60 columns insert/delete publish first at 364,043/363,415 cycles
+and settle at 364,191/363,520; at 80 they publish at 218,387/217,945 and settle
+at 218,492/218,050. Each operation publishes one draw sequence and uses six
+loads, eight calls, nine DMAs and 23,072 DMA bytes, with only the expected
+grid60/grid80, R25, C6 and C33 groups. The tracked native scenario now explicitly
+issues `syntax plain` after opening the fixture; the prior setup did not prove a
+Plain route. These spans run from public input entry to foreground quiescence;
+they are not physical keyboard latency. NTSC and physical-hardware timing remain
+pending. Overlay counts remain diagnostic; rearranging disk overlays earns no
+optimization credit.
+
+The original product scope remains unchanged. After the Plain slice finishes
+native qualification, the next work is whichever measured styled fixed-grid or
+GEOS parse/layout/raster boundary can delete the most live work without adding
+another parallel authority.

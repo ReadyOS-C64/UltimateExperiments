@@ -700,13 +700,7 @@ build/style-prod/source-%.o: src/fold/source-%.s src/fold/source.inc
 build/style-prod/source-entry.o: src/overlays/source-view.s build/editor-api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -I build -o $@ $<
-STYLE_SOURCE_OBJ = build/style-prod/source-entry.o build/style-prod/source-context.o build/style-prod/source-read.o build/style-prod/paragraph.o build/style-prod/paragraph-shift.o
-build/style-prod/paragraph-shift.o: src/render/grid/paragraph/shift-row.s src/render/grid/paragraph/shift-row.inc
-	mkdir -p $(dir $@)
-	$(CA65) -g -D 'LPF=$$8D40' -I src/render/grid/paragraph -I src -o $@ -l $(@:.o=.lst) $<
-build/style-prod/paragraph.o: src/render/grid/paragraph/producer.s src/render/grid/paragraph/prose2.inc
-	mkdir -p $(dir $@)
-	$(CA65) -g -I src/render/grid/paragraph -I src -o $@ -l $(@:.o=.lst) $<
+STYLE_SOURCE_OBJ = build/style-prod/source-entry.o build/style-prod/source-context.o build/style-prod/source-read.o
 build/style-prod/source-bindings.s: $(STYLE_SOURCE_OBJ) build/editor-report.json tools/module_bindings.py
 	$(PYTHON) tools/module_bindings.py --report build/editor-report.json --output $@ --require-export se_fs_begin $(STYLE_SOURCE_OBJ)
 build/style-prod/source-bindings.o: build/style-prod/source-bindings.s
