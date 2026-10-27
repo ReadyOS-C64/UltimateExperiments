@@ -55,6 +55,14 @@ entry:
     lda se_e_menu
     cmp #8
     jeq settings_key
+    cmp #6
+    bne :+
+    lda se_e_key
+    cmp #$86
+    jeq help_page
+    cmp #$87
+    jeq help_page
+:   lda se_e_menu
     cmp #7
     jeq okay ;readonly diagnostic popup never indexes six-menu tables
     lda se_e_menu
@@ -213,6 +221,9 @@ preview_key:
     sta se_e_command
     clc
     rts
+; UI1/menu6 owns text_length as a0..2 page index. Command/prompt entry resets
+; length, and every menu selection/Help open initializes it. se_e_item remains
+; the existing Help H/D selection and is never used as page state.
 help_toggle:
     lda se_e_ui
     cmp #1
@@ -221,10 +232,34 @@ help_toggle:
     cmp #6
     beq close
 @open:
+    lda #0
+    sta se_e_text_length
+    sta se_e_item
     lda #1
     sta se_e_ui
     lda #6
     sta se_e_menu
+    clc
+    rts
+help_page:
+    lda se_e_key
+    cmp #$86
+    beq @previous
+    inc se_e_text_length
+    lda se_e_text_length
+    cmp #3
+    bcc @done
+    lda #0
+    beq @store
+@previous:
+    lda se_e_text_length
+    bne :+
+    lda #3
+:   sec
+    sbc #1
+@store:
+    sta se_e_text_length
+@done:
     clc
     rts
 next_menu:
@@ -247,6 +282,7 @@ selected_menu:
     sta se_e_menu
     lda #0
     sta se_e_item
+    sta se_e_text_length ;UI1 menu selection starts keyboard page, never prompt data
     clc
     rts
 heading:

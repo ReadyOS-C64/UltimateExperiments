@@ -12,19 +12,9 @@ diag_popup:
     lda #20
     sta tui_box_h
     jsr tui_box40
-    PRINT_AT diag_title,4,3
-    PRINT_AT diag_length,6,3
-    PRINT_AT diag_cursor,7,3
-    PRINT_AT diag_hash,8,3
-    PRINT_AT diag_pending,10,3
-    PRINT_AT diag_epoch,11,3
-    PRINT_AT diag_owners,12,3
-    PRINT_AT diag_overlay,14,3
-    PRINT_AT diag_map,17,3
-    PRINT_AT diag_physical,18,3
-    PRINT_AT diag_types1,19,3
-    PRINT_AT diag_types2,20,3
-    PRINT_AT diag_close,21,3
+    lda #diag_table-ui_print_table
+    jsr ui_print_group
+
     ldx #16
     lda #TUI_TITLE
 @title:

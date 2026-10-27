@@ -11,25 +11,10 @@ settings_popup:
     lda #20
     sta tui_box_h
     jsr tui_box40
-    PRINT_AT sp_title,4,3
-    PRINT_AT sp_body,6,3
-    PRINT_AT sp_h1,7,3
-    PRINT_AT sp_h2,8,3
-    PRINT_AT sp_h3,9,3
-    PRINT_AT sp_h4,10,3
-    PRINT_AT sp_h5,11,3
-    PRINT_AT sp_h6,12,3
-    PRINT_AT sp_code,13,3
-    PRINT_AT sp_font,6,16
-    PRINT_AT sp_size,8,16
-    PRINT_AT sp_ink,9,16
-    PRINT_AT sp_paper,10,16
-    PRINT_AT sp_style,12,16
-    PRINT_AT sp_keys1,15,3
-    PRINT_AT sp_keys2,17,3
-    PRINT_AT sp_keys3,19,3
-    PRINT_AT sp_syntax,20,3
-    PRINT_AT sp_session,21,3
+    lda #settings_table-ui_print_table
+    jsr ui_print_group
+    lda #settings_right-ui_print_table
+    jsr ui_print_group
     lda se_render_caps
     beq @plain
     cmp #1

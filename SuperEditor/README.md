@@ -5,10 +5,12 @@ boots working **40/60/80-column source views and a GEOS-font hires view**: mixed
 backspace/insert/forward delete, horizontal/vertical cursors, preferred column, page movement, line home/end, top/bottom,
 ±40-character jumps, word movement, logical-line goto, native literal search,
 grouped undo/redo, mark/selection, copy/cut/paste, F1 menus, F6 help and F7 typed commands.
+See the [user guide](docs/USER_GUIDE.md) for keys, SuperMark syntax and file operations.
 
 The top row contains the menus with yellow PETSCII separators and a rounded
 bottom rule. The bottom has one status line. The command prompt and errors share it; F6
-opens/closes keyboard help, with 22 rows left for document text. F4 toggles soft
+opens help; F3/F5 cycle its keyboard, inline syntax and block syntax pages.
+F6 or RUN/STOP closes it, with 22 rows left for document text. F4 toggles soft
 wrap; View/L/R or F7 `pan left`/`pan right` scrolls logical lines horizontally.
 F7 `wrap on`/`wrap off` selects wrapping explicitly. F8 cycles 40/60/80/GEOS;
 CTRL-F8 reverses in the normalized event lane. F7 `mode 40`, `mode 60` and
