@@ -16,6 +16,7 @@ from test_geos_navigation_vice import object_bytes
 from overlay_catalog_policy import catalog_identity
 from png_pixels import read_png
 from d81_image import D81Image
+from cache_job_build import editor_pair_index
 ROOT=engine.ROOT;live=engine.live
 BASE=ROOT/'build/help-guide-probe/20261027T011411597788Z/link/fixture'
 PARENT=ROOT/'build/warm-shift-committed/20261027T002602997186Z/fixture'
@@ -230,8 +231,9 @@ def evaluate(e):
   assert f.read(0xcbc0,1)==b'\xa5'and f.read(0xcbc3,2)==f.read(s['se_reu_epoch'],2)and f.read(0xcbc6,1)==f.read(0xcbc8,1)==b'\0'
   for i,h in enumerate(f.read(0xcbc1,2)):
    p=ram[s['se_reu_map']+h];assert h and p and ram[s['se_reu_logical_owner']+h]==ram[s['se_reu_physical_owner']+p]==0xfd;part=pack[i*65536:(i+1)*65536];assert reu[p*65536:p*65536+len(part)]==part
-  for slot,name in enumerate(d['catalog']):
-   h=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[slot>>4],1);p=ram[s['se_reu_map']+h];assert h and p and ram[s['se_reu_logical_owner']+h]==ram[s['se_reu_physical_owner']+p]==2;raw=(e/(name+'.seo')).read_bytes()[36:];at=p*65536+(slot&15)*4096;assert reu[at:at+len(raw)]==raw
+  for order,name in enumerate(d['catalog']):
+   image=(e/(name+'.seo')).read_bytes();slot=editor_pair_index(image[5],image[6]) if 'catalog_index' in s else order
+   h=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[slot>>4],1);p=ram[s['se_reu_map']+h];assert h and p and ram[s['se_reu_logical_owner']+h]==ram[s['se_reu_physical_owner']+p]==2;raw=image[36:];at=p*65536+(slot&15)*4096;assert reu[at:at+len(raw)]==raw
   h=f.get('se_gc_handle',1);p=ram[s['se_reu_map']+h];assert h and p and f.get('se_gc_epoch',2)==f.get('se_reu_epoch',2)and ram[s['se_reu_logical_owner']+h]==ram[s['se_reu_physical_owner']+p]==0xfe
   fe=(h,p);FE=fe if FE is None else FE;assert fe==FE
   masked=bytearray(reu)

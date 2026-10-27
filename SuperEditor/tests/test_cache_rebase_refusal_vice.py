@@ -12,6 +12,7 @@ import test_cache_rebase_registered_vice as old
 from closed_runtime_copy import run_with_closed_links
 from d81_image import D81Image
 from overlay_catalog_policy import catalog_identity
+from cache_job_build import editor_pair_index
 ROOT=old.ROOT;timing=old.timing;local=old.local
 EOF_DATA=timing.native.live.grid.native_text('a')*70000+b'\r'+timing.native.live.grid.native_text('Z')
 JOURNAL_DATA=old.DATA;AT=old.AT
@@ -39,10 +40,13 @@ class Plan(old.Plan):
 def make_plan(e,phase):
  n=Plan(e,json.loads((e/'editor-report.json').read_text()),1,0);n.cost_profile=False
  names=json.loads((e/'freeze.json').read_text())['catalog'];n.parser_points=[]
+ def runtime_index(name):
+  image=(e/(name+'.seo')).read_bytes()
+  return editor_pair_index(image[5],image[6]) if 'catalog_index' in n.s else names.index(name)
  for name,ident in(('parse',41),('geossema',24),('geoslex',25)):
   syms=old.labels(e/(name+'.lbl'))
   for fn in('entry','se_sm_feed','se_sl_feed','request'):
-   if fn in syms:n.parser_points.append(dict(name=name+':'+fn,pc=syms[fn],slot=names.index(name)+1,id=ident))
+   if fn in syms:n.parser_points.append(dict(name=name+':'+fn,pc=syms[fn],slot=runtime_index(name)+1,id=ident))
  n.parser_traces=[f'trace exec ${p["pc"]:04x} if @cpu:${n.s["se_overlay_active"]+1:04x} == ${p["slot"]:02x}'for p in n.parser_points]
  n.boot();n.open('open_'+phase,b'LARGE70'if phase=='eof'else b'JOURNAL8')
  n.typed('markdown_initial','syntax markdown');n.typed('enter_geos','mode hires');n.typed('nowrap','wrap off');n.typed('full_actual','syntax full');n.memory('actual_caps','se_render_caps',3)

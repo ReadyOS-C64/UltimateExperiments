@@ -14,6 +14,7 @@ from test_cache_rebase_registered import metadata
 from d81_image import D81Image
 from closed_runtime_copy import run_with_closed_links
 from png_pixels import read_png
+from cache_job_build import editor_pair_index
 
 CONTROL = ROOT / 'build/warm-shift-committed/20261027T002602997186Z/fixture'
 RELEASE = ROOT / 'src/render/geos/vic-stride-probe'
@@ -27,6 +28,11 @@ DOCUMENTS = {
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+def runtime_index(e,names,name):
+    image=(e/(name+'.seo')).read_bytes()
+    symbols=json.loads((e/'editor-report.json').read_text())['symbols']
+    return editor_pair_index(image[5],image[6]) if 'catalog_index' in symbols else names.index(name)
 
 
 def candidate_package(out, control):
@@ -157,11 +163,11 @@ def trace_proof(e, source):
                 # supervisor. Use the same two-term ownership predicate as its
                 # entry; independently authenticate instruction bytes, enclosing
                 # R30 payload interval and the complete final staged image.
-                condition = f'(@cpu:${report_symbol(e,"se_overlay_active"):04x} == ${names.index(staged_worker)+1:02x}) && (@cpu:${report_symbol(e,"se_overlay_busy"):04x} == $01)'
+                condition = f'(@cpu:${report_symbol(e,"se_overlay_active"):04x} == ${runtime_index(e,names,staged_worker)+1:02x}) && (@cpu:${report_symbol(e,"se_overlay_busy"):04x} == $01)'
             else:
                 origin = 0xB000 if image[5] else 0xA000
                 assert origin <= pc < origin + len(raw)
-                condition = f'@cpu:${report_symbol(e,"se_overlay_active")+image[5]:04x} == ${names.index(name)+1:02x} && @cpu:${report_symbol(e,"se_overlay_busy")+image[5]:04x} == $01'
+                condition = f'@cpu:${report_symbol(e,"se_overlay_active")+image[5]:04x} == ${runtime_index(e,names,name)+1:02x} && @cpu:${report_symbol(e,"se_overlay_busy")+image[5]:04x} == $01'
             targets.append(dict(asset=name,symbol=symbol,pc=pc,condition=condition,
                                 payload_sha256=hashlib.sha256(raw).hexdigest()))
     (e / 'trace-proof.json').write_text(json.dumps(targets, indent=2) + '\n')
@@ -416,7 +422,7 @@ def evaluate(e):
         if item['expected_transaction']:
             assert (0,30) in calls and (1,21) not in calls and ram[0x8ba0] == 2
             assert ram[0x5000:0x5000+len(stage)] == stage and ram[0xcbd5] == 0x42,(tag,'complete immutable executed stage and namespace')
-            index = json.loads((e/'freeze.json').read_text())['catalog'].index('type')
+            names=json.loads((e/'freeze.json').read_text())['catalog'];index=runtime_index(e,names,'type')
             backing = ram[s['se_overlay_asset']+(index>>4)]
             physical = ram[s['se_reu_map']+backing]
             epoch = ram[s['se_reu_epoch']:s['se_reu_epoch']+2]

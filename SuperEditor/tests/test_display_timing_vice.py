@@ -15,6 +15,7 @@ from geos_preview_model import render,FontCatalog
 from png_pixels import read_png
 from vice_config import step
 import vice_plan
+from cache_job_build import editor_pair_index
 
 ROOT=native.ROOT
 PROBE=0x0F00
@@ -253,10 +254,11 @@ def evaluate(n):
             current_catalog=catalog_identity(current_catalog,s)
         if catalog_bytes is None:catalog_bytes=current_catalog
         assert current_catalog==catalog_bytes,(ident,'complete catalog changed')
-        for index,name in enumerate(json.loads((n.e/'freeze.json').read_text())['catalog']):
+        for order,name in enumerate(json.loads((n.e/'freeze.json').read_text())['catalog']):
+            image=(n.e/(name+'.seo')).read_bytes();index=editor_pair_index(image[5],image[6]) if 'catalog_index' in s else order
             handle=f.read(s['se_overlay_asset']+(index>>4),1)[0];bank=ram[s['se_reu_map']+handle]
             assert handle and bank and ram[s['se_reu_logical_owner']+handle]==ram[s['se_reu_physical_owner']+bank]==2
-            payload=(n.e/(name+'.seo')).read_bytes()[36:];at=bank*65536+(index&15)*4096
+            payload=image[36:];at=bank*65536+(index&15)*4096
             assert reus[ident][at:at+len(payload)]==payload,(ident,'full sealed catalog payload',name)
         assert f.read(0xC600,1024)==n.canary
         assert all(f.get(k,1)==0 for k in ('se_e_job','se_e_draw_busy','se_e_redraw','se_doc_read_locks','se_f_owner','se_e_error'))

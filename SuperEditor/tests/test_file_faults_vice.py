@@ -13,6 +13,7 @@ ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'tools'))
 from d81_image import D81Image,D81Error,File
 from vice_config import PROJECT,step
 from vice_plan import run_plan
+from cache_job_build import editor_pair_index
 from redraw_model import native_text
 sys.path.insert(0,str(ROOT/'tests'))
 from test_editor_file_vice import NativePlan
@@ -181,7 +182,9 @@ class FaultPlan(NativePlan):
   self.hold('park_before_accept');self.queue('queued_native_Return',b'\r');self.event('accept_one_native_event');self.memory('accept_job9','se_e_job',9)
  def lose(self,*names):
   catalog=json.loads((self.e/'freeze.json').read_text())['catalog']
-  for name in names:self.write('remove_catalog_'+name,self.s['se_overlay_ids']+catalog.index(name),0)
+  for name in names:
+   image=(self.e/(name+'.seo')).read_bytes();index=editor_pair_index(image[5],image[6]) if 'catalog_index' in self.s else catalog.index(name)
+   self.write('remove_catalog_'+name,self.s['se_overlay_ids']+index,0)
   self.write('force_C_readmission',self.s['se_overlay_active']+1,0)
   self.injections.append(dict(kind='catalog-ID deletion',assets=names,source_and_REU_bytes_untouched=True))
  def result_failure(self,ident,error,dos=None):

@@ -21,6 +21,7 @@ import test_cache_splice as splice
 from supermark_model import blocks
 from closed_runtime_copy import run_with_closed_links
 from d81_image import D81Image
+from cache_job_build import editor_pair_index
 
 ROOT = local.ROOT
 timing = local.timing
@@ -92,6 +93,9 @@ def scenario(e, variant, repeats):
     n = Plan(e, json.loads((e/'editor-report.json').read_text()), 1, 0)
     n.cost_profile = True
     names = json.loads((e/'freeze.json').read_text())['catalog']
+    def runtime_index(name):
+        image=(e/(name+'.seo')).read_bytes()
+        return editor_pair_index(image[5],image[6]) if 'catalog_index' in n.s else names.index(name)
     n.parser_points = []
     for name, ident in (('geossema', 24), ('geoslex', 25), ('parse', 41)):
         if name not in names:
@@ -100,7 +104,7 @@ def scenario(e, variant, repeats):
         for fn in ('se_sm_init', 'se_sm_feed', 'se_sl_init', 'se_sl_feed'):
             if fn in syms:
                 n.parser_points.append(dict(name=name+':'+fn, pc=syms[fn],
-                                            slot=names.index(name)+1, id=ident))
+                                            slot=runtime_index(name)+1, id=ident))
     n.parser_traces = [f'trace exec ${p["pc"]:04x} if @cpu:${n.s["se_overlay_active"]+1:04x} == ${p["slot"]:02x}'
                        for p in n.parser_points]
     n.boot()

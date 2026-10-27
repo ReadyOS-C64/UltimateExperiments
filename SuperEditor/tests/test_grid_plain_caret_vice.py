@@ -8,6 +8,12 @@ from pathlib import Path
 import argparse,hashlib,json,shutil,socket,subprocess,tempfile,zipfile
 import test_presentation_vice as presentation
 from test_presentation_vice import timing,capacity,ROOT,Captured,vice_plan
+from cache_job_build import editor_pair_index
+
+
+def runtime_index(e,names,name,symbols):
+    image=(e/(name+'.seo')).read_bytes()
+    return editor_pair_index(image[5],image[6]) if 'catalog_index' in symbols else names.index(name)
 
 
 class Plan(presentation.Plan):
@@ -32,7 +38,7 @@ def scenario(e):
     names=json.loads((e/'freeze.json').read_text())['catalog']
     # Assert the actual managed dependency state; never manufacture it.
     for name,slot in (('styler',1),('viewsource',0)):
-        n.memory('unverified_'+name,n.s['image_slot']+names.index(name),slot)
+        n.memory('unverified_'+name,n.s['image_slot']+runtime_index(e,names,name,n.s),slot)
     for preset,caps in (('plain',0),('full',3)):
         if caps:n.typed('enable_'+preset,'syntax '+preset)
         n.memory('caps_'+preset,'se_render_caps',caps)
@@ -85,8 +91,8 @@ def evaluate(n,require_fast=False):
         assert digest==outside,(ident,'whole16MiB outside exact grid packets/NC header/SP2')
         if item['caps']==0:
             names=result['identity']['catalog']
-            assert ram[s['image_slot']+names.index('styler')]==1
-            assert ram[s['image_slot']+names.index('viewsource')]==0
+            assert ram[s['image_slot']+runtime_index(e,names,'styler',s)]==1
+            assert ram[s['image_slot']+runtime_index(e,names,'viewsource',s)]==0
             assert not f.get('se_st_valid',1) and not f.get('se_st_request',1)
             assert not any(g['id']in(14,15,24,25,26,34,35,37,39)and g['slot']==1 for g in item['cost_profile']['groups']),(ident,'Plain semantic worker entered')
         if require_fast and item['action']in('right','left'):

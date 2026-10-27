@@ -18,6 +18,7 @@ from d81_image import D81Image,D81Error
 from png_pixels import read_png
 from vice_config import step
 import vice_plan
+from cache_job_build import editor_pair_index
 ROOT=old.ROOT;BASE=old.BASE;OPENED=old.OPENED;CASES=old.CASES
 DEFAULT=ROOT/'build/geos-incremental-editor/20261025T081538083121Z/fixture'
 SELECTED=['missing-device','write-protected','disk-full','cancel-read','cancel-write','cancel-candidate-scan','candidate-seq','candidate-prg','candidate-splat','promotion-ack-injected','missing-c12-open','missing-c12-save','missing-both-read','missing-both-preflight','missing-c12-saved-ack9','missing-c12-savepoint-pending9']
@@ -202,13 +203,15 @@ def evaluate(n):
   if ident!='before':
    for injection in n.injections:
     for name in injection.get('assets',[]):
-     index=identity['catalog'].index(name);assert catalog[index]==0;catalog[index]=stable_catalog[index]
+     image=(n.e/(name+'.seo')).read_bytes();index=editor_pair_index(image[5],image[6]) if 'catalog_index' in n.s else identity['catalog'].index(name)
+     assert catalog[index]==0;catalog[index]=stable_catalog[index]
   if stable_catalog is None:stable_catalog=bytes(catalog)
   assert bytes(catalog)==stable_catalog,(ident,'42-image catalog changed outside declared injected IDs')
-  for slot,name in enumerate(identity['catalog']):
+  for order,name in enumerate(identity['catalog']):
+   image=(n.e/(name+'.seo')).read_bytes();slot=editor_pair_index(image[5],image[6]) if 'catalog_index' in n.s else order
    handle=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[slot>>4],1);bank=ram[n.s['se_reu_map']+handle]
    assert handle and bank and ram[n.s['se_reu_logical_owner']+handle]==ram[n.s['se_reu_physical_owner']+bank]==2
-   payload=(n.e/(name+'.seo')).read_bytes()[36:];at=bank*65536+(slot&15)*4096;assert reu[at:at+len(payload)]==payload,(ident,name,'asset bytes')
+   payload=image[36:];at=bank*65536+(slot&15)*4096;assert reu[at:at+len(payload)]==payload,(ident,name,'asset bytes')
   pack=(n.e/'font-pack.bin').read_bytes()
   for i,handle in enumerate(f.read(0xcbc1,2)):
    bank=ram[n.s['se_reu_map']+handle];assert handle and bank and ram[n.s['se_reu_logical_owner']+handle]==ram[n.s['se_reu_physical_owner']+bank]==0xfd

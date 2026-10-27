@@ -13,6 +13,7 @@ from d81_image import D81Image
 from png_pixels import read_png
 import vice_plan,cpu_editor
 from bindings import verify as verify_binding
+from cache_job_build import editor_pair_index
 ROOT=io.ROOT;live=io.live
 
 class Plan(io.Plan):
@@ -170,10 +171,11 @@ def evaluate(e):
   cat=f.read(s['se_overlay_ids'],384)
   if catalog is None:catalog=cat
   assert cat==catalog
-  for slot,name in enumerate(json.loads((e/'freeze.json').read_text())['catalog']):
+  for order,name in enumerate(json.loads((e/'freeze.json').read_text())['catalog']):
+   image=(e/(name+'.seo')).read_bytes();slot=editor_pair_index(image[5],image[6]) if 'catalog_index' in s else order
    h=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[slot>>4],1);ph=ram[s['se_reu_map']+h]
    assert h and ph and ram[s['se_reu_logical_owner']+h]==ram[s['se_reu_physical_owner']+ph]==2
-   payload=(e/(name+'.seo')).read_bytes()[36:];a=ph*65536+(slot&15)*4096;assert reu[a:a+len(payload)]==payload
+   payload=image[36:];a=ph*65536+(slot&15)*4096;assert reu[a:a+len(payload)]==payload
   state=f.read(s['se_doc_roots'],512)+b''.join(f.read(s[k],w) for k,w in [('se_doc_meta',15),('se_doc_generation',2),('se_doc_length',3),('se_h_current',4),('se_h_saved',4),('se_h_end',2),('se_h_cursor',2),('se_h_counter',4)])
   if source_state is None:source_state=state
   assert state==source_state,(ident,'readonly source/history')

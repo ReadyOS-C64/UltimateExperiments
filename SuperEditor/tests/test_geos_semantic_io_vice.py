@@ -14,6 +14,7 @@ from test_fold_retention_vice import Captured
 from d81_image import D81Image
 from png_pixels import read_png
 import vice_plan
+from cache_job_build import editor_pair_index
 live=previous.live;ROOT=live.ROOT
 FINAL=ROOT/'agentsworking/evidence/M7/20261025T032222941206Z-geos-semantic-io-native'
 START=15;STOP=77;CLIP=semantic.FIXTURE[START:STOP]
@@ -109,10 +110,11 @@ def evaluate(e,phase):
         if catalog is None:catalog=got_catalog
         assert got_catalog==catalog
         assert len(reu)==16*1024*1024
-        for slot,name in enumerate(catalog_names):
-            handle=f.get('se_overlay_asset' if slot<16 else 'se_overlay_asset_second',1);physical=ram[s['se_reu_map']+handle]
+        for order,name in enumerate(catalog_names):
+            image=(e/(name+'.seo')).read_bytes();slot=editor_pair_index(image[5],image[6]) if 'catalog_index' in s else order
+            handle=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[slot>>4],1);physical=ram[s['se_reu_map']+handle]
             assert handle and physical and ram[s['se_reu_logical_owner']+handle]==ram[s['se_reu_physical_owner']+physical],(ident,'catalog allocation ownership',slot)
-            payload=(e/(name+'.seo')).read_bytes()[36:];offset=physical*65536+(slot%16)*4096
+            payload=image[36:];offset=physical*65536+(slot%16)*4096
             assert reu[offset:offset+len(payload)]==payload,(ident,'complete frozen catalog payload',slot,name)
         if c['clipboard'] is not None:
             wanted=bytes.fromhex(c['clipboard']);assert f.get('se_clip_length')==len(wanted)

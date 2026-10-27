@@ -13,6 +13,7 @@ from png_pixels import read_png
 from d81_image import D81Image
 from closed_runtime_copy import run_with_closed_links
 import vice_plan
+from cache_job_build import editor_pair_index
 ROOT=engine.ROOT;live=engine.live
 BASE=ROOT/'build/retention-grammar/20261026T200015684677Z/link/fixture'
 SOURCE=grammar.SOURCE;NAME=b'REGION';C19='53884af91475602c11020180c519e10f36fc59df83d0489286f6c21fa92a318b'
@@ -105,8 +106,9 @@ def evaluate(e):
   assert f.read(0xcbc0,1)==b'\xa5' and f.read(0xcbc3,2)==f.read(s['se_reu_epoch'],2) and f.read(0xcbc6,1)==f.read(0xcbc8,1)==b'\0'
   for i,h in enumerate(f.read(0xcbc1,2)):
    p=ram[s['se_reu_map']+h];assert h and p and ram[s['se_reu_logical_owner']+h]==ram[s['se_reu_physical_owner']+p]==0xfd;part=pack[i*65536:(i+1)*65536];assert reu[p*65536:p*65536+len(part)]==part
-  for slot,name in enumerate(ident['catalog']):
-   h=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[slot>>4],1);p=ram[s['se_reu_map']+h];assert h and p and ram[s['se_reu_logical_owner']+h]==ram[s['se_reu_physical_owner']+p]==2;payload=(e/(name+'.seo')).read_bytes()[36:];start=p*65536+(slot&15)*4096;assert reu[start:start+len(payload)]==payload
+  for order,name in enumerate(ident['catalog']):
+   image=(e/(name+'.seo')).read_bytes();slot=editor_pair_index(image[5],image[6]) if 'catalog_index' in s else order
+   h=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[slot>>4],1);p=ram[s['se_reu_map']+h];assert h and p and ram[s['se_reu_logical_owner']+h]==ram[s['se_reu_physical_owner']+p]==2;payload=image[36:];start=p*65536+(slot&15)*4096;assert reu[start:start+len(payload)]==payload
   if c['group']:
    state=f.read(s['se_doc_roots'],512)+b''.join(f.read(s[n],w)for n,w in [('se_doc_meta',15),('se_doc_generation',2),('se_doc_length',3),('se_h_current',4),('se_h_saved',4),('se_h_counter',4),('se_h_end',2),('se_h_cursor',2)])
    assert state==states.setdefault(c['group'],state),(tag,'read-only canonical/history')

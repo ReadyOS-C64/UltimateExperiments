@@ -19,6 +19,7 @@ from d81_image import D81Image
 from png_pixels import read_png
 from geos_fold_model import raster,preview,navigation,normalize_top
 import vice_plan
+from cache_job_build import editor_pair_index
 
 ROOT=previous.ROOT;live=previous.live
 
@@ -159,10 +160,11 @@ def evaluate(e):
             assert handle and bank and ram[s['se_reu_logical_owner']+handle]==ram[s['se_reu_physical_owner']+bank]==0xFD
             part=pack[i*65536:(i+1)*65536]
             assert reu[bank*65536:bank*65536+len(part)]==part,(ident,'complete actual cold fontpack')
-        for slot,name in enumerate(identity['catalog']):
+        for order,name in enumerate(identity['catalog']):
+            image=(e/(name+'.seo')).read_bytes();slot=editor_pair_index(image[5],image[6]) if 'catalog_index' in s else order
             handle=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[slot>>4],1)
             bank=ram[s['se_reu_map']+handle];assert handle and bank and ram[s['se_reu_logical_owner']+handle]==ram[s['se_reu_physical_owner']+bank]==2
-            payload=(e/(name+'.seo')).read_bytes()[36:];start=bank*65536+(slot&15)*4096
+            payload=image[36:];start=bank*65536+(slot&15)*4096
             assert reu[start:start+len(payload)]==payload,(ident,'catalog',name)
         if f.get('se_ef_valid',1):
             token=f.read(s['se_ef_token'],5)

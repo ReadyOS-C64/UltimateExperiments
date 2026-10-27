@@ -16,6 +16,7 @@ from d81_image import D81Image
 from png_pixels import read_png
 from vice_config import step
 import vice_plan
+from cache_job_build import editor_pair_index
 ROOT=native.ROOT
 BASE=ROOT/'build/geos-incremental-editor/20261025T081538083121Z/fixture'
 
@@ -234,8 +235,9 @@ def evaluate(e):
    for x in range(320):
     attr=attrs[(y//8)*40+x//8];ink=bits[(y//8)*320+(x//8)*8+y%8]&(128>>(x&7));color=attr>>4 if ink else attr&15;actual=pixels[(y+35)*width+x+32]
     assert actual==palette.setdefault(color,actual),(ident,'native VIC pixel',x,y)
-  for index,name in enumerate(identity['catalog']):
-   asset=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[index>>4],1);physical=memory[s['se_reu_map']+asset];blob=(e/(name+'.seo')).read_bytes()[36:];at=physical*65536+(index&15)*4096
+  for order,name in enumerate(identity['catalog']):
+   capsule=(e/(name+'.seo')).read_bytes();index=editor_pair_index(capsule[5],capsule[6]) if 'catalog_index' in s else order
+   asset=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[index>>4],1);physical=memory[s['se_reu_map']+asset];blob=capsule[36:];at=physical*65536+(index&15)*4096
    assert memory[s['se_reu_logical_owner']+asset]==memory[s['se_reu_physical_owner']+physical]==2 and image[at:at+len(blob)]==blob,(ident,'all sealed assets',name)
   observed.append(dict(id=ident,source_bytes=len(data),caret=c['caret'],pending=c['pending'],bitmap_sha256=hashlib.sha256(bits).hexdigest()))
  disk=D81Image((e/'working.d81').read_bytes());initial=D81Image((e/'initial-fixtures.d81').read_bytes());original={v.name for v in initial.entries()};data=native.live.grid.fixture()

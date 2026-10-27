@@ -13,6 +13,7 @@ from overlay_catalog_policy import catalog_identity
 from d81_image import D81Image
 from png_pixels import read_png
 import vice_plan
+from cache_job_build import editor_pair_index
 ROOT=engine.ROOT;live=engine.live
 DEFAULT=ROOT/'build/grid-caret-native-prepare/20261025T171500/fixture'
 
@@ -109,10 +110,11 @@ def evaluate(e):
   current=catalog_identity(f.read(s['se_overlay_ids'],384),s)
   if old_catalog is None:old_catalog=current
   assert current==old_catalog,(tag,'full64 catalog fields except published bit7 policy')
-  for index,name in enumerate(identity['catalog']):
+  for order,name in enumerate(identity['catalog']):
+   image=(e/(name+'.seo')).read_bytes();index=editor_pair_index(image[5],image[6]) if 'catalog_index' in s else order
    h=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[index>>4],1);b=ram[s['se_reu_map']+h]
    assert h and b and ram[s['se_reu_logical_owner']+h]==ram[s['se_reu_physical_owner']+b]==2
-   blob=(e/(name+'.seo')).read_bytes()[36:];at=b*65536+(index&15)*4096;assert reu[at:at+len(blob)]==blob,(tag,'whole48 assets',name)
+   blob=image[36:];at=b*65536+(index&15)*4096;assert reu[at:at+len(blob)]==blob,(tag,'whole48 assets',name)
   if f.get('se_ef_valid',1):
    assert f.get('se_ef_count',2)==len(tree) and object_bytes(f,reu,f.read(s['se_ef_token'],5),32*len(tree))==b''.join(t.bytes()for t in tree)
   if c.get('fast'):

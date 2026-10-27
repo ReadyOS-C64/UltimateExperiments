@@ -4,6 +4,7 @@ from datetime import datetime,timezone
 import argparse,ctypes as C,json,sys,binascii,shutil,hashlib
 ROOT=Path(__file__).resolve().parents[1];sys.path[:0]=[str(ROOT/'tests'),str(ROOT/'tools')]
 import test_geos_semantic_editor as semantic
+from cache_job_build import editor_pair_index
 geos=semantic.geos
 G=0x8B40;PROOF=G+29;CAPTURED=G+182;INCOMING=G+170;P=0x9134
 
@@ -58,7 +59,8 @@ def run(out,base):
   reject('provider-epoch',[(f.s['se_reu_epoch'],base_ram[f.s['se_reu_epoch']]^1)])
   reject('source-revision',[(f.s['se_r_revision'],base_ram[f.s['se_r_revision']]^1)])
   reject('foreign-FE',[(f.s['se_reu_physical_owner']+physical,7)])
-  index=next(i for i in range(f.s['se_overlay_capacity'])if base_ram[f.s['se_overlay_ids']+i]==24)
+  index=editor_pair_index(1,24)
+  assert base_ram[f.s['se_overlay_ids']+index]==24 and base_ram[f.s['image_slot']+index]&1==1
   reject('missing-C24-capability',[(f.s['se_overlay_ids']+index,0)])
   (out/'opcode-result.json').write_text(json.dumps(dict(status='passed',positives=positives,faults=faults,opaque_phase=True),indent=2)+'\n')
   # Internal64-byte serializer differential. Both actualadmittedR19s use

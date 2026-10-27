@@ -5,6 +5,7 @@ import argparse, ctypes as C, hashlib, json, re, shutil, subprocess, sys, zlib, 
 import test_cache_observer as observer
 import test_plain_geos as plain
 import test_grid_editor_vice as diverse
+from cache_job_build import editor_pair_index
 ROOT=observer.ROOT
 N=65536+64*4096
 ORIGINAL=observer.runner
@@ -46,6 +47,8 @@ def labels(p):return [(int(a,16),n)for a,n in re.findall(r'al ([0-9a-fA-F]+) \.(
 def run(out,base,profile_label="source-matched",dataset="251"):
  observer.runner=runner;g=observer.Gate(out,base);f=g.f;names=g.identity['names']; stems={};syms={};cases=[]
  try:
+  indexes={name:(editor_pair_index(f.assets[name][5],f.assets[name][6]) if 'catalog_index' in f.s else order) for order,name in enumerate(names)}
+  slot_names={index:name for name,index in indexes.items()};assert len(slot_names)==len(names)
   for name in names:
    stem=ROOT/'build/cache-editor'/name if name in ('fold','sema','inln','page')else ROOT/'build/overlays'/name
    if stem.with_suffix('.bin').exists() and stem.with_suffix('.lbl').exists() and stem.with_suffix('.bin').read_bytes()==f.assets[name][36:]:
@@ -57,7 +60,7 @@ def run(out,base,profile_label="source-matched",dataset="251"):
   resident=labels(g.frozen/'build/editor.lbl');syms['resident']=resident
   def decode(k):
    if k<65536:return 'resident',k
-   a=(k-65536)//4096;name=names[a];entry=next(pc for pc,n in syms[name]if n=='entry');return name,(entry&0xF000)+((k-65536)&4095)
+   a=(k-65536)//4096;name=slot_names[a];entry=next(pc for pc,n in syms[name]if n=='entry');return name,(entry&0xF000)+((k-65536)&4095)
   # Header byte slot is not assumed by symbolization; actual label address supplies it.
   def decoded(k):
    name,pc=decode(k)
@@ -111,11 +114,11 @@ def run(out,base,profile_label="source-matched",dataset="251"):
     (out/(tag+'-unexpected.json')).write_text(json.dumps(diffs,indent=2))
    assert after==expected,(tag,'16MiB outside exact FE extents')
    observer.geos.png(bits,attrs,out/(tag+'.png'))
-   c35base=65536+names.index('inln')*4096
+   c35base=65536+indexes['inln']*4096
    sections=list(zip(('selector','query','source_exchange','record','arena_core','root_open','page'),boundaries,boundaries[1:]))
-   detail=dict(c35_inclusive=sum(selfs[c35base:c35base+boundaries[1]])+sum(inc[c35base:c35base+boundaries[1]]),c35_self={name:sum(selfs[c35base+lo:c35base+hi])for name,lo,hi in sections},entries={name:{symbol:selfs[65536+names.index(name)*4096+(pc&4095)]for pc,symbol in syms.get(name,[])if symbol in ('entry','se_sm_feed','se_bc_query_begin','se_bc_query_step','se_bc_query_ack')}for name in ('inln','sema','geossema')})
-   detail['module_inclusive']={name:int(g.dll.cp_module(names.index(name)+1))for name in names if g.dll.cp_module(names.index(name)+1)}
-   detail['entries_all']={name:{symbol:selfs[65536+names.index(name)*4096+(pc&4095)]for pc,symbol in syms.get(name,[])if (symbol in ('entry','se_fs_begin','se_fs_guard','se_fs_read','se_sm_feed','se_bc_query_begin','se_bc_query_step','se_bc_query_ack','gsc_cached_carry','bcq_restore_page'))}for name in ('inln','page','rangeio','viewsource','geossema','sema')}
+   detail=dict(c35_inclusive=sum(selfs[c35base:c35base+boundaries[1]])+sum(inc[c35base:c35base+boundaries[1]]),c35_self={name:sum(selfs[c35base+lo:c35base+hi])for name,lo,hi in sections},entries={name:{symbol:selfs[65536+indexes[name]*4096+(pc&4095)]for pc,symbol in syms.get(name,[])if symbol in ('entry','se_sm_feed','se_bc_query_begin','se_bc_query_step','se_bc_query_ack')}for name in ('inln','sema','geossema')})
+   detail['module_inclusive']={name:int(g.dll.cp_module(indexes[name]+1))for name in names if g.dll.cp_module(indexes[name]+1)}
+   detail['entries_all']={name:{symbol:selfs[65536+indexes[name]*4096+(pc&4095)]for pc,symbol in syms.get(name,[])if (symbol in ('entry','se_fs_begin','se_fs_guard','se_fs_read','se_sm_feed','se_bc_query_begin','se_bc_query_step','se_bc_query_ack','gsc_cached_carry','bcq_restore_page'))}for name in ('inln','page','rangeio','viewsource','geossema','sema')}
    item=dict(tag=tag,instructions=total,detail=detail,exclusive=by,top_calls=topcalls,crc_calls=crcs,flags=f.get('se_bc_flags',1),queue=f.get('se_bc_count',1))
    cases.append(item);(out/(tag+'.json')).write_text(json.dumps(item,indent=2)+'\n');print('PASS',tag,total,sorted(by.items(),key=lambda x:-x[1]),flush=True)
   result=dict(status='PASS',source_bytes=len(data),dataset=dataset,fixture=str(base),profile_label=profile_label,query_bytes=len(f.assets['inln'][36:]),query_sha256=hashlib.sha256(f.assets['inln'][36:]).hexdigest(),resident=f.report['sha256'],cases=cases,scope='Read-only PC self time and overlapping inclusive JSR callsites; CPU instructions, not cycles. Exact source/pixels/shim and whole16MiB outside published FE spans per case.')

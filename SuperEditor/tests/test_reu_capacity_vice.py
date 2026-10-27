@@ -16,6 +16,7 @@ from png_pixels import read_png
 from d81_image import D81Image
 from vice_config import step
 import vice_plan
+from cache_job_build import editor_pair_index
 
 ROOT=folds.ROOT;live=folds.live
 SOURCE=ROOT/'build/geos-semantic-editor/20261025T060655745558Z/fixture'
@@ -239,9 +240,10 @@ def evaluate(e,kb):
         for i,handle in enumerate(f.read(0xCBC1,2)):
             bank=ram[s['se_reu_map']+handle];assert handle and physical[bank]==logical[handle]==0xFD
             chunk=pack[i*65536:(i+1)*65536];assert reu[bank*65536:bank*65536+len(chunk)]==chunk
-        for slot,name in enumerate(json.loads((e/'freeze.json').read_text())['catalog']):
+        for order,name in enumerate(json.loads((e/'freeze.json').read_text())['catalog']):
+            image=(e/(name+'.seo')).read_bytes();slot=editor_pair_index(image[5],image[6]) if 'catalog_index' in s else order
             handle=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[slot>>4],1);bank=ram[s['se_reu_map']+handle]
-            assert physical[bank]==logical[handle]==2;payload=(e/(name+'.seo')).read_bytes()[36:];start=bank*65536+(slot&15)*4096
+            assert physical[bank]==logical[handle]==2;payload=image[36:];start=bank*65536+(slot&15)*4096
             assert reu[start:start+len(payload)]==payload
         if c['clipboard'] is not None:
             clip=bytes.fromhex(c['clipboard']);assert f.get('se_clip_length')==len(clip)

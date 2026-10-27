@@ -13,6 +13,7 @@ from test_geos_navigation_vice import object_bytes
 from png_pixels import read_png
 from d81_image import D81Image
 import vice_plan
+from cache_job_build import editor_pair_index
 ROOT=base.ROOT
 
 
@@ -90,11 +91,12 @@ def evaluate(e):
                 at=y//8*40+x//8;ink=bits[y//8*320+x//8*8+y%8]&(128>>(x%8))
                 color=attrs[at]>>4 if ink else attrs[at]&15;pixel=pixels[(35+y)*w+32+x]
                 assert pixel==palette.setdefault(color,pixel),(ident,'VIC pixel',x,y)
-        for slot,name in enumerate(identity['catalog']):
+        for order,name in enumerate(identity['catalog']):
+            image=(e/(name+'.seo')).read_bytes();slot=editor_pair_index(image[5],image[6]) if 'catalog_index' in s else order
             handle=f.get(('se_overlay_asset','se_overlay_asset_second','se_overlay_asset_third','se_overlay_asset_fourth')[slot>>4],1)
             bank=ram[s['se_reu_map']+handle]
             assert handle and bank and ram[s['se_reu_logical_owner']+handle]==ram[s['se_reu_physical_owner']+bank]==2
-            payload=(e/(name+'.seo')).read_bytes()[36:];at=bank*65536+(slot&15)*4096
+            payload=image[36:];at=bank*65536+(slot&15)*4096
             assert reu[at:at+len(payload)]==payload,(ident,'sealed asset',name)
         token=f.read(s['se_bc_arena'],5);flags=f.get('se_bc_flags',1)
         if ident=='copied':
