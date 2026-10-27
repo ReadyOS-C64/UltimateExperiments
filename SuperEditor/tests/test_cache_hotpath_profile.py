@@ -61,10 +61,12 @@ def run(out,base,smoke=False):
      if action=='right':f.key(0x1d);drain(f) #prime the admitted hot caret path
      if action=='up':f.key(0x11);drain(f)
      at=f.get('se_hot_caret');before=g.audit_begin();stable=g.stable();catalog=f.catalog();initial=f.total_instructions;loads=f.get('se_overlay_loads',2);dmas=f.get('se_reu_dma_calls',2);dma_bytes=f.get('se_reu_dma_bytes',3);key={'right':0x1d,'down':0x11,'up':0x91,'insert':observer.Q}[action]
+     allow_baseline=mode==3 and caps!=0 and action=='insert';dll.pb_arena_begin(allow_baseline)
      dll.hp_begin(f.get('se_e_draw_sequence',2))
      try:f.key(key);ticks=drain(f)
      finally:dll.hp_end()
      g.audit_end(before,f'{mode}-{preset}-{action}')
+     baseline_writes=int(dll.pb_arena_get());dll.pb_arena_begin(False);assert baseline_writes==(2 if allow_baseline else 0)
      used=f.total_instructions-initial;assert dll.hp_get(0,0)==used and dll.hp_get(0,4)==0
      source=data[:at]+bytes((key,))+data[at:]if action=='insert'else data
      assert f.merged()==source and f.catalog()==catalog and f.read(0xc600,1024)==f.shim
@@ -88,7 +90,7 @@ def run(out,base,smoke=False):
     for p in sorted((ROOT/folder).glob('*.py')):z.write(p,p.relative_to(ROOT))
    p=ROOT/'src/cache/hotpath-profile-probe/runner.py';z.write(p,p.relative_to(ROOT))
   return result
- finally:f.close()
+ finally:dll.pb_arena_begin(False);f.close()
 
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--fixture',type=Path,default=BASE);p.add_argument('--smoke',action='store_true');a=p.parse_args();out=ROOT/'build/cache-hotpath-profile'/datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');print('RUN',out,flush=True);run(out,a.fixture.resolve(),a.smoke)
