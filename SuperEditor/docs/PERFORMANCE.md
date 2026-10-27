@@ -551,3 +551,41 @@ The read-only reopen disk is unchanged. Warp and device8 traps are enabled;
 PAL VIC0/50Hz resources and a16-cycle calibration are retained. Evidence:
 M8/20261025T142629350991Z-file-throughput-native. No physical latency or
 worst-case claim is made.
+
+## Warm GEOS byte shifts on the registered62 editor
+
+A bounded bitmap suffix change removes the second neighbor from1..7-bit shifts
+and performs an8-bit insertion shift as a byte displacement before its0..3-bit
+remainder. The payload is3 bytes smaller (C32 raw3771, sealed3803); R30 remains
+3662 bytes with updated stage length/CRC constants. Admission, color voting,
+source/history certificates and publication checks remain in place.
+
+Actual PAL native measurements through the disclosed public service PC/SP
+stopwatch, with IRQs running:
+
+| Case | Control cycles | Optimized cycles |
+| --- | ---: | ---: |
+| Plain steady INSERT |175856–175890|169637–169888|
+| Plain BACK |170707–170928|164599–164621|
+| Full strong steady INSERT |186356–189569|178295–181178|
+| Full strong BACK |181049–184271|173407–176108|
+| Plain first INSERT |717300|711039|
+| Full strong first INSERT |515393|507786|
+
+Steady keys improve3.4–4.4%; first insertion improves0.9–1.5%. Caret code is
+unchanged and its IRQ-phase variation includes a0.6% regression. The48 native
+captures have24 byte-identical control/candidate PNG pairs and8 distinct images,
+all visually reviewed. Both packages retain actual cold62 registration, fonts,
+source/history, settings, clipboard, the reserved shim, and precise whole16MiB
+REU checks. The provider is explicitly configured as256 banks. These timings
+measure service cost rather than physical keyboard latency.
+
+The native pair keeps the same earlier C41 in both variants. The combined
+7654 correctness fix plus new TYPE/GTYPE pair is separately authenticated and
+passes canonical rebase protocols/faults, real24-COW journal boundaries, public
+pixel/authority gates, complete62-image stack analysis and no-op build checks.
+Only those two packaged images differ from7654. Evidence: native
+build/warm-shift-native-adapter/ready8 and canonical
+build/warm-shift-canonical-{protocol,guards,journal,stack}; source-matched working
+fixture build/warm-shift-canonical-working-v2/20261027T001110182649Z/fixture.
+The provisional overall latency targets and broad redraw gate remain open.

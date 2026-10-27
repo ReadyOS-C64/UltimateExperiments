@@ -34,7 +34,7 @@ The public pixel primitive still applies its original strict validation.
 The transaction updates chars/styles/X boundaries, rebases later prefixes and
 publishes packet/header/caret/status only after admission. No resident state,
 BSS, zero page, bank or object is added. Current C6=3654, R30=3662,
-C32=3806/raw3774. The Plain admission extension accounts for6/34 added bytes
+C32=3803/raw3771 after the warm-shift optimization. The Plain admission extension accounts for6/34 added bytes
 in R30/C32; C6 is unchanged.
 The helper uses temporary8A00/8000/8400/8580/8640 scratch in owner4; see
 `two-color.inc`. All font inputs are immutable and authenticated in evidence.
@@ -55,7 +55,7 @@ grammar, tile seam and publication checks. No parser certificate is invented.
 Full and Markdown keep their styled paths. Selection, stored folds, unsupported
 geometry/metadata and CR/reflow cases retain the ordinary renderer.
 
-The actual60-image CPU matrix checks46 frames and8 API faults, including
+The earlier Plain-admission60-image CPU matrix checks46 frames and8 API faults, including
 repeated edits, literal controls, marked replacement, preset invalidation,
 Full/Markdown, checked-packet corruption, and namespace42→41→42 stage reuse.
 Independent pixels, forced full rendering, source/history and precise whole-REU
@@ -76,3 +76,29 @@ general reflow performance, worst-case latency or physical keyboard timing.
 Reproduction uses `tests/test_geos_plain_typing_candidate.py --fixture FIXTURE`
 and `tests/test_geos_plain_typing_registered_vice.py` with explicit sealed
 control/candidate fixtures. The native test requires only GTYPE/TYPE to differ.
+
+## Warm byte shifts
+
+For advances1..7, the bitmap suffix loop shifts only the current byte and its
+immediate neighbor. Insertion advances8..11 first select the preceding byte,
+then shift the remaining0..3 bits with the second neighbor. Row edges still
+supply zero rather than reading outside the40-byte row. Existing deletion,
+prefix/tail masks, traversal order,9-row seam and publication guards remain.
+Only C32 code and R30's embedded C32 length/CRC constants change; vectors,
+resident state and allocation stay the same.
+
+The component gate covers2154 cases plus17 seeded cases per variant, with
+pixel equality and no instruction-count regression. Public style, selection,
+no-wrap and refusal gates retain independent/forced-full pixel comparisons,
+source/history, whole RAM and precisely bounded full16MiB REU checks. The
+composed registered62 package also passes source-aware rebase protocols,
+real24-transaction journal boundaries and the68-byte stack bound.
+
+The native PAL A/B gate captures48 actual screens: repeated INSERT/BACK and
+caret moves in Plain prose and Full strong text. All24 paired PNGs are exact.
+Steady Plain keys improve3.4–3.7%; strong keys4.1–4.4%. First insertion improves
+only0.9–1.5%. Unchanged caret code has IRQ-phase variation, including a0.6%
+regression retained in the report. This is a small measured improvement;
+whole-key latency and broad reflow remain open performance work. Native pairs
+use the earlier62 C41 in both variants; separate canonical CPU gates verify
+composition with7654's journal/applicability fix. See docs/PERFORMANCE.md.

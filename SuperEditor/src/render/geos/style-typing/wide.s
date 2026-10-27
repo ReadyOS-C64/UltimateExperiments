@@ -85,17 +85,7 @@ set_mode:
     ldy column
     lda F+GT_OP
     bne @left
-    lda #0
-    sta carry2
-    cpy #2
-    bcc :+
-    dey
-    dey
-    lda (gt_base),y
-    sta carry2
-    iny
-    iny
-:   tya
+    tya
     beq @zero_prev
     dey
     lda (gt_base),y
@@ -107,25 +97,40 @@ set_mode:
     sta carrybyte
     lda (gt_base),y
     ldx F+GT_ADVANCE
+    cpx #8
+    bcs @right_wide
 @right_bits:
-    lsr carry2
-    ror carrybyte
+    lsr carrybyte
     ror
     dex
     bne @right_bits
     beq @shifted
-@left:
+@right_wide:
+    ; Eight right shifts select old previous byte exactly. Only remainder
+    ; 0..3 needs its previous neighbor; no read precedes the 40-byte row.
     lda #0
-    sta carry2
-    cpy #38
-    bcs :+
-    iny
-    iny
+    cpy #2
+    bcc :+
+    dey
+    dey
     lda (gt_base),y
-    sta carry2
-    dey
-    dey
-:   cpy #39
+    iny
+    iny
+:   sta carry2
+    txa
+    and #7
+    tax
+    lda carrybyte
+    cpx #0
+    beq @shifted
+@right_wide_bits:
+    lsr carry2
+    ror
+    dex
+    bne @right_wide_bits
+    beq @shifted
+@left:
+    cpy #39
     beq @zero_next
     iny
     lda (gt_base),y
@@ -138,8 +143,7 @@ set_mode:
     lda (gt_base),y
     ldx F+GT_ADVANCE
 @left_bits:
-    asl carry2
-    rol carrybyte
+    asl carrybyte
     rol
     dex
     bne @left_bits
