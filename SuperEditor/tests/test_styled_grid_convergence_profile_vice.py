@@ -350,14 +350,16 @@ def verify_native_pixels(plan, item, primary, attributes):
     width, height, pixels = timing.read_png(
         plan.out / ("native-" + item["id"] + ".png")
     )
-    assert (width, height) == (384, 272)
+    viewports = {(384, 272): (32, 35), (384, 247): (32, 23)}
+    assert (width, height) in viewports
+    viewport_x, viewport_y = viewports[(width, height)]
     palette = {}
     for y in range(200):
         for x in range(320):
             attribute = attrs[(y // 8) * 40 + x // 8]
             ink = bits[(y // 8) * 320 + (x // 8) * 8 + y % 8] & (128 >> (x % 8))
             role = attribute >> 4 if ink else attribute & 15
-            pixel = pixels[(35 + y) * width + 32 + x]
+            pixel = pixels[(viewport_y + y) * width + viewport_x + x]
             assert pixel == palette.setdefault(role, pixel), (
                 item["id"], "native VIC pixel", x, y
             )

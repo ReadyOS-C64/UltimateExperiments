@@ -744,17 +744,20 @@ build/grid-prod/native8.o: assets/fonts/generated/native8.bin
 build/grid-prod/font4.o: src/render/narrow/font4.s assets/fonts/generated/manifest.json
 	mkdir -p $(dir $@)
 	$(CA65) -g -D SE_FIXED_NARROW_FONT=1 -I src -I build -o $@ -l $(@:.o=.lst) $<
+build/grid-prod/font5.o: src/render/narrow/font5.s assets/fonts/generated/manifest.json
+	mkdir -p $(dir $@)
+	$(CA65) -g -D SE_FIXED_NARROW_FONT=1 -I src -I build -o $@ -l $(@:.o=.lst) $<
 build/grid-prod/grid80.o: src/overlays/grid.s src/render/narrow/grid.inc build/editor-api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -I build -o $@ $<
 build/grid-prod/grid60.o: src/overlays/grid.s src/render/narrow/grid.inc build/editor-api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -D GRID60=1 -I src -I build -o $@ $<
-GRID_COMMON_OBJ = build/grid-prod/row.o build/grid-prod/arbitrate.o build/grid-prod/cell8.o
+GRID60_OBJ = build/grid-prod/row60.o build/grid-prod/arbitrate.o build/grid-prod/cell8.o
 build/overlays/grid80.bin: build/grid-prod/grid80.o build/grid-prod/row80.o build/grid-prod/cell8.o build/grid-prod/font4.o build/grid-prod/native8.o cfg/grid-r.cfg
 	$(LD65) -C cfg/grid-r.cfg -o $@ -m $(@:.bin=.map) -Ln $(@:.bin=.lbl) build/grid-prod/grid80.o build/grid-prod/row80.o build/grid-prod/cell8.o build/grid-prod/font4.o build/grid-prod/native8.o
-build/overlays/grid60.bin: build/grid-prod/grid60.o $(GRID_COMMON_OBJ) build/grid-prod/font5.o build/grid-prod/native8.o cfg/grid-r.cfg
-	$(LD65) -C cfg/grid-r.cfg -o $@ -m $(@:.bin=.map) -Ln $(@:.bin=.lbl) build/grid-prod/grid60.o $(GRID_COMMON_OBJ) build/grid-prod/font5.o build/grid-prod/native8.o
+build/overlays/grid60.bin: build/grid-prod/grid60.o $(GRID60_OBJ) build/grid-prod/font5.o build/grid-prod/native8.o cfg/grid-r.cfg
+	$(LD65) -C cfg/grid-r.cfg -o $@ -m $(@:.bin=.map) -Ln $(@:.bin=.lbl) build/grid-prod/grid60.o $(GRID60_OBJ) build/grid-prod/font5.o build/grid-prod/native8.o
 build/overlays/grid80.seo: build/overlays/grid80.bin tools/overlays.py
 	$(PYTHON) tools/overlays.py $< $@ --slot 0 --id 16 --resident-report build/editor-report.json
 build/overlays/grid60.seo: build/overlays/grid60.bin tools/overlays.py

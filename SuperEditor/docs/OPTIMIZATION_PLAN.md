@@ -858,3 +858,35 @@ consumer and row-relative gates pass at
 68-byte stack bound remains conservative because this pass only deletes
 instructions and checked branches from existing leaves and introduces no call,
 push, interrupt or recursion edge.
+
+### Strict 60-column renderer
+
+The 60-column leaf no longer carries the generic 80-column branches and three
+per-scanline helper calls. Its strict renderer selects the fragment shift table
+once, runs one fused eight-scanline loop, restores the patched operand before
+return, and refuses every non-60 mode. It retains the existing 68-byte caller
+frame, four borrowed zero-page bytes, full-row bitmap and attribute clears,
+fixed font addresses, color arbitration, inverse, selection and caret behavior.
+
+R17 executable code shrinks from 1,266 to 1,205 bytes, freeing 61 bytes before
+the fixed `$A800` font. The standalone row differential passes 1,117 valid
+cases, 17 shared invalid frames, 32 random fonts, full output poisoning and a
+whole-RAM guard. The integrated styled consumer falls from 49,711/47,155 to
+47,092/44,796 instructions for 60-column insert/delete, a 5.27%/5.00% cut.
+The full 72-case matrix passes at
+`build/styled-grid-carry-matrix/20261027T132919561136Z/result.json`; structural
+60-column fallbacks also remove about 124,000 instructions. Modes 40 and 80 are
+unchanged.
+
+Normal-speed PAL 60-column insert/backspace now settles in 378,794/373,471
+cycles for Full and 378,895/373,495 for Markdown. This is 5.27–5.41% faster
+than the preceding qualified product. NTSC settles in 381,917/376,750 and
+382,157/376,445 cycles, 5.28–5.43% faster. Both 12-case cohorts preserve exact
+source, pixels, colors, anchors, history, catalog, payload, stack and shim,
+publish once, and perform no parser or overlay work after publication. Evidence
+and screenshots are in
+`agentsworking/evidence/M8/20261027T133119318729Z-display-timing-styled-grid-convergence-baseline`
+and
+`agentsworking/evidence/M8/20261027T133313781696Z-display-timing-styled-grid-convergence-baseline`.
+The NTSC verifier now selects the native `(32,23)` 320x200 viewport for its
+384x247 capture instead of assuming PAL's `(32,35)` viewport.
