@@ -229,7 +229,7 @@ gsc_cap:
  lda image_slot,x
  and #$7F
  cmp #1
- bne @bad
+ bne @advance
  lda image_size_lo,x
  cmp #<GSC_SEED_SIZE
  bne @bad
