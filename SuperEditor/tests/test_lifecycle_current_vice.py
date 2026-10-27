@@ -53,7 +53,11 @@ def run_one(fixture,mode,preview=False):
  oldcommand=lifecycle.component.command
  def compile_flags(*args):
   args=list(args)
-  if managed and args[0]=='ca65' and str(args[-1]).endswith(('/resume.s','/copy-entry.s')):args[1:1]=['-D','EDITOR_MANAGED_CODE=1']
+  if args[0]=='ca65' and str(args[-1]).endswith(('/resume.s','/copy-entry.s')):
+   positions=[i for i in range(len(args)-1)if args[i]=='-D' and args[i+1]=='EDITOR_MANAGED_CODE=1']
+   if managed and not positions:args[1:1]=['-D','EDITOR_MANAGED_CODE=1']
+   elif not managed:
+    for i in reversed(positions):del args[i:i+2]
   return oldcommand(*args)
  lifecycle.component.command=compile_flags
  try:e=lifecycle.prepare(fixture)
@@ -81,7 +85,8 @@ def run_one(fixture,mode,preview=False):
  if managed:
   boundary=(caps/'memo-invalidated-ram.bin').read_bytes();raw=boundary[at:at+384];state=catalog_state(raw,sym)
   assert not any(value for value in state.verified if value is not None)
-  assert not any(raw[64+i]&128 for i in range(64))
+  slot_at=sym['image_slot']-at;capacity=sym['se_overlay_capacity']
+  assert not any(raw[slot_at+i]&128 for i in range(capacity))
   assert boundary[sym['se_overlay_active']:sym['se_overlay_active']+2]==b'\0\0' and boundary[0xCBD5]==0
   assert catalog_identity(raw,sym)==next(iter(catalogs.values()))
   result['fresh_prelude_managed_invalidation']=dict(observed_before='se_doc_invalidate/first overlay call',verified_bits=0,active_tags=0,window_tag=0)
