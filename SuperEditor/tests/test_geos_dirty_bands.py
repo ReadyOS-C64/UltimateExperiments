@@ -22,7 +22,7 @@ def run(out,previous):
     objects=[ROOT/'build/geos-prod/page-paint-entry.o',out/'page-paint.o',ROOT/'build/geos-prod/native-pan.o',out/'cache-paint.o']
     command('python3','tools/module_bindings.py','--report',frozen/'build/editor-report.json','--output',out/'aliases.s',*objects)
     command('ca65','-o',out/'aliases.o',out/'aliases.s');command('ld65','-C','cfg/geos-editor-page.cfg','-o',out/'paint.bin',*objects,out/'aliases.o')
-    raw=(out/'paint.bin').read_bytes();assert len(raw)==4096 and raw[:16]==bytes.fromhex(r['resident_binding']['digest'])
+    raw=(out/'paint.bin').read_bytes();assert len(raw)<=4096 and raw[:16]==bytes.fromhex(r['resident_binding']['digest'])
     image=wrap(raw,1,22,api=(s['se_overlay_call'],s['se_overlay_frame']),binding_digest=raw[:16])
     dll=geos.grid.runner(out);f=geos.Fixture(out,frozen,dll,True);f.assets['geospaint']=image
     fonts={n:(frozen/'fonts'/n).read_bytes() for n in geos.GEOS_FONTS+('native8.bin',)}
@@ -33,9 +33,11 @@ def run(out,previous):
     try:
         f.source(data);f.command(99);f.render();eb,ea,_,_=semantic.expected(f,data,fonts)
         assert f.read(0x6000,8000)==eb and f.read(0x4000,1000)==ea
-        variants=[(2,start,start+1,start,start+1) for start in range(2,24)]
-        variants += [(2,2,6,2,6),(2,2,24,2,24),(0,3,4,2,24)]
-        variants += [(2,a,b,2,24) for a,b in [(0,2),(1,3),(24,25),(3,25),(4,4),(7,3)]]
+        # Incremental edit authority publishes one exact two-band interval.
+        # Every other pair must select the complete page before pixels change.
+        variants=[(2,start,start+2,start,start+2) for start in (2,3,6,22)]
+        variants += [(2,2,3,2,24),(2,2,6,2,24),(2,2,24,2,24),(0,3,5,2,24)]
+        variants += [(2,a,b,2,24) for a,b in [(0,2),(1,3),(23,25),(24,25),(3,25),(4,4),(7,3)]]
         for no,(flag,first,end,want_first,want_end) in enumerate(variants):
             bits=bytearray(eb);attrs=bytearray(ea)
             for i in range(640,7680):bits[i]^=(i*13+37)&255

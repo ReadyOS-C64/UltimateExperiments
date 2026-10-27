@@ -152,18 +152,18 @@ se_gp_paint_begin:
     lda GP_CONTROL+20
     cmp #2
     bne @all_bands
+    ; An authenticated 9px edit always spans exactly two bands.
+    ; Any malformed pair takes the complete paint path; stale GEX_ROW is ignored.
     lda GEX_FIRST_STRIP
     cmp #2
     bcc @all_bands
-    cmp #24
+    cmp #23
     bcs @all_bands
     sta GPP_ROW
-    lda GEX_END_STRIP
-    cmp #25
-    bcs @all_bands
-    cmp GPP_ROW
-    bcc @all_bands
-    beq @all_bands
+    clc
+    adc #2
+    cmp GEX_END_STRIP
+    bne @all_bands
     sta limit
     jmp @bands_ready
 @all_bands:
@@ -331,15 +331,22 @@ scan_line:
     lsr
     lsr
     sta GPP_ROW
-    lda GPP_KIND
-    beq @prose
+    ; Only rows starting in the preceding, first, or second dirty
+    ; band can intersect an authenticated two-band edit window. A full paint's
+    ; span is 22, so malformed hints conservatively retain every row.
+    lda limit
+    sec
+    sbc first_live
+    cmp #2
+    bne @read
     lda GPP_ROW
-    cmp first_live
-    jcc line_finished
-    cmp limit
-    jcs line_finished
-@prose:
-    jmp read_x
+    sbc first_live               ; CMP #2 left carry set
+    clc
+    adc #1
+    cmp #3
+    bcc @read                    ; start-band delta is FF, 00, or 01
+    jmp line_finished
+@read:
 
 read_x:
     lda R+GPR_RASTER_X
