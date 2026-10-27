@@ -357,18 +357,51 @@ def evaluate(n,artifacts,manifest):
 
 
 def synchronous_project(out):
-    """Private copy: await capture sentinel instead of~120ms text-drain idle.
+    """Private copy: serialize VICE and recover capture after an idle stop.
 
     The installed .NET runner remains untouched. Existing Ultimate assembly is
     copied as a read-only reference, so its neighboring project is never built.
     """
     target=out/'synchronous-dotnet';target.mkdir(exist_ok=True)
     original=PROJECT.parent/'Program.cs';text=original.read_text(encoding='utf-8-sig')
+    old='''    public static async Task<int> Main(string[] args)
+    {
+        try
+        {
+            return await Cli.RunAsync(args);'''
+    new='''    public static async Task<int> Main(string[] args)
+    {
+        try
+        {
+            // Stopwatch scripts use a text-monitor breakpoint followed by an
+            // atomic capture.  Concurrent VICE instances can steal the fixed
+            // monitor pair or delay playback continuation, so own this lane.
+            FileStream? viceLock = null;
+            var lockDeadline = Stopwatch.StartNew();
+            var lockPath = Path.Combine(Path.GetTempPath(), "supereditor-vice-stopwatch.lock");
+            while (viceLock is null && lockDeadline.Elapsed < TimeSpan.FromMinutes(3))
+            {
+                try
+                {
+                    viceLock = new FileStream(lockPath, FileMode.OpenOrCreate,
+                        FileAccess.ReadWrite, FileShare.None);
+                }
+                catch (IOException)
+                {
+                    await Task.Delay(100);
+                }
+            }
+            if (viceLock is null)
+                throw new AutomationException("E_VICE_LOCK_TIMEOUT",
+                    "another owned SuperEditor VICE stopwatch run held the global lock for 180 seconds");
+            using (viceLock)
+                return await Cli.RunAsync(args);'''
+    assert text.count(old)==1;text=text.replace(old,new)
     old='            var cmd = command.EndsWith(\'\\n\') ? command : command + "\\n";'
-    new='            string? captureComplete = null;\n            if (command.StartsWith("playback ", StringComparison.OrdinalIgnoreCase) &&\n                command.Contains("_coherent.mon", StringComparison.Ordinal))\n            {\n                var script = command.Substring(9).Trim().Trim(\'"\');\n                var lastSave = File.ReadAllLines(script).Last(line => line.StartsWith("bsave ", StringComparison.Ordinal));\n                captureComplete = lastSave.Split(\'"\')[1];\n                if (File.Exists(captureComplete))\n                    throw new AutomationException("E_CAPTURE_NOT_FRESH", "capture completion file already exists");\n            }\n            var cmd = command.EndsWith(\'\\n\') ? command : command + "\\n";'
+    new='            string? captureComplete = null;\n            string? captureLog = null;\n            string[] captureTail = Array.Empty<string>();\n            if (command.StartsWith("playback ", StringComparison.OrdinalIgnoreCase) &&\n                command.Contains("_coherent.mon", StringComparison.Ordinal))\n            {\n                var script = command.Substring(9).Trim().Trim(\'"\');\n                var scriptLines = File.ReadAllLines(script);\n                var lastRun = Array.FindLastIndex(scriptLines, line =>\n                    line.Trim().Equals("x", StringComparison.OrdinalIgnoreCase));\n                if (lastRun < 0)\n                    throw new AutomationException("E_CAPTURE_SCRIPT", "coherent capture script has no run command");\n                var lastSave = scriptLines.Last(line => line.StartsWith("bsave ", StringComparison.Ordinal));\n                captureComplete = lastSave.Split(\'"\')[1];\n                var logName = scriptLines.Take(lastRun).LastOrDefault(line =>\n                    line.StartsWith("logname ", StringComparison.Ordinal));\n                if (logName is not null)\n                    captureLog = logName.Split(\'"\')[1];\n                // VICE can stop playback at the measured breakpoint instead of\n                // continuing the commands after x.  Keep that post-stop tail\n                // ready as a fresh monitor transaction.  Leave logging on until\n                // after the final bsave sentinel is emitted.\n                captureTail = scriptLines.Skip(lastRun + 1)\n                    .Where(line => !line.Trim().Equals("log off", StringComparison.OrdinalIgnoreCase))\n                    .Concat(new[] { "log off" }).ToArray();\n                if (File.Exists(captureComplete))\n                    throw new AutomationException("E_CAPTURE_NOT_FRESH", "capture completion file already exists");\n            }\n            var cmd = command.EndsWith(\'\\n\') ? command : command + "\\n";'
     assert text.count(old)==1;text=text.replace(old,new)
     old='            return Drain();\n        }\n\n        public byte[] ReadBytes'
-    new='            var reply = Drain();\n            if (captureComplete is not null)\n            {\n                var deadline = Stopwatch.StartNew();\n                while (!File.Exists(captureComplete) || new FileInfo(captureComplete).Length != 1000)\n                {\n                    if (deadline.Elapsed > TimeSpan.FromSeconds(30))\n                        throw new AutomationException("E_CAPTURE_COMPLETION_TIMEOUT", "atomic final colors capture did not finish in30seconds");\n                    reply += Drain();\n                }\n                reply += Drain();\n            }\n            return reply;\n        }\n\n        public byte[] ReadBytes'
+    new='            var reply = Drain();\n            if (captureComplete is not null)\n            {\n                var deadline = Stopwatch.StartNew();\n                var tailSent = false;\n                while (!File.Exists(captureComplete) || new FileInfo(captureComplete).Length != 1000)\n                {\n                    if (!tailSent && deadline.Elapsed > TimeSpan.FromMilliseconds(500) &&\n                        captureLog is not null && File.Exists(captureLog))\n                    {\n                        var stopped = false;\n                        try\n                        {\n                            stopped = File.ReadAllText(captureLog).Contains("Stop on",\n                                StringComparison.OrdinalIgnoreCase);\n                        }\n                        catch (IOException)\n                        {\n                            // VICE is still appending the trace; retry below.\n                        }\n                        if (stopped)\n                        {\n                            var tail = string.Join("\\n", captureTail) + "\\n";\n                            var tailBytes = Encoding.ASCII.GetBytes(tail);\n                            _stream.Write(tailBytes, 0, tailBytes.Length);\n                            _stream.Flush();\n                            tailSent = true;\n                            Thread.Sleep(100);\n                        }\n                    }\n                    if (deadline.Elapsed > TimeSpan.FromSeconds(120))\n                        throw new AutomationException("E_CAPTURE_COMPLETION_TIMEOUT",\n                            "atomic final colors capture did not finish in 120 seconds; post-stop tail sent=" + tailSent);\n                    reply += Drain();\n                    Thread.Sleep(20);\n                }\n                reply += Drain();\n            }\n            return reply;\n        }\n\n        public byte[] ReadBytes'
     assert text.count(old)==1;patched=text.replace(old,new)
     # Two owned emulators can launch within the same second. Their monitor
     # ports alone do not isolate the runner's REU backing file and dump paths.
@@ -382,7 +415,7 @@ def synchronous_project(out):
     project=project.replace(oldref,'<Reference Include="ViceTasks.Ultimate"><HintPath>ViceTasks.Ultimate.dll</HintPath></Reference>')
     (target/'SynchronousVice.csproj').write_text(project)
     ultimate=PROJECT.parent.parent/'ViceTasks.Ultimate/bin/Debug/net8.0/ViceTasks.Ultimate.dll';shutil.copy2(ultimate,target/ultimate.name)
-    (target/'provenance.json').write_text(json.dumps(dict(original_program=str(original),original_sha256=hashlib.sha256(original.read_bytes()).hexdigest(),private_program_sha256=hashlib.sha256(patched.encode()).hexdigest(),change='Wait bounded30s for final1000Bcolors capture; append GUID to each runtime log/REU backing directory to isolate simultaneous owned emulators. Product/PC/source untouched.',referenced_ultimate_sha256=hashlib.sha256(ultimate.read_bytes()).hexdigest()),indent=2)+'\n')
+    (target/'provenance.json').write_text(json.dumps(dict(original_program=str(original),original_sha256=hashlib.sha256(original.read_bytes()).hexdigest(),private_program_sha256=hashlib.sha256(patched.encode()).hexdigest(),change='Serialize owned stopwatch VICE runs; wait bounded120s for final1000B colors capture; if playback stops at the measured breakpoint, issue the post-stop capture tail as a fresh monitor transaction with log-off after the sentinel; append GUID to runtime directories. Product/PC/source untouched.',referenced_ultimate_sha256=hashlib.sha256(ultimate.read_bytes()).hexdigest()),indent=2)+'\n')
     return target/'SynchronousVice.csproj'
 
 
