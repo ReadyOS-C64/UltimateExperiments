@@ -253,8 +253,6 @@ advance_row:
     lda G+GG_ROW
     cmp #9
     jcc next_row
-    lda #2
-    sta G+GG_VALID
     lda #0
     clc
     rts

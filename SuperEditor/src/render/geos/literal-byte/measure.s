@@ -9,8 +9,6 @@ HEADER_OK=GEOS_ROW_FRAME+GR_PRIVATE+38
 .export se_geos_measure,gg_pointer,gg_save_pointer,gg_format
 .segment "CODE"
 se_geos_measure:
-    lda #0
-    sta G+GG_VALID
     lda G+GG_STYLE
     cmp #4
     jcs argument
@@ -108,12 +106,6 @@ se_geos_measure:
     inc G+GG_ADVANCE
     inc G+GG_ADVANCE
 @metrics:
-    lda #6
-    sta G+GG_BASELINE
-    lda #9
-    sta G+GG_HEIGHT
-    lda #1
-    sta G+GG_VALID
     lda #0
     clc
     rts
@@ -122,8 +114,6 @@ argument:
     sec
     rts
 gg_format:
-    lda #0
-    sta G+GG_VALID
     lda #GG_FORMAT
     sec
     rts
