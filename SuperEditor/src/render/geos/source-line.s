@@ -53,7 +53,7 @@ se_geos_source_line:
     jeq certificate
 .endif
     cmp #GS_BEGIN
-    jeq begin
+    beq begin
     cmp #GS_STEP
     jeq step
     cmp #GS_CANCEL
@@ -68,13 +68,13 @@ bands:
     jmp argument ;editor mixed-height geometry is scheduled by C21
 .else
     cmp #GS_BANDS_BEGIN
-    jcc argument
+    bcc argument
     cmp #GS_BANDS_HIT+1
-    jcs argument
+    bcs argument
     tax
     lda GS_ACTIVE
     ora GS_CONTEXT_VALID
-    jne busy
+    bne busy
     cpx #GS_BANDS_BEGIN
     beq :+
     cpx #GS_BANDS_STEP
@@ -192,7 +192,11 @@ step:
     lda GSEM_FRAME+GSEM_INLINE
     beq @feed_line
     jsr window_try
-    jcs inline_request
+    bcc :+
+    cmp #2
+    bne fail
+    jmp inline_request
+:
     jsr style_remember
     jmp @feed_line
 @feed_line:
@@ -262,9 +266,9 @@ fail:
 certificate:
     lda GS_ACTIVE
     ora GS_CONTEXT_VALID
-    jne busy
+    bne busy
     jsr style_certificate
-    jcc zero
+    bcc zero
     lda #GI_ID
     sta $9135
     lda #GI_BEGIN

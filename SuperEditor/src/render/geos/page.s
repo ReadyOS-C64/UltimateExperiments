@@ -1,12 +1,9 @@
+.import se_bc_ring
 .setcpu "6502"
 .macpack longbranch
 .include "editor-api.inc"
 .include "render/presentation.inc"
 .include "cache/api.inc"
-BCQ_EDITOR_ACTIVE=1
-BCQ_PAGE_REUSE=1
-BCQ_PROOF_CAPTURE=1
-.include "cache/query/proof-api.inc"
 .import se_crc_init,se_crc_byte,se_crc_value
 .include "render/geos/plain-context.inc"
 .global se_render_caps,se_ef_visible
@@ -97,8 +94,6 @@ entry:
     jeq cached_row
     cmp #13
     jeq gsc_seed_done
-    cmp #14
-    jeq cached_classified
     cmp #6
     jeq classified
     cmp #7
@@ -117,19 +112,8 @@ begin:
     sta se_i_ready
     sta se_i_count
     sta se_n_cache_count
-    ; A new incarnation gets one optional initial baseline. Repaints and edits
-    ; never repeatedly pay a whole-document rebuild after refusal/cancellation.
-    lda se_render_caps
-    beq @schedule
-    lda se_bc_flags
-    and #(BC_ARMED|BC_LOST|BC_REBUILD_TRIED|BC_ACTIVE|BC_MUTATING)
-    cmp #BC_LOST
-    bne @schedule
-    ora #BC_REBUILD_TRIED ;A retains the eligible masked value BC_LOST
+    lda #0
     sta se_bc_flags
-    ldx #9
-    bne @call
-@schedule:
     ldx #10
 @call:
     lda #7
@@ -139,9 +123,7 @@ resume_after_admission:
     sta GSC_ALLOW_EDIT
     lda #0
     sta GSC_CAPTURED
-    lda se_bc_flags
-    and #($FF-BCQ_PAGE_PROOF)
-    sta se_bc_flags
+
     lda #0
     sta GSEM_FRAME+GSEM_CP_VALID
     sta $8B40 ;fresh caller-owned painter state may contain native power-on RAM
@@ -319,30 +301,6 @@ next_line:
     jmp prepare_line
 @classify:
     COPY24 ANCHOR,GSEM_FRAME+GSEM_QUERY
-    ; An actual C24 checkpoint also latches an inapplicable-cache fallback for
-    ; this viewport. Do not retry the same immutable baseline on every row.
-    lda GSEM_FRAME+GSEM_CP_VALID
-    bne legacy_classify
-    lda se_bc_flags
-    and #(BC_ARMED|BC_LOST|BC_MUTATING|BC_ACTIVE)
-    cmp #BC_ARMED
-    bne legacy_classify
-    lda se_bc_count
-    bne legacy_classify
-    lda #0
-    sta GSEM_FRAME+GSEM_CP_VALID
-    lda #14
-    sta PS
-    lda se_bc_flags
-    and #BC_PAGE_PROOF
-    beq @cold_query
-    lda #37
-    bne @query
-@cold_query:
-    lda #35
-@query:
-    ldx #0
-    jmp request
 legacy_classify:
     lda GSEM_FRAME+GSEM_CP_VALID
     bne gsc_classify_direct
@@ -364,36 +322,10 @@ gsc_seed_done:
     lda #GSEM_ID
     ldx #3
     jmp request
-cached_classified:
-    lda GSEM_FRAME+GSEM_ERROR
-    bne gsc_classify_direct
-    jsr bcq_capture_page
-    bcs classification_ready
-    lda se_bc_flags
-    and #BCQ_PAGE_PROOF
-    beq classification_ready
-    ldx #2
-@next:
-    lda BQ_NEXT,x
-    sta GSC_INCOMING,x
-    dex
-    bpl @next
-    ldx #5
-@carry:
-    lda BQ_CR+34,x
-    sta GSC_INCOMING+3,x
-    dex
-    bpl @carry
-    lda #2
-    sta GSC_CAPTURED
-    jsr gsc_publish
-    jmp classification_ready ;no fakeC24parser checkpoint
 gsc_classify_direct:
     lda #0
     sta GSC_CAPTURED
-    lda se_bc_flags
-    and #($FF-BCQ_PAGE_PROOF)
-    sta se_bc_flags
+
     lda #6
     sta PS
     lda #GSEM_ID
@@ -1042,9 +974,7 @@ paint_start:
     clc
     rts
 @visible:
-    lda se_bc_flags
-    and #($FF-BCQ_PAGE_PROOF)
-    sta se_bc_flags ;C22 aliases the85B queryproof
+ ;C22 aliases the85B queryproof
     lda #0
     sta GSEM_FRAME+GSEM_CP_VALID
     sta $8B40
@@ -1213,5 +1143,3 @@ gsc_publish:
 
 
 .include "render/geos/checkpoint/consumer.inc"
-
-.include "cache/query/proof.inc"

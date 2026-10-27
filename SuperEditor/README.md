@@ -105,6 +105,13 @@ checkpoint.
 make
 ```
 
+`make runtime-disk` builds `build/supereditor-runtime.d81` with the editor,
+its registered runtime overlays and GEOS font pack. It omits probe programs,
+test overlays and malformed fixtures. `make disk` retains the diagnostic
+`build/supereditor.d81` used by existing development tests. Both disks contain
+the same editor code and fonts; this packaging split does not change startup
+loading or screen-refresh performance. The runtime disk needs no probe outputs.
+
 Mount `build/supereditor.d81` in VICE drive8 as1581, then:
 
 ```basic

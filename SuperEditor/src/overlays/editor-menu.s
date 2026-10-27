@@ -22,10 +22,6 @@ entry:
     lda se_overlay_frame
     cmp #10
     jeq brg_schedule
-    cmp #11
-    jeq brg_source_proof
-    cmp #9 ;internal optional cache admission; no new user-facing menu command
-    jeq cache_admission
     cmp #U_DRAW
     jeq se_ui_draw
     lda #0
@@ -105,20 +101,6 @@ entry:
 @item:
     sty se_e_item
     jmp choose
-cache_admission:
-    jsr se_bc_admit
-    cmp #BC_MISS
-    bne :+
-    ; Optional storage failure resumes the ordinary C21/parser route.
-    lda #0
-    sta se_f_owner
-    sta $9136
-    lda #21
-    sta $9135
-    lda #1
-:
-    clc
-    rts
 menu:
     lda se_e_ui
     cmp #1
@@ -628,6 +610,29 @@ preview_mutations:
  .byte E_INSERT,E_BACK,E_DELETE,E_UNDO,E_REDO,E_CUT,E_PASTE,E_CLEARUNDO
 preview_mutations_end:
 
-.include "cache/editor/admit.inc"
 
-.include "cache/edit-rebase-integration/menu.inc"
+
+
+.include "render/geos/source-line.inc"
+.include "render/geos/fold-query.inc"
+.include "render/geos/semantic.inc"
+brg_schedule:
+ lda se_f_owner
+ cmp #4
+ bne @busy
+ lda #0
+ sta GS_ACTIVE
+ sta GS_CONTEXT_VALID
+ sta GFQ_ACTIVE
+ sta GSEM_FRAME+GSEM_ACTIVE
+ lda #50
+ sta $9134
+ lda #21
+ sta $9135
+ lda #1
+ sta $9136
+ clc
+ rts
+@busy:lda #$B2
+ sec
+ rts

@@ -34,8 +34,16 @@ window_try:
     bcc window_copy
     beq window_copy
 @miss:
-    sec
-    rts
+ lda #4
+ sta se_overlay_frame
+ lda #33
+ ldx #0
+ jsr se_overlay_call
+ bcs @failed
+ lda #0
+ sta SW_OFFSET
+ jmp window_copy
+@failed:rts
 window_copy:
     ldy SW_OFFSET
     ldx #0

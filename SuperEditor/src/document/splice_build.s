@@ -129,7 +129,6 @@ se_doc_splice_step:
     jsr se_object_resize
     jcs @abort
 .ifdef ENGINE_CODE
-    jsr bc_splice_prepare
 .endif
     ldx #0
 @publish:
@@ -146,7 +145,6 @@ se_doc_splice_step:
 :
     jsr se_doc_invalidate
 .ifdef ENGINE_CODE
-    jsr bc_commit
 .endif
     lda #0
     sta se_doc_busy
@@ -233,5 +231,4 @@ emit_insert:
 .include "render/api.inc"
 .include "hot/api.inc"
 .include "history/api.inc"
-.include "cache/observer/splice.inc"
 .endif

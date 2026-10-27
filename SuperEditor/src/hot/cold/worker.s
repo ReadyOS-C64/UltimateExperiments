@@ -67,4 +67,3 @@ context:
 .include "hot/cold/load.s"
 .include "hot/cold/prepare.s"
 .include "render/api.inc"
-.include "cache/observer/flush.inc"

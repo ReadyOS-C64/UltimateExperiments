@@ -9,7 +9,6 @@
 .global se_render_caps,se_ef_visible
 .global se_gc_width
 .include "seed-witness.inc"
-.include "nav-witness.inc"
 .include "cache/api.inc"
 .include "render/geos/editor.inc"
 .include "render/geos/source-line.inc"
@@ -113,8 +112,6 @@ entry:
  jeq semantic_ready
  cmp #6
  jeq cache_page_step
- cmp #9
- jeq nav_query_ready
  cmp #10
  jeq metric_ready
  cmp #8
@@ -303,10 +300,6 @@ local_seed_miss:
 ; The normal loader still authenticates the complete actual image on entry.
 local_seed_cap:
  ldy #0
- beq cap_common
-nav_selector_cap:
- ldy #5
-cap_common:
  ldx #0
 @next:
  lda se_overlay_ids,x
@@ -546,30 +539,10 @@ line_begin:
  jmp metric_ready
 @query:
  NAV_COPY24 GN_SCAN,GSEM_FRAME+GSEM_QUERY
- lda GN_COMMAND
- cmp #47
- bne nav_legacy
- lda GN_FLAGS
- and #2
- bne nav_legacy
- jsr nav_selector_cap
- bcc :+
- rts
-:
- lda #9
- sta GN_STATE
- lda #26
- ldx #6
- jmp request
-nav_legacy:
  lda #5
  sta GN_STATE
  lda #GSEM_ID
  ldx #GSEM_BEGIN
- jmp request
-nav_query_ready:
- lda #26
- ldx #7
  jmp request
 semantic_ready:
  lda GSEM_FRAME+GSEM_ACTIVE
@@ -1192,4 +1165,4 @@ argument:
  sec
  rts
 
-cap_table:.byte 24,<SEED_SIZE,>SEED_SIZE,<SEED_CRC,>SEED_CRC,26,<NAV_SIZE,>NAV_SIZE,<NAV_CRC,>NAV_CRC
+cap_table:.byte 24,<SEED_SIZE,>SEED_SIZE,<SEED_CRC,>SEED_CRC

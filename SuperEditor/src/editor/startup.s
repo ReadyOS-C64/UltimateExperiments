@@ -200,20 +200,8 @@ file45: .byte $43,$4C,$45,$58 ;CLEX
 file47=file15 ;GRID shares the existing GRIDEDIT prefix
 file46=file43+1 ;TYPE shares the suffix of GTYPE, saving cold filename bytes
 .include "editor/catalog.inc"
-file49=file36+4 ;FOLD: R33 baseline transport
-file50=file29+4 ;SEMA: C34 automatic baseline producer
-file51=file31+4 ;INLN: C35 retained query
-file52=file25+4 ;PAGE: C37 forward page query
-file53=file24+4 ;LINE: C39 retained inline SOURCE consumer
-file54=file15+4 ;EDIT: C45 lexical admission
-file55=file37+4 ;TAIL: R36 checked lexical resolver
-file56=file14   ;LEX: R37 page/roles
-file57=file14+3 ;ICAL: C47 producer
-file58=file39+4 ;CTRL: C49 COW linker
+file49=file36+4 ;FOLD: R33 current-BODY presentation plan
 file59=file26+4 ;ROW: R29 Plain CR geometry, shared GEOSROW suffix
-file60=file18+4 ;PARSE: C41 current-schema rebase
-file61=file23+4 ;XFORM: R34 checked COW transport
-; PARSE/XFORM registered above; FINISH/PAINT remain unregistered.
 file48: .byte $48,$4F,$54,$43,$4F,$4C,$44 ;HOTCOLD (raw DOS bytes, not text charmap)
 file38: .byte $47,$45,$4F,$53,$43,$41,$52,$45,$54
 file36: .byte $47,$45,$4F,$53,$46,$4F,$4C,$44

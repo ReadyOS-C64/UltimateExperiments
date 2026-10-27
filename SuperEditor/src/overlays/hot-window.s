@@ -109,7 +109,6 @@ caret:
     sta se_hot_tmp+2
     ADD24 se_hot_base,se_hot_tmp,se_hot_caret
 .ifdef EDITOR_BINDINGS
-    jsr bc_commit
 .endif
     jmp okay
 remember:
@@ -122,7 +121,6 @@ remember:
 mark:
     sta se_hot_delete
 .ifdef EDITOR_BINDINGS
-    jsr bc_hot_prepare
 .endif
 .ifdef EDITOR_BINDINGS
     jsr se_gec_capture
@@ -315,7 +313,6 @@ right:
 .endif
 commit:
 .ifdef EDITOR_BINDINGS
-    jsr bc_flush_commit
     jsr render_commit
 .endif
     lda se_doc_generation
@@ -491,9 +488,7 @@ change_quota:
 .endif
 
 .ifdef EDITOR_BINDINGS
-.include "cache/observer/hot.inc"
 .endif
 
 .ifdef EDITOR_BINDINGS
-.include "cache/observer/flush_commit.inc"
 .endif

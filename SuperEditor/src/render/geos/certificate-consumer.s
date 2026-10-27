@@ -13,12 +13,12 @@ style_certificate:
     ora GS_CONTEXT_VALID
     jne @miss
     jsr style_check
-    jcs @miss
+    bcs @miss
     ldx #2
 @start:
     lda GP_RECORD+GPR_START,x
     cmp SC_START,x
-    jne @miss
+    bne @miss
     dex
     bpl @start
     sec
@@ -27,17 +27,17 @@ style_certificate:
     sbc SC_START+I
     sta SC_TEMP+I
 .endrepeat
-    jcc @miss
+    bcc @miss
     lda SC_TEMP+1
     ora SC_TEMP+2
-    jne @miss
+    bne @miss
     lda SC_TEMP
     clc
     adc GP_RECORD+GPR_COUNT
-    jcs @miss
+    bcs @miss
     cmp SC_COUNT
     bcc @ready
-    jne @miss
+    bne @miss
 @ready:
     ldy SC_TEMP
     ldx #0

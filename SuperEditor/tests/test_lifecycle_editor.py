@@ -24,7 +24,10 @@ def build(out,base):
  for name in ('adapter.s','adapter.inc','resume.s','resume.inc','copy-entry.s','copy-entry.inc','preflight.s','preflight.inc'):shutil.copy2(ROOT/'src/lifecycle'/name,out/'source/lifecycle'/name)
  obj={}
  for name in ('adapter','resume','copy-entry','preflight'):
-  obj[name]=out/(name+'.o');command('ca65','-g','-I',out,'-I',out/'source','-I','src',*(['-D','LC_PREFLIGHT_IN_C29=1'] if name=='preflight' else []),'-o',obj[name],out/'source/lifecycle'/(name+'.s'))
+  defines=[]
+  if name=='preflight':defines+=['-D','LC_PREFLIGHT_IN_C29=1']
+  if name in ('resume','copy-entry'):defines+=['-D','EDITOR_MANAGED_CODE=1']
+  obj[name]=out/(name+'.o');command('ca65','-g','-I',out,'-I',out/'source','-I','src',*defines,'-o',obj[name],out/'source/lifecycle'/(name+'.s'))
  images={}
  for tag,slot,ident,names in [('lifecopy',0,26,['copy-entry']),('lifectrl',1,29,['adapter','preflight','resume'])]:
   oo=[obj[n] for n in names];command(sys.executable,'tools/module_bindings.py','--report',base/'build/editor-report.json','--output',out/(tag+'-aliases.s'),*oo)

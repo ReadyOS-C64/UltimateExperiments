@@ -57,8 +57,8 @@ display-test: disk
 keyboard-test: disk
 	$(PYTHON) tests/test_keyboard.py
 
-build/supereditor.d81: cache-package-force tools/package.py tools/overlays.py build/supereditor.prg build/display-probe.prg build/memory-probe.prg
-	$(CACHE_JOB_GUARD) --package --c1541 "$(C1541)"
+build/supereditor.d81: package-force tools/package.py tools/overlays.py build/supereditor.prg build/display-probe.prg build/memory-probe.prg
+	$(PACKAGE_GUARD) --package --c1541 "$(C1541)"
 
 disk: build/supereditor.d81
 
@@ -951,7 +951,7 @@ build/geos-prod/literal-byte/%.o: src/render/geos/literal-byte/%.s $(wildcard sr
 	$(CA65) -g -I src -o $@ -l $(@:.o=.lst) $<
 GEOS_PAGE_OBJ = build/geos-prod/page.o build/geos-prod/cache.o
 GEOS_PAINT_OBJ = build/geos-prod/page-paint-entry.o build/geos-prod/page-paint.o build/geos-prod/native-pan.o build/geos-prod/cache-paint.o
-GEOS_NAV_OBJ = build/geos-prod/navigation.o build/geos-prod/cache-paint.o
+GEOS_NAV_OBJ = build/geos-prod/navigation.o build/geos-prod/cache-nav.o
 GEOS_DELTA_OBJ = build/geos-prod/edit-cache.o build/geos-prod/cache-warm.o
 GEOS_CARET_OBJ = build/geos-prod/caret-cache.o build/geos-prod/cache-warm.o build/geos-prod/caret-ui.o build/geos-prod/chrome.o build/geos-prod/header.o
 build/geos-prod/block-parser.o: src/supermark/block.s src/supermark/api.inc
@@ -966,9 +966,12 @@ build/geos-prod/inline-parser.o: src/supermark/inline.s src/supermark/api.inc
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -o $@ $<
 GEOS_INLINE_OBJ = build/geos-prod/inline.o build/geos-prod/inline-parser.o
-build/geos-prod/inline.o: src/render/geos/inline.s src/render/geos/source-cache-api.inc src/render/geos/source-cache-gate.inc src/render/geos/navigation-cache.inc src/cache/query/proof.inc src/cache/query/proof-api.inc build/geos-prod/editor-api.inc
+build/geos-prod/inline.o: src/render/geos/inline.s src/render/geos/body-plan/api.inc build/geos-prod/editor-api.inc
 	mkdir -p $(dir $@)
-	$(CA65) -g -D SE_EDITOR_CACHED_INLINE_SOURCE=1 -D SE_EDITOR_INLINE_NAVIGATION=1 -D SE_EDITOR_NAV_TARGETED=1 -D BCQ_EDITOR_ACTIVE=1 -D BCQ_PAGE_REUSE=1 -I build/geos-prod -I src -o $@ -l $(@:.o=.lst) $<
+	$(CA65) -g -I build/geos-prod -I src -o $@ -l $(@:.o=.lst) $<
+build/geos-prod/cache-nav.o: src/render/geos/cache.s build/geos-prod/editor-api.inc
+	mkdir -p $(dir $@)
+	$(CA65) -g -D SE_GP_CACHE_WARM_ONLY=1 -D SE_GP_CACHE_READ_ONLY=1 -I build/geos-prod -I src -o $@ -l $(@:.o=.lst) $<
 define GEOS_IMAGE
 build/geos-prod/$(1)-bindings.s: $(2) build/editor.prg tools/module_bindings.py
 	$$(PYTHON) tools/module_bindings.py --report build/editor-report.json --output $$@ $(2)
@@ -1190,11 +1193,7 @@ build/geos-prod/checkpoint-witness.stamp: build/overlays/geossema.bin tools/chec
 	$(PYTHON) tools/checkpoint_witness.py $< build/geos-prod
 	touch $@
 build/geos-prod/page.o build/geos-prod/navigation.o: build/geos-prod/checkpoint-witness.stamp
-build/geos-prod/navigation-witness.stamp: build/overlays/geosinln.bin tools/checkpoint_witness.py
-	$(PYTHON) tools/checkpoint_witness.py $< build/geos-prod --profile navigation
-	touch $@
-build/geos-prod/navigation.o: build/geos-prod/navigation-witness.stamp src/cache/api.inc
-build/geos-prod/inline.o: src/cache/query/api.inc src/cache/arena/api.inc src/render/geos/navigation.inc
+build/geos-prod/inline.o: src/render/geos/body-plan/api.inc
 build/geos-prod/navigation.o: src/render/geos/navigation.inc
 build/geos-prod/page.o: src/render/geos/checkpoint/publish.inc src/render/geos/checkpoint/consumer.inc src/render/geos/checkpoint/codec.inc
 build/geos-prod/semantic.o: src/render/geos/checkpoint/seed.inc src/render/geos/checkpoint/codec.inc
@@ -1208,6 +1207,7 @@ build/geos-prod/checkpoint-outgoing.o: src/render/geos/checkpoint/outgoing.s src
 	mkdir -p $(dir $@)
 	$(CA65) -g -I build/geos-prod -I src -o $@ $<
 build/geos-prod/source-line.o: src/render/geos/source-certificate.inc src/render/geos/source-certificate.s src/render/geos/certificate-consumer.s src/render/geos/style-window.s
+build/geos-prod/source-line.o: src/render/geos/body-plan/api.inc
 
 # Runtime parsing capabilities are independent of the SES64 font ABI.
 build/overlays/menu40.o: build/editor-settings/presentation-defaults.inc src/render/presentation.inc
@@ -1233,56 +1233,32 @@ EDITOR_ASSETS += build/overlays/hotcold.seo
 editor build/supereditor.d81: build/overlays/hotcold.seo
 
 build/overlays/window.o build/overlays/hot-window.o build/hot-cold/worker.o: src/hot/validate.s src/hot/cold/load.s src/hot/cold/prepare.s
-# Retained-cache producer bodies are consumers of the same sealed editor ABI.
-build/overlays/window.o: src/cache/api.inc src/cache/observer/ring.inc src/cache/observer/hot.inc src/cache/observer/flush_commit.inc
-build/engine-code/splice_build.o: src/cache/api.inc src/cache/observer/ring.inc src/cache/observer/splice.inc src/render/api.inc src/hot/api.inc src/history/api.inc
-build/overlays/eedit.o: src/cache/api.inc
+# One checked current-BODY presentation plan replaces the retired baseline,
+# inline-query, lexical and rebase capsule families. It retains no new resident
+# state and uses the existing R33 identity.
+BODY_PLAN_OBJ=build/geos-prod/body-plan-entry.o
+build/geos-prod/body-plan-entry.o: src/render/geos/body-plan/entry.s src/render/geos/body-plan/api.inc build/geos-prod/editor-api.inc src/render/geos/semantic.inc src/render/geos/source-line.inc src/render/geos/line.inc src/render/geos/source-certificate.inc src/render/geos/inline.inc src/object/api.inc src/document/math24.inc
+	mkdir -p $(dir $@)
+	$(CA65) -g -I build/geos-prod -I src -o $@ -l $(@:.o=.lst) $<
+$(eval $(call GEOS_IMAGE,fold,$(BODY_PLAN_OBJ),cfg/overlay-r.cfg,0,33))
+EDITOR_ASSETS += build/overlays/fold.seo
+editor build/supereditor.d81: build/overlays/fold.seo
 
-build/hot-cold/worker.o: src/cache/api.inc src/cache/observer/ring.inc src/cache/observer/flush.inc
-
-# Checked REU baseline transport and retained C-slot jobs. Their builder uses
-# the actual resident aliases and refuses any capsule over its4KiB slot.
-CACHE_JOB_INPUTS=$(wildcard src/cache/editor/* src/cache/arena/* src/cache/query/* src/cache/semantic/* src/cache/inline/*.s src/cache/inline/*.inc) src/supermark/block.s src/supermark/inline.s src/supermark/api.inc tools/module_bindings.py tools/bindings.py tools/overlays.py
-.PHONY: cache-jobs-force cache-package-force
-cache-jobs-force:
-cache-package-force:
-CACHE_JOB_GUARD = $(PYTHON) tools/cache_job_build.py --project "$(CURDIR)" --base "$(CURDIR)" --out build/cache-editor --lexical-out build/lexical --publish build/overlays
-build/cache-editor/jobs.stamp: cache-jobs-force build/editor.prg build/editor.lbl build/editor-report.json $(CACHE_JOB_INPUTS) $(wildcard src/cache/lexical/*) src/supermark/lexer.s tools/cache_job_build.py
-	$(CACHE_JOB_GUARD)
-build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo build/overlays/line.seo: build/cache-editor/jobs.stamp
-	cmp -s build/cache-editor/$(@F) $@ || cp build/cache-editor/$(@F) $@
-EDITOR_ASSETS += build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo build/overlays/line.seo
-editor build/supereditor.d81: build/overlays/fold.seo build/overlays/sema.seo build/overlays/inln.seo build/overlays/page.seo build/overlays/line.seo
 build/editor/commands.o build/geos-resident/dispatch.o: src/cache/api.inc
-build/overlays/menu40.o: src/cache/editor/admit.inc src/cache/api.inc
+build/overlays/menu40.o: src/render/geos/source-line.inc src/render/geos/fold-query.inc src/render/geos/semantic.inc
 build/geos-prod/page.o: src/cache/api.inc
-
-# Viewport proof capture and explicit cached outgoing carry share no parser CP.
-build/geos-prod/page.o: src/cache/query/api.inc src/cache/query/proof-api.inc src/cache/query/proof.inc
 build/geos-prod/checkpoint-outgoing.o: src/render/geos/checkpoint/cache-outgoing.inc src/cache/query/proof-api.inc src/cache/api.inc
-
-# Registered lexical capsules share the checked cache-job transaction.
-LEXICAL_ASSETS=$(addprefix build/overlays/,$(addsuffix .seo,edit tail lex ical ctrl))
-build/lexical/jobs.stamp: build/cache-editor/jobs.stamp build/editor.prg build/editor.lbl build/editor-report.json $(wildcard src/cache/lexical/*) $(wildcard src/cache/arena/*) src/supermark/lexer.s tools/module_bindings.py tools/bindings.py tools/overlays.py
-	@test -f $@
-$(LEXICAL_ASSETS): build/lexical/jobs.stamp
-	cmp -s build/lexical/$(@F) $@ || cp build/lexical/$(@F) $@
-EDITOR_ASSETS += $(LEXICAL_ASSETS)
-editor build/supereditor.d81: $(LEXICAL_ASSETS)
-build/cache-editor/jobs.stamp: src/cache/query/open-compact.s
-
-# Current-schema rebase capsules, separate from the original cache families.
-.PHONY: cache-rebase-force
-cache-rebase-force:
-REBASE_ASSETS=build/overlays/parse.seo build/overlays/xform.seo
-build/cache-rebase/jobs.stamp: cache-rebase-force build/editor.prg build/editor.lbl build/editor-report.json $(wildcard src/cache/edit-rebase-integration/*) $(wildcard src/cache/arena/*) src/supermark/block.s tools/module_bindings.py tools/bindings.py tools/overlays.py
-	$(PYTHON) src/cache/edit-rebase-integration/build.py --out build/cache-rebase --base .
-$(REBASE_ASSETS): build/cache-rebase/jobs.stamp
-	cmp -s build/cache-rebase/$(@F) $@ || cp build/cache-rebase/$(@F) $@
-EDITOR_ASSETS += $(REBASE_ASSETS)
-editor build/supereditor.d81: $(REBASE_ASSETS)
-build/overlays/menu40.o: src/cache/edit-rebase-integration/menu.inc src/cache/edit-rebase-integration/api.inc
 build/editor/startup.o: src/editor/catalog.inc
+
+.PHONY: package-force
+package-force:
+PACKAGE_GUARD = $(PYTHON) tools/cache_job_build.py --project "$(CURDIR)"
+
+# The runtime medium contains only the editor, its real images and fontpack.
+# Depend on editor (including its additional per-mode targets), never probes.
+.PHONY: runtime-disk
+runtime-disk: editor build/geos-font-catalog/font-pack.bin
+	$(PACKAGE_GUARD) --package --runtime --c1541 "$(C1541)"
 
 # Complete logical-row C22/R21 paired ABI.
 build/geos-prod/row-job.o build/geos-prod/page-paint.o: src/render/geos/row-job.inc

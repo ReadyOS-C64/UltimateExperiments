@@ -10,6 +10,7 @@ import argparse, hashlib, json
 import test_cache_observer as observer
 import test_cache_hotpath_profile as hot
 import test_plain_geos as plain
+import cpu_editor
 
 ROOT = observer.ROOT
 
@@ -18,7 +19,7 @@ def run(base, out):
     out.mkdir(parents=True)
     (out / 'verifier.py').write_bytes(Path(__file__).read_bytes())
     identity = json.loads((base / 'freeze.json').read_text())
-    assert len(identity['names']) == 62
+    assert identity['names'] == cpu_editor.NAMES
     g = observer.Gate(out, base)
     f = g.f
     fonts = {n: (base / 'fonts' / n).read_bytes()

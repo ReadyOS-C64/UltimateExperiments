@@ -5,12 +5,8 @@
 .include "render/geos/semantic.inc"
 .include "render/geos/source-line.inc"
 .include "render/geos/inline.inc"
-.include "render/geos/source-cache-api.inc"
 .include "supermark/api.inc"
 .include "fold/source.inc"
-.ifdef SE_EDITOR_CACHED_INLINE_SOURCE
-.import se_bc_flags,se_bc_count
-.endif
 .import se_f_owner,se_fs_state,se_fs_owned,se_fs_end,se_fs_state_size
 .import se_fs_offset,se_fs_count,se_fs_buffer,se_fs_done,se_fs_length
 .import se_si_init,se_si_feed,se_si_finish,se_si_at_body,se_si_pos,se_si_ready
@@ -29,18 +25,8 @@ entry:
  cmp #4
  jne busy
  lda se_overlay_frame
-.ifdef SE_EDITOR_INLINE_NAVIGATION
- cmp #6
- jeq nav_select
- cmp #7
- jeq nav_query_ready
-.endif
  cmp #GI_BEGIN_WIDE
  jeq begin_wide
-.ifdef SE_EDITOR_CACHED_INLINE_SOURCE
- cmp #GI_SOURCE_FALLBACK ;explicit legacy retry, never redelegates
- jeq source_legacy
-.endif
  cmp #GI_SOURCE_BEGIN
  jeq source_begin
  cmp #GI_BEGIN
@@ -126,10 +112,6 @@ begin:
  ldx #0
  beq begin_common
 source_begin:
-.ifdef SE_EDITOR_CACHED_INLINE_SOURCE
-.include "render/geos/source-cache-gate.inc"
-source_legacy:
-.endif
  ldx #1
  bne begin_common
 begin_wide:
@@ -203,6 +185,23 @@ begin_common:
  jcc range
  CMP24 GI_LENGTH,GI_END
  jcc range
+ lda se_r_presentation
+ bne @direct
+ lda #0
+ jsr viewport_call
+ jcs fail
+ cmp #2
+ beq @direct
+ cmp #0
+ bne @collect
+ lda #2
+ sta GI_RESERVED
+ jmp publication
+@collect:
+ lda #1
+ sta GI_RESERVED
+ COPY24 VP_LIMIT,GI_VISIBLE_END
+@direct:
  jsr se_si_init
  COPY24 GI_BODY,se_si_pos
  SUB24 GI_BODY,GI_START,GI_TEMP
@@ -267,12 +266,15 @@ event:
  jne argument_fail
  COPY24 se_si_open,GI_HIDE_POS
  jsr hide_span
+ jcs fail
  COPY24 se_si_close,GI_HIDE_POS
  jsr hide_span
+ jcs fail
  jmp @interior
 @escape:
  COPY24 se_si_open,GI_HIDE_POS
  jsr hide_span
+ jcs fail
  jmp pending
 @interior:
  clc
@@ -298,6 +300,8 @@ event:
  CMP24 GI_TO,GI_FROM
  jcc pending
  jeq pending
+ lda GI_RESERVED
+ bne @style
  SUB24 GI_FROM,GI_QUERY,GI_TEMP
  lda GI_TEMP+1
  ora GI_TEMP+2
@@ -310,6 +314,7 @@ event:
  jne argument_fail
  lda GI_TEMP
  sta GI_STOP
+@style:
  lda se_si_style
  cmp #SM_INLINE_CODE
  beq @code
@@ -339,6 +344,15 @@ event:
  sta GI_PHASE
  jmp pending
 paint:
+ lda GI_RESERVED
+ beq @direct
+ lda #1
+ jsr viewport_call
+ jcs fail
+ lda #2
+ sta GI_PHASE
+ jmp pending
+@direct:
  ldx GI_PAINT
  cpx #160
  bne @ordinary
@@ -388,6 +402,21 @@ publication:
  sta GI_PHASE
  jmp pending
 publish:
+ lda GI_RESERVED
+ beq @direct
+ cmp #1
+ bne @reuse
+ lda #3
+ jsr viewport_call
+ jcs fail
+ lda #2
+ sta GI_RESERVED
+@reuse:
+ lda #5
+ jsr viewport_call
+ jcs fail
+ jmp complete
+@direct:
  ldx GI_PAINT
  cpx #160
  bne @ordinary
@@ -463,6 +492,12 @@ cancel:
 hide_span:
  lda se_si_width
  sta GI_HIDE_LEFT
+ lda GI_RESERVED
+ beq @direct
+ lda #2
+ jsr viewport_call
+ rts
+@direct:
 @byte:
  CMP24 GI_HIDE_POS,GI_QUERY
  bcc @next
@@ -495,6 +530,7 @@ hide_span:
 :
  dec GI_HIDE_LEFT
  jne @byte
+ clc
  rts
 hidden_bits:
  .byte $80,$40,$20,$10,$08,$04,$02,$01
@@ -626,6 +662,10 @@ argument:
 
 .include "render/geos/preview-handoff.inc"
 
-.ifdef SE_EDITOR_INLINE_NAVIGATION
-.include "render/geos/navigation-cache.inc"
-.endif
+
+.include "render/geos/body-plan/api.inc"
+viewport_call:
+ sta se_overlay_frame
+ lda #33
+ ldx #0
+ jmp se_overlay_call

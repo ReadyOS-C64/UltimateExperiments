@@ -39,6 +39,12 @@ space. Save replacement also needs space for the staged file while retaining
 the previous file until promotion. A nearly full disk can therefore refuse a
 save even when the final document itself would fit after replacement.
 
+`make runtime-disk` omits the development probes and malformed fixtures. The
+current 51-image build has53 files instead of76 and uses443 fewer file blocks
+(112,522 bytes of file capacity). Editor/font bytes, REU requirements and the
+fixed819,200-byte disk image size are unchanged. The diagnostic D81 remains
+available separately for the existing tests.
+
 The full font configuration does not support a 512 KiB REU. Historical native
 cold-boot/edit/save tests cover 1 MiB and 2 MiB REUs; they are workload-specific,
 not universal capacity promises for every history/clipboard/cache combination.

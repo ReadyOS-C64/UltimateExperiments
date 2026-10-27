@@ -155,8 +155,45 @@ def freeze(out,previous=None):
             src=ROOT/'assets/fonts/generated'/name
             shutil.copy2(src,frozen/'fonts'/name)
             identity['fonts'][name]=grid.sha(src)
+        raw_outputs={}
+        for path in (ROOT/'build').rglob('*.bin'):
+            if path.with_suffix('.lbl').exists() and path.with_suffix('.map').exists():
+                raw_outputs.setdefault(grid.sha(path),[]).append(path)
+        for name in identity['names']:
+            image=(frozen/f'build/overlays/{name}.seo').read_bytes()
+            candidates=raw_outputs.get(hashlib.sha256(image[36:]).hexdigest(),[])
+            assert candidates,(name,'no source-matched linked bin/lbl/map')
+            source=sorted(candidates,key=lambda p:(p.stem!=name,len(str(p)),str(p)))[0]
+            for suffix in ('.bin','.lbl','.map'):
+                linked=source.with_suffix(suffix)
+                standard=frozen/f'build/overlays/{name}{suffix}'
+                shutil.copy2(linked,standard)
+                # Some production capsules are linked in dedicated stage/worker
+                # directories and their native profilers consume those exact
+                # paths.  Preserve both the catalog-normalized copy and the
+                # source-matched linked path in the immutable fixture.
+                original=frozen/linked.relative_to(ROOT)
+                if original!=standard:
+                    original.parent.mkdir(parents=True,exist_ok=True)
+                    shutil.copy2(linked,original)
+            assert (frozen/f'build/overlays/{name}.bin').read_bytes()==image[36:]
+        # The code/style typing capsules deliberately have a staged entry and
+        # worker.  CPU instrumentation binds to those source-matched labels,
+        # so keep their production linked outputs rather than reconstructing
+        # paths from catalog aliases.
+        for stage_dir in ('code-typing','style-typing'):
+            source_dir=ROOT/'build/geos-prod'/stage_dir
+            target_dir=frozen/'build/geos-prod'/stage_dir
+            target_dir.mkdir(parents=True,exist_ok=True)
+            for linked in source_dir.iterdir():
+                if linked.suffix in ('.bin','.lbl','.map'):
+                    shutil.copy2(linked,target_dir/linked.name)
         for name in ('supereditor.d81','disk-manifest.json'):
             shutil.copy2(ROOT/'build'/name,frozen/'build'/name)
+        catalog=frozen/'build/geos-font-catalog'
+        catalog.mkdir(parents=True,exist_ok=True)
+        for name in ('font-pack.bin','catalog.json'):
+            shutil.copy2(ROOT/'build/geos-font-catalog'/name,catalog/name)
         identity['disk_sha256']=grid.sha(frozen/'build/supereditor.d81')
         # A CPU oracle can otherwise pass new SEO bytes with an old disk.
         # Refuse fresh product freezes until all packaged bytes are coherent.

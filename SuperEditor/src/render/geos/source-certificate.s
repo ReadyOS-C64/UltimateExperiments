@@ -12,7 +12,7 @@ style_remember:
     inx
     dey ;preserveborrow across low/mid/high
     bne @subtract
-    jcc @invalid
+    bcc @invalid
     lda SC_TEMP+1
     ora SC_TEMP+2
     bne @return

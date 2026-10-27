@@ -88,43 +88,6 @@ scan:
  jne scan
  jmp pending
 choose:
- ; Only real root job11 can own a child C continuation. Generic direct C25
- ; callers retain their exact strict BEGIN/STEP protocol.
- lda se_e_job
- cmp #11
- bne begin
- lda se_render_caps
- cmp #3
- bne begin
- ; Advisory only: actual gateway still authenticates the root/CR and source.
- lda se_bc_flags
- and #32
- beq begin
- lda se_bc_flags
- bpl @may_build
- lda F+GSEM_USED
- and #$10
- beq begin
-@may_build:
- sec
- lda F+GSEM_END
- sbc F+GSEM_BODY
- lda F+GSEM_END+1
- sbc F+GSEM_BODY+1
- tax
- lda F+GSEM_END+2
- sbc F+GSEM_BODY+2
- bne @long
- cpx #3
- bcc begin
-@long:
- lda #45
- sta $9135
- lda #0
- sta $9136
- lda #1
- clc
- rts
 begin:
  lda GLEX_SOURCE_ACTIVE
  ora GLEX_CONTEXT_VALID

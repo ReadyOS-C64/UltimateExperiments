@@ -1,4 +1,4 @@
-"""Actual62 stack CFG with the replacement R21 bounded row-job assembly.
+"""Current production stack CFG with the replacement R21 bounded row-job assembly.
 
 Only the old raster reassembly bridge changes. Every graph, unknown-edge
 refusal, staged-code proof and IRQ/NMI bound remains the released analyzer's.
@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / 'tests'), str(ROOT / 'tools')]
 import test_cache_rebase_registered_stack as registered
 import test_geos_strip_raster_candidate as raster
+import cpu_editor
 from overlays import wrap
 
 
@@ -88,7 +89,7 @@ def row_job_build(out, base, variant):
 
 def run(out, fixture, project):
     identity = json.loads((fixture / 'freeze.json').read_text())
-    assert len(identity['names']) == 62
+    assert identity['names'] == cpu_editor.NAMES
     old = raster.build
     raster.build = row_job_build
     try:

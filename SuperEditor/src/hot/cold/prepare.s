@@ -53,7 +53,6 @@ prepare:
     lda #2
     sta se_hot_phase
 .ifdef EDITOR_BINDINGS
-    jsr bc_flush_prepare
 .endif
     jmp pending
 packet:
