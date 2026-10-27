@@ -589,3 +589,36 @@ build/warm-shift-native-adapter/ready8 and canonical
 build/warm-shift-canonical-{protocol,guards,journal,stack}; source-matched working
 fixture build/warm-shift-canonical-working-v2/20261027T001110182649Z/fixture.
 The provisional overall latency targets and broad redraw gate remain open.
+
+## VIC scatter in groups of eight columns
+
+A second warm-typing change replaces40 pointer updates per raster line with
+five8-column groups. It retains all40 writes, nine raster lines, original tail
+zeroing, caret-free base, color rules, source certificates and publication order.
+The staged payload grows53 bytes to3824 (sealed3856); R30 remains3662 with its
+regenerated length/CRC witness. No state, allocation or overlay is added.
+
+Actual native PAL service measurements, committed1612523 control versus the
+coherent two-asset candidate, both with the corrected C41:
+
+| Case | Control cycles | Optimized cycles |
+| --- | ---: | ---: |
+| Plain steady INSERT |169627–169856|163818–163859|
+| Plain BACK |164597–164622|158693–158927|
+| Full strong steady INSERT |178297–181173|172983–175726|
+| Full strong BACK |173393–176320|167661–170640|
+| Plain first INSERT |710767|709393|
+| Full strong first INSERT |507786|506770|
+
+Steady keys improve3.0–3.6%; first insertion improves about0.2%. Caret code
+is unchanged; three measured caret intervals regress by1/6/4 cycles, retained
+as IRQ-phase variation. All48 actual captures agree with independent native
+pixels and24 paired activeRGB comparisons. Their eight distinct PNGs hash
+exactly to previously root-reviewed originals. Configured provider256 and tight
+whole16MiB guards, font/catalog/source/history/shim and actual stage capability
+checks remain. Source-rebuilt coherent D81 matches the canonical package byte
+for byte, not merely its logical files. Native evidence:
+`build/vic-stride-probe/native-ready3`; CPU differential/negative evidence:
+`build/vic-stride-probe/receipt.json`. General redraw and latency targets remain
+open. CPU instruction savings4.48–5.18% are deliberately separate from native
+cycle savings3.0–3.6%.

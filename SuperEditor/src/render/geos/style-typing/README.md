@@ -34,7 +34,7 @@ The public pixel primitive still applies its original strict validation.
 The transaction updates chars/styles/X boundaries, rebases later prefixes and
 publishes packet/header/caret/status only after admission. No resident state,
 BSS, zero page, bank or object is added. Current C6=3654, R30=3662,
-C32=3803/raw3771 after the warm-shift optimization. The Plain admission extension accounts for6/34 added bytes
+C32=3856/raw3824 after the VIC scatter optimization. The Plain admission extension accounts for6/34 added bytes
 in R30/C32; C6 is unchanged.
 The helper uses temporary8A00/8000/8400/8580/8640 scratch in owner4; see
 `two-color.inc`. All font inputs are immutable and authenticated in evidence.
@@ -102,3 +102,23 @@ regression retained in the report. This is a small measured improvement;
 whole-key latency and broad reflow remain open performance work. Native pairs
 use the earlier62 C41 in both variants; separate canonical CPU gates verify
 composition with7654's journal/applicability fix. See docs/PERFORMANCE.md.
+
+## VIC column groups
+
+The scatter loop now writes eight adjacent temporary columns with indirect
+indexed stores at Y0,8,...56, then advances the base64 bytes. Five groups still
+write all40 columns on each of nine raster lines. Indexed addressing handles
+low-byte carry inside each group. Pointer+320 and X40 match the earlier loop;
+Y56 is allowed by the primitive's clobbered-register contract and callers
+reinitialize Y. No tail clearing, caret-free base copy, masks, geometry or
+publication check changes.
+
+This costs53 stage bytes (raw3824, sealed3856,240 bytes before the stamp), with
+R30 still3662 and regenerated stage length/CRC. Primitive2154+17 cases per side,
+public56 paired operations,26 style/full-reference frames and18 authority faults
+pass. Native48 captures/24 exact active RGB pairs agree with independent pixels;
+all eight distinct PNGs exactly match previously root-reviewed originals.
+Steady Plain keys save3.4–3.6% PAL cycles, strong keys3.0–3.4%. First insertion
+saves only0.2%; unchanged caret code varies by up to6 cycles. Both native
+packages contain the current corrected C41; only TYPE/GTYPE differ. This is
+separate from the unpromoted general paint-convergence experiment.

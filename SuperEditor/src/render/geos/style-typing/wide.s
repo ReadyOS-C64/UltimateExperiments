@@ -287,19 +287,26 @@ set_mode:
     stx sy
     adc sy
     sta gt_bitmap+1
-    ldy #0
+    ; Five groups of eight VIC columns. Indirect indexed stores handle
+    ; low-byte carry within each group; advance the base once per group.
     ldx #0
 @copy:
-    lda GT_TEMP,x
-    sta (gt_bitmap),y
+    .repeat 8, I
+        ldy #(I*8)
+        lda GT_TEMP+I,x
+        sta (gt_bitmap),y
+    .endrepeat
     clc
     lda gt_bitmap
-    adc #8
+    adc #64
     sta gt_bitmap
     bcc :+
     inc gt_bitmap+1
 :
-    inx
+    txa
+    clc
+    adc #8
+    tax
     cpx #40
     bcc @copy
 @advance:
