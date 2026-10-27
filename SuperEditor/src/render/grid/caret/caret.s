@@ -767,73 +767,86 @@ leaf:
  jmp se_overlay_call
 ; C33's sealed native8 font is part of its own authenticated immutable payload.
 ; R25 guard requires the actual backend native font's exact bound/verified asset.
-status_pixels:
- ldy #7
-@row:
- lda (text_ptr),y
- cpx #128
- bcc :+
- eor #$FF
-: sta (screen_ptr),y
- dey
- bpl @row
- rts
+; Direct normal-status raster for the retained fixed-grid paths. Their admission
+; excludes modal/error/fault state. The prior complete frame already owns the
+; status attributes. Position painting compares the authenticated prior
+; caret, warm motion retains its unchanged label, and direct edits paint the
+; Modified transition from C33's sealed compact native font.
 status:
- jsr tui_editor_status40
- lda #6
- sta BCOL
- lda #48
+ lda #$30
  sta screen_ptr
  lda #$7E
  sta screen_ptr+1
-@cell:
- ldx BCOL
- lda $43C0,x
- pha
- and #127
- ldx #25
-@lookup:
- cmp status_codes,x
- beq @mapped
+ ldx #2
+@position:
+ lda H+N_CARET,x
+ eor se_hot_caret,x
+ and #$F0
+ beq @high_same
+ lda se_hot_caret,x
+ lsr
+ lsr
+ lsr
+ lsr
+ jsr status_nibble
+ bne @low
+@high_same:
+ jsr status_advance
+@low:
+ lda H+N_CARET,x
+ eor se_hot_caret,x
+ and #15
+ beq @low_same
+ lda se_hot_caret,x
+ and #15
+ jsr status_nibble
+ bne @next
+@low_same:
+ jsr status_advance
+@next:
  dex
- bpl @lookup
-@mapped:
- txa
+ bpl @position
+ rts
+status_edit:
+ jsr status
+ ; Normal Clean/Modified glyphs all retain a blank scanline7.
+ ldx #6
+@modified:
+ lda local_native8+25*8,x       ;M
+ sta $7E70,x
+ lda local_native8+23*8,x        ;o
+ sta $7E78,x
+ lda local_native8+17*8,x        ;d
+ sta $7E80,x
+ sta $7EA8,x
+ lda local_native8+20*8,x        ;i
+ sta $7E88,x
+ sta $7E98,x
+ lda local_native8+19*8,x        ;f
+ sta $7E90,x
+ lda local_native8+18*8,x        ;e
+ sta $7EA0,x
+ dex
+ bpl @modified
+ rts
+status_nibble:
  asl
  asl
  asl
  sta text_ptr
  lda #>local_native8
  sta text_ptr+1
- ldx BCOL
- lda $DBC0,x
- and #15
- asl
- asl
- asl
- asl
- ora #6
- sta $43C0,x
- pla
- tax
- jsr status_pixels
+ ldy #7
+@scanline:
+ lda (text_ptr),y
+ sta (screen_ptr),y
+ dey
+ bpl @scanline
+status_advance:
  clc
  lda screen_ptr
  adc #8
  sta screen_ptr
- bcc :+
- inc screen_ptr+1
-: inc BCOL
- lda BCOL
- cmp #12
- bne :+
- lda #14
- sta BCOL
- lda #112
- sta screen_ptr
-: lda BCOL
- cmp #22
- bcc @cell
  rts
 .segment "CODE"
 .import se_l_caret
@@ -1034,4 +1047,3 @@ nr_defaults:
 .segment "TAIL"
 palette: .byte 1,3,7,10,14,1,1,7,13,5,15,7,3,1
 bits:.byte 1,2,4,8,16,32,64,128
-status_codes:.incbin "status-codes.bin"

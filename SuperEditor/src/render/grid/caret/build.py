@@ -14,11 +14,10 @@ def build(out,base):
  if not fontpath.exists():fontpath=base/'assets/fonts/generated/native8.bin'
  (out/'native8.bin').write_bytes(fontpath.read_bytes())
  native=(out/'native8.bin').read_bytes();assert len(native)==1024
- # The compact dynamic status renderer can produce only these screen codes.
- codes=[1,4,5,6,9,12,14,15,32,*range(48,58),*range(65,71),77]
+ # Hex glyphs lead so the direct renderer indexes them without a lookup.
+ codes=[*range(48,58),*range(65,71),1,4,5,6,9,12,14,15,32,77]
  assert len(codes)==26
  (out/'status-font.bin').write_bytes(b''.join(native[i*8:i*8+8]for i in codes))
- (out/'status-codes.bin').write_bytes(bytes(codes))
  witness=[]
  for name,ident in [('grid80',16),('grid60',17)]:
   image=(base/'build/overlays'/(name+'.seo')).read_bytes()

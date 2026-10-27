@@ -957,3 +957,103 @@ and
 `agentsworking/evidence/M8/20261027T135726493122Z-display-timing-styled-grid-convergence-baseline`.
 The exact D81 is
 `47859cdb2579ecf983c1a6538e7b127d2a5460cebab50e6b6eb2d4761e49c3d0`.
+
+### Direct wide status and anchor arithmetic
+
+The retained 60/80-column row path no longer rebuilds the complete 14-cell
+status line through the generic TUI formatter. It compares the authenticated
+old and new caret nibbles, redraws only changed hex cells, and writes the fixed
+`Modified` label directly from the sealed compact native font. The status font
+is ordered for direct hex indexing, so its 26-byte screen-code lookup table is
+gone. Warm wide caret motion uses the same bounded delta renderer. The suffix
+anchor/header loop also sign-extends the one-byte edit delta once instead of
+recomputing it for every 24-bit anchor byte.
+
+The optimization itself deletes 28 meaningful linked bytes: two from CODE and
+26 from TAIL, with no BSS, zero-page, resident, image, bank or catalog growth.
+The separately committed `$8D00` alias correction adds 11 linked bytes,
+so the current product is still 17 linked bytes smaller than the parser-phase
+checkpoint while restoring insert/Undo correctness. The alias fix clears the
+authoritative `se_i_ready` gate before either row-transaction producer first
+writes `$8D00`; C8 then rebuilds record zero before any checkpoint read.
+
+The exact-current focused consumer passes at
+`build/styled-ticket-consumer/20261027T140547695666Z/result.json`: insert/delete
+costs are 6,910/6,767 instructions at 40 columns, 44,067/41,806 at 60 and
+30,461/29,690 at 80. Relative to the prior checkpoint this removes 101/58,
+2,293/2,258 and 2,293/2,258 instructions respectively, including the three
+instructions now paid to revoke the aliased index. The full 72-case matrix,
+five corruption classes, two cancellation cases and the registered 68-byte
+stack bound pass at
+`build/styled-grid-carry-matrix/20261027T140631173980Z/result.json`. Exact header
+and row-relative gates pass at
+`build/lrv-header-direct/20261027T140547689491Z/result.json` and
+`build/lrv-row-relative/20261027T140547690952Z/result.json`. The broad product
+profile passes all 24 Plain/Full fixed-grid and GEOS movement/edit cases at
+`build/cache-hotpath-profile/20261027T141338927183Z/result.json`, including
+every fixed-grid insert and its Undo; that lifecycle exposed the stale
+checkpoint alias.
+
+Normal-speed PAL 60-column edits settle in 335,808–341,607 cycles and 80-column
+edits in 279,721–282,518, a 2.11–2.15% and 2.50–2.60% reduction over the parser
+checkpoint. NTSC settles in 338,920–344,485 and 282,018–284,822 cycles, a
+1.97–2.08% and 2.45–2.55% reduction. Forty-column timing is effectively
+unchanged because it keeps its native text status path. Loads, calls and DMA
+counts are unchanged; the correctness fix increases transferred payload by 11
+bytes at 40 columns and 22 bytes at 60/80. All 24 native cases preserve exact
+source, pixels, colors, anchors, history, catalog, payload, stack and shim,
+publish once, and perform no parser or overlay work after publication. Evidence
+and screenshots are in
+`agentsworking/evidence/M8/20261027T140716237108Z-display-timing-styled-grid-convergence-baseline`
+and
+`agentsworking/evidence/M8/20261027T140850807106Z-display-timing-styled-grid-convergence-baseline`.
+The exact D81 is
+`c86c17087fb3d224cb6805092ce6e17695c92e91f1eaae8fd8430a532332d597`.
+
+### Next material slice: in-place GEOS row convergence
+
+The next GEOS experiment must replace repeated suffix layout and paint inside
+the existing C21/C22 route. It must not promote the additive R63/22-shadow
+prototype, add an overlay, or persist another cache. That private proof already
+shows the useful boundary: ordinary wrapped prose/styled insert/backspace can
+avoid 647,505–788,387 instructions, or 23.48–34.68% of the complete public
+operation, when a newly built row exactly rejoins the outgoing row stream.
+
+The production shape is one authenticated old 842-byte row in the existing
+dead phase loan. Put the convergence state machine in existing R28
+`render/geos/edit-cache.s`, extending or replacing `admit`, `verify`, `rebase`
+and `commit`; keep C21's `edit_attempt`, `publish_row` to `edit_verify`,
+`edit_rebase` and `cached_row` wiring and C22's existing dirty-strip admission.
+`GEX_OLD_ROW=$D568` and `GEX_NEW_ROW=$DD68` already reserve two unused 842-byte
+FE spans; use one and retire the other reservation. C21 builds the changed row
+normally, then R28 compares canonical NEXT, geometry, paint fields and the live
+CHARS/STYLES/ROLES/X planes. On exact convergence it bounds C22 to the union of
+old/new row strips and old/new caret strips. Only a later exact rebase proof may
+stop further C20/C24/C26 propagation. Existing publication and GCC authority
+remain the only commit boundary.
+
+Promotion requires all of the following:
+
+- leave the already full C21/C22 images unchanged in size, keep R28 within its
+  current 4 KiB slot (3,497 bytes currently), and delete its superseded strict
+  verify/rebase branches so the complete linked change is no larger;
+- save at least 500,000 actual-6510 instructions and 15% normal-speed PAL time
+  on ordinary wrapped edits, with no extra overlay loads and no more than one
+  842-byte old-row transfer per candidate row;
+- preserve forced-full exact pixels, attributes and row packets for prose and
+  styled insert/backspace, soft-wrap creation/removal, first/middle/last rows,
+  the shared ninth-row VIC band, selection and caret unions;
+- make CR split/join equal the full renderer with less than 1% regression, and
+  refuse folds, pan, selection, stale/corrupt GCC/GEC/header/source/provider
+  authority, count/top/kind/height/NEXT mismatch, damaged old rows and DMA
+  faults before optimized publication;
+- preserve source, history, Undo/Redo, STOP/cancel, full 16 MiB operation, the
+  68-byte stack bound, PAL and NTSC exact native evidence.
+
+Start with an ignored R28/C21/C22 fork and one-row scratch covering four
+ordinary and four structural cases. Reject it immediately if it needs a new
+capsule, another persistent memo, extra loads, or cannot fund itself by
+deleting the superseded edit/full-page and delayed cached-row work. The C32
+canonical-row source check stays: it is the current defense against arbitrary
+FE CHARS corruption, and deleting it would weaken correctness rather than
+remove redundant work.

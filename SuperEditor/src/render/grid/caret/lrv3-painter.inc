@@ -148,7 +148,7 @@ lrv_paint_entry:
 @finish:
  lda se_mode
  beq @status40
- jsr status
+ jsr status_edit
  jmp @status_done
 @status40:
  jsr tui_editor_status40
@@ -171,32 +171,31 @@ lrv_finish_state:
  asl
  adc COL
  tax
+ ; Sign-extend the one-byte edit delta once for the whole anchor suffix.
+ lda #0
+ bit LRVT+2
+ bpl :+
+ lda #$FF
+: sta screen_ptr
 @row:
- cpx #66
- bcs @bottom
  clc
  lda se_v_rows,x
  adc LRVT+2
  sta se_v_rows,x
  sta H+N_ROWS,x
  inx
- lda LRVT+2
- bmi :+
- lda #0
-:
- adc se_v_rows,x
+ lda se_v_rows,x
+ adc screen_ptr
  sta se_v_rows,x
  sta H+N_ROWS,x
  inx
- lda LRVT+2
- bmi :+
- lda #0
-:
- adc se_v_rows,x
+ lda se_v_rows,x
+ adc screen_ptr
  sta se_v_rows,x
  sta H+N_ROWS,x
  inx
- jmp @row
+ cpx #66
+ bcc @row
 @bottom:
  lda #<se_v_bottom
  sta text_ptr
@@ -245,24 +244,12 @@ lrv_finish_state:
  adc LRVT+2
  sta (text_ptr),y
  iny
- lda LRVT+2
- bmi :+
- lda #0
- beq :++
-:
- lda #$FF
-:
- adc (text_ptr),y
+ lda (text_ptr),y
+ adc screen_ptr
  sta (text_ptr),y
  iny
- lda LRVT+2
- bmi :+
- lda #0
- beq :++
-:
- lda #$FF
-:
- adc (text_ptr),y
+ lda (text_ptr),y
+ adc screen_ptr
  sta (text_ptr),y
  rts
 
