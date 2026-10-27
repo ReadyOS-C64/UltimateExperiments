@@ -3,6 +3,7 @@
 .ifdef EDITOR_BINDINGS
     .import se_gtt_certify
     .include "editor-api.inc"
+    .include "style/api.inc"
 .else
     .include "hot-api.inc"
 .endif
@@ -494,18 +495,20 @@ change_quota:
 ; Plain LRV3 update nests only the legal renderer-slot R25 call.  A miss simply
 ; retires the one-edit witness and lets the existing redraw path rebuild cold.
 lrv_plain_edit:
+    lda #ST_TX_INVALID
+    sta se_st_tx+ST_TX_PHASE
     lda GEC_VALID
     cmp #1
     bne @done
     lda se_mode
     cmp #3
     bcs @done                  ;GEOS keeps its certificate for its own consumer
-    lda se_render_caps
-    bne @done                  ;styled fixed-grid stays on the established path
     lda se_f_owner
     bne @invalidate
     jsr lrv_row_hint
     bcs @invalidate
+    lda se_render_caps
+    bne lrv_style_ticket
     lda #4
     sta se_f_owner
     lda #18
@@ -525,8 +528,253 @@ lrv_plain_edit:
 @done:
     rts
 
-; Non-authoritative physical-row hint.  R25 rechecks the selected LRV record;
-; this only avoids making the constrained renderer image rediscover the row.
+; The edit overlay already owns the authenticated pre-edit certificate and row
+; hint. Build the persistent styled ticket here instead of loading R25 merely
+; to rediscover the same facts. The prior complete frame guarantees that a
+; valid, idle style plan and checkpoint describe this exact view.
+lrv_style_ticket:
+    lda se_st_valid
+    and se_st_cp_valid
+    cmp #1
+    bne @identity_bad
+    lda se_st_request
+    bne @identity_bad
+    ; The validity flags are the fast lifecycle gate; these compact comparisons
+    ; independently bind the retained carry to the certified old publication.
+    ldx #14
+@meta:
+    lda se_st_descriptor,x
+    cmp se_doc_meta,x
+    bne @identity_bad
+    dex
+    bpl @meta
+    ldx #1
+@generation:
+    lda se_st_descriptor+15,x
+    cmp se_doc_generation,x
+    bne @identity_bad
+    lda se_st_descriptor+ST_KEY_EPOCH,x
+    cmp GEC_REU_EPOCH,x
+    bne @identity_bad
+    dex
+    bpl @generation
+    ldx #6
+@old_publication:
+    lda se_st_descriptor+17,x
+    cmp GEC_REVISION,x
+    bne @identity_bad
+    dex
+    bpl @old_publication
+    ldx #2
+@view:
+    lda se_st_descriptor+ST_KEY_TOP,x
+    cmp se_v_top,x
+    bne @identity_bad
+    lda se_st_descriptor+ST_KEY_PAN,x
+    cmp se_l_pan,x
+    bne @identity_bad
+    dex
+    bpl @view
+    lda se_mode
+    asl
+    ora se_l_mode
+    cmp se_st_descriptor+ST_KEY_MODE
+    beq @identity_ok
+@identity_bad:
+    jmp lrv_style_invalid
+@identity_ok:
+    lda se_st_cp_count
+    cmp #STYLE_ROWS+1
+    bcs @checkpoint_bad
+    ; Authenticate all 22 fixed records, including unused rows, before any
+    ; marker guides admission.  A fixed scan avoids count*5 arithmetic.
+    jsr se_crc_init
+    ldy #0
+@checkpoint_crc:
+    lda se_st_cp_rows,y
+    jsr se_crc_byte
+    iny
+    cpy #STYLE_CARRY_TABLE_BYTES
+    bcc @checkpoint_crc
+    lda se_crc_value
+    cmp se_st_cp_crc
+    bne @checkpoint_bad
+    lda se_crc_value+1
+    cmp se_st_cp_crc+1
+    beq @checkpoint_ok
+@checkpoint_bad:
+    jmp lrv_style_invalid
+@checkpoint_ok:
+    CMP24 GEC_POSITION,se_v_rows
+    bcc @checkpoint_bad
+    lda se_overlay_frame+1
+    cmp se_st_cp_count
+    bcs @checkpoint_bad
+    sta se_hot_target            ;first containing physical row
+@back:
+    lda se_hot_target
+    asl
+    asl
+    clc
+    adc se_hot_target
+    tax
+    lda se_st_cp_rows,x
+    bmi @start
+    lda se_hot_target
+    jeq lrv_style_invalid
+    dec se_hot_target
+    bne @back
+    beq @back
+@start:
+    lda se_hot_target
+    clc
+    adc #1
+    sta se_hot_target+1          ;exclusive physical-row end
+@forward:
+    lda se_hot_target+1
+    cmp se_st_cp_count
+    jcs lrv_style_invalid       ;last line lacks an outgoing convergence carry
+    asl
+    asl
+    clc
+    adc se_hot_target+1
+    tax
+    lda se_st_cp_rows,x
+    bmi @bounds
+    inc se_hot_target+1
+    bne @forward
+@bounds:
+    lda se_hot_target+1
+    sec
+    sbc se_hot_target
+    jeq lrv_style_invalid
+    sta se_hot_count
+    lda se_hot_target
+    asl
+    clc
+    adc se_hot_target
+    tax
+    ldy #0
+@start_copy:
+    lda se_v_rows,x
+    sta se_st_tx+ST_TX_START,y
+    inx
+    iny
+    cpy #3
+    bcc @start_copy
+    lda se_hot_target+1
+    asl
+    clc
+    adc se_hot_target+1
+    tax
+    ldy #0
+@end_copy:
+    lda se_v_rows,x
+    sta se_st_tx+ST_TX_END,y
+    inx
+    iny
+    cpy #3
+    bcc @end_copy
+@adjust_end:
+    lda GEC_OP
+    bne @delete_end
+    inc se_st_tx+ST_TX_END
+    bne @end_ready
+    inc se_st_tx+ST_TX_END+1
+    bne @end_ready
+    inc se_st_tx+ST_TX_END+2
+    jeq lrv_style_invalid
+@delete_end:
+    lda se_st_tx+ST_TX_END
+    bne :+
+    lda se_st_tx+ST_TX_END+1
+    bne @delete_mid
+    lda se_st_tx+ST_TX_END+2
+    jeq lrv_style_invalid
+    dec se_st_tx+ST_TX_END+2
+@delete_mid:
+    dec se_st_tx+ST_TX_END+1
+:
+    dec se_st_tx+ST_TX_END
+@end_ready:
+    lda se_mode
+    asl
+    ora se_l_mode
+    asl
+    asl
+    asl
+    asl
+    asl
+    ora se_hot_target
+    sta se_st_tx+ST_TX_ROW_MODE
+    lda se_hot_count
+    ldx GEC_OP
+    beq :+
+    ora #ST_TX_DELETE
+:
+    sta se_st_tx+ST_TX_COUNT_KIND
+    ldx #1
+@ticket_pair:
+    lda GEC_SEQUENCE,x
+    sta se_st_tx+ST_TX_SEQUENCE,x
+    lda se_doc_generation,x
+    sta se_st_tx+ST_TX_DOC_GENERATION,x
+    lda se_doc_epoch,x
+    sta se_st_tx+ST_TX_DOC_EPOCH,x
+    dex
+    bpl @ticket_pair
+    ldx #3
+@ticket_revision:
+    lda se_r_revision,x
+    sta se_st_tx+ST_TX_REVISION,x
+    dex
+    bpl @ticket_revision
+    ; C11 used to refresh the merged view length before C14 opened its source.
+    ; This path deliberately skips C11, so advance the authenticated old view
+    ; length by the same one-byte edit before publishing the ticket.
+    lda GEC_OP
+    bne @view_delete
+    inc se_v_length
+    bne @view_length_ready
+    inc se_v_length+1
+    bne @view_length_ready
+    inc se_v_length+2
+    jmp @view_length_ready
+@view_delete:
+    lda se_v_length
+    bne :+
+    lda se_v_length+1
+    bne @view_delete_mid
+    dec se_v_length+2
+@view_delete_mid:
+    dec se_v_length+1
+:
+    dec se_v_length
+@view_length_ready:
+    lda #ST_TX_CHECK_SEED^ST_TX_ADMITTED
+    ldx #ST_TX_BYTES-1
+@ticket_check:
+    eor se_st_tx,x
+    dex
+    cpx #ST_TX_START-1
+    bne @ticket_check
+    sta se_st_tx+ST_TX_CHECK
+    lda #0
+    sta se_st_valid
+    lda #1
+    sta se_st_request
+    lda #ST_TX_ADMITTED
+    sta se_st_tx+ST_TX_PHASE
+    clc
+    rts
+
+lrv_style_invalid:
+    lda #0
+    sta GEC_VALID
+    rts
+
+; Physical-row hint. Plain edits are rechecked by R25; styled admission proves
+; the lower page bound before trusting this monotonic next-anchor scan.
 lrv_row_hint:
     lda #0
     sta se_overlay_frame+1

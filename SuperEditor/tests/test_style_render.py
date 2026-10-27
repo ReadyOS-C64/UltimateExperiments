@@ -13,6 +13,7 @@ from cpu_editor import startup
 import cpu_editor,editor_fixture
 from redraw_model import source40,screen_code,Screen,verify_screen,native_text
 from overlays import wrap,HEADER
+ROLE_COLORS=[1,3,7,10,14,1,1,7,13,5,15,7,3,1]
 OUT=ROOT/'build/style-render'
 FROZEN=ROOT/'agentsworking/evidence/M5/20261024T220215181032Z-header-cpu'
 NAMES=['eedit','eplay','window','text40','menu40','engine','navigate','search','block','layout','fileio','aux']
@@ -66,7 +67,7 @@ def expected(f,data,plan=None):
    eof=p==len(data);cr=not eof and data[p]==13
    glyph=32 if eof or cr else screen_code(data[p]);ink=1
    if plan is not None and not eof and not cr:
-    style=plan[row*40+col];glyph^=style&128;ink=style&15
+    style=plan[row*40+col];glyph^=style&128;ink=ROLE_COLORS[style&15]
    original=glyph
    if marked and lo<=p<hi:glyph^=128;ink=3
    if p==caret and seen is None:glyph=original^128;ink=7 if marked else 3;seen=(row,col)

@@ -145,11 +145,7 @@ def projected_plan(data,anchors,width,pan):
 
 
 def semantic_role(style):
-    if style&0x40:return 4
-    if style&0x30:return (style>>4)&3
-    color=style&15
-    if style&0x80 and color==7:return 2
-    return {7:7,13:8,5:9,15:10,3:12,14:4,1:0}.get(color,0)
+    return style&15
 
 
 class Fixture(editor_fixture.EditorFixture):
@@ -365,7 +361,7 @@ def expected(f,data):
     anchors=row_starts(data,top,width,nowrap);caret=f.get('se_hot_caret');mark=f.get('se_sel_mark',1);lo,hi=sorted((caret,f.get('se_sel_anchor'))) if mark else (0,0)
     logical,ui_colors,rect=logical_ui(f,data)
     if width==40:
-        plan=semantic_plan(data,anchors,nowrap,pan,lexical=True) if f.get('se_st_valid',1) else bytes([1])*880
+        plan=semantic_plan(data,anchors,nowrap,pan,lexical=True) if f.get('se_st_valid',1) else bytes(880)
         seen=None
         for row,(start,stop) in enumerate(zip(anchors,anchors[1:])):
             end=stop-1 if stop>start and data[stop-1]==13 else stop
@@ -373,8 +369,8 @@ def expected(f,data):
                 p=start+pan+col;glyph=32;ink=1
                 if p<=end:
                     glyph=screen_code(data[p]) if p<end else 32
-                    style=plan[row*40+col] if p<end else 1
-                    glyph^=style&128;under=glyph;ink=style&15
+                    style=plan[row*40+col] if p<end else 0
+                    glyph^=style&128;under=glyph;ink=[1,3,7,10,14,1,1,7,13,5,15,7,3,1][style&15]
                     if lo<=p<hi:glyph^=128;ink=3
                     if p==caret and seen is None:glyph=under^128;ink=7 if mark else 3;seen=(row,col)
                 physical=row+2
@@ -384,12 +380,12 @@ def expected(f,data):
                 at=physical*40+col;logical[at]=glyph;ui_colors[at]=ink
         return (bytes(logical),bytes(ui_colors)),anchors,seen,rect
     font=f.fonts['narrow5.bin' if width==60 else 'narrow4.bin'];bits=bytearray(8000);attrs=bytearray([0x16])*1000;seen=None
-    plan=projected_plan(data,anchors,width,pan) if f.colored and f.get('se_st_valid',1) else bytes([1])*(width*22)
+    plan=projected_plan(data,anchors,width,pan) if f.colored and f.get('se_st_valid',1) else bytes(width*22)
     for row,(start,stop) in enumerate(zip(anchors,anchors[1:])):
         end=stop-1 if stop>start and data[stop-1]==13 else stop
         chars=[];flags=[];roles=[]
         for col in range(width):
-            p=start+pan+col;chars.append(data[p] if p<end else 32);style=plan[row*width+col] if p<end else 1
+            p=start+pan+col;chars.append(data[p] if p<end else 32);style=plan[row*width+col] if p<end else 0
             roles.append(semantic_role(style));flag=1 if style&128 else 0
             if p<=end:
                 if lo<=p<hi:flag|=2

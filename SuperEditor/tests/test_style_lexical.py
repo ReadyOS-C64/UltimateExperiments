@@ -91,7 +91,7 @@ SEGMENTS { CODE:load=CORE,type=ro; STYLE_DESCRIPTOR:load=DESC,type=bss;
  return rs,all_symbols,images,sizes
 
 def oracle(data,rows,mode,pan):
- plan=bytearray(base.plan_model(data,rows,mode,pan));spans=[];palette={7:7,8:13,9:5,10:15,11:7,12:3,13:1}
+ plan=bytearray(base.plan_model(data,rows,mode,pan));spans=[];palette={7:7,8:8,9:9,10:10,11:7,12:12,13:0}
  for e in blocks(data):
   if e['kind']==5:spans += [(a,b,palette[s]) for a,b,s in lex(data[e['body']:e['end']],e['language'],e['body'])]
  for row,(a,b) in enumerate(zip(rows,rows[1:])):

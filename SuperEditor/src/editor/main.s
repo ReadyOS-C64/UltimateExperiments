@@ -155,6 +155,7 @@ se_clear_state:
     inx
     bne @clear_view
     sta se_st_cp_valid
+    sta se_st_tx+ST_TX_PHASE
     ; Cold-only owned C64 metadata. A missing REU/asset can fail before each
     ; service initializer, so ready/phase fields must not retain power-on RAM.
     sta text_ptr
@@ -184,10 +185,17 @@ se_editor_render:
     ldx #1
     jsr se_overlay_call
     bcs @ordinary
+    cmp #ST_TX_WAIT
+    beq @style_wait
     tax
     bne @ordinary
     sta se_e_redraw
     jmp se_er_publish_only
+@style_wait:
+    lda #0
+    sta se_e_redraw
+    clc
+    rts ;ADMITTED ticket: idle runs bounded C14 before any layout or pixel work
 @ordinary:
     jsr se_layout_prepare
     bcs se_editor_render_failed

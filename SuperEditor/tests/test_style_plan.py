@@ -34,9 +34,9 @@ def rowmap(data,mode=0,top=0):
  return starts
 
 def plan_model(data,rows,mode=0,pan=0):
- styles=bytearray([1]*len(data))
+ styles=bytearray(len(data))
  for e in blocks(data):
-  base=0x87 if e['kind']==2 else 14 if e['kind']==5 else 15 if e['kind'] in (4,6,7,8) else 1
+  base=0x82 if e['kind']==2 else 4 if e['kind']==5 else 10 if e['kind'] in (4,6,7,8) else 0
   styles[e['start']:e['end']]=bytes([base])*(e['end']-e['start'])
   if e['kind'] in (4,5,6):continue
   origin=e['body'];part=data[origin:e['end']]
@@ -44,10 +44,10 @@ def plan_model(data,rows,mode=0,pan=0):
    if kind!=1:continue
    for p in range(a+width,b):
     mask=(styles[p]&0xF0)|(style<<4)
-    styles[p]=mask|(14 if mask&64 else [1,3,7,10][(mask>>4)&3])
+    styles[p]=mask|(4 if mask&64 else [0,1,2,3][(mask>>4)&3])
  result=[]
  for a,b in zip(rows,rows[1:]):
-  result += [styles[p] if p<min(b,len(data)) and data[p]!=13 else 1 for c in range(40) for p in [a+(pan if mode else 0)+c]]
+  result += [styles[p] if p<min(b,len(data)) and data[p]!=13 else 0 for c in range(40) for p in [a+(pan if mode else 0)+c]]
  return bytes(result)
 
 class Fixture:

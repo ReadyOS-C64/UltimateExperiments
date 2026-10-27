@@ -82,19 +82,19 @@ def paint_native(bits,attrs,ui,font):
 
 def wide_semantics(source,rows,width):
     """Whole-source independent parser/lexer spans projected onto wider rows."""
-    styles=bytearray([1])*len(source)
+    styles=bytearray(len(source))
     for event in blocks(source):
-        kind=event['kind'];a,b=event['start'],event['end'];base=0x87 if kind==2 else 14 if kind==5 else 15 if kind in (4,6,7,8) else 1
+        kind=event['kind'];a,b=event['start'],event['end'];base=0x82 if kind==2 else 4 if kind==5 else 10 if kind in (4,6,7,8) else 0
         styles[a:b]=bytes([base])*(b-a)
         if kind==5:
-            for start,end,role in lex(source[event['body']:b],event['language'],start=event['body']):styles[start:end]=bytes([{7:7,8:13,9:5,10:15,11:7,12:3,13:1}[role]])*(end-start)
+            for start,end,role in lex(source[event['body']:b],event['language'],start=event['body']):styles[start:end]=bytes([{7:7,8:8,9:9,10:10,11:7,12:12,13:0}[role]])*(end-start)
         if kind in (4,5,6):continue
         origin=event['body']
         for token,style,delimiter,start,end in inline(source[origin:b],origin,body_column=(origin-a) or None):
             if token!=1:continue
             for pos in range(start+delimiter,end):
-                mask=(styles[pos]&0xF0)|(style<<4);styles[pos]=mask|(14 if mask&64 else [1,3,7,10][(mask>>4)&3])
-    plan=bytearray([1])*(width*22)
+                mask=(styles[pos]&0xF0)|(style<<4);styles[pos]=mask|(4 if mask&64 else [0,1,2,3][(mask>>4)&3])
+    plan=bytearray(width*22)
     for row,(a,b) in enumerate(zip(rows,rows[1:])):
         for col in range(width):
             pos=a+col
@@ -103,10 +103,7 @@ def wide_semantics(source,rows,width):
 
 
 def role_for(style):
-    mask=(style>>4)&7
-    if mask:return min(mask,4)
-    if style&128:return 2
-    return {3:12,5:9,7:7,10:3,13:8,14:4,15:10}.get(style&15,0)
+    return style&15
 
 
 def body_model(data,top,caret,width,mark,anchor,font,plan=None):
@@ -114,7 +111,7 @@ def body_model(data,top,caret,width,mark,anchor,font,plan=None):
     for row,(start,stop) in enumerate(zip(rows,rows[1:])):
         end=stop-1 if stop>start and data[stop-1]==13 else stop;chars=[];flags=[];roles=[]
         for col in range(width):
-            p=start+col;chars.append(data[p] if p<end else 32);style=plan[row*width+col] if plan is not None and p<end else 1;roles.append(role_for(style));flag=1 if style&128 else 0
+            p=start+col;chars.append(data[p] if p<end else 32);style=plan[row*width+col] if plan is not None and p<end else 0;roles.append(role_for(style));flag=1 if style&128 else 0
             if p<=end:
                 if mark and lo<=p<hi:flag|=2
                 if p==caret and not seen:flag|=4;seen=True
@@ -252,7 +249,7 @@ def verify_cache(case,data,top,caret,anchor,plan,ram,reu,s):
     for row,(start,stop) in enumerate(zip(rows,rows[1:])):
         end=stop-1 if stop>start and data[stop-1]==13 else stop;chars=[];flags=[];roles=[]
         for col in range(width):
-            pos=start+col;chars.append(data[pos] if pos<end else 32);style=plan[row*width+col] if plan is not None and pos<end else 1;roles.append(role_for(style));flag=1 if style&128 else 0
+            pos=start+col;chars.append(data[pos] if pos<end else 32);style=plan[row*width+col] if plan is not None and pos<end else 0;roles.append(role_for(style));flag=1 if style&128 else 0
             if pos<=end:
                 if case['mark'] and lo<=pos<hi:flag|=2
                 if pos==caret and not seen:flag|=4;seen=True
@@ -324,7 +321,7 @@ def evaluate(n,artifacts,manifest):
                 for cell,style in enumerate(plan):
                     cells[80+cell]^=style&128
                     p=80+cell
-                    if ink[p]==1:ink[p]=style&15
+                    if ink[p]==1:ink[p]=WIDE_PALETTE[style&15]
             # Popup cells replace all underlying source semantics.
             for row,col in ui.cells:at=row*40+col;cells[at]=ui.matrix[at];ink[at]=ui.colors[at]
             assert ram[0x4000:0x43E8]==cells and bytes(v&15 for v in colors)==ink,(ident,'independent40 cells/colors')

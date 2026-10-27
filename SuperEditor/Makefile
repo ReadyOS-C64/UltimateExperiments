@@ -389,7 +389,7 @@ build/overlays/eedit.o: src/overlays/history-edit.s src/history/hot_packet.inc s
 	$(CA65) -g -D EDITOR_BINDINGS=1 -I src -I build -o $@ -l $(@:.o=.lst) $<
 build/overlays/eplay.o: src/overlays/history-play.s src/history/record.inc build/editor-api.inc
 	$(CA65) -g -D EDITOR_BINDINGS=1 -I src -I build -o $@ -l $(@:.o=.lst) $<
-build/overlays/window.o: src/overlays/hot-window.s src/render/api.inc src/overlays/render-damage.s src/render/geos/edit-certificate.inc src/render/geos/edit-certificate-body.inc src/hot/api.inc build/editor-api.inc
+build/overlays/window.o: src/overlays/hot-window.s src/render/api.inc src/style/api.inc src/overlays/render-damage.s src/render/geos/edit-certificate.inc src/render/geos/edit-certificate-body.inc src/hot/api.inc build/editor-api.inc
 	$(CA65) -g -D EDITOR_BINDINGS=1 -I src -I build -o $@ -l $(@:.o=.lst) $<
 build/overlays/text40.o: src/overlays/editor40.s src/overlays/render-nowrap.s src/overlays/render-visibility.s src/layout/api.inc src/render/api.inc src/editor/geometry.inc src/overlays/render-cache.s src/overlays/render-style.s src/editor/geometry.inc src/editor/api.inc src/editor/menu-data.inc build/editor-api.inc
 	$(CA65) -g -I src -I build -o $@ -l $(@:.o=.lst) $<

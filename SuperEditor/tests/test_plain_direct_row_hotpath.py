@@ -165,9 +165,11 @@ def run(out, fixture=None):
                 assert_plain(row["entries"], tag)
                 assert row["entries"].get("geostail", {}).get("ops", {}).get("18") == 1, \
                     (tag, "missing single direct-row prepare", row["entries"])
-                for frame in (14, 15, 17):
+                for frame in (14, 17):
                     assert row["entries"].get("geostail", {}).get("ops", {}).get(str(frame)) == 1, \
                         (tag, "direct-row transaction did not complete", frame, row["entries"])
+                assert "15" not in row["entries"].get("geostail", {}).get("ops", {}), \
+                    (tag, "direct-row transaction repeated row preparation", row["entries"])
                 assert row["entries"].get("grid", {}).get("ops", {}).get("1") == 1, \
                     (tag, "missing single direct-row consume", row["entries"])
                 assert not ({"layout", "viewsource"} & row["entries"].keys()), \

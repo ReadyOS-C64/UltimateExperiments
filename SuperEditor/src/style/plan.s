@@ -7,7 +7,6 @@
 .include "render/geos/edit-certificate.inc"
 .include "supermark/api.inc"
 .include "document/math24.inc"
-.include "tui/theme.inc"
 .import se_sm_pos,se_sm_ready,se_sm_start
 .ifndef SE_STYLE_GRID
 .import se_sm_init,se_sm_feed,se_sm_finish
@@ -35,6 +34,7 @@
 .endif
 .ifdef SE_STYLE_GRID
 .import st_columns,st_plan_page
+.import se_crc_init,se_crc_byte,se_crc_value
 .importzp text_ptr
 .endif
 .segment "STYLE_CODE"
@@ -53,7 +53,12 @@ se_style_begin:
     lda se_st_key+ST_KEY_MODE
     cmp #6
     jcs bad_argument
-    jsr grid_plan_init
+    lsr
+    tax
+    lda grid_columns,x
+    sta st_columns
+    lda grid_pages,x
+    sta st_plan_page
 .endif
     jsr se_fs_begin
     jcs failure
@@ -71,6 +76,7 @@ se_style_begin:
     sta st_phase
     jmp @started
 @cold:
+    sta se_st_tx+ST_TX_PHASE ;A=0: a refused ticket cannot outlive cold fallback
 .else
     jsr se_sm_init
 .endif
@@ -81,8 +87,6 @@ se_style_begin:
     sta se_st_cp_count
     jsr carry_snapshot
     COPY24 se_sm_pos,st_pos
-    lda #1
-    sta se_st_busy
 .ifdef SE_STYLE_GRID
     lda #1                  ;every live cell is overwritten by its base span
 .else
@@ -109,6 +113,7 @@ se_style_cancel:
     lda #0
     sta se_st_valid
     sta se_st_cp_valid
+    sta se_st_tx+ST_TX_PHASE
     sta se_st_busy
     sta se_st_error
     jmp release
@@ -170,6 +175,7 @@ failure:
     lda #0
     sta se_st_valid
     sta se_st_cp_valid
+    sta se_st_tx+ST_TX_PHASE
     sta se_st_busy
     jsr release
     lda se_st_error
@@ -192,7 +198,7 @@ pending:
 
 .ifndef SE_STYLE_GRID
 clear_step:
-    lda #TUI_FG
+    lda #0                  ;native prose role
     jsr put_plan
     jsr inc_paint
     lda st_paint+1
@@ -262,7 +268,6 @@ block_event:
     bpl @cold_event
     jsr fast_converged
     jcs se_st_fast_fallback
-    jsr bind_descriptor
     jmp @classified
 @cold_event:
 .endif
@@ -270,14 +275,14 @@ block_event:
 @classified:
     lda se_sm_kind
     sta st_kind
-    lda #TUI_FG
+    lda #0                  ;native prose role
     ldx st_kind
     cpx #SM_HEADING
     bne :+
-    lda #TUI_TITLE|$80
+    lda #2|$80              ;native strong role + inverse heading flag
 :   cpx #SM_CODE_LINE
     bne :+
-    lda #TUI_BORDER
+    lda #4                  ;native fixed-width/code role
 :   cpx #SM_CODE_OPEN
     beq @structural
     cpx #SM_CODE_CLOSE
@@ -287,7 +292,7 @@ block_event:
     cpx #SM_REGION_CLOSE
     bne :+
 @structural:
-    lda #TUI_STATUS
+    lda #10                 ;native structural/comment role
 :   sta st_style
     sta st_base
 @paint:
@@ -554,10 +559,23 @@ complete:
     jcs failure
     jsr release
     lda st_finish
-    bmi @publish_carry
+    bmi @fast_ready
     and #$40                ;cold builder captured the top logical checkpoint
     beq @carry_done
-@publish_carry:
+.ifdef SE_STYLE_GRID
+    jsr se_crc_init
+    ldy #0
+@carry_crc:
+    lda se_st_cp_rows,y
+    jsr se_crc_byte
+    iny
+    cpy #STYLE_CARRY_TABLE_BYTES
+    bcc @carry_crc
+    lda se_crc_value
+    sta se_st_cp_crc
+    lda se_crc_value+1
+    sta se_st_cp_crc+1
+.endif
     lda #1
     sta se_st_cp_valid
 @carry_done:
@@ -566,6 +584,23 @@ complete:
     inc se_st_generation+1
 :   lda #1
     sta se_st_valid
+    lda #0
+    sta se_st_busy
+    clc
+    rts
+@fast_ready:
+    ; The plan is private until C33 paints and publishes the row transaction.
+    ; Change the checksum first and the phase last so interruption is refusal.
+    lda #ST_TX_CHECK_SEED^ST_TX_READY
+    ldx #ST_TX_BYTES-1
+@ticket_check:
+    eor se_st_tx,x
+    dex
+    cpx #ST_TX_START-1
+    bne @ticket_check
+    sta se_st_tx+ST_TX_CHECK
+    lda #ST_TX_READY
+    sta se_st_tx+ST_TX_PHASE
     lda #0
     sta se_st_busy
     clc
@@ -634,15 +669,6 @@ plan_pointer:
     sta text_ptr+1
     ldy #0
     rts
-grid_plan_init:
-    lda se_st_key+ST_KEY_MODE
-    lsr
-    tax
-    lda grid_columns,x
-    sta st_columns
-    lda grid_pages,x
-    sta st_plan_page
-    rts
 .segment "RODATA"
 grid_columns:.byte 40,60,80
 grid_pages:.byte >STYLE_PLAN,$48,$48
@@ -687,7 +713,7 @@ merge_inline:
     sta st_offset
     and #$40
     beq @emphasis
-    lda #TUI_BORDER
+    lda #4                  ;native fixed-width/code role
     bne @color
 @emphasis:
     lda st_offset
@@ -712,52 +738,47 @@ inc_paint:
 ; Compare the changed line's exact outgoing state and end boundary before the
 ; existing painter is allowed to write any style-plan cell.
 fast_converged:
-    lda st_col
-    asl
-    sta st_style
-    clc
-    adc st_col
-    tax
-    lda se_sm_pos+2
-    cmp se_st_rows+2,x
+    ldx #2
+@boundary:
+    lda se_sm_pos,x
+    cmp se_st_tx+ST_TX_END,x
     bne @bad
-    lda se_sm_pos+1
-    cmp se_st_rows+1,x
-    bne @bad
-    lda se_sm_pos
-    cmp se_st_rows,x
-    jne @bad
+    dex
+    bpl @boundary
     lda st_col
-    asl
     sta st_style
+    asl
     asl
     clc
     adc st_style
     tax
     lda se_sm_fence
-    cmp se_st_cp_rows,x
-    bne @bad
-    lda se_sm_fence
+    sta st_style
     beq @text_language
     lda se_sm_language
     bne @language
 @text_language:
     lda #0
 @language:
-    cmp se_st_cp_rows+1,x
+    asl
+    asl
+    asl
+    asl
+    ora st_style
+    eor se_st_cp_rows,x
+    and #$7F                 ;logical-start is transport; bit6 must remain zero
     bne @bad
-    lda se_st_cp_rows+2,x
-    and #$1f
+    lda se_st_cp_rows+1,x
     cmp se_sm_regions
     bne @bad
     lda se_sm_state+76
-    cmp se_st_cp_rows+3,x
+    cmp se_st_cp_rows+2,x
     bne @bad
     lda se_sm_state+77
-    cmp se_st_cp_rows+4,x
+    cmp se_st_cp_rows+3,x
     bne @bad
     lda se_sm_state+78
-    cmp se_st_cp_rows+5,x
+    cmp se_st_cp_rows+4,x
     bne @bad
     clc
     rts
@@ -765,26 +786,13 @@ fast_converged:
     sec
     rts
 
-; Convergence refusal restarts the old full builder before any plan write.
+; Convergence refusal cannot rebuild against se_st_rows: those anchors still
+; describe the pre-edit publication. Return a clean retry so ordinary layout
+; publishes current geometry before a fresh cold job copies the new anchors.
 se_st_fast_fallback:
-    lda #0
-    sta se_st_cp_valid
-    sta se_st_cp_count
-    jsr se_sb_init           ;invalid carry forces a clean cold parser
-    jsr bind_descriptor
-    lda #0
-    sta st_index
-    sta st_used
-    sta st_finish
-    sta st_paint
-    sta st_paint+1
-    sta st_pos
-    sta st_pos+1
-    sta st_pos+2
-    lda #1
-    sta st_phase
-    jsr carry_snapshot
-    jmp pending
+    lda #ST_RETRY
+    clc
+    rts
 .endif
 
 bind_descriptor:
@@ -876,8 +884,8 @@ carry_snapshot:
     rts
 
 ; Publish incoming carry for each physical row in this logical line.  Repeating
-; six bytes makes lookup constant-time.  Bit7 of regions marks a true logical
-; start; wrapped continuations retain the same low-five-bit region depth.
+; five bytes makes lookup constant-time. Bit7 of the packed first byte marks a
+; true logical start; wrapped continuations retain the same semantic carry.
 carry_publish_event:
 @row:
     lda se_st_cp_count
@@ -903,31 +911,29 @@ carry_publish_event:
     bcs @top
 @within:
     lda se_st_cp_count
-    asl
     sta st_col
+    asl
     asl
     clc
     adc st_col
-    tax
-    lda st_offset
-    sta se_st_cp_rows,x
+    tay                         ;keep X=row*3 for the logical-start test below
     lda st_offset+1
-    sta se_st_cp_rows+1,x
+    asl
+    asl
+    asl
+    asl
+    ora st_offset
+    sta se_st_cp_rows,y
     lda st_style
     and #$1f
-    sta se_st_cp_rows+2,x
+    sta se_st_cp_rows+1,y
     lda st_base
-    sta se_st_cp_rows+3,x
+    sta se_st_cp_rows+2,y
     lda st_kind
-    sta se_st_cp_rows+4,x
+    sta se_st_cp_rows+3,y
     lda st_inline
-    sta se_st_cp_rows+5,x
+    sta se_st_cp_rows+4,y
     ; Mark exactly the row whose anchor is the logical start.
-    lda se_st_cp_count
-    asl
-    clc
-    adc se_st_cp_count
-    tax
     lda se_st_rows,x
     cmp se_sm_start
     bne @advance
@@ -937,16 +943,9 @@ carry_publish_event:
     lda se_st_rows+2,x
     cmp se_sm_start+2
     bne @advance
-    lda se_st_cp_count
-    asl
-    sta st_col
-    asl
-    clc
-    adc st_col
-    tax
-    lda se_st_cp_rows+2,x
-    ora #$80
-    sta se_st_cp_rows+2,x
+    lda se_st_cp_rows,y
+    ora #STYLE_CARRY_START
+    sta se_st_cp_rows,y
 @advance:
     inc se_st_cp_count
     jmp @row
@@ -974,38 +973,46 @@ carry_restore_top:
 .else
     lda se_st_cp_carry
 .endif
+    and #STYLE_CARRY_FENCE_MASK
     sta se_sm_fence
 .ifdef SE_STYLE_GRID
-    lda se_st_cp_rows+1
+    lda se_st_cp_rows
 .else
     lda se_st_cp_carry+1
 .endif
+ .ifdef SE_STYLE_GRID
+    lsr
+    lsr
+    lsr
+    lsr
+    and #3
+ .endif
     sta se_sm_language
 .ifdef SE_STYLE_GRID
-    lda se_st_cp_rows+2
+    lda se_st_cp_rows+1
 .else
     lda se_st_cp_carry+2
 .endif
     and #$1f
     sta se_sm_regions
 .ifdef SE_STYLE_GRID
-    lda se_st_cp_rows+3
+    lda se_st_cp_rows+2
 .else
     lda se_st_cp_carry+3
 .endif
     sta se_sm_state+76
 .ifdef SE_STYLE_GRID
-    lda se_st_cp_rows+4
+    lda se_st_cp_rows+3
 .else
     lda se_st_cp_carry+4
 .endif
     sta se_sm_state+77
 .ifdef SE_STYLE_GRID
-    lda se_st_cp_rows+5
+    lda se_st_cp_rows+4
 .else
     lda se_st_cp_carry+5
 .endif
     sta se_sm_state+78
     rts
 inline_colors:
-    .byte TUI_FG,TUI_HIGHLIGHT,TUI_TITLE,TUI_ERROR,TUI_BORDER
+    .byte 0,1,2,3,4         ;prose, emphasis, strong, combined, code

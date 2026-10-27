@@ -627,7 +627,7 @@ state convergence, skip lexical work for unchanged code lines, and delete the
 displaced orchestration in the same change. Overlay placement alone earns no
 credit.
 
-### Styled row transaction: selected replacement
+### Styled row transaction: implemented replacement
 
 The first convergence prototype proves the useful part of the idea and also
 defines what must be deleted. On an admitted Markdown 80-column edit it stops
@@ -650,41 +650,57 @@ reserved padding so sealed parser/source addresses do not move; linked BSS is
 unchanged. This deletion survives regardless of which styled transaction
 replaces the prototype.
 
-The selected boundary extends the existing R25/C33 local-row transaction. R25
-frame 18 validates the one-byte edit and writes a compact valid-last ticket; it
-does not publish geometry or pixels. C14/R14 restores the incoming block state,
-parses only the affected logical line, writes only its contiguous style rows and
-marks the ticket ready. C33 frame 1 then expands the ticket into its existing
-`$8D00` local transaction and reuses the established row packet, DMA, CRC,
-native painter, suffix-anchor, cache-header and caret commit. Publication stays
-last and increments the draw sequence once. Structural edits and any failed
-check use the existing cold renderer.
+The production boundary now admits the one-byte edit directly in C6, seals a
+compact ticket and packed row carries in the fixed `$4770` checkpoint window,
+and never enters R25 frame18 or C11 on an accepted edit. C14/R14 restores the
+incoming block state, performs bounded parse and planning, and marks the ticket
+ready. C33 frame1 authenticates that result, builds and paints the affected row
+transaction, calls the existing R25 native painter where required, rebases the
+suffix anchors and publishes exactly once. No accepted path runs C16 full-page
+render, C11 layout, frame15, post-publication capture or other work after the
+commit. This deletes work from the foreground edit graph; disk placement is
+unchanged and receives no performance credit.
 
-This staging is required by the current memory map. `$8D00` is both LRVT and
-STYLE_STATE, so a transaction cannot remain there while owner 2 runs C14. The
-fixed `$4770` checkpoint window is the persistent handoff. Pack each row carry
-into five bytes: marker/fence/language, region depth and three overflow bytes.
-Twenty-two records plus the top anchor, valid and count use 115 of the existing
-144 bytes, leaving 29 bytes for a 16–20-byte ticket with no new BSS, zero page,
-REU object, image or supervisor.
+The final checkpoint uses five-byte packed carry records and a CRC16 over all
+110 carry bytes. The CRC occupies two bytes that the plan originally reserved
+as slack, leaving seven spare checkpoint bytes. This is an intentional change
+to the byte gate: arbitrary carry corruption is now detected before admission,
+with no new BSS, zero-page, REU object, image, bank or supervisor. C33 also
+applies native roles while it constructs valid source-cell packets. The former
+separate 40/60/80-cell style pass is gone, and padding cells receive role zero.
+Cold style construction no longer clears 880/1320/1760 plan cells or 566 state
+bytes that are proven overwritten.
 
-The refactor is a deletion project, not a new fast-path layer. Replace the
-520-byte R14 GEC/admission routine with a roughly 120–140-byte ticket check;
-retain the useful 166-byte fused scanner. Replace the 367-byte generic C14 span
-painter with a 100–120-byte contiguous affected-row writer. Co-locate outgoing
-convergence with the resident parser state and remove the current 598-byte C14
-carry/checkpoint region. Delete the temporary immediate geometry publisher and
-the later frame-0 capture rather than keeping parallel publication authorities.
-The detailed order and revert points are recorded in
+Structural convergence refusal no longer reparses against pre-edit anchors.
+It retires the ticket and source lease, returns `ST_RETRY`, lets ordinary layout
+publish the new geometry, and only then starts a fresh cold style build. This
+ordering fixed the real 40-column `:::region` row-growth witness while deleting
+31 C14 bytes. Wrapped row growth is also rejected before mutation when the new
+source length exceeds the ticket's certified row geometry.
+
+The linked result meets the replacement byte gate: `styler.bin` is 3,311 bytes
+and `viewsource.bin` is 3,283, for 6,594 of the 6,630-byte combined allowance.
+`window.bin` is 4,071/4,096, `grid.bin` is 4,096 and `geostail.bin` is 3,965;
+resident state remains 1,533 bytes and the change adds zero BSS and zero-page
+bytes. The complete matrix passes all 72 cases. Its 48 admitted cases preserve
+source, pixels, colors, anchors, caret and history, publish once, use 6–10 loads
+and execute 24,065–129,441 instructions. Twenty-four structural cases, five
+stale/corrupt carry cases and queued-edit/F6 cancellation all pass. Registered
+stack use is 52 foreground plus 16 IRQ/NMI bytes, or 68 total. Evidence is in
+`build/styled-grid-carry-matrix/20261027T121902469141Z/result.json` and
+`build/editor-registered-stack/20261027T1219-current51/proof/qualified-result.json`.
+The exact final styled transaction still needs normal-speed PAL qualification;
+no PAL claim is inferred from the instruction-count harness.
+
+The next measured cuts stay inside this transaction instead of rearranging its
+overlays. Replace per-cell 24-bit range, selection and caret comparisons with
+row-relative counters (estimated 2.5–4.5K instructions per 80-column row).
+After proving uninterrupted ownership, remove repeated 59-byte guards between
+serialized fast slices (2–5K/edit), eliminate empty C14 phase-transition yields
+(1–3K plus fewer calls), and stop copying then generically rebuilding the
+256-byte cache header (about 2.8–3.5K). A sequential suffix-anchor walk can save
+another 300–500 instructions. The largest, riskier step is a native dirty-span
+row renderer, which could remove 30–70% of leaf paint work. CRC removal is not a
+candidate: it is now the tested corruption policy for persistent semantic state.
+The detailed implementation and acceptance record is maintained in
 `agentsworking/STYLED_ROW_TRANSACTION_PLAN.md`.
-
-Acceptance is deliberately tighter than “it fits.” `styler` plus `viewsource`
-must be no larger than 6,630 bytes, only 257 bytes over the 6,373-byte committed
-baseline. An admitted edit must execute no C11 layout op 4/5, no C16 full-page
-render and no post-publication C33 frame-0 capture; it must paint only affected
-logical rows and publish once. Markdown and unchanged-code edits run no lexer;
-changed BASIC/assembler code is bounded to the changed line. Exact source,
-pixels, colors, anchors, caret, history, stack and REU results remain mandatory,
-and poisoned tickets/carries must refuse before geometry or pixel mutation.
-Complete normal-speed PAL cycles and code bytes decide promotion. Load, call,
-DMA and parser counts explain the result but cannot substitute for it.

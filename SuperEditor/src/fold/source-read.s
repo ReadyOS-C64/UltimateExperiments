@@ -190,8 +190,9 @@ committed:
     clc
     rts
 gap_copy:
-    ; Clamp to source page; eight static page loops avoid another ZP pointer
-    ; or self-modified code while copying arbitrary gap runs efficiently.
+    ; Clamp to the source page, then patch the high byte of one absolute,X
+    ; loop.  R14 is a writable, non-reentrant overlay and every call rewrites
+    ; the operand before executing it.
     lda se_fs_phys
     jeq @page
     sec
@@ -203,25 +204,21 @@ gap_copy:
 @page:
     jsr output_pointer
     lda se_fs_phys+1
-.repeat 8,P
-    cmp #P
-    jeq .ident(.sprintf("gap_page_%d",P))
-.endrepeat
-    jmp read_bad
-.repeat 8,P
-.ident(.sprintf("gap_page_%d",P)):
+    clc
+    adc #>HOT_FIRST
+    sta @load+2
     ldy #0
     ldx se_fs_phys
-:   lda HOT_FIRST+P*256,x
+@load:
+    lda HOT_FIRST,x
     sta (text_ptr),y
     inx
     iny
     cpy se_fs_done
-    bne :-
+    bne @load
     lda #0
     clc
     rts
-.endrepeat
 output_pointer:
     lda se_fs_output
     sta text_ptr

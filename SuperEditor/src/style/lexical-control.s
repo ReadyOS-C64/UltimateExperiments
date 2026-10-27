@@ -300,7 +300,7 @@ lex_byte:
     rts
 
 lex_colors:
-    .byte 7,13,5,15,7,3,1 ;keyword,number,string,comment,directive,label,operator
+    .byte 7,8,9,10,7,12,0 ;keyword,number,string,comment,directive,label,operator roles
 lex_row_low:
 .ifdef SE_STYLE_GRID
 .repeat 3,W

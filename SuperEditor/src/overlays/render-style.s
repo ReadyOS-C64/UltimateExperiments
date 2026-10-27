@@ -85,6 +85,8 @@ style_cell:
     lda (text_ptr),y
     pha
     and #15
+    tax
+    lda style_role_colors,x
     sta tui_color
     pla
     and #$80
@@ -100,4 +102,6 @@ style_row_high:
 .repeat STYLE_ROWS,R
     .byte >(STYLE_PLAN+40*R)
 .endrepeat
+style_role_colors:
+    .byte 1,3,7,10,14,1,1,7,13,5,15,7,3,1
 .endif

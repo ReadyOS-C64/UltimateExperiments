@@ -198,12 +198,13 @@ def measure_linked_savings(out):
         (".ifndef SE_STYLE_GRID\nclear_step:\n", "clear_step:\n"),
         ("    jmp pending\n.endif\n\nblock_step:\n",
          "    jmp pending\n\nblock_step:\n"),
-        ("    lda grid_pages,x\n    sta st_plan_page\n    rts\n.segment \"RODATA\"\n"
-         "grid_columns:.byte 40,60,80\ngrid_pages:.byte >STYLE_PLAN,$48,$48\n",
+        ("    lda grid_pages,x\n    sta st_plan_page\n.endif\n"
+         "    jsr se_fs_begin\n",
          "    lda grid_pages,x\n    sta st_plan_page\n"
          "    lda grid_cells_low,x\n    sta st_cells\n"
          "    lda grid_cells_high,x\n    sta st_cells+1\n"
-         "    rts\n.segment \"RODATA\"\n"
+         ".endif\n    jsr se_fs_begin\n"),
+        ("grid_columns:.byte 40,60,80\ngrid_pages:.byte >STYLE_PLAN,$48,$48\n",
          "grid_columns:.byte 40,60,80\ngrid_pages:.byte >STYLE_PLAN,$48,$48\n"
          "grid_cells_low:.byte <880,<1320,<1760\n"
          "grid_cells_high:.byte >880,>1320,>1760\n"),

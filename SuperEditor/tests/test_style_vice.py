@@ -10,6 +10,7 @@ from redraw_model import native_text,source40
 from png_pixels import read_png
 from cpu_editor import NAMES
 from test_style_editor import semantic_plan, rows_for
+ROLE_COLORS=[1,3,7,10,14,1,1,7,13,5,15,7,3,1]
 def verify(e,r,data):
  s=r['symbols']
  artifacts=e/'run';pixels_checked=0;rgb_by_color={}
@@ -30,7 +31,7 @@ def verify(e,r,data):
    cells=bytearray(expected.matrix);inks=bytearray(expected.colors)
    for cell,style in enumerate(planned):
     cells[80+cell]^=style&128
-    if 80+cell!=80:inks[80+cell]=style&15
+    if 80+cell!=80:inks[80+cell]=ROLE_COLORS[style&15]
    assert matrix[80:960]==cells[80:960], 'full880 styled glyphs'
    assert bytes(v&15 for v in colors[80:960])==inks[80:960], 'full880 styled colors'
   for row in range(25):

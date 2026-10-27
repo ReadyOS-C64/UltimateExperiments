@@ -9,21 +9,17 @@
 .include "editor_file/api.inc"
 .import se_reu_epoch,se_style_release
 .import se_mode
-.import __STYLE_STATE_RUN__,__STYLE_STATE_SIZE__
-.import __SM_STATE_RUN__,__SM_STATE_SIZE__
-.import __FOLD_SOURCE_STATE_RUN__,__FOLD_SOURCE_STATE_SIZE__
+.import st_lex_phase,se_fs_active,se_fs_owned
 .export se_style_auto
 .segment "STYLE_CODE"
-.assert __STYLE_STATE_SIZE__ > 256, lderror, "style clear requires one full page"
-.assert __STYLE_STATE_SIZE__ < 512, lderror, "style clear tail exceeds one page"
-.assert __SM_STATE_SIZE__ > 0 .and __SM_STATE_SIZE__ < 256, lderror, "parser clear requires one partial page"
 ; Root calls only while idle, before the next service it checks input again.
 se_style_auto:
     lda se_f_owner
     beq claim
     cmp #2
     jne deferred
-    jmp key
+    jsr se_style_step
+    jmp result
 claim:
     lda se_v_nav_busy
     ora se_n_owned
@@ -32,30 +28,10 @@ claim:
     sta se_i_ready
     sta se_i_count
     sta se_n_cache_count
-    ldx #<__STYLE_STATE_SIZE__
-@state:
-    dex
-    sta __STYLE_STATE_RUN__+$100,x
-    cpx #0
-    bne @state
-    ; Controller is >256 bytes: clear its prefix and remaining tail explicitly.
-    ldx #0
-@page:
-    sta __STYLE_STATE_RUN__,x
-    inx
-    bne @page
-    ldx #<__SM_STATE_SIZE__
-@parser:
-    dex
-    sta __SM_STATE_RUN__,x
-    cpx #0
-    bne @parser
-    ldx #<__FOLD_SOURCE_STATE_SIZE__
-@reader:
-    dex
-    sta __FOLD_SOURCE_STATE_RUN__,x
-    cpx #0
-    bne @reader
+    sta se_st_busy
+    sta se_fs_active
+    sta se_fs_owned
+    sta st_lex_phase
     lda #2
     sta se_f_owner
 key:
@@ -101,14 +77,12 @@ key:
     sta se_st_rows,x
     dex
     bpl @rows
-    lda se_st_busy
-    beq start
-    jsr se_style_step
-    jmp result
 start:
     jsr se_style_begin
 result:
     bcs failed
+    cmp #ST_RETRY
+    beq retry_layout
     cmp #0
     jne deferred
     ; Completed plan is already published. Release the phase, preserve colors.
@@ -117,6 +91,16 @@ result:
     sta se_st_request
     lda #1
     sta se_e_redraw
+    clc
+    rts
+retry_layout:
+    ; Retire the ticket/checkpoint and source lease before exposing retry.
+    ; Keep request=1 so the post-layout renderer schedules a fresh cold plan.
+    jsr se_style_release
+    lda #1
+    sta se_st_request
+    sta se_e_redraw
+    lda #ST_RETRY
     clc
     rts
 failed:

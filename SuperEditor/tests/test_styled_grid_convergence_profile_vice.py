@@ -288,6 +288,7 @@ def markdown_expected(frame, source, full_primary, full_attributes):
 
     if width == 40:
         attributes = bytearray(full_attributes)
+        role_colors = (1, 3, 7, 10, 14, 1, 1, 7, 13, 5, 15, 7, 3, 1)
         seen = False
         for row, (start, stop) in enumerate(zip(anchors, anchors[1:])):
             end = stop - 1 if stop > start and source[stop - 1] == 13 else stop
@@ -295,8 +296,8 @@ def markdown_expected(frame, source, full_primary, full_attributes):
                 position = start + pan + column
                 ink = 1
                 if position <= end:
-                    style = plan[row * 40 + column] if position < end else 1
-                    ink = style & 15
+                    style = plan[row * 40 + column] if position < end else 0
+                    ink = role_colors[style & 15]
                     if lo <= position < hi:
                         ink = 3
                     if position == caret and not seen:
@@ -316,7 +317,7 @@ def markdown_expected(frame, source, full_primary, full_attributes):
         for column in range(width):
             position = start + pan + column
             characters.append(source[position] if position < end else 32)
-            style = plan[row * width + column] if position < end else 1
+            style = plan[row * width + column] if position < end else 0
             roles.append(grid.semantic_role(style))
             flag = 1 if style & 128 else 0
             if position <= end:

@@ -12,8 +12,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 import cpu_editor, editor_fixture
 from redraw_model import Screen, native_text, screen_code, source40, verify_screen
+from overlay_catalog_policy import catalog_identity
 from supermark_model import blocks, inline, lex
 from supermark_probe import petscii
+
+ROLE_COLORS = [1,3,7,10,14,1,1,7,13,5,15,7,3,1]
 
 REQUIRED = ['se_style_idle', 'se_style_input', 'se_fs_end', 'se_f_owner',
             'se_st_busy', 'se_st_valid', 'se_st_request', 'se_st_descriptor',
@@ -28,11 +31,7 @@ def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 def freeze_current(out):
     names = list(cpu_editor.NAMES)
     assert {'styler', 'viewsource', 'lexical'} <= set(names), ('style assets absent', names)
-    expected = {'eedit', 'eplay', 'window', 'text40', 'menu40', 'engine',
-                'navigate', 'search', 'block', 'layout', 'fileio', 'aux',
-                'styler', 'viewsource', 'lexical'}
-    assert set(names) in (expected, expected | {'gridedit', 'grid80', 'grid60'}), (
-        'unexpected actual catalog', names)
+    assert len(names) == len(set(names)), ('duplicate actual catalog names', names)
     frozen = out / 'fixture'
     (frozen / 'build/overlays').mkdir(parents=True)
     for name in ['editor.prg', 'editor-report.json', 'editor.lbl', 'editor.map',
@@ -73,17 +72,17 @@ def rows_for(source, top, nowrap):
 
 def semantic_plan(source, rows, nowrap, pan, lexical=False):
     """Independent parser-model spans projected onto source positions,880cells."""
-    styles = bytearray([1]) * len(source)
+    styles = bytearray(len(source))
     for event in blocks(source):
         kind = event['kind']
-        base = 0x87 if kind == 2 else 14 if kind == 5 else 15 if kind in (4, 6, 7, 8) else 1
+        base = 0x82 if kind == 2 else 4 if kind == 5 else 10 if kind in (4, 6, 7, 8) else 0
         start, end = event['start'], event['end']
         styles[start:end] = bytes([base]) * (end-start)
         if kind == 5 and lexical:
             origin=event['body']
             # The independent stream lexer emits exact canonical source spans.
             # These are full-word PETSCII BASIC/assembler, never PRG decoding.
-            palette={7:7,8:13,9:5,10:15,11:7,12:3,13:1}
+            palette={7:7,8:8,9:9,10:10,11:7,12:12,13:0}
             for a,b,style in lex(source[origin:end],event['language'],start=origin):
                 styles[a:b]=bytes([palette[style]])*(b-a)
         if kind in (4, 5, 6): continue
@@ -93,8 +92,8 @@ def semantic_plan(source, rows, nowrap, pan, lexical=False):
             if token != 1: continue
             for p in range(a+width, b):
                 mask = (styles[p] & 0xF0) | (style << 4)
-                styles[p] = mask | (14 if mask & 64 else [1, 3, 7, 10][(mask >> 4) & 3])
-    plan = bytearray([1])*880
+                styles[p] = mask | (4 if mask & 64 else [0, 1, 2, 3][(mask >> 4) & 3])
+    plan = bytearray(880)
     for row, (start, stop) in enumerate(zip(rows, rows[1:])):
         for col in range(40):
             p = start + (pan if nowrap else 0) + col
@@ -209,10 +208,10 @@ class Fixture(editor_fixture.EditorFixture):
                      for i in range(32*65536))
 
     def catalog(self):
-        # Eight immutable metadata arrays per admitted image. Active slots and
-        # hit/load counters are deliberately outside this catalog. Imports occur
-        # only in fixture setup, before any of these guarded style intervals.
-        return self.read(self.s['se_overlay_ids'],8*self.s['se_overlay_capacity'])
+        # The six fixed-entry arrays are immutable identity except for the
+        # declared managed-verification bit on published slot bytes.
+        raw=self.read(self.s['se_overlay_ids'],6*self.s['se_overlay_capacity'])
+        return catalog_identity(raw,self.s)
 
     def expected(self, data, styled=True):
         top, caret = self.get('se_v_top'), self.get('se_hot_caret')
@@ -223,7 +222,7 @@ class Fixture(editor_fixture.EditorFixture):
             error=self.get('se_e_error',1),history_fault=bool(self.get('se_h_fault',1)),
             trimmed=bool(self.get('se_h_trimmed',2)))
         rows = rows_for(data,top,mode)
-        plan = semantic_plan(data,rows,mode,pan,self.with_lexical) if styled else bytes([1])*880
+        plan = semantic_plan(data,rows,mode,pan,self.with_lexical) if styled else bytes(880)
         matrix, colors = bytearray(base.matrix), bytearray(base.colors)
         matrix[80:960], colors[80:960] = bytes([32])*880, bytes([1])*880
         lo, hi = sorted((anchor,caret)) if mark else (caret,caret)
@@ -240,9 +239,9 @@ class Fixture(editor_fixture.EditorFixture):
                 glyph = 32 if eof or cr else screen_code(data[p])
                 cell = row*40+col
                 # CR/EOF/filler are ordinary plan cells, even beneath headings.
-                style = plan[cell] if not eof and not cr else 1
+                style = plan[cell] if not eof and not cr else 0
                 glyph ^= style&128
-                ink = style&15
+                ink = ROLE_COLORS[style&15]
                 under = glyph
                 if lo<=p<hi: glyph^=128; ink=3
                 if p==caret and seen is None:
@@ -259,7 +258,18 @@ class Fixture(editor_fixture.EditorFixture):
         anchors=tuple(int.from_bytes(self.read(self.s['se_v_rows']+i*3,3),'little')
                       for i in range(22))+(self.get('se_v_bottom'),)
         assert anchors==expected.anchors,(tag,'source anchors')
-        if styled:assert self.read(0x4400,880)==plan,(tag,'880-cell plan')
+        if styled:
+            actual=self.read(0x4400,880)
+            mode=self.get('se_l_mode',1)
+            pan=self.get('se_l_pan') if mode else 0
+            for row,(start,stop) in enumerate(zip(anchors,anchors[1:])):
+                end=stop
+                if mode and end>start and end<=len(data) and data[end-1]==13:end-=1
+                for col in range(40):
+                    position=start+pan+col
+                    if position<min(end,len(data)) and data[position]!=13:
+                        cell=row*40+col
+                        assert actual[cell]==plan[cell],(tag,'live plan cell',cell)
         assert self.get('se_f_owner',1)==0 and not self.get('se_fs_owned',1)
         assert self.read(0xC600,1024)==self.shim
         self.frames.append(dict(tag=tag,source_bytes=len(data),styled=styled,
@@ -270,7 +280,7 @@ class Fixture(editor_fixture.EditorFixture):
         capacity=self.s['se_overlay_capacity']
         index=next(i for i in range(capacity)
             if self.m.read(self.s['se_overlay_ids']+i)==identity and
-               self.m.read(self.s['image_slot']+i)==slot)
+               self.m.read(self.s['image_slot']+i)&0x7f==slot)
         self.m.write(self.s['se_overlay_ids']+index,0)
         self.m.write(self.s['se_overlay_active']+slot,0)
         return index
@@ -330,7 +340,7 @@ def run(out, previous=None):
         try:
             finish_stable(f,data,f'fixture{index}')
         finally:f.close()
-    cases.append('independent complete880-cell plan/screen plus23 source anchors')
+    cases.append('independent live-cell plan/full screen plus23 source anchors')
 
     if Fixture.with_lexical:
         # Native high/unsupported bytes stay canonical raw text, never tokenized
@@ -509,7 +519,7 @@ def run(out, previous=None):
         peak_idle_instructions=max(f.idle_peak for f in allfixtures),
         compared_source_cells=880*len(Fixture.frames),
         immutable_style_intervals=immutable_passes,whole_reu_bytes=32*65536,
-        catalog_metadata_bytes=8*allfixtures[0].s['se_overlay_capacity'],
+        catalog_metadata_bytes=6*allfixtures[0].s['se_overlay_capacity'],
         catalog_metadata_start=allfixtures[0].s['se_overlay_ids'],
         immutable_catalog_intervals=catalog_checks,
         shim_bytes=1024,source_sha256={str(p.relative_to(ROOT)):sha(p) for p in

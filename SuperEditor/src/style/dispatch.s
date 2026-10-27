@@ -29,6 +29,8 @@ invoke:
     rts
 se_style_input:
 se_style_release:
+    lda #0
+    sta se_st_tx+ST_TX_PHASE ;any foreground input retires ADMITTED/READY work
     lda se_f_owner
     cmp #2
     bne done ;never inspect a stale index/file union as source-provider state

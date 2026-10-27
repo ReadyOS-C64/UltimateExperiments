@@ -138,26 +138,7 @@ grid_source:
     ldy g_col
     lda (text_ptr),y
     pha
-    and #$70
-    lsr
-    lsr
-    lsr
-    lsr
-    tax
-    lda grid_mask_roles,x
-    bne @role
-    pla
-    pha
-    bmi @heading
     and #15
-    tax
-    lda grid_color_roles,x
-    jmp @role
-@heading:
-    ; An unmodified heading has the priority of strong text. Inline colors
-    ; retain their own role, with heading reversal handled separately below.
-    lda #2
-@role:
     ldx g_col
     sta G_ROLES,x
     pla
@@ -268,10 +249,6 @@ grid_fold_marker:
 .segment "RODATA"
 grid_palette:
     .byte 1,3,7,10,14,1,1,7,13,5,15,7,3,1
-grid_mask_roles:
-    .byte 0,1,2,3,4,4,4,4
-grid_color_roles:
-    .byte 0,0,0,12,0,9,0,7,0,0,3,0,0,8,4,10
 grid_style_low:
 .repeat 2,W
 .repeat 22,R

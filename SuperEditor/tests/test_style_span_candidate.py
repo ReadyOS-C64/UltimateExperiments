@@ -102,11 +102,11 @@ def grid_rows(data, width, nowrap, top=0):
 
 
 def grid_oracle(data, rows, width, nowrap, pan):
-    styles = bytearray([1]) * len(data)
-    palette = {7: 7, 8: 13, 9: 5, 10: 15, 11: 7, 12: 3, 13: 1}
+    styles = bytearray(len(data))
+    palette = {7: 7, 8: 8, 9: 9, 10: 10, 11: 7, 12: 12, 13: 0}
     for e in blocks(data):
         k, a, b = e['kind'], e['start'], e['end']
-        color = 0x87 if k == 2 else 14 if k == 5 else 15 if k in (4, 6, 7, 8) else 1
+        color = 0x82 if k == 2 else 4 if k == 5 else 10 if k in (4, 6, 7, 8) else 0
         styles[a:b] = bytes([color]) * (b-a)
         if k == 5:
             for start, end, role in lex(data[e['body']:b], e['language'], start=e['body']):
@@ -119,8 +119,8 @@ def grid_oracle(data, rows, width, nowrap, pan):
                 continue
             for pos in range(start+delim, end):
                 mask = (styles[pos] & 0xF0) | (style << 4)
-                styles[pos] = mask | (14 if mask & 64 else [1, 3, 7, 10][(mask >> 4) & 3])
-    return bytes(styles[pos] if pos < min(b, len(data)) and data[pos] != 13 else 1
+                styles[pos] = mask | (4 if mask & 64 else [0, 1, 2, 3][(mask >> 4) & 3])
+    return bytes(styles[pos] if pos < min(b, len(data)) and data[pos] != 13 else 0
                  for a, b in zip(rows, rows[1:]) for c in range(width)
                  for pos in [a + (pan if nowrap else 0) + c])
 

@@ -6,12 +6,12 @@ se_st_generation:.res 2
 se_st_valid:.res 1
 se_st_request:.res 1 ;0idle,1needed,$80last failure for this exact key
 .segment "STYLE_CHECKPOINT"
-.export se_st_cp_rows,se_st_cp_anchor,se_st_cp_valid,se_st_cp_count
-; One normalized six-byte block carry per physical body row.  Bit7 of the
-; regions byte marks a genuine logical-line start; the low five bits retain
-; the exact region depth.  The top checkpoint also retains its 24-bit logical
-; anchor so a viewport beginning in a wrapped line can restart exactly.
-se_st_cp_rows:.res STYLE_ROWS*6
+.export se_st_cp_rows,se_st_cp_anchor,se_st_cp_valid,se_st_cp_count,se_st_cp_crc,se_st_tx
+; One normalized five-byte block carry per physical body row. Byte0 packs the
+; logical-start marker, language and fence; byte1 is region depth and bytes2-4
+; retain the exact 24-bit region overflow. The top checkpoint also retains its
+; logical anchor so a viewport beginning in a wrapped line can restart exactly.
+se_st_cp_rows:.res STYLE_ROWS*STYLE_CARRY_BYTES
 se_st_cp_anchor:.res 3
 .ifndef SE_STYLE_GRID
 .export se_st_cp_carry
@@ -19,7 +19,18 @@ se_st_cp_carry:.res 6
 .endif
 se_st_cp_valid:.res 1
 se_st_cp_count:.res 1
-.assert *-se_st_cp_rows <= $90,lderror,"normalized style carry exceeds checkpoint window"
+; Body/checksum first and phase last is the publication order.  C6 admits,
+; C14/R14 plans, and C33 consumes this persistent transaction ticket.
+se_st_tx:.res ST_TX_BYTES
+; CRC16-CCITT over the complete fixed carry table.  Cold C14 stores this seal
+; before publishing cp_valid; C6 verifies it before publishing ADMITTED.
+se_st_cp_crc:.res 2
+.ifdef SE_STYLE_GRID
+.assert *-se_st_cp_rows = $89,lderror,"styled checkpoint schema changed"
+.assert $90-(*-se_st_cp_rows) >= 7,lderror,"styled ticket leaves under seven spare bytes"
+.else
+.assert *-se_st_cp_rows <= $90,lderror,"isolated style checkpoint exceeds window"
+.endif
 .segment "STYLE_STATE"
 se_st_state:
 se_st_key:.res STYLE_KEY_BYTES

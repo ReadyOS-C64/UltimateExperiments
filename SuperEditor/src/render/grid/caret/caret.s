@@ -5,6 +5,7 @@
 .macpack longbranch
 .include "editor-api.inc"
 .include "api.inc"
+.include "style/api.inc"
 .include "document/math24.inc"
 .import se_f_owner,se_mode,se_v_columns,se_e_ui,se_e_menu,se_e_job,se_e_redraw,se_e_draw_busy,se_e_error
 .import se_hot_ready,se_hot_pending,se_hot_phase,se_hot_base,se_hot_length,se_hot_old_length,se_hot_caret
@@ -61,12 +62,24 @@ entry:
  cmp #4
  jeq lrv_paint_entry
  cmp #1
- bne :+
+ bne @not_frame1
+ lda se_st_tx+ST_TX_PHASE
+ cmp #ST_TX_ADMITTED
+ bne @ready
+ lda #ST_TX_WAIT
+ clc
+ rts
+@ready:
+ cmp #ST_TX_READY
+ jeq lrv_paint_entry
+ lda se_render_caps
+ bne @ordinary_frame1
  lda $8D23                  ;LRVT+LT_PREPARED, private R25 transaction marker
  cmp #$A5
  jeq lrv_paint_entry
+@ordinary_frame1:
  lda #1                    ;retain ordinary warm-caret frame semantics
-:
+@not_frame1:
  cmp #3
  bne ordinary_entry
  ldx se_f_owner
@@ -400,6 +413,13 @@ success:
  clc
  rts
 miss:
+ lda se_st_tx+ST_TX_PHASE
+ cmp #ST_TX_READY
+ bne :+
+ lda #ST_TX_INVALID
+ sta se_st_tx+ST_TX_PHASE
+ sta se_st_cp_valid
+:
  lda #0
  sta se_f_owner
 opaque:

@@ -1,16 +1,17 @@
 """Actual-6510 qualification matrix for styled fixed-grid carry convergence.
 
-This verifier is deliberately outside production.  It freezes an immutable
-product fixture, drives public editor input, counts real C14/C15 parser entry
-points, and compares the completed screen with the independent fixed-grid
-oracle.  No source, packet, pixel, carry, or parser result is seeded on a
-successful path.
+This verifier is deliberately outside production. It freezes an immutable
+product fixture, drives public editor input, observes the real
+C6 -> C14/R14 -> C33 transaction, counts parser entry points, and compares the
+completed screen with the independent fixed-grid oracle. No source, ticket,
+pixel, carry, or parser result is seeded on a successful path.
 
-Candidate qualification requires a sidecar carry-contract JSON.  Missing
-exports are reported as NOT_READY rather than letting a correct full fallback
-masquerade as convergence.  The semantic tuple is exactly six bytes:
-fence, language, region depth, and a 24-bit region-overflow value.  Anchor and
-position fields are transport metadata and never participate in convergence.
+Qualification binds directly to the shipped overlay labels: C6 admission in
+window, the bounded R14 reader, the C14 fallback, and the C33 consumer in
+geostail. The five-byte carry record packs fence and language into byte0,
+keeps region depth in byte1, and retains the 24-bit region-overflow value in
+bytes2-4. The logical-start bit is transport metadata and never participates
+in convergence.
 
 The full matrix covers Full/Markdown at 40/60/80 columns, heading/prose and
 inline transitions, BASIC/assembler token edits, unchanged-code avoidance,
@@ -26,6 +27,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 import argparse
+import binascii
 import ctypes as C
 import hashlib
 import importlib.util
@@ -49,12 +51,13 @@ PARSER_POINTS = {
     "lexical": ("se_sl_init", "se_sl_feed", "se_sl_finish"),
 }
 SEMANTIC_TUPLE = {
-    "bytes": 6,
-    "fence": [0, 1],
-    "language": [1, 1],
-    "regions": [2, 1],
-    "region_overflow": [3, 3],
-    "boundary_start": {"byte": 2, "mask": 0x80, "semantic": False},
+    "bytes": 5,
+    "fence": {"byte": 0, "mask": 0x0F, "shift": 0},
+    "language": {"byte": 0, "mask": 0x30, "shift": 4},
+    "regions": {"byte": 1, "mask": 0x1F, "shift": 0},
+    "region_overflow": [2, 3],
+    "boundary_start": {"byte": 0, "mask": 0x80, "semantic": False},
+    "reserved": [{"byte": 0, "mask": 0x40}, {"byte": 1, "mask": 0xE0}],
     "regions_mask": 0x1F,
 }
 
@@ -114,9 +117,9 @@ def edit_definitions(width):
         Edit("CR", ordinary, ordinary.index(petscii("room")) + 1, 13,
              "fallback"),
         Edit("wrap", wrap, width - 2, petscii("Q")[0], "fallback"),
-        Edit("fence", fence, fence.index(petscii("basc")) + 4,
+        Edit("fence", fence, fence.index(petscii("basc")) + 3,
              petscii("i")[0], "fallback"),
-        Edit("region", region, region.index(petscii("regin")) + 5,
+        Edit("region", region, region.index(petscii("regin")) + 4,
              petscii("o")[0], "fallback"),
     )
 
@@ -137,33 +140,37 @@ def matrix_description():
                     "lexical": edit.lexical,
                 })
     return {
-        "abi": "styled-fixed-grid-boundary-carry-v1",
+        "abi": "styled-fixed-grid-ticket-v3",
         "semantic_tuple": SEMANTIC_TUPLE,
         "production_contract": {
             "records_symbol": "se_st_cp_rows",
-            "record_stride": 6,
+            "record_stride": 5,
             "valid_symbol": "se_st_cp_valid",
             "count_symbol": "se_st_cp_count",
+            "crc_symbol": "se_st_cp_crc",
+            "crc_bytes": 2,
+            "crc_coverage": 22 * 5,
             "key_symbol": "se_st_descriptor",
             "anchor_symbol": "se_v_rows",
             "anchor_stride": 3,
             "anchor_index_bias": 0,
             "required_execution_labels": {
-                "fast_entry_symbol": "first instruction after selecting carry path",
-                "fast_admit_symbol": "optional: all guards passed; immediately before first optimized write",
-                "fallback_symbol": "transfer to established full planner/layout path",
-                "fast_asset": "sealed overlay containing all three exported labels",
+                "admit_symbol": "C6 ticket admission entry",
+                "reader_symbol": "R14 bounded source-reader entry",
+                "consumer_symbol": "C33 READY consumer entry",
+                "consumer_finish_symbol": "R25 frame17 publication entry",
+                "fallback_symbol": "C14 transfer to the cold planner",
             },
             "interpretation": (
                 "record i is the incoming carry for visible physical row i; its "
-                "persistent anchor is se_v_rows[i]. Byte2 bit7 is logical-start transport "
-                "authority and is masked before comparing region depth."
+                "persistent anchor is se_v_rows[i]. Byte0 bit7 is logical-start transport "
+                "authority and is masked before comparing the packed semantic tuple."
             ),
         },
         "cases": cases,
         "additional_gates": [
             "stale carry key refuses to full fallback before optimized writes",
-            "one corrupt semantic byte refuses to full fallback",
+            "one corrupt carry-table bit fails CRC before ADMITTED and falls back",
             "queued edit cancels active style work and newest source wins",
             "F6 UI cancels active style work and closing it restores exact body",
             "Undo and Redo preserve canonical history and exact body",
@@ -179,6 +186,8 @@ def matrix_description():
                 "block and inline feeds bounded by changed logical line through CR",
                 "unchanged code invokes zero lexical feeds",
                 "Markdown invokes zero lexical feeds",
+                "C6 admission, R14 reader, and C33 consumer each execute once",
+                "settled edit uses at most 10 overlay loads and 300000 instructions",
             ],
             "fallback": [
                 "established full parser/layout path is observed",
@@ -270,17 +279,18 @@ def configure(g, contract=None):
         tag = names.index(asset) + 1
         for name in required:
             hooks.append((asset, name, exported[name], tag))
-    if contract and contract.get("fast_asset"):
+    if contract and contract.get("admit_asset"):
         fields = [
-            ("fast_asset", "fast_entry_symbol", "fast_entry"),
+            ("admit_asset", "admit_symbol", "admit"),
+            ("reader_asset", "reader_symbol", "reader"),
+            ("consumer_asset", "consumer_symbol", "consumer"),
+            ("consumer_asset", "consumer_finish_symbol", "finish"),
             ("fallback_asset", "fallback_symbol", "fallback"),
         ]
-        if contract.get("fast_admit_symbol"):
-            fields.append(("fast_asset", "fast_admit_symbol", "fast_admit"))
         for asset_field, symbol_field, label in fields:
-            asset = contract.get(asset_field, contract["fast_asset"])
+            asset = contract[asset_field]
             exported = symbols(g.frozen / "build/overlays" / (asset + ".lbl"))
-            hooks.append(("carry", label, exported[contract[symbol_field]],
+            hooks.append(("transaction", label, exported[contract[symbol_field]],
                           names.index(asset) + 1))
     dll.cm_config(
         f.s["se_overlay_active"], f.s["se_e_draw_sequence"],
@@ -403,7 +413,7 @@ def line_bound(source, position):
     return end - start
 
 
-def verify_route(row, edit, caps, source, qualification):
+def verify_route(row, edit, caps, source, qualification, width):
     parser = row["parser"]
     block = parser.get("viewsource:se_sm_feed", 0)
     inline = parser.get("styler:se_si_feed", 0)
@@ -421,6 +431,9 @@ def verify_route(row, edit, caps, source, qualification):
     if not qualification:
         return
     if edit.route == "converge":
+        require(row["loads"] <= 10, "overlay-load-budget", row["loads"])
+        require(row["instructions"] <= 300_000, "instruction-budget",
+                row["instructions"])
         require(row["publications"] == 1, "single-publication", row["publications"])
         require(not any(row["parser_after_publication"].values()),
                 "parser-after-publication", row["parser_after_publication"])
@@ -435,20 +448,25 @@ def verify_route(row, edit, caps, source, qualification):
         elif edit.lexical == "changed-code":
             require(0 < lexical <= bound, "changed-code-lexer-bound",
                     {"lexical": lexical, "bound": bound})
-        require(parser.get("carry:fast_entry", 0) == 1,
-                "unique-carry-entry", parser.get("carry:fast_entry", 0))
-        if "carry:fast_admit" in parser:
-            require(parser["carry:fast_admit"] == 1, "unique-carry-admission",
-                    parser["carry:fast_admit"])
-        require(parser.get("carry:fallback", 0) == 0,
-                "admitted-edit-entered-fallback", parser.get("carry:fallback", 0))
+        for point in ("admit", "reader", "consumer", "finish"):
+            key = "transaction:" + point
+            require(parser.get(key, 0) == 1, "unique-" + point,
+                    parser.get(key, 0))
+        require(parser.get("transaction:fallback", 0) == 0,
+                "admitted-edit-entered-fallback",
+                parser.get("transaction:fallback", 0))
     else:
-        require(full_layout, "structural-missing-full-fallback", layout_ops)
-        require(parser.get("carry:fast_admit", 0) == 0,
-                "structural-reached-optimized-writes", parser.get("carry:fast_admit", 0))
-        # Structural guards may return directly from fast_begin before a
-        # changed-line parse starts.  The fallback label is required only for
-        # refusal after that parse; the observed full graph proves this route.
+        require(parser.get("transaction:finish", 0) == 0,
+                "structural-transaction-published",
+                parser.get("transaction:finish", 0))
+        require(parser.get("transaction:reader", 0) >= 1,
+                "structural-missing-cold-reader",
+                parser.get("transaction:reader", 0))
+        if width > 40:
+            require(full_layout, "structural-missing-full-fallback", layout_ops)
+        # C6 can refuse before admission (CR), C14 can reject changed carry,
+        # or C33 can reject changed row geometry (wrap). 40-column cold paint
+        # does not use C11; wide cold paint does. None may reach frame17.
 
 
 def read_contract(path, g):
@@ -457,32 +475,44 @@ def read_contract(path, g):
         # The production ABI uses the existing style-checkpoint window.  These
         # exports add no instrumentation counters or test-only product state.
         value = {
-            "abi": "styled-fixed-grid-boundary-carry-v1",
+            "abi": "styled-fixed-grid-ticket-v3",
             "semantic_tuple": SEMANTIC_TUPLE,
             "records_symbol": "se_st_cp_rows",
             "valid_symbol": "se_st_cp_valid",
             "count_symbol": "se_st_cp_count",
+            "crc_symbol": "se_st_cp_crc",
+            "crc_bytes": 2,
+            "crc_coverage": 22 * 5,
             "key_symbol": "se_st_descriptor",
-            "record_stride": 6,
+            "record_stride": 5,
             "semantic_offset": 0,
             "anchor_symbol": "se_v_rows",
             "anchor_stride": 3,
             "anchor_index_bias": 0,
-            "marker_byte": 2,
+            "marker_byte": 0,
             "marker_mask": 0x80,
+            "fence_mask": 0x0F,
+            "language_mask": 0x30,
+            "language_shift": 4,
+            "regions_byte": 1,
             "regions_mask": 0x1F,
-            "fast_asset": "viewsource",
-            "fast_entry_symbol": "se_sb_init",
+            "admit_asset": "window",
+            "admit_symbol": "lrv_style_ticket",
+            "reader_asset": "viewsource",
+            "reader_symbol": "se_sb_init",
+            "consumer_asset": "geostail",
+            "consumer_symbol": "lrv_style_admit",
+            "consumer_finish_symbol": "lrv_finish",
             "fallback_asset": "styler",
             "fallback_symbol": "se_st_fast_fallback",
         }
     else:
         value = json.loads(path.read_text())
     failures = []
-    if value.get("abi") != "styled-fixed-grid-boundary-carry-v1":
+    if value.get("abi") != "styled-fixed-grid-ticket-v3":
         failures.append("wrong abi")
     if value.get("semantic_tuple") != SEMANTIC_TUPLE:
-        failures.append("semantic tuple is not exact six-byte ABI")
+        failures.append("semantic tuple is not exact five-byte ABI")
     for field in ("records_symbol", "valid_symbol", "key_symbol"):
         symbol = value.get(field)
         if not symbol or symbol not in f.s:
@@ -491,28 +521,39 @@ def read_contract(path, g):
         symbol = value.get("count_symbol")
         if not symbol or symbol not in f.s:
             failures.append("missing export " + str(symbol or "count_symbol"))
-    if value.get("record_stride", 0) < value.get("semantic_offset", 0) + 6:
-        failures.append("record stride cannot hold semantic6")
+    crc_symbol = value.get("crc_symbol")
+    if (not crc_symbol or crc_symbol not in f.s or value.get("crc_bytes") != 2
+            or value.get("crc_coverage") != 22 * 5):
+        failures.append("checkpoint CRC16 must seal all 110 carry-table bytes")
+    if value.get("record_stride", 0) < value.get("semantic_offset", 0) + 5:
+        failures.append("record stride cannot hold packed semantic5")
     inline_anchor = value.get("anchor_offset") is not None
     external_anchor = value.get("anchor_symbol") in f.s and value.get("anchor_stride") == 3
     if not inline_anchor and not external_anchor:
         failures.append("record needs inline or external 24-bit anchor")
-    if value.get("marker_byte") != 2 or value.get("marker_mask") != 0x80:
-        failures.append("logical-start marker must be bit7 of semantic byte2")
+    if value.get("marker_byte") != 0 or value.get("marker_mask") != 0x80:
+        failures.append("logical-start marker must be bit7 of packed byte0")
+    if (value.get("fence_mask") != 0x0F or
+            value.get("language_mask") != 0x30 or
+            value.get("language_shift") != 4 or
+            value.get("regions_byte") != 1):
+        failures.append("wrong packed carry fields")
     if value.get("regions_mask") != 0x1F:
-        failures.append("region depth must use low5 bits of semantic byte2")
+        failures.append("region depth must use low5 bits of carry byte1")
     for asset_field, symbol_fields in (
-        ("fast_asset", ("fast_entry_symbol", "fast_admit_symbol")),
+        ("admit_asset", ("admit_symbol",)),
+        ("reader_asset", ("reader_symbol",)),
+        ("consumer_asset", ("consumer_symbol", "consumer_finish_symbol")),
         ("fallback_asset", ("fallback_symbol",)),
     ):
-        asset = value.get(asset_field, value.get("fast_asset"))
+        asset = value.get(asset_field)
         if not asset or asset not in g.identity["names"]:
             failures.append("missing sealed " + asset_field)
             continue
         exported = symbols(g.frozen / "build/overlays" / (asset + ".lbl"))
         for field in symbol_fields:
             label = value.get(field)
-            if field != "fast_admit_symbol" and not label:
+            if not label:
                 failures.append("missing execution label " + field)
             elif label and label not in exported:
                 failures.append("missing execution label " + label)
@@ -541,11 +582,15 @@ def locate_record(f, contract, anchor):
 
 
 def semantic_carry(raw, contract):
-    """Six semantic bytes with the byte2 transport marker removed."""
-    assert len(raw) == 6
-    result = bytearray(raw)
-    result[contract["marker_byte"]] &= contract["regions_mask"]
-    return bytes(result)
+    """Canonical six-byte semantic tuple decoded from packed transport."""
+    assert len(raw) == 5
+    packed = raw[0]
+    return bytes((
+        packed & contract["fence_mask"],
+        (packed & contract["language_mask"]) >> contract["language_shift"],
+        raw[contract["regions_byte"]] & contract["regions_mask"],
+        *raw[2:5],
+    ))
 
 
 def validate_carry_table(f, contract, source):
@@ -556,20 +601,26 @@ def validate_carry_table(f, contract, source):
         count = f.get(contract["count_symbol"], 1)
     assert 0 < count <= 22, ("carry count", count)
     base = f.s[contract["records_symbol"]]
+    sealed = f.read(base, contract["crc_coverage"])
+    observed_crc = f.get(contract["crc_symbol"], contract["crc_bytes"])
+    assert observed_crc == binascii.crc_hqx(sealed, 0xFFFF), \
+        ("carry table CRC16", observed_crc)
     rows = []
     for index in range(count):
         raw = f.read(base + index * contract["record_stride"]
-                     + contract["semantic_offset"], 6)
-        fence = raw[0]
-        language = raw[1]
-        regions = raw[2] & contract["regions_mask"]
+                     + contract["semantic_offset"], 5)
+        fence = raw[0] & contract["fence_mask"]
+        language = ((raw[0] & contract["language_mask"])
+                    >> contract["language_shift"])
+        regions = raw[contract["regions_byte"]] & contract["regions_mask"]
         marker = bool(raw[contract["marker_byte"]] & contract["marker_mask"])
         semantic = semantic_carry(raw, contract)
         toggled = bytearray(raw)
         toggled[contract["marker_byte"]] ^= contract["marker_mask"]
         assert semantic_carry(bytes(toggled), contract) == semantic, \
             ("transport marker entered semantic equality", index, raw.hex())
-        assert raw[2] & 0x60 == 0, ("reserved region bits", index, raw.hex())
+        assert raw[0] & 0x40 == 0 and raw[1] & 0xE0 == 0, \
+            ("reserved carry bits", index, raw.hex())
         assert fence <= 14 and language <= 2 and regions <= 16, \
             ("normalized carry range", index, raw.hex())
         if fence == 0:
@@ -588,7 +639,7 @@ def validate_carry_table(f, contract, source):
         rows.append({
             "index": index, "anchor": anchor, "fence": fence,
             "language": language, "regions": regions,
-            "overflow": int.from_bytes(raw[3:6], "little"),
+            "overflow": int.from_bytes(raw[2:5], "little"),
             "boundary_start": marker,
             "semantic_hex": semantic.hex(),
         })
@@ -636,13 +687,12 @@ def carry_fault(g, names, hooks, contract, mode, syntax, caps, kind):
     layout_ops = row["entries"].get("layout", {}).get("ops", {})
     assert {"4", "5"} & layout_ops.keys(), \
         (kind, "faulted carry did not refuse to full fallback", row["entries"])
-    assert row["parser"].get("carry:fast_entry", 0) == 1, \
-        (kind, "fault did not exercise carry admission", row["parser"])
-    assert row["parser"].get("carry:fast_admit", 0) == 0, \
-        (kind, "fault reached optimized writes", row["parser"])
-    # A preflight fault may return directly from fast_begin.  Requiring the
-    # full graph above proves refusal; fallback is expected only after a
-    # changed-line parse has begun and then fails convergence.
+    assert row["parser"].get("transaction:admit", 0) == 1, \
+        (kind, "fault did not exercise C6 admission", row["parser"])
+    assert row["parser"].get("transaction:consumer", 0) == 0, \
+        (kind, "fault reached C33 READY consumer", row["parser"])
+    # A C6 preflight fault can return before R14. Requiring the full graph
+    # above proves refusal without imposing a synthetic common fallback edge.
     return row
 
 
@@ -725,11 +775,19 @@ def run(out, fixture, contract_path=None, stack_result=None, smoke=False):
                     post_edit = []
                     def operation(edit=edit):
                         f.key(edit.key)
-                        post_edit.append(f.canonical())
+                        post_edit.append({
+                            "canonical": f.canonical(),
+                            "ticket_phase": f.get("se_st_tx", 1),
+                            "view_length": f.get("se_v_length", 3),
+                        })
                     row = observe(gate, names, hooks, operation)
                     assert f.merged() == expected, (tag, "source")
-                    assert f.canonical() == post_edit[0], \
+                    assert f.canonical() == post_edit[0]["canonical"], \
                         (tag, "render changed source/history/clipboard")
+                    if post_edit[0]["ticket_phase"] == 0xA5:
+                        assert post_edit[0]["view_length"] == len(expected), \
+                            (tag, "C6 admitted stale view length",
+                             post_edit[0]["view_length"], len(expected))
                     assert not any(f.get(name, 1) for name in (
                         "se_e_job", "se_e_draw_busy", "se_e_redraw", "se_f_owner",
                         "se_doc_read_locks", "se_e_error",
@@ -737,7 +795,7 @@ def run(out, fixture, contract_path=None, stack_result=None, smoke=False):
                     assert f.get("se_st_request", 1) != 1, \
                         (tag, "style request still pending", f.debug())
                     row["pixels_sha256"] = pixel_oracle(f, expected, caps, tag)
-                    verify_route(row, edit, caps, expected, qualification)
+                    verify_route(row, edit, caps, expected, qualification, width)
                     before_undo = history(f)
                     f.command(16)
                     profile.drain(f)
@@ -750,6 +808,8 @@ def run(out, fixture, contract_path=None, stack_result=None, smoke=False):
                     assert history(f) != before_undo, (tag, "Undo/Redo history did not move")
                     row.update(id=tag, mode=mode, width=width, syntax=syntax,
                                caps=caps, edit=edit.name, route=edit.route,
+                               admission=post_edit[0]["ticket_phase"] == 0xA5,
+                               admission_view_length=post_edit[0]["view_length"],
                                carry_records=len(carry_rows),
                                carry_sha256=(hashlib.sha256(json.dumps(
                                    carry_rows, sort_keys=True

@@ -14,11 +14,14 @@ LT_ROW=14
 LT_CARET_ROW=15
 LT_CARET_COL=16
 LT_RECORD_FLAGS=17
+LT_FLAGS=7
 LT_CLIP=18
 LT_SOURCE=20
 LT_GC_VALID=25
 LT_COVER=34
-LT_CELL_VALID=7
+; Per-cell packet scratch must not overlap LT_FLAGS: bit7 remains the styled
+; transaction marker through frame17 publication.
+LT_CELL_VALID=36
 LS_ROW=LRVT+40
 LS_POS=LRVT+41
 LS_NEXT=LRVT+44
@@ -30,27 +33,40 @@ lrv_paint_entry:
  jne opaque
  lda #4
  sta se_f_owner
+ lda se_st_tx+ST_TX_PHASE
+ cmp #ST_TX_READY
+ bne @plain
+ jmp @claimed
+@plain:
  lda LRVT+35                ;LT_PREPARED
  cmp #LRV_PUBLISHED
  jne miss
  lda #0
  sta LRVT+35                ;retire before any queued-state refusal
+@claimed:
  lda #1
  sta OP
  sta C+63
  jsr authenticate_helper
  jcs miss
+ lda se_st_tx+ST_TX_PHASE
+ cmp #ST_TX_READY
+ beq @queued_state
  ; The prepared transaction is consumable only while its exact R25 image and
  ; editor state remain current.  A queued command forces the ordinary redraw.
  inx
  cpx se_overlay_active
  jne miss
+@queued_state:
  lda se_e_ui
  ora se_e_job
  ora se_e_draw_busy
  ora se_r_presentation
  ora se_sel_mark
  jne miss
+ lda se_st_tx+ST_TX_PHASE
+ cmp #ST_TX_READY
+ beq @admit
  lda LRVT+LT_COVER
  cmp se_l_mode
  jne miss
@@ -89,10 +105,9 @@ lrv_paint_entry:
  jne miss
  dex
  bpl @caret
+@admit:
  lda #14
  jsr helper
- jcs miss
- jsr lrv_span_check
  jcs miss
  lda se_mode
  beq @validated
@@ -112,11 +127,12 @@ lrv_paint_entry:
  sta se_gc_valid+1
  sta se_gc_valid+2
 @row:
- lda #15
- jsr helper
- jcs miss
- cmp #1
- beq @finish
+ lda LRVT+LT_REL
+ cmp LRVT+LT_ROWS
+ bcs @finish
+ clc
+ adc LRVT+LT_FIRST
+ sta LRVT+LT_ROW
  jsr lrv_build_packet
  jcs miss
  lda se_mode
@@ -237,6 +253,36 @@ lrv_finish_state:
 ; Pure owner4 source gather. R25 has already authenticated the LRV header,
 ; selected record, plan slice and row DMA before this code reads any byte.
 lrv_build_packet:
+ ; Patch one private absolute,Y load before source callbacks borrow ZP. Padding
+ ; never consults the plan, so stale cells beyond a shorter line stay plain.
+ lda LRVT+LT_FLAGS
+ bpl @plan_ready
+ lda #0
+ sta text_ptr
+ lda se_mode
+ beq :+
+ lda #$48
+ bne @plan_page
+: lda #>STYLE_PLAN
+@plan_page:
+ sta text_ptr+1
+ ldx LRVT+LT_ROW
+ beq @plan_patch
+@plan_seek:
+ clc
+ lda text_ptr
+ adc LRVT+LT_WIDTH
+ sta text_ptr
+ bcc :+
+ inc text_ptr+1
+: dex
+ bne @plan_seek
+@plan_patch:
+ lda text_ptr
+ sta @style_cell+1
+ lda text_ptr+1
+ sta @style_cell+2
+@plan_ready:
  COPY24 LRVT+LT_START,LRVT+LT_SOURCE
  lda se_l_mode
  beq @wrapped
@@ -279,6 +325,7 @@ lrv_build_packet:
  sta P,x
  lda #0
  sta LRVT+LT_CELL_VALID
+ sta P+80,x
  ; Only offsets below the authenticated 16-bit content length read source.
  sec
  lda se_v_pos
@@ -321,6 +368,23 @@ lrv_build_packet:
  lda LRVT+LT_CELL_VALID
  cmp #1
  bne @caret
+ lda LRVT+LT_FLAGS
+ bpl @selection
+ ldy COL
+@style_cell:
+ lda $FFFF,y
+ pha
+ and #15
+ cmp #14
+ jcs @style_bad
+ ldx COL
+ sta P+80,x
+ pla
+ bpl @selection
+ lda P+160,x
+ ora #1
+ sta P+160,x
+@selection:
  CMP24 se_v_pos,se_sel_start
  bcc @caret
  CMP24 se_v_pos,se_sel_end
@@ -360,6 +424,9 @@ lrv_build_packet:
  lda #LRV_ERROR
  sec
  rts
+@style_bad:
+ pla
+ jmp @bad
 
 ; The native leaf evicts R25 from the R slot.  Commit the already-built
 ; packet here so a successful row does not reload R25 merely to prepare one
@@ -417,68 +484,6 @@ lrv_commit_row:
 @commit_bad:
  lda #LRV_ERROR
  sec
- rts
-
-; The selected visible slice must fit its logical line.  Multiplying
-; (CLIP_ROW + PLAN_ROWS - 1) by width proves the final row's first source
-; byte is at or before LENGTH.  This also admits exactly one terminal row at
-; empty or exact-width EOF and works unchanged for nowrap's one visible row.
-lrv_span_check:
- clc
- lda LRVT+LT_CLIP
- adc LRVT+LT_ROWS
- sta NEXT
- lda LRVT+LT_CLIP+1
- adc #0
- sta NEXT+1
- bcs @bad
- lda NEXT
- bne :+
- dec NEXT+1
-:
- dec NEXT
- lda #0
- sta NEXT+2
- sta POS
- sta POS+1
- sta POS+2
- lda LRVT+LT_WIDTH
- sta COL
-@bit:
- lsr COL
- bcc @shift
- clc
- lda POS
- adc NEXT
- sta POS
- lda POS+1
- adc NEXT+1
- sta POS+1
- lda POS+2
- adc NEXT+2
- sta POS+2
-@shift:
- asl NEXT
- rol NEXT+1
- rol NEXT+2
- lda COL
- bne @bit
- lda POS+2
- bne @bad
- lda POS+1
- cmp LRVT+LT_LENGTH+1
- bcc @ok
- bne @bad
- lda POS
- cmp LRVT+LT_LENGTH
- bcc @ok
- beq @ok
-@bad:
- lda #LRV_ERROR
- sec
- rts
-@ok:
- clc
  rts
 
 lrv_native_row:

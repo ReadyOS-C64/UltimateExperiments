@@ -1,6 +1,22 @@
 .setcpu "6502"
 .include "fold/source.inc"
+.macro FS_CHECK_NEAR source,offset,n,fail
+    ldx #n-1
+:
+    lda source,x
+    cmp se_fs_identity+offset,x
+    bne fail
+    dex
+    bpl :-
+.endmacro
 .segment "FOLD_SOURCE_CODE"
+.assert se_doc_original=se_doc_meta+5,lderror,"document identity fields are no longer contiguous"
+.assert se_doc_append=se_doc_original+5,lderror,"document identity fields are no longer contiguous"
+.assert se_doc_root_count=se_doc_length+3,lderror,"document length identity fields are no longer contiguous"
+.assert se_hot_append=se_hot_original+5,lderror,"hot object identity fields are no longer contiguous"
+.assert se_hot_length=se_hot_old_length+2,lderror,"hot length fields are no longer contiguous"
+.assert se_hot_left=se_hot_old_length+4,lderror,"hot length fields are no longer contiguous"
+.assert se_hot_right=se_hot_old_length+6,lderror,"hot length fields are no longer contiguous"
 se_fs_begin:
     lda se_fs_active
     ora se_fs_owned
@@ -26,7 +42,24 @@ se_fs_begin:
     sta se_fs_owned
     lda #0
     sta se_fs_error
-    FS_FIELDS FS_CAPTURE
+    ; Preserve the 59-byte identity ABI while joining physically contiguous
+    ; fields.  This removes seven copies of the same indexed loop.
+    FS_CAPTURE se_reu_epoch,0,2
+    FS_CAPTURE se_doc_epoch,2,2
+    FS_CAPTURE se_doc_generation,4,2
+    FS_CAPTURE se_doc_meta,6,15
+    FS_CAPTURE se_doc_length,21,4
+    FS_CAPTURE se_r_revision,25,4
+    FS_CAPTURE se_hot_ready,29,1
+    FS_CAPTURE se_hot_pending,30,1
+    FS_CAPTURE se_hot_phase,31,1
+    FS_CAPTURE se_hot_owned,32,1
+    FS_CAPTURE se_hot_fault,33,1
+    FS_CAPTURE se_hot_epoch,34,2
+    FS_CAPTURE se_hot_generation,36,2
+    FS_CAPTURE se_hot_original,38,10
+    FS_CAPTURE se_hot_base,48,3
+    FS_CAPTURE se_hot_old_length,51,8
     ldx #3
 @revision:
     lda se_r_revision,x
@@ -42,7 +75,30 @@ se_fs_guard:
     jeq fs_changed
     jsr se_doc_validate
     jcs fs_return
-    FS_FIELDS FS_CHECK
+    FS_CHECK_NEAR se_reu_epoch,0,2,@identity_changed_a
+    FS_CHECK_NEAR se_doc_epoch,2,2,@identity_changed_a
+    FS_CHECK_NEAR se_doc_generation,4,2,@identity_changed_a
+    FS_CHECK_NEAR se_doc_meta,6,15,@identity_changed_a
+    FS_CHECK_NEAR se_doc_length,21,4,@identity_changed_a
+    FS_CHECK_NEAR se_r_revision,25,4,@identity_changed_a
+    FS_CHECK_NEAR se_hot_ready,29,1,@identity_changed_a
+    FS_CHECK_NEAR se_hot_pending,30,1,@identity_changed_a
+    jmp @identity_checked_a
+@identity_changed_a:
+    jmp fs_changed
+@identity_checked_a:
+    FS_CHECK_NEAR se_hot_phase,31,1,@identity_changed_b
+    FS_CHECK_NEAR se_hot_owned,32,1,@identity_changed_b
+    FS_CHECK_NEAR se_hot_fault,33,1,@identity_changed_b
+    FS_CHECK_NEAR se_hot_epoch,34,2,@identity_changed_b
+    FS_CHECK_NEAR se_hot_generation,36,2,@identity_changed_b
+    FS_CHECK_NEAR se_hot_original,38,10,@identity_changed_b
+    FS_CHECK_NEAR se_hot_base,48,3,@identity_changed_b
+    FS_CHECK_NEAR se_hot_old_length,51,8,@identity_changed_b
+    jmp @identity_checked_b
+@identity_changed_b:
+    jmp fs_changed
+@identity_checked_b:
     lda se_doc_busy
     ora se_hot_phase
     ora se_hot_owned

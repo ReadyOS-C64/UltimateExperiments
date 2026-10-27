@@ -31,6 +31,9 @@ LRV_OLD_NC=$8500           ;old authenticated NC header
 ; Frame14 resumes the exact frame18 transaction. R25 remains resident across
 ; C6 -> resident -> C33; there is no persistent LRV object in this slice.
 lrv_admit:
+ lda se_st_tx+ST_TX_PHASE
+ cmp #ST_TX_READY
+ jeq lrv_style_admit
  lda GEC_VALID
  cmp #1
  jne lrv_bad
@@ -57,36 +60,176 @@ lrv_admit:
  sta LRVT+LT_CARET_ROW
  sta LRVT+LT_CARET_COL
  jsr se_selection_range
- clc
+ jsr lrv_span_check
  rts
 
-; Frame15.  Build one complete authoritative packet.  A=1 means done.
-lrv_packet:
- lda LRVT+LT_REL
- cmp LRVT+LT_ROWS
- bcc :+
- lda #1
- clc
- rts
-:
+; READY is authenticated once here, then expanded into the existing local-row
+; transaction. No later row call needs to reload R25.
+lrv_style_admit:
+ lda #ST_TX_CHECK_SEED
+ ldx #ST_TX_BYTES-1
+@check:
+ eor se_st_tx,x
+ dex
+ bne @check
+ cmp #ST_TX_READY
+ jne lrv_bad
+ lda se_st_valid
+ jne lrv_bad
+ lda se_st_request
+ cmp #0
+ jne lrv_bad
+ lda se_st_cp_valid
+ cmp #1
+ jne lrv_bad
+ lda se_render_caps
+ jeq lrv_bad
+ lda se_mode
+ cmp #3
+ jcs lrv_bad
+ tax
+ ora #$80
+ sta LRVT+LT_FLAGS
+ lda lrv_widths,x
+ sta LRVT+LT_WIDTH
+ lda se_mode
+ asl
+ ora se_l_mode
+ asl
+ asl
+ asl
+ asl
+ asl
+ eor se_st_tx+ST_TX_ROW_MODE
+ and #ST_TX_MODE_MASK
+ jne lrv_bad
+ lda se_st_tx+ST_TX_ROW_MODE
+ and #ST_TX_ROW_MASK
+ cmp #22
+ jcs lrv_bad
+ sta LRVT+LT_FIRST
+ lda se_st_tx+ST_TX_COUNT_KIND
+ and #ST_TX_COUNT_MASK
+ jeq lrv_bad
+ sta LRVT+LT_ROWS
  clc
  adc LRVT+LT_FIRST
- sta LRVT+LT_ROW
- jsr lrv_plan_row
+ cmp se_st_cp_count
  jcs lrv_bad
- lda #0
+ cmp #23
+ jcs lrv_bad
+ lda #ST_TX_DELETE
+ bit se_st_tx+ST_TX_COUNT_KIND
+ beq :+
+ lda #$FF
+ bne :++
+: lda #1
+: sta LRVT+LT_SIGN
+ ldx #1
+@sequence:
+ lda se_st_tx+ST_TX_SEQUENCE,x
+ cmp se_e_draw_sequence,x
+ jne lrv_bad
+ dex
+ bpl @sequence
+ ldx #3
+@revision:
+ lda se_st_tx+ST_TX_REVISION,x
+ cmp se_r_revision,x
+ jne lrv_bad
+ dex
+ bpl @revision
+ ldx #1
+@identity:
+ lda se_st_tx+ST_TX_DOC_GENERATION,x
+ cmp se_doc_generation,x
+ jne lrv_bad
+ lda se_st_tx+ST_TX_DOC_EPOCH,x
+ cmp se_doc_epoch,x
+ jne lrv_bad
+ dex
+ bpl @identity
+ jsr se_view_init
+ jcs lrv_bad
+ ldx #2
+@start:
+ lda se_st_tx+ST_TX_START,x
+ sta LRVT+LT_START,x
+ dex
+ bpl @start
+ sec
+ lda se_st_tx+ST_TX_END
+ sbc se_st_tx+ST_TX_START
+ sta LRVT+LT_LENGTH
+ lda se_st_tx+ST_TX_END+1
+ sbc se_st_tx+ST_TX_START+1
+ sta LRVT+LT_LENGTH+1
+ lda se_st_tx+ST_TX_END+2
+ sbc se_st_tx+ST_TX_START+2
+ jne lrv_bad
+ lda LRVT+LT_FIRST
+ asl
  clc
- rts
-
-; CAPS0 carries no plan object.  Materialize the implicit default role row.
-lrv_plan_row:
+ adc LRVT+LT_FIRST
+ tax
+ ldy #0
+@anchor:
+ lda se_v_rows,x
+ cmp LRVT+LT_START,y
+ jne lrv_bad
+ inx
+ iny
+ cpy #3
+ bcc @anchor
+ CMP24 se_v_length,se_st_tx+ST_TX_END
+ jcc lrv_bad
+ lda se_mode
+ beq @expanded
+ jsr lrv_save_header
+ jcs lrv_bad
+@expanded:
+ lda se_l_mode
+ sta LRVT+LT_COVER
+ lda #LRRF_VALID
+ sta LRVT+LT_RECORD_FLAGS
+ lda LRVT+LT_LENGTH
+ ora LRVT+LT_LENGTH+1
+ bne @nonempty
+ CMP24 se_st_tx+ST_TX_END,se_v_length
+ jne lrv_bad
+ jmp @record_ready
+@nonempty:
+ COPY24 se_st_tx+ST_TX_END,se_v_pos
+ jsr retreat
+ jsr se_view_peek
+ jcs lrv_bad
+ cmp #13
+ beq @cr
+ CMP24 se_st_tx+ST_TX_END,se_v_length
+ jne lrv_bad
+ jmp @record_ready
+@cr:
+ lda #LRRF_VALID|LRRF_CR
+ sta LRVT+LT_RECORD_FLAGS
+ lda LRVT+LT_LENGTH
+ bne :+
+ dec LRVT+LT_LENGTH+1
+: dec LRVT+LT_LENGTH
+@record_ready:
  lda #0
- ldy LRVT+LT_WIDTH
-@role:
- dey
- sta P+80,y
- bne @role
- clc
+ sta LRVT+LT_REL
+ sta LRVT+LT_CLIP
+ sta LRVT+LT_CLIP+1
+ sta LRVT+LT_CARET_ROW
+ sta LRVT+LT_CARET_COL
+ ldx #2
+@gc:
+ lda se_gc_valid,x
+ sta LRVT+LT_GC_VALID,x
+ dex
+ bpl @gc
+ jsr se_selection_range
+ jsr lrv_span_check
  rts
 
 ; Frame17.  Rekey the grid authority only after all row leaves succeeded.
@@ -95,7 +238,7 @@ lrv_finish:
  cmp LRVT+LT_ROWS
  jne lrv_bad
  lda se_mode
- beq @success
+ jeq @success
  ldx #0
 @restore_nc:
  lda LRV_OLD_NC,x
@@ -126,9 +269,61 @@ lrv_finish:
  lda se_e_draw_sequence+1
  adc #0
  sta H+N_SEQUENCE+1
+ lda LRVT+LT_FLAGS
+ bpl @store
+ ldx #3
+@header_revision:
+ lda se_r_revision,x
+ sta H+N_STYLE+17,x
+ dex
+ bpl @header_revision
+ ldx #2
+@header_length:
+ lda se_v_length,x
+ sta H+N_STYLE+21,x
+ dex
+ bpl @header_length
+ clc
+ lda se_st_generation
+ adc #1
+ sta H+N_STYLE+STYLE_KEY_BYTES
+ lda se_st_generation+1
+ adc #0
+ sta H+N_STYLE+STYLE_KEY_BYTES+1
+ lda #1
+ sta H+N_STYLE+STYLE_KEY_BYTES+2
+ lda #0
+ sta H+N_STYLE+STYLE_KEY_BYTES+3
+@store:
  jsr store_header
  jcs lrv_bad
 @success:
+ lda LRVT+LT_FLAGS
+ bpl @plain
+ ldx #3
+@descriptor_revision:
+ lda se_r_revision,x
+ sta se_st_descriptor+17,x
+ dex
+ bpl @descriptor_revision
+ ldx #2
+@descriptor_length:
+ lda se_v_length,x
+ sta se_st_descriptor+21,x
+ dex
+ bpl @descriptor_length
+ lda #1
+ sta se_st_cp_valid
+ inc se_st_generation
+ bne :+
+ inc se_st_generation+1
+: lda #0
+ sta se_st_request
+ lda #1
+ sta se_st_valid
+ lda #ST_TX_INVALID
+ sta se_st_tx+ST_TX_PHASE
+@plain:
  lda #0
  clc
  rts
@@ -257,40 +452,8 @@ lrv_plain_update:
  dex
  bpl @epochs
  ; Preserve the old authenticated NC header for the later 60/80 row commits.
- lda se_mode
- beq @header
- lda #1
- sta C+63
- jsr admit
+ jsr lrv_save_header
  jcs lrv_bad
- jsr fetch_header
- jcs lrv_bad
- jsr header_crc
- ldx #1
-@nc_crc:
- lda se_crc_value,x
- cmp H+N_CRC,x
- jne lrv_bad
- dex
- bpl @nc_crc
- lda H
- cmp #'N'
- jne lrv_bad
- lda H+1
- cmp #'C'
- jne lrv_bad
- lda H+2
- cmp #1
- jne lrv_bad
- lda H+3
- cmp #$a5
- jne lrv_bad
- ldx #0
-@save_nc:
- lda H,x
- sta LRV_OLD_NC,x
- inx
- bne @save_nc
 @header:
  lda se_l_mode
  sta LRVT+LT_COVER
@@ -458,6 +621,127 @@ lrv_check_edit_row:
  sec
  rts
 @ok:
+ clc
+ rts
+
+; Authenticate and retain the old narrow-cache header once per transaction.
+lrv_save_header:
+ lda se_mode
+ beq @done
+ lda #1
+ sta C+63
+ jsr admit
+ jcs @return
+ jsr fetch_header
+ jcs @return
+ jsr header_crc
+ ldx #1
+@crc:
+ lda se_crc_value,x
+ cmp H+N_CRC,x
+ bne @bad
+ dex
+ bpl @crc
+ lda H
+ cmp #'N'
+ bne @bad
+ lda H+1
+ cmp #'C'
+ bne @bad
+ lda H+2
+ cmp #1
+ bne @bad
+ lda H+3
+ cmp #LRV_PUBLISHED
+ bne @bad
+ ldx #0
+@save:
+ lda H,x
+ sta LRV_OLD_NC,x
+ inx
+ bne @save
+@done:
+ clc
+@return:
+ rts
+@bad:
+ sec
+ rts
+
+; Prove the last selected row starts within the authenticated logical length.
+lrv_span_check:
+ clc
+ lda LRVT+LT_CLIP
+ adc LRVT+LT_ROWS
+ sta NEXT
+ lda LRVT+LT_CLIP+1
+ adc #0
+ sta NEXT+1
+ bcs @bad
+ lda NEXT
+ bne :+
+ dec NEXT+1
+:
+ dec NEXT
+ lda #0
+ sta NEXT+2
+ sta POS
+ sta POS+1
+ sta POS+2
+ lda LRVT+LT_WIDTH
+ sta COL
+@bit:
+ lsr COL
+ bcc @shift
+ clc
+ lda POS
+ adc NEXT
+ sta POS
+ lda POS+1
+ adc NEXT+1
+ sta POS+1
+ lda POS+2
+ adc NEXT+2
+ sta POS+2
+@shift:
+ asl NEXT
+ rol NEXT+1
+ rol NEXT+2
+ lda COL
+ bne @bit
+ lda POS+2
+ bne @bad
+ lda POS+1
+ cmp LRVT+LT_LENGTH+1
+ bcc @ok
+ bne @bad
+ lda POS
+ cmp LRVT+LT_LENGTH
+ bcc @ok
+ beq @ok
+@bad:
+ sec
+ rts
+@ok:
+ ; Wrapped layout needs exactly this many rows. The lower bound above rejects
+ ; shrinkage; this strict upper bound also rejects an added terminal caret row.
+ lda se_l_mode
+ bne @valid
+ clc
+ lda POS
+ adc LRVT+LT_WIDTH
+ sta POS
+ bcc :+
+ inc POS+1
+:
+ lda LRVT+LT_LENGTH+1
+ cmp POS+1
+ bcc @valid
+ bne @bad
+ lda LRVT+LT_LENGTH
+ cmp POS
+ bcs @bad
+@valid:
  clc
  rts
 

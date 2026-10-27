@@ -4,6 +4,7 @@
 .macpack longbranch
 .include "editor-api.inc"
 .include "api.inc"
+.include "style/api.inc"
 .import se_f_owner,se_mode,se_v_columns,se_e_ui,se_e_menu,se_e_job,se_e_redraw,se_e_draw_busy,se_e_error
 .import se_hot_ready,se_hot_pending,se_hot_phase,se_hot_base,se_hot_length,se_hot_old_length,se_hot_caret
 .import se_hot_delete,se_l_caret
@@ -134,12 +135,12 @@ helpers:
 :
  cmp #14
  jeq lrv_admit
- cmp #15
- jeq lrv_packet
  cmp #17
  jeq lrv_finish
  cmp #18
- jeq lrv_plain_update
+ bne :+
+ jmp lrv_plain_update
+:
  lda #$90
  sec
  rts
