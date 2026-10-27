@@ -629,8 +629,6 @@ printable:
 @bad:
  sec
  rts
-count_delta:
- .byte 1,$FF
 capability:
  lda se_gc_width
  cmp #$FF
@@ -806,9 +804,24 @@ advance3:
 ; KIND/LANG/INLINE. Inline output can differ only if the edit splits/joins a
 ; '*'/'@' run or changes a native-pound escape context. Refuse those cases.
 syntax_proof:
- ; Exact transition lane: ordinary prose, beyond an alphanumeric first byte.
+ ; Exact transition lane: prose or heading body.  Colon-led constructs can
+ ; carry fence/region state and stay on the complete rebuild route.
+ jsr se_view_init
+ bcc :+
+ rts
+:
  lda GSEM_FRAME+GSEM_KIND
+ beq @prose
+ cmp #2
  bne @early_refuse
+ jmp @kind_ready
+@prose:
+ COPY24 GSEM_FRAME+GSEM_START,se_v_pos
+ jsr se_view_peek
+ bcs @early_refuse
+ cmp #':'
+ beq @early_refuse
+@kind_ready:
  CMP24 GEC_POSITION,GSEM_FRAME+GSEM_START
  bcc @early_refuse
  beq @early_refuse
@@ -822,17 +835,6 @@ syntax_proof:
 @early_refuse:
  jmp @refuse
 @position:
- jsr se_view_init
- bcc :+
- rts
-:
- COPY24 GSEM_FRAME+GSEM_START,se_v_pos
- jsr se_view_peek
- bcc :+
- rts
-:
- jsr printable
- jcs @refuse
  COPY24 GEC_POSITION,se_v_pos
  CMP24 se_v_pos,GSEM_FRAME+GSEM_BODY
  beq @next
