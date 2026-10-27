@@ -452,9 +452,6 @@ measure:
     iny
     cpy #8
     bcc @header
-    lda #0
-    sta G+GG_VALID
-    sta G+GG_REVERSE
     lda G+GG_VALUE
     jsr se_petscii_screen
     sta G+GG_SCREEN
@@ -488,7 +485,6 @@ measure:
     clc
     adc #32
 @mapped:
-    sta G+GG_INDEX
     lda #0
     beq @kind
 @fallback:
@@ -504,7 +500,6 @@ measure:
     beq fixed_format
     cmp #9
     bcs fixed_format
-    sta G+GG_WIDTH
     tax
     lda G+GG_KIND
     beq :+
@@ -522,18 +517,10 @@ measure:
     inc G+GG_ADVANCE
     inc G+GG_ADVANCE
 @metrics:
-    lda #6
-    sta G+GG_BASELINE
-    lda #9
-    sta G+GG_HEIGHT
-    lda #1
-    sta G+GG_VALID
     lda #0
     clc
     rts
 fixed_format:
-    lda #0
-    sta G+GG_VALID
     lda #GG_FORMAT
     sec
     rts
