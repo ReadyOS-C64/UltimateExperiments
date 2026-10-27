@@ -37,7 +37,8 @@ underline, per-role appearance and aligned code. F7 `mode hires`, then `preview`
 Return returns to editing. F7 `settings` chooses body/H1–H6/code fonts, sizes,
 colors and styles for the session. Host defaults live in
 [config/editor-defaults.toml](config/editor-defaults.toml); see
-[preview and settings controls](docs/GEOS_PREVIEW.md). Source-mapped preview editing
+[preview and settings controls](docs/GEOS_PREVIEW.md) and
+[capacity and tested limits](docs/CAPACITY.md). Source-mapped preview editing
 and formatting commands are deferred. Eligible wrapped60/80 prose edits reuse
 checked pixel/row packets; GEOS layout reuses completed inline styles and incoming
 parser state. Performance and final standalone hardening remain unfinished.

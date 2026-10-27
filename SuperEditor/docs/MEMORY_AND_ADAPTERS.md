@@ -1,8 +1,40 @@
+# Memory and standalone adapters
+
+## Current runtime ac7b270
+
+The current linked package has62 registered images and four REU code banks.
+Its resident remains2924dd/binding39cea9. The ReadyOS reservation is the entire
+untouched `$C600–$C9FF` range. Current resource sizes are:
+
+| Resource | Linked bytes |
+| --- | ---: |
+| Zero page |24|
+| BSS |1534|
+| COLD |1737, ending `$0ED5` inclusive;42 bytes before `$0F00`|
+| C7 menu/control |3930|
+| C21 page coordinator |4096|
+| R21 glyph rasterizer |4094|
+| R22 popup/settings |4003|
+| R30 local typing |3662|
+| C32 typing stage |3856, raw3824;240 bytes before the stage stamp|
+| C41 rebase |4068|
+| R34 transform |4095|
+
+All62 images and staged code pass the computed68-byte relative foreground plus
+one interrupt bound. This retains its declared IRQ/ROM/frame contracts; it is
+not an exhaustive physical NMI/ROM stack guarantee. The private63 paint module
+and paged-help experiment are not registered in this package. The
+[capacity and tested limits](CAPACITY.md) distinguish the bounded1MiB source
+engine proof, finite quotas, lower-memory configurations and D81 free space.
+
+The following sections preserve earlier checkpoint descriptions. Their scoped
+sizes and historical wording do not supersede this current linked map.
+
 The current build registers62 editor overlays in the existing64-entry catalogue
 and four checked REU code banks. R29 ROW and C41 PARSE/R34 XFORM reuse existing
 filename suffixes. The packed catalog leaves COLD ending`$0ED5`, with42 bytes
 before`$0F00`. BSS remains1,534 bytes and zero page24. The entire ReadyOS
-reservation`$C600–$C9FF` remains untouched. C7 is3930bytes, C21 is4096, C41 is4058
+reservation`$C600–$C9FF` remains untouched. C7 is3930bytes, C21 is4096, C41 is4068
 and R34 is4095. The rebase batch quota borrows BC_FRAME+79; its source reader is
 at+173 and live SuperMark state starts at+94. Up to four typed R34 microsteps
 share one synchronous source/observer guard, renewed after every yield. Final
