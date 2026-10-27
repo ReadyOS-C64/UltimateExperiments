@@ -89,7 +89,7 @@ def run(out,base):
   before=f.reu();canon=f.canonical();f.audit_begin();measured(tag,lambda:f.render());f.audit_end(before,tag);after=f.reu();wanted=bytearray(before);h=f.get('se_gc_handle',1);spans=[];mode=f.get('se_mode',1)
   if h:
    bank=f.m.read(f.s['se_reu_map']+h);assert bank and f.m.read(f.s['se_reu_logical_owner']+h)==f.m.read(f.s['se_reu_physical_owner']+bank)==0xfe
-   spans=([(0,64),(0x600,0x680),(0xb200,0xd568),(0xe568,0xea88)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)])if mode==3 else[(0,22*240)]
+   spans=([(0,64),(0x600,0x680),(0xb200,0xd8b2),(0xe568,0xea88)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)])if mode==3 else[(0,22*240)]
    for a,b in spans:wanted[bank*65536+a:bank*65536+b]=after[bank*65536+a:bank*65536+b]
   assert after==wanted and f.canonical()==canon,(tag,'readonly exactFE/source guard');check(tag+'-source')
   if mode==3:

@@ -24,6 +24,7 @@
 .import se_l_valid,se_r_valid,se_st_request,se_st_cp_valid,se_l_mode,se_l_pan,se_l_manual
 .import se_v_top,se_hot_caret,se_view_peek,se_view_advance,se_v_pos,se_v_rows
 .import se_v_bottom,se_v_seen,se_v_caret_row,se_l_need_wrap
+.importzp screen_ptr
 .export entry
 P=GP_CONTROL
 PS=P
@@ -79,8 +80,6 @@ entry:
     jeq fold_top_step
     cmp #11
     jeq caret_step
-    cmp #12
-    jeq edit_rebase
     jsr se_gp_cache_guard
     jcs failed
     lda PS
@@ -198,7 +197,12 @@ edit_attempt:
     jcs failed
     cmp #2
     beq full_page
-    lda #2
+    lda GEX_AUX
+    cmp #3
+    lda #3
+    bcs :+
+    lda #4                    ;complete CR rejoins immediately after dirty row
+:
     sta FAST_PAINT
     lda GEX_ROW
     sta LINE
@@ -332,8 +336,8 @@ fold_line_done:
     sta FOLD_PENDING
     COPY24 GFQ_RESULT,FOLD_END
 prepare_line:
- ; Reserved ABI3 prefix bytes authenticate the actual C24 language.
- lda GSEM_FRAME+GSEM_LANG
+	 ; Preserve the ABI3 language/complement packet contract.
+	 lda GSEM_FRAME+GSEM_LANG
  sta GP_RECORD+30
  eor #$FF
  sta GP_RECORD+31
@@ -717,8 +721,11 @@ publish_row:
     jsr se_gp_cache_write
     jcs failed
     lda FAST_PAINT
-    cmp #2
-    jeq edit_verify
+    cmp #3
+    bne :+
+    jsr convergence_compare
+    jcs failed
+:
     ; Publish canonical row anchors only after its complete immutable packet.
     lda LINE
     asl
@@ -770,6 +777,11 @@ publish_row:
     bcs complete_page
     jsr header_write
     jcs failed
+    lda FAST_PAINT
+    cmp #4
+    beq convergence_rebase
+    jsr convergence_capture
+    jcs failed
     jmp next_line
 complete_page:
     lda #1
@@ -777,23 +789,17 @@ complete_page:
     jsr header_write
     jcs failed
     jmp paint_start
-edit_verify:
-    lda #GEX_VERIFYROW
-    jsr edit_call
-    jcs failed
-    cmp #2
-    jeq full_page
-    lda #12
-    sta PS
-    jmp own_pending
-edit_rebase:
+convergence_rebase:
+    lda LINE
+    sta GEX_SCAN_ROW
     lda #GEX_REBASE
     jsr edit_call
-    jcs failed
-    cmp #0
-    jne own_pending
-    ; Rebind every VIEW anchor and caret against the newly published packet
-    ; positions. Only the physical bands intersecting the edited row repaint.
+    bcc :+
+    tax                         ;set Z from the overlay ABI return value
+    jeq full_page
+    jmp failed
+:   lda #2
+    sta FAST_PAINT
     lda #0
     sta LINE
     jmp cached_begin
@@ -1073,6 +1079,203 @@ busy:
 argument:
     lda #$90
     sec
+    rts
+
+; Private no-extra-load row comparator. R28 admission owns authority and the
+; first unused row-slot shadow; C21 compares/captures synchronously.
+convergence_compare:
+	lda LINE
+	cmp GEX_ROW
+	jeq @dirty
+	    lda #<GEX_OLD_ROW
+	    sta GP_IO_OFFSET
+	    lda #>GEX_OLD_ROW
+	    sta GP_IO_OFFSET+1
+    jsr convergence_host
+    jsr se_gp_cache_read
+    jcs @return
+    lda #0
+    sta screen_ptr
+    lda #$80
+    sta screen_ptr+1
+    ldx #4
+@anchor:
+    ldy #0
+    lda GEX_OP
+    bne @minus
+    clc
+    lda (screen_ptr),y
+    adc #1
+    sta (screen_ptr),y
+    iny
+    lda (screen_ptr),y
+    adc #0
+    sta (screen_ptr),y
+    iny
+    lda (screen_ptr),y
+    adc #0
+    sta (screen_ptr),y
+    jcs @not_exact
+    bcc @next_anchor
+@minus:
+    sec
+    lda (screen_ptr),y
+    sbc #1
+    sta (screen_ptr),y
+    iny
+    lda (screen_ptr),y
+    sbc #0
+    sta (screen_ptr),y
+    iny
+    lda (screen_ptr),y
+    sbc #0
+    sta (screen_ptr),y
+    jcc @not_exact
+@next_anchor:
+    clc
+    lda screen_ptr
+    adc #3
+    sta screen_ptr
+    dex
+    bne @anchor
+@normalized:
+    ; Both rows must be soft wraps of the same complete logical event.
+    ldx #2
+@event_start:
+    lda GSEM_FRAME+GSEM_START,x
+    cmp GEX_TEMP,x
+    jne @not_exact
+    dex
+    bpl @event_start
+    lda #0
+    sta screen_ptr
+    sta GEX_OFFSET
+    sta GEX_OFFSET+1
+    lda #$80
+    sta screen_ptr+1
+    lda #<GPR_USED
+    sta GEX_COPY_LEFT
+    lda #>GPR_USED
+    sta GEX_COPY_LEFT+1
+@chunk:
+    lda GEX_COPY_LEFT+1
+    beq @tail
+    lda #192
+    bne @amount
+@tail:
+    lda GEX_COPY_LEFT
+    cmp #192
+    bcc @amount
+    lda #192
+@amount:
+    sta GEX_CHUNK
+    lda LINE
+    jsr slot
+    clc
+    lda GP_IO_OFFSET
+    adc GEX_OFFSET
+    sta GP_IO_OFFSET
+    lda GP_IO_OFFSET+1
+    adc GEX_OFFSET+1
+    sta GP_IO_OFFSET+1
+    lda #<GEX_BUFFER
+    sta GP_IO_POINTER
+    lda #>GEX_BUFFER
+    sta GP_IO_POINTER+1
+    lda GEX_CHUNK
+    sta GP_IO_LENGTH
+    lda #0
+    sta GP_IO_LENGTH+1
+    jsr se_gp_cache_read
+    jcs @return
+    ldy #0
+@byte:
+    lda (screen_ptr),y
+    cmp GEX_BUFFER,y
+    jne @not_exact
+    iny
+    cpy GEX_CHUNK
+    bcc @byte
+    clc
+    lda screen_ptr
+    adc GEX_CHUNK
+    sta screen_ptr
+    bcc :+
+    inc screen_ptr+1
+:   clc
+    lda GEX_OFFSET
+    adc GEX_CHUNK
+    sta GEX_OFFSET
+    bcc :+
+    inc GEX_OFFSET+1
+:   sec
+    lda GEX_COPY_LEFT
+    sbc GEX_CHUNK
+    sta GEX_COPY_LEFT
+    lda GEX_COPY_LEFT+1
+    sbc #0
+    sta GEX_COPY_LEFT+1
+    ora GEX_COPY_LEFT
+    jne @chunk
+    lda #4
+    sta FAST_PAINT
+    bne @reload
+@dirty:
+    ; Preserve this row's complete-event START across the following row job.
+    ldx #2
+@save_event_start:
+    lda GSEM_FRAME+GSEM_START,x
+    sta GEX_TEMP,x
+    dex
+    bpl @save_event_start
+    clc
+    rts
+@not_exact:
+    lda #0
+    sta FAST_PAINT
+@reload:
+    lda LINE
+    jsr slot
+    lda #<GP_RECORD
+    sta GP_IO_POINTER
+    lda #>GP_RECORD
+    sta GP_IO_POINTER+1
+    lda #GPR_PREFIX
+    sta GP_IO_LENGTH
+    lda #0
+    sta GP_IO_LENGTH+1
+    jmp se_gp_cache_read
+@return:
+    rts
+
+convergence_host:
+    lda #0
+    sta GP_IO_POINTER
+    lda #$80
+    sta GP_IO_POINTER+1
+    lda #<GPR_USED
+    sta GP_IO_LENGTH
+    lda #>GPR_USED
+    sta GP_IO_LENGTH+1
+    rts
+
+convergence_capture:
+    lda FAST_PAINT
+    cmp #3
+    bne @done
+    lda LINE
+    jsr slot
+    jsr convergence_host
+    jsr se_gp_cache_read
+    jcs @return
+	    lda #<GEX_OLD_ROW
+	    sta GP_IO_OFFSET
+	    lda #>GEX_OLD_ROW
+	    sta GP_IO_OFFSET+1
+    jmp se_gp_cache_write
+@done:
+    clc
+@return:
     rts
 
 .segment "GEOS_PAGE"

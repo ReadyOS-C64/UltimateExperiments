@@ -63,7 +63,7 @@ def run(out,base):
    # f.reu() in the historical renderer fixture covers2MiB. This gate's
    # snapshots cover16MiB, so compare equal full extents with exact FE spans.
    _,bank=f.raw_cache();after=gate.reu();wanted=bytearray(before)
-   spans=[(0,64),(0x600,0x680),(0xB200,0xD568),(0xE568,0xEA88)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]
+   spans=[(0,64),(0x600,0x680),(0xB200,0xD8B2),(0xE568,0xEA88)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]
    for lo,hi in spans:
     lo+=bank*65536;hi+=bank*65536;wanted[lo:hi]=after[lo:hi]
    assert after==wanted,'whole16MiB outside exact FE cache spans'

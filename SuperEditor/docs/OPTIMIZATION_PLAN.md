@@ -1010,33 +1010,42 @@ and
 The exact D81 is
 `c86c17087fb3d224cb6805092ce6e17695c92e91f1eaae8fd8430a532332d597`.
 
-### Next material slice: in-place GEOS row convergence
+### Implemented material slice: in-place GEOS row convergence
 
-The next GEOS experiment must replace repeated suffix layout and paint inside
-the existing C21/C22 route. It must not promote the additive R63/22-shadow
-prototype, add an overlay, or persist another cache. That private proof already
-shows the useful boundary: ordinary wrapped prose/styled insert/backspace can
-avoid 647,505–788,387 instructions, or 23.48–34.68% of the complete public
-operation, when a newly built row exactly rejoins the outgoing row stream.
+The GEOS replacement removes repeated suffix layout and paint inside the
+existing C21/C22 route. It does not promote the additive R63/22-shadow
+prototype, add an overlay, or persist another cache. When a newly built row
+exactly rejoins the outgoing row stream, C21 stops the remaining
+C20/C24/C26 suffix construction and R28 applies one bounded signed-anchor
+rebase while it is resident.
 
-The production shape is one authenticated old 842-byte row in the existing
-dead phase loan. R28 performs one-time authority admission, captures the first
-old row and publishes header VALID0. The synchronous old/new row comparator and
+The production shape uses one authenticated 842-byte following-row shadow in
+the existing phase loan. R28 performs one-time authority admission and publishes
+header VALID0. The synchronous old/new row comparator and
 next-row capture must remain in C21 while C20/C24/C26 and R21 run. Calling R28
 again at every `publish_row` would reload it after those R-slot workers and
 fails the zero-extra-load gate before benchmarking. Replace the strict
 `admit`, `verify`, `rebase` and `commit` route rather than layering another
 transaction over it. Keep C22's existing dirty-strip admission unchanged.
-`GEX_OLD_ROW=$D568` and `GEX_NEW_ROW=$DD68` already reserve two unused 842-byte
-FE spans; use one and retire the other reservation. C21 builds the changed row
+`GEX_OLD_ROW=$D568` owns exactly `$D568–$D8B1`; `$D8B2–$E567` stays dead and
+exact. C21 builds the changed row
 normally, then its resident comparator checks canonical NEXT, geometry, paint
 fields and the live
 CHARS/STYLES/ROLES/X planes. On exact convergence it bounds C22 to the union of
-old/new row strips and old/new caret strips. Only a later exact rebase proof may
-stop further C20/C24/C26 propagation. Existing publication and GCC authority
-remain the only commit boundary.
+old/new row strips and old/new caret strips, then terminates further
+C20/C24/C26 propagation. Existing publication and GCC authority remain the
+only commit boundary.
 
-Promotion requires all of the following:
+The final C21/R28 pair is 4,094 + 3,194 = 7,288 bytes, 118 bytes smaller than
+the 7,406-byte `3d53387` control. Representative Full GEOS insert falls from
+907,617 to 825,542 actual 6510 instructions (9.04%), with 36 overlay loads
+unchanged, DMA calls falling 383 to 310 and DMA bytes falling 168,061 to
+166,782. Wrapped prose insert/backspace fall about 40.4% against the original
+control; styled wrapped edits fall about 37.5%. The accepted transaction uses
+one 842-byte shadow and adds no overlay, BSS, zero-page state, REU object or
+persistent cache.
+
+CPU, output and authority qualification covered all of the following:
 
 - leave C22 byte-identical, keep C21 and R28 within their current 4 KiB slots,
   and keep their combined linked payload no larger than the `c9bc852` control
@@ -1053,17 +1062,16 @@ Promotion requires all of the following:
   refuse folds, pan, selection, stale/corrupt GCC/GEC/header/source/provider
   authority, count/top/kind/height/NEXT mismatch, damaged old rows and DMA
   faults before optimized publication;
-- preserve source, history, Undo/Redo, STOP/cancel, full 16 MiB operation, the
-  68-byte stack bound, PAL and NTSC exact native evidence.
+- preserve source, history, Undo/Redo, STOP/cancel, the full 16 MiB operation
+  and the 68-byte stack bound.
 
-Start with an ignored R28/C21/C22 fork and one-row scratch covering four
-ordinary and four structural cases. Reject it immediately if it needs a new
-capsule, another persistent memo, extra loads, or cannot fund itself by
-deleting superseded edit work. Do not delete C21's `cached_row`: the independent
-source-identical caret/selection reuse route needs it. The C32
-canonical-row source check stays: it is the current defense against arbitrary
-FE CHARS corruption, and deleting it would weaken correctness rather than
-remove redundant work.
+Broad24, wrapped, complete-CR, hardening, full-page refusal, over-capacity,
+tail-fault, structural-refusal and Plain-mode gates pass. Lane-aware lifetime
+watches observed 14 accepted arms and 14 closes with zero prefix writes, owner
+changes, yields or open watches. C21's `cached_row` remains because the
+independent source-identical caret/selection reuse route needs it. The C32
+canonical-row source check also remains as the defense against arbitrary FE
+CHARS corruption.
 
 ### Dead GEOS edit-class path removed
 

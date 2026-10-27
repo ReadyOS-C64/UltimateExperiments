@@ -9,7 +9,7 @@ DEFAULT=ROOT/'build/geos-convergent-line/20261025T203529279433Z/project'
 BASE=ROOT/'build/geos-incremental-editor/20261025T203233990688Z/fixture'
 
 def outside(f,before,tag):
- after=f.reu();_,bank=f.raw_cache();allowed=[(0,64),(0x600,0x680),(0xb200,0xd568),(0xe568,0xea88)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)];cursor=0
+ after=f.reu();_,bank=f.raw_cache();allowed=[(0,64),(0x600,0x680),(0xb200,0xd8b2),(0xe568,0xea88)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)];cursor=0
  for a,b in sorted((bank*65536+a,bank*65536+b)for a,b in allowed):assert after[cursor:a]==before[cursor:a],(tag,'foreignREU',cursor,a);cursor=b
  assert after[cursor:]==before[cursor:],(tag,'foreignREUtail')
 

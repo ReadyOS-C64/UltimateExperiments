@@ -61,7 +61,7 @@ def run(out,base,faults_only=False,packaged=False):
     bits,attrs,_=plain.expected(f,data,fonts,1);assert f.read(0x6000,8000)==bits and f.read(0x4000,1000)==attrs,(variant,tag,'pixels')
     assert f.merged()==data and g.stable()==stable and f.canonical()==canonical and f.read(0xc600,1024)==f.shim
     assert not any(f.get(n,1)for n in('se_e_job','se_e_error','se_f_owner','se_doc_read_locks'))
-    _,bank=f.raw_cache();after=g.reu();want=bytearray(before);spans=[(0,64),(0x600,0x680),(0xb200,0xd568),(0xe568,0xea88),(0xfc00,0xfda0)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)]
+    _,bank=f.raw_cache();after=g.reu();want=bytearray(before);spans=[(0,64),(0x600,0x680),(0xb200,0xd8b2),(0xe568,0xea88),(0xfc00,0xfda0)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)]
     for l,h in spans:want[bank*65536+l:bank*65536+h]=after[bank*65536+l:bank*65536+h]
     assert after==want,(variant,tag,'precise whole16MiB')
     if (packaged or variant=='candidate')and (tag.startswith('4k')or tag=='far66k'):assert(39,0)in trace and(39,1)in trace and(20,1)in trace,trace
@@ -115,7 +115,7 @@ def faults(out,g,images,fonts,packaged=False):
   elif action!='wrong-certificate':f.key(0x8b);f.key(0x8b)
   f.render();bits,attrs,_=plain.expected(f,data,fonts,1);assert f.read(0x6000,8000)==bits and f.read(0x4000,1000)==attrs,(action,'recovery pixels')
   assert f.canonical()==canonical and g.stable()==stable and f.merged()==data and not any(f.get(n,1)for n in('se_e_error','se_doc_read_locks','se_f_owner','se_e_job'))
-  _,bank=f.raw_cache();after=g.reu();want=bytearray(before);spans=[(0,64),(0x600,0x680),(0xb200,0xd568),(0xe568,0xea88),(0xfc00,0xfda0)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)]
+  _,bank=f.raw_cache();after=g.reu();want=bytearray(before);spans=[(0,64),(0x600,0x680),(0xb200,0xd8b2),(0xe568,0xea88),(0xfc00,0xfda0)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)]
   for l,h in spans:want[bank*65536+l:bank*65536+h]=after[bank*65536+l:bank*65536+h]
   assert after==want,(action,'whole16MiB recovery')
   observer.geos.png(bits,attrs,out/(action+'.png'));item=dict(action=action,steps=step,trace=trace);results.append(item);print('FAULT PASS',action,flush=True)

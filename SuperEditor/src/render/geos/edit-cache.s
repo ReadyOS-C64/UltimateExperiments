@@ -5,13 +5,12 @@
 .include "render/geos/edit-cache.inc"
 .include "render/geos/edit-certificate.inc"
 .include "render/geos/semantic.inc"
-.import se_crc_init,se_crc_byte,se_crc_value
 .include "document/math24.inc"
 .import se_f_owner,se_mode,se_e_ui,se_e_draw_sequence,se_r_presentation
 .import se_l_mode,se_l_pan,se_sel_mark,se_ef_valid,se_ef_generation
 .import se_gc_handle,se_gc_epoch,se_gc_width,se_reu_epoch,se_reu_map
 .import se_doc_meta,se_doc_generation,se_doc_epoch,se_doc_busy
-.import se_r_revision,se_v_length,se_v_top,se_v_pos,se_view_init,se_view_peek
+.import se_r_revision,se_v_length,se_v_top,se_v_pos,se_view_init,se_view_peek,se_view_advance,se_view_retreat
 .import se_hot_caret,se_hot_pending,se_hot_phase,se_hot_ready,se_hot_command,se_hot_delete
 .import se_object_id,se_object_validate
 .import se_petscii_screen
@@ -25,8 +24,6 @@ entry:
  jne busy
  lda se_overlay_frame
  beq admit
- cmp #1
- jeq verify
  cmp #2
  jeq rebase
  cmp #3
@@ -43,13 +40,19 @@ pending:
  clc
  rts
 miss:
+	 ldx GEX_PHASE
  lda #0
  sta GEX_PHASE
  sta GEC_VALID
  sta GCC_VALID
+	 cpx #1
+	 beq @rebase_refuse
  lda #2
  clc
  rts
+@rebase_refuse:
+	 sec
+	 rts
 fault:
  pha
  lda #0
@@ -224,7 +227,7 @@ admit:
  jne miss
  lda GEX_HEADER+GPH_COUNT
  beq @bad_count
- cmp #23
+	 cmp #23                    ;1..GP_MAX_LINES; reserved FE shadow is independent
  bcc :+
 @bad_count:
  jmp miss
@@ -278,6 +281,8 @@ admit:
  CMP24 GEC_POSITION,GP_RECORD+GPR_END
  bcc @found
  bne @next
+ lda GEX_OP
+ jne miss                     ;a delete witness must remain inside CHARS[0..COUNT)
  jmp @found ;complete reason/caret-row proof below disambiguates EOF/CR
 @next:
  inc GEX_ROW
@@ -293,26 +298,23 @@ admit:
  cmp GCC_HEIGHT
  jne miss
  lda GP_RECORD+GPR_KIND
- cmp #2
- jcs miss
+ jne miss
 @geometry:
  lda GP_RECORD+GPR_RASTER_X
  ora GP_RECORD+GPR_RASTER_X+1
  ora GP_RECORD+GPR_COUNT+1
  bne @reason_bad
- lda GP_RECORD+GPR_KIND
- eor #1
- ora #8 ;oldKIND0/1 is already checked on both START/interior paths
+ lda #9                       ;old raster KIND0 was already proved
  cmp GP_RECORD+GPR_HEIGHT
  bne @reason_bad
  sta GEX_HEIGHT
  lda GP_RECORD+GPR_REASON
  beq @reason_bad
- cmp #3
- bcc :+
-@reason_bad:
- jmp miss
-: sta GEX_AUX
+ cmp #7
+ bcs @reason_bad
+ cmp #2                      ;CR and wraps; EOF has no following-row witness
+ beq @reason_bad
+ sta GEX_AUX
  lda GP_RECORD+GPR_TOP
  cmp #16
  bcc @reason_bad
@@ -346,6 +348,10 @@ admit:
  cmp #162
  bcs @reason_bad
  sta GEX_BOUNDARIES
+ jmp @geometry_ok
+@reason_bad:
+ jmp miss
+@geometry_ok:
  COPY24 GP_RECORD+GPR_START,GEX_OLD_START
  COPY24 GP_RECORD+GPR_END,GEX_OLD_END
  COPY24 GP_RECORD+GPR_NEXT,GEX_OLD_NEXT
@@ -358,62 +364,39 @@ admit:
  lda GEX_TEMP
  cmp GEX_BOUNDARIES
  jne miss
- lda GEX_AUX
- cmp #1
- bne @eof_shape
- COPY24 GEX_OLD_END,GEX_TEMP
- inc GEX_TEMP
- bne :+
- inc GEX_TEMP+1
- bne :+
- inc GEX_TEMP+2
-: CMP24 GEX_TEMP,GEX_OLD_NEXT
- jne miss
- jmp @row_shape
-@eof_shape:
- CMP24 GEX_OLD_END,GEX_OLD_NEXT
- jne miss
- CMP24 GEX_OLD_END,GEX_OLD_LENGTH
- jne miss
+ CMP24 GEX_OLD_NEXT,GEX_OLD_END
+ jcc miss
+ CMP24 GEX_OLD_NEXT,GEX_OLD_LENGTH
+ bcc @row_shape
+ beq @row_shape
+ jmp miss
 @row_shape:
- jsr cert_read
- jcs fault
- cmp #1
- jne miss
- CMP24 GEX_BUFFER+4,GEX_OLD_NEXT
- jne miss
+ lda GEX_AUX
+ lsr                          ;only admitted reason below 3 is CR=1
+ bne @neighbor
+ sec                          ;prove the cached complete-CR shape NEXT=END+1
+ ldx #0
+@cr_shape:
+ lda GEX_OLD_END,x
+ adc #0
+ eor GEX_OLD_NEXT,x           ;EOR preserves the carry into the next byte
+ bne @bad_shape
+ inx
+ cpx #3
+ bne @cr_shape
+@neighbor:
  lda GEX_ROW
  beq @first
  sec
  sbc #1
  jsr row
  jcs fault
- lda GP_RECORD+GPR_REASON
- cmp #1
- jne miss
  CMP24 GP_RECORD+GPR_NEXT,GEX_OLD_START
- jne miss
+ bne @bad_shape
  jmp @first_char
+@bad_shape:
+ jmp miss
 @first:
- lda GEX_OLD_START
- ora GEX_OLD_START+1
- ora GEX_OLD_START+2
- beq @first_char
- COPY24 GEX_OLD_START,se_v_pos
- lda se_v_pos
- bne @preceding_low
- lda se_v_pos+1
- bne @preceding_mid
- dec se_v_pos+2
-@preceding_mid:
- dec se_v_pos+1
-@preceding_low:
- dec se_v_pos
-@preceding:
- jsr se_view_peek
- jcs fault
- cmp #13
- jne miss
 @first_char:
 @byte_witness:
  ; Deletionwitness mustmatchthe oldcached literalbyte atthatcanonicalposition.
@@ -451,7 +434,7 @@ admit:
  cmp GEC_NEW
  jne miss
 @stage:
- ; Retain the checked old-header witness; row backups have no consumers.
+ ; Retain the checked old-header witness.
  lda #<GEX_OLD_HEADER
  sta GP_IO_OFFSET
  lda #>GEX_OLD_HEADER
@@ -516,120 +499,36 @@ admit:
  lda #1
  sta GEX_PHASE
  jmp pending
-; Anewbuiltrow isalready initsnormalFEslot, stillunderheaderVALID0.
-verify:
- lda GEX_PHASE
- cmp #1
- jne miss
+; C21 proves row convergence and enters one synchronous suffix rebase.
+rebase:
+	 lda GEX_PHASE
+	 cmp #1
+	 jne miss
  jsr current
  jcs fault
- lda GEX_ROW
- jsr row
- jcs fault
- lda GP_RECORD+GPR_KIND
- eor #1
- clc
- adc #8
- cmp GEX_HEIGHT
- jne miss
- lda GP_RECORD+GPR_FLAGS
- and #$FE
- ora GP_RECORD+GPR_RASTER_X
- ora GP_RECORD+GPR_RASTER_X+1
- ora GP_RECORD+GPR_COUNT+1
- jne miss
- lda GP_RECORD+GPR_REASON
- cmp GEX_AUX
- jne miss
- lda GP_RECORD+GPR_TOP
- cmp GEX_TOP
- jne miss
- lda GP_RECORD+GPR_HEIGHT
- cmp GEX_HEIGHT
- jne miss
- CMP24 GP_RECORD+GPR_START,GEX_OLD_START
- jne miss
- CMP24 GP_RECORD+GPR_FIRST,GEX_OLD_START
- jne miss
- COPY24 GEX_OLD_END,GEX_TEMP
- jsr delta
- jcs miss
- CMP24 GP_RECORD+GPR_END,GEX_TEMP
- jne miss
- COPY24 GEX_OLD_NEXT,GEX_TEMP
- jsr delta
- jcs miss
- CMP24 GP_RECORD+GPR_NEXT,GEX_TEMP
- jne miss
- SUB24 GP_RECORD+GPR_END,GEX_OLD_START,GEX_TEMP
- lda GEX_TEMP+1
- ora GEX_TEMP+2
- jne miss
- lda GEX_TEMP
- cmp #162
- jcs miss
- cmp GP_RECORD+GPR_COUNT
- jne miss
-@new_semantics_ready:
- jsr cert_read
- jcs fault
- cmp #1
- jne miss
- lda GSEM_FRAME+GSEM_CP_VALID
- cmp #1
- jne miss
- ldx #27
-@semantic_key:
- lda GSEM_FRAME+GSEM_CP_KEY,x
- cmp GP_HEADER+GPH_KEY,x
- jne miss
- dex
- bpl @semantic_key
- ldx #2
-@semantic_next:
- lda GSEM_FRAME+GSEM_CP_NEXT,x
- cmp GP_RECORD+GPR_NEXT,x
- jne miss
- lda GSEM_FRAME+GSEM_CP_STATE+76,x
- cmp GEX_BUFFER+38,x
- jne miss
- dex
- bpl @semantic_next
- lda GSEM_FRAME+GSEM_CP_STATE+16
- cmp GEX_BUFFER+35
- jne miss
- lda GSEM_FRAME+GSEM_CP_STATE+15
- cmp GEX_BUFFER+36
- jne miss
- lda GSEM_FRAME+GSEM_CP_STATE+17
- cmp GEX_BUFFER+37
- jne miss
- jsr cert_rekey
- jcs fault
- jsr current
- jcs fault
+	 jsr syntax_proof
+	 jcs fault
+	 lda GEX_AUX
+	 lsr
+	 bne @proof_done
+	 ; FAST=4 is an uninterrupted C21 handoff. The executable write watch
+	 ; proves this live dirty prefix is unchanged from publication to entry.
+	 lda GP_RECORD+GPR_REASON
+	 cmp #1
+	 jne miss
+	 ; GSEM START is the complete logical-event start, while cached START is
+	 ; this visual segment. Equality excludes a final CR segment after any
+	 ; soft wrap, including viewport row zero with START>0.
+	 CMP24 GSEM_FRAME+GSEM_START,GEX_OLD_START
+	 jne miss
+@proof_done:
  lda GEX_PAGE_COUNT
  sta GP_HEADER+GPH_COUNT
  COPY24 GEX_OLD_BOTTOM,GEX_TEMP
  jsr delta
  jcs miss
  COPY24 GEX_TEMP,GP_HEADER+GPH_BOTTOM
- jsr header_write
- jcs fault
- lda GEX_ROW
- clc
- adc #1
- sta GEX_SCAN_ROW
- lda #2
- sta GEX_PHASE
- jmp pending
-rebase:
- lda GEX_PHASE
- cmp #2
- jne miss
- jsr current
- jcs fault
-@sync_loop:
+@loop:
  lda GEX_SCAN_ROW
  cmp GEX_PAGE_COUNT
  jcs commit
@@ -665,16 +564,10 @@ rebase:
  sta GP_IO_LENGTH+1
  jsr se_gp_cache_write
  jcs fault
- jsr cert_read
- jcs fault
- cmp #1
- bne :+
- jsr cert_rekey
- jcs fault
-:
+ ; Old-key logical certificates safely miss; rows need no rekey transaction.
  ; ABI3 consumers derive affinities from FIRST; no absolute arrays to shift.
  inc GEX_SCAN_ROW
- jmp @sync_loop
+ jmp @loop
 commit:
  lda #1
  sta GP_HEADER+GPH_VALID
@@ -718,18 +611,26 @@ cancel:
  rts
 ; Helpers have noallocation/free/source mutation andnooverlay calls.
 printable:
- cmp #32
+ cmp #$30
  bcc @bad
- cmp #$80
+ cmp #$3A
  bcc @yes
- cmp #$A0
+ cmp #$41
  bcc @bad
+ cmp #$5B
+ bcc @yes
+ cmp #$C1
+ bcc @bad
+ cmp #$DB
+ bcs @bad
 @yes:
  clc
  rts
 @bad:
  sec
  rts
+count_delta:
+ .byte 1,$FF
 capability:
  lda se_gc_width
  cmp #$FF
@@ -900,109 +801,76 @@ advance3:
  inc screen_ptr+1
 : rts
 
-; Per-logical-line outgoing certificate: same64B checked schema at slot+0500.
-; COUNT/CR/EOF proof above ensures this is a complete logical row, not wrap.
-cert_request:
- lda #0
- ldx #5
- jsr field
- lda #<GEX_BUFFER
- sta GP_IO_POINTER
- lda #>GEX_BUFFER
- sta GP_IO_POINTER+1
- lda #64
- sta GP_IO_LENGTH
- lda #0
- sta GP_IO_LENGTH+1
- rts
-cert_read:
- jsr cert_request
- jsr se_gp_cache_read
- bcs @return
- lda GEX_BUFFER
- cmp #$43
- bne @miss
- lda GEX_BUFFER+1
- cmp #2
- bne @miss
- lda GEX_BUFFER+2
- cmp #64
- bne @miss
- lda GEX_BUFFER+3
- cmp #1
- bne @miss
- ldx #27
-@key:
- lda GEX_BUFFER+7,x
- cmp GCC_KEY,x
- bne @miss
- dex
- bpl @key
- ldx #2
-@top:
- lda GEX_BUFFER+41,x
- cmp GP_HEADER+GPH_TOP,x
- bne @miss
- dex
- bpl @top
- jsr cert_crc
- lda se_crc_value
- cmp GEX_BUFFER+62
- bne @miss
- lda se_crc_value+1
- cmp GEX_BUFFER+63
- bne @miss
- lda #1
- clc
-@return:
- rts
-@miss:
- lda #0
- clc
- rts
-cert_crc:
- jsr se_crc_init
- ldy #0
-@byte:
- lda GEX_BUFFER,y
- jsr se_crc_byte
- iny
- cpy #62
- bcc @byte
- rts
-cert_rekey:
- COPY24 GEX_BUFFER+4,GEX_TEMP
- jsr delta
- bcs @return
- COPY24 GEX_TEMP,GEX_BUFFER+4
- ldx #27
-@key:
- lda GP_HEADER+GPH_KEY,x
- sta GEX_BUFFER+7,x
- dex
- bpl @key
- jsr cert_crc
- lda se_crc_value
- sta GEX_BUFFER+62
- lda se_crc_value+1
- sta GEX_BUFFER+63
- lda #0
- sta GEX_BUFFER+3
- jsr cert_request
- jsr se_gp_cache_write
- bcs @return
- lda #1
- sta GEX_BUFFER+3
- clc
- lda GP_IO_OFFSET
- adc #3
- sta GP_IO_OFFSET
+; Complete-event authority for the one-byte alphanumeric lane. The block prefix
+; is unchanged (edit is in BODY); same-event exact packet convergence proves
+; KIND/LANG/INLINE. Inline output can differ only if the edit splits/joins a
+; '*'/'@' run or changes a native-pound escape context. Refuse those cases.
+syntax_proof:
+ ; Exact transition lane: ordinary prose, beyond an alphanumeric first byte.
+ lda GSEM_FRAME+GSEM_KIND
+ bne @early_refuse
+ CMP24 GEC_POSITION,GSEM_FRAME+GSEM_START
+ bcc @early_refuse
+ beq @early_refuse
+ CMP24 GEC_POSITION,GSEM_FRAME+GSEM_BODY
+ bcc @early_refuse
+ CMP24 GEC_POSITION,GSEM_FRAME+GSEM_END
+ bcc @position
+ bne @early_refuse
+ lda GEX_OP
+ bne @position               ;only deleting the final body byte may land at END
+@early_refuse:
+ jmp @refuse
+@position:
+ jsr se_view_init
  bcc :+
- inc GP_IO_OFFSET+1
-: lda #<(GEX_BUFFER+3)
- sta GP_IO_POINTER
- lda #1
- sta GP_IO_LENGTH
- jmp se_gp_cache_write
-@return:
+ rts
+:
+ COPY24 GSEM_FRAME+GSEM_START,se_v_pos
+ jsr se_view_peek
+ bcc :+
+ rts
+:
+ jsr printable
+ jcs @refuse
+ COPY24 GEC_POSITION,se_v_pos
+ CMP24 se_v_pos,GSEM_FRAME+GSEM_BODY
+ beq @next
+ jsr se_view_retreat
+ jsr se_view_peek
+ bcc :+
+ rts
+:
+ cmp #'*'
+ beq @refuse
+ cmp #'@'
+ beq @refuse
+ cmp #$5C
+ beq @refuse
+@next:
+ COPY24 GEC_POSITION,se_v_pos
+ lda GEX_OP
+ bne @next_ready
+ jsr se_view_advance          ;skip the inserted byte
+@next_ready:
+ CMP24 se_v_pos,GSEM_FRAME+GSEM_END
+ bcs @safe
+ jsr se_view_peek
+ bcc :+
+ rts
+:
+ cmp #'*'
+ beq @late_refuse
+ cmp #'@'
+ beq @late_refuse
+ cmp #$5C
+ beq @late_refuse
+@safe:
+ lda #0
+ clc
+ rts
+@late_refuse:
+@refuse:
+ lda #0
+ sec
  rts

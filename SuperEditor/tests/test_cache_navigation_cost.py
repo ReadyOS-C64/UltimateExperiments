@@ -50,7 +50,7 @@ def run(out,old,new):
     assert f.merged()==data and g.stable()==stable and f.read(0xC600,1024)==f.shim
     assert not any(f.get(n,1)for n in ('se_e_job','se_e_error','se_f_owner','se_doc_read_locks'))
     assert f.get('se_bc_count',1)==0 and f.get('se_bc_flags',1)&15==1
-    _,bank=f.raw_cache();after=g.reu();wanted=bytearray(before);spans=[(0,64),(0x600,0x680),(0xB200,0xD568),(0xE568,0xEA88),(0xFC00,0xFDA0)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)]
+    _,bank=f.raw_cache();after=g.reu();wanted=bytearray(before);spans=[(0,64),(0x600,0x680),(0xB200,0xD8B2),(0xE568,0xEA88),(0xFC00,0xFDA0)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)]
     for lo,hi in spans:wanted[bank*65536+lo:bank*65536+hi]=after[bank*65536+lo:bank*65536+hi]
     assert after==wanted,(tag,variant,'whole16MiB outside precise FE spans')
     assert counts['C34']==0
@@ -93,7 +93,7 @@ def faults(out,base):
     assert f.get('se_input_tail',1)==f.get('se_input_head',1)and f.merged()==source
    f.render();guard_pixels(source,action+'-recovered');assert not any(f.get(n,1)for n in ('se_f_owner','se_doc_read_locks','se_e_job','se_e_error'))and f.read(0xC600,1024)==f.shim
    assert g.stable()==stable
-   _,bank=f.raw_cache();after=g.reu();wanted=bytearray(before);spans=[(0,64),(0x600,0x680),(0xB200,0xD568),(0xE568,0xEA88),(0xFC00,0xFDA0)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)]
+   _,bank=f.raw_cache();after=g.reu();wanted=bytearray(before);spans=[(0,64),(0x600,0x680),(0xB200,0xD8B2),(0xE568,0xEA88),(0xFC00,0xFDA0)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)]
    for lo,hi in spans:wanted[bank*65536+lo:bank*65536+hi]=after[bank*65536+lo:bank*65536+hi]
    assert after==wanted,(action,'entire recovery16MiB outside preciseFE spans')
    cases.append(dict(action=action,steps_to_boundary=step,held_reader=1,prepaint_reu_unchanged=True,recovered_source_sha256=hashlib.sha256(source).hexdigest()));print('FAULT PASS',cases[-1],flush=True)

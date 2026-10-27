@@ -72,7 +72,7 @@ def run(out,base,physical=16):
   if h:
    b=f.m.read(f.s['se_reu_map']+h);assert b<physical and f.m.read(f.s['se_reu_physical_owner']+b)==f.m.read(f.s['se_reu_logical_owner']+h)==0xfe
    if mode==3:
-    ranges=[(0,64),(0x600,0x680),(0xb200,0xd568),(0xe568,0xea88)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)]
+    ranges=[(0,64),(0x600,0x680),(0xb200,0xd8b2),(0xe568,0xea88)]+[(0x200+i*0x800,0x200+i*0x800+842)for i in range(22)]+[(0x700+i*0x800,0x740+i*0x800)for i in range(22)]
    else:ranges=[(0,22*240)]
    for lo,hi in ranges:
     lo+=b*65536;hi+=b*65536;wanted[lo:hi]=after[lo:hi];spans.append((lo,hi))

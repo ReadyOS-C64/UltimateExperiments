@@ -68,7 +68,7 @@ def run(out, base):
                            ('se_e_error', 'se_f_owner', 'se_doc_read_locks'))
             _, bank = f.raw_cache()
             after, wanted = gate.reu(), bytearray(before)
-            spans = [(0, 64), (0x600, 0x680), (0xB200, 0xD568),
+            spans = [(0, 64), (0x600, 0x680), (0xB200, 0xD8B2),
                      (0xE568, 0xEA88)]
             spans += [(0x200+i*0x800, 0x200+i*0x800+842)
                       for i in range(22)]

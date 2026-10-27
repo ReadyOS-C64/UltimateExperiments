@@ -53,6 +53,12 @@ verified invocation when no input waits; they do not introduce another source
 trust boundary or allocate state. C20's next BEGIN revokes its old certificates before reusing
 the loaned bytes. Native-row transitions revoke row continuation first.
 
+The GEOS edit transaction uses one 842-byte following-row shadow at FE
+`$D568–$D8B1`. It is valid only while the foreground C21/R28 transaction is
+live. The former backup tail `$D8B2–$E567` is unowned and must remain exact;
+font storage still begins at `$E568`. Resume and every transaction exit revoke
+the phase/validity fields, so stale shadow bytes never become durable state.
+
 Paged Help retains C7/R22. The retired paint supervisor and shadow overlap stay
 outside production. See the [optimization replacement plan](OPTIMIZATION_PLAN.md).
 The [capacity and tested limits](CAPACITY.md) distinguish the bounded1MiB source
@@ -233,10 +239,11 @@ and all48 assets; forced rebuild reproduces65 existing outputs exactly.
 Native all-mode PAL/NTSC64 and targeted CPU checks pass. Lifecycle/media/
 capacity release evidence is tracked separately in the current checkpoint.
 
-The current R28 keeps only the64B old-header witness at D528..D567.
-The4096B spans D568..E567 have no readers or writers and remain reserved;
-poisoned copies survive successful edits, refusal and failure/recovery. Early
-wrap is only an optional refusal before staging, never a new positive admission.
+The current R28 keeps the64B old-header witness at D528..D567 and one
+same-transaction 842B following-row shadow at D568..D8B1. D8B2..E567 has no
+readers or writers and remains exact through successful edits, refusal and
+failure/recovery. Early wrap is only an optional refusal before staging, never
+a new positive admission.
 C22's largest gathered packet is388B and ends below the actual FS state8EE0;
 its scatter order consumes overlapping style inputs before role writes. The
 R21 fixed font/tail addresses ABF3/AEDB/AF5B remain unchanged. None of these
@@ -324,9 +331,10 @@ resume needs68 bytes. This bound is scoped to the pinned ROM/vector contracts,
 not arbitrary ROMs or repeated NMI storms. Evidence:
 `agentsworking/evidence/M8/20261025T113435781210Z-managed-stack-absolute`.
 
-The following tables preserve earlier build-specific audits. The FE cache layout
-remains applicable; historical resident identities and bounds are superseded by
-the current values above.
+The following tables preserve earlier build-specific audits. Their resident
+identities and bounds are historical. In the FE table, the current editor uses
+`$D568–$D8B1` as its transaction shadow and keeps `$D8B2–$E567` dead; the older
+build described below reserved the complete 4 KiB range.
 
 ## Historical44-asset delta
 
@@ -346,7 +354,8 @@ added. The existing typed FE logical allocation now contains:
 |`$0000–$B1FF`|Literal row packets/cache data |
 |`$B200–$D527`|Literal caret-free8000-byte bitmap and1000-byte attributes |
 |`$D528–$D567`|R28 old-header witness,64bytes |
-|`$D568–$E567`|Former two row snapshots; reserved/unused,4096bytes |
+|`$D568–$D8B1`|Current 842-byte following-row transaction shadow |
+|`$D8B2–$E567`|Retired backup tail; unowned and exact,3254bytes |
 |`$E568–$EA67`|128normal glyphs plus widths,1280bytes |
 |`$EA68–$EA87`|32-byte normal-font READY witness |
 |`$EA88–$EB68`|225-byte preview witness and all66anchor bytes |
@@ -356,7 +365,8 @@ at`$B200–$CD7F`,880attributes at`$CD80–$D0EF`. These interpretations are mut
 exclusive. Preview clears literal publication validity; returning to editable
 GEOS rebuilds the literal base. Preview lookup verifies the full bodyCRC before
 its two live displayDMAs, without yielding between finalcheck andcopy. Cache
-writes never touch R28backups or normalglyphs. An optional cache failure cannot
+writes touch only the current bounded R28 shadow and never the dead tail or
+normal glyphs. An optional cache failure cannot
 reject an already rendered page. Source/settings/fold/font/provider identities
 are checked on bounded continuations. Strict overlay admission remains intact.
 

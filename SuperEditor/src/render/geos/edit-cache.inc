@@ -41,14 +41,17 @@ GEX_END=GEX_STATE+47
 GEX_OLD_HEADER=$D528 ;64B
 GEX_CONVERGENT_LINE=1
 GEX_EARLY_WRAP=0 ;optional strict overflow refusal before any header/row staging
-GEX_ROW_BACKUPS=0 ;old/new row copies had no consumers; addresses stay reserved
-GEX_OLD_ROW=$D568 ;2048B reserved, unused
-GEX_NEW_ROW=$DD68 ;2048B reserved, unused
+GEX_ROW_BACKUPS=0 ;full old/new row backups remain retired
+GEX_OLD_ROW=$D568 ;842B same-transaction following-row shadow
+GEX_SHADOW_BYTES=842
+GEX_SHADOW_END=$D8B2 ;exclusive; D8B2..E567 remains dead/exact
+GEX_NEW_ROW=$DD68 ;legacy reserved address inside the dead tail, unused
 GEX_TAIL_END=$E568
 GEX_BUFFER=$9000 ;192B, sourcecontext must be inactive
 GEX_HEADER=$9080 ;64B duringADMIT, upperpart of192Bbuffer
 .assert GEX_END=GP_IO_OFFSET,error,"edit phase mustend before checkedDMArequest"
-.assert GEX_TAIL_END<=$10000,error,"edit backups exceed ownedFEbank"
+.assert GEX_OLD_ROW+GEX_SHADOW_BYTES=GEX_SHADOW_END,error,"edit shadow extent drift"
+.assert GEX_SHADOW_END<=GEX_TAIL_END,error,"edit shadow exceeds reserved FE tail"
 ; ADMIT A1accepted/A2miss. Outputs oldgeometry +dirtyrange; headerVALID0/current
 ; key and64B oldheader witness publishedbeforeaccepted (not on earlyrefusal).
 ; VERIFY reads the rebuilt row atROW,

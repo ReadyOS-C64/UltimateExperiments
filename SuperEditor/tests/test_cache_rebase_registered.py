@@ -4,8 +4,8 @@ The mature independent oracle/protocol suite is reused through explicit,
 asserted host-only adaptations. The generated run function is saved alongside
 its receipt. Product code and source/read/parser results are never replaced.
 The historical batch gate masked the whole FE bank; this gate instead permits
-only the authenticated source/GTF reservation [0,64)+[0200,EA88), preserving its
-prefix hole and preview/body/glyph tail, plus the exact existing COW spans.
+the authenticated cache through the 842-byte edit shadow and the separate GTF
+reservation, preserving the dead D8B2..E567 tail and all later bytes.
 """
 from pathlib import Path
 from datetime import datetime, timezone
@@ -16,7 +16,7 @@ from bindings import verify
 from d81_image import D81Image
 
 ROOT = Path(__file__).resolve().parents[1]
-FE_SPANS = ((0, 64), (0x200, 0xEA88))
+FE_SPANS = ((0, 64), (0x200, 0xD8B2), (0xE568, 0xEA88))
 STAGES = {'clex': 'code-typing/stage', 'code': 'code-typing/worker',
           'type': 'style-typing/stage', 'gtype': 'style-typing/worker'}
 
@@ -205,7 +205,7 @@ def run(out, fixture, project, cases=('repeat', 'small', 'high24')):
     assert len(startup_receipts) == len(cases)
     result = dict(status='PASS', identity=seal, cases=results, startup=startup_receipts,
                   typed_DMA_intervals=len(typed_intervals), observed_checked_stashes=sum(x['writes'] for x in typed_intervals),
-                  FE_policy='Only authenticated [0,64)+[0200,EA88); preserve64..1FF andEA88..FFFF. Other banks exact except precise COW/root/directory/journal spans.',
+                  FE_policy='Only authenticated [0,64)+[0200,D8B2)+[E568,EA88); preserve64..1FF, D8B2..E567 and EA88..FFFF. Other banks exact except precise COW/root/directory/journal spans.',
                   historical_scope_correction='Earlier batch/repeat gates allowed the whole FE bank; their precise-COW evidence did not prove the FE hole/tail. This registered gate is the first tightened repeat/fault/small/high24 proof.',
                   verifiers=dict(registered_sha256=sha(Path(__file__)), protocol_sha256=sha(Path(suite.__file__)), generated_sha256=sha(out/'registered-run.py')),
                   scope='Actual registered62 source/project/D81 and startup; no app build, capsule substitution, extra catalog imports, native or hardware. Existing host-only CPU observer compilation and ROM/font transport seams retained.')
