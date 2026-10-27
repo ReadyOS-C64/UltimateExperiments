@@ -17,6 +17,8 @@ SE_GEOS_PAGE_PAINT_IMPLEMENTATION=1
 .include "render/geos/row.inc"
 .include "render/geos/native-pan.inc"
 .include "render/narrow/grid.inc"
+.include "render/geos/row-job.inc"
+.import se_doc_invalidate
 .export se_gp_paint_begin,se_gp_paint_step,se_gp_paint_cancel
 .export se_gp_paint_busy,se_gp_paint_valid
 .export se_gnp_palette
@@ -58,11 +60,11 @@ tail_role=S+$5E
 limit=S+$A0
 tail_flags=S+$9F
 D=$8D00
-CHARS=$8D20
-STYLES=$8D60
-ROLES=$8DA0
-FLAGS=$8DE0
-MAP=$8E20
+CHARS=RJ_CHARS
+STYLES=RJ_STYLES
+ROLES=RJ_ROLES
+FLAGS=RJ_FLAGS
+MAP=RJ_MAP
 F=GEOS_ROW_FRAME
 P_SCAN=1
 P_CHARS=2
@@ -136,6 +138,15 @@ se_gp_paint_begin:
     sta GPP_ERROR
     sta GPP_LINE
     sta budget
+    sta RJ+RJ_VALID
+    sta $47E3 ;old source-grid checkpoint retired before phase loan
+    ldx #13
+@row_palette:
+    lda palette,x
+    sta RJ_PALETTE,x
+    dex
+    bpl @row_palette
+    jsr se_doc_invalidate
     ; A certified edit may repaint only intersecting physical8px bands.
     ; Malformed hints conservatively repaint the complete document area.
     lda GP_CONTROL+20
@@ -161,6 +172,8 @@ se_gp_paint_begin:
     lda #24
     sta limit
 @bands_ready:
+    lda GPP_ROW
+    sta first_live ;first dirty physical band, immutable
     lda #1
     sta GPP_BUSY
     sta GPP_RESET
@@ -241,6 +254,8 @@ certify:
     bcc @record
     lda #0
     sta GPP_LINE
+    lda first_live
+    sta strip_y
     lda #P_SCAN
     sta GPP_PHASE
     jmp pending
@@ -283,24 +298,9 @@ certify:
 ; Expired/future records need no cache fetch. A9th-row descender remains live
 ; until its certified exclusive bottom reaches the next physical strip.
 scan_line:
-    lda GPP_ROW
-    asl
-    asl
-    asl
-    sta strip_y
-    ldx GPP_LINE
-    cpx count_lines
+    lda GPP_LINE
+    cmp count_lines
     jcs strip_done
-    lda bottoms,x
-    cmp strip_y
-    bcc expired
-    beq expired
-    lda strip_y
-    clc
-    adc #8
-    cmp tops,x
-    jcc strip_done
-    jeq strip_done
     jsr prefix
     jcs fail
     ldx GPP_LINE
@@ -312,10 +312,6 @@ scan_line:
     jcs changed
     cmp bottoms,x
     jne changed
-    lda R+GPR_TOP
-    sec
-    sbc strip_y
-    sta GPP_Y
     jsr record_kind
     jcs fail
     lda R+GPR_COUNT+1
@@ -324,17 +320,27 @@ scan_line:
     cmp #GP_MAX_GLYPHS+1
     jcs argument
     sta extent
+    sta GPP_COUNT
     lda #0
     sta extent+1
     sta GPP_OFFSET
     sta GPP_OFFSET+1
     sta empty_caret
+    lda R+GPR_TOP
+    lsr
+    lsr
+    lsr
+    sta GPP_ROW
+    lda GPP_KIND
+    beq @prose
+    lda GPP_ROW
+    cmp first_live
+    jcc line_finished
+    cmp limit
+    jcs line_finished
+@prose:
     jmp read_x
-expired:
-    inc first_live
-    inc GPP_LINE
-    jmp pending
-; Read initial viewport x; further prose appends use the leaf's exact advance.
+
 read_x:
     lda R+GPR_RASTER_X
     sta GPP_X
@@ -357,49 +363,54 @@ read_x:
     cmp #65
     jcs argument
 @ready:
+    lda extent
+    bne :+
+    jmp choose_draw
+:
     jmp start_chunk
 start_chunk:
     lda GPP_OFFSET
     cmp extent
     jcs end_line
-    lda GPP_X+1
-    bmi @count ;small signed-left origin is rendered by the clipped leaf
-    cmp #1
-    bcc @count
-    lda GPP_X
-    cmp #64
-    jcs end_line
-@count:
-    sec
     lda extent
-    sbc GPP_OFFSET
-    cmp #65
-    bcc :+
-    lda #64
-:
     sta GPP_COUNT
     lda #P_CHARS
     sta GPP_PHASE
     jmp pending
+
 read_chars:
     lda #<GPR_CHARS
-    ldx #>GPR_CHARS
-    ldy #>CHARS
-    jsr array_request
+    sta field
+    lda #>GPR_CHARS
+    sta field+1
+    lda #0
+    sta host
+    lda #$80
+    sta host+1
+    clc
+    lda GPP_COUNT
+    adc #<(GPR_ROLES-GPR_CHARS)
+    sta amount
+    lda #>(GPR_ROLES-GPR_CHARS)
+    adc #0
+    sta amount+1
+    jsr fetch
     jcs fail
-    ; CHARS are already in place. The gathered style/role slices begin162
-    ; and324 bytes later. Ascending order is required: role destinations may
-    ; overlap only style source bytes that were copied earlier in this loop.
+    ; One typed checked FE read to existing document-root scratch; CPU copies
+    ; the complete packet into inactive4400 plan before any public yield.
     ldx #0
 @gather:
-    lda CHARS+(GPR_STYLES-GPR_CHARS),x
+    lda $8000,x
+    sta CHARS,x
+    lda $8000+(GPR_STYLES-GPR_CHARS),x
     sta STYLES,x
-    lda CHARS+(GPR_ROLES-GPR_CHARS),x
+    lda $8000+(GPR_ROLES-GPR_CHARS),x
     sta ROLES,x
     inx
     cpx GPP_COUNT
     bcc @gather
     jmp flags_ready
+
 flags_ready:
     lda want_selection
     bne @maps
@@ -492,6 +503,8 @@ choose_draw:
     beq @prose
     lda #0
     sta GPP_CELL
+    lda #1
+    sta GPP_RESET
     lda #P_CELL
     bne @set
 @prose:
@@ -499,36 +512,83 @@ choose_draw:
 @set:
     sta GPP_PHASE
     jmp pending
-; Execute one <=64-glyph R21 call, preserving histogram between all appends.
+; One complete9px row, including its virtual cell and shared-band base votes.
 draw_prose:
-    jsr row_setup
-    lda #1
-    sta F+GR_RUNS
+    lda empty_caret
+    bne @ready
+    inc empty_caret
+    jsr tail_selection
+    jcs fail
+    jsr caret_line
+    bcc @tail_ready
+    lda R+GPR_TAIL_VALID
+    beq @tail_ready
+    jsr load_tail
+    jcs fail
+    jsr equal_caret
+    bne @tail_ready
+    lda tail_flags
+    ora #4
+    sta tail_flags
+@tail_ready:
+    lda tail_flags
+    beq @ready
     lda GPP_COUNT
-    sta D+GRR_COUNT
-    lda GPP_Y
-    sta D+GRR_Y
+    cmp #161
+    jcs argument
+    tax
+    bne @append_tail
+    lda R+GPR_TAIL_X
+    sta GPP_X
+    lda R+GPR_TAIL_X+1
+    sta GPP_X+1
+@append_tail:
+    lda tail_character
+    sta CHARS,x
+    lda #0
+    sta STYLES,x
+    lda tail_role
+    sta ROLES,x
+    lda tail_flags
+    sta FLAGS,x
+    inc GPP_COUNT
+@ready:
+    jsr row_setup
+    lda GPP_COUNT
+    sta RJ+RJ_COUNT
+    lda R+GPR_TOP
+    sta RJ+RJ_TOP
     lda GPP_X
-    sta D+GRR_X
+    sta RJ+RJ_X
     lda GPP_X+1
-    sta D+GRR_X+1
+    sta RJ+RJ_X+1
+    lda #0
+    sta RJ+RJ_MODE
+    lda RJ+RJ_VALID
+    beq @call
+    lda RJ+RJ_LAST_BAND
+    cmp GPP_ROW
+    bne @carry
+    lda #1
+    bne @mode
+@carry:
+    clc
+    adc #1
+    cmp GPP_ROW
+    bne @call
+    lda #2
+@mode:
+    sta RJ+RJ_MODE
+@call:
     jsr row_call
     jcs fail
-    lda D+GRR_NEXT_X
-    sta GPP_X
-    lda D+GRR_NEXT_X+1
-    sta GPP_X+1
-    lda D+GRR_DONE
-    jeq end_line
-    clc
-    adc GPP_OFFSET
-    sta GPP_OFFSET
-    lda #P_START
-    sta GPP_PHASE
-    jmp pending
-; One native8 tile per micro-operation, at most8 per publicSTEP. R21 resets
-; are isolated before code cells.
+    tax
+    jne yield
+    jmp line_finished
+
 draw_cell:
+    lda #0
+    sta RJ+RJ_VALID
     lda GPP_RESET
     beq @cell
     lda #P_CELL
@@ -672,6 +732,17 @@ native_begin:
     sta GNP_FRAME+GNP_CHARS,x
     dex
     bpl @pointers
+    ldx #0
+@native_packet:
+    lda CHARS,x
+    sta $8D20,x
+    lda ROLES,x
+    sta $8DA0,x
+    lda FLAGS,x
+    sta $8DE0,x
+    inx
+    cpx GPP_COUNT
+    bcc @native_packet
     jsr se_gnp_begin
     jcs fail
     lda #P_NATIVE
@@ -702,19 +773,18 @@ end_line:
     jmp pending
 line_finished:
     ldx GPP_LINE
-    cpx first_live
-    bne @phase
-    lda strip_y
+    lda bottoms,x
     clc
-    adc #8
-    cmp bottoms,x
-    bcc @phase
-    inc first_live
-@phase:
+    adc #7
+    lsr
+    lsr
+    lsr
+    sta strip_y ;first entirely blank band after this row
     lda #P_SCAN
     sta GPP_PHASE
     inc GPP_LINE
     jmp pending
+
 tail_right:
     jsr load_tail
     jcs fail
@@ -767,15 +837,13 @@ tail_draw:
     sta GPP_PHASE
     jmp pending
 strip_done:
-    lda GPP_RESET
-    beq @next
-    lda #P_SCAN
-    jmp queue_clear
-@next:
-    inc GPP_ROW
-    lda GPP_ROW
+    lda strip_y
+    cmp first_live
+    bcs :+
+    lda first_live
+:   sta GPP_ROW
     cmp limit
-    bcc @strip
+    bcc @clear
     lda #0
     sta GPP_BUSY
     lda #1
@@ -783,17 +851,10 @@ strip_done:
     lda #0
     clc
     rts
-@strip:
-    lda first_live
-    sta GPP_LINE
-    lda #1
-    sta GPP_RESET
+@clear:
     lda #P_SCAN
-    sta GPP_PHASE
-    jmp pending
-; A public STEP keeps its full checked guard only across this bounded slice.
-; Every R21 operation is entered/exited through a public yield; IRQ only queues
-; input during the <=8 preparation/native-cell micro-operations between them.
+    jmp queue_clear
+
 queue_clear:
     sta next_phase
     lda #P_CLEAR
@@ -802,12 +863,24 @@ queue_clear:
 clear_strip:
     jsr row_setup
     lda #0
-    sta F+GR_RUNS
+    sta RJ+RJ_COUNT
+    sta RJ+RJ_MODE
+    lda GPP_ROW
+    asl
+    asl
+    asl
+    sta RJ+RJ_TOP
     jsr row_call
     jcs fail
     lda next_phase
     sta GPP_PHASE
+    lda GPP_LINE
+    cmp count_lines
+    bcc @return
+    inc strip_y
+@return:
     jmp yield
+
 pending:
     lda GPP_PHASE
     cmp #P_DRAW
@@ -826,6 +899,9 @@ return:
 owner:
     lda se_f_owner
     cmp #4
+    bne busy
+    lda $912C
+    ora $912D
     bne busy
     clc
     rts
@@ -916,108 +992,57 @@ fetch:
     sta GP_IO_LENGTH+1
     jmp se_gp_cache_read
 ; A/X record field, Y destination high. Four arrays are64-byte aligned.
-array_request:
-    clc
-    adc GPP_OFFSET
-    sta field
-    txa
-    adc #0
-    sta field+1
-    sty host+1
-    ldy GPP_PHASE
-    lda destination_lo-P_CHARS,y
-    sta host
-    lda GPP_COUNT
-    jeq argument
-    cmp #65
-    jcs argument
-    sta amount
-    lda #0
-    sta amount+1
-    lda GPP_PHASE
-    cmp #P_CHARS
-    bne @fetch
-    ; One checked contiguous transfer covers the same three field slices.
-    ; Existing public chunks are1..64; no source or worker loop is enlarged.
-    clc
-    lda amount
-    adc #<(GPR_ROLES-GPR_CHARS)
-    sta amount
-    lda #>(GPR_ROLES-GPR_CHARS)
-    adc #0
-    sta amount+1
-@fetch:
-    jmp fetch
+
+
 row_setup:
-    lda GPP_ROW
-    sta F+GR_ROW
-    lda GPP_RESET
-    sta F+GR_RESET
     lda R+GPR_BACKGROUND
-    cmp #16
-    bcc :+
-    lda #6
-:
-    sta F+GR_BACKGROUND
-    lda #<D
-    sta F+GR_RUN_POINTER
-    lda #>D
-    sta F+GR_RUN_POINTER+1
-    lda #<GP_ROW_FONT
-    sta F+GR_FONT
-    lda #>GP_ROW_FONT
-    sta F+GR_FONT+1
-    lda #<GP_ROW_WIDTHS
-    sta F+GR_WIDTHS
-    lda #>GP_ROW_WIDTHS
-    sta F+GR_WIDTHS+1
-    lda #<GP_NATIVE_FONT
-    sta F+GR_NATIVE
-    lda #>GP_NATIVE_FONT
-    sta F+GR_NATIVE+1
-    lda #<palette
-    sta F+GR_PALETTE
-    lda #>palette
-    sta F+GR_PALETTE+1
+    sta RJ+RJ_BACKGROUND ;R21 validates before display publication
     lda #0
-    sta F+GR_LEFT
-    sta F+GR_LEFT+1
-    sta F+GR_TOP
+    sta RJ+RJ_LEFT
+    sta RJ+RJ_LEFT+1
     lda #<320
-    sta F+GR_RIGHT
+    sta RJ+RJ_RIGHT
     lda #>320
-    sta F+GR_RIGHT+1
-    lda #8
-    sta F+GR_BOTTOM
-    ldx #7
-@pointers:
-    lda pointers,x
-    sta D+GRR_CHARACTERS,x
-    dex
-    bpl @pointers
-    lda #<MAP
-    sta D+GRR_BOUNDARIES
-    lda #>MAP
-    sta D+GRR_BOUNDARIES+1
+    sta RJ+RJ_RIGHT+1
+    lda first_live
+    asl
+    asl
+    asl
+    sta RJ+RJ_CLIP_TOP
+    lda limit
+    asl
+    asl
+    asl
+    sta RJ+RJ_CLIP_BOTTOM
     rts
 row_call:
+    lda #2
+    ldx GPP_PHASE
+    cpx #P_CLEAR
+    beq @operation
+    lda RJ+RJ_VALID
+    cmp #2
+    bne @begin
+    lda #3
+    bne @operation
+@begin:
     lda #0
+@operation:
     sta se_overlay_frame
-    lda #<F
+    lda #<RJ
     sta se_overlay_frame+1
-    lda #>F
+    lda #>RJ
     sta se_overlay_frame+2
     lda #GP_ROW_ID
     ldx #0
     jsr se_overlay_call
     jcs return
-    lda #0
-    sta GPP_RESET
-    sta budget
+    ldy #0
+    sty GPP_RESET
+    sty budget
     clc
     rts
-; Compute range in private state, preserving all selection fields. Only the
-; actual canonical mark/anchor/caret identify selection across paint slices.
+
 caret_line:
     lda GPP_LINE
     cmp GP_HEADER+GPH_CARET_ROW
@@ -1153,8 +1178,6 @@ at_or_before_caret:
     rts
 .segment "RODATA"
 palette: .byte 1,3,7,10,14,1,1,7,13,5,15,7,3,1
-pointers: .word CHARS,STYLES,ROLES,FLAGS
-destination_lo: .byte <CHARS,<STYLES,<ROLES
-native_pointers: .word CHARS,ROLES,FLAGS
+native_pointers: .word $8D20,$8DA0,$8DE0
 .assert tail_flags+1<=GPP_STATE_END,error,"paint private state overflow"
-.assert MAP+130<=$8EE0,error,"paint arrays overlap reader context"
+.assert MAP+324<=$47D0,error,"full row map overlaps palette"

@@ -710,3 +710,42 @@ build/queued-repaint-supplement/v3-small-final/result.json,
 tests/test_geos_queued_repaint.py and tests/test_geos_queued_repaint_vice.py. Initial native v2 timing receipts are
 explicitly rejected: an asynchronous host playback script lacked its completion
 sentinel. The v3 comparisons assert every timing boundary from captured RAM.
+
+
+## Compose a logical GEOS row once
+
+R21/C22 now gather and compose a complete logical row instead of restarting
+its preparation for each8-pixel physical strip. Eight glyphs per continuation
+reduce repeated glyph/measurement work. The fixed font, color arbitration,
+selection, clipping and native code-row paths remain. Full array validation is
+once per exclusively owned packet; source/provider/header/selection guards
+remain at every public STEP. Existing phase storage is reused; no image or
+resident allocation is added. R21/C22 payload4057+4089 replaces4094+4056.
+
+A paired native PAL run uses actual File/Open, Bottom, then the public F7 Top
+command. The established stopwatch seam invokes final Return through public
+input with PC/SP setup; this is command-to-completion work, not physical input
+latency. Both final screenshots match independent bitmap/color/source models.
+
+| Public Top command | Control cycles | New cycles | Largest service step, old→new |
+| --- | ---: | ---: | ---: |
+|863-byte Full prose |15,422,210|13,732,977|482,564→113,544|
+|Wrapped Markdown prose |11,500,650|10,219,280|482,583→110,738|
+
+Total time improves10.95%/11.14%; the largest service step improves76–77%.
+Code loads remain118/24. These completion times and service steps still miss
+the original1MHz budgets. Subsequent work must reduce parsing/transport and
+bound initialization/final color resolution. No general responsiveness closure.
+
+Private paired CPU12 checks show long warmed Full repaint−14.91%, diverse Full
+−3.31%, but diverse Plain+2.49%; this small regression is disclosed. Additional
+CPU clipping48, fault43, incremental15 and warmfold28 checks preserve independent
+pixels, canonical geometry/source/history/shim and precise whole-REU guards.
+The actual integrated scheduler queue10 and62-image stack bound68 also pass.
+Cold historical fold audit rejects initial type53 writes on both cohorts; the
+warmfold gate explicitly completes that real baseline first, without relaxing
+its evaluator. These scoped tests do not replace final integrated acceptance.
+
+Native evidence: build/material-native/row-native-comparison.json.
+Private source/CPU release: build/row-residency-probe/READY8.json.
+Current stack: build/row-job-stack-agent/run1/result.json.

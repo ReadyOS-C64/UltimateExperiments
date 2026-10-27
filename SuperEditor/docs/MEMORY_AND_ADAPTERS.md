@@ -3,7 +3,7 @@
 ## Current 62-image runtime
 
 The current linked package has62 registered images and four REU code banks.
-Its resident is2924ddbc/binding39cea9. The experimental63rd image was retired
+Its resident is215bd082/bindingc10bc2. The experimental63rd image was retired
 from the production build; its exact unqualified sources remain in6a280d8. The ReadyOS reservation is the entire
 untouched `$C600–$C9FF` range. Current resource sizes are:
 
@@ -14,19 +14,45 @@ untouched `$C600–$C9FF` range. Current resource sizes are:
 | COLD |1737, ending `$0ED5` inclusive;42 bytes before `$0F00`|
 | C7 menu/control |4001|
 | C21 page coordinator |4096|
-| R21 glyph rasterizer |4094|
+| R21 bounded logical-row rasterizer |4057|
+| C22 row painter |4089|
 | R22 popup/settings |4086|
 | R30 local typing |3662|
 | C32 typing stage |3856, raw3824;240 bytes before the stage stamp|
 | C41 rebase |4068|
 | R34 transform |4095|
 
-The restored resident, all62 images and the complete D81 reproduce the verified
-12bde7a fixture byte-for-byte. Its computed68-byte relative foreground plus one
-interrupt bound retains the declared IRQ/ROM/frame contracts; it is not an
-exhaustive physical NMI/ROM stack guarantee. Paged Help uses the existing C7/R22
-pair. The private paint supervisor and its live shadow overlap are outside the
-runtime. See the [optimization replacement plan](OPTIMIZATION_PLAN.md).
+The scheduler update5349d45 preserves62 images and reduces resident code one
+byte. The R21/C22 replacement removes per-strip row preparation, retains the
+same fonts, and adds no resident/REU allocation or registered image. Its combined
+payload is four bytes smaller; fixed font padding remains inside R21. All other
+60 images are unchanged from the scheduler control. Actual62 CFG analysis still
+computes68 relative bytes for foreground plus one IRQ/NMI, subject to the
+declared ROM/frame contracts. This is not an exhaustive physical NMI guarantee.
+
+C21 completes source/layout before paint. During C22/R21 paint, these existing
+phase loans are exclusive:
+
+| Inclusive range | Paint owner |
+| --- | --- |
+| `$4400–$47DD` | Complete161-glyph packet, x map and palette |
+| `$8880–$8B3F` | Glyph frame and upper-band histogram |
+| `$8B40–$8BFF` | C22 state and selection witness |
+| `$8D00–$8F2F` | Lower-band histogram; reused only after invalidation for native cells |
+| `$9040–$9081` | Row descriptor and continuation in inactive source snapshot |
+
+Both source lease/context flags must be zero before paint; zero flags alone do
+not authorize painting while a suspended C20 continuation exists. C21's actual
+build-before-paint sequencing supplies that proof. No source prefetch or parser
+may run while the row continuation is live. IRQ writes only input state; normal
+input cancels source paint before another phase. Every C22 STEP still checks
+source/provider/header/selection. R21 validates arrays at packet admission,
+then checks its scalar/frame/cursor bounds and reconstructs output addresses
+on continuation. C20's next BEGIN revokes its old certificates before reusing
+the loaned bytes. Native-row transitions revoke row continuation first.
+
+Paged Help retains C7/R22. The retired paint supervisor and shadow overlap stay
+outside production. See the [optimization replacement plan](OPTIMIZATION_PLAN.md).
 The [capacity and tested limits](CAPACITY.md) distinguish the bounded1MiB source
 engine proof, finite quotas, lower-memory configurations and D81 free space.
 
