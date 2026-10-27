@@ -5,6 +5,36 @@ It preserves the original product scope and supersedes any proposal to keep
 adding optimization layers to the present renderer. It is a plan, not a claim
 that the budgets below have been achieved.
 
+## Current execution checkpoint
+
+Commit `a5af575` completed the first graph replacement: eleven semantic,
+query, lexical and rebase capsules plus their observer writers are gone. The
+runtime is now51 images and174,889 raw payload bytes, down41,699 bytes from the
+connected control, with unchanged resident/BSS/ZP/ReadyOS reservation. R33 is
+one checked current-BODY plan rather than another family of cache supervisors.
+
+Commit `ade8326` removes two measured sources of repeated work. C8 passes its
+already found Plain GOTO logical start to C23 through a full-key, CRC,
+VALID-last descriptor; the66K CPU path falls162,038,336→17,165,027
+instructions and22,145→187 loads, with a real D81/FileOpen/IRQ PAL run at
+2,344,684 cycles. R33 now keys the BODY plan on29 logical identity bytes, so
+transport/window moves do not force reparsing; A/B/A falls1,299,975→694,204
+instructions. Neither change adds an image, bank, supervisor or resident state.
+
+The immediate correction is also measured precisely. WRAPPED TOP regressed
+9,713,018→11,285,120 PAL cycles because C26 crosses into R33 66 times for
+individual paint/hide events. Those crossings plus resident dispatch explain
+97.85% of the added CPU work and94 additional loads; source, pixels, row calls,
+parser feeds and navigation match the control. Move span accumulation into C26,
+flush completed/dirty34-byte records, and delete R33's event-level surface.
+This takes priority over page caching, disk ordering or another overlay.
+
+After that correction, the largest exact cost remains R21: about2.014 million
+instructions per tested TOP, including fixed-font decode/measure, raster,
+addressing, histogram and role election. Investigate fusion within the existing
+R21/C22 job lifetime. Do not revive the rejected per-glyph REU atlas or trade
+one repeated checked transport for another.
+
 ## Product and machine constraints
 
 Design for a stock 1 MHz C64 first. Keep PETSCII/SuperMark, all 40/60/80-column
