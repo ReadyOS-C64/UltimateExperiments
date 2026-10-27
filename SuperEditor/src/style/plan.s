@@ -555,8 +555,7 @@ next_line:
     jmp pending
 
 complete:
-    jsr se_fs_guard
-    jcs failure
+    ; STEP already authenticated this source before reaching completion.
     jsr release
     lda st_finish
     bmi @fast_ready

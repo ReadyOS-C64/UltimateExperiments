@@ -774,6 +774,10 @@ def run(out, fixture, contract_path=None, stack_result=None, smoke=False):
                     expected = edit.edited()
                     post_edit = []
                     def operation(edit=edit):
+                        # The row packet is scratch, not retained authority.
+                        # Poison selector flags so every accepted/fallback
+                        # producer must overwrite padding as well as live cells.
+                        f.m.load(0x88C4 + 160, bytes((2,)) * 80)
                         f.key(edit.key)
                         post_edit.append({
                             "canonical": f.canonical(),

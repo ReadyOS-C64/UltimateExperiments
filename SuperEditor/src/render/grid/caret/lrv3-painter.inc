@@ -17,11 +17,12 @@ LT_RECORD_FLAGS=17
 LT_FLAGS=7
 LT_CLIP=18
 LT_SOURCE=20
+LT_REMAIN=23              ;2, live content bytes at/after this row source
 LT_GC_VALID=25
+LT_END_PENDING=28         ;the one real CR/EOF caret cell has not been emitted
+LT_ROW_CARET=29           ;row-relative caret column, or $FF
+LT_LIVE=30                ;contiguous content/end cells emitted in this packet
 LT_COVER=34
-; Per-cell packet scratch must not overlap LT_FLAGS: bit7 remains the styled
-; transaction marker through frame17 publication.
-LT_CELL_VALID=36
 LS_ROW=LRVT+40
 LS_POS=LRVT+41
 LS_NEXT=LRVT+44
@@ -317,59 +318,93 @@ lrv_build_packet:
  jmp @offset_check
 @source_ready:
  COPY24 LRVT+LT_SOURCE,se_v_pos
+ ; Convert the authenticated 24-bit row source to one bounded 16-bit content
+ ; countdown. LT_LENGTH is the content extent excluding CR; END_PENDING names
+ ; its one real CR/EOF caret cell. A source beyond the extent is padding only.
+ lda #0
+ sta LRVT+LT_END_PENDING
+ sec
+ lda LRVT+LT_SOURCE
+ sbc LRVT+LT_START
+ sta NEXT
+ lda LRVT+LT_SOURCE+1
+ sbc LRVT+LT_START+1
+ sta NEXT+1
+ lda LRVT+LT_SOURCE+2
+ sbc LRVT+LT_START+2
+ sta NEXT+2
+ sec
+ lda LRVT+LT_LENGTH
+ sbc NEXT
+ sta LRVT+LT_REMAIN
+ lda LRVT+LT_LENGTH+1
+ sbc NEXT+1
+ sta LRVT+LT_REMAIN+1
+ lda #0
+ sbc NEXT+2
+ bcc @range_after
+ inc LRVT+LT_END_PENDING
+ bcs @range_ready
+@range_after:
+ lda #0
+ sta LRVT+LT_REMAIN
+ sta LRVT+LT_REMAIN+1
+@range_ready:
+ ; Resolve the only possible caret once for this row. The live-cell count below
+ ; rejects a candidate in padding while retaining the exact end position.
+ lda #$FF
+ sta LRVT+LT_ROW_CARET
+ sec
+ lda se_hot_caret
+ sbc LRVT+LT_SOURCE
+ sta NEXT
+ lda se_hot_caret+1
+ sbc LRVT+LT_SOURCE+1
+ sta NEXT+1
+ lda se_hot_caret+2
+ sbc LRVT+LT_SOURCE+2
+ bcc @caret_ready
+ bne @caret_ready
+ lda NEXT+1
+ bne @caret_ready
+ lda NEXT
+ cmp LRVT+LT_WIDTH
+ bcs @caret_ready
+ sta LRVT+LT_ROW_CARET
+@caret_ready:
  lda #0
  sta COL
+ sta LRVT+LT_LIVE
 @cell:
  ldx COL
  lda #32
  sta P,x
  lda #0
- sta LRVT+LT_CELL_VALID
  sta P+80,x
- ; Only offsets below the authenticated 16-bit content length read source.
- sec
- lda se_v_pos
- sbc LRVT+LT_START
- sta NEXT
- lda se_v_pos+1
- sbc LRVT+LT_START+1
- sta NEXT+1
- lda se_v_pos+2
- sbc LRVT+LT_START+2
- bne @flags
- lda NEXT+1
- cmp LRVT+LT_LENGTH+1
- bcc @read
- bne @flags
- lda NEXT
- cmp LRVT+LT_LENGTH
- bcc @read
- beq @end_cell
- jmp @advance
+ sta P+160,x
+ lda LRVT+LT_REMAIN
+ ora LRVT+LT_REMAIN+1
+ bne @read
+ lsr LRVT+LT_END_PENDING
+ bcc @next_cell
+ lda LRVT+LT_RECORD_FLAGS
+ and #LRRF_REVERSE
+ beq :+
+ inc P+160,x
+: inc LRVT+LT_LIVE
+ bne @next_cell
 @read:
- lda #1
- sta LRVT+LT_CELL_VALID
  jsr se_view_peek
  jcs @bad
  ldx COL
  sta P,x
- jmp @flags
-@end_cell:
- lda #2
- sta LRVT+LT_CELL_VALID
-@flags:
- ldx COL
  lda LRVT+LT_RECORD_FLAGS
  and #LRRF_REVERSE
  beq :+
- lda #1
+ inc P+160,x
 :
- sta P+160,x
- lda LRVT+LT_CELL_VALID
- cmp #1
- bne @caret
  lda LRVT+LT_FLAGS
- bpl @selection
+ bpl @valid
  ldy COL
 @style_cell:
  lda $FFFF,y
@@ -380,43 +415,39 @@ lrv_build_packet:
  ldx COL
  sta P+80,x
  pla
- bpl @selection
+ bpl @valid
  lda P+160,x
  ora #1
  sta P+160,x
-@selection:
- CMP24 se_v_pos,se_sel_start
- bcc @caret
- CMP24 se_v_pos,se_sel_end
- bcs @caret
- lda P+160,x
- ora #2
- sta P+160,x
-@caret:
- ; The end position is a real caret cell (including the exact-width EOF
- ; terminal row), but no later padding cell may alias another logical line.
- lda LRVT+LT_CELL_VALID
- beq @advance
- CMP24 se_v_pos,se_hot_caret
- bne @advance
- lda LRVT+LT_ROW
- sta LRVT+LT_CARET_ROW
- lda COL
- sta LRVT+LT_CARET_COL
- lda P+160,x
- ora #4
- sta P+160,x
-@advance:
+@valid:
+ inc LRVT+LT_LIVE
+ lda LRVT+LT_REMAIN
+ bne :+
+ dec LRVT+LT_REMAIN+1
+: dec LRVT+LT_REMAIN
  inc se_v_pos
  bne :+
  inc se_v_pos+1
  bne :+
  inc se_v_pos+2
 :
+@next_cell:
  inc COL
  lda COL
  cmp LRVT+LT_WIDTH
  jcc @cell
+ lda LRVT+LT_ROW_CARET
+ cmp LRVT+LT_LIVE
+ bcs @packet_ready
+ tax
+ lda LRVT+LT_ROW
+ sta LRVT+LT_CARET_ROW
+ lda LRVT+LT_ROW_CARET
+ sta LRVT+LT_CARET_COL
+ lda P+160,x
+ ora #4
+ sta P+160,x
+@packet_ready:
  lda #0
  clc
  rts

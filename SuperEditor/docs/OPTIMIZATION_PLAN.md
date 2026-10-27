@@ -704,3 +704,51 @@ row renderer, which could remove 30–70% of leaf paint work. CRC removal is not
 candidate: it is now the tested corruption policy for persistent semantic state.
 The detailed implementation and acceptance record is maintained in
 `agentsworking/STYLED_ROW_TRANSACTION_PLAN.md`.
+
+### Row-relative packet construction and completion-guard deletion
+
+The first post-transaction cut removes work inside the accepted foreground
+path. C33 now computes the 24-bit row offset, remaining content count, endpoint
+state and caret column once per row. Its cell loop no longer repeats 24-bit
+range, selection and caret comparisons for every one of 40, 60 or 80 cells.
+It clears character, role and selector bytes as it produces each owned cell, so
+padding cannot retain stale reverse or selection flags. Selection is rejected
+at the authenticated R25 admission boundary and is no longer retested inside
+the admitted packet loop.
+
+The packet builder itself falls from 2,634 to 1,347 instructions for the
+ordinary 40-column case, 3,275 to 1,668 at 60 columns and 3,915 to 1,988 at 80
+columns. Near-full rows fall from 3,266/4,897/6,527 to
+1,639/2,420/3,200. The complete styled consumer now uses
+7,498/7,306 instructions at 40 columns, 84,030/83,854 at 60 and
+55,295/55,147 at 80 for insert/delete, with the same two or three loads. This
+is a ten-byte C33 code increase over the required packet-flag clear baseline;
+it adds no state, zero-page, image, bank or catalog entry and leaves 17 bytes
+before the fixed `$BF00` boundary.
+
+The focused production oracle covers an empty line, first/live/end/padding
+caret positions, width-minus-one content, exact-width CR/EOF refusal, wrapped
+and panned rows, a retained row beginning at source offset 66,000, poisoned
+character/role/selector planes, and selection refusal with the full 16 MiB REU
+unchanged. Evidence is in
+`build/lrv-row-relative/20261027T124658181333Z/result.json`. The complete
+72-case styled matrix, including five corruption classes, queued input, F6
+cancellation and stack 68, passes at
+`build/styled-grid-carry-matrix/20261027T124651196416Z/result.json`.
+
+C14 also removes a second source guard at `complete:`. Every path to that label
+remains inside the same uninterrupted `se_style_step` that already authenticated
+the source, so the second R14 call could not observe a new source authority. The
+deletion removes eight linked bytes and 945–946 instructions plus one R14 call
+from every completed planner, without changing overlay loads. Structural wrap
+routes that complete two planners remove 1,892 instructions. The larger private
+guard/yield fusion experiment is deliberately not shipped: although it saved
+more instructions, it added 23 linked bytes and slightly lengthened the measured
+input-response bound.
+
+The next admitted change must meet the same standard. A direct authenticated
+header update is under proof because it can delete two 256-byte CPU copies and
+the generic header rebuild while retaining both CRCs and valid-last publication.
+Dirty-span painting and dead graph removal remain candidates only if their
+complete-operation savings exceed their code cost. Moving the same work between
+disk members or overlays remains outside the optimization ledger.

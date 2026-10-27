@@ -110,6 +110,11 @@ def run(out, fixture=None):
                     source = admission.TEXT[:at - 1] + admission.TEXT[at:]
                 _, first, count, _ = make_ready(f, mode, source)
 
+                # Every packet flag byte must be produced by this transaction.
+                # Poisoning catches padding cells that skip the live/end paths
+                # and would otherwise inherit selection/reverse state.
+                f.m.load(0x88C4 + 160, bytes((2,)) * 80)
+
                 loads = f.get("se_overlay_loads", 2)
                 gate.dll.hp_begin(f.get("se_e_draw_sequence", 2))
                 try:
