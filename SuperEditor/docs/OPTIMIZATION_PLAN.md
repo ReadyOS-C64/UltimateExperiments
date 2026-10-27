@@ -495,3 +495,74 @@ instead of zeroing six render bytes again, and it reuses the loop's proven X=0.
 Zero-byte linker assertions keep those fields inside BSS. This removes 16 live
 COLD bytes and 51 startup cycles with identical dirty-RAM results. It is recorded
 as bloat cleanup only and carries no foreground performance claim.
+
+## Material replacement boundary after the bounded cuts
+
+The bounded instruction deletions above are complete. Further leaf-loop and
+overlay-routing variants are closed unless a new whole-operation profile shows
+them to be material. Three exact-current experiments establish that boundary:
+
+- specializing C32 for six-byte shifts made the complete cold operations slower
+  after payload authentication and left stale pixels on the next public caret;
+- keeping the edit pair hot removed later overlay loads but required 546 new
+  bytes while the generic rekey path still served other modes; and
+- both a fused R21 decoder/compositor and a terminal byte-row cut saved less
+  than 3% of their complete public operations.
+
+An R33/C26 direct span accumulator removed 66 event crossings and reduced a
+forced WRAPPED insertion by 149,077 instructions, but that was only 4.13% of the
+complete operation and grew the two images by 408 bytes. It is rejected. This
+is the decisive lesson for the next work: crossing, load and DMA counts are
+diagnostics; only deleted live bytes and complete foreground PAL cycles qualify
+a production change.
+
+The active replacement is one retained logical-line model, `LRM1`, in the
+existing FE grid-cache bank. It replaces SP2 and the dormant style checkpoint;
+it is not another cache family. The fixed map is `$1600..$FFFF`: a 256-byte
+header, a 1,792-byte visible style-plan snapshot, 128 32-byte line-directory
+records, and 128 pairs of incoming/outgoing block, inline and lexer states with
+per-record CRCs. It adds no image, bank, BSS, zero-page byte or catalog entry.
+Capacity overflow, a line too large for the plan, a CR edit, row-count change,
+generation wrap or any failed source/owner/epoch/CRC proof takes the existing
+cold path and republishes one current authority. Syntax highlighting disabled
+bypasses the lexer and LRM grammar path entirely.
+
+The first admitted update is one insertion or backspace inside one retained
+CR-terminated logical line. The existing edit certificate proves the sole
+mutation. LRM1 restores that line's incoming state, parses the real changed line
+once, and accepts the suffix only when its terminator, row count and normalized
+outgoing continuation state converge. It then republishes the affected style
+rows and invokes the local-row painter. `model_generation16 + ordinal8`, the
+full source/style key and document/REU epochs bind every renderer reference;
+generation wrap revokes those references before reuse.
+
+This slice must delete the old mechanisms in the same candidate. The immediate
+deletion budget is 177 bytes of C14 checkpoint routines, the 1,119-byte AUX
+refresh object and op-6 route, the old 120-byte resident checkpoint semantics,
+the SP2 producer/consumer code and its 128 REU bytes. Keeping both authorities
+after qualification is a failed result.
+
+Do not count the former twelve-capsule type-$53 cache/lex/rebase family as a
+future saving. Commit `a5af575` already removed that 44,410-byte payload family,
+its catalog rows and resident observer state from the current 51-image product.
+Its frozen 62-image deletion map remains useful as proof that partial removal
+would have stranded one shared schema, but those bytes cannot be claimed twice.
+The current R33 is the much smaller checked BODY presentation plan introduced by
+that replacement and remains live until LRM1 demonstrably covers the GEOS path.
+
+Acceptance is measured on exact first and steady public insert/backspace cases
+in all fixed-grid widths. Current steady Full work is 734,992 instructions at
+40 columns, 2,743,354 at 60 and 1,898,955 at 80. The first production slice must
+beat 367,496, 1,371,677 and 949,478 respectively, while keeping source, history,
+pixels, rows, ownership, lifecycle, stack and the `$C600..$C9FF` ReadyOS reserve
+exact. Parser convergence without local repaint cannot pass the 60/80-column
+gates and is not eligible for promotion.
+
+The renderer consumes LRM1 through retained geometry packets rather than adding
+a pixel-cache manager. A geometry hit skips C24/C20 but still regenerates live
+selection and caret state in C22. A raster hit may keep existing bitmap bands
+only when source generation, ordinal, placement, selected interval, caret
+rectangle and shared-band damage all match. The current screen and grid packets
+remain the pixel authority. This second level is admitted only when it deletes
+the displaced measure/raster path and materially improves the same complete
+public operation.
