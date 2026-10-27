@@ -79,6 +79,7 @@ def build_control(out, production):
  bit LRVT+LT_FLAGS
  bpl :+
  sta H+N_STYLE+17,x
+ sta se_st_descriptor+17,x
 : dex
  bpl @header_revision
  ldx #2
@@ -102,6 +103,7 @@ def build_control(out, production):
  bit LRVT+LT_FLAGS
  bpl :+
  sta H+N_STYLE+21,x
+ sta se_st_descriptor+21,x
 : dex
  bpl @length
 """
@@ -128,6 +130,18 @@ def build_control(out, production):
  sta H+N_CARET,x
  dex
  bpl @header_caret
+ ldx #3
+@control_descriptor_revision:
+ lda se_r_revision,x
+ sta se_st_descriptor+17,x
+ dex
+ bpl @control_descriptor_revision
+ ldx #2
+@control_descriptor_length:
+ lda se_v_length,x
+ sta se_st_descriptor+21,x
+ dex
+ bpl @control_descriptor_length
 """
     text = replace_once(text, direct, rebuild)
     style_point = """ lda LRVT+LT_FLAGS

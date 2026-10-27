@@ -284,7 +284,6 @@ ordinary_entry:
  jcs miss
 @status:
  jsr status
- jcs miss
  lda NEWSEEN
  sta se_v_seen
  sta H+N_SEEN
@@ -835,8 +834,6 @@ status:
 : lda BCOL
  cmp #22
  bcc @cell
- lda #0
- clc
  rts
 .segment "CODE"
 .import se_l_caret

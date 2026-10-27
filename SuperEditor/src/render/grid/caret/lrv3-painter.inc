@@ -149,13 +149,11 @@ lrv_paint_entry:
  lda se_mode
  beq @status40
  jsr status
- jcs miss
  jmp @status_done
 @status40:
  jsr tui_editor_status40
 @status_done:
  jsr lrv_finish_state
- jcs miss
  lda #17
  jsr helper
  jcs miss
@@ -230,7 +228,6 @@ lrv_finish_state:
  sta se_l_caret,x
  dex
  bpl @caret
- clc
  rts
 @rows:
  lda #<se_v_rows
@@ -310,12 +307,9 @@ lrv_build_packet:
  ADD24 LRVT+LT_SOURCE,se_l_pan,LRVT+LT_SOURCE
  jmp @source_ready
 @wrapped:
- clc
- lda LRVT+LT_CLIP
- adc LRVT+LT_REL
+ lda LRVT+LT_REL
  sta NEXT
- lda LRVT+LT_CLIP+1
- adc #0
+ lda #0
  sta NEXT+1
 @offset_check:
  lda NEXT
@@ -459,7 +453,6 @@ lrv_build_packet:
  ora #4
  sta P+160,x
 @packet_ready:
- lda #0
  clc
  rts
 @bad:
@@ -607,7 +600,6 @@ lrv_text_row:
  lda COL
  cmp #40
  bcc @cell
- lda #0
  clc
  rts
 @bad:

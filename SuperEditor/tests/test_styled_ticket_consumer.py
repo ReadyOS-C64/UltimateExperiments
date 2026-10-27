@@ -146,10 +146,14 @@ def run(out, fixture=None):
                     expected_state
                 assert f.get("se_st_generation", 2) == \
                     ((old_generation + 1) & 0xFFFF)
-                assert f.read(f.s["se_st_descriptor"] + 17, 4) == \
-                    f.read(f.s["se_r_revision"], 4)
-                assert f.read(f.s["se_st_descriptor"] + 21, 3) == \
-                    len(source).to_bytes(3, "little")
+                descriptor_revision = f.read(f.s["se_st_descriptor"] + 17, 4)
+                current_revision = f.read(f.s["se_r_revision"], 4)
+                assert descriptor_revision == current_revision, \
+                    (width, action, descriptor_revision.hex(), current_revision.hex())
+                descriptor_length = f.read(f.s["se_st_descriptor"] + 21, 3)
+                current_length = len(source).to_bytes(3, "little")
+                assert descriptor_length == current_length, \
+                    (width, action, descriptor_length.hex(), current_length.hex())
                 exact_rows(f, source, mode, first, count)
 
                 entries = {

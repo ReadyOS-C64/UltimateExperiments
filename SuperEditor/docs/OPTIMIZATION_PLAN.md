@@ -827,3 +827,34 @@ by a constant 104-cycle quiescence tail with no parser or overlay work. The
 complete oracle and screenshots are in
 `agentsworking/evidence/M8/20261027T130055318500Z-display-timing-styled-grid-convergence-baseline/normal-speed-ntsc-styled-transaction.json`
 and its sibling `ntsc-styled-transaction-contact-sheet.png`.
+
+### Deletion-only transaction cleanup
+
+The next pass removes state and branches whose values are invariant in the live
+row transaction. `LT_CLIP` was always zero, so its stores, 16-bit additions and
+carry refusal are gone. Success no longer normalizes unused `A`/carry values or
+rewrites `se_st_cp_valid` and `se_st_request` to values already required by
+admission. The styled descriptor update is fused with the authenticated wide
+header loops; 40-column mode retains its required local copy because it bypasses
+that header path. The orphan `LRV3` magic and geometry constants are also gone.
+
+This deletes 69 linked bytes: 30 executable bytes from `grid`, plus 30
+executable and nine read-only bytes from `geostail`. No BSS, zero-page,
+resident state, image, bank, catalog entry, load or DMA is added. Focused
+insert/delete work falls from 7,327/7,141 to 7,309/7,123 instructions at 40
+columns, from 49,754/47,198 to 49,711/47,155 at 60, and from 33,529/32,723 to
+33,486/32,680 at 80. This is a small hot-path saving coupled to a real code
+deletion, with no credit assigned to packaging or overlay placement.
+
+The exact-current D81 is
+`b6ceb3089774a55c7be5b9d0396341e6fde0e71b303b32aeabdd8a860af03552`.
+The 72-case matrix, all five corruption classes and both cancellation cases pass
+at `build/styled-grid-carry-matrix/20261027T132718007905Z/result.json`. The
+byte-exact 256-byte header/CRC oracle passes at
+`build/lrv-header-direct/20261027T132700114530Z/result.json`, and the focused
+consumer and row-relative gates pass at
+`build/styled-ticket-consumer/20261027T132708785100Z/result.json` and
+`build/lrv-row-relative/20261027T132710997907Z/result.json`. The established
+68-byte stack bound remains conservative because this pass only deletes
+instructions and checked branches from existing leaves and introduces no call,
+push, interrupt or recursion edge.

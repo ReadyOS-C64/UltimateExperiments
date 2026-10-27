@@ -185,8 +185,6 @@ lrv_style_admit:
  jsr lrv_save_header
  jcs lrv_bad
 @expanded:
- lda se_l_mode
- sta LRVT+LT_COVER
  lda LRVT+LT_LENGTH
  ora LRVT+LT_LENGTH+1
  bne @nonempty
@@ -211,8 +209,6 @@ lrv_style_admit:
 @record_ready:
  lda #0
  sta LRVT+LT_REL
- sta LRVT+LT_CLIP
- sta LRVT+LT_CLIP+1
  sta LRVT+LT_CARET_ROW
  sta LRVT+LT_CARET_COL
  ldx #2
@@ -250,6 +246,7 @@ lrv_finish:
  bit LRVT+LT_FLAGS
  bpl :+
  sta H+N_STYLE+17,x
+ sta se_st_descriptor+17,x
 : dex
  bpl @header_revision
  ldx #2
@@ -273,6 +270,7 @@ lrv_finish:
  bit LRVT+LT_FLAGS
  bpl :+
  sta H+N_STYLE+21,x
+ sta se_st_descriptor+21,x
 : dex
  bpl @length
  clc
@@ -301,6 +299,8 @@ lrv_finish:
 @success:
  lda LRVT+LT_FLAGS
  bpl @plain
+ lda se_mode
+ bne @descriptor_done
  ldx #3
 @descriptor_revision:
  lda se_r_revision,x
@@ -313,19 +313,15 @@ lrv_finish:
  sta se_st_descriptor+21,x
  dex
  bpl @descriptor_length
- lda #1
- sta se_st_cp_valid
+@descriptor_done:
  inc se_st_generation
  bne :+
  inc se_st_generation+1
-: lda #0
- sta se_st_request
- lda #1
+: lda #1
  sta se_st_valid
  lda #ST_TX_INVALID
  sta se_st_tx+ST_TX_PHASE
 @plain:
- lda #0
  clc
  rts
 
@@ -542,9 +538,6 @@ lrv_plain_update:
  sta LRVT+LT_FIRST
  lda #1
  sta LRVT+LT_ROWS
- lda #0
- sta LRVT+LT_CLIP
- sta LRVT+LT_CLIP+1
  jsr lrv_check_edit_row
  jcs lrv_bad
  lda #LRV_PUBLISHED
@@ -661,14 +654,10 @@ lrv_save_header:
 
 ; Prove the last selected row starts within the authenticated logical length.
 lrv_span_check:
- clc
- lda LRVT+LT_CLIP
- adc LRVT+LT_ROWS
+ lda LRVT+LT_ROWS
  sta NEXT
- lda LRVT+LT_CLIP+1
- adc #0
+ lda #0
  sta NEXT+1
- bcs @bad
  lda NEXT
  bne :+
  dec NEXT+1
@@ -743,5 +732,3 @@ lrv_bad:
 
 .segment "RODATA"
 lrv_widths:.byte 40,60,80
-lrv_magic:.byte "LRV3"
-lrv_geometry:.byte LRV_RECORD_BYTES,LRV_RECORD_LIMIT,6,22,1
