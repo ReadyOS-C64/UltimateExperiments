@@ -516,31 +516,45 @@ is the decisive lesson for the next work: crossing, load and DMA counts are
 diagnostics; only deleted live bytes and complete foreground PAL cycles qualify
 a production change.
 
-The active replacement is one retained logical-line model, `LRM1`, in the
-existing FE grid-cache bank. It replaces SP2 and the dormant style checkpoint;
-it is not another cache family. The fixed map is `$1600..$FFFF`: a 256-byte
-header, a 1,792-byte visible style-plan snapshot, 128 32-byte line-directory
-records, and 128 pairs of incoming/outgoing block, inline and lexer states with
-per-record CRCs. It adds no image, bank, BSS, zero-page byte or catalog entry.
-Capacity overflow, a line too large for the plan, a CR edit, row-count change,
-generation wrap or any failed source/owner/epoch/CRC proof takes the existing
-cold path and republishes one current authority. Syntax highlighting disabled
-bypasses the lexer and LRM grammar path entirely.
+The active replacement is one visible retained logical-line model, `LRV3`, in
+the existing FE grid-cache bank. It is not another cache family. Its complete
+fixed map is only 2,432 bytes: a 96-byte header at `$1600..$165F`, twenty-four
+24-byte records at `$1660..$189F`, and a 1,760-byte fixed visible style canvas
+at `$18A0..$1F7F`. It adds no image, bank, BSS, zero-page byte or catalog entry.
+Twenty-two records cover the visible physical rows; the predecessor and
+successor supply exact boundary state. Folded projection and true capacity
+overflow remain cold misses in this first slice.
+
+Each record stores a 16-bit CR-exclusive line length and six-byte incoming and
+outgoing block continuations: fence, region depth, language and 24-bit overflow
+depth. Later starts are reconstructed from the header anchor by at most
+twenty-four checked prefix additions. This preserves lines through 65,535 bytes
+and means a one-byte edit changes no suffix record or suffix CRC. Packed
+kind/language and row-unit plan geometry keep the record at 24 bytes. Per-record
+and per-slice CRCs feed two 48-byte manifests, so hot publication hashes the
+changed slice, manifests and header rather than rescanning the whole object.
+The block parser is reconstructed with init, derived START and incoming carry.
+Inline and BASIC/assembler lexer state are line-local and drained at CR/EOF, so
+their 68- and 60-byte working states are not duplicated per line.
 
 The first admitted update is one insertion or backspace inside one retained
-CR-terminated logical line. The existing edit certificate proves the sole
-mutation. LRM1 restores that line's incoming state, parses the real changed line
-once, and accepts the suffix only when its terminator, row count and normalized
-outgoing continuation state converge. It then republishes the affected style
-rows and invokes the local-row painter. `model_generation16 + ordinal8`, the
-full source/style key and document/REU epochs bind every renderer reference;
-generation wrap revokes those references before reuse.
+CR/EOF logical line whose physical row count is unchanged. Plain uses the same
+replacement painter but bypasses C14/C15 grammar. Markdown parses that line once;
+Full invokes C15 once only for a colored BASIC/assembler code line. The edit is
+accepted only when terminator, row height and normalized outgoing continuation
+converge. `model_generation16 + ordinal8`, the full source/style key and
+document/REU epochs bind renderer references; wrap revokes all references before
+generation zero can be reused.
 
-This slice must delete the old mechanisms in the same candidate. The immediate
-deletion budget is 177 bytes of C14 checkpoint routines, the 1,119-byte AUX
-refresh object and op-6 route, the old 120-byte resident checkpoint semantics,
-the SP2 producer/consumer code and its 128 REU bytes. Keeping both authorities
-after qualification is a failed result.
+The first composed candidate must delete the complete current fixed-grid edit
+graph, not merely SP2 or its long-row tail. The exact gross boundary is 4,461
+linked bytes: R14 SP2 964, C14 SP2 dispatch/calls 42, R14 routing/read cleanup
+27, the complete C33 type/long family 1,438 and the complete R25 frames 14..18
+family 1,990. Replacement code is capped at 2,366 bytes across those existing
+images, giving at least 2,095 bytes of net deletion. The shared 120-byte style
+checkpoint, AUX refresh and resident GEOS hook remain until LRV3 covers GEOS;
+retiring them earlier would break a live consumer. That later all-mode boundary
+deletes another exact 1,518 linked bytes and reaches 5,979 cumulative.
 
 Do not count the former twelve-capsule type-$53 cache/lex/rebase family as a
 future saving. Commit `a5af575` already removed that 44,410-byte payload family,
@@ -548,7 +562,7 @@ its catalog rows and resident observer state from the current 51-image product.
 Its frozen 62-image deletion map remains useful as proof that partial removal
 would have stranded one shared schema, but those bytes cannot be claimed twice.
 The current R33 is the much smaller checked BODY presentation plan introduced by
-that replacement and remains live until LRM1 demonstrably covers the GEOS path.
+that replacement and remains live until LRV3 demonstrably covers the GEOS path.
 
 Acceptance is measured on exact first and steady public insert/backspace cases
 in all fixed-grid widths. Current steady Full work is 734,992 instructions at
