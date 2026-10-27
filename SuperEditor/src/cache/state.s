@@ -12,7 +12,7 @@ se_bc_head: .res 1
 se_bc_tail: .res 1
 se_bc_count: .res 1
 .assert *-se_bc_arena=17,error,"cache descriptor size"
-.assert se_bc_arena>=$9FB5,lderror,"cache moved existing OBJECTS state"
+.assert se_bc_arena>=$9FB3,lderror,"cache moved surviving OBJECTS state"
 .assert *<=$A000,lderror,"cache descriptor exceeds OBJECTS"
 .segment "DOCSTATE"
 .export se_bc_ring

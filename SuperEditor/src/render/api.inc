@@ -4,6 +4,6 @@
 .global se_r_original,se_r_append,se_r_generation,se_r_length,se_r_top
 .global se_r_mark,se_r_anchor,se_r_caret,se_r_ui,se_r_under_glyph,se_r_under_color
 .global se_r_caret_row,se_r_caret_col,se_r_first,se_r_last,se_r_delta,se_r_next
-.global se_r_pad,se_r_mode,se_r_glyph,se_r_color
+.global se_r_mode,se_r_glyph,se_r_color
 
 .global se_r_presentation

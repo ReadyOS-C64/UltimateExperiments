@@ -50,7 +50,8 @@ se_block_step:
     sec
     rts
 copy_step:
-    jsr se_clip_copy_step
+    lda #B_COPY_STEP
+    jsr invoke
     jcs failed
     lda se_clip_busy
     bne pending

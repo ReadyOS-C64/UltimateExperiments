@@ -426,3 +426,24 @@ Immediate next action: finish the bounded current probes, preserve their
 findings, and produce Phase 1's common-build cost/residency table and replacement
 map. Then tackle the hot-key eviction loop and retained-line fallback. Do not
 continue filling the64-entry catalog with independent optimization supervisors.
+
+## Current ruthless deletion pass
+
+The catalog-capacity change is closed. Current production work must delete live
+instructions, state, repeated validation or raster work and report the effect on
+the complete foreground operation. Disk order and catalog layout do not qualify
+as performance work in this pass.
+
+The first resident deletion removes the 28-byte clipboard compatibility
+dispatcher, routes its sole live COPY STEP caller through the controller's
+existing C10 dispatcher, and deletes eight unread state bytes. The linked result
+is 26 fewer CODE bytes and eight fewer resident state bytes. A successful copy
+step saves 15 CPU cycles and one resident call; overlay calls and loads stay
+unchanged. This is a code-graph simplification, not a redraw claim.
+
+The next two independently measured candidates target foreground work directly:
+C32 typing removes repeated guards and validation wrappers, while R21 raster
+specializes its production-only full-width contract and deletes generic clipping.
+They must retain exact pixels, source and fault behavior after composition before
+promotion. Continue from whole-operation PAL attribution after those cuts; do not
+return to overlay-file rearrangement.

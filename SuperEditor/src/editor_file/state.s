@@ -43,9 +43,8 @@ se_f_temp: .res 16
 se_f_backup_name: .res 16
 se_f_nonce: .res 1
 ; Native dialog result uses caller's se_f_name/name_len/device. No ASCII folding.
-.export se_f_ui_length,se_f_ui_key,se_f_ui_index,se_f_ui_help
+.export se_f_ui_key,se_f_ui_index,se_f_ui_help
 se_f_ui_help: .res 1
-se_f_ui_length: .res 1
 se_f_ui_key: .res 1
 se_f_ui_index: .res 1
 

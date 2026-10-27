@@ -27,7 +27,6 @@ se_r_first: .res 3
 se_r_last: .res 3
 se_r_delta: .res 3
 se_r_next: .res 3
-se_r_pad: .res 1
 se_r_mode: .res 1
 se_r_glyph: .res 1
 se_r_color: .res 1

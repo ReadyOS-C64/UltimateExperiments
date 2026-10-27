@@ -40,10 +40,6 @@ se_v_rows: .res EDITOR_ROW_START_BYTES ;22 body starts; end anchor is separate
 se_v_cell: .res 1
 se_v_restart: .res 1
 se_v_nav_busy: .res 1
-se_v_nav_dir: .res 1
-se_v_nav_left: .res 1
-se_v_nav_kind: .res 1
-se_v_budget: .res 1
 se_v_menu_row: .res 1
 se_v_menu_count: .res 1
 se_v_menu_index: .res 1

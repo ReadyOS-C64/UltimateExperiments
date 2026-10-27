@@ -66,7 +66,6 @@ H_CHUNK=128
 .global se_h_crc
 .global se_h_crc_pos
 .global se_h_crc_left
-.global se_h_expected_crc
 .global se_h_request
 .global se_h_base_append
 .global se_h_insert_offset

@@ -43,7 +43,6 @@ se_h_io_count: .res 2
 se_h_crc: .res 2
 se_h_crc_pos: .res 3
 se_h_crc_left: .res 2
-se_h_expected_crc: .res 2
 se_h_request: .res 9
 se_h_base_append: .res 3
 se_h_insert_offset: .res 3

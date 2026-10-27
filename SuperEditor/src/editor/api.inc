@@ -80,7 +80,7 @@ U_SETTINGS=8
 .global se_v_top,se_v_pos,se_v_length,se_v_hot_end,se_v_span,se_v_old_span,se_v_phys
 .global se_v_cache_base,se_v_cache_end,se_v_cache_count,se_v_temp,se_v_row,se_v_col
 .global se_v_caret_row,se_v_caret_col,se_v_seen,se_v_rows,se_v_bottom,se_v_cell,se_v_restart
-.global se_v_nav_busy,se_v_nav_dir,se_v_nav_left,se_v_nav_kind,se_v_budget
+.global se_v_nav_busy
 .global se_v_menu_row,se_v_menu_count,se_v_menu_index,se_v_menu_ptr
 
 .global se_view_init,se_view_peek,se_view_advance,se_view_retreat
