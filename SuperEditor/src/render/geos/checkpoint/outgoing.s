@@ -20,20 +20,9 @@ se_gcl_publish:
 :
  jsr gsc_cap
  jcs @done
- lda GSC_CAPTURED
- cmp #2
- beq :+
  jsr gsc_publish
-:
  jsr se_gp_cache_guard
  bcs @done
- lda GSC_CAPTURED
- cmp #2
- bne :+
- jsr gsc_cached_carry
- bcs @done
- jmp @logical_start
-:
  lda GSEM_FRAME+GSEM_CP_VALID
  cmp #1
  bne @done
@@ -262,5 +251,3 @@ gsc_cap:
 @bad:
  sec
  rts
-
-.include "render/geos/checkpoint/cache-outgoing.inc"

@@ -1247,7 +1247,6 @@ editor build/supereditor.d81: build/overlays/fold.seo
 build/editor/commands.o build/geos-resident/dispatch.o: src/cache/api.inc
 build/overlays/menu40.o: src/render/geos/source-line.inc src/render/geos/fold-query.inc src/render/geos/semantic.inc
 build/geos-prod/page.o: src/cache/api.inc
-build/geos-prod/checkpoint-outgoing.o: src/render/geos/checkpoint/cache-outgoing.inc src/cache/query/proof-api.inc src/cache/api.inc
 build/editor/startup.o: src/editor/catalog.inc
 
 .PHONY: package-force
