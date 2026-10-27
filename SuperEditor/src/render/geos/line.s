@@ -2,6 +2,7 @@
 .macpack longbranch
 .include "render/geos/api.inc"
 .include "render/geos/line.inc"
+.import se_petscii_screen
 .export se_geos_line_begin,se_geos_line_step,se_geos_line_finish
 L=GEOS_LINE_FRAME
 G=L+GL_GLYPH
@@ -433,10 +434,109 @@ range:
     lda #GL_RANGE
     sec
     rts
+; C20 owns one fixed packed BSW9 face. Recheck its eight-byte header for
+; every measured glyph so corruption introduced between BEGIN and STEP still
+; fails exactly as before while deleting unrelated raster-frame validation.
 measure:
-    ldx #<G
-    ldy #>G
-    jmp se_geos_measure
+    lda L+GL_FONT
+    sta se_gg_pointer
+    lda L+GL_FONT+1
+    sta se_gg_pointer+1
+    ldy #0
+@header:
+    lda (se_gg_pointer),y
+    cmp fixed_font_header,y
+    beq :+
+    jmp fixed_format
+:
+    iny
+    cpy #8
+    bcc @header
+    lda #0
+    sta G+GG_VALID
+    sta G+GG_REVERSE
+    lda G+GG_VALUE
+    jsr se_petscii_screen
+    sta G+GG_SCREEN
+    cmp #1
+    bcc @at
+    cmp #27
+    bcc @lower
+    beq @bracket
+    cmp #29
+    beq @bracket
+    cmp #32
+    bcc @fallback
+    cmp #64
+    bcc @ordinary
+    cmp #65
+    bcc @fallback
+    cmp #91
+    bcs @fallback
+@ordinary:
+    sec
+    sbc #32
+    bcs @mapped
+@at:
+    lda #32
+    bne @mapped
+@lower:
+    clc
+    adc #64
+    bne @mapped
+@bracket:
+    clc
+    adc #32
+@mapped:
+    sta G+GG_INDEX
+    lda #0
+    beq @kind
+@fallback:
+    lda #1
+@kind:
+    sta G+GG_KIND
+    lda L+GL_WIDTHS
+    sta se_gg_pointer
+    lda L+GL_WIDTHS+1
+    sta se_gg_pointer+1
+    ldy G+GG_SCREEN
+    lda (se_gg_pointer),y
+    beq fixed_format
+    cmp #9
+    bcs fixed_format
+    sta G+GG_WIDTH
+    tax
+    lda G+GG_KIND
+    beq :+
+    cpx #8
+    bne fixed_format
+:   txa
+    sta G+GG_ADVANCE
+    lda G+GG_STYLE
+    lsr
+    bcc @italic
+    inc G+GG_ADVANCE
+@italic:
+    lsr
+    bcc @metrics
+    inc G+GG_ADVANCE
+    inc G+GG_ADVANCE
+@metrics:
+    lda #6
+    sta G+GG_BASELINE
+    lda #9
+    sta G+GG_HEIGHT
+    lda #1
+    sta G+GG_VALID
+    lda #0
+    clc
+    rts
+fixed_format:
+    lda #0
+    sta G+GG_VALID
+    lda #GG_FORMAT
+    sec
+    rts
 packet:
     lda L,x
     sta se_gg_pointer
@@ -473,6 +573,9 @@ caret:
     sta L+GL_CARET_VALID
 @done:
     rts
+.segment "RODATA"
+fixed_font_header: .byte 6,60,0,9,8,0,204,0
+.segment "CODE"
 .include "render/geos/line-map.s"
 .ifdef SE_EDITOR_GEOS_RENDERED
 .include "render/geos/line-rendered.s"

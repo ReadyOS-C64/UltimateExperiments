@@ -944,7 +944,7 @@ build/geos-prod/header.o: src/tui/header40.s
 build/geos-prod/chrome.o: src/tui/editor-chrome40.s
 	mkdir -p $(dir $@)
 	$(CA65) -g -I src -o $@ $<
-GEOS_LAYOUT_OBJ = build/geos-prod/source-line.o build/geos-prod/line.o build/geos-prod/measure.o build/geos-prod/assets.o
+GEOS_LAYOUT_OBJ = build/geos-prod/source-line.o build/geos-prod/line.o build/geos-prod/assets.o
 GEOS_ROW_OBJ = build/geos-prod/row-job.o build/geos-prod/row-job-loans.o build/geos-prod/literal-byte/measure.o build/geos-prod/literal-byte/glyph.o build/geos-prod/literal-byte/assets.o
 build/geos-prod/literal-byte/%.o: src/render/geos/literal-byte/%.s $(wildcard src/render/geos/*.inc)
 	mkdir -p $(dir $@)
