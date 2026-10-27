@@ -639,12 +639,30 @@ resolve_continue:
  sbc band0
  cmp band
  jne @next_band
+ ; Resolver starts on any valid retained tile.  Establish both band bases once;
+ ; the 40-tile budget cannot yield inside a band.
+ lda #0
+ sta role
+ ldx band
+ lda rowlo,x
+ sta se_gg_pointer
+ lda rowhi,x
+ and #$1f
+ sta se_gg_pointer+1
+ ldx #3
+@band_address:
+ lsr se_gg_pointer+1
+ ror se_gg_pointer
+ dex
+ bne @band_address
+ lda se_gg_pointer+1
+ ora #$40
+ sta se_gg_pointer+1
 @tile:
  lda row_budget
  jeq pause_job
  dec row_budget
  lda #0
- sta role
  sta weight
  sta rank
  sta best
@@ -678,22 +696,7 @@ resolve_continue:
  asl
  ora RJ+RJ_BACKGROUND
  sta work
- ; attributes=$4000 +physicalrow*40+tile, using theVICbase/8.
- ldx band
- lda rowlo,x
- sta se_gg_pointer
- lda rowhi,x
- and #$1f
- sta se_gg_pointer+1
- ldx #3
-@address:
- lsr se_gg_pointer+1
- ror se_gg_pointer
- dex
- bne @address
- lda se_gg_pointer+1
- ora #$40
- sta se_gg_pointer+1
+ ; The VIC attribute base is invariant across this physical band.
  ldy tile
  lda work
  sta (se_gg_pointer),y

@@ -461,3 +461,10 @@ resolver calls per full TOP operation. Public CPU work falls 2.34–3.73%; nativ
 PAL LONG and WRAPPED fall 1.68% and 2.40%. Exact pixels, attributes, source,
 fault-before-write behavior, stack, overlay traffic and DMA remain unchanged.
 The role-zero shortcut remains rejected because it regressed Markdown and Full.
+
+The next R21 pass hoists band-invariant role initialization and VIC attribute
+address calculation out of the 1,200-tile resolver. It removes 27,690 R21
+instructions from LONG and WRAPPED, saving 99,052 and 99,398 native PAL cycles.
+It is one executable byte smaller, adds no state or calls, and keeps component,
+fault, stack, package, pixel, load and DMA checks exact. The histogram-pointer
+variant remains rejected because it added code for a weaker resume contract.
