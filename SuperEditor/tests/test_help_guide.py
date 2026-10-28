@@ -180,15 +180,15 @@ def run(out,base,reuse=None):
   f.command(69);assert f.get('se_clip_length')==4 and f.get('se_sel_mark',1)==1
   canonical=f.canonical()
   for mode in range(4):
-   f.command(96+mode);f.render();before=state();key(0x8b);assert (f.get('se_e_ui',1),f.get('se_e_menu',1),f.get('se_e_item',1),f.get('se_e_text_length',1))==(1,6,0,0);guard(before,f'm{mode}-F6-open')
+   f.command(96+mode);f.render();before=state();key(0x8b);assert (f.get('se_e_ui',1),f.get('se_e_menu',1),f.get('se_e_item',1),f.get('se_e_text_length',1))==(1,9,0,0);guard(before,f'm{mode}-F6-open')
    for page in range(3):
     assert f.get('se_e_text_length',1)==page;frame(f'm{mode}-guide{page}');key(0x87)
    assert f.get('se_e_text_length',1)==0;key(0x86);assert f.get('se_e_text_length',1)==2;frame(f'm{mode}-reverse2');key(0x8b);assert f.get('se_e_ui',1)==0
-   # Original Help selection semantics remain separate from page state.
-   key(0x8b);key(0x11);assert f.get('se_e_item',1)==1;key(0x91);assert f.get('se_e_item',1)==0;key(13);assert (f.get('se_e_ui',1),f.get('se_e_menu',1),f.get('se_e_text_length',1))==(1,6,0);key(3) #existing selected H closes menu then reopens Help
+   # Help pull-down selection remains separate from page state.
+   key(0x85);key('h');key(0x11);assert f.get('se_e_item',1)==1;key(0x91);assert f.get('se_e_item',1)==0;key(13);assert (f.get('se_e_ui',1),f.get('se_e_menu',1),f.get('se_e_text_length',1))==(1,9,0);key(3)
    key(0x8b);key('d');assert f.get('se_e_menu',1)==7;f.render();guard(before,f'm{mode}-Help-D');diag_parity(f'm{mode}-Help-D');key(3)
    # F1 Help/H and Help/D by arrows/Return, including fresh page initialization.
-   key(0x85);key('h');key('h');assert f.get('se_e_menu',1)==6 and f.get('se_e_text_length',1)==0;key(3)
+   key(0x85);key('h');key('h');assert f.get('se_e_menu',1)==9 and f.get('se_e_text_length',1)==0;key(3)
    key(0x85);key('h');key(0x11);key(0x87);assert f.get('se_e_item',1)==1 and f.get('se_e_text_length',1)==1;key(13);assert f.get('se_e_menu',1)==7;f.render();guard(before,f'm{mode}-arrow-diag');key(3)
    # The shared table printer also preserves the full existing Settings dialog.
    f.command(103);frame(f'm{mode}-settings','settings');key('h');assert f.get('se_render_caps',1)==0;key('r');assert f.get('se_render_caps',1)==3;frame(f'm{mode}-settings-reset','settings');key(3)
@@ -201,7 +201,7 @@ def run(out,base,reuse=None):
   key(0x8b);key(3);assert f.get('se_e_ui',1)==4;guard(before,'preview-STOP-restores-ui4');key(13);f.render();assert not f.get('se_r_presentation',1)
   # Pending source survives all pages and a genuine typed command after close.
   f.command(50);key('Q');at=f.get('se_hot_caret')-1;data=DATA[:at]+geos.native_text('Q')+DATA[at:];f.render();assert f.get('se_hot_pending',1)==1
-  before=state();key(0x8b);key(0x87);frame('pending-guide1');key(3);guard(before,'pending-help');f.typed(geos.native_text('help'));assert f.get('se_e_menu',1)==6 and f.get('se_e_text_length',1)==0;frame('typed-help0');key(3)
+  before=state();key(0x8b);key(0x87);frame('pending-guide1');key(3);guard(before,'pending-help');f.typed(geos.native_text('help'));assert f.get('se_e_menu',1)==9 and f.get('se_e_text_length',1)==0;frame('typed-help0');key(3)
   # Genuine File owner1/modal phase: F6 remains file help, never source guide.
   f.hold_file_transport=True;f.put('se_e_key',15,1);f.put('se_e_mods',4,1);f.call('se_editor_input')
   # Pending Q is legitimately flushed before File may claim owner1. Stop at

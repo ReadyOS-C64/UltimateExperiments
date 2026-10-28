@@ -139,6 +139,7 @@ cell_draw:
     sta text_ptr+1
     pla
     sta text_ptr
+    jsr rounded_pointer
 pixels:
     ldy #7
 @row:
@@ -242,6 +243,7 @@ row_setup:
     and #3
     ora #$48
     sta text_ptr+1
+    jsr rounded_pointer
     jsr pixels
     clc
     lda screen_ptr
@@ -253,12 +255,30 @@ row_setup:
     inc GCC_UI_COLUMN
     lda GCC_UI_COLUMN
     cmp #40
-    bcc @cell
+    jcc @cell
     lda #0
     clc
+    rts
+rounded_pointer:
+    cpx #$6D
+    bne :+
+    lda #<gcc_rounded_bl
+    sta text_ptr
+    lda #>gcc_rounded_bl
+    sta text_ptr+1
+:
+    cpx #$7D
+    bne :+
+    lda #<gcc_rounded_br
+    sta text_ptr
+    lda #>gcc_rounded_br
+    sta text_ptr+1
+:
     rts
 .segment "RODATA"
 row_matrix_lo: .byte $00,$28,$C0
 row_matrix_hi: .byte $40,$40,$43
 row_bitmap_lo: .byte $00,$40,$00
 row_bitmap_hi: .byte $60,$61,$7E
+gcc_rounded_bl: .byte $18,$18,$1C,$0F,$07,$00,$00,$00
+gcc_rounded_br: .byte $18,$18,$38,$F0,$E0,$00,$00,$00

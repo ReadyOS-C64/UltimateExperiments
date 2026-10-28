@@ -53,11 +53,13 @@ for tag in ['header','diverse','file-menu','help']:
  if tag!='file-menu':
   assert matrix[40:80]==expected.matrix[40:80] and bytes(v&15 for v in colors[40:80])==expected.colors[40:80]
  if tag=='file-menu':
-  assert matrix[40]==0x6B and matrix[79]==0x73
-  assert matrix[200]==0x6D and matrix[239]==0x7D
-  border=[40+c for c in range(40)]+[200+c for c in range(40)]+[80,119,120,159,160,199]
+  assert matrix[40]==0x6B and matrix[60]==0x72
+  assert matrix[200]==0x6D and matrix[220]==0x7D
+  assert font[0x6d*8:0x6e*8]==bytes.fromhex('18 18 1c 0f 07 00 00 00')
+  assert font[0x7d*8:0x7e*8]==bytes.fromhex('18 18 38 f0 e0 00 00 00')
+  border=[40+c for c in range(21)]+[200+c for c in range(21)]+[80,100,120,140,160,180]
   assert all((colors[at]&15)==7 for at in border)
-  assert (colors[82]&15)==7 and all(matrix[82+c]&0x80 for c in range(len('O  Open...       CTRL-O')))
+  assert (colors[82]&15)==7 and all(matrix[82+c]&0x80 for c in range(len('O Open...  CTRL-O')))
   assert (colors[122]&15)==3 and (colors[162]&15)==3
  if tag=='help':
   for row,label in [(4,'SuperEditor keys 1/3'),(8,'CBM-S settings; F8 modes'),

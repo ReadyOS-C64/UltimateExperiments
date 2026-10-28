@@ -48,7 +48,11 @@ def generate():
     rom = Path(os.environ.get('C64_CHARGEN', '/opt/homebrew/Cellar/vice/3.10/share/vice/C64/chargen-901225-01.bin'))
     raw = rom.read_bytes()
     assert len(raw) == 4096
-    native = raw[2048:3072]
+    native = bytearray(raw[2048:3072])
+    # The editor runs the lowercase set, whose line-art lower corners are
+    # square. Graft in the upper/graphics set's visibly rounded PETSCII pair.
+    native[0x6d*8:0x6e*8] = raw[0x4a*8:0x4b*8]
+    native[0x7d*8:0x7e*8] = raw[0x4b*8:0x4c*8]
     # Shared full-width bitmap menu/status glyphs; normal128glyph charset.
     (OUTPUT/'native8.bin').write_bytes(native)
     # Four ink pixels in five-pixel pitch: preserve outside strokes and combine

@@ -5,7 +5,7 @@ se_ui_draw:
 popup:
     lda se_e_menu
     jeq @bar_only
-    cmp #6
+    cmp #9
     jeq help_popup
     cmp #7
     jeq diag_popup
@@ -15,18 +15,33 @@ popup:
     clc
     adc #2
     sta tui_box_h
-    lda #0
+    lda se_e_menu
+    tax
+    dex
+    lda menu_xs,x
     sta tui_box_x
     lda #1
     sta tui_box_y
-    lda #40
+    lda menu_widths,x
     sta tui_box_w
     lda #TUI_TITLE
     jsr tui_box40_color
+    ldx tui_box_x
+    lda #TUI_T_DOWN
+    cpx #0
+    bne :+
     lda #TUI_T_RIGHT
-    sta VIC_SCREEN+40
+:   sta VIC_SCREEN+40,x
+    txa
+    clc
+    adc tui_box_w
+    tax
+    dex
+    lda #TUI_T_DOWN
+    cpx #39
+    bne :+
     lda #TUI_T_LEFT
-    sta VIC_SCREEN+79
+:   sta VIC_SCREEN+40,x
     lda se_e_menu
     sec
     sbc #1
@@ -47,7 +62,10 @@ popup:
     clc
     adc #2
     sta se_v_menu_row
-    ldx #2
+    lda tui_box_x
+    clc
+    adc #2
+    tax
     ldy #0
 @label:
     lda (text_ptr),y
@@ -115,6 +133,10 @@ help_popup:
     clc
     rts
 .segment "RODATA"
+; Pull-downs hug their content and stay as close as possible to their heading.
+; The main underline remains visible on either side of the attached top edge.
+menu_xs:    .byte 0,6,12,11,14,14
+menu_widths:.byte 21,24,27,29,26,26
 guide_pages: .byte guide_table0-ui_print_table,guide_table1-ui_print_table,guide_table2-ui_print_table
 guide_0_0: .byte "SuperEditor keys 1/3",0
 guide_0_1: .byte "Type; RETURN/DEL/cursors",0

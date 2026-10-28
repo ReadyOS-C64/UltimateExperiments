@@ -162,7 +162,7 @@ class Fixture(editor_fixture.EditorFixture):
         base=self.s['se_display_init'];code=self.read(base,96);pcs=[]
         for page in range(8):
             pattern=bytes([0xBD,0,0xD8+page,0x9D,0,0x48+page]);offset=code.index(pattern);pcs.append(base+offset)
-        rom=self.fonts['chargen.bin'][2048:4096];assert rom[:1024]==self.fonts['native8.bin']
+        rom=self.fonts['chargen.bin'][2048:4096]
         self.dll.gm_rom(C.create_string_buffer(rom),(C.c_uint16*8)(*pcs))
         leaf=self.assets['grid80'][36:]
         assert leaf[39]==0x4C and leaf[42]==0x4C
@@ -327,7 +327,10 @@ def logical_ui(f,data):
             for col in range(w):
                 at=(y+row)*40+x+col;border=row in (0,h-1) or col in (0,w-1)
                 glyph=32
-                if row==0:glyph=(0x6B if attached else 0x70) if col==0 else (0x73 if attached else 0x6E) if col==w-1 else 0x40
+                if row==0:
+                    if col==0:glyph=(0x6B if attached and x==0 else 0x72 if attached else 0x70)
+                    elif col==w-1:glyph=(0x73 if attached and x+w==40 else 0x72 if attached else 0x6E)
+                    else:glyph=0x40
                 elif row==h-1:glyph=0x6D if col==0 else 0x7D if col==w-1 else 0x40
                 elif col in (0,w-1):glyph=0x5D
                 matrix[at]=glyph;colors[at]=border_color if border else 1
@@ -336,13 +339,13 @@ def logical_ui(f,data):
         matrix[960:]=bytes([32])*40;text('Command:',24,0)
         raw=f.read(f.s['se_e_text'],f.get('se_e_text_length',1));matrix[968:968+len(raw)]=bytes(map(screen_code,raw));matrix[968+len(raw)]=0xA0
     elif ui==1 and f.get('se_e_menu',1)==1:
-        box(0,1,40,5,7,True)
-        for i,label in enumerate(['O  Open...       CTRL-O','S  Save          CTRL-S','A  Save as...']):
+        box(0,1,21,5,7,True)
+        for i,label in enumerate(['O Open...  CTRL-O','S Save     CTRL-S','A Save as...']):
             text(label,i+2,2)
             if i==f.get('se_e_item',1):
                 for col in range(len(label)):at=(i+2)*40+2+col;matrix[at]^=128;colors[at]=7 if col==0 else 3
             else:colors[(i+2)*40+2]=3
-    elif ui==1 and f.get('se_e_menu',1)==6:
+    elif ui==1 and f.get('se_e_menu',1)==9:
         box(1,3,38,16)
         for row,label in [(4,'SuperEditor keys 1/3'),(6,'Type; RETURN/DEL/cursors'),(7,'F1 menu; F6 help; F7 command'),(8,'CBM-S settings; F8 modes'),(9,'F3/F5, CBM-UP/DOWN: pages'),(10,'CBM-LEFT/RIGHT: jump 40'),(11,'CBM-F toggle region'),(12,'CBM-D collapse; CBM-E expand'),(13,'F2 mark; CTRL-C/K copy; X/V cut/pst'),(14,'F4 wrap; HOME/CTRL-E line'),(17,'F6/STOP closes help')]:text(label,row,3)
     elif ui==3:
@@ -461,7 +464,10 @@ def run(out,previous,colored=False):
         else:
             verify_screen(f.read(0x4000,1000),f.read(0xD800,1000),Screen(*wanted,anchors,seen),tag=tag)
             assert [f.m.read(a) for a in [0xD011,0xD016,0xD018]]==[0x1B,8,2]
-            assert f.read(0x4800,2048)==f.fonts['chargen.bin'][2048:]
+            display_rom=bytearray(f.fonts['chargen.bin'][2048:])
+            display_rom[0x6d*8:0x6e*8]=f.fonts['native8.bin'][0x6d*8:0x6e*8]
+            display_rom[0x7d*8:0x7e*8]=f.fonts['native8.bin'][0x7d*8:0x7e*8]
+            assert f.read(0x4800,2048)==bytes(display_rom)
         actual=tuple(int.from_bytes(f.read(f.s['se_v_rows']+i*3,3),'little') for i in range(22))+(f.get('se_v_bottom'),)
         assert actual==anchors,(tag,'23anchors',actual,anchors)
         assert f.get('se_v_seen',1)==int(seen is not None)
