@@ -4,7 +4,7 @@
 .ifndef EDITOR_OVERLAY
 .import tui_putc40, tui_color
 .endif
-.export tui_box40, tui_box_x, tui_box_y, tui_box_w, tui_box_h
+.export tui_box40, tui_box40_color, tui_box_x, tui_box_y, tui_box_w, tui_box_h
 .ifdef EDITOR_OVERLAY
 .include "editor-api.inc"
 .else
@@ -20,6 +20,9 @@ box_ry: .res 1
 ; ReadyOS PETSCII window: light-blue frame, blue interior, white default text.
 ; Static parameter frame; nonreentrant. Dimensions validated; cells clipped.
 tui_box40:
+    lda #TUI_BORDER
+tui_box40_color:
+    sta @border_color+1
     lda tui_box_x
     cmp #40
     jcs @invalid
@@ -91,6 +94,7 @@ tui_box40:
 @br:
     lda #TUI_CORNER_BR
 @border:
+@border_color:
     ldx #TUI_BORDER
     stx tui_color
 @write:

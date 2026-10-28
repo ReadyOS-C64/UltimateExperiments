@@ -42,6 +42,13 @@ def send(key,render=True):
  put('se_e_key',key,1);call('se_editor_input');return settle(render)
 def command(value,render=True):
  call('se_editor_command',a=value);return settle(render)
+def overlay_hotkey(matrix,mods=2):
+ put('se_e_key',0xA0,1);put('se_e_mods',mods,1);put('se_e_matrix',matrix,1);put('se_overlay_frame',9,1)
+ regs,_=m.call(s['se_overlay_call'],a=7,x=1);assert not regs.p&1
+ value=get('se_e_command',1);put('se_e_mods',0,1);put('se_e_matrix',0,1);return value
+def cbm_hotkey(matrix,key=0xA0,shift=False,render=True):
+ put('se_e_key',key,1);put('se_e_mods',3 if shift else 2,1);put('se_e_matrix',matrix,1)
+ call('se_editor_input');steps=settle(render);put('se_e_mods',0,1);put('se_e_matrix',0,1);return steps
 def typed(text,render=True):
  send(0x88,False)
  for c in text.upper().encode('ascii'):send(c,False)
@@ -77,6 +84,12 @@ try:
  shim=bytes((i*73+29)&255 for i in range(1024));m.load(0xC600,shim)
  startup(m,s,assets);settle();original=document()
  assert original.startswith(bytes([35,32,0xD3,0x55,0x50]))
+ assert [overlay_hotkey(v) for v in (13,14,18,21)]==[103,114,113,112]
+ assert [overlay_hotkey(2,v) for v in (2,3)]==[41,40]
+ assert [overlay_hotkey(7,v) for v in (2,3)]==[39,38]
+ assert overlay_hotkey(10)==0xFF
+ cbm_hotkey(13);assert get('se_e_ui',1)==1 and get('se_e_menu',1)==8
+ send(3);assert get('se_e_ui',1)==0
  header,header_colors=menu_header()
  assert read(0x4000,80)==header and bytes(c&15 for c in read(0xD800,80))==header_colors
  assert '# SuperEditor' in screen()
@@ -100,7 +113,7 @@ try:
  send(ord('U'));assert view()==bytes([0xD8,0x59,0xDA,13])+original and get('se_e_ui',1)==0
  send(0x85);send(ord('E'));send(0x11);send(13);assert view()==expected
  send(0x85);send(0x9D);assert get('se_e_menu',1)==6;send(3)
- typed('help');assert 'SuperEditor keyboard' in screen();send(3)
+ typed('help');assert 'SuperEditor keys 1/3' in screen();send(3)
  # Typed unknown command remains editable; unavailable commands do not mutate.
  send(0x88);send(ord('Q'));put('se_e_key',13,1);call('se_editor_input');call('se_editor_render')
  assert get('se_e_error',1)==0x76 and get('se_e_ui',1)==2 and view()==expected
@@ -141,7 +154,7 @@ try:
  assert read(0xC600,1024)==shim
  result=dict(status='passed',engine='Peddle MOS_6510',prg_sha256=r['sha256'],resident_binding=r['resident_binding']['digest'],
  overlay_sha256={n:hashlib.sha256(v).hexdigest() for n,v in assets.items()},actual_command_pipeline=True,
- pending_view=True,typed_and_menu_commands=True,history_ui=True,source_bytes=len(source),long_line_bytes=69200,
+ pending_view=True,typed_and_menu_commands=True,commodore_hotkeys=True,history_ui=True,source_bytes=len(source),long_line_bytes=69200,
  boundary_delete_count=530,full_gap_insert_count=2100,pending_eof_mapping=True,shim_bytes_verified=1024,
  max_render_instructions=max_draw,max_service_instructions=max_service,max_input_instructions=max_input,
  limitations='ROM import injected; native D81/IRQ/VIC proof separate. Vertical/page/selection/files/formatting/modes unfinished.')

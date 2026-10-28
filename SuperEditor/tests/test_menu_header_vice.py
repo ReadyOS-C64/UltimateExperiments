@@ -6,7 +6,7 @@ ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'tools'))
 from vice_config import PROJECT,step
 from vice_plan import run_plan
 from d81_image import D81Image
-from redraw_model import native_text,source40
+from redraw_model import native_text,screen_code,source40
 from png_pixels import read_png
 from cpu_editor import NAMES
 r=json.loads((ROOT/'build/editor-report.json').read_text());s=r['symbols']
@@ -49,7 +49,20 @@ artifacts,manifest=run_plan(plan,e);pixels_checked=0
 expected=source40(data,0,0)
 for tag in ['header','diverse','file-menu','help']:
  out=artifacts/f'stages/{tag}ram';matrix=(out/'matrix.bin').read_bytes();colors=(out/'colors.bin').read_bytes();font=(out/'font.bin').read_bytes()
- assert matrix[:80]==expected.matrix[:80] and bytes(v&15 for v in colors[:80])==expected.colors[:80]
+ assert matrix[:40]==expected.matrix[:40] and bytes(v&15 for v in colors[:40])==expected.colors[:40]
+ if tag!='file-menu':
+  assert matrix[40:80]==expected.matrix[40:80] and bytes(v&15 for v in colors[40:80])==expected.colors[40:80]
+ if tag=='file-menu':
+  assert matrix[40]==0x6B and matrix[79]==0x73
+  assert matrix[200]==0x6D and matrix[239]==0x7D
+  border=[40+c for c in range(40)]+[200+c for c in range(40)]+[80,119,120,159,160,199]
+  assert all((colors[at]&15)==7 for at in border)
+  assert (colors[82]&15)==7 and all(matrix[82+c]&0x80 for c in range(len('O  Open...       CTRL-O')))
+  assert (colors[122]&15)==3 and (colors[162]&15)==3
+ if tag=='help':
+  for row,label in [(4,'SuperEditor keys 1/3'),(8,'CBM-S settings; F8 modes'),
+                    (11,'CBM-F toggle region'),(12,'CBM-D collapse; CBM-E expand')]:
+   raw=bytes(screen_code(v) for v in native_text(label));assert matrix[row*40+3:row*40+3+len(raw)]==raw
  assert bytes(v&15 for v in colors[960:])==bytes([15])*40
  w,h,pixels=read_png(e/f'native-{tag}.png');assert(w,h)==(384,272);bg=pixels[0]
  for row in range(25):
@@ -60,5 +73,5 @@ for tag in ['header','diverse','file-menu','help']:
     for gx in range(8):
      assert bool(bits&(128>>gx))==(pixels[(35+row*8+gy)*w+32+col*8+gx]!=bg),(tag,row,col,gx,gy)
      pixels_checked+=1
-result=dict(status='passed',evidence=str(e),prg_sha256=r['sha256'],catalog_capacity=s['se_overlay_capacity'],screenshots=4,native_pixels_checked=pixels_checked,shim_bytes=1024,source_bytes=len(data),scope='Actual40 editor newheader/open/menu/help; nativeIRQbytes, no physicalchord or additionalmodeeditingclaim')
+result=dict(status='passed',evidence=str(e),prg_sha256=r['sha256'],catalog_capacity=s['se_overlay_capacity'],screenshots=4,native_pixels_checked=pixels_checked,shim_bytes=1024,source_bytes=len(data),attached_menu=True,mnemonic_colors=True,scope='Actual40 editor newheader/open/menu/help; nativeIRQbytes, no physicalchord or additionalmodeeditingclaim')
 (e/'result.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))

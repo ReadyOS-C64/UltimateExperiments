@@ -320,30 +320,31 @@ def logical_ui(f,data):
     def text(value,row,col):
         raw=bytes(map(screen_code,native_text(value)));assert col+len(raw)<=40,(value,col)
         matrix[row*40+col:row*40+col+len(raw)]=raw
-    def box(x,y,w,h):
+    def box(x,y,w,h,border_color=14,attached=False):
         nonlocal rect
         rect=(x,y,w,h)
         for row in range(h):
             for col in range(w):
                 at=(y+row)*40+x+col;border=row in (0,h-1) or col in (0,w-1)
                 glyph=32
-                if row==0:glyph=0x70 if col==0 else 0x6E if col==w-1 else 0x40
+                if row==0:glyph=(0x6B if attached else 0x70) if col==0 else (0x73 if attached else 0x6E) if col==w-1 else 0x40
                 elif row==h-1:glyph=0x6D if col==0 else 0x7D if col==w-1 else 0x40
                 elif col in (0,w-1):glyph=0x5D
-                matrix[at]=glyph;colors[at]=14 if border else 1
+                matrix[at]=glyph;colors[at]=border_color if border else 1
     ui=f.get('se_e_ui',1)
     if ui==2:
         matrix[960:]=bytes([32])*40;text('Command:',24,0)
         raw=f.read(f.s['se_e_text'],f.get('se_e_text_length',1));matrix[968:968+len(raw)]=bytes(map(screen_code,raw));matrix[968+len(raw)]=0xA0
     elif ui==1 and f.get('se_e_menu',1)==1:
-        box(1,3,35,5)
+        box(0,1,40,5,7,True)
         for i,label in enumerate(['O  Open...       CTRL-O','S  Save          CTRL-S','A  Save as...']):
-            text(label,i+4,3)
+            text(label,i+2,2)
             if i==f.get('se_e_item',1):
-                for col in range(len(label)):at=(i+4)*40+3+col;matrix[at]^=128;colors[at]=3
+                for col in range(len(label)):at=(i+2)*40+2+col;matrix[at]^=128;colors[at]=7 if col==0 else 3
+            else:colors[(i+2)*40+2]=3
     elif ui==1 and f.get('se_e_menu',1)==6:
         box(1,3,38,16)
-        for row,label in [(4,'SuperEditor keys 1/3'),(6,'Type / Return / DEL / cursors'),(7,'F1 menus; View P preview/source'),(8,'View S settings; Settings H syntax'),(9,'F4 wrap; F8/CTRL-F8 modes'),(10,'F2 mark; CTRL-C/K copy'),(11,'CTRL-X cut / CTRL-V paste'),(12,'CTRL-Z undo / CTRL-Y redo'),(13,'HOME/CTRL-E line; F7 commands'),(14,'F7 find/goto; Help D diag'),(17,'F3/F5 pages; F6/STOP close')]:text(label,row,3)
+        for row,label in [(4,'SuperEditor keys 1/3'),(6,'Type; RETURN/DEL/cursors'),(7,'F1 menu; F6 help; F7 command'),(8,'CBM-S settings; F8 modes'),(9,'F3/F5, CBM-UP/DOWN: pages'),(10,'CBM-LEFT/RIGHT: jump 40'),(11,'CBM-F toggle region'),(12,'CBM-D collapse; CBM-E expand'),(13,'F2 mark; CTRL-C/K copy; X/V cut/pst'),(14,'F4 wrap; HOME/CTRL-E line'),(17,'F6/STOP closes help')]:text(label,row,3)
     elif ui==3:
         box(1,4,38,19);text('Open a PETSCII document',5,3)
         colors[203:238]=bytes([7])*35;text('Device:',6,3);matrix[250]=48+f.get('se_f_device',1);text('Name:',7,3)

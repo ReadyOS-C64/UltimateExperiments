@@ -1,4 +1,4 @@
-.import tui_box40
+.import tui_box40,tui_box40_color
 .export se_ui_draw
 .segment "CODE"
 se_ui_draw:
@@ -15,13 +15,18 @@ popup:
     clc
     adc #2
     sta tui_box_h
-    lda #1
+    lda #0
     sta tui_box_x
-    lda #3
+    lda #1
     sta tui_box_y
-    lda #35
+    lda #40
     sta tui_box_w
-    jsr tui_box40
+    lda #TUI_TITLE
+    jsr tui_box40_color
+    lda #TUI_T_RIGHT
+    sta VIC_SCREEN+40
+    lda #TUI_T_LEFT
+    sta VIC_SCREEN+79
     lda se_e_menu
     sec
     sbc #1
@@ -40,9 +45,9 @@ popup:
     sta text_ptr+1
     lda se_v_menu_index
     clc
-    adc #4
+    adc #2
     sta se_v_menu_row
-    ldx #3
+    ldx #2
     ldy #0
 @label:
     lda (text_ptr),y
@@ -55,9 +60,15 @@ popup:
     bne @plain
     eor #$80
     ldx #TUI_HIGHLIGHT
+    cpy #0
+    bne @ink
+    ldx #TUI_TITLE
     bne @ink
 @plain:
     ldx #TUI_FG
+    cpy #0
+    bne @ink
+    ldx #TUI_HIGHLIGHT
 @ink:
     stx tui_color
     ldx se_v_row
@@ -106,16 +117,16 @@ help_popup:
 .segment "RODATA"
 guide_pages: .byte guide_table0-ui_print_table,guide_table1-ui_print_table,guide_table2-ui_print_table
 guide_0_0: .byte "SuperEditor keys 1/3",0
-guide_0_1: .byte "Type / Return / DEL / cursors",0
-guide_0_2: .byte "F1 menus; View P preview/source",0
-guide_0_3: .byte "View S settings; Settings H syntax",0
-guide_0_4: .byte "F4 wrap; F8/CTRL-F8 modes",0
-guide_0_5: .byte "F2 mark; CTRL-C/K copy",0
-guide_0_6: .byte "CTRL-X cut / CTRL-V paste",0
-guide_0_7: .byte "CTRL-Z undo / CTRL-Y redo",0
-guide_0_8: .byte "HOME/CTRL-E line; F7 commands",0
-guide_0_9: .byte "F7 find/goto; Help D diag",0
-guide_0_10: .byte "F3/F5 pages; F6/STOP close",0
+guide_0_1: .byte "Type; RETURN/DEL/cursors",0
+guide_0_2: .byte "F1 menu; F6 help; F7 command",0
+guide_0_3: .byte "CBM-S settings; F8 modes",0
+guide_0_4: .byte "F3/F5, CBM-UP/DOWN: pages",0
+guide_0_5: .byte "CBM-LEFT/RIGHT: jump 40",0
+guide_0_6: .byte "CBM-F toggle region",0
+guide_0_7: .byte "CBM-D collapse; CBM-E expand",0
+guide_0_8: .byte "F2 mark; CTRL-C/K copy; X/V cut/pst",0
+guide_0_9: .byte "F4 wrap; HOME/CTRL-E line",0
+guide_0_10: .byte "F6/STOP closes help",0
 guide_1_0: .byte "SuperMark inline 2/3",0
 guide_1_1: .byte "# to ###### + space: headings",0
 guide_1_2: .byte "**bold**  *italic*  ***both***",0

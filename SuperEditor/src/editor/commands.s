@@ -61,23 +61,31 @@ ui:
     jsr se_overlay_call
     jcs se_editor_error
     lda se_e_command
-    bne command_ready
-    jmp redraw
+    jeq redraw
+    cmp #$FF
+    beq document_unmodified
+    jmp command_ready
 document_key:
     lda se_e_mods
-    and #4
+    and #6
     beq @unmodified
+    cmp #2
+    bne @control
+    lda #U_HOTKEY
+    bne ui
+@control:
     lda se_e_key
     cmp #$13 ;CTRL-S shares HOME's native byte
     bne :+
     lda #E_SAVE
-    bne command_ready
+    jne command_ready
 :
     cmp #$0F
     bne @unmodified
     lda #E_OPEN
-    bne command_ready
+    jne command_ready
 @unmodified:
+document_unmodified:
     lda se_e_key
     cmp #3
     bne @ordinary

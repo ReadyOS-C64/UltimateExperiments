@@ -73,6 +73,7 @@ U_FINDPROMPT=5
 U_GOTOPROMPT=6
 U_HELP=7
 U_SETTINGS=8
+U_HOTKEY=9
 .global se_editor_command,se_editor_input,se_editor_service,se_editor_ready
 .global se_e_key,se_e_mods,se_e_matrix,se_e_command,se_e_job,se_e_after_load,se_e_error
 .global se_e_draw_busy,se_e_draw_sequence

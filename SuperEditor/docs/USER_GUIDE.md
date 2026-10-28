@@ -29,8 +29,10 @@ endings, not tokenized BASIC PRGs or UTF-8 Markdown.
 
 ## Menus, commands and display modes
 
-**F1** opens the menu bar. Choose a heading and item by their displayed letter,
-or use left/right, up/down and Return. RUN/STOP closes the current menu or prompt.
+**F1** opens the menu bar. Choose a heading and item by its cyan/yellow displayed
+letter, or use left/right, up/down and Return. The attached yellow child menu
+meets the menu bar at PETSCII T junctions; its lower corners are the PETSCII
+rounded corner cells. RUN/STOP closes the current menu or prompt.
 For example, **F1, V, H** selects GEOS and **F1, V, S** opens Settings.
 
 | Menu | Available actions |
@@ -76,8 +78,8 @@ There is no source formatting command on CTRL-B or CTRL-I, and no `quit` command
 | Cursors | Move caret; up/down preserve the preferred horizontal position |
 | HOME / CTRL-E | Beginning / end of the logical CR-delimited source line |
 | SHIFT-HOME | Top of document |
-| F3 / F5 | Previous / next page |
-| CTRL-J / CTRL-L | Move backward / forward 40 characters within the source line |
+| F3 / F5 or CBM-Up / CBM-Down | Previous / next page |
+| CBM-Left / CBM-Right | Move backward / forward 40 characters within the source line |
 | CTRL-A / CTRL-W | Previous / next word |
 | CTRL-G | GOTO prompt; line numbers start at 1 |
 | CTRL-F / CTRL-N | Find prompt / next match |
@@ -85,6 +87,9 @@ There is no source formatting command on CTRL-B or CTRL-I, and no `quit` command
 | CTRL-C or CTRL-K | Copy selection |
 | CTRL-X / CTRL-V | Cut / paste |
 | CTRL-Z / CTRL-Y | Undo / redo |
+| CBM-F | Toggle the region containing the caret between folded and expanded |
+| CBM-D / CBM-E | Collapse / expand the region containing the caret |
+| CBM-S | Open session Settings directly |
 | RUN/STOP | Clear selection or close the current popup/prompt |
 
 Use Edit→D or F7 `delete` for forward deletion. A selection refers to canonical
@@ -117,8 +122,8 @@ Plain preserves stored collapse choices for the other presets. Formatted preview
 remains an explicit formatting view even with Plain selected; its code-token
 colors are enabled only in Full.
 
-Open **F1, V, S** or F7 `settings` in any mode. Settings affect formatted preview;
-editable GEOS keeps its established source fonts.
+Open **CBM-S**, **F1, V, S**, or F7 `settings` in any mode. Settings affect
+formatted preview; editable GEOS keeps its established source fonts.
 
 | Settings key | Action |
 | --- | --- |

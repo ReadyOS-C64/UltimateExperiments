@@ -52,6 +52,8 @@ def menu_header():
         matrix[column:column + len(codes)] = codes
     for column in (0, 6, 12, 18, 27, 34, 39):
         matrix[column], colors[column] = 0x5D, 7
+    for column in (1, 7, 13, 19, 28, 35):
+        colors[column] = 3
     matrix[40], matrix[79] = 0x6D, 0x7D
     for column in (6, 12, 18, 27, 34):
         matrix[40 + column] = 0x71

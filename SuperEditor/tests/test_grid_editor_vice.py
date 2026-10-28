@@ -50,18 +50,20 @@ class UI:
         for n,value in enumerate(values):
             at=row*40+col+n;self.matrix[at]=value^(128 if inverse else 0)
             if color is not None:self.colors[at]=color
-    def box(self,x,y,w,h):
+    def box(self,x,y,w,h,border_color=14,attached=False):
         for row in range(y,y+h):
             for col in range(x,x+w):
                 top,bottom,left,right=row==y,row==y+h-1,col==x,col==x+w-1
-                code=0x70 if top and left else 0x6E if top and right else 0x6D if bottom and left else 0x7D if bottom and right else 0x40 if top or bottom else 0x5D if left or right else 32
-                self.put(row,col,bytes([code]),14 if top or bottom or left or right else 1,raw=True);self.cells.add((row,col))
+                code=(0x6B if attached else 0x70) if top and left else (0x73 if attached else 0x6E) if top and right else 0x6D if bottom and left else 0x7D if bottom and right else 0x40 if top or bottom else 0x5D if left or right else 32
+                self.put(row,col,bytes([code]),border_color if top or bottom or left or right else 1,raw=True);self.cells.add((row,col))
     def file_menu(self):
-        self.box(1,3,35,5)
-        for i,label in enumerate(['O  Open...       CTRL-O','S  Save          CTRL-S','A  Save as...']):self.put(4+i,3,label,3 if i==0 else 1,inverse=i==0)
+        self.box(0,1,40,5,7,True)
+        for i,label in enumerate(['O  Open...       CTRL-O','S  Save          CTRL-S','A  Save as...']):
+            self.put(2+i,2,label,3 if i==0 else 1,inverse=i==0)
+            self.colors[(2+i)*40+2]=7 if i==0 else 3
     def help(self,template=None,cache=False):
         self.box(1,3,38,16)
-        for row,label in [(4,'SuperEditor keyboard'),(6,'Type / Return / DEL / cursors'),(7,'F1 menus / F6 keyboard help'),(8,'F3/F5 pages; F4 wrap; arrows move'),(10,'CTRL-Z undo / CTRL-Y redo'),(11,'HOME/CTRL-E line; F2 mark/unmark'),(12,'CTRL-C/K copy CTRL-X/V cut/paste'),(14,'F7 top/bottom/diag; Help-D diag'),(15,'F8/CTRL-F8 modes; F7 wrap/pan' if cache else 'F7: wrap on/off, pan left/right'),(17,'F6 or RUN/STOP closes help')]:self.put(row,3,label)
+        for row,label in [(4,'SuperEditor keys 1/3'),(6,'Type; RETURN/DEL/cursors'),(7,'F1 menu; F6 help; F7 command'),(8,'CBM-S settings; F8 modes'),(9,'F3/F5, CBM-UP/DOWN: pages'),(10,'CBM-LEFT/RIGHT: jump 40'),(11,'CBM-F toggle region'),(12,'CBM-D collapse; CBM-E expand'),(13,'F2 mark; CTRL-C/K copy; X/V cut/pst'),(14,'F4 wrap; HOME/CTRL-E line'),(17,'F6/STOP closes help')]:self.put(row,3,label)
     def file_dialog(self,device,name,listing,index=0,help=False):
         self.box(1,4,38,19);self.put(5,3,'Open a PETSCII document')
         self.colors[5*40+3:5*40+38]=bytes([7])*35

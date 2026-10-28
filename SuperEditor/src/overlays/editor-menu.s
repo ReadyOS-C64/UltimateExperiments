@@ -27,6 +27,8 @@ entry:
     lda #0
     sta se_e_command
     lda se_overlay_frame
+    cmp #U_HOTKEY
+    jeq document_hotkey
     cmp #U_SETTINGS
     jeq settings_open
     cmp #U_HELP
@@ -110,6 +112,40 @@ menu:
     lda #0
     sta se_e_menu
     sta se_e_item
+    clc
+    rts
+document_hotkey:
+    lda se_e_matrix
+    ldx #3
+@find:
+    cmp cbm_matrix,x
+    beq @command
+    dex
+    bpl @find
+    cmp #2                 ;physical CRSR left/right key
+    beq @horizontal
+    cmp #7                 ;physical CRSR up/down key
+    bne @ordinary          ;tell resident to retain other Commodore PETSCII
+    lda se_e_mods
+    lsr                     ;shift selects the reverse cursor direction
+    lda #E_PAGEDOWN
+    bcc @publish
+    lda #E_PAGEUP
+    bne @publish
+@horizontal:
+    lda se_e_mods
+    lsr
+    lda #E_JFORWARD
+    bcc @publish
+    lda #E_JBACK
+    bne @publish
+@command:
+    lda cbm_commands,x
+    bne @publish
+@ordinary:
+    lda #$FF
+@publish:
+    sta se_e_command
     clc
     rts
 command:
@@ -528,6 +564,9 @@ goto_argument:
 find_text: .byte $46,$49,$4E,$44,$20
 goto_text: .byte $47,$4F,$54,$4F,$20
 heading_keys: .byte 'f','e','v','n','b','h'
+; KERNAL matrix identities are independent of the Commodore character table.
+cbm_matrix: .byte 13,14,18,21 ;S,E,D,F
+cbm_commands: .byte E_SETTINGS,E_EXPAND,E_COLLAPSE,E_FOLD
 .include "editor/menu-data.inc"
 word_low: .byte <w0,<w1,<w2,<w3,<w4,<w5,<w6,<w7,<w8,<w9,<w10,<w11,<w12,<w13,<w14,<w15,<w16,<w17,<w18,<w19,<w20,<w21,<w22,<w23,<w24,<w25,<w26,<w27,<w28,<w29,<w30,<w31,<w32,<w33,<w34,<w35,<w36,<w37,<w38,<w39,<w40,<w41,<w42,<w43,<w44,<w45,<w46,<w47
 word_high: .byte >w0,>w1,>w2,>w3,>w4,>w5,>w6,>w7,>w8,>w9,>w10,>w11,>w12,>w13,>w14,>w15,>w16,>w17,>w18,>w19,>w20,>w21,>w22,>w23,>w24,>w25,>w26,>w27,>w28,>w29,>w30,>w31,>w32,>w33,>w34,>w35,>w36,>w37,>w38,>w39,>w40,>w41,>w42,>w43,>w44,>w45,>w46,>w47

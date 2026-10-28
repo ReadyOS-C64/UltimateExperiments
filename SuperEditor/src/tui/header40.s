@@ -34,7 +34,15 @@ tui_header40:
     sta VIC_SCREEN+40
     lda #TUI_CORNER_BR
     sta VIC_SCREEN+79
+    lda #TUI_HIGHLIGHT
+    ldx #5
+@mnemonic:
+    ldy mnemonics,x
+    sta $D800,y
+    dex
+    bpl @mnemonic
     rts
 .segment "RODATA"
 header_text: .byte $DD,"File ",$DD,"Edit ",$DD,"View ",$DD,"Navigate",$DD,"Block ",$DD,"Help",$DD,0
 separators: .byte 0,6,12,18,27,34,39
+mnemonics: .byte 1,7,13,19,28,35
