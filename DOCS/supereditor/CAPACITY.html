@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Capacity and tested limits · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Capacity and tested limits"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor" open><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="USER_GUIDE.html">Complete user guide</a></li><li><a href="SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="BUILD.html">Build and package</a></li><li><a href="CAPACITY.html" aria-current="page">Capacity and limits</a></li><li><a href="PERFORMANCE.html">Performance</a></li><li><a href="OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav></aside><main id="content"><div class="page-actions"><a href="CAPACITY.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="capacity-and-tested-limits">Capacity and tested limits</h1>
+<p>A now-retired experimental63-overlay package passed a bounded native smoke with
+an actual2MiB REU:32 detected banks, exact2,097,152-byte dumps and14 occupied
+banks for the422-byte diverse document. All63 images and the complete fontpack,
+source40/80/GEOS, formatted preview and paged Help are checked. This proves that
+small-document workflow, not maximum source/append quota or all2MiB workloads.</p>
+<p>The full development configuration uses a 16 MiB REU. A bounded CPU test of the
+1612523 engine reaches exactly <strong>1,048,576 source bytes</strong>, with a separate
+16-bank append object. It verifies BOF/middle/EOF edits, Undo/Redo, copy/paste,
+replacement at the limit and refusal above it. It uses Plain rendering, modeled
+ROM/source import and real hot-window APIs for far placement. It does not prove
+1 MiB disk I/O, Full-mode speed or global navigation speed.</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Current limit or behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Original source object</td>
+<td>1–16 banks of 64 KiB</td>
+</tr>
+<tr>
+<td>Append object</td>
+<td>Separate finite allocation; old source extents remain immutable</td>
+</tr>
+<tr>
+<td>Source quota</td>
+<td>Derived from the original object&#39;s allocation; up to 1 MiB</td>
+</tr>
+<tr>
+<td>Small file opened from disk</td>
+<td>Original quota rounds up to the next 64 KiB bank; a tiny file normally gets a 64 KiB quota</td>
+</tr>
+<tr>
+<td>Object slots</td>
+<td>8; optional analysis may be retired to admit required work</td>
+</tr>
+<tr>
+<td>Piece storage</td>
+<td>2,048 entries, with at most 32 active leaves</td>
+</tr>
+<tr>
+<td>History record arenas</td>
+<td>45,056 active bytes plus 20,480 staging bytes; finite linear history</td>
+</tr>
+<tr>
+<td>Overlay catalog</td>
+<td>62 registered images, capacity 64; four REU code banks</td>
+</tr>
+<tr>
+<td>GEOS font pack</td>
+<td>74,432 bytes across two checked REU banks</td>
+</tr>
+</tbody></table>
+<p>At source quota, an extra byte is refused before modifying the source, pending
+edit, caret/selection, history or observer. Equal-length replacement and Undo
+remain usable. A copy or append/history allocation can independently exhaust
+its own resource; free physical REU space alone does not guarantee admission.
+Opening another file starts a new history. The current program does not offer
+a quota-setting dialog or unlimited history.</p>
+<p>A D81 image is only 819,200 bytes including its filesystem. It cannot contain a
+1 MiB document. Editor overlays, fonts and samples further reduce free disk
+space. Save replacement also needs space for the staged file while retaining
+the previous file until promotion. A nearly full disk can therefore refuse a
+save even when the final document itself would fit after replacement.</p>
+<p><code>make runtime-disk</code> omits the development probes and malformed fixtures. The
+current 51-image build has53 files instead of76 and uses443 fewer file blocks
+(112,522 bytes of file capacity). Editor/font bytes, REU requirements and the
+fixed819,200-byte disk image size are unchanged. The diagnostic D81 remains
+available separately for the existing tests.</p>
+<p>The full font configuration does not support a 512 KiB REU. Historical native
+cold-boot/edit/save tests cover 1 MiB and 2 MiB REUs; they are workload-specific,
+not universal capacity promises for every history/clipboard/cache combination.
+The current bounded 1 MiB document test uses a 16 MiB provider. Source import,
+rendering, navigation and IEC transfer costs must be measured separately.</p>
+<p>Reproduce the bounded engine proof with
+<code>tests/test_supereditor_capacity_limits.py --fixture FROZEN_FIXTURE --out NEW_OUTPUT</code>.
+Its recorded release is <code>build/capacity-limits-current/release/manifest.json</code>.
+The test includes full 16 MiB typed-DMA comparisons, all immutable original
+banks, a retained foreign bank, independent pixels and source/history/observer
+checks. A separately preserved public LEFT operation in a huge logical line
+took 45.47 million CPU instructions; this capacity result is not a performance
+claim. Exhaustive piece/history exhaustion and final-cohort lower-memory native
+acceptance remain separate gates.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

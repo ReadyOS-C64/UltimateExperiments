@@ -4,6 +4,19 @@
 
 Outside ReadyOS—and sometimes before ReadyOS—we do random experiments for the Commodore 64 Ultimate. Some may become supported projects; some are one-offs and throwaways. Pick an experiment below for its guides, examples and downloads.
 
+## SuperEditor
+
+A standalone 6510-assembly editor for PETSCII Markdown-lite, with 40, 60 and
+80-column source views plus editable GEOS-font hires and a formatted preview.
+It includes color syntax for C64 BASIC and assembler, folding, wrapping and
+panning, menus, session appearance settings, selection, clipboard, Undo/Redo,
+search, navigation, and native D81 file dialogs. It remains a development
+preview while performance and wider standalone qualification continue.
+
+![SuperEditor editing a diverse PETSCII document in 40 columns](supereditor/screenshots/editor-40.png)
+
+[Explore SuperEditor](supereditor/index.md) · [Download the preview ZIP](downloads/SuperEditor-preview.zip) · [Complete user guide](supereditor/USER_GUIDE.md) · [Screenshot gallery](supereditor/SCREENSHOTS.md)
+
 ## ReadyFS
 
 ReadyFS aims to provide a full set of command-line tools and a coherent way to work with Ultimate DOS drives, mounted disk images or real C64 drives, SOFTIEC, and SD2IEC. That includes mounting disk images and accessing disk images on the Ultimate **without mounting them**, as if they were folders. A **unified path syntax** spans all these drive types, and disk operations such as **copy and move work between drive types**, so files can move from one kind of storage to another.

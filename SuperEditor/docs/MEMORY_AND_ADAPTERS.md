@@ -472,7 +472,8 @@ R16 and R17 (4096 bytes); C16 is 4095, leaving one byte. R1 is 4070, C22 is 4065
 R21 is 4047 and C23 is 4030. The new lifecycle controller C29 is 2304 bytes
 (including its fixed template), R26 copier 1783. These sizes include binding,
 entry and data; they are not estimates of executable instructions alone.
-The complete per-image hashes are [archived with the audit](../build/editor-stack/20261025T075401300951Z/current41-map/overlay-sizes.json).
+The complete per-image hashes remain in the local ignored audit record
+`build/editor-stack/20261025T075401300951Z/current41-map/overlay-sizes.json`.
 
 | Image | Slot/module ID | Payload bytes | Bytes to 4096 |
 | --- | --- | ---: | ---: |
@@ -565,11 +566,9 @@ instruction was JSR at `$21BE` (`se_object_validate`) to `$21A0`
 (`object_service_valid`). Catalog indexes were 1 and 6 respectively; indexes
 are not module IDs.
 
-[Full stack samples and identity](../build/editor-stack/20261025T075401300951Z/stack-result.json),
-[original soak result](../build/editor-stack/20261025T075401300951Z/result.json),
-[calibration](../build/editor-stack/20261025T075401300951Z/calibration.json),
-and [41-asset linker audit](../build/editor-stack/20261025T075401300951Z/current41-map/editor-report.json)
-are separate records. The stack workload's final source SHA256 was
+Full stack samples, the original soak result, calibration and the 41-asset
+linker audit remain separate local ignored records beneath
+`build/editor-stack/20261025T075401300951Z/`. The stack workload's final source SHA256 was
 `2d9f24a314b12c703974431563ce307087c0ace83f67678ed7fc55159207117c`.
 No pixel or emulated-cycle claim is derived from this instruction experiment.
 

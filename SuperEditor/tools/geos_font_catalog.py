@@ -1,4 +1,4 @@
-"""Bounded local GEOS D81/VLIR font inventory; outputs private build data only.
+"""Build a bounded data-only GEOS D81/VLIR bitmap-font inventory.
 
 No font scaling, name substitution, synthetic family, or guessed point size.
 The GEOS size is the actual VLIR index and packed info-sector identifier; the
@@ -111,7 +111,7 @@ def build(media,out,bsw):
         item['metrics'].pop('offsets');item['metrics'].pop('widths');unique[key]=item
     for p in media+[bsw]:assert sha(p.read_bytes())==source_hashes[str(p.resolve())],'source media modified'
     faces=list(unique.values());result=dict(schema=1,faces=faces,face_count=len(faces),font_file_faces=sum(x['namespace']=='GEOS-font-file' for x in faces),raw_bytes=sum(x['metrics']['raw_bytes'] for x in faces),source_sha256=source_hashes,
-        scope='Genuine local GEOS font records; native point IDs/raster metrics. No scaling, font substitution, runtime integration or redistribution claim.')
+        scope='Genuine GEOS bitmap-font records; native point IDs and raster metrics. No scaling, substitution, executable font software or original disk filesystem.')
     # One immutable logical-data pack; no per-font SEO/catalog slot. The index
     # is16B/face; callers must split logical REU transfers at64KiB boundaries.
     table=bytearray();payload=bytearray();base=32+16*len(faces)

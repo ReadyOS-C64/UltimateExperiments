@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Retained BASIC and assembler colors · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Retained BASIC and assembler colors"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor" open><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="USER_GUIDE.html">Complete user guide</a></li><li><a href="SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="BUILD.html">Build and package</a></li><li><a href="CAPACITY.html">Capacity and limits</a></li><li><a href="PERFORMANCE.html">Performance</a></li><li><a href="OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#reusing-a-retained-body-after-an-insertion">Reusing a retained BODY after an insertion</a></li><li><a href="#what-the-measurements-prove">What the measurements prove</a></li><li><a href="#remaining-limits">Remaining limits</a></li><li><a href="#same-call-lexical-work-batching">Same-call lexical work batching</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="SYNTAX_CACHE.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="retained-basic-and-assembler-colors">Retained BASIC and assembler colors</h1>
+<p>Full source mode can now retain lexical spans for a long code line in the
+checked REU analysis object. Markdown skips the language lexer; Plain skips
+automatic structure, inline and language parsing. F7 <code>syntax full</code>,
+<code>syntax markdown</code> and <code>syntax plain</code> select these session settings.</p>
+<p>Automatic construction currently applies to the first eligible CR-delimited
+code BODY of at least 768 bytes in a baseline. It runs through the actual
+foreground dispatcher and five registered operation modules: C45 gateway,
+R36 resolver, R37 transport, C47 producer and C49 publisher. They reuse existing
+filename strings and fit their ordinary 4 KiB overlay slots. The complete disk
+has62 editor overlays in four REU code banks; the catalogue still holds 64.</p>
+<p>The producer lexes the BODY once, storing bounded spans. The publisher writes
+unused pages and a new root, validates the completed record, then publishes
+VALID last. The old reachable root stays unchanged. Consumers authenticate the
+actual source identity, record, page and allocation before using stored roles.
+This does not replace source bytes or manufacture a parser checkpoint.</p>
+<p>One attempt is permitted per baseline, including refusals and cancellation.
+Observer flag128 remembers it; successful baseline replacement or a genuine
+new document resets that flag. Cleanup releases owned ACTIVE state and source
+leases while preserving the attempt flag. This prevents repeated construction
+when resources or the span budget are unavailable. Missing workers, malformed
+records, stale capabilities, pending changes and unsupported root formats keep
+the existing parser fallback.</p>
+<h2 id="reusing-a-retained-body-after-an-insertion">Reusing a retained BODY after an insertion</h2>
+<p>C41/R34 can preserve the checked flags5 code BODY when one ordinary character
+is inserted in a complete ordinary line after a retained BODY of at least4096
+bytes, optionally followed by the
+actual hot-window flush REKEY. The source threshold is4096 bytes; the dirty whole
+line is reparsed and its carry must converge. Repeated eligible edits alternate
+checked logical COW page pairs and publish VALID last. Empty INLINE references,
+one CR page/one LEX page and complete source/observer identity are required.
+Deletion, Return, markup, edits before code and unsupported graphs retain the
+existing parser. Plain never schedules this worker; Markdown still performs no
+language-lexer feeds. This does not add general edit or layout retention.
+A valid baseline without lexical data also takes that fallback. The48-entry
+journal is bounded: if the next one or two queued observations do not fit, the
+worker preserves the selected graph and queue and requests the normal parser.
+It does not report a stale-state error merely because the journal is full.
+See the <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/SuperEditor/src/cache/edit-rebase-integration/README.html">registered rebase contract</a>.</p>
+<h2 id="what-the-measurements-prove">What the measurements prove</h2>
+<p>On the paired approximately 1 KiB BASIC and assembler documents, the previous
+54-overlay build repeatedly feeds 18,962/18,924 source bytes during a full page
+repaint. The retained path constructs each BODY with 998/996 feeds once; a warm
+repaint performs zero lexer init/feed/finish calls and consumes retained roles.
+C25 still runs as a gateway: module-entry counts are not parser-feed counts.</p>
+<table>
+<thead>
+<tr>
+<th>Complete warm repaint</th>
+<th align="right">Previous CPU instructions</th>
+<th align="right">Retained CPU instructions</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BASIC</td>
+<td align="right">5,895,637</td>
+<td align="right">4,268,957</td>
+</tr>
+<tr>
+<td>Assembler</td>
+<td align="right">5,791,898</td>
+<td align="right">4,164,189</td>
+</tr>
+</tbody></table>
+<p>These are measured instruction counts. The paired native test also measures
+whole foreground work with IRQ/VIC/REU stalls included:</p>
+<table>
+<thead>
+<tr>
+<th>Warm repaint</th>
+<th align="right">Previous PAL cycles</th>
+<th align="right">Retained PAL cycles</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BASIC</td>
+<td align="right">23,909,858</td>
+<td align="right">17,277,646</td>
+</tr>
+<tr>
+<td>Assembler</td>
+<td align="right">23,502,441</td>
+<td align="right">16,874,426</td>
+</tr>
+</tbody></table>
+<p>Setup uses real D81 File/Open and typed commands; the stopwatch uses an explicit
+PC/SP/public-input seam. Warp and drive traps are enabled. These are not physical
+keyboard-latency measurements. This compares complete54/59-overlay build
+cohorts, rather than attributing every cycle to one assembly change. Warm overlay loads rise
+from 211 to 286; the remaining source checks, role dispatch and rasterization
+still cost substantial work. Zero lexer feeds do not establish general editor
+performance, and full-page responsiveness remains unfinished.</p>
+<p>The native gate checks real D81 startup/imports, source/history, the ReadyOS
+reservation, independent VIC pixels, exact allocation changes during publication
+and an immutable analysis arena on warm reuse. The controlled standalone
+prepare/resume proof preserves the observer and unchanged lexical object, then
+continues editing and modeled SaveAs/Open. It is not ReadyOS integration.</p>
+<h2 id="remaining-limits">Remaining limits</h2>
+<p>This is a first long-line cache policy, not complete retention for every code
+block. Other code lines and short bodies use the existing lexer. Editing and
+some content-preserving hot-window movements conservatively miss; cached
+colors are not rebased onto changed source. Preview has its own pipeline.
+Mapped edit roots and retained layout remain separate unfinished work.</p>
+<p>Reserved observer bit64 is not part of this lexical protocol. A future live
+reader-revocation protocol must explicitly couple all participating readers
+and writers before those implementations can be combined.</p>
+<h2 id="same-call-lexical-work-batching">Same-call lexical work batching</h2>
+<p>C45 services up to four existing resolver/retained-role work units per public
+STEP. Every helper entry still validates the full source identity and arena
+capability. R36/R37 alone omit immediately repeated inner guards after that
+same-call validation; no proof is retained across yields. Source verification
+remains bounded to32bytes per original step. Other arena profiles retain their
+original guards. No new flags, allocations, BSS or ZP are introduced.</p>
+<p>Paired native59 control/candidate measurements save6.25% BASIC and6.06% assembler
+warm PAL cycles, with identical pixels and unchanged286 overlay loads. C45 warm
+inclusive call peaks grow from about29k to64kcycles; whole scheduler-service
+peaks remain about80.5k/68.1k. This is a throughput improvement with a larger
+service-call budget; long-page responsiveness remains open. See the
+<a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/SuperEditor/src/cache/lexical-batch-native-probe/README.html">exact paired qualification</a> and
+<a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/SuperEditor/src/cache/lexical-warm-probe/README.html">same-call lifetime proof</a>.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

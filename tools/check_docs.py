@@ -4,7 +4,9 @@ from pathlib import Path
 from html.parser import HTMLParser
 from urllib.parse import urlsplit, unquote
 import hashlib
+import json
 import re
+import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / 'DOCS'
@@ -85,7 +87,7 @@ def check_ref(file, url, anchors=False):
 
 for file, page in pages.items():
     html = file.read_text()
-    if file != DOCS / 'readyfs/portable-guide.html' and re.findall(r'data-project="([^"]+)"', html) != ['readyfs', 'dos64', 'reusql', 'c77']:
+    if file != DOCS / 'readyfs/portable-guide.html' and re.findall(r'data-project="([^"]+)"', html) != ['supereditor', 'readyfs', 'dos64', 'reusql', 'c77']:
         errors.append(f'{file.relative_to(DOCS)}: experiment navigation order')
     markdown = file.with_suffix('.md')
     if markdown.exists():
@@ -104,7 +106,7 @@ for file in DOCS.rglob('*'):
         text = file.read_text()
         if re.search(r'/(?:Users/[^/\s]+|home/(?!web_user)[^/\s]+)', text):
             errors.append(f'Personal home path: {file.relative_to(DOCS)}')
-if re.findall(r'^## (.+)$', (DOCS / 'index.md').read_text(), re.M)[:4] != ['ReadyFS', 'DOS64 Ultimate', 'ReuSQL64', 'C77 Cyberpunk 77']:
+if re.findall(r'^## (.+)$', (DOCS / 'index.md').read_text(), re.M)[:5] != ['SuperEditor', 'ReadyFS', 'DOS64 Ultimate', 'ReuSQL64', 'C77 Cyberpunk 77']:
     errors.append('Landing-page experiment order')
 for original, download in [
     ('ReadyFS/artifacts/readyfs/readyfs-overlay-lab.d81', 'readyfs-overlay-lab.d81'),
@@ -121,6 +123,24 @@ for original, download in [
 ]:
     if (ROOT / original).read_bytes() != (DOCS / 'downloads' / download).read_bytes():
         errors.append(f'Download differs from source: {download}')
+super_source = ROOT / 'SuperEditor/releases/SuperEditor-preview.zip'
+super_download = DOCS / 'downloads/SuperEditor-preview.zip'
+if super_source.read_bytes() != super_download.read_bytes():
+    errors.append('SuperEditor Pages download differs from project release')
+with zipfile.ZipFile(super_source) as archive:
+    expected = {'README.txt', 'SUPEREDITOR.D81', 'BUILD.json', 'SHA256SUMS'}
+    if set(archive.namelist()) != expected or len(archive.namelist()) != len(expected):
+        errors.append('SuperEditor package member allowlist')
+    if archive.testzip() is not None:
+        errors.append('SuperEditor package CRC failure')
+    build = json.loads(archive.read('BUILD.json'))
+    disk = archive.read('SUPEREDITOR.D81')
+    if len(disk) != 819200 or build['disk']['bytes'] != len(disk):
+        errors.append('SuperEditor package D81 size')
+    if build['disk']['sha256'] != hashlib.sha256(disk).hexdigest():
+        errors.append('SuperEditor package D81 hash')
+    if b'LOAD"SUPEREDITOR",8,1' not in archive.read('README.txt'):
+        errors.append('SuperEditor package README lacks startup command')
 if errors:
     raise SystemExit('\n'.join(errors))
 print(f'PASS: {len(pages)} HTML pages, Markdown links, anchors, local assets, highlighted SQL preserved, no video or personal home paths, and matching experiment downloads.')

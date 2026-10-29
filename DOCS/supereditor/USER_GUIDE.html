@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>SuperEditor user guide · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: SuperEditor user guide"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor" open><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="USER_GUIDE.html" aria-current="page">Complete user guide</a></li><li><a href="SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="BUILD.html">Build and package</a></li><li><a href="CAPACITY.html">Capacity and limits</a></li><li><a href="PERFORMANCE.html">Performance</a></li><li><a href="OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#start-and-open-a-file">Start and open a file</a></li><li><a href="#menus-commands-and-display-modes">Menus, commands and display modes</a></li><li><a href="#edit-navigate-and-select">Edit, navigate and select</a></li><li><a href="#choose-source-processing-and-preview-appearance">Choose source processing and preview appearance</a></li><li><a href="#formatted-preview">Formatted preview</a></li><li><a href="#write-supermark">Write SuperMark</a></li><li><a href="#fold-without-losing-source">Fold without losing source</a></li><li><a href="#save-and-handle-a-file-dialog">Save and handle a file dialog</a></li><li><a href="#help-and-current-limits">Help and current limits</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="USER_GUIDE.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="supereditor-user-guide">SuperEditor user guide</h1>
+<p>SuperEditor edits raw PETSCII source on a C64 with a REU. Its four editable views
+share one document, selection, clipboard and Undo history. Formatted GEOS preview
+is a separate, read-only view of that same source.</p>
+<p>This guide describes the current standalone working release, including the
+qualified three-page F6 guide.</p>
+<h2 id="start-and-open-a-file">Start and open a file</h2>
+<p>Attach the complete SuperEditor D81 as drive 8 and enable a REU. The complete
+font package works with 2 MiB for the tested small-document workflow; larger
+tests use 16 MiB. It does not start with 512 KiB. See <a href="CAPACITY.html">capacity</a>.</p>
+<pre><code class="language-text">LOAD&quot;SUPEREDITOR&quot;,8,1
+RUN
+</code></pre>
+<p>Keep the overlay and font files on the disk. Startup and some operations at 1 MHz
+can take a substantial time; see <a href="PERFORMANCE.html">performance and remaining latency</a>.
+The editor uses C64 key names below. A host emulator&#39;s PC keyboard mapping may
+differ; these instructions are not a claim about every physical key chord.</p>
+<p>Press <strong>CTRL-O</strong>, or <strong>F1, F, O</strong>, to open a file. Type a PETSCII filename or select
+one with up/down, then press Return. Files are raw PETSCII SEQ text with CR line
+endings, not tokenized BASIC PRGs or UTF-8 Markdown.</p>
+<h2 id="menus-commands-and-display-modes">Menus, commands and display modes</h2>
+<p><strong>F1</strong> opens the menu bar. Choose a heading and item by its cyan/yellow displayed
+letter, or use left/right, up/down and Return. The attached yellow child menu
+meets the menu bar at PETSCII T junctions; its lower corners are the PETSCII
+rounded corner cells. RUN/STOP closes the current menu or prompt.
+For example, <strong>F1, V, H</strong> selects GEOS and <strong>F1, V, S</strong> opens Settings.</p>
+<table>
+<thead>
+<tr>
+<th>Menu</th>
+<th>Available actions</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>File</td>
+<td>Open, Save, Save As</td>
+</tr>
+<tr>
+<td>Edit</td>
+<td>Undo, Redo, Delete next character, Clear Undo/recover</td>
+</tr>
+<tr>
+<td>View</td>
+<td>40/60/80 columns, GEOS, wrap, pan, preview/source, settings</td>
+</tr>
+<tr>
+<td>Navigate</td>
+<td>Up/down, pages, line/document ends,40-character jumps, words, GOTO, Find/next</td>
+</tr>
+<tr>
+<td>Block</td>
+<td>Mark, copy, cut, paste, fold toggle, collapse all, expand all</td>
+</tr>
+<tr>
+<td>Help</td>
+<td>Keyboard/SuperMark guide, document diagnostics</td>
+</tr>
+</tbody></table>
+<p><strong>F7</strong> opens a typed command line. Return executes; RUN/STOP cancels. Commands are
+case-insensitive. Representative commands, including aliases without dedicated
+menu items, are:</p>
+<pre><code class="language-text">mode 40          mode 60          mode 80          mode hires
+home             end              top              bottom
+up               down             page up          page down
+jump -40         jump +40         word left        word right
+goto 25          find text        findi text       next match
+mark             copy             cut              paste
+undo             redo             delete           clear undo
+wrap             wrap on          wrap off
+pan left         pan right
+open             save             save as
+fold             fold all         unfold all
+preview          source           settings         diag
+syntax plain     syntax markdown  syntax full
+</code></pre>
+<p><strong>F8</strong> cycles 40→60→80→GEOS; <strong>CTRL-F8</strong> cycles in reverse. The 40-column view uses
+native cells;60/80 use narrower bitmap text; editable GEOS uses proportional
+BSW text and fixed-width code. All keep source markers visible and editable.
+There is no source formatting command on CTRL-B or CTRL-I, and no <code>quit</code> command.</p>
+<h2 id="edit-navigate-and-select">Edit, navigate and select</h2>
+<table>
+<thead>
+<tr>
+<th>C64 key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Printable keys / Return</td>
+<td>Insert source text / CR newline</td>
+</tr>
+<tr>
+<td>DEL / SHIFT-DEL</td>
+<td>Delete previous character / insert a space</td>
+</tr>
+<tr>
+<td>Cursors</td>
+<td>Move caret; up/down preserve the preferred horizontal position</td>
+</tr>
+<tr>
+<td>HOME / CTRL-E</td>
+<td>Beginning / end of the logical CR-delimited source line</td>
+</tr>
+<tr>
+<td>SHIFT-HOME</td>
+<td>Top of document</td>
+</tr>
+<tr>
+<td>F3 / F5 or CBM-Up / CBM-Down</td>
+<td>Previous / next page</td>
+</tr>
+<tr>
+<td>CBM-Left / CBM-Right</td>
+<td>Move backward / forward 40 characters within the source line</td>
+</tr>
+<tr>
+<td>CTRL-A / CTRL-W</td>
+<td>Previous / next word</td>
+</tr>
+<tr>
+<td>CTRL-G</td>
+<td>GOTO prompt; line numbers start at 1</td>
+</tr>
+<tr>
+<td>CTRL-F / CTRL-N</td>
+<td>Find prompt / next match</td>
+</tr>
+<tr>
+<td>F2</td>
+<td>Mark/unmark; move the caret to extend a selection</td>
+</tr>
+<tr>
+<td>CTRL-C or CTRL-K</td>
+<td>Copy selection</td>
+</tr>
+<tr>
+<td>CTRL-X / CTRL-V</td>
+<td>Cut / paste</td>
+</tr>
+<tr>
+<td>CTRL-Z / CTRL-Y</td>
+<td>Undo / redo</td>
+</tr>
+<tr>
+<td>CBM-F</td>
+<td>Toggle the region containing the caret between folded and expanded</td>
+</tr>
+<tr>
+<td>CBM-D / CBM-E</td>
+<td>Collapse / expand the region containing the caret</td>
+</tr>
+<tr>
+<td>CBM-S</td>
+<td>Open session Settings directly</td>
+</tr>
+<tr>
+<td>RUN/STOP</td>
+<td>Clear selection or close the current popup/prompt</td>
+</tr>
+</tbody></table>
+<p>Use Edit→D or F7 <code>delete</code> for forward deletion. A selection refers to canonical
+source bytes, including markup and collapsed text. Copy preserves it; cut and
+replacement operate on those bytes. Paste replaces an active selection.</p>
+<p><code>find text</code> searches literally; <code>findi text</code> ignores case. <code>next match</code> repeats
+the search. GOTO uses logical line numbers, so soft wrapping does not add lines.
+A GOTO or match inside a collapsed block opens its containing folds.</p>
+<p>Undo/Redo history is finite. A new edit after Undo discards the redo branch;
+opening another document starts a fresh history. <code>clear undo</code> deliberately clears
+history and should not be used when you still need those edits.</p>
+<p><strong>F4</strong> toggles soft wrapping without inserting CRs. <code>pan left/right</code> enables the
+unwrapped view and moves 20 columns in text modes or 20 pixels in GEOS. Manual
+panning can hide the caret; ordinary source navigation reveals it again.</p>
+<h2 id="choose-source-processing-and-preview-appearance">Choose source processing and preview appearance</h2>
+<p>The presets change display processing, not document bytes:</p>
+<table>
+<thead>
+<tr>
+<th>F7 command</th>
+<th>Source behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>syntax plain</code> or <code>syntax off</code></td>
+<td>Literal source, no syntax parser or code-token coloring; folds shown expanded</td>
+</tr>
+<tr>
+<td><code>syntax markdown</code></td>
+<td>SuperMark structure and inline styles, uniform code color</td>
+</tr>
+<tr>
+<td><code>syntax full</code> or <code>syntax on</code></td>
+<td>SuperMark plus BASIC/assembler token colors</td>
+</tr>
+</tbody></table>
+<p>Plain preserves stored collapse choices for the other presets. Formatted preview
+remains an explicit formatting view even with Plain selected; its code-token
+colors are enabled only in Full.</p>
+<p>Open <strong>CBM-S</strong>, <strong>F1, V, S</strong>, or F7 <code>settings</code> in any mode. Settings affect
+formatted preview; editable GEOS keeps its established source fonts.</p>
+<table>
+<thead>
+<tr>
+<th>Settings key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1–8 or up/down</td>
+<td>Select Body, H1–H6 or Code profile</td>
+</tr>
+<tr>
+<td>F / S</td>
+<td>Next font family / next supported size within that family</td>
+</tr>
+<tr>
+<td>C / G</td>
+<td>Cycle ink / paper color</td>
+</tr>
+<tr>
+<td>B / I / U</td>
+<td>Toggle bold / italic / underline for that profile</td>
+</tr>
+<tr>
+<td>H</td>
+<td>Cycle Plain→Markdown→Full source processing</td>
+</tr>
+<tr>
+<td>R</td>
+<td>Reset all appearance and source-processing settings to compiled defaults</td>
+</tr>
+<tr>
+<td>Return / RUN/STOP</td>
+<td>Close; already applied choices remain applied</td>
+</tr>
+</tbody></table>
+<p>Settings are session-only. Restart restores the compiled defaults; Save does not
+write appearance into the source file. Numeric sizes/colors use C64 hexadecimal
+notation: <code>$18</code> means 24, <code>$0A</code> means 10. Fonts have genuine supplied sizes, not
+arbitrary scaling. Code offers only the supported fixed-width faces. See the
+<a href="GEOS_PREVIEW.html#session-settings">font catalog and C64 color-cell rules</a>.
+Settings/H changes processing; <strong>View/H</strong> selects the GEOS view.</p>
+<h2 id="formatted-preview">Formatted preview</h2>
+<p>Select GEOS, then <strong>F1, V, P</strong> or F7 <code>preview</code>. Preview hides confirmed formatting
+controls and uses the heading/body/code profiles. Unmatched inline delimiters
+stay literal. It does not edit or replace the saved source.</p>
+<p>In preview, <strong>F3/F5</strong> or up/down change pages; HOME returns to the top. <strong>Return</strong>
+or <strong>RUN/STOP</strong> returns to editable source. F7 <code>source</code> and View/P toggle between
+source and preview in GEOS. F8 switches mode and returns to source. Preview is
+not available in the 40/60/80-column modes.</p>
+<p>Menus, Help and Settings remain available. Closing Settings opened from preview
+returns to preview. Typing, deletion, cut/paste and Undo cannot mutate source
+while preview is active. Preview currently retains 32 page-back starts; it does
+not yet provide word-aware wrapping or editing inside formatted text.</p>
+<h2 id="write-supermark">Write SuperMark</h2>
+<p>SuperMark is PETSCII Markdown-lite. The examples below are readable host
+transcriptions; use the C64&#39;s native characters in the document.</p>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code># Title</code> … <code>###### Title</code></td>
+<td>Heading levels 1–6, starting in column zero with a following space</td>
+</tr>
+<tr>
+<td><code>**bold**</code>, <code>*italic*</code>, <code>***both***</code></td>
+<td>Matched emphasis; may be nested within supported parser limits</td>
+</tr>
+<tr>
+<td><code>@@code@@</code></td>
+<td>Inline code; no emphasis or pound escapes inside it</td>
+</tr>
+<tr>
+<td><code>- item</code>, <code>* item</code></td>
+<td>Bullet list item</td>
+</tr>
+<tr>
+<td><code>1. item</code>, <code>27. item</code></td>
+<td>Numbered item; supplied numbers are preserved, not renumbered</td>
+</tr>
+<tr>
+<td><code>:::basic</code>, <code>:::asm</code>, <code>:::text</code></td>
+<td>Fenced BASIC V2, 6502/6510 assembler, or plain code</td>
+</tr>
+<tr>
+<td><code>:::region Title</code> … <code>:::end</code></td>
+<td>Explicit nested region</td>
+</tr>
+<tr>
+<td><code>£*</code>, <code>£#</code>, <code>£@</code>, <code>££</code></td>
+<td>Contextual literal syntax escapes using the native pound key</td>
+</tr>
+</tbody></table>
+<p>Indent with spaces; typed Tab does not expand into four-column stops. Lists
+recognize two-space indentation through three nested levels. Block markers
+start in column zero; indented colon strings do not open fences. A leading <code>* </code>
+is a bullet marker, not italic markup. Inline styles end at CR; unmatched markers
+remain literal while typing. BASIC/assembler colors are lexical assistance,
+not compilation or validation. Unknown code-language labels use plain code.</p>
+<p>A fence opens with 3–15 colons and closes on a line containing <strong>exactly the same
+number of colons</strong>, without a label or trailing text. To include a literal
+three-colon line, use a longer fence:</p>
+<pre><code class="language-text">::::text
+A literal closing-looking line:
+:::
+::::
+</code></pre>
+<p>A region uses exactly <code>:::region</code> and <code>:::end</code>; regions can nest. For example:</p>
+<pre><code class="language-text"># Notes
+A **strong** idea and @@lda #0@@.
+:::region Example
+:::basic
+10 PRINT &quot;HELLO&quot;
+20 GOTO 10
+:::
+:::end
+</code></pre>
+<p>The native pound character (<code>£</code>, PETSCII <code>$5C</code>) replaces Markdown&#39;s backslash.
+It escapes <code># * - . : @ £</code> only where the following character would be syntax;
+for example, <code>£# Title</code> at line start is literal. Currency such as <code>£5</code> stays
+literal. Escapes are disabled inside fenced/inline code.</p>
+<p>There is no underscore emphasis, backtick/tilde fence or backslash escape syntax.
+Links, images, HTML, tables and block quotes are unsupported and stay literal.
+There is no JSON highlighting. Return inserts CR, not a host LF; source views
+preserve imported unsupported control bytes as data with visible markers.
+Changing views never renumbers lists or rewrites the source.</p>
+<h2 id="fold-without-losing-source">Fold without losing source</h2>
+<p>Heading sections (through the next equal or higher heading), fenced code and
+explicit regions can collapse. Place the
+caret in the desired unit and use <strong>Block/F</strong> or F7 <code>fold</code>; repeat to expand it.
+Use <code>fold all</code> or <code>unfold all</code> for the document. There is no standalone <code>unfold</code>
+command.</p>
+<p>A collapsed unit keeps its summary/opener with an inverse <code>+</code>. Arrow/page
+navigation skips the hidden body; direct GOTO/find reveals it. Selection and
+copy/cut still include the hidden source. No hidden-line count or delete
+confirmation is shown, so check the selection before a destructive edit.</p>
+<p>Incomplete fence/region syntax during editing makes automatic fold retention
+fall back to expanded source. You can keep typing and use Undo. Explicit
+<code>fold all</code> still reports malformed fold syntax; it does not silently accept it.</p>
+<h2 id="save-and-handle-a-file-dialog">Save and handle a file dialog</h2>
+<p><strong>CTRL-S</strong> or <strong>F1, F, S</strong> saves. An unnamed document opens Save As; <strong>F1, F, A</strong>
+always asks for a new name. Filenames allow up to 16 native bytes. In the dialog:</p>
+<ul>
+<li>Type a name, DEL to erase, or up/down to select a listed file.</li>
+<li>F3 switches drive 8/9; F5 advances the directory page.</li>
+<li>F6 shows the dialog&#39;s own help; Return accepts; RUN/STOP cancels.</li>
+</ul>
+<p>Opening over a dirty document asks <strong>S</strong> to save, <strong>D</strong> to discard or <strong>C</strong> to
+cancel. Saving an unnamed document first asks for a name, then resumes the Open.
+The clipboard survives opening another file; the document&#39;s Undo history does not.</p>
+<p>Save writes and verifies a staged file before replacing the target, retaining
+recovery candidates when DOS status is uncertain. It needs temporary free disk
+space as well as room for the final file. On an error, read the dialog and keep
+the disk attached until cleanup finishes; cancelling does not imply a save
+completed. If a recovery dialog offers <strong>K</strong>, that explicitly keeps the precise
+candidate files on disk. It is not a generic success acknowledgement.</p>
+<p>A capacity error refuses an edit before changing source or pending text; existing
+Undo remains usable. Source quota, append/history storage, object slots and disk
+space are separate finite resources. See <a href="CAPACITY.html">capacity and tested limits</a>.
+A D81 is 819,200 bytes including its filesystem and cannot store a 1 MiB document.</p>
+<h2 id="help-and-current-limits">Help and current limits</h2>
+<p><strong>F6</strong> opens a three-page guide: keyboard/routes, inline/list syntax and
+blocks/fences. <strong>F3/F5</strong> wrap between guide pages; <strong>F6</strong> or <strong>RUN/STOP</strong> closes
+it and restores the source or preview. <strong>Help/D</strong> or F7 <code>diag</code> opens document
+diagnostics. The normal source F3/F5 page keys are unchanged when Help is closed.</p>
+<p>General reflow, cold startup and some far navigation/editing are still slow.
+The 1 MiB capacity result is a bounded CPU/source-engine test, not a 1 MiB native
+D81 save claim. See <a href="PERFORMANCE.html">current performance</a>, <a href="CAPACITY.html">capacity</a>,
+<a href="GEOS_PREVIEW.html">preview limitations</a> and <a href="MEMORY_AND_ADAPTERS.html">memory/standalone adapter scope</a>.
+ReadyOS integration and UltimateDOS file access are future adapters; the current
+standalone file workflow is drive 8/9 D81. This guide does not claim those adapters
+or general performance work complete.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

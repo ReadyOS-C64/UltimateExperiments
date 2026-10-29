@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>GEOS preview and appearance · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: GEOS preview and appearance"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor" open><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="USER_GUIDE.html">Complete user guide</a></li><li><a href="SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="GEOS_PREVIEW.html" aria-current="page">GEOS preview and settings</a></li><li><a href="STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="BUILD.html">Build and package</a></li><li><a href="CAPACITY.html">Capacity and limits</a></li><li><a href="PERFORMANCE.html">Performance</a></li><li><a href="OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#collapsed-regions">Collapsed regions</a></li><li><a href="#session-settings">Session settings</a></li><li><a href="#implementation-and-verification">Implementation and verification</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="GEOS_PREVIEW.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="geos-preview-and-appearance">GEOS preview and appearance</h1>
+<p>The editable GEOS source view and formatted preview are separate presentations.
+Both use the same PETSCII document. Preview never rewrites markup or saves a
+formatted copy over the source.</p>
+<p>From F7, enter <code>mode hires</code>, then <code>preview</code>. Return or RUN/STOP returns to editable
+GEOS source. F3/F5 or up/down page through preview; F1 menus, F6 help and F7 typed
+commands remain available. F8 changes display mode and returns to source editing.
+Typing, deletion and text mutation commands are ignored while preview is active.
+The page-back stack currently retains32 page starts. Word-aware preview wrapping
+and source-mapped formatted editing remain future work.</p>
+<p>Preview hides confirmed emphasis/code delimiters, heading prefixes, confirmed
+escape introducers and fence/region control lines. Unmatched delimiters remain
+literal. Native hyphen and numbered list prefixes remain visible. Region titles
+can contain inline emphasis; the explicit close is <code>:::end</code>. BASIC and assembler
+code keep their own fixed-width font and syntax colors. JSON highlighting is not
+part of the dialect.</p>
+<h2 id="collapsed-regions">Collapsed regions</h2>
+<p>F7 <code>fold</code>, <code>fold all</code> and <code>unfold all</code> share the document&#39;s fold state with the
+40/60/80-column views. Editable GEOS source retains the opener and displays an
+inverse yellow <code>+</code> at its newline. A selection crossing hidden bytes highlights
+that marker; copy/cut still operate on the original source bytes.</p>
+<p>Formatted preview keeps styled heading/region titles and their selected fonts.
+A collapsed BASIC or assembler fence keeps its literal <code>:::basic</code> or <code>:::asm</code>
+label in the selected fixed-width code font. Its inverse <code>+</code> uses that font
+without bold/italic/underline, yellow ink and the containing band&#39;s background.
+The marker wraps normally, including onto the next preview page when necessary.
+Changing fold state resets the preview page-back history.</p>
+<p>Up/down and page navigation skip collapsed bodies in the editable view. A direct
+GOTO or search target inside hidden source opens its containing ancestors.
+Folding never removes source bytes or changes the saved file format.</p>
+<h2 id="session-settings">Session settings</h2>
+<p>F7 <code>syntax plain</code>, <code>syntax markdown</code>, and <code>syntax full</code> choose the source parsing
+preset. Settings H cycles the same choices. Plain source uses literal BSW/9
+without semantic parsing; formatted preview remains an explicit formatting
+consumer. Preview code-token coloring is enabled only in Full. Stored fold
+choices survive switching to expanded Plain source. See
+<a href="REU_CACHE_REDESIGN.html">parsing presets</a>.</p>
+<p>F7 <code>settings</code> opens the dialog in any display mode. Changes affect formatted
+preview; editable GEOS source continues to use its established BSW/9 and native8
+presentation. Source text, selection, undo and saved files do not contain settings.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1–8 or arrows</td>
+<td>Body, H1–H6, Code profile</td>
+</tr>
+<tr>
+<td>F</td>
+<td>Next font family</td>
+</tr>
+<tr>
+<td>S</td>
+<td>Next genuine size in that family</td>
+</tr>
+<tr>
+<td>C / G</td>
+<td>Foreground ink / background paper</td>
+</tr>
+<tr>
+<td>B / I / U</td>
+<td>Bold / italic / underline</td>
+</tr>
+<tr>
+<td>R</td>
+<td>Restore compiled defaults for all profiles</td>
+</tr>
+<tr>
+<td>Return / RUN/STOP</td>
+<td>Close</td>
+</tr>
+</tbody></table>
+<p>Size and color fields use explicit C64 <code>$</code> hexadecimal notation. <code>$18</code> is24,
+<code>$12</code> is18 and <code>$0A</code> is10. Font names are shown in the dialog. Only sizes present
+in the original GEOS font files are offered; there is no bitmap scaling.</p>
+<p>The44 choices consist of BSW/9, native/8 and42 genuine GEOS file faces:</p>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>Genuine sizes (decimal)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>University</td>
+<td>6,10,12,14,18,24</td>
+</tr>
+<tr>
+<td>California</td>
+<td>10,12,14,18</td>
+</tr>
+<tr>
+<td>Roma</td>
+<td>9,12,18,24</td>
+</tr>
+<tr>
+<td>Dwinelle</td>
+<td>18</td>
+</tr>
+<tr>
+<td>Cory</td>
+<td>12,24</td>
+</tr>
+<tr>
+<td>Commodore</td>
+<td>10</td>
+</tr>
+<tr>
+<td>LW Roma, LW Cal, LW Greek, LW Barrows</td>
+<td>9,10,12,14,18,24 each</td>
+</tr>
+</tbody></table>
+<p>Code admits native/8 or Commodore/10, the measured fixed-width faces. Both use
+8-pixel advances. Bold/italic code ink is clipped within that advance so columns
+stay aligned. Graphics absent from a GEOS face use the native PETSCII fallback.
+LW Greek deliberately retains its original glyph repertoire.</p>
+<p>Profiles share the C64&#39;s real two-color-per8×8-cell limit. Preview aligns each
+text band to an8-pixel boundary, aligns mixed fonts by baseline and uses the block
+profile&#39;s background for the band. The first glyph depositing ink in a cell
+chooses its foreground. Fixed8-pixel code columns align with color cells; lexer
+colors override the code profile&#39;s base ink for recognized tokens. Inline code
+uses the code font while retaining the containing paragraph&#39;s background.</p>
+<p>Settings are session-only. Restart restores compiled defaults. For repeatable
+testing, edit <code>config/editor-defaults.toml</code> and rebuild <code>make editor build/supereditor.d81</code>. For example:</p>
+<pre><code class="language-toml">[heading1]
+font = &quot;roma&quot;
+size = 18
+foreground = 6
+background = 7
+bold = true
+italic = false
+underline = true
+</code></pre>
+<p>The compiler validates the complete table before publishing it. A proportional
+code face, nonexistent size or invalid color is refused. Reset reads the table
+embedded in its overlay, not startup code that may have been reclaimed.</p>
+<h2 id="implementation-and-verification">Implementation and verification</h2>
+<p>C27 coordinates bounded source/parser jobs; R23 fetches/rasterizes genuine fonts.
+C7 controls settings and R22 draws the shared popup. There is no same-slot overlay
+nesting. The GFC1 pack contains43 native records, including the system BSW font,
+in74,432 bytes across two typed logical REU allocations. Pack/face CRCs and actual
+logical/physical ownership are checked before use.</p>
+<p>The maximum4210-byte font temporarily occupies <code>$5000-$6071</code>, sharing the overlay
+stage and114 bytes of top chrome. Document pixels start atY16/<code>$6280</code>; chrome is
+repainted after the final glyph. A new page or overlay stage write forces validation and
+refill before a font pointer is used. Glyphs within the same verified font window
+reuse its capability and face witness; the public strict fetch API still checks CRCs. The ReadyOS <code>$C600-$C9FF</code> reservation remains
+untouched. <code>$CA00-$CFFF</code> is now a second CPU-only warm extent; future suspend/resume
+must include it explicitly in addition to <code>$1000-$C5FF</code>.</p>
+<p>Verification commands:</p>
+<pre><code class="language-sh">python3 tests/test_geos_preview_editor.py --run
+python3 tests/test_geos_preview_settings.py --run
+python3 tests/test_geos_preview_vice.py --run
+</code></pre>
+<p>CPU tests use explicit ROM file-transport seams. Native tests perform real D81
+startup/font import and File/Open through the .NET VICE harness with warp/traps,
+compare actual VIC pixels to a canonical-source/raw-font reference, and retain
+source/history/REU/reserved-memory evidence. Physical key chords, PAL/NTSC speed,
+full lifecycle integration and the wider standalone completion gates remain open.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Memory and standalone adapters · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Memory and standalone adapters"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor" open><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="USER_GUIDE.html">Complete user guide</a></li><li><a href="SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="BUILD.html">Build and package</a></li><li><a href="CAPACITY.html">Capacity and limits</a></li><li><a href="PERFORMANCE.html">Performance</a></li><li><a href="OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="MEMORY_AND_ADAPTERS.html" aria-current="page">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#current-62-image-runtime">Current 62-image runtime</a></li><li><a href="#current48-incremental-rendering">Current48 incremental rendering</a></li><li><a href="#historical47-local-style-increment">Historical47 local-style increment</a></li><li><a href="#historical-managed46-build">Historical managed46 build</a></li><li><a href="#historical44-asset-delta">Historical44-asset delta</a></li><li><a href="#historical42-asset-delta">Historical42-asset delta</a></li><li><a href="#cpu-ram">CPU RAM</a></li><li><a href="#overlay-calls-and-measured-sizes">Overlay calls and measured sizes</a></li><li><a href="#reu-provider-document-limits-and-dma">REU provider, document limits and DMA</a></li><li><a href="#observed-foreground-stack">Observed foreground stack</a></li><li><a href="#lifecycle-and-future-os-integration">Lifecycle and future OS integration</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="MEMORY_AND_ADAPTERS.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="memory-and-standalone-adapters">Memory and standalone adapters</h1>
+<h2 id="current-62-image-runtime">Current 62-image runtime</h2>
+<p>The current linked package has62 registered images and four REU code banks.
+Its resident is215bd082/bindingc10bc2. The experimental63rd image was retired
+from the production build; its exact unqualified sources remain in6a280d8. The ReadyOS reservation is the entire
+untouched <code>$C600–$C9FF</code> range. Current resource sizes are:</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th align="right">Linked bytes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Zero page</td>
+<td align="right">24</td>
+</tr>
+<tr>
+<td>BSS</td>
+<td align="right">1534</td>
+</tr>
+<tr>
+<td>COLD</td>
+<td align="right">1737, ending <code>$0ED5</code> inclusive;42 bytes before <code>$0F00</code></td>
+</tr>
+<tr>
+<td>C7 menu/control</td>
+<td align="right">4001</td>
+</tr>
+<tr>
+<td>C21 page coordinator</td>
+<td align="right">4096</td>
+</tr>
+<tr>
+<td>R21 polling logical-row rasterizer</td>
+<td align="right">4095</td>
+</tr>
+<tr>
+<td>C22 row painter</td>
+<td align="right">4089</td>
+</tr>
+<tr>
+<td>R22 popup/settings</td>
+<td align="right">4086</td>
+</tr>
+<tr>
+<td>R30 local typing</td>
+<td align="right">3662</td>
+</tr>
+<tr>
+<td>C32 typing stage</td>
+<td align="right">3856, raw3824;240 bytes before the stage stamp</td>
+</tr>
+<tr>
+<td>C41 rebase</td>
+<td align="right">4068</td>
+</tr>
+<tr>
+<td>R34 transform</td>
+<td align="right">4095</td>
+</tr>
+</tbody></table>
+<p>The scheduler update5349d45 preserves62 images and reduces resident code one
+byte. The R21/C22 replacement removes per-strip row preparation, retains the
+same fonts, and adds no resident/REU allocation or registered image. Its combined
+payload is34 bytes larger; the polling helper reuses the fixed image tail. All other
+60 images are unchanged from the scheduler control. Actual62 CFG analysis still
+computes68 relative bytes for foreground plus one IRQ/NMI, subject to the
+declared ROM/frame contracts. This is not an exhaustive physical NMI guarantee.</p>
+<p>C21 completes source/layout before paint. During C22/R21 paint, these existing
+phase loans are exclusive:</p>
+<table>
+<thead>
+<tr>
+<th>Inclusive range</th>
+<th>Paint owner</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>$4400–$47DD</code></td>
+<td>Complete161-glyph packet, x map and palette</td>
+</tr>
+<tr>
+<td><code>$8880–$8B3F</code></td>
+<td>Glyph frame and upper-band histogram</td>
+</tr>
+<tr>
+<td><code>$8B40–$8BFF</code></td>
+<td>C22 state and selection witness</td>
+</tr>
+<tr>
+<td><code>$8D00–$8F2F</code></td>
+<td>Lower-band histogram; reused only after invalidation for native cells</td>
+</tr>
+<tr>
+<td><code>$9040–$9081</code></td>
+<td>Row descriptor and continuation in inactive source snapshot</td>
+</tr>
+</tbody></table>
+<p>Both source lease/context flags must be zero before paint; zero flags alone do
+not authorize painting while a suspended C20 continuation exists. C21&#39;s actual
+build-before-paint sequencing supplies that proof. No source prefetch or parser
+may run while the row continuation is live. IRQ writes only input state; normal
+input cancels source paint before another phase. Every C22 STEP still checks
+source/provider/header/selection. R21 validates arrays at packet admission,
+then checks its scalar/frame/cursor/stage bounds and reconstructs output
+addresses on continuation. Internal IRQ-ring/NMI polls continue within the same
+verified invocation when no input waits; they do not introduce another source
+trust boundary or allocate state. C20&#39;s next BEGIN revokes its old certificates before reusing
+the loaned bytes. Native-row transitions revoke row continuation first.</p>
+<p>The GEOS edit transaction uses one 842-byte following-row shadow at FE
+<code>$D568–$D8B1</code>. It is valid only while the foreground C21/R28 transaction is
+live. The former backup tail <code>$D8B2–$E567</code> is unowned and must remain exact;
+font storage still begins at <code>$E568</code>. Resume and every transaction exit revoke
+the phase/validity fields, so stale shadow bytes never become durable state.</p>
+<p>Paged Help retains C7/R22. The retired paint supervisor and shadow overlap stay
+outside production. See the <a href="OPTIMIZATION_PLAN.html">optimization replacement plan</a>.
+The <a href="CAPACITY.html">capacity and tested limits</a> distinguish the bounded1MiB source
+engine proof, finite quotas, lower-memory configurations and D81 free space.</p>
+<p>The following sections preserve earlier checkpoint descriptions. Their scoped
+sizes and historical wording do not supersede this current linked map.</p>
+<p>The current build registers62 editor overlays in the existing64-entry catalogue
+and four checked REU code banks. R29 ROW and C41 PARSE/R34 XFORM reuse existing
+filename suffixes. The packed catalog leaves COLD ending<code>$0ED5</code>, with42 bytes
+before<code>$0F00</code>. BSS remains1,534 bytes and zero page24. The entire ReadyOS
+reservation<code>$C600–$C9FF</code> remains untouched. C7 is3930bytes, C21 is4096, C41 is4068
+and R34 is4095. The rebase batch quota borrows BC_FRAME+79; its source reader is
+at+173 and live SuperMark state starts at+94. Up to four typed R34 microsteps
+share one synchronous source/observer guard, renewed after every yield. Final
+journal/root VALID-last publication retains its nonyielding boundary. No resident
+warm state, bank, object, BSS or zero page was added. See the
+<a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/SuperEditor/src/cache/edit-rebase-integration/README.html">checked rebase contract</a>.</p>
+<p>C33 remains4,096 bytes and expands512 bytes of CRC lookup data only during its
+checked, non-yielding CAPTURE operation. The expansion borrows <code>$8D00–$8EFF</code>,
+which aliases retained sparse line-index storage. It clears <code>se_i_ready</code>,
+<code>se_i_count</code> and <code>se_n_cache_count</code> before the first write. Owner4 alone is not
+proof that cached index data is disposable. Pending redraw/drawbusy refusal
+happens before borrowing this area. A native60→80/GOTO regression exposed the
+missing invalidation; both directions and source positions above64KiB now pass.
+R25 stays4,057 bytes. C22&#39;s partially visible caret fix reduces it to4,056.
+The combined foreground stack bound remains68 bytes including one IRQ/NMI.</p>
+<p>Both five-capsule cache families now share a content-aware build transaction.
+Actual resident/source/include/tool identities and all ten outputs are checked;
+changed content reaches the real D81 even with second-resolution Make clocks.
+A no-op preserves output bytes and mtimes. <code>make editor disk</code> runs these checks.
+The following paragraphs retain their named earlier checkpoint scopes.</p>
+<p>The previous grid update changes only C33/R25/R14 relative to checkpoint69720da.
+It adds no resident, BSS, zero-page, allocation or catalogue entry. C33 remains
+4,096 bytes, R25 is4,057 and R14 is4,095. NC byte253 stores the exact parsing
+preset inside the existing256-byte CRC-covered header. Raw editing preserves
+SP2 and semantic descriptors. See <a href="GRID_RAW_EDITING.html">grid qualification</a> for
+native costs, the physical-row correction and remaining capture overhead.</p>
+<p>The C19 fold allocator is 1,469 bytes (+99) and reclaims optional
+checked type53 analysis only after genuine resource exhaustion, then retries
+once. It borrows no fold phase bytes, BSS or zero page. Owner 3, full capability
+and extent checks, and no ACTIVE/MUTATING job are required. It preserves cache
+TRIED/ticket/incarnation/ring; C12 file retirement remains byte-identical.
+Checkpoint <code>69720da</code> changes only C19 versus <code>4c25480</code>; all 54 assets are present.
+All 28 fold and five editor scenarios, the 68-byte stack bound and three
+native Copy/Cut/Undo frames pass.</p>
+<p>R21 remains 4,094 bytes and uses one transient byte <code>$8B3B</code> inside its existing
+704-byte glyph frame for the precomputed vertical intersection. Font addresses
+<code>$ABF3</code>/<code>$AEDB</code> and compositor tail address <code>$AF5B</code> stay fixed; font bytes are
+identical. Tail jump operands may relocate with code, so a fixed tail address
+is not a claim that all tail bytes are unchanged. No new allocation is added.</p>
+<p>The current 54-asset build packs each startup filename into a low address byte
+and one byte containing its high address nibble and length. Assembly/link checks
+require names below <code>$1000</code>, lengths1–15 and at most64 entries. The original raw
+DOS names, order, aliases and 325-byte tutorial stay byte-identical.</p>
+<p>This recovers47 cold bytes: COLD ends at <code>$0EC5</code>, leaving58 bytes before the
+REU-probe save area at <code>$0F00</code>. BSS remains1,534 bytes and zero page24; the
+entire <code>$C600–$C9FF</code> reservation remains untouched. Warm addresses stay fixed;
+warm code changes only the initial JSR operand for the relocated cold REU
+probe and its ABI seal. This is available headroom, not registration of the
+private lexical/edit-cache modules. The catalog still contains54 assets.</p>
+<p>The emitted-table audit checks every filename against the frozen three-table
+build and the exact file in the new D81. Fresh native startup imports all54,
+all11 presentation images remain identical, navigation56 and stack68 pass,
+and controlled same-process lifecycle6 restores48,152 bytes and reopens422.
+No new allocation or bank is introduced.</p>
+<p>Historical parsing-preset update: one session capability byte is linked into ordinary
+BSS, which ends at <code>$C5FD</code> (1,534 bytes; two spare). Code/constants end <code>$3EFD</code>
+and cold startup ends <code>$0EFC</code>; <code>$C600–$C9FF</code> remains untouched. The SES64 font
+table is unchanged. Plain exposes expanded source through <code>se_ef_visible</code>
+without discarding the stored fold map. The internal raw context kind9 is a
+layout input, never a claimed SuperMark parser result. Preview metadata&#39;s
+previously reserved byte3 now carries the preset and is covered by its CRC.</p>
+<p>The following checkpoint notes describe the preceding Full-render baseline.
+D81dbc4ecf968ab, resident2d87e75e,
+bindingbc032951a4ff040b1cd687f8eb175884. Core/RODATA3EF9 (6bytes free),
+cold0EFE (1free), BSS1533/ZP24,48assets/threebanks, C600..C9FF untouched.
+C144089/R144095/C334096/R254095/C204096/C213741/R194028/R283749.
+No new resident/BSS/ZP storage, overlay asset, REU object or bank was added.</p>
+<p>R19op7 publishes actual C24 outgoing carry in precisely22x64B of existing FE
+row padding [0700+i0800,0740+i0800). R28 authenticates sourcekey/CRC/TOP/NEXT
+and all six carry bytes before suffix reuse; page and record validity publish
+last. Live ABI3 row contents, parser checkpoints, SP2 and font caches retain
+separate extents. R14op7 requires owner4 before its strict shift frame; owner2
+producer uses latch89C3, C14-only dispatcher leaves C15 unchanged. Production
+builds regenerate the actual linked C24/C14/R14/R25/native witnesses.</p>
+<p>SP2 uses exactly128 FEbytes1600..167F, previously unused, for actual C14
+logical-paragraph authority. Owner2 producer and owner4 C33 consumer are mode-
+bound and CRC/source/epoch/anchor checked. C33 authenticates actual linked
+C14/R14/R25 sizes/CRCs and managed publisher/font verification. Code lives in
+src/render/grid/paragraph; generated witnesses come from current linked images,
+not historical probe outputs. Source READ0..2 is retained; optional3..5 provide
+paragraph BEGIN/EVENT/FINISH. C33 retains revealop3, caret/typing and planner.</p>
+<p>C20 style/role certificate owns4400..458B and its bounded window adds6bytes
+458C..4591. Remaining84-byte ledger suffix,525-byte continuation and13-byte tail
+stay reserved/guarded. R21 uses two more ephemeral bytes inside its existing704B
+caller frame, no frame growth; fontABF3/widthAEDB/tailAF5B remain fixed. Its new
+indirect shift table is byte-checked only in the R21 stack graph.</p>
+<p>Incoming parser records remain FE0600/0640. AUXop6 refreshes actual published
+keys under complete old/new-source and nonwrapping16-bit sequence guards;
+C21 preserves an unobserved predecessor until a valid refresh or checked miss.
+The resident route consumes22B; four fixed copies save28B, leaving6 free.
+Actual48/sevenhelper stack77/minSPB2 and forced66-output rebuild pass. Final
+combined lifecycle/media/pressure qualification remains pending. No ReadyOS
+application or UltimateDOS integration is claimed.</p>
+<p>Earlier exact-build details follow with their original scopes.</p>
+<p>Current qualified hardening build: D81 <code>6f975a6d74b4</code>, residentb33cc41e,
+48assets/three assetbanks, BSS1533/ZP24/core3EFF/cold0EFE. ReservedC600..C9FF
+unchanged. C33/R25=4096/3586, R21=4094, C21=3597, C22=4070,
+C25=4049,C26=3327,R28=4095. No new allocation/state/bank. C26operation4
+accepts exactly161 with split finalrole at8FEB and hiddenbit160 at8FEA;
+legacyoperations0/3 retain160limit. C22 budgets up to8 prep/nativecells perSTEP
+and yields before/after R21. Actualall48/sevenhelper stack77/minSPB2 and
+forced65-output rebuild pass. Exactevidence is in the current hardening manifest.</p>
+<p>Earlier checkpoint details follow and retain their original scope.</p>
+<h1 id="memory-overlays-and-future-adapters">Memory, overlays and future adapters</h1>
+<p>The standalone editor owns its RAM and logical REU allocations. It is not a
+ReadyOS application and does not use UltimateDOS yet. These boundaries are
+part of the implementation contract, not evidence of an installed OS adapter.</p>
+<h2 id="current48-incremental-rendering">Current48 incremental rendering</h2>
+<p>Resident <code>b33cc41e</code>, binding <code>1ecddb41a1977cec0b84d415d6ab6595</code>,
+D81 <code>57be0ca4350b</code>:48 images in three asset banks. BSS1533 and zero page24
+are unchanged; <code>$C600–$C9FF</code> remains reserved. Cold ends <code>$0EFE</code>, core/RODATA
+ends <code>$3EFF</code>, with the CRC table still at <code>$3F00</code>. There is no spare core byte.</p>
+<p>C33/grid is3914 bytes. It retains a256-byte authenticated source/font/row
+witness at offset <code>$1500</code> of the existing owned FE allocation. Geometry,
+source/pending revision, style/folds, selection, actual packet CRCs, provider
+and publication sequence must match. Up to two caret/selection cells per row
+are XORed using their four/five-pixel masks; colors remain unchanged because
+caret/selection is excluded from ink voting. Unsupported changes fall back.
+Operation2 contains only the pure fold/layout decision; its return cannot
+nest another C overlay or borrow the File phase. The source40 common path
+stays resident. GRID reuses GRIDEDIT&#39;s filename prefix at startup.</p>
+<p>C6/window=4091, R30/gtype=3651, C32/type=3772 (3740 raw bytes at <code>$5000</code>),
+R28/geosdelta=4095, C14/styler=4047. R21/geosrow=4086 and C22/geospaint=4085. R30 adds a seventh fixed helper JMP at
+<code>$A032</code>; the original six <code>$A020..$A02F</code> vectors retain their addresses.
+The exact white/yellow shared-tile election uses temporary scratch only,
+within the existing synchronous owner4 phase. A dry caret-free transform must
+prove the existing color winner before FE/VIC publication; unknown roles or
+changed winners fall back. The direct pixel primitive retains strict guards.</p>
+<p>C6 publishes certificate VALID2, and both new worker entries require2. The old
+producer/consumer used1. This explicit discriminator makes mixed generations
+refuse before publication; resident seals alone cannot distinguish changed
+assets built for the same resident. C32 still requires the exact stage CRC and
+namespace42 witness at <code>$5FE0</code>; C31 retains namespace41.</p>
+<p>R28 class4 permits alphanumeric INSERT/BACK inside an unchanged complete
+heading prefix, including CR/EOF append; its real rebuilt row must preserve
+geometry before tail reuse. New wrap, structural edits and uncertain cases
+fall back. No new BSS, zero page, object or REU bank is added by these changes.
+Current stack analysis reassembles both staged borrowers, all seven helpers
+and all48 assets; forced rebuild reproduces65 existing outputs exactly.
+Native all-mode PAL/NTSC64 and targeted CPU checks pass. Lifecycle/media/
+capacity release evidence is tracked separately in the current checkpoint.</p>
+<p>The current R28 keeps the64B old-header witness at D528..D567 and one
+same-transaction 842B following-row shadow at D568..D8B1. D8B2..E567 has no
+readers or writers and remains exact through successful edits, refusal and
+failure/recovery. Early wrap is only an optional refusal before staging, never
+a new positive admission.
+C22&#39;s largest gathered packet is388B and ends below the actual FS state8EE0;
+its scatter order consumes overlapping style inputs before role writes. The
+R21 fixed font/tail addresses ABF3/AEDB/AF5B remain unchanged. None of these
+changes add a lifecycle state, allocation, bank, object or same-slot nesting.</p>
+<h2 id="historical47-local-style-increment">Historical47 local-style increment</h2>
+<p>Resident <code>4e64d113</code>, binding <code>bcec17ed8107a9013db3e0ba87e7e3c6</code>, current D81
+<code>ed098bf5c005</code>:47 images still use three asset banks,1533 BSS bytes and24 zero-page
+bytes. C6 is4084 bytes; R30 is2073. C32 is3553 bytes, with3521 raw executable
+bytes at <code>$5000</code> and a five-byte witness at <code>$5FE0</code>. It uses namespace42; code
+C31 remains namespace41. All legitimate font/stage writers revoke that window.</p>
+<p>C32 handles 8–11 pixel suffix deletion as one byte plus 0–3 residual bit
+shifts. Its 149-byte increase adds no state, bank, object, BSS or zero page.
+R27 is4053 bytes; C16 is4096. Chrome rows0/1/24 use a checked 40-cell row
+operation; popup rectangles retain the cell operation. Three existing UI
+scratch bytes are reused within the original 88-byte phase allocation.</p>
+<p>C14 is4047 bytes after bounded row-intersection source-color projection
+(previous3923). It reuses the existing controller fields, with no new state.
+The pure planner, actual root/missing-asset/ownership tests, native A/B and
+current PAL+NTSC64 pixel gates pass. The full combined stack stays77/minB2.</p>
+<p>R21 is4086 bytes with fixed font addressesABF3/AEDB and byte compositor tailAF5B.
+C27 is4095; R23 cached-ink is4095. Managed preview-body stateCC4D adds no BSS/ZP;
+resident grows six bytes and R26 grows eight. Core ends3EFD (two bytes spare);
+cold ends0EFD. All checked CPU→REU writes and fresh prelude revokeCC4D.
+The optional glyph cache uses preciselyFE[EB69,FBA9),4160 bytes, no new bank.
+Its ABI3 header binds the actualFE/FD graph, resident seal and generated BSW9CRC;
+recordCRC/key/metrics precede publication. C27 transport and R23 glyph scratch
+share8A00 only in disjoint synchronous phases.</p>
+<p>R30 fixes six helper JMPs at <code>$A020,$A023,$A026,$A029,$A02C,$A02F</code>. C32 links to
+those helpers and the current resident seal; no resident router bytes or new
+phase storage were needed. The <code>TYPE</code> startup filename aliases the suffix of
+<code>GTYPE</code>, adding only three cold-table bytes. Cold code ends <code>$0EFD</code>; core/CRC and
+ReadyOS reserved ranges retain the managed46 geometry below. The staged stack
+verifier independently reassembles both executable borrowers and resolves their
+calls in the owning overlay context.</p>
+<h2 id="historical-managed46-build">Historical managed46 build</h2>
+<p>Resident <code>bdef9dd0</code>, D81 <code>b3813f5d4fae</code>, binding
+<code>b91eb05ce60de246071ec54efe90d7c3</code>: all46 slots fit three asset banks.
+BSS remains1533 bytes, zero page24 bytes. Cold code ends <code>$0EFA</code>; resident
+constants end <code>$3EF7</code>, leaving eight bytes before the unchanged256-byte CRC
+lookup table at <code>$3F00</code>. Startup-only history/hot initialization and46 bytes of
+cold strings moved into disposable startup storage. The357-byte sample is
+copied with bounded256+101-byte loops; unused sample padding was removed.
+The ReadyOS <code>$C600–$C9FF</code> reservation remains intact.</p>
+<p><code>EDITOR_MANAGED_CODE=1</code> applies only to editor-specific cache/provider/DMA/IEC/
+startup/resume objects. Generic objects retain their original behavior.
+A published catalog entry uses slot-byte bit7 as its verification memo and bit0
+as slot identity; other bits are invalid. Import and first load validate the
+binding and full payload CRC. Verified warm copies use one direct DMA into the
+execution slot, leaving <code>$5000</code> unchanged. All entries, including active hits,
+check the resident binding. A checked owner2 write/free/rebind or fresh resume
+clears every memo bit, both active tags and <code>$CBD5</code> before further execution.
+IEC payload writes also clear <code>$CBD5</code> before their first store, including failed
+partial reads. No claim is made for arbitrary unnotified host/raw REU mutation.</p>
+<p>The unverified load path still stages and checks before replacing an executable.
+A verified direct load that discovers a bad binding refuses execution and leaves
+its active tag clear; it does not promise to retain the old slot bytes.</p>
+<p>C21 row prefix bytes30/31 publish the actual language and its complement.
+R31 authenticates a complete native8 row, obtains the typed C31 asset directly,
+checks binding/rawCRC and executes its pure lexer/native painter at <code>$5000</code>.
+C31 links to run at <code>$5000</code> and load at <code>$B020</code>; it is a data capsule, not a
+same-slot nested call. Corrected BASIC raw code occupies3314 bytes through
+<code>$5CF1</code>. Its five-byte capability stamp is <code>$5FE0–$5FE4</code>, guarded against overlap.
+<code>GF_VALID=$41</code> and <code>GF_FACE=$FF</code> distinguish code from cached font data.</p>
+<p>C6 is4030 bytes after certifying every glyph role intersecting the changed
+physical tile bands. R30 remains4091 bytes. No new persistent state is required.
+The preview font fast path uses the checked sticky window capability rather than
+an overlay-load counter; public strict font fetch retains full CRC verification.</p>
+<p>The full stack proof resolves all1022 actual staged instructions:52 foreground
+bytes plus16 IRQ/one-NMI bytes. Matching native BASIC SYS idle SP <code>$F6</code> adds nine
+existing BASIC bytes, giving77 bytes total and minimum SP <code>$B2</code>. Fresh trusted
+resume needs68 bytes. This bound is scoped to the pinned ROM/vector contracts,
+not arbitrary ROMs or repeated NMI storms. Evidence:
+<code>agentsworking/evidence/M8/20261025T113435781210Z-managed-stack-absolute</code>.</p>
+<p>The following tables preserve earlier build-specific audits. Their resident
+identities and bounds are historical. In the FE table, the current editor uses
+<code>$D568–$D8B1</code> as its transaction shadow and keeps <code>$D8B2–$E567</code> dead; the older
+build described below reserved the complete 4 KiB range.</p>
+<h2 id="historical44-asset-delta">Historical44-asset delta</h2>
+<p>Current packaged cache build: PRG<code>e9c82775d0c6b9c1c124bd401a20ec312c8bb0ccbf7b200a2743020f8053fc25</code>,
+D81<code>3d1a2b7eb63b387e9f963a8a8d23caa0757cb2bf52f8aff0d86728b2e4257c60</code>.
+BSS1533bytes/ZP24bytes, cold end<code>$0EFE</code>, five aligned corebytes free.
+C6=3897/R30=4091/C30=3399/C21=3521/R28=3768/C27=4044bytes.
+The frozen41-image table below remains historical.</p>
+<p>Direct plain typing reuses the47-byte retired R28 phase<code>$9149–$9177</code> for its
+sealed certificate. Phase ownership makes these exclusive. The original20-byte
+edit witness remains<code>$CFE8–$CFFB</code>. No resident state or ReadyOS shim space was
+added. The existing typed FE logical allocation now contains:</p>
+<table>
+<thead>
+<tr>
+<th>FE offsets</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>$0000–$B1FF</code></td>
+<td>Literal row packets/cache data</td>
+</tr>
+<tr>
+<td><code>$B200–$D527</code></td>
+<td>Literal caret-free8000-byte bitmap and1000-byte attributes</td>
+</tr>
+<tr>
+<td><code>$D528–$D567</code></td>
+<td>R28 old-header witness,64bytes</td>
+</tr>
+<tr>
+<td><code>$D568–$D8B1</code></td>
+<td>Current 842-byte following-row transaction shadow</td>
+</tr>
+<tr>
+<td><code>$D8B2–$E567</code></td>
+<td>Retired backup tail; unowned and exact,3254bytes</td>
+</tr>
+<tr>
+<td><code>$E568–$EA67</code></td>
+<td>128normal glyphs plus widths,1280bytes</td>
+</tr>
+<tr>
+<td><code>$EA68–$EA87</code></td>
+<td>32-byte normal-font READY witness</td>
+</tr>
+<tr>
+<td><code>$EA88–$EB68</code></td>
+<td>225-byte preview witness and all66anchor bytes</td>
+</tr>
+</tbody></table>
+<p>Preview reuses the body-base area in a different packed layout:7040bitmap bytes
+at<code>$B200–$CD7F</code>,880attributes at<code>$CD80–$D0EF</code>. These interpretations are mutually
+exclusive. Preview clears literal publication validity; returning to editable
+GEOS rebuilds the literal base. Preview lookup verifies the full bodyCRC before
+its two live displayDMAs, without yielding between finalcheck andcopy. Cache
+writes touch only the current bounded R28 shadow and never the dead tail or
+normal glyphs. An optional cache failure cannot
+reject an already rendered page. Source/settings/fold/font/provider identities
+are checked on bounded continuations. Strict overlay admission remains intact.</p>
+<p>The final44-image stack analysis resolves112foreground/module/helper graphs,
+including pinned KERNAL901227-03 device8/9 IEC paths, actual emitted IRQcode and
+one NMI overlap. Maximum is51bytes below root idleSP plus16interrupt bytes.
+Observed natural BASIC SYS idleSP<code>$F6</code> yields minimum<code>$B3</code>, including nine existing
+BASIC bytes. Fresh trusted resume starts a new stack and yields minimum<code>$BC</code>.
+This is a scoped static bound, not arbitrary-ROM or repeated-NMI coverage. The
+older foreground-only experiment below retains its narrower original scope.</p>
+<p>Actual one-bank-document workloads on1MiB/2MiB REUs reach15privatebanks and all
+eight objectslots during stagedOpen while retaining snapshot/clipboard/folds/
+history. Transient owner writes are included. Pressure-allocation tests exercise
+COPY refusal and failed secondOpen reservation rollback, then continue editing.
+These measured workloads are not a universal maximum-capacity guarantee.</p>
+<p>Two build identities matter here. The stack experiment below uses the accepted
+39-asset <code>071324</code> fixture (PRG <code>054bfd4b…3652c</code>, binding
+<code>6e15b659db9afead2209aff70fb5b6c4</code>). The linker audit uses the newer 41-asset
+candidate, PRG <code>d1d2a8b0787c001f7f82b8e0c29a689e0137c8dc03704181f79527814663653e</code>,
+binding <code>abc457b9d13808aedc7c1c5eac8d4625</code>. Adding lifecycle images does not
+promote the older native gallery into native 41-asset or hardware proof.</p>
+<h2 id="historical42-asset-delta">Historical42-asset delta</h2>
+<p>The later incremental build uses PRG<code>e0c9007124f0031037266ec8f29156a67e5a7a1af55c2443910946958766cab9</code>
+and binding<code>112e1bd5ae2fe3c91844005e28538ef4</code>. The following detailed table remains
+the frozen41-asset audit; these are the measured changes:42catalog entries,
+cold end<code>$0EEE</code>, six bytes of aligned core slack, C22=4017, R28=3689, R21=4086 and R23=3820bytes (latest byte-decoder increment). ResidentBSS1533 andZP24 are unchanged.</p>
+<p>The exact single-edit witness occupies<code>$CFE8–$CFFB</code>. R28&#39;s47-byte caller phase
+is<code>$9149–$9177</code>; it is exclusive with other foreground owners. The existing
+FE bank retains fixed2KiB ABI3 slots (842 live bytes each) through<code>$B1FF</code>, caret-free bitmap/attributes at
+<code>$B200–$D527</code>, then oldheader/oldrow/newrow transaction backups at
+<code>$D528–$E567</code>. The bank tail from<code>$E568</code> remains untouched by the current public build; a private verified glyph-cache candidate uses E568..EA87 and is not yet wired. No extra REU bank
+or resident storage was added for incremental edits. ABI3 derives literal canonical affinities as FIRST+index; the legacy LEFT/RIGHT
+array offsets are non-live. Following-row rebasing updates prefixes only.
+A page is unpublished
+until rebuilt-row geometry and rebased positions pass checks.</p>
+<h2 id="cpu-ram">CPU RAM</h2>
+<p>Addresses and occupied sizes below come from the frozen 41-asset linker report.
+Aliased phase segments are alternatives, not additive allocations.</p>
+<table>
+<thead>
+<tr>
+<th>Range</th>
+<th>Use and measured allocation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>$0002–$0019</code></td>
+<td>24 bytes of editor zero page; linker capacity ends <code>$001B</code></td>
+</tr>
+<tr>
+<td><code>$0100–$01FF</code></td>
+<td>6510 hardware stack; no document/overlay storage</td>
+</tr>
+<tr>
+<td><code>$0801–$0EEA</code></td>
+<td>Cold bootstrap and initialization code; discarded after startup</td>
+</tr>
+<tr>
+<td><code>$1000–$3FFF</code></td>
+<td>Resident entry/code/constants; CRC table <code>$3F00–$3FFF</code></td>
+</tr>
+<tr>
+<td><code>$4000–$43E7</code></td>
+<td>1000 bitmap attributes; source40 uses the text matrix here</td>
+</tr>
+<tr>
+<td><code>$4400–$476F</code></td>
+<td>880-byte source40 semantic plan</td>
+</tr>
+<tr>
+<td><code>$4770–$47E7</code></td>
+<td>120-byte style checkpoint; remaining linker reservation ends <code>$47FF</code></td>
+</tr>
+<tr>
+<td><code>$4800–$4FFF</code></td>
+<td>Native font copy, or inactive font space reused by narrow style plans</td>
+</tr>
+<tr>
+<td><code>$5000–$5FFF</code></td>
+<td>Overlay staging; verify before replacing an executable slot</td>
+</tr>
+<tr>
+<td><code>$6000–$7F3F</code></td>
+<td>8000-byte bitmap; color RAM remains separate at <code>$D800</code></td>
+</tr>
+<tr>
+<td><code>$8000–$8BFF</code></td>
+<td>Operation-specific transfer/render scratch; not a general free heap</td>
+</tr>
+<tr>
+<td><code>$8C00–$8CD9</code></td>
+<td>218-byte view state</td>
+</tr>
+<tr>
+<td><code>$8CDA–$8CFE</code></td>
+<td>37-byte style descriptor; last VIEW byte remains unused</td>
+</tr>
+<tr>
+<td><code>$8D00–$917F</code></td>
+<td>1152-byte phase union: index, FILE, style, fold or GEOS work; owner guarded</td>
+</tr>
+<tr>
+<td><code>$9180–$91FB</code></td>
+<td>124-byte navigation state</td>
+</tr>
+<tr>
+<td><code>$9200–$99FF</code></td>
+<td>2048-byte pending text gap</td>
+</tr>
+<tr>
+<td><code>$9A00–$9D84</code></td>
+<td>901 occupied bytes of document state; capacity 1024</td>
+</tr>
+<tr>
+<td><code>$9E00–$9FB4</code></td>
+<td>437 occupied bytes of checked object metadata; capacity 512</td>
+</tr>
+<tr>
+<td><code>$A000–$AFFF</code></td>
+<td>4096-byte R executable slot</td>
+</tr>
+<tr>
+<td><code>$B000–$BFFF</code></td>
+<td>4096-byte C executable slot</td>
+</tr>
+<tr>
+<td><code>$C000–$C5FD</code></td>
+<td>1534-byte resident BSS; 2 bytes remain before <code>$C600</code></td>
+</tr>
+<tr>
+<td><strong><code>$C600–$C9FF</code></strong></td>
+<td><strong>ReadyOS&#39;s reserved 1 KiB: no editor fill, BSS, loaders or DMA</strong></td>
+</tr>
+<tr>
+<td><code>$CA00–$CB7F</code></td>
+<td>64-entry overlay catalog, 384 bytes</td>
+</tr>
+<tr>
+<td><code>$CB80–$CBBF</code></td>
+<td>64-byte session settings table</td>
+</tr>
+<tr>
+<td><code>$CBC0–$CBFF</code></td>
+<td>64-byte font-store state</td>
+</tr>
+<tr>
+<td><code>$CC00–$CFFF</code></td>
+<td>1024-byte preview/caret-cache workspace</td>
+</tr>
+</tbody></table>
+<p>VIEWSTATE occupies <code>$8C00–$8CD9</code> inclusive; the descriptor starts <code>$8CDA</code>.
+The code/core/constants end at <code>$3EFD</code>, leaving 2 bytes before the aligned CRC
+table. This alignment slack is not a general allocation pool. BSS, VIEW and
+individual overlays must each respect their own limits.</p>
+<p>The full warm CPU payload is two disjoint extents: <code>$1000–$C5FF</code> (<code>$B600</code>
+bytes), then <code>$CA00–$CFFF</code> (<code>$0600</code> bytes). Editor ZP <code>$0002–$0019</code> adds 24 bytes:
+<code>$BC18</code> bytes total. The stack, vectors, CIA/VIC registers, color RAM and CPU
+port are not included in those extents. The reserved ReadyOS gap must never
+be bridged by a contiguous copy.</p>
+<h2 id="overlay-calls-and-measured-sizes">Overlay calls and measured sizes</h2>
+<p>SEO2 images contain a 36-byte checked header followed by at most 4096 payload
+bytes, including a 16-byte resident-binding signature. The resident loader
+validates slot, ID, size, entry, binding and CRC before executable replacement.
+A cached image is a checked logical REU allocation, not a persistent RAM pointer.
+A call supplies the resident frame; modules must not retain pointers into
+another evictable image.</p>
+<p>R-slot 0 is <code>$A000</code>, C-slot 1 is <code>$B000</code>. Same-slot nesting is rejected. C→R
+nesting is allowed; calling C from an active R is rejected. A root scheduler
+therefore sequences C workers instead of nesting them. IRQ/NMI handlers are
+resident and do not load overlays or DMA document state.</p>
+<p>The audited 41-image candidate uses 41 of 64 catalog entries. Full slots are
+R16 and R17 (4096 bytes); C16 is 4095, leaving one byte. R1 is 4070, C22 is 4065,
+R21 is 4047 and C23 is 4030. The new lifecycle controller C29 is 2304 bytes
+(including its fixed template), R26 copier 1783. These sizes include binding,
+entry and data; they are not estimates of executable instructions alone.
+The complete per-image hashes remain in the local ignored audit record
+<code>build/editor-stack/20261025T075401300951Z/current41-map/overlay-sizes.json</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Image</th>
+<th>Slot/module ID</th>
+<th align="right">Payload bytes</th>
+<th align="right">Bytes to 4096</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>eedit</code></td>
+<td>C4</td>
+<td align="right">3456</td>
+<td align="right">640</td>
+</tr>
+<tr>
+<td><code>eplay</code></td>
+<td>C5</td>
+<td align="right">2118</td>
+<td align="right">1978</td>
+</tr>
+<tr>
+<td><code>window</code></td>
+<td>C6</td>
+<td align="right">2543</td>
+<td align="right">1553</td>
+</tr>
+<tr>
+<td><code>text40</code></td>
+<td>R1</td>
+<td align="right">4070</td>
+<td align="right">26</td>
+</tr>
+<tr>
+<td><code>menu40</code></td>
+<td>C7</td>
+<td align="right">2491</td>
+<td align="right">1605</td>
+</tr>
+<tr>
+<td><code>engine</code></td>
+<td>R2</td>
+<td align="right">3516</td>
+<td align="right">580</td>
+</tr>
+<tr>
+<td><code>navigate</code></td>
+<td>C8</td>
+<td align="right">3804</td>
+<td align="right">292</td>
+</tr>
+<tr>
+<td><code>search</code></td>
+<td>C9</td>
+<td align="right">974</td>
+<td align="right">3122</td>
+</tr>
+<tr>
+<td><code>block</code></td>
+<td>C10</td>
+<td align="right">3872</td>
+<td align="right">224</td>
+</tr>
+<tr>
+<td><code>layout</code></td>
+<td>C11</td>
+<td align="right">3738</td>
+<td align="right">358</td>
+</tr>
+<tr>
+<td><code>fileio</code></td>
+<td>C12</td>
+<td align="right">3965</td>
+<td align="right">131</td>
+</tr>
+<tr>
+<td><code>aux</code></td>
+<td>C13</td>
+<td align="right">2272</td>
+<td align="right">1824</td>
+</tr>
+<tr>
+<td><code>styler</code></td>
+<td>C14</td>
+<td align="right">3923</td>
+<td align="right">173</td>
+</tr>
+<tr>
+<td><code>viewsource</code></td>
+<td>R14</td>
+<td align="right">2331</td>
+<td align="right">1765</td>
+</tr>
+<tr>
+<td><code>lexical</code></td>
+<td>C15</td>
+<td align="right">3664</td>
+<td align="right">432</td>
+</tr>
+<tr>
+<td><code>gridedit</code></td>
+<td>C16</td>
+<td align="right">4095</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td><code>grid80</code></td>
+<td>R16</td>
+<td align="right">4096</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td><code>grid60</code></td>
+<td>R17</td>
+<td align="right">4096</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td><code>foldparse</code></td>
+<td>C17</td>
+<td align="right">3297</td>
+<td align="right">799</td>
+</tr>
+<tr>
+<td><code>foldfinish</code></td>
+<td>C18</td>
+<td align="right">3230</td>
+<td align="right">866</td>
+</tr>
+<tr>
+<td><code>foldcore</code></td>
+<td>R18</td>
+<td align="right">3015</td>
+<td align="right">1081</td>
+</tr>
+<tr>
+<td><code>foldctl</code></td>
+<td>C19</td>
+<td align="right">1343</td>
+<td align="right">2753</td>
+</tr>
+<tr>
+<td><code>rangeio</code></td>
+<td>R19</td>
+<td align="right">2817</td>
+<td align="right">1279</td>
+</tr>
+<tr>
+<td><code>foldxform</code></td>
+<td>R20</td>
+<td align="right">2987</td>
+<td align="right">1109</td>
+</tr>
+<tr>
+<td><code>geosline</code></td>
+<td>C20</td>
+<td align="right">3461</td>
+<td align="right">635</td>
+</tr>
+<tr>
+<td><code>geospage</code></td>
+<td>C21</td>
+<td align="right">3402</td>
+<td align="right">694</td>
+</tr>
+<tr>
+<td><code>geosrow</code></td>
+<td>R21</td>
+<td align="right">4047</td>
+<td align="right">49</td>
+</tr>
+<tr>
+<td><code>geospaint</code></td>
+<td>C22</td>
+<td align="right">4065</td>
+<td align="right">31</td>
+</tr>
+<tr>
+<td><code>geosnav</code></td>
+<td>C23</td>
+<td align="right">4030</td>
+<td align="right">66</td>
+</tr>
+<tr>
+<td><code>geossema</code></td>
+<td>C24</td>
+<td align="right">2268</td>
+<td align="right">1828</td>
+</tr>
+<tr>
+<td><code>geoslex</code></td>
+<td>C25</td>
+<td align="right">3872</td>
+<td align="right">224</td>
+</tr>
+<tr>
+<td><code>geosinln</code></td>
+<td>C26</td>
+<td align="right">3160</td>
+<td align="right">936</td>
+</tr>
+<tr>
+<td><code>popups</code></td>
+<td>R22</td>
+<td align="right">3793</td>
+<td align="right">303</td>
+</tr>
+<tr>
+<td><code>geospreview</code></td>
+<td>C27</td>
+<td align="right">2273</td>
+<td align="right">1823</td>
+</tr>
+<tr>
+<td><code>geosfontrow</code></td>
+<td>R23</td>
+<td align="right">3373</td>
+<td align="right">723</td>
+</tr>
+<tr>
+<td><code>geosfontin</code></td>
+<td>C28</td>
+<td align="right">791</td>
+<td align="right">3305</td>
+</tr>
+<tr>
+<td><code>geosfold</code></td>
+<td>R24</td>
+<td align="right">1541</td>
+<td align="right">2555</td>
+</tr>
+<tr>
+<td><code>geostail</code></td>
+<td>R25</td>
+<td align="right">246</td>
+<td align="right">3850</td>
+</tr>
+<tr>
+<td><code>geoscaret</code></td>
+<td>R27</td>
+<td align="right">3933</td>
+<td align="right">163</td>
+</tr>
+<tr>
+<td><code>lifectrl</code></td>
+<td>C29</td>
+<td align="right">2304</td>
+<td align="right">1792</td>
+</tr>
+<tr>
+<td><code>lifecopy</code></td>
+<td>R26</td>
+<td align="right">1783</td>
+<td align="right">2313</td>
+</tr>
+</tbody></table>
+<h2 id="reu-provider-document-limits-and-dma">REU provider, document limits and DMA</h2>
+<p>The standalone provider probes capacity, then maintains logical→physical maps,
+typed ownership and an epoch. Bank 0 is reserved by this provider; it is not an
+application scratch shortcut. Objects carry ID, generation and provider epoch,
+and split checked transfers at logical-bank boundaries. Never substitute an
+object ID, logical handle or file number for a physical REU bank.</p>
+<p>The ordinary <code>se_reu_copy</code> buffer must fit wholly in <code>$4000–$BFFF</code>, have a
+nonzero exact 16-bit length and stay in one 64 KiB REU bank. It validates the full
+request before writing REU registers and briefly masks IRQ around the DMA.
+The one-byte presence probe and lifecycle copier have separate narrow contracts;
+their special handling does not widen the general DMA API. Document readers
+have stricter phase/buffer rules as well: a physically legal address does not
+establish ownership of VIEW, NAV or another live phase.</p>
+<p>The engine allocates metadata plus separate original and append objects. Its
+source quota derives from the original object&#39;s admitted bank count. Pending
+insertions and their eventual append interval are checked before mutation;
+full-capacity refusal must preserve the pending edit, caret, selection and
+usable Undo history. Capacity is not the same as free physical REU space.</p>
+<p>Actual historical full-feature cold-boot/edit/save evidence exists at 1 MiB and
+2 MiB; the full font configuration refuses 512 KiB and missing REU. The native
+64KiB boundary gate verifies a one-bank quota, early refusal, replacement,
+Undo/Redo and byte-exact 65536-byte SaveAs/reopen. These are tested configurations,
+not a promise that every document/history/clipboard combination fits 1 MiB.
+The standalone gallery uses 16 MiB. Allocation counts at checkpoints are not
+transient high-water measurements.</p>
+<h2 id="observed-foreground-stack">Observed foreground stack</h2>
+<p>The immutable 39-asset run passed 128 seeded rounds and 183 canonical/integrity
+checks, including all four modes, insertion/deletion, Undo/Redo, clipboard,
+fold/preview churn and source offsets above 64 KiB. It sampled <strong>2,593,027,928
+instructions across 101,364 foreground calls</strong>. No observed push wrapped SP.</p>
+<p>The deepest sample was <strong>SP=<code>$DE</code>: 33 bytes used from <code>$FF</code>, including the two
+synthetic caller bytes</strong>. The remaining stack address range is 223 bytes
+(<code>$0100–$01DE</code>); this is numerical headroom at an observed sample, not a proven
+native reserve. It occurred while public RIGHT (command 2) drained job 2 in GEOS:
+<code>se_editor_service</code>, with C4 <code>eedit</code> and R2 <code>engine</code> loaded. The actual deepest
+instruction was JSR at <code>$21BE</code> (<code>se_object_validate</code>) to <code>$21A0</code>
+(<code>object_service_valid</code>). Catalog indexes were 1 and 6 respectively; indexes
+are not module IDs.</p>
+<p>Full stack samples, the original soak result, calibration and the 41-asset
+linker audit remain separate local ignored records beneath
+<code>build/editor-stack/20261025T075401300951Z/</code>. The stack workload&#39;s final source SHA256 was
+<code>2d9f24a314b12c703974431563ce307087c0ace83f67678ed7fc55159207117c</code>.
+No pixel or emulated-cycle claim is derived from this instruction experiment.</p>
+<p>The CPU harness starts each callable service at SP=<code>$FD</code>, with two synthetic
+return bytes in <code>$01FE/$01FF</code>; reported usage from <code>$FF</code> includes those two
+bytes. It executes real editor instructions, including checked overlay loads,
+and records SP before and after every instruction. It neither patches editor
+code nor substitutes a host source/history implementation. Explicit fixture
+source/font imports and ROM IEC seams are excluded from the measurement.</p>
+<p>The seven-instruction calibration reaches SP=<code>$F9</code>: the two caller bytes,
+one nested JSR, PHA and PHP require exactly six bytes. This catches a probe
+which samples only entry/exit and misses the deepest push.</p>
+<p>This is <strong>observed foreground depth</strong>, not a static worst-case bound. CPU
+interrupts are masked in this experiment. The separate native PAL/NTSC timing
+gate compares <code>$0100–$013F</code> before/after real IRQ-driven operations; that proves
+those 64 bytes stayed unchanged in those samples. It does not identify the
+lowest transient SP or establish a universal 192-byte native bound.</p>
+<p>The resident IRQ handler calls KERNAL UDTIM (<code>$FFEA</code>) and SCNKEY (<code>$FF9F</code>), then
+returns through <code>$EA81</code>. Its comment/ABI expects the KERNAL dispatcher to have
+stacked A/X/Y; each handler JSR itself pushes another two bytes, while ROM
+helper nesting is outside this CPU probe. The NMI handler adds exactly three
+software pushes and no JSR; the 6510 interrupt entry adds three hardware bytes.
+Those local facts do not bound upstream ROM entry, NMI interrupting an IRQ,
+repeated NMI edges, or IEC OPEN/CHRIN/CHROUT/status/error paths. This historical probe alone claims no audited
+combined IRQ/NMI/ROM maximum. Its original follow-up requirement was
+verified ROM-revision call-depth analysis or instruction-level native tracing
+covering those paths, not subtraction of a guessed interrupt allowance.</p>
+<h2 id="lifecycle-and-future-os-integration">Lifecycle and future OS integration</h2>
+<p>The current47 standalone adapter has native four-mode capture/restore and
+continued editing/SaveAs/reopen evidence, including affected preview-cache
+revocation tests. Its versioned C29/R26 contract remains the one described
+below; the current checkpoint identifies all exact build scopes. This is a
+controlled standalone adapter, not a ReadyOS application switch.</p>
+<p>The original 41-image candidate contains a standalone, same-process C29/R26 adapter.
+Its current contract uses an FC-typed logical snapshot allocation, a versioned
+header, resident binding, provider/source witnesses and a fresh trusted low-RAM
+thunk. Capture and verification steps process at most 256 payload bytes or one
+provider table. The final trusted thunk restores the complete fixed extents
+and transfers control; that final commit is not a 256-byte step. Restore
+verifies before publishing and resumes at a fresh editor event loop, never at
+a saved C/R-slot PC or saved CPU stack. Its exact-extent copy is deliberately
+separate from general DMA.</p>
+<p>The fresh control region includes bounce <code>$0700</code>, binding/descriptor <code>$0800</code>,
+restore thunk <code>$0900</code> and resume prelude <code>$0A00</code>; these are cold-only facilities,
+not new warm allocations. The current primitive assumes its live provider and
+backing REU remain owned and its known interrupt hooks are not externally
+raced. Actual standalone scramble/resume tests belong to that adapter&#39;s own
+identity/evidence. This document&#39;s 39-image stack/native gates do not establish
+41-image lifecycle, power-loss recovery, OS switching or hardware readiness.</p>
+<p>ReadyOS currently snapshots <code>$1000–$C5FF</code>; its existing shim alone does not
+preserve <code>$CA00–$CFFF</code>, editor ZP, color RAM, vectors or hardware state. A future
+adapter must explicitly preserve the second extent, coordinate provider-owned
+allocations/epochs, reinstall runtime hooks and refresh display/input state at
+an OS safe point. It must replace the standalone allocator/probe, not rerun
+cold provider initialization over live mappings. The editor remains excluded
+from <code>$C600–$C9FF</code>. No ReadyOS registration or C8xx calls are implemented here.</p>
+<p>UltimateDOS belongs behind the existing bounded open/read/write/status/directory
+transport seam. Keep filename/device binding, acknowledgement, staging,
+verification and atomic source publication in the editor coordinator. Replacing
+IEC transport must not flatten canonical source, bypass ownership checks or
+convert PETSCII data into host text. D81/KERNAL transport remains the current
+standalone implementation.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

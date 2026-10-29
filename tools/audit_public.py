@@ -65,6 +65,27 @@ for path in archives:
             if PRIVATE.search(archive.read(name)):
                 errors.append(f'Personal path inside package: {name}')
 
+super_archives = [ROOT / 'SuperEditor/releases/SuperEditor-preview.zip',
+                  ROOT / 'DOCS/downloads/SuperEditor-preview.zip']
+for path in super_archives:
+    if not path.exists():
+        errors.append(f'Missing package: {path.relative_to(ROOT)}')
+        continue
+    with zipfile.ZipFile(path) as archive:
+        expected = {'README.txt', 'SUPEREDITOR.D81', 'BUILD.json', 'SHA256SUMS'}
+        if set(archive.namelist()) != expected or len(archive.namelist()) != len(expected):
+            errors.append('SuperEditor package must contain exactly four approved assets')
+        if archive.testzip() is not None:
+            errors.append('SuperEditor package CRC failure')
+        build = json.loads(archive.read('BUILD.json'))
+        disk = archive.read('SUPEREDITOR.D81')
+        if len(disk) != 819200 or build['disk']['sha256'] != hashlib.sha256(disk).hexdigest():
+            errors.append('SuperEditor D81 metadata mismatch')
+        for name in archive.namelist():
+            body = archive.read(name)
+            if PRIVATE.search(body) or LINUX_HOME.search(body):
+                errors.append(f'Personal path inside SuperEditor package: {name}')
+
 sys.path.insert(0, str(P / 'build_support'))
 from dos_disk_inspect import Volume
 from example_disk import build as example_disk, NAMES

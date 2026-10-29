@@ -32,6 +32,10 @@ register('ReadyFS/PROJECT_INVENTORY.md','readyfs/PROJECT_INVENTORY.md');
 register('ReadyFS/AGENTS.md','readyfs/AGENTS.md');
 tree('ReadyFS/docs','readyfs',p=>!p.endsWith('.html'));
 register('ReadyFS/docs/READYFS_USER_GUIDE.html','readyfs/portable-guide.html');
+register('SuperEditor/README.md','supereditor/index.md');
+tree('SuperEditor/docs','supereditor');
+tree('SuperEditor/screenshots','supereditor/screenshots');
+register('SuperEditor/releases/SuperEditor-preview.zip','downloads/SuperEditor-preview.zip');
 register('8088DOS64ultimate/README.md','dos64/index.md');
 tree('8088DOS64ultimate/docs','dos64',p=>!p.includes('/videos/') && !p.endsWith('.html'));
 register('8088DOS64ultimate/examples/README.md','dos64/examples/index.md');
@@ -73,6 +77,17 @@ for(const [src,dst] of sources){
 const escape=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const slug=s=>s.toLowerCase().replace(/<[^>]*>/g,'').replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-');
 const experiments=[
+ {label:'SuperEditor',directory:'supereditor',children:[
+  ['Complete user guide','USER_GUIDE.html'],
+  ['Screenshot gallery','SCREENSHOTS.html'],
+  ['GEOS preview and settings','GEOS_PREVIEW.html'],
+  ['Standalone keys','STANDALONE_KEYS.html'],
+  ['Build and package','BUILD.html'],
+  ['Capacity and limits','CAPACITY.html'],
+  ['Performance','PERFORMANCE.html'],
+  ['Optimization plan','OPTIMIZATION_PLAN.html'],
+  ['Memory and adapters','MEMORY_AND_ADAPTERS.html']
+ ]},
  {label:'ReadyFS',directory:'readyfs',children:[
   ['Illustrated user guide','READYFS_USER_GUIDE.html'],
   ['Editor and history','READYFS_INTERACTIVE_UI.html'],
