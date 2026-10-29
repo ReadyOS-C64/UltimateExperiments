@@ -1,0 +1,183 @@
+--- a/src/render/geos/page-paint.s
++++ b/src/render/geos/page-paint.s
+@@ -1,6 +1,6 @@
+ ; ABI3 literal source boundaries are implicit FIRST+index; no affinity arrays.
+ ; Bounded foreground GEOS page compositor. Cache reads and renderer calls are
+-; deliberately separate steps; no C-slot service is entered from another C.
++; isolated from bounded preparation/native-cell batches; no same-C nesting.
+ .setcpu "6502"
+ .macpack longbranch
+ .ifdef EDITOR_OVERLAY
+@@ -79,6 +79,8 @@
+ P_TAIL_DRAW=13
+ P_CERTIFY=14
+ P_NATIVE=15
++P_CLEAR=16
++budget=GPP_PRIVATE
+ .segment "CODE"
+ se_gp_paint_begin:
+     jsr owner
+@@ -133,6 +135,7 @@
+     sta GPP_VALID
+     sta GPP_ERROR
+     sta GPP_LINE
++    sta budget
+     ; A certified edit may repaint only intersecting physical8px bands.
+     ; Malformed hints conservatively repaint the complete document area.
+     lda GP_CONTROL+20
+@@ -199,17 +202,18 @@
+     lda se_sel_mark
+     cmp saved_mark
+     jne changed
++    lda #8
++    sta budget
++dispatch:
+     lda GPP_PHASE
++    cmp #P_CLEAR
++    jeq clear_strip
+     cmp #P_CERTIFY
+     jeq certify
+     cmp #P_SCAN
+     jeq scan_line
+     cmp #P_CHARS
+     jeq read_chars
+-    cmp #P_STYLES
+-    jeq read_styles
+-    cmp #P_ROLES
+-    jeq read_roles
+     cmp #P_RIGHT
+     jeq read_right
+     cmp #P_LEFT
+@@ -230,7 +234,7 @@
+     jeq native_step
+     jmp argument
+ ; No pixels are touched until every cached prefix has passed ordered,
+-; nonoverlapping geometry validation. At most one32-byte fetch per STEP.
++; nonoverlapping geometry validation. At most eight32-byte prefixes per STEP.
+ certify:
+     lda cert_index
+     cmp count_lines
+@@ -383,8 +387,6 @@
+     ldy #>CHARS
+     jsr array_request
+     jcs fail
+-    lda GPP_KIND
+-    bne @single_field
+     ; CHARS are already in place. The gathered style/role slices begin162
+     ; and324 bytes later. Ascending order is required: role destinations may
+     ; overlap only style source bytes that were copied earlier in this loop.
+@@ -398,25 +400,6 @@
+     cpx GPP_COUNT
+     bcc @gather
+     jmp flags_ready
+-@single_field:
+-    lda #P_STYLES
+-    sta GPP_PHASE
+-    jmp pending
+-read_styles:
+-    lda #<GPR_STYLES
+-    ldx #>GPR_STYLES
+-    ldy #>STYLES
+-    jsr array_request
+-    jcs fail
+-    lda #P_ROLES
+-    sta GPP_PHASE
+-    jmp pending
+-read_roles:
+-    lda #<GPR_ROLES
+-    ldx #>GPR_ROLES
+-    ldy #>ROLES
+-    jsr array_request
+-    jcs fail
+ flags_ready:
+     lda want_selection
+     bne @maps
+@@ -543,16 +526,13 @@
+     lda #P_START
+     sta GPP_PHASE
+     jmp pending
+-; One actual native8 tile per call. R21 resets a strip before code cells.
++; One native8 tile per micro-operation, at most8 per publicSTEP. R21 resets
++; are isolated before code cells.
+ draw_cell:
+     lda GPP_RESET
+     beq @cell
+-    jsr row_setup
+-    lda #0
+-    sta F+GR_RUNS
+-    jsr row_call
+-    jcs fail
+-    jmp pending
++    lda #P_CELL
++    jmp queue_clear
+ @cell:
+     lda GPP_X
+     and #7
+@@ -792,12 +772,8 @@
+ strip_done:
+     lda GPP_RESET
+     beq @next
+-    jsr row_setup
+-    lda #0
+-    sta F+GR_RUNS
+-    jsr row_call
+-    jcs fail
+-    jmp pending
++    lda #P_SCAN
++    jmp queue_clear
+ @next:
+     inc GPP_ROW
+     lda GPP_ROW
+@@ -817,7 +793,35 @@
+     sta GPP_RESET
+     lda #P_SCAN
+     sta GPP_PHASE
++    jmp pending
++; A public STEP keeps its full checked guard only across this bounded slice.
++; Every R21 operation is entered/exited through a public yield; IRQ only queues
++; input during the <=8 preparation/native-cell micro-operations between them.
++queue_clear:
++    sta next_phase
++    lda #P_CLEAR
++    sta GPP_PHASE
++    jmp yield
++clear_strip:
++    jsr row_setup
++    lda #0
++    sta F+GR_RUNS
++    jsr row_call
++    jcs fail
++    lda next_phase
++    sta GPP_PHASE
++    jmp yield
+ pending:
++    lda GPP_PHASE
++    cmp #P_DRAW
++    beq yield
++    cmp #P_CLEAR
++    beq yield
++    lda budget
++    beq yield
++    dec budget
++    jne dispatch
++yield:
+     lda #1
+     clc
+ return:
+@@ -935,8 +939,6 @@
+     sta amount+1
+     lda GPP_PHASE
+     cmp #P_CHARS
+-    bne @fetch
+-    lda GPP_KIND
+     bne @fetch
+     ; One checked contiguous transfer covers the same three field slices.
+     ; Existing public chunks are1..64; no source or worker loop is enlarged.
+@@ -1014,6 +1016,7 @@
+     jcs return
+     lda #0
+     sta GPP_RESET
++    sta budget
+     clc
+     rts
+ ; Compute range in private state, preserving all selection fields. Only the

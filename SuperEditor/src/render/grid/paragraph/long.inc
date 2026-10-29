@@ -1,0 +1,14 @@
+; Private owner4 phase; below FS and unrelated published descriptors.
+LS=$8D00
+LS_FIRST=LS
+LS_LAST=LS+1
+LS_NOEND=LS+2
+LS_ROW=LS+3
+LS_COUNT=LS+4
+LS_COL=LS+5
+LS_NEW=LS+6
+LS_TAIL=LS+7
+LS_CHAIN=LS+8
+LS_TAILINK=LS+9 ;8
+LS_GC=LS+17 ;3
+LPF=$8D40

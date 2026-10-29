@@ -1,0 +1,178 @@
+--- a/src/reu/dma.s
++++ b/src/reu/dma.s
+@@ -79,9 +79,10 @@
+     bne @handle
+     sty dma_physical
+ .ifdef EDITOR_MANAGED_CODE
++    ldy dma_direction
++    bne :+
++    sty $CC4D ;all checked CPU->REU writes revoke preview body verification
+     cmp #2
+-    bne :+
+-    ldy dma_direction
+     bne :+
+     jsr se_overlay_unverify
+ :
+--- a/src/overlay/cache.s
++++ b/src/overlay/cache.s
+@@ -165,6 +165,7 @@
+     sta se_overlay_active
+     sta se_overlay_active+1
+     sta $CBD5 ;sharedfont/executable5000windowwitness
++    sta $CC4D ;preview body verification cannot survive provider/resume
+     pla
+     tax
+     rts
+--- a/src/lifecycle/copy-entry.s
++++ b/src/lifecycle/copy-entry.s
+@@ -260,6 +260,13 @@
+  rts
+ dma:
+  sta LC_CMD
++.ifdef EDITOR_MANAGED_CODE
++ lsr a ;validated commands90stash/91fetch; preserve original inLC_CMD
++ bcs :+
++ lda #0
++ sta $CC4D ;directFCcapture also revokes memo across ownership recycling
++:
++.endif
+  lda LC_CPU
+  sta $DF02
+  lda LC_CPU+1
+--- a/src/render/geos/preview-cache.s
++++ b/src/render/geos/preview-cache.s
+@@ -11,24 +11,21 @@
+  lda #0
+  sta PPC_ARMED
+  sta PPC_CAPTURE
+- sta PPC_ZERO
+  jsr pc_source_begin
+- jcs pc_return
++ bcs pc_return
+  jsr pc_owned
+  bcs pc_miss
+  lda #PPC_META_FIRST
+  sta PP_PHASE
+  lda #1
+- clc
+- rts
++ rts ;pc_owned already clearedcarry
+ pc_miss:
+  jsr pc_seed
+  jsr pc_release
+  lda #1
+  sta PPC_ARMED
+  lda #0
+- clc
+-pc_return:
++pc_return: ;pc_release guaranteescarryclear
+  rts
+ ; Every pending callback authenticates source, typed bank, view and settings.
+ pc_step:
+@@ -85,6 +82,10 @@
+  jsr pc_chunk
+  lda PPC_CAPTURE
+  bne @capture
++ lda PPC_BODY_MEMO
++ jeq pc_miss ;checked write during an earlier CRC slice revoked it
++ lsr a ;1verified =>carry,80verifying =>clear
++ jcs pc_restore
+  lda #<PPC_CHUNK
+  sta se_reu_c64
+  lda #>PPC_CHUNK
+@@ -136,6 +137,9 @@
+  lda PPC_VALUE+1
+  cmp PPC_META+PPC_CRC+1
+  jne pc_miss
++ lda #1
++ sta PPC_BODY_MEMO
++pc_restore:
+  ; No foreground yield after checksum before live DMA; IRQ never touches REU.
+  lda #1
+  jsr pc_body_dma
+@@ -272,12 +276,20 @@
+  sta se_reu_offset+1
+  lda #1
+  jsr pc_write ;VALID publication last; failure merely disables optional capture
++ bcs @release
++ lda #1
++ sta PPC_BODY_MEMO
+ @release:
+  jsr pc_release
+  lda #2
+  clc
+  rts
+ pc_reset:
++ lda PPC_BODY_MEMO
++ bne :+
++ lda #$80
++ sta PPC_BODY_MEMO ;arm sweep; any inter-slice checkedwrite returns it to0
++:
+  lda #0
+  sta PPC_CURSOR
+  sta PPC_CURSOR+1
+@@ -387,13 +399,13 @@
+  rts
+ pc_owned:
+  lda se_reu_retired
+- jne pc_stale
++ bne pc_stale
+  lda se_gc_epoch
+  cmp se_reu_epoch
+- jne pc_stale
++ bne pc_stale
+  lda se_gc_epoch+1
+  cmp se_reu_epoch+1
+- jne pc_stale
++ bne pc_stale
+  ldx se_gc_handle
+  beq pc_stale
+  lda se_reu_logical_owner,x
+@@ -474,24 +486,22 @@
+  jne pc_changed
+  lda se_crc_value+1
+  cmp PPC_META+PPC_META_CRC+1
+- jne pc_changed
++ bne pc_changed
+  lda PPC_META+PPC_ROWS
+  cmp #23
+- jcs pc_changed
++ bcs pc_changed
+  ldx #2
+ @first:
+  lda PPC_META+PPC_ANCHORS,x
+  cmp PPC_META+PPC_TOP,x
+- jne pc_changed
++ bne pc_changed
+  dex
+  bpl @first
+  ; Canonical anchors are checked by the source builder and protected by CRC.
+  ; Bound every published row at/before the captured bottom and source length.
+  CMP24 PPC_META+PPC_BOTTOM,se_v_length
+- jcs @equal
+  bcc @rows
+-@equal:
+- jne pc_changed
++ bne pc_changed
+ @rows:
+  ldx #0
+  ldy PPC_META+PPC_ROWS
+@@ -706,6 +716,5 @@
+  jne pc_changed
+  dex
+  bpl @face
+- lda #0
+- clc
+- rts
++ clc
++ rts
+--- a/src/render/geos/preview-cache.inc
++++ b/src/render/geos/preview-cache.inc
+@@ -36,6 +36,7 @@
+ PPC_META_FIRST=8
+ PPC_META_LAST=9
+ PPC_CRC_PHASE=10
++PPC_BODY_MEMO=PP_STATE+77 ;sticky0onEVERYcheckedREUwrite/provider/resume
+ .assert PPC_META+PPC_SIZE<=PPC_CHUNK,error,"preview metadata overlaps CRC chunk"
+ .assert PPC_CHUNK+128<=$8B40,error,"preview chunk overlaps semantic checkpoint"
+ .assert PPC_META_REU+PPC_SIZE<=$10000,error,"preview metadata outside FE"

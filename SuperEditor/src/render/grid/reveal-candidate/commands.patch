@@ -1,0 +1,22 @@
+--- a/src/editor/commands.s
++++ b/src/editor/commands.s
+@@ -346,9 +346,16 @@
+     bcs redraw
+ .export se_editor_reveal
+ se_editor_reveal:
+-    COPY24 se_hot_caret,se_e_target
+-    lda #E_POSITION
+-    sta se_e_command
++    lda #3
++    sta se_overlay_frame
++    lda #33
++    ldx #1
++    jsr se_overlay_call
++    jcs se_editor_error
++    lsr ;only A/C are promised by overlay return; discriminate result bit0
++    bcc @committed
++    jmp se_geos_navigate
++@committed:
+     jmp flush_first
+ 
+ redraw:

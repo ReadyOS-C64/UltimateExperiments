@@ -1,0 +1,8 @@
+# Install ready caret.s/api.inc/build.py under src/render/grid/caret-candidate.
+# This target adds one C33 slot1 asset; all47 existing images must be resealed.
+build/overlays/grid.seo: build/editor.prg src/render/grid/caret-candidate/caret.s src/render/grid/caret-candidate/api.inc
+	$(PYTHON) src/render/grid/caret-candidate/build.py build/grid-caret $(CURDIR)
+	cp build/grid-caret/gridcaret.seo $@
+EDITOR_ASSETS += build/overlays/grid.seo
+editor: build/overlays/grid.seo
+build/supereditor.d81: build/overlays/grid.seo

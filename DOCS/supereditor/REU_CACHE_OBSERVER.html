@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Retained cache: source observation foundation · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Retained cache: source observation foundation"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor" open><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="USER_GUIDE.html">Complete user guide</a></li><li><a href="SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="BUILD.html">Build and package</a></li><li><a href="CAPACITY.html">Capacity and limits</a></li><li><a href="PERFORMANCE.html">Performance</a></li><li><a href="OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#memory-and-residency">Memory and residency</a></li><li><a href="#source-events">Source events</a></li><li><a href="#queue-and-failure-rules">Queue and failure rules</a></li><li><a href="#replacement-job-frame">Replacement job frame</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="REU_CACHE_OBSERVER.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="retained-cache-source-observation-foundation">Retained cache: source observation foundation</h1>
+<p>This is the implemented producer contract on <code>supereditor/reu-cache-redesign</code>.
+The renderer does not yet consume the replacement semantic cache. CPU tests
+explicitly arm the optional observer after creating a real type <code>$53</code> object;
+that setup is not proof of a completed semantic baseline. Product startup leaves
+it disarmed. See <a href="REU_CACHE_REDESIGN.html">the redesign plan</a> for remaining work.</p>
+<h2 id="memory-and-residency">Memory and residency</h2>
+<p><code>src/cache/state.s</code> links last in the existing work segments:</p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Address</th>
+<th>Bytes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Arena capability, ticket, incarnation, flags and queue indices</td>
+<td><code>$9FB5–$9FC5</code></td>
+<td>17</td>
+</tr>
+<tr>
+<td>Three producer records</td>
+<td><code>$9D85–$9DE4</code></td>
+<td>96</td>
+</tr>
+</tbody></table>
+<p>Existing data addresses remain unchanged. Ordinary BSS remains 1,534 bytes,
+zero page remains 24 bytes, and <code>$C600–$C9FF</code> is reserved. Cold initialization
+already clears the new tails. The standalone warm image includes these bytes;
+that alone does not establish cache authority after lifecycle restoration.
+The replacement cache still needs explicit resume revocation before integration.</p>
+<p>C6 retains ordinary gap edits, caret movement and postpublication W_COMMIT.
+R32 HOTCOLD handles window loading, load continuation, flush preparation and the
+fallback packet operation. Its source is shared with the standalone hot probe.
+The normal C4 fast packet path remains. The observer runs inside the mutation
+image already loaded: it adds no overlay call or REU DMA to a warm local edit.
+R32 cannot call another overlay and allocates no BSS or zero page.</p>
+<h2 id="source-events">Source events</h2>
+<p>The separate 32-bit edit ticket describes visible source changes. Existing
+render revision behavior is preserved; render revision is not a universal
+source identity. All offsets and splice lengths are 24-bit canonical values.</p>
+<ul>
+<li>C6 reserves after quota and boundary admission, then publishes after the
+successful gap mutation. INSERT, BACKSPACE and DELETE each emit one SPLICE.
+BACKSPACE records its position after the preliminary LEFT. Movement emits none.</li>
+<li>R2 reserves after all fallible staging and append resizing, immediately before
+authoritative root publication. It uses the actual transaction position,
+exclusive end and insertion length. This covers byte/reference splices and
+the product&#39;s C4 edits and C5 undo/redo routes. Failed, dry-run or cancelled
+transactions emit none. The separate document replay probe is not linked into
+this editor and is outside this product observer contract.</li>
+<li>R32 PREPARE can reserve an uncommitted REKEY intent for a hot flush. R2 checks
+the hot/history phase, owned byte splice, actual tuple and captured revision
+and generation before consuming it. Publication commits a REKEY without
+advancing the edit ticket: those bytes were observed when they became visible.
+C6 W_COMMIT handles the checked zero/zero flush with unchanged generation.
+Later history-storage failure cannot erase an already-published observation.</li>
+<li>Successful H_INIT for a new history/source context clears the queue and
+ticket, advances incarnation and disarms the cache with LOST set. Repeated
+H_INIT for the same context is idempotent. This hook is after source validation
+and allocation; it is not at rollbackable file candidate adoption.</li>
+</ul>
+<p>A generic committed splice while a pending merged gap has no proved matching
+flush intent causes LOST, rather than guessing a coordinate translation.</p>
+<h2 id="queue-and-failure-rules">Queue and failure rules</h2>
+<p>Each 32-byte record contains kind, ticket, before/after render revisions,
+position/delete/insert, before/after document generations, and CRC16. The exact
+offsets are in <code>src/cache/api.inc</code>. CRC covers bytes 1–28 and reserved byte 31;
+it excludes the marker at 0 and CRC at 29–30. The A5 marker, count and head publish
+last. Producers bound indices; consumers must also validate queue continuity
+(<code>head == (tail + count) mod 3</code>), every record and the complete ticket chain
+before rebasing retained data.</p>
+<p>Reservation sets MUTATING without advancing the queue. Publication validates
+head, tail and capacity again. An abandoned intent remains MUTATING and is not a
+committed record; queries must refuse it. A subsequent mutation marks LOST.
+Queue overflow, malformed indices, an unexpected reservation or ticket wrap
+disarms the cache, retains unread records and lets source editing continue.
+Recovery requires a fresh verified baseline; no guessed or partial cache hit.</p>
+<p>Missing R32 operations follow the existing hot-window ownership rules. A missing
+fast C4 packet now takes the resident failure/cancel path, preserving the pending
+gap and releasing owned history/splice work. W_COMMIT stays in C6 so cleanup
+after successful publication does not depend on loading a cold helper.</p>
+<h2 id="replacement-job-frame">Replacement job frame</h2>
+<p>The new semantic and arena components share an exclusive owner-4 frame at
+<code>$8D00–$8F3F</code>, replacing the old phase contents rather than adding resident BSS:</p>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Offset</th>
+<th>Bytes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Request and semantic control</td>
+<td>0</td>
+<td>94</td>
+</tr>
+<tr>
+<td>Block parser / phase-aliased inline parser</td>
+<td>94</td>
+<td>79</td>
+</tr>
+<tr>
+<td>Checked source reader, including full source identity</td>
+<td>173</td>
+<td>86</td>
+</tr>
+<tr>
+<td>Source packet</td>
+<td>259</td>
+<td>32</td>
+</tr>
+<tr>
+<td>Semantic record</td>
+<td>291</td>
+<td>96</td>
+</tr>
+<tr>
+<td>Arena control</td>
+<td>387</td>
+<td>61</td>
+</tr>
+<tr>
+<td>Shared DMA/output buffer</td>
+<td>448</td>
+<td>128</td>
+</tr>
+</tbody></table>
+<p>Legacy R14 source state overlaps the shared IO area. Output must be drained and
+acknowledged before the next R14 exchange. Retaining a source reader and parser
+continuation makes BODY scanning linear rather than restarting at each viewport
+or inline event. Component CPU verification is separate from deployment and
+renderer cache-hit verification.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

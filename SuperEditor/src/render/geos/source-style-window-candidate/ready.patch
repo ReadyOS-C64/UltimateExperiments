@@ -1,0 +1,330 @@
+--- a/src/render/geos/source-line.s
++++ b/src/render/geos/source-line.s
+@@ -4,6 +4,9 @@
+ .include "render/geos/source-line.inc"
+ .ifdef SE_EDITOR_GEOS_INLINE
+ .include "render/geos/semantic.inc"
++.include "render/geos/inline.inc"
++.include "render/geos/editor.inc"
++.include "render/geos/source-certificate.inc"
+ .import se_st_request,se_st_cp_valid
+ INLINE_CONT=GSEM_FRAME+$A7
+ ; Reserve a full24bit sparse glyph-source ledger. A rendered boundary can
+@@ -45,6 +48,10 @@
+     cmp #GS_OWNER
+     jne busy
+     lda se_overlay_frame
++.ifdef SE_EDITOR_GEOS_INLINE
++    cmp #SC_CONSUME
++    jeq certificate
++.endif
+     cmp #GS_BEGIN
+     jeq begin
+     cmp #GS_STEP
+@@ -89,6 +96,7 @@
+     sta GS_READS
+ .ifdef SE_EDITOR_GEOS_INLINE
+     sta INLINE_CONT
++    sta SC_VALID
+ .endif
+     lda GS_ENCODING
+     beq :+
+@@ -212,12 +220,23 @@
+ return:
+     rts
+ complete:
++.ifdef SE_EDITOR_GEOS_INLINE
++    lda SC_VALID
++    cmp #1
++    bne :+
++    inc SC_VALID ;complete currentC20 output, consumed only after parentguard
++:
++.endif
+     jsr cleanup
+ zero:
+     lda #0
+     clc
+     rts
+ cancel:
++.ifdef SE_EDITOR_GEOS_INLINE
++    lda #0
++    sta SC_VALID
++.endif
+     lda GS_CONTEXT_VALID
+     beq zero
+     jsr cleanup
+@@ -225,10 +244,34 @@
+ fail:
+     sta GS_ERROR
+     pha
++.ifdef SE_EDITOR_GEOS_INLINE
++    lda #0
++    sta SC_VALID
++.endif
+     jsr cleanup
+     pla
+     sec
+     rts
++.ifdef SE_EDITOR_GEOS_INLINE
++certificate:
++    lda GS_ACTIVE
++    ora GS_CONTEXT_VALID
++    jne busy
++    jsr style_certificate
++    jcc zero
++    lda #GI_ID
++    sta $9135
++    lda #GI_BEGIN
++    ldx GSEM_FRAME+GSEM_COUNT
++    cpx #161
++    bne :+
++    lda #GI_BEGIN_WIDE
++:
++    sta $9136
++    lda #GS_PENDING
++    clc
++    rts
++.endif
+ argument:
+     lda #GL_ARGUMENT
+     sec
+@@ -298,4 +341,6 @@
+     rts
+ .ifdef SE_EDITOR_GEOS_INLINE
+ .include "render/geos/source-inline.s"
+-.endif
++.include "render/geos/source-certificate.s"
++.include "render/geos/certificate-consumer.s"
++.endif
+--- a/src/render/geos/source-inline.s
++++ b/src/render/geos/source-inline.s
+@@ -1,5 +1,5 @@
+ ; C20-only continuation bridge. Owner4 has invalidated the inactive source-grid
+-; plan; its1024 bytes4400..47FF hold a sparse source ledger and only the
++; plan; its1024 bytes4400..47FF hold the current-output certificate and the
+ ; live GL core/map,59B source identity and native packet32. Measure outputs are
+ ; scratch; the14 immutable glyph inputs are retained for the next measure call.
+ ; End the old lease before leaving C20: STOP during C26 has just one real lease.
+@@ -119,6 +119,7 @@
+     bne @changed
+     dex
+     bpl @identity
++    jsr style_remember
+     lda L+GL_PACKET_COUNT
+     jmp feed_line
+ @changed:
+--- a/src/render/geos/page.s
++++ b/src/render/geos/page.s
+@@ -4,6 +4,7 @@
+ .include "render/geos/semantic-consumer-candidate/codec.inc"
+ .include "render/geos/editor.inc"
+ .include "render/geos/source-line.inc"
++.include "render/geos/source-certificate.inc"
+ .include "render/geos/semantic-lex.inc"
+ .include "render/geos/inline.inc"
+ .include "render/geos/fold-query.inc"
+@@ -603,6 +604,13 @@
+     sta GSEM_FRAME+GSEM_COUNT
+     lda #8
+     sta PS
++    lda SC_VALID
++    cmp #2
++    bne :+
++    lda #GP_LAYOUT_ID
++    ldx #SC_CONSUME
++    jmp request
++:
+     lda #GI_ID
+     ldx #GI_BEGIN
+     ldy GP_RECORD+GPR_COUNT
+--- /dev/null
++++ b/src/render/geos/source-certificate.inc
+@@ -0,0 +1,20 @@
++; Private prototype: literal current-line output certificate, never crossjob.
++.ifndef SOURCE_STYLE_CERTIFICATE
++SOURCE_STYLE_CERTIFICATE=1
++SC_CONSUME=7               ;editorC20 only; completehit orhandnormalC26toroot
++SC_VALID=$4400             ;0absent,1accumulating,2currentC20linecompleted
++SC_KEY=$4401               ;59B exact frozenFSidentity, same as actualC20map
++SC_START=$443C             ;3B GL_START
++SC_COUNT=$443F             ;contiguous0..161 source styles/roles
++SC_CONTEXT=$4440           ;10B GSEM START/END/BODY/ROLE
++SC_STYLES=$444A            ;161 literal canonical source styles
++SC_ROLES=$44EB             ;161 literal canonical source semantic roles
++SC_END=$458C
++SC_TEMP=GS_CONTROL+5       ;3B otherwiseunused9131..9133, belowparent9134
++.assert SC_ROLES+161=SC_END,error,"style certificate extent"
++.assert SC_END<=$45E6,error,"style certificate overlaps live continuation"
++.assert SC_TEMP+3=$9134,error,"style certificate aliases parent"
++.ifdef SE_EDITOR_GEOS_RENDERED
++.error "literal source certificate cannot replace rendered canonical ledger"
++.endif
++.endif
+--- /dev/null
++++ b/src/render/geos/source-certificate.s
+@@ -0,0 +1,84 @@
++; Accumulate outputs alreadycomputed by actualC26, only for currentC20job.
++; It neither prefetches nor skips a source guard/query. First161 canonical
++; sourcebytes cover normal wrapped rows; positivepan beyond it safelymisses.
++style_remember:
++    sec
++.repeat 3,I
++    lda L+GL_SCAN+I
++    sbc L+GL_START+I
++    sta SC_TEMP+I
++.endrepeat
++    jcc @invalid
++    lda SC_TEMP+1
++    ora SC_TEMP+2
++    bne @return
++    lda SC_TEMP
++    cmp #161
++    bcs @return
++    cmp SC_COUNT
++    bne @first
++    lda SC_VALID
++    cmp #1
++    bne @first
++    ldx #58
++@key:
++    lda GS_FS+27,x
++    cmp SC_KEY,x
++    bne @invalid
++    dex
++    bpl @key
++    ldx #9
++@context:
++    lda GSEM_FRAME+GSEM_START,x
++    cmp SC_CONTEXT,x
++    bne @invalid
++    dex
++    bpl @context
++    jmp @copy
++@first:
++    lda SC_TEMP
++    bne @invalid
++    lda SC_VALID
++    bne @invalid
++    ldx #58
++@save_key:
++    lda GS_FS+27,x
++    sta SC_KEY,x
++    dex
++    bpl @save_key
++    ldx #2
++@save_start:
++    lda L+GL_START,x
++    sta SC_START,x
++    dex
++    bpl @save_start
++    ldx #9
++@save_context:
++    lda GSEM_FRAME+GSEM_START,x
++    sta SC_CONTEXT,x
++    dex
++    bpl @save_context
++@copy:
++    ldy SC_TEMP
++    ldx #0
++@cell:
++    lda GI_OUTPUT_STYLES,x
++    sta SC_STYLES,y
++    lda GI_OUTPUT_ROLES,x
++    sta SC_ROLES,y
++    iny
++    inx
++    cpy #161
++    beq @publish
++    cpx L+GL_PACKET_COUNT
++    bcc @cell
++@publish:
++    sty SC_COUNT
++    lda #1
++    sta SC_VALID
++@return:
++    rts
++@invalid:
++    lda #0
++    sta SC_VALID
++    rts
+--- /dev/null
++++ b/src/render/geos/certificate-consumer.s
+@@ -0,0 +1,78 @@
++.import se_fs_owned
++; Parent fullsource/FE guard alreadyprotects the currentC20map. This certificate
++; is an additional output of that exactjob, not a reusable validity-bitcache.
++style_certificate:
++    lda GP_RECORD+GPR_COUNT
++    jeq @miss
++    cmp #162
++    jcs @miss
++    lda SC_VALID
++    cmp #2
++    jne @miss
++    lda GS_ACTIVE
++    ora GS_CONTEXT_VALID
++    jne @miss
++    ldx #58
++@key:
++    lda GS_FS+27,x
++    cmp SC_KEY,x
++    jne @miss
++    dex
++    bpl @key
++    ldx #9
++@context:
++    lda GSEM_FRAME+GSEM_START,x
++    cmp SC_CONTEXT,x
++    jne @miss
++    dex
++    bpl @context
++    ldx #2
++@start:
++    lda GP_RECORD+GPR_START,x
++    cmp SC_START,x
++    jne @miss
++    dex
++    bpl @start
++    sec
++.repeat 3,I
++    lda GP_RECORD+GPR_FIRST+I
++    sbc SC_START+I
++    sta SC_TEMP+I
++.endrepeat
++    jcc @miss
++    lda SC_TEMP+1
++    ora SC_TEMP+2
++    jne @miss
++    lda SC_TEMP
++    clc
++    adc GP_RECORD+GPR_COUNT
++    jcs @miss
++    cmp SC_COUNT
++    bcc @ready
++    jne @miss
++@ready:
++    ldy SC_TEMP
++    ldx #0
++@cell:
++    lda SC_STYLES,y
++    sta GI_OUTPUT_STYLES,x
++    lda SC_ROLES,y
++    cpx #160
++    bne @ordinary
++    sta GI_OUTPUT_ROLE_LAST
++    jmp @next
++@ordinary:
++    sta GI_OUTPUT_ROLES,x
++@next:
++    iny
++    inx
++    cpx GP_RECORD+GPR_COUNT
++    bcc @cell
++    lda #0
++    sta GI_ACTIVE ;GLmap alreadypublished; samephase as normalC26publication
++    sta se_fs_owned ;inactive GL/map aliases FS: leave C26-compatible empty owner
++    clc
++    rts
++@miss:
++    sec
++    rts

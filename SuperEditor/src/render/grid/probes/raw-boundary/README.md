@@ -1,0 +1,15 @@
+# Private raw physical-row boundary correction
+
+This namespace starts from the immutable raw-wrapped release M8/20261026T074830577823Z, not mutable production. The builder first reassembles C33/R25 and requires exact released SEO bytes. No canonical/shared build, Git, native ports, hardware, new BSS/ZP/bank/asset changes.
+
+Native qualification found an actual correctness bug in the preceding release: a59-character physical row at60 columns becomes a full60-character row after insertion. Its CR moves to a separate empty physical row. BACK then removes that row. Raw short typing checked only `oldLength + editSign < width`, so deletion wrongly qualified as a one-row edit and left the following tail in the wrong place. Exact CPU public `goto3`,5×RIGHT,Q,BACK with the native fixture reproduces the same short-route1 bitmap failure; source remains exact.
+
+The correction requires **oldLength < width** before the existing raw short new-length check. The actual old canonical range comes from the checked NC row anchors; full-width old rows are never isolated short-line geometry. They now reach the existing fully checked long controller or real full-render fallback. The long controller correctly refuses the empty terminal-row deletion case. Full semantic behavior is unchanged. No row-count transformation is claimed implemented.
+
+Only source delta is `caret/helper.s` at `@raw_length`: `LDA TLEN; CMP W; JCS invalid`, followed by existing `CLC; ADC SIGN`. Actual emitted growth is8 bytes because ca65 expands the distant conditional branch. R25 is4057 bytes, C33 remains4096 and changes only its generated helper size/CRC witness; R14 remains exact released4095. C33 prefont endsBE4F, native fontBF00/tailBFD0 remain unchanged. Normal pair generation must rebuild R25 then C33. No other dependency witness changes.
+
+Release fixture: `build/grid-raw-boundary/20261026T075424568241Z/pair/fixture`; source tree `pair/tree`; exact `release/helper.patch`. Final CPU qualification is40 exact native-sequence frames across60/80 andPlain/Full,44 previously admitted wrapped/boundary frames,24 prewrite faults, and all54 actual sealed images in the staged stack graph (R23/C37/foreground52/combined68). Independent entire bitmap/attributes/source/history,22 NC packets/row CRCs/69 anchors, shim and checked whole16MiB DMA guards remain enabled. The old failing release and expected/actual failure images are preserved.
+
+Structural CR/new/removed physical-row edits still use slow full-render+capture. This correction fixes publication correctness and does not solve that cost. The `first` field in the initial local sequence receipt records the interval until the public input call returns, not the precisely instrumented first-publication time; only `instructions` is used as the full settled cost here. Native timing remains parent-owned.
+
+Reproduce: `PYTHONPATH=tests:tools python3 tests/test_grid_raw_boundary.py`. Existing raw44/fault24 and staged-stack checks are also recorded alongside this run. Next performance investigation must preserve this correction and use a separate probe/variant; the corrective release remains immutable.

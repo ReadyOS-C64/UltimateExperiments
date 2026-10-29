@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>SuperEditor · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: SuperEditor"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor" open><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html" aria-current="page">Overview and downloads</a></li><li><a href="USER_GUIDE.html">Complete user guide</a></li><li><a href="SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="BUILD.html">Build and package</a></li><li><a href="CAPACITY.html">Capacity and limits</a></li><li><a href="PERFORMANCE.html">Performance</a></li><li><a href="OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#what-works">What works</a></li><li><a href="#start-it">Start it</a></li><li><a href="#supermark-at-a-glance">SuperMark at a glance</a></li><li><a href="#guides">Guides</a></li><li><a href="#build">Build</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="supereditor">SuperEditor</h1>
+<p><img loading="lazy" decoding="async" width="320" height="200" src="screenshots/editor-40.png" alt="SuperEditor editing a diverse SuperMark document in its 40-column view"></p>
+<p><strong><a href="../downloads/SuperEditor-preview.zip">Download the SuperEditor development preview</a></strong> — the ZIP contains
+<code>SUPEREDITOR.D81</code>, a quick-start <code>README.txt</code>, exact SHA-256 sums and build
+metadata.</p>
+<p>SuperEditor is a standalone C64 editor written in 6510 assembly. It edits raw
+PETSCII using <strong>SuperMark</strong>, a Markdown-lite dialect adapted to the C64 keyboard,
+screen and color system. One document moves between native 40 columns, custom
+60/80-column bitmap text, editable proportional GEOS-font hires, and a separate
+formatted GEOS preview.</p>
+<p>This is a development preview, not yet a ReadyOS application. Performance and
+wider standalone qualification continue, but the downloadable runtime contains
+the real editor, production overlays and complete font pack—not test probes.</p>
+<h2 id="what-works">What works</h2>
+<ul>
+<li>Mixed-case PETSCII editing, insert/delete, preferred-column movement, line and
+document ends, page movement, ±40-character jumps, GOTO, literal/case-folded
+search and word navigation.</li>
+<li>Mark/selection, copy, cut, paste, grouped Undo/Redo and replacement of selected
+text.</li>
+<li>F1 Turbo-Pascal-style menus, F6 three-page help, F7 typed commands, direct
+Commodore-key shortcuts, one status row and rounded PETSCII menu borders.</li>
+<li>Color presentation for headings, emphasis, strong text, inline code, lists,
+BASIC V2 and 6502/6510 assembler. Parsing can be Plain, Markdown or Full so
+syntax work can be disabled.</li>
+<li>Soft wrap and horizontal pan without changing source bytes.</li>
+<li>Collapsible headings, fenced code blocks and nested explicit regions. Hidden
+text remains in the source and participates in selection, copy and save.</li>
+<li>D81 open, save and save-as dialogs with recovery handling for raw PETSCII SEQ
+files.</li>
+<li>Read-only formatted preview with genuine GEOS bitmap-font sizes, bold, italic,
+underline, role colors and aligned fixed-width code.</li>
+<li>Session settings for Body, H1–H6 and Code fonts, sizes, ink, paper and styles.</li>
+</ul>
+<p><img loading="lazy" decoding="async" width="320" height="200" src="screenshots/editor-80.png" alt="The same source in the 80-column view"></p>
+<p><img loading="lazy" decoding="async" width="320" height="200" src="screenshots/editor-geos.png" alt="Editable proportional GEOS-font source"></p>
+<p>See the <a href="SCREENSHOTS.html">screenshot gallery</a> for menus, multiple folds,
+formatted preview, settings, wrapping and panning.</p>
+<h2 id="start-it">Start it</h2>
+<p>The tested small-document workflow needs at least a 2 MiB REU; 16 MiB is
+recommended for larger documents and the full feature set. A 512 KiB REU is
+rejected. Attach the supplied D81 as an unpartitioned 1581 disk on device 8,
+keep it mounted for overlay/font loading, then enter:</p>
+<pre><code class="language-basic">LOAD&quot;SUPEREDITOR&quot;,8,1
+RUN
+</code></pre>
+<p>F1 opens menus, F6 opens help, F7 opens the typed command prompt and F8 cycles
+40→60→80→GEOS. CTRL-O opens a file, CTRL-S saves, F4 toggles wrapping, F2 starts
+a selection, and CBM-S opens appearance settings. Every implemented command has
+a menu or typed route for host keyboards where a physical chord is inconvenient.</p>
+<h2 id="supermark-at-a-glance">SuperMark at a glance</h2>
+<p>SuperMark keeps familiar lightweight forms while making the differences explicit:</p>
+<pre><code class="language-text"># Heading
+**strong**  *emphasis*  @@inline code@@
+- bullet
+1. numbered item
+:::basic
+10 PRINT &quot;HELLO&quot;
+:::
+:::region Collapsible notes
+Nested source remains editable and saveable.
+:::end
+</code></pre>
+<p>The native pound key is the escape introducer: <code>£*</code>, <code>£#</code>, <code>£@</code> and <code>££</code> make
+literal syntax characters where they would otherwise be controls. There are no
+backtick fences, underscore emphasis, links, images, HTML, tables, block quotes
+or JSON highlighting. Files use PETSCII bytes and CR line endings, not UTF-8.</p>
+<h2 id="guides">Guides</h2>
+<ul>
+<li><a href="USER_GUIDE.html">Complete user guide</a>: every key, command, dialog,
+SuperMark rule, folding behavior and recovery path.</li>
+<li><a href="SCREENSHOTS.html">Screenshot gallery</a>: verified captures across the editor.</li>
+<li><a href="GEOS_PREVIEW.html">GEOS preview and settings</a>: font catalog, profiles and
+C64 color-cell constraints.</li>
+<li><a href="CAPACITY.html">Capacity and tested limits</a>: REU/document boundaries.</li>
+<li><a href="PERFORMANCE.html">Performance</a> and
+<a href="OPTIMIZATION_PLAN.html">optimization plan</a>: measured costs and open work.</li>
+<li><a href="BUILD.html">Build and package</a>: prerequisites, runtime-disk allowlist and
+deterministic ZIP production.</li>
+</ul>
+<h2 id="build">Build</h2>
+<p>Building requires Python 3.11+, cc65, VICE&#39;s <code>c1541</code>, the local GEOS bitmap-font
+source media, and a C64 character ROM. The release D81 contains only the extracted
+data-only font records—metrics, glyph indexes/advances and bitmap rows—not a GEOS
+system disk, application, filesystem or executable font software.</p>
+<pre><code class="language-sh">make runtime-disk
+python3 tools/package_release.py
+</code></pre>
+<p><code>make runtime-disk</code> creates the 53-member production medium. The deterministic
+packager publishes exactly the D81, README, build metadata and checksums. See the
+<a href="BUILD.html">build guide</a> for verification and site-publication commands.</p>
+<p>Future ReadyOS lifecycle integration and UltimateDOS storage remain separate
+work. The standalone memory map preserves ReadyOS&#39;s reserved 1 KiB region so the
+editor can move toward suspend/resume integration without reclaiming it.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

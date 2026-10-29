@@ -1,0 +1,79 @@
+--- a/src/render/geos/style-typing-candidate/wide.s
++++ b/src/render/geos/style-typing-candidate/wide.s
+@@ -44,8 +44,19 @@
+     sta gt_base+1
+ @row:
+     ; One temporary byte per destination column. Source remains immutable.
+-    lda #0
+-    sta column
++    ; Copy whole unchanged prefix bytes without any bit shifts. Validation
++    ; proves xb<=nb; the boundary byte still takes the exact masked path.
++    ldy #0
++    ldx xb
++    beq @shift_begin
++@copy_prefix:
++    lda (gt_base),y
++    sta GT_TEMP,y
++    iny
++    dex
++    bne @copy_prefix
++@shift_begin:
++    sty column
+ @byte:
+     ldy column
+     lda F+GT_OP
+@@ -112,14 +123,10 @@
+     sta value
+     ; Preserve only original pixels strictly before the edit.
+     cpy xb
+-    bcc @original
+     bne @no_prefix
+     lda (gt_base),y
+     and prefix
+     bcs @prefix_ready ;carry from CPY equality is stillset
+-@original:
+-    lda (gt_base),y
+-    jmp @prefix_ready
+ @no_prefix:
+     lda #0
+ @prefix_ready:
+@@ -141,17 +148,24 @@
+     lda work
+     cpy nb
+     bcc @store
+-    bne @empty
+     and endmask
+-    jmp @store
+-@empty:
+-    lda #0
+ @store:
+     sta GT_TEMP,y
+     inc column
+     lda column
+-    cmp #40
+-    jcc @byte
++    cmp np
++    jne @byte
++    ; Unused tail is zeroed explicitly, including dirty old input-tail bits.
++    tay
++    cpy #40
++    bcs @tail_done
++    lda #0
++@clear_tail:
++    sta GT_TEMP,y
++    iny
++    cpy #40
++    bcc @clear_tail
++@tail_done:
+     ; Insert glyph isalreadygenuine/transformed, left-aligned andadvance-bounded.
+     lda F+GT_OP
+     bne @caret
+@@ -411,6 +425,8 @@
+     lsr
+     lsr
+     sta nb
++    sta np
++    inc np ;exclusive shift-loop end, at most40 after validation
+     ldx F+GT_CARET_WIDTH
+     lda lowmask,x
+     sta caretlo

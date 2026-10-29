@@ -1,0 +1,114 @@
+; Retained block-cache replacement ABI. Derived data never owns source bytes.
+.ifndef SE_BLOCK_CACHE_API
+SE_BLOCK_CACHE_API=1
+BC_ABI=1
+BC_OBJECT_TYPE=$53
+BC_COMPLETE=0
+BC_PENDING=1
+BC_MISS=2
+BC_STREAM=3
+BC_ARMED=1
+BC_LOST=2
+BC_MUTATING=4
+BC_ACTIVE=8
+; Optional full-baseline admission was tried for this document incarnation.
+; H_INIT revokes it with the incarnation; ordinary repaint must not rebuild.
+BC_REBUILD_TRIED=16
+BC_LEX_ATTEMPT=128 ;one lexical construction attempt per baseline; bit64 reserved
+BC_PAGE_PROOF=32
+BC_RING_LIMIT=3
+BC_EVENT_SIZE=32
+BC_EVENT_SPLICE=1
+BC_EVENT_REKEY=2
+BC_EVENT_NEW=3
+BC_EVENT_VALID=$A5
+BC_E_MARK=0
+BC_E_KIND=1
+BC_E_FLAGS=2
+BC_E_TICKET=4
+BC_E_REV_BEFORE=8
+BC_E_REV_AFTER=12
+BC_E_POSITION=16
+BC_E_DELETE=19
+BC_E_INSERT=22
+BC_E_GEN_BEFORE=25
+BC_E_GEN_AFTER=27
+; Event CRC covers1..28 andreserved31; excludesmarker0/CRC29..30.
+BC_E_CRC=29
+
+; Owner4 replacement workspace. Never coexist with an old FILE/style/fold/
+; GEOS job in this union. Header94 is the semantic worker's request/control.
+; Its FS identity is retained ONCE inside the checked86-byte reader context.
+BC_FRAME=$8D00
+BC_FRAME_SIZE=576
+BCF_ABI=0
+BCF_STATE=1
+BCF_ERROR=2
+BCF_FLAGS=3
+BCF_READY=4
+BCF_CAPS=5
+BCF_BUDGET=6
+BCF_ARENA=8
+BCF_INCARNATION=13
+BCF_TICKET=17
+BCF_CONTROL=21
+BCF_PARSER=94
+BCF_READER=173
+BCF_PACKET=259
+BCF_CR=291
+BCF_ARENA_CONTROL=387
+BC_ARENA_CONTROL_SIZE=61
+BCF_IO=448
+BC_IO_SIZE=128
+BC_IO=BC_FRAME+BCF_IO
+.assert BCF_PARSER+79=BCF_READER,error,"cache parser/reader overlap"
+.assert BCF_READER+86=BCF_PACKET,error,"cache reader/packet overlap"
+.assert BCF_PACKET+32=BCF_CR,error,"cache packet/CR overlap"
+.assert BCF_CR+96=BCF_ARENA_CONTROL,error,"cache CR/arena overlap"
+.assert BCF_ARENA_CONTROL+BC_ARENA_CONTROL_SIZE=BCF_IO,error,"cache arena/IO overlap"
+.assert BCF_IO+BC_IO_SIZE=BC_FRAME_SIZE,error,"cache frame extent"
+
+BC_PAGE_BYTES=4096
+BC_PAGE_HEADER=64
+BC_ROOT_SIZE=128
+BC_ROOT_A=$0000
+BC_ROOT_B=$0080
+BC_DIRECTORY=$0100
+BC_JOURNAL=$0900
+BC_JOURNAL_LIMIT=48
+BC_COUNTERS=$0F00
+BC_ROOT_MAGIC=0
+BC_ROOT_ABI=4
+BC_ROOT_VALID=5
+BC_ROOT_LENGTH=6
+BC_ROOT_TOKEN=8
+BC_ROOT_TYPE=13
+BC_ROOT_INCARNATION=14
+BC_ROOT_SEQUENCE=18
+BC_ROOT_TICKET=22
+BC_ROOT_OLDEST=26
+BC_ROOT_COUNT=30
+BC_ROOT_FLAGS=31
+BC_ROOT_SOURCE=32
+BC_ROOT_MERGED_LENGTH=91
+BC_ROOT_BLOCK_ABI=94
+BC_ROOT_INLINE_ABI=96
+BC_ROOT_LEX_ABI=98
+BC_ROOT_STRUCTURE_EPOCH=100
+BC_ROOT_LEX_EPOCH=102
+BC_ROOT_FIRST=104
+BC_ROOT_LAST=108
+BC_ROOT_RECORDS=112
+BC_ROOT_INDEX=115
+BC_ROOT_CRC=119
+BC_ROOT_RESERVED=121
+BC_PAGE_CR=1
+BC_PAGE_INLINE=2
+BC_PAGE_LEX=3
+BC_PAGE_LAYOUT=4
+BC_PAGE_MAP=5
+BC_PAGE_INDEX=6
+BC_PAGE_GLYPH=7
+.global se_bc_arena,se_bc_ticket,se_bc_incarnation,se_bc_flags
+.global se_bc_head,se_bc_tail,se_bc_count,se_bc_ring
+.endif

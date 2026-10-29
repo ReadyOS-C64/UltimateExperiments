@@ -1,0 +1,95 @@
+--- render/grid/finalize.s
++++ render/grid/finalize.s
+@@ -102,9 +102,9 @@
+     lda g_skip
+     beq :+
+     cpx #2
+-    jcc @advance
++    bcc @advance
+     cpx #24
+-    jeq @advance
++    beq @advance
+ :
+     lda #$40
+     sta screen_ptr+1
+@@ -157,7 +157,7 @@
+     lda g_backend
+     ldx #0
+     jsr se_overlay_call
+-    jcs @return
++    bcs @return
+ @advance:
+     inc g_col
+     lda g_col
+--- render/grid/preflight.s
++++ render/grid/preflight.s
+@@ -97,7 +97,7 @@
+     jne grid_stale
+ @length:
+     CMP24 g_next,se_v_length
+-    jcc @end
++    bcc @end
+     jne grid_stale
+ @end:
+     COPY24 g_next,g_end
+@@ -127,7 +127,7 @@
+     bcc @next
+     CMP24 se_hot_caret,g_end
+     bcc @found
+-    jne @next
++    bne @next
+     ; At a soft boundary, the caret belongs to the following row. A real
+     ; CR/EOF blank belongs here if there is room in this row.
+     lda se_l_mode
+@@ -135,7 +135,7 @@
+     SUB24 g_end,g_start,g_delta
+     lda g_delta+2
+     ora g_delta+1
+-    jne @next
++    bne @next
+     lda g_delta
+     cmp g_width
+     bcs @next
+@@ -176,9 +176,9 @@
+     sbc #0
+     sta se_l_pan+2
+     inc se_l_pan
+-    jne @ready
++    bne @ready
+     inc se_l_pan+1
+-    jne @ready
++    bne @ready
+     inc se_l_pan+2
+     jmp @ready
+ @left:
+@@ -215,7 +215,7 @@
+     bcc @copy
+     lda g_row
+     cmp #21
+-    jne @ready
++    bne @ready
+     lda se_ef_valid
+     bne @ready
+     COPY24 se_v_bottom,g_next
+--- render/grid/source.s
++++ render/grid/source.s
+@@ -204,7 +204,7 @@
+     sta G_NR+NR_ROW
+     lda #GRID_ROW
+     jsr grid_call
+-    jcs grid_return
++    bcs grid_return
+     lda g_row
+     clc
+     adc #2
+--- render/grid/mode.s
++++ render/grid/mode.s
+@@ -224,7 +224,7 @@
+ presentation:
+     lda se_mode
+     cmp #3
+-    jne unavailable
++    bne unavailable
+     lda se_r_presentation
+     eor #1
+     jmp set_presentation

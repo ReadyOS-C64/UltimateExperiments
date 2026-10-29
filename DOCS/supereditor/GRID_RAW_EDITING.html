@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Plain 60/80-column editing · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Plain 60/80-column editing"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor" open><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="USER_GUIDE.html">Complete user guide</a></li><li><a href="SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="BUILD.html">Build and package</a></li><li><a href="CAPACITY.html">Capacity and limits</a></li><li><a href="PERFORMANCE.html">Performance</a></li><li><a href="OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#measured-pal-work">Measured PAL work</a></li><li><a href="#qualification">Qualification</a></li><li><a href="#normal-role80-column-raster">Normal-role80-column raster</a></li><li><a href="#empty-cr-physical-row-insertionremoval">Empty-CR physical-row insertion/removal</a></li><li><a href="#return-at-a-short-lines-end">Return at a short line's end</a></li><li><a href="#native-row-input-setup">Native-row input setup</a></li><li><a href="#plain-return-splits-and-back-merges">Plain Return splits and BACK merges</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="GRID_RAW_EDITING.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="plain-6080-column-editing">Plain 60/80-column editing</h1>
+<p><code>syntax plain</code> now uses the checked grid packets for caret movement and local
+typing without first loading semantic parsers. This changes three existing
+capsules: C33 <code>grid</code>, R25 <code>geostail</code>, and R14 <code>viewsource</code>. That checkpoint kept
+the resident, allocations, zero page and ReadyOS reservation unchanged. The
+subsequent lexical-cache registration brings the catalogue to59 entries.</p>
+<p>NC header byte253 records the exact presentation preset under the existing
+CCITT checksum. Every consumer compares it. Plain typing checks source objects,
+window/revision/caret deltas, exact old-to-new bytes, packet CRCs, row ownership,
+fonts and REU capabilities. It never manufactures an SP2 semantic certificate,
+publishes a semantic descriptor or marks parsing valid. Markdown and Full retain
+their semantic checks and exact helper witnesses.</p>
+<p>Short edits require both old and new row lengths below the column width. Wrapped
+edits can carry pixels across existing rows only after validating the complete
+affected source and packets. Before writing pixels, a real checked R14 admission
+authenticates its pixel worker. Its owner4 operation6 is a no-op used to complete
+that admission; operation7 performs the existing pixel carry. Four assembler-
+checked short branches fund the new entry without removing validation.</p>
+<p>The short-row old-length check is essential: inserting into a width-minus-one
+line can create a separate CR row. Deleting the inserted byte must remove that
+physical row. An earlier candidate checked only the new length and left stale
+following pixels. The native test reproduces this sequence in both widths; the
+corrected build uses the full renderer for this geometry change.</p>
+<h2 id="measured-pal-work">Measured PAL work</h2>
+<p>These are VICE CPU cycles through settled foreground idle, with IRQ/VIC/REU
+stalls included. Setup uses real ROM File/Open and IRQ commands. The stopwatch
+uses an explicit PC/SP/public-input entry seam, so these are not measurements
+of physical keyboard latency. Warp and drive traps are enabled for development.</p>
+<table>
+<thead>
+<tr>
+<th>Plain operation</th>
+<th align="right">Previous</th>
+<th align="right">Current</th>
+<th align="right">Current overlay loads</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>60-column Right</td>
+<td align="right">871,683</td>
+<td align="right">133,289</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td>80-column Right</td>
+<td align="right">792,692</td>
+<td align="right">137,911</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td>60-column short-space insertion</td>
+<td align="right">997,820</td>
+<td align="right">371,328</td>
+<td align="right">4</td>
+</tr>
+<tr>
+<td>80-column short-space insertion</td>
+<td align="right">931,728</td>
+<td align="right">255,659</td>
+<td align="right">4</td>
+</tr>
+<tr>
+<td>60-column first wrapped-quote insertion</td>
+<td align="right">1,435,327</td>
+<td align="right">692,236</td>
+<td align="right">4</td>
+</tr>
+<tr>
+<td>80-column first wrapped-quote insertion</td>
+<td align="right">1,029,577</td>
+<td align="right">364,769</td>
+<td align="right">4</td>
+</tr>
+</tbody></table>
+<p>Structural edits still have a material regression because their completed full
+paint is followed by the 22-packet capture:</p>
+<table>
+<thead>
+<tr>
+<th>Plain fallback</th>
+<th align="right">Previous settled</th>
+<th align="right">Current first publication</th>
+<th align="right">Current settled</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>60-column insertion adding a row</td>
+<td align="right">1,428,082</td>
+<td align="right">1,523,967</td>
+<td align="right">2,046,346</td>
+</tr>
+<tr>
+<td>80-column insertion adding a row</td>
+<td align="right">1,125,862</td>
+<td align="right">1,221,684</td>
+<td align="right">1,740,134</td>
+</tr>
+<tr>
+<td>60-column CR insertion</td>
+<td align="right">2,094,539</td>
+<td align="right">2,243,720</td>
+<td align="right">2,760,409</td>
+</tr>
+<tr>
+<td>80-column CR insertion</td>
+<td align="right">1,538,007</td>
+<td align="right">1,691,286</td>
+<td align="right">2,205,244</td>
+</tr>
+</tbody></table>
+<p>The current capture implementation reduces the extra settled work from roughly
+0.52 million to0.30 million PAL cycles. It expands full CRC lookup tables once
+and reuses the already admitted R25 during one exclusive capture. Every helper
+still checks its actual owner/operation; no executable image is patched. Both
+pending redraw and drawbusy refuse before any borrowed scratch is initialized.</p>
+<p>The lookup tables alias retained line-index storage. Capture now revokes all
+three index/cache authority fields before writing there. The first native
+mode60→80/GOTO2 test exposed a <code>$7B</code> error when that invalidation was missing.
+Both mode directions, real File/Open, and GOTO above64KiB now pass.</p>
+<table>
+<thead>
+<tr>
+<th>Current fallback</th>
+<th align="right">First publication</th>
+<th align="right">Settled PAL cycles</th>
+<th align="right">Loads</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>60-column insertion adding a row</td>
+<td align="right">1,524,117</td>
+<td align="right">1,828,709</td>
+<td align="right">9</td>
+</tr>
+<tr>
+<td>80-column insertion adding a row</td>
+<td align="right">1,221,519</td>
+<td align="right">1,525,607</td>
+<td align="right">9</td>
+</tr>
+<tr>
+<td>60-column CR insertion</td>
+<td align="right">2,243,693</td>
+<td align="right">2,546,706</td>
+<td align="right">9</td>
+</tr>
+<tr>
+<td>80-column CR insertion</td>
+<td align="right">1,691,372</td>
+<td align="right">1,994,023</td>
+<td align="right">9</td>
+</tr>
+</tbody></table>
+<p>Handling changed geometry efficiently remains open. Full GEOS source repaint is
+still10,155,510 PAL cycles on the diverse fixture. This does not meet the
+normal-C64 performance targets.</p>
+<h2 id="qualification">Qualification</h2>
+<p>The canonical build passes the five editor/cache cases, the exact public
+insert/delete sequence in Plain and Full at both widths, the existing wrapped
+and prewrite-fault suites, and the unchanged 68-byte staged stack bound. The
+paired private proofs also retain CRC, foreign-owner, stale-capability,
+mixed-helper-generation, NUL and source positions above64KiB coverage.</p>
+<p>Native qualification includes20 typing/fallback frames,16 Plain/Full caret
+frames,11 source/settings/preview frames and6 controlled lifecycle frames.
+All53 were directly reviewed and independently checked against VIC pixels.
+All20 corrected typing screenshots are byte-identical to the previous control.
+Lifecycle testing includes resumed editing, Undo, SaveAs and reopen through the
+existing standalone adapter; it is not ReadyOS suspend/resume integration.</p>
+<p>The59-overlay integration repeats the20 typing,16 caret and11 presentation
+frames; all47 were inspected. The20 typing screenshots remain byte-identical to
+the earlier54-overlay control. Additional tests cover partially visible GEOS
+carets, native lexical reuse, the phase/index regression, all256 CRC table words,
+132 packet checks and a70,002-byte document on a1MiB REU. The unchanged68-byte
+stack bound includes the new finite lexical dispatch tables and admitted R25
+capture calls. None of these checks closes the remaining structural-edit cost.</p>
+<h2 id="normal-role80-column-raster">Normal-role80-column raster</h2>
+<p>R16 now proves an all-normal effective-role row before skipping tile color
+arbitration. Original glyph/flag conversion and mixed-role arbitration remain.
+NativePAL short insert/BACK improve about11.4% with identical pixels and the
+same four overlay loads; the separate wrapped shift route is unchanged.
+No resident/BSS/ZP/font growth occurs; R25/C33 are rebuilt against the actual
+new R16 CRC. See <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/SuperEditor/src/render/grid/probes/normal-row80/README.html">the proof and limitations</a>.</p>
+<h2 id="empty-cr-physical-row-insertionremoval">Empty-CR physical-row insertion/removal</h2>
+<p>Plain60/80 ordinary insertion/BACK can now move a validated body suffix when
+wrapping adds/removes an empty CR physical row. Existing R24 operations preserve
+source/header/packet/provider authority, complete packets/anchors/CRbits and
+final R25 publication. NativePAL cases improve43.9–57.5% with identical images.
+Unknown offscreen exposure still falls back. Return-key split/merge now has
+the separate checked R29 path described below. See the
+<a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/SuperEditor/src/render/grid/geometry/README.html">geometry contract and measured limits</a>.</p>
+<h2 id="return-at-a-short-lines-end">Return at a short line&#39;s end</h2>
+<p>The long-row validator now authenticates an inserted byte before testing the
+old row&#39;s terminal bound. Previously a Return exactly at that bound could be
+mistaken for the original CR: source bytes were correct, but the following rows
+stayed at their old screen positions. The terminal CR now reaches the existing
+structural-edit admission; ordinary terminal glyphs still use the validated path.
+Deletion checks its old-byte bound before reading. No CRC, provider or source
+guard is removed. See the <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/SuperEditor/src/render/grid/probes/row-geometry-extend/cr/TERMINAL.html">isolated regression</a>.</p>
+<h2 id="native-row-input-setup">Native-row input setup</h2>
+<p>C33 initializes the complete19-byte native-row input descriptor from a constant
+template, then sets the current width/count and physical row. It leaves the
+renderer-owned49-byte scratch area to the worker. This recovers40 code/data
+bytes without extra overlay calls or changing either native renderer. Both
+widths pass544 glyph/role/flag vectors (1088 calls) with zero versus nonzero
+scratch, identical independent pixels/attributes and instruction counts.
+Registered edit/fault, stack and native60/80 typing checks also pass. This is
+space recovery for further rendering work, not a structural-edit speed claim.</p>
+<h2 id="plain-return-splits-and-back-merges">Plain Return splits and BACK merges</h2>
+<p>R29 now validates the complete visible logical paragraph against the genuine
+pending source, stages candidate rows, and paints only rows whose full240-byte
+packets differ. It copies/authenticates the real narrow font once and uses a
+local role0 blitter, reducing loads9→4. R25 still performs the final source/
+revision/CRC VALID-last commit. Selected, folded, styled, panned and incomplete
+offscreen scopes retain the existing renderer. See the <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/SuperEditor/src/render/grid/cr/README.html">phase, authority and
+build contract</a> and <a href="PERFORMANCE.html">paired native timings</a>.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

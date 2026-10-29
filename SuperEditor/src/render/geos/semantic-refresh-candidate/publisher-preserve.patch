@@ -1,0 +1,13 @@
+--- released-consumer/publish.inc
++++ private-refresh/publish.inc
+@@ -46,6 +46,10 @@
+  jsr gsc_record_write
+  jmp @skip
+ @invalidate_previous:
++ lda se_v_top
++ ora se_v_top+1
++ ora se_v_top+2
++ bne @skip
+  lda #0
+  jsr gsc_valid_write
+ @skip:

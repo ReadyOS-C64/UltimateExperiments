@@ -6,6 +6,7 @@ on:
       - 'DOCS/**'
       - '8088DOS64ultimate/**'
       - 'ReadyFS/**'
+      - 'SuperEditor/**'
       - 'ReuSQL64/**'
       - 'C77Cyberpunk77/**'
       - 'tools/**'

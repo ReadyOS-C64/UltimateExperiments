@@ -1,0 +1,249 @@
+--- a/src/render/geos/inline.s
++++ b/src/render/geos/inline.s
+@@ -25,6 +25,8 @@
+  cmp #4
+  jne busy
+  lda se_overlay_frame
++ cmp #GI_BEGIN_WIDE
++ jeq begin_wide
+  cmp #GI_SOURCE_BEGIN
+  jeq source_begin
+  cmp #GI_BEGIN
+@@ -111,13 +113,24 @@
+  beq begin_common
+ source_begin:
+  ldx #1
++ bne begin_common
++begin_wide:
++ ldx #2
+ begin_common:
+  lda GS_ACTIVE
+  ora GS_CONTEXT_VALID
+  jne busy
+  lda F+GSEM_COUNT
++ cpx #2
++ bne @ordinary_count
++ cmp #161
++ jne argument
++ ldx #0 ;WIDE completion returns to its caller, never SOURCE_BEGIN handoff
++ beq @count_ready
++@ordinary_count:
+  cmp #161
+  jcs argument
++@count_ready:
+  lda F+GSEM_ROLE
+  cmp #14
+  jcs argument
+@@ -129,6 +142,9 @@
+  sta GI_CONTROL,x
+  dex
+  bpl @clear
++ sta GI_LAST_HIDDEN
++ sta GI_LAST_STYLE
++ sta GI_LAST_ROLE
+  pla
+  sta GI_SOURCE_RETURN
+  lda #0
+@@ -189,16 +205,24 @@
+  jmp pending
+ initialize:
+  ldx GI_PAINT
++ cpx #160
++ beq @last
+  cpx GI_COUNT
+  bcs @next
+  lda #0
+  sta GI_STYLES,x
+  lda GI_BASE
+  sta GI_ROLES,x
++ jmp @next
++@last:
++ lda #0
++ sta GI_LAST_STYLE
++ lda GI_BASE
++ sta GI_LAST_ROLE
+ @next:
+  inc GI_PAINT
+  lda GI_PAINT
+- cmp #160
++ cmp #161
+  beq @scan
+  dec GI_BUDGET
+  bne initialize
+@@ -298,6 +322,21 @@
+  jmp pending
+ paint:
+  ldx GI_PAINT
++ cpx #160
++ bne @ordinary
++ lda GI_STYLE
++ bmi @last_code
++ lda GI_LAST_STYLE
++ bmi @next
++ ora GI_STYLE
++ sta GI_LAST_STYLE
++ jmp @next
++@last_code:
++ sta GI_LAST_STYLE
++ lda #4
++ sta GI_LAST_ROLE
++ jmp @next
++@ordinary:
+  lda GI_STYLE
+  bmi @code
+  lda GI_STYLES,x
+@@ -332,11 +371,21 @@
+  jmp pending
+ publish:
+  ldx GI_PAINT
++ cpx #160
++ bne @ordinary
++ lda GI_LAST_STYLE
++ and #3
++ sta GI_OUTPUT_STYLES+160
++ lda GI_LAST_ROLE
++ sta GI_OUTPUT_ROLE_LAST
++ jmp @next
++@ordinary:
+  lda GI_STYLES,x
+  and #3
+  sta GI_OUTPUT_STYLES,x
+  lda GI_ROLES,x
+  sta GI_OUTPUT_ROLES,x
++@next:
+  inc GI_PAINT
+  lda GI_PAINT
+  cmp GI_COUNT
+@@ -356,7 +405,13 @@
+  jmp pending
+ publish_hidden:
+  ldx GI_PAINT
++ cpx #20
++ bne @ordinary
++ lda GI_LAST_HIDDEN
++ jmp @store
++@ordinary:
+  lda GI_HIDDEN,x
++@store:
+  sta GI_OUTPUT_HIDDEN,x
+  inc GI_PAINT
+  lda GI_PAINT
+@@ -405,6 +460,12 @@
+  lsr
+  tax
+  lda hidden_bits,y
++ cpx #20
++ bne @ordinary
++ ora GI_LAST_HIDDEN
++ sta GI_LAST_HIDDEN
++ jmp @next
++@ordinary:
+  ora GI_HIDDEN,x
+  sta GI_HIDDEN,x
+ @next:
+@@ -415,7 +476,7 @@
+  inc GI_HIDE_POS+2
+ :
+  dec GI_HIDE_LEFT
+- bne @byte
++ jne @byte
+  rts
+ hidden_bits:
+  .byte $80,$40,$20,$10,$08,$04,$02,$01
+--- a/src/render/geos/inline.inc
++++ b/src/render/geos/inline.inc
+@@ -4,6 +4,7 @@
+ GI_BEGIN=0
+ GI_STEP=1
+ GI_CANCEL=2
++GI_BEGIN_WIDE=4             ;exact161 query; append-role ABI requires matching C21
+ GI_SOURCE_BEGIN=3           ;finish requests C20/STEP1 and returnsA1 after END
+ GI_PARSER=$8D00             ;68B unchanged actual SuperMark inline state
+ GI_STYLES=$8D44             ;160B private; bit7=exclusive proven inline code
+@@ -40,7 +41,11 @@
+ GI_OUTPUT_STYLES=$8300
+ GI_OUTPUT_ROLES=$8F36       ;160B after FS, safe across parent cache/DOC guards
+ GI_OUTPUT_HIDDEN=$8FD6      ;20B: QUERY+i -> byte i/8, bit$80>>(i&7)
+-GI_HIDDEN_BYTES=20
++GI_HIDDEN_BYTES=21
++GI_LAST_HIDDEN=GI_CONTROL+67
++GI_LAST_STYLE=GI_CONTROL+68
++GI_LAST_ROLE=GI_CONTROL+69
++GI_OUTPUT_ROLE_LAST=GI_OUTPUT_HIDDEN+GI_HIDDEN_BYTES ;8FEB, separate161strole
+ GI_STATE_END=$8EE0
+ ; Owner4 only. Read-only entireGSEM8B40..8BFF and visible packet8200..829F.
+ ; Inputs GSEM QUERY0/count4/START9/END12/BODY15/baseROLE18. QUERY may precede
+@@ -52,7 +57,10 @@
+ ; Hidden mask marks only matched PAIR opener/closer widths and confirmed ESCAPE
+ ; pound introducer. Escaped character remains visible; unmatched markers stay
+ ; literal. Actual parser code exclusivity applies. Styles/roles are unchanged.
+-; All20 mask bytes are published; bits at/after COUNT are zero, including COUNT0.
++; All21 mask bytes are published; bits at/after COUNT are zero. Old0/3 max160.
++; WIDE4 accepts exactly161; styles stay contiguous8300..83A0, first160 roles
++; stay8F36..8FD5, roleindex160 publishes separately atGI_OUTPUT_ROLE_LAST.
++; Existing control/arrays and first20hidden bytes preserve their addresses.
+ ; A1pending/A0complete/Cseterror. Each STEP <=32 feeds or32 initialize/paint/
+ ; publish cells and <=one32B R14 READ. Source lease/snapshot uses existing
+ ; GSFS9040/flags912C/D; resident cleanup remains safe if C26 is unavailable.
+@@ -68,7 +76,7 @@
+ .assert GI_STYLES-GI_PARSER=68,error,"inline parser placement changed"
+ .assert GI_ROLES-GI_STYLES=160,error,"inline style extent changed"
+ .assert GI_CONTROL-GI_ROLES=160,error,"inline role extent changed"
+-.assert GI_HIDE_LEFT<GI_STATE_END,error,"inline private context overlaps reader"
++.assert GI_LAST_ROLE<GI_STATE_END,error,"inline private context overlaps reader"
+ .assert GI_OUTPUT_ROLES+160=GI_OUTPUT_HIDDEN,error,"inline hidden mask placement"
+ .assert GI_OUTPUT_HIDDEN+GI_HIDDEN_BYTES<=$9040,error,"inline hidden mask overlaps saved source"
+ .endif
+--- a/src/render/geos/page.s
++++ b/src/render/geos/page.s
+@@ -578,6 +578,11 @@
+     sta PS
+     lda #GI_ID
+     ldx #GI_BEGIN
++    ldy GP_RECORD+GPR_COUNT
++    cpy #161
++    bne :+
++    ldx #GI_BEGIN_WIDE
++:
+     jmp request
+ @plain_roles:
+     lda GSEM_FRAME+GSEM_ROLE
+@@ -623,6 +628,12 @@
+     jsr field
+     jsr se_gp_cache_write
+     jcs failed
++    lda GP_RECORD+GPR_COUNT
++    cmp #161
++    bne :+
++    lda #160
++:
++    sta GP_IO_LENGTH
+     lda #<GI_OUTPUT_ROLES
+     sta GP_IO_POINTER
+     lda #>GI_OUTPUT_ROLES
+@@ -632,6 +643,25 @@
+     inc GP_IO_OFFSET+1
+     jsr se_gp_cache_write
+     jcs failed
++    lda GP_RECORD+GPR_COUNT
++    cmp #161
++    bne @complete
++    lda #1
++    sta GP_IO_LENGTH
++    lda #<GI_OUTPUT_ROLE_LAST
++    sta GP_IO_POINTER
++    lda #>GI_OUTPUT_ROLE_LAST
++    sta GP_IO_POINTER+1
++    clc
++    lda GP_IO_OFFSET
++    adc #160
++    sta GP_IO_OFFSET
++    bcc :+
++    inc GP_IO_OFFSET+1
++:
++    jsr se_gp_cache_write
++    jcs failed
++@complete:
+     jmp begin_maps
+ write_roles:
+     lda GP_RECORD+GPR_COUNT

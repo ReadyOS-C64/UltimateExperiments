@@ -1,0 +1,15 @@
+# Private early heading-wrap refusal (R28 4095)
+
+Baseline is released3928 row-backup-removal source, kept unchanged. This adds167 bytes, no BSS/ZP/state. Full existing ADMIT/real C24+C20 row rebuild/VERIFY/REBASE/paint remains authoritative. No acceptance shortcut: helper A0 continues every old check, A2 only declines the optimization, Cset propagates checked failures.
+
+Necessary conditions: actual class4 heading-body INSERT; old complete logical row (existing source/key/capability/generation/row/prefix/CR/EOF and caret guards); old INLINE0. C24's INLINE is presence of any '*' or '@' anywhere in the complete logical event, including unmatched/escaped runs. Thus an inserted alnum strictly after the proven unchanged1..6hash+space prefix cannot split/activate any emphasis/strong/code delimiter or change block class. Literal GEOS always uses fixed BSW9; runtime fontsettings affect only separate formatted preview.
+
+The embedded62 advances are exact current BSW9 metadata (hash in width-source.json). Actual resident PETSCII→screen conversion selects26 lowercase,26 uppercase,10 digits. Unsupported/high graphics retain old path. Compute full cached TAIL_X+new plain advance with carry; only strict>320 is considered. Equality320 continues old VERIFY. Before refusing, read the full old styles field through checked FE DMA and prove every byte0. Nonzero styles continue old path even if INLINE was corrupted0. Early refusal happens before row/header staging and performs zero REU/VRAM writes.
+
+Why no guessed old-width lower bound: no-inline ensures no delimiter-grammar change; styles0 ensures no old bold/italic advance can shrink. Existing unchanged headingprefix ensures block class remains heading; actual C24 still validates any admitted row. CR insertion/deletion, BACK, other classes, any inline markers, unsupported glyphs, selection/fold/pan/provider mismatch never use this refusal.
+
+Helper call relies only on documented A0/Zset continue, A2/Zclear refuse and Cset error. Lowercase index subtraction relies on Cclear from CMP27 and actual class4 alnum proof excludes screen0. The zero-field reader returns exactlyA0(allzero) orA2(nonzero), so EOR2 maps to optional-refusal result; checked errors branch before EOR.
+
+CPU tests:72 A/B fullrenderer/canonical/allanchors/pixel/attrs/16MiB cases; all72 PNG pairs identical, including >64KiB/inline/pending/folds/metadata faults. Dedicated136 actual C6→public R28 ADMIT cases cover all62 glyphs at overflow and exact320; unmatched-run activation, escaped markers, closed bold/italic, malformed styles/INLINE, palette and highgraphics. Every refusal writes zero REU/VRAM; other cases explicitly preserve original admission/VERIFY. Six STOP/missingworker + four source/cache faults with Undo/Redo12 frames; original15/forward37/back35 pass.
+
+New-wrap render1,928,045→1,825,828 instructions and34→28loads. Positive heading edit adds53 instructions; BACK adds12; otherclasses pay only the measured short helper guard when reached (exact per-case costs retained). These are actual CPU counts, not inferred native cycles. No canonical/sharedbuild changes.

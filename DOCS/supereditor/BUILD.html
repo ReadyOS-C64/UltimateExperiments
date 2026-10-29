@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Build SuperEditor · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Build SuperEditor"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor" open><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="USER_GUIDE.html">Complete user guide</a></li><li><a href="SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="BUILD.html" aria-current="page">Build and package</a></li><li><a href="CAPACITY.html">Capacity and limits</a></li><li><a href="PERFORMANCE.html">Performance</a></li><li><a href="OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#prerequisites">Prerequisites</a></li><li><a href="#build-the-runtime-disk">Build the runtime disk</a></li><li><a href="#verify-and-package">Verify and package</a></li><li><a href="#start-the-build">Start the build</a></li><li><a href="#documentation-site">Documentation site</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="BUILD.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="build-supereditor">Build SuperEditor</h1>
+<p>The downloadable preview is a standalone D81 assembled from the same production
+editor, overlay capsules and data-only bitmap-font pack used by development.
+Probe programs, malformed test images, logs and agent working records are not
+part of the runtime disk or release ZIP.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Python 3.11 or newer</li>
+<li>cc65 (<code>ca65</code> and <code>ld65</code>)</li>
+<li>VICE&#39;s <code>c1541</code></li>
+<li>local GEOS font source media used by <code>tools/geos_font_catalog.py</code></li>
+<li>a C64 character ROM, selectable with <code>C64_CHARGEN</code></li>
+</ul>
+<p>Native integration tests additionally use .NET 8 and the repository&#39;s VICE UI
+automation harness. CPU-level tests use the configured Peddle source tree.</p>
+<h2 id="build-the-runtime-disk">Build the runtime disk</h2>
+<p>From <code>SuperEditor/</code>:</p>
+<pre><code class="language-sh">make runtime-disk
+</code></pre>
+<p>The result is <code>build/supereditor-runtime.d81</code>. It contains <code>SUPEREDITOR</code>, the
+registered runtime capsules, and <code>GEOSFONTS</code>. The font member contains only
+bounded metrics, glyph indexes/advances and bitmap rows in the project&#39;s <code>GFC1</code>
+container. It does not contain a GEOS system disk, filesystem or executable
+font-rendering code.</p>
+<p>The development command <code>make disk</code> creates <code>build/supereditor.d81</code>; that image
+may include diagnostic programs and is not the published download.</p>
+<h2 id="verify-and-package">Verify and package</h2>
+<p>The runtime-package test rebuilds the exact member allowlist, checks every D81
+member against its source, proves no-op behavior and exercises rollback:</p>
+<pre><code class="language-sh">python3 tests/test_runtime_package.py --fixture path/to/frozen/editor/fixture
+python3 tools/package_release.py
+</code></pre>
+<p><code>package_release.py</code> requires a qualified runtime disk and its content proof. It
+creates <code>releases/SuperEditor-preview.zip</code> with exactly:</p>
+<ul>
+<li><code>SUPEREDITOR.D81</code></li>
+<li><code>README.txt</code></li>
+<li><code>BUILD.json</code></li>
+<li><code>SHA256SUMS</code></li>
+</ul>
+<p>The ZIP is deterministic for identical input bytes and verifies every member
+after writing. The repository documentation build copies this exact archive to
+the GitHub Pages download directory and checks byte equality.</p>
+<h2 id="start-the-build">Start the build</h2>
+<p>Mount the runtime D81 as an unpartitioned 1581 disk on device 8, enable the REU,
+and enter:</p>
+<pre><code class="language-basic">LOAD&quot;SUPEREDITOR&quot;,8,1
+RUN
+</code></pre>
+<p>Keep the D81 mounted while editing because overlays and fonts are loaded from
+it. Two MiB supports the tested small-document workflow; 16 MiB is recommended
+for large documents and the full feature set. A 512 KiB REU is rejected.</p>
+<h2 id="documentation-site">Documentation site</h2>
+<p>From the repository root:</p>
+<pre><code class="language-sh">npm ci
+npm run build:docs
+npm run check:docs
+python3 tools/audit_public.py
+</code></pre>
+<p>The Pages workflow performs the same build and validation before publishing
+<code>DOCS/</code>.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

@@ -1,0 +1,33 @@
+/build/
+**/build/
+/logs/
+/tools/automation/bin/
+/tools/automation/obj/
+/assets/fonts/generated/
+
+# Generated binaries/listings can also be emitted by disposable probes.
+*.o
+*.prg
+*.bin
+*.d64
+*.d81
+*.lst
+*.lbl
+*.map
+
+# Local research downloads and machine-specific reports.
+/probes/empty_seq/vdrive-iec-3.10.c.txt
+/probes/empty_seq/homebrew-vice.json
+
+# Generated qualification receipts stay with ignored execution evidence.
+/src/**/release.json
+/src/**/measurement.json
+/src/**/input.json
+/src/**/inputs.json
+/src/**/short-branches.json
+/src/**/producer-short-branches.json
+/src/**/read-branch-island.json
+/src/**/width-source.json
+
+# Local post-promotion comparison receipts; qualified assembler source is kept.
+/src/render/geos/cache-outgoing-candidate/*.s.patch

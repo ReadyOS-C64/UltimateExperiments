@@ -1,0 +1,67 @@
+--- a/src/render/geos/literal-byte/row.s
++++ b/src/render/geos/literal-byte/row.s
+@@ -237,6 +237,25 @@
+     sta inkhi
+     lda G+GG_INK+1,y
+     sta inklo
++    ora inkhi
++    ora flags ;only plain empty ink may skip coverage; inverse is conservative
++    bne @draw_y
++@skip_y:
++    inc gy
++    lda gy
++    cmp #9
++    jcc @glyph_y
++    clc
++    lda xpos
++    adc G+GG_ADVANCE
++    sta xpos
++    bcc :+
++    inc xpos+1
++:
++    inc index
++    jsr boundary
++    jmp next_glyph
++@draw_y:
+     lda xpos
+     sta pixel
+     lda xpos+1
+@@ -268,7 +287,7 @@
+     jmp @address_ready
+ @slow_address:
+     jsr clipped_right
+-    bcs @skip_y
++    jcs @skip_y
+     jsr pixel_address
+ @address_ready:
+     jsr histogram_address
+@@ -311,27 +330,12 @@
+     inc gx
+     lda gx
+     cmp G+GG_ADVANCE
+-    bcs @skip_y
++    jcs @skip_y
+     jsr next_pixel
+     jsr clipped_right
+-    bcs @skip_y
++    jcs @skip_y
+     jsr raster_next
+     jmp @glyph_x
+-@skip_y:
+-    inc gy
+-    lda gy
+-    cmp #9
+-    jcc @glyph_y
+-    clc
+-    lda xpos
+-    adc G+GG_ADVANCE
+-    sta xpos
+-    bcc :+
+-    inc xpos+1
+-:
+-    inc index
+-    jsr boundary
+-    jmp next_glyph
+ run_done:
+     lda desc
+     sta se_gg_pointer

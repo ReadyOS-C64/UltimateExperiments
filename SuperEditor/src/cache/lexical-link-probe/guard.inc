@@ -1,0 +1,37 @@
+link_guard:
+
+ lda LX_LIVE
+ cmp #1
+ jne bca_stale
+ lda LX_READER+7
+ and LX_READER+8
+ cmp #1
+ jne bca_stale
+ lda se_doc_read_locks
+ jeq bca_stale
+ EQ LX_AUTH,se_bc_arena,13
+ lda se_bc_flags
+ and #(BC_ARMED|BC_LOST|BC_MUTATING|BC_ACTIVE)
+ cmp #BC_ARMED
+ jne bca_stale
+ lda se_bc_count
+ jne bca_stale
+ FS_FIELDS LIVE
+ lda se_doc_busy
+ ora se_h_phase
+ ora se_b_phase
+ ora se_clip_busy
+ ora se_snapshot_busy
+ jne bca_stale
+ jsr se_doc_validate
+ jcs link_return
+ CP se_doc_meta,se_object_id,5
+ jsr se_object_validate
+ jcs link_return
+ CP se_doc_original,se_object_id,5
+ jsr se_object_validate
+ jcs link_return
+ CP se_doc_append,se_object_id,5
+ jsr se_object_validate
+ jcs link_return
+ jmp bca_guard

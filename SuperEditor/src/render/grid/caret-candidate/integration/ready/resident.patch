@@ -1,0 +1,134 @@
+--- a/src/editor/main.s
++++ b/src/editor/main.s
+@@ -179,6 +179,19 @@
+     bne :+
+     jmp se_geos_render ;bounded page job, never the source-grid layout path
+ :
++    tax
++    beq @ordinary
++    lda #1
++    sta se_overlay_frame
++    lda #33
++    ldx #1
++    jsr se_overlay_call
++    bcs @ordinary
++    tax
++    bne @ordinary
++    sta se_e_redraw
++    jmp se_er_publish_only
++@ordinary:
+     jsr se_layout_prepare
+     bcs se_editor_render_failed
+     cmp #0
+@@ -237,6 +250,20 @@
+     bcs se_editor_render_failed
+ .export se_er_published
+ se_er_published:
++    jsr se_er_publish_only
++    ldx se_mode
++    beq @done
++    cpx #3
++    bcs @done
++    sta se_overlay_frame
++    lda #33
++    ldx #1
++    jsr se_overlay_call
++@done:
++    lda #0
++    clc
++    rts
++se_er_publish_only:
+     inc se_e_draw_sequence
+     bne :+
+     inc se_e_draw_sequence+1
+--- a/src/editor/startup.s
++++ b/src/editor/startup.s
+@@ -104,7 +104,7 @@
+     tax
+     bcs asset_failed
+     inx
+-    cpx #47
++    cpx #48
+     bcc @asset
+     jsr se_editor_fonts_import
+     bcs failed
+@@ -172,7 +172,7 @@
+ file41: .byte $47,$45,$4F,$53,$44,$45,$4C,$54,$41 ;GEOSDELTA
+ .segment "COLD"
+ .ifdef EDITOR_MANAGED_CODE
+-failure_hint: .asciiz "Disk / REU?"
++failure_hint: .asciiz "Disk/REU?"
+ .else
+ failure_hint: .asciiz "Check disk and REU."
+ .endif
+@@ -180,10 +180,11 @@
+ file43: .byte $47,$54,$59,$50,$45 ;GTYPE
+ file44: .byte $43,$4F,$44,$45 ;CODE
+ file45: .byte $43,$4C,$45,$58 ;CLEX
++file47=file15 ;GRID shares the existing GRIDEDIT prefix
+ file46=file43+1 ;TYPE shares the suffix of GTYPE, saving cold filename bytes
+-file_low: .byte <file0,<file1,<file2,<file3,<file4,<file5,<file6,<file7,<file8,<file9,<file10,<file11,<file12,<file13,<file14,<file15,<file16,<file17,<file18,<file19,<file20,<file21,<file22,<file23,<file24,<file25,<file26,<file27,<file28,<file29,<file30,<file31,<file32,<file33,<file34,<file35,<file36,<file37,<file38,<file39,<file40,<file41,<file42,<file43,<file44,<file45,<file46
+-file_high: .byte >file0,>file1,>file2,>file3,>file4,>file5,>file6,>file7,>file8,>file9,>file10,>file11,>file12,>file13,>file14,>file15,>file16,>file17,>file18,>file19,>file20,>file21,>file22,>file23,>file24,>file25,>file26,>file27,>file28,>file29,>file30,>file31,>file32,>file33,>file34,>file35,>file36,>file37,>file38,>file39,>file40,>file41,>file42,>file43,>file44,>file45,>file46
+-file_length: .byte 5,5,6,6,6,6,8,6,5,6,6,3,6,10,7,8,6,6,9,10,8,7,7,9,8,8,7,9,7,8,7,8,6,11,11,10,8,8,9,8,8,9,5,5,4,4,4
++file_low: .byte <file0,<file1,<file2,<file3,<file4,<file5,<file6,<file7,<file8,<file9,<file10,<file11,<file12,<file13,<file14,<file15,<file16,<file17,<file18,<file19,<file20,<file21,<file22,<file23,<file24,<file25,<file26,<file27,<file28,<file29,<file30,<file31,<file32,<file33,<file34,<file35,<file36,<file37,<file38,<file39,<file40,<file41,<file42,<file43,<file44,<file45,<file46,<file47
++file_high: .byte >file0,>file1,>file2,>file3,>file4,>file5,>file6,>file7,>file8,>file9,>file10,>file11,>file12,>file13,>file14,>file15,>file16,>file17,>file18,>file19,>file20,>file21,>file22,>file23,>file24,>file25,>file26,>file27,>file28,>file29,>file30,>file31,>file32,>file33,>file34,>file35,>file36,>file37,>file38,>file39,>file40,>file41,>file42,>file43,>file44,>file45,>file46,>file47
++file_length: .byte 5,5,6,6,6,6,8,6,5,6,6,3,6,10,7,8,6,6,9,10,8,7,7,9,8,8,7,9,7,8,7,8,6,11,11,10,8,8,9,8,8,9,5,5,4,4,4,4
+ file38: .byte $47,$45,$4F,$53,$43,$41,$52,$45,$54
+ file36: .byte $47,$45,$4F,$53,$46,$4F,$4C,$44
+ file37: .byte $47,$45,$4F,$53,$54,$41,$49,$4C
+--- a/src/layout/dispatch.s
++++ b/src/layout/dispatch.s
+@@ -22,29 +22,26 @@
+     jeq ready ;GEOS has its own pixel-width line planner and page job
+     jsr se_ef_prepare ;phase-independent source-key guard, without a C reload
+     jcs failed
+-    cmp #1
+-    beq @queued
++    tax ;se_ef_prepare returns only0ready/1queued
++    bne @queued
++    ; Keep the common source40/wrapped-ready predicate resident: no C load.
+     lda se_ef_valid
+-    beq @ordinary
+-    lda se_l_valid
+-    beq @start
+-    ldx #1
+-@fold_generation:
+-    lda se_ef_generation,x
+-    cmp se_ef_projection_generation,x
+-    bne @start
+-    dex
+-    bpl @fold_generation
+-    CMP24 se_hot_caret,se_l_caret
+-    bne @start
+-    CMP24 se_v_top,se_l_top
+-    bne @start
+-@ordinary:
++    bne @folded
+     lda se_l_mode
+     bne @no_wrap
+     lda se_l_need_wrap
+     beq ready
+-    jmp @start
++    bne @start
++@folded:
++    lda #2 ;pure fold/layout decision, no phase/private scratch access
++    sta se_overlay_frame
++    lda #33
++    ldx #1
++    jsr se_overlay_call
++    bcs failed
++    lsr ;private C33 returns only0ready/1start/2context
++    bcs @start
++    beq ready
+ @no_wrap:
+     lda #A_LAYOUT_CONTEXT
+     sta se_overlay_frame
+@@ -52,7 +49,7 @@
+     ldx #1
+     jsr se_overlay_call
+     bcs failed
+-    cmp #0
++    tax
+     beq ready
+ @start:
+     lda #L_BEGIN
