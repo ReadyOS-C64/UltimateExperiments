@@ -237,7 +237,8 @@ Measured problems already justify architectural work:
   outgoing checkpoint. It must not be promoted as another permanent layer.
 
 Use [warm input attribution](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/SuperEditor/src/render/geos/warm-input-profile-probe/README.md),
-[raster attribution](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/SuperEditor/src/render/geos/raster-cost-probe/COST.md), the existing
+the local ignored raster-attribution record at
+`src/render/geos/raster-cost-probe/COST.md`, the existing
 [cache redesign](REU_CACHE_REDESIGN.md), and the pinned geoWrite source study in
 `agentsworking/research/GEOWRITE_REFRESH.md`. Historical measurements are scoped
 baselines, not a new common-build benchmark or a measured geoWrite comparison.

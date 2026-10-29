@@ -11,6 +11,7 @@ hljs.registerLanguage('sql',sql);
 hljs.registerLanguage('pascal',delphi);
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const out=path.join(root,'DOCS');
+const tracked=new Set(execFileSync('git',['ls-files','-z'],{cwd:root,encoding:'utf8'}).split('\0').filter(Boolean));
 execFileSync(process.execPath,[path.join(root,'ReadyFS/build_support/build_readyfs_user_guide.mjs')],{stdio:'inherit'});
 const sources=new Map();
 const destinations=new Map();
@@ -63,7 +64,11 @@ function localLink(url,src,dst){
  let mapped=sources.get(abs);
  if(abs===path.join(root,'README.md'))mapped=path.join(out,'index.md');
  if(abs.startsWith(out+path.sep))mapped=abs;
- if(!mapped){if(abs.startsWith(root+path.sep) && fs.existsSync(abs))return 'https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/'+path.relative(root,abs).split(path.sep).map(encodeURIComponent).join('/')+(fragment?'#'+fragment:'');return url;}
+ if(!mapped){
+  const repositoryPath=path.relative(root,abs).split(path.sep).join('/');
+  if(abs.startsWith(root+path.sep) && tracked.has(repositoryPath))return 'https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/'+repositoryPath.split('/').map(encodeURIComponent).join('/')+(fragment?'#'+fragment:'');
+  return url;
+ }
  return relative(dst,mapped)+(fragment?'#'+fragment:'');
 }
 for(const [src,dst] of sources){
