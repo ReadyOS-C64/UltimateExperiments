@@ -4,7 +4,7 @@
 
 The port uses the same checkpoint as [WollyMonjac’s Pentium/486 DOS version](https://github.com/WollyMonjac/Tiny-2.1). It implements four causal transformer layers with 96 channels, four attention heads of width 24, a 256-channel ReLU feed-forward block, and a 97-token character vocabulary. The position embeddings are learned and the context contains 128 positions. The token embedding also supplies the output matrix.
 
-ca65 and ld65 build a resident 6502/6510 inference engine. The program streams weight and cache tiles through the REU and uses the same routine for all four layers. Cold boot loads and checks the model. Inference uses resident code with no per-layer overlays.
+ca65 and ld65 build a resident 6502/6510 inference engine. The program streams weight and cache tiles through the REU and uses the same routine for all four layers. At startup the PRG probes the REU header and verifies the model CRC32 before reusing the image. The legacy Ultimate DOS loader can supply a model if the resident check fails. Inference uses resident code with no per-layer overlays.
 
 ## Fixed-point arithmetic
 

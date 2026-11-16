@@ -1,6 +1,6 @@
 # Tiny 2.1 for the C64 Ultimate
 
-Version **0.6** runs WollyMonjac’s Tiny 2.1 checkpoint on a physical C64 Ultimate using 6502/6510 assembly. The Ultimate’s 64 MHz turbo mode runs the transformer, and a 16 MB REU holds the model and attention history. The program loads the model through Ultimate DOS and runs standalone from the Ultimate menu.
+Version **0.6** runs WollyMonjac’s Tiny 2.1 checkpoint on a physical C64 Ultimate using 6502/6510 assembly. The Ultimate’s 64 MHz turbo mode runs the transformer, and a 16 MB REU holds the model and attention history. Load the model into REU from the Ultimate menu, then run the PRG from the same menu. The console verifies and reuses the preloaded model.
 
 **Required hardware: 64 MHz C64 Ultimate and 16 MB REU.**
 
@@ -46,7 +46,7 @@ The physical C64 Ultimate recording includes vocabulary, grammar, translation, g
 
 ## Screenshots
 
-![The v0.6 console ready for a question after loading the model](screenshots/ready.png)
+![The v0.6 console showing that the preloaded REU model passed verification](screenshots/ready.png)
 
 ![The native context diagnostic finishes at 128 positions and answers a new question](screenshots/context.png)
 

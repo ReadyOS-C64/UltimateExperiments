@@ -1,6 +1,6 @@
 const CHECKPOINT_SHA = "4b603237070ad9084433537bf8d6c7470d0fc583e6a4f1f03c00cd17264e7095";
 const MODEL_SHA = "ba89630a6bb1fd2d385e6daeae6bbc27a919996703e12e4beb4ab06136f61a1b";
-const PRG_SHA = "f288bc9d5279cc3e4b32a5294f768586f2555a0a95b9b8534cfc905243b0a860";
+const PRG_SHA = "8559749a6a66fc8478e64ac9a37f7bf6954f1468ba53e9116abb8066be2a7494";
 const CHECKPOINT = "https://raw.githubusercontent.com/WollyMonjac/Tiny-2.1/1d5cf54677addf188a090ca1c91acb3d02989a1d/TINY.BIN";
 const encoder = new TextEncoder();
 
@@ -164,8 +164,8 @@ export async function prepareRelease(base = new URL(".", import.meta.url)) {
     );
     const readme = "# Tiny 2.1 v0.6 for the C64 Ultimate\n\n" +
         "**Required hardware: a C64 Ultimate with 64 MHz turbo support and a 16 MB REU.**\n\n" +
-        "This ZIP contains PROBE.PRG and the matching MODEL.BIN.\n\n" + setup;
-    return zip([["PROBE.PRG", new Uint8Array(program)], ["MODEL.BIN", model],
+        "This ZIP contains PROBE.PRG and the matching MODEL.REU.\n\n" + setup;
+    return zip([["PROBE.PRG", new Uint8Array(program)], ["MODEL.REU", model],
                 ["README.md", encoder.encode(readme)], ["LICENSE", new Uint8Array(license)]]);
 }
 

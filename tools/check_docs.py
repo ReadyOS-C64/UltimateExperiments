@@ -148,7 +148,7 @@ with zipfile.ZipFile(super_source) as archive:
 tiny_program = ROOT / 'Tiny21/releases/PROBE.PRG'
 if tiny_program.read_bytes() != (DOCS / 'tiny21/install/PROBE.PRG').read_bytes():
     errors.append('Tiny 2.1 Pages PRG differs from project release')
-if hashlib.sha256(tiny_program.read_bytes()).hexdigest() != 'f288bc9d5279cc3e4b32a5294f768586f2555a0a95b9b8534cfc905243b0a860':
+if hashlib.sha256(tiny_program.read_bytes()).hexdigest() != '8559749a6a66fc8478e64ac9a37f7bf6954f1468ba53e9116abb8066be2a7494':
     errors.append('Tiny 2.1 packaged PRG hash')
 tiny_guide = (DOCS / 'tiny21/DOWNLOAD.html').read_text()
 if 'id="tiny21-download"' not in tiny_guide or 'src="install.js"' not in tiny_guide:

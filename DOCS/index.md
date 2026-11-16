@@ -77,7 +77,7 @@ A reconstructed dual-bank character ROM and Cyberpunk palette, explored across R
 
 ## Tiny 2.1 for the C64 Ultimate
 
-Version 0.6 runs WollyMonjac’s Pentium/486 DOS transformer in native 6502/6510 assembly at 64 MHz with a 16 MB REU. The console loads the model through Ultimate DOS and answers short questions one character at a time.
+Version 0.6 runs WollyMonjac’s Pentium/486 DOS transformer in native 6502/6510 assembly at 64 MHz with a 16 MB REU. Load the model into REU and run the program from the Ultimate menu. The console answers short questions one character at a time.
 
 ![Two native Tiny 2.1 example answers on the C64 Ultimate](tiny21/screenshots/answers.png)
 

@@ -4,6 +4,8 @@ The PRG configures register-controlled 64 MHz turbo, then runs two fixed prompts
 
 The probe uses an available 64 MHz-capable Ultimate with Command Interface and REU enabled, FTP, and the REST API. The detached worker sets REU capacity to 16 MB when needed and verifies it is left at 16 MB. It takes over C64 RAM, CIA timers and the runtime REU ranges for the run. It leaves drives and other USB files untouched. Verify shared hardware ownership from a live preflight before issuing `run`. A previously running machine program cannot be resumed after running this PRG. Development uses Peddle and reaches the device only after complete inference passes there.
 
+The current PRG first validates any model already in REU. Its ready screen says “Preloaded REU model verified” when it can reuse the image. Use the [Ultimate menu setup guide](../docs/DOWNLOAD.md) for the release. The original Ultimate DOS loader remains available as a fallback when the resident model is absent or fails verification.
+
 ## Build and verify
 
 From the project root after building the core:
@@ -82,7 +84,7 @@ Evidence for the standard transport benchmark is under `agentworking/evidence/ul
 
 ## Interactive console
 
-Use the same build and detached launch procedure with `--interactive` passed to `probe/build.py`. The PRG loads `MODEL.BIN` from the build's USB directory as before. Launch from that directory using the Ultimate menu or the detached worker. A successful detached launch verifies the ready state and saves `ready.png`. The same model stays in the REU across questions.
+Use the same build and detached launch procedure with `--interactive` passed to `probe/build.py`. Preload `MODEL.REU` through the Ultimate menu for the release workflow. For developer bundles, the PRG can also load `MODEL.BIN` from its compiled USB path when a matching image is absent from REU. Launch from that directory using the Ultimate menu or the detached worker. A successful detached launch verifies the ready state and saves `ready.png`. The same model stays in the REU across questions.
 
 Type a question and press RETURN. DEL removes the last character. RUN/STOP clears the input line while idle. During computation, hold RUN/STOP until the console returns to input. Cancellation occurs between token ingests, so it can take the rest of the current token to respond. SHIFT enters uppercase letters and punctuation. The input line accepts up to 72 printable characters. Hardware reset leaves the console.
 

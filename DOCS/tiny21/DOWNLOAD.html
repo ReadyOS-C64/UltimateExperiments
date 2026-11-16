@@ -9,16 +9,10 @@
 
 <p id="tiny21-github-download"><a href="https://readyos-c64.github.io/UltimateExperiments/tiny21/DOWNLOAD.html">Open the live download page</a> to use the button from GitHub.</p>
 
-<p>Unzip the download. It contains <code>PROBE.PRG</code>, the matching <code>MODEL.BIN</code>, and this setup guide.</p>
+<p>Unzip the download. It contains <code>PROBE.PRG</code>, <code>MODEL.REU</code>, and this setup guide. <code>MODEL.REU</code> is the ready-to-load model image.</p>
 <h2 id="set-up-the-ultimate">Set up the Ultimate</h2>
 <ol>
-<li><p>Copy the two files to this exact folder on the USB drive. In the Ultimate file browser, the drive must appear as <code>/USB1</code>.</p>
-<pre><code class="language-text">/USB1/TINY64-G8-INLINE-READY/
-  PROBE.PRG
-  MODEL.BIN
-</code></pre>
-</li>
-<li><p>Set these options once.</p>
+<li><p>Copy <code>MODEL.REU</code> and <code>PROBE.PRG</code> to any folder on the USB drive. Open the Ultimate menu and press <strong>F2</strong> to check these settings.</p>
 <table>
 <thead>
 <tr>
@@ -29,13 +23,8 @@
 </thead>
 <tbody><tr>
 <td>C64 and Cartridge Settings</td>
-<td>Command Interface</td>
-<td>Enabled</td>
-</tr>
-<tr>
-<td>C64 and Cartridge Settings</td>
 <td>RAM Expansion Unit</td>
-<td>Enabled</td>
+<td><strong>Enabled</strong></td>
 </tr>
 <tr>
 <td>C64 and Cartridge Settings</td>
@@ -45,15 +34,18 @@
 <tr>
 <td>U64 Specific Settings</td>
 <td>Turbo Control</td>
-<td>C64U Turbo Registers (called U64 Turbo Registers on some firmware)</td>
+<td><strong>C64U Turbo Registers</strong> (called U64 Turbo Registers on some firmware)</td>
 </tr>
 </tbody></table>
 </li>
-<li><p>Save any open work on the C64. In the Ultimate file browser, select <code>PROBE.PRG</code> and choose <strong>Run</strong>. Wait for the question field, type <code>what is 7 times 8</code>, and press <strong>RETURN</strong>. On the tested Ultimate, the answer was <code>7 times 8 is 56.</code> in about 36 seconds.</p>
+<li><p>In the Ultimate file browser, select <strong><code>MODEL.REU</code></strong>, press <strong>RETURN</strong>, and choose <strong>Load into REU</strong>. Acknowledge the completion message.</p>
+</li>
+<li><p>Select <strong><code>PROBE.PRG</code></strong> and choose <strong>Run</strong>. The startup screen should say <strong>Preloaded REU model verified</strong>. Type <code>what is 7 times 8</code> and press <strong>RETURN</strong>. The expected answer is <code>7 times 8 is 56.</code></p>
 </li>
 </ol>
+<p>The program selects and checks <strong>64 MHz</strong> at startup. You can run the PRG again while the same model remains in REU. Reload the model after powering off or using the REU for another program. Save any open work before running the PRG.</p>
 <h2 id="if-startup-fails">If startup fails</h2>
-<p>Check the <code>/USB1</code> volume, the exact folder name, the two filenames, and the settings above. The PRG loads the converted <code>MODEL.BIN</code> and checks its CRC before opening the question field. The verified model file is 380,995 bytes with SHA-256 <code>ba89630a6bb1fd2d385e6daeae6bbc27a919996703e12e4beb4ab06136f61a1b</code>. The tested firmware was 3.14 with FPGA 121 and core 1.47.</p>
+<p>If the console asks you to load the model, go back to the Ultimate menu and select <strong>Load into REU</strong> for <code>MODEL.REU</code>, then run <code>PROBE.PRG</code> again. Keep the <code>.REU</code> extension so the file browser offers the correct action. The verified model file is 380,995 bytes with SHA-256 <code>ba89630a6bb1fd2d385e6daeae6bbc27a919996703e12e4beb4ab06136f61a1b</code>. The tested firmware was 3.14 with FPGA 121 and core 1.47.</p>
 <p>Once the console returns to the question field, you can try <code>what is the capital of peru</code> without loading the model again. Use <strong>DEL</strong> to erase a character. Physical RUN/STOP cancellation and retry are in the <a href="FUTURE.html">future-version notes</a>.</p>
 <p><a href="https://github.com/WollyMonjac/Tiny-2.1">Original Tiny 2.1 for Pentium/486 DOS</a></p>
 </main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

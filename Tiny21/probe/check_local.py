@@ -82,11 +82,17 @@ def check(bundle):
         assert stats[4] & 1 == 0 and stats[3] == len(data), stats
         assert machine.get("model_crc", 4) == zlib.crc32(data)
         assert machine.run("model_open")[4] & 1 == 0
+        stats = machine.run("check_resident_model", instruction_limit=12_000_000)
+        assert stats[4] & 1 == 0 and stats[3] == len(data) + 272, stats
+        machine.reu[0] ^= 1
+        stats = machine.run("check_resident_model")
+        assert stats[4] & 1 and stats[3] == 272, stats
+        machine.reu[0] ^= 1
 
         machine.reu[-1] = 4  # unowned scratch remains outside the hash
         machine.reu[len(data) - 1] ^= 0x80
-        stats = machine.run("verify_model_image", instruction_limit=12_000_000)
-        assert stats[4] & 1 == 1, stats
+        stats = machine.run("check_resident_model", instruction_limit=12_000_000)
+        assert stats[4] & 1 and stats[3] == len(data) + 272, stats
         machine.reu[len(data) - 1] ^= 0x80
 
         for rate in (985248, 1022727):

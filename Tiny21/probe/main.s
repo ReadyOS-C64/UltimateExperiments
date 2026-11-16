@@ -9,7 +9,7 @@
 .import model_open, model_reset, model_ingest, model_choose, token_pos
 .importzp reu_banks
 .import wide_a, wide_b, wide_divide, wide_remainder
-.export probe_main
+.export probe_main, check_resident_model
 .if INTERACTIVE
 .import console_main
 .export row_start, print, putchar, format_time
@@ -113,6 +113,20 @@ turbo_ok:
     jmp error
 :
 .endif
+    lda #32
+    sta reu_banks
+    AT 4
+    TEXT checking
+    jsr check_resident_model
+    bcs disk_fallback
+    COPY4 model_crc, MAIL+20
+    lda #5                  ; CRC-verified image was already in REU
+    sta MAIL+7
+    AT 4
+    TEXT preloaded
+    jmp start_inference
+
+disk_fallback:
     jsr clock_read
     bcc start_load
     jmp clock_error
@@ -140,6 +154,8 @@ start_load:
     sta MAIL+20
     lda uci_other_ids+1
     sta MAIL+21
+    AT 21
+    TEXT load_hint
     lda #$82
     jmp error
 load_ok:
@@ -171,6 +187,7 @@ admitted:
     COPY4 MAIL+8, clock_elapsed
     jsr format_time
     TEXT clear_load
+start_inference:
 .if INTERACTIVE
     jmp console_main
 .else
@@ -214,6 +231,15 @@ error:
     sta $d020
     jsr turbo_restore
     jmp park
+
+.proc check_resident_model
+    ; Reject an empty or foreign REU quickly using the model header.
+    jsr model_open
+    bcs done
+    jmp verify_model_image
+done:
+    rts
+.endproc
 
 elapsed:
     jsr clock_read
@@ -629,6 +655,8 @@ subtitle: .byte "64 MHz checked | 16 MiB REU",0
 loading: .byte "Ultimate DOS is loading MODEL.BIN...",0
 checking: .byte "Verifying the REU image CRC32...    ",0
 loaded: .byte "Ultimate DOS load ",0
+preloaded: .asciiz "Preloaded REU model verified         "
+load_hint: .asciiz "Load MODEL.REU in the Ultimate menu"
 clear_load: .byte "            ",0
 .if CONTEXT_TEST
 finished: .byte "CONTEXT LIMIT / RECOVERY PASSED",0

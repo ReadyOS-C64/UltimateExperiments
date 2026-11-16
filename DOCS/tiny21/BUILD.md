@@ -15,4 +15,4 @@ python3 -m tools.run_peddle --verify --core-dir build/group8 --layout group8 \
 
 The host copies the model directly into Peddle’s mocked REU. See the
 [native probe build notes](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/probe/README.md) for packaging a PRG and model
-for a matching USB path. Both converters use a pinned [upstream Tiny 2.1 checkpoint](https://github.com/WollyMonjac/Tiny-2.1).
+with the legacy fallback USB path. The current menu workflow loads the raw image named `MODEL.REU` into REU at offset zero. The PRG can be run from any folder after that step. Both converters use a pinned [upstream Tiny 2.1 checkpoint](https://github.com/WollyMonjac/Tiny-2.1).

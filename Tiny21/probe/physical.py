@@ -198,13 +198,15 @@ def decode_boot(mail, manifest, ready_phase):
     load_ticks, rate, turbo_ticks, crc = struct.unpack_from("<4I", mail, 8)
     if (pal not in (0, 1) or rate != (985248 if pal else 1022727)
             or turbo & 0x8f != 0x8f or not 4608 <= turbo_ticks <= 5887
-            or stage != 4 or mail[24:26] != b"00"
+            or (stage, mail[24:26]) not in ((4, b"00"), (5, b"\0\0"))
+            or (stage == 5 and load_ticks != 0)
             or crc != int(manifest["model_crc32"], 16)):
         raise ValueError(f"probe timing or loader identity mismatch: {mail.hex()}")
     return {
         "clock": "CIA2 A/B cascaded PHI2",
         "pal": bool(pal), "ticks_per_second": rate, "turbo_register": turbo,
         "turbo_validation_ticks": turbo_ticks, "model_crc32": f"{crc:08x}",
+        "model_source": "preloaded REU" if stage == 5 else "Ultimate DOS",
         "dos_load_ticks": load_ticks, "dos_load_seconds": load_ticks / rate,
     }
 
