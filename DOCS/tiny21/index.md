@@ -2,7 +2,7 @@
 
 Version **0.6** runs WollyMonjac’s Tiny 2.1 checkpoint on a physical C64 Ultimate using 6502/6510 assembly. The Ultimate’s 64 MHz turbo mode runs the transformer, and a 16 MB REU holds the model and attention history. The program loads the model through Ultimate DOS and runs standalone from the Ultimate menu.
 
-[Download and setup](DOWNLOAD.md) · [Technical details](TECHNICAL.md) · [GitHub Pages](https://readyos-c64.github.io/UltimateExperiments/tiny21/)
+[Quick start and download](DOWNLOAD.md) · [Technical details](TECHNICAL.md) · [GitHub Pages](https://readyos-c64.github.io/UltimateExperiments/tiny21/)
 
 ## Examples
 
