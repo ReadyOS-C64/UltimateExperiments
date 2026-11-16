@@ -74,3 +74,11 @@ A reconstructed dual-bank character ROM and Cyberpunk palette, explored across R
 ![ReadyOS launcher with the C77 character ROM and palette](c77/screenshots/c77-cyberpunk-77-charrom/01_launcher.png)
 
 [Explore C77 Cyberpunk 77](c77/index.md) · [Clean gallery](c77/screenshots/c77-cyberpunk-77-charrom/README.md) · [CRT gallery](c77/screenshots/c77-cyberpunk-77-crt/README.md)
+
+## Tiny 2.1 for the C64 Ultimate
+
+Version 0.6 runs WollyMonjac’s Pentium/486 DOS transformer in native 6502/6510 assembly at 64 MHz with a 16 MB REU. The console loads the model through Ultimate DOS and answers short questions one character at a time.
+
+![Two native Tiny 2.1 example answers on the C64 Ultimate](tiny21/screenshots/answers.png)
+
+[Explore Tiny 2.1](tiny21/index.md) · [Technical details](tiny21/TECHNICAL.md) · [Download and setup](tiny21/DOWNLOAD.md)

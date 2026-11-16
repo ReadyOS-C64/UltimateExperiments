@@ -1,0 +1,12 @@
+[
+  {"question": "give me a synonym for happy", "answer": "Glad."},
+  {"question": "what is the plural of mouse", "answer": "Mice."},
+  {"question": "translate dog to spanish", "answer": "Dog in Spanish is perro."},
+  {"question": "what is the capital of japan", "answer": "The capital is Tokyo."},
+  {"question": "what planet is known as the red planet", "answer": "It is Mars."},
+  {"question": "what do bees make", "answer": "Honey."},
+  {"question": "who wrote hamlet", "answer": "William Shakespeare."},
+  {"question": "what is the chemical symbol for gold", "answer": "It is Au."},
+  {"question": "how many bits in a byte", "answer": "A byte has eight bits."},
+  {"question": "what is the square root of 81", "answer": "9."}
+]

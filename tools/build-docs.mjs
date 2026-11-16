@@ -50,6 +50,11 @@ register('C77Cyberpunk77/README.md','c77/index.md');
 register('C77Cyberpunk77/C77CYBER.VPL','c77/C77CYBER.VPL');
 tree('C77Cyberpunk77/assets','c77/assets');
 tree('C77Cyberpunk77/screenshots','c77/screenshots');
+register('Tiny21/README.md','tiny21/index.md');
+register('Tiny21/FUTURE.md','tiny21/FUTURE.md');
+tree('Tiny21/docs','tiny21');
+tree('Tiny21/screenshots','tiny21/screenshots');
+register('Tiny21/releases/Tiny21-C64-Ultimate-v0.6.zip','downloads/Tiny21-C64-Ultimate-v0.6.zip');
 const downloads=[
  ['ReadyFS/artifacts/readyfs/readyfs-overlay-lab.d81','downloads/readyfs-overlay-lab.d81'],
  ['ReadyFS/artifacts/readyfs/readyfs-lab.d81','downloads/readyfs-lab.d81'],
@@ -133,6 +138,11 @@ const experiments=[
   ['Clean character-ROM gallery','screenshots/c77-cyberpunk-77-charrom/README.html'],
   ['CRT gallery','screenshots/c77-cyberpunk-77-crt/README.html'],
   ['Earlier palette gallery','screenshots/c77-cyberpunk-77/README.html']
+ ]},
+ {label:'Tiny 2.1',directory:'tiny21',children:[
+  ['Download and run v0.6','DOWNLOAD.html'],
+  ['Technical details','TECHNICAL.html'],
+  ['Future versions','FUTURE.html']
  ]}
 ];
 function navigation(page){

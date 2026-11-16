@@ -28,6 +28,12 @@ A reconstructed dual-bank character ROM, a Cyberpunk palette, and clean/CRT gall
 
 [Project README](C77Cyberpunk77/README.md) · [Clean gallery](C77Cyberpunk77/screenshots/c77-cyberpunk-77-charrom/README.md) · [Online galleries](https://readyos-c64.github.io/UltimateExperiments/c77/index.html)
 
+## Tiny 2.1 for the C64 Ultimate
+
+Version 0.6 is a native 6502/6510 port of WollyMonjac’s Pentium/486 DOS model. It runs a four-layer character transformer on a 64 MHz C64 Ultimate with a 16 MB REU.
+
+[Project README](Tiny21/README.md) · [Technical details](Tiny21/docs/TECHNICAL.md) · [Download and setup](Tiny21/docs/DOWNLOAD.md) · [Online guide and demo](https://readyos-c64.github.io/UltimateExperiments/tiny21/)
+
 ## Documentation and repository
 
 [DOCS/index.html](DOCS/index.html) is the static documentation site, with Markdown and HTML editions, screenshots, command references, walkthroughs and the main disk downloads on each experiment's child pages. See [publishing instructions](DOCS/README.md) to build or maintain it.

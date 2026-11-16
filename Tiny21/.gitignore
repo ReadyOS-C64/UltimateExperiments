@@ -1,0 +1,10 @@
+/build/
+/dist/
+/reference/
+/releases/local/
+/test-results/
+**/bin/
+**/obj/
+*.reu
+MODEL.BIN
+TINY.BIN

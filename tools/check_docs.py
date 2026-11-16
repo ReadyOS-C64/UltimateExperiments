@@ -13,8 +13,9 @@ DOCS = ROOT / 'DOCS'
 errors = []
 
 class Page(HTMLParser):
-    def __init__(self):
+    def __init__(self, file):
         super().__init__()
+        self.file = file
         self.ids = set()
         self.refs = []
         self.title = False
@@ -32,7 +33,10 @@ class Page(HTMLParser):
             self._pascal = []
             if 'hljs' not in attrs.get('class', '').split(): errors.append('Pascal example is missing highlighting')
         if tag == 'title': self.title = True
-        if tag in ('video', 'audio', 'iframe'):
+        tiny21_demo = (tag == 'iframe' and self.file == DOCS / 'tiny21/index.html'
+                      and attrs.get('src') == 'https://www.youtube-nocookie.com/embed/EOZRYfPyuy0'
+                      and attrs.get('title'))
+        if tag in ('video', 'audio', 'iframe') and not tiny21_demo:
             errors.append(f'Unexpected media/embed element: {tag}')
         if 'id' in attrs:
             if attrs['id'] in self.ids: errors.append(f'Duplicate anchor: {attrs["id"]}')
@@ -52,7 +56,7 @@ class Page(HTMLParser):
 
 pages = {}
 for file in DOCS.rglob('*.html'):
-    page = Page()
+    page = Page(file)
     page.feed(file.read_text())
     pages[file] = page
     if not page.title: errors.append(f'{file.relative_to(DOCS)} has no title')
@@ -87,7 +91,7 @@ def check_ref(file, url, anchors=False):
 
 for file, page in pages.items():
     html = file.read_text()
-    if file != DOCS / 'readyfs/portable-guide.html' and re.findall(r'data-project="([^"]+)"', html) != ['supereditor', 'readyfs', 'dos64', 'reusql', 'c77']:
+    if file != DOCS / 'readyfs/portable-guide.html' and re.findall(r'data-project="([^"]+)"', html) != ['supereditor', 'readyfs', 'dos64', 'reusql', 'c77', 'tiny21']:
         errors.append(f'{file.relative_to(DOCS)}: experiment navigation order')
     markdown = file.with_suffix('.md')
     if markdown.exists():
@@ -141,6 +145,17 @@ with zipfile.ZipFile(super_source) as archive:
         errors.append('SuperEditor package D81 hash')
     if b'LOAD"SUPEREDITOR",8,1' not in archive.read('README.txt'):
         errors.append('SuperEditor package README lacks startup command')
+tiny_source = ROOT / 'Tiny21/releases/Tiny21-C64-Ultimate-v0.6.zip'
+if tiny_source.read_bytes() != (DOCS / 'downloads' / tiny_source.name).read_bytes():
+    errors.append('Tiny 2.1 Pages download differs from project release')
+with zipfile.ZipFile(tiny_source) as archive:
+    expected = {'PROBE.PRG', 'README.md', 'make_model.py', 'LICENSE'}
+    if len(archive.namelist()) != len(expected) or set(archive.namelist()) != expected or archive.testzip():
+        errors.append('Tiny 2.1 package contents or CRC')
+    if hashlib.sha256(archive.read('PROBE.PRG')).hexdigest() != 'f288bc9d5279cc3e4b32a5294f768586f2555a0a95b9b8534cfc905243b0a860':
+        errors.append('Tiny 2.1 packaged PRG hash')
+    if archive.read('make_model.py') != (ROOT / 'Tiny21/tools/model.py').read_bytes():
+        errors.append('Tiny 2.1 packaged converter differs from source')
 if errors:
     raise SystemExit('\n'.join(errors))
-print(f'PASS: {len(pages)} HTML pages, Markdown links, anchors, local assets, highlighted SQL preserved, no video or personal home paths, and matching experiment downloads.')
+print(f'PASS: {len(pages)} HTML pages, Markdown links, anchors, local assets, highlighted SQL preserved, only approved embeds, no bundled media or personal home paths, and matching experiment downloads.')

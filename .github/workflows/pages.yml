@@ -7,6 +7,7 @@ on:
       - '8088DOS64ultimate/**'
       - 'ReadyFS/**'
       - 'SuperEditor/**'
+      - 'Tiny21/**'
       - 'ReuSQL64/**'
       - 'C77Cyberpunk77/**'
       - 'tools/**'
