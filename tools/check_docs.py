@@ -145,17 +145,16 @@ with zipfile.ZipFile(super_source) as archive:
         errors.append('SuperEditor package D81 hash')
     if b'LOAD"SUPEREDITOR",8,1' not in archive.read('README.txt'):
         errors.append('SuperEditor package README lacks startup command')
-tiny_source = ROOT / 'Tiny21/releases/Tiny21-C64-Ultimate-v0.6.zip'
-if tiny_source.read_bytes() != (DOCS / 'downloads' / tiny_source.name).read_bytes():
-    errors.append('Tiny 2.1 Pages download differs from project release')
-with zipfile.ZipFile(tiny_source) as archive:
-    expected = {'PROBE.PRG', 'README.md', 'make_model.py', 'LICENSE'}
-    if len(archive.namelist()) != len(expected) or set(archive.namelist()) != expected or archive.testzip():
-        errors.append('Tiny 2.1 package contents or CRC')
-    if hashlib.sha256(archive.read('PROBE.PRG')).hexdigest() != 'f288bc9d5279cc3e4b32a5294f768586f2555a0a95b9b8534cfc905243b0a860':
-        errors.append('Tiny 2.1 packaged PRG hash')
-    if archive.read('make_model.py') != (ROOT / 'Tiny21/tools/model.py').read_bytes():
-        errors.append('Tiny 2.1 packaged converter differs from source')
+tiny_program = ROOT / 'Tiny21/releases/PROBE.PRG'
+if tiny_program.read_bytes() != (DOCS / 'tiny21/install/PROBE.PRG').read_bytes():
+    errors.append('Tiny 2.1 Pages PRG differs from project release')
+if hashlib.sha256(tiny_program.read_bytes()).hexdigest() != 'f288bc9d5279cc3e4b32a5294f768586f2555a0a95b9b8534cfc905243b0a860':
+    errors.append('Tiny 2.1 packaged PRG hash')
+tiny_guide = (DOCS / 'tiny21/DOWNLOAD.html').read_text()
+if 'id="tiny21-download"' not in tiny_guide or 'src="install.js"' not in tiny_guide:
+    errors.append('Tiny 2.1 download must expose the browser ZIP builder')
+if any(text in tiny_guide for text in ('make_model.py', 'TINY.BIN', 'python3')):
+    errors.append('Tiny 2.1 user guide exposes the developer conversion workflow')
 if errors:
     raise SystemExit('\n'.join(errors))
 print(f'PASS: {len(pages)} HTML pages, Markdown links, anchors, local assets, highlighted SQL preserved, only approved embeds, no bundled media or personal home paths, and matching experiment downloads.')

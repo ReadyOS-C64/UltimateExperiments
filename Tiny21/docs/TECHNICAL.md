@@ -26,6 +26,8 @@ Every layer, position, key and value has a 96-channel int8 vector and a stored p
 
 The key pass processes all four heads in tiles of up to 40 records. It accumulates scaled attention scores and records each head’s maximum. In the value pass the engine subtracts from that maximum, looks up the negative exponential with interpolation and normalizes the weighted value sum. It reuses the final tile from the key pass before rereading the earlier prefix. The 24-bit REU driver splits requests at 512 KiB bank boundaries because the hardware counter wraps there.
 
+[Developer build and model conversion](BUILD.md)
+
 ## Verification and timings
 
 Peddle preloads the model into the modeled REU with a direct host copy. Real linked assembly performs model admission, REU access and inference. Version 0.6 reproduced all checked logits and answers for the 64-prompt fixed-point holdout and used 10.92% fewer total CPU cycles than the previous wide group-four build. The separate integer-versus-original comparison reproduced 63 of 64 complete answers and 2,408 of 2,415 teacher-forced choices.

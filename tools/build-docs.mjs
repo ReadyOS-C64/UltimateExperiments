@@ -54,7 +54,9 @@ register('Tiny21/README.md','tiny21/index.md');
 register('Tiny21/FUTURE.md','tiny21/FUTURE.md');
 tree('Tiny21/docs','tiny21');
 tree('Tiny21/screenshots','tiny21/screenshots');
-register('Tiny21/releases/Tiny21-C64-Ultimate-v0.6.zip','downloads/Tiny21-C64-Ultimate-v0.6.zip');
+register('Tiny21/releases/PROBE.PRG','tiny21/install/PROBE.PRG');
+register('Tiny21/LICENSE','tiny21/install/LICENSE');
+register('Tiny21/web/install.js','tiny21/install.js');
 const downloads=[
  ['ReadyFS/artifacts/readyfs/readyfs-overlay-lab.d81','downloads/readyfs-overlay-lab.d81'],
  ['ReadyFS/artifacts/readyfs/readyfs-lab.d81','downloads/readyfs-lab.d81'],

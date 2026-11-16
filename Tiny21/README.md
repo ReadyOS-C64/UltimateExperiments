@@ -2,6 +2,8 @@
 
 Version **0.6** runs WollyMonjac’s Tiny 2.1 checkpoint on a physical C64 Ultimate using 6502/6510 assembly. The Ultimate’s 64 MHz turbo mode runs the transformer, and a 16 MB REU holds the model and attention history. The program loads the model through Ultimate DOS and runs standalone from the Ultimate menu.
 
+**Required hardware: 64 MHz C64 Ultimate and 16 MB REU.**
+
 [Quick start and download](docs/DOWNLOAD.md) · [Technical details](docs/TECHNICAL.md) · [GitHub Pages](https://readyos-c64.github.io/UltimateExperiments/tiny21/)
 
 ## Examples
@@ -29,4 +31,4 @@ On the same Ultimate, version 0.6 completed these prompts about 10.5% faster tha
 
 ## Credits and license
 
-The original model, checkpoint and Pentium/486 DOS implementation are by the [WollyMonjac/Tiny-2.1 project](https://github.com/WollyMonjac/Tiny-2.1). This project adapts that checkpoint for the C64 Ultimate. The C64 port is [MIT licensed](LICENSE). Peddle keeps its [own MIT notice](third_party/peddle/LICENSE). The port’s license covers its own code and documentation. The upstream checkpoint is obtained separately from its author’s repository.
+The original model, checkpoint and Pentium/486 DOS implementation are by the [WollyMonjac/Tiny-2.1 project](https://github.com/WollyMonjac/Tiny-2.1). This project adapts that checkpoint for the C64 Ultimate. The C64 port is [MIT licensed](LICENSE). Peddle keeps its [own MIT notice](third_party/peddle/LICENSE). The port’s license covers its own code and documentation.
