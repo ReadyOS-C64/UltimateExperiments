@@ -6,6 +6,12 @@ Version **0.6** runs WollyMonjac’s Tiny 2.1 checkpoint on a physical C64 Ultim
 
 [Quick start and download](docs/DOWNLOAD.md) · [Technical details](docs/TECHNICAL.md) · [GitHub Pages](https://readyos-c64.github.io/UltimateExperiments/tiny21/)
 
+## Video
+
+<iframe class="tiny21-video" src="https://www.youtube-nocookie.com/embed/EOZRYfPyuy0" title="Tiny 2.1 running on the C64 Ultimate" width="640" height="360" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+[Watch the C64 Ultimate demo on YouTube](https://www.youtube.com/watch?v=EOZRYfPyuy0)
+
 ## Examples
 
 | Type this question | Answer | Measured time at 64 MHz |
@@ -37,12 +43,6 @@ The physical C64 Ultimate recording includes vocabulary, grammar, translation, g
 | `what is the chemical symbol for gold` | It is Au. |
 | `how many bits in a byte` | A byte has eight bits. |
 | `what is the square root of 81` | 9. |
-
-## Video
-
-<iframe class="tiny21-video" src="https://www.youtube-nocookie.com/embed/EOZRYfPyuy0" title="Tiny 2.1 running on the C64 Ultimate" width="640" height="360" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-[Watch the C64 Ultimate demo on YouTube](https://www.youtube.com/watch?v=EOZRYfPyuy0)
 
 ## Screenshots
 
