@@ -17,6 +17,27 @@ On the same Ultimate, version 0.6 completed these prompts about 10.5% faster tha
 
 ![Both example answers and their measured times on the physical C64 Ultimate](screenshots/answers.png)
 
+## What the model was trained on
+
+The [upstream Tiny 2.1 README](https://github.com/WollyMonjac/Tiny-2.1) describes a small question-answering model trained on roughly **3,500 facts**, each asked in several wordings. The release includes the trained checkpoint and inference code. A complete training corpus and source list are unavailable in the upstream release, so the exact facts and topic coverage are unknown.
+
+## Questions from the C64 demo
+
+The physical C64 Ultimate recording includes vocabulary, grammar, translation, geography, science, literature, computing, and math. These are the answers captured for the exact prompts shown.
+
+| Question as entered | Answer from the C64 |
+| --- | --- |
+| `give me a synonym for happy` | Glad. |
+| `what is the plural of mouse` | Mice. |
+| `translate dog to spanish` | Dog in Spanish is perro. |
+| `what is the capital of japan` | The capital is Tokyo. |
+| `what planet is known as the red planet` | It is Mars. |
+| `what do bees make` | Honey. |
+| `who wrote hamlet` | William Shakespeare. |
+| `what is the chemical symbol for gold` | It is Au. |
+| `how many bits in a byte` | A byte has eight bits. |
+| `what is the square root of 81` | 9. |
+
 ## Video
 
 <iframe class="tiny21-video" src="https://www.youtube-nocookie.com/embed/EOZRYfPyuy0" title="Tiny 2.1 running on the C64 Ultimate" width="640" height="360" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
