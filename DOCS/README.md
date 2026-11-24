@@ -1,6 +1,6 @@
 # Documentation build and GitHub Pages
 
-`DOCS/` is the publishable static documentation tree for Ultimate Experiments. It includes full Markdown and HTML references, the SuperEditor guide/gallery and preview ZIP, ReadyFS screenshot walkthroughs, C77 galleries, copies of the three committed main D81s, and DOS64 preview/example downloads. It can embed the Tiny 2.1 YouTube demo. It excludes local video files, log directories, agent working notes, firmware checkouts and external website source repositories.
+`DOCS/` is the publishable static documentation tree for Ultimate Experiments. It includes full Markdown and HTML references, the SuperEditor guide/gallery and preview ZIP, ReadyFS screenshot walkthroughs, C77 galleries, copies of the three committed main D81s, DOS64 preview/example downloads, and the prebuilt C64 LLM v0.7 ZIP. It embeds the original Tiny 2.1 YouTube demo. It excludes local video files, log directories, agent working notes, firmware checkouts and external website source repositories.
 
 ## Build and validate
 
@@ -47,7 +47,7 @@ After deployment, run:
 npm run check:live -- --base-url https://readyos-c64.github.io/UltimateExperiments/
 ```
 
-The live validator requests every published page, screenshot, Markdown source, supporting asset and main D81. It requires HTTP 200 and exact SHA-256 equality with the checkout, with bounded retries for deployment propagation. The deployment workflow runs this automatically after publishing. Local link/anchor and media/privacy checks run before upload.
+The live validator requests every published page, screenshot, Markdown source, supporting asset and packaged download. It requires HTTP 200 and exact SHA-256 equality with the checkout, with bounded retries for deployment propagation. The deployment workflow runs this automatically after publishing. Local link/anchor and media/privacy checks run before upload.
 
 ## Example fixtures
 

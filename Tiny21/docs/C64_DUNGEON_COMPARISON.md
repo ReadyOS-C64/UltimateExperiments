@@ -170,6 +170,10 @@ tokenizer, and model-admission decisions. Dungeon's metadata and tokenizer
 contract are relevant references. Adopting its cache exponents would change
 our numeric profile and needs a separate accuracy evaluation.
 
+The v0.7 console keeps two compatible Tiny21 model images in separate REU
+slots. F1 selects the original Tiny 2.1 and F3 selects C64PROGINFO.
+[Release model slots and cache layout](TECHNICAL.md#model-and-resident-6510-engine)
+
 ## Performance interpretation
 
 Dungeon reports 563 ms per generated token and 2.29 characters/s over its
@@ -215,7 +219,7 @@ a whole-token measurement. Multi-character tokens and short control prompts
 improve text throughput through model/tokenizer design and should be measured
 separately from assembly improvements.
 
-## Changes measured on the v0.7 branch
+## Changes measured for v0.7
 
 The ca65 group-eight dot now uses unrolled, directly indexed lookups into
 the existing fixed table pages. Q/K/V still share the prepared table.

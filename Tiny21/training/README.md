@@ -84,12 +84,12 @@ against the relevant hardware or language reference.
 suites. Use `--independent` to select either one. For native inference and
 formatting, use `tools.run_peddle --verify` and `probe.check_models`.
 
-The final bundle ran on the physical C64 Ultimate at 64 MHz with a 16 MB REU.
+The C64PROGINFO model shipped in v0.7 ran on the physical C64 Ultimate at 64 MHz with a 16 MB REU.
 F3 loaded C64PROGINFO through Ultimate DOS and displayed the two-line assembly
 and BASIC examples. F1 returned to Tiny 2.1 and answered the arithmetic
 prompt. F3 then reused the resident C64PROGINFO image. The native Peddle
 console also generated and displayed the ten-line sprite example.
-[Physical assembler output](../screenshots/proginfo-assembler.png).
+[Physical assembler output](../screenshots/proginfo-assembler.png) · [v0.7 examples and screenshots](../README.md#try-c64proginfo).
 
 ## Expanded C64 wording and English-language experiment
 

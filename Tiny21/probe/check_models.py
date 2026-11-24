@@ -52,9 +52,14 @@ def check(bundle, prompt, expected):
         assert not machine.run('check_resident_model', instruction_limit=CRC_LIMIT)[4] & 1
         assert machine.get('active_model', 1) == 0
         matrix = machine.keyboard_matrix()
+        machine.run('screen_init')
+        assert screen(machine, 1).startswith('C64 LLM - Little Language Model')
+        prompt_color = 0xD800 + 40*7
+        assert all(color & 15 == 7 for color in machine.ram[prompt_color:prompt_color+80])
         machine.run('console_prepare')
         seed_pal_clock(machine)
         assert screen(machine, 5).startswith('Model: Tiny 2.1')
+        assert screen(machine, 10).startswith('Model ready.')
 
         machine.reu[PROGRAMMER + len(prog) - 1] ^= 1
         key(machine, matrix, 5, 0x86)
@@ -80,6 +85,12 @@ def check(bundle, prompt, expected):
                              for code in machine.ram[start:start + len(text)])
             assert actual == text, (index, actual, text)
         assert screen(machine, 22).startswith('Elapsed ')
+        machine.run('render_prompt')
+        assert screen(machine, 7, 79) == prompt[-72:].ljust(79)
+        assert not type_chars(machine, matrix, '\r\b')
+        assert screen(machine, 7, 79) == prompt[-72:].ljust(79)
+        assert not type_chars(machine, matrix, 'n')
+        assert screen(machine, 7, 79) == 'n' + chr(0xA0) + ' ' * 77
         check_ten_lines(machine)
 
         key(machine, matrix, 4, 0x85)

@@ -54,9 +54,7 @@ register('Tiny21/README.md','tiny21/index.md');
 register('Tiny21/FUTURE.md','tiny21/FUTURE.md');
 tree('Tiny21/docs','tiny21');
 tree('Tiny21/screenshots','tiny21/screenshots');
-register('Tiny21/releases/PROBE.PRG','tiny21/install/PROBE.PRG');
-register('Tiny21/LICENSE','tiny21/install/LICENSE');
-register('Tiny21/web/install.js','tiny21/install.js');
+register('Tiny21/releases/Tiny21-v0.7-C64PROGINFO.zip','downloads/Tiny21-v0.7-C64PROGINFO.zip');
 const downloads=[
  ['ReadyFS/artifacts/readyfs/readyfs-overlay-lab.d81','downloads/readyfs-overlay-lab.d81'],
  ['ReadyFS/artifacts/readyfs/readyfs-lab.d81','downloads/readyfs-lab.d81'],
@@ -141,8 +139,8 @@ const experiments=[
   ['CRT gallery','screenshots/c77-cyberpunk-77-crt/README.html'],
   ['Earlier palette gallery','screenshots/c77-cyberpunk-77/README.html']
  ]},
- {label:'Tiny 2.1',directory:'tiny21',children:[
-  ['Download and run v0.6','DOWNLOAD.html'],
+ {label:'C64 LLM',directory:'tiny21',children:[
+  ['Download and setup','DOWNLOAD.html'],
   ['Technical details','TECHNICAL.html'],
   ['Future versions','FUTURE.html']
  ]}
@@ -182,7 +180,8 @@ for(const file of files(out)){
   return `<h${token.depth} id="${id}">${label}</h${token.depth}>\n`;
  }};
  let content=new Marked({renderer,gfm:true}).parse(source);
- content=content.replace(/(href=")([^"?#]+)\.md([#?][^"]*)?"/g,'$1$2.html$3"');
+ content=content.replace(/(href=")([^"?#]+)\.md([#?][^"]*)?"/g,(tag,prefix,url,suffix='')=>
+  /^[a-z][a-z0-9+.-]*:|^\/\//i.test(url)?tag:prefix+url+'.html'+suffix+'"');
  // Reserve image space so a late-loading screenshot cannot move a section anchor.
  content=content.replace(/<img src="([^"]+)"([^>]*)>/g,(tag,src,rest)=>{
   let dimensions='';

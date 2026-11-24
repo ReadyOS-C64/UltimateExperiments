@@ -38,6 +38,7 @@ KERNAL_KEY = $0277
 .segment "PROBEBSS"
 answer_cursor: .res 2
 answer_column: .res 1
+prompt_answered: .res 1
 
 .segment "PROBE"
 .macro TEXT label
@@ -75,8 +76,10 @@ edit:
     jsr console_edit
     bcc input
     jsr run_answer
-    lda #0
+    lda prompt_answered
+    bne keep_prompt
     sta question_length
+keep_prompt:
     jsr render_prompt
     lda #5
     sta $d020
@@ -87,8 +90,9 @@ edit:
 
 .proc console_prepare
     jsr keyboard_init
-.if ::CONSOLE_AUTOMATION
     lda #0
+    sta prompt_answered
+.if ::CONSOLE_AUTOMATION
     sta KERNAL_KEY_COUNT
 .endif
     lda model_context
@@ -103,6 +107,7 @@ controls_line:
     LINE 23, dual_controls
     LINE 24, model_keys
     jsr render_model
+    LINE STATUS_ROW, model_ready
 .else
     LINE 20, controls
     LINE 21, cancel_hint
@@ -129,15 +134,29 @@ controls_line:
     beq erase
     cmp #RUN_STOP
     beq clear
+    ldx prompt_answered
+    beq append
+    ; The first printable key replaces the completed prompt.
+    cmp #' '
+    bcc waiting
+    cmp #$7f
+    bcs waiting
+    ldx #0
+    stx prompt_answered
+    stx question_length
+append:
     jsr question_append
     bcc redraw
     bcs waiting
 erase:
+    lda prompt_answered
+    bne waiting
     jsr question_delete
     bcc redraw
     bcs waiting
 clear:
     lda #0
+    sta prompt_answered
     sta question_length
 redraw:
     jsr render_prompt
@@ -145,6 +164,8 @@ waiting:
     clc
     rts
 submit:
+    lda prompt_answered
+    bne waiting
     jsr question_begin
     bcs waiting
     sec
@@ -165,6 +186,7 @@ select:
     bcs unavailable
     jsr question_cancel
     lda #0
+    sta prompt_answered
     sta question_length
     jsr clear_answer
     jsr render_model
@@ -203,9 +225,12 @@ copy:
     inx
     bne copy
 prompt_cursor:
+    lda prompt_answered
+    bne done
     ldy #0
     lda #$a0
     sta (cursor),y
+done:
     rts
 .endproc
 
@@ -251,7 +276,7 @@ step:
     cmp #QUESTION_CONTEXT
     jeq context
     LINE STATUS_ROW, finished
-    jmp time
+    jmp keep_prompt
 progress:
     lda question_position
     and #7
@@ -280,6 +305,9 @@ emit:
     jmp step
 context:
     LINE STATUS_ROW, limit
+keep_prompt:
+    lda #1
+    sta prompt_answered
     jmp time
 cancelled:
     jsr question_cancel
@@ -287,6 +315,8 @@ cancelled:
     jmp time
 failed:
     jsr question_cancel
+    lda #0
+    sta prompt_answered
     LINE STATUS_ROW, error
     rts
 time:

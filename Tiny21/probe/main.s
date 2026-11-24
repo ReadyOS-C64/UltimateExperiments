@@ -545,6 +545,9 @@ accent:
     sta COLOR+40*2,x
     lda #7
     sta COLOR+40*7,x
+.if INTERACTIVE
+    sta COLOR+40*8,x
+.endif
     sta COLOR+40*14,x
     lda #13
     sta COLOR+40*11,x
@@ -646,7 +649,7 @@ result_hi: .byte >RECORD1,>RECORD2
 prompt_lo: .byte <prompt1,<prompt2
 prompt_hi: .byte >prompt1,>prompt2
 .if INTERACTIVE
-title: .asciiz "TINY 2.1 / C64 ULTIMATE"
+title: .asciiz "C64 LLM - Little Language Model"
 subtitle: .asciiz "64 MHz checked, 16 MiB REU"
 .else
 title: .byte "TINY 2.1 / ULTIMATE INFERENCE PROBE",0
@@ -656,7 +659,11 @@ loading: .byte "Ultimate DOS is loading MODEL.BIN...",0
 checking: .byte "Verifying the REU image CRC32...    ",0
 loaded: .byte "Ultimate DOS load ",0
 preloaded: .asciiz "Preloaded REU model verified         "
+.if DUAL_MODEL
+load_hint: .asciiz "Check USB folder and model files"
+.else
 load_hint: .asciiz "Load MODEL.REU in the Ultimate menu"
+.endif
 clear_load: .byte "            ",0
 .if CONTEXT_TEST
 finished: .byte "CONTEXT LIMIT / RECOVERY PASSED",0

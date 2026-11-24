@@ -1,4 +1,4 @@
-"""Edit physical VIC footage, preserving typing and compressing inference to two seconds."""
+"""Edit physical VIC footage, with adjustable typing speed and compressing inference to two seconds."""
 import argparse
 from bisect import bisect_right
 from functools import lru_cache
@@ -44,7 +44,9 @@ def font(size):
     return ImageFont.truetype(FONT_PATH, size)
 
 
-def edit(evidence, music, output):
+def edit(evidence, music, output, *, typing_speed=1):
+    if not math.isfinite(typing_speed) or typing_speed <= 0:
+        raise ValueError("typing speed must be positive and finite")
     results = json.loads((evidence / "video-results.json").read_bytes())
     if not results:
         raise ValueError("no completed native prompts")
@@ -69,15 +71,18 @@ def edit(evidence, music, output):
     def frame_at(seconds):
         return frame_by_index(max(0, bisect_right(timestamps, seconds) - 1))
 
+    def typing_frame_count(result):
+        elapsed = result["submitted"] - result["typing_start"]
+        return math.ceil(elapsed * FPS / typing_speed)
+
     def frames():
         yield from (frame_at(0) for _ in range(FPS))
         for result in results:
             start = result["typing_start"]
             submitted = result["submitted"]
             finished = result["finished"]
-            typing_frames = math.ceil((submitted - start) * FPS)
-            for count in range(typing_frames):
-                yield frame_at(start + count / FPS)
+            for count in range(typing_frame_count(result)):
+                yield frame_at(start + count * typing_speed / FPS)
             for count in range(WAIT_FRAMES):
                 fraction = count / WAIT_FRAMES
                 image = frame_at(submitted + fraction * (finished - submitted)).copy()
@@ -87,8 +92,8 @@ def edit(evidence, music, output):
             yield from (complete for _ in range(HOLD_FRAMES))
 
     output.parent.mkdir(parents=True, exist_ok=True)
-    duration = (FPS + sum(math.ceil((v["submitted"] - v["typing_start"]) * FPS)
-                          + WAIT_FRAMES + HOLD_FRAMES for v in results)) / FPS
+    duration = (FPS + sum(typing_frame_count(result) + WAIT_FRAMES + HOLD_FRAMES
+                          for result in results)) / FPS
     command = [
         "/opt/homebrew/bin/ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
         "-f", "rawvideo", "-pixel_format", "rgb24", "-video_size", f"{size[0]}x{size[1]}",
@@ -111,5 +116,7 @@ if __name__ == "__main__":
     parser.add_argument("evidence", type=Path)
     parser.add_argument("music", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--typing-speed", type=float, default=1,
+                        help="typing playback speed multiplier, independent of the two-second waits")
     options = parser.parse_args()
-    edit(options.evidence, options.music, options.output)
+    edit(options.evidence, options.music, options.output, typing_speed=options.typing_speed)

@@ -1,44 +1,81 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Tiny 2.1 for the C64 Ultimate · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Tiny 2.1 for the C64 Ultimate"><link rel="stylesheet" href="../style.css"></head>
-<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor"><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../supereditor/index.html">Overview and downloads</a></li><li><a href="../supereditor/USER_GUIDE.html">Complete user guide</a></li><li><a href="../supereditor/SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="../supereditor/GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="../supereditor/STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="../supereditor/BUILD.html">Build and package</a></li><li><a href="../supereditor/CAPACITY.html">Capacity and limits</a></li><li><a href="../supereditor/PERFORMANCE.html">Performance</a></li><li><a href="../supereditor/OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="../supereditor/MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details><details class="project-nav" data-project="tiny21" open><summary aria-label="Tiny 2.1 guides">Tiny 2.1<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html" aria-current="page">Overview and downloads</a></li><li><a href="DOWNLOAD.html">Download and run v0.6</a></li><li><a href="TECHNICAL.html">Technical details</a></li><li><a href="FUTURE.html">Future versions</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#video">Video</a></li><li><a href="#examples">Examples</a></li><li><a href="#what-the-model-was-trained-on">What the model was trained on</a></li><li><a href="#questions-from-the-c64-demo">Questions from the C64 demo</a></li><li><a href="#screenshots">Screenshots</a></li><li><a href="#credits-and-license">Credits and license</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="tiny-21-for-the-c64-ultimate">Tiny 2.1 for the C64 Ultimate</h1>
-<p>Version <strong>0.6</strong> runs WollyMonjac’s Tiny 2.1 checkpoint on a physical C64 Ultimate using 6502/6510 assembly. The Ultimate’s 64 MHz turbo mode runs the transformer, and a 16 MB REU holds the model and attention history. Load the model into REU from the Ultimate menu, then run the PRG from the same menu. The console verifies and reuses the preloaded model.</p>
-<p><strong>Required hardware: 64 MHz C64 Ultimate and 16 MB REU.</strong></p>
-<p><a href="DOWNLOAD.html">Quick start and download</a> · <a href="TECHNICAL.html">Technical details</a> · <a href="https://readyos-c64.github.io/UltimateExperiments/tiny21/">GitHub Pages</a></p>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>C64 LLM - Little Language Model · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: C64 LLM - Little Language Model"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor"><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../supereditor/index.html">Overview and downloads</a></li><li><a href="../supereditor/USER_GUIDE.html">Complete user guide</a></li><li><a href="../supereditor/SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="../supereditor/GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="../supereditor/STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="../supereditor/BUILD.html">Build and package</a></li><li><a href="../supereditor/CAPACITY.html">Capacity and limits</a></li><li><a href="../supereditor/PERFORMANCE.html">Performance</a></li><li><a href="../supereditor/OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="../supereditor/MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details><details class="project-nav" data-project="tiny21" open><summary aria-label="C64 LLM guides">C64 LLM<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html" aria-current="page">Overview and downloads</a></li><li><a href="DOWNLOAD.html">Download and setup</a></li><li><a href="TECHNICAL.html">Technical details</a></li><li><a href="FUTURE.html">Future versions</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#use-the-console">Use the console</a></li><li><a href="#video">Video</a></li><li><a href="#try-c64proginfo">Try C64PROGINFO</a></li><li><a href="#try-tiny-21">Try Tiny 2.1</a></li><li><a href="#screenshots">Screenshots</a></li><li><a href="#credits-and-license">Credits and license</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="c64-llm---little-language-model">C64 LLM - Little Language Model</h1>
+<p>Version <strong>0.7</strong> runs two selectable character models in native 6502/6510 assembly on a <strong>64 MHz C64 Ultimate with a 16 MB REU</strong>. <strong>Tiny 2.1</strong> answers general short questions. <strong>C64PROGINFO</strong> focuses on Commodore 64 hardware, BASIC V2, and 6502 assembly.</p>
+<p><a href="DOWNLOAD.html">Download and setup</a> · <a href="TECHNICAL.html">Technical details</a> · <a href="BUILD.html">Build from source</a> · <a href="https://readyos-c64.github.io/UltimateExperiments/tiny21/">Online guide</a></p>
+<h2 id="use-the-console">Use the console</h2>
+<p>Unzip the v0.7 package and copy <code>PROBE.PRG</code>, <code>MODEL.BIN</code>, and <code>C64PROGINFO.BIN</code> to <code>/USB1/TINY64-MODELS</code>. Enable the <strong>16 MB REU</strong> and <strong>Command Interface</strong>, set <strong>Turbo Control</strong> to <strong>C64U Turbo Registers</strong>, and run <code>PROBE.PRG</code> from the Ultimate menu. It starts with Tiny 2.1.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Model</th>
+<th align="right">Context</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>F1</strong></td>
+<td>Tiny 2.1</td>
+<td align="right">128 positions</td>
+</tr>
+<tr>
+<td><strong>F3</strong></td>
+<td>C64PROGINFO</td>
+<td align="right">224 positions</td>
+</tr>
+</tbody></table>
+<p>Switch while the console is ready. Check the <strong>Model:</strong> line after <strong>Model ready.</strong> appears. The program loads the selected model if needed and reuses a verified copy already in its REU slot. Type a question and press <strong>RETURN</strong>. <strong>DEL</strong> edits the prompt. Hold <strong>RUN/STOP</strong> to cancel during generation. The console keeps the question on screen with its answer and starts a fresh question on your next typed character.</p>
 <h2 id="video">Video</h2>
-<iframe class="tiny21-video" src="https://www.youtube-nocookie.com/embed/EOZRYfPyuy0" title="Tiny 2.1 running on the C64 Ultimate" width="640" height="360" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="tiny21-video" src="https://www.youtube-nocookie.com/embed/EOZRYfPyuy0" title="Original Tiny 2.1 demo on the C64 Ultimate" width="640" height="360" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-<p><a href="https://www.youtube.com/watch?v=EOZRYfPyuy0">Watch the C64 Ultimate demo on YouTube</a></p>
-<h2 id="examples">Examples</h2>
+<p><a href="https://www.youtube.com/watch?v=EOZRYfPyuy0">Watch the original Tiny 2.1 demo on YouTube</a></p>
+<h2 id="try-c64proginfo">Try C64PROGINFO</h2>
+<ul>
+<li><p><code>what cpu does the c64 use</code> → A MOS 6510.</p>
+</li>
+<li><p><code>what is the resolution of c64 hires bitmap</code> → 320 by 200 pixels.</p>
+</li>
+<li><p><code>show basic code to clear the screen and print ready</code></p>
+<pre><code class="language-basic">10 PRINT CHR$(147)
+20 PRINT &quot;READY&quot;
+</code></pre>
+</li>
+<li><p><code>show assembler code to set border to red</code></p>
+<pre><code class="language-asm">LDA #$02
+STA $D020
+</code></pre>
+</li>
+</ul>
+<p><img loading="lazy" decoding="async" width="384" height="272" src="screenshots/c64proginfo-basic.png" alt="C64PROGINFO retains the two-line BASIC question and shows the multiline answer"></p>
+<p>C64PROGINFO was trained on <strong>3,507 C64 facts and code examples</strong>, expanded into alternate question wordings. It covers the 6510, VIC-II, SID, CIA, memory and registers, KERNAL calls, BASIC V2 and assembly. It works best with familiar phrasing and can give incorrect answers or code. <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/README.md">Training data, tests and results</a></p>
+<h2 id="try-tiny-21">Try Tiny 2.1</h2>
 <table>
 <thead>
 <tr>
 <th>Type this question</th>
 <th>Answer</th>
-<th align="right">Measured time at 64 MHz</th>
+<th align="right">v0.7 measured time at 64 MHz</th>
 </tr>
 </thead>
 <tbody><tr>
 <td><code>what is 7 times 8</code></td>
 <td>7 times 8 is 56.</td>
-<td align="right">36.321 s</td>
+<td align="right">32.442 s</td>
 </tr>
 <tr>
 <td><code>what is the capital of peru</code></td>
 <td>Lima.</td>
-<td align="right">34.442 s</td>
+<td align="right">30.678 s</td>
 </tr>
 </tbody></table>
-<p>On the same Ultimate, version 0.6 completed these prompts about 10.5% faster than the previous wide group-four build. The model generates text one character at a time. It works best with short questions, and its answers can be wrong.</p>
-<p><img loading="lazy" decoding="async" width="384" height="272" src="screenshots/answers.png" alt="Both example answers and their measured times on the physical C64 Ultimate"></p>
-<h2 id="what-the-model-was-trained-on">What the model was trained on</h2>
-<p>The <a href="https://github.com/WollyMonjac/Tiny-2.1">upstream Tiny 2.1 README</a> describes a small question-answering model trained on roughly <strong>3,500 facts</strong>, each asked in several wordings. The release includes the trained checkpoint and inference code. A complete training corpus and source list are unavailable in the upstream release, so the exact facts and topic coverage are unknown.</p>
-<h2 id="questions-from-the-c64-demo">Questions from the C64 demo</h2>
-<p>The physical C64 Ultimate recording includes vocabulary, grammar, translation, geography, science, literature, computing, and math. These are the answers captured for the exact prompts shown.</p>
+<p>The engine generates one character at a time. On the same Ultimate, v0.7 cut the combined time for these two prompts by 10.8% from v0.6. <a href="C64_DUNGEON_COMPARISON.html#measured-on-the-c64-ultimate">Benchmark methodology</a></p>
+<p>The upstream model was trained on roughly <strong>3,500 facts</strong> with multiple wordings. The original physical demo covers vocabulary, grammar, translation, geography, science, literature, computing and math. <a href="https://github.com/WollyMonjac/Tiny-2.1/tree/main/training">Upstream Tiny 2.1 training kit</a></p>
+<h3 id="questions-from-the-original-demo">Questions from the original demo</h3>
 <table>
 <thead>
 <tr>
 <th>Question as entered</th>
-<th>Answer from the C64</th>
+<th>Answer from Tiny 2.1</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -83,8 +120,9 @@
 </tr>
 </tbody></table>
 <h2 id="screenshots">Screenshots</h2>
-<p><img loading="lazy" decoding="async" width="384" height="272" src="screenshots/ready.png" alt="The v0.6 console showing that the preloaded REU model passed verification"></p>
-<p><img loading="lazy" decoding="async" width="384" height="272" src="screenshots/context.png" alt="The native context diagnostic finishes at 128 positions and answers a new question"></p>
+<p><img loading="lazy" decoding="async" width="384" height="272" src="screenshots/ready.png" alt="C64 LLM v0.7 ready with Tiny 2.1 selected and F1 and F3 shortcuts on screen"></p>
+<p><img loading="lazy" decoding="async" width="384" height="272" src="screenshots/c64proginfo-assembly.png" alt="C64PROGINFO returns two lines of 6502 assembly for setting the border to red"></p>
 <h2 id="credits-and-license">Credits and license</h2>
-<p>The original model, checkpoint and Pentium/486 DOS implementation are by the <a href="https://github.com/WollyMonjac/Tiny-2.1">WollyMonjac/Tiny-2.1 project</a>. This project adapts that checkpoint for the C64 Ultimate. The C64 port is <a href="install/LICENSE">MIT licensed</a>. Peddle keeps its <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/third_party/peddle/LICENSE">own MIT notice</a>. The port’s license covers its own code and documentation.</p>
+<p>The original Tiny 2.1 checkpoint and Pentium/486 DOS implementation are by <a href="https://github.com/WollyMonjac/Tiny-2.1">WollyMonjac/Tiny-2.1</a>. The C64 port, documentation, and C64PROGINFO are under the <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/LICENSE">MIT license</a>. Peddle keeps its <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/third_party/peddle/LICENSE">own MIT notice</a>.</p>
+<p>C64PROGINFO&#39;s training tools adapt the PyTorch decoder and training loop from <a href="https://github.com/jaydarkseed757/c64-dungeon">jaydarkseed757’s c64-dungeon</a>. The <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/LICENSE.c64-dungeon">c64-dungeon notice</a> and the <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/LICENSE.tiny21-language">upstream Tiny 2.1 notice</a> are included in the ZIP.</p>
 </main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>
