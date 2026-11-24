@@ -186,3 +186,31 @@ geometry, tokenization, prompts, arithmetic contract, and timing boundaries.
 The reported five-minute run includes an integer-reference token checksum,
 which is stronger evidence than a single narrative screenshot. This review
 has not rerun that benchmark. [Dungeon hardware results](https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/docs/HW_RESULTS.md)
+
+## Engine efficiency and optimization priorities
+
+A fresh Peddle measurement of our v0.6 group-eight binary took 49,333,722 CPU
+cycles for position zero with output logits. Dungeon documents 28,730,682
+cycles for its smaller model at position zero in VICE. Dividing whole-step
+cycles by dense MAC count gives approximately 140 for Tiny21 and 135 for
+Dungeon. This rough normalization puts their efficiencies much closer than
+their raw output-character rates suggest. It includes normalization,
+attention, scales and control overhead in the numerator and counts only dense
+MACs in the denominator. The models, numeric contracts and simulation backends
+differ, so it is an indicator, rather than a matched kernel benchmark.
+
+The strongest candidate to measure first is a row-block bitplane kernel with
+patched absolute addressing. It could reduce pointer and loop overhead and
+extend exact lookup arithmetic to the F2 and output projections. A useful
+experiment should retain our Q/K/V table sharing, sparse F2 fallback, and
+existing all-head attention tile reuse. Compare full-prompt cycles, table
+setup, DMA traffic and exact logits on the same model.
+
+Specialized scale products and divisions are another candidate where
+proved width bounds permit them. Per-head exponent caches and folding the
+attention scale into weights are separate numeric-profile experiments,
+because they alter model quantization. Moving the exponential table into REU
+is a RAM tradeoff that adds transfers; it needs a workspace-driven reason and
+a whole-token measurement. Multi-character tokens and short control prompts
+improve text throughput through model/tokenizer design and should be measured
+separately from assembly improvements.
