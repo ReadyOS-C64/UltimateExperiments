@@ -1,0 +1,182 @@
+{
+  "model_sha256": "f673f34c2211338f4dccdd2bdd3290093c8de27ab716c3ca3eaf74c905796cc5",
+  "image_sha256": "ab903f354012fd71fa86676ca76b917bb641144c529aa6a57ad1cb8417e37bea",
+  "format_version": 4,
+  "tile_rows": 16,
+  "bytes": 390499,
+  "regions": {
+    "embedding": {
+      "offset": 4096,
+      "rows": 97,
+      "columns": 96
+    },
+    "position": {
+      "offset": 13699,
+      "rows": 128,
+      "columns": 96
+    },
+    "0.q": {
+      "offset": 26371,
+      "rows": 96,
+      "columns": 96
+    },
+    "0.k": {
+      "offset": 35875,
+      "rows": 96,
+      "columns": 96
+    },
+    "0.v": {
+      "offset": 45379,
+      "rows": 96,
+      "columns": 96
+    },
+    "0.o": {
+      "offset": 54883,
+      "rows": 96,
+      "columns": 96
+    },
+    "0.f1": {
+      "offset": 64387,
+      "rows": 256,
+      "columns": 96
+    },
+    "0.f2": {
+      "offset": 89731,
+      "rows": 96,
+      "columns": 256
+    },
+    "1.q": {
+      "offset": 114595,
+      "rows": 96,
+      "columns": 96
+    },
+    "1.k": {
+      "offset": 124099,
+      "rows": 96,
+      "columns": 96
+    },
+    "1.v": {
+      "offset": 133603,
+      "rows": 96,
+      "columns": 96
+    },
+    "1.o": {
+      "offset": 143107,
+      "rows": 96,
+      "columns": 96
+    },
+    "1.f1": {
+      "offset": 152611,
+      "rows": 256,
+      "columns": 96
+    },
+    "1.f2": {
+      "offset": 177955,
+      "rows": 96,
+      "columns": 256
+    },
+    "2.q": {
+      "offset": 202819,
+      "rows": 96,
+      "columns": 96
+    },
+    "2.k": {
+      "offset": 212323,
+      "rows": 96,
+      "columns": 96
+    },
+    "2.v": {
+      "offset": 221827,
+      "rows": 96,
+      "columns": 96
+    },
+    "2.o": {
+      "offset": 231331,
+      "rows": 96,
+      "columns": 96
+    },
+    "2.f1": {
+      "offset": 240835,
+      "rows": 256,
+      "columns": 96
+    },
+    "2.f2": {
+      "offset": 266179,
+      "rows": 96,
+      "columns": 256
+    },
+    "3.q": {
+      "offset": 291043,
+      "rows": 96,
+      "columns": 96
+    },
+    "3.k": {
+      "offset": 300547,
+      "rows": 96,
+      "columns": 96
+    },
+    "3.v": {
+      "offset": 310051,
+      "rows": 96,
+      "columns": 96
+    },
+    "3.o": {
+      "offset": 319555,
+      "rows": 96,
+      "columns": 96
+    },
+    "3.f1": {
+      "offset": 329059,
+      "rows": 256,
+      "columns": 96
+    },
+    "3.f2": {
+      "offset": 354403,
+      "rows": 96,
+      "columns": 256
+    },
+    "0.g1": {
+      "offset": 379267,
+      "count": 96
+    },
+    "0.g2": {
+      "offset": 379459,
+      "count": 96
+    },
+    "1.g1": {
+      "offset": 379651,
+      "count": 96
+    },
+    "1.g2": {
+      "offset": 379843,
+      "count": 96
+    },
+    "2.g1": {
+      "offset": 380035,
+      "count": 96
+    },
+    "2.g2": {
+      "offset": 380227,
+      "count": 96
+    },
+    "3.g1": {
+      "offset": 380419,
+      "count": 96
+    },
+    "3.g2": {
+      "offset": 380611,
+      "count": 96
+    },
+    "final": {
+      "offset": 380803,
+      "count": 96
+    },
+    "position_extension": {
+      "offset": 380995,
+      "rows": 96,
+      "columns": 96
+    }
+  },
+  "context": 224,
+  "model_name": "E2JROMAJI"
+}

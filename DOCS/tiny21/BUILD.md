@@ -41,6 +41,31 @@ The reply fills ten lines. This example assumes the normal VIC bank and
 screen addresses. A pattern must already be at decimal address 3072.
 [More checked prompts](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/native_checks.txt).
 
+## Build the v0.8 three-model console
+
+Use the prebuilt `models/E2JROMAJI.BIN` included on the v0.8 branch. Build the
+group-eight core and create a package with all three model files.
+The [Japanese training pipeline](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/JAPANESE.md) documents how to
+reproduce the model.
+
+```sh
+make reference all build/group8/core.bin
+python3 -m tools.model reference/TINY.BIN build/group8-model.reu --layout group8
+python3 -m probe.package_models --out build/Tiny21-v0.8-English-Japanese.zip \
+  --tiny build/group8-model.reu --programmer models/C64PROGINFO.BIN \
+  --japanese models/E2JROMAJI.BIN
+```
+
+Unzip the package and copy `PROBE.PRG`, `MODEL.BIN`, `C64PROGINFO.BIN`, and
+`E2JROMAJI.BIN` into `/USB1/TINY64-MODELS`. Run `PROBE.PRG` from the
+Ultimate menu. Press **F5**, wait for **Model ready.**, then type a short English
+sentence and press **RETURN**.
+
+The Japanese model lives at REU `$200000`. The existing model slots remain
+at `$000000` and `$100000`, and the active model uses the shared attention
+cache. You can also pass `--third-model models/E2JROMAJI.BIN` to the
+interactive probe builder to get labels and an identity manifest for testing.
+
 ## Development models with up to 255 positions
 
 The v0.7 group-eight core accepts T64M layout 4. Use a TNY2 checkpoint with

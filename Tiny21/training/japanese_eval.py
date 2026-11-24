@@ -33,7 +33,8 @@ def main():
     parser.add_argument('model', type=Path)
     parser.add_argument('--suite', type=Path, default=Path(__file__).with_name('japanese_checks.txt'))
     parser.add_argument('--validation', type=Path)
-    parser.add_argument('--train', type=Path, help='tag prompts present in the training file')
+    parser.add_argument('--train', type=Path, action='append', default=[],
+                        help='tag prompts present in a training file (can be repeated)')
     parser.add_argument('--per-domain', type=int, default=12)
     parser.add_argument('--seed', type=int, default=804)
     parser.add_argument('--device', default='mps')
@@ -45,11 +46,12 @@ def main():
     known = set()
     if args.train:
         wanted = {normalized(row['prompt']) for row in rows}
-        with args.train.open() as stream:
-            for line in stream:
-                prompt = normalized(json.loads(line)['prompt'])
-                if prompt in wanted:
-                    known.add(prompt)
+        for path in args.train:
+            with path.open() as stream:
+                for line in stream:
+                    prompt = normalized(json.loads(line)['prompt'])
+                    if prompt in wanted:
+                        known.add(prompt)
 
     if args.integer:
         model = Network(args.model.read_bytes())
