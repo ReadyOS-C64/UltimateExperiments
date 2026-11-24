@@ -112,9 +112,13 @@ def main():
     parser.add_argument('--resume', action='store_true')
     parser.add_argument('--qat', action='store_true')
     parser.add_argument('--boost-fact', help='increase the sample rate of one new fact during a short fine-tune')
+    parser.add_argument('--language-share', type=float, default=0.08,
+                        help='fraction of batch samples reserved for supplemental language and logic')
     args = parser.parse_args()
     if args.resume and args.init:
         parser.error('--resume and --init are mutually exclusive')
+    if not 0 <= args.language_share < 1:
+        parser.error('--language-share must be at least zero and below one')
     torch.manual_seed(args.seed)
     rng = np.random.default_rng(args.seed)
     args.out.mkdir(parents=True, exist_ok=True)
@@ -132,6 +136,12 @@ def main():
     examples = load_examples(args.data / 'train.jsonl')
     train = encode_examples(examples, model.cfg.ctx_len)
     weights = training_weights(examples)
+    support = np.array([row['fact'].startswith(('language.', 'logic.')) for row in examples])
+    if support.any():
+        if support.all():
+            raise ValueError('language and logic examples require a C64 technical corpus')
+        weights[support] *= args.language_share / weights[support].sum()
+        weights[~support] *= (1 - args.language_share) / weights[~support].sum()
     if args.boost_fact:
         selected = np.array([row['fact'] == args.boost_fact for row in examples])
         if not selected.any():

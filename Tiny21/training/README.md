@@ -90,3 +90,48 @@ and BASIC examples. F1 returned to Tiny 2.1 and answered the arithmetic
 prompt. F3 then reused the resident C64PROGINFO image. The native Peddle
 console also generated and displayed the ten-line sprite example.
 [Physical assembler output](../screenshots/proginfo-assembler.png).
+
+## Expanded C64 wording and English-language experiment
+
+The original 3,507 C64 fact and example records yield 360,987 technical
+training wordings after lexical substitutions and question reframing.
+The control and mixed runs both use those C64 wordings, initialized from
+the same C64PROGINFO checkpoint. The mixed run reserves 8% of its sampling
+probability for 6,096 additional English and C64 logic wordings.
+
+`tiny21_language.tsv` contains 79 selected English relations from WollyMonjac's
+Tiny 2.1 `lang.tsv` and `words2.tsv`. They cover opposites, synonyms, plurals
+and verb forms useful to C64 questions. The import excludes geography,
+translations and other trivia. The C64 logic examples derive their answers
+from byte operations, bit masks and the 6510 branch conditions. The
+experiment starts from our C64PROGINFO weights.
+[MIT notice](LICENSE.tiny21-language) · [Upstream data licenses](https://github.com/WollyMonjac/Tiny-2.1/blob/49348445661ffc9106f243afb4eafe499a51e286/DATA_LICENSES.md)
+
+```sh
+python -m training.language_mix --data build/corpus-expanded --out build/language
+python -m training.verify_corpus build/language/mixed
+for variant in control mixed; do
+  python -m training.train --data "build/language/$variant" \
+    --out "build/language/$variant-weights" --init build/proginfo-sprite/latest.pt \
+    --steps 3600 --eval-every 600 --batch 64 --seed 91 --lr .00024 --qat
+done
+```
+
+The original independent C64 prompts and the 36 new prompts in
+`language_transfer_checks.txt` stay outside both training sets. Baseline,
+control and mixed evaluations measure supported prompts, the two independent
+sets and held-out English and logic wordings separately.
+
+| Check | Released checkpoint | Expanded C64 control | Expanded C64 + English and logic |
+| --- | ---: | ---: | ---: |
+| Supported C64 prompts, QAT | 11/11 | 11/11 | 11/11 |
+| Familiar-family C64 wordings, QAT | 245/252 | 248/252 | 240/252 |
+| Independent C64 wordings, exported integer model | 11/69 | 10/69 | 8/69 |
+| Held-out English and logic wordings, QAT | 0/90 | 0/90 | 25/90 |
+| Alternate branch wording and unseen byte operands, QAT | 0/36 | 0/36 | 2/36 |
+
+The auxiliary training helped on examples of the auxiliary tasks. The
+mixed checkpoint scored lower on both C64 wording checks, so the release
+uses the prior checkpoint. Peddle ran the experimental image from the
+C64PROGINFO slot and matched all checked logits on the CPU identification
+prompt.

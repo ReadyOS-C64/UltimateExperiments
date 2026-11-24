@@ -1,0 +1,37 @@
+# Fresh C64 prompts held out from the expanded wording and language-mix experiment.
+architecture|fact|name the microprocessor that executes c64 programs|A MOS 6510.
+architecture|fact|does the commodore 64 contain 32 or 64 kilobytes of ram|64 KiB of main RAM.
+architecture|fact|which pair of locations tells the cpu where to begin after a reset|$FFFC and $FFFD, low byte first.
+architecture|fact|which part of memory is reserved for the processor stack|$0100 through $01FF.
+architecture|fact|where in ram does the first basic program line normally start|$0801 by default.
+architecture|fact|where is the beginning of the default text buffer|$0400, or 1024 decimal, in the default setup.
+architecture|fact|what location holds the 6510 banking port direction bits|$00 is the 6510 data direction register.
+vic|fact|what chip is in charge of making the c64 picture|The MOS VIC-II handles graphics and video.
+vic|fact|tell me the amount of memory in a single vic bank|The VIC-II addresses a 16 KiB bank at a time.
+vic|fact|which address should my program write to change the outside frame colour|$D020, or 53280 decimal.
+vic|fact|give the width and height in pixels of a hires bitmap|320 by 200 pixels.
+vic|fact|how wide is the picture in multicolour bitmap mode|160 by 200 double-width pixels.
+vic|fact|why does each text row fetch cost the 6510 bus time|The VIC-II steals cycles to fetch the screen and color cells.
+sprite|fact|how many separate hardware objects can i move with the sprite registers|Eight hardware sprites, numbered 0 to 7.
+sprite|fact|where can i find the pointer bytes for the normal screen setup|$07F8 through $07FF.
+sprite|fact|what register holds sprite x coordinates above 255|$D010 holds the ninth X bit for each sprite.
+sprite|fact|what memory location reports one sprite hitting a second sprite|$D01E, cleared by reading.
+sid|fact|how many simultaneous oscillator voices can one sid program|Three programmable voices.
+sid|fact|how wide is each voice's pitch word|16 bits, low byte first.
+sid|fact|which part of d418 is the master output level|The low nibble of $D418 sets master volume.
+sid|fact|what flag selects the noise waveform for one voice|Bit 7 in a voice control register.
+interrupt|fact|do i write ones or zeros to acknowledge the vic flags|Write ones to the flag bits you want to clear in $D019.
+interrupt|fact|would a pending nmi be blocked by the i flag|The I flag masks IRQ. NMI ignores it.
+interrupt|fact|what should the last 6510 instruction of a native interrupt routine be|RTI restores the status and program counter from the stack.
+cia|fact|which chip drives the maskable interrupt input instead of nmi|CIA 1 is wired to the CPU IRQ input.
+cia|fact|which location lets me read the direction switches of controller two|Read active-low joystick bits 0 to 4 at $DC00.
+cia|fact|are each of the cia timers 8 or 16 bits|Each CIA timer is 16 bits wide.
+asm|fact|what do i execute to remove incoming carry before an ordinary adc|Use CLC before ADC for an addition without incoming carry.
+asm|fact|what instruction returns control to the caller after jsr|RTS returns from a JSR subroutine call.
+asm|fact|which cpu flag reports a signed result overflowing after adc|The V flag reports signed overflow after ADC or SBC.
+kernal|fact|what address in the kernal jump table outputs the byte in the accumulator|CHROUT is at $FFD2. Put the byte to output in A.
+basic|fact|what does basic call the statement that polls for keys|GET polls a character. INPUT waits for a line and parses it.
+basic|fact|which punctuation joins commands within a numbered basic line|A colon separates statements on one BASIC program line.
+examples|basic|write a one line basic program that makes the border red|10 POKE 53280,2
+examples|assembler|give me two machine language instructions for changing the border to red|LDA #$02\nSTA $D020
+examples|basic|give basic v2 source that clears the display and then prints ready|10 PRINT CHR$(147)\n20 PRINT "READY"

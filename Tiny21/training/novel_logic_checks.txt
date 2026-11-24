@@ -1,0 +1,37 @@
+# 6510 probes with operands held out from the auxiliary training grid.
+c64 bit logic|fact|after and #$05 with a holding $12 what byte remains|$00.
+c64 bit logic|fact|after and #$23 with a holding $34 what byte remains|$20.
+c64 bit logic|fact|after and #$b4 with a holding $58 what byte remains|$10.
+c64 bit logic|fact|after and #$31 with a holding $96 what byte remains|$10.
+c64 bit logic|fact|after and #$a3 with a holding $c6 what byte remains|$82.
+c64 bit logic|fact|after and #$f0 with a holding $9a what byte remains|$90.
+c64 bit logic|fact|after and #$d7 with a holding $76 what byte remains|$56.
+c64 bit logic|fact|after and #$e3 with a holding $2d what byte remains|$21.
+c64 bit logic|fact|after or #$05 with a holding $12 what byte remains|$17.
+c64 bit logic|fact|after or #$23 with a holding $34 what byte remains|$37.
+c64 bit logic|fact|after or #$b4 with a holding $58 what byte remains|$FC.
+c64 bit logic|fact|after or #$31 with a holding $96 what byte remains|$B7.
+c64 bit logic|fact|after or #$a3 with a holding $c6 what byte remains|$E7.
+c64 bit logic|fact|after or #$f0 with a holding $9a what byte remains|$FA.
+c64 bit logic|fact|after or #$d7 with a holding $76 what byte remains|$F7.
+c64 bit logic|fact|after or #$e3 with a holding $2d what byte remains|$EF.
+c64 bit logic|fact|after eor #$05 with a holding $12 what byte remains|$17.
+c64 bit logic|fact|after eor #$23 with a holding $34 what byte remains|$17.
+c64 bit logic|fact|after eor #$b4 with a holding $58 what byte remains|$EC.
+c64 bit logic|fact|after eor #$31 with a holding $96 what byte remains|$A7.
+c64 bit logic|fact|after eor #$a3 with a holding $c6 what byte remains|$65.
+c64 bit logic|fact|after eor #$f0 with a holding $9a what byte remains|$6A.
+c64 bit logic|fact|after eor #$d7 with a holding $76 what byte remains|$A1.
+c64 bit logic|fact|after eor #$e3 with a holding $2d what byte remains|$CE.
+c64 branch logic|fact|will bcc jump if the cpu carry flag is active|Branch not taken.
+c64 branch logic|fact|will bcc jump if the cpu carry flag is not active|Branch taken.
+c64 branch logic|fact|will bcs jump if the cpu carry flag is active|Branch taken.
+c64 branch logic|fact|will bcs jump if the cpu carry flag is not active|Branch not taken.
+c64 branch logic|fact|will beq jump if the cpu zero flag is active|Branch taken.
+c64 branch logic|fact|will beq jump if the cpu zero flag is not active|Branch not taken.
+c64 branch logic|fact|will bne jump if the cpu zero flag is active|Branch not taken.
+c64 branch logic|fact|will bne jump if the cpu zero flag is not active|Branch taken.
+c64 branch logic|fact|will bmi jump if the cpu negative flag is active|Branch taken.
+c64 branch logic|fact|will bmi jump if the cpu negative flag is not active|Branch not taken.
+c64 branch logic|fact|will bpl jump if the cpu negative flag is active|Branch not taken.
+c64 branch logic|fact|will bpl jump if the cpu negative flag is not active|Branch taken.
