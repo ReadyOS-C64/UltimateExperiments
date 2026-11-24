@@ -26,7 +26,7 @@ class Machine:
     lib.tiny_enable_cycle_profile.argtypes = (C.c_void_p,)
     lib.tiny_enable_cycle_profile.restype = C.POINTER(C.c_uint64 * 65536)
     lib.tiny_run.argtypes = (C.c_void_p, C.c_uint16, C.c_uint64,
-                            C.POINTER(C.c_uint64), C.c_uint8, C.c_uint8, C.c_uint32)
+                            C.POINTER(C.c_uint64), C.c_uint8, C.c_uint8, C.c_uint32, C.c_uint32)
     def __init__(self, core_dir=BUILD):
         self.symbols = {name[1:]: int(addr, 16)
                         for _, addr, name in map(str.split, (core_dir / "core.lbl").read_text().splitlines())}
@@ -74,12 +74,13 @@ class Machine:
         addr = self.symbols[name]
         return int.from_bytes(bytes(self.ram[addr:addr + size]), "little", signed=signed)
 
-    def run(self, label, accumulator=0, *, instruction_limit=2_000_000, x=0, model_length=0):
-        if not 0 <= model_length <= 0x80000:
+    def run(self, label, accumulator=0, *, instruction_limit=2_000_000, x=0,
+            model_length=0, model_base=0):
+        if not 0 <= model_length <= 0x80000 or model_base not in (0, 0x100000):
             raise ValueError("guard model length exceeds the owned model region")
         stats = (C.c_uint64 * 9)()
         status = self.lib.tiny_run(self.ptr, self.symbols[label], instruction_limit, stats,
-                                   accumulator, x, model_length)
+                                   accumulator, x, model_length, model_base)
         if status:
             error = {1: "instruction budget", 2: "unsupported REU command",
                      3: "unowned CPU write", 4: "stack guard",

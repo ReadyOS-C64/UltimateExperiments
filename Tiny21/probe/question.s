@@ -1,6 +1,10 @@
 .setcpu "6502"
 .include "question.inc"
+.include "bundle.inc"
 .import model_reset, model_ingest, model_choose, token_pos, model_context
+.if ::DUAL_MODEL
+    .import active_model
+.endif
 .export question_text, question_length, question_position, question_char
 .export question_append, question_delete, question_begin, question_step, question_cancel
 
@@ -71,6 +75,12 @@ trimmed:
     lda #1
     sta question_lower
     sta question_active
+.if ::DUAL_MODEL
+    lda active_model
+    beq case_scan
+    clc
+    rts
+.endif
 case_scan:
     dex
     lda question_text,x
@@ -105,7 +115,11 @@ next:
     lda question_active
     beq idle
     lda pending_token
-    bne decode
+    beq prefill
+    sec
+    sbc #1
+    jmp decode
+prefill:
     ldy question_position
     cpy question_end
     beq delimiter
@@ -138,13 +152,30 @@ decode:
     beq context
     jsr model_choose
     bcs failure
-    cmp #2
-    bcc eos
+    cmp #1
+    beq eos
+    cmp #0
+    bne character
+.if ::DUAL_MODEL
+    lda active_model
+    beq eos
+    lda #1                  ; pending stores token plus one
     sta pending_token
+    lda #13
+    bne output
+.else
+    beq eos
+.endif
+character:
+    tax
+    inx
+    stx pending_token
     clc
     adc #30
+output:
     sta question_char
     lda #QUESTION_OUTPUT
+    clc
     rts
 idle:
     lda #QUESTION_IDLE

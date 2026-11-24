@@ -27,9 +27,9 @@ def round_div(n, d):
     return -magnitude if n < 0 else magnitude
 
 
-def input_tokens(line, context=BASE_CONTEXT):
+def input_tokens(line, context=BASE_CONTEXT, *, lowercase=False):
     text = "".join(c for c in line if " " <= c <= "~")[:context - 56].rstrip(" ")
-    if text.isupper():
+    if lowercase or text.isupper():
         text = text.lower()
     return [ord(c) - 30 for c in text]
 
@@ -160,17 +160,17 @@ class Network:
             result.extend(round_div(value, denominator) for value in weighted)
         return result
 
-    def answer(self, question):
+    def answer(self, question, *, multiline=False):
         self.reset()
-        for token in input_tokens(question, self.context):
+        for token in input_tokens(question, self.context, lowercase=multiline):
             self.step(token, logits=False)
         scores = self.step(1)
         output = []
         while self.position < self.context:
             token = max(range(97), key=scores.__getitem__)
-            if token <= 1:
+            if token == 1 or (token == 0 and not multiline):
                 break
-            output.append(chr(token + 30))
+            output.append("\n" if token == 0 else chr(token + 30))
             scores = self.step(token)
         return "".join(output)
 

@@ -3,6 +3,9 @@
 .import reu_transfer
 .importzp reu_addr, reu_ram, reu_size, reu_direction
 .export verify_model_image, model_crc
+.if DUAL_MODEL
+    .import requested_model, slot_banks
+.endif
 
 TILE = $8000
 CHUNK = $2000
@@ -16,6 +19,10 @@ byte_limit = $f3
 .segment "PROBEBSS"
 blocks:    .res 1
 model_crc: .res 4
+.if DUAL_MODEL
+tail_lo:   .res 1
+tail_hi:   .res 1
+.endif
 
 .segment "PROBE"
 verify_model_image:
@@ -23,19 +30,36 @@ verify_model_image:
     .repeat 4, I
         sta model_crc+I
     .endrepeat
-    lda #PAGES
-    sta blocks
     lda #0
     sta reu_addr
     sta reu_addr+1
+.if DUAL_MODEL
+    ldx requested_model
+    lda slot_banks,x
     sta reu_addr+2
+    lda pages_by_model,x
+    sta blocks
+    lda tail_low_by_model,x
+    sta tail_lo
+    lda tail_high_by_model,x
+    sta tail_hi
+.else
+    sta reu_addr+2
+    lda #PAGES
+    sta blocks
+.endif
 verify_block:
     lda #<CHUNK
     ldx #>CHUNK
     ldy blocks
     bne stage
+.if DUAL_MODEL
+    lda tail_lo
+    ldx tail_hi
+.else
     lda #<TAIL
     ldx #>TAIL
+.endif
 stage:
     sta byte_limit
     stx page_limit
@@ -82,10 +106,22 @@ final:
         sta model_crc+I
     .endrepeat
     ldx #3
+.if DUAL_MODEL
+    ldy #3
+    lda requested_model
+    beq compare
+    ldy #7
+.endif
 compare:
     lda model_crc,x
+.if DUAL_MODEL
+    cmp expected,y
+    bne corrupt
+    dey
+.else
     cmp expected,x
     bne corrupt
+.endif
     dex
     bpl compare
     clc
@@ -114,4 +150,13 @@ update_crc:
 
 expected:
     .dword MODEL_CRC32
+.if DUAL_MODEL
+    .dword SECOND_MODEL_CRC
+pages_by_model:
+    .byte PAGES, SECOND_MODEL_SIZE / CHUNK
+tail_low_by_model:
+    .byte <TAIL, <(SECOND_MODEL_SIZE .mod CHUNK)
+tail_high_by_model:
+    .byte >TAIL, >(SECOND_MODEL_SIZE .mod CHUNK)
+.endif
 .include "crc_table.inc"

@@ -13,6 +13,7 @@ public:
     std::array<uint8_t, 65536> ram{};
     unsigned mode = 0;
     unsigned model_bytes = 0;
+    unsigned slot = 0;
     unsigned transactions = 0;
     bool opened = false;
     bool loaded = false;
@@ -64,7 +65,7 @@ private:
         } else if (op == 2) {
             const std::string path(command.begin() + 3, command.end());
             if (command[2] != 1 || !path.starts_with("/USB1/TINY64-") ||
-                    !path.ends_with("/MODEL.BIN")) protocol_error = true;
+                    !path.ends_with(slot ? "/C64PROGINFO.BIN" : "/MODEL.BIN")) protocol_error = true;
             opened = true;
         } else if (op == 7 && opened) {
             unsigned actual = mode == 1 ? model_bytes - 1 : model_bytes;
@@ -73,7 +74,7 @@ private:
             more = true;  // force a second asynchronous block on file-info
         } else if (op == 0x21 && opened && command.size() == 10) {
             for (unsigned i = 0; i < 4; ++i) {
-                if (command[i + 2] != 0 ||
+                if (command[i + 2] != (slot && i == 2 ? 0x10 : 0) ||
                     command[i + 6] != uint8_t(model_bytes >> (i * 8))) protocol_error = true;
             }
             loaded = true;
@@ -166,12 +167,15 @@ private:
 
 extern "C" int test_uci(const uint8_t *image, unsigned bytes, uint16_t start_clock,
                         uint16_t loader, uint16_t dos_stage, uint16_t dos_status,
-                        unsigned expected, unsigned mode, uint8_t *result) {
+                        uint16_t requested_model, unsigned slot, unsigned expected,
+                        unsigned mode, uint8_t *result) {
     if (bytes > 0x2000) return 1;
     Fixture fixture;
     fixture.mode = mode;
+    fixture.slot = slot;
     fixture.model_bytes = expected;
     std::memcpy(fixture.ram.data() + 0xa000, image, bytes);
+    if (requested_model) fixture.ram[requested_model] = slot;
     fixture.call(start_clock, 500);
     result[0] = fixture.call(loader, 500000);
     result[1] = fixture.ram[dos_stage];

@@ -22,6 +22,8 @@ BASE_CONTEXT = 128
 MAX_CONTEXT = 255
 BASE_CHECKPOINT_BYTES = 381808
 POSITION_ROW_BYTES = 4 + 96
+MODEL_NAME_OFFSET = 53
+MODEL_NAME_BYTES = 11
 
 
 @dataclass
@@ -119,10 +121,15 @@ def append_tiles(payload, matrix, first, end, transform=None):
             payload.extend(round(scale * (1 << 24)).to_bytes(3, "little"))
 
 
-def image(data, layout="canonical"):
+def image(data, layout="canonical", *, model_name=None):
     if layout not in LAYOUTS:
         raise ValueError(f"unknown matrix layout {layout!r}")
     version = LAYOUTS[layout]
+    if model_name is not None:
+        encoded_name = model_name.encode("ascii")
+        if (version != 4 or not 1 <= len(encoded_name) <= MODEL_NAME_BYTES
+                or not encoded_name.isalnum()):
+            raise ValueError("named images require layout 4 and an ASCII alphanumeric name")
     matrices, gains = decode(data)
     digest = hashlib.sha256(data).hexdigest()
     if version < 4 and digest != MODEL_SHA:
@@ -155,12 +162,16 @@ def image(data, layout="canonical"):
                      256, len(entries), len(payload), gain_base, bytes.fromhex(digest))
     if version == 4:
         payload[52] = positions.rows
+        if model_name is not None:
+            payload[MODEL_NAME_OFFSET:MODEL_NAME_OFFSET + len(encoded_name)] = encoded_name
     for index, entry in enumerate(entries):
         struct.pack_into("<IHH", payload, 64 + 8 * index, *entry)
     manifest = dict(model_sha256=digest, image_sha256=hashlib.sha256(payload).hexdigest(),
                     format_version=version, tile_rows=TILE_ROWS, bytes=len(payload), regions=directory)
     if version == 4:
         manifest["context"] = positions.rows
+        if model_name is not None:
+            manifest["model_name"] = model_name
     return payload, manifest
 
 

@@ -88,18 +88,22 @@ class Ultimate:
             ftp.login("anonymous", "anonymous@")
             # MKD is exclusive. Never turn an existing directory into a run root.
             ftp.mkd(root)
-            files = [("PROBE.PRG", "prg_sha256")]
+            files = [("PROBE.PRG", manifest["prg_sha256"])]
             if "model_sha256" in manifest:
-                files.insert(0, ("MODEL.BIN", "model_sha256"))
-            for name, key in files:
+                files.insert(0, ("MODEL.BIN", manifest["model_sha256"]))
+            if second := manifest.get("second_model"):
+                if second["file"] != "C64PROGINFO.BIN":
+                    raise ValueError("unexpected second model filename")
+                files.insert(0, ("C64PROGINFO.BIN", second["sha256"]))
+            for name, expected in files:
                 local = (bundle / name).read_bytes()
-                if hash_bytes(local) != manifest[key]:
+                if hash_bytes(local) != expected:
                     raise ValueError(f"bundle identity mismatch for {name}")
                 target = root + "/" + name
                 ftp.storbinary("STOR " + target, io.BytesIO(local))
                 copy = io.BytesIO()
                 ftp.retrbinary("RETR " + target, copy.write)
-                if hash_bytes(copy.getvalue()) != manifest[key]:
+                if hash_bytes(copy.getvalue()) != expected:
                     raise ValueError(f"remote content identity mismatch for {name}")
 
 
@@ -498,7 +502,8 @@ def run(device, out, bundle, timeout, *, record_video=False, start_query=1,
                     ready = frames.receive(time.monotonic() + 10)
                     capture_questions(device, frames, out, marker, ready, start_query=start_query,
                                       color=frame_color,
-                                      visible=probe_visible, png=save_png, save_json=json_file)
+                                      visible=probe_visible, png=save_png, save_json=json_file,
+                                      timing_row=manifest.get("timing_row", 17))
                 if keyboard_timeout is not None:
                     from manual_keyboard import verify
                     json_file(out / "boot-result.json", result)

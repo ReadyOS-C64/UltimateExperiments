@@ -10,7 +10,7 @@ import zlib
 from tools.peddle import Machine
 
 
-def check_uci(bundle, symbols, program, expected_size):
+def check_uci(bundle, symbols, program, expected_size, *, slot=0):
     root = Path(__file__).resolve().parent.parent
     source = root / "third_party/peddle/Peddle"
     dylib = bundle / "uci-fixture.so"
@@ -22,8 +22,8 @@ def check_uci(bundle, symbols, program, expected_size):
                     *(str(path) for path in sorted(source.glob("*.cpp")))],
                    env=env, check=True)
     fixture = C.CDLL(str(dylib.resolve()))
-    fixture.test_uci.argtypes = (C.c_char_p, C.c_uint, *([C.c_uint16] * 4),
-                                C.c_uint, C.c_uint, C.POINTER(C.c_uint8))
+    fixture.test_uci.argtypes = (C.c_char_p, C.c_uint, *([C.c_uint16] * 5),
+                                C.c_uint, C.c_uint, C.c_uint, C.POINTER(C.c_uint8))
     for mode, expected in ((0, (0, 4, 48, 48, 4, 1, 1)),
                            (1, (1, 2, 48, 48, 3, 0, 1)),
                            (2, (1, 3, 48, 50, 4, 1, 1))):
@@ -31,7 +31,7 @@ def check_uci(bundle, symbols, program, expected_size):
         status = fixture.test_uci(
             program, len(program), *(symbols[name] for name in
                                     ("clock_start", "load_model_file", "dos_stage", "dos_status")),
-            expected_size, mode, result)
+            symbols.get("requested_model", 0), slot, expected_size, mode, result)
         assert status == 0 and tuple(result) == expected, (mode, status, tuple(result))
     print("Native UCI passed async multi-block reply, size mismatch, and LOAD_REU failure/close.")
     fixture.test_turbo.argtypes = (C.c_char_p, C.c_uint, *([C.c_uint16] * 4),

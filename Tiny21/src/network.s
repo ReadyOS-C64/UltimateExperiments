@@ -16,7 +16,7 @@
     .import mul8_unsigned
     .importzp mul_rhs, mul_result
 .endif
-.export model_open, model_embed, model_project, model_norm, layer_front
+.export model_open, model_open_at, model_bank, model_embed, model_project, model_norm, layer_front
 .export token_id, token_pos, model_context, layer_id, residual, normalized, query, key, value
 .export layer_tail, attention, hidden, projected
 
@@ -36,6 +36,7 @@ IMAGE_END_HI = ^IMAGE_SIZE
 
 .segment "BSS"
 model_ready:      .res 1
+model_bank:       .res 1
 directory:        .res MATRICES * 8
 projection_left:  .res 2
 projection_bytes: .res 1
@@ -120,7 +121,19 @@ packed_matrix:
 ; Admit fixed geometry and directory offsets. Layouts 1-3 also pin the
 ; upstream identity. Layout 4 supplies its own identity and context size.
 ; The caller must authenticate the payload before use.
-.proc model_open
+model_open:
+    lda #0
+.proc model_open_at
+    ; A is the high byte of an aligned catalog slot, $000000 or $100000.
+    cmp #0
+    beq slot
+    cmp #$10
+    beq slot
+    sec
+    rts
+slot:
+    sta model_bank
+    sta reu_addr+2
     lda #0
     sta model_ready
     sta logits_ready
@@ -128,7 +141,6 @@ packed_matrix:
     sta model_context
     sta reu_addr
     sta reu_addr+1
-    sta reu_addr+2
 .ifdef GROUP4_EXPERIMENT
     sta group4_model
     sta group4_ready
@@ -258,10 +270,14 @@ fail:
     asl
     asl
     tax
-    .repeat 3, I
+    .repeat 2, I
         lda directory+I,x
         sta reu_addr+I
     .endrepeat
+    lda directory+2,x
+    clc
+    adc model_bank
+    sta reu_addr+2
     clc
     rts
 failure:
@@ -448,6 +464,8 @@ copy:
     sta embedding_rows
     POINTER reu_addr, IMAGE_SIZE
     lda #^IMAGE_SIZE
+    clc
+    adc model_bank
     sta reu_addr+2
     jmp read_position
 base_position:
@@ -484,6 +502,8 @@ done:
     lda #>GAIN_BASE
     sta reu_addr+1
     lda #^GAIN_BASE
+    clc
+    adc model_bank
     sta reu_addr+2
     cpx #0
     beq load

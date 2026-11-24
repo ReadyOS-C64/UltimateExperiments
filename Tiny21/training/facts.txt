@@ -1,0 +1,201 @@
+# category|topic|answer|natural question|second question
+architecture|main cpu|A MOS 6510.|what cpu does the c64 use|what processor is in a commodore 64
+architecture|main ram|64 KiB of main RAM.|how much ram does the c64 have|what is the amount of physical ram
+architecture|6510 and 6502 difference|The 6510 adds an I/O port at $00 and $01.|how does a 6510 differ from a 6502|what did mos add to the 6502 for the 6510
+architecture|cpu data width|8 bits.|how wide is the 6510 data bus|is the c64 cpu eight bit
+architecture|cpu address width|16 bits, for 64 KiB of addresses.|how wide is the address bus|how many address bits does a 6510 drive
+architecture|active reset vector|$FFFC and $FFFD, low byte first.|where does the 6510 read the reset vector|what addresses hold the cpu reset vector
+architecture|active nmi vector|$FFFA and $FFFB, low byte first.|where is the processor nmi vector|what is the hardware nmi vector at the top of memory
+architecture|active irq vector|$FFFE and $FFFF, low byte first.|where is the processor irq vector|what is the hardware irq vector
+architecture|irq indirection vector|$0314 and $0315 with the KERNAL IRQ dispatcher active.|where does the kernal fetch the ram irq vector|what is the kernal irq hook address
+architecture|nmi indirection vector|$0318 and $0319 with the KERNAL NMI dispatcher active.|where is the kernal ram nmi hook|how can my program hook the kernal nmi
+architecture|break ram vector|$0316 and $0317.|where is the kernal brk ram vector|where does the kernal brk dispatcher jump indirectly
+architecture|computer stack page|$0100 through $01FF.|what memory page contains the c64 stack|where does a 6510 push data
+architecture|zero page range|$0000 through $00FF.|what is the zero page range|which addresses can use zero page addressing
+architecture|basic program start|$0801 by default.|where do basic programs begin|what is the ordinary c64 basic start address
+architecture|basic rom range|$A000 through $BFFF when mapped in.|what address range is basic rom|where is the c64 basic rom mapped
+architecture|kernal rom range|$E000 through $FFFF when mapped in.|where is kernal rom visible|what address range holds kernal
+architecture|character rom range|$D000 through $DFFF when selected for CPU reads.|where does the cpu see character rom|what addresses contain the character generator rom
+architecture|io memory range|$D000 through $DFFF when I/O is selected.|what is the c64 io address range|where are the mapped io chips
+architecture|color ram base|$D800, or 55296 decimal.|where is color ram|what is the first color ram address
+architecture|color ram width|Four bits per cell.|how many bits wide is color ram|how big is a c64 color ram entry
+architecture|color ram screen span|$D800 through $DBE7 cover 1000 visible cells.|what part of color ram maps to the 40 by 25 screen|where is the last visible color ram byte
+architecture|screen ram base|$0400, or 1024 decimal, in the default setup.|where is the normal c64 screen memory|what is the default screen ram address
+architecture|screen ram visible span|$0400 through $07E7 at the default screen base.|where is the end of default screen memory|what addresses make up the visible text screen
+architecture|screen versus petscii|Screen codes index glyphs. PETSCII represents text and controls.|difference between screen codes and petscii|are petscii values the same as screen codes
+architecture|cpu port direction|$00 is the 6510 data direction register.|what does address zero do on a c64|what is the address of the cpu port ddr
+architecture|cpu port data|$01 is the 6510 processor port data register.|what lives at memory location one|where do i write the c64 memory configuration
+architecture|loram bit|Bit 0 of $01 is LORAM.|which bit of the cpu port is loram|where is the loram flag
+architecture|hiram bit|Bit 1 of $01 is HIRAM.|which port bit is hiram|what is the address and bit for hiram
+architecture|charen bit|Bit 2 of $01 is CHAREN.|which port bit controls io versus character rom|which bit is charen on the 6510
+architecture|ram under rom|Writes go to RAM under ordinary BASIC and KERNAL ROM.|can i write ram under basic rom|what happens when you store to a kernal rom address
+architecture|all ram configuration|Clear LORAM and HIRAM with no cartridge forcing another mapping.|how do i see all ram with the cpu|when is ram visible even in the io area
+architecture|kernal with io but no basic|Set the low three bits of $01 to binary 110.|how do i keep kernal and io but hide basic|what cpu port configuration shows kernal without basic
+architecture|io with both system roms hidden|Set the low three bits of $01 to binary 101.|how do i map io but hide both system roms|how can i keep io on with ram under kernal and basic
+architecture|PAL cpu clock|About 0.985 MHz on a standard PAL C64.|what clock speed does a pal c64 run at|how fast is a pal 6510
+architecture|NTSC cpu clock|About 1.023 MHz on a standard NTSC C64.|what clock speed does a ntsc c64 run at|how fast is a ntsc 6510
+vic|vic chip|The MOS VIC-II handles graphics and video.|what chip draws graphics on the c64|which chip is the c64 video controller
+vic|vic register base|$D000, or 53248 decimal.|what is the vic ii register base|where do vic2 registers start
+vic|vic address width|The VIC-II addresses a 16 KiB bank at a time.|how much memory can vic ii address at once|how large is a vic bank
+vic|vic bank selector|CIA 2 port A bits 0 and 1 select the VIC bank, inverted.|how do i select a vic bank|which chip chooses the vic ii bank
+vic|vic character rom visibility|Character ROM shows in VIC banks 0 and 2 at offsets $1000 through $1FFF.|which vic banks see character rom|does vic always see character rom
+vic|vic screen memory base register|$D018 bits 7 through 4 select the screen offset in 1 KiB units.|how does the vic choose screen ram|where are the vic screen offset bits
+vic|vic charset selector|$D018 bits 3 through 1 select the character offset in 2 KiB units.|which bits in d018 choose the character set|how do i move charset memory
+vic|vic bitmap selector|$D018 bit 3 chooses bitmap offset $0000 or $2000 within the VIC bank.|what bit selects the bitmap address|how do i choose the bitmap half of the vic bank
+vic|vic hires bitmap mode|Set bit 5 of $D011 and clear bit 4 of $D016.|how do i enter hires bitmap mode|what settings enable high resolution bitmap mode
+vic|vic multicolor bitmap mode|Set bit 5 of $D011 and bit 4 of $D016.|how do i turn on multicolor bitmap mode|what bits select multicolour bitmap graphics
+vic|vic extended color text mode|Set bit 6 of $D011 with bitmap and multicolor disabled.|how do i turn on extended background color mode|how is ecm text enabled
+vic|extended color glyph count|64 glyphs. The high two screen code bits select the background.|how many glyphs can extended color text use|how does ecm choose a background per cell
+vic|standard character glyph dimensions|8 by 8 pixels.|how big is a c64 character cell|how many pixels in a hires text glyph
+vic|standard character screen dimensions|40 columns by 25 rows in the default mode.|how many rows and columns on a c64|what is c64 text resolution
+vic|hires bitmap resolution|320 by 200 pixels.|what is the resolution of c64 hires bitmap|how many pixels across in high resolution bitmap
+vic|multicolor bitmap resolution|160 by 200 double-width pixels.|what is multicolor bitmap resolution|how wide is a multicolour bitmap on c64
+vic|bitmap data size|8000 bytes for either bitmap mode.|how much ram does the bitmap use|how many bytes are in the c64 bitmap pixel data
+vic|hires bitmap cell colors|Two colors per 8 by 8 cell, from its screen RAM byte.|where do hires bitmap colors come from|how many colors per cell in hires bitmap
+vic|hires bitmap zero color|The low nibble of the cell's screen byte selects color for a zero bit.|which color does a clear hires bitmap pixel use|where is the background nibble in a hires screen byte
+vic|hires bitmap one color|The high nibble of the cell's screen byte selects color for a one bit.|which color does a set hires bitmap pixel use|where is the foreground nibble in a hires screen byte
+vic|multicolor bitmap cell palettes|$D021, two screen RAM nibbles, and the low nibble of color RAM.|which registers and bytes supply four bitmap colors|where do multicolor bitmap colors come from
+vic|multicolor text per-cell selection|Color RAM bit 3 chooses multicolor for that cell if global multicolor is on.|can hires and multicolor characters share a screen|what per-character flag enables multicolor text
+vic|raster position low register|$D012 contains the low eight raster bits.|where can i read the raster line|what register reads the vic raster low byte
+vic|raster position high register|Use bit 7 of $D011 as the ninth raster bit.|where is the high raster bit|how do i read raster lines beyond 255
+vic|border color register|$D020, or 53280 decimal.|what address sets the border color|where is the border colour register
+vic|background color register|$D021, or 53281 decimal.|what address sets the background color|which register controls the default background color
+vic|x smooth scroll bits|Bits 2 through 0 in $D016.|how do i smoothly scroll horizontally|which bits are vic xscroll
+vic|y smooth scroll bits|Bits 2 through 0 in $D011.|how do i smoothly scroll vertically|which bits are vic yscroll
+vic|row display height selector|$D011 bit 3 chooses 24 or 25 rows.|how do i switch between 24 and 25 rows|which bit is rsel
+vic|column display width selector|$D016 bit 3 chooses 38 or 40 columns.|how do i switch between 38 and 40 columns|which bit is csel
+vic|display enable bit|$D011 bit 4 is DEN.|where is the vic display enable bit|how do i blank the vic screen
+vic|badline condition|In the badline range, raster low 3 bits must match YSCROLL with DEN latched.|what makes a vic ii badline|when does the vic fetch another row of screen data
+vic|badline bus impact|The VIC-II steals cycles to fetch the screen and color cells.|why do badlines slow down the cpu|what happens to the bus during a badline
+vic|multiplexing concept|Reuse a hardware sprite farther down the screen with new registers and pointer.|what is sprite multiplexing|how do games display more than eight sprites
+vic|border opening caveat|Opening the border depends on exact VIC timing and the video standard.|why do border tricks differ on pal and ntsc|are border opening cycles portable across vic versions
+vic|raster split concept|Change VIC settings at a selected scanline, often from a raster IRQ.|how does a raster split work|how can two display modes share a frame
+sprite|number hardware sprites|Eight hardware sprites, numbered 0 to 7.|how many sprites does the vic ii have|how many hardware sprites can c64 display per line
+sprite|hires sprite dimensions|24 by 21 pixels before expansion.|how large is a hires hardware sprite|what are normal c64 sprite dimensions
+sprite|multicolor sprite dimensions|12 by 21 double-width pixels before expansion.|what are the dimensions of a multicolor sprite|how wide is a multicolour hardware sprite in pixels
+sprite|sprite data size|63 bytes of pixels in each 64-byte aligned slot.|how much data is in a sprite|how many bytes of sprite graphics does vic read
+sprite|sprite pointer table offset|Screen base plus $03F8, for eight bytes.|where is the sprite pointer table relative to screen ram|how do i locate the sprite pointers
+sprite|default sprite pointer table|$07F8 through $07FF.|where are sprite pointers with the default screen|what are the default sprite pointer addresses
+sprite|sprite enable register|$D015. Bit n controls sprite n.|how do i enable hardware sprites|which register turns sprites on
+sprite|sprite x high bits register|$D010 holds the ninth X bit for each sprite.|how do i move sprites right of x 255|where are sprite x high bits
+sprite|sprite x expansion register|$D01D. Bit n doubles sprite n's width.|which register expands sprites horizontally|how do i double a sprite width
+sprite|sprite y expansion register|$D017. Bit n doubles sprite n's height.|which register expands sprites vertically|how do i double a sprite height
+sprite|sprite background priority register|$D01B. A set bit puts that sprite behind foreground graphics.|how do sprites go behind text or graphics|what register controls sprite foreground priority
+sprite|sprite multicolor selection register|$D01C. Bit n enables multicolor for sprite n.|how do i make sprite 0 multicolor|where is the sprite multicolour enable register
+sprite|sprite sprite collision register|$D01E, cleared by reading.|where do i read sprite sprite collisions|which register reports two sprites touching
+sprite|sprite background collision register|$D01F, cleared by reading.|where do sprite background collisions appear|which register sees collision with foreground pixels
+sprite|sprite common colors|$D025 and $D026 are shared among multicolor sprites.|where are sprite shared multicolors|which registers set sprite common colors
+sprite|sprite individual color base|$D027 through $D02E, one register per sprite.|where are sprite colors stored|what is the base of the per sprite color registers
+sprite|sprite order priority|Lower numbered sprites appear in front of higher numbered sprites.|which sprite is drawn on top when they overlap|does sprite zero cover sprite seven
+sprite|sprite multicolor transparent bits|Pixel pair 00 is transparent.|which pixel value is transparent for a multicolor sprite|what is the multicolor sprite transparent bit pair
+sprite|sprite multicolor individual bits|Pixel pair 10 uses the sprite's individual color.|which sprite multicolor pair is per sprite|when do multicolor sprites use their own color
+interrupt|vic irq status register|$D019 holds the VIC-II IRQ flags.|where are vic interrupt flags|what address gives raster irq status
+interrupt|vic irq enable register|$D01A selects which VIC-II IRQ sources can assert IRQ.|where do i enable vic interrupts|what address is the vic irq mask
+interrupt|vic irq flag clearing|Write ones to the flag bits you want to clear in $D019.|how do i acknowledge vic interrupt flags|do you write a zero or one to clear d019
+interrupt|vic raster irq flag|Bit 0 of $D019 is the raster IRQ flag.|which bit says a raster irq occurred|how do i test for a vic raster interrupt
+interrupt|vic raster irq enable bit|Set bit 0 in $D01A.|which bit enables raster irq|how do i unmask the vic raster interrupt
+interrupt|6510 irq disabling|Use SEI to set the interrupt disable flag.|what instruction turns off maskable irq|how do i disable 6502 irq in asm
+interrupt|6510 irq enabling|Use CLI to clear the interrupt disable flag.|what instruction turns on maskable irq|how do i enable maskable interrupts in assembly
+interrupt|nmi masking|The I flag masks IRQ. NMI ignores it.|does sei prevent nmi|can cli change nmi behavior
+interrupt|irq return|RTI restores the status and program counter from the stack.|which instruction returns from an interrupt|how does a 6510 return from irq
+interrupt|cia1 interrupt target|CIA 1 is wired to the CPU IRQ input.|does cia1 cause irq or nmi|which interrupt line does cia1 drive
+interrupt|cia2 interrupt target|CIA 2 is wired to the CPU NMI input.|does cia2 cause irq or nmi|which interrupt line does cia2 drive
+interrupt|cia1 icr address|$DC0D.|where is cia1 interrupt control register|what address clears cia1 pending interrupts on read
+interrupt|cia2 icr address|$DD0D.|where is cia2 interrupt control register|what address clears cia2 pending interrupts on read
+interrupt|cia icr write semantics|Bit 7 selects set (1) or clear (0) for the written mask bits.|how do writes to cia interrupt control work|what does bit 7 mean when writing cia icr
+interrupt|cia icr read semantics|Reading reports pending flags and clears them.|what happens when you read the cia icr|how do i clear cia interrupt flags
+interrupt|cia all interrupt mask clear|Write $7F to the CIA ICR, then read to acknowledge pending flags.|how do i disable all cia interrupt sources|how do i clear cia interrupt masks without setting new ones
+cia|cia1 registers|CIA 1 is mapped at $DC00 through $DC0F, with mirrors.|where is cia1 on the memory map|what is the cia1 base address
+cia|cia2 registers|CIA 2 is mapped at $DD00 through $DD0F, with mirrors.|where is cia2 on the memory map|what is the cia2 base address
+cia|cia port direction rules|A 1 in the direction register makes the corresponding pin an output.|what does a cia data direction bit mean|how do i configure a cia pin as output
+cia|cia 1 keyboard|CIA 1 scans the keyboard matrix using ports A and B.|which chip reads the keyboard|what cia ports scan the keyboard matrix
+cia|joystick port 1|Read active-low joystick bits 0 to 4 at $DC01.|what address reads joystick port 1|which cia port has joystick one
+cia|joystick port 2|Read active-low joystick bits 0 to 4 at $DC00.|what address reads joystick port 2|which cia port has joystick two
+cia|cia1 time of day high|$DC0B is the CIA 1 time-of-day hour register.|where is cia1 tod hours|which chip register holds the cia1 time of day hour
+cia|cia interval timer width|Each CIA timer is 16 bits wide.|how many bits is a cia countdown timer|what size are cia timers a and b
+sid|sid chip|The SID is the MOS sound interface device.|what chip creates c64 sound|what does sid stand for
+sid|sid register base|$D400, or 54272 decimal.|where is the sid on the memory map|what is the first sid register address
+sid|sound voices|Three programmable voices.|how many voices has the sid|how many oscillators does the c64 sid have
+sid|sid voice frequency register width|16 bits, low byte first.|how wide is a sid frequency value|is sid frequency stored low byte first
+sid|sid voice pulse width register width|12 bits.|how many bits set sid pulse width|how wide is a sid duty cycle value
+sid|sid waveform triangle flag|Bit 4 in a voice control register.|what bit selects triangle waveform on sid|how do i select sid triangle wave
+sid|sid waveform sawtooth flag|Bit 5 in a voice control register.|what bit selects sawtooth on sid|how do i select sid saw waveform
+sid|sid waveform pulse flag|Bit 6 in a voice control register.|which sid control bit selects pulse output|how do i select sid pulse wave
+sid|sid waveform noise flag|Bit 7 in a voice control register.|which bit is sid noise|how do i select the sid noise waveform
+sid|sid gate flag|Bit 0 of the voice control register starts or releases its envelope.|what is the sid gate bit|how do you start and release a sid note
+sid|sid sync flag|Bit 1 of the voice control register is sync.|which sid voice bit enables oscillator sync|where is the sid hard sync bit
+sid|sid ring modulation flag|Bit 2 of the voice control register is ring modulation.|which sid bit enables ring modulation|where do i set sid ring mod
+sid|sid test flag|Bit 3 of the voice control register is TEST.|what is the sid oscillator test bit|where is the sid test flag
+sid|sid volume register|The low nibble of $D418 sets master volume.|where is the sid volume register|what bits control master volume
+sid|sid sustain and release nibbles|Sustain is the high nibble and release is the low nibble.|which nibble is sid sustain|how are sustain and release packed in the sid
+sid|sid attack and decay nibbles|Attack is the high nibble and decay is the low nibble.|which nibble is sid attack|how are attack and decay packed in the sid
+sid|sid filter cutoff resolution|11 bits split across $D415 and $D416.|how many bits is the sid filter cutoff|what registers set sid cutoff frequency
+sid|sid filter cutoff low bits|The low three cutoff bits are in $D415.|where are the sid filter low cutoff bits|what does d415 contain
+sid|sid filter cutoff high bits|The upper eight cutoff bits are in $D416.|where are the sid filter high cutoff bits|what does d416 contain
+sid|sid filter resonance bits|The upper nibble of $D417 holds resonance.|which bits of d417 set resonance|where is sid filter resonance
+sid|sid filter voice routing bits|Bits 0 through 2 of $D417 route voices 1 through 3 to the filter.|how do i route a sid voice to the filter|which bits select voices for sid filtering
+sid|sid oscillator 3 readback|$D41B is OSC3, the oscillator 3 output readback.|where can i read sid oscillator 3|which sid register exposes oscillator three
+sid|sid envelope 3 readback|$D41C is ENV3, the envelope 3 readback.|where can i read sid envelope 3|what is the sid voice three envelope address
+sid|sid frequency formula|Register value is round(hertz times 2^24 divided by the SID clock).|how do i calculate a sid frequency word|what formula converts hertz to a sid register value
+asm|cpu load accumulator|LDA loads the accumulator and updates N and Z.|what does lda do|how do i load the accumulator
+asm|cpu store accumulator|STA writes A to memory and leaves processor flags unchanged.|what does sta do|does sta change the zero flag
+asm|cpu carry before addition|Use CLC before ADC for an addition without incoming carry.|why do i clc before adc|how do i add two bytes with no incoming carry
+asm|cpu carry before subtraction|Use SEC before SBC for subtraction without an incoming borrow.|why do i sec before sbc|do i set or clear carry before ordinary subtraction
+asm|cpu binary vs decimal|CLD selects binary arithmetic for ADC and SBC.|how do i turn off bcd mode|what instruction forces binary mode
+asm|cpu decimal enabling|SED sets decimal mode for ADC and SBC.|how do i turn on decimal mode|what enables bcd arithmetic on 6502
+asm|cpu compare carry|CMP sets carry if A is at least the operand, unsigned.|what does carry mean after cmp|how do i test unsigned greater or equal after cmp
+asm|cpu compare equals|BEQ branches when the zero flag is set.|what branch follows an equal compare|which branch instruction checks equality
+asm|cpu bit test|BIT sets Z from A AND memory and copies bits 7 and 6 into N and V.|what does bit test on 6502|how does bit change processor flags
+asm|cpu relative branch range|-128 through +127 bytes from the instruction after the branch.|how far can a 6502 branch jump|what is the signed branch displacement range
+asm|cpu indirect jmp page wrap|On a 6510, JMP ($xxFF) reads the high byte at $xx00.|what is the indirect jump page bug|how does jmp indirect wrap on a 6510
+asm|cpu call return opcode|RTS returns from a JSR subroutine call.|which instruction returns from jsr|how do i return from a subroutine
+asm|cpu push accumulator|PHA pushes A onto the hardware stack.|how do i push the accumulator|what does pha do
+asm|cpu pull accumulator|PLA pulls A from the stack and updates N and Z.|how do i restore a pushed accumulator|what does pla do
+asm|cpu arithmetic shift left|ASL shifts left and puts the former bit 7 in carry.|which bit goes to carry with asl|what does asl do
+asm|cpu logical shift right|LSR shifts right, zero-fills bit 7 and puts the former bit 0 in carry.|what does lsr do|which bit does lsr put into carry
+asm|cpu rotate left|ROL inserts carry into bit 0 and moves old bit 7 to carry.|what does rol do|which bit gets the old carry after rol
+asm|cpu rotate right|ROR inserts carry into bit 7 and moves old bit 0 to carry.|what does ror do|which bit gets the old carry after ror
+asm|cpu unsigned overflow|The carry flag reports unsigned overflow on ADC.|which adc flag indicates unsigned overflow|how do i detect a carry out of an 8 bit addition
+asm|cpu signed overflow|The V flag reports signed overflow after ADC or SBC.|which flag indicates signed overflow|what does adc set for signed overflow
+asm|cpu load imm syntax|Use a hash prefix, for example LDA #$41.|how do i load a literal in asm|what syntax selects immediate addressing in ca65
+asm|cpu zero page indirect syntax|Use (zp,X) for pre-indexed or (zp),Y for post-indexed addressing.|which forms of indirect indexed lda does 6510 support|how are the two indexed indirect forms written
+basic|basic version|Commodore BASIC V2.|what basic is built into the c64|which version of basic does c64 use
+basic|basic screen memory write|Use POKE address,value with a screen code as the value.|how do you write directly to the c64 screen from basic|does poke to screen memory use petscii or screen codes
+basic|basic peek purpose|PEEK(address) returns a byte from the current CPU memory map.|what does peek do in c64 basic|how can basic read a memory location
+basic|basic poke byte range|POKE stores a value from 0 to 255.|what values can i poke on a c64|what is the byte range for poke
+basic|basic sys purpose|SYS transfers control to a machine-language routine at an address.|how do i call assembly from c64 basic|what does sys do
+basic|basic usr purpose|USR calls a machine-language routine and returns a numeric value.|what does usr do in c64 basic|how can a basic expression call a user routine
+basic|basic integer suffix|A percent sign marks an integer variable.|what suffix selects an integer in basic v2|how do i declare a basic integer variable
+basic|basic string suffix|A dollar sign marks a string variable.|what suffix marks a basic string|how does basic identify strings
+basic|basic variable significance|Only the first two characters of a variable name are significant.|how many letters in a basic variable are significant|can score and scroller name different basic variables
+basic|basic string length|A C64 BASIC string can hold at most 255 bytes.|how long can a basic string be|what is the maximum string length in basic v2
+basic|basic line delimiter|A colon separates statements on one BASIC program line.|how do i put multiple statements on one basic line|what separates c64 basic statements on the same line
+basic|basic screen clear output|PRINT CHR$(147) clears the screen.|how do i clear the screen in basic|what chr$ value clears the c64 screen
+basic|basic cursor home output|PRINT CHR$(19) homes the cursor.|how can basic send the cursor home|which chr$ code is home
+basic|basic suppress newline|End PRINT with a semicolon to suppress the following newline.|how do i print without going to a new line in basic|what does a trailing semicolon do in print
+basic|basic get vs input|GET polls a character. INPUT waits for a line and parses it.|difference between get and input in basic|which basic statement polls one key without waiting for return
+basic|basic get empty|GET A$ returns an empty string when no character is waiting.|what does get return if no key is pressed|get a$ returns what with an empty keyboard buffer
+basic|basic restore data|RESTORE resets READ to the first DATA item.|what does restore do in basic|how do i start reading data from the beginning
+basic|basic read data|READ takes successive values from DATA statements.|how do read and data work|what basic statement reads embedded data
+basic|basic for descending|Use a negative STEP in a descending FOR loop.|how do i count down with for and next in basic|what step value lets a basic loop go backwards
+basic|basic and or operators|AND and OR operate bitwise on signed 16-bit integers.|are and and or bitwise in basic v2|how do i mask bits in c64 basic
+basic|basic signed integer bounds|-32768 through 32767.|what is the integer range of c64 basic|what range does a percent variable hold
+basic|basic random positive|RND with a positive argument generates the next pseudorandom value.|what does rnd of 1 do in c64 basic|what argument advances the basic random sequence
+basic|basic random negative|RND with a negative argument reseeds the pseudorandom sequence.|how do i seed rnd in c64 basic|what happens with a negative rnd argument
+basic|basic bitwise not|NOT inverts all the bits of a signed 16-bit integer.|what does not do in basic v2|does not flip bits in c64 basic
+basic|basic drive default|8 is the usual first disk drive device number.|what device number is the 1541 typically|which device number do load commands use for disk
+basic|basic load secondary one|LOAD with secondary address 1 uses the PRG file's load address.|what does load with comma 8 comma 1 mean|how do i load a prg at the address in its header
+basic|basic disk directory|LOAD "$",8 loads a directory as a BASIC listing.|how do i list a disk directory in basic|what command loads the 1541 directory
+basic|basic request disk status channel|Open logical file with secondary address 15 to read disk status.|how do i read a 1541 error message from basic|which secondary address is the command and status channel
+kernal|kernal chrout entry|CHROUT is at $FFD2. Put the byte to output in A.|what is the kernal character output routine|where can assembly call chrout
+kernal|kernal getin entry|GETIN is at $FFE4. With keyboard input, A is zero if no key is available.|what is the kernal get key routine|where can assembly call getin
+kernal|kernal chrin entry|CHRIN is at $FFCF.|what is the kernal chrin address|which kernal entry reads a character from the current input channel
+kernal|kernal load entry|LOAD is at $FFD5.|what is the kernal load routine address|where is the kernal jump table load entry
+kernal|kernal plot entry|PLOT is at $FFF0.|where is kernal plot|what kernal routine address reads or sets cursor coordinates
+kernal|kernal plot directions|Carry clear sets the cursor. Carry set reads it.|how does kernal plot choose read or write|what does carry do when calling plot
+kernal|kernal setlfs entry|SETLFS is at $FFBA.|what address is kernal setlfs|where in kernal do i set logical file device and secondary address
+kernal|kernal setnam entry|SETNAM is at $FFBD.|what address is kernal setnam|where is the kernal filename setup entry
+kernal|kernal stop entry|STOP is at $FFE1.|what is the kernal run stop routine address|which kernal jump table call tests run stop
+kernal|kernal clear channels entry|CLRCHN is at $FFCC.|what is the kernal clrchn address|where do i restore default input and output channels
+kernal|kernal keyboard buffer count|$C6 counts pending bytes in the default keyboard buffer.|where is the kernal keyboard buffer length|what zero page address reports buffered key count
+kernal|kernal keyboard buffer base|$0277 is the default keyboard buffer start.|where is the c64 keyboard buffer|what address is the first kernal key queue byte

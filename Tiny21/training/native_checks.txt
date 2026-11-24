@@ -1,0 +1,12 @@
+# Supported question wordings for scored smoke checks. See independent_checks.txt for paraphrase tests.
+architecture|fact|what cpu does the c64 use|A MOS 6510.
+vic|fact|what is the resolution of c64 hires bitmap|320 by 200 pixels.
+sprite|fact|how many sprites does the vic ii have|Eight hardware sprites, numbered 0 to 7.
+sid|fact|where is the sid volume register|The low nibble of $D418 sets master volume.
+interrupt|fact|how do i acknowledge vic interrupt flags|Write ones to the flag bits you want to clear in $D019.
+cia|fact|which chip reads the keyboard|CIA 1 scans the keyboard matrix using ports A and B.
+asm|fact|what does lda do|LDA loads the accumulator and updates N and Z.
+basic|fact|what basic is built into the c64|Commodore BASIC V2.
+examples|basic|show basic code to clear the screen and print ready|10 PRINT CHR$(147)\n20 PRINT "READY"
+examples|assembler|show assembler code to set border to red|LDA #$02\nSTA $D020
+examples|assembler|show assembler code to start only sprite 0 at x 64 y 80 using data at 3072 on the default screen|LDA #$30\nSTA $07F8\nLDA #$40\nSTA $D000\nLDA #$50\nSTA $D001\nLDA #$00\nSTA $D010\nLDA #$01\nSTA $D015

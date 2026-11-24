@@ -64,7 +64,8 @@ def keyboard_transport(device):
             worker.join()
 
 
-def capture_questions(device, frames, out, marker, ready, *, start_query, color, visible, png, save_json):
+def capture_questions(device, frames, out, marker, ready, *, start_query, color, visible, png,
+                      save_json, timing_row=17):
     """Record genuine VIC transitions and check RAM only after stable completion."""
     questions = json.loads(QUERIES.read_bytes())
     if not 1 <= start_query <= len(questions):
@@ -131,7 +132,7 @@ def capture_questions(device, frames, out, marker, ready, *, start_query, color,
             expected = screen_codes(item["answer"])
             if answer.rstrip(b" ") != expected:
                 raise RuntimeError(f"unexpected native output for {question}: {answer.hex()}")
-            timing = device.capture_memory(0x0400 + 40 * 17, 40)
+            timing = device.capture_memory(0x0400 + 40 * timing_row, 40)
             match = re.match(screen_codes("Elapsed ") + rb"(\d{3}\.\d{3})", timing.lstrip(b" "))
             if not match:
                 raise RuntimeError(f"missing native timing {timing.hex()}")

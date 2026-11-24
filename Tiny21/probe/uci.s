@@ -3,6 +3,9 @@
 .import clock_read, clock_delta, clock_now, clock_since, clock_elapsed
 .export load_model_file, dos_stage, dos_status
 .export uci_identity, uci_observed, uci_detail, uci_other_ids
+.if DUAL_MODEL
+    .import requested_model
+.endif
 
 UCI_CONTROL = $df1c
 UCI_COMMAND = $df1d
@@ -51,9 +54,21 @@ load_model_file:
     sec
     rts
 :
+.if DUAL_MODEL
+    lda requested_model
+    bne open_second
+.endif
     lda #<open_cmd
     ldx #>open_cmd
     ldy #open_end-open_cmd
+.if DUAL_MODEL
+    bne open_file
+open_second:
+    lda #<second_open_cmd
+    ldx #>second_open_cmd
+    ldy #second_open_end-second_open_cmd
+open_file:
+.endif
     jsr exchange
     bcs loader_failed
     inc file_open
@@ -67,16 +82,40 @@ load_model_file:
     cmp #4
     bcc loader_failed
     ldx #3
+.if DUAL_MODEL
+    ldy #3
+    lda requested_model
+    beq check_size
+    ldy #7
+.endif
 check_size:
     lda reply_data,x
+.if DUAL_MODEL
+    cmp model_size,y
+    bne loader_failed
+    dey
+.else
     cmp model_size,x
     bne loader_failed
+.endif
     dex
     bpl check_size
     inc dos_stage
+.if DUAL_MODEL
+    lda requested_model
+    bne load_second
+.endif
     lda #<load_cmd
     ldx #>load_cmd
     ldy #10
+.if DUAL_MODEL
+    bne issue_load
+load_second:
+    lda #<second_load_cmd
+    ldx #>second_load_cmd
+    ldy #10
+issue_load:
+.endif
     jsr exchange
     bcs loader_failed
     inc dos_stage
@@ -278,3 +317,13 @@ close_cmd:
     .byte $02,$03
 model_size:
     .dword MODEL_SIZE
+.if DUAL_MODEL
+    .dword SECOND_MODEL_SIZE
+second_open_cmd:
+    .byte $02,$02,$01, SECOND_MODEL_PATH
+second_open_end:
+.assert second_open_end-second_open_cmd < 256, error, "UCI command exceeds byte count"
+second_load_cmd:
+    .byte $02,$21
+    .dword $100000,SECOND_MODEL_SIZE
+.endif

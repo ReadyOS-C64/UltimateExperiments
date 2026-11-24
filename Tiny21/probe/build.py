@@ -34,11 +34,14 @@ def digest(path):
 
 
 def build(out, remote, core_dir=ROOT / "build", *, interactive=False, qualify_reu=False,
-          model_image=ROOT / "build/model.reu", context_test=False, automation=False):
+          model_image=ROOT / "build/model.reu", context_test=False, automation=False,
+          second_model=None):
     if not RUN_PATH.fullmatch(remote):
         raise ValueError("remote directory must be an owned TINY64 run folder on a USB drive")
     if automation and not interactive:
         raise ValueError("keyboard automation requires the interactive console")
+    if second_model is not None and not interactive:
+        raise ValueError("model selection requires the interactive console")
     questions = ["what is 7 times 8", "what is the capital of peru"]
     answers = ["7 times 8 is 56.", "Lima."]
     context_source = ""
@@ -66,6 +69,32 @@ def build(out, remote, core_dir=ROOT / "build", *, interactive=False, qualify_re
         raise ValueError("the legacy context diagnostic requires a 128-position model")
     model.write_bytes(payload)
     crc = zlib.crc32(payload)
+    second_source = ""
+    second_descriptor = None
+    if second_model is not None:
+        second = second_model.read_bytes()
+        if (not group8 or version != b"\x03" or
+                second[:5] != b"T64M\x04" or second[53:64] != b"C64PROGINFO" or
+                not 128 <= second[52] <= 255 or
+                len(second) != int.from_bytes(second[12:16], "little") or
+                len(second) != len(payload) + 99 * (second[52] - 128)):
+            raise ValueError("expected the original group-eight image and a named C64PROGINFO image")
+        second_crc = zlib.crc32(second)
+        (out / "C64PROGINFO.BIN").write_bytes(second)
+        second_source = (
+            f'.define SECOND_MODEL_PATH "{remote}/C64PROGINFO.BIN"\n'
+            f"SECOND_MODEL_SIZE = {len(second)}\n"
+            f"SECOND_MODEL_CRC = ${second_crc:08x}\n"
+        )
+        second_descriptor = {
+            "file": "C64PROGINFO.BIN",
+            "name": "C64PROGINFO",
+            "bytes": len(second),
+            "sha256": hashlib.sha256(second).hexdigest(),
+            "crc32": f"{second_crc:08x}",
+            "context": second[52],
+            "reu_offset": 0x100000,
+        }
     run_hash = hashlib.sha256(remote.encode("ascii")).digest()
     palette = (1, 3, 6, 7, 13, 14)
     marker = [palette[byte % len(palette)] for byte in run_hash[:12]]
@@ -79,11 +108,14 @@ def build(out, remote, core_dir=ROOT / "build", *, interactive=False, qualify_re
         f"QUALIFY_REU = {int(qualify_reu)}\n"
         f"CONSOLE_AUTOMATION = {int(automation)}\n"
         f"CONTEXT_TEST = {int(context_test)}\n"
+        f"DUAL_MODEL = {int(second_model is not None)}\n"
         f".define RUN_MARKER {','.join(map(str, marker))}\n"
-        + context_source)
+        + context_source + second_source)
     (out / "crc_table.inc").write_text(genc_rc32_table())
     native_objs = []
     sources = PROBE + ["question", "keyboard", "console"] if interactive else PROBE
+    if second_model is not None:
+        sources = [*sources, "models"]
     if qualify_reu:
         sources = [*sources, "reu_qualify"]
     for stem in sources:
@@ -141,6 +173,9 @@ def build(out, remote, core_dir=ROOT / "build", *, interactive=False, qualify_re
         manifest["automation_keyboard"] = True
     if qualify_reu:
         manifest["reu_qualification_mailbox"] = symbols["REU_QUALIFICATION_RESULT"]
+    if second_descriptor:
+        manifest["second_model"] = second_descriptor
+        manifest["timing_row"] = 22
     (out / "bundle.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest
 
@@ -155,8 +190,9 @@ if __name__ == "__main__":
     parser.add_argument("--qualify-reu", action="store_true")
     parser.add_argument("--context-test", action="store_true")
     parser.add_argument("--model-image", type=Path, default=ROOT / "build/model.reu")
+    parser.add_argument("--second-model", type=Path)
     args = parser.parse_args()
     print(json.dumps(build(args.out.resolve(), args.remote, args.core_dir.resolve(),
                            interactive=args.interactive, qualify_reu=args.qualify_reu,
                            model_image=args.model_image, context_test=args.context_test,
-                           automation=args.automation), indent=2))
+                           automation=args.automation, second_model=args.second_model), indent=2))

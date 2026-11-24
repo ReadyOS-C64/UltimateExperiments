@@ -2,6 +2,8 @@
 
 **Development version 0.7** runs the original model with fewer CPU cycles and can load compatible checkpoints with up to 255 learned positions. [Inference-engine comparison and benchmarks](docs/C64_DUNGEON_COMPARISON.md) · [Development builds](docs/BUILD.md).
 
+The v0.7 two-model console adds **C64PROGINFO**, a 224-position model for Commodore 64 programming questions. Press **F1** for Tiny 2.1 or **F3** for C64PROGINFO in a two-model build. The console loads each model through Ultimate DOS on first use and verifies the corresponding REU slot before reusing it. BASIC and assembler answers can span multiple screen rows. [Two-model build and install](docs/BUILD.md#build-and-install-the-two-model-console) · [Training and verification](training/README.md).
+
 Version **0.6** runs WollyMonjac’s Tiny 2.1 checkpoint on a physical C64 Ultimate using 6502/6510 assembly. The Ultimate’s 64 MHz turbo mode runs the transformer, and a 16 MB REU holds the model and attention history. Load the model into REU from the Ultimate menu, then run the PRG from the same menu. The console verifies and reuses the preloaded model.
 
 **Required hardware: 64 MHz C64 Ultimate and 16 MB REU.**
@@ -27,7 +29,7 @@ On the same Ultimate, version 0.6 completed these prompts about 10.5% faster tha
 
 ## What the model was trained on
 
-The [upstream Tiny 2.1 README](https://github.com/WollyMonjac/Tiny-2.1) describes a small question-answering model trained on roughly **3,500 facts**, each asked in several wordings. The release includes the trained checkpoint and inference code. A complete training corpus and source list are unavailable in the upstream release, so the exact facts and topic coverage are unknown.
+The upstream Tiny 2.1 README describes a small question-answering model trained on roughly **3,500 facts**, each asked in several wordings. The upstream project now publishes its fact files, question generator and training scripts alongside the DOS version. [Upstream Tiny 2.1 training kit](https://github.com/WollyMonjac/Tiny-2.1/tree/main/training)
 
 ## Questions from the C64 demo
 
@@ -54,4 +56,6 @@ The physical C64 Ultimate recording includes vocabulary, grammar, translation, g
 
 ## Credits and license
 
-The original model, checkpoint and Pentium/486 DOS implementation are by the [WollyMonjac/Tiny-2.1 project](https://github.com/WollyMonjac/Tiny-2.1). This project adapts that checkpoint for the C64 Ultimate. The C64 port is [MIT licensed](LICENSE). Peddle keeps its [own MIT notice](third_party/peddle/LICENSE). The port’s license covers its own code and documentation.
+The original model, checkpoint and Pentium/486 DOS implementation are by the [WollyMonjac/Tiny-2.1 project](https://github.com/WollyMonjac/Tiny-2.1). This project adapts that checkpoint for the C64 Ultimate. The [MIT license](LICENSE) covers our code, documentation and C64PROGINFO model. Peddle keeps its [own MIT notice](third_party/peddle/LICENSE).
+
+C64PROGINFO's training tools adapt the PyTorch decoder and training loop from [jaydarkseed757’s c64-dungeon](https://github.com/jaydarkseed757/c64-dungeon). Its copyright and license are included in the [training source](training/LICENSE.c64-dungeon).

@@ -70,6 +70,7 @@ class GroupEightGuardTest(unittest.TestCase):
         self.machine = Machine(BUILD / "group8")
         self.addCleanup(self.machine.close)
         self.machine.put("reu_banks", 32)
+        self.machine.put("model_bank", 0)
 
     def transfer(self, label, far, cpu, size, read=1):
         m = self.machine
