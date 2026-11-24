@@ -6,7 +6,7 @@
 .import clock_start, clock_read, clock_delta, clock_rate, clock_now, clock_since
 .import clock_is_pal, clock_elapsed, turbo_start, turbo_restore, turbo_readback, turbo_sample
 .import turbo_detail, clock_detail, clock_controls
-.import model_open, model_reset, model_ingest, model_choose, token_pos
+.import model_open, model_reset, model_ingest, model_choose, token_pos, model_context
 .importzp reu_banks
 .import wide_a, wide_b, wide_divide, wide_remainder
 .export probe_main, check_resident_model
@@ -308,7 +308,7 @@ delimiter:
     rts
 answer:
     lda token_pos
-    cmp #128
+    cmp model_context
     bcs done
     jsr model_choose
     bcc :+
@@ -545,6 +545,9 @@ accent:
     sta COLOR+40*2,x
     lda #7
     sta COLOR+40*7,x
+.if INTERACTIVE
+    sta COLOR+40*8,x
+.endif
     sta COLOR+40*14,x
     lda #13
     sta COLOR+40*11,x
@@ -646,7 +649,7 @@ result_hi: .byte >RECORD1,>RECORD2
 prompt_lo: .byte <prompt1,<prompt2
 prompt_hi: .byte >prompt1,>prompt2
 .if INTERACTIVE
-title: .asciiz "TINY 2.1 / C64 ULTIMATE"
+title: .asciiz "C64 LLM - Little Language Model"
 subtitle: .asciiz "64 MHz checked, 16 MiB REU"
 .else
 title: .byte "TINY 2.1 / ULTIMATE INFERENCE PROBE",0
@@ -656,7 +659,11 @@ loading: .byte "Ultimate DOS is loading MODEL.BIN...",0
 checking: .byte "Verifying the REU image CRC32...    ",0
 loaded: .byte "Ultimate DOS load ",0
 preloaded: .asciiz "Preloaded REU model verified         "
+.if DUAL_MODEL
+load_hint: .asciiz "Check USB folder and model files"
+.else
 load_hint: .asciiz "Load MODEL.REU in the Ultimate menu"
+.endif
 clear_load: .byte "            ",0
 .if CONTEXT_TEST
 finished: .byte "CONTEXT LIMIT / RECOVERY PASSED",0

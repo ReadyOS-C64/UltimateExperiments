@@ -1,4 +1,5 @@
 .setcpu "6502"
+.include "question.inc"
 .export keyboard_init, keyboard_input, keyboard_stop
 
 PORT_A = $dc00
@@ -126,7 +127,7 @@ driven_bit:
     .byte $01,$02,$04,$08,$10,$20,$40,$80
 ; Columns PA0 through PA7, rows PB0 through PB7 within each column.
 plain:
-    .byte 8,13,0,0,0,0,0,0
+    .byte 8,13,0,0,KEY_F1,KEY_F3,0,0
     .byte "3wa4zse",SHIFT_KEY
     .byte "5rd6cftx"
     .byte "7yg8bhuv"
@@ -135,7 +136,7 @@ plain:
     .byte 0,"*;",0,SHIFT_KEY,"=^/"
     .byte "1",0,0,"2 ",0,"q",RUN_STOP
 shifted:
-    .byte 8,13,0,0,0,0,0,0
+    .byte 8,13,0,0,KEY_F1,KEY_F3,0,0
     .byte "#WA$ZSE",SHIFT_KEY
     .byte "%RD&CFTX"
     .byte "'YG(BHUV"

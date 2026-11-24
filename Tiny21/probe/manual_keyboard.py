@@ -1,4 +1,5 @@
 """Observe the native CIA1 keyboard and cancellation on a physical console."""
+import json
 import re
 import time
 
@@ -10,6 +11,7 @@ SCREEN = 0x0400
 
 
 def verify(device, frames, out, bundle, marker, timeout, *, color, visible, png, save_json):
+    timing_row = json.loads((bundle / "bundle.json").read_text()).get("timing_row", 17)
     labels = {}
     for line in (bundle / "probe.lbl").read_text().splitlines():
         _, address, label = line.split()
@@ -58,7 +60,7 @@ def verify(device, frames, out, bundle, marker, timeout, *, color, visible, png,
             result = device.capture_memory(SCREEN + 40 * 12 + 1, 79).rstrip(b" ")
             if result != screen_codes(ANSWER):
                 raise RuntimeError(f"native keyboard retry produced {result.hex()}")
-        timing = device.capture_memory(SCREEN + 40 * 17, 40).lstrip(b" ")
+        timing = device.capture_memory(SCREEN + 40 * timing_row, 40).lstrip(b" ")
         match = re.match(screen_codes("Elapsed ") + rb"(\d{3}\.\d{3})", timing)
         if not match:
             raise RuntimeError("native keyboard check did not publish elapsed time")

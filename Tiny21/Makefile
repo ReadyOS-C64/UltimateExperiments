@@ -65,7 +65,7 @@ reference:
 model: | build
 	$(PYTHON) tools/model.py reference/TINY.BIN build/model.reu
 
-test: all
+test: all build/group8/core.bin
 	$(PYTHON) -m unittest discover -s tests -v
 
 build/group8-bench/dot_group8.o: src/dot_group8.s

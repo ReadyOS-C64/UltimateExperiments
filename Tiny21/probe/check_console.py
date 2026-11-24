@@ -110,10 +110,23 @@ def check(bundle, checkpoint):
               flush=True)
 
         machine.put("question_length", 0)
-        for _ in range(72):
-            assert not machine.run("question_append", ord("a"))[4] & 1
+        limit = machine.get("model_context", 1) - 56
+        text = "a" * (limit - 3) + "xyz"
+        for char in text:
+            assert not machine.run("console_edit", ord(char))[4] & 1
         assert machine.run("question_append", ord("z"))[4] & 1
-        assert machine.get("question_length", 1) == 72
+        assert machine.get("question_length", 1) == limit
+        assert screen(machine, 7, 72) == text[-72:]
+
+        # Exercise scrolling directly without requiring a 200-byte generated answer.
+        start = 0x400 + 40 * 12
+        end = 0x400 + 40 * 17
+        for i in range(6):
+            machine.ram[start+40*i:start+40*(i+1)] = bytes([i + 1]) * 40
+        machine.run("scroll_answer")
+        assert bytes(machine.ram[start:end+40]) == (
+            b"".join(bytes([i]) * 40 for i in range(2, 6)) + b" " * 40 + bytes([6]) * 40
+        )
     finally:
         machine.close()
 

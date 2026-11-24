@@ -3,51 +3,50 @@
 .importzp reu_addr, reu_ram, reu_size, reu_direction
 .import vector_count, vector_cache
 .importzp vector_source, vector_dest
-.import key, value, layer_id, token_pos
+.import key, value, layer_id, token_pos, model_context
+.import mul8_unsigned
+.importzp mul_rhs, mul_result
 .export cache_store, cache_slot_address
 
-; One 32 KiB slot per layer. Each indexed position has a 100-byte K
-; record followed by a 100-byte V record. Only slots at positions at or
-; below the current valid position may be consumed by causal attention.
+; Legacy contexts have 32 KiB per layer. Extended contexts have 64 KiB.
+; Each position has a 100-byte K record followed by a 100-byte V record.
 CACHE_BASE = $080000
 CACHE_STRIDE = 200
 .assert 128*CACHE_STRIDE <= $8000, error, "cache layer must fit a stride"
+.assert 255*CACHE_STRIDE <= $10000, error, "extended cache layer must fit a stride"
 
 .segment "CODE"
-; Set reu_addr to the current layer's slot at A (0..127).
+; Set reu_addr to the current layer's slot at position A.
 .proc cache_slot_address
-    cmp #128
+    cmp model_context
     bcs fail
     ldx layer_id
     cpx #4
     bcs fail
-    tay
-    lda #0
+    ldy #CACHE_STRIDE
+    sty mul_rhs
+    jsr mul8_unsigned
     sta reu_addr
-    ; LSR's original bit selects the upper half of the layer bank.
-    txa
-    lsr
-    sta reu_addr+2
-    lda #0
-    ror
+    lda mul_result+1
     sta reu_addr+1
-    lda reu_addr+2
+    lda model_context
+    cmp #129
+    txa
+    bcs bank
+    ; LSR's original bit selects the upper half of a legacy layer bank.
+    lsr
+    bcc bank
+    ldx reu_addr+1
+    ; Legacy offsets are below $8000.
+    txa
+    ora #$80
+    sta reu_addr+1
+    lda layer_id
+    lsr
+bank:
     clc
     adc #^CACHE_BASE
     sta reu_addr+2
-    cpy #0
-    beq finish
-seek:
-    clc
-    lda reu_addr
-    adc #CACHE_STRIDE
-    sta reu_addr
-    bcc :+
-    inc reu_addr+1
-:
-    dey
-    bne seek
-finish:
     clc
     rts
 fail:

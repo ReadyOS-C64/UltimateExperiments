@@ -42,6 +42,10 @@ public:
     RunFailure failure = none;
     unsigned failed_address = 0;
     unsigned model_length = 0;
+    unsigned model_base = 0;
+    unsigned work_start = 0x5000;
+    unsigned scores_start = 0;
+    unsigned scores_end = 0;
 
     Machine() {
         ram.fill(0xa5);
@@ -51,7 +55,7 @@ public:
     }
 
     int run(uint16_t pc, uint64_t limit, uint64_t *stats, uint8_t accumulator,
-            uint8_t x, unsigned guard_model_length) {
+            uint8_t x, unsigned guard_model_length, unsigned guard_model_base) {
         reg.pc = reg.pc0 = pc;
         reg.sp = caller_sp;
         reg.a = accumulator;
@@ -66,6 +70,7 @@ public:
         failure = none;
         failed_address = 0;
         model_length = guard_model_length;
+        model_base = guard_model_base;
         uint8_t lowest_stack = caller_sp;
         uint64_t instructions = 0;
         const bool profiling = !cycle_profile.empty();
@@ -123,7 +128,8 @@ private:
                                                      within(address, 1, 0xc000, 0xcc00))) ||
                               within(address, 1, 0x80, 0xf0) ||
                               within(address, 1, 0x100 + stack_floor, 0x200) ||
-                              within(address, 1, 0x5000, dma_tile_end) ||
+                              within(address, 1, work_start, dma_tile_end) ||
+                              within(address, 1, scores_start, scores_end) ||
                               within(address, 1, reu_base + 1, reu_base + io.size()))) {
             failure = cpu_write;
             failed_address = address;
@@ -150,7 +156,7 @@ private:
         const unsigned length = io[7] | unsigned(io[8]) << 8;
         const unsigned count = length ? length : ram_size;
         if (model_length) {
-            const bool model_read = (command & 1) && within(far, count, 0, model_length);
+            const bool model_read = (command & 1) && within(far, count, model_base, model_base + model_length);
             const bool group8_read = group8_dma && model_read && within(cpu, count, 0xc400, 0xcb00);
             if (!within(cpu, count, dma_tile_start, dma_tile_end) && !group8_read) {
                 failure = cpu_dma;
@@ -159,7 +165,9 @@ private:
             }
             const unsigned bank = far & ~reu_counter;
             const bool crosses_bank = count > bank + reu_counter + 1 - far;
-            if (crosses_bank || !(model_read || within(far, count, cache_start, cache_end))) {
+            const unsigned end =
+                reu[model_base + 4] == 4 && reu[model_base + 52] > 128 ? 0x0c0000 : cache_end;
+            if (crosses_bank || !(model_read || within(far, count, cache_start, end))) {
                 failure = reu_dma;
                 failed_address = far;
                 return;
@@ -202,6 +210,11 @@ uint8_t *tiny_reu(Machine *m) { return m->reu.data(); }
 void tiny_set_reu_capacity(Machine *m, unsigned capacity) { m->reu_capacity = capacity; }
 void tiny_enable_group4_workspace(Machine *m) { m->group4_workspace = true; }
 void tiny_enable_group8_dma(Machine *m) { m->group8_dma = true; }
+void tiny_set_workspace(Machine *m, unsigned work, unsigned scores, unsigned size) {
+    m->work_start = work;
+    m->scores_start = scores;
+    m->scores_end = scores + size;
+}
 uint8_t *tiny_keyboard(Machine *m) {
     m->keyboard_enabled = true;
     return m->keyboard.data();
@@ -211,7 +224,7 @@ uint64_t *tiny_enable_cycle_profile(Machine *m) {
     return m->cycle_profile.data();
 }
 int tiny_run(Machine *m, uint16_t pc, uint64_t limit, uint64_t *stats,
-             uint8_t accumulator, uint8_t x, unsigned guard_model_length) {
-    return m->run(pc, limit, stats, accumulator, x, guard_model_length);
+             uint8_t accumulator, uint8_t x, unsigned guard_model_length, unsigned guard_model_base) {
+    return m->run(pc, limit, stats, accumulator, x, guard_model_length, guard_model_base);
 }
 }

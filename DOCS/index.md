@@ -75,10 +75,10 @@ A reconstructed dual-bank character ROM and Cyberpunk palette, explored across R
 
 [Explore C77 Cyberpunk 77](c77/index.md) · [Clean gallery](c77/screenshots/c77-cyberpunk-77-charrom/README.md) · [CRT gallery](c77/screenshots/c77-cyberpunk-77-crt/README.md)
 
-## Tiny 2.1 for the C64 Ultimate
+## C64 LLM for the C64 Ultimate
 
-Version 0.6 runs WollyMonjac’s Pentium/486 DOS transformer in native 6502/6510 assembly at 64 MHz with a 16 MB REU. Load the model into REU and run the program from the Ultimate menu. The console answers short questions one character at a time.
+Version 0.7 runs two models in native 6502/6510 assembly at 64 MHz with a 16 MB REU. Press **F1** for WollyMonjac’s Tiny 2.1 for general questions or **F3** for C64PROGINFO for C64 hardware, BASIC V2, and 6502 assembly. The ready-to-run ZIP includes the PRG and both models.
 
-![Two native Tiny 2.1 example answers on the C64 Ultimate](tiny21/screenshots/answers.png)
+![The v0.7 console displays a two-line BASIC program from C64PROGINFO](tiny21/screenshots/c64proginfo-basic.png)
 
-[Explore Tiny 2.1](tiny21/index.md) · [Technical details](tiny21/TECHNICAL.md) · [Download and setup](tiny21/DOWNLOAD.md)
+[Explore C64 LLM](tiny21/index.md) · [Technical details](tiny21/TECHNICAL.md) · [Download and setup](tiny21/DOWNLOAD.md)

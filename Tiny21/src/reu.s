@@ -5,7 +5,7 @@
 REU_TILE = $8000
 REU_TILE_SIZE = $2000
 .ifdef GROUP8_EXPERIMENT
-    .import group4_ready
+    .import group4_ready, model_bank
     .importzp IMAGE_END_LO, IMAGE_END_MID, IMAGE_END_HI
     .export reu_group8_read, REU_GROUP8_TILE
 REU_GROUP8_TILE = $c400
@@ -63,11 +63,15 @@ reu_group8_read:
 :
     lda reu_direction
     cmp #2
-    bcs error
+    bcs invalid_config
     ldx reu_banks
-    beq error
+    beq invalid_config
     cpx #33
-    bcs error
+    bcc :+
+invalid_config:
+    sec
+    rts
+:
     lda reu_ram+1
 .ifdef GROUP8_EXPERIMENT
     cmp tile_start_page
@@ -113,18 +117,26 @@ reu_group8_read:
     ldx tile_end_page
     cpx #>REU_GROUP8_TILE_END
     bne regular_tile
-    ; The alternate window can read only the admitted model image.
+    ; Match the active model's aligned slot and its projection span.
+    sta last_bank
+    lda reu_addr+2
+    cmp model_bank
+    bcc error
+    lda last_bank
+    sbc model_bank
     cmp #IMAGE_END_HI
-    bcc check_bank
+    bcc model_bank_ok
     bne error
     ldx chunk+1
     cpx #IMAGE_END_MID
-    bcc check_bank
+    bcc model_bank_ok
     bne error
     ldx chunk
     cpx #IMAGE_END_LO
     bcs error
-    bcc check_bank
+model_bank_ok:
+    lda last_bank
+    jmp check_bank
 regular_tile:
     ; The normal tile may overwrite a live group-eight lookup table.
     ldx group4_ready

@@ -1,5 +1,7 @@
 .setcpu "6502"
-.import cache_attention_first, cache_slot_address, token_pos, query, attention
+.import cache_attention_first, cache_slot_address, token_pos, model_context, query, attention
+.import mul8_unsigned
+.importzp mul_rhs, mul_result
 .import reu_transfer, REU_TILE, REU_TILE_SIZE
 .importzp reu_addr, reu_ram, reu_size, reu_direction
 .import wide_a, wide_b, wide_product, wide_multiply, wide_round_divide, wide_mul_byte
@@ -41,8 +43,12 @@ signed_sum: .res SCORE_BYTES
 prepared_query: .res HEAD_COUNT*HEAD_WIDTH*(QUERY_BYTES+1)
 factors:    .res HEAD_COUNT*4
 maximum:    .res HEAD_COUNT*SCORE_BYTES
-scores:     .res 128*HEAD_COUNT*SCORE_BYTES
 weighted:   .res HEAD_COUNT*HEAD_WIDTH*ACCUM_BYTES
+
+; RAM under KERNAL. Leave the hardware interrupt vectors untouched.
+; 255 weights of at most 2^24 also fit the existing 32-bit factor sums.
+.segment "SCORES"
+scores:     .res 255*HEAD_COUNT*SCORE_BYTES
 
 .segment "CODE"
 .macro ADDRESS dst, addr
@@ -96,18 +102,13 @@ use_limit:
     sec
     sbc block_count
     sta remaining
-    ldx block_count
-    ADDRESS reu_size, 0
-size_loop:
-    clc
-    lda reu_size
-    adc #RECORD_BYTES
+    lda #RECORD_BYTES
+    sta mul_rhs
+    lda block_count
+    jsr mul8_unsigned
     sta reu_size
-    bcc :+
-    inc reu_size+1
-:
-    dex
-    bne size_loop
+    lda mul_result+1
+    sta reu_size+1
     ADDRESS reu_ram, REU_TILE
     ADDRESS record, REU_TILE
     lda #1
@@ -583,7 +584,7 @@ done:
     bne general
     jmp cache_attention_first
 general:
-    cmp #128
+    cmp model_context
     bcc valid
     sec
     rts

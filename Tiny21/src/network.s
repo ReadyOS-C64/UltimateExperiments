@@ -13,15 +13,20 @@
 .endif
 .ifdef GROUP8_EXPERIMENT
     .import group8_prepare, matrix_project_group8
+    .import mul8_unsigned
+    .importzp mul_rhs, mul_result
 .endif
-.export model_open, model_embed, model_project, model_norm, layer_front
-.export token_id, token_pos, layer_id, residual, normalized, query, key, value
+.export model_open, model_open_at, model_bank, model_embed, model_project, model_norm, layer_front
+.export token_id, token_pos, model_context, layer_id, residual, normalized, query, key, value
 .export layer_tail, attention, hidden, projected
 
 TILE_HEADER = 64
 MATRICES = 26
 GAIN_BASE = 379267
 IMAGE_SIZE = GAIN_BASE + 9 * 192
+BASE_CONTEXT = 128
+EMBED_ROW_BYTES = 99
+CONTEXT_AT = 52
 .ifdef GROUP8_EXPERIMENT
     .exportzp IMAGE_END_LO, IMAGE_END_MID, IMAGE_END_HI
 IMAGE_END_LO = <IMAGE_SIZE
@@ -31,12 +36,14 @@ IMAGE_END_HI = ^IMAGE_SIZE
 
 .segment "BSS"
 model_ready:      .res 1
+model_bank:       .res 1
 directory:        .res MATRICES * 8
 projection_left:  .res 2
 projection_bytes: .res 1
 first_matrix:     .res 1
 token_id:         .res 1
 token_pos:        .res 1
+model_context:    .res 1
 layer_id:         .res 1
 residual:         .res 384
 normalized:       .res 384
@@ -111,15 +118,29 @@ packed_matrix:
     jmp reu_transfer
 .endproc
 
-; Admit the pinned geometry, layout and checkpoint identity metadata.
-; Payload integrity is checked separately by the host conversion manifest.
-.proc model_open
+; Admit fixed geometry and directory offsets. Layouts 1-3 also pin the
+; upstream identity. Layout 4 supplies its own identity and context size.
+; The caller must authenticate the payload before use.
+model_open:
+    lda #0
+.proc model_open_at
+    ; A is the high byte of an aligned catalog slot, $000000 or $100000.
+    cmp #0
+    beq slot
+    cmp #$10
+    beq slot
+    sec
+    rts
+slot:
+    sta model_bank
+    sta reu_addr+2
     lda #0
     sta model_ready
     sta logits_ready
+    sta token_pos
+    sta model_context
     sta reu_addr
     sta reu_addr+1
-    sta reu_addr+2
 .ifdef GROUP4_EXPERIMENT
     sta group4_model
     sta group4_ready
@@ -138,6 +159,8 @@ packed_matrix:
 .ifdef GROUP8_EXPERIMENT
     beq packed
     cmp #3
+    beq packed
+    cmp #4
 packed:
 .endif
     bne :+
@@ -152,6 +175,19 @@ check_header:
     lda group4_model
     bne header_byte_ok
 :
+.ifdef GROUP8_EXPERIMENT
+    lda group4_model
+    cmp #4
+    bne compare_header
+    ; Layout 4 checks its image length separately and carries a model-specific SHA.
+    cpx #20
+    bcs header_byte_ok
+    cpx #16
+    bcs compare_header
+    cpx #12
+    bcs header_byte_ok
+compare_header:
+.endif
 .endif
     lda REU_TILE,x
     cmp header,x
@@ -170,6 +206,16 @@ check_directory:
     inx
     cpx #MATRICES*8
     bne check_directory
+    lda #BASE_CONTEXT
+.ifdef GROUP8_EXPERIMENT
+    ldx group4_model
+    cpx #4
+    bne context_ready
+    jsr extended_context
+    bcs failure
+context_ready:
+.endif
+    sta model_context
     lda #1
     sta model_ready
     clc
@@ -178,6 +224,42 @@ failure:
     sec
     rts
 .endproc
+
+.ifdef GROUP8_EXPERIMENT
+; The first 128 positions and all other tensors keep their original offsets.
+; Additional position rows follow the gain vectors in the same tile format.
+.proc extended_context
+    lda REU_TILE+CONTEXT_AT
+    sec
+    sbc #BASE_CONTEXT
+    bcc fail
+    ldy #EMBED_ROW_BYTES
+    sty mul_rhs
+    jsr mul8_unsigned
+    clc
+    adc #<IMAGE_SIZE
+    tax
+    lda mul_result+1
+    adc #>IMAGE_SIZE
+    tay
+    lda #^IMAGE_SIZE
+    adc #0
+    cmp REU_TILE+14
+    bne fail
+    cpy REU_TILE+13
+    bne fail
+    cpx REU_TILE+12
+    bne fail
+    lda REU_TILE+15
+    bne fail
+    lda REU_TILE+CONTEXT_AT
+    clc
+    rts
+fail:
+    sec
+    rts
+.endproc
+.endif
 
 .proc matrix_address
     ldx model_ready
@@ -188,10 +270,14 @@ failure:
     asl
     asl
     tax
-    .repeat 3, I
+    .repeat 2, I
         lda directory+I,x
         sta reu_addr+I
     .endrepeat
+    lda directory+2,x
+    clc
+    adc model_bank
+    sta reu_addr+2
     clc
     rts
 failure:
@@ -229,7 +315,7 @@ failure:
     beq layout_ready
     lda group4_model
     cmp #3
-    bne group_four
+    bcc group_four
     lda group8_matrix,y
     bne select_kernel
 group_four:
@@ -344,8 +430,11 @@ fail:
     bcs failure
     sta embedding_index
     lda token_pos
-    cmp #128
-    bcs failure
+    cmp model_context
+    bcc valid
+failure:
+    rts
+valid:
     lda #0
     jsr matrix_address
     bcs done
@@ -364,13 +453,30 @@ copy:
 :
     inx
     bne copy
+    lda token_pos
+    cmp #BASE_CONTEXT
+    bcc base_position
+    sbc #BASE_CONTEXT
+    sta embedding_index
+    lda model_context
+    sec
+    sbc #BASE_CONTEXT
+    sta embedding_rows
+    POINTER reu_addr, IMAGE_SIZE
+    lda #^IMAGE_SIZE
+    clc
+    adc model_bank
+    sta reu_addr+2
+    jmp read_position
+base_position:
     lda #1
     jsr matrix_address
     bcs done
-    lda #128
+    lda #BASE_CONTEXT
     sta embedding_rows
     lda token_pos
     sta embedding_index
+read_position:
     jsr embedding_row
     bcs done
     POINTER vector_source, embedding_result
@@ -380,9 +486,6 @@ copy:
     jsr vector_add
     clc
 done:
-    rts
-failure:
-    sec
     rts
 .endproc
 
@@ -399,6 +502,8 @@ failure:
     lda #>GAIN_BASE
     sta reu_addr+1
     lda #^GAIN_BASE
+    clc
+    adc model_bank
     sta reu_addr+2
     cpx #0
     beq load

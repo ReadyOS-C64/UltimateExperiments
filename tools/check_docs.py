@@ -145,16 +145,33 @@ with zipfile.ZipFile(super_source) as archive:
         errors.append('SuperEditor package D81 hash')
     if b'LOAD"SUPEREDITOR",8,1' not in archive.read('README.txt'):
         errors.append('SuperEditor package README lacks startup command')
-tiny_program = ROOT / 'Tiny21/releases/PROBE.PRG'
-if tiny_program.read_bytes() != (DOCS / 'tiny21/install/PROBE.PRG').read_bytes():
-    errors.append('Tiny 2.1 Pages PRG differs from project release')
-if hashlib.sha256(tiny_program.read_bytes()).hexdigest() != '8559749a6a66fc8478e64ac9a37f7bf6954f1468ba53e9116abb8066be2a7494':
-    errors.append('Tiny 2.1 packaged PRG hash')
+tiny_zip = ROOT / 'Tiny21/releases/Tiny21-v0.7-C64PROGINFO.zip'
+if tiny_zip.read_bytes() != (DOCS / 'downloads' / tiny_zip.name).read_bytes():
+    errors.append('C64 LLM Pages download differs from the project release')
+with zipfile.ZipFile(tiny_zip) as archive:
+    expected = {'PROBE.PRG', 'MODEL.BIN', 'C64PROGINFO.BIN', 'README.md',
+                'LICENSE', 'LICENSE-TINY21.txt', 'LICENSE-C64-DUNGEON.txt'}
+    if set(archive.namelist()) != expected or len(archive.namelist()) != len(expected):
+        errors.append('C64 LLM package member allowlist')
+    if archive.testzip() is not None:
+        errors.append('C64 LLM package CRC failure')
+    program = archive.read('PROBE.PRG')
+    if program[:2] != b'\x01\x08' or b'C64 LLM - Little Language Model' not in program:
+        errors.append('C64 LLM package must contain the v0.7 console')
+    base_hash = hashlib.sha256(archive.read('MODEL.BIN')).hexdigest()
+    if base_hash != 'ba89630a6bb1fd2d385e6daeae6bbc27a919996703e12e4beb4ab06136f61a1b':
+        errors.append('C64 LLM package Tiny 2.1 model hash')
+    if archive.read('C64PROGINFO.BIN') != (ROOT / 'Tiny21/models/C64PROGINFO.BIN').read_bytes():
+        errors.append('C64 LLM package C64PROGINFO image differs from the project model')
+    tiny_readme = archive.read('README.md').decode()
 tiny_guide = (DOCS / 'tiny21/DOWNLOAD.html').read_text()
-if 'id="tiny21-download"' not in tiny_guide or 'src="install.js"' not in tiny_guide:
-    errors.append('Tiny 2.1 download must expose the browser ZIP builder')
-if any(text in tiny_guide for text in ('make_model.py', 'TINY.BIN', 'python3')):
-    errors.append('Tiny 2.1 user guide exposes the developer conversion workflow')
+if f'href="../downloads/{tiny_zip.name}"' not in tiny_guide:
+    errors.append('C64 LLM download must link to the prebuilt ZIP')
+for guide in (tiny_readme, tiny_guide):
+    if any(text not in guide for text in ('64 MHz', '16 MB', 'USB1', 'TINY64-MODELS', 'F1', 'F3')):
+        errors.append('C64 LLM setup guide is missing installation or model-switching instructions')
+    if any(text in guide for text in ('make_model.py', 'TINY.BIN', 'python3')):
+        errors.append('C64 LLM setup guide exposes the developer conversion workflow')
 if errors:
     raise SystemExit('\n'.join(errors))
 print(f'PASS: {len(pages)} HTML pages, Markdown links, anchors, local assets, highlighted SQL preserved, only approved embeds, no bundled media or personal home paths, and matching experiment downloads.')

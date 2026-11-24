@@ -19,12 +19,14 @@ class Machine:
     lib.tiny_enable_group4_workspace.restype = None
     lib.tiny_enable_group8_dma.argtypes = (C.c_void_p,)
     lib.tiny_enable_group8_dma.restype = None
+    lib.tiny_set_workspace.argtypes = (C.c_void_p, C.c_uint, C.c_uint, C.c_uint)
+    lib.tiny_set_workspace.restype = None
     lib.tiny_keyboard.argtypes = (C.c_void_p,)
     lib.tiny_keyboard.restype = C.POINTER(C.c_ubyte * 8)
     lib.tiny_enable_cycle_profile.argtypes = (C.c_void_p,)
     lib.tiny_enable_cycle_profile.restype = C.POINTER(C.c_uint64 * 65536)
     lib.tiny_run.argtypes = (C.c_void_p, C.c_uint16, C.c_uint64,
-                            C.POINTER(C.c_uint64), C.c_uint8, C.c_uint8, C.c_uint32)
+                            C.POINTER(C.c_uint64), C.c_uint8, C.c_uint8, C.c_uint32, C.c_uint32)
     def __init__(self, core_dir=BUILD):
         self.symbols = {name[1:]: int(addr, 16)
                         for _, addr, name in map(str.split, (core_dir / "core.lbl").read_text().splitlines())}
@@ -33,6 +35,9 @@ class Machine:
             self.lib.tiny_enable_group4_workspace(self.ptr)
         if "reu_group8_read" in self.symbols:
             self.lib.tiny_enable_group8_dma(self.ptr)
+        self.lib.tiny_set_workspace(self.ptr, self.symbols.get("__WORK_START__", 0x5000),
+                                    self.symbols.get("__SCORES_RUN__", 0),
+                                    self.symbols.get("__SCORES_SIZE__", 0))
         self.ram = self.lib.tiny_ram(self.ptr).contents
         self.reu = self.lib.tiny_reu(self.ptr).contents
         code = (core_dir / "core.bin").read_bytes()
@@ -69,12 +74,13 @@ class Machine:
         addr = self.symbols[name]
         return int.from_bytes(bytes(self.ram[addr:addr + size]), "little", signed=signed)
 
-    def run(self, label, accumulator=0, *, instruction_limit=2_000_000, x=0, model_length=0):
-        if not 0 <= model_length <= 0x80000:
+    def run(self, label, accumulator=0, *, instruction_limit=2_000_000, x=0,
+            model_length=0, model_base=0):
+        if not 0 <= model_length <= 0x80000 or model_base not in (0, 0x100000):
             raise ValueError("guard model length exceeds the owned model region")
         stats = (C.c_uint64 * 9)()
         status = self.lib.tiny_run(self.ptr, self.symbols[label], instruction_limit, stats,
-                                   accumulator, x, model_length)
+                                   accumulator, x, model_length, model_base)
         if status:
             error = {1: "instruction budget", 2: "unsupported REU command",
                      3: "unowned CPU write", 4: "stack guard",

@@ -1,37 +1,62 @@
-# Tiny 2.1 for the C64 Ultimate
+# C64 LLM - Little Language Model
 
-Version **0.6** runs WollyMonjac’s Tiny 2.1 checkpoint on a physical C64 Ultimate using 6502/6510 assembly. The Ultimate’s 64 MHz turbo mode runs the transformer, and a 16 MB REU holds the model and attention history. Load the model into REU from the Ultimate menu, then run the PRG from the same menu. The console verifies and reuses the preloaded model.
+Version **0.7** runs two selectable character models in native 6502/6510 assembly on a **64 MHz C64 Ultimate with a 16 MB REU**. **Tiny 2.1** answers general short questions. **C64PROGINFO** focuses on Commodore 64 hardware, BASIC V2, and 6502 assembly.
 
-**Required hardware: 64 MHz C64 Ultimate and 16 MB REU.**
+[Download and setup](DOWNLOAD.md) · [Technical details](TECHNICAL.md) · [Build from source](BUILD.md) · [Online guide](https://readyos-c64.github.io/UltimateExperiments/tiny21/)
 
-[Quick start and download](DOWNLOAD.md) · [Technical details](TECHNICAL.md) · [GitHub Pages](https://readyos-c64.github.io/UltimateExperiments/tiny21/)
+## Use the console
+
+Unzip the v0.7 package and copy `PROBE.PRG`, `MODEL.BIN`, and `C64PROGINFO.BIN` to `/USB1/TINY64-MODELS`. Enable the **16 MB REU** and **Command Interface**, set **Turbo Control** to **C64U Turbo Registers**, and run `PROBE.PRG` from the Ultimate menu. It starts with Tiny 2.1.
+
+| Key | Model | Context |
+| --- | --- | ---: |
+| **F1** | Tiny 2.1 | 128 positions |
+| **F3** | C64PROGINFO | 224 positions |
+
+Switch while the console is ready. Check the **Model:** line after **Model ready.** appears. The program loads the selected model if needed and reuses a verified copy already in its REU slot. Type a question and press **RETURN**. **DEL** edits the prompt. Hold **RUN/STOP** to cancel during generation. The console keeps the question on screen with its answer and starts a fresh question on your next typed character.
 
 ## Video
 
-<iframe class="tiny21-video" src="https://www.youtube-nocookie.com/embed/EOZRYfPyuy0" title="Tiny 2.1 running on the C64 Ultimate" width="640" height="360" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="tiny21-video" src="https://www.youtube-nocookie.com/embed/EOZRYfPyuy0" title="Original Tiny 2.1 demo on the C64 Ultimate" width="640" height="360" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-[Watch the C64 Ultimate demo on YouTube](https://www.youtube.com/watch?v=EOZRYfPyuy0)
+[Watch the original Tiny 2.1 demo on YouTube](https://www.youtube.com/watch?v=EOZRYfPyuy0)
 
-## Examples
+## Try C64PROGINFO
 
-| Type this question | Answer | Measured time at 64 MHz |
+- `what cpu does the c64 use` → A MOS 6510.
+- `what is the resolution of c64 hires bitmap` → 320 by 200 pixels.
+- `show basic code to clear the screen and print ready`
+
+  ```basic
+  10 PRINT CHR$(147)
+  20 PRINT "READY"
+  ```
+
+- `show assembler code to set border to red`
+
+  ```asm
+  LDA #$02
+  STA $D020
+  ```
+
+![C64PROGINFO retains the two-line BASIC question and shows the multiline answer](screenshots/c64proginfo-basic.png)
+
+C64PROGINFO was trained on **3,507 C64 facts and code examples**, expanded into alternate question wordings. It covers the 6510, VIC-II, SID, CIA, memory and registers, KERNAL calls, BASIC V2 and assembly. It works best with familiar phrasing and can give incorrect answers or code. [Training data, tests and results](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/README.md)
+
+## Try Tiny 2.1
+
+| Type this question | Answer | v0.7 measured time at 64 MHz |
 | --- | --- | ---: |
-| `what is 7 times 8` | 7 times 8 is 56. | 36.321 s |
-| `what is the capital of peru` | Lima. | 34.442 s |
+| `what is 7 times 8` | 7 times 8 is 56. | 32.442 s |
+| `what is the capital of peru` | Lima. | 30.678 s |
 
-On the same Ultimate, version 0.6 completed these prompts about 10.5% faster than the previous wide group-four build. The model generates text one character at a time. It works best with short questions, and its answers can be wrong.
+The engine generates one character at a time. On the same Ultimate, v0.7 cut the combined time for these two prompts by 10.8% from v0.6. [Benchmark methodology](C64_DUNGEON_COMPARISON.md#measured-on-the-c64-ultimate)
 
-![Both example answers and their measured times on the physical C64 Ultimate](screenshots/answers.png)
+The upstream model was trained on roughly **3,500 facts** with multiple wordings. The original physical demo covers vocabulary, grammar, translation, geography, science, literature, computing and math. [Upstream Tiny 2.1 training kit](https://github.com/WollyMonjac/Tiny-2.1/tree/main/training)
 
-## What the model was trained on
+### Questions from the original demo
 
-The [upstream Tiny 2.1 README](https://github.com/WollyMonjac/Tiny-2.1) describes a small question-answering model trained on roughly **3,500 facts**, each asked in several wordings. The release includes the trained checkpoint and inference code. A complete training corpus and source list are unavailable in the upstream release, so the exact facts and topic coverage are unknown.
-
-## Questions from the C64 demo
-
-The physical C64 Ultimate recording includes vocabulary, grammar, translation, geography, science, literature, computing, and math. These are the answers captured for the exact prompts shown.
-
-| Question as entered | Answer from the C64 |
+| Question as entered | Answer from Tiny 2.1 |
 | --- | --- |
 | `give me a synonym for happy` | Glad. |
 | `what is the plural of mouse` | Mice. |
@@ -46,10 +71,12 @@ The physical C64 Ultimate recording includes vocabulary, grammar, translation, g
 
 ## Screenshots
 
-![The v0.6 console showing that the preloaded REU model passed verification](screenshots/ready.png)
+![C64 LLM v0.7 ready with Tiny 2.1 selected and F1 and F3 shortcuts on screen](screenshots/ready.png)
 
-![The native context diagnostic finishes at 128 positions and answers a new question](screenshots/context.png)
+![C64PROGINFO returns two lines of 6502 assembly for setting the border to red](screenshots/c64proginfo-assembly.png)
 
 ## Credits and license
 
-The original model, checkpoint and Pentium/486 DOS implementation are by the [WollyMonjac/Tiny-2.1 project](https://github.com/WollyMonjac/Tiny-2.1). This project adapts that checkpoint for the C64 Ultimate. The C64 port is [MIT licensed](install/LICENSE). Peddle keeps its [own MIT notice](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/third_party/peddle/LICENSE). The port’s license covers its own code and documentation.
+The original Tiny 2.1 checkpoint and Pentium/486 DOS implementation are by [WollyMonjac/Tiny-2.1](https://github.com/WollyMonjac/Tiny-2.1). The C64 port, documentation, and C64PROGINFO are under the [MIT license](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/LICENSE). Peddle keeps its [own MIT notice](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/third_party/peddle/LICENSE).
+
+C64PROGINFO's training tools adapt the PyTorch decoder and training loop from [jaydarkseed757’s c64-dungeon](https://github.com/jaydarkseed757/c64-dungeon). The [c64-dungeon notice](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/LICENSE.c64-dungeon) and the [upstream Tiny 2.1 notice](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/LICENSE.tiny21-language) are included in the ZIP.

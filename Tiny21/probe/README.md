@@ -1,5 +1,7 @@
 # Tiny 2.1 Ultimate hardware probe
 
+For the ready-to-run two-model console, start with the [v0.7 setup guide](../docs/DOWNLOAD.md). The [build and packaging instructions](../docs/BUILD.md) cover the matched PRG and both model files.
+
 The PRG configures register-controlled 64 MHz turbo, then runs two fixed prompts through the native assembly inference core. The displayed answers are produced by the model on the C64. Time to first output and total response time come from cascaded CIA2 PHI2 timers, separately from the configured turbo CPU clock. The launch worker collects actual VIC video screenshots, validates the raw timing and answer mailbox, and retains the previous turbo configuration for restoration. The probe leaves its final screen visible.
 
 The probe uses an available 64 MHz-capable Ultimate with Command Interface and REU enabled, FTP, and the REST API. The detached worker sets REU capacity to 16 MB when needed and verifies it is left at 16 MB. It takes over C64 RAM, CIA timers and the runtime REU ranges for the run. It leaves drives and other USB files untouched. Verify shared hardware ownership from a live preflight before issuing `run`. A previously running machine program cannot be resumed after running this PRG. Development uses Peddle and reaches the device only after complete inference passes there.
@@ -22,9 +24,9 @@ bundle="$PWD/build/ultimate-probe-$run_id"
 /opt/homebrew/bin/python3 -m probe.check_video
 ```
 
-The package contains `PROBE.PRG`, the converted `MODEL.BIN`, and the identity manifest. The builder verifies that the PRG contains the same core bytes used by Peddle and records their SHA-256. It uses the bootstrap at `$0801`, code starting at `$1000`, and a cold probe segment relocated from `$5000` to `$A000` before model BSS is used. The model path is compiled into the PRG and must match the owned USB run directory. The `MODEL.BIN` payload is the normal T64M REU image, converted from the pinned upstream checkpoint.
+The package contains `PROBE.PRG`, the converted `MODEL.BIN`, and the identity manifest. The builder verifies that the PRG contains the same core bytes used by Peddle and records their SHA-256. It uses the bootstrap at `$0801`, code starting at `$1000`, and a cold probe segment relocated from `$5400` to `$A000` before model BSS is used. The model path is compiled into the PRG and must match the owned USB run directory. The `MODEL.BIN` payload can be the converted, pinned upstream checkpoint or a compatible [development checkpoint](../docs/BUILD.md).
 
-Ultimate DOS target 2 opens the file read-only, checks its exact length, issues `LOAD_REU` for address zero, and closes it. The probe drains asynchronous data and status blocks with a CIA deadline. A complete CRC32 walk through REU DMA verifies that the expected image arrived before the inference core validates the header and directory. [Ultimate DOS protocol](https://1541u-documentation.readthedocs.io/en/latest/uci/ultimate_dos_target.html) · [UCI transport](https://1541u-documentation.readthedocs.io/en/latest/uci/core_uci_architecture.html)
+Ultimate DOS target 2 opens the file read-only, checks its exact length, issues `LOAD_REU` for the target slot, and closes it. The primary slot is at REU address zero. C64PROGINFO uses `$100000` in the two-model console. The probe drains asynchronous data and status blocks with a CIA deadline. A complete CRC32 walk through REU DMA verifies that the expected image arrived before the inference core validates the header and directory. [Ultimate DOS protocol](https://1541u-documentation.readthedocs.io/en/latest/uci/ultimate_dos_target.html) · [UCI transport](https://1541u-documentation.readthedocs.io/en/latest/uci/core_uci_architecture.html)
 
 To package the faster mixed-layout console, build the packed core and generate its model image before using the same detached launch procedure. Use a fresh `run_id` when building either variant.
 
@@ -41,7 +43,7 @@ python3 -m probe.check_console "$bundle"
 
 ## Observe and run in a detached shell
 
-Set `host` to the Ultimate's configured address. Every device transaction is executed by a Terminal-owned `nohup` background worker with stdin closed. The launcher returns while the job runs. The output directory contains `pid`, `status`, and `worker.log`.
+Set `host` to the Ultimate's configured address. On macOS, the launcher submits a background shell to `launchd` with stdin closed. The launcher returns while the job runs. The output directory contains `pid`, `status`, and `worker.log`.
 
 ```sh
 /opt/homebrew/bin/python3 probe/launch_detached.py \
@@ -148,7 +150,7 @@ With Pillow and FFmpeg installed, edit the recording from the detached run's
 time-lapse per inference, then holds the completed screen for two seconds.
 
 ```sh
-python3 probe/video_edit.py "$evidence" "$soundtrack" "$output_mp4"
+python3 probe/video_edit.py "$evidence" "$soundtrack" "$output_mp4" --typing-speed 3
 ```
 
 ## Qualify the physical keyboard

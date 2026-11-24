@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Tiny21 v0.7 research comparison with c64-dungeon · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: Tiny21 v0.7 research comparison with c64-dungeon"><link rel="stylesheet" href="../style.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor"><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../supereditor/index.html">Overview and downloads</a></li><li><a href="../supereditor/USER_GUIDE.html">Complete user guide</a></li><li><a href="../supereditor/SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="../supereditor/GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="../supereditor/STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="../supereditor/BUILD.html">Build and package</a></li><li><a href="../supereditor/CAPACITY.html">Capacity and limits</a></li><li><a href="../supereditor/PERFORMANCE.html">Performance</a></li><li><a href="../supereditor/OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="../supereditor/MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details><details class="project-nav" data-project="tiny21" open><summary aria-label="C64 LLM guides">C64 LLM<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html">Overview and downloads</a></li><li><a href="DOWNLOAD.html">Download and setup</a></li><li><a href="TECHNICAL.html">Technical details</a></li><li><a href="FUTURE.html">Future versions</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#design-lineage-and-assembly-overlap">Design lineage and assembly overlap</a></li><li><a href="#model-and-forward-pass">Model and forward pass</a></li><li><a href="#fixed-point-arithmetic">Fixed-point arithmetic</a></li><li><a href="#multiplication-and-lookup-tables">Multiplication and lookup tables</a></li><li><a href="#reu-and-attention-cache">REU and attention cache</a></li><li><a href="#model-flexibility-and-multiple-model-implications">Model flexibility and multiple-model implications</a></li><li><a href="#performance-interpretation">Performance interpretation</a></li><li><a href="#engine-efficiency-and-optimization-priorities">Engine efficiency and optimization priorities</a></li><li><a href="#changes-measured-for-v07">Changes measured for v0.7</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="C64_DUNGEON_COMPARISON.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="tiny21-v07-research-comparison-with-c64-dungeon">Tiny21 v0.7 research comparison with c64-dungeon</h1>
+<p>Compared on 2026-11-23. The Tiny21 baseline is the released v0.6 source at
+<code>30089f7858bbb0f9bed199bffd67a8f256855171</code>. The c64-dungeon snapshot is
+<code>60a5b6c36db41a5c74fa3b7efea15ba235b27546</code>.</p>
+<p>This review reads source and the shipped model package. Its numerical
+inventory and source comparisons run on the host. Dungeon&#39;s runtime
+correctness and hardware timings are author-reported.</p>
+<h2 id="design-lineage-and-assembly-overlap">Design lineage and assembly overlap</h2>
+<p>Dungeon explicitly credits Tiny21. Its reference research pins our v0.6
+commit, records reading the integer oracle, converter and selected assembly
+modules, and identifies our arithmetic and verification approach as its
+starting point. It also studies llama2.c64. The authors describe their ACME
+engine as an independent implementation. <a href="https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/docs/REFERENCE_IMPLEMENTATIONS.md">Reference research</a></p>
+<p>A source comparison covered our 14 inference assembly files and nine native
+probe assembly files against Dungeon&#39;s 12 engine assembly files. There were
+zero byte-identical files. After stripping comments and whitespace, the
+longest matching run of literal opcodes and operands was five instructions,
+such as four shifts followed by TAX. Those are ordinary indexing operations.
+When operands were discarded, the longest matching run contained 23 opcodes
+in REU setup, which writes the same hardware registers.</p>
+<p>This provides no evidence of a substantial verbatim assembly routine in the
+compared source. The comparison examines source instructions before macro
+expansion. It cannot determine authorship or rule out adaptation expressed
+through renamed operands or different macro structure. The quarter-square
+equation, fixed-point formats and subset-sum equations are shared, while the
+assembly implementing them differs. <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/src/dot.s">Our compact multiplier</a>,
+<a href="https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/engine/source/ai_math.asm">Dungeon multiplier</a></p>
+<h2 id="model-and-forward-pass">Model and forward pass</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Tiny21 v0.6</th>
+<th>Shipped Dungeon v3q model</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Layers / attention heads</td>
+<td>4 / 4</td>
+<td>4 / 4</td>
+</tr>
+<tr>
+<td>Channels / head width</td>
+<td>96 / 24</td>
+<td>64 / 16</td>
+</tr>
+<tr>
+<td>Feed-forward width / activation</td>
+<td>256 / ReLU</td>
+<td>256 / ReLU</td>
+</tr>
+<tr>
+<td>Positions</td>
+<td>128 learned absolute</td>
+<td>128 learned absolute</td>
+</tr>
+<tr>
+<td>Vocabulary</td>
+<td>97 character tokens</td>
+<td>256 ids including characters, letter groups and controls</td>
+</tr>
+<tr>
+<td>Parameter count</td>
+<td>366,528</td>
+<td>221,760</td>
+</tr>
+<tr>
+<td>Converted image</td>
+<td>380,995 bytes</td>
+<td>237,312 bytes</td>
+</tr>
+<tr>
+<td>Final projection</td>
+<td>Tied token embedding</td>
+<td>Tied token embedding</td>
+</tr>
+<tr>
+<td>Generation</td>
+<td>Greedy</td>
+<td>Greedy or top-k with temperature and seeded RNG</td>
+</tr>
+</tbody></table>
+<p>The shipped Dungeon image&#39;s length and SHA-256 matched its distribution
+manifest. The model uses four pre-RMSNorm transformer blocks with the same
+overall ordering as Tiny21. Each performs normalization, Q/K/V, cache append,
+causal attention, output projection/residual, normalization, ReLU feed-forward
+and residual. Both skip the output head for prompt positions whose logits
+would be discarded. Their model weights and token ids are different.
+<a href="https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/dist/MANIFEST.JSON">Dungeon manifest</a>,
+<a href="https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/engine/source/ai_model.asm">forward pass</a></p>
+<h2 id="fixed-point-arithmetic">Fixed-point arithmetic</h2>
+<p>Both retain signed Q16.16 activations and logits, signed int8 row weights,
+Q0.24 row scales, Q4.12 normalization gains, and int16 dot inputs packed with
+a shared shift. Both use widened accumulators, integer square roots with
+eight guard bits, and nearest rounding with ties away from zero. These are
+specific numerical design choices Dungeon&#39;s reference research attributes
+to Tiny21.</p>
+<p>Their arithmetic is not bit-compatible with ours. Dungeon rounds the mean
+square before its RMS square root, while our oracle floors the scaled
+division used to construct that root. Dungeon folds the attention factor
+1/sqrt(head width) into Q weights before quantization, while our attention
+path applies its fixed-point factor during score evaluation. Dungeon also
+changes cache scaling, described below. These changes require its own
+integer oracle and model conversion. <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/tools/oracle.py">Our oracle</a>,
+<a href="https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/docs/INFERENCE.md">Dungeon arithmetic contract</a></p>
+<h2 id="multiplication-and-lookup-tables">Multiplication and lookup tables</h2>
+<p>Both compact multiplication paths use the quarter-square identity and
+page-aligned byte planes. Our tables are assembled as constants and accessed
+with indirect zero-page pointers. Dungeon builds its tables at initialization
+under BASIC ROM and patches absolute indexed operands for its multiply
+helper.</p>
+<p>Both fast matrix paths use the same group-eight subset-sum principle.
+For eight activations, build all 256 sums. A weight bitplane mask selects one
+sum. Add the seven positive planes and subtract the sign plane to reconstruct
+an exact signed dot. Dungeon&#39;s format document explicitly identifies our
+<code>mask_row_group8</code> as the source of this idea.</p>
+<p>The organization is substantially different. Our engine prepares 9 KiB of
+tables for the full 96-input vector and shares them across Q/K/V. We stream
+16-row tiles, retaining group-four for O and the compact sparse path for F2.
+Dungeon streams blocks of up to 64 rows by 64 columns, builds one 768-byte
+subset table at a time, and applies it to all rows in the block through a
+generated kernel. It uses this layout for all matrices except the position
+embedding, including F2 and the tied output head. Its matrix calls rebuild
+the tables for each Q/K/V projection. <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/src/dot_group8.s">Our kernel</a>,
+<a href="https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/engine/source/ai_matvec.asm">Dungeon matrix kernel</a></p>
+<p>Both softmax implementations use 1,025 samples of exp(-i/64), linear
+interpolation, and a delta cutoff of 16. Comparing the generated numerical
+entries found 1,024 identical values. The first differs because ours handles
+exact 2^24 separately, while Dungeon caps it to 2^24-1. Equal values from the
+same formula establish numerical agreement for those entries.</p>
+<p>Our exp table stays in resident memory. Dungeon places its initial table in
+vector RAM, copies it to REU at initialization, then fetches two entries with
+a six-byte DMA for each evaluation. Its generated arithmetic kernels occupy
+<code>$9C00–$9DFF</code>. This trades small transfers and initialization work for free
+CPU RAM. <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/src/attention_exp.s">Our exponential</a>,
+<a href="https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/engine/source/ai_math.asm">Dungeon exponential and table</a></p>
+<h2 id="reu-and-attention-cache">REU and attention cache</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Tiny21 v0.6</th>
+<th>Dungeon engine</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Model base</td>
+<td>REU zero</td>
+<td>REU zero</td>
+</tr>
+<tr>
+<td>KV base / layer stride</td>
+<td>$080000 / $8000</td>
+<td>$100000 / $10000</td>
+</tr>
+<tr>
+<td>KV record</td>
+<td>K8 + peak32, V8 + peak32</td>
+<td>K8, V8, per-head key/value exponents</td>
+</tr>
+<tr>
+<td>Baseline bytes per position/layer</td>
+<td>200</td>
+<td>136</td>
+</tr>
+<tr>
+<td>Actual 128-position KV bytes</td>
+<td>102,400</td>
+<td>69,632</td>
+</tr>
+<tr>
+<td>Runtime minimum / documented user setting</td>
+<td>16 MB release target</td>
+<td>2 MB engine minimum / 16 MB player setting</td>
+</tr>
+<tr>
+<td>Transfer policy</td>
+<td>Owned CPU windows and model/cache regions</td>
+<td>General fetch/stash with caller-selected CPU buffers</td>
+</tr>
+<tr>
+<td>Bank boundaries</td>
+<td>Split at 512 KiB</td>
+<td>Split at 512 KiB</td>
+</tr>
+</tbody></table>
+<p>Our cache scales all 96 channels of a key or value with one absolute peak.
+Dungeon packs each 16-channel head with a power-of-two shift and stores one
+exponent per head. This replaces peak multiplications/divisions with shifts
+and changes the quantization. Its training fine-tunes the model with weight
+and K/V quantization simulated.</p>
+<p>Both attend to positions zero through the current position, append current
+K/V first, and reset context validity for a new request. Our attention code
+processes all heads across a tile, then reuses the final key-pass tile during
+the value pass. Dungeon loops over heads and fetches cache tiles again for
+each score/value pass. Its design favors simpler head-local arithmetic and
+different scaling. <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/src/cache.s">Our cache</a>,
+<a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/src/attention.s">our attention</a>,
+<a href="https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/engine/source/ai_attn.asm">Dungeon attention</a></p>
+<p>Both configure the 17xx REU registers for DMA, split the 512 KiB counter wrap,
+and use model integrity checks. Dungeon explicitly cites Tiny21 for the
+counter behavior. Both support a preloaded image and a USB/UCI fallback.
+Dungeon&#39;s driver uses different counters and general addresses, while ours
+checks particular CPU windows and capacity spans. The routines have different
+source and validation responsibilities. <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/src/reu.s">Our REU driver</a>,
+<a href="https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/engine/source/hw_reu.asm">Dungeon REU driver</a></p>
+<h2 id="model-flexibility-and-multiple-model-implications">Model flexibility and multiple-model implications</h2>
+<p>Our v0.6 model admission pins the Tiny 2.1 checkpoint hash, dimensions, exact
+matrix directory and image size. Its image versions select packing layouts
+for one checkpoint. Dungeon uses a new D64AI header with tensor kinds,
+dimensions, offsets, tokenizer, vocabulary identity and header/payload CRCs.
+Its engine reads model geometry at runtime within compiled limits, including
+d &lt;= 128, heads/layers &lt;= 8, feed-forward &lt;= 256 and context &lt;= 128.</p>
+<p>That permits sequential replacement of compatible Dungeon models. The
+current code still maps one image at REU zero and one active context. It does
+not provide a registry of several models concurrently resident in REU.
+The terminal/game also use model-specific vocabulary identities and scene
+tokens. Arbitrary tokenizers cannot be exchanged without checking the host.
+<a href="https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/engine/source/ai_load.asm">Dungeon loader</a>,
+<a href="https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/docs/MODEL_FORMAT.md">model format</a></p>
+<p>For v0.7, distinguish selecting several checkpoints of the same Tiny21
+geometry from supporting different geometries and tokenizers. The former can
+preserve the proven arithmetic. The latter needs format, workspace, cache,
+tokenizer, and model-admission decisions. Dungeon&#39;s metadata and tokenizer
+contract are relevant references. Adopting its cache exponents would change
+our numeric profile and needs a separate accuracy evaluation.</p>
+<p>The v0.7 console keeps two compatible Tiny21 model images in separate REU
+slots. F1 selects the original Tiny 2.1 and F3 selects C64PROGINFO.
+<a href="TECHNICAL.html#model-and-resident-6510-engine">Release model slots and cache layout</a></p>
+<h2 id="performance-interpretation">Performance interpretation</h2>
+<p>Dungeon reports 563 ms per generated token and 2.29 characters/s over its
+five-minute shipped-model benchmark. Our published standard prompts measured
+0.795–0.829 characters/s from first output through ready. The scopes differ.
+Dungeon&#39;s 64-wide model performs 212,992 dense MACs per full step versus our
+353,376, about 40% less work before attention. Its letter-group tokens can emit
+multiple characters and its scene prompts use a few control tokens. Those
+factors affect throughput alongside the optimized kernel.</p>
+<p>Its figures support treating the implementation as promising. They do not
+isolate an engine-only speed ratio. Such a comparison requires matched model
+geometry, tokenization, prompts, arithmetic contract, and timing boundaries.
+The reported five-minute run includes an integer-reference token checksum,
+which is stronger evidence than a single narrative screenshot. This review
+has not rerun that benchmark. <a href="https://github.com/jaydarkseed757/c64-dungeon/blob/60a5b6c36db41a5c74fa3b7efea15ba235b27546/docs/HW_RESULTS.md">Dungeon hardware results</a></p>
+<h2 id="engine-efficiency-and-optimization-priorities">Engine efficiency and optimization priorities</h2>
+<p>A fresh Peddle measurement of our v0.6 group-eight binary took 49,333,722 CPU
+cycles for position zero with output logits. Dungeon documents 28,730,682
+cycles for its smaller model at position zero in VICE. Dividing whole-step
+cycles by dense MAC count gives approximately 140 for Tiny21 and 135 for
+Dungeon. This rough normalization puts their efficiencies much closer than
+their raw output-character rates suggest. It includes normalization,
+attention, scales and control overhead in the numerator and counts only dense
+MACs in the denominator. The models, numeric contracts and simulation backends
+differ, so it is an indicator, rather than a matched kernel benchmark.</p>
+<p>The strongest candidate to measure first is a row-block bitplane kernel with
+patched absolute addressing. It could reduce pointer and loop overhead and
+extend exact lookup arithmetic to the F2 and output projections. A useful
+experiment should retain our Q/K/V table sharing, sparse F2 fallback, and
+existing all-head attention tile reuse. Compare full-prompt cycles, table
+setup, DMA traffic and exact logits on the same model.</p>
+<p>Specialized scale products and divisions are another candidate where
+proved width bounds permit them. Per-head exponent caches and folding the
+attention scale into weights are separate numeric-profile experiments,
+because they alter model quantization. Moving the exponential table into REU
+is a RAM tradeoff that adds transfers; it needs a workspace-driven reason and
+a whole-token measurement. Multi-character tokens and short control prompts
+improve text throughput through model/tokenizer design and should be measured
+separately from assembly improvements.</p>
+<h2 id="changes-measured-for-v07">Changes measured for v0.7</h2>
+<p>The ca65 group-eight dot now uses unrolled, directly indexed lookups into
+the existing fixed table pages. Q/K/V still share the prepared table.
+Sparse F2, the compact output projection and the resident exponential
+table use their existing arithmetic. Cache slot addresses and attention
+tile lengths now use the existing quarter-square multiplier in place of
+repeated addition. Attention still processes all heads in each 40-record
+tile and retains the last key tile for the value pass.</p>
+<table>
+<thead>
+<tr>
+<th>Same Tiny21 model and workload</th>
+<th align="right">v0.6 Peddle cycles</th>
+<th align="right">v0.7 Peddle cycles</th>
+<th align="right">Reduction</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Position zero, token <code>w</code>, with logits</td>
+<td align="right">49,333,722</td>
+<td align="right">42,262,117</td>
+<td align="right">14.3%</td>
+</tr>
+<tr>
+<td><code>what is 7 times 8</code></td>
+<td align="right">2,061,063,646</td>
+<td align="right">1,820,409,164</td>
+<td align="right">11.7%</td>
+</tr>
+<tr>
+<td><code>what is the capital of peru</code></td>
+<td align="right">1,951,929,113</td>
+<td align="right">1,718,359,946</td>
+<td align="right">12.0%</td>
+</tr>
+</tbody></table>
+<p>The prompt measurements include prefill and generation through end of
+response. Both answers and all checked logits matched the integer oracle,
+with the same DMA byte counts and transfer counts in the two builds.
+Generation-only rates were 1.03 and 0.98 characters/s at an idealized 64 MHz.
+Peddle counts CPU cycles and verifies DMA data; physical DMA and video timing
+are outside the rate calculation.</p>
+<p>The context layout raises the engine&#39;s limit from 128 to 255 positions.
+The current upstream checkpoint continues to supply 128 learned positions.
+The extended test checkpoint reuses existing position rows to exercise
+the format and arithmetic. A full run ingested 154 prompt characters before
+the delimiter and matched every generation logit to the Python oracle. The
+final-position test verified all 97 logits, all four newly appended cache
+records and clean rejection at the limit. The attention test verified exact
+outputs on a full 255-position prefix, including a head with equal weights
+at every position. <a href="BUILD.html">Build and model format</a>.</p>
+<h3 id="measured-on-the-c64-ultimate">Measured on the C64 Ultimate</h3>
+<p>The 2026-11-23 A/B run used the same physical C64 Ultimate, a 16 MB REU, the
+same preloaded model (CRC32 <code>557003c0</code>), and the same two scripted prompts.
+Both builds verified 64 MHz. The probe measured PAL CIA2 PHI2 ticks at
+985,248 Hz. Response time excludes model loading and validation.</p>
+<table>
+<thead>
+<tr>
+<th>Prompt</th>
+<th align="right">v0.6 first character</th>
+<th align="right">v0.7 first character</th>
+<th align="right">v0.6 total</th>
+<th align="right">v0.7 total</th>
+<th align="right">Total time reduction</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>what is 7 times 8</code></td>
+<td align="right">17.012 s</td>
+<td align="right">14.959 s</td>
+<td align="right">36.322 s</td>
+<td align="right">32.442 s</td>
+<td align="right">10.68%</td>
+</tr>
+<tr>
+<td><code>what is the capital of peru</code></td>
+<td align="right">28.148 s</td>
+<td align="right">24.956 s</td>
+<td align="right">34.441 s</td>
+<td align="right">30.678 s</td>
+<td align="right">10.93%</td>
+</tr>
+</tbody></table>
+<p>Both answers matched. Combined response time fell from 70.763 s to
+63.120 s, a 10.80% reduction. Output-phase rates rose from 0.829 to 0.915
+and from 0.795 to 0.874 character tokens per second, respectively.</p>
+</main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>

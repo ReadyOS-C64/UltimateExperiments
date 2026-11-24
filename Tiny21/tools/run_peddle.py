@@ -7,7 +7,7 @@ from pathlib import Path
 import struct
 from time import perf_counter
 
-from tools.model import LAYOUTS, image
+from tools.model import BASE_CONTEXT, LAYOUTS, image
 from tools.oracle import Network, input_tokens
 from tools.peddle import BUILD, Machine
 
@@ -38,30 +38,37 @@ class Timing:
 
 
 class Target:
-    def __init__(self, machine, checkpoint, layout="canonical"):
+    def __init__(self, machine, checkpoint, layout="canonical", *, programmer_model=False):
         self.machine = machine
-        payload, manifest = image(checkpoint, layout)
+        self.programmer_model = programmer_model
+        self.model_base = 0x100000 if programmer_model else 0
+        payload, manifest = image(checkpoint, layout,
+                                  model_name="C64PROGINFO" if programmer_model else None)
         payload = bytes(payload)
         start = perf_counter()
-        machine.preload(payload)
+        machine.preload(payload, self.model_base)
         self.preload_seconds = perf_counter() - start
         self.image_sha256 = manifest["image_sha256"]
         self.model_length = len(payload)
+        self.context = manifest.get("context", BASE_CONTEXT)
         machine.put("reu_banks", 32)
         self.admission = Timing()
-        self.execute(self.admission, "model_open")
+        if programmer_model:
+            self.execute(self.admission, "model_open_at", self.model_base >> 16)
+        else:
+            self.execute(self.admission, "model_open")
 
     def execute(self, timing, label, accumulator=0, *, x=0, instruction_limit=2_000_000):
         m = self.machine
         timing.add(m.run(label, accumulator, x=x, instruction_limit=instruction_limit,
-                         model_length=self.model_length), m.stack_bytes)
+                         model_length=self.model_length, model_base=self.model_base), m.stack_bytes)
 
     def answer(self, question, verify=None):
         m = self.machine
         prefill = Timing()
         decode = Timing()
         trace = []
-        prompt = input_tokens(question)
+        prompt = input_tokens(question, self.context, lowercase=self.programmer_model)
 
         def consume(token, logits, timing):
             self.execute(timing, "model_ingest", token, x=int(logits), instruction_limit=STEP_LIMIT)
@@ -79,21 +86,21 @@ class Target:
         first_decision = perf_counter() - start
 
         answer = []
-        while token > 1 and m.get("token_pos", 1) < 128:
-            answer.append(chr(token + 30))
+        while token != 1 and (token or self.programmer_model) and m.get("token_pos", 1) < self.context:
+            answer.append("\n" if token == 0 else chr(token + 30))
             consume(token, True, decode)
-            if m.get("token_pos", 1) < 128:
+            if m.get("token_pos", 1) < self.context:
                 self.execute(decode, "model_choose")
                 token = m.accumulator
         elapsed = perf_counter() - start
-        stop = "context" if m.get("token_pos", 1) == 128 else "eos"
+        stop = "context" if m.get("token_pos", 1) == self.context else "eos"
         if verify is not None:
             reference = Network(verify)
             for position, (token_id, scores) in enumerate(trace):
                 expected = reference.step(token_id, logits=scores is not None)
                 if scores is not None and scores != tuple(expected):
                     raise AssertionError(f"target logits differ from the reference at position {position}")
-            if "".join(answer) != reference.answer(question):
+            if "".join(answer) != reference.answer(question, multiline=self.programmer_model):
                 raise AssertionError("target greedy answer differs from the reference")
 
         return dict(question=question, answer="".join(answer), stop=stop,
@@ -112,11 +119,13 @@ if __name__ == "__main__":
     parser.add_argument("--verify", action="store_true", help="compare results with the integer reference")
     parser.add_argument("--core-dir", type=Path, default=BUILD, help="directory with linked core and labels")
     parser.add_argument("--layout", choices=LAYOUTS, default="canonical")
+    parser.add_argument("--programmer-model", action="store_true",
+                        help="use C64PROGINFO's REU slot and multiline tokenizer")
     args = parser.parse_args()
     checkpoint = args.checkpoint.read_bytes()
     machine = Machine(args.core_dir)
     try:
-        target = Target(machine, checkpoint, args.layout)
+        target = Target(machine, checkpoint, args.layout, programmer_model=args.programmer_model)
         print(json.dumps(dict(host_reu_preload_seconds=target.preload_seconds,
                               image_sha256=target.image_sha256,
                               admission=target.admission.report())), flush=True)

@@ -12,7 +12,7 @@ from operator import mul
 from pathlib import Path
 import struct
 
-from tools.model import decode
+from tools.model import BASE_CONTEXT, decode
 
 Q = 1 << 16
 SCALE_Q = 1 << 24
@@ -27,9 +27,9 @@ def round_div(n, d):
     return -magnitude if n < 0 else magnitude
 
 
-def input_tokens(line):
-    text = "".join(c for c in line if " " <= c <= "~")[:72].rstrip(" ")
-    if text.isupper():
+def input_tokens(line, context=BASE_CONTEXT, *, lowercase=False):
+    text = "".join(c for c in line if " " <= c <= "~")[:context - 56].rstrip(" ")
+    if lowercase or text.isupper():
         text = text.lower()
     return [ord(c) - 30 for c in text]
 
@@ -84,6 +84,7 @@ class Projection:
 class Network:
     def __init__(self, checkpoint, project=None):
         matrices, gains = decode(checkpoint)
+        self.context = matrices["position"].rows
         self.matrices = {
             name: Projection([struct.unpack(f"<{m.cols}b", row) for row in m.weights],
                              [round(scale * SCALE_Q) for scale in m.scales])
@@ -100,7 +101,7 @@ class Network:
         self.position = 0
 
     def step(self, token, logits=True, trace=None):
-        if not (0 <= token < 97 and self.position < 128):
+        if not (0 <= token < 97 and self.position < self.context):
             raise ValueError("token/position outside checkpoint geometry")
         matrices = self.matrices
         residual = [a + b for a, b in zip(matrices["embedding"].embedding(token),
@@ -159,17 +160,17 @@ class Network:
             result.extend(round_div(value, denominator) for value in weighted)
         return result
 
-    def answer(self, question):
+    def answer(self, question, *, multiline=False):
         self.reset()
-        for token in input_tokens(question):
+        for token in input_tokens(question, self.context, lowercase=multiline):
             self.step(token, logits=False)
         scores = self.step(1)
         output = []
-        while self.position < 128:
+        while self.position < self.context:
             token = max(range(97), key=scores.__getitem__)
-            if token <= 1:
+            if token == 1 or (token == 0 and not multiline):
                 break
-            output.append(chr(token + 30))
+            output.append("\n" if token == 0 else chr(token + 30))
             scores = self.step(token)
         return "".join(output)
 

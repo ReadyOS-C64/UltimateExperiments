@@ -27,10 +27,9 @@ embedding_result: .res ROW_WIDTH * 4
 ; to 96 packed signed Q16.16 words. Caller supplies the table's REU base.
 .proc embedding_row
     lda embedding_rows
-    cmp #97
-    beq valid_rows
-    cmp #128
-    beq valid_rows
+    beq invalid
+    cmp #129
+    bcc valid_rows
 invalid:
     sec
     rts

@@ -1,0 +1,34 @@
+# category|kind|prompt|expected answer
+architecture|fact|which mos cpu runs programs on a commodore 64|A MOS 6510.
+architecture|fact|how many bytes of physical ram are fitted inside the c64|64 KiB of main RAM.
+architecture|fact|where in the address space is the processor's hardware stack|$0100 through $01FF.
+architecture|fact|which of the cpu port low bits is called charen|Bit 2 of $01 is CHAREN.
+architecture|fact|where does the default text screen live in ram|$0400, or 1024 decimal, in the default setup.
+architecture|fact|where does the c64 fetch the reset target after power on|$FFFC and $FFFD, low byte first.
+vic|fact|which chip is responsible for displaying graphics|The MOS VIC-II handles graphics and video.
+vic|fact|how large in kilobytes is a vic video bank|The VIC-II addresses a 16 KiB bank at a time.
+vic|fact|tell me the register address for the screen border colour|$D020, or 53280 decimal.
+vic|fact|what are the c64's pixel dimensions in standard hires bitmap|320 by 200 pixels.
+vic|fact|which bit of d011 is the upper bit of the raster counter|Use bit 7 of $D011 as the ninth raster bit.
+vic|fact|what does a badline do to available cpu cycles|The VIC-II steals cycles to fetch the screen and color cells.
+sprite|fact|how many sprites are available without multiplexing|Eight hardware sprites, numbered 0 to 7.
+sprite|fact|how much memory does an unexpanded sprite's pixel data fill|63 bytes of pixels in each 64-byte aligned slot.
+sprite|fact|give the address of the hardware sprite on switch register|$D015. Bit n controls sprite n.
+sid|fact|how many independent voices are available on a single sid|Three programmable voices.
+sid|fact|where is the volume nibble on a sid|The low nibble of $D418 sets master volume.
+sid|fact|which control bit makes a voice produce sawtooth|Bit 5 in a voice control register.
+interrupt|fact|what do i store in d019 to clear vic irq flags|Write ones to the flag bits you want to clear in $D019.
+interrupt|fact|when i use sei does it stop nonmaskable interrupts|The I flag masks IRQ. NMI ignores it.
+interrupt|fact|how does a 6510 finish an interrupt service routine|RTI restores the status and program counter from the stack.
+cia|fact|what location would i peek for joystick two|Read active-low joystick bits 0 to 4 at $DC00.
+cia|fact|how wide are the cia countdown registers|Each CIA timer is 16 bits wide.
+asm|fact|which flag must i clear before adding two 6502 values with adc|Use CLC before ADC for an addition without incoming carry.
+asm|fact|which bit shifts into carry on a logical right shift|LSR shifts right, zero-fills bit 7 and puts the former bit 0 in carry.
+asm|fact|what hex opcode is lda with a literal operand|$A9.
+kernal|fact|which address do i jsr to print a petscii character|CHROUT is at $FFD2. Put the byte to output in A.
+basic|fact|can i put more than one command on a basic program line|A colon separates statements on one BASIC program line.
+basic|fact|what do you get when using get with no pending key|GET A$ returns an empty string when no character is waiting.
+examples|basic|using c64 basic set the border colour to red|10 POKE 53280,2
+examples|basic|write two lines of basic that clear the display then say ready|10 PRINT CHR$(147)\n20 PRINT "READY"
+examples|assembler|write 6502 assembly that makes the c64 border red|LDA #$02\nSTA $D020
+examples|assembler|i need assembly code to blank the first screen page with spaces|LDX #$00\nLDA #$20\nFILL: STA $0400,X\nINX\nBNE FILL

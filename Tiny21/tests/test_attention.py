@@ -28,11 +28,14 @@ class AttentionTest(unittest.TestCase):
         self.addCleanup(m.close)
         rng = random.Random(197)
         m.put("reu_banks", 32)
-        for count in (2, 17, 32, 40, 41, 80, 81, 128):
+        for count in (2, 17, 32, 40, 41, 80, 81, 128, 129, 255):
             with self.subTest(count=count):
                 layer = count % 4
+                context = 128 if count <= 128 else 255
+                m.put("model_context", context)
                 keys, values = [], []
-                base = 0x80000 + 0x8000 * layer
+                stride = 0x8000 if context == 128 else 0x10000
+                base = 0x80000 + stride * layer
                 for pos in range(count):
                     k = [rng.randrange(-127, 128) for _ in range(96)]
                     v = [rng.randrange(-127, 128) for _ in range(96)]

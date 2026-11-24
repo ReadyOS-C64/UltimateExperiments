@@ -2,9 +2,9 @@ from pathlib import Path
 import struct
 import unittest
 
-from tools.model import image
+from tools.model import BASE_CONTEXT, MAX_CONTEXT, POSITION_ROW_BYTES, image
 from tools.oracle import Network, cache_vector
-from tools.peddle import Machine
+from tools.peddle import BUILD, Machine
 
 MODEL = Path(__file__).resolve().parents[1] / "reference" / "TINY.BIN"
 
@@ -167,6 +167,7 @@ class NetworkTest(unittest.TestCase):
 
     def test_cache_at_distinct_layers_and_final_position(self):
         m = self.m
+        self.assertFalse(m.run("model_open")[4] & 1)
         keys = [-(2**31), 2**31 - 1, 32768, -32768] * 24
         values = [0] * 96
         for name, vector in (("key", keys), ("value", values)):
@@ -185,3 +186,62 @@ class NetworkTest(unittest.TestCase):
         m.put("token_pos", 128)
         stats = m.run("cache_store")
         self.assertEqual((stats[4] & 1, stats[2]), (1, 0))
+
+    @unittest.skipUnless((BUILD / "group8/core.bin").exists(), "build the group-eight core")
+    def test_extended_context_layout_and_last_position_logits(self):
+        # Give the test checkpoint 127 deliberately distinct additional rows
+        # by reversing existing rows. This is an arithmetic fixture.
+        row = POSITION_ROW_BYTES
+        start = 12 + 97 * row
+        end = start + BASE_CONTEXT * row
+        extra = b"".join(self.checkpoint[i - row:i] for i in range(end, start + row, -row))
+        checkpoint = self.checkpoint[:end] + extra + self.checkpoint[end:]
+        payload, manifest = image(checkpoint, "group8-context")
+        self.assertEqual(manifest["context"], MAX_CONTEXT)
+        self.assertEqual(len(payload), len(self.image) + 127 * 99)
+
+        m = Machine(BUILD / "group8")
+        self.addCleanup(m.close)
+        m.preload(payload)
+        m.put("reu_banks", 32)
+        for offset in (12, 14, 15, 52, 72):
+            original = m.reu[offset]
+            m.reu[offset] ^= 0x80
+            self.assertTrue(m.run("model_open")[4] & 1)
+            self.assertEqual(m.get("model_context", 1), 0)
+            m.reu[offset] = original
+        self.assertFalse(m.run("model_open")[4] & 1)
+        self.assertEqual(m.get("model_context", 1), MAX_CONTEXT)
+
+        reference = Network(checkpoint)
+        tokens = [ord(char) - 30 for char in ("what comes after 199? " * 13)[:MAX_CONTEXT]]
+        for token in tokens[:-1]:
+            reference.step(token, logits=False)
+        stride = 0x10000
+        for layer in range(4):
+            base = 0x80000 + layer * stride
+            for position, ((key, key_peak), (value, value_peak)) in enumerate(
+                    zip(reference.keys[layer], reference.values[layer])):
+                struct.pack_into("<I96bI96b", m.reu, base + 200 * position,
+                                 key_peak, *key, value_peak, *value)
+            m.reu[base + MAX_CONTEXT * 200] = 0x5a
+
+        m.put("token_pos", MAX_CONTEXT - 1)
+        trace = {}
+        expected = reference.step(tokens[-1], trace=trace)
+        stats = m.run("model_ingest", tokens[-1], x=1, instruction_limit=175_000_000,
+                      model_length=len(payload))
+        self.assertFalse(stats[4] & 1)
+        self.assertEqual(m.get("token_pos", 1), MAX_CONTEXT)
+        self.assertEqual(struct.unpack_from("<97i", m.ram, m.symbols["logits"]), tuple(expected))
+        for layer in range(4):
+            offset = 0x80000 + layer * stride + 200 * (MAX_CONTEXT - 1)
+            self.assertEqual(bytes(m.reu[offset:offset + 201]),
+                             self.record(trace[f"{layer}.k"]) + self.record(trace[f"{layer}.v"]) + b"Z")
+        stats = m.run("model_ingest", 2, model_length=len(payload))
+        self.assertEqual((stats[4] & 1, stats[2], m.get("token_pos", 1)), (1, 0, MAX_CONTEXT))
+
+        m.preload(image(self.checkpoint, "group8")[0])
+        self.assertFalse(m.run("model_open")[4] & 1)
+        self.assertEqual((m.get("model_context", 1), m.get("token_pos", 1)), (BASE_CONTEXT, 0))
+        self.assertTrue(m.run("model_choose")[4] & 1)
