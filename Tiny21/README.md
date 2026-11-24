@@ -1,5 +1,7 @@
 # Tiny 2.1 for the C64 Ultimate
 
+**Development version 0.7** starts work on multiple-model support. [Inference-engine comparison with c64-dungeon](docs/C64_DUNGEON_COMPARISON.md).
+
 Version **0.6** runs WollyMonjac’s Tiny 2.1 checkpoint on a physical C64 Ultimate using 6502/6510 assembly. The Ultimate’s 64 MHz turbo mode runs the transformer, and a 16 MB REU holds the model and attention history. Load the model into REU from the Ultimate menu, then run the PRG from the same menu. The console verifies and reuses the preloaded model.
 
 **Required hardware: 64 MHz C64 Ultimate and 16 MB REU.**
