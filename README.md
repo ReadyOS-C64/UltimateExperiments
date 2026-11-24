@@ -32,7 +32,7 @@ A reconstructed dual-bank character ROM, a Cyberpunk palette, and clean/CRT gall
 
 Version 0.7 runs two models in native 6502/6510 assembly at 64 MHz with a 16 MB REU. Press **F1** for WollyMonjac’s Tiny 2.1 for general questions or **F3** for C64PROGINFO for C64 hardware, BASIC V2, and 6502 assembly. The ready-to-run ZIP includes the PRG and both models.
 
-[Project README](Tiny21/README.md) · [Technical details](Tiny21/docs/TECHNICAL.md) · [Download and setup](Tiny21/docs/DOWNLOAD.md) · [Online guide and demo](https://readyos-c64.github.io/UltimateExperiments/tiny21/)
+[Project README](Tiny21/README.md) · [Technical details](Tiny21/docs/TECHNICAL.md) · [Download and setup](Tiny21/docs/DOWNLOAD.md) · [C64PROGINFO demo and examples](https://readyos-c64.github.io/UltimateExperiments/tiny21/#video)
 
 ## Documentation and repository
 

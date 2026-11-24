@@ -30,9 +30,11 @@ Both model files are ready to use. The console checks each model's REU slot befo
 | **F1** | **Tiny 2.1** for general short questions | `what is 7 times 8` |
 | **F3** | **C64PROGINFO** for C64 hardware, BASIC V2, and 6502 assembly | `show assembler code to set border to red` |
 
-Press the function key while the console is ready. Wait for **Model ready.** and check the **Model:** line. **RETURN** submits your question and **DEL** edits the prompt. To interrupt a running answer, hold **RUN/STOP** until **Cancelled. Ready.** appears. An answered question stays visible. Start typing to replace it with the next question.
+1. Wait until the console is ready. To interrupt a running answer, hold **RUN/STOP** until **Cancelled. Ready.** appears.
+2. Press **F1** or **F3**. If you selected a different model, wait for **Model ready.** and check its name on the **Model:** line. A successful switch clears the previous question and answer.
+3. Enter your next question. **RETURN** submits it and **DEL** edits it. An answered question stays visible until you start typing again.
 
-C64PROGINFO can return code on multiple lines. It performs best with familiar wording. Check generated code and register details before using them.
+C64PROGINFO returns multiline BASIC and assembly examples. [Watch the programmers’ demo](index.md#video) · [Try 17 example prompts](index.md#try-c64proginfo)
 
 ## If a model fails to load
 

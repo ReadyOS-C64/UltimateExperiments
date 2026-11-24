@@ -1,6 +1,6 @@
 # Documentation build and GitHub Pages
 
-`DOCS/` is the publishable static documentation tree for Ultimate Experiments. It includes full Markdown and HTML references, the SuperEditor guide/gallery and preview ZIP, ReadyFS screenshot walkthroughs, C77 galleries, copies of the three committed main D81s, DOS64 preview/example downloads, and the prebuilt C64 LLM v0.7 ZIP. It embeds the original Tiny 2.1 YouTube demo. It excludes local video files, log directories, agent working notes, firmware checkouts and external website source repositories.
+`DOCS/` is the publishable static documentation tree for Ultimate Experiments. It includes full Markdown and HTML references, the SuperEditor guide/gallery and preview ZIP, ReadyFS screenshot walkthroughs, C77 galleries, copies of the three committed main D81s, DOS64 preview/example downloads, and the prebuilt C64 LLM v0.7 ZIP. It embeds the C64PROGINFO and original Tiny 2.1 YouTube demos. It excludes local video files, log directories, agent working notes, firmware checkouts and external website source repositories.
 
 ## Build and validate
 

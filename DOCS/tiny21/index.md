@@ -8,40 +8,129 @@ Version **0.7** runs two selectable character models in native 6502/6510 assembl
 
 Unzip the v0.7 package and copy `PROBE.PRG`, `MODEL.BIN`, and `C64PROGINFO.BIN` to `/USB1/TINY64-MODELS`. Enable the **16 MB REU** and **Command Interface**, set **Turbo Control** to **C64U Turbo Registers**, and run `PROBE.PRG` from the Ultimate menu. It starts with Tiny 2.1.
 
+## Switch models
+
 | Key | Model | Context |
 | --- | --- | ---: |
-| **F1** | Tiny 2.1 | 128 positions |
-| **F3** | C64PROGINFO | 224 positions |
+| **F1** | Tiny 2.1 for general short questions | 128 positions |
+| **F3** | C64PROGINFO for C64 hardware and programming | 224 positions |
 
-Switch while the console is ready. Check the **Model:** line after **Model ready.** appears. The program loads the selected model if needed and reuses a verified copy already in its REU slot. Type a question and press **RETURN**. **DEL** edits the prompt. Hold **RUN/STOP** to cancel during generation. The console keeps the question on screen with its answer and starts a fresh question on your next typed character. Wrapped questions keep their color on both rows.
+1. Wait until the console is ready. If it is answering, hold **RUN/STOP** until **Cancelled. Ready.** appears.
+2. Press **F1** or **F3**. When the selection changes, the console shows **Checking selected model...**. Wait for **Model ready.** and confirm the name on the **Model:** line.
+3. Type a question and press **RETURN**. **DEL** edits the prompt. Questions stay visible with their answers, and typing starts a new prompt.
+
+Each model keeps its own REU slot. The console verifies and reuses an image already in its slot, or loads the matching file from USB through Ultimate DOS. A successful switch clears the displayed question and answer and starts a fresh context. If loading fails, the previous model stays active. [Setup and troubleshooting](DOWNLOAD.md#switch-models-and-ask-questions) · [REU layout and validation](TECHNICAL.md#model-and-resident-6510-engine)
 
 ## Video
+
+<iframe class="tiny21-video" src="https://www.youtube-nocookie.com/embed/qnYL4ZUhqow?start=13" title="C64 LLM programmers’ guide and C64PROGINFO demo" width="640" height="360" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+[Watch the C64PROGINFO programmers’ guide on YouTube](https://www.youtube.com/watch?v=qnYL4ZUhqow&t=13s)
+
+<details>
+<summary>Original Tiny 2.1 demo</summary>
 
 <iframe class="tiny21-video" src="https://www.youtube-nocookie.com/embed/EOZRYfPyuy0" title="Original Tiny 2.1 demo on the C64 Ultimate" width="640" height="360" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 [Watch the original Tiny 2.1 demo on YouTube](https://www.youtube.com/watch?v=EOZRYfPyuy0)
 
+</details>
+
 ## Try C64PROGINFO
 
-- `what cpu does the c64 use` → A MOS 6510.
-- `what is the resolution of c64 hires bitmap` → 320 by 200 pixels.
-- `show basic code to clear the screen and print ready`
+Press **F3**, wait for **Model ready.**, then type a prompt below and press **RETURN**. These 17 prompts and answers are from the programmers’ demo.
 
-  ```basic
-  10 PRINT CHR$(147)
-  20 PRINT "READY"
-  ```
+### C64 facts
 
-- `show assembler code to set border to red`
+| Type this question | C64PROGINFO answer |
+| --- | --- |
+| `what cpu does the c64 use` | A MOS 6510. |
+| `what is the resolution of c64 hires bitmap` | 320 by 200 pixels. |
+| `how many sprites does the vic ii have` | Eight hardware sprites, numbered 0 to 7. |
+| `where is the sid volume register` | The low nibble of `$D418` sets master volume. |
+| `how do i acknowledge vic interrupt flags` | Write ones to the flag bits you want to clear in `$D019`. |
+| `which chip reads the keyboard` | CIA 1 scans the keyboard matrix using ports A and B. |
+| `what does lda do` | LDA loads the accumulator and updates N and Z. |
+| `what basic is built into the c64` | Commodore BASIC V2. |
 
-  ```asm
-  LDA #$02
-  STA $D020
-  ```
+### BASIC V2
+
+`show basic code to clear the screen and print ready`
+
+```basic
+10 PRINT CHR$(147)
+20 PRINT "READY"
+```
+
+`show basic code to print the numbers 1 to 10`
+
+```basic
+10 FOR I=1 TO 10:PRINT I:NEXT I
+```
+
+`show basic code to wait for a keypress`
+
+```basic
+10 GET A$:IF A$="" THEN 10
+20 PRINT A$
+```
+
+`show basic code to test fire on joystick port 2`
+
+```basic
+10 IF (PEEK(56320) AND 16)=0 THEN PRINT "FIRE"
+```
+
+`show basic code to read a number and print its square`
+
+```basic
+10 INPUT A
+20 PRINT A*A
+```
+
+### 6502 assembly
+
+`show assembler code to set sprite zero color to white and enable it`
+
+```asm
+LDA #$01
+STA $D027
+LDA $D015
+ORA #$01
+STA $D015
+```
+
+Set up sprite 0’s position and sprite data before enabling it.
+
+`show assembler code to write 440 hz sid voice 1 frequency on pal`
+
+```asm
+LDA #$44
+STA $D400
+LDA #$1D
+STA $D401
+```
+
+This writes the PAL pitch registers. Configure the waveform, gate, envelope, and master volume to hear the voice.
+
+`show assembler code to wait for low raster byte 100`
+
+```asm
+WAIT: LDA $D012
+CMP #100
+BNE WAIT
+```
+
+`show assembler code to set border to red`
+
+```asm
+LDA #$02
+STA $D020
+```
 
 ![C64PROGINFO retains the two-line BASIC question and shows the multiline answer](screenshots/c64proginfo-basic.png)
 
-C64PROGINFO was trained on **3,507 C64 facts and code examples**, expanded into alternate question wordings. It covers the 6510, VIC-II, SID, CIA, memory and registers, KERNAL calls, BASIC V2 and assembly. It works best with familiar phrasing and can give incorrect answers or code. [Training data, tests and results](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/README.md)
+C64PROGINFO was trained on **3,507 C64 facts and code examples**, expanded into alternate question wordings. It covers the 6510, VIC-II, SID, CIA, memory and registers, KERNAL calls, BASIC V2 and assembly. It works best with familiar phrasing. Check the register details and generated code before using them. [Training data, tests and results](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/README.md)
 
 ## Try Tiny 2.1
 

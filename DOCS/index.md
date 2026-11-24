@@ -81,4 +81,4 @@ Version 0.7 runs two models in native 6502/6510 assembly at 64 MHz with a 16 MB 
 
 ![The v0.7 console displays a two-line BASIC program from C64PROGINFO](tiny21/screenshots/c64proginfo-basic.png)
 
-[Explore C64 LLM](tiny21/index.md) · [Technical details](tiny21/TECHNICAL.md) · [Download and setup](tiny21/DOWNLOAD.md)
+[Explore C64 LLM](tiny21/index.md) · [Video](tiny21/index.md#video) · [C64PROGINFO examples](tiny21/index.md#try-c64proginfo) · [Technical details](tiny21/TECHNICAL.md) · [Download and setup](tiny21/DOWNLOAD.md)

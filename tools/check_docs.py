@@ -11,6 +11,10 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / 'DOCS'
 errors = []
+C64_LLM_EMBEDS = {
+    'https://www.youtube-nocookie.com/embed/qnYL4ZUhqow?start=13',
+    'https://www.youtube-nocookie.com/embed/EOZRYfPyuy0',
+}
 
 class Page(HTMLParser):
     def __init__(self, file):
@@ -19,6 +23,7 @@ class Page(HTMLParser):
         self.ids = set()
         self.refs = []
         self.title = False
+        self.embeds = []
         self.sql_blocks = []
         self.pascal_blocks = []
         self._pascal = None
@@ -34,8 +39,10 @@ class Page(HTMLParser):
             if 'hljs' not in attrs.get('class', '').split(): errors.append('Pascal example is missing highlighting')
         if tag == 'title': self.title = True
         tiny21_demo = (tag == 'iframe' and self.file == DOCS / 'tiny21/index.html'
-                      and attrs.get('src') == 'https://www.youtube-nocookie.com/embed/EOZRYfPyuy0'
+                      and attrs.get('src') in C64_LLM_EMBEDS
                       and attrs.get('title'))
+        if tiny21_demo:
+            self.embeds.append(attrs['src'])
         if tag in ('video', 'audio', 'iframe') and not tiny21_demo:
             errors.append(f'Unexpected media/embed element: {tag}')
         if 'id' in attrs:
@@ -65,6 +72,9 @@ for file in DOCS.rglob('*.html'):
         expected = [block.rstrip('\n') for block in re.findall(r'```sql\n([\s\S]*?)```', markdown.read_text())]
         if expected != page.sql_blocks:
             errors.append(f'{file.relative_to(DOCS)}: highlighted SQL differs from its Markdown source')
+
+if sorted(pages[DOCS / 'tiny21/index.html'].embeds) != sorted(C64_LLM_EMBEDS):
+    errors.append('C64 LLM overview must include each approved demo exactly once')
 
 def check_ref(file, url, anchors=False):
     parsed = urlsplit(url)
