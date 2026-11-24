@@ -22,7 +22,7 @@ bundle="$PWD/build/ultimate-probe-$run_id"
 /opt/homebrew/bin/python3 -m probe.check_video
 ```
 
-The package contains `PROBE.PRG`, the converted `MODEL.BIN`, and the identity manifest. The builder verifies that the PRG contains the same core bytes used by Peddle and records their SHA-256. It uses the bootstrap at `$0801`, code starting at `$1000`, and a cold probe segment relocated from `$5000` to `$A000` before model BSS is used. The model path is compiled into the PRG and must match the owned USB run directory. The `MODEL.BIN` payload is the normal T64M REU image, converted from the pinned upstream checkpoint.
+The package contains `PROBE.PRG`, the converted `MODEL.BIN`, and the identity manifest. The builder verifies that the PRG contains the same core bytes used by Peddle and records their SHA-256. It uses the bootstrap at `$0801`, code starting at `$1000`, and a cold probe segment relocated from `$5400` to `$A000` before model BSS is used. The model path is compiled into the PRG and must match the owned USB run directory. The `MODEL.BIN` payload can be the converted, pinned upstream checkpoint or a compatible [development checkpoint](../docs/BUILD.md).
 
 Ultimate DOS target 2 opens the file read-only, checks its exact length, issues `LOAD_REU` for address zero, and closes it. The probe drains asynchronous data and status blocks with a CIA deadline. A complete CRC32 walk through REU DMA verifies that the expected image arrived before the inference core validates the header and directory. [Ultimate DOS protocol](https://1541u-documentation.readthedocs.io/en/latest/uci/ultimate_dos_target.html) · [UCI transport](https://1541u-documentation.readthedocs.io/en/latest/uci/core_uci_architecture.html)
 

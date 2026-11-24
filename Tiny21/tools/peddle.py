@@ -19,6 +19,8 @@ class Machine:
     lib.tiny_enable_group4_workspace.restype = None
     lib.tiny_enable_group8_dma.argtypes = (C.c_void_p,)
     lib.tiny_enable_group8_dma.restype = None
+    lib.tiny_set_workspace.argtypes = (C.c_void_p, C.c_uint, C.c_uint, C.c_uint)
+    lib.tiny_set_workspace.restype = None
     lib.tiny_keyboard.argtypes = (C.c_void_p,)
     lib.tiny_keyboard.restype = C.POINTER(C.c_ubyte * 8)
     lib.tiny_enable_cycle_profile.argtypes = (C.c_void_p,)
@@ -33,6 +35,9 @@ class Machine:
             self.lib.tiny_enable_group4_workspace(self.ptr)
         if "reu_group8_read" in self.symbols:
             self.lib.tiny_enable_group8_dma(self.ptr)
+        self.lib.tiny_set_workspace(self.ptr, self.symbols.get("__WORK_START__", 0x5000),
+                                    self.symbols.get("__SCORES_RUN__", 0),
+                                    self.symbols.get("__SCORES_SIZE__", 0))
         self.ram = self.lib.tiny_ram(self.ptr).contents
         self.reu = self.lib.tiny_reu(self.ptr).contents
         code = (core_dir / "core.bin").read_bytes()

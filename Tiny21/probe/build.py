@@ -59,9 +59,11 @@ def build(out, remote, core_dir=ROOT / "build", *, interactive=False, qualify_re
     group4 = any(line.endswith(" .group4_dot") for line in core_labels.splitlines())
     group8 = any(line.endswith(" .reu_group8_read") for line in core_labels.splitlines())
     version = payload[4:5]
-    supported_version = b"\x03" if group8 else b"\x02" if group4 else b"\x01"
+    supported_version = b"\x04" if group8 else b"\x02" if group4 else b"\x01"
     if payload[:4] != b"T64M" or not b"\x01" <= version <= supported_version:
         raise ValueError("model image layout is incompatible with the linked core")
+    if context_test and version == b"\x04" and payload[52:53] != b"\x80":
+        raise ValueError("the legacy context diagnostic requires a 128-position model")
     model.write_bytes(payload)
     crc = zlib.crc32(payload)
     run_hash = hashlib.sha256(remote.encode("ascii")).digest()
@@ -103,7 +105,7 @@ def build(out, remote, core_dir=ROOT / "build", *, interactive=False, qualify_re
     end = load_addr + len(prg_data) - 2
     if load_addr != 0x801 or symbols["probe_start"] != 0x80d:
         raise ValueError("invalid BASIC SYS bootstrap")
-    if (symbols["__PROBE_LOAD__"] != 0x5000 or
+    if (symbols["__PROBE_LOAD__"] != symbols["__WORK_START__"] or
             symbols["__PROBE_LOAD__"] + symbols["__PROBE_SIZE__"] != end or
             symbols["__PROBE_RUN__"] != 0xa000):
         raise ValueError("unexpected probe relocation map")

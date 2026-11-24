@@ -6,7 +6,7 @@
 .import clock_start, clock_read, clock_delta, clock_rate, clock_now, clock_since
 .import clock_is_pal, clock_elapsed, turbo_start, turbo_restore, turbo_readback, turbo_sample
 .import turbo_detail, clock_detail, clock_controls
-.import model_open, model_reset, model_ingest, model_choose, token_pos
+.import model_open, model_reset, model_ingest, model_choose, token_pos, model_context
 .importzp reu_banks
 .import wide_a, wide_b, wide_divide, wide_remainder
 .export probe_main, check_resident_model
@@ -308,7 +308,7 @@ delimiter:
     rts
 answer:
     lda token_pos
-    cmp #128
+    cmp model_context
     bcs done
     jsr model_choose
     bcc :+

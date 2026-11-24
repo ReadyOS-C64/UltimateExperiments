@@ -23,8 +23,9 @@ class PeddleGuardTest(unittest.TestCase):
             self.run_fixture(bytes.fromhex("a955 8d0010 60"))
         self.assertEqual(m.ram[0x1000], before)
         # The same write in the work arena is legitimate.
-        self.run_fixture(bytes.fromhex("a955 8d0050 60"))
-        self.assertEqual(m.ram[0x5000], 0x55)
+        work = m.symbols["__WORK_START__"]
+        self.run_fixture(bytes.fromhex("a955 8d") + work.to_bytes(2, "little") + b"\x60")
+        self.assertEqual(m.ram[work], 0x55)
 
     def test_stack_high_water_balanced_return_and_guard(self):
         # Three PHA / PLA pairs nested on top of the two return bytes.

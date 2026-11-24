@@ -48,7 +48,7 @@ def build(out, remote, mode):
     start = int.from_bytes(raw[:2], "little")
     end = start + len(raw) - 2
     if (start != 0x801 or symbols["probe_start"] != 0x80d
-            or symbols["__PROBE_LOAD__"] != 0x5000
+            or symbols["__PROBE_LOAD__"] != symbols["__WORK_START__"]
             or symbols["__PROBE_LOAD__"] + symbols["__PROBE_SIZE__"] != end
             or symbols["__PROBE_RUN__"] != 0xa000 or symbols["sample"] & 255
             or raw[-len(sample):] != sample):

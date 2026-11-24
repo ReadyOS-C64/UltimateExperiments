@@ -1,6 +1,6 @@
 .setcpu "6502"
 .include "question.inc"
-.import model_reset, model_ingest, model_choose, token_pos
+.import model_reset, model_ingest, model_choose, token_pos, model_context
 .export question_text, question_length, question_position, question_char
 .export question_append, question_delete, question_begin, question_step, question_cancel
 
@@ -21,9 +21,16 @@ pending_token:     .res 1
     bcc ignored
     cmp #$7f
     bcs ignored
+    tay
+    lda model_context
+    sec
+    sbc #QUESTION_RESERVE
+    bcc ignored
+    cmp question_length
+    beq ignored
+    bcc ignored
     ldx question_length
-    cpx #QUESTION_LIMIT
-    bcs ignored
+    tya
     sta question_text,x
     inc question_length
     clc
@@ -127,7 +134,7 @@ decode:
     jsr model_ingest
     bcs failure
     lda token_pos
-    cmp #128
+    cmp model_context
     beq context
     jsr model_choose
     bcs failure

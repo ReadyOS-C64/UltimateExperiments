@@ -2,8 +2,9 @@
 
 The canonical layout keeps the original row weights. The experimental group4
 layout repacks selected dense rows into bitplane masks at the same size.
-The group8 candidate uses wider masks for Q/K/V and F1. All layouts
-use Q0.24 row scales, Q4.12 RMS gains and the same tiled directory.
+The group8 layouts use wider masks for Q/K/V and F1. The context layout
+appends learned position rows after the gains. All layouts use Q0.24 row
+scales, Q4.12 RMS gains and the same tiled directory.
 """
 import argparse
 from dataclasses import dataclass
@@ -16,7 +17,11 @@ import struct
 MODEL_SHA = "4b603237070ad9084433537bf8d6c7470d0fc583e6a4f1f03c00cd17264e7095"
 TILE_ROWS = 16
 HEADER_SIZE = 4096
-LAYOUTS = {"canonical": 1, "group4": 2, "group8": 3}
+LAYOUTS = {"canonical": 1, "group4": 2, "group8": 3, "group8-context": 4}
+BASE_CONTEXT = 128
+MAX_CONTEXT = 255
+BASE_CHECKPOINT_BYTES = 381808
+POSITION_ROW_BYTES = 4 + 96
 
 
 @dataclass
@@ -30,6 +35,10 @@ class Matrix:
 def decode(data):
     if len(data) < 12 or struct.unpack_from("<4s4H", data) != (b"TNY2", 96, 4, 4, 256):
         raise ValueError("expected TNY2 checkpoint with D96/L4/H4/HID256")
+    extra_rows, remainder = divmod(len(data) - BASE_CHECKPOINT_BYTES, POSITION_ROW_BYTES)
+    context = BASE_CONTEXT + extra_rows
+    if remainder or not BASE_CONTEXT <= context <= MAX_CONTEXT:
+        raise ValueError("unexpected TNY2 checkpoint size for 128 to 255 positions")
     cursor = 12
     matrices = {}
     gains = {}
@@ -60,7 +69,7 @@ def decode(data):
         gains[name] = values
 
     matrix("embedding", 97, 96)
-    matrix("position", 128, 96)
+    matrix("position", context, 96)
     for layer in range(4):
         gain(f"{layer}.g1")
         for projection in ("q", "k", "v", "o"):
@@ -101,13 +110,22 @@ def mask_row_group8(row):
     )
 
 
+def append_tiles(payload, matrix, first, end, transform=None):
+    for start in range(first, end, TILE_ROWS):
+        stop = min(end, start + TILE_ROWS)
+        weights = matrix.weights[start:stop]
+        payload.extend(b"".join(map(transform, weights) if transform else weights))
+        for scale in matrix.scales[start:stop]:
+            payload.extend(round(scale * (1 << 24)).to_bytes(3, "little"))
+
+
 def image(data, layout="canonical"):
     if layout not in LAYOUTS:
         raise ValueError(f"unknown matrix layout {layout!r}")
     version = LAYOUTS[layout]
     matrices, gains = decode(data)
     digest = hashlib.sha256(data).hexdigest()
-    if digest != MODEL_SHA:
+    if version < 4 and digest != MODEL_SHA:
         raise ValueError(f"unexpected checkpoint SHA-256: {digest}")
     payload = bytearray(HEADER_SIZE)
     directory = {}
@@ -117,27 +135,32 @@ def image(data, layout="canonical"):
         transform = None
         if version >= 2 and projection in ("q", "k", "v", "o", "f1"):
             transform = mask_row
-            if version == 3 and projection != "o":
+            if version >= 3 and projection != "o":
                 transform = mask_row_group8
         start = len(payload)
-        for first in range(0, matrix.rows, TILE_ROWS):
-            stop = first + TILE_ROWS
-            weights = matrix.weights[first:stop]
-            payload.extend(b"".join(map(transform, weights) if transform else weights))
-            for scale in matrix.scales[first:stop]:
-                payload.extend(round(scale * (1 << 24)).to_bytes(3, "little"))
-        directory[name] = dict(offset=start, rows=matrix.rows, columns=matrix.cols)
-        entries.append((start, matrix.rows, matrix.cols))
+        rows = BASE_CONTEXT if name == "position" else matrix.rows
+        append_tiles(payload, matrix, 0, rows, transform)
+        directory[name] = dict(offset=start, rows=rows, columns=matrix.cols)
+        entries.append((start, rows, matrix.cols))
     gain_base = len(payload)
     for name, values in gains.items():
         directory[name] = dict(offset=len(payload), count=len(values))
         payload.extend(struct.pack("<96h", *(round(v * 4096) for v in values)))
+    positions = matrices["position"]
+    if positions.rows > BASE_CONTEXT:
+        directory["position_extension"] = dict(offset=len(payload),
+                                               rows=positions.rows - BASE_CONTEXT, columns=96)
+        append_tiles(payload, positions, BASE_CONTEXT, positions.rows)
     struct.pack_into("<4sBBBBHHII32s", payload, 0, b"T64M", version, 96, 4, 4,
                      256, len(entries), len(payload), gain_base, bytes.fromhex(digest))
+    if version == 4:
+        payload[52] = positions.rows
     for index, entry in enumerate(entries):
         struct.pack_into("<IHH", payload, 64 + 8 * index, *entry)
     manifest = dict(model_sha256=digest, image_sha256=hashlib.sha256(payload).hexdigest(),
                     format_version=version, tile_rows=TILE_ROWS, bytes=len(payload), regions=directory)
+    if version == 4:
+        manifest["context"] = positions.rows
     return payload, manifest
 
 

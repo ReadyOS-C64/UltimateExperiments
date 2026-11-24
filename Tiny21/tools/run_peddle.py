@@ -7,7 +7,7 @@ from pathlib import Path
 import struct
 from time import perf_counter
 
-from tools.model import LAYOUTS, image
+from tools.model import BASE_CONTEXT, LAYOUTS, image
 from tools.oracle import Network, input_tokens
 from tools.peddle import BUILD, Machine
 
@@ -47,6 +47,7 @@ class Target:
         self.preload_seconds = perf_counter() - start
         self.image_sha256 = manifest["image_sha256"]
         self.model_length = len(payload)
+        self.context = manifest.get("context", BASE_CONTEXT)
         machine.put("reu_banks", 32)
         self.admission = Timing()
         self.execute(self.admission, "model_open")
@@ -61,7 +62,7 @@ class Target:
         prefill = Timing()
         decode = Timing()
         trace = []
-        prompt = input_tokens(question)
+        prompt = input_tokens(question, self.context)
 
         def consume(token, logits, timing):
             self.execute(timing, "model_ingest", token, x=int(logits), instruction_limit=STEP_LIMIT)
@@ -79,14 +80,14 @@ class Target:
         first_decision = perf_counter() - start
 
         answer = []
-        while token > 1 and m.get("token_pos", 1) < 128:
+        while token > 1 and m.get("token_pos", 1) < self.context:
             answer.append(chr(token + 30))
             consume(token, True, decode)
-            if m.get("token_pos", 1) < 128:
+            if m.get("token_pos", 1) < self.context:
                 self.execute(decode, "model_choose")
                 token = m.accumulator
         elapsed = perf_counter() - start
-        stop = "context" if m.get("token_pos", 1) == 128 else "eos"
+        stop = "context" if m.get("token_pos", 1) == self.context else "eos"
         if verify is not None:
             reference = Network(verify)
             for position, (token_id, scores) in enumerate(trace):

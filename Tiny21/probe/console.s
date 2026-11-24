@@ -7,6 +7,7 @@
 .import question_text, question_length, question_position, question_char
 .import question_append, question_delete, question_begin, question_step, question_cancel
 .import keyboard_init, keyboard_input, keyboard_stop
+.import model_context
 .export console_main, console_prepare, console_edit, run_answer
 
 MAIL_PHASE = $ce04
@@ -15,6 +16,9 @@ INPUT_ROW = 7
 STATUS_ROW = 10
 ANSWER_ROW = 12
 TIME_ROW = 17
+PROMPT_VIEW = 72
+ANSWER_START = SCREEN + 40*ANSWER_ROW
+ANSWER_END = SCREEN + 40*TIME_ROW
 RUN_STOP = 3
 DEL = 8
 RETURN = 13
@@ -77,7 +81,14 @@ edit:
     lda #0
     sta KERNAL_KEY_COUNT
 .endif
+    lda model_context
+    cmp #129
+    bcs extended
     LINE 6, ask
+    jmp controls_line
+extended:
+    LINE 6, ask_extended
+controls_line:
     LINE 20, controls
     LINE 21, cancel_hint
     jsr render_prompt
@@ -127,7 +138,13 @@ clear:
     bpl clear
     lda #INPUT_ROW
     jsr row_start
-    ldx #0
+    lda question_length
+    sec
+    sbc #PROMPT_VIEW
+    bcs :+
+    lda #0
+:
+    tax
 copy:
     cpx question_length
     beq prompt_cursor
@@ -183,7 +200,7 @@ clear_time:
     .endrepeat
 step:
     jsr keyboard_stop
-    bne cancelled
+    jne cancelled
     jsr question_step
     jcs failed
     cmp #QUESTION_PREFILL
@@ -191,7 +208,7 @@ step:
     cmp #QUESTION_OUTPUT
     beq emit
     cmp #QUESTION_CONTEXT
-    beq context
+    jeq context
     LINE STATUS_ROW, finished
     jmp time
 progress:
@@ -207,6 +224,8 @@ progress:
     lsr
     clc
     adc #16
+    cmp #40
+    bcs step
     tay
     lda #'.'
     sta (cursor),y
@@ -216,6 +235,14 @@ emit:
     sta MAIL_PHASE
     lda #4
     sta $d020
+    lda answer_cursor+1
+    cmp #>ANSWER_END
+    bne show_char
+    lda answer_cursor
+    cmp #<ANSWER_END
+    bne show_char
+    jsr scroll_answer
+show_char:
     lda answer_cursor
     sta cursor
     lda answer_cursor+1
@@ -246,7 +273,29 @@ time:
     jmp format_time
 .endproc
 
+.proc scroll_answer
+    ldx #0
+shift:
+    lda ANSWER_START+40,x
+    sta ANSWER_START,x
+    inx
+    cpx #ANSWER_END-ANSWER_START-40
+    bne shift
+    ldx #39
+    lda #' '
+clear:
+    sta ANSWER_END-40,x
+    dex
+    bpl clear
+    lda #<(ANSWER_END-40)
+    sta answer_cursor
+    lda #>(ANSWER_END-40)
+    sta answer_cursor+1
+    rts
+.endproc
+
 ask:         .asciiz "Question (72 characters)"
+ask_extended:.asciiz "Question (long input scrolls left)"
 controls:    .asciiz "RETURN ask   DEL erase   RUN/STOP clear"
 cancel_hint: .asciiz "Hold RUN/STOP to cancel an answer"
 reading:     .asciiz "Reading question"

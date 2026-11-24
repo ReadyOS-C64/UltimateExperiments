@@ -14,9 +14,7 @@ lane_value = $66
 lane_count = $69
 half = $6a
 upper = $6c
-weights = $6d
 plane = $6f
-mask_index = $70
 plane_sum = $71
 lower = $75
 
@@ -114,50 +112,41 @@ append:
 .endproc
 
 .proc group8_dot
-    lda dot_weights
-    sta weights
-    lda dot_weights+1
-    sta weights+1
     lda #0
-    sta mask_index
     .repeat 4, I
         sta dot_result+I
     .endrepeat
     lda #8
     sta plane
+    ldx #0
 bit_plane:
-    jsr start_groups
     lda #0
     sta plane_sum
     sta plane_sum+1
     sta plane_sum+2
-    ldx #12
-next_mask:
-    ldy mask_index
-    lda (weights),y
-    tay
-    clc
-    lda plane_sum
-    adc (lut_lo),y
-    sta plane_sum
-    lda plane_sum+1
-    adc (lut_mid),y
-    sta plane_sum+1
-    lda plane_sum+2
-    adc (lut_hi),y
-    sta plane_sum+2
-    inc mask_index
-    inc lut_lo+1
-    inc lut_mid+1
-    inc lut_hi+1
-    ; The high plane jumps from $9F to $C0 after the eighth group.
-    cpx #5
-    bne same_region
-    lda #$c0
-    sta lut_hi+1
-same_region:
-    dex
-    bne next_mask
+    ; Each sum plane occupies fixed pages, so the mask can index them
+    ; directly. X walks the packed row across all eight weight planes.
+    .repeat 12, GROUP
+        txa
+        tay
+        lda (dot_weights),y
+        tay
+        inx
+        clc
+        lda plane_sum
+        adc $8000 + GROUP*$100,y
+        sta plane_sum
+        lda plane_sum+1
+        adc $8c00 + GROUP*$100,y
+        sta plane_sum+1
+        lda plane_sum+2
+        .if GROUP < 8
+            adc $9800 + GROUP*$100,y
+        .else
+            adc $c000 + (GROUP-8)*$100,y
+        .endif
+        sta plane_sum+2
+    .endrepeat
 
     lda #0
     bit plane_sum+2

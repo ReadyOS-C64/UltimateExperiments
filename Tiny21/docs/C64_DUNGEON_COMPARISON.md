@@ -214,3 +214,36 @@ is a RAM tradeoff that adds transfers; it needs a workspace-driven reason and
 a whole-token measurement. Multi-character tokens and short control prompts
 improve text throughput through model/tokenizer design and should be measured
 separately from assembly improvements.
+
+## Changes measured on the v0.7 branch
+
+The ca65 group-eight dot now uses unrolled, directly indexed lookups into
+the existing fixed table pages. Q/K/V still share the prepared table.
+Sparse F2, the compact output projection and the resident exponential
+table use their existing arithmetic. Cache slot addresses and attention
+tile lengths now use the existing quarter-square multiplier in place of
+repeated addition. Attention still processes all heads in each 40-record
+tile and retains the last key tile for the value pass.
+
+| Same Tiny21 model and workload | v0.6 Peddle cycles | v0.7 Peddle cycles | Reduction |
+| --- | ---: | ---: | ---: |
+| Position zero, token `w`, with logits | 49,333,722 | 42,262,117 | 14.3% |
+| `what is 7 times 8` | 2,061,063,646 | 1,820,409,164 | 11.7% |
+| `what is the capital of peru` | 1,951,929,113 | 1,718,359,946 | 12.0% |
+
+The prompt measurements include prefill and generation through end of
+response. Both answers and all checked logits matched the integer oracle,
+with the same DMA byte counts and transfer counts in the two builds.
+Generation-only rates were 1.03 and 0.98 characters/s at an idealized 64 MHz.
+Peddle counts CPU cycles and verifies DMA data; physical DMA and video timing
+are outside the rate calculation.
+
+The context layout raises the engine's limit from 128 to 255 positions.
+The current upstream checkpoint continues to supply 128 learned positions.
+The extended test checkpoint reuses existing position rows to exercise
+the format and arithmetic. A full run ingested 154 prompt characters before
+the delimiter and matched every generation logit to the Python oracle. The
+final-position test verified all 97 logits, all four newly appended cache
+records and clean rejection at the limit. The attention test verified exact
+outputs on a full 255-position prefix, including a head with equal weights
+at every position. [Build and model format](BUILD.md).
