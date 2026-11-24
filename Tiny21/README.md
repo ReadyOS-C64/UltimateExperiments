@@ -2,7 +2,7 @@
 
 Version **0.7** runs two selectable character models in native 6502/6510 assembly on a **64 MHz C64 Ultimate with a 16 MB REU**. **Tiny 2.1** answers general short questions. **C64PROGINFO** focuses on Commodore 64 hardware, BASIC V2, and 6502 assembly.
 
-[Download and setup](docs/DOWNLOAD.md) · [Technical details](docs/TECHNICAL.md) · [Build from source](docs/BUILD.md) · [Online guide](https://readyos-c64.github.io/UltimateExperiments/tiny21/)
+[Download and setup](docs/DOWNLOAD.md) · [Technical details](docs/TECHNICAL.md) · [Build from source](docs/BUILD.md) · [Online guide](https://readyos-c64.github.io/UltimateExperiments/tiny21/) · [GitHub release](https://github.com/ReadyOS-C64/UltimateExperiments/releases/tag/v0.7)
 
 ## Use the console
 
@@ -13,7 +13,7 @@ Unzip the v0.7 package and copy `PROBE.PRG`, `MODEL.BIN`, and `C64PROGINFO.BIN` 
 | **F1** | Tiny 2.1 | 128 positions |
 | **F3** | C64PROGINFO | 224 positions |
 
-Switch while the console is ready. Check the **Model:** line after **Model ready.** appears. The program loads the selected model if needed and reuses a verified copy already in its REU slot. Type a question and press **RETURN**. **DEL** edits the prompt. Hold **RUN/STOP** to cancel during generation. The console keeps the question on screen with its answer and starts a fresh question on your next typed character.
+Switch while the console is ready. Check the **Model:** line after **Model ready.** appears. The program loads the selected model if needed and reuses a verified copy already in its REU slot. Type a question and press **RETURN**. **DEL** edits the prompt. Hold **RUN/STOP** to cancel during generation. The console keeps the question on screen with its answer and starts a fresh question on your next typed character. Wrapped questions keep their color on both rows.
 
 ## Video
 

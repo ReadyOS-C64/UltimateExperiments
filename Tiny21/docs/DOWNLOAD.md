@@ -1,8 +1,8 @@
 # Download and run C64 LLM v0.7
 
-[Download the v0.7 verification ZIP](../releases/Tiny21-v0.7-C64PROGINFO.zip)
+[Download the v0.7 ZIP](../releases/Tiny21-v0.7-C64PROGINFO.zip) · [GitHub release](https://github.com/ReadyOS-C64/UltimateExperiments/releases/tag/v0.7)
 
-This package passed in Peddle. The GitHub release is pending a check of this exact ZIP on a physical C64 Ultimate.
+This ZIP was verified on a C64 Ultimate at 64 MHz with a 16 MB REU and firmware 3.14.
 
 **Required hardware — a C64 Ultimate with 64 MHz turbo support, a 16 MB REU, and a USB drive.** Enable the RAM Expansion Unit and Command Interface before starting.
 

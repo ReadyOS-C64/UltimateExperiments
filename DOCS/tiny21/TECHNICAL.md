@@ -37,6 +37,14 @@ The key pass processes all four heads in tiles of up to 40 records. It accumulat
 
 On the same PAL C64 Ultimate at 64 MHz and 16 MB REU, v0.7 answered the two standard Tiny 2.1 prompts in 32.442 s and 30.678 s. Combined response time dropped 10.8% from v0.6. Measurements use CIA2 PHI2 ticks and exclude model loading. Output-phase rates were 0.915 and 0.874 character tokens per second for those prompts. [Full hardware and Peddle comparison](C64_DUNGEON_COMPARISON.md#measured-on-the-c64-ultimate)
 
-A separate Ultimate recording verified C64PROGINFO switching, resident-image reuse, and C64 answers including multiline BASIC and assembly. The v0.7 package was unpacked and checked in Peddle for both model slots, CRC recovery, the updated prompt display, and multiline answers. Peddle counts CPU cycles and models REU transfers. The hardware timings above come from the Ultimate.
+The final ZIP was unpacked and installed on a PAL C64 Ultimate with firmware 3.14, FPGA 121, and core 1.47. The shipped PRG loaded Tiny 2.1 through Ultimate DOS on cold startup and reused it after restart. During the hardware check, the console loaded C64PROGINFO on its first selection and reused both REU slots on later switches.
+
+Remote key events exercised cancellation and retry, the Tiny 2.1 arithmetic example, and multiline BASIC and assembly answers. The test verified the retained question, the question color on both rows, and replacement on the next typed character. It used a temporary input fixture in RAM and restored the running program before relaunching the original PRG. Peddle tests also cover the CIA1 matrix input path, model CRC recovery, and multiline formatting.
+
+| Final-package prompt | Model | Measured time |
+| --- | --- | ---: |
+| `what is 7 times 8` | Tiny 2.1 | 32.463 s |
+| `show basic code to clear the screen and print ready` | C64PROGINFO | 110.347 s |
+| `show assembler code to set border to red` | C64PROGINFO | 64.305 s |
 
 [Training and independent prompt results](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/README.md)
