@@ -76,7 +76,7 @@ class Machine:
 
     def run(self, label, accumulator=0, *, instruction_limit=2_000_000, x=0,
             model_length=0, model_base=0):
-        if not 0 <= model_length <= 0x80000 or model_base not in (0, 0x100000):
+        if not 0 <= model_length <= 0x80000 or model_base not in (0, 0x100000, 0x200000):
             raise ValueError("guard model length exceeds the owned model region")
         stats = (C.c_uint64 * 9)()
         status = self.lib.tiny_run(self.ptr, self.symbols[label], instruction_limit, stats,

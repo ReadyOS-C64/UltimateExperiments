@@ -91,10 +91,11 @@ class Ultimate:
             files = [("PROBE.PRG", manifest["prg_sha256"])]
             if "model_sha256" in manifest:
                 files.insert(0, ("MODEL.BIN", manifest["model_sha256"]))
-            if second := manifest.get("second_model"):
-                if second["file"] != "C64PROGINFO.BIN":
-                    raise ValueError("unexpected second model filename")
-                files.insert(0, ("C64PROGINFO.BIN", second["sha256"]))
+            for slot, filename in (("second_model", "C64PROGINFO.BIN"), ("third_model", "E2JROMAJI.BIN")):
+                if model := manifest.get(slot):
+                    if model["file"] != filename:
+                        raise ValueError(f"unexpected {slot} filename")
+                    files.insert(0, (filename, model["sha256"]))
             for name, expected in files:
                 local = (bundle / name).read_bytes()
                 if hash_bytes(local) != expected:

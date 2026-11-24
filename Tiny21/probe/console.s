@@ -95,14 +95,7 @@ keep_prompt:
 .if ::CONSOLE_AUTOMATION
     sta KERNAL_KEY_COUNT
 .endif
-    lda model_context
-    cmp #129
-    bcs extended
-    LINE 6, ask
-    jmp controls_line
-extended:
-    LINE 6, ask_extended
-controls_line:
+    jsr render_prompt_label
 .if ::DUAL_MODEL
     LINE 23, dual_controls
     LINE 24, model_keys
@@ -120,13 +113,36 @@ controls_line:
     rts
 .endproc
 
+.proc render_prompt_label
+.if ::THIRD_MODEL
+    lda active_model
+    cmp #2
+    bne context
+    LINE 6, ask_japanese
+    rts
+context:
+.endif
+    lda model_context
+    cmp #129
+    bcs extended
+    LINE 6, ask
+    rts
+extended:
+    LINE 6, ask_extended
+    rts
+.endproc
+
 ; Accept one ASCII event. Carry set when a nonempty question is submitted.
 .proc console_edit
 .if ::DUAL_MODEL
     cmp #KEY_F1
-    beq tiny
+    jeq tiny
     cmp #KEY_F3
-    beq programmer
+    jeq programmer
+.if ::THIRD_MODEL
+    cmp #KEY_F5
+    jeq japanese
+.endif
 .endif
     cmp #RETURN
     beq submit
@@ -176,6 +192,11 @@ tiny:
     beq select
 programmer:
     lda #1
+.if ::THIRD_MODEL
+    bne select
+japanese:
+    lda #2
+.endif
 select:
     cmp active_model
     beq waiting
@@ -190,6 +211,7 @@ select:
     sta question_length
     jsr clear_answer
     jsr render_model
+    jsr render_prompt_label
     jsr render_prompt
     LINE STATUS_ROW, model_ready
     clc
@@ -402,8 +424,17 @@ tail:
     LINE 5, model_tiny
     rts
 programmer:
+.if ::THIRD_MODEL
+    cmp #2
+    beq japanese
+.endif
     LINE 5, model_prog
     rts
+.if ::THIRD_MODEL
+japanese:
+    LINE 5, model_japanese
+    rts
+.endif
 .endproc
 .endif
 
@@ -435,8 +466,11 @@ clear:
     rts
 .endproc
 
-ask:         .asciiz "Question (72 characters)"
-ask_extended:.asciiz "Question (long input scrolls left)"
+ask:         .asciiz "Question (72 characters)               "
+ask_extended:.asciiz "Question (long input scrolls left)     "
+.if ::THIRD_MODEL
+ask_japanese:.asciiz "Type an English sentence to translate  "
+.endif
 controls:    .asciiz "RETURN ask   DEL erase   RUN/STOP clear"
 cancel_hint: .asciiz "Hold RUN/STOP to cancel an answer"
 reading:     .asciiz "Reading question"
@@ -447,7 +481,12 @@ error:       .asciiz "Answer failed. Ready.                  "
 duration:    .asciiz "Elapsed "
 .if ::DUAL_MODEL
 dual_controls: .asciiz "RETURN ask  DEL erase  RUN/STOP cancel"
+.if ::THIRD_MODEL
+model_keys:    .asciiz "F1 Tiny 2.1  F3 C64PROGINFO  F5 Romaji"
+model_japanese:.asciiz "Model: English to Japanese (romaji)    "
+.else
 model_keys:    .asciiz "F1 Tiny 2.1   F3 C64PROGINFO"
+.endif
 model_tiny:    .asciiz "Model: Tiny 2.1                         "
 model_prog:    .asciiz "Model: C64PROGINFO                      "
 switching:     .asciiz "Checking selected model...              "

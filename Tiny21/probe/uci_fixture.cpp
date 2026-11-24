@@ -64,8 +64,9 @@ private:
             protocol_error = true;
         } else if (op == 2) {
             const std::string path(command.begin() + 3, command.end());
+            constexpr const char *files[] = {"/MODEL.BIN", "/C64PROGINFO.BIN", "/E2JROMAJI.BIN"};
             if (command[2] != 1 || !path.starts_with("/USB1/TINY64-") ||
-                    !path.ends_with(slot ? "/C64PROGINFO.BIN" : "/MODEL.BIN")) protocol_error = true;
+                    slot >= 3 || !path.ends_with(files[slot])) protocol_error = true;
             opened = true;
         } else if (op == 7 && opened) {
             unsigned actual = mode == 1 ? model_bytes - 1 : model_bytes;
@@ -74,7 +75,7 @@ private:
             more = true;  // force a second asynchronous block on file-info
         } else if (op == 0x21 && opened && command.size() == 10) {
             for (unsigned i = 0; i < 4; ++i) {
-                if (command[i + 2] != (slot && i == 2 ? 0x10 : 0) ||
+                if (command[i + 2] != (i == 2 ? slot * 0x10 : 0) ||
                     command[i + 6] != uint8_t(model_bytes >> (i * 8))) protocol_error = true;
             }
             loaded = true;

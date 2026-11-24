@@ -55,19 +55,17 @@ load_model_file:
     rts
 :
 .if DUAL_MODEL
-    lda requested_model
-    bne open_second
-.endif
+    ldy requested_model
+    lda open_command_low,y
+    ldx open_command_high,y
+    pha
+    lda open_command_length,y
+    tay
+    pla
+.else
     lda #<open_cmd
     ldx #>open_cmd
     ldy #open_end-open_cmd
-.if DUAL_MODEL
-    bne open_file
-open_second:
-    lda #<second_open_cmd
-    ldx #>second_open_cmd
-    ldy #second_open_end-second_open_cmd
-open_file:
 .endif
     jsr exchange
     bcs loader_failed
@@ -83,10 +81,11 @@ open_file:
     bcc loader_failed
     ldx #3
 .if DUAL_MODEL
-    ldy #3
     lda requested_model
-    beq check_size
-    ldy #7
+    asl
+    asl
+    ora #3
+    tay
 .endif
 check_size:
     lda reply_data,x
@@ -102,20 +101,14 @@ check_size:
     bpl check_size
     inc dos_stage
 .if DUAL_MODEL
-    lda requested_model
-    bne load_second
-.endif
+    ldy requested_model
+    lda load_command_low,y
+    ldx load_command_high,y
+.else
     lda #<load_cmd
     ldx #>load_cmd
-    ldy #10
-.if DUAL_MODEL
-    bne issue_load
-load_second:
-    lda #<second_load_cmd
-    ldx #>second_load_cmd
-    ldy #10
-issue_load:
 .endif
+    ldy #10
     jsr exchange
     bcs loader_failed
     inc dos_stage
@@ -319,6 +312,9 @@ model_size:
     .dword MODEL_SIZE
 .if DUAL_MODEL
     .dword SECOND_MODEL_SIZE
+.if THIRD_MODEL
+    .dword THIRD_MODEL_SIZE
+.endif
 second_open_cmd:
     .byte $02,$02,$01, SECOND_MODEL_PATH
 second_open_end:
@@ -326,4 +322,38 @@ second_open_end:
 second_load_cmd:
     .byte $02,$21
     .dword $100000,SECOND_MODEL_SIZE
+.if THIRD_MODEL
+third_open_cmd:
+    .byte $02,$02,$01, THIRD_MODEL_PATH
+third_open_end:
+.assert third_open_end-third_open_cmd < 256, error, "UCI command exceeds byte count"
+third_load_cmd:
+    .byte $02,$21
+    .dword $200000,THIRD_MODEL_SIZE
+.endif
+open_command_low:
+    .byte <open_cmd, <second_open_cmd
+.if THIRD_MODEL
+    .byte <third_open_cmd
+.endif
+open_command_high:
+    .byte >open_cmd, >second_open_cmd
+.if THIRD_MODEL
+    .byte >third_open_cmd
+.endif
+open_command_length:
+    .byte open_end-open_cmd, second_open_end-second_open_cmd
+.if THIRD_MODEL
+    .byte third_open_end-third_open_cmd
+.endif
+load_command_low:
+    .byte <load_cmd, <second_load_cmd
+.if THIRD_MODEL
+    .byte <third_load_cmd
+.endif
+load_command_high:
+    .byte >load_cmd, >second_load_cmd
+.if THIRD_MODEL
+    .byte >third_load_cmd
+.endif
 .endif

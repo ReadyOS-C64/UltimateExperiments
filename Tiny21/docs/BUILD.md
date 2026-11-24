@@ -41,6 +41,25 @@ The reply fills ten lines. This example assumes the normal VIC bank and
 screen addresses. A pattern must already be at decimal address 3072.
 [More checked prompts](../training/native_checks.txt).
 
+## Build the v0.8 three-model console
+
+Use the exported `E2JROMAJI.BIN` from the
+[Japanese training pipeline](../training/JAPANESE.md). Build the group-eight
+core and create a package with all three model files.
+
+```sh
+make reference all build/group8/core.bin
+python3 -m tools.model reference/TINY.BIN build/group8-model.reu --layout group8
+python3 -m probe.package_models --out build/Tiny21-v0.8-English-Japanese.zip \
+  --tiny build/group8-model.reu --programmer models/C64PROGINFO.BIN \
+  --japanese models/E2JROMAJI.BIN
+```
+
+The Japanese model lives at REU `$200000`. The existing model slots remain
+at `$000000` and `$100000`, and the active model uses the shared attention
+cache. You can also pass `--third-model models/E2JROMAJI.BIN` to the
+interactive probe builder to get labels and an identity manifest for testing.
+
 ## Development models with up to 255 positions
 
 The v0.7 group-eight core accepts T64M layout 4. Use a TNY2 checkpoint with

@@ -1,4 +1,5 @@
 .setcpu "6502"
+.include "bundle.inc"
 .import model_open_at, verify_model_image, load_model_file
 .export select_model, active_model, requested_model, slot_banks, model_disk_load
 
@@ -10,11 +11,15 @@ model_disk_load: .res 1
 .segment "PROBE"
 slot_banks:
     .byte $00, $10
+.if THIRD_MODEL
+    .byte $20
+.endif
+slot_end:
 
 ; A is the requested model number. Verify identity before changing the
 ; engine. The old slot and its payload are never touched by this load.
 .proc select_model
-    cmp #2
+    cmp #slot_end-slot_banks
     bcs invalid
     cmp active_model
     beq unchanged

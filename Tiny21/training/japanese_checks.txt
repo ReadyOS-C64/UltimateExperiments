@@ -1,0 +1,84 @@
+# English text enters the console directly. References use polite, spaced romaji.
+tense|fact|i eat an apple|watashi wa ringo o tabemasu
+tense|fact|i ate an apple|watashi wa ringo o tabemashita
+tense|fact|i ate apples|watashi wa ringo o tabemashita
+desire|fact|i want to eat an apple|watashi wa ringo o tabetai desu
+tense|fact|i didn't eat an apple|watashi wa ringo o tabemasen deshita
+desire|fact|i don't want to eat an apple|watashi wa ringo o tabetakunai desu
+tense|fact|i did not eat the apples.|watashi wa ringo o tabemasen deshita
+desire|fact|i did not want to eat apples|watashi wa ringo o tabetakunakatta desu
+tense|fact|she bought a notebook|kanojo wa nooto o kaimashita
+tense|fact|they didn't drink coffee|karera wa koohii o nomimasen deshita
+tense|fact|he is reading a book|kare wa hon o yonde imasu
+tense|fact|we were watching television|watashitachi wa terebi o mite imashita
+tense|fact|yesterday, i bought oranges|watashi wa kinou orenji o kaimashita
+tense|fact|i drank water yesterday|watashi wa kinou mizu o nomimashita
+tense|fact|i will go to the library tomorrow|watashi wa ashita toshokan ni ikimasu
+tense|fact|she studies japanese every day|kanojo wa mainichi nihongo o benkyou shimasu
+tense|fact|i woke up at six|watashi wa roku ji ni okimashita
+desire|fact|i'd like to buy a ticket|watashi wa kippu o kaitai desu
+desire|fact|i wanted to read the newspaper|watashi wa shinbun o yomitakatta desu
+desire|fact|i do not want to drink milk|watashi wa gyuunyuu o nomitakunai desu
+desire|fact|do you want to eat cake?|anata wa keeki o tabetai desu ka
+desire|fact|i want an umbrella|watashi wa kasa ga hoshii desu
+ability|fact|i can speak japanese|watashi wa nihongo ga hanasemasu
+ability|fact|she cannot read kanji|kanojo wa kanji ga yomemasen
+ability|fact|can you read a newspaper?|anata wa shinbun ga yomemasu ka
+requests|fact|please open the window|mado o akete kudasai
+requests|fact|please don't close the door|doa o shimenaide kudasai
+requests|fact|let's go to the park|kouen ni ikimashou
+requests|fact|may i use the phone?|watashi wa denwa o tsukatte mo ii desu ka
+requests|fact|i have to return home|watashi wa ie ni kaeranakereba narimasen
+demonstrative|fact|this is a book|kore wa hon desu
+demonstrative|fact|that is a pencil|sore wa enpitsu desu
+demonstrative|fact|that over there is a dog|are wa inu desu
+demonstrative|fact|these are apples|kore wa ringo desu
+demonstrative|fact|what is that over there?|are wa nan desu ka
+demonstrative|fact|whose bag is this?|kore wa dare no kaban desu ka
+demonstrative|fact|this is my umbrella|kore wa watashi no kasa desu
+demonstrative|fact|those over there are bicycles|are wa jitensha desu
+demonstrative|fact|that book over there is old|ano hon wa furui desu
+location|fact|i am here|watashi wa koko ni imasu
+location|fact|he is there|kare wa soko ni imasu
+location|fact|she is over there|kanojo wa asoko ni imasu
+location|fact|come here please|koko ni kite kudasai
+location|fact|the station is over there|eki wa asoko ni arimasu
+location|fact|there is a cat in the room|heya ni neko ga imasu
+location|fact|there is a book on the desk|tsukue no ue ni hon ga arimasu
+location|fact|where is the station?|eki wa doko desu ka
+location|fact|where are you going?|anata wa doko ni ikimasu ka
+questions|fact|what did you eat?|anata wa nani o tabemashita ka
+questions|fact|what do you want to drink?|anata wa nani o nomitai desu ka
+adjectives|fact|this bag is expensive|kono kaban wa takai desu
+adjectives|fact|this book was not expensive|kono hon wa takakunakatta desu
+adjectives|fact|the curry was spicy|karee wa karakatta desu
+adjectives|fact|the library is quiet|toshokan wa shizuka desu
+adjectives|fact|the hotel was not clean|hoteru wa kirei ja arimasen deshita
+adjectives|fact|this is a quiet room|kore wa shizuka na heya desu
+adjectives|fact|this bag is cheaper than that bag|kono kaban wa sono kaban yori yasui desu
+copula|fact|i am a student|watashi wa gakusei desu
+copula|fact|she was a teacher|kanojo wa sensei deshita
+copula|fact|he is not a doctor|kare wa isha ja arimasen
+counting|fact|please give me three apples|ringo o mittsu kudasai
+counting|fact|there are two students|gakusei ga futari imasu
+counting|fact|i bought two pencils|watashi wa enpitsu o futatsu kaimashita
+shopping|fact|how much is this umbrella?|kono kasa wa ikura desu ka
+shopping|fact|this, please|kore o kudasai
+preference|fact|i like cats|watashi wa neko ga suki desu
+preference|fact|he doesn't like fish|kare wa sakana ga suki ja arimasen
+sequence|fact|after i eat breakfast, i study japanese|watashi wa asagohan o tabeta ato de nihongo o benkyou shimasu
+sequence|fact|i wash my hands before i eat lunch|watashi wa hirugohan o taberu mae ni te o araimasu
+conversation|fact|thank you very much|doumo arigatou gozaimasu
+conversation|fact|please speak slowly|yukkuri hanashite kudasai
+residence|fact|i live in tokyo|watashi wa toukyou ni sunde imasu
+residence|fact|where do you live?|anata wa doko ni sunde imasu ka
+origin|fact|i'm from canada|watashi wa kanada shusshin desu
+origin|fact|she came from japan|kanojo wa nihon kara kimashita
+adjectives|fact|that cat is cute|sono neko wa kawaii desu
+adjectives|fact|this dog was small|kono inu wa chiisakatta desu
+travel|fact|i go to school by bus|watashi wa basu de gakkou ni ikimasu
+travel|fact|i went home by taxi|watashi wa takushii de ie ni ikimashita
+time|fact|what time is it?|ima nan ji desu ka
+time|fact|it's half past seven|ima wa shichi ji han desu
+tense|fact|i ate an apple yesterday|watashi wa kinou ringo o tabemashita
+location|fact|there's a cat in the room|heya ni neko ga imasu

@@ -107,10 +107,11 @@ final:
     .endrepeat
     ldx #3
 .if DUAL_MODEL
-    ldy #3
     lda requested_model
-    beq compare
-    ldy #7
+    asl
+    asl
+    ora #3
+    tay
 .endif
 compare:
     lda model_crc,x
@@ -152,11 +153,23 @@ expected:
     .dword MODEL_CRC32
 .if DUAL_MODEL
     .dword SECOND_MODEL_CRC
+.if THIRD_MODEL
+    .dword THIRD_MODEL_CRC
+.endif
 pages_by_model:
     .byte PAGES, SECOND_MODEL_SIZE / CHUNK
+.if THIRD_MODEL
+    .byte THIRD_MODEL_SIZE / CHUNK
+.endif
 tail_low_by_model:
     .byte <TAIL, <(SECOND_MODEL_SIZE .mod CHUNK)
+.if THIRD_MODEL
+    .byte <(THIRD_MODEL_SIZE .mod CHUNK)
+.endif
 tail_high_by_model:
     .byte >TAIL, >(SECOND_MODEL_SIZE .mod CHUNK)
+.if THIRD_MODEL
+    .byte >(THIRD_MODEL_SIZE .mod CHUNK)
+.endif
 .endif
 .include "crc_table.inc"

@@ -1,4 +1,4 @@
-"""Export the trained C64PROGINFO network as TNY2 and a named T64M image."""
+"""Export a compatible trained network as TNY2 and a named T64M image."""
 import argparse
 import json
 from pathlib import Path
@@ -46,14 +46,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('checkpoint', type=Path)
     parser.add_argument('--out', required=True, type=Path)
+    parser.add_argument('--name', default='C64PROGINFO', help='short model name stored in the REU image')
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     model, _ = load_checkpoint(args.checkpoint)
     raw = checkpoint_bytes(model)
-    payload, manifest = image(raw, 'group8-context', model_name='C64PROGINFO')
-    (args.out / 'C64PROGINFO.tny2').write_bytes(raw)
-    (args.out / 'C64PROGINFO.BIN').write_bytes(payload)
-    (args.out / 'C64PROGINFO.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    name = args.name.upper()
+    payload, manifest = image(raw, 'group8-context', model_name=name)
+    (args.out / f'{name}.tny2').write_bytes(raw)
+    (args.out / f'{name}.BIN').write_bytes(payload)
+    (args.out / f'{name}.json').write_text(json.dumps(manifest, indent=2) + '\n')
     print(f'{model.param_count():,} parameters, {len(payload):,} bytes')
 
 

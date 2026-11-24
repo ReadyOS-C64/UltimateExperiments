@@ -124,10 +124,12 @@ packed_matrix:
 model_open:
     lda #0
 .proc model_open_at
-    ; A is the high byte of an aligned catalog slot, $000000 or $100000.
+    ; A is the high byte of an aligned catalog slot: $00, $10, or $20.
     cmp #0
     beq slot
     cmp #$10
+    beq slot
+    cmp #$20
     beq slot
     sec
     rts

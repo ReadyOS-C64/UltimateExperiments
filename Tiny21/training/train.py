@@ -36,11 +36,11 @@ def encode_examples(examples, context):
     return tokens, starts, lengths
 
 
-def training_weights(examples):
+def training_weights(examples, balance=0.5):
     """Keep generated address tables from dominating the training batches."""
     counts = Counter(ex['category'] for ex in examples)
     weights = np.array([(3.0 if ex['fact'].startswith(('factual.', 'example.')) else 1.0)
-                        / math.sqrt(counts[ex['category']]) for ex in examples])
+                        / counts[ex['category']] ** balance for ex in examples])
     return weights / weights.sum()
 
 
@@ -112,11 +112,15 @@ def main():
     parser.add_argument('--resume', action='store_true')
     parser.add_argument('--qat', action='store_true')
     parser.add_argument('--boost-fact', help='increase the sample rate of one new fact during a short fine-tune')
+    parser.add_argument('--category-balance', type=float, default=0.5,
+                        help='category sampling exponent, from 0 (by size) to 1 (equal categories)')
     parser.add_argument('--language-share', type=float, default=0.08,
                         help='fraction of batch samples reserved for supplemental language and logic')
     args = parser.parse_args()
     if args.resume and args.init:
         parser.error('--resume and --init are mutually exclusive')
+    if not 0 <= args.category_balance <= 1:
+        parser.error('--category-balance must be between zero and one')
     if not 0 <= args.language_share < 1:
         parser.error('--language-share must be at least zero and below one')
     torch.manual_seed(args.seed)
@@ -135,7 +139,7 @@ def main():
         rng.bit_generator.state = payload['rng']
     examples = load_examples(args.data / 'train.jsonl')
     train = encode_examples(examples, model.cfg.ctx_len)
-    weights = training_weights(examples)
+    weights = training_weights(examples, args.category_balance)
     support = np.array([row['fact'].startswith(('language.', 'logic.')) for row in examples])
     if support.any():
         if support.all():
