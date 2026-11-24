@@ -41,7 +41,7 @@ python3 -m probe.check_console "$bundle"
 
 ## Observe and run in a detached shell
 
-Set `host` to the Ultimate's configured address. Every device transaction is executed by a Terminal-owned `nohup` background worker with stdin closed. The launcher returns while the job runs. The output directory contains `pid`, `status`, and `worker.log`.
+Set `host` to the Ultimate's configured address. On macOS, the launcher submits a background shell to `launchd` with stdin closed. The launcher returns while the job runs. The output directory contains `pid`, `status`, and `worker.log`.
 
 ```sh
 /opt/homebrew/bin/python3 probe/launch_detached.py \

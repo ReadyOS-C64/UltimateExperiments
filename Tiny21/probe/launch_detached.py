@@ -1,9 +1,10 @@
-"""Start an Ultimate operation in a detached Terminal-owned background shell."""
+"""Start an Ultimate operation in a background shell managed by launchd."""
 import argparse
 from pathlib import Path
 import shlex
 import subprocess
 import sys
+from uuid import uuid4
 
 SOURCE = Path(__file__).resolve().parent
 
@@ -12,6 +13,7 @@ def launch(out, args):
     cwd = shlex.quote(str(Path.cwd()))
     out = out.resolve()
     out.mkdir(parents=True, exist_ok=False)
+    label = f"org.readyos.tiny21.probe.{uuid4().hex}"
     cmd = shlex.join([sys.executable, str(SOURCE / "physical.py"), *args,
                       "--out", str(out / "evidence")])
     worker = out / "worker.sh"
@@ -22,16 +24,14 @@ def launch(out, args):
         f"cd -- {cwd} && TINY64_DETACHED=1 {cmd}\n"
         "status=$?\n"
         f"printf '%s\\n' \"$status\" > {shlex.quote(str(out / 'status'))}\n"
-        'exit "$status"\n'
+        f"/bin/launchctl remove {label}\n"
+        "exit 0\n"
     )
-    launch_cmd = (" /usr/bin/nohup /bin/bash " + shlex.quote(str(worker))
-                  + " </dev/null >" + shlex.quote(str(out / "worker.log"))
-                  + " 2>&1 & disown")
     subprocess.run(
-        ["/usr/bin/osascript",
-         "-e", "on run argv",
-         "-e", 'tell application "Terminal" to do script (item 1 of argv)',
-         "-e", "end run", launch_cmd], check=True, timeout=20,
+        ["/bin/launchctl", "submit", "-l", label, "--", "/bin/bash", "-c",
+         'exec /bin/bash "$1" </dev/null >"$2" 2>&1',
+         "tiny21-probe", str(worker), str(out / "worker.log")],
+        check=True, timeout=20,
     )
     print(out)
 

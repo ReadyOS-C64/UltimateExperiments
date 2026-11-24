@@ -22,7 +22,7 @@ def screen_codes(text):
 
 @contextmanager
 def keyboard_transport(device):
-    """Keep LAN traffic in the approved Terminal-owned Python process."""
+    """Keep LAN traffic in the detached probe process."""
     class Transport(BaseHTTPRequestHandler):
         def relay(self):
             request = urlsplit(self.path)

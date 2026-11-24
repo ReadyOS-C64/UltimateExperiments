@@ -247,3 +247,19 @@ final-position test verified all 97 logits, all four newly appended cache
 records and clean rejection at the limit. The attention test verified exact
 outputs on a full 255-position prefix, including a head with equal weights
 at every position. [Build and model format](BUILD.md).
+
+### Measured on the C64 Ultimate
+
+The 2026-11-23 A/B run used the same physical C64 Ultimate, a 16 MB REU, the
+same preloaded model (CRC32 `557003c0`), and the same two scripted prompts.
+Both builds verified 64 MHz. The probe measured PAL CIA2 PHI2 ticks at
+985,248 Hz. Response time excludes model loading and validation.
+
+| Prompt | v0.6 first character | v0.7 first character | v0.6 total | v0.7 total | Total time reduction |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `what is 7 times 8` | 17.012 s | 14.959 s | 36.322 s | 32.442 s | 10.68% |
+| `what is the capital of peru` | 28.148 s | 24.956 s | 34.441 s | 30.678 s | 10.93% |
+
+Both answers matched. Combined response time fell from 70.763 s to
+63.120 s, a 10.80% reduction. Output-phase rates rose from 0.829 to 0.915
+and from 0.795 to 0.874 character tokens per second, respectively.
