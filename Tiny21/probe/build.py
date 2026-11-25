@@ -45,10 +45,11 @@ def add_model(source, out, remote, *, name, prefix, offset, base_size):
     (out / filename).write_bytes(data)
     crc = zlib.crc32(data)
     source_definitions = (
-        f'.define {prefix}_MODEL_PATH "{remote}/{filename}"\n'
         f"{prefix}_MODEL_SIZE = {len(data)}\n"
         f"{prefix}_MODEL_CRC = ${crc:08x}\n"
     )
+    if remote is not None:
+        source_definitions += f'.define {prefix}_MODEL_PATH "{remote}/{filename}"\n'
     descriptor = {
         "file": filename,
         "name": name,
@@ -63,8 +64,12 @@ def add_model(source, out, remote, *, name, prefix, offset, base_size):
 
 def build(out, remote, core_dir=ROOT / "build", *, interactive=False, qualify_reu=False,
           model_image=ROOT / "build/model.reu", context_test=False, automation=False,
-          second_model=None, third_model=None):
-    if not RUN_PATH.fullmatch(remote):
+          second_model=None, third_model=None, reu_only=False):
+    if reu_only:
+        if (remote is not None or not interactive or third_model is None or
+                qualify_reu or context_test or automation):
+            raise ValueError("REU-only mode requires the three-model console and raw REU images")
+    elif remote is None or not RUN_PATH.fullmatch(remote):
         raise ValueError("remote directory must be an owned TINY64 run folder on a USB drive")
     if automation and not interactive:
         raise ValueError("keyboard automation requires the interactive console")
@@ -109,15 +114,17 @@ def build(out, remote, core_dir=ROOT / "build", *, interactive=False, qualify_re
     ):
         if source is not None:
             definitions, descriptor = add_model(source, out, remote, name=name,
-                                                prefix=prefix, offset=offset, base_size=len(payload))
+                                                prefix=prefix, offset=0 if reu_only else offset,
+                                                base_size=len(payload))
             model_source += definitions
             additional_models[key] = descriptor
-    run_hash = hashlib.sha256(remote.encode("ascii")).digest()
+    run_hash = hashlib.sha256((remote or "c64llm-reu-only").encode("ascii")).digest()
     palette = (1, 3, 6, 7, 13, 14)
     marker = [palette[byte % len(palette)] for byte in run_hash[:12]]
     nonce = int.from_bytes(run_hash[-2:], "little")
     (out / "bundle.inc").write_text(
-        f'.define MODEL_PATH "{remote}/MODEL.BIN"\n'
+        (f'.define MODEL_PATH "{remote}/MODEL.BIN"\n' if remote is not None else "")
+        + f"REU_ONLY = {int(reu_only)}\n"
         f"MODEL_SIZE = {model.stat().st_size}\n"
         f"MODEL_CRC32 = ${crc:08x}\n"
         f"RUN_NONCE = ${nonce:04x}\n"
@@ -131,8 +138,11 @@ def build(out, remote, core_dir=ROOT / "build", *, interactive=False, qualify_re
         + context_source + model_source)
     (out / "crc_table.inc").write_text(genc_rc32_table())
     native_objs = []
-    sources = PROBE + ["question", "keyboard", "console"] if interactive else PROBE
-    if second_model is not None:
+    if reu_only:
+        sources = ["boot", "main", "integrity", "question", "keyboard", "console", "reu_models"]
+    else:
+        sources = PROBE + ["question", "keyboard", "console"] if interactive else PROBE
+    if second_model is not None and not reu_only:
         sources = [*sources, "models"]
     if qualify_reu:
         sources = [*sources, "reu_qualify"]
@@ -143,7 +153,7 @@ def build(out, remote, core_dir=ROOT / "build", *, interactive=False, qualify_re
         native_objs.append(obj)
     kernels = (["dot_group4"] if group4 else []) + (["dot_group8"] if group8 else [])
     core_objs = [core_dir / f"{name}.o" for name in [*CORE, *kernels]]
-    prg = out / "PROBE.PRG"
+    prg = out / ("C64LLM.PRG" if reu_only else "PROBE.PRG")
     labels = out / "probe.lbl"
     subprocess.run(["ld65", "-C", str(SOURCE / "ultimate.cfg"), "-m", str(out / "probe.map"),
                     "-Ln", str(labels), "-o", str(prg), *map(str, [*core_objs, *native_objs])], check=True)
@@ -191,8 +201,19 @@ def build(out, remote, core_dir=ROOT / "build", *, interactive=False, qualify_re
         manifest["automation_keyboard"] = True
     if qualify_reu:
         manifest["reu_qualification_mailbox"] = symbols["REU_QUALIFICATION_RESULT"]
-    if additional_models:
-        manifest.update(additional_models)
+    manifest.update(additional_models)
+    if reu_only:
+        manifest.pop("remote_path")
+        images = {}
+        for raw_name, image_name in (("MODEL.BIN", "TINY21.REU"),
+                                     ("C64PROGINFO.BIN", "C64PROGINFO.REU"),
+                                     ("E2JROMAJI.BIN", "E2JROMAJI.REU")):
+            content = (out / raw_name).read_bytes()
+            target = out / image_name
+            target.write_bytes(content.ljust(1 << 20, b"\0"))
+            images[image_name] = digest(target)
+        manifest["reu_images"] = images
+    elif additional_models:
         manifest["timing_row"] = 22
     (out / "bundle.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest
@@ -201,7 +222,8 @@ def build(out, remote, core_dir=ROOT / "build", *, interactive=False, qualify_re
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--remote", required=True)
+    parser.add_argument("--remote")
+    parser.add_argument("--reu-only", action="store_true")
     parser.add_argument("--core-dir", type=Path, default=ROOT / "build")
     parser.add_argument("--interactive", action="store_true")
     parser.add_argument("--automation", action="store_true")
@@ -212,7 +234,7 @@ if __name__ == "__main__":
     parser.add_argument("--third-model", type=Path)
     args = parser.parse_args()
     print(json.dumps(build(args.out.resolve(), args.remote, args.core_dir.resolve(),
-                           interactive=args.interactive, qualify_reu=args.qualify_reu,
+                           interactive=args.interactive or args.reu_only, qualify_reu=args.qualify_reu,
                            model_image=args.model_image, context_test=args.context_test,
                            automation=args.automation, second_model=args.second_model,
-                           third_model=args.third_model), indent=2))
+                           third_model=args.third_model, reu_only=args.reu_only), indent=2))

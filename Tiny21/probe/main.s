@@ -1,5 +1,9 @@
 .setcpu "6502"
 .include "bundle.inc"
+.if REU_ONLY
+.import console_main
+.export probe_main, row_start, print, putchar
+.else
 .import load_model_file, dos_stage, dos_status
 .import uci_identity, uci_observed, uci_detail, uci_other_ids
 .import verify_model_image, model_crc
@@ -17,6 +21,7 @@
 .if QUALIFY_REU
 .import qualify_reu
 .endif
+.endif
 
 ; Mailbox addresses remain stable for independent host readback.
 MAIL = $ce00
@@ -29,6 +34,7 @@ message = $f2
 result = $f4
 
 .segment "PROBEBSS"
+.if !REU_ONLY
 question_id: .res 1
 question_at: .res 1
 answer_len:  .res 1
@@ -37,6 +43,7 @@ question_start: .res 4
 first_ticks: .res 4
 total_ticks: .res 4
 digits: .res 6
+.endif
 
 .segment "PROBE"
 .macro TEXT label
@@ -58,6 +65,12 @@ digits: .res 6
 .endmacro
 
 probe_main:
+.if REU_ONLY
+    jsr screen_init
+    AT 2
+    TEXT subtitle
+    jmp console_main
+.else
     lda #0
     ldx #$1f
 clear_mail:
@@ -505,6 +518,7 @@ print10:
     lda digits,x
     ora #'0'
     jmp putchar
+.endif
 
 screen_init:
     lda $dd02
@@ -554,6 +568,7 @@ accent:
     sta COLOR+40*18,x
     dex
     bpl accent
+.if !REU_ONLY
     ; Passive video identity. A reverse space fills its whole cell, so
     ; an out-of-band observer can establish that this PRG owns the screen.
     ldx #11
@@ -564,10 +579,13 @@ video_marker:
     sta COLOR+1,x
     dex
     bpl video_marker
+.endif
     AT 1
     TEXT title
+.if !REU_ONLY
     AT 4
     TEXT loading
+.endif
     rts
 
 row_start:
@@ -627,7 +645,9 @@ glyph:
 saved_y: .res 1
 
 .segment "PROBE"
+.if !REU_ONLY
 marker_colors: .byte RUN_MARKER
+.endif
 row_low:
     .repeat 25, I
         .byte <(SCREEN+I*40+1)
@@ -636,6 +656,10 @@ row_high:
     .repeat 25, I
         .byte >(SCREEN+I*40+1)
     .endrepeat
+.if REU_ONLY
+title: .asciiz "C64 LLM - Little Language Model"
+subtitle: .asciiz "REU edition - 1 MiB or more"
+.else
 question_rows: .byte 7,14
 .if CONTEXT_TEST
 answer_rows: .byte 9,15
@@ -679,3 +703,4 @@ prompt1: .byte CONTEXT_PROMPT,0
 prompt1: .byte "what is 7 times 8",0
 .endif
 prompt2: .byte "what is the capital of peru",0
+.endif
