@@ -1,15 +1,16 @@
-# C64 LLM v0.7 technical details
+# C64 LLM v0.8 technical details
 
 ## Model and resident 6510 engine
 
-Both release models use four causal transformer layers with 96 channels, four attention heads of width 24, a 256-channel ReLU feed-forward block, and a 97-token character vocabulary. The input embedding also serves as the output matrix. The learned position budget covers the prompt, delimiter, and generated answer.
+All three models use four causal transformer layers with 96 channels, four attention heads of width 24, a 256-channel ReLU feed-forward block, and a 97-token character vocabulary. The input embedding also serves as the output matrix. The learned position budget covers the prompt, delimiter, and generated answer.
 
 | Model | Image layout | Learned positions | REU slot |
 | --- | --- | ---: | --- |
 | [WollyMonjac’s Tiny 2.1](https://github.com/WollyMonjac/Tiny-2.1) | T64M v3, 380,995 bytes | 128 | `$000000` |
 | C64PROGINFO | T64M v4, 390,499 bytes | 224 | `$100000` |
+| English to Japanese | T64M v4, 390,499 bytes | 224 | `$200000` |
 
-The resident 6502/6510 engine streams weight and cache tiles through the REU and uses the same code for all layers. **F1** selects Tiny 2.1 and **F3** selects C64PROGINFO. For the selected model, the PRG checks the expected image CRC32 in REU, then opens and validates the header and matrix directory. If the copy is missing or invalid, Ultimate DOS loads the matching file into the selected slot before checking it again. A failed switch leaves the previous model available. A successful switch resets the active context.
+The resident 6502/6510 engine streams weight and cache tiles through the REU and uses the same code for all layers. **F1** selects Tiny 2.1, **F3** selects C64PROGINFO, and **F5** selects English to Japanese. For the selected model, the PRG checks the expected image CRC32 in REU, then opens and validates the header and matrix directory. If the copy is missing or invalid, Ultimate DOS loads the matching file into the selected slot before checking it again. A failed switch leaves the previous model available. A successful switch resets the active context.
 
 ## Fixed-point arithmetic
 
@@ -27,7 +28,7 @@ The page-aligned group-eight workspace occupies 9 KiB across `$8000–$9FFF` and
 
 ## Causal attention and the REU cache
 
-Every layer, position, key and value has a 96-channel int8 vector and a stored peak for reconstructing its scale. A position’s key and value use a 200-byte combined record. Four REU cache regions start at `$080000`. They use a `$8000` stride per layer for up to 128 positions and a `$10000` stride for extended contexts. Both models share the allocated cache. The current key and value are appended before attention, which reads only the live prefix through the current position. A new question or model switch resets validity and positional state.
+Every layer, position, key and value has a 96-channel int8 vector and a stored peak for reconstructing its scale. A position’s key and value use a 200-byte combined record. Four REU cache regions start at `$080000`. They use a `$8000` stride per layer for up to 128 positions and a `$10000` stride for extended contexts. All three models share the allocated cache. The current key and value are appended before attention, which reads only the live prefix through the current position. A new question or model switch resets validity and positional state.
 
 The key pass processes all four heads in tiles of up to 40 records. It accumulates scaled attention scores and records each head’s maximum. In the value pass the engine subtracts from that maximum, looks up the negative exponential with interpolation and normalizes the weighted value sum. It reuses the final tile from the key pass before rereading the earlier prefix. The 24-bit REU driver splits requests at 512 KiB bank boundaries because the hardware counter wraps there.
 
@@ -47,4 +48,4 @@ Remote key events exercised cancellation and retry, the Tiny 2.1 arithmetic exam
 | `show basic code to clear the screen and print ready` | C64PROGINFO | 110.347 s |
 | `show assembler code to set border to red` | C64PROGINFO | 64.305 s |
 
-[Training and independent prompt results](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/README.md)
+[C64PROGINFO training and prompt results](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/README.md) · [Japanese training and hardware timings](https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/JAPANESE.md)

@@ -30,9 +30,9 @@ A reconstructed dual-bank character ROM, a Cyberpunk palette, and clean/CRT gall
 
 ## C64 LLM for the C64 Ultimate
 
-Version 0.7 runs two models in native 6502/6510 assembly at 64 MHz with a 16 MB REU. Press **F1** for WollyMonjac’s Tiny 2.1 for general questions or **F3** for C64PROGINFO for C64 hardware, BASIC V2, and 6502 assembly. The ready-to-run ZIP includes the PRG and both models.
+Version 0.8 runs three selectable models in native 6502/6510 assembly at 64 MHz with a 16 MB REU. Press **F1** for Tiny 2.1, **F3** for C64PROGINFO, or **F5** to translate beginner English sentences into spaced Japanese romaji.
 
-[Project README](Tiny21/README.md) · [Technical details](Tiny21/docs/TECHNICAL.md) · [Download and setup](Tiny21/docs/DOWNLOAD.md) · [C64PROGINFO demo and examples](https://readyos-c64.github.io/UltimateExperiments/tiny21/#video)
+[Project README](Tiny21/README.md) · [Technical details](Tiny21/docs/TECHNICAL.md) · [Download and setup](Tiny21/docs/DOWNLOAD.md) · [Japanese translation demo and examples](Tiny21/README.md#try-english-to-japanese)
 
 ## Documentation and repository
 

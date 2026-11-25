@@ -1,24 +1,12 @@
 # C64 LLM - Little Language Model
 
-Version **0.7** runs two selectable character models in native 6502/6510 assembly on a **64 MHz C64 Ultimate with a 16 MB REU**. **Tiny 2.1** answers general short questions. **C64PROGINFO** focuses on Commodore 64 hardware, BASIC V2, and 6502 assembly.
+Version **0.8** runs three selectable character models in native 6502/6510 assembly on a **64 MHz C64 Ultimate with a 16 MB REU**. **Tiny 2.1** answers general questions, **C64PROGINFO** covers C64 hardware and programming, and **English to Japanese** translates beginner English to spaced romaji.
 
-[Download and setup](docs/DOWNLOAD.md) · [Technical details](docs/TECHNICAL.md) · [Build from source](docs/BUILD.md) · [Online guide](https://readyos-c64.github.io/UltimateExperiments/tiny21/) · [GitHub release](https://github.com/ReadyOS-C64/UltimateExperiments/releases/tag/v0.7)
+[Download and setup](docs/DOWNLOAD.md) · [Technical details](docs/TECHNICAL.md) · [Build from source](docs/BUILD.md) · [Online guide](https://readyos-c64.github.io/UltimateExperiments/tiny21/)
 
-## v0.8 development build
+## Run v0.8 on the C64 Ultimate
 
-The v0.8 console adds **F5** for English to Japanese. Type a short English
-sentence and press **RETURN** for polite, spaced romaji. For example,
-`i ate an apple` produces `watashi wa ringo o tabemashita`.
-The v0.8 ZIP includes `C64LLM.PRG` and all three model files, including
-the ready-to-use 375,744-parameter `E2JROMAJI.BIN`. Copy the four files to
-`/USB1/TINY64-MODELS` and run `C64LLM.PRG` from the Ultimate menu.
-**F1** and **F3** select Tiny 2.1 and C64PROGINFO.
-[Japanese examples and training](training/JAPANESE.md) ·
-[Build the three-model console](docs/BUILD.md#build-the-v08-three-model-console)
-
-## Use the v0.7 console
-
-Unzip the v0.7 package and copy `PROBE.PRG`, `MODEL.BIN`, and `C64PROGINFO.BIN` to `/USB1/TINY64-MODELS`. Enable the **16 MB REU** and **Command Interface**, set **Turbo Control** to **C64U Turbo Registers**, and run `PROBE.PRG` from the Ultimate menu. It starts with Tiny 2.1.
+Unzip the v0.8 package and copy `C64LLM.PRG` and all three BIN files to `/USB1/TINY64-MODELS`. Enable the **16 MB REU** and **Command Interface**, set **Turbo Control** to **C64U Turbo Registers**, and run `C64LLM.PRG` from the Ultimate menu. It starts with Tiny 2.1. [Step-by-step setup](docs/DOWNLOAD.md#install-and-run)
 
 ## Switch models
 
@@ -26,9 +14,10 @@ Unzip the v0.7 package and copy `PROBE.PRG`, `MODEL.BIN`, and `C64PROGINFO.BIN` 
 | --- | --- | ---: |
 | **F1** | Tiny 2.1 for general short questions | 128 positions |
 | **F3** | C64PROGINFO for C64 hardware and programming | 224 positions |
+| **F5** | English to Japanese in spaced romaji | 224 positions |
 
 1. Wait until the console is ready. If it is answering, hold **RUN/STOP** until **Cancelled. Ready.** appears.
-2. Press **F1** or **F3**. When the selection changes, the console shows **Checking selected model...**. Wait for **Model ready.** and confirm the name on the **Model:** line.
+2. Press **F1**, **F3**, or **F5**. When the selection changes, the console shows **Checking selected model...**. Wait for **Model ready.** and confirm the name on the **Model:** line.
 3. Type a question and press **RETURN**. **DEL** edits the prompt. Questions stay visible with their answers, and typing starts a new prompt.
 
 Each model keeps its own REU slot. The console verifies and reuses an image already in its slot, or loads the matching file from USB through Ultimate DOS. A successful switch clears the displayed question and answer and starts a fresh context. If loading fails, the previous model stays active. [Setup and troubleshooting](docs/DOWNLOAD.md#switch-models-and-ask-questions) · [REU layout and validation](docs/TECHNICAL.md#model-and-resident-6510-engine)
@@ -47,6 +36,38 @@ Each model keeps its own REU slot. The console verifies and reuses an image alre
 [Watch the original Tiny 2.1 demo on YouTube](https://www.youtube.com/watch?v=EOZRYfPyuy0)
 
 </details>
+
+## Try English to Japanese
+
+Press **F5** and wait for **Model ready.** and **Model: English to Japanese (romaji)**. Type a short English sentence directly and press **RETURN**. It replies in polite, spaced romaji, as in `watashi wa ringo o tabemashita`. Press **F1** or **F3** when you want to return to the other models.
+
+<iframe class="tiny21-video" src="https://www.youtube-nocookie.com/embed/jw8KyRismIQ" title="C64 LLM English-to-Japanese translation demo" width="640" height="360" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+[Watch on YouTube](https://www.youtube.com/watch?v=jw8KyRismIQ) · [Hardware demo with screenshots and timings](https://tiny21-c64-ultimate.klumsy.chatgpt.site/japanese/)
+
+These examples were verified on the Ultimate.
+
+| Type this sentence | Romaji reply |
+| --- | --- |
+| `i eat an apple` | `watashi wa ringo o tabemasu` |
+| `i ate an apple` | `watashi wa ringo o tabemashita` |
+| `i ate apples` | `watashi wa ringo o tabemashita` |
+| `this is a book` | `kore wa hon desu` |
+| `that is a pencil` | `sore wa enpitsu desu` |
+| `that over there is a dog` | `are wa inu desu` |
+| `i want to eat an apple` | `watashi wa ringo o tabetai desu` |
+| `i don't want to eat an apple` | `watashi wa ringo o tabetakunai desu` |
+| `i didn't eat an apple` | `watashi wa ringo o tabemasen deshita` |
+| `i am here` | `watashi wa koko ni imasu` |
+| `he is there` | `kare wa soko ni imasu` |
+| `she is over there` | `kanojo wa asoko ni imasu` |
+| `the curry was spicy` | `karee wa karakatta desu` |
+| `please give me three apples` | `ringo o mittsu kudasai` |
+| `i go to school by bus` | `watashi wa basu de gakkou ni ikimasu` |
+
+The 375,744-parameter model was trained on beginner vocabulary and sentence patterns for tense, negation, desire, demonstratives, locations, adjectives, and counters. A plain noun such as `ringo` can mean an apple or apples. The model can confuse clock times and unfamiliar phrasings. [Model training and evaluation](training/JAPANESE.md)
+
+![C64 LLM translates “I don't want to eat an apple” to spaced romaji](screenshots/japanese-romaji.png)
 
 ## Try C64PROGINFO
 
@@ -178,6 +199,6 @@ The upstream model was trained on roughly **3,500 facts** with multiple wordings
 
 ## Credits and license
 
-The original Tiny 2.1 checkpoint and Pentium/486 DOS implementation are by [WollyMonjac/Tiny-2.1](https://github.com/WollyMonjac/Tiny-2.1). The C64 port, documentation, and C64PROGINFO are under the [MIT license](LICENSE). Peddle keeps its [own MIT notice](third_party/peddle/LICENSE).
+The original Tiny 2.1 checkpoint and Pentium/486 DOS implementation are by [WollyMonjac/Tiny-2.1](https://github.com/WollyMonjac/Tiny-2.1). The C64 port, documentation, and the two models developed here are under the [MIT license](LICENSE). Peddle keeps its [own MIT notice](third_party/peddle/LICENSE).
 
 C64PROGINFO's training tools adapt the PyTorch decoder and training loop from [jaydarkseed757’s c64-dungeon](https://github.com/jaydarkseed757/c64-dungeon). The [c64-dungeon notice](training/LICENSE.c64-dungeon) and the [upstream Tiny 2.1 notice](training/LICENSE.tiny21-language) are included in the ZIP.

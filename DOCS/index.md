@@ -77,7 +77,7 @@ A reconstructed dual-bank character ROM and Cyberpunk palette, explored across R
 
 ## C64 LLM for the C64 Ultimate
 
-Version 0.7 runs two models in native 6502/6510 assembly at 64 MHz with a 16 MB REU. Press **F1** for WollyMonjac’s Tiny 2.1 for general questions or **F3** for C64PROGINFO for C64 hardware, BASIC V2, and 6502 assembly. The ready-to-run ZIP includes the PRG and both models.
+Version 0.8 runs three models in native 6502/6510 assembly at 64 MHz with a 16 MB REU. Press **F1** for Tiny 2.1, **F3** for C64PROGINFO, or **F5** for English-to-Japanese translation in spaced romaji. The ZIP includes the PRG and all three model files.
 
 ![The v0.7 console displays a two-line BASIC program from C64PROGINFO](tiny21/screenshots/c64proginfo-basic.png)
 

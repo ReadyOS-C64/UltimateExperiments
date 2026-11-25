@@ -14,6 +14,7 @@ errors = []
 C64_LLM_EMBEDS = {
     'https://www.youtube-nocookie.com/embed/qnYL4ZUhqow?start=13',
     'https://www.youtube-nocookie.com/embed/EOZRYfPyuy0',
+    'https://www.youtube-nocookie.com/embed/jw8KyRismIQ',
 }
 
 class Page(HTMLParser):
@@ -174,12 +175,31 @@ with zipfile.ZipFile(tiny_zip) as archive:
     if archive.read('C64PROGINFO.BIN') != (ROOT / 'Tiny21/models/C64PROGINFO.BIN').read_bytes():
         errors.append('C64 LLM package C64PROGINFO image differs from the project model')
     tiny_readme = archive.read('README.md').decode()
+if any(text not in tiny_readme for text in ('64 MHz', '16 MB', 'USB1', 'TINY64-MODELS', 'F1', 'F3')):
+    errors.append('C64 LLM v0.7 archive is missing installation or model-switching instructions')
+
+ultimate_zip = ROOT / 'Tiny21/releases/Tiny21-v0.8-English-Japanese.zip'
+if ultimate_zip.read_bytes() != (DOCS / 'downloads' / ultimate_zip.name).read_bytes():
+    errors.append('C64 LLM v0.8 Pages download differs from the project ZIP')
+with zipfile.ZipFile(ultimate_zip) as archive:
+    expected = {'C64LLM.PRG', 'MODEL.BIN', 'C64PROGINFO.BIN', 'E2JROMAJI.BIN',
+                'README.md', 'LICENSE', 'LICENSE-TINY21.txt', 'LICENSE-C64-DUNGEON.txt'}
+    if set(archive.namelist()) != expected or len(archive.namelist()) != len(expected):
+        errors.append('C64 LLM v0.8 package member allowlist')
+    if archive.testzip() is not None:
+        errors.append('C64 LLM v0.8 package CRC failure')
+    for model in ('C64PROGINFO.BIN', 'E2JROMAJI.BIN'):
+        if archive.read(model) != (ROOT / 'Tiny21/models' / model).read_bytes():
+            errors.append(f'C64 LLM v0.8 ZIP differs from the project model: {model}')
+    ultimate_readme = archive.read('README.md').decode()
 tiny_guide = (DOCS / 'tiny21/DOWNLOAD.html').read_text()
-if f'href="../downloads/{tiny_zip.name}"' not in tiny_guide:
-    errors.append('C64 LLM download must link to the prebuilt ZIP')
-for guide in (tiny_readme, tiny_guide):
+if f'href="../downloads/{ultimate_zip.name}"' not in tiny_guide:
+    errors.append('C64 LLM download must link to the prebuilt v0.8 ZIP')
+for guide in (ultimate_readme, tiny_guide):
     if any(text not in guide for text in ('64 MHz', '16 MB', 'USB1', 'TINY64-MODELS', 'F1', 'F3')):
         errors.append('C64 LLM setup guide is missing installation or model-switching instructions')
+    if any(text not in guide for text in ('C64LLM.PRG', 'E2JROMAJI.BIN', 'F5', 'romaji')):
+        errors.append('C64 LLM v0.8 setup guide is missing Japanese model instructions')
     if any(text in guide for text in ('make_model.py', 'TINY.BIN', 'python3')):
         errors.append('C64 LLM setup guide exposes the developer conversion workflow')
 if errors:

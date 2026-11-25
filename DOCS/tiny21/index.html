@@ -1,20 +1,10 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>C64 LLM - Little Language Model · Ultimate Experiments</title><meta name="description" content="Commodore 64 Ultimate experiments: C64 LLM - Little Language Model"><link rel="stylesheet" href="../style.css"></head>
-<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor"><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../supereditor/index.html">Overview and downloads</a></li><li><a href="../supereditor/USER_GUIDE.html">Complete user guide</a></li><li><a href="../supereditor/SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="../supereditor/GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="../supereditor/STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="../supereditor/BUILD.html">Build and package</a></li><li><a href="../supereditor/CAPACITY.html">Capacity and limits</a></li><li><a href="../supereditor/PERFORMANCE.html">Performance</a></li><li><a href="../supereditor/OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="../supereditor/MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details><details class="project-nav" data-project="tiny21" open><summary aria-label="C64 LLM guides">C64 LLM<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html" aria-current="page">Overview and downloads</a></li><li><a href="DOWNLOAD.html">Download and setup</a></li><li><a href="TECHNICAL.html">Technical details</a></li><li><a href="FUTURE.html">Future versions</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#v08-development-build">v0.8 development build</a></li><li><a href="#use-the-v07-console">Use the v0.7 console</a></li><li><a href="#switch-models">Switch models</a></li><li><a href="#video">Video</a></li><li><a href="#try-c64proginfo">Try C64PROGINFO</a></li><li><a href="#try-tiny-21">Try Tiny 2.1</a></li><li><a href="#screenshots">Screenshots</a></li><li><a href="#credits-and-license">Credits and license</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="c64-llm---little-language-model">C64 LLM - Little Language Model</h1>
-<p>Version <strong>0.7</strong> runs two selectable character models in native 6502/6510 assembly on a <strong>64 MHz C64 Ultimate with a 16 MB REU</strong>. <strong>Tiny 2.1</strong> answers general short questions. <strong>C64PROGINFO</strong> focuses on Commodore 64 hardware, BASIC V2, and 6502 assembly.</p>
-<p><a href="DOWNLOAD.html">Download and setup</a> · <a href="TECHNICAL.html">Technical details</a> · <a href="BUILD.html">Build from source</a> · <a href="https://readyos-c64.github.io/UltimateExperiments/tiny21/">Online guide</a> · <a href="https://github.com/ReadyOS-C64/UltimateExperiments/releases/tag/v0.7">GitHub release</a></p>
-<h2 id="v08-development-build">v0.8 development build</h2>
-<p>The v0.8 console adds <strong>F5</strong> for English to Japanese. Type a short English
-sentence and press <strong>RETURN</strong> for polite, spaced romaji. For example,
-<code>i ate an apple</code> produces <code>watashi wa ringo o tabemashita</code>.
-The v0.8 ZIP includes <code>C64LLM.PRG</code> and all three model files, including
-the ready-to-use 375,744-parameter <code>E2JROMAJI.BIN</code>. Copy the four files to
-<code>/USB1/TINY64-MODELS</code> and run <code>C64LLM.PRG</code> from the Ultimate menu.
-<strong>F1</strong> and <strong>F3</strong> select Tiny 2.1 and C64PROGINFO.
-<a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/JAPANESE.md">Japanese examples and training</a> ·
-<a href="BUILD.html#build-the-v08-three-model-console">Build the three-model console</a></p>
-<h2 id="use-the-v07-console">Use the v0.7 console</h2>
-<p>Unzip the v0.7 package and copy <code>PROBE.PRG</code>, <code>MODEL.BIN</code>, and <code>C64PROGINFO.BIN</code> to <code>/USB1/TINY64-MODELS</code>. Enable the <strong>16 MB REU</strong> and <strong>Command Interface</strong>, set <strong>Turbo Control</strong> to <strong>C64U Turbo Registers</strong>, and run <code>PROBE.PRG</code> from the Ultimate menu. It starts with Tiny 2.1.</p>
+<body><a class="skip" href="#content">Skip to content</a><header><a class="brand" href="../index.html">ULTIMATE<span>EXPERIMENTS</span></a><span class="tag">Commodore 64 · Work in progress</span></header><div class="layout"><aside><nav aria-label="Documentation"><a href="../index.html">All experiments</a><details class="project-nav" data-project="supereditor"><summary aria-label="SuperEditor guides">SuperEditor<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../supereditor/index.html">Overview and downloads</a></li><li><a href="../supereditor/USER_GUIDE.html">Complete user guide</a></li><li><a href="../supereditor/SCREENSHOTS.html">Screenshot gallery</a></li><li><a href="../supereditor/GEOS_PREVIEW.html">GEOS preview and settings</a></li><li><a href="../supereditor/STANDALONE_KEYS.html">Standalone keys</a></li><li><a href="../supereditor/BUILD.html">Build and package</a></li><li><a href="../supereditor/CAPACITY.html">Capacity and limits</a></li><li><a href="../supereditor/PERFORMANCE.html">Performance</a></li><li><a href="../supereditor/OPTIMIZATION_PLAN.html">Optimization plan</a></li><li><a href="../supereditor/MEMORY_AND_ADAPTERS.html">Memory and adapters</a></li></ul></details><details class="project-nav" data-project="readyfs"><summary aria-label="ReadyFS guides">ReadyFS<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../readyfs/index.html">Overview and downloads</a></li><li><a href="../readyfs/READYFS_USER_GUIDE.html">Illustrated user guide</a></li><li><a href="../readyfs/READYFS_INTERACTIVE_UI.html">Editor and history</a></li><li><a href="../readyfs/READYFS_RUN_GUIDE.html">RUN / batch scripting</a></li><li><a href="../readyfs/READYFS_SOFTWAREIEC_GUIDE.html">SoftwareIEC mappings</a></li><li><a href="../readyfs/READYFS_SD2IEC_TUTORIAL.html">SD2IEC walkthrough</a></li><li><a href="../readyfs/READYFS_IEC_CONFIGURATION.html">IEC configuration</a></li><li><a href="../readyfs/SD2IEC_NATIVE.html">Native SD2IEC reference</a></li><li><a href="../readyfs/tours/editor.html">Editor screenshot tour</a></li><li><a href="../readyfs/tours/sd2iec.html">SD2IEC screenshot tour</a></li><li><a href="../readyfs/READYFS_SAFETY.html">Safety</a></li><li><a href="../readyfs/READYFS_ACCEPTANCE.html">Acceptance and limits</a></li><li><a href="../readyfs/READYFS_MASTER_PLAN.html">Design plan</a></li><li><a href="../readyfs/READYFS_PATH_RESEARCH.html">Path research</a></li></ul></details><details class="project-nav" data-project="dos64"><summary aria-label="DOS64 Ultimate guides">DOS64 Ultimate<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../dos64/index.html">Overview and downloads</a></li><li><a href="../dos64/INSTALL.html">Install the prebuilt preview</a></li><li><a href="../dos64/BUILD.html">Build and tests</a></li><li><a href="../dos64/STATUS.html">Current status and limits</a></li><li><a href="../dos64/SCREENSHOTS.html">Physical screenshots</a></li><li><a href="../dos64/examples/index.html">Example applications</a></li><li><a href="../dos64/TECHNICAL.html">Technical documentation</a></li><li><a href="../dos64/AUDIT.html">Publication audit</a></li></ul></details><details class="project-nav" data-project="reusql"><summary aria-label="ReuSQL64 guides">ReuSQL64<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../reusql/index.html">Overview and downloads</a></li><li><a href="../reusql/performance.html">Performance and staged queries</a></li><li><a href="../reusql/shell.html">Interactive shell</a></li><li><a href="../reusql/sql-language.html">SQL language</a></li><li><a href="../reusql/tested-queries.html">Tested SQL examples</a></li><li><a href="../reusql/architecture.html">Architecture</a></li><li><a href="../reusql/memory-map.html">Memory map</a></li><li><a href="../reusql/public-api.html">Public API</a></li><li><a href="../reusql/storage-format.html">Storage format</a></li><li><a href="../reusql/export-format.html">Export format</a></li><li><a href="../reusql/dependencies.html">Build dependencies</a></li></ul></details><details class="project-nav" data-project="c77"><summary aria-label="C77 Cyberpunk 77 guides">C77 Cyberpunk 77<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="../c77/index.html">Overview and downloads</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-charrom/README.html">Clean character-ROM gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77-crt/README.html">CRT gallery</a></li><li><a href="../c77/screenshots/c77-cyberpunk-77/README.html">Earlier palette gallery</a></li></ul></details><details class="project-nav" data-project="tiny21" open><summary aria-label="C64 LLM guides">C64 LLM<span class="nav-chevron" aria-hidden="true"></span></summary><ul><li><a href="index.html" aria-current="page">Overview and downloads</a></li><li><a href="DOWNLOAD.html">Download and setup</a></li><li><a href="TECHNICAL.html">Technical details</a></li><li><a href="FUTURE.html">Future versions</a></li></ul></details></nav><details class="contents" open><summary>On this page</summary><ul><li><a href="#run-v08-on-the-c64-ultimate">Run v0.8 on the C64 Ultimate</a></li><li><a href="#switch-models">Switch models</a></li><li><a href="#video">Video</a></li><li><a href="#try-english-to-japanese">Try English to Japanese</a></li><li><a href="#try-c64proginfo">Try C64PROGINFO</a></li><li><a href="#try-tiny-21">Try Tiny 2.1</a></li><li><a href="#screenshots">Screenshots</a></li><li><a href="#credits-and-license">Credits and license</a></li></ul></details></aside><main id="content"><div class="page-actions"><a href="index.md" download>Markdown source ↓</a><button type="button" onclick="window.print()">Print</button></div><h1 id="c64-llm---little-language-model">C64 LLM - Little Language Model</h1>
+<p>Version <strong>0.8</strong> runs three selectable character models in native 6502/6510 assembly on a <strong>64 MHz C64 Ultimate with a 16 MB REU</strong>. <strong>Tiny 2.1</strong> answers general questions, <strong>C64PROGINFO</strong> covers C64 hardware and programming, and <strong>English to Japanese</strong> translates beginner English to spaced romaji.</p>
+<p><a href="DOWNLOAD.html">Download and setup</a> · <a href="TECHNICAL.html">Technical details</a> · <a href="BUILD.html">Build from source</a> · <a href="https://readyos-c64.github.io/UltimateExperiments/tiny21/">Online guide</a></p>
+<h2 id="run-v08-on-the-c64-ultimate">Run v0.8 on the C64 Ultimate</h2>
+<p>Unzip the v0.8 package and copy <code>C64LLM.PRG</code> and all three BIN files to <code>/USB1/TINY64-MODELS</code>. Enable the <strong>16 MB REU</strong> and <strong>Command Interface</strong>, set <strong>Turbo Control</strong> to <strong>C64U Turbo Registers</strong>, and run <code>C64LLM.PRG</code> from the Ultimate menu. It starts with Tiny 2.1. <a href="DOWNLOAD.html#install-and-run">Step-by-step setup</a></p>
 <h2 id="switch-models">Switch models</h2>
 <table>
 <thead>
@@ -34,10 +24,15 @@ the ready-to-use 375,744-parameter <code>E2JROMAJI.BIN</code>. Copy the four fil
 <td>C64PROGINFO for C64 hardware and programming</td>
 <td align="right">224 positions</td>
 </tr>
+<tr>
+<td><strong>F5</strong></td>
+<td>English to Japanese in spaced romaji</td>
+<td align="right">224 positions</td>
+</tr>
 </tbody></table>
 <ol>
 <li>Wait until the console is ready. If it is answering, hold <strong>RUN/STOP</strong> until <strong>Cancelled. Ready.</strong> appears.</li>
-<li>Press <strong>F1</strong> or <strong>F3</strong>. When the selection changes, the console shows <strong>Checking selected model...</strong>. Wait for <strong>Model ready.</strong> and confirm the name on the <strong>Model:</strong> line.</li>
+<li>Press <strong>F1</strong>, <strong>F3</strong>, or <strong>F5</strong>. When the selection changes, the console shows <strong>Checking selected model...</strong>. Wait for <strong>Model ready.</strong> and confirm the name on the <strong>Model:</strong> line.</li>
 <li>Type a question and press <strong>RETURN</strong>. <strong>DEL</strong> edits the prompt. Questions stay visible with their answers, and typing starts a new prompt.</li>
 </ol>
 <p>Each model keeps its own REU slot. The console verifies and reuses an image already in its slot, or loads the matching file from USB through Ultimate DOS. A successful switch clears the displayed question and answer and starts a fresh context. If loading fails, the previous model stays active. <a href="DOWNLOAD.html#switch-models-and-ask-questions">Setup and troubleshooting</a> · <a href="TECHNICAL.html#model-and-resident-6510-engine">REU layout and validation</a></p>
@@ -53,6 +48,82 @@ the ready-to-use 375,744-parameter <code>E2JROMAJI.BIN</code>. Copy the four fil
 <p><a href="https://www.youtube.com/watch?v=EOZRYfPyuy0">Watch the original Tiny 2.1 demo on YouTube</a></p>
 </details>
 
+<h2 id="try-english-to-japanese">Try English to Japanese</h2>
+<p>Press <strong>F5</strong> and wait for <strong>Model ready.</strong> and <strong>Model: English to Japanese (romaji)</strong>. Type a short English sentence directly and press <strong>RETURN</strong>. It replies in polite, spaced romaji, as in <code>watashi wa ringo o tabemashita</code>. Press <strong>F1</strong> or <strong>F3</strong> when you want to return to the other models.</p>
+<iframe class="tiny21-video" src="https://www.youtube-nocookie.com/embed/jw8KyRismIQ" title="C64 LLM English-to-Japanese translation demo" width="640" height="360" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<p><a href="https://www.youtube.com/watch?v=jw8KyRismIQ">Watch on YouTube</a> · <a href="https://tiny21-c64-ultimate.klumsy.chatgpt.site/japanese/">Hardware demo with screenshots and timings</a></p>
+<p>These examples were verified on the Ultimate.</p>
+<table>
+<thead>
+<tr>
+<th>Type this sentence</th>
+<th>Romaji reply</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>i eat an apple</code></td>
+<td><code>watashi wa ringo o tabemasu</code></td>
+</tr>
+<tr>
+<td><code>i ate an apple</code></td>
+<td><code>watashi wa ringo o tabemashita</code></td>
+</tr>
+<tr>
+<td><code>i ate apples</code></td>
+<td><code>watashi wa ringo o tabemashita</code></td>
+</tr>
+<tr>
+<td><code>this is a book</code></td>
+<td><code>kore wa hon desu</code></td>
+</tr>
+<tr>
+<td><code>that is a pencil</code></td>
+<td><code>sore wa enpitsu desu</code></td>
+</tr>
+<tr>
+<td><code>that over there is a dog</code></td>
+<td><code>are wa inu desu</code></td>
+</tr>
+<tr>
+<td><code>i want to eat an apple</code></td>
+<td><code>watashi wa ringo o tabetai desu</code></td>
+</tr>
+<tr>
+<td><code>i don&#39;t want to eat an apple</code></td>
+<td><code>watashi wa ringo o tabetakunai desu</code></td>
+</tr>
+<tr>
+<td><code>i didn&#39;t eat an apple</code></td>
+<td><code>watashi wa ringo o tabemasen deshita</code></td>
+</tr>
+<tr>
+<td><code>i am here</code></td>
+<td><code>watashi wa koko ni imasu</code></td>
+</tr>
+<tr>
+<td><code>he is there</code></td>
+<td><code>kare wa soko ni imasu</code></td>
+</tr>
+<tr>
+<td><code>she is over there</code></td>
+<td><code>kanojo wa asoko ni imasu</code></td>
+</tr>
+<tr>
+<td><code>the curry was spicy</code></td>
+<td><code>karee wa karakatta desu</code></td>
+</tr>
+<tr>
+<td><code>please give me three apples</code></td>
+<td><code>ringo o mittsu kudasai</code></td>
+</tr>
+<tr>
+<td><code>i go to school by bus</code></td>
+<td><code>watashi wa basu de gakkou ni ikimasu</code></td>
+</tr>
+</tbody></table>
+<p>The 375,744-parameter model was trained on beginner vocabulary and sentence patterns for tense, negation, desire, demonstratives, locations, adjectives, and counters. A plain noun such as <code>ringo</code> can mean an apple or apples. The model can confuse clock times and unfamiliar phrasings. <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/JAPANESE.md">Model training and evaluation</a></p>
+<p><img loading="lazy" decoding="async" width="384" height="272" src="screenshots/japanese-romaji.png" alt="C64 LLM translates “I don&#39;t want to eat an apple” to spaced romaji"></p>
 <h2 id="try-c64proginfo">Try C64PROGINFO</h2>
 <p>Press <strong>F3</strong>, wait for <strong>Model ready.</strong>, then type a prompt below and press <strong>RETURN</strong>. These 17 prompts and answers are from the programmers’ demo.</p>
 <h3 id="c64-facts">C64 facts</h3>
@@ -217,6 +288,6 @@ STA $D020
 <p><img loading="lazy" decoding="async" width="384" height="272" src="screenshots/ready.png" alt="C64 LLM v0.7 ready with Tiny 2.1 selected and F1 and F3 shortcuts on screen"></p>
 <p><img loading="lazy" decoding="async" width="384" height="272" src="screenshots/c64proginfo-assembly.png" alt="C64PROGINFO returns two lines of 6502 assembly for setting the border to red"></p>
 <h2 id="credits-and-license">Credits and license</h2>
-<p>The original Tiny 2.1 checkpoint and Pentium/486 DOS implementation are by <a href="https://github.com/WollyMonjac/Tiny-2.1">WollyMonjac/Tiny-2.1</a>. The C64 port, documentation, and C64PROGINFO are under the <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/LICENSE">MIT license</a>. Peddle keeps its <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/third_party/peddle/LICENSE">own MIT notice</a>.</p>
+<p>The original Tiny 2.1 checkpoint and Pentium/486 DOS implementation are by <a href="https://github.com/WollyMonjac/Tiny-2.1">WollyMonjac/Tiny-2.1</a>. The C64 port, documentation, and the two models developed here are under the <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/LICENSE">MIT license</a>. Peddle keeps its <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/third_party/peddle/LICENSE">own MIT notice</a>.</p>
 <p>C64PROGINFO&#39;s training tools adapt the PyTorch decoder and training loop from <a href="https://github.com/jaydarkseed757/c64-dungeon">jaydarkseed757’s c64-dungeon</a>. The <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/LICENSE.c64-dungeon">c64-dungeon notice</a> and the <a href="https://github.com/ReadyOS-C64/UltimateExperiments/blob/main/Tiny21/training/LICENSE.tiny21-language">upstream Tiny 2.1 notice</a> are included in the ZIP.</p>
 </main></div><footer>Independent experiments for the Commodore 64 Ultimate. <a href="../README.html">Build and publishing</a></footer></body></html>
