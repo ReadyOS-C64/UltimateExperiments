@@ -56,8 +56,8 @@ python3 -m probe.package_models --out build/Tiny21-v0.8-English-Japanese.zip \
   --japanese models/E2JROMAJI.BIN
 ```
 
-Unzip the package and copy `PROBE.PRG`, `MODEL.BIN`, `C64PROGINFO.BIN`, and
-`E2JROMAJI.BIN` into `/USB1/TINY64-MODELS`. Run `PROBE.PRG` from the
+Unzip the package and copy `C64LLM.PRG`, `MODEL.BIN`, `C64PROGINFO.BIN`, and
+`E2JROMAJI.BIN` into `/USB1/TINY64-MODELS`. Run `C64LLM.PRG` from the
 Ultimate menu. Press **F5**, wait for **Model ready.**, then type a short English
 sentence and press **RETURN**.
 

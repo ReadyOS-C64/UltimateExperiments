@@ -18,7 +18,7 @@ set Turbo Control to **C64U Turbo Registers** (also called **U64 Turbo
 Registers** on some firmware). The program selects and verifies 64 MHz.
 
 1. Unzip the archive. Copy {files} into `{folder}` in the Ultimate file browser.
-2. In the Ultimate menu, select `PROBE.PRG` and choose **Run**. The console
+2. In the Ultimate menu, select `{program}` and choose **Run**. The console
    starts with Tiny 2.1.
 3. When the console is ready, select {keys}. Wait for **Model ready.** and
    check the **Model:** line. Then type your prompt and press **RETURN**.
@@ -59,14 +59,17 @@ JAPANESE_HELP = """- **English to Japanese** translates short beginner English s
 
 def package(output, core_dir, tiny, programmer, remote, *, japanese=None):
     output.parent.mkdir(parents=True, exist_ok=True)
-    files = ['PROBE.PRG', 'MODEL.BIN', 'C64PROGINFO.BIN']
+    program = 'C64LLM.PRG' if japanese is not None else 'PROBE.PRG'
+    models = ['MODEL.BIN', 'C64PROGINFO.BIN']
     keys = '**F1** for Tiny 2.1 or **F3** for C64PROGINFO'
     if japanese is not None:
-        files.append('E2JROMAJI.BIN')
+        models.append('E2JROMAJI.BIN')
         keys = '**F1** for Tiny 2.1, **F3** for C64PROGINFO, or **F5** for English to Japanese'
+    files = [program, *models]
     readme = INSTALL.format(
         version='0.8' if japanese is not None else '0.7',
         files=', '.join(f'`{name}`' for name in files[:-1]) + f', and `{files[-1]}`',
+        program=program,
         keys=keys, folder=remote, translation=JAPANESE_HELP if japanese is not None else '',
     )
     with TemporaryDirectory(prefix='tiny21-models-') as path:
@@ -74,7 +77,8 @@ def package(output, core_dir, tiny, programmer, remote, *, japanese=None):
         build(out, remote, core_dir, interactive=True, model_image=tiny,
               second_model=programmer, third_model=japanese)
         with ZipFile(output, 'w', compression=ZIP_DEFLATED, compresslevel=9) as archive:
-            for name in files:
+            archive.write(out / 'PROBE.PRG', program)
+            for name in models:
                 archive.write(out / name, name)
             archive.writestr('README.md', readme)
             archive.write(ROOT / 'LICENSE', 'LICENSE')

@@ -9,9 +9,10 @@ Version **0.7** runs two selectable character models in native 6502/6510 assembl
 The v0.8 console adds **F5** for English to Japanese. Type a short English
 sentence and press **RETURN** for polite, spaced romaji. For example,
 `i ate an apple` produces `watashi wa ringo o tabemashita`.
-The branch includes the ready-to-use 375,744-parameter model as
-`E2JROMAJI.BIN`. Copy it alongside the other two model files when installing
-the v0.8 package. **F1** and **F3** still select Tiny 2.1 and C64PROGINFO.
+The v0.8 ZIP includes `C64LLM.PRG` and all three model files, including
+the ready-to-use 375,744-parameter `E2JROMAJI.BIN`. Copy the four files to
+`/USB1/TINY64-MODELS` and run `C64LLM.PRG` from the Ultimate menu.
+**F1** and **F3** select Tiny 2.1 and C64PROGINFO.
 [Japanese examples and training](training/JAPANESE.md) ·
 [Build the three-model console](docs/BUILD.md#build-the-v08-three-model-console)
 
