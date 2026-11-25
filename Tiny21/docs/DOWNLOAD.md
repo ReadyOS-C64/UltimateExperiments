@@ -2,6 +2,9 @@
 
 [Download the v0.8 Ultimate ZIP](../releases/Tiny21-v0.8-English-Japanese.zip)
 
+For VICE or another C64 with a compatible REU, use the [REU edition](REU.md)
+and its separate ZIP.
+
 All three models were verified on a C64 Ultimate at 64 MHz with a 16 MB REU and firmware 3.14.
 
 **Required hardware — a C64 Ultimate with 64 MHz turbo support, a 16 MB REU, and a USB drive.** Enable the RAM Expansion Unit and Command Interface before starting.

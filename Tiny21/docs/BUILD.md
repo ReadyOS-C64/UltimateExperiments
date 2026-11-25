@@ -66,6 +66,21 @@ at `$000000` and `$100000`, and the active model uses the shared attention
 cache. You can also pass `--third-model models/E2JROMAJI.BIN` to the
 interactive probe builder to get labels and an identity manifest for testing.
 
+## Build the v0.8 REU edition
+
+Use the [REU edition source tag](https://github.com/ReadyOS-C64/UltimateExperiments/tree/v0.8-reu/Tiny21)
+with the same group-eight core and model files described above.
+
+```sh
+python3 -m probe.build --reu-only --out build/reu-edition --core-dir build/group8 \
+  --model-image build/group8-model.reu --second-model models/C64PROGINFO.BIN \
+  --third-model models/E2JROMAJI.BIN
+python3 -m probe.package_reu --bundle build/reu-edition \
+  --out build/C64LLM-v0.8-REU.zip
+```
+
+[Run in VICE and switch models](REU.md)
+
 ## Development models with up to 255 positions
 
 The v0.7 group-eight core accepts T64M layout 4. Use a TNY2 checkpoint with

@@ -4,6 +4,10 @@ Version **0.8** runs three selectable character models in native 6502/6510 assem
 
 [Download and setup](DOWNLOAD.md) · [Technical details](TECHNICAL.md) · [Build from source](BUILD.md) · [Online guide](https://readyos-c64.github.io/UltimateExperiments/tiny21/)
 
+The [REU edition](REU.md) runs in VICE or on a C64 with a compatible
+REU. It identifies the attached image and prompts you for the next one when
+you switch models.
+
 ## Run v0.8 on the C64 Ultimate
 
 Unzip the v0.8 package and copy `C64LLM.PRG` and all three BIN files to `/USB1/TINY64-MODELS`. Enable the **16 MB REU** and **Command Interface**, set **Turbo Control** to **C64U Turbo Registers**, and run `C64LLM.PRG` from the Ultimate menu. It starts with Tiny 2.1. [Step-by-step setup](DOWNLOAD.md#install-and-run)

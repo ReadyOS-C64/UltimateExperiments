@@ -195,13 +195,14 @@ with zipfile.ZipFile(ultimate_zip) as archive:
 tiny_guide = (DOCS / 'tiny21/DOWNLOAD.html').read_text()
 if f'href="../downloads/{ultimate_zip.name}"' not in tiny_guide:
     errors.append('C64 LLM download must link to the prebuilt v0.8 ZIP')
-for guide in (ultimate_readme, tiny_guide):
+for guide in (tiny_readme, ultimate_readme, tiny_guide):
     if any(text not in guide for text in ('64 MHz', '16 MB', 'USB1', 'TINY64-MODELS', 'F1', 'F3')):
         errors.append('C64 LLM setup guide is missing installation or model-switching instructions')
-    if any(text not in guide for text in ('C64LLM.PRG', 'E2JROMAJI.BIN', 'F5', 'romaji')):
-        errors.append('C64 LLM v0.8 setup guide is missing Japanese model instructions')
     if any(text in guide for text in ('make_model.py', 'TINY.BIN', 'python3')):
         errors.append('C64 LLM setup guide exposes the developer conversion workflow')
+for guide in (ultimate_readme, tiny_guide):
+    if any(text not in guide for text in ('C64LLM.PRG', 'E2JROMAJI.BIN', 'F5', 'romaji')):
+        errors.append('C64 LLM v0.8 setup guide is missing Japanese model instructions')
 if errors:
     raise SystemExit('\n'.join(errors))
 print(f'PASS: {len(pages)} HTML pages, Markdown links, anchors, local assets, highlighted SQL preserved, only approved embeds, no bundled media or personal home paths, and matching experiment downloads.')
