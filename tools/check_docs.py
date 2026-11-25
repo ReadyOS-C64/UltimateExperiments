@@ -193,8 +193,11 @@ with zipfile.ZipFile(ultimate_zip) as archive:
             errors.append(f'C64 LLM v0.8 ZIP differs from the project model: {model}')
     ultimate_readme = archive.read('README.md').decode()
 tiny_guide = (DOCS / 'tiny21/DOWNLOAD.html').read_text()
-if f'href="../downloads/{ultimate_zip.name}"' not in tiny_guide:
-    errors.append('C64 LLM download must link to the prebuilt v0.8 ZIP')
+reu_zip = 'https://github.com/ReadyOS-C64/UltimateExperiments/releases/download/v0.8-reu/C64LLM-v0.8-REU.zip'
+for name in ('tiny21/index.html', 'tiny21/DOWNLOAD.html'):
+    links = pages[DOCS / name].refs
+    if f'../downloads/{ultimate_zip.name}' not in links or reu_zip not in links:
+        errors.append(f'{name}: link to both the Ultimate and REU edition ZIPs')
 for guide in (tiny_readme, ultimate_readme, tiny_guide):
     if any(text not in guide for text in ('64 MHz', '16 MB', 'USB1', 'TINY64-MODELS', 'F1', 'F3')):
         errors.append('C64 LLM setup guide is missing installation or model-switching instructions')

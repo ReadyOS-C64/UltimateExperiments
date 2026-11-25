@@ -32,6 +32,9 @@
 </tr>
 </tbody></table>
 <p>The resident 6502/6510 engine streams weight and cache tiles through the REU and uses the same code for all layers. <strong>F1</strong> selects Tiny 2.1, <strong>F3</strong> selects C64PROGINFO, and <strong>F5</strong> selects English to Japanese. For the selected model, the PRG checks the expected image CRC32 in REU, then opens and validates the header and matrix directory. If the copy is missing or invalid, Ultimate DOS loads the matching file into the selected slot before checking it again. A failed switch leaves the previous model available. A successful switch resets the active context.</p>
+<p>The table describes the Ultimate Edition. In the REU Edition, the user
+loads one model image at REU address <code>$000000</code>. The PRG checks the REU and
+identifies and verifies that image before inference. <a href="REU.html">REU Edition setup</a></p>
 <h2 id="fixed-point-arithmetic">Fixed-point arithmetic</h2>
 <p>Residuals, normalization inputs and logits use signed Q16.16. Each dense projection packs activations into signed 16-bit integers with a shared right-shift exponent chosen from the largest magnitude. Weight rows retain their original signed int8 values. Each row’s scale becomes Q0.24 on conversion. The engine accumulates signed products before applying the row scale and shared exponent, rounding to nearest with ties away from zero.</p>
 <p>RMS normalization sums squares in a widened accumulator before taking an integer square root and applying Q4.12 gains. The fixed-point path retains fractional guard bits in the square root. ReLU clamps negative feed-forward activations to zero. Greedy decoding selects the largest logit after row rescaling, and ties keep the first vocabulary entry.</p>

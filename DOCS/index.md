@@ -75,9 +75,12 @@ A reconstructed dual-bank character ROM and Cyberpunk palette, explored across R
 
 [Explore C77 Cyberpunk 77](c77/index.md) · [Clean gallery](c77/screenshots/c77-cyberpunk-77-charrom/README.md) · [CRT gallery](c77/screenshots/c77-cyberpunk-77-crt/README.md)
 
-## C64 LLM for the C64 Ultimate
+## C64 LLM
 
-Version 0.8 runs three models in native 6502/6510 assembly at 64 MHz with a 16 MB REU. Press **F1** for Tiny 2.1, **F3** for C64PROGINFO, or **F5** for English-to-Japanese translation in spaced romaji. The ZIP includes the PRG and all three model files.
+Both v0.8 editions run Tiny 2.1, C64PROGINFO, and English-to-Japanese translation in native 6502/6510 assembly.
+
+- **Ultimate Edition** for a 64 MHz C64 Ultimate with a 16 MB REU. The PRG automatically loads the selected model from USB through Ultimate DOS. [Ultimate ZIP and setup](tiny21/DOWNLOAD.md#ultimate-edition-setup)
+- **REU Edition** for VICE or a C64 with a compatible REU of at least 1 MiB. You attach or restore the supplied model image into REU yourself. [REU ZIP and setup](tiny21/REU.md)
 
 ![The v0.7 console displays a two-line BASIC program from C64PROGINFO](tiny21/screenshots/c64proginfo-basic.png)
 

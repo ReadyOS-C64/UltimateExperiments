@@ -12,6 +12,10 @@ All three models use four causal transformer layers with 96 channels, four atten
 
 The resident 6502/6510 engine streams weight and cache tiles through the REU and uses the same code for all layers. **F1** selects Tiny 2.1, **F3** selects C64PROGINFO, and **F5** selects English to Japanese. For the selected model, the PRG checks the expected image CRC32 in REU, then opens and validates the header and matrix directory. If the copy is missing or invalid, Ultimate DOS loads the matching file into the selected slot before checking it again. A failed switch leaves the previous model available. A successful switch resets the active context.
 
+The table describes the Ultimate Edition. In the REU Edition, the user
+loads one model image at REU address `$000000`. The PRG checks the REU and
+identifies and verifies that image before inference. [REU Edition setup](REU.md)
+
 ## Fixed-point arithmetic
 
 Residuals, normalization inputs and logits use signed Q16.16. Each dense projection packs activations into signed 16-bit integers with a shared right-shift exponent chosen from the largest magnitude. Weight rows retain their original signed int8 values. Each row’s scale becomes Q0.24 on conversion. The engine accumulates signed products before applying the row scale and shared exponent, rounding to nearest with ties away from zero.

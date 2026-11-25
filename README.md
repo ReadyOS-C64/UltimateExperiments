@@ -28,9 +28,12 @@ A reconstructed dual-bank character ROM, a Cyberpunk palette, and clean/CRT gall
 
 [Project README](C77Cyberpunk77/README.md) · [Clean gallery](C77Cyberpunk77/screenshots/c77-cyberpunk-77-charrom/README.md) · [Online galleries](https://readyos-c64.github.io/UltimateExperiments/c77/index.html)
 
-## C64 LLM for the C64 Ultimate
+## C64 LLM
 
-Version 0.8 runs three selectable models in native 6502/6510 assembly at 64 MHz with a 16 MB REU. Press **F1** for Tiny 2.1, **F3** for C64PROGINFO, or **F5** to translate beginner English sentences into spaced Japanese romaji.
+Both v0.8 editions run Tiny 2.1, C64PROGINFO, and English-to-Japanese translation in native 6502/6510 assembly.
+
+- **Ultimate Edition** for a 64 MHz C64 Ultimate with a 16 MB REU. The PRG automatically loads the selected model from USB through Ultimate DOS. [Ultimate ZIP and setup](Tiny21/docs/DOWNLOAD.md#ultimate-edition-setup)
+- **REU Edition** for VICE or a C64 with a compatible REU of at least 1 MiB. You attach or restore the supplied model image into REU yourself. [REU ZIP and setup](Tiny21/docs/REU.md)
 
 [Project README](Tiny21/README.md) · [Technical details](Tiny21/docs/TECHNICAL.md) · [Download and setup](Tiny21/docs/DOWNLOAD.md) · [Japanese translation demo and examples](Tiny21/README.md#try-english-to-japanese)
 

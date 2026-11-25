@@ -1,15 +1,21 @@
-# Download and run C64 LLM v0.8 on the Ultimate
+# Download C64 LLM v0.8
 
-[Download the v0.8 Ultimate ZIP](../releases/Tiny21-v0.8-English-Japanese.zip)
+## Choose your edition
 
-For VICE or another C64 with a compatible REU, use the [REU edition](REU.md)
-and its separate ZIP.
+Both packages include Tiny 2.1, C64PROGINFO, and English-to-Japanese translation.
+
+| Edition | What you need | Who loads the model | Download and setup |
+| --- | --- | --- | --- |
+| **Ultimate Edition** | C64 Ultimate with 64 MHz turbo, a 16 MB REU, and USB | The PRG automatically loads the selected BIN from USB through Ultimate DOS or reuses its verified copy in REU. | [Ultimate ZIP](../releases/Tiny21-v0.8-English-Japanese.zip) · [Ultimate setup](#ultimate-edition-setup) |
+| **REU Edition** | VICE or a C64 with a compatible REU of at least 1 MiB and a way to restore REU images | You attach or restore one supplied `.REU` image at address zero. F1, F3, and F5 show the filename to load before you press **RETURN** to verify it. | [REU ZIP](https://github.com/ReadyOS-C64/UltimateExperiments/releases/download/v0.8-reu/C64LLM-v0.8-REU.zip) · [VICE and hardware setup](REU.md) |
+
+## Ultimate Edition setup
 
 All three models were verified on a C64 Ultimate at 64 MHz with a 16 MB REU and firmware 3.14.
 
 **Required hardware — a C64 Ultimate with 64 MHz turbo support, a 16 MB REU, and a USB drive.** Enable the RAM Expansion Unit and Command Interface before starting.
 
-## Install and run
+### Install and run
 
 1. Unzip the archive. On the drive shown as **USB1** in the Ultimate menu, create **TINY64-MODELS** at the root. Copy **C64LLM.PRG**, **MODEL.BIN**, **C64PROGINFO.BIN**, and **E2JROMAJI.BIN** into that folder. The packaged PRG looks for the model files at `/USB1/TINY64-MODELS` when it needs to load them.
 2. Open the Ultimate menu and press **F2** to check the settings.
@@ -26,7 +32,7 @@ All three models were verified on a C64 Ultimate at 64 MHz with a 16 MB REU and 
 
 All three model files are ready to use. The console checks each model's REU slot before loading from USB and reuses a verified resident copy. Keep the USB drive connected for a model's first use and after powering off.
 
-## Switch models and ask questions
+### Switch models and ask questions
 
 | Key | Model | Example question |
 | --- | --- | --- |
@@ -40,11 +46,11 @@ All three model files are ready to use. The console checks each model's REU slot
 
 C64PROGINFO returns multiline BASIC and assembly examples. [Watch the programmers’ demo](../README.md#video) · [Try 17 example prompts](../README.md#try-c64proginfo)
 
-## Translate English to Japanese
+### Translate English to Japanese
 
 Press **F5**, wait for **Model ready.**, and check the model name. Type the English sentence directly, then press **RETURN**. Try `this is a book` for `kore wa hon desu` or `i ate apples` for `watashi wa ringo o tabemashita`. [Fifteen examples and the Japanese demo](../README.md#try-english-to-japanese)
 
-## If a model fails to load
+### If a model fails to load
 
 Check the folder, filenames, and settings above. If the first model fails, return to the Ultimate browser and run the PRG after correcting the setup. If a switch reports **Load failed. Current model kept.**, correct the setup and press the model key again.
 
