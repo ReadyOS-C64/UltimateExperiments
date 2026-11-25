@@ -1,18 +1,21 @@
 # C64 LLM - Little Language Model
 
-Version **0.8** runs three selectable character models in native 6502/6510 assembly on a **64 MHz C64 Ultimate with a 16 MB REU**. **Tiny 2.1** answers general questions, **C64PROGINFO** covers C64 hardware and programming, and **English to Japanese** translates beginner English to spaced romaji.
+Both **v0.8** editions run the same three models in native 6502/6510 assembly. **Tiny 2.1** answers general questions, **C64PROGINFO** covers C64 hardware and programming, and **English to Japanese** translates beginner English to spaced romaji.
 
 [Download and setup](docs/DOWNLOAD.md) · [Technical details](docs/TECHNICAL.md) · [Build from source](docs/BUILD.md) · [Online guide](https://readyos-c64.github.io/UltimateExperiments/tiny21/)
 
-The [REU edition](docs/REU.md) runs in VICE or on a C64 with a compatible
-REU. It identifies the attached image and prompts you for the next one when
-you switch models.
+## Choose your edition
+
+| Edition | Runs on | How models reach the REU | Get it |
+| --- | --- | --- | --- |
+| **Ultimate Edition** | C64 Ultimate at 64 MHz with a 16 MB REU | The PRG automatically loads the selected BIN from USB through Ultimate DOS, or reuses its verified REU copy. | [Ultimate ZIP](releases/Tiny21-v0.8-English-Japanese.zip) · [Setup](docs/DOWNLOAD.md#ultimate-edition-setup) |
+| **REU Edition** | VICE or a C64 with a compatible REU of at least 1 MiB | You attach or restore one supplied `.REU` image yourself. The PRG identifies it and tells you which image to load when you switch. | [REU ZIP](https://github.com/ReadyOS-C64/UltimateExperiments/releases/download/v0.8-reu/C64LLM-v0.8-REU.zip) · [Setup](docs/REU.md) |
 
 ## Run v0.8 on the C64 Ultimate
 
 Unzip the v0.8 package and copy `C64LLM.PRG` and all three BIN files to `/USB1/TINY64-MODELS`. Enable the **16 MB REU** and **Command Interface**, set **Turbo Control** to **C64U Turbo Registers**, and run `C64LLM.PRG` from the Ultimate menu. It starts with Tiny 2.1. [Step-by-step setup](docs/DOWNLOAD.md#install-and-run)
 
-## Switch models
+## Switch models on the Ultimate
 
 | Key | Model | Context |
 | --- | --- | ---: |
